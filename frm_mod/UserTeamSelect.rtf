@@ -1,0 +1,412 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green128\blue0;\red128\green0\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Friend\cf0  \cf1 Class\cf0  usrTeamSelector\par
+\tab\cf1 Inherits\cf0  System.Windows.Forms.UserControl\par
+\tab\par
+\tab\cf1 Public\cf0  TeamName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  TeamDisplayName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  TeamType \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  TeamForeColor \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\cf1 Public\cf0  TeamBackColor \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\cf1 Public\cf0  TeamSeason \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  TeamYear \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  TeamHelmetColor \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\par
+\tab\cf2 'property variables\par
+\cf0\tab\cf2 'Dim m_AdoCon As New ADODB.Connection\par
+\cf0\tab\cf1 Dim\cf0  m_Node \cf1 As\cf0  System.Windows.Forms.TreeNode\par
+\tab\cf1 Dim\cf0  m_TeamName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Dim\cf0  m_SeasonID \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Dim\cf0  m_TName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Dim\cf0  m_TeamForeColor \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\cf1 Dim\cf0  m_TeamBackColor \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\par
+\tab\cf2 'Const m_def_AdoCon = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\\Main\\Football\\newcode\\ThreeInOneTeamFiles.mdb;Persist Security Info=False;Jet OLEDB:Database Password=06251950"\par
+\cf0\tab\cf1 Const\cf0  m_def_TeamForeColor \cf1 As\cf0  \cf1 Short\cf0  = 0\par
+\tab\cf1 Const\cf0  m_def_teamBackColor \cf1 As\cf0  \cf1 Short\cf0  = 0\par
+\tab\par
+\tab\cf1 Public\cf0  \cf1 Event\cf0  TeamSelected(\cf1 ByVal\cf0  Sender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  e \cf1 As\cf0  System.EventArgs)\par
+\tab\par
+\tab\cf2 'Local variables\par
+\cf0\tab\cf1 Dim\cf0  m_Rst \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\cf1 Dim\cf0  m_Forecolr \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\cf1 Dim\cf0  m_Backcolr \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\par
+\tab\cf1 Public\cf0  \cf1 Sub\cf0  LoadTeams()\par
+\tab\tab\cf1 Dim\cf0  SaveSeason \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  OldSeason \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  gSqlstr \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  gRstado \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\tab\par
+\tab\tab tvTeam.Nodes.Clear()\par
+\tab\tab txtLoading.Visible = \cf1 True\par
+\cf0\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab OpenDb()\par
+\tab\tab tvTeam.Nodes.Add(\cf3 "Seasons"\cf0 , \cf3 "Teams"\cf0 )\par
+\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab tvTeam.Nodes.Item(1).Expand()\par
+\tab\tab\par
+\tab\tab gSqlstr = \cf3 "select * from SeasonID order by SeasonId"\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object gRstado may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab gRstado = \cf1 Nothing\par
+\cf0\tab\tab gRstado.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  gRstado\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 While\cf0  \cf1 Not\cf0  .EOF\par
+\tab\tab\tab\tab\cf1 If\cf0  Len(Trim(.Fields(\cf3 "SeasonId"\cf0 ).Value)) >= 4 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  Mid(.Fields(\cf3 "SeasonId"\cf0 ).Value, 1, 4) <> OldSeason \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab OldSeason = Mid(.Fields(\cf3 "SeasonId"\cf0 ).Value, 1, 4)\par
+\tab\tab\tab\tab\tab\tab SaveSeason = OldSeason\par
+\tab\tab\tab\tab\tab\tab\cf2 'All these nodes must exist for each year even if there are no teams\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "Seasons"\cf0 , \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*"\cf0  & nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), SaveSeason)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*"\cf0  & nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*Pro"\cf0  & SaveSeason, \cf3 "Pro Teams"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*"\cf0  & nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*College"\cf0  & SaveSeason, \cf3 "College Teams"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\cf2 'tvTeam.Nodes.Add "*College" & SaveSeason, tvwChild, "*1A&1AA" & SaveSeason, "1A & 1AA"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*College"\cf0  & SaveSeason, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*DivII"\cf0  & SaveSeason, \cf3 "Division II"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*College"\cf0  & SaveSeason, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*DivIII"\cf0  & SaveSeason, \cf3 "Division III"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*College"\cf0  & SaveSeason, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*NAIA"\cf0  & SaveSeason, \cf3 "NAIA"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*"\cf0  & nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*Other"\cf0  & SaveSeason, \cf3 "Other Teams"\cf0 )\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\tab AddSeasonTeams(SaveSeason, \cf1 False\cf0 )\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "Seasons"\cf0 , \cf1 True\cf0 )(0).Nodes.Add(\cf3 "*"\cf0  & nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), Trim(.Fields(\cf3 "Description"\cf0 ).Value))\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab AddSeasonTeams(nz(.Fields(\cf3 "SeasonId"\cf0 ), \cf3 ""\cf0 ), \cf1 True\cf0 )\par
+\tab\tab\tab\tab\tab\cf2 'tvTeam.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*" & Trim$(!Description), Trim$(!Description)\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab txtLoading.Visible = \cf1 False\par
+\cf0\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  AddSeasonTeams(\cf1 ByRef\cf0  Season \cf1 As\cf0  \cf1 String\cf0 , \cf1 ByRef\cf0  SeasonChar \cf1 As\cf0  \cf1 Boolean\cf0 )\par
+\tab\tab\cf1 Dim\cf0  gSqlstr \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  gseasonrst \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\tab\cf1 Dim\cf0  TeamType \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  tname \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  SeasonChar = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab gSqlstr = \cf3 "select * from Teams where SeasonID = '"\cf0  & Season & \cf3 "' order by TeamName, TeamYear"\par
+\cf0\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab gSqlstr = \cf3 "select * from Teams where TeamYear = "\cf0  & Season & \cf3 " order by SeasonId, TeamName"\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object gseasonrst may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab gseasonrst = \cf1 Nothing\par
+\cf0\tab\tab gseasonrst.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  gseasonrst\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 While\cf0  \cf1 Not\cf0  .EOF\par
+\tab\tab\tab\tab\cf2 'Season = Mid$(!Seasonid, 1, 4)\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  Len(Trim(.Fields(\cf3 "SeasonId"\cf0 ).Value)) < 5 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "G-"\cf0  & .Fields(\cf3 "TeamYear"\cf0 ).Value & .Fields(\cf3 "SeasonId"\cf0 ).Value & .Fields(\cf3 "TeamName"\cf0 ).Value, .Fields(\cf3 "TeamYear"\cf0 ).Value & \cf3 " "\cf0  & .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "G-"\cf0  & .Fields(\cf3 "TeamYear"\cf0 ).Value & .Fields(\cf3 "SeasonId"\cf0 ).Value & .Fields(\cf3 "TeamName"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab TeamType = Mid(.Fields(\cf3 "SeasonId"\cf0 ).Value, 5, 1)\par
+\tab\tab\tab\tab\tab tname = .Fields(\cf3 "SeasonId"\cf0 ).Value & \cf3 " -"\cf0  & .Fields(\cf3 "TeamName"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\cf2 'Tname = Season & " -" & !TEAMNAME\par
+\cf0\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  TeamType\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "P"\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*Pro"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "P-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*Pro-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "P-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "C"\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*College"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "C-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*College-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "C-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "2"\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*DivII"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "2-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*DivII-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "2-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "3"\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*DivIII"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "2-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*DivIII-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "2-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "N"\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*NAIA"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "2-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*NAIA-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "2-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Add method behavior has changed Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="DBD08912-7C17-401D-9BE9-BA85E7772B99"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Find(\cf3 "*Other"\cf0  & Season, \cf1 True\cf0 )(0).Nodes.Add(\cf3 "O-"\cf0  & tname, .Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = \cf3 "*Other-"\cf0  & Season & \cf3 "|"\cf0  & \cf3 "O-"\cf0  & tname\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Lower bound of collection tvTeam.Nodes has changed from 1 to 0. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A3B628A0-A810-4AE2-BFA2-9E7A29EB9AD0"'\par
+\cf0\tab\tab\tab\tab\tab tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag = tvTeam.Nodes.Item(tvTeam.Nodes.Count).Tag & \cf3 "\\"\cf0  & \cf1 CStr\cf0 (.Fields(\cf3 "Teamcolorfore"\cf0 ).Value) & \cf3 ","\cf0  & \cf1 CStr\cf0 (.Fields(\cf3 "TeamColorBack"\cf0 ).Value)\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab .MoveFirst()\par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  tvTeam_MouseDown(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.Windows.Forms.MouseEventArgs) \cf1 Handles\cf0  tvTeam.MouseDown\par
+\tab\tab\cf1 Dim\cf0  Button \cf1 As\cf0  \cf1 Short\cf0  = eventArgs.Button \\ &H100000\par
+\tab\tab\cf1 Dim\cf0  Shift \cf1 As\cf0  \cf1 Short\cf0  = System.Windows.Forms.Control.ModifierKeys \\ &H10000\par
+\tab\tab\cf1 Dim\cf0  x \cf1 As\cf0  \cf1 Single\cf0  = VB6.PixelsToTwipsX(eventArgs.X)\par
+\tab\tab\cf1 Dim\cf0  y \cf1 As\cf0  \cf1 Single\cf0  = VB6.PixelsToTwipsY(eventArgs.Y)\par
+\tab\tab\cf2 'UPGRADE_ISSUE: MSComctlLib.TreeView property tvTeam.DropHighlight was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="CC4C7EC0-C903-48FC-ACCC-81861D12DA4A"'\par
+\cf0\tab\tab tvTeam.DropHighlight = tvTeam.GetNodeAt(x, y)\par
+\tab\tab\cf2 'Make sure we are over a Node\par
+\cf0\tab\tab\cf2 'UPGRADE_ISSUE: MSComctlLib.TreeView property tvTeam.DropHighlight was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="CC4C7EC0-C903-48FC-ACCC-81861D12DA4A"'\par
+\cf0\tab\tab\cf1 If\cf0  \cf1 Not\cf0  tvTeam.DropHighlight \cf1 Is\cf0  \cf1 Nothing\cf0  \cf1 Then\par
+\cf0\tab\tab\tab tvTeam.SelectedNode = tvTeam.GetNodeAt(x, y)\par
+\tab\tab\tab\cf2 'Set moNode = tvTeam.SelectedItem ' Set the item being dragged.\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf2 'UPGRADE_ISSUE: MSComctlLib.TreeView property tvTeam.DropHighlight was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="CC4C7EC0-C903-48FC-ACCC-81861D12DA4A"'\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object tvTeam.DropHighlight may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab tvTeam.DropHighlight = \cf1 Nothing\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  tvTeam_NodeClick(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.Windows.Forms.TreeNodeMouseClickEventArgs) \cf1 Handles\cf0  tvTeam.NodeMouseClick\par
+\tab\tab\cf1 Dim\cf0  Node \cf1 As\cf0  System.Windows.Forms.TreeNode = eventArgs.Node\par
+\tab\tab\cf1 Dim\cf0  x \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  sqlstr \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  rst \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\tab\cf1 Dim\cf0  teamT \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  TeamYr \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf2 ' Don't do anything if the user has selected the root item.\par
+\cf0\tab\tab\cf1 If\cf0  Mid(Node.Name, 1, 1) = \cf3 "*"\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\cf0  \cf2 'this is a root element so just exit\par
+\cf0\tab\tab\par
+\tab\tab\cf2 ' DoEvents to let treeview selection change before we start loading entries\par
+\cf0\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab m_TName = Trim(Mid(Node.Name, 10, Len(Node.Name)))\par
+\tab\tab m_SeasonID = Mid(Node.Name, 3, 4)\par
+\tab\tab TeamYear = m_SeasonID\par
+\tab\tab TeamYr = m_SeasonID\par
+\tab\tab m_TeamName = Trim(Mid(Node.Name, 10, Len(Node.Name)))\par
+\tab\tab TeamDisplayName = m_SeasonID & \cf3 " "\cf0  & m_TName\par
+\tab\tab teamT = Mid(Node.Name, 7, 1)\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  teamT\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "P"\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (Pro)"\par
+\cf0\tab\tab\tab\cf1 Case\cf0  \cf3 "C"\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (College)"\par
+\cf0\tab\tab\tab\cf1 Case\cf0  \cf3 "2"\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (Div 2)"\par
+\cf0\tab\tab\tab\cf1 Case\cf0  \cf3 "3"\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (Div 3)"\par
+\cf0\tab\tab\tab\cf1 Case\cf0  \cf3 "N"\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (NAIA)"\par
+\cf0\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "W"\cf0 , \cf3 "U"\par
+\cf0\tab\tab\tab\tab m_SeasonID = Mid(Node.Name, 7, 3)\par
+\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " ("\cf0  & m_SeasonID & \cf3 ")"\par
+\cf0\tab\tab\tab\tab teamT = Mid(Node.Name, 7, 3)\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab TeamDisplayName = TeamDisplayName & \cf3 " (Other)"\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\cf2 'cmdHomeName.Caption = m_TName\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 'gRstado.MoveFirst\par
+\cf0\tab\tab\cf2 'x = "SeasonID = '" & m_SeasonID & "' and TeamName = '" & m_TeamName & "'"\par
+\cf0\tab\tab\cf2 'gRstado.Find "TeamName = '" & m_TeamName & "'"\par
+\cf0\tab\tab\cf2 'gRstado.Find "SeasonID = '" & m_SeasonID & "' and TeamName = '" & m_TeamName & "'"\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  m_TeamName = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Mid(teamT, 1, 1)\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "U"\cf0 , \cf3 "W"\par
+\cf0\tab\tab\tab\tab sqlstr = \cf3 "Select * from Teams where SeasonId = '"\cf0  & m_SeasonID & \cf3 "' and "\cf0  & \cf3 "TeamName = '"\cf0  & m_TeamName & \cf3 "' and TeamYear = "\cf0  & TeamYr\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab sqlstr = \cf3 "Select * from Teams where SeasonId = '"\cf0  & m_SeasonID & teamT & \cf3 "' and "\cf0  & \cf3 "TeamName = '"\cf0  & m_TeamName & \cf3 "' and TeamYear = "\cf0  & TeamYr\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object rst may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab rst = \cf1 Nothing\par
+\cf0\tab\tab rst.Open(sqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockReadOnly)\par
+\tab\tab\cf1 With\cf0  rst\par
+\tab\tab\tab .MoveFirst()\par
+\tab\tab\tab\par
+\tab\tab\tab\cf2 '    .Find "SeasonID = '" & m_SeasonID & "'"\par
+\cf0\tab\tab\tab\cf2 '    If .BOF And .EOF Then\par
+\cf0\tab\tab\tab\cf2 '    Else\par
+\cf0\tab\tab\tab\cf2 '       .Find "TeamName = '" & m_TeamName & "'"\par
+\cf0\tab\tab\tab TeamHelmetColor = .Fields(\cf3 "Teamcolorfore"\cf0 ).Value\par
+\tab\tab\tab TCOLOR(.Fields(\cf3 "TeamColorBack"\cf0 ).Value, .Fields(\cf3 "Teamcolorfore"\cf0 ).Value)\par
+\tab\tab\tab m_TeamForeColor = m_Forecolr\par
+\tab\tab\tab m_TeamBackColor = m_Backcolr\par
+\tab\tab\tab\cf2 'cmdHomeName.ForeColor = m_Forecolr\par
+\cf0\tab\tab\tab\cf2 'gHfcolor = m_Forecolr\par
+\cf0\tab\tab\tab\cf2 'cmdHomeName.BackColor = m_Backcolr\par
+\cf0\tab\tab\tab\cf2 'gHbcolor = m_Backcolr\par
+\cf0\tab\tab\tab\cf2 'ghColor = !TeamColorfore\par
+\cf0\tab\tab\tab\cf2 'gSeasonID(0) = m_SeasonID\par
+\cf0\tab\tab\tab\cf2 'gTeamYear(0) = Mid$(m_SeasonID, 1, 4)\par
+\cf0\tab\tab\tab\cf2 '    End If\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab TeamName = m_TName\par
+\tab\tab TeamSeason = m_SeasonID\par
+\tab\tab TeamForeColor = m_TeamForeColor\par
+\tab\tab TeamBackColor = m_TeamBackColor\par
+\tab\tab TeamType = teamT\par
+\tab\tab\par
+\tab\tab\cf1 RaiseEvent\cf0  TeamSelected(\cf1 Me\cf0 , \cf1 Nothing\cf0 )\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_ISSUE: MSComctlLib.TreeView event tvTeam.OLESetData was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="ABD9AF39-7E24-4AFF-AD8D-3675C1AA3054"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  tvTeam_OLESetData(\cf1 ByRef\cf0  Data \cf1 As\cf0  MSComctlLib.DataObject, \cf1 ByRef\cf0  DataFormat \cf1 As\cf0  \cf1 Short\cf0 )\par
+\tab\tab\cf1 If\cf0  \cf1 Not\cf0  tvTeam.SelectedNode \cf1 Is\cf0  \cf1 Nothing\cf0  \cf1 Then\par
+\cf0\tab\tab\tab Data.SetData(\cf3 "Treeview_Entry|"\cf0  & tvTeam.SelectedNode.Tag)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'Public Property Get AdoCon() As String\par
+\cf0\tab\cf2 '    AdoCon = gConado.ConnectionString\par
+\cf0\tab\cf2 'End Property\par
+\cf0\tab\par
+\tab\cf2 'Public Property Let AdoCon(ByVal ConnectString As String)\par
+\cf0\tab\cf2 '    m_AdoCon.ConnectionString = ConnectString\par
+\cf0\tab\cf2 '    PropertyChanged "AdoCon"\par
+\cf0\tab\cf2 '    If m_AdoCon.State = adStateClosed Then\par
+\cf0\tab\cf2 '        m_AdoCon.Open\par
+\cf0\tab\cf2 '    End If\par
+\cf0\tab\cf2 'End Property\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_Initialize()\par
+\tab\tab\cf2 '    m_AdoCon.ConnectionString = m_def_AdoCon\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_ISSUE: VBRUN.PropertyBag type was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6B85A2A7-FE9F-4FBE-AA0C-CF11AC86A305"'\par
+\cf0\tab\cf2 'UPGRADE_WARNING: UserControl event ReadProperties is not supported. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="92F3B58C-F772-4151-BE90-09F4A232AEAD"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_ReadProperties(\cf1 ByRef\cf0  PropBag \cf1 As\cf0  \cf1 Object\cf0 )\par
+\tab\tab\cf2 '    m_AdoCon.ConnectionString = PropBag.ReadProperty("AdoCon", m_def_AdoCon)\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  usrTeamSelector_Resize(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  \cf1 MyBase\cf0 .Resize\par
+\tab\tab tvTeam.Height = Height\par
+\tab\tab tvTeam.Width = Width\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_ISSUE: VBRUN.PropertyBag type was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6B85A2A7-FE9F-4FBE-AA0C-CF11AC86A305"'\par
+\cf0\tab\cf2 'UPGRADE_WARNING: UserControl event WriteProperties is not supported. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="92F3B58C-F772-4151-BE90-09F4A232AEAD"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_WriteProperties(\cf1 ByRef\cf0  PropBag \cf1 As\cf0  \cf1 Object\cf0 )\par
+\tab\tab\cf2 '    Call PropBag.WriteProperty("AdoCon", m_AdoCon.ConnectionString, m_def_AdoCon)\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf1 Public\cf0  \cf1 Shadows\cf0  \cf1 Property\cf0  Enabled() \cf1 As\cf0  \cf1 Boolean\par
+\cf0\tab\tab\cf1 Get\par
+\cf0\tab\tab\tab Enabled = \cf1 MyBase\cf0 .Enabled\par
+\tab\tab\cf1 End\cf0  \cf1 Get\par
+\cf0\tab\tab\cf1 Set\cf0 (\cf1 ByVal\cf0  Value \cf1 As\cf0  \cf1 Boolean\cf0 )\par
+\tab\tab\tab\cf1 MyBase\cf0 .Enabled = Value\par
+\tab\tab\cf1 End\cf0  \cf1 Set\par
+\cf0\tab\cf1 End\cf0  \cf1 Property\par
+\cf0\tab\par
+\tab\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  TCOLOR(\cf1 ByRef\cf0  FCOLOR \cf1 As\cf0  \cf1 Short\cf0 , \cf1 ByRef\cf0  BCOLOR \cf1 As\cf0  \cf1 Short\cf0 )\par
+\tab\tab\cf1 Static\cf0  SAVCOLOR \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\par
+\tab\tab\cf2 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'\par
+\cf0\tab\tab\cf1 If\cf0  IsDbNull(BCOLOR) \cf1 Then\cf0  BCOLOR = SAVCOLOR\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  FCOLOR\par
+\tab\tab\tab\cf1 Case\cf0  0\par
+\tab\tab\tab\tab m_Forecolr = &H0\par
+\tab\tab\tab\cf1 Case\cf0  1\par
+\tab\tab\tab\tab m_Forecolr = &H800000\par
+\tab\tab\tab\cf1 Case\cf0  2\par
+\tab\tab\tab\tab m_Forecolr = &H4000\par
+\tab\tab\tab\cf1 Case\cf0  3\par
+\tab\tab\tab\tab m_Forecolr = &H808000\par
+\tab\tab\tab\cf1 Case\cf0  4\par
+\tab\tab\tab\tab m_Forecolr = &HFF\par
+\tab\tab\tab\cf1 Case\cf0  5\par
+\tab\tab\tab\tab m_Forecolr = &HFF00FF\par
+\tab\tab\tab\cf1 Case\cf0  6\par
+\tab\tab\tab\tab m_Forecolr = &H40C0\par
+\tab\tab\tab\cf1 Case\cf0  7\par
+\tab\tab\tab\tab m_Forecolr = &HC0C0C0\par
+\tab\tab\tab\cf1 Case\cf0  8\par
+\tab\tab\tab\tab m_Forecolr = &H404040\par
+\tab\tab\tab\cf1 Case\cf0  9\par
+\tab\tab\tab\tab m_Forecolr = &HFF0000\par
+\tab\tab\tab\cf1 Case\cf0  10\par
+\tab\tab\tab\tab m_Forecolr = &HFF00\par
+\tab\tab\tab\cf1 Case\cf0  11\par
+\tab\tab\tab\tab m_Forecolr = &HFFFF00\par
+\tab\tab\tab\cf1 Case\cf0  12\par
+\tab\tab\tab\tab m_Forecolr = &HFF\par
+\tab\tab\tab\cf1 Case\cf0  13\par
+\tab\tab\tab\tab m_Forecolr = &HFF00FF\par
+\tab\tab\tab\cf1 Case\cf0  14\par
+\tab\tab\tab\tab m_Forecolr = &HC0C0\par
+\tab\tab\tab\cf1 Case\cf0  15\par
+\tab\tab\tab\tab m_Forecolr = &HFFFFFF\par
+\tab\tab\tab\cf1 Case\cf0  18\par
+\tab\tab\tab\tab m_Forecolr = &HC000\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab m_Forecolr = &H0\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  BCOLOR\par
+\tab\tab\tab\cf1 Case\cf0  0\par
+\tab\tab\tab\tab m_Backcolr = &H0\par
+\tab\tab\tab\cf1 Case\cf0  1\par
+\tab\tab\tab\tab m_Backcolr = &HFF0000\par
+\tab\tab\tab\cf1 Case\cf0  2\par
+\tab\tab\tab\tab m_Backcolr = &H4000\par
+\tab\tab\tab\cf1 Case\cf0  3\par
+\tab\tab\tab\tab m_Backcolr = &H808000\par
+\tab\tab\tab\cf1 Case\cf0  4\par
+\tab\tab\tab\tab m_Backcolr = &HFF\par
+\tab\tab\tab\cf1 Case\cf0  5\par
+\tab\tab\tab\tab m_Backcolr = &HFF00FF\par
+\tab\tab\tab\cf1 Case\cf0  6\par
+\tab\tab\tab\tab\cf2 'm_Backcolr = &H40C0&\par
+\cf0\tab\tab\tab\tab m_Backcolr = &HFFFF\par
+\tab\tab\tab\cf1 Case\cf0  7\par
+\tab\tab\tab\tab m_Backcolr = &HC0C0C0\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab m_Backcolr = &HFFFFFF\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab SAVCOLOR = BCOLOR\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf2 'UPGRADE_NOTE: val was upgraded to val_Renamed. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\cf1 Public\cf0  \cf1 Function\cf0  nz(\cf1 ByRef\cf0  val_Renamed \cf1 As\cf0  \cf1 Object\cf0 , \cf1 ByRef\cf0  def \cf1 As\cf0  \cf1 Object\cf0 ) \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\par
+\tab\tab\cf2 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'\par
+\cf0\tab\tab\cf1 If\cf0  IsDbNull(val_Renamed) \cf1 Or\cf0  Len(val_Renamed) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object def. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab nz = def\par
+\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object val_Renamed. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab nz = val_Renamed\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Function\par
+End\cf0  \cf1 Class\cf0\f1\par
+}
+ 

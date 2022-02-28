@@ -1,0 +1,916 @@
+DECLARE SUB TITLE ()
+DECLARE SUB GETKEY ()
+DECLARE SUB ReadFile (BYVAL Address%)
+DECLARE SUB SortStr (BYVAL Address%, Size%, Direction%)
+DECLARE SUB MAMenu (BYVAL Address%, SELECTION%, START%, COUNT%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%)
+DECLARE FUNCTION QPRTrim$ (Work$)
+DECLARE SUB MQPrint (X$, Colr)
+DECLARE FUNCTION FCount% (FSpec$)
+DECLARE SUB MPaintBox (ULRow, ULCol, LRRow, LRCol, Colr)
+DECLARE SUB MScrnSave (ULRow, ULCol, LRRow, LRCol, SEG Address)
+DECLARE SUB MScrnRest (ULRow, ULCol, LRRow, LRCol, SEG Address)
+DECLARE FUNCTION GetDrive% ()
+DECLARE FUNCTION EXIST (FILENAME$)
+  DIM PTSF(60), PTSA(60), O2(60), Z2$(240), O%(20), O$(20), H1$(60), Z3$(240)
+  DIM T$(60), W(60), L(60), T(60), Z5$(40), LD(240), ZM%(40), H$(20)
+  DIM LZ(240), P$(60), Z4$(240), TT(10, 20, 9), TR$(10, 20)
+  DIM D$(2)
+  '$INCLUDE: 'DEFCNF.BI'
+  '$INCLUDE: 'SetCnf.BI'          'queries the system info for MsgBox
+  D% = GetDrive%
+5 OPEN "DEV.BAS" FOR INPUT AS #1: FOR I = 0 TO 2: INPUT #1, D$(I): NEXT: CLOSE 1
+
+   IF UCASE$(LEFT$(D$(2), 1)) <> "A" AND UCASE$(LEFT$(D$(2), 1)) <> "B" THEN 4000
+   PRINT "MAKE SURE DISK WITH STATS AND LEADER FILES IS IN DRIVE "; D$(2)
+   CALL GETKEY
+
+4000 Spec$ = D$(2) + "*.LDR"
+    COUNT% = FCount%(Spec$)
+   IF COUNT% = 0 THEN 4500
+   REDIM F$(0 TO COUNT%)
+   FOR X = 1 TO COUNT%
+       F$(X) = SPACE$(12)
+   NEXT
+   F$(0) = Spec$
+   CALL ReadFile(VARPTR(F$(0)))
+   CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
+
+1310 CLS
+    COLOR , 1
+    CLS
+    LOCATE , 28
+    COLOR 14
+    PRINT "SELECT CONFERENCE TO VIEW": COLOR 15
+     SELECTION% = 1
+     START% = 1
+     FileColr% = 31
+     HiLiteColr% = 112
+     Rows% = 20
+     Columns% = 4
+     Spacing% = 6
+     Row% = 4
+     Column% = 1
+    LOCATE 25, 1
+    COLOR 14
+    PRINT "ENTER"; : COLOR 15
+    PRINT "-SELECTS CONFERENCE";
+CALL SHOWCURSOR
+20 MAMenu VARPTR(F$(1)), SELECTION%, START%, COUNT%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%
+CALL HIDECURSOR
+     IF EXITCODE% = 27 THEN 2900
+     IF EXITCODE% = -71 THEN START% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
+     IF EXITCODE% = -79 THEN START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GOTO 20
+     IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
+     IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
+     IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
+     F$ = F$(SELECTION%)
+   LOCATE 2, 33: PRINT F$: LOCATE , 33: PRINT "ANY CHANGE (YN)";
+     COLOR 15, 0
+3910 I$ = INKEY$: IF I$ = "" THEN 3910
+    IF UCASE$(I$) = "Y" THEN 1310
+3911 F$ = QPRTrim$(F$)
+    WE$ = LEFT$(F$, LEN(F$) - 4)
+    GOTO 7
+
+4500 LOCATE 10, 8
+     GOSUB 4600
+     PRINT "NO CONFERENCE FILES WERE FOUND"
+     PRINT "PRESS ANY KEY TO RETURN TO MAIN MENU"
+3805 I$ = INKEY$: IF I$ = "" THEN 3805
+     GOTO 2900
+
+7 WE$ = LEFT$(WE$, 8)
+   OPEN D$(2) + WE$ + ".TMS" FOR INPUT AS #2
+   INPUT #2, FF$, D1$, D2$
+   CLOSE 2
+   GOSUB 200
+   CLS
+   LOCATE 9, 1: PRINT "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+   OPEN D$(2) + WE$ + ".LDR" FOR INPUT AS #2
+   FOR X = 1 TO 60
+   INPUT #2, T$(X), W(X), L(X), T(X), PTSF(X), PTSA(X)
+   NEXT
+   FOR X = 1 TO 240
+   INPUT #2, Z2$(X), Z3$(X), LD(X), LZ(X)
+   NEXT
+   FOR I = 1 TO 10
+   FOR I1 = 1 TO 20
+   FOR I2 = 1 TO 9
+   INPUT #2, TT(I, I1, I2)
+   NEXT: NEXT: NEXT
+   FOR I = 1 TO 10
+   FOR I1 = 1 TO 20
+   INPUT #2, TR$(I, I1)
+   NEXT: NEXT
+   CLOSE 2
+
+    GOTO 1119
+200 L = 8: IF LEN(D1$) < L THEN D1$ = D1$ + " ": GOTO 200
+201 L = 8: IF LEN(D2$) < L THEN D2$ = D2$ + " ": GOTO 201
+204 RETURN
+
+900 IF LEN(P$(P)) < L THEN P$(P) = P$(P) + " ": GOTO 900
+    RETURN
+930 A = INT(1000 * A + .5)
+    IF A = 1000 THEN P$(P) = P$(P) + "1.000 ": RETURN
+    A$ = STR$(A)
+    L = LEN(A$)
+    A$ = RIGHT$(A$, L - 1)
+936 IF LEN(A$) < 3 THEN A$ = "0" + A$: GOTO 936
+    A$ = " ." + RIGHT$(A$, 3)
+    P$(P) = P$(P) + A$
+    RETURN
+960 A$ = "     " + STR$(A)
+    A$ = RIGHT$(A$, W)
+    P$(P) = P$(P) + A$
+    RETURN
+
+1119 D1 = W(1) - L(1)
+     FOR P = 1 TO 15: IF T$(P) = "*" OR T$(P) = "" THEN P$(P) = "": GOTO 1151
+     P$(P) = T$(P): L = 12: GOSUB 900: A = INT(W(P)): W = 3: GOSUB 960: L = 16: GOSUB 900
+     A = INT(L(P)): W = 3: GOSUB 960: L = 20: GOSUB 900: A = INT(T(P)): GOSUB 960: L = 24: GOSUB 900: A = 0
+     IF W(P) + L(P) > 0 THEN A = INT((W(P) + .5 * T(P)) / (W(P) + L(P) + T(P)) * 1000 + .5) / 1000
+     GOSUB 930: L = 30: GOSUB 900: A = PTSF(P): W = 3: GOSUB 960: A = PTSA(P): W = 4: GOSUB 960
+     P$(P) = P$(P)
+1151 NEXT P
+     D1 = W(16) - L(16)
+     FOR P = 16 TO 30: IF T$(P) = "*" OR T$(P) = "" THEN P$(P) = "": GOTO 1152
+     P$(P) = T$(P): L = 12: GOSUB 900: A = INT(W(P)): W = 3: GOSUB 960: L = 16: GOSUB 900
+     A = INT(L(P)): W = 3: GOSUB 960: L = 20: GOSUB 900: A = INT(T(P)): GOSUB 960: L = 24: GOSUB 900: A = 0
+     IF W(P) + L(P) > 0 THEN A = INT(W(P) / (W(P) + L(P) + T(P)) * 1000 + .5) / 1000
+     GOSUB 930: L = 30: GOSUB 900: A = PTSF(P): W = 3: GOSUB 960: A = PTSA(P): W = 4: GOSUB 960
+     P$(P) = P$(P)
+1152 NEXT P
+
+     D1 = W(31) - L(31)
+     FOR P = 31 TO 45: IF T$(P) = "*" OR T$(P) = "" THEN P$(P) = "": GOTO 1153
+     P$(P) = T$(P): L = 12: GOSUB 900: A = INT(W(P)): W = 3: GOSUB 960: L = 16: GOSUB 900
+     A = INT(L(P)): W = 3: GOSUB 960: L = 20: GOSUB 900: A = INT(T(P)): GOSUB 960: L = 24: GOSUB 900: A = 0
+     IF W(P) + L(P) > 0 THEN A = INT((W(P) + .5 * T(P)) / (W(P) + L(P) + T(P)) * 1000 + .5) / 1000
+     GOSUB 930: L = 30: GOSUB 900: A = PTSF(P): W = 3: GOSUB 960: A = PTSA(P): W = 4: GOSUB 960
+     P$(P) = P$(P)
+1153 NEXT P
+     D1 = W(46) - L(46)
+     FOR P = 46 TO 60: IF T$(P) = "*" OR T$(P) = "" THEN P$(P) = "": GOTO 1154
+     P$(P) = T$(P): L = 12: GOSUB 900: A = INT(W(P)): W = 3: GOSUB 960: L = 16: GOSUB 900
+     A = INT(L(P)): W = 3: GOSUB 960: L = 20: GOSUB 900: A = INT(T(P)): GOSUB 960: L = 24: GOSUB 900: A = 0
+     IF W(P) + L(P) > 0 THEN A = INT(W(P) / (W(P) + L(P) + T(P)) * 1000 + .5) / 1000
+     GOSUB 930: L = 30: GOSUB 900: A = PTSF(P): W = 3: GOSUB 960: A = PTSA(P): W = 4: GOSUB 960
+     P$(P) = P$(P)
+1154 NEXT P
+1202 CLS : CALL TITLE
+     J = 5: GOSUB 2075: COLOR 7
+     LOCATE , 30: PRINT "STATS TO "; : COLOR 15: PRINT "S"; : COLOR 7: PRINT "CREEN"
+     LOCATE , 30: PRINT "STATS TO "; : COLOR 15: PRINT "P"; : COLOR 7: PRINT "RINTER"
+     LOCATE , 30: PRINT "STATS TO "; : COLOR 15: PRINT "F"; : COLOR 7: PRINT "ILE"
+8651 I$ = INKEY$: IF I$ = "" THEN 8651
+     COLOR 14, 0
+     IF UCASE$(I$) = "P" THEN 3200
+     IF UCASE$(I$) = "F" THEN X1 = 1: GOTO 3100
+
+1200 CLS
+     COLOR 12: PRINT FF$ + " OVERALL RECORD"
+     IF D1$ <> "" THEN PRINT D1$; " DIVISION"
+     LOCATE 2, 41
+     IF D2$ <> "" THEN PRINT D2$; " DIVISION"
+     LOCATE , 1: COLOR 14: PRINT "              W   L   T   PCT  PF  PA": COLOR 15
+     FOR P = 1 TO 15: IF P$(P) = "" THEN RT = RT + 1: GOTO 1256
+     LOCATE (P + 3 - RT): PRINT T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT "  .---"; : GOTO 1255
+     IF L(P) + T(P) = 0 THEN PRINT " 1.000"; : GOTO 1255
+     IF W(P) = 0 THEN PRINT "  .000"; : GOTO 1255
+     PRINT USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+1255 PRINT TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+1256 NEXT
+     RT = 0
+     IF D2$ = "" THEN 1257
+     LOCATE 3, 41
+     COLOR 14: PRINT "              W   L   T   PCT  PF  PA": COLOR 15
+     FOR P = 16 TO 30
+     IF P$(P) = "" THEN RT = RT + 1: GOTO 1258
+     LOCATE (P - 12 - RT), 41
+     PRINT T$(P); TAB(54); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT "  .---"; : GOTO 1260
+     IF L(P) + T(P) = 0 THEN PRINT " 1.000"; : GOTO 1260
+     IF W(P) = 0 THEN PRINT "  .000"; : GOTO 1260
+     PRINT USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+1260 PRINT TAB(71); USING "### ###"; PTSF(P); PTSA(P)
+1258 NEXT
+     RT = 0
+
+1257 GOSUB 1930
+     CLS
+     COLOR 12
+     PRINT FF$ + " CONFERENCE RECORD"
+     IF D1$ <> "" THEN PRINT D1$; " DIVISION"
+     LOCATE 2, 41
+     IF D2$ <> "" THEN PRINT D2$; " DIVISION"
+     LOCATE , 1: COLOR 14: PRINT "              W   L   T   PCT  PF  PA": COLOR 15
+     FOR P = 31 TO 45
+     IF P$(P) = "" THEN RT = RT + 1: GOTO 1266
+     LOCATE (P - 27 - RT): PRINT T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT "  .---"; : GOTO 1259
+     IF L(P) + T(P) = 0 THEN PRINT " 1.000"; : GOTO 1259
+     IF W(P) = 0 THEN PRINT "  .000"; : GOTO 1259
+     PRINT USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+1259 PRINT TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+1266 NEXT
+     RT = 0
+     IF D2$ = "" THEN 1265
+     LOCATE 3, 41
+     COLOR 14: PRINT "              W   L   T   PCT  PF  PA": COLOR 15
+     FOR P = 46 TO 60
+     IF P$(P) = "" THEN RT = RT + 1: GOTO 1262
+     LOCATE (P - 42 - RT), 41
+     PRINT T$(P); TAB(54); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT "  .---"; : GOTO 1261
+     IF L(P) + T(P) = 0 THEN PRINT " 1.000"; : GOTO 1261
+     IF W(P) = 0 THEN PRINT "  .000"; : GOTO 1261
+     PRINT USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+1261 PRINT TAB(71); USING "### ###"; PTSF(P); PTSA(P)
+1262 NEXT
+     RT = 0
+1265 GOSUB 1930
+
+     CLS : COLOR 14: PRINT "RUSHING LEADERS (MIN 10 ATT/G)"
+     COLOR 12: PRINT "                            AVG  ATT": COLOR 15
+     FOR P = 1 TO 20
+     IF Z2$(P) = "*" THEN 1320
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "##.# ####"; LD(P); LZ(P)
+1320 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "RECEIVING LEADERS (MIN 4 REC/G)"
+     LOCATE 2, 41: COLOR 12: PRINT "                            AVG  REC": COLOR 15
+     FOR P = 21 TO 40
+     IF Z2$(P) = "*" THEN 1327
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "##.#  ###"; LD(P); LZ(P)
+1327 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14: PRINT "RUSHING YARDS TOTAL": COLOR 15
+     FOR P = 41 TO 50
+     IF Z2$(P) = "*" THEN 1360
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "####"; LD(P)
+1360 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "RECEIVING YARDS TOTAL": COLOR 15
+     FOR P = 51 TO 60
+     IF Z2$(P) = "*" THEN 1420
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "####"; LD(P)
+1420 NEXT
+
+     LOCATE 13: COLOR 14: PRINT "RUSHING ATTEMPTS": COLOR 15
+     FOR P = 81 TO 90
+     IF Z2$(P) = "*" THEN 1425
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "####"; LD(P)
+1425 NEXT
+     LOCATE 13, 41: COLOR 14: PRINT "TOTAL RECEPTIONS": COLOR 15
+     FOR P = 91 TO 100
+     IF Z2$(P) = "*" THEN 1434
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "####"; LD(P)
+1434 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14: PRINT "ALL PURPOSE YARDAGE": COLOR 15
+     FOR P = 101 TO 110
+     IF Z2$(P) = "*" THEN 1464
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "####"; LD(P)
+1464 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "SCORING NON-KICKERS": COLOR 15
+     FOR P = 111 TO 120
+     IF Z2$(P) = "*" THEN 1469
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "####"; LD(P)
+1469 NEXT
+     LOCATE 13: COLOR 14: PRINT "RUSHING TOUCHDOWNS": COLOR 15
+     FOR P = 61 TO 70
+     IF Z2$(P) = "*" THEN 1474
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "####"; LD(P)
+1474 NEXT
+     LOCATE 13, 41: COLOR 14: PRINT "RECEIVING TOUCHDOWNS": COLOR 15
+     FOR P = 71 TO 80
+     IF Z2$(P) = "*" THEN 1479
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "####"; LD(P)
+1479 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14: PRINT "COMPLETION PERCENTAGE": COLOR 15
+     FOR P = 121 TO 130
+     IF Z2$(P) = "*" THEN 1494
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "###.#"; LD(P)
+1494 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "QUARTERBACK RATING": COLOR 15
+     FOR P = 131 TO 140
+     IF Z2$(P) = "*" THEN 1504
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "###.#"; LD(P)
+1504 NEXT
+     LOCATE 13: COLOR 14: PRINT "PASSING YARDAGE": COLOR 15
+     FOR P = 141 TO 150
+     IF Z2$(P) = "*" THEN 1509
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "####"; LD(P)
+1509 NEXT
+     LOCATE 13, 41: COLOR 14: PRINT "PASSING TOUCHDOWNS": COLOR 15
+     FOR P = 151 TO 160
+     IF Z2$(P) = "*" THEN 1514
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "####"; LD(P)
+1514 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14: PRINT "KO RETURN AVERAGE                 #": COLOR 15
+     FOR P = 161 TO 170
+     IF Z2$(P) = "*" THEN 1604
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "##.#  ##"; LD(P); LZ(P)
+1604 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "PUNT RETURN AVERAGE               #"
+     COLOR 15
+     FOR P = 171 TO 180
+     IF Z2$(P) = "*" THEN 1609
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "##.#  ##"; LD(P); LZ(P)
+1609 NEXT
+     LOCATE 13: COLOR 14: PRINT "PUNTING AVERAGE": COLOR 15
+     FOR P = 181 TO 190
+     IF Z2$(P) = "*" THEN 1614
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "##.#  ###"; LD(P); LZ(P)
+1614 NEXT
+     LOCATE 13, 41: COLOR 14: PRINT "SCORING (KICKERS)": COLOR 15
+     FOR P = 191 TO 200
+     IF Z2$(P) = "*" THEN 1619
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "###"; LD(P)
+1619 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14: PRINT "FIELD GOAL %                     FGA": COLOR 15
+     FOR P = 201 TO 210
+     IF Z2$(P) = "*" THEN 1624
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "###.#  ##"; LD(P); LZ(P)
+1624 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "EXTRA POINT %                    EPA": COLOR 15
+     FOR P = 211 TO 220
+     IF Z2$(P) = "*" THEN 1629
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "###.#  ##"; LD(P); LZ(P)
+1629 NEXT
+     LOCATE 13: COLOR 14: PRINT "INTERCEPTIONS": COLOR 15
+     FOR P = 221 TO 230
+     IF Z2$(P) = "*" THEN 1740
+     PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 28
+     PRINT USING "##"; LD(P)
+1740 NEXT
+     LOCATE 13, 41: COLOR 14: PRINT "SACKS": COLOR 15
+     FOR P = 231 TO 240
+     IF Z2$(P) = "*" THEN 1790
+     LOCATE , 41: PRINT Z2$(P) + ", " + Z3$(P); : LOCATE , 68
+     PRINT USING "##"; LD(P)
+1790 NEXT
+     GOSUB 1900
+1792 CLS
+     COLOR 14: PRINT "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G": COLOR 15
+     CA = 1
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1793
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+1793 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "TOTAL DEFENSE  G PLAYS  YDS  AVG YDS/G": COLOR 15
+     CA = 2
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1794
+     LOCATE , 41: PRINT TR$(CA, P); : LOCATE , 55
+     PRINT USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+1794 NEXT
+     GOSUB 1900
+     CLS
+     COLOR 14: PRINT "RUSHING OFF    G PLAYS  YDS  AVG YDS/G": COLOR 15
+     CA = 3
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1795
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+1795 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "RUSHING DEF    G PLAYS  YDS  AVG YDS/G": COLOR 15
+     CA = 4
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1796
+     LOCATE , 41: PRINT TR$(CA, P); : LOCATE , 55
+     PRINT USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+1796 NEXT
+     GOSUB 1900
+     CLS
+     COLOR 14: PRINT "SCORING OFF    G  POINTS    AVG": COLOR 15
+     CA = 5
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1797
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3)
+1797 NEXT
+     LOCATE 1, 41: COLOR 14: PRINT "SCORING DEF    G  POINTS    AVG": COLOR 15
+     CA = 6
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1798
+     LOCATE , 41: PRINT TR$(CA, P); : LOCATE , 55
+     PRINT USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3)
+1798 NEXT
+     GOSUB 1900
+     CLS
+     COLOR 14: PRINT "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G": COLOR 15
+     CA = 7
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1799
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
+1799 NEXT
+     GOSUB 1900
+     CLS
+     COLOR 14: PRINT "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G": COLOR 15
+     CA = 8
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1800
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
+1800 NEXT
+     GOSUB 1900
+     CLS
+     COLOR 14: PRINT "PUNTING        NO     AVG": COLOR 15
+     CA = 9
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1801
+     PRINT TR$(CA, P); : LOCATE , 15
+     PRINT USING "###    ##.#"; TT(CA, P, 1); TT(CA, P, 2)
+1801 NEXT
+     GOSUB 1900
+
+     CLS
+     COLOR 14
+     PRINT "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
+     PRINT "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
+     COLOR 15
+     CA = 10
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 1802
+     PRINT TR$(CA, P); : LOCATE , 18
+     PRINT USING "### ###  ###    ### ###  ###       ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5); TT(CA, P, 6); TT(CA, P, 7)
+1802 NEXT
+     GOSUB 1900
+3900 GOSUB 4600
+   U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
+   LOCATE , (80 - LEN(U$)) / 2
+   PRINT U$
+   COLOR 15, 0
+1820 A$ = INKEY$: IF A$ = "" THEN 1820
+     IF UCASE$(A$) = "Y" THEN 1202
+     GOTO 1310
+1880 L = 26: IF LEN(Z4$(P)) < L THEN Z4$(P) = Z4$(P) + " ": GOTO 1880
+     RETURN
+1900 LOCATE 24: PRINT "HIT ANY KEY TO CONTINUE!!";
+1910 QK$ = INKEY$: IF QK$ = "" THEN 1910
+     RETURN
+1930 LOCATE 23: PRINT "HIT ANY KEY TO CONTINUE!!";
+1940 QK$ = INKEY$: IF QK$ = "" THEN 1940
+     RETURN
+2900 IF D% >= 67 THEN 2905
+     CLS
+     PRINT "MAKE SURE PROGRAM DISK IS IN DRIVE"
+     CALL GETKEY
+2905 RUN "HELLO.EXE 3"
+4600 JJ = 4
+     LOCATE 6, 8: COLOR 15, 1
+     PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
+     FOR II = 1 TO JJ: LOCATE 6 + II, 8
+     PRINT " º"; STRING$(61, 32); "º "; : NEXT
+     LOCATE 7 + JJ, 8
+     PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
+     RETURN
+
+2075 REM:
+     LOCATE 8, 8: COLOR 15, 1: PRINT " Ö"; STRING$(61, 196); "· ";
+     FOR II = 1 TO J: LOCATE 8 + II, 8: PRINT " º"; STRING$(61, 32); "º "; : NEXT
+     LOCATE 9 + J, 8: PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 10, 15: RETURN
+3100 COLOR 15, 0: CLS
+    JJ = 7
+    LOCATE 6, 8: COLOR 15, 1
+    PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
+    PRINT " º"; STRING$(61, 32); "º "; : NEXT
+    LOCATE 7 + JJ, 8
+    PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+    LOCATE , 12: PRINT "ENTER NAME FOR FILE: ": PRINT
+    LOCATE , 12: PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
+    LOCATE , 12: PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+    LOCATE , 12: PRINT "WILL AUTOMATICALLY ADD .RPT"
+    LOCATE 7, 37: INPUT SF$
+    IF SF$ = "" THEN 3100
+    LOCATE 13, 12: PRINT "ANY CHANGE (YN) "
+705 I$ = INKEY$: IF I$ = "" THEN 705
+   IF UCASE$(I$) = "Y" THEN 3100
+   COLOR 15, 0
+3200 CLS
+     IF X1 <> 1 THEN OPEN "REPORT" FOR OUTPUT AS #2 ELSE OPEN SF$ + ".RPT" FOR OUTPUT AS #2
+     PRINT #2, FF$ + " OVERALL RECORD"
+     IF D1$ <> "" THEN PRINT #2, D1$; " DIVISION"
+     PRINT #2, "              W   L   T   PCT  PF  PA"
+     FOR P = 1 TO 15
+     IF P$(P) = "" THEN 3255
+     PRINT #2, T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT #2, "  .---"; : GOTO 3256
+     IF L(P) + T(P) = 0 THEN PRINT #2, " 1.000"; : GOTO 3256
+     IF W(P) = 0 THEN PRINT #2, "  .000"; : GOTO 3256
+     PRINT #2, USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+3256 PRINT #2, TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+3255 NEXT
+     PRINT #2,
+     IF D2$ <> "" THEN PRINT #2, D2$; " DIVISION"
+     PRINT #2, "              W   L   T   PCT  PF  PA"
+     FOR P = 16 TO 30
+     IF P$(P) = "" THEN 3257
+     PRINT #2, T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT #2, "  .---"; : GOTO 3258
+     IF L(P) + T(P) = 0 THEN PRINT #2, " 1.000"; : GOTO 3258
+     IF W(P) = 0 THEN PRINT #2, "  .000"; : GOTO 3258
+     PRINT #2, USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+3258 PRINT #2, TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+3257 NEXT
+     PRINT #2,
+     PRINT #2, FF$ + " CONFERENCE RECORD"
+     IF D1$ <> "" THEN PRINT #2, D1$; " DIVISION"
+     PRINT #2, "              W   L   T   PCT  PF  PA"
+     FOR P = 31 TO 45
+     IF P$(P) = "" THEN 3259
+     PRINT #2, T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT #2, "  .---"; : GOTO 3260
+     IF L(P) + T(P) = 0 THEN PRINT #2, " 1.000"; : GOTO 3260
+     IF W(P) = 0 THEN PRINT #2, "  .000"; : GOTO 3260
+     PRINT #2, USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+3260 PRINT #2, TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+3259 NEXT
+     PRINT #2,
+     IF D2$ <> "" THEN PRINT #2, D2$; " DIVISION"
+     PRINT #2, "              W   L   T   PCT  PF  PA"
+     FOR P = 46 TO 60
+     IF P$(P) = "" THEN 3261
+     PRINT #2, T$(P); TAB(14); USING "##  ##  ##"; W(P); L(P); T(P);
+     IF W(P) + L(P) + T(P) = 0 THEN PRINT #2, "  .---"; : GOTO 3262
+     IF L(P) + T(P) = 0 THEN PRINT #2, " 1.000"; : GOTO 3262
+     IF W(P) = 0 THEN PRINT #2, "  .000"; : GOTO 3262
+     PRINT #2, USING "  .###"; W(P) / (W(P) + L(P) + T(P));
+3262 PRINT #2, TAB(31); USING "### ###"; PTSF(P); PTSA(P)
+3261 NEXT
+
+     PRINT #2, CHR$(12)
+     PRINT #2, "RUSHING LEADERS (MIN 10 ATT/G)"; TAB(41); "RECEIVING LEADERS (MIN 4 REC/G)"
+     PRINT #2, "                            AVG  ATT"; TAB(41); "                            AVG  REC"
+     FOR P = 1 TO 20
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "##.# ####"; LD(P); LZ(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 20) = "*" THEN
+        PRINT #2,
+        GOTO 3320
+     ELSE
+        PRINT #2, Z2$(P + 20) + ", " + Z3$(P + 20);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "##.# ####"; LD(P + 20); LZ(P + 20)
+     END IF
+3320 NEXT
+     PRINT #2,
+     PRINT #2, "RUSHING YARDS TOTAL"; TAB(41); "RECEIVING YARDS TOTAL"
+     FOR P = 41 TO 50
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "####"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3360
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "####"; LD(P + 10)
+     END IF
+3360 NEXT
+     PRINT #2,
+     PRINT #2, "RUSHING ATTEMPTS"; TAB(41); "TOTAL RECEPTIONS"
+     FOR P = 81 TO 90
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "####"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3425
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "####"; LD(P + 10)
+     END IF
+3425 NEXT
+     PRINT #2,
+     PRINT #2, "ALL PURPOSE YARDAGE"; TAB(41); "SCORING NON-KICKERS"
+     FOR P = 101 TO 110
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "####"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3464
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "####"; LD(P + 10)
+     END IF
+3464 NEXT
+     PRINT #2, CHR$(12)
+     PRINT #2, "RUSHING TOUCHDOWNS"; TAB(41); "RECEIVING TOUCHDOWNS"
+     FOR P = 61 TO 70
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "####"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3474
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "####"; LD(P + 10)
+     END IF
+3474 NEXT
+     PRINT #2,
+     PRINT #2, "COMPLETION PERCENTAGE"; TAB(41); "QUARTERBACK RATING"
+     FOR P = 121 TO 130
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "###.#"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3494
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "###.#"; LD(P + 10)
+     END IF
+3494 NEXT
+     PRINT #2,
+     PRINT #2, "PASSING YARDAGE"; TAB(41); "PASSING TOUCHDOWNS"
+     FOR P = 141 TO 150
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "####"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3509
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "####"; LD(P + 10)
+     END IF
+3509 NEXT
+     PRINT #2,
+     PRINT #2, "KO RETURN AVERAGE                 #"; TAB(41); "PUNT RETURN AVERAGE               #"
+     FOR P = 161 TO 170
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "##.#  ##"; LD(P); LZ(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3604
+     ELSE
+         PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+         PRINT #2, TAB(68);
+         PRINT #2, USING "##.#  ##"; LD(P + 10); LZ(P + 10)
+     END IF
+3604 NEXT
+     PRINT #2,
+     PRINT #2, "PUNTING AVERAGE"; TAB(41); "SCORING (KICKERS)"
+     FOR P = 181 TO 190
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "##.#  ###"; LD(P); LZ(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3619
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "###"; LD(P + 10)
+     END IF
+3619 NEXT
+     PRINT #2,
+     PRINT #2, "FIELD GOAL %                     FGA"; TAB(41); "EXTRA POINT %                   EPA"
+     FOR P = 201 TO 210
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "###.#  ###"; LD(P); LZ(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3624
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "###.#  ##"; LD(P + 10); LZ(P + 10)
+     END IF
+3624 NEXT
+     PRINT #2,
+     PRINT #2, "INTERCEPTIONS"; TAB(41); "SACKS"
+     FOR P = 221 TO 230
+     IF Z2$(P) = "*" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, Z2$(P) + ", " + Z3$(P);
+         PRINT #2, TAB(28);
+         PRINT #2, USING "##"; LD(P);
+         PRINT #2, TAB(41);
+     END IF
+     IF Z2$(P + 10) = "*" THEN
+        PRINT #2,
+        GOTO 3640
+     ELSE
+        PRINT #2, Z2$(P + 10) + ", " + Z3$(P + 10);
+        PRINT #2, TAB(68);
+        PRINT #2, USING "##"; LD(P + 10)
+     END IF
+3640 NEXT
+     PRINT #2, CHR$(12)
+     PRINT #2, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; TAB(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
+     FOR P = 1 TO 20
+     CA = 1
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(15);
+         PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5);
+         PRINT #2, TAB(41);
+     END IF
+     CA = 2
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+        PRINT #2,
+        GOTO 3793
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(56);
+         PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+     END IF
+3793 NEXT
+     PRINT #2,
+
+     PRINT #2, "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"; TAB(41); "RUSHING DEF     G PLAYS  YDS  AVG YDS/G"
+     FOR P = 1 TO 20
+     CA = 3
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(15);
+         PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5);
+         PRINT #2, TAB(41);
+     END IF
+     CA = 4
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+        PRINT #2,
+        GOTO 3795
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(56);
+         PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
+     END IF
+3795 NEXT
+     PRINT #2, CHR$(12)
+     PRINT #2, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
+     CA = 7
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3799
+     PRINT #2, TR$(CA, P); TAB(15);
+     PRINT #2, USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
+3799 NEXT
+     PRINT #2,
+     PRINT #2, "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
+     CA = 8
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3800
+     PRINT #2, TR$(CA, P); TAB(15);
+     PRINT #2, USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
+3800 NEXT
+     PRINT #2, CHR$(12)
+     PRINT #2, "SCORING OFF    G  POINTS    AVG"; TAB(41); "SCORING DEF     G  POINTS    AVG"
+     FOR P = 1 TO 20
+     CA = 5
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+         PRINT #2, TAB(41);
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(15);
+         PRINT #2, USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3);
+         PRINT #2, TAB(41);
+     END IF
+     CA = 6
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
+        PRINT #2,
+        GOTO 3797
+     ELSE
+         PRINT #2, TR$(CA, P); TAB(56);
+         PRINT #2, USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3)
+     END IF
+3797 NEXT
+     PRINT #2,
+     PRINT #2, "PUNTING        NO     AVG"
+     CA = 9
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3801
+     PRINT #2, TR$(CA, P); TAB(15);
+     PRINT #2, USING "###    ##.#"; TT(CA, P, 1); TT(CA, P, 2)
+3801 NEXT
+     PRINT #2, CHR$(12)
+     PRINT #2, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
+     PRINT #2, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
+     CA = 10
+     FOR P = 1 TO 20
+     IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3802
+     PRINT #2, TR$(CA, P); TAB(18);
+     PRINT #2, USING "### ###  ###    ### ###  ###       ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5); TT(CA, P, 6); TT(CA, P, 7)
+3802 NEXT
+     CLOSE 2
+     IF X1 = 1 THEN 3900
+     OPEN "REPORT" FOR INPUT AS #2
+     DO WHILE NOT EOF(2)
+         LINE INPUT #2, X$
+         LPRINT X$
+     LOOP
+     CLOSE 2
+     LPRINT CHR$(12)
+     GOTO 3900
+
+SUB GETKEY ()
+2906 I$ = INKEY$: IF I$ = "" THEN 2906
+END SUB
+
+SUB TITLE ()
+     COLOR , 2
+     LOCATE 1, 1: PRINT TAB(80); : LOCATE , 26: COLOR 0
+     PRINT "3 IN 1 FOOTBALL STATISTICS"
+     LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
+     PRINT "(C) LANCE HAFFNER/SHANNON LYNN 1991"; TAB(70); LEFT$(TIME$, 5);
+     LOCATE 4, 1: COLOR 2, 0
+END SUB
+

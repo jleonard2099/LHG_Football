@@ -1,0 +1,479 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red128\green0\blue0;\red0\green128\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Friend\cf0  \cf1 Class\cf0  frmbox2screen\par
+\tab\cf1 Inherits\cf0  System.Windows.Forms.Form\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  frmbox2screen_Load(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  \cf1 MyBase\cf0 .Load\par
+\tab\tab\cf1 Dim\cf0  rptGameStats \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  Text1 \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  text2 \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  irpct \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Dim\cf0  ti \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Dim\cf0  j \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Dim\cf0  yc \cf1 As\cf0  \cf1 Single\par
+\cf0\tab\tab\cf1 Dim\cf0  tdpct \cf1 As\cf0  \cf1 Double\par
+\cf0\tab\tab\cf1 Dim\cf0  xppct \cf1 As\cf0  \cf1 Single\par
+\cf0\tab\tab\cf1 Dim\cf0  fgpct \cf1 As\cf0  \cf1 Single\par
+\cf0\tab\tab\cf1 Dim\cf0  Rname \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab SSDBGrid3.Columns(\cf2 "playername"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid7.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid4.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid8.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid5.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid9.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid6.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid10.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid11.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid12.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid13.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid14.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid15.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid16.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid17.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid18.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab SSDBGrid19.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(0)\par
+\tab\tab SSDBGrid20.Columns(\cf2 "PlayerName"\cf0 ).Text = team_name(1)\par
+\tab\tab\par
+\tab\tab\cf1 If\cf0  home_or_neutral_site_flag = 2 \cf1 Then\cf0  text2 = \cf2 "SITE: NEUTRAL  ATTENDANCE: "\cf0  & VB6.Format(att, \cf2 "###,###"\cf0 )\par
+\tab\tab\cf1 If\cf0  home_or_neutral_site_flag <> 2 \cf1 Then\cf0  text2 = \cf2 "SITE: "\cf0  & compile_stadium_name & \cf2 "  ATTENDANCE: "\cf0  & VB6.Format(att, \cf2 "###,###"\cf0 )\par
+\tab\tab SSDBGrid1.AddItem(Text1 & vbTab & text2)\par
+\tab\tab PRINTBOX(Text1 & vbTab & text2)\par
+\tab\tab Text1 = \cf2 " "\par
+\cf0\tab\tab text2 = \cf2 " "\par
+\cf0\tab\tab SSDBGrid1.AddItem(Text1 & vbTab & text2)\par
+\tab\tab PRINTBOX(Text1 & vbTab & text2)\par
+\tab\tab Text1 = \cf2 " "\par
+\cf0\tab\tab text2 = \cf2 " "\par
+\cf0\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab Text1 = team_name(i)\par
+\tab\tab\tab text2 = VB6.Format(s(i, 1), \cf2 "## "\cf0 ) & VB6.Format(s(i, 2), \cf2 "## "\cf0 ) & VB6.Format(s(i, 3), \cf2 "## "\cf0 ) & VB6.Format(s(i, 4), \cf2 "## "\cf0 )\par
+\tab\tab\tab\cf1 If\cf0  q > 4 \cf1 Then\par
+\cf0\tab\tab\tab\tab\cf1 For\cf0  i1 = 5 \cf1 To\cf0  q\par
+\tab\tab\tab\tab\tab text2 = text2 & VB6.Format(s(i, i1), \cf2 "## "\cf0 )\par
+\tab\tab\tab\tab\cf1 Next\cf0  i1\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab text2 = text2 & \cf2 "- "\cf0  & VB6.Format(s(i, 0), \cf2 "###"\cf0 )\par
+\tab\tab\tab SSDBGrid1.AddItem(Text1 & vbTab & text2)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab Text1 = \cf2 " "\par
+\cf0\tab\tab text2 = \cf2 " "\par
+\cf0\tab\tab SSDBGrid1.AddItem(Text1 & vbTab & text2)\par
+\tab\tab PRINTBOX(Text1 & vbTab & text2)\par
+\tab\tab\cf1 If\cf0  X2 = 0 \cf1 Then\cf0  \cf1 GoTo\cf0  8526\par
+\tab\tab\cf1 For\cf0  i = 1 \cf1 To\cf0  X2\par
+\tab\tab\tab text2 = team_name(k1(i, 1)) & \cf2 "-"\par
+\cf0\tab\tab\tab ti = time_of_score(i)\par
+\tab\tab\tab ti = ti + ti * \cf1 CShort\cf0 (ti < 0)\par
+\tab\tab\tab irpct = Int(ti / 60)\par
+\tab\tab\tab j = ti - irpct * 60\par
+\tab\tab\tab text2 = text2 & VB6.Format(irpct, \cf2 "#0"\cf0 ) & \cf2 ":"\cf0  & VB6.Format(j, \cf2 "00"\cf0 )\par
+\tab\tab\tab\cf1 If\cf0  qtr_of_score(i) = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab text2 = text2 & \cf2 " of 1st - "\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  qtr_of_score(i) = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab text2 = text2 & \cf2 " of 2nd - "\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  qtr_of_score(i) = 3 \cf1 Then\par
+\cf0\tab\tab\tab\tab text2 = text2 & \cf2 " of 3rd - "\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  qtr_of_score(i) = 4 \cf1 Then\par
+\cf0\tab\tab\tab\tab text2 = text2 & \cf2 " of 4th - "\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  qtr_of_score(i) >= 5 \cf1 Then\par
+\cf0\tab\tab\tab\tab text2 = text2 & \cf2 " of overtime - "\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) <> 7 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & Int(k1(i, 5) + 0.5)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd run by "\cf0  & rb_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd pass by "\cf0  & qb_name(k1(i, 1), k1(i, 2)) & \cf2 " to "\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  k1(i, 3) > 9 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab Text1 = Text1 & receiver_name(k1(i, 1), k1(i, 3) - 10)\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab Text1 = Text1 & rb_name(k1(i, 1), k1(i, 3))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 3 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd K.O. Return by "\cf0  & kor_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 4 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd Punt Return by "\cf0  & pr_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 5 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " Interception Return by "\cf0  & defender_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 6 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " blocked kick recovered in end zone"\par
+\cf0\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 7 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " Safety"\par
+\cf0\tab\tab\tab\tab\cf1 GoTo\cf0  8525\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 8 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd FG by "\cf0  & kicker_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8525\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 9 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " yd run by "\cf0  & qb_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 10 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " Fumble return"\par
+\cf0\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 11 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 "Fake Punt "\cf0  & k1(i, 2)\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 0) = 12 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 "2 pt def return by "\cf0  & defender_name(k1(i, 1), k1(i, 2))\par
+\tab\tab\tab\tab\cf1 GoTo\cf0  8517\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8517: \par
+\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 10 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " (Kick Failed)"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 20 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " (Run Failed)"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 30 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 "  (Pass failed)"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 11 \cf1 Then\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " (Kick by "\cf0  & kicker_name(k1(i, 1), k1(i, 6)) & \cf2 ")"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 21 \cf1 Then\par
+\cf0\tab\tab\tab\tab\cf3 'Print " (Run Good)"\par
+\cf0\tab\tab\tab\tab Text1 = Text1 & \cf2 " (Run Good)"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  k1(i, 4) = 31 \cf1 Then\par
+\cf0\tab\tab\tab\tab\cf3 'Print " (Pass Good) "\par
+\cf0\tab\tab\tab\tab Text1 = Text & \cf2 " (Pass Good)"\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8525: \par
+\tab\tab\tab SSDBGrid1.AddItem(text2 & vbTab & Text1)\par
+\tab\tab\tab PRINTBOX(text2 & vbTab & Text1)\par
+\tab\tab\tab Text1 = \cf2 " "\par
+\cf0\tab\tab\tab text2 = \cf2 " "\par
+\cf0\tab\tab\tab\cf3 '8525\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+8526: \par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Team Statistics"\cf0 )\par
+\tab\tab TeamStats(team_name(0), \cf2 "TEAM NAME"\cf0 , team_name(1))\par
+\tab\tab\par
+\tab\tab SSDBGrid2.AddItem(team_first_downs(0) & vbTab & \cf2 "First Downs"\cf0  & vbTab & team_first_downs(1))\par
+\tab\tab TeamStats(Str(team_first_downs(0)), \cf2 "First Downs"\cf0 , Str(team_first_downs(1)))\par
+\tab\tab\cf1 If\cf0  using_pro_or_college_rules = 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = team_rush_att(0) & \cf2 " - "\cf0  & Int(team_rush_yds(0) + 0.5)\par
+\tab\tab\tab text2 = team_rush_att(1) & \cf2 " - "\cf0  & Int(team_rush_yds(1) + 0.5)\par
+\tab\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Rushing Yds"\cf0  & vbTab & text2)\par
+\tab\tab\tab TeamStats(Text1, \cf2 "Rushing Yds"\cf0 , text2)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  using_pro_or_college_rules <> 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = team_rush_att(0) - team_sacked(0) & \cf2 " - "\cf0  & Int(team_rush_yds(0) + team_sacked_yds(0) + 0.5)\par
+\tab\tab\tab text2 = team_rush_att(1) - team_sacked(1) & \cf2 " - "\cf0  & Int(team_rush_yds(1) + team_sacked_yds(1) + 0.5)\par
+\tab\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Rushing Yds"\cf0  & vbTab & text2)\par
+\tab\tab\tab TeamStats(Text1, \cf2 "Rushing Yds"\cf0 , text2)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab SSDBGrid2.AddItem(Int(team_pass_yds(0) + 0.5) & vbTab & \cf2 "Passing Yds"\cf0  & vbTab & Int(team_pass_yds(1) + 0.5))\par
+\tab\tab TeamStats(\cf1 CStr\cf0 (Int(team_pass_yds(0) + 0.5)), \cf2 "Passing Yds"\cf0 , \cf1 CStr\cf0 (Int(team_pass_yds(1) + 0.5)))\par
+\tab\tab\cf1 If\cf0  using_pro_or_college_rules = 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = \cf1 CStr\cf0 (Int(team_rush_yds(0) + 0.5) + Int(team_pass_yds(0) + 0.5))\par
+\tab\tab\tab text2 = \cf1 CStr\cf0 (Int(team_rush_yds(1) + 0.5) + Int(team_pass_yds(1) + 0.5))\par
+\tab\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Total Yds"\cf0  & vbTab & text2)\par
+\tab\tab\tab TeamStats(Text1, \cf2 "Total Yds"\cf0 , text2)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  using_pro_or_college_rules <> 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = \cf1 CStr\cf0 (Int(team_rush_yds(0) + 0.5) - Int(team_sacked_yds(0) + 0.5) + Int(team_pass_yds(0) + 0.5))\par
+\tab\tab\tab text2 = \cf1 CStr\cf0 (Int(team_rush_yds(1) + 0.5) - Int(team_sacked_yds(1) + 0.5) + Int(team_pass_yds(1) + 0.5))\par
+\tab\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Total Yds"\cf0  & vbTab & text2)\par
+\tab\tab\tab TeamStats(Text1, \cf2 "Total Yds"\cf0 , text2)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab Text1 = team_pass_comp(0) & \cf2 "-"\cf0  & team_pass_att(0) & \cf2 "-"\cf0  & team_pass_int(0)\par
+\tab\tab text2 = team_pass_comp(1) & \cf2 "-"\cf0  & team_pass_att(1) & \cf2 "-"\cf0  & team_pass_int(1)\par
+\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Passes"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Passes"\cf0 , text2)\par
+\tab\tab\cf1 If\cf0  team_punts(0) = 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = \cf2 "0 - 00.0"\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  team_punts(0) > 0 \cf1 Then\par
+\cf0\tab\tab\tab Text1 = team_punts(0) & \cf2 " - "\cf0  & Int((team_punt_yds(0) / team_punts(0)) * 10 + 0.5) / 10\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  team_punts(1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab text2 = \cf2 "0 - 00.0"\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  team_punts(1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab text2 = team_punts(1) & \cf2 " - "\cf0  & Int((team_punt_yds(1) / team_punts(1)) * 10 + 0.5) / 10\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Punts"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Punts"\cf0 , text2)\par
+\tab\tab Text1 = team_fumbles(0) & \cf2 " - "\cf0  & team_fum_lost(0)\par
+\tab\tab text2 = team_fumbles(1) & \cf2 " - "\cf0  & team_fum_lost(1)\par
+\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Fum/Lost"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Fum/Lost"\cf0 , text2)\par
+\tab\tab Text1 = team_penalties(0) & \cf2 " - "\cf0  & Int(team_penalty_yds(0) + 0.5)\par
+\tab\tab text2 = team_penalties(1) & \cf2 " - "\cf0  & Int(team_penalty_yds(1) + 0.5)\par
+\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Penalties"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Penalties"\cf0 , text2)\par
+\tab\tab Text1 = team_sacked(0) & \cf2 " - "\cf0  & team_sacked_yds(0)\par
+\tab\tab text2 = team_sacked(1) & \cf2 " - "\cf0  & team_sacked_yds(1)\par
+\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "sacked"\cf0  & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Sacked"\cf0 , text2)\par
+\tab\tab\cf3 'UPGRADE_WARNING: Couldn't resolve default property of object TIME_OF_POSS(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab Text1 = VB6.Format(Int(TIME_OF_POSS(0) / 60), \cf2 "##"\cf0 ) & \cf2 ":"\cf0  & VB6.Format(TIME_OF_POSS(0) - Int(TIME_OF_POSS(0) / 60) * 60, \cf2 "##"\cf0 )\par
+\tab\tab\cf3 'UPGRADE_WARNING: Couldn't resolve default property of object TIME_OF_POSS(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab text2 = VB6.Format(Int(TIME_OF_POSS(1) / 60), \cf2 "##"\cf0 ) & \cf2 ":"\cf0  & VB6.Format(TIME_OF_POSS(1) - Int(TIME_OF_POSS(1) / 60) * 60, \cf2 "##"\cf0 )\par
+\tab\tab SSDBGrid2.AddItem(Text1 & vbTab & \cf2 "Time of Possession"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "Time of Possession"\cf0 , text2)\par
+\tab\tab Text1 = third_down_e(0) - third_down_f(0) & \cf2 " - "\cf0  & third_down_e(0)\par
+\tab\tab text2 = third_down_e(1) - third_down_f(1) & \cf2 " - "\cf0  & third_down_e(1)\par
+\tab\tab SSDBGrid1.AddItem(Text1 & vbTab & \cf2 "3RD Down Eff"\cf0  & vbTab & text2)\par
+\tab\tab TeamStats(Text1, \cf2 "3RD Down Eff"\cf0 , text2)\par
+\tab\tab\cf3 ' should be dbgrid2?\par
+\cf0\tab\tab\par
+\tab\tab ADDBACKS() \cf3 'subroutine\par
+\cf0\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Rushing Statistics"\cf0 )\par
+\tab\tab rushHmax = 0\par
+\tab\tab rushVmax = 0\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  13\par
+\tab\tab\tab\tab\cf1 If\cf0  rb_rush_att(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8560\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  i1 > 10 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab Rname = qb_name(i, i1 - 10)\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab Rname = rb_name(i, i1)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid3.AddItem(Rname & vbTab & VB6.Format(rb_rush_att(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5) / rb_rush_att(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_rush_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_rush_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RushingStats(i, Rname & vbTab & VB6.Format(rb_rush_att(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5) / rb_rush_att(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_rush_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_rush_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid7.AddItem(Rname & vbTab & VB6.Format(rb_rush_att(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5) / rb_rush_att(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_rush_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_rush_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RushingStats(i, Rname & vbTab & VB6.Format(rb_rush_att(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_rush_yds(i, i1) + 0.5) / rb_rush_att(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_rush_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_rush_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8560: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Receiving Statistics"\cf0 )\par
+\tab\tab recvHmax = 0\par
+\tab\tab recvVmax = 0\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\tab\cf1 If\cf0  receiver_receptions(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8570\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid4.AddItem(receiver_name(i, i1) & vbTab & VB6.Format(receiver_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5) / receiver_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(receiver_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(receiver_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RecvingStats(i, receiver_name(i, i1) & vbTab & VB6.Format(receiver_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5) / receiver_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(receiver_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(receiver_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid8.AddItem(receiver_name(i, i1) & vbTab & VB6.Format(receiver_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5) / receiver_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(receiver_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(receiver_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RecvingStats(i, receiver_name(i, i1) & vbTab & VB6.Format(receiver_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(receiver_receiving_yds(i, i1) + 0.5) / receiver_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(receiver_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(receiver_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8570: \cf1 Next\cf0  i1\par
+\tab\tab\tab\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\cf1 If\cf0  rb_receptions(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8571\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid4.AddItem(rb_name(i, i1) & vbTab & VB6.Format(rb_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5) / rb_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RecvingStats(i, rb_name(i, i1) & vbTab & VB6.Format(rb_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5) / rb_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid8.AddItem(rb_name(i, i1) & vbTab & VB6.Format(rb_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5) / rb_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab RecvingStats(i, rb_name(i, i1) & vbTab & VB6.Format(rb_receptions(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(rb_receiving_yds(i, i1) + 0.5) / rb_receptions(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(rb_receiving_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(rb_receiving_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8571: \cf1 Next\cf0  i1\par
+\tab\tab\tab\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Passing Statistics"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  qb_pass_att(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8580\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  qb_pass_comp(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab yc = \cf1 CSng\cf0 (VB6.Format(Int(qb_pass_yds(i, i1) + 0.5) / qb_pass_comp(i, i1), \cf2 "##.#"\cf0 ))\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab yc = 0\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  qb_pass_comp(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf3 'tdpct = Format(qb_pass_td(i, i1) / qb_pass_comp(i, i1) * 100, "###.#")\par
+\cf0\tab\tab\tab\tab\tab tdpct = qb_pass_td(i, i1) / qb_pass_comp(i, i1) * 100\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab tdpct = 0\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid5.AddItem(qb_name(i, i1) & vbTab & VB6.Format(qb_pass_att(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5) / qb_pass_att(i, i1), \cf2 "#0.0"\cf0 ) & vbTab & yc & vbTab & VB6.Format(qb_pass_td(i, i1), \cf2 "#0"\cf0 ) & vbTab & tdpct & VB6.Format(qb_pass_int(i, i1), \cf2 "0#"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_lg(i, i1), \cf2 "##0"\cf0 ))\par
+\tab\tab\tab\tab\tab PassStats(i, qb_name(i, i1) & vbTab & VB6.Format(qb_pass_att(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "###.0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5) / qb_pass_att(i, i1), \cf2 "#0.0"\cf0 ) & vbTab & yc & vbTab & VB6.Format(qb_pass_td(i, i1), \cf2 "#0"\cf0 ) & vbTab & VB6.Format(tdpct, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1), \cf2 "#0"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_lg(i, i1), \cf2 "##0"\cf0 ))\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid9.AddItem(qb_name(i, i1) & vbTab & VB6.Format(qb_pass_att(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5) / qb_pass_att(i, i1), \cf2 "#0.0"\cf0 ) & vbTab & yc & vbTab & VB6.Format(qb_pass_td(i, i1), \cf2 "#0"\cf0 ) & vbTab & tdpct & VB6.Format(qb_pass_int(i, i1), \cf2 "#0"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_lg(i, i1), \cf2 "##0"\cf0 ))\par
+\tab\tab\tab\tab\tab PassStats(i, qb_name(i, i1) & vbTab & VB6.Format(qb_pass_att(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(qb_pass_comp(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5), \cf2 "##0"\cf0 ) & vbTab & VB6.Format(Int(qb_pass_yds(i, i1) + 0.5) / qb_pass_att(i, i1), \cf2 "#0.0"\cf0 ) & vbTab & yc & vbTab & VB6.Format(qb_pass_td(i, i1), \cf2 "#0"\cf0 ) & vbTab & VB6.Format(tdpct, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1), \cf2 "#0"\cf0 ) & vbTab & VB6.Format(qb_pass_int(i, i1) / qb_pass_att(i, i1) * 100, \cf2 "##0.0"\cf0 ) & vbTab & VB6.Format(qb_pass_lg(i, i1), \cf2 "##0"\cf0 ))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+8580: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "KickOff Punt Return Statistics"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\cf1 If\cf0  kor_returns(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8591\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid6.AddItem(kor_name(i, i1) & vbTab & VB6.Format(kor_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kor_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(kor_return_yds(i, i1) + 0.5) / kor_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kor_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(kor_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab KO_PRStats(i, kor_name(i, i1) & vbTab & VB6.Format(kor_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kor_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(kor_return_yds(i, i1) + 0.5) / kor_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kor_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(kor_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid10.AddItem(kor_name(i, i1) & vbTab & VB6.Format(kor_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kor_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(kor_return_yds(i, i1) + 0.5) / kor_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kor_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(kor_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab KO_PRStats(i, kor_name(i, i1) & vbTab & VB6.Format(kor_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kor_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(kor_return_yds(i, i1) + 0.5) / kor_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kor_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(kor_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8591: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Punt Return Statistics"\cf0 )\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\cf1 If\cf0  pr_returns(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8592\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid11.AddItem(pr_name(i, i1) & vbTab & VB6.Format(pr_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(pr_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(pr_return_yds(i, i1) + 0.5) / pr_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(pr_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(pr_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab PR_Stats(i, pr_name(i, i1) & vbTab & VB6.Format(pr_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(pr_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(pr_return_yds(i, i1) + 0.5) / pr_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(pr_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(pr_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid12.AddItem(pr_name(i, i1) & vbTab & VB6.Format(pr_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(pr_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(pr_return_yds(i, i1) + 0.5) / pr_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(pr_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(pr_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab PR_Stats(i, pr_name(i, i1) & vbTab & VB6.Format(pr_returns(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(pr_return_yds(i, i1), \cf2 "####"\cf0 ) & vbTab & VB6.Format(Int(pr_return_yds(i, i1) + 0.5) / pr_returns(i, i1), \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(pr_return_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(pr_return_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8592: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Punt Kick Stats"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 If\cf0  team_punts(0) = 0 \cf1 And\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab SSDBGrid13.AddItem(punter_name(0) & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0 )\par
+\tab\tab\tab\tab PuntStats(i, punter_name(0) & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0 )\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\par
+\tab\tab\tab\cf1 If\cf0  team_punts(1) = 0 \cf1 And\cf0  i = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab SSDBGrid14.AddItem(punter_name(1) & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0 )\par
+\tab\tab\tab\tab PuntStats(i, punter_name(1) & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0  & vbTab & \cf2 "0"\cf0 )\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  team_punts(0) > 0 \cf1 And\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab SSDBGrid13.AddItem(punter_name(0) & vbTab & VB6.Format(team_punts(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_yds(i) / team_punts(i), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(team_long_punt(i), \cf2 "###"\cf0 ) & vbTab & VB6.Format(team_punt_tb(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_blkd(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_in20(i), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab PuntStats(i, punter_name(0) & vbTab & VB6.Format(team_punts(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_yds(i) / team_punts(i), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(team_long_punt(i), \cf2 "###"\cf0 ) & vbTab & VB6.Format(team_punt_tb(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_blkd(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_in20(i), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 If\cf0  team_punts(1) > 0 \cf1 And\cf0  i = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab SSDBGrid14.AddItem(punter_name(0) & vbTab & VB6.Format(team_punts(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_yds(i) / team_punts(i), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(team_long_punt(i), \cf2 "###"\cf0 ) & vbTab & VB6.Format(team_punt_tb(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_blkd(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_in20(i), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab PuntStats(i, punter_name(0) & vbTab & VB6.Format(team_punts(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_yds(i) / team_punts(i), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(team_long_punt(i), \cf2 "###"\cf0 ) & vbTab & VB6.Format(team_punt_tb(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_blkd(i), \cf2 "##"\cf0 ) & vbTab & VB6.Format(team_punt_in20(i), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8593: \cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Kick Stats"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\tab\cf1 If\cf0  kicker_xpa(i, i1) = 0 \cf1 And\cf0  kicker_fga(i, i1) = 0 \cf1 Then\cf0  \cf1 GoTo\cf0  8594\par
+\tab\tab\tab\tab\cf1 If\cf0  kicker_xpa(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab xppct = kicker_xpm(i, i1) / kicker_xpa(i, i1) * 100\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab xppct = 0\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  kicker_fga(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab fgpct = kicker_fgm(i, i1) / kicker_fga(i, i1) * 100\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab fgpct = 0\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid15.AddItem(kicker_name(i, i1) & vbTab & VB6.Format(kicker_xpm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_xpa(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(xppct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_fgm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fga(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(fgpct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_long_fg(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fgm_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_5059(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_5059(i, i1), \cf2 "#"\cf0 ))\par
+\tab\tab\tab\tab\tab KickStats(i, kicker_name(i, i1) & vbTab & VB6.Format(kicker_xpm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_xpa(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(xppct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_fgm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fga(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(fgpct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_long_fg(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fgm_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_5059(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_5059(i, i1), \cf2 "#"\cf0 ))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  i = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab SSDBGrid16.AddItem(kicker_name(i, i1) & vbTab & VB6.Format(kicker_xpm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_xpa(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(xppct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_fgm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fga(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(fgpct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_long_fg(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fgm_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_5059(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_5059(i, i1), \cf2 "#"\cf0 ))\par
+\tab\tab\tab\tab\tab KickStats(i, kicker_name(i, i1) & vbTab & VB6.Format(kicker_xpm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_xpa(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(xppct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_fgm(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fga(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(fgpct, \cf2 "###.#"\cf0 ) & vbTab & VB6.Format(kicker_long_fg(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(kicker_fgm_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_019(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_2029(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_3039(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_4049(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fgm_5059(i, i1), \cf2 "#"\cf0 ) & vbTab & VB6.Format(kicker_fga_5059(i, i1), \cf2 "#"\cf0 ))\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8594: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Defense Interception Stats"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  30\par
+\tab\tab\tab\tab\cf1 If\cf0  defender_ints(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8600\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid17.AddItem(defender_name(i, i1) & vbTab & VB6.Format(defender_ints(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5) / defender_ints(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(defender_ir_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(defender_ir_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab Ints_Stats(i, defender_name(i, i1) & vbTab & VB6.Format(defender_ints(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5) / defender_ints(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(defender_ir_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(defender_ir_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid18.AddItem(defender_name(i, i1) & vbTab & VB6.Format(defender_ints(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5) / defender_ints(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(defender_ir_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(defender_ir_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab Ints_Stats(i, defender_name(i, i1) & vbTab & VB6.Format(defender_ints(i, i1), \cf2 "##"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5), \cf2 "###"\cf0 ) & vbTab & VB6.Format(Int(defender_ir_yds(i, i1) + 0.5) / defender_ints(i, i1), \cf2 "##.#"\cf0 ) & vbTab & VB6.Format(defender_ir_lg(i, i1), \cf2 "###"\cf0 ) & vbTab & VB6.Format(defender_ir_td(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8600: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab PRINTBOX(\cf2 "Sacks"\cf0 )\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  30\par
+\tab\tab\tab\tab\cf1 If\cf0  defender_sacks(i, i1) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  8700\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  i = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid19.AddItem(defender_name(i, i1) & vbTab & VB6.Format(defender_sacks(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab Sacks_Stats(i, defender_name(i, i1) & vbTab & VB6.Format(defender_sacks(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab SSDBGrid20.AddItem(defender_name(i, i1) & vbTab & VB6.Format(defender_sacks(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\tab Sacks_Stats(i, defender_name(i, i1) & vbTab & VB6.Format(defender_sacks(i, i1), \cf2 "##"\cf0 ))\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 8700: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab frmGeneratingStats.Show()\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf3 'UPGRADE_WARNING: Couldn't resolve default property of object rptGameStats.Show. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab rptGameStats.Show()\par
+\tab\tab i = 0\par
+\tab\tab frmGeneratingStats.Close()\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+End\cf0  \cf1 Class\cf0\f1\par
+}
+ 

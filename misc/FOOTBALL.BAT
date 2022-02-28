@@ -1,0 +1,6 @@
+REM This builds the FOOTBALL.EXE program from the corresponding OBJ's
+BC/C:512 S1
+BC/C:512 S2
+BC/C:512 S3
+BC/C:512 S4
+LINK/EXEPACK S1 S2 S3 S4, FOOTBALL,,PRO7;

@@ -1,0 +1,383 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green128\blue0;\red128\green0\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Module\cf0  modSaveStats\par
+\tab\par
+\tab\cf1 Public\cf0  \cf1 Sub\cf0  SAVESTATS(\cf1 ByRef\cf0  q \cf1 As\cf0  \cf1 Short\cf0 )\par
+\tab\tab\cf1 Dim\cf0  tname \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab pn = q\par
+\tab\tab\par
+\tab\tab\cf2 'For q = 0 To 1\par
+\cf0\tab\tab cpct = 0\par
+\tab\tab\cf2 'frmcompileforwho.Show vbModal\par
+\cf0\tab\tab\par
+\tab\tab\par
+8093: \cf2 'If i_dlr = "N" Then GoTo 8079\par
+\cf0\tab\tab\par
+\tab\tab\cf2 ' add record to team_schedule\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  home_or_neutral_site_flag = q \cf1 Then\par
+\cf0\tab\tab\tab home_away_ot(q) = \cf3 "H"\par
+\cf0\tab\tab\tab compile_stadium_name = game_stadium_name(q)\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  home_or_neutral_site_flag <> q \cf1 Then\cf0  home_away_ot(q) = \cf3 "A"\par
+\cf0\tab\tab\cf1 If\cf0  home_or_neutral_site_flag = 2 \cf1 Then\cf0  home_away_ot(q) = \cf3 "X"\par
+\cf0\tab\tab\cf1 If\cf0  home_or_neutral_site_flag = q \cf1 And\cf0  pn > 4 \cf1 Then\cf0  home_away_ot(q) = \cf3 "H-"\cf0  & Str(pn - 4) & \cf3 " OT"\par
+\cf0\tab\tab\cf1 If\cf0  home_or_neutral_site_flag <> q \cf1 And\cf0  pn > 4 \cf1 Then\cf0  home_away_ot(q) = \cf3 "A-"\cf0  & Str(pn - 4) & \cf3 " OT"\par
+\cf0\tab\tab\cf1 If\cf0  home_or_neutral_site_flag = 2 \cf1 And\cf0  pn > 4 \cf1 Then\cf0  home_away_ot(q) = \cf3 "X-"\cf0  & Str(pn - 4) & \cf3 " OT"\par
+\cf0\tab\tab our_score(q) = s(q, 0)\par
+\tab\tab opp_name(q) = team_name(1 - q)\par
+\tab\tab opp_score(q) = s(1 - q, 0)\par
+\tab\tab Attendance(q) = att\par
+\tab\tab our_power_rating(q) = team_power_rating(q)\par
+\tab\tab opp_power_rating(q) = team_power_rating(1 - q)\par
+\tab\tab\par
+\tab\tab frmSavingStats.Show()\par
+\tab\tab frmSavingStats.ProgressBar1.Value = 10\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\par
+\tab\tab\cf2 'save schedule  ?????? does not match\par
+\cf0\tab\tab\cf1 With\cf0  grstTeam0\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab gSqlstr = \cf3 "insert into team_schedule (Ourseasonid, Ourteamyear, Ourteamname, "\cf0  & \cf3 "our_score,oppTeamname, opp_score, home_away_ot, "\cf0  & \cf3 "ourPowerRating, oppPowerRating, attendance, stadium_name) values ('"\cf0  & gSeasonID(q) & \cf3 "',"\cf0  & gTeamYear(q) & \cf3 ",'"\cf0  & team_name(q) & \cf3 "',"\cf0  & our_score(q) & \cf3 ",'"\cf0  & opp_name(q) & \cf3 "',"\cf0  & opp_score(q) & \cf3 ","\cf0  & CnvHomeAway(home_away_ot(q)) & \cf3 ","\cf0  & our_power_rating(q) & \cf3 ","\cf0  & opp_power_rating(q) & \cf3 ","\cf0  & Attendance(q) & \cf3 ",'"\cf0  & Trim(nz(compile_stadium_name, \cf3 " "\cf0 )) & \cf3 "')"\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab gConado.Execute(gSqlstr)\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 ' save team stats\par
+\cf0\tab\tab\par
+\tab\tab frmSavingStats.ProgressBar1.Value = 20\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab gSqlstr = \cf3 "Select * from TeamStats "\cf0  & \cf3 "where Teamname = '"\cf0  & team_name(q) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = team_name(q)\par
+\tab\tab\tab .Fields(\cf3 "team_first_downs"\cf0 ).Value = .Fields(\cf3 "team_first_downs"\cf0 ).Value + team_first_downs(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_first_downs"\cf0 ).Value = .Fields(\cf3 "opp_first_downs"\cf0 ).Value + team_first_downs(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_punts"\cf0 ).Value = .Fields(\cf3 "team_punts"\cf0 ).Value + team_punts(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_punts"\cf0 ).Value = .Fields(\cf3 "opp_punts"\cf0 ).Value + team_punts(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_punt_yds"\cf0 ).Value = .Fields(\cf3 "team_punt_yds"\cf0 ).Value + team_punt_yds(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_punt_yds"\cf0 ).Value = .Fields(\cf3 "opp_punt_yds"\cf0 ).Value + team_punt_yds(1 - q)\par
+\tab\tab\tab\par
+\tab\tab\tab\cf1 If\cf0  team_long_punt(q) > .Fields(\cf3 "team_punt_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab .Fields(\cf3 "team_punt_lg"\cf0 ).Value = .Fields(\cf3 "team_punt_lg"\cf0 ).Value + team_long_punt(q)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\par
+\tab\tab\tab\cf1 If\cf0  team_long_punt(1 - q) > .Fields(\cf3 "opp_punt_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab .Fields(\cf3 "opp_punt_lg"\cf0 ).Value = .Fields(\cf3 "opp_punt_lg"\cf0 ).Value + team_long_punt(1 - q)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\par
+\tab\tab\tab\par
+\tab\tab\tab .Fields(\cf3 "team_punt_blkd"\cf0 ).Value = .Fields(\cf3 "team_punt_blkd"\cf0 ).Value + team_punt_blkd(q)\par
+\tab\tab\tab .Fields(\cf3 "team_punt_in20"\cf0 ).Value = .Fields(\cf3 "team_punt_in20"\cf0 ).Value + team_punt_in20(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_punt_blkd"\cf0 ).Value = .Fields(\cf3 "opp_punt_blkd"\cf0 ).Value + team_punt_blkd(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "opp_punt_in20"\cf0 ).Value = .Fields(\cf3 "opp_punt_in20"\cf0 ).Value + team_punt_in20(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_penalties"\cf0 ).Value = .Fields(\cf3 "team_penalties"\cf0 ).Value + team_penalties(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_penalties"\cf0 ).Value = .Fields(\cf3 "opp_penalties"\cf0 ).Value + team_penalties(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_penalty_yds"\cf0 ).Value = .Fields(\cf3 "team_penalty_yds"\cf0 ).Value + team_penalty_yds(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_penalty_yds"\cf0 ).Value = .Fields(\cf3 "opp_penalty_yds"\cf0 ).Value + team_penalty_yds(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_fumbles"\cf0 ).Value = .Fields(\cf3 "team_fumbles"\cf0 ).Value + team_fumbles(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_fumbles"\cf0 ).Value = .Fields(\cf3 "opp_fumbles"\cf0 ).Value + team_fumbles(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_fum_lost"\cf0 ).Value = .Fields(\cf3 "team_fum_lost"\cf0 ).Value + team_fum_lost(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_fum_lost"\cf0 ).Value = .Fields(\cf3 "opp_fum_lost"\cf0 ).Value + team_fum_lost(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_safties"\cf0 ).Value = .Fields(\cf3 "team_safties"\cf0 ).Value + team_safties(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_safties"\cf0 ).Value = .Fields(\cf3 "opp_safties"\cf0 ).Value + team_safties(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_2xp_att"\cf0 ).Value = .Fields(\cf3 "team_2xp_att"\cf0 ).Value + team_2xp_att(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_2xp_att"\cf0 ).Value = .Fields(\cf3 "opp_2xp_att"\cf0 ).Value + team_2xp_att(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_third_down_e"\cf0 ).Value = .Fields(\cf3 "team_third_down_e"\cf0 ).Value + third_down_e(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_third_down_e"\cf0 ).Value = .Fields(\cf3 "opp_third_down_e"\cf0 ).Value + third_down_e(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_third_down_f"\cf0 ).Value = .Fields(\cf3 "team_third_down_f"\cf0 ).Value + third_down_f(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_third_down_f"\cf0 ).Value = .Fields(\cf3 "opp_third_down_f"\cf0 ).Value + third_down_f(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_sacked"\cf0 ).Value = .Fields(\cf3 "team_sacked"\cf0 ).Value + team_sacked(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_sacked"\cf0 ).Value = .Fields(\cf3 "opp_sacked"\cf0 ).Value + team_sacked(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_sacked_yds"\cf0 ).Value = .Fields(\cf3 "team_sacked_yds"\cf0 ).Value + team_sacked_yds(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_sacked_yds"\cf0 ).Value = .Fields(\cf3 "opp_sacked_yds"\cf0 ).Value + team_sacked_yds(1 - q)\par
+\tab\tab\tab\cf2 '\par
+\cf0\tab\tab\tab .Fields(\cf3 "team_rush_att"\cf0 ).Value = .Fields(\cf3 "team_rush_att"\cf0 ).Value + team_rush_att(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_rush_att"\cf0 ).Value = .Fields(\cf3 "opp_rush_att"\cf0 ).Value + team_rush_att(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_rush_yds"\cf0 ).Value = .Fields(\cf3 "team_rush_yds"\cf0 ).Value + team_rush_yds(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_rush_yds"\cf0 ).Value = .Fields(\cf3 "opp_rush_yds"\cf0 ).Value + team_rush_yds(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_rush_td"\cf0 ).Value = .Fields(\cf3 "team_rush_td"\cf0 ).Value + team_rush_td(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_rush_td"\cf0 ).Value = .Fields(\cf3 "opp_rush_td"\cf0 ).Value + team_rush_td(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_pass_att"\cf0 ).Value = .Fields(\cf3 "team_pass_att"\cf0 ).Value + team_pass_att(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_pass_att"\cf0 ).Value = .Fields(\cf3 "opp_pass_att"\cf0 ).Value + team_pass_att(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_pass_comp"\cf0 ).Value = .Fields(\cf3 "team_pass_comp"\cf0 ).Value + team_pass_comp(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_pass_comp"\cf0 ).Value = .Fields(\cf3 "opp_pass_comp"\cf0 ).Value + team_pass_comp(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_pass_int"\cf0 ).Value = .Fields(\cf3 "team_pass_int"\cf0 ).Value + team_pass_int(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_pass_int"\cf0 ).Value = .Fields(\cf3 "opp_pass_int"\cf0 ).Value + team_pass_int(1 - q)\par
+\tab\tab\tab .Fields(\cf3 "team_pass_yds"\cf0 ).Value = .Fields(\cf3 "team_pass_yds"\cf0 ).Value + team_pass_yds(q)\par
+\tab\tab\tab .Fields(\cf3 "opp_pass_yds"\cf0 ).Value = .Fields(\cf3 "opp_pass_yds"\cf0 ).Value + team_pass_yds(1 - q)\par
+\tab\tab\tab .Update()\par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab\cf2 ' save running back stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 30\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 If\cf0  q = 0 \cf1 Then\cf0  tname = gHomeTeam\par
+\tab\tab\cf1 If\cf0  q = 1 \cf1 Then\cf0  tname = gVisitorTeam\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  13 \cf2 '?????? was 13\par
+\cf0\tab\tab\tab\cf1 If\cf0  rb_rush_att(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstrb0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstrb0 = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from RunningBackStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and rbname = '"\cf0  & rb_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab grstrb0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenDynamic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstrb0\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "RbName"\cf0 ).Value = rb_name(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  rb_name(q, i) = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 For\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_att"\cf0 ).Value = .Fields(\cf3 "rb_rush_att"\cf0 ).Value + rb_rush_att(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_yds"\cf0 ).Value = .Fields(\cf3 "rb_rush_yds"\cf0 ).Value + rb_rush_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_td"\cf0 ).Value = .Fields(\cf3 "rb_rush_td"\cf0 ).Value + rb_rush_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  rb_rush_lg(q, i) > .Fields(\cf3 "rb_rush_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_lg"\cf0 ).Value = rb_rush_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_lg_td_flag"\cf0 ).Value = rb_rush_lg_td_flag(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_rush_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receptions"\cf0 ).Value = .Fields(\cf3 "rb_receptions"\cf0 ).Value + rb_receptions(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receiving_yds"\cf0 ).Value = .Fields(\cf3 "rb_receiving_yds"\cf0 ).Value + rb_receiving_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receiving_td"\cf0 ).Value = .Fields(\cf3 "rb_receiving_td"\cf0 ).Value + rb_receiving_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  rb_receiving_lg(q, i) > .Fields(\cf3 "rb_receiving_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receiving_lg"\cf0 ).Value = rb_receiving_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receiving_lg_td_flag"\cf0 ).Value = nz(rb_receiving_lg_td_flag(q, i), \cf3 " "\cf0 )\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "rb_receiving_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 'Save Receiver Stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 40\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\cf1 If\cf0  receiver_receptions(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from ReceiverStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and rname = '"\cf0  & receiver_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "RName"\cf0 ).Value = receiver_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receptions"\cf0 ).Value = .Fields(\cf3 "receiver_receptions"\cf0 ).Value + receiver_receptions(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receiving_yds"\cf0 ).Value = .Fields(\cf3 "receiver_receiving_yds"\cf0 ).Value + receiver_receiving_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receiving_td"\cf0 ).Value = .Fields(\cf3 "receiver_receiving_td"\cf0 ).Value + receiver_receiving_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  receiver_receiving_lg(q, i) > .Fields(\cf3 "receiver_receiving_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receiving_lg"\cf0 ).Value = receiver_receiving_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receiving_lg_td_flag"\cf0 ).Value = receiver_receiving_lg_td_flag(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "receiver_receiving_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'Save QuarterBack Stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 50\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  4\par
+\tab\tab\tab\cf1 If\cf0  qb_pass_att(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from QuarterBackStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and qname = '"\cf0  & qb_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "QName"\cf0 ).Value = qb_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_att"\cf0 ).Value = .Fields(\cf3 "qb_pass_att"\cf0 ).Value + qb_pass_att(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_comp"\cf0 ).Value = .Fields(\cf3 "qb_pass_comp"\cf0 ).Value + qb_pass_comp(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_int"\cf0 ).Value = .Fields(\cf3 "qb_pass_int"\cf0 ).Value + qb_pass_int(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_yds"\cf0 ).Value = .Fields(\cf3 "qb_pass_yds"\cf0 ).Value + qb_pass_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_td"\cf0 ).Value = .Fields(\cf3 "qb_pass_td"\cf0 ).Value + qb_pass_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  qb_pass_lg(1 - q, 0) > .Fields(\cf3 "qb_pass_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_lg"\cf0 ).Value = qb_pass_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_lg_td_flag"\cf0 ).Value = qb_pass_lg_td_flag(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "qb_pass_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'Save Kick Off Returner stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 60\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\cf1 If\cf0  kor_returns(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from KickOffReturnerStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and kname = '"\cf0  & kor_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "KName"\cf0 ).Value = kor_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kor_returns"\cf0 ).Value = .Fields(\cf3 "kor_returns"\cf0 ).Value + kor_returns(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kor_return_yds"\cf0 ).Value = .Fields(\cf3 "kor_return_yds"\cf0 ).Value + kor_return_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kor_return_td"\cf0 ).Value = .Fields(\cf3 "kor_return_td"\cf0 ).Value + kor_return_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  kor_return_lg(q, i) > .Fields(\cf3 "kor_return_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "kor_return_lg"\cf0 ).Value = kor_return_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "kor_return_lg_td_flag"\cf0 ).Value = kor_return_lg_td_flag(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "kor_return_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'Save Punt Returner Stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 70\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\cf1 If\cf0  pr_returns(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from PuntReturnerStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and prname = '"\cf0  & pr_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "PrName"\cf0 ).Value = pr_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "pr_returns"\cf0 ).Value = .Fields(\cf3 "pr_returns"\cf0 ).Value + pr_returns(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "pr_return_yds"\cf0 ).Value = .Fields(\cf3 "pr_return_yds"\cf0 ).Value + pr_return_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "pr_return_td"\cf0 ).Value = .Fields(\cf3 "pr_return_td"\cf0 ).Value + pr_return_td(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  pr_return_lg(q, i) > .Fields(\cf3 "pr_return_lg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "pr_return_lg"\cf0 ).Value = pr_return_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "pr_return_lg_td_flag"\cf0 ).Value = pr_return_lg_td_flag(q, i)\par
+\tab\tab\tab\tab\tab\tab .Fields(\cf3 "pr_return_lg_vswho"\cf0 ).Value = team_name(1 - q)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'Save Kicker Stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 80\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 If\cf0  kicker_xpa(q, i) + kicker_fga(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from KickerStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and kickername = '"\cf0  & kicker_name(q, i) & \cf3 " ' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "KickerName"\cf0 ).Value = kicker_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_xpa"\cf0 ).Value = .Fields(\cf3 "kicker_xpa"\cf0 ).Value + kicker_xpa(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_xpm"\cf0 ).Value = .Fields(\cf3 "kicker_xpm"\cf0 ).Value + kicker_xpm(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga"\cf0 ).Value = .Fields(\cf3 "kicker_fga"\cf0 ).Value + kicker_fga(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm"\cf0 ).Value = .Fields(\cf3 "kicker_fgm"\cf0 ).Value + kicker_fgm(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga_019"\cf0 ).Value = .Fields(\cf3 "kicker_fga_019"\cf0 ).Value + kicker_fga_019(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga_2029"\cf0 ).Value = .Fields(\cf3 "kicker_fga_2029"\cf0 ).Value + kicker_fga_2029(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga_3039"\cf0 ).Value = .Fields(\cf3 "kicker_fga_3039"\cf0 ).Value + kicker_fga_3039(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga_4049"\cf0 ).Value = .Fields(\cf3 "kicker_fga_4049"\cf0 ).Value + kicker_fga_4049(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fga_5059"\cf0 ).Value = .Fields(\cf3 "kicker_fga_5059"\cf0 ).Value + kicker_fga_5059(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm_019"\cf0 ).Value = .Fields(\cf3 "kicker_fgm_019"\cf0 ).Value + kicker_fgm_019(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm_2029"\cf0 ).Value = .Fields(\cf3 "kicker_fgm_2029"\cf0 ).Value + kicker_fgm_2029(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm_3039"\cf0 ).Value = .Fields(\cf3 "kicker_fgm_3039"\cf0 ).Value + kicker_fgm_3039(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm_4049"\cf0 ).Value = .Fields(\cf3 "kicker_fgm_4049"\cf0 ).Value + kicker_fgm_4049(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_fgm_5059"\cf0 ).Value = .Fields(\cf3 "kicker_fgm_5059"\cf0 ).Value + kicker_fgm_5059(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  kicker_long_fg(q, i) > .Fields(\cf3 "kicker_long_fg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "kicker_long_fg"\cf0 ).Value = kicker_long_fg(q, i)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'Defender stats\par
+\cf0\tab\tab frmSavingStats.ProgressBar1.Value = 90\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 If\cf0  defender_sacks(q, i) + defender_ints(q, i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab gSqlstr = \cf3 "Select * from DefenderStats "\cf0  & \cf3 "where Teamname = '"\cf0  & tname & \cf3 "' and defendername = '"\cf0  & defender_name(q, i) & \cf3 "' and "\cf0  & \cf3 "SeasonId = '"\cf0  & gSeasonID(q) & \cf3 "' and Teamyear = "\cf0  & gTeamYear(q)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeamStat may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstTeamStat = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab grstTeamStat.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\tab\tab\cf1 With\cf0  grstTeamStat\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "SeasonId"\cf0 ).Value = gSeasonID(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamYear"\cf0 ).Value = gTeamYear(q)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "TeamName"\cf0 ).Value = tname\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "DefenderName"\cf0 ).Value = defender_name(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "numofsacks"\cf0 ).Value = .Fields(\cf3 "numofsacks"\cf0 ).Value + defender_sacks(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "SackYds"\cf0 ).Value = .Fields(\cf3 "SackYds"\cf0 ).Value + defender_sack_yds(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "NumOfInterceptions"\cf0 ).Value = .Fields(\cf3 "NumOfInterceptions"\cf0 ).Value + defender_ints(q, i)\par
+\tab\tab\tab\tab\tab .Fields(\cf3 "IrYards"\cf0 ).Value = .Fields(\cf3 "IrYards"\cf0 ).Value + defender_ir_yds(q, i)\par
+\tab\tab\tab\tab\tab\cf1 If\cf0  defender_ir_lg(q, i) > .Fields(\cf3 "irlg"\cf0 ).Value \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "irlg"\cf0 ).Value = defender_ir_lg(q, i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab .Fields(\cf3 "Ir_lg_vswho"\cf0 ).Value = nz(defender_ir_lg_vswho(q, i), \cf3 " "\cf0 )\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\cf2 'what about this?\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "IrTd"\cf0 ).Value = defender_ir_td(q, i)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab .Fields(\cf3 "Ir_lg_TdFlag"\cf0 ).Value = nz(defender_ir_lg_td_flag(q, i), \cf3 " "\cf0 )\par
+\tab\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab frmSavingStats.Close()\par
+8079: \par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Function\cf0  CnvHomeAway(\cf1 ByRef\cf0  sHomeAway \cf1 As\cf0  \cf1 String\cf0 ) \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  UCase(sHomeAway)\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "A"\cf0 , \cf3 "1"\par
+\cf0\tab\tab\tab\tab sHomeAway = \cf1 CStr\cf0 (1)\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "H"\cf0 , \cf3 "0"\par
+\cf0\tab\tab\tab\tab sHomeAway = \cf1 CStr\cf0 (0)\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab MsgBox(\cf3 "unknown HomeAway - "\cf0  & sHomeAway)\par
+\tab\tab\tab\tab sHomeAway = \cf1 CStr\cf0 (0)\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\cf1 End\cf0  \cf1 Function\par
+End\cf0  \cf1 Module\cf0\f1\par
+}
+ 

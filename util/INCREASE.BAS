@@ -1,0 +1,828 @@
+DECLARE SUB TITLE ()
+   DECLARE FUNCTION QPRTrim$ (Work$)
+   DECLARE FUNCTION EXIST% (FILENAME$)
+   DECLARE SUB MMenuVert (BYVAL Address%, Choice%, Start%, SCANCODE%, NormClr%, HiLite%, NumRows%, Row%, Column%)
+   DECLARE SUB MAMenu (BYVAL Address%, SELECTION%, Start%, Count%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%)
+   DECLARE SUB box0 (ULRow%, ULCol%, LRRow%, LRCol%, Char%, Colr%)
+   DECLARE FUNCTION GetDrive% ()
+   DECLARE SUB Comline (N, A$(), Max)
+    DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), VV$(500)
+    DIM V%(500), item$(4), D$(2), PA%(4), B6%(7), A5(9)
+    DIM A0%(9), A1%(9), A3%(9), A1$(9), A1(9), A3(9), B(9), B2(1), B3(2), B4(2), DI$(9)
+    DIM A4%(5), A5%(5), A2$(5), A$(5)
+    DIM A6%(3), A7%(3), A8%(3), QX%(3), A3$(3)
+    DIM A9%(2), B%(2), B1%(2), B2%(2), A4$(2), A5$(2)
+    DIM A6$(1), B3%(1)
+    DIM B4%(1), B5%(1), B7%(1), B8%(1), A7$(1)
+    OPEN "DEV.BAS" FOR INPUT AS #2
+    D% = GetDrive%
+    FOR I = 0 TO 1
+    INPUT #2, D$(I)
+    NEXT
+    CLOSE 2
+ CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
+ PRINT "Number of arguments = "; N ' Print out each part of the command line
+ PRINT "Arguments are: "
+ FOR I = 1 TO N: PRINT A$(I): NEXT I
+ 
+' The following is a sample command line and output for a stand-alone
+' executable file (assumes program name is ARG.EXE):
+'
+' arg one  two   three    four     five      six
+ 
+' Use SUB procedure to get command line and split into arguments.
+' Parameters:  NumArgs : Number of command-line arguments found
+'              Args$() : Array in which to return arguments
+'              MaxArgs : Maximum number of arguments array can return
+   IF A$(1) = "3" THEN RN = 3: GOTO 900
+   IF A$(1) = "2" THEN RN = 2: GOTO 900
+   IF A$(1) = "1" THEN RN = 1: GOTO 900
+
+100 CALL TITLE
+   item$(1) = "CHANGE OR EDIT AN EXISTING  TEAM"
+   item$(2) = "PRINT A TEAM ROSTER             "
+   item$(3) = "VIEW A TEAM ROSTER              "
+   item$(4) = "EXIT TO MAIN MENU               "
+     SELECTION% = 1
+     Count% = 4
+     Start% = 1
+     SCANCODE% = 4
+     FileColr% = 31
+     HiLiteColr% = 112
+     Spacing% = 1
+     Row% = 8
+     Column% = 25
+     CALL box0(7, 24, 12, 57, 2, 31)
+     CALL ShowCursor
+     MMenuVert VARPTR(item$(1)), SELECTION%, Start%, SCANCODE%, FileColr%, HiLiteColr%, Count%, Row%, Column%
+     CALL HideCursor
+     COLOR , 0
+     RN = SELECTION%
+     IF SCANCODE% = 27 THEN RN = 4
+
+    IF RN = 4 AND D% >= 67 THEN RUN "HELLO.EXE 2"
+    IF RN = 4 THEN CLS : PRINT "MAKE SURE PROGRAM DISK IS IN DRIVE": GOSUB 4091: RUN "HELLO.EXE 2"
+    GOTO 900
+
+500 S$ = "": ATT = 0: FOR I = 0 TO 9
+        A0%(I) = 0: A1%(I) = 0: A2%(I) = 0: A3%(I) = 0: A1$(I) = ""
+    NEXT
+    FOR I = 0 TO 5
+        A4%(I) = 0: A5%(I) = 0: A2$(I) = ""
+    NEXT
+    FOR I = 0 TO 3
+        A6%(I) = 0: A7%(I) = 0: A8%(I) = 0: QX%(I) = 0: A3$(I) = ""
+        NEXT
+        FOR I = 0 TO 2
+        A9%(I) = 0: B%(I) = 0: B1%(I) = 0: B2%(I) = 0: A4$(I) = "": A5$(I) = ""
+        NEXT
+        A6$(0) = "": B3%(I) = 0
+        FOR I = 0 TO 1
+        B4%(I) = 0: B5%(I) = 0: B7%(I) = 0: B8%(I) = 0: A7$(I) = ""
+        NEXT
+        RETURN
+900 REM *** READ TEAM AND BRANCH ***
+181 COLOR 15, 0: CLS
+    JJ = 7
+    LOCATE 6, 8: COLOR 15, 4
+    PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
+    PRINT " º"; STRING$(61, 32); "º "; : NEXT
+    LOCATE 7 + JJ, 8
+    PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+    LOCATE , 12: PRINT "ENTER DISK ID: ": PRINT
+    LOCATE , 12: PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+    LOCATE , 12: PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+    LOCATE , 12: PRINT
+    LOCATE , 12: PRINT "HIT <ENTER> TO USE PREVIOUS ID"
+    LOCATE 7, 27: INPUT NY$
+    IF NY$ = "" THEN GOSUB 3102: GOTO 182
+    YN$ = NY$
+    FOR I = 1 TO 500: VV$(I) = "": NEXT
+    IF UCASE$(LEFT$(D$(1), 1)) <> "A" AND UCASE$(LEFT$(D$(1), 1)) <> "B" THEN 310
+    CLS : PRINT "INSERT APPROPRIATE TEAM DISK": PRINT "PRESS ANY KEY TO CONTINUE"
+360 I$ = INKEY$: IF I$ = "" THEN 360
+310 GOSUB 3100
+182 IF BO% = 1 THEN BO% = 0: GOTO 181
+183 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$: COLOR 15, 4
+    LOCATE , 33: PRINT "ANY CHANGE (YN)"; : I$ = INKEY$: IF I$ = "" THEN 183
+    IF UCASE$(I$) = "Y" THEN 181
+    COLOR 15, 0
+    IF RN = 1 THEN 1000
+    IF RN = 3 THEN 3000
+    REM:*** PRINT TEAM ROSTER ***
+    LPRINT "TEAM ROSTER FOR "; A$; " "; AA$; " TEAM NUMBER ="; B8%: LPRINT
+    LPRINT USING "DEF RUSH ADJ   = ###"; B6%(0); : LPRINT TAB(35); USING "SACKED %         = ##"; B6%(5)
+    LPRINT USING "DEF COMP % ADJ = ###"; B6%(1); : LPRINT TAB(35); USING "DEF SACK ADJ     = ##"; B6%(6)
+    LPRINT USING "DEF INT % ADJ  = ###"; B6%(2); : LPRINT TAB(35); USING "RUN/PASS %       = ##"; B6%(7)
+    LPRINT USING "OFF FUMBLE  %  = ###"; B6%(3); : LPRINT TAB(35); "DEF YDS/COMP ADJ = ";
+    IF YC < 50 THEN LPRINT USING "+#.#"; YC / 100 * 30
+    IF YC > 50 THEN LPRINT USING "+#.#"; (100 - YC) / 100 * -30
+    LPRINT USING "DEF FUMBLE  %  = ###"; B6%(4); : LPRINT TAB(35); USING "PENALTY ADJ      = ##"; PA%(0)
+    LPRINT USING "STAD TYPE      = ###"; PA%(3); : LPRINT TAB(35); USING "GEOGRAPH REGION  = ##"; PA%(4)
+    LPRINT USING "BACKGRND COLOR = ###"; PA%(1); : LPRINT TAB(35); USING "FOREGRND COLOR   = ##"; PA%(2)
+    LPRINT
+    LPRINT "RUNNING BACKS-"
+    LPRINT "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+    FOR I = 0 TO 9: IF LEFT$(A1$(I), 1) = " " OR LEFT$(A1$(I), 3) = "END" THEN 952
+    LPRINT A1$(I); TAB(23); : LPRINT USING "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+952 NEXT
+    LPRINT
+    LPRINT "WIDE RECEIVERS-"
+    LPRINT "NAME-              REC AVG     CX%"
+    FOR I = 0 TO 5: IF LEFT$(A2$(I), 1) = " " OR LEFT$(A2$(I), 3) = "END" THEN 953
+    LPRINT A2$(I); TAB(23); : LPRINT USING "##       ###"; A5%(I) * 3; A4%(I)
+953 NEXT
+    LPRINT
+    LPRINT "QUARTERBACKS-                     YDS/CMP"
+    LPRINT "NAME-               COMP%   INT%    ADJ     CX%"
+    FOR I = 0 TO 3: IF LEFT$(A3$(I), 1) = " " OR LEFT$(A3$(I), 3) = "END" THEN 954
+    LPRINT A3$(I); TAB(21); : LPRINT USING "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+954 NEXT
+    LPRINT
+    LPRINT "KICKOFF RETURNMEN-"
+    LPRINT "NAME-              RET AVG     CX%"
+    FOR I = 0 TO 2: IF LEFT$(A4$(I), 1) = " " OR LEFT$(A4$(I), 3) = "END" THEN 955
+    LPRINT A4$(I); TAB(23); : LPRINT USING "##       ###"; B%(I) * 3; A9%(I)
+955 NEXT
+    LPRINT
+    LPRINT "PUNT RETURNMEN-"
+    LPRINT "NAME-              RET AVG     CX%"
+    FOR I = 0 TO 2: IF LEFT$(A5$(I), 1) = " " OR LEFT$(A5$(I), 3) = "END" THEN 956
+    LPRINT A5$(I); TAB(23); : LPRINT USING "##       ###"; B2%(I) * 3; B1%(I)
+956 NEXT
+    LPRINT
+    LPRINT "PLACE KICKERS-"
+    LPRINT "NAME-                FG%  CX%   EP%  CX%"
+    FOR I = 0 TO 1: IF LEFT$(A7$(I), 1) = " " OR LEFT$(A7$(I), 3) = "END" THEN 957
+    LPRINT A7$(I); TAB(21); : LPRINT USING "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+957 NEXT
+    LPRINT
+    LPRINT "PUNTER-"
+    LPRINT "NAME-              AVG"
+    LPRINT A6$(0); TAB(21); : LPRINT USING "##"; B3%(0) * 2 + 28
+    LPRINT CHR$(12)
+    GOTO 100
+1000 REM *** CHANGE EXISTING TEAM FILES ***
+     CLS : U$ = "CHANGE/EDIT AN EXISTING TEAM": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: LOCATE 3, 1
+     COLOR 12: PRINT "(1) "; : COLOR 15: PRINT "TEAM RATINGS"
+     COLOR 12: PRINT "(2) "; : COLOR 15: PRINT "RUNNING BACKS - INCREASE/DECREASE AVG"
+     COLOR 12: PRINT "(3) "; : COLOR 15: PRINT "WIDE RECEIVERS - DISPLAY TEAM REC AVG"
+     COLOR 12: PRINT "(4) "; : COLOR 15: PRINT "QUARTERBACKS - INCREASE/DECREASE COMP%"
+     COLOR 12: PRINT "(5) "; : COLOR 15: PRINT "RETURN TO TEAM MANAGEMENT MENU"
+     COLOR 12: PRINT "(6) "; : COLOR 15: PRINT "SAVE CHANGES"
+1011 I$ = INKEY$: IF I$ = "" THEN 1011
+     I = VAL(I$)
+1012 IF I < 1 OR I > 6 THEN 1011
+     ON I GOTO 1100, 1200, 1300, 1400, 1050, 1060
+1050 CLS : PRINT "SAVE CHANGES (YN)";
+1055 I$ = INKEY$: IF I$ = "" THEN 1055
+     IF UCASE$(I$) <> "Y" THEN 100
+1060 IF UCASE$(LEFT$(D$(0), 1)) = "C" THEN 1065
+     CLS : PRINT "MAKE SURE TEAMS DISK TO SAVE ON IS IN DRIVE": GOSUB 4091
+1065 GOSUB 9600: GOTO 100
+1100 CLS : U$ = "CHANGE TEAM RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15
+     LOCATE 2: PRINT " 1. TEAM NUMBER "; B8%
+     LOCATE 3: PRINT " 2. TEAM NAME "; A$
+     LOCATE 4: PRINT " 3. NICKNAME "; AA$
+     LOCATE 5: PRINT " 4. DEF RUSHING ADJ "; B6%(0)
+     LOCATE 6: PRINT " 5. DEF COMPLETION % ADJ "; B6%(1)
+     LOCATE 7: PRINT " 6. DEF INTERCEPTION % ADJ "; B6%(2)
+     LOCATE 8: PRINT " 7. OFF FUMBLE % "; B6%(3)
+     LOCATE 9: PRINT " 8. DEF FUMBLE % "; B6%(4)
+     LOCATE 10: PRINT " 9. OFF SACK ADJ % "; B6%(5)
+     LOCATE 11: PRINT "10. DEF SACK ADJ % "; B6%(6)
+     LOCATE 12: PRINT "11. DEF YDS/COMP ADJ "; : IF YC < 50 THEN PRINT USING "+#.#"; YC / 100 * 30
+     IF YC > 50 THEN PRINT USING "+#.#"; (100 - YC) / 100 * -30
+     LOCATE 13: PRINT "12. TM PENALTY ADJ "; PA%(0)
+     LOCATE 14: PRINT "13. OFF RUN/PASS % "; B6%(7)
+     LOCATE 15: PRINT "14. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
+     LOCATE 16: PRINT "15. POWER INDEX "; PA%(4)
+     LOCATE 17: PRINT "16. TM BACKGROUND COLOR (0-7) "; PA%(1)
+     LOCATE 18: PRINT "17. TM TEXT COLOR (0-15) "; PA%(2)
+     LOCATE 19: PRINT "18. DISK ID "; YN$
+     LOCATE 20: PRINT "19. STADIUM NAME "; S$
+     LOCATE 21: PRINT "20. AVERAGE ATTENDANCE "; ATT
+     LOCATE 22: COLOR PA%(2), PA%(1): PRINT "SAMPLE TEAM COLOR": COLOR 15, 0
+     GOTO 1170
+     CLS : U$ = "CHANGE TEAM RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15
+1151 LOCATE 2: INPUT " 1. TEAM NUMBER "; B8%: IF C1 = 1 THEN 1170
+1152 LOCATE 3: INPUT " 2. TEAM NAME "; A$: IF C1 = 1 THEN 1170
+1153 LOCATE 4: INPUT " 3. NICKNAME "; AA$: IF C1 = 1 THEN 1170
+1154 LOCATE 5: INPUT " 4. DEF RUSHING ADJ "; B6%(0): IF C1 = 1 THEN 1170
+1155 LOCATE 6: INPUT " 5. DEF COMPLETION % ADJ "; B6%(1): IF C1 = 1 THEN 1170
+1156 LOCATE 7: INPUT " 6. DEF INTERCEPTION % ADJ "; B6%(2): IF C1 = 1 THEN 1170
+1157 LOCATE 8: INPUT " 7. OFF FUMBLE % "; B6%(3): IF C1 = 1 THEN 1170
+1158 LOCATE 9: INPUT " 8. DEF FUMBLE % "; B6%(4): IF C1 = 1 THEN 1170
+1159 LOCATE 10: INPUT " 9. OFF SACK ADJ % "; B6%(5): IF C1 = 1 THEN 1170
+1160 LOCATE 11: INPUT "10. DEF SACK ADJ % "; B6%(6): IF C1 = 1 THEN 1170
+1161 LOCATE 12: INPUT "11. DEF YDS/COMP ADJ "; YC: IF YC <= 0 THEN YC = 100 + (YC * 10 / 3): GOTO 1170
+     YC = 10 / 3 * YC: GOTO 1170
+1163 LOCATE 13: INPUT "12. TM PENALTY ADJ "; PA%(0): IF C1 = 1 THEN 1170
+1164 LOCATE 14: INPUT "13. OFF RUN/PASS % "; B6%(7): IF C1 = 1 THEN 1170
+1165 LOCATE 15: INPUT "14. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3): IF C1 = 1 THEN 1170
+1166 LOCATE 16: INPUT "15. POWER INDEX "; PA%(4): IF C1 = 1 THEN 1170
+1167 LOCATE 17: INPUT "16. TM BACKGROUND COLOR (0-7) "; PA%(1): IF C1 = 1 THEN 1170
+1168 LOCATE 18: INPUT "17. TM TEXT COLOR (0-15) "; PA%(2): IF C1 = 1 THEN 1170
+1169 LOCATE 19: INPUT "18. DISK ID "; YN$: IF C1 = 1 THEN 1170
+1171 LOCATE 20: INPUT "19. STADIUM NAME "; S$: IF C1 = 1 THEN 1170
+1172 LOCATE 21: INPUT "20. AVERAGE ATTENDANCE "; ATT
+1170 LOCATE 22: COLOR PA%(2), PA%(1): PRINT "SAMPLE TEAM COLOR": COLOR 15, 0
+     C1 = 1: LOCATE 23: INPUT "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
+     IF B9 <= 0 OR B9 > 20 THEN 1000
+     ON B9 GOTO 1151, 1152, 1153, 1154, 1155, 1156, 1157, 1158, 1159, 1160, 1161, 1163, 1164, 1165, 1166, 1167, 1168, 1169, 1171, 1172
+1200 CLS : U$ = "EDIT RUNNING BACKS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15
+     PRINT "   NAME"; TAB(20); "RUSH AVG  CX%"
+     RBT = 0
+     FOR I = 0 TO 9
+     PRINT USING "## "; I + 1;
+     PRINT " "; A1$(I); TAB(20);
+     PRINT USING "##.#       ## ##"; A1%(I) * .3; A0%(I)
+     RBT = RBT + A1%(I) * A0%(I) / 100
+     NEXT
+     PRINT
+     PRINT "TEAM AVG"; TAB(20); : PRINT USING "##.#"; RBT * .3
+     LOCATE 16
+     PRINT "HIT (+) TO INCREASE BY 1, (-) TO DECREASE BY 1"
+     PRINT "HIT ESC TO ACCEPT RESULTS AND RETURN TO MAIN MENU"
+1201 I$ = INKEY$: IF I$ = "" THEN 1201
+     IF I$ <> CHR$(43) AND I$ <> CHR$(45) AND I$ <> CHR$(27) THEN 1201
+     IF I$ = CHR$(43) THEN
+     FOR I = 0 TO 9
+     A1%(I) = A1%(I) + 1
+     NEXT
+     END IF
+     IF I$ = CHR$(45) THEN
+     FOR I = 0 TO 9
+     A1%(I) = A1%(I) - 1
+     NEXT
+     END IF
+     IF I$ = CHR$(27) THEN 1000
+     GOTO 1200
+
+
+1300 CLS : U$ = "EDIT WIDE RECEIVERS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15
+     RBT = 0
+     PRINT "   NAME"; TAB(20); "REC AVG    CX"
+     FOR I = 0 TO 9: PRINT USING "## "; I + 1; : PRINT " "; A1$(I); TAB(20); : PRINT USING "   ##      ##"; A3%(I) * 3; A2%(I)
+     RBT = RBT + A3%(I) * A2%(I) / 100
+     NEXT
+     FOR I = 0 TO 5: PRINT USING "## "; I + 1; : PRINT " "; A2$(I); TAB(20); : PRINT USING "   ##      ##"; A5%(I) * 3; A4%(I)
+     RBT = RBT + A5%(I) * A4%(I) / 100
+     NEXT
+     PRINT
+     PRINT "TEAM AVG"; TAB(20); : PRINT USING "   ##.#"; RBT * 3
+
+1301 I$ = INKEY$: IF I$ = "" THEN 1301
+     GOTO 1000
+
+
+
+
+1400 CLS : U$ = "EDIT QUARTERBACKS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15
+     PRINT "   NAME"; TAB(20); "COMP%   INT%   YDS/COMP ADJ  CX"
+     RBT = 0
+     FOR I = 0 TO 3
+     PRINT USING "## "; I + 1;
+     PRINT " "; A3$(I); TAB(20);
+     PRINT USING " ##      ##       +##       ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+     RBT = A7%(I) * A6%(I) / 100 + RBT
+     NEXT
+     PRINT
+     PRINT USING "TEAM AVG            ##.#"; RBT
+
+
+     PRINT "HIT (+) TO INCREASE C% BY 1, (-) TO DECREASE C% BY 1"
+     PRINT "HIT ESC TO ACCEPT RESULTS AND RETURN TO MAIN MENU"
+1401 I$ = INKEY$: IF I$ = "" THEN 1401
+     IF I$ <> CHR$(43) AND I$ <> CHR$(45) AND I$ <> CHR$(27) THEN 1401
+     IF I$ = CHR$(43) THEN
+     FOR I = 0 TO 3
+     A7%(I) = A7%(I) + 1
+     NEXT
+     END IF
+     IF I$ = CHR$(45) THEN
+     FOR I = 0 TO 3
+     A7%(I) = A7%(I) - 1
+     NEXT
+     END IF
+     IF I$ = CHR$(27) THEN 1000
+     GOTO 1400
+
+4091 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE";
+4092 I$ = INKEY$: IF I$ = "" THEN 4092
+4095 RETURN
+3100 NT = 0
+     OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+     Y = LOF(1)
+     FIELD #1, 15 AS Q$(0), 640 AS X$
+     FOR I1 = 1 TO Y / 934
+     GET #1, I1
+     FOR I2 = 1 TO 15
+     IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 3105
+     NEXT I2
+     NT = NT + 1
+     VV$(NT) = Q$(0): V%(NT) = I1
+3105 NEXT I1
+    CLOSE 1
+TS% = INT((NT - 1) / 80)
+3102 SELECTION% = 1
+     Count% = NT
+     Start% = 1
+     FileColr% = 79
+     HiLiteColr% = 112
+     Rows% = 20
+     Columns% = 4
+     Spacing% = 6
+     Row% = 4
+     Column% = 1
+     COLOR , 4: CLS : LOCATE , 33: COLOR 14
+     PRINT "TEAM SELECTION": COLOR 15
+     LOCATE 25, 1: COLOR 14: PRINT "ESC"; : COLOR 15
+     PRINT "-SELECT NEW ID  PGDN  PGUP  "; : COLOR 14
+     PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
+     CALL ShowCursor
+20   MAMenu VARPTR(VV$(1)), SELECTION%, Start%, Count%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%
+     CALL HideCursor
+     IF EXITCODE% = 27 THEN BO% = 1: RETURN
+     IF EXITCODE% = -71 THEN Start% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
+     IF EXITCODE% = -79 THEN Start% = NT: EXITCODE% = 3: SELECTION% = NT: GOTO 20
+     IF EXITCODE% = -73 THEN Start% = Start% - 80: IF Start% < 1 THEN Start% = 1
+     IF EXITCODE% = -81 THEN Start% = Start% + 80: IF Start% > NT THEN Start% = NT
+     IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = Start%: GOTO 20
+     B8% = V%(SELECTION%)
+     GOTO 9500
+
+4100 CLOSE 1
+     BEEP: CLS : PRINT "ERROR:: TEAMS DISK NOT FOUND OR PATHS NOT SET CORRECTLY"
+     LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
+4105 I$ = INKEY$: IF I$ = "" THEN 4105
+     RESUME 100
+     REM *** ERROR HANDLING ROUTINES ***
+     PRINT "YOU NEED TO TELL 3-IN-1 WHERE YOUR TEAMS ARE": RESUME 100
+9400 FOR I = 0 TO 15: C2(I) = 0: C3(I) = 0: NEXT
+     U = 0
+     FOR I = 1 TO 9
+     IF A0%(I) = 0 THEN U = U + 1: GOTO 9403
+     C3(I) = A0%(I) - A0%(I - 1 - U): U = 0
+9403 NEXT
+     FOR I = 1 TO 9: A0%(I) = C3(I): NEXT
+     FOR I = 0 TO 5: A2%(I + 10) = A4%(I): NEXT
+     U = 0
+     FOR I = 1 TO 15
+     IF A2%(I) = 0 THEN U = U + 1: GOTO 9408
+     C2(I) = A2%(I) - A2%(I - 1 - U): U = 0
+9408 NEXT
+     FOR I = 1 TO 15: A2%(I) = C2(I): NEXT
+     FOR I = 0 TO 5: A4%(I) = A2%(I + 10): NEXT
+     FOR I = 3 TO 1 STEP -1
+     IF A6%(I) = 0 THEN 9414
+     A6%(I) = A6%(I) - A6%(I - 1)
+9414 NEXT
+     FOR I = 2 TO 1 STEP -1
+     IF A9%(I) = 0 THEN 9418
+     A9%(I) = A9%(I) - A9%(I - 1)
+9418 NEXT
+     FOR I = 2 TO 1 STEP -1
+     IF B1%(I) = 0 THEN 9422
+     B1%(I) = B1%(I) - B1%(I - 1)
+9422 NEXT
+     FOR I = 1 TO 1 STEP -1
+     IF B5%(I) = 0 THEN 9426
+     B5%(I) = B5%(I) - B5%(I - 1)
+9426 NEXT
+     FOR I = 1 TO 1 STEP -1
+     IF B8%(I) = 0 THEN 9430
+     B8%(I) = B8%(I) - B8%(I - 1)
+9430 NEXT
+     RETURN
+9500 OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
+AS Q$, 78 AS Q$(0)
+     FIELD #1, 56 AS Q$(0), 12 AS Q$(16), 2 AS Q$(17), 2 AS Q$(18), 2 AS Q$(19), 2 AS Q$(20), 12 AS Q$(21), 2 AS Q$(22), 2 AS Q$(23), 2 AS Q$(24), 2 AS Q$(25), 200 AS Q$, 200 AS Q$(200), 238 AS Q$(201), 200 AS Q$
+     FIELD #1, 96 AS Q$(0), 12 AS Q$(26), 2 AS Q$(27), 2 AS Q$(28), 2 AS Q$(29), 2 AS Q$(30), 12 AS Q$(31), 2 AS Q$(32), 2 AS Q$(33), 2 AS Q$(34), 2 AS Q$(35), 200 AS Q$(199), 200 AS Q$(200), 198 AS Q$(201), 200 AS Q$
+     FIELD #1, 136 AS Q$(0), 12 AS Q$(36), 2 AS Q$(37), 2 AS Q$(38), 2 AS Q$(39), 2 AS Q$(40), 12 AS Q$(41), 2 AS Q$(42), 2 AS Q$(43), 2 AS Q$(44), 2 AS Q$(45), 200 AS Q$(199), 200 AS Q$(200), 158 AS Q$(201), 200 AS Q$
+     FIELD #1, 176 AS Q$(0), 12 AS Q$(46), 2 AS Q$(47), 2 AS Q$(48), 2 AS Q$(49), 2 AS Q$(50), 12 AS Q$(51), 2 AS Q$(52), 2 AS Q$(53), 2 AS Q$(54), 2 AS Q$(55), 200 AS Q$(199), 200 AS Q$(200), 118 AS Q$(201), 200 AS Q$
+     FIELD #1, 216 AS Q$(0), 12 AS Q$(56), 2 AS Q$(57), 2 AS Q$(58), 2 AS Q$(59), 2 AS Q$(60), 12 AS Q$(61), 2 AS Q$(62), 2 AS Q$(63), 2 AS Q$(64), 2 AS Q$(65), 200 AS Q$(199), 200 AS Q$(200), 78 AS Q$(201), 200 AS Q$
+     FIELD #1, 200 AS Q$(0), 56 AS Q$, 12 AS Q$(66), 2 AS Q$(67), 2 AS Q$(68), 12 AS Q$(69), 2 AS Q$(70), 2 AS Q$(71), 12 AS Q$(72), 2 AS Q$(73), 2 AS Q$(74), 200 AS Q$(99), 200 AS Q$(200), 200 AS Q$, 30 AS Q$
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 4 AS Q$(201), 12 AS Q$(75), 2 AS Q$(76), 2 AS Q$(77), 12 AS Q$(78), 2 AS Q$(79), 2 AS Q$(80), 12 AS Q$(81), 2 AS Q$(82), 2 AS Q$(83), 200 AS Q$(199), 182 AS Q$(200), 200 AS Q$
+     FIELD #1, 200 AS Q$(0), 152 AS Q$(201), 12 AS Q$(84), 2 AS Q$(85), 2 AS Q$(86), 2 AS Q$(87), 2 AS Q$(88), 12 AS Q$(89), 2 AS Q$(90), 2 AS Q$(91), 2 AS Q$(92), 2 AS Q$(93), 200 AS Q$(199), 200 AS Q$(200), 142 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 192 AS Q$(201), 12 AS Q$(94), 2 AS Q$(95), 2 AS Q$(96), 2 AS Q$(97), 2 AS Q$(98), 12 AS Q$(99), 2 AS Q$(100), 2 AS Q$(101), 2 AS Q$(102), 2 AS Q$(103), 200 AS Q$(199), 200 AS Q$(200), 102 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 32 AS Q$(200), 12 AS Q$(104), 2 AS Q$(105), 2 AS Q$(106), 12 AS Q$(107), 2 AS Q$(108), 2 AS Q$(109), 12 AS Q$(110), 2 AS Q$(111), 2 AS Q$(112), 200 AS Q$(201), 200 AS Q$(202), 54 AS Q$(203)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 80 AS Q$(200), 12 AS Q$(113), 2 AS Q$(114), 2 AS Q$(115), 12 AS Q$(116), 2 AS Q$(117), 2 AS Q$(118), 12 AS Q$(119), 2 AS Q$(120), 2 AS Q$(121), 200 AS Q$(201), 200 AS Q$(202), 6 AS Q$(203)
+     FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
+AS Q$
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 184 AS Q$(200), 12 AS Q$(135), 2 AS Q$(136), 12 AS Q$(137), 2 AS Q$(138), 12 AS Q$(139), 2 AS Q$(140), 12 AS Q$(141), 2 AS Q$(142), 12 AS Q$(143), 2 AS Q$(144), 200 AS Q$(201), 80 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 154 AS Q$(200), 12 AS Q$(145), 2 AS Q$(146), 12 AS Q$(147), 2 AS Q$(148), 12 AS Q$(149), 2 AS Q$(150), 12 AS Q$(151), 2 AS Q$(152), 12 AS Q$(153), 2 AS Q$(154), 200 AS Q$(201), 10 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 224 AS Q$(200), 12 AS Q$(155), 2 AS Q$(156), 12 AS Q$(157), 2 AS Q$(158), 12 AS Q$(159), 2 AS Q$(160), 12 AS Q$(161), 2 AS Q$(162), 12 AS Q$(163), 2 AS Q$(164), 140 AS Q$(201)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 194 AS Q$(200), 12 AS Q$(165), 2 AS Q$(166), 12 AS Q$(167), 2 AS Q$(168), 12 AS Q$(169), 2 AS Q$(170), 12 AS Q$(171), 2 AS Q$(172), 12 AS Q$(173), 2 AS Q$(174), 70 AS Q$(201)
+     FIELD #1, 232 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 232 AS Q$(200), 12 AS Q$(175), 2 AS Q$(176), 12 AS Q$(177), 2 AS Q$(178), 12 AS Q$(179), 2 AS Q$(180), 12 AS Q$(181), 2 AS Q$(182), 12 AS Q$(183), 2 AS Q$(184)
+     GET #1, B8%
+     A$ = Q$(1): AA$ = Q$(2)
+     FOR I = 0 TO 7: B6%(I) = CVI(Q$(I + 3)): NEXT I
+     FOR I = 0 TO 4: PA%(I) = CVI(Q$(I + 11)): NEXT I
+     FOR I = 0 TO 9
+     A1$(I) = Q$(I * 5 + 16)
+     A0%(I) = CVI(Q$(I * 5 + 17))
+     A1%(I) = CVI(Q$(I * 5 + 18))
+     A2%(I) = CVI(Q$(I * 5 + 19))
+     A3%(I) = CVI(Q$(I * 5 + 20))
+     NEXT I
+     FOR I = 0 TO 5
+     A2$(I) = Q$(I * 3 + 66)
+     A4%(I) = CVI(Q$(I * 3 + 67))
+     A5%(I) = CVI(Q$(I * 3 + 68))
+     NEXT I
+     FOR I = 0 TO 3
+     A3$(I) = Q$(I * 5 + 84)
+     A6%(I) = CVI(Q$(I * 5 + 85))
+     A7%(I) = CVI(Q$(I * 5 + 86))
+     A8%(I) = CVI(Q$(I * 5 + 87))
+     QX%(I) = CVI(Q$(I * 5 + 88))
+     NEXT I
+     FOR I = 0 TO 2
+     A4$(I) = Q$(I * 3 + 104)
+     A9%(I) = CVI(Q$(I * 3 + 105))
+     B%(I) = CVI(Q$(I * 3 + 106))
+     NEXT I
+     FOR I = 0 TO 2
+     A5$(I) = Q$(I * 3 + 113)
+     B1%(I) = CVI(Q$(I * 3 + 114))
+     B2%(I) = CVI(Q$(I * 3 + 115))
+     NEXT I
+     A6$(0) = Q$(122)
+     B3%(0) = CVI(Q$(123))
+     A7$(0) = Q$(124)
+     B4%(0) = CVI(Q$(125))
+     B5%(0) = CVI(Q$(126))
+     B7%(0) = CVI(Q$(127))
+     B8%(0) = CVI(Q$(128))
+     A7$(1) = Q$(129)
+     B4%(1) = CVI(Q$(130))
+     B5%(1) = CVI(Q$(131))
+     B7%(1) = CVI(Q$(132))
+     B8%(1) = CVI(Q$(133))
+     YC = CVI(Q$(134))
+     FOR I = 0 TO 14
+     DS$(I) = Q$(I * 2 + 135)
+     DS%(I) = CVI(Q$(I * 2 + 136))
+     NEXT I
+     FOR I = 0 TO 9
+     DI$(I) = Q$(I * 2 + 165)
+     DI%(I) = CVI(Q$(I * 2 + 166))
+     NEXT I
+     CLOSE #1
+     IF NOT EXIST%(D$(0) + "STADIUMS." + YN$) THEN S$ = "": ATT = 0: GOTO 9505
+     OPEN D$(0) + "STADIUMS." + YN$ FOR RANDOM AS #2 LEN = 50
+     FIELD #2, 15 AS X$, 30 AS Q$(1), 4 AS Q$(3), 1 AS Q$(4)
+     GET #2, B8%
+     S$ = QPRTrim$(Q$(1))
+     ATT = CVL(Q$(3))
+     Z$ = Q$(4)
+     CLOSE #2
+     IF Z$ <> "x" THEN S$ = "": ATT = 0
+9505 GOTO 9400
+9600 REM
+     YC% = YC
+     GOSUB 9900
+     S0 = 0: S1 = 0: S2 = 0: S3 = 0
+     FOR I = 0 TO 9: S0 = S0 + A0%(I): S2 = S2 + A2%(I): NEXT
+     S4 = 100 / S0
+     FOR I = 0 TO 9: IF A0%(I) <> 0 THEN A0%(I) = INT(S4 * A0%(I) + .5) + S1: S1 = A0%(I)
+     IF A0%(I) > 100 THEN A0%(I) = 100
+     NEXT I
+     FOR I = 0 TO 5: S2 = S2 + A4%(I): NEXT
+     S5 = 100 / S2
+     FOR I = 0 TO 9: IF A2%(I) <> 0 THEN A2%(I) = INT(S5 * A2%(I) + .5) + S3: S3 = A2%(I)
+     IF A2%(I) > 100 THEN A2%(I) = 100
+     NEXT I
+     FOR I = 0 TO 5: IF A4%(I) <> 0 THEN A4%(I) = INT(S5 * A4%(I) + .5) + S3: S3 = A4%(I)
+     IF A4%(I) > 100 THEN A4%(I) = 100
+     NEXT I
+     S6 = 0: S7 = 0
+     FOR I = 0 TO 3: S6 = S6 + A6%(I): NEXT
+     S8 = 100 / S6
+     FOR I = 0 TO 3: IF A6%(I) <> 0 THEN A6%(I) = INT(S8 * A6%(I) + .5) + S7: S7 = A6%(I)
+     IF A6%(I) > 100 THEN A6%(I) = 100
+     NEXT
+     G0 = 0: G1 = 0: G3 = 0: G4 = 0
+     FOR I = 0 TO 2: G0 = G0 + A9%(I): G3 = G3 + B1%(I): NEXT
+     G2 = 100 / G0: G5 = 100 / G3
+     FOR I = 0 TO 2: IF A9%(I) <> 0 THEN A9%(I) = INT(G2 * A9%(I) + .5) + G1: G1 = A9%(I)
+     IF A9%(I) > 100 THEN A9%(I) = 100
+     NEXT
+     FOR I = 0 TO 2: IF B1%(I) <> 0 THEN B1%(I) = INT(G5 * B1%(I) + .5) + G4: G4 = B1%(I)
+     IF B1%(I) > 100 THEN B1%(I) = 100
+     NEXT
+     G0 = 0: G1 = 0: G3 = 0: G4 = 0
+     FOR I = 0 TO 1: G0 = G0 + B5%(I): G3 = G3 + B8%(I): NEXT
+     G2 = 100 / G0: G5 = 100 / G3
+     FOR I = 0 TO 1: IF B5%(I) <> 0 THEN B5%(I) = INT(G2 * B5%(I) + .5) + G1: G1 = B5%(I)
+     IF B5%(I) > 100 THEN B5%(I) = 100
+     NEXT
+     FOR I = 0 TO 1: IF B8%(I) <> 0 THEN B8%(I) = INT(G5 * B8%(I) + .5) + G4: G4 = B8%(I)
+     IF B8%(I) > 100 THEN B8%(I) = 100
+     NEXT
+     FOR I = 9 TO 0 STEP -1: IF A0%(I) <> 0 THEN A0%(I) = 100: GOTO 9776
+     NEXT
+9776 FOR I = 5 TO 0 STEP -1: IF A4%(I) <> 0 THEN A4%(I) = 100: GOTO 9778
+     NEXT
+9778 FOR I = 3 TO 0 STEP -1: IF A6%(I) <> 0 THEN A6%(I) = 100: GOTO 9780
+     NEXT
+9780 FOR I = 2 TO 0 STEP -1: IF A9%(I) <> 0 THEN A9%(I) = 100: GOTO 9782
+     NEXT
+9782 FOR I = 2 TO 0 STEP -1: IF B1%(I) <> 0 THEN B1%(I) = 100: GOTO 9784
+     NEXT
+9784 FOR I = 1 TO 0 STEP -1: IF B5%(I) <> 0 THEN B5%(I) = 100: GOTO 9786
+     NEXT
+9786 FOR I = 1 TO 0 STEP -1: IF B8%(I) <> 0 THEN B8%(I) = 100: GOTO 9800
+     NEXT
+9800 OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
+AS Q$, 78 AS Q$(0)
+     FIELD #1, 56 AS Q$(0), 12 AS Q$(16), 2 AS Q$(17), 2 AS Q$(18), 2 AS Q$(19), 2 AS Q$(20), 12 AS Q$(21), 2 AS Q$(22), 2 AS Q$(23), 2 AS Q$(24), 2 AS Q$(25), 200 AS Q$, 200 AS Q$(200), 238 AS Q$(201), 200 AS Q$
+     FIELD #1, 96 AS Q$(0), 12 AS Q$(26), 2 AS Q$(27), 2 AS Q$(28), 2 AS Q$(29), 2 AS Q$(30), 12 AS Q$(31), 2 AS Q$(32), 2 AS Q$(33), 2 AS Q$(34), 2 AS Q$(35), 200 AS Q$(199), 200 AS Q$(200), 198 AS Q$(201), 200 AS Q$
+     FIELD #1, 136 AS Q$(0), 12 AS Q$(36), 2 AS Q$(37), 2 AS Q$(38), 2 AS Q$(39), 2 AS Q$(40), 12 AS Q$(41), 2 AS Q$(42), 2 AS Q$(43), 2 AS Q$(44), 2 AS Q$(45), 200 AS Q$(199), 200 AS Q$(200), 158 AS Q$(201), 200 AS Q$
+     FIELD #1, 176 AS Q$(0), 12 AS Q$(46), 2 AS Q$(47), 2 AS Q$(48), 2 AS Q$(49), 2 AS Q$(50), 12 AS Q$(51), 2 AS Q$(52), 2 AS Q$(53), 2 AS Q$(54), 2 AS Q$(55), 200 AS Q$(199), 200 AS Q$(200), 118 AS Q$(201), 200 AS Q$
+     FIELD #1, 216 AS Q$(0), 12 AS Q$(56), 2 AS Q$(57), 2 AS Q$(58), 2 AS Q$(59), 2 AS Q$(60), 12 AS Q$(61), 2 AS Q$(62), 2 AS Q$(63), 2 AS Q$(64), 2 AS Q$(65), 200 AS Q$(199), 200 AS Q$(200), 78 AS Q$(201), 200 AS Q$
+     FIELD #1, 200 AS Q$(0), 56 AS Q$, 12 AS Q$(66), 2 AS Q$(67), 2 AS Q$(68), 12 AS Q$(69), 2 AS Q$(70), 2 AS Q$(71), 12 AS Q$(72), 2 AS Q$(73), 2 AS Q$(74), 200 AS Q$(99), 200 AS Q$(200), 200 AS Q$, 30 AS Q$
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 4 AS Q$(201), 12 AS Q$(75), 2 AS Q$(76), 2 AS Q$(77), 12 AS Q$(78), 2 AS Q$(79), 2 AS Q$(80), 12 AS Q$(81), 2 AS Q$(82), 2 AS Q$(83), 200 AS Q$(199), 182 AS Q$(200), 200 AS Q$
+     FIELD #1, 200 AS Q$(0), 152 AS Q$(201), 12 AS Q$(84), 2 AS Q$(85), 2 AS Q$(86), 2 AS Q$(87), 2 AS Q$(88), 12 AS Q$(89), 2 AS Q$(90), 2 AS Q$(91), 2 AS Q$(92), 2 AS Q$(93), 200 AS Q$(199), 200 AS Q$(200), 142 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 192 AS Q$(201), 12 AS Q$(94), 2 AS Q$(95), 2 AS Q$(96), 2 AS Q$(97), 2 AS Q$(98), 12 AS Q$(99), 2 AS Q$(100), 2 AS Q$(101), 2 AS Q$(102), 2 AS Q$(103), 200 AS Q$(199), 200 AS Q$(200), 102 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 32 AS Q$(200), 12 AS Q$(104), 2 AS Q$(105), 2 AS Q$(106), 12 AS Q$(107), 2 AS Q$(108), 2 AS Q$(109), 12 AS Q$(110), 2 AS Q$(111), 2 AS Q$(112), 200 AS Q$(201), 200 AS Q$(202), 54 AS Q$(203)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 80 AS Q$(200), 12 AS Q$(113), 2 AS Q$(114), 2 AS Q$(115), 12 AS Q$(116), 2 AS Q$(117), 2 AS Q$(118), 12 AS Q$(119), 2 AS Q$(120), 2 AS Q$(121), 200 AS Q$(201), 200 AS Q$(202), 6 AS Q$(203)
+     FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
+AS Q$
+     FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 184 AS Q$(200), 12 AS Q$(135), 2 AS Q$(136), 12 AS Q$(137), 2 AS Q$(138), 12 AS Q$(139), 2 AS Q$(140), 12 AS Q$(141), 2 AS Q$(142), 12 AS Q$(143), 2 AS Q$(144), 200 AS Q$(201), 80 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 154 AS Q$(200), 12 AS Q$(145), 2 AS Q$(146), 12 AS Q$(147), 2 AS Q$(148), 12 AS Q$(149), 2 AS Q$(150), 12 AS Q$(151), 2 AS Q$(152), 12 AS Q$(153), 2 AS Q$(154), 200 AS Q$(201), 10 AS Q$(202)
+     FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 224 AS Q$(200), 12 AS Q$(155), 2 AS Q$(156), 12 AS Q$(157), 2 AS Q$(158), 12 AS Q$(159), 2 AS Q$(160), 12 AS Q$(161), 2 AS Q$(162), 12 AS Q$(163), 2 AS Q$(164), 140 AS Q$(201)
+     FIELD #1, 200 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 194 AS Q$(200), 12 AS Q$(165), 2 AS Q$(166), 12 AS Q$(167), 2 AS Q$(168), 12 AS Q$(169), 2 AS Q$(170), 12 AS Q$(171), 2 AS Q$(172), 12 AS Q$(173), 2 AS Q$(174), 70 AS Q$(201)
+     FIELD #1, 232 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 232 AS Q$(200), 12 AS Q$(175), 2 AS Q$(176), 12 AS Q$(177), 2 AS Q$(178), 12 AS Q$(179), 2 AS Q$(180), 12 AS Q$(181), 2 AS Q$(182), 12 AS Q$(183), 2 AS Q$(184)
+     LSET Q$(1) = A$: LSET Q$(2) = AA$
+     FOR I = 0 TO 7: LSET Q$(I + 3) = MKI$(B6%(I)): NEXT I
+     FOR I = 0 TO 4: LSET Q$(I + 11) = MKI$(PA%(I)): NEXT I
+     FOR I = 0 TO 9
+     LSET Q$(I * 5 + 16) = A1$(I)
+     LSET Q$(I * 5 + 17) = MKI$(A0%(I))
+     LSET Q$(I * 5 + 18) = MKI$(A1%(I))
+     LSET Q$(I * 5 + 19) = MKI$(A2%(I))
+     LSET Q$(I * 5 + 20) = MKI$(A3%(I))
+     NEXT I
+     FOR I = 0 TO 5
+     LSET Q$(I * 3 + 66) = A2$(I)
+     LSET Q$(I * 3 + 67) = MKI$(A4%(I))
+     LSET Q$(I * 3 + 68) = MKI$(A5%(I))
+     NEXT I
+     FOR I = 0 TO 3
+     LSET Q$(I * 5 + 84) = A3$(I)
+     LSET Q$(I * 5 + 85) = MKI$(A6%(I))
+     LSET Q$(I * 5 + 86) = MKI$(A7%(I))
+     LSET Q$(I * 5 + 87) = MKI$(A8%(I))
+     LSET Q$(I * 5 + 88) = MKI$(QX%(I))
+     NEXT I
+     FOR I = 0 TO 2
+     LSET Q$(I * 3 + 104) = A4$(I)
+     LSET Q$(I * 3 + 105) = MKI$(A9%(I))
+     LSET Q$(I * 3 + 106) = MKI$(B%(I))
+     NEXT I
+     FOR I = 0 TO 2
+     LSET Q$(I * 3 + 113) = A5$(I)
+     LSET Q$(I * 3 + 114) = MKI$(B1%(I))
+     LSET Q$(I * 3 + 115) = MKI$(B2%(I))
+     NEXT I
+     LSET Q$(122) = A6$(0)
+     LSET Q$(123) = MKI$(B3%(0))
+     LSET Q$(124) = A7$(0)
+     LSET Q$(125) = MKI$(B4%(0))
+     LSET Q$(126) = MKI$(B5%(0))
+     LSET Q$(127) = MKI$(B7%(0))
+     LSET Q$(128) = MKI$(B8%(0))
+     LSET Q$(129) = A7$(1)
+     LSET Q$(130) = MKI$(B4%(1))
+     LSET Q$(131) = MKI$(B5%(1))
+     LSET Q$(132) = MKI$(B7%(1))
+     LSET Q$(133) = MKI$(B8%(1))
+     LSET Q$(134) = MKI$(YC%)
+     FOR I = 0 TO 14
+     LSET Q$(I * 2 + 135) = DS$(I)
+     LSET Q$(I * 2 + 136) = MKI$(DS%(I))
+     NEXT I
+     FOR I = 0 TO 9
+     LSET Q$(I * 2 + 165) = DI$(I)
+     LSET Q$(I * 2 + 166) = MKI$(DI%(I))
+     NEXT I
+     PUT #1, B8%
+     CLOSE #1
+     OPEN D$(0) + "STADIUMS." + YN$ FOR RANDOM AS #2 LEN = 50
+     FIELD #2, 15 AS Q$(1), 30 AS Q$(2), 4 AS Q$(3), 1 AS Q$(4)
+     LSET Q$(1) = A$
+     LSET Q$(2) = S$
+     LSET Q$(3) = MKL$(ATT)
+     LSET Q$(4) = "x"
+     PUT #2, B8%
+     CLOSE 2
+     GOSUB 500: GOTO 100
+9900 REM:*** CHECK CONTRIBUTION RATINGS ***
+     CLS : U$ = "CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 3
+     PRINT "THE NEXT SCREENS WILL CYCLE THROUGH THE  TEAM ROSTER SHOWING THE  % OF PLAYING"
+     PRINT "TIME EACH PLAYER IS CURRENTLY ALLOTTED. TOTAL CONTRIBUTION FOR EACH POSITION"
+     PRINT "MUST TOTAL 100%"
+     LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
+9906 I$ = INKEY$: IF I$ = "" THEN 9906
+     CLS : U$ = "RUNNING BACK CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9909 LOCATE 3: BC% = 0: FOR I = 0 TO 9: PRINT USING "## "; I + 1; : PRINT " "; A1$(I); TAB(20); : PRINT USING "      ##"; A0%(I): BC% = BC% + A0%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT "11  PROCEED TO RECEIVERS"
+9911 LOCATE 16: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 11 THEN 9911
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 10 AND BC% <> 100 THEN LOCATE 18: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9909
+     IF I1 = 10 THEN 9917
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24: INPUT A0%(I1): GOTO 9909
+9917 CLS : U$ = "RECEIVING CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9919 LOCATE 3: BC% = 0
+     FOR I = 0 TO 9: PRINT USING "## "; I + 1; : PRINT " "; A1$(I); TAB(20); : PRINT USING "      ##"; A2%(I): BC% = BC% + A2%(I): NEXT
+     FOR I = 0 TO 5: PRINT USING "## "; I + 11; : PRINT " "; A2$(I); TAB(20); : PRINT USING "      ##"; A4%(I): BC% = BC% + A4%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT "17  PROCEED TO QUARTERBACKS"
+9921 LOCATE 21: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 17 THEN 9921
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 16 AND BC% <> 100 THEN LOCATE 22: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 22: PRINT "                    ": GOTO 9919
+     IF I1 = 16 THEN 9927
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     IF I1 <= 9 THEN INPUT A2%(I1): GOTO 9919
+     INPUT A4%(I1 - 10): GOTO 9919
+9927 CLS : U$ = "QUARTERBACK CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9929 LOCATE 3: BC% = 0
+     FOR I = 0 TO 3: PRINT USING "## "; I + 1; : PRINT " "; A3$(I); TAB(20); : PRINT USING "      ##"; A6%(I): BC% = BC% + A6%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT " 5  PROCEED TO KO RETURNMEN"
+9931 LOCATE 10: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 5 THEN 9931
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 4 AND BC% <> 100 THEN LOCATE 16: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9929
+     IF I1 = 4 THEN 9937
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     INPUT A6%(I1): GOTO 9929
+9937 CLS : U$ = "KICK-OFF RETURN CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9939 LOCATE 3: BC% = 0
+     FOR I = 0 TO 2: PRINT USING "## "; I + 1; : PRINT " "; A4$(I); TAB(20); : PRINT USING "      ##"; A9%(I): BC% = BC% + A9%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT " 4  PROCEED TO PUNT RETURNMEN"
+9941 LOCATE 10: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 4 THEN 9941
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 3 AND BC% <> 100 THEN LOCATE 16: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9939
+     IF I1 = 3 THEN 9947
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     INPUT A9%(I1): GOTO 9939
+9947 CLS : U$ = "PUNT RETURN CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9949 LOCATE 3: BC% = 0
+     FOR I = 0 TO 2: PRINT USING "## "; I + 1; : PRINT " "; A5$(I); TAB(20); : PRINT USING "      ##"; B1%(I): BC% = BC% + B1%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT " 4  PROCEED TO FG KICKERS"
+9951 LOCATE 10: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 4 THEN 9951
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 3 AND BC% <> 100 THEN LOCATE 16: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9949
+     IF I1 = 3 THEN 9957
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     INPUT B1%(I1): GOTO 9949
+9957 CLS : U$ = "FIELD GOAL CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9959 LOCATE 3: BC% = 0
+     FOR I = 0 TO 1: PRINT USING "## "; I + 1; : PRINT " "; A7$(I); TAB(20); : PRINT USING "      ##"; B5%(I): BC% = BC% + B5%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT " 3  PROCEED TO PAT/EP KICKERS"
+9961 LOCATE 10: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 3 THEN 9961
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 2 AND BC% <> 100 THEN LOCATE 16: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9949
+     IF I1 = 2 THEN 9967
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     INPUT B5%(I1): GOTO 9959
+9967 CLS : U$ = "PAT/EXTRA POINT CONTRIBUTION RATINGS": LOCATE 1, 40 - LEN(U$) / 2: COLOR 14: PRINT U$: COLOR 15: LOCATE 2
+     PRINT "   NAME"; TAB(20); "CONTRIBUTION"
+9969 LOCATE 3: BC% = 0
+     FOR I = 0 TO 1: PRINT USING "## "; I + 1; : PRINT " "; A7$(I); TAB(20); : PRINT USING "      ##"; B8%(I): BC% = BC% + B8%(I): NEXT
+     PRINT "    TOTAL"; TAB(20); : PRINT USING "     ###"; BC%
+     PRINT " 3  PROCEED"
+9971 LOCATE 10: INPUT "ENTER #: "; B9
+     IF B9 <= 0 OR B9 > 3 THEN 9971
+     B9 = B9 - 1: I1 = B9
+     IF I1 = 2 AND BC% <> 100 THEN LOCATE 16: PRINT "TOTAL IS NOT 100%!": GOSUB 9990: LOCATE 16: PRINT "                    ": GOTO 9949
+     IF I1 = 2 THEN 9989
+     LOCATE I1 + 3, 24: PRINT "   ": LOCATE I1 + 3, 24
+     INPUT B8%(I1): GOTO 9969
+9989 RETURN
+9990 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
+9991 I$ = INKEY$: IF I$ = "" THEN 9991
+     RETURN
+
+3000 CLS : COLOR 11: PRINT "TEAM ROSTER FOR "; : COLOR PA%(2), PA%(1): PRINT A$; : COLOR 11, 0: PRINT "   TEAM NUMBER ="; : COLOR 14: PRINT B8%: PRINT
+    COLOR 15: PRINT USING "DEF RUSH ADJ   = ###"; B6%(0); : PRINT TAB(35); USING "SACKED %         = ##"; B6%(5)
+    PRINT USING "DEF COMP % ADJ = ###"; B6%(1); : PRINT TAB(35); USING "DEF SACK ADJ     = ##"; B6%(6)
+    PRINT USING "DEF INT % ADJ  = ###"; B6%(2); : PRINT TAB(35); USING "RUN/PASS %       = ##"; B6%(7)
+    PRINT USING "OFF FUMBLE  %  = ###"; B6%(3); : PRINT TAB(35); "DEF YDS/COMP ADJ = ";
+    IF YC < 50 THEN PRINT USING "+#.#"; YC / 100 * 30
+    IF YC > 50 THEN PRINT USING "+#.#"; (100 - YC) / 100 * -30
+    PRINT USING "DEF FUMBLE  %  = ###"; B6%(4); : PRINT TAB(35); USING "PENALTY ADJ      = ##"; PA%(0)
+    PRINT USING "STAD TYPE      = ###"; PA%(3)
+    PRINT USING "BACKGRND COLOR = ###"; PA%(1); : PRINT TAB(35); USING "FOREGRND COLOR   = ##"; PA%(2)
+    PRINT
+    COLOR 12: PRINT "RUNNING BACKS-"
+    COLOR 14: PRINT "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+    FOR I = 0 TO 9: IF LEFT$(A1$(I), 1) = " " OR LEFT$(A1$(I), 3) = "END" THEN 840
+    COLOR 3: PRINT A1$(I); : COLOR 15: LOCATE , 23: PRINT USING "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+840 NEXT
+    LOCATE 23: COLOR 15: PRINT "HIT ANY KEY TO CONTINUE";
+843 I$ = INKEY$: IF I$ = "" THEN 843
+    CLS
+    COLOR 12: PRINT "WIDE RECEIVERS-"
+    COLOR 14: PRINT "NAME-              REC AVG     CX%"
+    FOR I = 0 TO 5: IF LEFT$(A2$(I), 1) = " " OR LEFT$(A2$(I), 3) = "END" THEN 853
+    COLOR 3: PRINT A2$(I); : COLOR 15: LOCATE , 23: PRINT USING "##       ###"; A5%(I) * 3; A4%(I)
+853 NEXT
+    PRINT
+    COLOR 12: PRINT "QUARTERBACKS-                     YDS/CMP"
+    COLOR 14: PRINT "NAME-               COMP%   INT%    ADJ     CX%"
+    FOR I = 0 TO 3: IF LEFT$(A3$(I), 1) = " " OR LEFT$(A3$(I), 3) = "END" THEN 854
+    COLOR 3: PRINT A3$(I); : COLOR 15: LOCATE , 21: PRINT USING "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+854 NEXT
+    PRINT
+    COLOR 12: PRINT "KICKOFF RETURNMEN-"
+    COLOR 14: PRINT "NAME-              RET AVG     CX%"
+    FOR I = 0 TO 2: IF LEFT$(A4$(I), 1) = " " OR LEFT$(A4$(I), 3) = "END" THEN 855
+    COLOR 3: PRINT A4$(I); : COLOR 15: LOCATE , 23: PRINT USING "##       ###"; B%(I) * 3; A9%(I)
+855 NEXT
+    LOCATE 21: COLOR 15: PRINT "HIT ANY KEY TO CONTINUE"
+863 I$ = INKEY$: IF I$ = "" THEN 863
+    CLS
+    COLOR 12: PRINT "PUNT RETURNMEN-"
+    COLOR 14: PRINT "NAME-              RET AVG     CX%"
+    FOR I = 0 TO 2: IF LEFT$(A5$(I), 1) = " " OR LEFT$(A5$(I), 3) = "END" THEN 866
+    COLOR 3: PRINT A5$(I); : COLOR 15: LOCATE , 23: PRINT USING "##       ###"; B2%(I) * 3; B1%(I)
+866 NEXT
+    PRINT
+    COLOR 12: PRINT "PLACE KICKERS-"
+    COLOR 14: PRINT "NAME-                FG%  CX%   EP%  CX%"
+    FOR I = 0 TO 1: IF LEFT$(A7$(I), 1) = " " OR LEFT$(A7$(I), 3) = "END" THEN 867
+    COLOR 3: PRINT A7$(I); : COLOR 15: LOCATE , 21: PRINT USING "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+867 NEXT
+    PRINT
+    COLOR 12: PRINT "PUNTER-"
+    COLOR 14: PRINT "NAME-              AVG"
+    COLOR 3: PRINT A6$(0); : COLOR 15: LOCATE , 21: PRINT USING "##"; B3%(0) * 2 + 28
+    LOCATE 21: COLOR 15: PRINT "HIT ANY KEY TO CONTINUE"
+868 I$ = INKEY$: IF I$ = "" THEN 868
+    GOTO 100
+
+ STATIC SUB Comline (NumArgs, Args$(), MaxArgs)
+ CONST TRUE = -1, FALSE = 0
+ 
+     NumArgs = 0: In = FALSE
+     ' Get the command line using the COMMAND$ function
+     Cl$ = COMMAND$
+     L = LEN(Cl$)
+     ' Go through the command line a character at a time
+     FOR I = 1 TO L
+          C$ = MID$(Cl$, I, 1)
+          ' Test for character being a blank or a tab
+          IF (C$ <> " " AND C$ <> CHR$(9)) THEN
+          ' Neither blank nor tab; test if you're already inside
+          ' an argument
+               IF NOT In THEN
+               ' You've found the start of a new argument
+                    ' Test for too many arguments
+                      IF NumArgs = MaxArgs THEN EXIT FOR
+                      NumArgs = NumArgs + 1
+                      In = TRUE
+               END IF
+               ' Add the character to the current argument
+               Args$(NumArgs) = Args$(NumArgs) + C$
+          ELSE
+          ' Found a blank or a tab.
+               ' Set "Not in an argument" flag to FALSE
+               In = FALSE
+          END IF
+     NEXT I
+ 
+ END SUB
+
+SUB TITLE ()
+   COLOR , 0: KEY OFF: CLS
+   COLOR , 1: LOCATE 1, 1: PRINT TAB(80); : LOCATE , 32: COLOR 12
+   PRINT "3 IN 1 FOOTBALL V6.0"
+   LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
+   PRINT "(C) LANCE HAFFNER/SHANNON LYNN 1987-1994"; TAB(70); LEFT$(TIME$, 5);
+   LOCATE 3, 1: COLOR 2, 0
+   COLOR 15: PRINT "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
+             PRINT "              FOR TECHNICAL SUPPORT, CALL (615) 366-8088"
+   COLOR 10
+END SUB
+

@@ -1,0 +1,1284 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green128\blue0;\red128\green0\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Imports\cf0  VB = Microsoft.VisualBasic\par
+\cf1 Friend\cf0  \cf1 Class\cf0  frmCreateCollegeFB\par
+\tab\cf1 Inherits\cf0  System.Windows.Forms.Form\par
+\tab\cf1 Dim\cf0  TotalRushers \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\cf1 Dim\cf0  a_dlr \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Dim\cf0  qbPassComp(3) \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\cf1 Dim\cf0  qbPassAtt(3) \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\cf1 Dim\cf0  qbPassYards(3) \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\cf1 Dim\cf0  offpassyards \cf1 As\cf0  \cf1 Single\par
+\cf0\tab\cf1 Dim\cf0  Offpasscmp \cf1 As\cf0  \cf1 Single\par
+\cf0\tab\cf1 Dim\cf0  x \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  Command1_Click(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  Command1.Click\par
+\tab\tab\cf1 Dim\cf0  QV \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  QK \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  KK \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  QT \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  QM \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  KT \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  KM \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  PK \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  PT \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  PM \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  RK \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  SK \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  RT \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  RM \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  ST \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  SM \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  txtkor \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  txtqbyards \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  i \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  Avg \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  defpasscmp \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  defnetyardsrush \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  offkickoffret \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  offpuntret \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  div \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  defpasscomp \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  txtteamname \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  txtinstitutionid \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  adcmdtxt \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  snsackpct2 \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  snsackpct1 \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 Dim\cf0  j \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Dim\cf0  iRcv \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\cf1 Dim\cf0  lRcnt \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\tab\cf1 Dim\cf0  lTotRec \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\tab\par
+\tab\tab sncmppct1 = 56\par
+\tab\tab sncmppct2 = 53\par
+\tab\tab\par
+\tab\tab snintpct1 = 3.5\par
+\tab\tab snintpct2 = 4#\par
+\tab\tab\par
+\tab\tab snfumpct1 = 3#\par
+\tab\tab snfumpct2 = 3.6\par
+\tab\tab\par
+\tab\tab snyc1 = 12.7\par
+\tab\tab snyc2 = 12.9\par
+\tab\tab\par
+\tab\tab snrush1 = 4.6\par
+\tab\tab snrush2 = 4.4\par
+\tab\tab\par
+\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object snsackpct1. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab snsackpct1 = 6\par
+\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object snsackpct2. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab snsackpct2 = 7\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab gsqlstr = \cf3 "select * from div1_teams where sacked > 0"\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoteam may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstadoteam = \cf1 Nothing\par
+\cf0\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab grstadoteam.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf1 With\cf0  grstadoteam\par
+\tab\tab\tab lTotRec = .RecordCount\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab lRcnt = lRcnt + 1\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab DosTno = .Fields(\cf3 "DosTeamNo"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab txtinstitutionid = .Fields(\cf3 "Institution id"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtteamname. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab txtteamname = .Fields(\cf3 "Institution"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\cf2 '    MsgBox "Tech"\par
+\cf0\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab a_dlr = nz(.Fields(\cf3 "Dos_Team_name"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\cf1 If\cf0  a_dlr = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtteamname. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a_dlr = \cf3 "03 "\cf0  & txtteamname\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab a_dlr = \cf3 "03 "\cf0  & a_dlr\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab Text1.Text = lRcnt & \cf3 " of "\cf0  & lTotRec & \cf3 ". "\cf0  & a_dlr & vbCrLf & Text1.Text\par
+\tab\tab\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\tab\tab\cf1 If\cf0  Len(Text1.Text) > 10000 \cf1 Then\cf0  Text1.Text = \cf3 ""\par
+\cf0\tab\tab\tab\tab powerrating = .Fields(\cf3 "powerrating"\cf0 ).Value\par
+\tab\tab\tab\tab schedulestrength = .Fields(\cf3 "schedulestrength"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab defpasscomp = .Fields(\cf3 "defpasscomp"\cf0 ).Value\par
+\tab\tab\tab\tab offfumlost = .Fields(\cf3 "offfumlost"\cf0 ).Value\par
+\tab\tab\tab\tab deffumlost = .Fields(\cf3 "deffumlost"\cf0 ).Value\par
+\tab\tab\tab\tab offrushatt = .Fields(\cf3 "offrushatt"\cf0 ).Value\par
+\tab\tab\tab\tab teampuntret = .Fields(\cf3 "teampuntret"\cf0 ).Value\par
+\tab\tab\tab\tab offpassint = .Fields(\cf3 "defpassint"\cf0 ).Value\par
+\tab\tab\tab\tab teampenalties = .Fields(\cf3 "teampenalties"\cf0 ).Value\par
+\tab\tab\tab\tab gamesplayed = .Fields(\cf3 "gamesplayed"\cf0 ).Value\par
+\tab\tab\tab\tab offsacked = .Fields(\cf3 "sacked"\cf0 ).Value\par
+\tab\tab\tab\tab defsacked = .Fields(\cf3 "defsacked"\cf0 ).Value\par
+\tab\tab\tab\tab defrushatt = .Fields(\cf3 "defrushatt"\cf0 ).Value\par
+\tab\tab\tab\tab offpassatt = .Fields(\cf3 "offpassatt"\cf0 ).Value\par
+\tab\tab\tab\tab Offpasscmp = .Fields(\cf3 "offpasscomp"\cf0 ).Value\par
+\tab\tab\tab\tab offpassint = .Fields(\cf3 "offpassint"\cf0 ).Value\par
+\tab\tab\tab\tab defpassint = .Fields(\cf3 "defpassint"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab div = .Fields(\cf3 "division"\cf0 ).Value\par
+\tab\tab\tab\tab defpassatt = .Fields(\cf3 "defpassatt"\cf0 ).Value\par
+\tab\tab\tab\tab defpuntret = .Fields(\cf3 "defpuntret"\cf0 ).Value\par
+\tab\tab\tab\tab defkickoffret = .Fields(\cf3 "defkoret"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object offpuntret. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab offpuntret = .Fields(\cf3 "teampuntret"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object offkickoffret. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab offkickoffret = .Fields(\cf3 "teamkoret"\cf0 ).Value\par
+\tab\tab\tab\tab gamesplayed = .Fields(\cf3 "gamesplayed"\cf0 ).Value\par
+\tab\tab\tab\tab offsacked = offsacked * gamesplayed\par
+\tab\tab\tab\tab defsacked = defsacked * gamesplayed\par
+\tab\tab\tab\tab defpassyards = .Fields(\cf3 "defpassyards"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defnetyardsrush. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab defnetyardsrush = .Fields(\cf3 "defnetyardsrush"\cf0 ).Value\par
+\tab\tab\tab\tab pa_pct(3) = 0\par
+\tab\tab\tab\tab pa_pct(2) = .Fields(\cf3 "ForeColor"\cf0 ).Value\par
+\tab\tab\tab\tab pa_pct(1) = .Fields(\cf3 "BackColor"\cf0 ).Value\par
+\tab\tab\tab\tab\cf2 'a_dlr = !Institution\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'powerrating\par
+\cf0\tab\tab\tab\tab pa_pct(4) = powerrating\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'strength of schedule adjustment\par
+\cf0\tab\tab\tab\tab schedulestrength = 75 - schedulestrength\par
+\tab\tab\tab\tab schedulestrength = Int(schedulestrength * 0.36 + 0.5)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  Int(schedulestrength / 2) = schedulestrength / 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab o9 = schedulestrength / 2\par
+\tab\tab\tab\tab\tab d9 = o9\par
+\tab\tab\tab\tab\tab\cf1 GoTo\cf0  20\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab rn = Int(Rnd(1) * 100) + 1\par
+\tab\tab\tab\tab\cf1 If\cf0  rn <= 50 \cf1 And\cf0  schedulestrength > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab d9 = Int(schedulestrength / 2) + 1\par
+\tab\tab\tab\tab\tab o9 = schedulestrength - d9\par
+\tab\tab\tab\tab\tab\cf1 GoTo\cf0  20\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  schedulestrength > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab o9 = Int(schedulestrength / 2) + 1\par
+\tab\tab\tab\tab\tab d9 = schedulestrength - o9\par
+\tab\tab\tab\tab\tab\cf1 GoTo\cf0  20\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  rn <= 50 \cf1 And\cf0  schedulestrength < 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab d9 = Int(schedulestrength / 2) + 1\par
+\tab\tab\tab\tab\tab o9 = schedulestrength - d9\par
+\tab\tab\tab\tab\tab\cf1 GoTo\cf0  20\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf1 If\cf0  schedulestrength < 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab o9 = Int(schedulestrength / 2) + 1\par
+\tab\tab\tab\tab\tab d9 = schedulestrength - o9\par
+\tab\tab\tab\tab\tab\cf1 GoTo\cf0  20\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 ' def pass comp adj\par
+\cf0 20: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(1) = Int(((defpasscomp / defpassatt) * 100) + 0.5) - sncmppct1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  defpassatt = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(1) = 0\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(1) = Int(((defpasscomp / defpassatt) * 100) + 0.5) - sncmppct2\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'def int adj\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab b6_pct(2) = Int((snintpct1 - (defpassint / defpassatt) * 100) + 0.5)\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  defpassatt = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(2) = 0\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(2) = Int((snintpct2 - (defpassint / defpassatt) * 100) + 0.5)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'off fumble adj & def fumble adj\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object offkickoffret. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(3) = Int((offfumlost * 2) / (offrushatt + Offpasscmp + teampuntret + offkickoffret) * 100 + 0.5)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(4) = Int((deffumlost * 2) / (defrushatt + defpasscomp + defpuntret + defkickoffret) * 100 + 0.5) - snfumpct1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object offkickoffret. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  offrushatt + Offpasscmp + teampuntret + offkickoffret = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(3) = 0\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object offkickoffret. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(3) = Int((offfumlost * 2) / (offrushatt + Offpasscmp + teampuntret + offkickoffret) * 100 + 0.5)\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscmp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  defrushatt + defpasscmp + defpuntret + defkickoffret = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(4) = 0\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscmp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b6_pct(4) = Int((deffumlost * 2) / (defrushatt + defpasscmp + defpuntret + defkickoffret) * 100 + 0.5) - snfumpct2\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'off sacked adj & def sacked adj\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab b6_pct(5) = (offsacked / (offsacked + offpassatt) * 100)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object snsackpct1. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(6) = (defsacked / (defsacked + defpassatt) * 100) - snsackpct1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab b6_pct(5) = (offsacked * 100) / (offsacked + offpassatt)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object snsackpct2. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(6) = ((defsacked * 100) / (defsacked + defpassatt)) - snsackpct2\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 ' run/pass pct\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  offrushatt + offpassatt = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab b6_pct(7) = 0\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab b6_pct(7) = (offrushatt / (offrushatt + offpassatt) * 100)\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 ' penalty adjustment\par
+\cf0\tab\tab\tab\tab pa_pct(0) = Int(((teampenalties / gamesplayed - 6#) / 0.2) + 0.5)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'team def yards per completion adjustment\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab q = (defpassyards / defpasscomp) - snyc1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  defpasscomp = 0 \cf1 Then\cf0  \cf2 '?\par
+\cf0\tab\tab\tab\tab\tab\tab q = 0\par
+\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defpasscomp. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab q = defpassyards / defpasscomp - snyc2\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\cf2 '    MsgBox "tech"\par
+\cf0\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  q >= 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab x = (q / 0.3)\par
+\tab\tab\tab\tab\tab\cf2 'q = Int((q / 0.3) + 0.5)\par
+\cf0\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab x = (q / 0.3)\par
+\tab\tab\tab\tab\tab\cf2 'q = Int((100 - (q / 0.3)) + 0.5)\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'If q = 100 Then q = 0\par
+\cf0\tab\tab\tab\tab q = x * 0.3\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'def rushing adjustment\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defnetyardsrush. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object Avg. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab Avg = ((defnetyardsrush + (defsacked * 7)) / (defrushatt - defsacked)) - snrush1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object Avg. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(0) = Int((Avg / 0.3) + 0.5)\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object div. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  div = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object defnetyardsrush. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object Avg. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab Avg = ((defnetyardsrush + (defsacked * 7)) / (defrushatt - defsacked)) - snrush2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object Avg. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(0) = Int((Avg / 0.3) + 0.5)\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'punter avg\par
+\cf0\tab\tab\tab\tab\cf2 '    gsqlstr = "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "DIVISION1.[Uniform Number], DIVISION1.[Last Name] as lastname, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "DIVISION1.[First Name] as firstname, Sum(DIVISION1.punts) AS SumOfPUnts, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Sum(DIVISION1.puntyards) AS SumOfPUntYards " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "From DIVISION1 " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "where [Institution id] = " & txtInstitutionid & " " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Having(((Sum(DIVISION1.punts)) > 9))" & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "ORDER BY DIVISION1.TeamName, Sum(DIVISION1.punts) DESC , Sum(DIVISION1.puntyards) DESC"\par
+\cf0\tab\tab\tab\tab\cf2 '    Set grstadorb = Nothing\par
+\cf0\tab\tab\tab\tab\cf2 '    grstadorb.Open gsqlstr, gconado, adOpenForwardOnly, adLockReadOnly, adcmdtxt\par
+\cf0\tab\tab\tab\tab\cf2 '       txtfirstname = nz(![First name], "")\par
+\cf0\tab\tab\tab\tab\cf2 '        txtlastname = ![last name]\par
+\cf0\tab\tab\tab\tab\cf2 '        a1_dlr(i) = Left$(nz(![First name], ""), 1) & "." & txtlastname\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'rushers\par
+\cf0\tab\tab\tab\tab\cf2 'gsqlstr = "SELECT [Institution ID], TeamName, [Uniform Number] as UniformNumber,[Last Name] as lastname, [First Name] as firstname, Sum(DIVISION1.RushAtt) AS SumOfRushAtt, Sum(DIVISION1.RushYards) AS SumOfRushYards, Sum(DIVISION1.Receptions) AS SumOfReceptions, Sum(DIVISION1.RecYards) AS SumOfRecYards" _\par
+\cf0\tab\tab\tab\tab\cf2 ''& " from DIVISION1 " _\par
+\cf0\tab\tab\tab\tab\cf2 ''& "where [institution id] = " & txtinstitutionid & " and teamname = '" & txtteamname & "'" _\par
+\cf0\tab\tab\tab\tab\cf2 ''& "GROUP BY [Institution ID],TeamName, [Uniform Number], [Last Name], [First Name] " _\par
+\cf0\tab\tab\tab\tab\cf2 ''& "Having Sum(DIVISION1.RushAtt) > 7 " _\par
+\cf0\tab\tab\tab\tab\cf2 ''& "ORDER BY TeamName, Sum(DIVISION1.RushAtt) DESC "\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "Select * from Runningbacksummary where [Institution id] = "\cf0  & txtinstitutionid & \cf3 " and "\cf0  & \cf3 "SumofRushAtt > 7 "\cf0  & \cf3 "ORDER BY TeamName, SumOfRushAtt DESC "\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadorb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadorb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadorb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a1_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a1_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadorb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '    MsgBox "tech"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "First Name"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "last name"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbrushatt = .Fields(\cf3 "SumofRushAtt"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbrushyards = .Fields(\cf3 "sumofrushyards"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbreceptions = .Fields(\cf3 "sumofreceptions"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbrecyards = .Fields(\cf3 "sumofrecyards"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadorb!First Name, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "First Name"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a1_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a1_dlr(i) = VB.Left(nz(.Fields(\cf3 "First Name"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a0_pct(i) = txtrbrushatt\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a1_pct(i) = txtrbrushyards / txtrbrushatt\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a2_pct(i) = txtrbreceptions\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  txtrbreceptions > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a3_pct(i) = txtrbrecyards / txtrbreceptions\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a3_pct(i) = 0\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        gsqlstr = "Select * from Division1Qb_AdjRush where InstitutionId = " & txtInstitutionid & " and " & _\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 ''            "TeamName = '" & txtteamname & "' and " & _\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 ''            "UniformNumber = '" & !UniformNumber & "' and " & _\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 ''            "LastName = '" & !lastname & "'"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        Set grstadorec = Nothing\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        grstadorec.Open gsqlstr, gconado, adOpenForwardOnly, adLockReadOnly, adcmdtxt\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        If grstadorec.BOF And grstadorec.EOF Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        Else\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '            txtrbrushatt = grstadorec!AdjRushAtt\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '            txtrbrushyards = grstadorec!AdjRushYards\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '        End If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 9 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab TotalRushers = i - 1\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'receivers\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT [Institution ID] as institutionid, TeamName, [Uniform Number] as uniformnumber, [Last Name] as lastname, [First Name] as firstname, Sum(DIVISION1.RushAtt) AS SumOfRushAtt, Sum(DIVISION1.RushYards) AS SumOfRushYards, Sum(DIVISION1.Receptions) AS SumOfReceptions, Sum(DIVISION1.RecYards) AS SumOfRecYards"\cf0  & \cf3 " From DIVISION1"\cf0  & \cf3 " where [institution id] = "\cf0  & txtinstitutionid & \cf3 " GROUP BY [Institution ID], TeamName, [Uniform Number], [Last Name], [First Name] "\cf0  & \cf3 "Having (((Sum(DIVISION1.RushAtt)) < 8) And ((Sum(DIVISION1.Receptions)) > 1 )) "\cf0  & \cf3 "ORDER BY TeamName, Sum(DIVISION1.Receptions) DESC"\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadorec may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadorec = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadorec.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  10\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a2_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a2_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadorec\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbreceptions = .Fields(\cf3 "sumofreceptions"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtrbrecyards = .Fields(\cf3 "sumofrecyards"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadorec!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a2_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a2_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a4_pct(i) = txtrbreceptions\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a5_pct(i) = txtrbrecyards / txtrbreceptions\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 10 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab iRcv = 6\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  TotalRushers < 9 \cf1 And\cf0  i > 5 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 '    MsgBox "tech"\par
+\cf0\tab\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\tab\cf1 For\cf0  j = TotalRushers + 1 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  a2_dlr(iRcv) = \cf3 ""\cf0  \cf1 Or\cf0  a2_dlr(iRcv) = \cf3 "END         "\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 For\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  iRcv > 10 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 For\par
+\cf0\tab\tab\tab\tab\tab\tab a1_dlr(j) = a2_dlr(iRcv)\par
+\tab\tab\tab\tab\tab\tab a0_pct(j) = 0\par
+\tab\tab\tab\tab\tab\tab a1_pct(j) = 0\par
+\tab\tab\tab\tab\tab\tab a2_pct(j) = a4_pct(iRcv)\par
+\tab\tab\tab\tab\tab\tab a3_pct(j) = a5_pct(iRcv)\par
+\tab\tab\tab\tab\tab\tab a2_dlr(j) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'a2_dlr(j) = ""\par
+\cf0\tab\tab\tab\tab\tab\tab iRcv = iRcv + 1\par
+\tab\tab\tab\tab\tab\cf1 Next\cf0  j\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'quarterbacks\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT [Institution ID] as institutionid, TeamName, [Uniform Number] as uniformnumber, [Last Name] as lastname, [First Name] as firstname, Sum(DIVISION1.PassAtt) AS SumOfPassAtt, Sum(DIVISION1.PassCmp) AS SumOfPassCmp, Sum(DIVISION1.PassInt) AS SumOfPassInt, Sum(DIVISION1.PassYards) AS SumOfPassYards, Sum(DIVISION1.RushAtt) AS SumOfRushAtt, Sum(DIVISION1.RushYards) AS SumOfRushYards"\cf0  & \cf3 " From DIVISION1"\cf0  & \cf3 " where [institution id] = "\cf0  & txtinstitutionid & \cf3 " GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name]"\cf0  & \cf3 " Having (((Sum(DIVISION1.PassAtt)) > 5))"\cf0  & \cf3 " ORDER BY DIVISION1.TeamName, Sum(DIVISION1.PassAtt) DESC"\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a3_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a3_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab qbPassComp(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab qbPassAtt(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab qbPassYards(i) = 0\par
+\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '    MsgBox "tech"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtqbpassatt = .Fields(\cf3 "sumofpassatt"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtqbpasscmp = .Fields(\cf3 "sumofpasscmp"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtqbpassint = .Fields(\cf3 "sumofpassint"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtqbyards. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtqbyards = .Fields(\cf3 "sumofpassyards"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadoqb!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a3_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a3_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a6_pct(i) = txtqbpassatt\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a7_pct(i) = (txtqbpasscmp * 100 / txtqbpassatt)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a8_pct(i) = (txtqbpassint * 100 / txtqbpassatt)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab qbPassComp(i) = txtqbpasscmp\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab qbPassAtt(i) = txtqbpassatt\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtqbyards. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab qbPassYards(i) = txtqbyards\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  txtqbpasscmp = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab qx_pct(i) = 0\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtqbyards. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab qx_pct(i) = txtqbyards / txtqbpasscmp\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'kickoffreturners\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "Select DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number],"\cf0  & \cf3 "DIVISION1.[Last Name] as lastname, DIVISION1.[First Name] as firstname, Sum(DIVISION1.koret) AS SumOfkoret, "\cf0  & \cf3 "Sum(DIVISION1.koryards) AS SumOfkoryards "\cf0  & \cf3 "From DIVISION1 "\cf0  & \cf3 " where [institution id] = "\cf0  & txtinstitutionid & \cf3 " "\cf0  & \cf3 "GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] "\cf0  & \cf3 "Having (((Sum(DIVISION1.koret)) > 4)) "\cf0  & \cf3 "ORDER BY DIVISION1.TeamName, Sum(DIVISION1.koret) DESC , Sum(DIVISION1.koryards) DESC "\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a4_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a4_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtkor. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtkor = .Fields(\cf3 "sumofkoret"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtkoravg = .Fields(\cf3 "sumofkoryards"\cf0 ).Value / .Fields(\cf3 "sumofkoret"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadoqb!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a4_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a4_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtkor. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a9_pct(i) = txtkor\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b_pct(i) = txtkoravg\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 2 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'Punt returners\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, "\cf0  & \cf3 "DIVISION1.[Uniform Number], DIVISION1.[Last Name] as lastname, DIVISION1.[First Name] as firstname, "\cf0  & \cf3 "Sum(DIVISION1.puntret) AS SumOfpuntret, Sum(DIVISION1.pryards) AS SumOfpryards "\cf0  & \cf3 "From DIVISION1 "\cf0  & \cf3 " where [institution id] = "\cf0  & txtinstitutionid & \cf3 " GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] "\cf0  & \cf3 "Having (((Sum(DIVISION1.puntret)) > 4)) "\cf0  & \cf3 "ORDER BY DIVISION1.TeamName, Sum(DIVISION1.puntret) DESC , Sum(DIVISION1.pryards) DESC "\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a5_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a5_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtprret = .Fields(\cf3 "sumofpuntret"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtprAvg = .Fields(\cf3 "sumofpryards"\cf0 ).Value / .Fields(\cf3 "sumofpuntret"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadoqb!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a5_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a5_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b1_pct(i) = txtprret\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b2_pct(i) = txtprAvg\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'Punter\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], "\cf0  & \cf3 "DIVISION1.[Last Name] as lastname, DIVISION1.[First Name] as firstname, Sum(DIVISION1.punts) AS SumOfPUnts, "\cf0  & \cf3 "Sum(DIVISION1.puntyards) AS SumOfPUntYards "\cf0  & \cf3 "From DIVISION1 "\cf0  & \cf3 " where [institution id] = "\cf0  & txtinstitutionid & \cf3 " GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] "\cf0  & \cf3 "Having (((Sum(DIVISION1.punts)) > 9)) "\cf0  & \cf3 "ORDER BY DIVISION1.TeamName, Sum(DIVISION1.punts) DESC , Sum(DIVISION1.puntyards) DESC "\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a6_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a6_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtpunterpunts = .Fields(\cf3 "sumofpunts"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtpunterAvg = .Fields(\cf3 "sumofpuntyards"\cf0 ).Value / .Fields(\cf3 "sumofpunts"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadoqb!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a6_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a6_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b3_pct(i) = txtpunterAvg\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 0 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab b3_pct(0) = Int((b3_pct(0) - 28) / 2! + 0.5)\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'Kickers\par
+\cf0\tab\tab\tab\tab\cf2 'Text1 = "long query..." & vbCrLf & Text1\par
+\cf0\tab\tab\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\tab\tab\cf2 'Dim cmd As New ADODB.Command\par
+\cf0\tab\tab\tab\tab\cf2 'cmd.ActiveConnection = gconado\par
+\cf0\tab\tab\tab\tab\cf2 'cmd.CommandText = "Select * from Query1"\par
+\cf0\tab\tab\tab\tab\cf2 'cmd.Parameters(0).Value = txtinstitutionid\par
+\cf0\tab\tab\tab\tab\cf2 'Set grstadoqb = Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'Set grstadoqb = cmd.Execute()\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 '    gsqlstr = "SELECT [qry_union_fg_xp_kicker].[Institution ID], " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "[qry_union_fg_xp_kicker].[TeamName], [qry_union_fg_xp_kicker].[Uniform Number]," & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "[qry_union_fg_xp_kicker].[Last Name] as lastname, [qry_union_fg_xp_kicker].[First Name] as firstname, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Sum([qry_union_fg_xp_kicker].[SumOfxpm]) AS SumOfSumOfxpm, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Sum([qry_union_fg_xp_kicker].[SumOfxpa]) AS SumOfSumOfxpa, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Sum([qry_union_fg_xp_kicker].[sumoffgm]) AS SumOfsumoffgm, " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Sum([qry_union_fg_xp_kicker].[sumoffga]) AS SumOfsumoffga " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "From qry_union_fg_xp_kicker " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        " where [institution id] = " & txtinstitutionid & " " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "GROUP BY [qry_union_fg_xp_kicker].[Institution ID], [qry_union_fg_xp_kicker].[TeamName], [qry_union_fg_xp_kicker].[Uniform Number], [qry_union_fg_xp_kicker].[Last Name], [qry_union_fg_xp_kicker].[First Name] " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "ORDER BY [qry_union_fg_xp_kicker].[TeamName], Sum([qry_union_fg_xp_kicker].[SumOfxpa]) DESC , Sum([qry_union_fg_xp_kicker].[sumoffga]) DESC "\par
+\cf0\tab\tab\tab\tab\cf2 '\par
+\cf0\tab\tab\tab\tab\cf2 '\par
+\cf0\tab\tab\tab\tab\cf2 '    gsqlstr = "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name] as lastname, DIVISION1.[First Name] as firstname, Sum(DIVISION1.xpm) AS SumOfxpm, Sum(DIVISION1.xpa) AS SumOfxpa, Sum(0) AS sumoffgm, Sum(0) AS sumoffga " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "FROM DIVISION1 where [institution id] = 5 " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Having (((Sum(DIVISION1.xpa)) > 1)) " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "Union " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name] as lastname, DIVISION1.[First Name] as firstname, Sum(0) AS sumofxpm, Sum(0) AS sumofxpa, Sum(DIVISION1.fgm) AS SumOffgm, Sum(DIVISION1.fga) AS SumOffga " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "FROM DIVISION1 where [institution id] = 5 " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] " & _\par
+\cf0\tab\tab\tab\tab\cf2 ''        "HAVING (((Sum(DIVISION1.fga))>1))"\par
+\cf0\tab\tab\tab\tab\cf2 '\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT Kickers.[InstitutionId], Kickers.[UniformNumber], Kickers.TeamName, Kickers.lastname, Kickers.firstname, Sum(Kickers.SumOfxpm) AS SumOfSumOfxpm, Sum(Kickers.SumOfxpa) AS SumOfSumOfxpa, Sum(Kickers.sumoffga) AS SumOfsumoffga, Sum(Kickers.sumoffgm) AS SumOfsumoffgm "\cf0  & \cf3 "From Kickers "\cf0  & \cf3 "Where institutionid = "\cf0  & txtinstitutionid & \cf3 " "\cf0  & \cf3 "GROUP BY Kickers.[InstitutionId], Kickers.[UniformNumber], Kickers.TeamName, Kickers.lastname, Kickers.firstname "\cf0  & \cf3 "ORDER BY Sum(Kickers.SumOfxpm) DESC"\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a7_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'a7_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '    MsgBox "Tech"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "lastname"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtkickerxpa = .Fields(\cf3 "SumofSumofXpa"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtkickerxpm = .Fields(\cf3 "SumofSumofXpm"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtkickerfga = .Fields(\cf3 "SumofSumOffga"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab txtkickerfgm = .Fields(\cf3 "SumofSumOffgm"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(grstadoqb!FirstName, ). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ) = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a7_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab a7_dlr(i) = VB.Left(nz(.Fields(\cf3 "FirstName"\cf0 ), \cf3 ""\cf0 ), 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b5_pct(i) = txtkickerfga\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  txtkickerfga = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab b4_pct(i) = 0\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab b4_pct(i) = txtkickerfgm / txtkickerfga * 100\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b8_pct(i) = txtkickerxpa\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  txtkickerxpa = 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab b7_pct(i) = 0\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab b7_pct(i) = txtkickerxpm / txtkickerxpa * 100\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 1 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'interceptors\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object txtinstitutionid. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab gsqlstr = \cf3 "SELECT DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name], Sum(DIVISION1.defint) AS SumOfdefint "\cf0  & \cf3 "From DIVISION1 where [Institution id] = "\cf0  & txtinstitutionid & \cf3 " GROUP BY DIVISION1.[Institution ID], DIVISION1.TeamName, DIVISION1.[Uniform Number], DIVISION1.[Last Name], DIVISION1.[First Name] "\cf0  & \cf3 "Having (((Sum(DIVISION1.defint)) > 0)) "\cf0  & \cf3 "ORDER BY DIVISION1.TeamName, Sum(DIVISION1.defint) DESC"\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\cf2 'UPGRADE_NOTE: Object grstadoqb may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab\tab\tab grstadoqb = \cf1 Nothing\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object adcmdtxt. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab grstadoqb.Open(gsqlstr, gconado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockReadOnly, adcmdtxt)\par
+\tab\tab\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab di_dlr(i) = \cf3 "END         "\par
+\cf0\tab\tab\tab\tab\tab\cf2 'di_dlr(i) = ""\par
+\cf0\tab\tab\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab i = 0\par
+\tab\tab\tab\tab\cf1 With\cf0  grstadoqb\par
+\tab\tab\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\tab\tab\cf2 'If txtinstitutionid = 692 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 '    MsgBox "Tech"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'End If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab txtfirstname = nz(.Fields(\cf3 "First Name"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\tab\tab\tab\tab txtlastname = .Fields(\cf3 "last name"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf1 If\cf0  txtfirstname = \cf3 ""\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab di_dlr(i) = txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\tab di_dlr(i) = VB.Left(txtfirstname, 1) & \cf3 "."\cf0  & txtlastname\par
+\tab\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab di_pct(i) = .Fields(\cf3 "SumofDefInt"\cf0 ).Value\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab ds_dlr(i) = \cf3 "END"\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab ds_pct(i) = 0\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  i > 9 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\tab\cf2 'End With\par
+\cf0\tab\tab\tab\tab\par
+\tab\tab\tab\tab\par
+539: \cf1 For\cf0  i = 0 \cf1 To\cf0  1 \cf2 'conv field goal pct to rating\par
+\cf0 540: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b4_pct(i) = Int((b4_pct(i) / 5) + 0.5) - 5\par
+541: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  b4_pct(i) < 1 \cf1 Then\cf0  b4_pct(i) = 1\par
+542: \cf1 Next\cf0  \par
+543: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object SM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab SM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object ST. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab ST = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab RM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab RT = 0\par
+544: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object SM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab SM = SM + a0_pct(i)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab RM = RM + a2_pct(i) : \cf1 Next\cf0  i\par
+545: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object SM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object SK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab SK = 100 / SM\par
+546: \cf2 'UPGRADE_ISSUE: GoSub statement is not supported. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="C5A1A479-AB8B-4D40-AAF4-DB19A2E5E77F"'\par
+\cf0\tab\tab\tab\tab\cf1 GoSub\cf0  1000\par
+548: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a1_pct(i) = Int(a1_pct(i) / 0.3 + 0.5) : \cf1 Next\cf0  i\par
+549: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  o9 <> 0 \cf1 And\cf0  a1_pct(i) <> 0 \cf1 Then\cf0  a1_pct(i) = a1_pct(i) - o9\par
+550: \cf2 ':IF a1_pct(I) <  = 0 THEN a1_pct(I) = 1\par
+\cf0 551: \cf1 Next\cf0  i\par
+552: \cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab RM = RM + a4_pct(i) : \cf1 Next\cf0  i\par
+553: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab RK = 100 / RM\par
+554: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a2_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a2_pct(i) = Int(RK * a2_pct(i) + 0.5) + RT\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab RT = a2_pct(i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  a2_pct(i) > 100 \cf1 Then\cf0  a2_pct(i) = 100\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 555: \cf1 Next\cf0  i\par
+556: \cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a4_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a4_pct(i) = Int(RK * a4_pct(i) + 0.5) + RT\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object RT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab RT = a4_pct(i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  a4_pct(i) > 100 \cf1 Then\cf0  a4_pct(i) = 100\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 557: \cf1 Next\cf0  i\par
+558: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a3_pct(i) = Int(a3_pct(i) / 3 + 0.5) : \cf1 Next\cf0  i\par
+559: \cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a5_pct(i) = Int(a5_pct(i) / 3 + 0.5) : \cf1 Next\cf0  i\par
+560: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab PM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab PT = 0\par
+561: \cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab PM = PM + a6_pct(i) : \cf1 Next\cf0  i\par
+562: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab PK = 100 / PM\par
+563: \cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a6_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a6_pct(i) = Int(PK * a6_pct(i) + 0.5) + PT\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab PT = a6_pct(i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  a6_pct(i) > 100 \cf1 Then\cf0  a6_pct(i) = 100\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 564: \cf1 Next\cf0  i\par
+565: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab KM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab KT = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab QM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab QT = 0\par
+566: \cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  o9 <> 0 \cf1 And\cf0  a7_pct(i) <> 0 \cf1 Then\cf0  a7_pct(i) = a7_pct(i) - o9\par
+567: \cf1 Next\cf0  i\par
+568: \cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab KM = KM + a9_pct(i)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab QM = QM + b1_pct(i)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b_pct(i) = Int(b_pct(i) / 3! + 0.5)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b2_pct(i) = Int(b2_pct(i) / 3 + 0.5) : \cf1 Next\cf0  i\par
+569: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab KK = 100 / KM\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab QK = 100 / QM\par
+570: \cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a9_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a9_pct(i) = Int(KK * a9_pct(i) + 0.5) + KT\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object KT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab KT = a9_pct(i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  a9_pct(i) > 100 \cf1 Then\cf0  a9_pct(i) = 100\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 571: \cf1 Next\cf0  i\par
+572: \cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  b1_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b1_pct(i) = Int(QK * b1_pct(i) + 0.5) + QT\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab QT = b1_pct(i)\par
+\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab\cf1 If\cf0  b1_pct(i) > 100 \cf1 Then\cf0  b1_pct(i) = 100\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 573: \cf1 Next\cf0  i\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PM. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab PM = 0\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object PT. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab PT = 0 : b5_pct(0) = Int(b5_pct(0) / (b5_pct(0) + b5_pct(1)) * 100 + 0.5) : b5_pct(1) = 100 : b8_pct(0) = Int(b8_pct(0) / (b8_pct(0) + b8_pct(1)) * 100 + 0.5) : b8_pct(1) = 100\par
+574: \cf1 For\cf0  i = 9 \cf1 To\cf0  0 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a0_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a0_pct(i) = 100 : \cf1 GoTo\cf0  576\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 575: \cf1 Next\cf0  i\par
+576: \cf1 For\cf0  i = 5 \cf1 To\cf0  0 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a4_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a4_pct(i) = 100 : \cf1 GoTo\cf0  578\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 577: \cf1 Next\cf0  i\par
+578: \cf1 For\cf0  i = 3 \cf1 To\cf0  0 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a6_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a6_pct(i) = 100 : \cf1 GoTo\cf0  580\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 579: \cf1 Next\cf0  i\par
+580: \cf1 For\cf0  i = 2 \cf1 To\cf0  0 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  a9_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab a9_pct(i) = 100 : \cf1 GoTo\cf0  582\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 581: \cf1 Next\cf0  i\par
+582: \cf1 For\cf0  i = 2 \cf1 To\cf0  0 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  b1_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab\tab b1_pct(i) = 100 : \cf1 GoTo\cf0  584\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 583: \cf1 Next\cf0  i\par
+584: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object QV. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab QV = 0\par
+585: x = Int((q / 0.3) + 0.5) : \cf1 If\cf0  x < 0 \cf1 Then\cf0  x = 100 + x\par
+586: yc_pct = x\par
+587: \cf1 If\cf0  d9 > 0 \cf1 Then\cf0  b6_pct(0) = b6_pct(0) + d9 : b6_pct(1) = b6_pct(1) + d9\par
+600: \cf1 Call\cf0  write_team()\par
+610: \cf1 For\cf0  i = 0 \cf1 To\cf0  7\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b6_pct(i) = 0 : \cf1 Next\cf0  i\par
+611: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a1_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a0_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a1_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a1_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a2_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a3_pct(i) = 0 : \cf1 Next\cf0  i\par
+612: \cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a2_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a4_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a5_pct(i) = 0 : \cf1 Next\cf0  i\par
+613: \cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a3_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a6_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a7_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a8_pct(i) = 0 : \cf1 Next\cf0  i\par
+614: \cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a4_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a9_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b_pct(i) = 0 : \cf1 Next\cf0  i\par
+615: \cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a5_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b1_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b2_pct(i) = 0 : \cf1 Next\cf0  i\par
+616: a6_dlr(0) = \cf3 ""\cf0  : b3_pct(0) = 0\par
+617: \cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab a7_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b4_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b7_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b5_pct(i) = 0\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab b8_pct(i) = 0 : \cf1 Next\cf0  \par
+618: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab di_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab di_pct(i) = 0 : \cf1 Next\cf0  \par
+619: \cf1 For\cf0  i = 0 \cf1 To\cf0  14\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab ds_dlr(i) = \cf3 ""\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab ds_pct(i) = 0 : \cf1 Next\cf0  \par
+\tab\tab\tab\tab\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab\par
+1000: \cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf1 If\cf0  a0_pct(i) <> 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object ST. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object SK. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab a0_pct(i) = Int(SK * a0_pct(i) + 0.5) + ST\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object ST. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab ST = a0_pct(i)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 1001: \cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf1 If\cf0  a0_pct(i) > 100 \cf1 Then\cf0  a0_pct(i) = 100\par
+1002: \cf1 Next\cf0  i\par
+\tab\tab\par
+1003: \cf2 'UPGRADE_WARNING: Return has a new behavior. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'\par
+\cf0\tab\tab\cf1 Return\cf0  \par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  Command2_Click(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  Command2.Click\par
+\tab\tab\cf1 Dim\cf0  sql \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  rst \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\tab\par
+\tab\tab sql = \cf3 "SELECT * From DIVISION1 Where [last name] Like "\cf0  & Chr(34) & \cf3 "%'%"\cf0  & Chr(34)\par
+\tab\tab rst.Open(sql, gconado, ADOR.CursorTypeEnum.adOpenDynamic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\cf1 With\cf0  rst\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab .Fields(\cf3 "last name"\cf0 ).Value = Replace(.Fields(\cf3 "last name"\cf0 ).Value, \cf3 "'"\cf0 , \cf3 ""\cf0 )\par
+\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\tab MsgBox(\cf3 "Done"\cf0 )\par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  write_team()\par
+\tab\tab\cf1 Dim\cf0  i \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\par
+9820: recd.tname = a_dlr\par
+\tab\tab\cf2 'recd.tnname = " "\par
+\cf0\tab\tab recd.rshadj = b6_pct(0)\par
+\tab\tab recd.cmpadj = b6_pct(1)\par
+\tab\tab recd.intadj = b6_pct(2)\par
+\tab\tab recd.fum = b6_pct(3)\par
+\tab\tab recd.dfum = b6_pct(4)\par
+\tab\tab recd.sack = b6_pct(5)\par
+\tab\tab recd.dsack = b6_pct(6)\par
+\tab\tab recd.rp = b6_pct(7)\par
+\tab\tab recd.pen = pa_pct(0)\par
+\tab\tab recd.backcol = pa_pct(1)\par
+\tab\tab recd.forecol = pa_pct(2)\par
+\tab\tab recd.indooroutdoor = pa_pct(3)\par
+\tab\tab recd.pr = pa_pct(4)\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.rb1(i).rbname = a1_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.rb1(i).rbcarr = a0_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.rb1(i).rbravg = a1_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.rb1(i).rbrec = a2_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.rb1(i).rbrecavg = a3_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  5\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.REC1(i).recname = a2_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.REC1(i).recrec = a4_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.REC1(i).recrecavg = a5_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  3\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.QB1(i).qbname = Trim(a3_dlr(i))\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.QB1(i).qbatt = a6_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.QB1(i).qbcmp = a7_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.QB1(i).qbint = a8_pct(i)\par
+\tab\tab\tab\par
+\tab\tab\tab offpassyards = qbPassYards(0) + qbPassYards(1) + qbPassYards(2) + qbPassYards(3)\par
+\tab\tab\tab Offpasscmp = qbPassComp(0) + qbPassComp(1) + qbPassComp(2) + qbPassComp(3)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf1 If\cf0  a3_dlr(i) = \cf3 ""\cf0  \cf1 Or\cf0  Trim(a3_dlr(i)) = \cf3 "END"\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  qbPassAtt(0) / offpassatt > 0.7 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab recd.QB1(i).qbarm = 0\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab qx_pct(i) = Int(((((qbPassYards(i) / qbPassComp(i)) - (offpassyards / Offpasscmp)) / 0.3)) + 0.5)\par
+\tab\tab\tab\tab\tab\cf2 'recd.QB1(i).qbarm = qx_pct(i)\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KOR1(i).korname = a4_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KOR1(i).korret = a9_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KOR1(i).koravg = b_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  2\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.PR1(i).prname = a5_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.PR1(i).prret = b1_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.PR1(i).pravg = b2_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab recd.PUNTER1.puntername = a6_dlr(0)\par
+\tab\tab recd.PUNTER1.punteravg = b3_pct(0)\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KICKE1(i).kickername = a7_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KICKE1(i).kickerfga = b4_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KICKE1(i).kickerfgpct = b5_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KICKE1(i).kickerxpa = b7_pct(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.KICKE1(i).kickersppct = b8_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab recd.defyc = yc_pct\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  14\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.SACKER1(i).sackername = ds_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.SACKER1(i).sackersacks = ds_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  9\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.interceptor1(i).interceptorname = di_dlr(i)\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object i. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab recd.interceptor1(i).interceptorints = di_pct(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab FileOpen(2, \cf1 My\cf0 .Application.Info.DirectoryPath & \cf3 "\\foot.03"\cf0 , OpenMode.Binary, OpenAccess.Write)\par
+\tab\tab\cf2 'UPGRADE_WARNING: Put was upgraded to FilePut and has a new behavior. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'\par
+\cf0\tab\tab FilePut(2, recd, (DosTno - 1) * 934 + 1)\par
+\tab\tab FileClose(2)\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  Command3_Click(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  Command3.Click\par
+\tab\tab\cf1 Dim\cf0  cmd \cf1 As\cf0  \cf1 New\cf0  ADODB.Command\par
+\tab\tab cmd.let_ActiveConnection(gconado)\par
+\tab\tab cmd.CommandText = \cf3 "Select * from Query1"\par
+\cf0\tab\tab cmd.Parameters(0).Value = 692\par
+\tab\tab grstadoqb = cmd.Execute()\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  frmCreateCollegeFB_Load(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  \cf1 MyBase\cf0 .Load\par
+\tab\tab gconado.Open(\cf3 "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="\cf0  & \cf1 My\cf0 .Application.Info.DirectoryPath & \cf3 "\\ncaa_football.mdb;Persist Security Info=False"\cf0 )\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf2 'UPGRADE_NOTE: val was upgraded to val_Renamed. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\cf1 Public\cf0  \cf1 Function\cf0  nz(\cf1 ByRef\cf0  val_Renamed \cf1 As\cf0  \cf1 Object\cf0 , \cf1 ByRef\cf0  def \cf1 As\cf0  \cf1 Object\cf0 ) \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf2 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'\par
+\cf0\tab\tab\cf1 If\cf0  IsDbNull(val_Renamed) \cf1 Or\cf0  Len(val_Renamed) = 0 \cf1 Then\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object def. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab nz = def\par
+\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object val_Renamed. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab nz = val_Renamed\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\cf1 End\cf0  \cf1 Function\par
+End\cf0  \cf1 Class\cf0\f1\par
+}
+ 

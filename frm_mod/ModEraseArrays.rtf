@@ -1,0 +1,534 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red128\green0\blue0;\red0\green128\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Module\cf0  modEraseArrays\par
+\tab\par
+\tab\cf1 Public\cf0  \cf1 Sub\cf0  ClearArrays()\par
+\tab\tab\par
+\tab\tab Qb = \cf2 ""\par
+\cf0\tab\tab att = 0\par
+\tab\tab home_or_neutral_site_flag = 0\par
+\tab\tab d2 = 0\par
+\tab\tab pn = 0\par
+\tab\tab r0 = 0\par
+\tab\tab x2 = 0\par
+\tab\tab rushHmax = 0\par
+\tab\tab rushVmax = 0\par
+\tab\tab KO_PRHmax = 0\par
+\tab\tab KO_PRVmax = 0\par
+\tab\tab passHmax = 0\par
+\tab\tab passVmax = 0\par
+\tab\tab KO_PRHmax = 0\par
+\tab\tab KO_PRVmax = 0\par
+\tab\tab PR_Hmax = 0\par
+\tab\tab PR_Vmax = 0\par
+\tab\tab Punt_Hmax = 0\par
+\tab\tab Punt_Vmax = 0\par
+\tab\tab KickHmax = 0\par
+\tab\tab KickVmax = 0\par
+\tab\tab Ints_Hmax = 0\par
+\tab\tab Ints_Vmax = 0\par
+\tab\tab Sacks_Hmax = 0\par
+\tab\tab Sacks_Vmax = 0\par
+\tab\tab s6 = 0\par
+\tab\tab ot1 = 0\par
+\tab\tab ti = 0\par
+\tab\tab dt = 0\par
+\tab\tab ry = 0\par
+\tab\tab p1 = 0\par
+\tab\tab d = 0\par
+\tab\tab D1 = 0\par
+\tab\tab i9 = 0\par
+\tab\tab YT = 0\par
+\tab\tab dl = 0\par
+\tab\tab y = 0\par
+\tab\tab kn = 0\par
+\tab\tab kn2 = 0\par
+\tab\tab rvpct1 = 0\par
+\tab\tab T = 0\par
+\tab\tab q = 0\par
+\tab\tab i = 0\par
+\tab\tab i1 = 0\par
+\tab\tab i2 = 0\par
+\tab\tab i3 = 0\par
+\tab\tab f8 = 0\par
+\tab\tab rfpct = 0\par
+\tab\tab i4 = 0\par
+\tab\tab i5 = 0\par
+\tab\tab i6 = 0\par
+\tab\tab i7 = 0\par
+\tab\tab i8 = 0\par
+\tab\tab g = 0\par
+\tab\tab tp = 0\par
+\tab\tab RN = 0\par
+\tab\tab x = 0\par
+\tab\tab u3 = 0\par
+\tab\tab n = 0\par
+\tab\tab g1 = 0\par
+\tab\tab o = 0\par
+\tab\tab x1 = 0\par
+\tab\tab yf = 0\par
+\tab\tab f9 = 0\par
+\tab\tab w5 = 0\par
+\tab\tab xe = 0\par
+\tab\tab qx = 0\par
+\tab\tab qbnpct = 0\par
+\tab\tab htpct = 0\par
+\tab\tab egpct = 0\par
+\tab\tab p = 0\par
+\tab\tab rp = 0\par
+\tab\tab dr = 0\par
+\tab\tab p2 = 0\par
+\tab\tab xx = 0\par
+\tab\tab kk = 0\par
+\tab\tab g2 = 0\par
+\tab\tab j = 0\par
+\tab\tab r1 = 0\par
+\tab\tab GK = 0\par
+\tab\tab cp = 0\par
+\tab\tab ffpct = 0\par
+\tab\tab\par
+\tab\tab kj = 0\par
+\tab\tab hbpct1 = 0\par
+\tab\tab d3 = 0\par
+\tab\tab hlpct = 0\par
+\tab\tab ih = 0\par
+\tab\tab sy = 0\par
+\tab\tab ey = 0\par
+\tab\tab m5 = 0\par
+\tab\tab s2 = 0\par
+\tab\tab s3 = 0\par
+\tab\tab pq = 0\par
+\tab\tab pw = 0\par
+\tab\tab e = 0\par
+\tab\tab FPCT = 0\par
+\tab\tab Y1 = 0\par
+\tab\tab spct = 0\par
+\tab\tab W_pct = 0\par
+\tab\tab f2 = 0\par
+\tab\tab bg = 0\par
+\tab\tab pr = 0\par
+\tab\tab ipct = 0\par
+\tab\tab pc = 0\par
+\tab\tab it = 0\par
+\tab\tab z1 = 0\par
+\tab\tab p9 = 0\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  BoxScoreText\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  TS_HomeStat\par
+\tab\tab\cf1 Erase\cf0  TS_VisitorStat\par
+\tab\tab\cf1 Erase\cf0  TS_StatName\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  rushhstat\par
+\tab\tab\cf1 Erase\cf0  rushVstat\par
+\tab\tab\cf1 Erase\cf0  recvHstat\par
+\tab\tab\cf1 Erase\cf0  recvVstat\par
+\tab\tab\cf1 ReDim\cf0  rushhstat(20)\par
+\tab\tab\cf1 Dim\cf0  rushvstats(20) \cf1 As\cf0  \cf1 Object\par
+\cf0\tab\tab\cf1 ReDim\cf0  recvHstat(20)\par
+\tab\tab\cf1 ReDim\cf0  recvVstat(20)\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  passHstat\par
+\tab\tab\cf1 Erase\cf0  passVstat\par
+\tab\tab\cf1 ReDim\cf0  passHstat(20)\par
+\tab\tab\cf1 ReDim\cf0  passVstat(20)\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  KO_PRHstat\par
+\tab\tab\cf1 Erase\cf0  KO_PRVstat\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  PR_Hstat\par
+\tab\tab\cf1 Erase\cf0  PR_Vstat\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  Punt_Hstat\par
+\tab\tab\cf1 Erase\cf0  Punt_Vstat\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  KickHstat\par
+\tab\tab\cf1 Erase\cf0  KickVstat\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  Ints_Hstat\par
+\tab\tab\cf1 Erase\cf0  Ints_Vstat\par
+\tab\tab\cf1 ReDim\cf0  Ints_Hstat(100)\par
+\tab\tab\cf1 ReDim\cf0  Ints_Vstat(100)\par
+\tab\tab\par
+\tab\tab\cf1 Erase\cf0  Sacks_Hstat\par
+\tab\tab\cf1 Erase\cf0  Sacks_Vstat\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(k1, 0, k1.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(run_play_result_array_1, 0, run_play_result_array_1.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(run_play_result_array_2, 0, run_play_result_array_2.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dspct, 0, dspct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dipct, 0, dipct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(yrpct, 0, yrpct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(break_away_run_result_array, 0, break_away_run_result_array.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(our_score, 0, our_score.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(opp_name, 0, opp_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(opp_score, 0, opp_score.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(home_away_ot, 0, home_away_ot.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(our_power_rating, 0, our_power_rating.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(opp_power_rating, 0, opp_power_rating.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(Attendance, 0, Attendance.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(game_stadium_name, 0, game_stadium_name.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(v4pct, 0, v4pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dds, 0, dds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(ddi, 0, ddi.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pcpct, 0, pcpct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(ot, 0, ot.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(k3, 0, k3.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(random_qb_select_flag, 0, random_qb_select_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(t1, 0, t1.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(has_flea_flicker_been_run, 0, has_flea_flicker_been_run.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(has_reverse_been_run, 0, has_reverse_been_run.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(s, 0, s.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dir_dlr, 0, dir_dlr.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(hbpct, 0, hbpct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(r9pct, 0, r9pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(QB_IN_GAME, 0, QB_IN_GAME.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_in_game, 0, kicker_in_game.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'Weather\par
+\cf0\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(Wx_pct, 0, Wx_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dndlr, 0, dndlr.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(xd, 0, xd.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(dss, 0, dss.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(aa_dlr, 0, aa_dlr.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'Team Stats\par
+\cf0\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_name, 0, team_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_first_downs, 0, team_first_downs.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_safties, 0, team_safties.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(third_down_e, 0, third_down_e.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(third_down_f, 0, third_down_f.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_penalty_yds, 0, team_penalty_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_penalties, 0, team_penalties.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_rush_att, 0, team_rush_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_rush_yds, 0, team_rush_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_rush_td, 0, team_rush_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_pass_comp, 0, team_pass_comp.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_pass_yds, 0, team_pass_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_pass_int, 0, team_pass_int.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_pass_att, 0, team_pass_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_punts, 0, team_punts.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_punt_yds, 0, team_punt_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_fumbles, 0, team_fumbles.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_fum_lost, 0, team_fum_lost.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_long_punt, 0, team_long_punt.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_punt_tb, 0, team_punt_tb.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_punt_blkd, 0, team_punt_blkd.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_punt_in20, 0, team_punt_in20.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_2xp_att, 0, team_2xp_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_2xp_made, 0, team_2xp_made.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_sacked, 0, team_sacked.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_sacked_yds, 0, team_sacked_yds.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(time_of_score, 0, time_of_score.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qtr_of_score, 0, qtr_of_score.Length)\par
+\tab\tab\cf3 'player game stats\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_att, 0, rb_rush_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_yds, 0, rb_rush_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_td, 0, rb_rush_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_lg, 0, rb_rush_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_lg_td_flag, 0, rb_rush_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_lg_vswho, 0, rb_rush_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receptions, 0, rb_receptions.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_yds, 0, rb_receiving_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_td, 0, rb_receiving_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_lg, 0, rb_receiving_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_lg_td_flag, 0, rb_receiving_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_lg_vswho, 0, rb_receiving_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receptions, 0, receiver_receptions.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_yds, 0, receiver_receiving_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_td, 0, receiver_receiving_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_lg, 0, receiver_receiving_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_lg_td_flag, 0, receiver_receiving_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_lg_vswho, 0, receiver_receiving_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_att, 0, qb_pass_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_comp, 0, qb_pass_comp.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_int, 0, qb_pass_int.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_yds, 0, qb_pass_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_td, 0, qb_pass_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_lg, 0, qb_pass_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_lg_td_flag, 0, qb_pass_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pass_lg_vswho, 0, qb_pass_lg_vswho.Length)\par
+\tab\tab\cf3 'Erase qb_rush_att\par
+\cf0\tab\tab\cf3 'Erase qb_rush_yds\par
+\cf0\tab\tab\cf3 'Erase qb_rush_td\par
+\cf0\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_returns, 0, kor_returns.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_return_yds, 0, kor_return_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_return_td, 0, kor_return_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_return_lg, 0, kor_return_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_return_lg_td_flag, 0, kor_return_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_return_lg_vswho, 0, kor_return_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_returns, 0, pr_returns.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_return_yds, 0, pr_return_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_return_td, 0, pr_return_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_return_lg, 0, pr_return_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_return_lg_td_flag, 0, pr_return_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_return_lg_vswho, 0, pr_return_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_xpm, 0, kicker_xpm.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_xpa, 0, kicker_xpa.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga, 0, kicker_fga.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm, 0, kicker_fgm.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm_019, 0, kicker_fgm_019.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga_019, 0, kicker_fga_019.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm_2029, 0, kicker_fgm_2029.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga_2029, 0, kicker_fga_2029.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm_3039, 0, kicker_fgm_3039.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga_3039, 0, kicker_fga_3039.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm_4049, 0, kicker_fgm_4049.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga_4049, 0, kicker_fga_4049.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fgm_5059, 0, kicker_fgm_5059.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fga_5059, 0, kicker_fga_5059.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_long_fg, 0, kicker_long_fg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ints, 0, defender_ints.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ir_yds, 0, defender_ir_yds.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ir_lg, 0, defender_ir_lg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ir_td, 0, defender_ir_td.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ir_lg_vswho, 0, defender_ir_lg_vswho.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_ir_lg_td_flag, 0, defender_ir_lg_td_flag.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_sacks, 0, defender_sacks.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_sack_yds, 0, defender_sack_yds.Length)\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_rush_adj, 0, def_rush_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_comp_adj, 0, def_comp_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_int_adj, 0, def_int_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(off_fum_pct, 0, off_fum_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_fum_adj, 0, def_fum_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(off_sack_pct, 0, off_sack_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_sack_adj, 0, def_sack_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(run_pass_pct, 0, run_pass_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(TIME_OF_POSS, 0, TIME_OF_POSS.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(def_yds_catch_adj, 0, def_yds_catch_adj.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_penalty_adj, 0, team_penalty_adj.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_fore_color, 0, team_fore_color.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_back_color, 0, team_back_color.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(indoor_outdoor, 0, indoor_outdoor.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(team_power_rating, 0, team_power_rating.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_name, 0, rb_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_pct_of_carries, 0, rb_pct_of_carries.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_rush_avg, 0, rb_rush_avg.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_pct_of_receptions, 0, rb_pct_of_receptions.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(rb_receiving_avg, 0, rb_receiving_avg.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_name, 0, receiver_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_pct_of_receptions, 0, receiver_pct_of_receptions.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(receiver_receiving_avg, 0, receiver_receiving_avg.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_name, 0, qb_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_pct_of_throws, 0, qb_pct_of_throws.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_comp_pct, 0, qb_comp_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_int_pct, 0, qb_int_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(qb_arm_rating, 0, qb_arm_rating.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_name, 0, kor_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_pct_of_ret, 0, kor_pct_of_ret.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kor_ret_avg, 0, kor_ret_avg.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_name, 0, pr_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_pct_of_ret, 0, pr_pct_of_ret.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(pr_ret_avg, 0, pr_ret_avg.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(punter_name, 0, punter_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(punter_rating, 0, punter_rating.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_name, 0, kicker_name.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_fg_made_pct, 0, kicker_fg_made_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_pct_of_fg_att, 0, kicker_pct_of_fg_att.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_xp_made_pct, 0, kicker_xp_made_pct.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(kicker_pct_of_xp_att, 0, kicker_pct_of_xp_att.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_pct_of_ints, 0, defender_pct_of_ints.Length)\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_name, 0, defender_name.Length)\par
+\tab\tab\par
+\tab\tab\cf3 'UPGRADE_NOTE: Erase was upgraded to System.Array.Clear. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\tab System.Array.Clear(defender_pct_of_sacks, 0, defender_pct_of_sacks.Length)\par
+\tab\tab\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+End\cf0  \cf1 Module\cf0\f1\par
+}
+ 

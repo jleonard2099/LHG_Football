@@ -1,0 +1,1198 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fprq1\fcharset0 Courier New;}{\f1\fswiss\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green128\blue0;\red128\green0\blue0;}
+{\*\generator Msftedit 5.41.15.1515;}\viewkind4\uc1\pard\cf1\f0\fs20 Option\cf0  \cf1 Strict\cf0  \cf1 Off\par
+Option\cf0  \cf1 Explicit\cf0  \cf1 On\par
+Friend\cf0  \cf1 Class\cf0  usrGameOptions\par
+\tab\cf1 Inherits\cf0  System.Windows.Forms.UserControl\par
+\tab\par
+\tab\cf2 'UPGRADE_NOTE: DesignMode was upgraded to DesignMode_Renamed. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'\par
+\cf0\tab\cf1 Dim\cf0  DesignMode_Renamed \cf1 As\cf0  \cf1 Boolean\par
+\cf0\tab\cf1 Dim\cf0  OrigHomeName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Dim\cf0  OrigVisitorName \cf1 As\cf0  \cf1 String\par
+\cf0\tab\cf1 Public\cf0  \cf1 Event\cf0  PLAYGAME(\cf1 ByVal\cf0  Sender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  e \cf1 As\cf0  System.EventArgs)\par
+\tab\cf1 Public\cf0  \cf1 Event\cf0  testEvent(\cf1 ByVal\cf0  Sender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  e \cf1 As\cf0  System.EventArgs)\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  SSResizer2_ResizeComplete(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  SSResizer2.ResizeComplete\par
+\tab\tab\cf1 Dim\cf0  x \cf1 As\cf0  \cf1 Integer\par
+\cf0\tab\tab x = VB6.PixelsToTwipsX(SSTab1.Width)\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneHomeCaption"\cf0 ).Width = x / 3\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneVisitorCaption"\cf0 ).Width = x / 3\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneGameOptionCaption"\cf0 ).Width = x / 3\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneHomeCaption"\cf0 ).Height = 915\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneVisitorCaption"\cf0 ).Height = 915\par
+\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneGameOptionCaption"\cf0 ).Height = 915\par
+\tab\tab\cf1 If\cf0  x > 8900 \cf1 Then\par
+\cf0\tab\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneHomeName"\cf0 ).Height = 900\par
+\tab\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneVisitorName"\cf0 ).Height = 900\par
+\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneHomeName"\cf0 ).Height = 450\par
+\tab\tab\tab SSSplitter1.Panes.Item(\cf3 "PaneVisitorName"\cf0 ).Height = 450\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 If\cf0  cmdHomeName.Font.SizeInPoints < 9 \cf1 Then\cf0  cmdHomeName.Font = VB6.FontChangeSize(cmdHomeName.Font, 10)\par
+\tab\tab\cf1 If\cf0  cmdVisitorName.Font.SizeInPoints < 9 \cf1 Then\cf0  cmdVisitorName.Font = VB6.FontChangeSize(cmdVisitorName.Font, 10)\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  tsHome_TeamSelected(\cf1 ByVal\cf0  Sender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  e \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  tsHome.TeamSelected\par
+\tab\tab\cf1 Dim\cf0  x \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab gHomeTeam = tsHome.TeamDisplayName\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Mid(tsHome.TeamType, 1, 1)\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "U"\cf0 , \cf3 "W"\par
+\cf0\tab\tab\tab\tab gHSeasonID = tsHome.TeamSeason\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab gHSeasonID = tsHome.TeamSeason & tsHome.TeamType\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab gHomeName = tsHome.TeamName\par
+\tab\tab cmdHomeName.Text = gHomeTeam\par
+\tab\tab\par
+\tab\tab cmdHomeName.ForeColor = System.Drawing.ColorTranslator.FromOle(tsHome.TeamForeColor)\par
+\tab\tab cmdHomeName.BackColor = System.Drawing.ColorTranslator.FromOle(tsHome.TeamBackColor)\par
+\tab\tab gHfcolor = tsHome.TeamForeColor\par
+\tab\tab gHbcolor = tsHome.TeamBackColor\par
+\tab\tab ghColor = tsHome.TeamHelmetColor\par
+\tab\tab gSeasonID(0) = gHSeasonID\par
+\tab\tab gTeamYear(0) = tsHome.TeamYear\par
+\tab\tab gTeamType(0) = tsHome.TeamType\par
+\tab\tab\par
+\tab\tab\cf2 'gRstado.MoveFirst\par
+\cf0\tab\tab\cf2 'x = "SeasonID = '" & gHSeasonID & "' and TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\cf2 'gRstado.Find "TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\cf2 'gRstado.Find "SeasonID = '" & gHSeasonID & "' and TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\par
+\tab\tab\cf2 '    If gHomeName = "" Then Exit Sub\par
+\cf0\tab\tab\cf2 '\par
+\cf0\tab\tab\cf2 '    gSqlstr = "Select * from Teams where SeasonId = '" & gHSeasonID & "' and " & _\par
+\cf0\tab\tab\cf2 ''        "TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\cf2 '    Set gRstado = Nothing\par
+\cf0\tab\tab\cf2 '    gRstado.Open gSqlstr, gConado, adOpenStatic, adLockReadOnly\par
+\cf0\tab\tab\cf2 '    With gRstado\par
+\cf0\tab\tab\cf2 '    .MoveFirst\par
+\cf0\tab\tab\par
+\tab\tab\cf2 '    .Find "SeasonID = '" & gHSeasonID & "'"\par
+\cf0\tab\tab\cf2 '    If .BOF And .EOF Then\par
+\cf0\tab\tab\cf2 '    Else\par
+\cf0\tab\tab\cf2 '       .Find "TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\cf2 '        TCOLOR !TeamColorBack, !Teamcolorfore\par
+\cf0\tab\tab\cf2 '        cmdHomeName.ForeColor = ForeColr\par
+\cf0\tab\tab\cf2 '        gHfcolor = ForeColr\par
+\cf0\tab\tab\cf2 '        cmdHomeName.BackColor = BackColr\par
+\cf0\tab\tab\cf2 '        gHbcolor = BackColr\par
+\cf0\tab\tab\cf2 '        ghColor = !Teamcolorfore\par
+\cf0\tab\tab\cf2 '        gSeasonID(0) = gHSeasonID\par
+\cf0\tab\tab\cf2 '        gTeamYear(0) = Mid$(gHSeasonID, 1, 4)\par
+\cf0\tab\tab\cf2 '        If gTcpConnected = True Then\par
+\cf0\tab\tab\cf2 'TransmitTeam gRstado\par
+\cf0\tab\tab\cf2 '        End If\par
+\cf0\tab\tab\cf2 ''    End If\par
+\cf0\tab\tab\cf2 '    End With\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  tsVisitor_TeamSelected(\cf1 ByVal\cf0  Sender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  e \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  tsVisitor.TeamSelected\par
+\tab\tab gVisitorTeam = tsVisitor.TeamDisplayName\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Mid(tsVisitor.TeamType, 1, 1)\par
+\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "U"\cf0 , \cf3 "W"\par
+\cf0\tab\tab\tab\tab gVSeasonID = tsVisitor.TeamSeason\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab gVSeasonID = tsVisitor.TeamSeason & tsVisitor.TeamType\par
+\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab gVisitorName = tsVisitor.TeamName\par
+\tab\tab cmdVisitorName.Text = gVisitorTeam\par
+\tab\tab cmdVisitorName.ForeColor = System.Drawing.ColorTranslator.FromOle(tsVisitor.TeamForeColor)\par
+\tab\tab cmdVisitorName.BackColor = System.Drawing.ColorTranslator.FromOle(tsVisitor.TeamBackColor)\par
+\tab\tab gVfcolor = tsVisitor.TeamForeColor\par
+\tab\tab gVbcolor = tsVisitor.TeamBackColor\par
+\tab\tab gvColor = tsVisitor.TeamHelmetColor\par
+\tab\tab gSeasonID(1) = gVSeasonID\par
+\tab\tab gTeamYear(1) = tsVisitor.TeamYear\par
+\tab\tab gTeamType(1) = tsVisitor.TeamType\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_ISSUE: UserControl event UserControl.InitProperties was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="ABD9AF39-7E24-4AFF-AD8D-3675C1AA3054"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_InitProperties()\par
+\tab\tab\cf1 If\cf0  \cf1 Not\cf0  DesignMode = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Me\cf0 .DesignMode_Renamed = \cf1 True\cf0  \cf2 '\par
+\cf0\tab\tab\cf2 'SSScroll1.VPosition = 0\par
+\cf0\tab\tab\cf2 'SSScroll1.HPosition = 0\par
+\cf0\tab\tab\cf2 'SSScroll1.Locked = True\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_Initialize()\par
+\tab\tab\cf1 Dim\cf0  nod \cf1 As\cf0  System.Windows.Forms.TreeNode\par
+\tab\tab\cf1 Dim\cf0  tname \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  Season \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  TeamType \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  SaveSeason \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  OldSeason \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab\cf2 'SSScroll1.VPosition = 0\par
+\cf0\tab\tab\cf2 'SSScroll1.HPosition = 0\par
+\cf0\tab\tab\cf2 'SSScroll1.Locked = True\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  DesignMode_Renamed = \cf1 True\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab SSTab1.TabPages.Item(1).Enabled = \cf1 False\par
+\cf0\tab\tab SSTab1.TabPages.Item(2).Enabled = \cf1 False\par
+\cf0\tab\tab SSTab1.SelectedIndex = 0\par
+\tab\tab cmbPlay.SelectedIndex = 0\par
+\tab\tab cmbGameType.SelectedIndex = 0\par
+\tab\tab cmbCollegeRulesYear.SelectedIndex = 0\par
+\tab\tab cmbNFLRulesYear.SelectedIndex = 0\par
+\tab\tab cmbSuddenDeath.SelectedIndex = 0\par
+\tab\tab cmbLocation.SelectedIndex = 0\par
+\tab\tab\par
+\tab\tab OpenDb()\par
+\tab\tab\par
+\tab\tab gSqlstr = \cf3 "select * from defaultOptions"\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object grstDefaultoptions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstDefaultoptions = \cf1 Nothing\par
+\cf0\tab\tab grstDefaultoptions.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstDefaultoptions\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 While\cf0  \cf1 Not\cf0  .EOF\par
+\tab\tab\tab\tab cmbPlay.SelectedIndex = .Fields(\cf3 "who_controls_teams"\cf0 ).Value\par
+\tab\tab\tab\tab cmbGameType.SelectedIndex = .Fields(\cf3 "Pro_or_coll_rules"\cf0 ).Value\par
+\tab\tab\tab\tab cmbLocation.SelectedIndex = .Fields(\cf3 "Default_location_flag"\cf0 ).Value\par
+\tab\tab\tab\tab cmbNFLRulesYear.SelectedIndex = .Fields(\cf3 "Default_Pro_Rules_used"\cf0 ).Value\par
+\tab\tab\tab\tab cmbCollegeRulesYear.SelectedIndex = .Fields(\cf3 "Default_College_Rules_used"\cf0 ).Value\par
+\tab\tab\tab\tab cmbSuddenDeath.SelectedIndex = .Fields(\cf3 "Auto_Overtime_flag"\cf0 ).Value\par
+\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab tsHome.LoadTeams()\par
+\tab\tab tsVisitor.LoadTeams()\par
+\tab\tab\par
+\tab\tab\cf2 ' Add a 'dummy' root node that says 'Seasons'\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes.Add , , "Seasons", "Teams"\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes(1).Expanded = True\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes.Add , , "Seasons", "Teams"\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes(1).Expanded = True\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 '    gSqlstr = "select * from SeasonID order by SeasonId"\par
+\cf0\tab\tab\cf2 '    Set gRstado = Nothing\par
+\cf0\tab\tab\cf2 '    gRstado.Open gSqlstr, gConado, adOpenStatic, adLockReadOnly, adCmdText\par
+\cf0\tab\tab\cf2 '    With gRstado\par
+\cf0\tab\tab\cf2 '    Do While Not .EOF\par
+\cf0\tab\tab\cf2 '        If Mid$(!SeasonID, 1, 4) <> OldSeason Then\par
+\cf0\tab\tab\cf2 '            OldSeason = Mid$(!SeasonID, 1, 4)\par
+\cf0\tab\tab\cf2 '            SaveSeason = OldSeason\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "Seasons", tvwChild, "*" & nz(!SeasonID, ""), SaveSeason\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*Pro" & SaveSeason, "Pro Teams"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*College" & SaveSeason, "College Teams"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*College" & SaveSeason, tvwChild, "*1A&1AA" & SaveSeason, "1A & 1AA"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*College" & SaveSeason, tvwChild, "*DivII" & SaveSeason, "Division II"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*College" & SaveSeason, tvwChild, "*DivIII" & SaveSeason, "Division III"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*College" & SaveSeason, tvwChild, "*NAIA" & SaveSeason, "NAIA"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*Other" & SaveSeason, "Other Teams"\par
+\cf0\tab\tab\cf2 '\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "Seasons", tvwChild, "*" & nz(!SeasonID, ""), SaveSeason\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*Pro" & SaveSeason, "Pro Teams"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*College" & SaveSeason, "College Teams"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*College" & SaveSeason, tvwChild, "*1A&1AA" & SaveSeason, "1A & 1AA"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*College" & SaveSeason, tvwChild, "*DivII" & SaveSeason, "Division II"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*College" & SaveSeason, tvwChild, "*DivIII" & SaveSeason, "Division III"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*College" & SaveSeason, tvwChild, "*NAIA" & SaveSeason, "NAIA"\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "*" & nz(!SeasonID, ""), tvwChild, "*Other" & SaveSeason, "Other Teams"\par
+\cf0\tab\tab\cf2 '            AddSeasonTeams SaveSeason\par
+\cf0\tab\tab\cf2 '        End If\par
+\cf0\tab\tab\cf2 '        .MoveNext\par
+\cf0\tab\tab\cf2 '    Loop\par
+\cf0\tab\tab\cf2 '    End With\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab SSTab1_Enter(SSTab1, \cf1 New\cf0  System.EventArgs())\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'Private Sub AddSeasonTeams(Season As String)\par
+\cf0\tab\cf2 '    gSqlstr = "select * from Teams where TeamYear = " & Season & " order by SeasonId, TeamName"\par
+\cf0\tab\cf2 '    Set gseasonrst = Nothing\par
+\cf0\tab\cf2 '    gseasonrst.Open gSqlstr, gConado, adOpenStatic, adLockReadOnly, adCmdText\par
+\cf0\tab\cf2 '    With gseasonrst\par
+\cf0\tab\cf2 '    Do While Not .EOF\par
+\cf0\tab\cf2 '        'Season = Mid$(!Seasonid, 1, 4)\par
+\cf0\tab\cf2 '        TeamType = Mid$(!SeasonID, 5, 1)\par
+\cf0\tab\cf2 '        tname = !SeasonID & " -" & !TeamName\par
+\cf0\tab\cf2 '        'Tname = Season & " -" & !TEAMNAME\par
+\cf0\tab\cf2 '\par
+\cf0\tab\cf2 '\par
+\cf0\tab\cf2 '        Select Case TeamType\par
+\cf0\tab\cf2 '        Case "P"\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*Pro" & Season, tvwChild, "P-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*Pro" & Season, tvwChild, "P-" & tname, !TeamName\par
+\cf0\tab\cf2 '        Case "C"\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*College" & Season, tvwChild, "C-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*College" & Season, tvwChild, "C-" & tname, !TeamName\par
+\cf0\tab\cf2 '        Case "2"\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*DivII" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*DivII" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '        Case "3"\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*DivIII" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*DivIII" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '        Case "N"\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*NAIA" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*NAIA" & Season, tvwChild, "2-" & tname, !TeamName\par
+\cf0\tab\cf2 '        Case Else\par
+\cf0\tab\cf2 '            tvHome.Nodes.Add "*Other" & Season, tvwChild, "O-" & tname, !TeamName\par
+\cf0\tab\cf2 '            tvVisitor.Nodes.Add "*Other" & Season, tvwChild, "O-" & tname, !TeamName\par
+\cf0\tab\cf2 '        End Select\par
+\cf0\tab\cf2 '        .MoveNext\par
+\cf0\tab\cf2 '    Loop\par
+\cf0\tab\cf2 '    .MoveFirst\par
+\cf0\tab\cf2 '    End With\par
+\cf0\tab\cf2 '\par
+\cf0\tab\cf2 'End Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdNextQb_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdNextQb.ClickEvent\par
+\tab\tab\cf1 If\cf0  cmdNextQb.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdNextQb.Value = \cf1 False\par
+\cf0\tab\tab EnableWeathertab()\par
+\tab\tab SSTab1.SelectedIndex = 2\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdNextWeather_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdNextWeather.ClickEvent\par
+\tab\tab\cf1 If\cf0  cmdNextWeather.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdNextWeather.Value = \cf1 False\par
+\cf0\tab\tab\cf1 RaiseEvent\cf0  PLAYGAME(\cf1 Me\cf0 , \cf1 Nothing\cf0 )\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdPrevQb_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdPrevQb.ClickEvent\par
+\tab\tab\cf1 If\cf0  cmdPrevQb.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdPrevQb.Value = \cf1 False\par
+\cf0\tab\tab SSTab1.SelectedIndex = 0\par
+\tab\tab gHomeName = OrigHomeName\par
+\tab\tab gVisitorName = OrigVisitorName\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdPrevWeather_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdPrevWeather.ClickEvent\par
+\tab\tab\cf1 If\cf0  cmdPrevWeather.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdPrevWeather.Value = \cf1 False\par
+\cf0\tab\tab SSTab1.SelectedIndex = 1\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  SSTab1_Enter(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  SSTab1.Enter\par
+\tab\tab\cf1 Dim\cf0  nod \cf1 As\cf0  System.Windows.Forms.TreeNode\par
+\tab\tab\cf1 Dim\cf0  tname \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  Season \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\cf1 Dim\cf0  TeamType \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf1 Exit\cf0  \cf1 Sub\cf0  \cf2 'temp\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab cmbPlay.SelectedIndex = 0\par
+\tab\tab cmbGameType.SelectedIndex = 0\par
+\tab\tab cmbCollegeRulesYear.SelectedIndex = 0\par
+\tab\tab cmbNFLRulesYear.SelectedIndex = 0\par
+\tab\tab cmbSuddenDeath.SelectedIndex = 0\par
+\tab\tab cmbLocation.SelectedIndex = 0\par
+\tab\tab\cf2 'Exit Sub 'temp\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object grstDefaultoptions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstDefaultoptions = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "select * from defaultOptions"\par
+\cf0\tab\tab grstDefaultoptions.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstDefaultoptions\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 While\cf0  \cf1 Not\cf0  .EOF\par
+\tab\tab\tab\tab cmbPlay.SelectedIndex = .Fields(\cf3 "who_controls_teams"\cf0 ).Value\par
+\tab\tab\tab\tab cmbGameType.SelectedIndex = .Fields(\cf3 "Pro_or_coll_rules"\cf0 ).Value\par
+\tab\tab\tab\tab cmbLocation.SelectedIndex = .Fields(\cf3 "Default_location_flag"\cf0 ).Value\par
+\tab\tab\tab\tab cmbNFLRulesYear.SelectedIndex = .Fields(\cf3 "Default_Pro_Rules_used"\cf0 ).Value\par
+\tab\tab\tab\tab cmbCollegeRulesYear.SelectedIndex = .Fields(\cf3 "Default_College_Rules_used"\cf0 ).Value\par
+\tab\tab\tab\tab cmbSuddenDeath.SelectedIndex = .Fields(\cf3 "Auto_Overtime_flag"\cf0 ).Value\par
+\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\cf1 Exit\cf0  \cf1 Sub\cf0  \cf2 'temp\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 '    ' Add a 'dummy' root node that says '1998'\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes.Add , , "Seasons", "1998"\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes(1).Expanded = True\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes.Add , , "Seasons", "1998"\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes(1).Expanded = True\par
+\cf0\tab\tab\cf2 '\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes.Add "Seasons", tvwChild, "Pro", "Pro Teams"\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes.Add "Seasons", tvwChild, "College", "College Teams"\par
+\cf0\tab\tab\cf2 '    tvHome.Nodes.Add "Seasons", tvwChild, "Other", "Other Teams"\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes.Add "Seasons", tvwChild, "Pro", "Pro Teams"\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes.Add "Seasons", tvwChild, "College", "College Teams"\par
+\cf0\tab\tab\cf2 '    tvVisitor.Nodes.Add "Seasons", tvwChild, "Other", "Other Teams"\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\cf2 'gSqlstr = "Select * from teams"\par
+\cf0\tab\tab\cf2 'gRstado.Open gSqlstr, gConado, adOpenStatic, adLockReadOnly, adCmdText\par
+\cf0\tab\tab\cf2 '    With gRstado\par
+\cf0\tab\tab\cf2 '    Do While Not .EOF\par
+\cf0\tab\tab\cf2 '        Season = Mid$(!SeasonId, 1, 4)\par
+\cf0\tab\tab\cf2 '        TeamType = Mid$(!SeasonId, 5, 1)\par
+\cf0\tab\tab\cf2 '        tname = !SeasonId & " -" & !TeamName\par
+\cf0\tab\tab\cf2 '\par
+\cf0\tab\tab\cf2 '        Select Case TeamType\par
+\cf0\tab\tab\cf2 '        Case "P"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "Pro", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "Pro", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '        Case "C"\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "College", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "College", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '        Case Else\par
+\cf0\tab\tab\cf2 '            tvHome.Nodes.Add "Other", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '            tvVisitor.Nodes.Add "Other", tvwChild, tname, !TeamName\par
+\cf0\tab\tab\cf2 '        End Select\par
+\cf0\tab\tab\cf2 '        .MoveNext\par
+\cf0\tab\tab\cf2 '    Loop\par
+\cf0\tab\tab\cf2 '    .MoveFirst\par
+\cf0\tab\tab\cf2 '    End With\par
+\cf0\tab\tab\cf2 '\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\par
+\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbCollegeRulesYear.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbCollegeRulesYear_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbCollegeRulesYear.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbGameType.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbGameType_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbGameType.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbLocation.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbLocation_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbLocation.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbNFLRulesYear.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbNFLRulesYear_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbNFLRulesYear.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbPlay.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbPlay_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbPlay.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbPlay_KeyPress(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.Windows.Forms.KeyPressEventArgs) \cf1 Handles\cf0  cmbPlay.KeyPress\par
+\tab\tab\cf1 Dim\cf0  KeyAscii \cf1 As\cf0  \cf1 Short\cf0  = Asc(eventArgs.KeyChar)\par
+\tab\tab\cf1 If\cf0  KeyAscii = 13 \cf1 Then\par
+\cf0\tab\tab\tab System.Windows.Forms.SendKeys.Send(\cf3 "\{tab\}"\cf0 )\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab KeyAscii = 0\par
+\tab\tab eventArgs.KeyChar = Chr(KeyAscii)\par
+\tab\tab\cf1 If\cf0  KeyAscii = 0 \cf1 Then\par
+\cf0\tab\tab\tab eventArgs.Handled = \cf1 True\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf2 'UPGRADE_WARNING: Event cmbSuddenDeath.SelectedIndexChanged may fire when form is initialized. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="88B12AE1-6DE0-48A0-86F1-60C0686C026A"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmbSuddenDeath_SelectedIndexChanged(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  System.EventArgs) \cf1 Handles\cf0  cmbSuddenDeath.SelectedIndexChanged\par
+\tab\tab ResetSaveButton()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdNotes_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdNotes.ClickEvent\par
+\tab\tab cmdNotes.Value = \cf1 False\par
+\cf0\tab\tab frmNotes.Show()\par
+\tab\tab\cf1 RaiseEvent\cf0  testEvent(\cf1 Me\cf0 , \cf1 Nothing\cf0 )\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdPrev_Click(\cf1 ByRef\cf0  Value \cf1 As\cf0  \cf1 Short\cf0 )\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdSaveSettings_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdSaveSettings.ClickEvent\par
+\tab\tab\cf1 Dim\cf0  rstLoc \cf1 As\cf0  \cf1 New\cf0  ADODB.Recordset\par
+\tab\tab\cf1 Dim\cf0  sql \cf1 As\cf0  \cf1 String\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  cmdSaveSettings.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdSaveSettings.Value = \cf1 False\par
+\cf0\tab\tab sql = \cf3 "Select * from DefaultOptions"\par
+\cf0\tab\tab rstLoc.Open(sql, gConado, ADOR.CursorTypeEnum.adOpenStatic, ADOR.LockTypeEnum.adLockOptimistic)\par
+\tab\tab\cf1 With\cf0  rstLoc\par
+\tab\tab\tab\cf1 If\cf0  .BOF \cf1 And\cf0  .EOF \cf1 Then\par
+\cf0\tab\tab\tab\tab .AddNew()\par
+\tab\tab\tab\tab .Fields(\cf3 "who_controls_teams"\cf0 ).Value = cmbPlay.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_location_flag"\cf0 ).Value = cmbLocation.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Pro_or_coll_rules"\cf0 ).Value = cmbGameType.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_Pro_Rules_used"\cf0 ).Value = cmbNFLRulesYear.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_College_Rules_used"\cf0 ).Value = cmbCollegeRulesYear.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Auto_Overtime_flag"\cf0 ).Value = cmbSuddenDeath.SelectedIndex\par
+\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab .Fields(\cf3 "who_controls_teams"\cf0 ).Value = cmbPlay.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_location_flag"\cf0 ).Value = cmbLocation.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Pro_or_coll_rules"\cf0 ).Value = cmbGameType.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_Pro_Rules_used"\cf0 ).Value = cmbNFLRulesYear.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Default_College_Rules_used"\cf0 ).Value = cmbCollegeRulesYear.SelectedIndex\par
+\tab\tab\tab\tab .Fields(\cf3 "Auto_Overtime_flag"\cf0 ).Value = cmbSuddenDeath.SelectedIndex\par
+\tab\tab\tab\tab .Update()\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab cmdSaveSettings.Text = \cf3 "Options Saved"\par
+\cf0\tab\tab cmdSaveSettings.Enabled = \cf1 False\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  cmdStart_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSRibbonEvents_ClickEvent) \cf1 Handles\cf0  cmdStart.ClickEvent\par
+\tab\tab\par
+\tab\tab\cf1 If\cf0  cmdStart.Value = \cf1 False\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab cmdStart.Value = \cf1 False\par
+\cf0\tab\tab\cf1 If\cf0  gHSeasonID = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab\cf1 If\cf0  gVSeasonID = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Sub\par
+\cf0\tab\tab\par
+\tab\tab delay_in_seconds = 1.7\par
+\tab\tab mode_of_play = cmbPlay.SelectedIndex\par
+\tab\tab using_pro_or_college_rules = cmbGameType.SelectedIndex\par
+\tab\tab COLLEGE_RULES_USING = cmbCollegeRulesYear.SelectedIndex\par
+\tab\tab pro_rules_using = cmbNFLRulesYear.SelectedIndex\par
+\tab\tab OVERTIME_FLAG = cmbSuddenDeath.SelectedIndex\par
+\tab\tab home_or_neutral_site_flag = cmbLocation.SelectedIndex\par
+\tab\tab computer_control_flag = 0\par
+\tab\tab\cf1 If\cf0  mode_of_play = 0 \cf1 Then\par
+\cf0\tab\tab\tab computer_control_flag = -1\par
+\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\cf1 If\cf0  mode_of_play = 1 \cf1 Then\par
+\cf0\tab\tab\tab\tab computer_control_flag = 1\par
+\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  mode_of_play = 2 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab computer_control_flag = 0\par
+\tab\tab\tab\tab\tab mode_of_play = 1\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab\cf1 If\cf0  mode_of_play = 3 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\tab mode_of_play = 2\par
+\tab\tab\tab\tab\tab\tab computer_control_flag = -1\par
+\tab\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab frmLoading.Show()\par
+\tab\tab frmLoading.ProgressBar1.Value = 5\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'make this a find later since we already have read in the teams\par
+\cf0\tab\tab\cf2 'find home team first and then visitor\par
+\cf0\tab\tab\cf2 'gRstado.Find "TeamName = '" & gHomeName & "' and SeasonId = '" & gHSeasonID & "'"\par
+\cf0\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeam0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstTeam0 = \cf1 Nothing\par
+\cf0\tab\tab\cf2 'If Mid$(gTeamType(0), 1, 1) = "G" Then\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Teams where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab\cf2 'Else\par
+\cf0\tab\tab\cf2 '    gSqlstr = "Select * from Teams where SeasonID = '" & gHSeasonID & "' and TeamName = '" & gHomeName & "'"\par
+\cf0\tab\tab\cf2 'End If\par
+\cf0\tab\tab grstTeam0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstTeam0\par
+\tab\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Mid(gTeamType(0), 1, 1)\par
+\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "W"\cf0 , \cf3 "U"\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab team_name(0) = nz(.Fields(\cf3 "TeamYear"\cf0 ), \cf3 ""\cf0 ) & \cf3 " "\cf0  & .Fields(\cf3 "TeamName"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab\tab team_name(0) = Trim(Mid(.Fields(\cf3 "SeasonId"\cf0 ).Value, 1, 4)) & \cf3 " "\cf0  & Trim(.Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\tab\par
+\tab\tab\tab\cf2 'yrpct(0) = Trim(Mid(!SeasonId, 3, 2))\par
+\cf0\tab\tab\tab yrpct(0) = \cf1 CShort\cf0 (Trim(Mid(gTeamYear(0), 3, 2)))\par
+\tab\tab\tab\cf1 If\cf0  yrpct(0) < 10 \cf1 Then\cf0  yrpct(0) = 200\par
+\tab\tab\tab def_rush_adj(0) = .Fields(\cf3 "DefRushAdj"\cf0 ).Value\par
+\tab\tab\tab def_comp_adj(0) = .Fields(\cf3 "DefCompAdj"\cf0 ).Value\par
+\tab\tab\tab def_int_adj(0) = .Fields(\cf3 "DefIntAdj"\cf0 ).Value\par
+\tab\tab\tab off_fum_pct(0) = .Fields(\cf3 "OffFumPct"\cf0 ).Value\par
+\tab\tab\tab def_fum_adj(0) = .Fields(\cf3 "DefFumAdj"\cf0 ).Value\par
+\tab\tab\tab off_sack_pct(0) = .Fields(\cf3 "OffSackPct"\cf0 ).Value\par
+\tab\tab\tab def_sack_adj(0) = .Fields(\cf3 "DefSackAdj"\cf0 ).Value\par
+\tab\tab\tab run_pass_pct(0) = .Fields(\cf3 "RunPassPct"\cf0 ).Value\par
+\tab\tab\tab def_yds_catch_adj(0) = .Fields(\cf3 "DefYardPerCompAdj"\cf0 ).Value\par
+\tab\tab\tab team_penalty_adj(0) = .Fields(\cf3 "PenaltyAdj"\cf0 ).Value\par
+\tab\tab\tab team_fore_color(0) = .Fields(\cf3 "Teamcolorfore"\cf0 ).Value\par
+\tab\tab\tab team_back_color(0) = .Fields(\cf3 "TeamColorBack"\cf0 ).Value\par
+\tab\tab\tab indoor_outdoor(0) = .Fields(\cf3 "IndoorOutDoor"\cf0 ).Value\par
+\tab\tab\tab team_power_rating(0) = .Fields(\cf3 "PowerRating"\cf0 ).Value\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab game_stadium_name(0) = nz(.Fields(\cf3 "Stadium_name"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\cf0  CreateTeamXML(grstTeam0)\par
+\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 10\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstTeam1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstTeam1 = \cf1 Nothing\par
+\cf0\tab\tab\cf2 'If Mid$(gTeamType(0), 1, 1) = "G" Then\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Teams where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab\cf2 'Else\par
+\cf0\tab\tab\cf2 '    gSqlstr = "Select * from Teams where SeasonID = '" & gVSeasonID & "' and TeamName = '" & gVisitorName & "'"\par
+\cf0\tab\tab\cf2 'End If\par
+\cf0\tab\tab\cf2 'gSqlstr = "Select * from Teams where SeasonID = '" & gVSeasonID & "' and TeamName = '" & gVisitorName & "'"\par
+\cf0\tab\tab grstTeam1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf2 'gRstado.Find "TeamName = '" & gVisitorName & "' and SeasonId = '" & gVSeasonID & "'"\par
+\cf0\tab\tab\cf1 With\cf0  grstTeam1\par
+\tab\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Mid(gTeamType(0), 1, 1)\par
+\tab\tab\tab\tab\cf1 Case\cf0  \cf3 "G"\cf0 , \cf3 "W"\cf0 , \cf3 "U"\par
+\cf0\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab team_name(1) = nz(.Fields(\cf3 "TeamYear"\cf0 ), \cf3 ""\cf0 ) & \cf3 " "\cf0  & .Fields(\cf3 "TeamName"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\tab\tab team_name(1) = Trim(Mid(.Fields(\cf3 "SeasonId"\cf0 ).Value, 1, 4)) & \cf3 " "\cf0  & Trim(.Fields(\cf3 "TeamName"\cf0 ).Value)\par
+\tab\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\tab yrpct(1) = \cf1 CShort\cf0 (Trim(Mid(gTeamYear(1), 3, 2)))\par
+\tab\tab\tab\cf2 'yrpct(1) = Trim(Mid(!SeasonId, 3, 2))\par
+\cf0\tab\tab\tab\cf1 If\cf0  yrpct(1) < 10 \cf1 Then\cf0  yrpct(1) = 200\par
+\tab\tab\tab def_rush_adj(1) = .Fields(\cf3 "DefRushAdj"\cf0 ).Value\par
+\tab\tab\tab def_comp_adj(1) = .Fields(\cf3 "DefCompAdj"\cf0 ).Value\par
+\tab\tab\tab def_int_adj(1) = .Fields(\cf3 "DefIntAdj"\cf0 ).Value\par
+\tab\tab\tab off_fum_pct(1) = .Fields(\cf3 "OffFumPct"\cf0 ).Value\par
+\tab\tab\tab def_fum_adj(1) = .Fields(\cf3 "DefFumAdj"\cf0 ).Value\par
+\tab\tab\tab off_sack_pct(1) = .Fields(\cf3 "OffSackPct"\cf0 ).Value\par
+\tab\tab\tab def_sack_adj(1) = .Fields(\cf3 "DefSackAdj"\cf0 ).Value\par
+\tab\tab\tab run_pass_pct(1) = .Fields(\cf3 "RunPassPct"\cf0 ).Value\par
+\tab\tab\tab def_yds_catch_adj(1) = .Fields(\cf3 "DefYardPerCompAdj"\cf0 ).Value\par
+\tab\tab\tab team_penalty_adj(1) = .Fields(\cf3 "PenaltyAdj"\cf0 ).Value\par
+\tab\tab\tab team_fore_color(1) = .Fields(\cf3 "Teamcolorfore"\cf0 ).Value\par
+\tab\tab\tab team_back_color(1) = .Fields(\cf3 "TeamColorBack"\cf0 ).Value\par
+\tab\tab\tab indoor_outdoor(1) = .Fields(\cf3 "IndoorOutDoor"\cf0 ).Value\par
+\tab\tab\tab team_power_rating(1) = .Fields(\cf3 "PowerRating"\cf0 ).Value\par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab game_stadium_name(1) = nz(.Fields(\cf3 "Stadium_name"\cf0 ), \cf3 ""\cf0 )\par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\cf0  CreateTeamXML(grstTeam0)\par
+\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 15\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstrb0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstrb0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from RunningBacks where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstrb0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstrb0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab rb_name(0, i) = .Fields(\cf3 "RbName"\cf0 ).Value\par
+\tab\tab\tab\tab rb_pct_of_carries(0, i) = .Fields(\cf3 "PctOfCarries"\cf0 ).Value\par
+\tab\tab\tab\tab rb_rush_avg(0, i) = .Fields(\cf3 "RushAvg"\cf0 ).Value\par
+\tab\tab\tab\tab rb_pct_of_receptions(0, i) = .Fields(\cf3 "PctOfReceptions"\cf0 ).Value\par
+\tab\tab\tab\tab rb_receiving_avg(0, i) = .Fields(\cf3 "RecAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "RunningBacks"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RbName"\cf0 , .Fields(\cf3 "RbName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofCarries"\cf0 , .Fields(\cf3 "PctOfCarries"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RushAvg"\cf0 , .Fields(\cf3 "RushAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofReceptions"\cf0 , .Fields(\cf3 "PctOfReceptions"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RecAvg"\cf0 , .Fields(\cf3 "RecAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "RunningBacks"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 20\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstrb1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstrb1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from RunningBacks where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstrb1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstrb1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab rb_name(1, i) = .Fields(\cf3 "RbName"\cf0 ).Value\par
+\tab\tab\tab\tab rb_pct_of_carries(1, i) = .Fields(\cf3 "PctOfCarries"\cf0 ).Value\par
+\tab\tab\tab\tab rb_rush_avg(1, i) = .Fields(\cf3 "RushAvg"\cf0 ).Value\par
+\tab\tab\tab\tab rb_pct_of_receptions(1, i) = .Fields(\cf3 "PctOfReceptions"\cf0 ).Value\par
+\tab\tab\tab\tab rb_receiving_avg(1, i) = .Fields(\cf3 "RecAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "RunningBacks"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RbName"\cf0 , .Fields(\cf3 "RbName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofCarries"\cf0 , .Fields(\cf3 "PctOfCarries"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RushAvg"\cf0 , .Fields(\cf3 "RushAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofReceptions"\cf0 , .Fields(\cf3 "PctOfReceptions"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RecAvg"\cf0 , .Fields(\cf3 "RecAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "RunningBacks"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 25\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstrec0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstrec0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Receivers where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstrec0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstrec0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab receiver_name(0, i) = .Fields(\cf3 "RName"\cf0 ).Value\par
+\tab\tab\tab\tab receiver_pct_of_receptions(0, i) = .Fields(\cf3 "PctOfReceptions"\cf0 ).Value\par
+\tab\tab\tab\tab receiver_receiving_avg(0, i) = .Fields(\cf3 "RecAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Receivers"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Rname"\cf0 , .Fields(\cf3 "RName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofReceptions"\cf0 , .Fields(\cf3 "PctOfReceptions"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RecAvg"\cf0 , .Fields(\cf3 "RecAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Receivers"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 30\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstrec1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstrec1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Receivers where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstrec1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstrec1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab receiver_name(1, i) = .Fields(\cf3 "RName"\cf0 ).Value\par
+\tab\tab\tab\tab receiver_pct_of_receptions(1, i) = .Fields(\cf3 "PctOfReceptions"\cf0 ).Value\par
+\tab\tab\tab\tab receiver_receiving_avg(1, i) = .Fields(\cf3 "RecAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Receivers"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Rname"\cf0 , .Fields(\cf3 "RName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofReceptions"\cf0 , .Fields(\cf3 "PctOfReceptions"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "RecAvg"\cf0 , .Fields(\cf3 "RecAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Receivers"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 35\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstqb0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstqb0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from QuarterBacks where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstqb0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstqb0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab qb_name(0, i) = .Fields(\cf3 "QName"\cf0 ).Value\par
+\tab\tab\tab\tab qb_pct_of_throws(0, i) = .Fields(\cf3 "PctOfThrows"\cf0 ).Value\par
+\tab\tab\tab\tab qb_comp_pct(0, i) = .Fields(\cf3 "CompPct"\cf0 ).Value\par
+\tab\tab\tab\tab qb_int_pct(0, i) = .Fields(\cf3 "IntPct"\cf0 ).Value\par
+\tab\tab\tab\tab qb_arm_rating(0, i) = .Fields(\cf3 "ArmRating"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Quarterbacks"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Qname"\cf0 , .Fields(\cf3 "QName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofThrows"\cf0 , .Fields(\cf3 "PctOfThrows"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "CompPct"\cf0 , .Fields(\cf3 "CompPct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "IntPct"\cf0 , .Fields(\cf3 "IntPct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "ArmRating"\cf0 , .Fields(\cf3 "ArmRating"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Quarterbacks"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 40\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstqb1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstqb1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from QuarterBacks where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstqb1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstqb1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab qb_name(1, i) = .Fields(\cf3 "QName"\cf0 ).Value\par
+\tab\tab\tab\tab qb_pct_of_throws(1, i) = .Fields(\cf3 "PctOfThrows"\cf0 ).Value\par
+\tab\tab\tab\tab qb_comp_pct(1, i) = .Fields(\cf3 "CompPct"\cf0 ).Value\par
+\tab\tab\tab\tab qb_int_pct(1, i) = .Fields(\cf3 "IntPct"\cf0 ).Value\par
+\tab\tab\tab\tab qb_arm_rating(1, i) = .Fields(\cf3 "ArmRating"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Quarterbacks"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Qname"\cf0 , .Fields(\cf3 "QName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofThrows"\cf0 , .Fields(\cf3 "PctOfThrows"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "CompPct"\cf0 , .Fields(\cf3 "CompPct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "IntPct"\cf0 , .Fields(\cf3 "IntPct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "ArmRating"\cf0 , .Fields(\cf3 "ArmRating"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Quarterbacks"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 45\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstkor0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstkor0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from KickOffReturners where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstkor0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstkor0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab kor_name(0, i) = .Fields(\cf3 "KName"\cf0 ).Value\par
+\tab\tab\tab\tab kor_pct_of_ret(0, i) = .Fields(\cf3 "PctOfKor"\cf0 ).Value\par
+\tab\tab\tab\tab kor_ret_avg(0, i) = .Fields(\cf3 "KorAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "KickOffReturners"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Kname"\cf0 , .Fields(\cf3 "KName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofKor"\cf0 , .Fields(\cf3 "PctOfKor"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "KorAvg"\cf0 , .Fields(\cf3 "KorAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "KickOffReturners"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 50\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstkor1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstkor1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from KickOffReturners where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstkor1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstkor1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab kor_name(1, i) = .Fields(\cf3 "KName"\cf0 ).Value\par
+\tab\tab\tab\tab kor_pct_of_ret(1, i) = .Fields(\cf3 "PctOfKor"\cf0 ).Value\par
+\tab\tab\tab\tab kor_ret_avg(1, i) = .Fields(\cf3 "KorAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "KickOffReturners"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "Kname"\cf0 , .Fields(\cf3 "KName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofKor"\cf0 , .Fields(\cf3 "PctOfKor"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "KorAvg"\cf0 , .Fields(\cf3 "KorAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "KickOffReturners"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 55\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstpr0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstpr0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from puntReturners where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstpr0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstpr0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab pr_name(0, i) = .Fields(\cf3 "PrName"\cf0 ).Value\par
+\tab\tab\tab\tab pr_pct_of_ret(0, i) = .Fields(\cf3 "PctOfPr"\cf0 ).Value\par
+\tab\tab\tab\tab pr_ret_avg(0, i) = .Fields(\cf3 "PrAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "PuntReturners"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PrName"\cf0 , .Fields(\cf3 "PrName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofPr"\cf0 , .Fields(\cf3 "PctOfPr"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PrAvg"\cf0 , .Fields(\cf3 "PrAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "PuntReturners"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 60\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstpr1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstpr1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from PuntReturners where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstpr1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstpr1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab pr_name(1, i) = .Fields(\cf3 "PrName"\cf0 ).Value\par
+\tab\tab\tab\tab pr_pct_of_ret(1, i) = .Fields(\cf3 "PctOfPr"\cf0 ).Value\par
+\tab\tab\tab\tab pr_ret_avg(1, i) = .Fields(\cf3 "PrAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "PuntReturners"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PrName"\cf0 , .Fields(\cf3 "PrName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofPr"\cf0 , .Fields(\cf3 "PctOfPr"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PrAvg"\cf0 , .Fields(\cf3 "PrAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "PuntReturners"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 65\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstpunter0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstpunter0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Punters where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstpunter0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstpunter0\par
+\tab\tab\tab\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab punter_name(0) = .Fields(\cf3 "PunterName"\cf0 ).Value\par
+\tab\tab\tab\tab punter_rating(0) = .Fields(\cf3 "PunterAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Punters"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PunterName"\cf0 , .Fields(\cf3 "PunterName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PunterAvg"\cf0 , .Fields(\cf3 "PunterAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Punters"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 70\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstpunter1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstpunter1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Punters where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstpunter1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstpunter1\par
+\tab\tab\tab\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab\par
+\tab\tab\tab\tab punter_name(1) = .Fields(\cf3 "PunterName"\cf0 ).Value\par
+\tab\tab\tab\tab punter_rating(1) = .Fields(\cf3 "PunterAvg"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Punters"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PunterName"\cf0 , .Fields(\cf3 "PunterName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PunterAvg"\cf0 , .Fields(\cf3 "PunterAvg"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Punters"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 75\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstkicker0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstkicker0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Kickers where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstkicker0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstkicker0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab kicker_name(0, i) = .Fields(\cf3 "KickerName"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_fg_made_pct(0, i) = .Fields(\cf3 "FgMadePct"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_pct_of_fg_att(0, i) = .Fields(\cf3 "PctOfFgAtt"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_xp_made_pct(0, i) = .Fields(\cf3 "XpMadePct"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_pct_of_xp_att(0, i) = .Fields(\cf3 "PctOfXpAtt"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Kickers"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "KickerName"\cf0 , .Fields(\cf3 "KickerName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "FgMadePct"\cf0 , .Fields(\cf3 "FgMadePct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofFgAtt"\cf0 , .Fields(\cf3 "PctOfFgAtt"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "XpMadePct"\cf0 , .Fields(\cf3 "XpMadePct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofXpAtt"\cf0 , .Fields(\cf3 "PctOfXpAtt"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Kickers"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 80\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstkicker1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstkicker1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from Kickers where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstkicker1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstkicker1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab kicker_name(1, i) = .Fields(\cf3 "KickerName"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_fg_made_pct(1, i) = .Fields(\cf3 "FgMadePct"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_pct_of_fg_att(1, i) = .Fields(\cf3 "PctOfFgAtt"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_xp_made_pct(1, i) = .Fields(\cf3 "XpMadePct"\cf0 ).Value\par
+\tab\tab\tab\tab kicker_pct_of_xp_att(1, i) = .Fields(\cf3 "PctOfXpAtt"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Kickers"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "KickerName"\cf0 , .Fields(\cf3 "KickerName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "FgMadePct"\cf0 , .Fields(\cf3 "FgMadePct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofFgAtt"\cf0 , .Fields(\cf3 "PctOfFgAtt"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "XpMadePct"\cf0 , .Fields(\cf3 "XpMadePct"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofXpAtt"\cf0 , .Fields(\cf3 "PctOfXpAtt"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Kickers"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 85\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstdefender0 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstdefender0 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from defenders where SeasonID = '"\cf0  & gHSeasonID & \cf3 "' and TeamName = '"\cf0  & gHomeName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(0)\par
+\tab\tab grstdefender0.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstdefender0\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  IsDbNull(.Fields(\cf3 "PctOfSacks"\cf0 ).Value) \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  doint0\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab defender_pct_of_sacks(0, i) = .Fields(\cf3 "PctOfSacks"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 doint0: \par
+\tab\tab\tab\tab defender_pct_of_ints(0, i) = .Fields(\cf3 "PctOfDefInts"\cf0 ).Value\par
+\tab\tab\tab\tab defender_name(0, i) = .Fields(\cf3 "DefenderName"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(0) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Defenders"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "DefenderName"\cf0 , .Fields(\cf3 "DefenderName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofSacks"\cf0 , nz(.Fields(\cf3 "PctOfSacks"\cf0 ), 0))\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofDefInts"\cf0 , .Fields(\cf3 "PctOfDefInts"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Defenders"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 90\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf2 'UPGRADE_NOTE: Object grstdefender1 may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'\par
+\cf0\tab\tab grstdefender1 = \cf1 Nothing\par
+\cf0\tab\tab gSqlstr = \cf3 "Select * from defenders where SeasonID = '"\cf0  & gVSeasonID & \cf3 "' and TeamName = '"\cf0  & gVisitorName & \cf3 "' and TeamYear = "\cf0  & gTeamYear(1)\par
+\tab\tab grstdefender1.Open(gSqlstr, gConado, ADOR.CursorTypeEnum.adOpenForwardOnly, ADOR.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)\par
+\tab\tab\cf1 With\cf0  grstdefender1\par
+\tab\tab\tab i = -1\par
+\tab\tab\tab\cf1 Do\cf0  \cf1 Until\cf0  .EOF\par
+\tab\tab\tab\tab i = i + 1\par
+\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  IsDbNull(.Fields(\cf3 "PctOfSacks"\cf0 ).Value) \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab\cf1 GoTo\cf0  doint1\par
+\tab\tab\tab\tab\cf1 Else\par
+\cf0\tab\tab\tab\tab\tab defender_pct_of_sacks(1, i) = .Fields(\cf3 "PctOfSacks"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0 doint1: \par
+\tab\tab\tab\tab defender_pct_of_ints(1, i) = .Fields(\cf3 "PctOfDefInts"\cf0 ).Value\par
+\tab\tab\tab\tab defender_name(1, i) = .Fields(\cf3 "DefenderName"\cf0 ).Value\par
+\tab\tab\tab\tab\cf1 If\cf0  SendTeam(1) = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab StartPlayerPos(\cf3 "Defenders"\cf0 )\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "DefenderName"\cf0 , .Fields(\cf3 "DefenderName"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofSacks"\cf0 , nz(.Fields(\cf3 "PctOfSacks"\cf0 ), 0))\par
+\tab\tab\tab\tab\tab AddPlayerStat(\cf3 "PctofDefInts"\cf0 , .Fields(\cf3 "PctOfDefInts"\cf0 ).Value)\par
+\tab\tab\tab\tab\tab EndPlayerPos(\cf3 "Defenders"\cf0 )\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab .MoveNext()\par
+\tab\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\cf1 End\cf0  \cf1 With\par
+\cf0\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 95\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\par
+\tab\tab EndTeam()\par
+\tab\tab\cf2 'send full team info to other player\par
+\cf0\tab\tab\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab\cf1 For\cf0  i1 = 9 \cf1 To\cf0  1 \cf1 Step\cf0  -1\par
+\tab\tab\tab\tab\cf1 If\cf0  rb_pct_of_carries(i, i1) = 0 \cf1 Then\cf0  \cf1 GoTo\cf0  9594\par
+\tab\tab\tab\tab pcpct(i, i1) = rb_pct_of_carries(i, i1) - rb_pct_of_carries(i, i1 - 1)\par
+9594: \cf1 Next\cf0  i1\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab frmLoading.ProgressBar1.Value = 100\par
+\tab\tab System.Windows.Forms.Application.DoEvents()\par
+\tab\tab\cf1 For\cf0  i = 0 \cf1 To\cf0  1\par
+\tab\tab\tab dds(i) = 0\par
+\tab\tab\tab ddi(i) = 0\par
+\tab\tab\tab\cf1 For\cf0  i1 = 0 \cf1 To\cf0  30\par
+\tab\tab\tab\tab dds(i) = dds(i) + defender_pct_of_sacks(i, i1)\par
+\tab\tab\tab\tab ddi(i) = ddi(i) + defender_pct_of_ints(i, i1)\par
+\tab\tab\tab\tab\cf1 If\cf0  defender_pct_of_sacks(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab dspct(i) = 1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\tab\cf1 If\cf0  defender_pct_of_ints(i, i1) > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab\tab dipct(i) = 1\par
+\tab\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf1 Next\cf0  i1\par
+\tab\tab\tab\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\par
+\tab\tab\cf2 'show the quarterback selection tab\par
+\cf0\tab\tab EnableQBtab()\par
+\tab\tab SSTab1.SelectedIndex = 1\par
+\tab\tab frmLoading.Close()\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  ResetSaveButton()\par
+\tab\tab cmdSaveSettings.Text = \cf3 "Save Options"\par
+\cf0\tab\tab cmdSaveSettings.Enabled = \cf1 True\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  EnableQBtab()\par
+\tab\tab\cf1 Dim\cf0  i \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\par
+\tab\tab SSTab1.TabPages.Item(1).Enabled = \cf1 True\par
+\cf0\tab\tab\cf1 For\cf0  i = 1 \cf1 To\cf0  optHomeQb.Count - 1\par
+\tab\tab\tab optHomeQb.Unload(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab\cf1 For\cf0  i = 1 \cf1 To\cf0  optVisitorQb.Count - 1\par
+\tab\tab\tab optVisitorQb.Unload(i)\par
+\tab\tab\cf1 Next\cf0  i\par
+\tab\tab TCOLOR(team_back_color(0), team_fore_color(0))\par
+\tab\tab lblSelectHome.ForeColor = System.Drawing.ColorTranslator.FromOle(ForeColr)\par
+\tab\tab lblSelectHome.BackColor = System.Drawing.ColorTranslator.FromOle(BackColr)\par
+\tab\tab\par
+\tab\tab TCOLOR(team_back_color(1), team_fore_color(1))\par
+\tab\tab lblSelectVisitor.ForeColor = System.Drawing.ColorTranslator.FromOle(ForeColr)\par
+\tab\tab lblSelectVisitor.BackColor = System.Drawing.ColorTranslator.FromOle(BackColr)\par
+\tab\tab\par
+\tab\tab lblSelectHome.Text = \cf3 "Select "\cf0  & team_name(0) & \cf3 " Quarterback"\par
+\cf0\tab\tab OrigHomeName = gHomeName\par
+\tab\tab gHomeName = team_name(0)\par
+\tab\tab lblSelectVisitor.Text = \cf3 "Select "\cf0  & team_name(1) & \cf3 " Quarterback"\par
+\cf0\tab\tab OrigVisitorName = gVisitorName\par
+\tab\tab gVisitorName = team_name(1)\par
+\tab\tab\par
+\tab\tab i = 0\par
+\tab\tab\cf1 Do\cf0  \par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf1 If\cf0  Trim(nz(qb_name(0, i), \cf3 ""\cf0 )) = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\cf1 If\cf0  i > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab optHomeQb.Load(i)\par
+\tab\tab\tab\tab optHomeQb(i).Top = VB6.TwipsToPixelsY(VB6.PixelsToTwipsY(optHomeQb(i - 1).Top) + VB6.PixelsToTwipsY(optHomeQb(0).Height))\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab optHomeQb(i).Text = Trim(nz(qb_name(0, i), \cf3 ""\cf0 ))\par
+\tab\tab\tab optHomeQb(i).Tag = i\par
+\tab\tab\tab optHomeQb(i).Visible = \cf1 True\par
+\cf0\tab\tab\tab i = i + 1\par
+\tab\tab\tab\cf1 If\cf0  i > 3 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\par
+\tab\tab\par
+\tab\tab optHomeQb.Load(i)\par
+\tab\tab optHomeQb(i).Top = VB6.TwipsToPixelsY(VB6.PixelsToTwipsY(optHomeQb(i - 1).Top) + VB6.PixelsToTwipsY(optHomeQb(0).Height))\par
+\tab\tab optHomeQb(i).Text = \cf3 "Let Computer Pick QB"\par
+\cf0\tab\tab optHomeQb(i).Tag = i\par
+\tab\tab optHomeQb(i).Visible = \cf1 True\par
+\cf0\tab\tab\par
+\tab\tab\par
+\tab\tab i = 0\par
+\tab\tab\cf1 Do\cf0  \par
+\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab\cf1 If\cf0  Trim(nz(qb_name(1, i), \cf3 ""\cf0 )) = \cf3 ""\cf0  \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\tab\cf1 If\cf0  i > 0 \cf1 Then\par
+\cf0\tab\tab\tab\tab optVisitorQb.Load(i)\par
+\tab\tab\tab\tab optVisitorQb(i).Top = VB6.TwipsToPixelsY(VB6.PixelsToTwipsY(optVisitorQb(i - 1).Top) + VB6.PixelsToTwipsY(optVisitorQb(0).Height))\par
+\tab\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\tab\tab\cf2 'UPGRADE_WARNING: Couldn't resolve default property of object nz(). Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'\par
+\cf0\tab\tab\tab optVisitorQb(i).Text = Trim(nz(qb_name(1, i), \cf3 ""\cf0 ))\par
+\tab\tab\tab optVisitorQb(i).Tag = i\par
+\tab\tab\tab optVisitorQb(i).Visible = \cf1 True\par
+\cf0\tab\tab\tab i = i + 1\par
+\tab\tab\tab\cf1 If\cf0  i > 3 \cf1 Then\cf0  \cf1 Exit\cf0  \cf1 Do\par
+\cf0\tab\tab\cf1 Loop\cf0  \par
+\tab\tab\par
+\tab\tab optVisitorQb.Load(i)\par
+\tab\tab optVisitorQb(i).Top = VB6.TwipsToPixelsY(VB6.PixelsToTwipsY(optVisitorQb(i - 1).Top) + VB6.PixelsToTwipsY(optVisitorQb(0).Height))\par
+\tab\tab optVisitorQb(i).Text = \cf3 "Let Computer Pick QB"\par
+\cf0\tab\tab optVisitorQb(i).Tag = i\par
+\tab\tab optVisitorQb(i).Visible = \cf1 True\par
+\cf0\tab\tab\par
+\tab\tab optHomeQb(0).Value = \cf1 True\par
+\cf0\tab\tab optVisitorQb(0).Value = \cf1 True\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  EnableWeathertab()\par
+\tab\tab SSTab1.TabPages.Item(2).Enabled = \cf1 True\par
+\cf0\tab\tab optWeather(0).Value = \cf1 True\par
+\cf0\tab\tab optWind(0).Value = \cf1 True\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  optWeather_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSOptionEvents_ClickEvent) \cf1 Handles\cf0  optWeather.ClickEvent\par
+\tab\tab\cf1 Dim\cf0  Index \cf1 As\cf0  \cf1 Short\cf0  = optWeather.GetIndex(eventSender)\par
+\tab\tab\cf1 Dim\cf0  i \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  Index = 3 \cf1 Then\cf0  i = Int(Rnd(1) * 22) + 1\par
+\tab\tab\cf1 If\cf0  i = 18 \cf1 Then\cf0  Wx_pct(4) = -3\par
+\tab\tab Wx_pct(5) = 1\par
+\tab\tab Wx_pct(6) = -10\par
+\tab\tab\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Index\par
+\tab\tab\tab\cf1 Case\cf0  0\par
+\tab\tab\tab\cf1 Case\cf0  1\par
+\tab\tab\tab\tab Wx_pct(4) = -3\par
+\tab\tab\tab\tab Wx_pct(5) = 1\par
+\tab\tab\tab\tab Wx_pct(6) = -10\par
+\tab\tab\tab\cf1 Case\cf0  2\par
+\tab\tab\tab\tab Wx_pct(4) = -6\par
+\tab\tab\tab\tab Wx_pct(5) = 2\par
+\tab\tab\tab\tab Wx_pct(6) = -20\par
+\tab\tab\tab\cf1 Case\cf0  3\par
+\tab\tab\tab\tab\cf1 If\cf0  i = 7 \cf1 Then\cf0  Wx_pct(4) = -6\par
+\tab\tab\tab\tab Wx_pct(5) = 2\par
+\tab\tab\tab\tab Wx_pct(6) = -20\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\cf1 Private\cf0  \cf1 Sub\cf0  optWind_ClickEvent(\cf1 ByVal\cf0  eventSender \cf1 As\cf0  System.Object, \cf1 ByVal\cf0  eventArgs \cf1 As\cf0  AxThreed.DSSOptionEvents_ClickEvent) \cf1 Handles\cf0  optWind.ClickEvent\par
+\tab\tab\cf1 Dim\cf0  Index \cf1 As\cf0  \cf1 Short\cf0  = optWind.GetIndex(eventSender)\par
+\tab\tab\cf1 Dim\cf0  i \cf1 As\cf0  \cf1 Short\par
+\cf0\tab\tab\par
+\tab\tab\cf1 If\cf0  Index = 3 \cf1 Then\cf0  i = Int(Rnd(1) * 22) + 1\par
+\tab\tab\cf1 If\cf0  i = 14 \cf1 Then\cf0  Wx_pct(1) = -7\par
+\tab\tab Wx_pct(2) = -5\par
+\tab\tab Wx_pct(3) = -10\par
+\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  Index\par
+\tab\tab\tab\cf1 Case\cf0  0\par
+\tab\tab\tab\cf1 Case\cf0  1\par
+\tab\tab\tab\tab Wx_pct(1) = -7\par
+\tab\tab\tab\tab Wx_pct(2) = -5\par
+\tab\tab\tab\tab Wx_pct(3) = -10\par
+\tab\tab\tab\cf1 Case\cf0  2\par
+\tab\tab\tab\tab Wx_pct(1) = -15\par
+\tab\tab\tab\tab Wx_pct(2) = -15\par
+\tab\tab\tab\tab Wx_pct(3) = -30\par
+\tab\tab\tab\cf1 Case\cf0  3\par
+\tab\tab\tab\tab\cf1 If\cf0  i = 3 \cf1 Then\cf0  Wx_pct(1) = -15\par
+\tab\tab\tab\tab Wx_pct(2) = -15\par
+\tab\tab\tab\tab Wx_pct(3) = -30\par
+\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab W_pct = Int(Rnd(1) * 2)\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf2 'UPGRADE_ISSUE: UserControl event UserControl.Show was not upgraded. Click for more: 'ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?keyword="ABD9AF39-7E24-4AFF-AD8D-3675C1AA3054"'\par
+\cf0\tab\cf1 Private\cf0  \cf1 Sub\cf0  UserControl_Show()\par
+\tab\tab\cf1 If\cf0  gTcpConnected = \cf1 True\cf0  \cf1 Then\par
+\cf0\tab\tab\tab\cf1 Select\cf0  \cf1 Case\cf0  gClientServer\par
+\tab\tab\tab\tab\cf1 Case\cf0  gIamController\par
+\tab\tab\tab\tab\tab tsVisitor.Enabled = \cf1 False\par
+\cf0\tab\tab\tab\tab\tab tsHome.Enabled = \cf1 True\par
+\cf0\tab\tab\tab\tab\tab\cf2 'tsVisitor.MousePointer = ccNoDrop\par
+\cf0\tab\tab\tab\tab\tab\cf2 'tsHome.MousePointer = ccDefault\par
+\cf0\tab\tab\tab\tab\cf1 Case\cf0  gIamServer\par
+\tab\tab\tab\tab\tab tsVisitor.Enabled = \cf1 True\par
+\cf0\tab\tab\tab\tab\tab tsHome.Enabled = \cf1 False\par
+\cf0\tab\tab\tab\tab\tab\cf2 'tsVisitor.MousePointer = ccDefault\par
+\cf0\tab\tab\tab\tab\tab\cf2 'tsHome.MousePointer = ccNoDrop\par
+\cf0\tab\tab\tab\tab\cf1 Case\cf0  \cf1 Else\par
+\cf0\tab\tab\tab\cf1 End\cf0  \cf1 Select\par
+\cf0\tab\tab\tab cmdStart.Text = \cf3 "Wait..."\par
+\cf0\tab\tab\tab cmbPlay.SelectedIndex = 0\par
+\tab\tab\cf1 End\cf0  \cf1 If\par
+\cf0\tab\cf1 End\cf0  \cf1 Sub\par
+\cf0\tab\par
+\tab\par
+\tab\cf1 Public\cf0  \cf1 Sub\cf0  UpdateRemoteData()\par
+\tab\tab\par
+\tab\cf1 End\cf0  \cf1 Sub\par
+End\cf0  \cf1 Class\cf0\f1\par
+}
+ 
