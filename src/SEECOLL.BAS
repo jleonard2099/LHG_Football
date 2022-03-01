@@ -16,7 +16,7 @@ DECLARE FUNCTION EXIST (FILENAME$)
   DIM LZ(240), P$(60), Z4$(240), TT(10, 20, 9), TR$(10, 20)
   DIM D$(2)
   '$INCLUDE: 'DEFCNF.BI'
-  '$INCLUDE: 'SetCnf.BI'          'queries the system info for MsgBox
+  '$INCLUDE: 'SETCNF.BI'          'queries the system info for MsgBox
   D% = GetDrive%
 5 OPEN "DEV.BAS" FOR INPUT AS #1: FOR I = 0 TO 2: INPUT #1, D$(I): NEXT: CLOSE 1
 

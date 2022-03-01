@@ -30,4 +30,3 @@ IF Cnf.MonTyp >= 3 AND Cnf.MonTyp <= 5 THEN
 ELSE
    Cnf.CurSize = 12
 END IF
-
