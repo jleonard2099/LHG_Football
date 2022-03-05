@@ -11,7 +11,8 @@
 *** From WWW - "3 IN 1 FOOTBALL V6.3"
 *** From Code - "3 IN 1 FOOTBALL V6.3"
 
+[ ] Re-create all library code natively in BASIC
+
 [ ] Attempt first compilation of each game
 	[ ] bring in files from "misc" as needed	
 	[ ] delete "misc" folder when done 
-
