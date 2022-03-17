@@ -1,5 +1,5 @@
 
-* PRELIMINARY WORK
+* PHASE 1 - PRELIMINARY WORK
 
 ** GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
 
@@ -8,26 +8,26 @@
 
 
 ** GOAL: COMPILE FULL GAMES FROM SOURCES
-*** From WWW - "3 IN 1 FOOTBALL V6.3"
-*** From Code - "3 IN 1 FOOTBALL V6.3"
 
-[ ] Re-create dependent functions with no QB64 equivalent in native BASIC
+[X] Re-create dependent functions with no QB64 equivalent in native BASIC
 	[X] ClearEOL
 	[X] FCopy
 	[X] MAMenu
 	[X] MMenuVert
-	[ ] MPaintBox
+	[X] MScrnSave/MScrnRest
 	[X] QPrint/MQPrint	
 	[X] ReadFile + FCount
 	[X] Text In
 	[X] YesNoB
 	
-[ ] Replace dependent functions with QB64 equivalents
+[X] Replace dependent functions with QB64 equivalents
 
-[ ] Make code compatible with QB64
-	[ ] Remove unused DECLARE / DIM
-	[ ] Replace RND(1) with RND
+[X] Remove obsolete code
+	Remove checks for disk drives
+	Remove references to SortStr (not needed)
+		They are all used to sort file lists
+		My function for getting file lists does a sort
 
-[ ] Attempt first compilation of each game
-	[ ] bring in files from "misc" as needed	
-	[ ] delete "misc" folder when done 
+[X] Make code compatible with QB64
+
+[ ] Attempt first compilation of each file

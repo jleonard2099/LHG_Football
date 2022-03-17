@@ -1,393 +1,603 @@
-$INCLUDE "DEFS.INC"
-$INCLUDE "DIRECTRY.INC"
-  D% = fndrivecode%(drive$)
-  DIM A$(270), S$(270), ATT(270)
+
+DIM A$(270), S$(270), ATT(270)
+
 1 DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), VV$(500), V%(500)
+
 10 OPEN "DEV.BAS" FOR INPUT AS #2: FOR I = 0 TO 1: INPUT #2, D$(I): NEXT: CLOSE 2
 YN$ = "88"
-     OPEN "DATA.88" FOR INPUT AS #2
-     FOR I = 1 TO 237
-     INPUT #2, A$(I), S$(I), ATT(I)
-     NEXT
-     CLOSE 2
-
-    FOR B8% = 1 TO 193
-
-     GOSUB 9500
+OPEN "DATA.88" FOR INPUT AS #2
+	FOR I = 1 TO 237
+	INPUT #2, A$(I), S$(I), ATT(I)
+	NEXT
+CLOSE 2
+	 FOR B8% = 1 TO 193
+	  GOSUB 9500
 FOR I = 1 TO 237
-    IF RIGHT$(A$, LEN(A$) - 3) = RIGHT$(A$(I), LEN(A$(I)) - 3) THEN S$ = S$(I): ATT = ATT(I): GOTO 25
-    NEXT
-    PRINT "ENTER STADIUM FOR "; A$; " "; : INPUT S$
-    INPUT "AVERAGE ATTENDANCE "; ATT
-25   OPEN D$(0) + "STADIUMS." + YN$ FOR RANDOM AS #2 LEN = 50
-     FIELD #2, 15 AS Q$(1), 30 AS Q$(2), 4 AS Q$(3), 1 AS Q$(4)
-     LSET Q$(1) = A$
-     LSET Q$(2) = S$
-     LSET Q$(3) = MKL$(ATT)
-     LSET Q$(4) = "x"
-     PUT #2, B8%
-     CLOSE 2
+	IF RIGHT$(A$, LEN(A$) - 3) = RIGHT$(A$(I), LEN(A$(I)) - 3) THEN S$ = S$(I): ATT = ATT(I): GOTO 25
+	NEXT
+	PRINT "ENTER STADIUM FOR "; A$; " "; : INPUT S$
+	INPUT "AVERAGE ATTENDANCE "; ATT
 
-    NEXT
-    END
+25   OPEN D$(0) + "STADIUMS." + YN$ FOR RANDOM AS #2 LEN = 50
+	FIELD #2, 15 AS Q$(1), 30 AS Q$(2), 4 AS Q$(3), 1 AS Q$(4)
+	LSET Q$(1) = A$
+	LSET Q$(2) = S$
+	LSET Q$(3) = MKL$(ATT)
+	LSET Q$(4) = "x"
+	PUT #2, B8%
+CLOSE 2
+	 NEXT
+	END
 
 500 FOR I = 0 TO 9
-        A0%(I) = 0: A1%(I) = 0: A2%(I) = 0: A3%(I) = 0: A1$(I) = ""
-    NEXT
-    FOR I = 0 TO 5
-        A4%(I) = 0: A5%(I) = 0: A2$(I) = ""
-    NEXT
-    FOR I = 0 TO 3
-        A6%(I) = 0: A7%(I) = 0: A8%(I) = 0: QX%(I) = 0: A3$(I) = ""
-        NEXT
-        FOR I = 0 TO 2
-        A9%(I) = 0: B%(I) = 0: B1%(I) = 0: B2%(I) = 0: A4$(I) = "": A5$(I) = ""
-        NEXT
-        A6$(0) = "": B3%(I) = 0
-        FOR I = 0 TO 1
-        B4%(I) = 0: B5%(I) = 0: B7%(I) = 0: B8%(I) = 0: A7$(I) = ""
-        NEXT
-        RETURN
+		A0%(I) = 0: A1%(I) = 0: A2%(I) = 0: A3%(I) = 0: A1$(I) = ""
+	NEXT
+	FOR I = 0 TO 5
+		A4%(I) = 0: A5%(I) = 0: A2$(I) = ""
+	NEXT
+	FOR I = 0 TO 3
+		A6%(I) = 0: A7%(I) = 0: A8%(I) = 0: QX%(I) = 0: A3$(I) = ""
+		NEXT
+		FOR I = 0 TO 2
+		A9%(I) = 0: B%(I) = 0: B1%(I) = 0: B2%(I) = 0: A4$(I) = "": A5$(I) = ""
+		NEXT
+		A6$(0) = "": B3%(I) = 0
+		FOR I = 0 TO 1
+		B4%(I) = 0: B5%(I) = 0: B7%(I) = 0: B8%(I) = 0: A7$(I) = ""
+		NEXT
+		RETURN
 
 4091 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE";
-4092 I$ = INKEY$: IF I$ = "" THEN 4092
+4092 I$ = GetKeyPress$
+
 4095 RETURN
 
 3100 NT = 0
-     OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
-     Y = LOF(1)
-     FIELD #1, 15 AS Q$(0), 640 AS X$
-     FOR I1 = 1 TO Y / 934
-     GET #1, I1
-     FOR I2 = 1 TO 15
-     IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 3105
-     NEXT I2
-     NT = NT + 1
-     VV$(NT) = Q$(0): V%(NT) = I1
+OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+	Y = LOF(1)
+	FIELD #1, 15 AS Q$(0), 640 AS X$
+	FOR I1 = 1 TO Y / 934
+	GET #1, I1
+	FOR I2 = 1 TO 15
+	IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 3105
+	NEXT I2
+	NT = NT + 1
+	VV$(NT) = Q$(0): V%(NT) = I1
+
 3105 NEXT I1
-    CLOSE 1
+CLOSE 1
 TS% = INT((NT - 1) / 80)
+
 3102 SS% = 0
+
 3101 COLOR , 4: CLS : LOCATE , 33: COLOR 14: PRINT "TEAM SELECTION": COLOR 15
-    FOR X = 1 TO 20
-    LOCATE 3 + X, 1: PRINT VV$(SS% * 80 + X);
-    LOCATE , 21: PRINT VV$(SS% * 80 + 20 + X);
-    LOCATE , 41: PRINT VV$(SS% * 80 + 40 + X);
-    LOCATE , 61: PRINT VV$(SS% * 80 + 60 + X)
-    NEXT
-    LOCATE 25, 1: COLOR 14: PRINT "ESC"; : COLOR 15: PRINT "-SELECT NEW ID  PGDN  PGUP  "; : COLOR 14: PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
-    LOCATE 4, 1: COLOR 0, 7: PRINT VV$(SS% * 80 + 1); : COLOR 15, 4
+	FOR X = 1 TO 20
+	LOCATE 3 + X, 1: PRINT VV$(SS% * 80 + X);
+	LOCATE , 21: PRINT VV$(SS% * 80 + 20 + X);
+	LOCATE , 41: PRINT VV$(SS% * 80 + 40 + X);
+	LOCATE , 61: PRINT VV$(SS% * 80 + 60 + X)
+	NEXT
+	LOCATE 25, 1: COLOR 14: PRINT "ESC"; : COLOR 15: PRINT "-SELECT NEW ID  PGDN  PGUP  "; : COLOR 14: PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
+	LOCATE 4, 1: COLOR 0, 7: PRINT VV$(SS% * 80 + 1); : COLOR 15, 4
+
 3108 X = INT((POS(X) - 1) / 20) + 1: Y = CSRLIN
-    REM:PRINT X,Y
-3109 I$ = INKEY$: IF I$ = "" THEN 3109
-    IF I$ = CHR$(0) + "Q" THEN 3110
-    IF I$ = CHR$(0) + "I" THEN 3120
-    IF I$ = CHR$(0) + "G" THEN SS% = 0: GOTO 3101
-    IF I$ = CHR$(0) + "O" THEN SS% = TS%: GOTO 3101
-    IF I$ = CHR$(0) + "H" THEN 3130
-    IF I$ = CHR$(0) + "M" THEN 3135
-    IF I$ = CHR$(0) + "P" THEN 3140
-    IF I$ = CHR$(0) + "K" THEN 3145
-    IF I$ = CHR$(27) THEN BO% = 1: RETURN
-    IF I$ = CHR$(13) THEN 3190
-3110 REM *** PAGE DOWN ***
-    IF SS% = TS% THEN 3108
-    SS% = SS% + 1: GOTO 3101
-3120 REM *** PAGE UP ***
-    IF SS% = 0 THEN 3108
-    SS% = SS% - 1: GOTO 3101
-3130 REM *** CURSOR UP ***
-    IF Y < 4 THEN 3108
-    GOSUB 3150
-    Y = Y - 1: IF Y < 4 THEN Y = 4
-    GOSUB 3151
-    GOTO 3108
-3135 REM *** CURSOR RIGHT ***
-    IF X = 4 THEN 3108
-    IF SS% * 80 + Y - 3 + (X) * 20 > NT THEN 3108
-    GOSUB 3150
-    X = X + 1: IF X >= 4 THEN X = 4
-    GOSUB 3151
-    GOTO 3108
-3140 REM *** CURSOR DOWN ***
-    IF Y >= 23 THEN 3108
-    IF SS% * 80 + Y + 1 - 3 + (X - 1) * 20 > NT THEN 3108
-    GOSUB 3150
-    Y = Y + 1: IF Y >= 23 THEN Y = 23
-    GOSUB 3151
-    GOTO 3108
-3145 REM *** CURSOR LEFT ***
-    IF X = 1 THEN 3108
-    GOSUB 3150
-    X = X - 1: IF X <= 1 THEN X = 1
-    GOSUB 3151
-    GOTO 3108
+	'PRINT X,Y
+3109 I$ = GetKeyPress$
+	IF I$ = CHR$(0) + "Q" THEN 3110
+	IF I$ = CHR$(0) + "I" THEN 3120
+	IF I$ = CHR$(0) + "G" THEN SS% = 0: GOTO 3101
+	IF I$ = CHR$(0) + "O" THEN SS% = TS%: GOTO 3101
+	IF I$ = CHR$(0) + "H" THEN 3130
+	IF I$ = CHR$(0) + "M" THEN 3135
+	IF I$ = CHR$(0) + "P" THEN 3140
+	IF I$ = CHR$(0) + "K" THEN 3145
+	IF I$ = CHR$(27) THEN BO% = 1: RETURN
+	IF I$ = CHR$(13) THEN 3190
+
+3110 ' *** PAGE DOWN ***
+	IF SS% = TS% THEN 3108
+	SS% = SS% + 1: GOTO 3101
+
+3120 ' *** PAGE UP ***
+	IF SS% = 0 THEN 3108
+	SS% = SS% - 1: GOTO 3101
+
+3130 ' *** CURSOR UP ***
+	IF Y < 4 THEN 3108
+	GOSUB 3150
+	Y = Y - 1: IF Y < 4 THEN Y = 4
+	GOSUB 3151
+	GOTO 3108
+
+3135 ' *** CURSOR RIGHT ***
+	IF X = 4 THEN 3108
+	IF SS% * 80 + Y - 3 + (X) * 20 > NT THEN 3108
+	GOSUB 3150
+	X = X + 1: IF X >= 4 THEN X = 4
+	GOSUB 3151
+	GOTO 3108
+
+3140 ' *** CURSOR DOWN ***
+	IF Y >= 23 THEN 3108
+	IF SS% * 80 + Y + 1 - 3 + (X - 1) * 20 > NT THEN 3108
+	GOSUB 3150
+	Y = Y + 1: IF Y >= 23 THEN Y = 23
+	GOSUB 3151
+	GOTO 3108
+
+3145 ' *** CURSOR LEFT ***
+	IF X = 1 THEN 3108
+	GOSUB 3150
+	X = X - 1: IF X <= 1 THEN X = 1
+	GOSUB 3151
+	GOTO 3108
+
 3150 LOCATE Y, (X - 1) * 20 + 1: COLOR 15, 4
-    PRINT VV$(Y - 3 + (X - 1) * 20 + SS% * 80);
-    RETURN
+	PRINT VV$(Y - 3 + (X - 1) * 20 + SS% * 80);
+	RETURN
+
 3151 COLOR 0, 7: LOCATE Y, (X - 1) * 20 + 1
-    PRINT VV$(Y - 3 + (X - 1) * 20 + SS% * 80);
-    COLOR 15, 4
-    RETURN
+	PRINT VV$(Y - 3 + (X - 1) * 20 + SS% * 80);
+	COLOR 15, 4
+	RETURN
+
 3190 B8% = V%(SS% * 80 + Y - 3 + (X - 1) * 20): GOTO 9500
 
 4100 CLOSE 1
-     BEEP: CLS : PRINT "ERROR:: TEAMS DISK NOT FOUND OR PATHS NOT SET CORRECTLY"
-     LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
-4105 I$ = INKEY$: IF I$ = "" THEN 4105
-5000 REM *** ERROR HANDLING ROUTINES ***
+	BEEP: CLS : PRINT "ERROR:: TEAMS DISK NOT FOUND OR PATHS NOT SET CORRECTLY"
+	LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
+4105 I$ = GetKeyPress$
+
+5000 ' *** ERROR HANDLING ROUTINES ***
+
 9400 FOR I = 0 TO 15: C2(I) = 0: C3(I) = 0: NEXT
-     U = 0
-     FOR I = 1 TO 9
+	U = 0
+	FOR I = 1 TO 9
+
 9401 IF A0%(I) = 0 THEN U = U + 1: GOTO 9403
+
 9402 C3(I) = A0%(I) - A0%(I - 1 - U): U = 0
+
 9403 NEXT
-     FOR I = 1 TO 9: A0%(I) = C3(I): NEXT
+	FOR I = 1 TO 9: A0%(I) = C3(I): NEXT
+
 9404 FOR I = 0 TO 5: A2%(I + 10) = A4%(I): NEXT
+
 9405 U = 0
-     FOR I = 1 TO 15
+	FOR I = 1 TO 15
+
 9406 IF A2%(I) = 0 THEN U = U + 1: GOTO 9408
+
 9407 C2(I) = A2%(I) - A2%(I - 1 - U): U = 0
+
 9408 NEXT
+
 9409 FOR I = 1 TO 15: A2%(I) = C2(I): NEXT
+
 9410 FOR I = 0 TO 5: A4%(I) = A2%(I + 10): NEXT
+
 9411 FOR I = 3 TO 1 STEP -1
+
 9412 IF A6%(I) = 0 THEN 9414
+
 9413 A6%(I) = A6%(I) - A6%(I - 1)
+
 9414 NEXT
+
 9415 FOR I = 2 TO 1 STEP -1
+
 9416 IF A9%(I) = 0 THEN 9418
+
 9417 A9%(I) = A9%(I) - A9%(I - 1)
+
 9418 NEXT
+
 9419 FOR I = 2 TO 1 STEP -1
+
 9420 IF B1%(I) = 0 THEN 9422
+
 9421 B1%(I) = B1%(I) - B1%(I - 1)
+
 9422 NEXT
+
 9423 FOR I = 1 TO 1 STEP -1
+
 9424 IF B5%(I) = 0 THEN 9426
+
 9425 B5%(I) = B5%(I) - B5%(I - 1)
+
 9426 NEXT
+
 9427 FOR I = 1 TO 1 STEP -1
+
 9428 IF B8%(I) = 0 THEN 9430
+
 9429 B8%(I) = B8%(I) - B8%(I - 1)
+
 9430 NEXT
+
 9499 RETURN
+
 9500 ON ERROR GOTO 4100
-     OPEN D$(0) + "FOOT." + YN$ FOR INPUT AS #1
-     CLOSE 1
-     OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+OPEN D$(0) + "FOOT." + YN$ FOR INPUT AS #1
+CLOSE 1
+OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+
 9501 FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
+
 9502 FIELD #1, 56 AS Q$(0), 12 AS Q$(16), 2 AS Q$(17), 2 AS Q$(18), 2 AS Q$(19), 2 AS Q$(20), 12 AS Q$(21), 2 AS Q$(22), 2 AS Q$(23), 2 AS Q$(24), 2 AS Q$(25), 200 AS Q$, 200 AS Q$(200), 238 AS Q$(201), 200 AS Q$
+
 9503 FIELD #1, 96 AS Q$(0), 12 AS Q$(26), 2 AS Q$(27), 2 AS Q$(28), 2 AS Q$(29), 2 AS Q$(30), 12 AS Q$(31), 2 AS Q$(32), 2 AS Q$(33), 2 AS Q$(34), 2 AS Q$(35), 200 AS Q$(199), 200 AS Q$(200), 198 AS Q$(201), 200 AS Q$
+
 9504 FIELD #1, 136 AS Q$(0), 12 AS Q$(36), 2 AS Q$(37), 2 AS Q$(38), 2 AS Q$(39), 2 AS Q$(40), 12 AS Q$(41), 2 AS Q$(42), 2 AS Q$(43), 2 AS Q$(44), 2 AS Q$(45), 200 AS Q$(199), 200 AS Q$(200), 158 AS Q$(201), 200 AS Q$
+
 9505 FIELD #1, 176 AS Q$(0), 12 AS Q$(46), 2 AS Q$(47), 2 AS Q$(48), 2 AS Q$(49), 2 AS Q$(50), 12 AS Q$(51), 2 AS Q$(52), 2 AS Q$(53), 2 AS Q$(54), 2 AS Q$(55), 200 AS Q$(199), 200 AS Q$(200), 118 AS Q$(201), 200 AS Q$
+
 9506 FIELD #1, 216 AS Q$(0), 12 AS Q$(56), 2 AS Q$(57), 2 AS Q$(58), 2 AS Q$(59), 2 AS Q$(60), 12 AS Q$(61), 2 AS Q$(62), 2 AS Q$(63), 2 AS Q$(64), 2 AS Q$(65), 200 AS Q$(199), 200 AS Q$(200), 78 AS Q$(201), 200 AS Q$
+
 9507 FIELD #1, 200 AS Q$(0), 56 AS Q$, 12 AS Q$(66), 2 AS Q$(67), 2 AS Q$(68), 12 AS Q$(69), 2 AS Q$(70), 2 AS Q$(71), 12 AS Q$(72), 2 AS Q$(73), 2 AS Q$(74), 200 AS Q$(99), 200 AS Q$(200), 200 AS Q$, 30 AS Q$
+
 9508 FIELD #1, 200 AS Q$(0), 100 AS Q$, 4 AS Q$(201), 12 AS Q$(75), 2 AS Q$(76), 2 AS Q$(77), 12 AS Q$(78), 2 AS Q$(79), 2 AS Q$(80), 12 AS Q$(81), 2 AS Q$(82), 2 AS Q$(83), 200 AS Q$(199), 182 AS Q$(200), 200 AS Q$
+
 9509 FIELD #1, 200 AS Q$(0), 152 AS Q$(201), 12 AS Q$(84), 2 AS Q$(85), 2 AS Q$(86), 2 AS Q$(87), 2 AS Q$(88), 12 AS Q$(89), 2 AS Q$(90), 2 AS Q$(91), 2 AS Q$(92), 2 AS Q$(93), 200 AS Q$(199), 200 AS Q$(200), 142 AS Q$(202)
+
 9510 FIELD #1, 200 AS Q$(0), 192 AS Q$(201), 12 AS Q$(94), 2 AS Q$(95), 2 AS Q$(96), 2 AS Q$(97), 2 AS Q$(98), 12 AS Q$(99), 2 AS Q$(100), 2 AS Q$(101), 2 AS Q$(102), 2 AS Q$(103), 200 AS Q$(199), 200 AS Q$(200), 102 AS Q$(202)
+
 9511 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 32 AS Q$(200), 12 AS Q$(104), 2 AS Q$(105), 2 AS Q$(106), 12 AS Q$(107), 2 AS Q$(108), 2 AS Q$(109), 12 AS Q$(110), 2 AS Q$(111), 2 AS Q$(112), 200 AS Q$(201), 200 AS Q$(202), 54 AS Q$(203)
+
 9512 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 80 AS Q$(200), 12 AS Q$(113), 2 AS Q$(114), 2 AS Q$(115), 12 AS Q$(116), 2 AS Q$(117), 2 AS Q$(118), 12 AS Q$(119), 2 AS Q$(120), 2 AS Q$(121), 200 AS Q$(201), 200 AS Q$(202), 6 AS Q$(203)
+
 9513 FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
 AS Q$
+
 9514 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 184 AS Q$(200), 12 AS Q$(135), 2 AS Q$(136), 12 AS Q$(137), 2 AS Q$(138), 12 AS Q$(139), 2 AS Q$(140), 12 AS Q$(141), 2 AS Q$(142), 12 AS Q$(143), 2 AS Q$(144), 200 AS Q$(201), 80 AS Q$(202)
+
 9515 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 154 AS Q$(200), 12 AS Q$(145), 2 AS Q$(146), 12 AS Q$(147), 2 AS Q$(148), 12 AS Q$(149), 2 AS Q$(150), 12 AS Q$(151), 2 AS Q$(152), 12 AS Q$(153), 2 AS Q$(154), 200 AS Q$(201), 10 AS Q$(202)
+
 9516 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 224 AS Q$(200), 12 AS Q$(155), 2 AS Q$(156), 12 AS Q$(157), 2 AS Q$(158), 12 AS Q$(159), 2 AS Q$(160), 12 AS Q$(161), 2 AS Q$(162), 12 AS Q$(163), 2 AS Q$(164), 140 AS Q$(201)
+
 9517 FIELD #1, 200 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 194 AS Q$(200), 12 AS Q$(165), 2 AS Q$(166), 12 AS Q$(167), 2 AS Q$(168), 12 AS Q$(169), 2 AS Q$(170), 12 AS Q$(171), 2 AS Q$(172), 12 AS Q$(173), 2 AS Q$(174), 70 AS Q$(201)
+
 9518 FIELD #1, 232 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 232 AS Q$(200), 12 AS Q$(175), 2 AS Q$(176), 12 AS Q$(177), 2 AS Q$(178), 12 AS Q$(179), 2 AS Q$(180), 12 AS Q$(181), 2 AS Q$(182), 12 AS Q$(183), 2 AS Q$(184)
+
 9519 GET #1, B8%
-     A$ = Q$(1): AA$ = Q$(2)
+	A$ = Q$(1): AA$ = Q$(2)
+
 9520 IF RIGHT$(A$, 1) = " " THEN A$ = LEFT$(A$, LEN(A$) - 1): GOTO 9520
+
 9521 FOR I = 0 TO 7: B6%(I) = CVI(Q$(I + 3)): NEXT I
+
 9522 FOR I = 0 TO 4: PA%(I) = CVI(Q$(I + 11)): NEXT I
+
 9523 FOR I = 0 TO 9
+
 9524 A1$(I) = Q$(I * 5 + 16)
+
 9525 A0%(I) = CVI(Q$(I * 5 + 17))
+
 9526 A1%(I) = CVI(Q$(I * 5 + 18))
+
 9527 A2%(I) = CVI(Q$(I * 5 + 19))
+
 9528 A3%(I) = CVI(Q$(I * 5 + 20))
+
 9529 NEXT I
+
 9530 FOR I = 0 TO 5
+
 9531 A2$(I) = Q$(I * 3 + 66)
+
 9532 A4%(I) = CVI(Q$(I * 3 + 67))
+
 9533 A5%(I) = CVI(Q$(I * 3 + 68))
+
 9534 NEXT I
+
 9535 FOR I = 0 TO 3
+
 9536 A3$(I) = Q$(I * 5 + 84)
+
 9537 A6%(I) = CVI(Q$(I * 5 + 85))
+
 9538 A7%(I) = CVI(Q$(I * 5 + 86))
+
 9539 A8%(I) = CVI(Q$(I * 5 + 87))
+
 9540 QX%(I) = CVI(Q$(I * 5 + 88))
+
 9548 NEXT I
+
 9549 FOR I = 0 TO 2
+
 9550 A4$(I) = Q$(I * 3 + 104)
+
 9551 A9%(I) = CVI(Q$(I * 3 + 105))
+
 9552 B%(I) = CVI(Q$(I * 3 + 106))
+
 9553 NEXT I
+
 9554 FOR I = 0 TO 2
+
 9555 A5$(I) = Q$(I * 3 + 113)
+
 9556 B1%(I) = CVI(Q$(I * 3 + 114))
+
 9557 B2%(I) = CVI(Q$(I * 3 + 115))
+
 9558 NEXT I
+
 9559 A6$(0) = Q$(122)
+
 9560 B3%(0) = CVI(Q$(123))
+
 9561 A7$(0) = Q$(124)
+
 9562 B4%(0) = CVI(Q$(125))
+
 9563 B5%(0) = CVI(Q$(126))
+
 9564 B7%(0) = CVI(Q$(127))
+
 9565 B8%(0) = CVI(Q$(128))
+
 9571 A7$(1) = Q$(129)
+
 9572 B4%(1) = CVI(Q$(130))
+
 9573 B5%(1) = CVI(Q$(131))
+
 9574 B7%(1) = CVI(Q$(132))
+
 9575 B8%(1) = CVI(Q$(133))
+
 9576 YC = CVI(Q$(134))
+
 9580 FOR I = 0 TO 14
+
 9581 DS$(I) = Q$(I * 2 + 135)
+
 9582 DS%(I) = CVI(Q$(I * 2 + 136))
+
 9583 NEXT I
+
 9584 FOR I = 0 TO 9
+
 9585 DI$(I) = Q$(I * 2 + 165)
+
 9586 DI%(I) = CVI(Q$(I * 2 + 166))
+
 9597 NEXT I
+
 9599 CLOSE #1: GOTO 9400
+
 9600 REM
-9601 REM:PRINT YC,YC%
-     YC% = YC
-     REM:PRINT YC,YC%
-9602 REM:I$=INKEY$:IF I$="" THEN 9602
-9605 REM:GOSUB 9900
-     S0 = 0: S1 = 0: S2 = 0: S3 = 0
-     FOR I = 0 TO 9: S0 = S0 + A0%(I): S2 = S2 + A2%(I): NEXT
-     S4 = 100 / S0
-     FOR I = 0 TO 9: IF A0%(I) <> 0 THEN A0%(I) = INT(S4 * A0%(I) + .5) + S1: S1 = A0%(I)
-     IF A0%(I) > 100 THEN A0%(I) = 100
-     NEXT I
-     FOR I = 0 TO 5: S2 = S2 + A4%(I): NEXT
-     S5 = 100 / S2
-     FOR I = 0 TO 9: IF A2%(I) <> 0 THEN A2%(I) = INT(S5 * A2%(I) + .5) + S3: S3 = A2%(I)
-     IF A2%(I) > 100 THEN A2%(I) = 100
-     NEXT I
-     FOR I = 0 TO 5: IF A4%(I) <> 0 THEN A4%(I) = INT(S5 * A4%(I) + .5) + S3: S3 = A4%(I)
-     IF A4%(I) > 100 THEN A4%(I) = 100
-     NEXT I
-     S6 = 0: S7 = 0
-     FOR I = 0 TO 3: S6 = S6 + A6%(I): NEXT
-     S8 = 100 / S6
-     FOR I = 0 TO 3: IF A6%(I) <> 0 THEN A6%(I) = INT(S8 * A6%(I) + .5) + S7: S7 = A6%(I)
-     IF A6%(I) > 100 THEN A6%(I) = 100
-     NEXT
-     G0 = 0: G1 = 0: G3 = 0: G4 = 0
-     FOR I = 0 TO 2: G0 = G0 + A9%(I): G3 = G3 + B1%(I): NEXT
-     G2 = 100 / G0: G5 = 100 / G3
-     FOR I = 0 TO 2: IF A9%(I) <> 0 THEN A9%(I) = INT(G2 * A9%(I) + .5) + G1: G1 = A9%(I)
-     IF A9%(I) > 100 THEN A9%(I) = 100
-     NEXT
-     FOR I = 0 TO 2: IF B1%(I) <> 0 THEN B1%(I) = INT(G5 * B1%(I) + .5) + G4: G4 = B1%(I)
-     IF B1%(I) > 100 THEN B1%(I) = 100
-     NEXT
-     G0 = 0: G1 = 0: G3 = 0: G4 = 0
-     FOR I = 0 TO 1: G0 = G0 + B5%(I): G3 = G3 + B8%(I): NEXT
-     G2 = 100 / G0: G5 = 100 / G3
-     FOR I = 0 TO 1: IF B5%(I) <> 0 THEN B5%(I) = INT(G2 * B5%(I) + .5) + G1: G1 = B5%(I)
-     IF B5%(I) > 100 THEN B5%(I) = 100
-     NEXT
-     FOR I = 0 TO 1: IF B8%(I) <> 0 THEN B8%(I) = INT(G5 * B8%(I) + .5) + G4: G4 = B8%(I)
-     IF B8%(I) > 100 THEN B8%(I) = 100
-     NEXT
+
+9601 'PRINT YC,YC%
+	YC% = YC
+	'PRINT YC,YC%
+
+9602 'I$=GetKeyPress$
+9605 'GOSUB 9900
+	S0 = 0: S1 = 0: S2 = 0: S3 = 0
+	FOR I = 0 TO 9: S0 = S0 + A0%(I): S2 = S2 + A2%(I): NEXT
+	S4 = 100 / S0
+	FOR I = 0 TO 9: IF A0%(I) <> 0 THEN A0%(I) = INT(S4 * A0%(I) + .5) + S1: S1 = A0%(I)
+	IF A0%(I) > 100 THEN A0%(I) = 100
+	NEXT I
+	FOR I = 0 TO 5: S2 = S2 + A4%(I): NEXT
+	S5 = 100 / S2
+	FOR I = 0 TO 9: IF A2%(I) <> 0 THEN A2%(I) = INT(S5 * A2%(I) + .5) + S3: S3 = A2%(I)
+	IF A2%(I) > 100 THEN A2%(I) = 100
+	NEXT I
+	FOR I = 0 TO 5: IF A4%(I) <> 0 THEN A4%(I) = INT(S5 * A4%(I) + .5) + S3: S3 = A4%(I)
+	IF A4%(I) > 100 THEN A4%(I) = 100
+	NEXT I
+	S6 = 0: S7 = 0
+	FOR I = 0 TO 3: S6 = S6 + A6%(I): NEXT
+	S8 = 100 / S6
+	FOR I = 0 TO 3: IF A6%(I) <> 0 THEN A6%(I) = INT(S8 * A6%(I) + .5) + S7: S7 = A6%(I)
+	IF A6%(I) > 100 THEN A6%(I) = 100
+	NEXT
+	G0 = 0: G1 = 0: G3 = 0: G4 = 0
+	FOR I = 0 TO 2: G0 = G0 + A9%(I): G3 = G3 + B1%(I): NEXT
+	G2 = 100 / G0: G5 = 100 / G3
+	FOR I = 0 TO 2: IF A9%(I) <> 0 THEN A9%(I) = INT(G2 * A9%(I) + .5) + G1: G1 = A9%(I)
+	IF A9%(I) > 100 THEN A9%(I) = 100
+	NEXT
+	FOR I = 0 TO 2: IF B1%(I) <> 0 THEN B1%(I) = INT(G5 * B1%(I) + .5) + G4: G4 = B1%(I)
+	IF B1%(I) > 100 THEN B1%(I) = 100
+	NEXT
+	G0 = 0: G1 = 0: G3 = 0: G4 = 0
+	FOR I = 0 TO 1: G0 = G0 + B5%(I): G3 = G3 + B8%(I): NEXT
+	G2 = 100 / G0: G5 = 100 / G3
+	FOR I = 0 TO 1: IF B5%(I) <> 0 THEN B5%(I) = INT(G2 * B5%(I) + .5) + G1: G1 = B5%(I)
+	IF B5%(I) > 100 THEN B5%(I) = 100
+	NEXT
+	FOR I = 0 TO 1: IF B8%(I) <> 0 THEN B8%(I) = INT(G5 * B8%(I) + .5) + G4: G4 = B8%(I)
+	IF B8%(I) > 100 THEN B8%(I) = 100
+	NEXT
+
 9774 FOR I = 9 TO 0 STEP -1: IF A0%(I) <> 0 THEN A0%(I) = 100: GOTO 9776
+
 9775 NEXT
+
 9776 FOR I = 5 TO 0 STEP -1: IF A4%(I) <> 0 THEN A4%(I) = 100: GOTO 9778
+
 9777 NEXT
+
 9778 FOR I = 3 TO 0 STEP -1: IF A6%(I) <> 0 THEN A6%(I) = 100: GOTO 9780
+
 9779 NEXT
+
 9780 FOR I = 2 TO 0 STEP -1: IF A9%(I) <> 0 THEN A9%(I) = 100: GOTO 9782
+
 9781 NEXT
+
 9782 FOR I = 2 TO 0 STEP -1: IF B1%(I) <> 0 THEN B1%(I) = 100: GOTO 9784
+
 9783 NEXT
+
 9784 FOR I = 1 TO 0 STEP -1: IF B5%(I) <> 0 THEN B5%(I) = 100: GOTO 9786
+
 9785 NEXT
+
 9786 FOR I = 1 TO 0 STEP -1: IF B8%(I) <> 0 THEN B8%(I) = 100: GOTO 9800
+
 9787 NEXT
+
 9800 OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
+
 9801 FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
+
 9802 FIELD #1, 56 AS Q$(0), 12 AS Q$(16), 2 AS Q$(17), 2 AS Q$(18), 2 AS Q$(19), 2 AS Q$(20), 12 AS Q$(21), 2 AS Q$(22), 2 AS Q$(23), 2 AS Q$(24), 2 AS Q$(25), 200 AS Q$, 200 AS Q$(200), 238 AS Q$(201), 200 AS Q$
+
 9803 FIELD #1, 96 AS Q$(0), 12 AS Q$(26), 2 AS Q$(27), 2 AS Q$(28), 2 AS Q$(29), 2 AS Q$(30), 12 AS Q$(31), 2 AS Q$(32), 2 AS Q$(33), 2 AS Q$(34), 2 AS Q$(35), 200 AS Q$(199), 200 AS Q$(200), 198 AS Q$(201), 200 AS Q$
+
 9804 FIELD #1, 136 AS Q$(0), 12 AS Q$(36), 2 AS Q$(37), 2 AS Q$(38), 2 AS Q$(39), 2 AS Q$(40), 12 AS Q$(41), 2 AS Q$(42), 2 AS Q$(43), 2 AS Q$(44), 2 AS Q$(45), 200 AS Q$(199), 200 AS Q$(200), 158 AS Q$(201), 200 AS Q$
+
 9805 FIELD #1, 176 AS Q$(0), 12 AS Q$(46), 2 AS Q$(47), 2 AS Q$(48), 2 AS Q$(49), 2 AS Q$(50), 12 AS Q$(51), 2 AS Q$(52), 2 AS Q$(53), 2 AS Q$(54), 2 AS Q$(55), 200 AS Q$(199), 200 AS Q$(200), 118 AS Q$(201), 200 AS Q$
+
 9806 FIELD #1, 216 AS Q$(0), 12 AS Q$(56), 2 AS Q$(57), 2 AS Q$(58), 2 AS Q$(59), 2 AS Q$(60), 12 AS Q$(61), 2 AS Q$(62), 2 AS Q$(63), 2 AS Q$(64), 2 AS Q$(65), 200 AS Q$(199), 200 AS Q$(200), 78 AS Q$(201), 200 AS Q$
+
 9807 FIELD #1, 200 AS Q$(0), 56 AS Q$, 12 AS Q$(66), 2 AS Q$(67), 2 AS Q$(68), 12 AS Q$(69), 2 AS Q$(70), 2 AS Q$(71), 12 AS Q$(72), 2 AS Q$(73), 2 AS Q$(74), 200 AS Q$(99), 200 AS Q$(200), 200 AS Q$, 30 AS Q$
+
 9808 FIELD #1, 200 AS Q$(0), 100 AS Q$, 4 AS Q$(201), 12 AS Q$(75), 2 AS Q$(76), 2 AS Q$(77), 12 AS Q$(78), 2 AS Q$(79), 2 AS Q$(80), 12 AS Q$(81), 2 AS Q$(82), 2 AS Q$(83), 200 AS Q$(199), 182 AS Q$(200), 200 AS Q$
+
 9809 FIELD #1, 200 AS Q$(0), 152 AS Q$(201), 12 AS Q$(84), 2 AS Q$(85), 2 AS Q$(86), 2 AS Q$(87), 2 AS Q$(88), 12 AS Q$(89), 2 AS Q$(90), 2 AS Q$(91), 2 AS Q$(92), 2 AS Q$(93), 200 AS Q$(199), 200 AS Q$(200), 142 AS Q$(202)
+
 9810 FIELD #1, 200 AS Q$(0), 192 AS Q$(201), 12 AS Q$(94), 2 AS Q$(95), 2 AS Q$(96), 2 AS Q$(97), 2 AS Q$(98), 12 AS Q$(99), 2 AS Q$(100), 2 AS Q$(101), 2 AS Q$(102), 2 AS Q$(103), 200 AS Q$(199), 200 AS Q$(200), 102 AS Q$(202)
+
 9811 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 32 AS Q$(200), 12 AS Q$(104), 2 AS Q$(105), 2 AS Q$(106), 12 AS Q$(107), 2 AS Q$(108), 2 AS Q$(109), 12 AS Q$(110), 2 AS Q$(111), 2 AS Q$(112), 200 AS Q$(201), 200 AS Q$(202), 54 AS Q$(203)
+
 9812 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 80 AS Q$(200), 12 AS Q$(113), 2 AS Q$(114), 2 AS Q$(115), 12 AS Q$(116), 2 AS Q$(117), 2 AS Q$(118), 12 AS Q$(119), 2 AS Q$(120), 2 AS Q$(121), 200 AS Q$(201), 200 AS Q$(202), 6 AS Q$(203)
+
 9813 FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
 AS Q$
-9814 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 184 AS Q$(200), 12 AS Q$(135), 2 AS Q$(136), 12 AS Q$(137), 2 AS Q$(138), 12 AS Q$(139), 2 AS Q$(140), 12 AS Q$(141), 2 AS Q$(142), 12 AS Q$(143), 2 AS Q$(144), 200 AS Q$(201), 80 AS Q$(202)
-9815 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 154 AS Q$(200), 12 AS Q$(145), 2 AS Q$(146), 12 AS Q$(147), 2 AS Q$(148), 12 AS Q$(149), 2 AS Q$(150), 12 AS Q$(151), 2 AS Q$(152), 12 AS Q$(153), 2 AS Q$(154), 200 AS Q$(201), 10 AS Q$(202)
-9816 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 224 AS Q$(200), 12 AS Q$(155), 2 AS Q$(156), 12 AS Q$(157), 2 AS Q$(158), 12 AS Q$(159), 2 AS Q$(160), 12 AS Q$(161), 2 AS Q$(162), 12 AS Q$(163), 2 AS Q$(164), 140 AS Q$(201)
-9817 FIELD #1, 200 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 194 AS Q$(200), 12 AS Q$(165), 2 AS Q$(166), 12 AS Q$(167), 2 AS Q$(168), 12 AS Q$(169), 2 AS Q$(170), 12 AS Q$(171), 2 AS Q$(172), 12 AS Q$(173), 2 AS Q$(174), 70 AS Q$(201)
-9818 FIELD #1, 232 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 232 AS Q$(200), 12 AS Q$(175), 2 AS Q$(176), 12 AS Q$(177), 2 AS Q$(178), 12 AS Q$(179), 2 AS Q$(180), 12 AS Q$(181), 2 AS Q$(182), 12 AS Q$(183), 2 AS Q$(184)
-9820 LSET Q$(1) = A$: LSET Q$(2) = AA$
-9821 FOR I = 0 TO 7: LSET Q$(I + 3) = MKI$(B6%(I)): NEXT I
-9822 FOR I = 0 TO 4: LSET Q$(I + 11) = MKI$(PA%(I)): NEXT I
-9823 FOR I = 0 TO 9
-9824 LSET Q$(I * 5 + 16) = A1$(I)
-9825 LSET Q$(I * 5 + 17) = MKI$(A0%(I))
-9826 LSET Q$(I * 5 + 18) = MKI$(A1%(I))
-9827 LSET Q$(I * 5 + 19) = MKI$(A2%(I))
-9828 LSET Q$(I * 5 + 20) = MKI$(A3%(I))
-9829 NEXT I
-9830 FOR I = 0 TO 5
-9831 LSET Q$(I * 3 + 66) = A2$(I)
-9832 LSET Q$(I * 3 + 67) = MKI$(A4%(I))
-9833 LSET Q$(I * 3 + 68) = MKI$(A5%(I))
-9834 NEXT I
-9835 FOR I = 0 TO 3
-9836 LSET Q$(I * 5 + 84) = A3$(I)
-9837 LSET Q$(I * 5 + 85) = MKI$(A6%(I))
-9838 LSET Q$(I * 5 + 86) = MKI$(A7%(I))
-9839 LSET Q$(I * 5 + 87) = MKI$(A8%(I))
-9840 LSET Q$(I * 5 + 88) = MKI$(QX%(I))
-9848 NEXT I
-9849 FOR I = 0 TO 2
-9850 LSET Q$(I * 3 + 104) = A4$(I)
-9851 LSET Q$(I * 3 + 105) = MKI$(A9%(I))
-9852 LSET Q$(I * 3 + 106) = MKI$(B%(I))
-9853 NEXT I
-9854 FOR I = 0 TO 2
-9855 LSET Q$(I * 3 + 113) = A5$(I)
-9856 LSET Q$(I * 3 + 114) = MKI$(B1%(I))
-9857 LSET Q$(I * 3 + 115) = MKI$(B2%(I))
-9858 NEXT I
-9859 LSET Q$(122) = A6$(0)
-9860 LSET Q$(123) = MKI$(B3%(0))
-9861 LSET Q$(124) = A7$(0)
-9862 LSET Q$(125) = MKI$(B4%(0))
-9863 LSET Q$(126) = MKI$(B5%(0))
-9864 LSET Q$(127) = MKI$(B7%(0))
-9865 LSET Q$(128) = MKI$(B8%(0))
-9871 LSET Q$(129) = A7$(1)
-9872 LSET Q$(130) = MKI$(B4%(1))
-9873 LSET Q$(131) = MKI$(B5%(1))
-9874 LSET Q$(132) = MKI$(B7%(1))
-9875 LSET Q$(133) = MKI$(B8%(1))
-9876 LSET Q$(134) = MKI$(YC%)
-9880 FOR I = 0 TO 14
-9881 LSET Q$(I * 2 + 135) = DS$(I)
-9882 LSET Q$(I * 2 + 136) = MKI$(DS%(I))
-9883 NEXT I
-9884 FOR I = 0 TO 9
-9885 LSET Q$(I * 2 + 165) = DI$(I)
-9886 LSET Q$(I * 2 + 166) = MKI$(DI%(I))
-9897 NEXT I
-9898 PUT #1, B8%
-9899 CLOSE #1: GOSUB 500: RETURN
-9990 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
-9991 I$ = INKEY$: IF I$ = "" THEN 9991
-9992 RETURN
 
-
+9814 FIELD #1, 200 AS Q$(0), 200 AS Q$(199), 184 AS Q$(200), 12 AS Q$(135), 2 AS Q$(136), 12 AS Q$(137), 2 AS Q$(138), 12 AS Q$(139), 2 AS Q$(140), 12 AS Q$(141), 2 AS Q$(142), 12 AS Q$(143), 2 AS Q$(144), 200 AS Q$(201), 80 AS Q$(202)
+
+9815 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 154 AS Q$(200), 12 AS Q$(145), 2 AS Q$(146), 12 AS Q$(147), 2 AS Q$(148), 12 AS Q$(149), 2 AS Q$(150), 12 AS Q$(151), 2 AS Q$(152), 12 AS Q$(153), 2 AS Q$(154), 200 AS Q$(201), 10 AS Q$(202)
+
+9816 FIELD #1, 200 AS Q$(0), 100 AS Q$, 200 AS Q$(199), 224 AS Q$(200), 12 AS Q$(155), 2 AS Q$(156), 12 AS Q$(157), 2 AS Q$(158), 12 AS Q$(159), 2 AS Q$(160), 12 AS Q$(161), 2 AS Q$(162), 12 AS Q$(163), 2 AS Q$(164), 140 AS Q$(201)
+
+9817 FIELD #1, 200 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 194 AS Q$(200), 12 AS Q$(165), 2 AS Q$(166), 12 AS Q$(167), 2 AS Q$(168), 12 AS Q$(169), 2 AS Q$(170), 12 AS Q$(171), 2 AS Q$(172), 12 AS Q$(173), 2 AS Q$(174), 70 AS Q$(201)
+
+9818 FIELD #1, 232 AS Q$(0), 200 AS Q$, 200 AS Q$(199), 232 AS Q$(200), 12 AS Q$(175), 2 AS Q$(176), 12 AS Q$(177), 2 AS Q$(178), 12 AS Q$(179), 2 AS Q$(180), 12 AS Q$(181), 2 AS Q$(182), 12 AS Q$(183), 2 AS Q$(184)
+
+9820 LSET Q$(1) = A$: LSET Q$(2) = AA$
+
+9821 FOR I = 0 TO 7: LSET Q$(I + 3) = MKI$(B6%(I)): NEXT I
+
+9822 FOR I = 0 TO 4: LSET Q$(I + 11) = MKI$(PA%(I)): NEXT I
+
+9823 FOR I = 0 TO 9
+
+9824 LSET Q$(I * 5 + 16) = A1$(I)
+
+9825 LSET Q$(I * 5 + 17) = MKI$(A0%(I))
+
+9826 LSET Q$(I * 5 + 18) = MKI$(A1%(I))
+
+9827 LSET Q$(I * 5 + 19) = MKI$(A2%(I))
+
+9828 LSET Q$(I * 5 + 20) = MKI$(A3%(I))
+
+9829 NEXT I
+
+9830 FOR I = 0 TO 5
+
+9831 LSET Q$(I * 3 + 66) = A2$(I)
+
+9832 LSET Q$(I * 3 + 67) = MKI$(A4%(I))
+
+9833 LSET Q$(I * 3 + 68) = MKI$(A5%(I))
+
+9834 NEXT I
+
+9835 FOR I = 0 TO 3
+
+9836 LSET Q$(I * 5 + 84) = A3$(I)
+
+9837 LSET Q$(I * 5 + 85) = MKI$(A6%(I))
+
+9838 LSET Q$(I * 5 + 86) = MKI$(A7%(I))
+
+9839 LSET Q$(I * 5 + 87) = MKI$(A8%(I))
+
+9840 LSET Q$(I * 5 + 88) = MKI$(QX%(I))
+
+9848 NEXT I
+
+9849 FOR I = 0 TO 2
+
+9850 LSET Q$(I * 3 + 104) = A4$(I)
+
+9851 LSET Q$(I * 3 + 105) = MKI$(A9%(I))
+
+9852 LSET Q$(I * 3 + 106) = MKI$(B%(I))
+
+9853 NEXT I
+
+9854 FOR I = 0 TO 2
+
+9855 LSET Q$(I * 3 + 113) = A5$(I)
+
+9856 LSET Q$(I * 3 + 114) = MKI$(B1%(I))
+
+9857 LSET Q$(I * 3 + 115) = MKI$(B2%(I))
+
+9858 NEXT I
+
+9859 LSET Q$(122) = A6$(0)
+
+9860 LSET Q$(123) = MKI$(B3%(0))
+
+9861 LSET Q$(124) = A7$(0)
+
+9862 LSET Q$(125) = MKI$(B4%(0))
+
+9863 LSET Q$(126) = MKI$(B5%(0))
+
+9864 LSET Q$(127) = MKI$(B7%(0))
+
+9865 LSET Q$(128) = MKI$(B8%(0))
+
+9871 LSET Q$(129) = A7$(1)
+
+9872 LSET Q$(130) = MKI$(B4%(1))
+
+9873 LSET Q$(131) = MKI$(B5%(1))
+
+9874 LSET Q$(132) = MKI$(B7%(1))
+
+9875 LSET Q$(133) = MKI$(B8%(1))
+
+9876 LSET Q$(134) = MKI$(YC%)
+
+9880 FOR I = 0 TO 14
+
+9881 LSET Q$(I * 2 + 135) = DS$(I)
+
+9882 LSET Q$(I * 2 + 136) = MKI$(DS%(I))
+
+9883 NEXT I
+
+9884 FOR I = 0 TO 9
+
+9885 LSET Q$(I * 2 + 165) = DI$(I)
+
+9886 LSET Q$(I * 2 + 166) = MKI$(DI%(I))
+
+9897 NEXT I
+
+9898 PUT #1, B8%
+
+9899 CLOSE #1: GOSUB 500: RETURN
+
+9990 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE"
+9991 I$ = GetKeyPress$
+
+9992 RETURN

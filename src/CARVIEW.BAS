@@ -1,787 +1,924 @@
-   DECLARE SUB ReadFile (BYVAL Address%)
-   DECLARE SUB SortStr (BYVAL Address%, Size%, Direction%)
-   DECLARE SUB MAMenu (BYVAL Address%, SELECTION%, START%, COUNT%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%)
-   DECLARE FUNCTION QPRTrim$ (Work$)
-   DECLARE SUB MQPrint (X$, Colr)
-   DECLARE FUNCTION FCount% (FSpec$)
-   DECLARE FUNCTION EXIST% (FILENAME$)
-   DECLARE SUB MAMenu (BYVAL Address%, SELECTION%, START%, COUNT%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%)
-   DECLARE FUNCTION GetDrive% ()
-   DECLARE SUB MMenuVert (BYVAL Address%, Choice%, START%, SCANCODE%, NormClr%, HiLite%, NumRows%, Row%, Column%)
-  DIM A1$(1, 50), A2$(1, 40), A3$(1, 20), A4$(1, 15), A5$(1, 15), A6$(1, 10), A7$(1, 10), TT(50)
-  DIM RC(6), RC$(6), D$(1)
-   DIM FF(15, 30), YY(15, 30), II(15, 30), PP(15, 30), RBS$(15, 50, 1), WRS$(15, 40, 1), QBS$(15, 20, 1), PRS$(15, 15, 1), KRS$(15, 15, 1)
-   REDIM DI$(1, 55), GIS(15, 55, 3), DS$(1, 55), GSS(15, 55, 3), GS%(1, 55), GI%(1, 55)
-  REDIM RBS(15, 50, 11), WRS(15, 40, 11), QBS(15, 20, 13), PRS(15, 15, 11), KRS(15, 15, 11), PUS(15, 10, 4), FGS(15, 10, 17)
-   OPEN "DEV.BAS" FOR INPUT AS #1: FOR I = 0 TO 1: INPUT #1, D$(I): NEXT
-  COLOR 0, 0: CLS : TMR = 6420
-  DRIVE% = GetDrive%
-   CLOSE #1
-     Spec$ = D$(1) + "*.CAR"
-    COUNT% = FCount%(Spec$)
-   IF COUNT% = 0 THEN 4500
-   REDIM F$(0 TO COUNT%)
-   FOR X = 1 TO COUNT%
-       F$(X) = SPACE$(12)
-   NEXT
-   F$(0) = Spec$
-   CALL ReadFile(VARPTR(F$(0)))
-   CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
+'$INCLUDE: 'KeyInput.BI'
+'$INCLUDE: 'QPProEqu.BI'
+
+DIM A1$(1, 50), A2$(1, 40), A3$(1, 20), A4$(1, 15), A5$(1, 15), A6$(1, 10), A7$(1, 10), TT(50)
+DIM RC(6), RC$(6), D$(1)
+DIM FF(15, 30), YY(15, 30), II(15, 30), PP(15, 30), RBS$(15, 50, 1), WRS$(15, 40, 1), QBS$(15, 20, 1), PRS$(15, 15, 1), KRS$(15, 15, 1)
+REDIM DI$(1, 55), GIS(15, 55, 3), DS$(1, 55), GSS(15, 55, 3), GS%(1, 55), GI%(1, 55)
+REDIM RBS(15, 50, 11), WRS(15, 40, 11), QBS(15, 20, 13), PRS(15, 15, 11), KRS(15, 15, 11), PUS(15, 10, 4), FGS(15, 10, 17)
+
+OPEN "DEV.BAS" FOR INPUT AS #1
+	FOR I = 0 TO 1: INPUT #1, D$(I): NEXT
+	COLOR 0, 0: CLS : TMR = 6420
+CLOSE #1
+
+	Spec$ = D$(1) + "*.CAR"
+	COUNT% = FCount%(Spec$)
+	IF COUNT% = 0 THEN 4500
+	REDIM F$(0 TO COUNT%)
+	FOR X = 1 TO COUNT%
+	  F$(X) = SPACE$(12)
+	NEXT
+	F$(0) = Spec$
+	CALL ReadFile(F$())
+	'CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
 
 1310 CLS
-    COLOR , 1
-    CLS
-    LOCATE , 28
-    COLOR 14
-    PRINT "SELECT FILE TO VIEW": COLOR 15
-     SELECTION% = 1
-     START% = 1
-     FileColr% = 31
-     HiLiteColr% = 112
-     Rows% = 20
-     Columns% = 4
-     Spacing% = 6
-     Row% = 4
-     Column% = 1
-    LOCATE 25, 1
-    COLOR 14
-    PRINT "ENTER"; : COLOR 15
-    PRINT "-SELECTS FILE";
-CALL SHOWCURSOR
-20 MAMenu VARPTR(F$(1)), SELECTION%, START%, COUNT%, EXITCODE%, FileColr%, HiLiteColr%, Rows%, Columns%, Spacing%, Row%, Column%
-CALL HIDECURSOR
-     IF EXITCODE% = 27 THEN RUN "CAREER.EXE"
-     IF EXITCODE% = -71 THEN START% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
-     IF EXITCODE% = -79 THEN START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GOTO 20
-     IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
-     IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
-     IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
-     F$ = F$(SELECTION%)
-   LOCATE 2, 33: PRINT F$: LOCATE , 33: PRINT "ANY CHANGE (YN)";
-     COLOR 15, 0
-3910 I$ = INKEY$: IF I$ = "" THEN 3910
-    IF UCASE$(I$) = "Y" THEN 1310
-     F$ = QPRTrim$(F$)
-    Z$ = LEFT$(F$, LEN(F$) - 4)
-   GOSUB 9500: COLOR 15: LOCATE 12, 10: PRINT "LOADING CAREER FILE . . . . PLEASE WAIT"
-   OPEN D$(1) + Z$ + ".CAR" FOR INPUT AS #1
-   INPUT #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-   FOR I = 0 TO 49: INPUT #1, A1$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 39: INPUT #1, A2$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 19: INPUT #1, A3$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 14: INPUT #1, A4$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 14: INPUT #1, A5$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 9: INPUT #1, A6$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 9: INPUT #1, A7$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 54: INPUT #1, DI$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR I = 0 TO 54: INPUT #1, DS$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-   FOR N = 1 TO 15: FOR J = 0 TO 49: FOR K = 0 TO 9: INPUT #1, RBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 49: INPUT #1, RBS$(N, J, 0), RBS$(N, J, 1): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 39: FOR K = 0 TO 5: INPUT #1, WRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 39: INPUT #1, WRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 19: FOR K = 0 TO 7: INPUT #1, QBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 19: INPUT #1, QBS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: INPUT #1, KRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 14: INPUT #1, KRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: INPUT #1, PRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 14: INPUT #1, PRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 3: INPUT #1, PUS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 16: INPUT #1, FGS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: INPUT #1, GIS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: INPUT #1, GSS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-   CLOSE #1
-    GOTO 2000
+	COLOR , 1
+	CLS
+	LOCATE , 28
+	COLOR 14
+	PRINT "SELECT FILE TO VIEW": COLOR 15
+	SELECTION% = 1
+	START% = 1
+	FileFGColr% = 15:FileBGColr% = 1
+	HiLiteFGColr% = 0:HiLiteBGColr% = 7
+	Rows% = 20
+	Columns% = 4
+	Spacing% = 6
+	Row% = 4
+	Column% = 1
+	LOCATE 25, 1
+	COLOR 14
+	PRINT "ENTER"; : COLOR 15
+	PRINT "-SELECTS FILE";
+
+_MouseShow "DEFAULT"
+20 MAMenu F$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+_MouseHide
+
+	IF EXITCODE% = 27 THEN RUN "CAREER.EXE"
+	IF EXITCODE% = -71 THEN START% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
+	IF EXITCODE% = -79 THEN START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GOTO 20
+	IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
+	IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
+	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
+	F$ = F$(SELECTION%)
+	LOCATE 2, 33: PRINT F$
+	LOCATE , 33: PRINT "ANY CHANGE (YN)";
+	COLOR 15, 0
+3910 I$ = GetKeyPress$
+	IF UCASE$(I$) = "Y" THEN 1310
+	
+	F$ = RTrim$(F$)
+	Z$ = LEFT$(F$, LEN(F$) - 4)
+	COLOR 15: LOCATE 12, 10: PRINT "LOADING CAREER FILE . . . . PLEASE WAIT"
+	
+OPEN D$(1) + Z$ + ".CAR" FOR INPUT AS #1
+	INPUT #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+	FOR I = 0 TO 49: INPUT #1, A1$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 39: INPUT #1, A2$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 19: INPUT #1, A3$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 14: INPUT #1, A4$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 14: INPUT #1, A5$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 9: INPUT #1, A6$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 9: INPUT #1, A7$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 54: INPUT #1, DI$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR I = 0 TO 54: INPUT #1, DS$(PX, I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
+	FOR N = 1 TO 15: FOR J = 0 TO 49: FOR K = 0 TO 9: INPUT #1, RBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 49: INPUT #1, RBS$(N, J, 0), RBS$(N, J, 1): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 39: FOR K = 0 TO 5: INPUT #1, WRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 39: INPUT #1, WRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 19: FOR K = 0 TO 7: INPUT #1, QBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 19: INPUT #1, QBS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: INPUT #1, KRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 14: INPUT #1, KRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: INPUT #1, PRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 14: INPUT #1, PRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 3: INPUT #1, PUS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 16: INPUT #1, FGS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: INPUT #1, GIS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+	FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: INPUT #1, GSS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
+CLOSE #1
+	
+	GOTO 2000
+
 101 CLS : FOR I = 1 TO 50: TT(I) = 0: NEXT
+
 104 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
-    IF RT = 1 THEN 113
-    IF RT = 2 THEN 108
+	COLOR 12: LOCATE 2: PRINT "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
+	IF RT = 1 THEN 113
+	IF RT = 2 THEN 108
+
 108 I = B9: GOTO 114
+
 113 FOR I = 0 TO 49
-    IF A1$(PX, I) = "" OR A1$(PX, I) = "XXX" THEN 260
+	IF A1$(PX, I) = "" OR A1$(PX, I) = "XXX" THEN 260
+
 114 LOCATE 3: COLOR 15: PRINT LEFT$(A1$(PX, I), 13);
-    VV = RBS(1, I, 7) + RBS(2, I, 7) + RBS(3, I, 7) + RBS(4, I, 7) + RBS(5, I, 7) + RBS(6, I, 7) + RBS(7, I, 7) + RBS(7, I, 7) + RBS(9, I, 7) + RBS(10, I, 7) + RBS(11, I, 7) + RBS(12, I, 7) + RBS(13, I, 7) + RBS(14, I, 7) + RBS(15, I, 7)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(15); RBS(V, I, 8);
-    PRINT TAB(23); USING "###"; RBS(V, I, 0);
-    PRINT TAB(29); USING "####"; RBS(V, I, 1);
-    IF RBS(V, I, 1) = 0 OR RBS(V, I, 0) = 0 THEN PRINT TAB(34); " 0.0";
-    IF RBS(V, I, 0) > 0 THEN PRINT TAB(34); USING "##.#"; RBS(V, I, 1) / RBS(V, I, 0);
-    PRINT TAB(39); USING "###"; RBS(V, I, 2);
-    PRINT TAB(45); USING "###"; RBS(V, I, 3);
-    PRINT TAB(51); USING "####"; RBS(V, I, 4);
-    IF RBS(V, I, 4) = 0 OR RBS(V, I, 3) = 0 THEN PRINT TAB(57); " 0.0";
-    IF RBS(V, I, 3) > 0 THEN PRINT TAB(57); USING "##.#"; RBS(V, I, 4) / RBS(V, I, 3);
-    PRINT TAB(63); USING "##"; RBS(V, I, 5);
-    PRINT TAB(67); USING "##"; RBS(V, I, 6);
-    PRINT TAB(69); RBS$(V, I, 0);
-    PRINT TAB(77); USING "##"; RBS(V, I, 9);
-    PRINT TAB(79); RBS$(V, I, 1)
-    NEXT V
-    GOSUB 600
-    FOR J = 1 TO 6: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-233 I$ = INKEY$: IF I$ = "" THEN 233
-    IF I$ = CHR$(0) THEN 236
-    IF I$ = CHR$(27) THEN 2000
+	VV = RBS(1, I, 7) + RBS(2, I, 7) + RBS(3, I, 7) + RBS(4, I, 7) + RBS(5, I, 7) + RBS(6, I, 7) + RBS(7, I, 7) + RBS(7, I, 7) + RBS(9, I, 7) + RBS(10, I, 7) + RBS(11, I, 7) + RBS(12, I, 7) + RBS(13, I, 7) + RBS(14, I, 7) + RBS(15, I, 7)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(15); RBS(V, I, 8);
+	PRINT TAB(23); USING "###"; RBS(V, I, 0);
+	PRINT TAB(29); USING "####"; RBS(V, I, 1);
+	IF RBS(V, I, 1) = 0 OR RBS(V, I, 0) = 0 THEN PRINT TAB(34); " 0.0";
+	IF RBS(V, I, 0) > 0 THEN PRINT TAB(34); USING "##.#"; RBS(V, I, 1) / RBS(V, I, 0);
+	PRINT TAB(39); USING "###"; RBS(V, I, 2);
+	PRINT TAB(45); USING "###"; RBS(V, I, 3);
+	PRINT TAB(51); USING "####"; RBS(V, I, 4);
+	IF RBS(V, I, 4) = 0 OR RBS(V, I, 3) = 0 THEN PRINT TAB(57); " 0.0";
+	IF RBS(V, I, 3) > 0 THEN PRINT TAB(57); USING "##.#"; RBS(V, I, 4) / RBS(V, I, 3);
+	PRINT TAB(63); USING "##"; RBS(V, I, 5);
+	PRINT TAB(67); USING "##"; RBS(V, I, 6);
+	PRINT TAB(69); RBS$(V, I, 0);
+	PRINT TAB(77); USING "##"; RBS(V, I, 9);
+	PRINT TAB(79); RBS$(V, I, 1)
+	NEXT V
+	GOSUB 600
+	FOR J = 1 TO 6: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+233 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 236
+	IF I$ = CHR$(27) THEN 2000
+
 236 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                              "
-    NEXT
-    IF RT = 1 THEN 260
-    IF RT = 2 THEN GOTO 2000
+	PRINT STRING$ (90, " ")
+	NEXT
+	IF RT = 1 THEN 260
+	IF RT = 2 THEN GOTO 2000
+
 260 NEXT I
-    CLS
+	CLS
+
 301 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
-    IF RT = 1 THEN 306
-    IF RT = 2 THEN 305
+	COLOR 12: LOCATE 2: PRINT "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
+	IF RT = 1 THEN 306
+	IF RT = 2 THEN 305
+
 305 I = B9: GOTO 309
+
 306 FOR I = 0 TO 39
-    IF A2$(PX, I) = "" OR A2$(PX, I) = "XXX" THEN 329
+	IF A2$(PX, I) = "" OR A2$(PX, I) = "XXX" THEN 329
+
 309 LOCATE 3: COLOR 15: PRINT LEFT$(A2$(PX, I), 13);
-    VV = WRS(1, I, 4) + WRS(2, I, 4) + WRS(3, I, 4) + WRS(4, I, 4) + WRS(5, I, 4) + WRS(6, I, 4) + WRS(7, I, 4) + WRS(8, I, 4) + WRS(9, I, 4) + WRS(10, I, 4) + WRS(11, I, 4) + WRS(12, I, 4) + WRS(13, I, 4) + WRS(14, I, 4) + WRS(15, I, 4)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(16); WRS(V, I, 5);
-    PRINT TAB(25); USING "###"; WRS(V, I, 0);
-    PRINT TAB(33); USING "####"; WRS(V, I, 1);
-    IF WRS(V, I, 0) = 0 OR WRS(V, I, 1) = 0 THEN PRINT TAB(41); " 0.0";
-    IF WRS(V, I, 0) > 0 THEN PRINT TAB(41); USING "##.#"; WRS(V, I, 1) / WRS(V, I, 0);
-    PRINT TAB(47); USING "##"; WRS(V, I, 2);
-    PRINT TAB(54); USING "##"; WRS(V, I, 3);
-    PRINT TAB(56); WRS$(V, I, 0)
-    NEXT V
-    GOSUB 630
-    FOR J = 7 TO 9: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-321 I$ = INKEY$: IF I$ = "" THEN 321
-    IF I$ = CHR$(0) THEN 324
-    IF I$ = CHR$(27) THEN 2000
+	VV = WRS(1, I, 4) + WRS(2, I, 4) + WRS(3, I, 4) + WRS(4, I, 4) + WRS(5, I, 4) + WRS(6, I, 4) + WRS(7, I, 4) + WRS(8, I, 4) + WRS(9, I, 4) + WRS(10, I, 4) + WRS(11, I, 4) + WRS(12, I, 4) + WRS(13, I, 4) + WRS(14, I, 4) + WRS(15, I, 4)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(16); WRS(V, I, 5);
+	PRINT TAB(25); USING "###"; WRS(V, I, 0);
+	PRINT TAB(33); USING "####"; WRS(V, I, 1);
+	IF WRS(V, I, 0) = 0 OR WRS(V, I, 1) = 0 THEN PRINT TAB(41); " 0.0";
+	IF WRS(V, I, 0) > 0 THEN PRINT TAB(41); USING "##.#"; WRS(V, I, 1) / WRS(V, I, 0);
+	PRINT TAB(47); USING "##"; WRS(V, I, 2);
+	PRINT TAB(54); USING "##"; WRS(V, I, 3);
+	PRINT TAB(56); WRS$(V, I, 0)
+	NEXT V
+	GOSUB 630
+	FOR J = 7 TO 9: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+321 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 324
+	IF I$ = CHR$(27) THEN 2000
+
 324 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                            "
-    NEXT
-    IF RT = 1 THEN 329
-    IF RT = 2 THEN GOTO 2000
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 329
+	IF RT = 2 THEN GOTO 2000
+
 329 NEXT I
-    CLS
+	CLS
+
 334 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"""
-    IF RT = 1 THEN 339
-    IF RT = 2 THEN 338
+	COLOR 12: LOCATE 2: PRINT "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"""
+	IF RT = 1 THEN 339
+	IF RT = 2 THEN 338
+
 338 I = B9: GOTO 340
+
 339 FOR I = 0 TO 19
-    IF A3$(PX, I) = "" OR A3$(PX, I) = "XXX" THEN 375
+	IF A3$(PX, I) = "" OR A3$(PX, I) = "XXX" THEN 375
+
 340 LOCATE 3: COLOR 15: PRINT LEFT$(A3$(PX, I), 12);
-    VV = QBS(1, I, 6) + QBS(2, I, 6) + QBS(3, I, 6) + QBS(4, I, 6) + QBS(5, I, 6) + QBS(6, I, 6) + QBS(7, I, 6) + QBS(8, I, 6) + QBS(9, I, 6) + QBS(10, I, 6) + QBS(11, I, 6) + QBS(12, I, 6) + QBS(13, I, 6) + QBS(14, I, 6) + QBS(15, I, 6)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(13); QBS(V, I, 7);
-    PRINT TAB(21); USING "###"; QBS(V, I, 1);
-    PRINT TAB(26); USING "###"; QBS(V, I, 0);
-    PRINT TAB(32); USING "##"; QBS(V, I, 2);
-    PRINT TAB(36); USING "##"; QBS(V, I, 4);
-    PRINT TAB(40); USING "####"; QBS(V, I, 3);
-    IF QBS(V, I, 1) = 0 OR QBS(V, I, 0) = 0 THEN PRINT TAB(47); " 00";
-    IF QBS(V, I, 1) > 0 THEN PRINT TAB(47); USING "##"; (QBS(V, I, 1) / QBS(V, I, 0)) * 100;
-    IF QBS(V, I, 1) = 0 THEN PRINT TAB(53); " 0.0";
-    IF QBS(V, I, 1) > 0 THEN PRINT TAB(53); USING "##.#"; QBS(V, I, 3) / QBS(V, I, 1);
-    GOSUB 8999
-    PRINT TAB(60); USING "###.#"; QBS(V, I, 12);
-    PRINT TAB(70); USING "##"; QBS(V, I, 5);
-    PRINT TAB(72); QBS$(V, I, 0)
-    NEXT V
-    GOSUB 660
-    FOR J = 10 TO 14: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-364 I$ = INKEY$: IF I$ = "" THEN 364
-    IF I$ = CHR$(0) THEN 367
-    IF I$ = CHR$(27) THEN 2000
+	VV = QBS(1, I, 6) + QBS(2, I, 6) + QBS(3, I, 6) + QBS(4, I, 6) + QBS(5, I, 6) + QBS(6, I, 6) + QBS(7, I, 6) + QBS(8, I, 6) + QBS(9, I, 6) + QBS(10, I, 6) + QBS(11, I, 6) + QBS(12, I, 6) + QBS(13, I, 6) + QBS(14, I, 6) + QBS(15, I, 6)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(13); QBS(V, I, 7);
+	PRINT TAB(21); USING "###"; QBS(V, I, 1);
+	PRINT TAB(26); USING "###"; QBS(V, I, 0);
+	PRINT TAB(32); USING "##"; QBS(V, I, 2);
+	PRINT TAB(36); USING "##"; QBS(V, I, 4);
+	PRINT TAB(40); USING "####"; QBS(V, I, 3);
+	IF QBS(V, I, 1) = 0 OR QBS(V, I, 0) = 0 THEN PRINT TAB(47); " 00";
+	IF QBS(V, I, 1) > 0 THEN PRINT TAB(47); USING "##"; (QBS(V, I, 1) / QBS(V, I, 0)) * 100;
+	IF QBS(V, I, 1) = 0 THEN PRINT TAB(53); " 0.0";
+	IF QBS(V, I, 1) > 0 THEN PRINT TAB(53); USING "##.#"; QBS(V, I, 3) / QBS(V, I, 1);
+	GOSUB 8999
+	PRINT TAB(60); USING "###.#"; QBS(V, I, 12);
+	PRINT TAB(70); USING "##"; QBS(V, I, 5);
+	PRINT TAB(72); QBS$(V, I, 0)
+	NEXT V
+	GOSUB 660
+	FOR J = 10 TO 14: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+364 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 367
+	IF I$ = CHR$(27) THEN 2000
+
 367 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                            "
-    NEXT
-    IF RT = 1 THEN 375
-    IF RT = 2 THEN GOTO 2000
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 375
+	IF RT = 2 THEN GOTO 2000
+
 375 NEXT I
-    CLS
+	CLS
+
 384 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
-    IF RT = 1 THEN 389
-    IF RT = 2 THEN 388
+	COLOR 12: LOCATE 2: PRINT "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+	IF RT = 1 THEN 389
+	IF RT = 2 THEN 388
+
 388 I = B9: GOTO 390
+
 389 FOR I = 0 TO 14
-    IF A4$(PX, I) = "" OR A4$(PX, I) = "XXX" THEN 415
+	IF A4$(PX, I) = "" OR A4$(PX, I) = "XXX" THEN 415
+
 390 LOCATE 3: COLOR 15: PRINT LEFT$(A4$(PX, I), 13);
-    VV = KRS(1, I, 4) + KRS(2, I, 4) + KRS(3, I, 4) + KRS(4, I, 4) + KRS(5, I, 4) + KRS(6, I, 4) + KRS(7, I, 4) + KRS(8, I, 4) + KRS(9, I, 4) + KRS(10, I, 4) + KRS(11, I, 4) + KRS(12, I, 4) + KRS(13, I, 4) + KRS(14, I, 4) + KRS(15, I, 4)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(22); KRS(V, I, 5);
-    PRINT TAB(32); USING "###"; KRS(V, I, 0);
-    PRINT TAB(42); USING "####"; KRS(V, I, 1);
-    IF KRS(V, I, 0) = 0 OR KRS(V, I, 1) = 0 THEN PRINT TAB(52); " 00";
-    IF KRS(V, I, 0) > 0 THEN PRINT TAB(52); USING "##.#"; KRS(V, I, 1) / KRS(V, I, 0);
-    PRINT TAB(62); USING "##"; KRS(V, I, 2);
-    PRINT TAB(70); USING "##"; KRS(V, I, 3);
-    PRINT TAB(72); KRS$(V, I, 0)
-    NEXT V
-    GOSUB 690
-    FOR J = 15 TO 17: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-401 I$ = INKEY$: IF I$ = "" THEN 401
-    IF I$ = CHR$(0) THEN 404
-    IF I$ = CHR$(27) THEN 2000
+	VV = KRS(1, I, 4) + KRS(2, I, 4) + KRS(3, I, 4) + KRS(4, I, 4) + KRS(5, I, 4) + KRS(6, I, 4) + KRS(7, I, 4) + KRS(8, I, 4) + KRS(9, I, 4) + KRS(10, I, 4) + KRS(11, I, 4) + KRS(12, I, 4) + KRS(13, I, 4) + KRS(14, I, 4) + KRS(15, I, 4)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(22); KRS(V, I, 5);
+	PRINT TAB(32); USING "###"; KRS(V, I, 0);
+	PRINT TAB(42); USING "####"; KRS(V, I, 1);
+	IF KRS(V, I, 0) = 0 OR KRS(V, I, 1) = 0 THEN PRINT TAB(52); " 00";
+	IF KRS(V, I, 0) > 0 THEN PRINT TAB(52); USING "##.#"; KRS(V, I, 1) / KRS(V, I, 0);
+	PRINT TAB(62); USING "##"; KRS(V, I, 2);
+	PRINT TAB(70); USING "##"; KRS(V, I, 3);
+	PRINT TAB(72); KRS$(V, I, 0)
+	NEXT V
+	GOSUB 690
+	FOR J = 15 TO 17: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+401 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 404
+	IF I$ = CHR$(27) THEN 2000
+
 404 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                            "
-    NEXT
-    IF RT = 1 THEN 415
-    IF RT = 2 THEN 2000
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 415
+	IF RT = 2 THEN 2000
+
 415 NEXT I
-    CLS
+	CLS
+
 424 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
-    IF RT = 1 THEN 429
-    IF RT = 2 THEN 428
+	COLOR 12: LOCATE 2: PRINT "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+	IF RT = 1 THEN 429
+	IF RT = 2 THEN 428
+
 428 I = B9: GOTO 430
+
 429 FOR I = 0 TO 14
-    IF A5$(PX, I) = "" OR A5$(PX, I) = "XXX" THEN 450
+	IF A5$(PX, I) = "" OR A5$(PX, I) = "XXX" THEN 450
+
 430 LOCATE 3: COLOR 15: PRINT LEFT$(A5$(PX, I), 13);
-    VV = PRS(1, I, 4) + PRS(2, I, 4) + PRS(3, I, 4) + PRS(4, I, 4) + PRS(5, I, 4) + PRS(6, I, 4) + PRS(7, I, 4) + PRS(8, I, 4) + PRS(9, I, 4) + PRS(10, I, 4) + PRS(11, I, 4) + PRS(12, I, 4) + PRS(13, I, 4) + PRS(14, I, 4) + PRS(15, I, 4)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(22); PRS(V, I, 5);
-    PRINT TAB(32); USING "###"; PRS(V, I, 0);
-    PRINT TAB(42); USING "####"; PRS(V, I, 1);
-    IF PRS(V, I, 0) = 0 OR PRS(V, I, 1) = 0 THEN PRINT TAB(52); " 00";
-    IF PRS(V, I, 0) > 0 THEN PRINT TAB(52); USING "##.#"; PRS(V, I, 1) / PRS(V, I, 0);
-    PRINT TAB(62); USING "##"; PRS(V, I, 2);
-    PRINT TAB(70); USING "##"; PRS(V, I, 3);
-    PRINT TAB(72); PRS$(V, I, 0)
-    NEXT V
-    GOSUB 720
-    FOR J = 18 TO 20: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-441 I$ = INKEY$: IF I$ = "" THEN 441
-    IF I$ = CHR$(0) THEN 444
-    IF I$ = CHR$(27) THEN 2000
+	VV = PRS(1, I, 4) + PRS(2, I, 4) + PRS(3, I, 4) + PRS(4, I, 4) + PRS(5, I, 4) + PRS(6, I, 4) + PRS(7, I, 4) + PRS(8, I, 4) + PRS(9, I, 4) + PRS(10, I, 4) + PRS(11, I, 4) + PRS(12, I, 4) + PRS(13, I, 4) + PRS(14, I, 4) + PRS(15, I, 4)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(22); PRS(V, I, 5);
+	PRINT TAB(32); USING "###"; PRS(V, I, 0);
+	PRINT TAB(42); USING "####"; PRS(V, I, 1);
+	IF PRS(V, I, 0) = 0 OR PRS(V, I, 1) = 0 THEN PRINT TAB(52); " 00";
+	IF PRS(V, I, 0) > 0 THEN PRINT TAB(52); USING "##.#"; PRS(V, I, 1) / PRS(V, I, 0);
+	PRINT TAB(62); USING "##"; PRS(V, I, 2);
+	PRINT TAB(70); USING "##"; PRS(V, I, 3);
+	PRINT TAB(72); PRS$(V, I, 0)
+	NEXT V
+	GOSUB 720
+	FOR J = 18 TO 20: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+441 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 444
+	IF I$ = CHR$(27) THEN 2000
+
 444 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                            "
-    NEXT
-    IF RT = 1 THEN 450
-    IF RT = 2 THEN 2000
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 450
+	IF RT = 2 THEN 2000
+
 450 NEXT I
-    CLS
+	CLS
+
 464 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "PUNTERS           YEAR     ATT.     YARDS      AVG."
-    IF RT = 1 THEN 469
-    IF RT = 2 THEN 468
+	COLOR 12: LOCATE 2: PRINT "PUNTERS           YEAR     ATT.     YARDS      AVG."
+	IF RT = 1 THEN 469
+	IF RT = 2 THEN 468
+
 468 I = B9: GOTO 470
+
 469 FOR I = 0 TO 9
-    IF A6$(PX, I) = "" OR A6$(PX, I) = "XXX" THEN 495
+	IF A6$(PX, I) = "" OR A6$(PX, I) = "XXX" THEN 495
+
 470 LOCATE 3: COLOR 15: PRINT LEFT$(A6$(PX, I), 13);
-    VV = PUS(1, I, 2) + PUS(2, I, 2) + PUS(3, I, 2) + PUS(4, I, 2) + PUS(5, I, 2) + PUS(6, I, 2) + PUS(7, I, 2) + PUS(8, I, 2) + PUS(9, I, 2) + PUS(10, I, 2) + PUS(11, I, 2) + PUS(12, I, 2) + PUS(13, I, 2) + PUS(14, I, 2) + PUS(15, I, 2)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(18); PUS(V, I, 3);
-    PRINT TAB(28); USING "###"; PUS(V, I, 0);
-    PRINT TAB(38); USING "####"; PUS(V, I, 1);
-    IF PUS(V, I, 0) = 0 OR PUS(V, I, 1) = 0 THEN PRINT TAB(47); "00.0";
-    IF PUS(V, I, 0) > 0 THEN PRINT TAB(47); USING "##.#"; PUS(V, I, 1) / PUS(V, I, 0);
-    NEXT V
-    GOSUB 750
-    FOR J = 21 TO 22: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-481 I$ = INKEY$: IF I$ = "" THEN 481
-    IF I$ = CHR$(0) THEN 484
-    IF I$ = CHR$(27) THEN 2000
+	VV = PUS(1, I, 2) + PUS(2, I, 2) + PUS(3, I, 2) + PUS(4, I, 2) + PUS(5, I, 2) + PUS(6, I, 2) + PUS(7, I, 2) + PUS(8, I, 2) + PUS(9, I, 2) + PUS(10, I, 2) + PUS(11, I, 2) + PUS(12, I, 2) + PUS(13, I, 2) + PUS(14, I, 2) + PUS(15, I, 2)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(18); PUS(V, I, 3);
+	PRINT TAB(28); USING "###"; PUS(V, I, 0);
+	PRINT TAB(38); USING "####"; PUS(V, I, 1);
+	IF PUS(V, I, 0) = 0 OR PUS(V, I, 1) = 0 THEN PRINT TAB(47); "00.0";
+	IF PUS(V, I, 0) > 0 THEN PRINT TAB(47); USING "##.#"; PUS(V, I, 1) / PUS(V, I, 0);
+	NEXT V
+	GOSUB 750
+	FOR J = 21 TO 22: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+481 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 484
+	IF I$ = CHR$(27) THEN 2000
+
 484 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                            "
-    NEXT
-    IF RT = 1 THEN 495
-    IF RT = 2 THEN 2000
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 495
+	IF RT = 2 THEN 2000
+
 495 NEXT I
-    CLS
+	CLS
+
 504 COLOR 11: LOCATE 1: PRINT Z$
-    COLOR 12: LOCATE 2: PRINT "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
-    IF RT = 1 THEN 509
-    IF RT = 2 THEN 508
+	COLOR 12: LOCATE 2: PRINT "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
+	IF RT = 1 THEN 509
+	IF RT = 2 THEN 508
+
 508 I = B9: GOTO 510
+
 509 FOR I = 0 TO 9
-    IF A7$(PX, I) = "" OR A7$(PX, I) = "XXX" THEN 535
+	IF A7$(PX, I) = "" OR A7$(PX, I) = "XXX" THEN 535
+
 510 LOCATE 3: COLOR 15: PRINT LEFT$(A7$(PX, I), 13);
-    VV = FGS(1, I, 15) + FGS(2, I, 15) + FGS(3, I, 15) + FGS(4, I, 15) + FGS(5, I, 15) + FGS(6, I, 15) + FGS(7, I, 15) + FGS(8, I, 15) + FGS(9, I, 15) + FGS(10, I, 15) + FGS(11, I, 15) + FGS(12, I, 15) + FGS(13, I, 15) + FGS(14, I, 15) + FGS(15, I,  _
+	VV = FGS(1, I, 15) + FGS(2, I, 15) + FGS(3, I, 15) + FGS(4, I, 15) + FGS(5, I, 15) + FGS(6, I, 15) + FGS(7, I, 15) + FGS(8, I, 15) + FGS(9, I, 15) + FGS(10, I, 15) + FGS(11, I, 15) + FGS(12, I, 15) + FGS(13, I, 15) + FGS(14, I, 15) + FGS(15, I,  _
+
 15)
-    FOR V = 1 TO VV
-    COLOR 7: PRINT TAB(13); FGS(V, I, 16);
-    PRINT TAB(19); USING "###"; FGS(V, I, 3);
-    PRINT TAB(23); USING "###"; FGS(V, I, 2);
-    IF FGS(V, I, 2) = 0 OR FGS(V, I, 3) = 0 THEN PRINT TAB(27); "  0";
-    IF FGS(V, I, 2) > 0 THEN PRINT TAB(27); USING "###"; (FGS(V, I, 2) / FGS(V, I, 3)) * 100;
-    PRINT TAB(32); USING "###"; FGS(V, I, 1);
-    PRINT TAB(36); USING "###"; FGS(V, I, 0);
-    IF FGS(V, I, 0) = 0 OR FGS(V, I, 1) = 0 THEN PRINT TAB(40); "  0";
-    IF FGS(V, I, 0) > 0 THEN PRINT TAB(40); USING "###"; (FGS(V, I, 0) / FGS(V, I, 1)) * 100;
-    PRINT TAB(46); USING "##"; FGS(V, I, 4);
-    PRINT TAB(49); USING "##"; FGS(V, I, 5); : PRINT "-";
-    PRINT TAB(52); USING "##"; FGS(V, I, 10);
-    PRINT TAB(55); USING "##"; FGS(V, I, 6); : PRINT "-";
-    PRINT TAB(58); USING "##"; FGS(V, I, 11);
-    PRINT TAB(61); USING "##"; FGS(V, I, 7); : PRINT "-";
-    PRINT TAB(64); USING "##"; FGS(V, I, 12);
-    PRINT TAB(67); USING "##"; FGS(V, I, 8); : PRINT "-";
-    PRINT TAB(70); USING "##"; FGS(V, I, 13);
-    PRINT TAB(73); USING "##"; FGS(V, I, 9); : PRINT "-";
-    PRINT TAB(76); USING "##"; FGS(V, I, 14)
-    NEXT V
-    GOSUB 780
-    FOR J = 23 TO 45: TT(J) = 0: NEXT
-    PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-521 I$ = INKEY$: IF I$ = "" THEN 521
-    IF I$ = CHR$(0) THEN 524
-    IF I$ = CHR$(27) THEN 2000
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(13); FGS(V, I, 16);
+	PRINT TAB(19); USING "###"; FGS(V, I, 3);
+	PRINT TAB(23); USING "###"; FGS(V, I, 2);
+	IF FGS(V, I, 2) = 0 OR FGS(V, I, 3) = 0 THEN PRINT TAB(27); "  0";
+	IF FGS(V, I, 2) > 0 THEN PRINT TAB(27); USING "###"; (FGS(V, I, 2) / FGS(V, I, 3)) * 100;
+	PRINT TAB(32); USING "###"; FGS(V, I, 1);
+	PRINT TAB(36); USING "###"; FGS(V, I, 0);
+	IF FGS(V, I, 0) = 0 OR FGS(V, I, 1) = 0 THEN PRINT TAB(40); "  0";
+	IF FGS(V, I, 0) > 0 THEN PRINT TAB(40); USING "###"; (FGS(V, I, 0) / FGS(V, I, 1)) * 100;
+	PRINT TAB(46); USING "##"; FGS(V, I, 4);
+	PRINT TAB(49); USING "##"; FGS(V, I, 5); : PRINT "-";
+	PRINT TAB(52); USING "##"; FGS(V, I, 10);
+	PRINT TAB(55); USING "##"; FGS(V, I, 6); : PRINT "-";
+	PRINT TAB(58); USING "##"; FGS(V, I, 11);
+	PRINT TAB(61); USING "##"; FGS(V, I, 7); : PRINT "-";
+	PRINT TAB(64); USING "##"; FGS(V, I, 12);
+	PRINT TAB(67); USING "##"; FGS(V, I, 8); : PRINT "-";
+	PRINT TAB(70); USING "##"; FGS(V, I, 13);
+	PRINT TAB(73); USING "##"; FGS(V, I, 9); : PRINT "-";
+	PRINT TAB(76); USING "##"; FGS(V, I, 14)
+	NEXT V
+	GOSUB 780
+	FOR J = 23 TO 45: TT(J) = 0: NEXT
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+521 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 524
+	IF I$ = CHR$(27) THEN 2000
+
 524 FOR T = 3 TO 20: LOCATE T
-    PRINT "                                                                              "
-    NEXT
-    IF RT = 1 THEN 535
-    IF RT = 2 THEN 2000
+	PRINT STRING$ (90, " ")
+	NEXT
+	IF RT = 1 THEN 535
+	IF RT = 2 THEN 2000
 535 NEXT I
-    GOSUB 1000
-    CLS : LOCATE 5, 20: COLOR 14: PRINT "VIEW AGAIN (Y/N)"
-589 I$ = INKEY$: IF I$ = "" THEN 589
-    IF UCASE$(I$) = "Y" THEN 101 ELSE 591
+	GOSUB 1000
+
+	CLS : LOCATE 5, 20: COLOR 14: PRINT "VIEW AGAIN (Y/N)"
+	
+589 I$ = GetKeyPress$
+	IF UCASE$(I$) = "Y" THEN 101 ELSE 591
+
 591 GOTO 2000
-595 GOSUB 9600
-    RUN "CAREER.EXE"
+
+595 RUN "CAREER.EXE"
+
 600 VV = RBS(1, B9, 7) + RBS(2, B9, 7) + RBS(3, B9, 7) + RBS(4, B9, 7) + RBS(5, B9, 7) + RBS(6, B9, 7) + RBS(7, B9, 7) + RBS(7, B9, 7) + RBS(9, B9, 7) + RBS(10, B9, 7) + RBS(11, B9, 7) + RBS(12, B9, 7) + RBS(13, B9, 7) + RBS(14, B9, 7) + RBS(15, B9 _
 , 7)
-    FOR V = 1 TO VV
-    TT(1) = TT(1) + RBS(V, I, 0)
-    TT(2) = TT(2) + RBS(V, I, 1)
-    TT(3) = TT(3) + RBS(V, I, 2)
-    TT(4) = TT(4) + RBS(V, I, 3)
-    TT(5) = TT(5) + RBS(V, I, 4)
-    TT(6) = TT(6) + RBS(V, I, 5)
-    NEXT V
-    RC(1) = RBS(1, I, 6): RC$(1) = RBS$(1, I, 0)
-    RC(2) = RBS(1, I, 9): RC$(2) = RBS$(1, I, 1)
-    FOR V = 2 TO VV
-    IF RBS(V, I, 6) >= RC(1) THEN 606 ELSE 607
-606 RC(1) = RBS(V, I, 6): RC$(1) = RBS$(V, I, 0)
-607 IF RBS(V, I, 9) >= RC(2) THEN 608 ELSE 610
-608 RC(2) = RBS(V, I, 9): RC$(2) = RBS$(V, I, 1)
-610 NEXT
-    PRINT : COLOR 3
-    PRINT : PRINT "TOTALS";
-    PRINT TAB(18); USING "##"; VV;
-    PRINT TAB(22); USING "####"; TT(1);
-    PRINT TAB(28); USING "#####"; TT(2);
-    IF TT(1) = 0 OR TT(2) = 0 THEN PRINT TAB(34); " 0.0";
-    IF TT(1) > 0 THEN PRINT TAB(34); USING "##.#"; TT(2) / TT(1);
-    PRINT TAB(39); USING "###"; TT(3);
-    PRINT TAB(44); USING "####"; TT(4);
-    PRINT TAB(50); USING "#####"; TT(5);
-    IF TT(4) = 0 OR TT(5) = 0 THEN PRINT TAB(57); " 0.0";
-    IF TT(4) > 0 THEN PRINT TAB(57); USING "##.#"; TT(5) / TT(4);
-    PRINT TAB(62); USING "###"; TT(6);
-    PRINT TAB(67); USING "##"; RC(1);
-    PRINT TAB(69); RC$(1);
-    PRINT TAB(77); USING "##"; RC(2);
-    PRINT TAB(79); RC$(2);
-    RETURN
-630 VV = WRS(1, I, 4) + WRS(2, I, 4) + WRS(3, I, 4) + WRS(4, I, 4) + WRS(5, I, 4) + WRS(6, I, 4) + WRS(7, I, 4) + WRS(8, I, 4) + WRS(9, I, 4) + WRS(10, I, 4) + WRS(11, I, 4) + WRS(12, I, 4) + WRS(13, I, 4) + WRS(14, I, 4) + WRS(15, I, 4)
-    FOR V = 1 TO VV
-    TT(7) = TT(7) + WRS(V, I, 0)
-    TT(8) = TT(8) + WRS(V, I, 1)
-    TT(9) = TT(9) + WRS(V, I, 2)
-    NEXT V
-    RC(2) = WRS(1, I, 3): RC$(2) = WRS$(1, I, 0)
-    FOR V = 2 TO VV
-    IF WRS(V, I, 3) >= RC(2) THEN 636 ELSE 637
-636 RC(2) = WRS(V, I, 3): RC$(2) = WRS$(V, I, 0)
-637 NEXT
-    PRINT : COLOR 3: PRINT "TOTALS";
-    PRINT TAB(19); USING "##"; VV;
-    PRINT TAB(24); USING "####"; TT(7);
-    PRINT TAB(32); USING "#####"; TT(8);
-    IF TT(7) = 0 OR TT(8) = 0 THEN PRINT TAB(41); " 0.0";
-    IF TT(7) > 0 THEN PRINT TAB(41); USING "##.#"; TT(8) / TT(7);
-    PRINT TAB(46); USING "###"; TT(9);
-    PRINT TAB(54); USING "##"; RC(2);
-    PRINT TAB(56); RC$(2)
-    RETURN
-660 VV = QBS(1, I, 6) + QBS(2, I, 6) + QBS(3, I, 6) + QBS(4, I, 6) + QBS(5, I, 6) + QBS(6, I, 6) + QBS(7, I, 6) + QBS(8, I, 6) + QBS(9, I, 6) + QBS(10, I, 6) + QBS(11, I, 6) + QBS(12, I, 6) + QBS(13, I, 6) + QBS(14, I, 6) + QBS(15, I, 6)
-    FOR V = 1 TO VV
-    TT(10) = TT(10) + QBS(V, I, 1)
-    TT(11) = TT(11) + QBS(V, I, 0)
-    TT(12) = TT(12) + QBS(V, I, 2)
-    TT(13) = TT(13) + QBS(V, I, 4)
-    TT(14) = TT(14) + QBS(V, I, 3)
-    NEXT V
-    RC(3) = QBS(1, I, 5): RC$(3) = QBS$(1, I, 0)
-    FOR V = 2 TO VV
-    IF QBS(V, I, 5) >= RC(3) THEN 668 ELSE 669
-668 RC(3) = QBS(V, I, 5): RC$(3) = QBS$(V, I, 0)
-669 NEXT
-    PRINT : COLOR 3: PRINT : PRINT "TOTALS";
-    PRINT TAB(16); USING "##"; VV;
-    PRINT TAB(20); USING "####"; TT(10);
-    PRINT TAB(25); USING "####"; TT(11);
-    PRINT TAB(31); USING "###"; TT(12);
-    PRINT TAB(34); USING "####"; TT(13);
-    PRINT TAB(39); USING "#####"; TT(14);
-    IF TT(10) = 0 OR TT(11) = 0 THEN PRINT TAB(47); " 00";
-    IF TT(10) > 0 THEN PRINT TAB(47); USING "##"; (TT(10) / TT(11)) * 100;
-    IF TT(11) = 0 THEN PRINT TAB(53); " 0.0";
-    IF TT(10) > 0 THEN PRINT TAB(53); USING "##.#"; TT(14) / TT(10);
-    GOSUB 9099
-    PRINT TAB(60); USING "###.#"; TT(31);
-    PRINT TAB(70); USING "##"; RC(3);
-    PRINT TAB(72); RC$(3)
-    RETURN
-690 VV = KRS(1, I, 4) + KRS(2, I, 4) + KRS(3, I, 4) + KRS(4, I, 4) + KRS(5, I, 4) + KRS(6, I, 4) + KRS(7, I, 4) + KRS(8, I, 4) + KRS(9, I, 4) + KRS(10, I, 4) + KRS(11, I, 4) + KRS(12, I, 4) + KRS(13, I, 4) + KRS(14, I, 4) + KRS(15, I, 4)
-    FOR V = 1 TO VV
-    TT(15) = TT(15) + KRS(V, I, 0)
-    TT(16) = TT(16) + KRS(V, I, 1)
-    TT(17) = TT(17) + KRS(V, I, 2)
-    NEXT V
-    RC(4) = KRS(1, I, 3): RC$(4) = KRS$(1, I, 0)
-    FOR V = 2 TO VV
-    IF KRS(V, I, 3) >= RC(4) THEN 696 ELSE 697
-696 RC(4) = KRS(V, I, 3): RC$(4) = KRS$(V, I, 0)
-697 NEXT
-    PRINT : COLOR 3: PRINT : PRINT "TOTALS";
-    PRINT TAB(25); USING "##"; VV;
-    PRINT TAB(32); USING "###"; TT(15);
-    PRINT TAB(41); USING "#####"; TT(16);
-    IF TT(15) = 0 OR TT(16) = 0 THEN PRINT TAB(52); " 00";
-    IF TT(15) > 0 THEN PRINT TAB(52); USING "##.#"; TT(16) / TT(15);
-    PRINT TAB(61); USING "###"; TT(17);
-    PRINT TAB(70); USING "##"; RC(4);
-    PRINT TAB(72); RC$(4)
-    RETURN
-720 VV = PRS(1, I, 4) + PRS(2, I, 4) + PRS(3, I, 4) + PRS(4, I, 4) + PRS(5, I, 4) + PRS(6, I, 4) + PRS(7, I, 4) + PRS(8, I, 4) + PRS(9, I, 4) + PRS(10, I, 4) + PRS(11, I, 4) + PRS(12, I, 4) + PRS(13, I, 4) + PRS(14, I, 4) + PRS(15, I, 4)
-    FOR V = 1 TO VV
-    TT(18) = TT(18) + PRS(V, I, 0)
-    TT(19) = TT(19) + PRS(V, I, 1)
-    TT(20) = TT(20) + PRS(V, I, 2)
-    NEXT V
-    RC(5) = PRS(1, I, 3): RC$(5) = PRS$(1, I, 0)
-    FOR V = 2 TO VV
-    IF PRS(V, I, 3) >= RC(5) THEN 726 ELSE 727
-726 RC(5) = PRS(V, I, 3): RC$(5) = PRS$(V, I, 0)
-727 NEXT
-    PRINT : COLOR 3: PRINT : PRINT "TOTALS";
-    PRINT TAB(25); USING "##"; VV;
-    PRINT TAB(32); USING "###"; TT(18);
-    PRINT TAB(41); USING "#####"; TT(19);
-    IF TT(18) = 0 OR TT(19) = 0 THEN PRINT TAB(52); " 00";
-    IF TT(18) > 0 THEN PRINT TAB(52); USING "##.#"; TT(19) / TT(18);
-    PRINT TAB(61); USING "###"; TT(20);
-    PRINT TAB(70); USING "##"; RC(5);
-    PRINT TAB(72); RC$(5)
-    RETURN
-750 VV = PUS(1, I, 2) + PUS(2, I, 2) + PUS(3, I, 2) + PUS(4, I, 2) + PUS(5, I, 2) + PUS(6, I, 2) + PUS(7, I, 2) + PUS(8, I, 2) + PUS(9, I, 2) + PUS(10, I, 2) + PUS(11, I, 2) + PUS(12, I, 2) + PUS(13, I, 2) + PUS(14, I, 2) + PUS(15, I, 2)
-    FOR V = 1 TO VV
-    TT(21) = TT(21) + PUS(V, I, 0)
-    TT(22) = TT(22) + PUS(V, I, 1)
-    NEXT V
-    PRINT : COLOR 3: PRINT : PRINT "TOTALS";
-    PRINT TAB(21); USING "##"; VV;
-    PRINT TAB(27); USING "####"; TT(21);
-    PRINT TAB(37); USING "#####"; TT(22);
-    IF TT(21) = 0 OR TT(22) = 0 THEN PRINT TAB(47); " 00"
-    IF TT(21) > 0 THEN PRINT TAB(47); USING "##.#"; TT(22) / TT(21)
-    RETURN
-780 VV = FGS(1, I, 15) + FGS(2, I, 15) + FGS(3, I, 15) + FGS(4, I, 15) + FGS(5, I, 15) + FGS(6, I, 15) + FGS(7, I, 15) + FGS(8, I, 15) + FGS(9, I, 15) + FGS(10, I, 15) + FGS(11, I, 15) + FGS(12, I, 15) + FGS(13, I, 15) + FGS(14, I, 15) + FGS(15, I,  _
-15)
-    FOR V = 1 TO VV
-    TT(23) = TT(23) + FGS(V, I, 0)
-    TT(24) = TT(24) + FGS(V, I, 1)
-    TT(34) = TT(34) + FGS(V, I, 2)
-    TT(35) = TT(35) + FGS(V, I, 3)
-    TT(36) = TT(36) + FGS(V, I, 5)
-    TT(37) = TT(37) + FGS(V, I, 6)
-    TT(38) = TT(38) + FGS(V, I, 7)
-    TT(39) = TT(39) + FGS(V, I, 8)
-    TT(40) = TT(40) + FGS(V, I, 9)
-    TT(41) = TT(41) + FGS(V, I, 10)
-    TT(42) = TT(42) + FGS(V, I, 11)
-    TT(43) = TT(43) + FGS(V, I, 12)
-    TT(44) = TT(44) + FGS(V, I, 13)
-    TT(45) = TT(45) + FGS(V, I, 14)
-    NEXT V
-    RC(6) = FGS(1, I, 4)
-    FOR V = 2 TO VV
-    IF FGS(V, I, 4) >= RC(6) THEN 785 ELSE 786
-785 RC(6) = FGS(V, I, 4)
-786 NEXT
-    PRINT : COLOR 3: PRINT : PRINT "TOTALS";
-    PRINT TAB(16); VV;
-    PRINT TAB(19); USING "###"; TT(35);
-    PRINT TAB(23); USING "###"; TT(34);
-    IF TT(34) = 0 OR TT(35) = 0 THEN PRINT TAB(27); "  0";
-    IF TT(34) > 0 THEN PRINT TAB(27); USING "###"; (TT(34) / TT(35)) * 100;
-    PRINT TAB(32); USING "###"; TT(24);
-    PRINT TAB(36); USING "###"; TT(23);
-    IF TT(23) = 0 OR TT(24) = 0 THEN PRINT TAB(40); "  0";
-    IF TT(23) > 0 THEN PRINT TAB(40); USING "###"; (TT(23) / TT(24)) * 100;
-    PRINT TAB(46); USING "##"; RC(6);
-    PRINT TAB(49); USING "##"; TT(36); : PRINT "-";
-    PRINT TAB(52); USING "##"; TT(41);
-    PRINT TAB(55); USING "##"; TT(37); : PRINT "-";
-    PRINT TAB(58); USING "##"; TT(42);
-    PRINT TAB(61); USING "##"; TT(38); : PRINT "-";
-    PRINT TAB(64); USING "##"; TT(43);
-    PRINT TAB(67); USING "##"; TT(39); : PRINT "-";
-    PRINT TAB(70); USING "##"; TT(44);
-    PRINT TAB(73); USING "##"; TT(40); : PRINT "-";
-    PRINT TAB(76); USING "##"; TT(45)
-    RETURN
-1000 CLS
-1001 COLOR 11: LOCATE 1: PRINT Z$
-     COLOR 12: LOCATE 2: PRINT "INTERCEPTORS        YEAR     INTERCEPTIONS"
-     IF RT = 1 THEN 1006
-     IF RT = 2 THEN 1005
-1005 I = B9: GOTO 1008
-1006 FOR I = 0 TO 54
-     IF DI$(PX, I) = "" OR DI$(PX, I) = "XXX" THEN 1028
-1008 LOCATE 3: COLOR 15: PRINT LEFT$(DI$(PX, I), 13);
-     VV = GIS(1, I, 1) + GIS(2, I, 1) + GIS(3, I, 1) + GIS(4, I, 1) + GIS(5, I, 1) + GIS(6, I, 1) + GIS(7, I, 1) + GIS(8, I, 1) + GIS(9, I, 1) + GIS(10, I, 1) + GIS(11, I, 1) + GIS(12, I, 1) + GIS(13, I, 1) + GIS(14, I, 1) + GIS(15, I, 1)
-     FOR V = 1 TO VV
-     COLOR 7: PRINT TAB(20); GIS(V, I, 2);
-     PRINT TAB(34); USING "###"; GIS(V, I, 0);
-     NEXT V
-     GOSUB 1820
-     TT(32) = 0
-     PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-1017 I$ = INKEY$: IF I$ = "" THEN 1017
-     IF I$ = CHR$(0) THEN 1020
-     IF I$ = CHR$(27) THEN 2000
-1020 FOR T = 3 TO 20: LOCATE T
-     PRINT "                                                                            "
-     NEXT
-     IF RT = 1 THEN 1028
-     IF RT = 2 THEN 2000
-1028 NEXT I
-     CLS
-1031 COLOR 11: LOCATE 1: PRINT Z$
-     COLOR 12: LOCATE 2: PRINT "DEFENSIVE SACKS     YEAR        SACKS"
-     IF RT = 1 THEN 1036
-     IF RT = 2 THEN 1035
-1035 I = B9: GOTO 1038
-1036 FOR I = 0 TO 54
-     IF DS$(PX, I) = "" OR DS$(PX, I) = "XXX" THEN 1058
-1038 LOCATE 3: COLOR 15: PRINT LEFT$(DS$(PX, I), 13);
-     VV = GSS(1, I, 1) + GSS(2, I, 1) + GSS(3, I, 1) + GSS(4, I, 1) + GSS(5, I, 1) + GSS(6, I, 1) + GSS(7, I, 1) + GSS(8, I, 1) + GSS(9, I, 1) + GSS(10, I, 1) + GSS(11, I, 1) + GSS(12, I, 1) + GSS(13, I, 1) + GSS(14, I, 1) + GSS(15, I, 1)
-     FOR V = 1 TO VV
-     COLOR 7: PRINT TAB(20); GSS(V, I, 2);
-     PRINT TAB(34); USING "###"; GSS(V, I, 0);
-     NEXT V
-     GOSUB 1920
-     TT(33) = 0
-     PRINT : PRINT : PRINT : COLOR 14: PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
-1047 I$ = INKEY$: IF I$ = "" THEN 1047
-     IF I$ = CHR$(0) THEN 1050
-     IF I$ = CHR$(27) THEN 2000
-1050 FOR T = 3 TO 20: LOCATE T
-     PRINT "                                                                            "
-     NEXT
-     IF RT = 1 THEN 1058
-     IF RT = 2 THEN 2000
-1058 NEXT I
-     RETURN
-1820 VV = GIS(1, I, 1) + GIS(2, I, 1) + GIS(3, I, 1) + GIS(4, I, 1) + GIS(5, I, 1) + GIS(6, I, 1) + GIS(7, I, 1) + GIS(8, I, 1) + GIS(9, I, 1) + GIS(10, I, 1) + GIS(11, I, 1) + GIS(12, I, 1) + GIS(13, I, 1) + GIS(14, I, 1) + GIS(15, I, 1)
-     FOR V = 1 TO VV
-     TT(32) = TT(32) + GIS(V, I, 0)
-     NEXT V
-     PRINT : COLOR 3
-     PRINT : PRINT "TOTALS";
-     PRINT TAB(23); USING "##"; VV;
-     PRINT TAB(33); USING "####"; TT(32)
-     RETURN
-1920 VV = GSS(1, I, 1) + GSS(2, I, 1) + GSS(3, I, 1) + GSS(4, I, 1) + GSS(5, I, 1) + GSS(6, I, 1) + GSS(7, I, 1) + GSS(8, I, 1) + GSS(9, I, 1) + GSS(10, I, 1) + GSS(11, I, 1) + GSS(12, I, 1) + GSS(13, I, 1) + GSS(14, I, 1) + GSS(15, I, 1)
-     FOR V = 1 TO VV
-     TT(33) = TT(33) + GSS(V, I, 0)
-     NEXT V
-     PRINT : COLOR 3
-     PRINT : PRINT "TOTALS";
-     PRINT TAB(23); USING "##"; VV;
-     PRINT TAB(33); USING "####"; TT(33)
-     RETURN
-2000 CLS : COLOR 7: PRINT "VIEW "; : COLOR 12: PRINT "R"; : COLOR 7
-     PRINT "UNNING BACKS, "; : COLOR 12: PRINT "W"; : COLOR 7
-     PRINT "IDE RECEIVERS, "; : COLOR 12: PRINT "Q"; : COLOR 7
-     PRINT "UARTERBACKS, "; : COLOR 12: PRINT "K"; : COLOR 7
-     PRINT "ICK RETURNERS, P";
-     COLOR 12: PRINT "U"; : COLOR 7: PRINT "NT"
-     PRINT "RETURNERS, "; : COLOR 12: PRINT "P"; : COLOR 7
-     PRINT "UNTERS, KI"; : COLOR 12: PRINT "C"; : COLOR 7: PRINT "KERS, ";
-     COLOR 12: PRINT "I"; : COLOR 7: PRINT "NTERCEPTIONS, "; : COLOR 12
-     PRINT "D"; : COLOR 7: PRINT "EFENSIVE SACKS,"
-     COLOR 7: PRINT "R"; : COLOR 12: PRINT "O"; : COLOR 7
-     PRINT "STER IN SEQUENCE, OR "; : COLOR 12: PRINT "E"; : COLOR 7
-     PRINT "XIT TO MAIN MENU."
-     GOSUB 9200
-2005 I$ = INKEY$: IF I$ = "" THEN 2005
-     IF UCASE$(I$) = "R" THEN 2020
-     IF UCASE$(I$) = "W" THEN 2120
-     IF UCASE$(I$) = "Q" THEN 2220
-     IF UCASE$(I$) = "K" THEN 2320
-     IF UCASE$(I$) = "U" THEN 2420
-     IF UCASE$(I$) = "P" THEN 2520
-     IF UCASE$(I$) = "C" THEN 2620
-     IF UCASE$(I$) = "I" THEN 2820
-     IF UCASE$(I$) = "D" THEN 2920
-     IF UCASE$(I$) = "O" THEN 2018
-     IF UCASE$(I$) = "E" THEN 595
-2018 RT = 1: GOTO 101
-2020 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 16: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
-     FOR I = 17 TO 33: LOCATE I - 15, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
-     FOR I = 34 TO 49: LOCATE I - 32, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
-     PRINT
-     PRINT : COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 104
-2120 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 19: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A2$(PX, I), 12): NEXT
-     FOR I = 20 TO 39: LOCATE I - 18, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A2$(PX, I), 12): NEXT
-     PRINT
-     PRINT : COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 301
-2220 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A3$(PX, I), 12): NEXT
-     FOR I = 10 TO 19: LOCATE I - 8, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A3$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 334
-2320 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 7: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A4$(PX, I), 12): NEXT
-     FOR I = 8 TO 14: LOCATE I - 6, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A4$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 384
-2420 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 7: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A5$(PX, I), 12): NEXT
-     FOR I = 8 TO 14: LOCATE I - 6, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A5$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 424
-2520 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A6$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 464
-2620 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A7$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 504
-2820 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 18: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
-     FOR I = 19 TO 36: LOCATE I - 17, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
-     FOR I = 37 TO 54: LOCATE I - 35, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 1001
-2920 CLS : COLOR 12: PRINT Z$
-     FOR I = 0 TO 18: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
-     FOR I = 19 TO 36: LOCATE I - 17, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
-     FOR I = 37 TO 54: LOCATE I - 35, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
-     PRINT
-     COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
-     RT = 2
-     CLS : GOTO 1031
-8999 IF QBS(V, I, 0) > 0 THEN QBS(V, I, 11) = INT(QBS(V, I, 1) / QBS(V, I, 0) * 1000) / 10
-     IF QBS(V, I, 0) = 0 THEN QBS(V, I, 11) = 0: QBS(V, I, 8) = 0: QBS(V, I, 10) = 0: QBS(V, I, 9) = 0: GOTO 9005
-     QBS(V, I, 8) = INT(QBS(V, I, 4) / QBS(V, I, 0) * 1000) / 10
-     QBS(V, I, 10) = INT(QBS(V, I, 3) / QBS(V, I, 0) * 100) / 100
-     QBS(V, I, 9) = INT(QBS(V, I, 2) / QBS(V, I, 0) * 1000) / 10
-9005 PP(V, I) = QBS(V, I, 11) - 30
-     IF PP(V, I) < 0 THEN PP(V, I) = 0: GOTO 9009
-     IF PP(V, I) > 77.5 THEN PP(V, I) = 2.375: GOTO 9009
-     PP(V, I) = PP(V, I) * .05
-9009 IF QBS(V, I, 8) > 11.9 THEN FF(V, I) = 2.375: GOTO 9011
-     FF(V, I) = QBS(V, I, 8) * .2
-9011 IF QBS(V, I, 9) = 0 THEN II(V, I) = 0: GOTO 9014
-     IF QBS(V, I, 9) > 9.5 THEN II(V, I) = 0: GOTO 9014
-     II(V, I) = 2.375 - (.25 * QBS(V, I, 9))
-9014 QBS(V, I, 10) = QBS(V, I, 10) - 3
-     IF QBS(V, I, 10) < 0 THEN YY(V, I) = 0: GOTO 9020
-     IF QBS(V, I, 10) > 12.5 THEN YY(V, I) = 2.375: GOTO 9020
-     D = INT(QBS(V, I, 10) * 100) / 2
-     IF D = QBS(V, I, 10) / 2 THEN YY(V, I) = QBS(V, I, 10) / 2 * .3 + QBS(V, I, 10) / 2 * .2: GOTO 9020
-     YY(V, I) = QBS(V, I, 10) / 2 * .3 + QBS(V, I, 10) / 2 * .2 + .003
-9020 QBS(V, I, 12) = PP(V, I) + FF(V, I) + II(V, I) + YY(V, I)
-     IF QBS(V, I, 12) > 9.5 THEN QBS(V, I, 12) = 158.3: GOTO 9027
-     QBS(V, I, 12) = QBS(V, I, 12) * 50 / 3
-9027 QBS(V, I, 12) = INT(QBS(V, I, 12) * 10) / 10
-     RETURN
-9099 IF TT(11) > 0 THEN TT(30) = INT(TT(10) / TT(11) * 1000) / 10
-     IF TT(11) = 0 THEN TT(30) = 0: TT(27) = 0: TT(29) = 0: TT(28) = 0: GOTO 9105
-     TT(27) = INT(TT(13) / TT(11) * 1000) / 10
-     TT(29) = INT(TT(14) / TT(11) * 100) / 100
-     TT(28) = INT(TT(12) / TT(11) * 1000) / 10
-9105 PPT = TT(30) - 30
-     IF PPT < 0 THEN PPT = 0: GOTO 9109
-     IF PPT > 77.5 THEN PPT = 2.375: GOTO 9109
-     PPT = PPT * .05
-9109 IF TT(27) > 11.9 THEN FFT = 2.375: GOTO 9111
-     FFT = TT(27) * .2
-9111 IF TT(28) = 0 THEN IIT = 0: GOTO 9114
-     IF TT(28) > 9.5 THEN IIT = 0: GOTO 9114
-     IIT = 2.375 - (.25 * TT(28))
-9114 TT(29) = TT(29) - 3
-     IF TT(29) < 0 THEN YYT = 0: GOTO 9120
-     IF TT(29) > 12.5 THEN YYT = 2.375: GOTO 9120
-     D = INT(TT(29) * 100) / 2
-     IF D = TT(29) / 2 THEN YYT = TT(29) / 2 * .3 + TT(29) / 2 * .2: GOTO 9120
-     YYT = TT(29) / 2 * .3 + TT(29) / 2 * .2 + .003
-9120 TT(31) = PPT + FFT + IIT + YYT
-     IF TT(31) > 9.5 THEN TT(31) = 158.3: GOTO 9127
-     TT(31) = TT(31) * 50 / 3
-9127 TT(31) = INT(TT(31) * 10) / 10
-     RETURN
-9200 FOR I = 1 TO 50: TT(I) = 0: NEXT
-     RETURN
-     IF QBS(V, B9, 1) > 0 THEN QBS(V, B9, 11) = INT(QBS(V, B9, 2) / QBS(V, B9, 1) * 1000) / 10
-     IF QBS(V, B9, 1) = 0 THEN QBS(V, B9, 11) = 0: QBS(V, B9, 8) = 0: QBS(V, B9, 10) = 0: QBS(V, B9, 9) = 0: GOTO 9405
-     QBS(V, B9, 8) = INT(QBS(V, B9, 5) / QBS(V, B9, 1) * 1000) / 10
-     QBS(V, B9, 10) = INT(QBS(V, B9, 4) / QBS(V, B9, 1) * 100) / 100
-     QBS(V, B9, 9) = INT(QBS(V, B9, 3) / QBS(V, B9, 1) * 1000) / 10
-9405 PP(V, B9) = QBS(V, B9, 11) - 30
-     IF PP(V, B9) < 0 THEN PP(V, B9) = 0: GOTO 9409
-     IF PP(V, B9) > 77.5 THEN PP(V, B9) = 2.375: GOTO 9409
-     PP(V, B9) = PP(V, B9) * .05
-9409 IF QBS(V, B9, 8) > 11.9 THEN FF(V, B9) = 2.375: GOTO 9411
-     FF(V, B9) = QBS(V, B9, 8) * .2
-9411 IF QBS(V, B9, 9) = 0 THEN II(V, B9) = 0: GOTO 9414
-     IF QBS(V, B9, 9) > 9.5 THEN II(V, B9) = 0: GOTO 9414
-     II(V, B9) = 2.375 - (.25 * QBS(V, B9, 9))
-9414 QBS(V, B9, 10) = QBS(V, B9, 10) - 3
-     IF QBS(V, B9, 10) < 0 THEN YY(V, B9) = 0: GOTO 9420
-     IF QBS(V, B9, 10) > 12.5 THEN YY(V, B9) = 2.375: GOTO 9420
-     D = INT(QBS(V, B9, 10) * 100) / 2
-     IF D = QBS(V, B9, 10) / 2 THEN YY(V, B9) = QBS(V, B9, 10) / 2 * .3 + QBS(V, B9, 10) / 2 * .2: GOTO 9420
-     YY(V, B9) = QBS(V, B9, 10) / 2 * .3 + QBS(V, B9, 10) / 2 * .2 + .003
-9420 QBS(V, B9, 12) = PP(V, B9) + FF(V, B9) + II(V, B9) + YY(V, B9)
-     IF QBS(V, B9, 12) > 9.5 THEN QBS(V, B9, 12) = 158.3: GOTO 9427
-     QBS(V, B9, 12) = QBS(V, B9, 12) * 50 / 3
-9427 QBS(V, B9, 12) = INT(QBS(V, B9, 12) * 10) / 10
-     RETURN
-9500 IF LEFT$(D$(1), 1) <> "A" AND LEFT$(D$(1), 1) <> "B" THEN RETURN
-     CLS : COLOR 15: PRINT "MAKE SURE DISK WITH CAREER FILE IS IN DRIVE "; : COLOR 12: PRINT D$(1)
-     COLOR 15: LOCATE 23: PRINT "HIT ANY KEY TO CONTINUE"
-9502 I$ = INKEY$: IF I$ = "" THEN 9502
-     RETURN
-9600 IF DRIVE% >= 67 THEN RETURN
-     CLS : COLOR 15: PRINT "MAKE SURE PROGRAM DISK IS IN DRIVE "
-     LOCATE 23: PRINT "HIT ANY KEY TO CONTINUE"
-9602 I$ = INKEY$: IF I$ = "" THEN 9602
-     RETURN
-4500 CLS
-     PRINT "NO CAREER FILES WERE FOUND"
-     PRINT "PRESS ANY KEY TO RETURN TO MAIN MENU"
-3805 I$ = INKEY$: IF I$ = "" THEN 3805
-     RUN "CAREER.EXE"
+	FOR V = 1 TO VV
+	TT(1) = TT(1) + RBS(V, I, 0)
+	TT(2) = TT(2) + RBS(V, I, 1)
+	TT(3) = TT(3) + RBS(V, I, 2)
+	TT(4) = TT(4) + RBS(V, I, 3)
+	TT(5) = TT(5) + RBS(V, I, 4)
+	TT(6) = TT(6) + RBS(V, I, 5)
+	NEXT V
+	RC(1) = RBS(1, I, 6): RC$(1) = RBS$(1, I, 0)
+	RC(2) = RBS(1, I, 9): RC$(2) = RBS$(1, I, 1)
+	FOR V = 2 TO VV
+	IF RBS(V, I, 6) >= RC(1) THEN 606 ELSE 607
 
+606 RC(1) = RBS(V, I, 6): RC$(1) = RBS$(V, I, 0)
+
+607 IF RBS(V, I, 9) >= RC(2) THEN 608 ELSE 610
+
+608 RC(2) = RBS(V, I, 9): RC$(2) = RBS$(V, I, 1)
+
+610 NEXT
+	PRINT : COLOR 3
+	PRINT : PRINT "TOTALS";
+	PRINT TAB(18); USING "##"; VV;
+	PRINT TAB(22); USING "####"; TT(1);
+	PRINT TAB(28); USING "#####"; TT(2);
+	IF TT(1) = 0 OR TT(2) = 0 THEN PRINT TAB(34); " 0.0";
+	IF TT(1) > 0 THEN PRINT TAB(34); USING "##.#"; TT(2) / TT(1);
+	PRINT TAB(39); USING "###"; TT(3);
+	PRINT TAB(44); USING "####"; TT(4);
+	PRINT TAB(50); USING "#####"; TT(5);
+	IF TT(4) = 0 OR TT(5) = 0 THEN PRINT TAB(57); " 0.0";
+	IF TT(4) > 0 THEN PRINT TAB(57); USING "##.#"; TT(5) / TT(4);
+	PRINT TAB(62); USING "###"; TT(6);
+	PRINT TAB(67); USING "##"; RC(1);
+	PRINT TAB(69); RC$(1);
+	PRINT TAB(77); USING "##"; RC(2);
+	PRINT TAB(79); RC$(2);
+	RETURN
+
+630 VV = WRS(1, I, 4) + WRS(2, I, 4) + WRS(3, I, 4) + WRS(4, I, 4) + WRS(5, I, 4) + WRS(6, I, 4) + WRS(7, I, 4) + WRS(8, I, 4) + WRS(9, I, 4) + WRS(10, I, 4) + WRS(11, I, 4) + WRS(12, I, 4) + WRS(13, I, 4) + WRS(14, I, 4) + WRS(15, I, 4)
+	FOR V = 1 TO VV
+	TT(7) = TT(7) + WRS(V, I, 0)
+	TT(8) = TT(8) + WRS(V, I, 1)
+	TT(9) = TT(9) + WRS(V, I, 2)
+	NEXT V
+	RC(2) = WRS(1, I, 3): RC$(2) = WRS$(1, I, 0)
+	FOR V = 2 TO VV
+	IF WRS(V, I, 3) >= RC(2) THEN 636 ELSE 637
+
+636 RC(2) = WRS(V, I, 3): RC$(2) = WRS$(V, I, 0)
+
+637 NEXT
+	PRINT : COLOR 3: PRINT "TOTALS";
+	PRINT TAB(19); USING "##"; VV;
+	PRINT TAB(24); USING "####"; TT(7);
+	PRINT TAB(32); USING "#####"; TT(8);
+	IF TT(7) = 0 OR TT(8) = 0 THEN PRINT TAB(41); " 0.0";
+	IF TT(7) > 0 THEN PRINT TAB(41); USING "##.#"; TT(8) / TT(7);
+	PRINT TAB(46); USING "###"; TT(9);
+	PRINT TAB(54); USING "##"; RC(2);
+	PRINT TAB(56); RC$(2)
+	RETURN
+
+660 VV = QBS(1, I, 6) + QBS(2, I, 6) + QBS(3, I, 6) + QBS(4, I, 6) + QBS(5, I, 6) + QBS(6, I, 6) + QBS(7, I, 6) + QBS(8, I, 6) + QBS(9, I, 6) + QBS(10, I, 6) + QBS(11, I, 6) + QBS(12, I, 6) + QBS(13, I, 6) + QBS(14, I, 6) + QBS(15, I, 6)
+	FOR V = 1 TO VV
+	TT(10) = TT(10) + QBS(V, I, 1)
+	TT(11) = TT(11) + QBS(V, I, 0)
+	TT(12) = TT(12) + QBS(V, I, 2)
+	TT(13) = TT(13) + QBS(V, I, 4)
+	TT(14) = TT(14) + QBS(V, I, 3)
+	NEXT V
+	RC(3) = QBS(1, I, 5): RC$(3) = QBS$(1, I, 0)
+	FOR V = 2 TO VV
+	IF QBS(V, I, 5) >= RC(3) THEN 668 ELSE 669
+
+668 RC(3) = QBS(V, I, 5): RC$(3) = QBS$(V, I, 0)
+
+669 NEXT
+	PRINT : COLOR 3: PRINT : PRINT "TOTALS";
+	PRINT TAB(16); USING "##"; VV;
+	PRINT TAB(20); USING "####"; TT(10);
+	PRINT TAB(25); USING "####"; TT(11);
+	PRINT TAB(31); USING "###"; TT(12);
+	PRINT TAB(34); USING "####"; TT(13);
+	PRINT TAB(39); USING "#####"; TT(14);
+	IF TT(10) = 0 OR TT(11) = 0 THEN PRINT TAB(47); " 00";
+	IF TT(10) > 0 THEN PRINT TAB(47); USING "##"; (TT(10) / TT(11)) * 100;
+	IF TT(11) = 0 THEN PRINT TAB(53); " 0.0";
+	IF TT(10) > 0 THEN PRINT TAB(53); USING "##.#"; TT(14) / TT(10);
+	GOSUB 9099
+	PRINT TAB(60); USING "###.#"; TT(31);
+	PRINT TAB(70); USING "##"; RC(3);
+	PRINT TAB(72); RC$(3)
+	RETURN
+
+690 VV = KRS(1, I, 4) + KRS(2, I, 4) + KRS(3, I, 4) + KRS(4, I, 4) + KRS(5, I, 4) + KRS(6, I, 4) + KRS(7, I, 4) + KRS(8, I, 4) + KRS(9, I, 4) + KRS(10, I, 4) + KRS(11, I, 4) + KRS(12, I, 4) + KRS(13, I, 4) + KRS(14, I, 4) + KRS(15, I, 4)
+	FOR V = 1 TO VV
+	TT(15) = TT(15) + KRS(V, I, 0)
+	TT(16) = TT(16) + KRS(V, I, 1)
+	TT(17) = TT(17) + KRS(V, I, 2)
+	NEXT V
+	RC(4) = KRS(1, I, 3): RC$(4) = KRS$(1, I, 0)
+	FOR V = 2 TO VV
+	IF KRS(V, I, 3) >= RC(4) THEN 696 ELSE 697
+
+696 RC(4) = KRS(V, I, 3): RC$(4) = KRS$(V, I, 0)
+
+697 NEXT
+	PRINT : COLOR 3: PRINT : PRINT "TOTALS";
+	PRINT TAB(25); USING "##"; VV;
+	PRINT TAB(32); USING "###"; TT(15);
+	PRINT TAB(41); USING "#####"; TT(16);
+	IF TT(15) = 0 OR TT(16) = 0 THEN PRINT TAB(52); " 00";
+	IF TT(15) > 0 THEN PRINT TAB(52); USING "##.#"; TT(16) / TT(15);
+	PRINT TAB(61); USING "###"; TT(17);
+	PRINT TAB(70); USING "##"; RC(4);
+	PRINT TAB(72); RC$(4)
+	RETURN
+
+720 VV = PRS(1, I, 4) + PRS(2, I, 4) + PRS(3, I, 4) + PRS(4, I, 4) + PRS(5, I, 4) + PRS(6, I, 4) + PRS(7, I, 4) + PRS(8, I, 4) + PRS(9, I, 4) + PRS(10, I, 4) + PRS(11, I, 4) + PRS(12, I, 4) + PRS(13, I, 4) + PRS(14, I, 4) + PRS(15, I, 4)
+	FOR V = 1 TO VV
+	TT(18) = TT(18) + PRS(V, I, 0)
+	TT(19) = TT(19) + PRS(V, I, 1)
+	TT(20) = TT(20) + PRS(V, I, 2)
+	NEXT V
+	RC(5) = PRS(1, I, 3): RC$(5) = PRS$(1, I, 0)
+	FOR V = 2 TO VV
+	IF PRS(V, I, 3) >= RC(5) THEN 726 ELSE 727
+
+726 RC(5) = PRS(V, I, 3): RC$(5) = PRS$(V, I, 0)
+
+727 NEXT
+	PRINT : COLOR 3: PRINT : PRINT "TOTALS";
+	PRINT TAB(25); USING "##"; VV;
+	PRINT TAB(32); USING "###"; TT(18);
+	PRINT TAB(41); USING "#####"; TT(19);
+	IF TT(18) = 0 OR TT(19) = 0 THEN PRINT TAB(52); " 00";
+	IF TT(18) > 0 THEN PRINT TAB(52); USING "##.#"; TT(19) / TT(18);
+	PRINT TAB(61); USING "###"; TT(20);
+	PRINT TAB(70); USING "##"; RC(5);
+	PRINT TAB(72); RC$(5)
+	RETURN
+
+750 VV = PUS(1, I, 2) + PUS(2, I, 2) + PUS(3, I, 2) + PUS(4, I, 2) + PUS(5, I, 2) + PUS(6, I, 2) + PUS(7, I, 2) + PUS(8, I, 2) + PUS(9, I, 2) + PUS(10, I, 2) + PUS(11, I, 2) + PUS(12, I, 2) + PUS(13, I, 2) + PUS(14, I, 2) + PUS(15, I, 2)
+	FOR V = 1 TO VV
+	TT(21) = TT(21) + PUS(V, I, 0)
+	TT(22) = TT(22) + PUS(V, I, 1)
+	NEXT V
+	PRINT : COLOR 3: PRINT : PRINT "TOTALS";
+	PRINT TAB(21); USING "##"; VV;
+	PRINT TAB(27); USING "####"; TT(21);
+	PRINT TAB(37); USING "#####"; TT(22);
+	IF TT(21) = 0 OR TT(22) = 0 THEN PRINT TAB(47); " 00"
+	IF TT(21) > 0 THEN PRINT TAB(47); USING "##.#"; TT(22) / TT(21)
+	RETURN
+
+780 VV = FGS(1, I, 15) + FGS(2, I, 15) + FGS(3, I, 15) + FGS(4, I, 15) + FGS(5, I, 15) + FGS(6, I, 15) + FGS(7, I, 15) + FGS(8, I, 15) + FGS(9, I, 15) + FGS(10, I, 15) + FGS(11, I, 15) + FGS(12, I, 15) + FGS(13, I, 15) + FGS(14, I, 15) + FGS(15, I,  _
+
+15)
+	FOR V = 1 TO VV
+	TT(23) = TT(23) + FGS(V, I, 0)
+	TT(24) = TT(24) + FGS(V, I, 1)
+	TT(34) = TT(34) + FGS(V, I, 2)
+	TT(35) = TT(35) + FGS(V, I, 3)
+	TT(36) = TT(36) + FGS(V, I, 5)
+	TT(37) = TT(37) + FGS(V, I, 6)
+	TT(38) = TT(38) + FGS(V, I, 7)
+	TT(39) = TT(39) + FGS(V, I, 8)
+	TT(40) = TT(40) + FGS(V, I, 9)
+	TT(41) = TT(41) + FGS(V, I, 10)
+	TT(42) = TT(42) + FGS(V, I, 11)
+	TT(43) = TT(43) + FGS(V, I, 12)
+	TT(44) = TT(44) + FGS(V, I, 13)
+	TT(45) = TT(45) + FGS(V, I, 14)
+	NEXT V
+	RC(6) = FGS(1, I, 4)
+	FOR V = 2 TO VV
+	IF FGS(V, I, 4) >= RC(6) THEN 785 ELSE 786
+
+785 RC(6) = FGS(V, I, 4)
+
+786 NEXT
+	PRINT : COLOR 3: PRINT : PRINT "TOTALS";
+	PRINT TAB(16); VV;
+	PRINT TAB(19); USING "###"; TT(35);
+	PRINT TAB(23); USING "###"; TT(34);
+	IF TT(34) = 0 OR TT(35) = 0 THEN PRINT TAB(27); "  0";
+	IF TT(34) > 0 THEN PRINT TAB(27); USING "###"; (TT(34) / TT(35)) * 100;
+	PRINT TAB(32); USING "###"; TT(24);
+	PRINT TAB(36); USING "###"; TT(23);
+	IF TT(23) = 0 OR TT(24) = 0 THEN PRINT TAB(40); "  0";
+	IF TT(23) > 0 THEN PRINT TAB(40); USING "###"; (TT(23) / TT(24)) * 100;
+	PRINT TAB(46); USING "##"; RC(6);
+	PRINT TAB(49); USING "##"; TT(36); : PRINT "-";
+	PRINT TAB(52); USING "##"; TT(41);
+	PRINT TAB(55); USING "##"; TT(37); : PRINT "-";
+	PRINT TAB(58); USING "##"; TT(42);
+	PRINT TAB(61); USING "##"; TT(38); : PRINT "-";
+	PRINT TAB(64); USING "##"; TT(43);
+	PRINT TAB(67); USING "##"; TT(39); : PRINT "-";
+	PRINT TAB(70); USING "##"; TT(44);
+	PRINT TAB(73); USING "##"; TT(40); : PRINT "-";
+	PRINT TAB(76); USING "##"; TT(45)
+	RETURN
+
+1000 CLS
+
+1001 COLOR 11: LOCATE 1: PRINT Z$
+	COLOR 12: LOCATE 2: PRINT "INTERCEPTORS        YEAR     INTERCEPTIONS"
+	IF RT = 1 THEN 1006
+	IF RT = 2 THEN 1005
+
+1005 I = B9: GOTO 1008
+
+1006 FOR I = 0 TO 54
+	IF DI$(PX, I) = "" OR DI$(PX, I) = "XXX" THEN 1028
+
+1008 LOCATE 3: COLOR 15: PRINT LEFT$(DI$(PX, I), 13);
+	VV = GIS(1, I, 1) + GIS(2, I, 1) + GIS(3, I, 1) + GIS(4, I, 1) + GIS(5, I, 1) + GIS(6, I, 1) + GIS(7, I, 1) + GIS(8, I, 1) + GIS(9, I, 1) + GIS(10, I, 1) + GIS(11, I, 1) + GIS(12, I, 1) + GIS(13, I, 1) + GIS(14, I, 1) + GIS(15, I, 1)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(20); GIS(V, I, 2);
+	PRINT TAB(34); USING "###"; GIS(V, I, 0);
+	NEXT V
+	GOSUB 1820
+	TT(32) = 0
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+1017 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 1020
+	IF I$ = CHR$(27) THEN 2000
+
+1020 FOR T = 3 TO 20: LOCATE T
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 1028
+	IF RT = 2 THEN 2000
+
+1028 NEXT I
+	CLS
+
+1031 COLOR 11: LOCATE 1: PRINT Z$
+	COLOR 12: LOCATE 2: PRINT "DEFENSIVE SACKS     YEAR        SACKS"
+	IF RT = 1 THEN 1036
+	IF RT = 2 THEN 1035
+
+1035 I = B9: GOTO 1038
+
+1036 FOR I = 0 TO 54
+	IF DS$(PX, I) = "" OR DS$(PX, I) = "XXX" THEN 1058
+
+1038 LOCATE 3: COLOR 15: PRINT LEFT$(DS$(PX, I), 13);
+	VV = GSS(1, I, 1) + GSS(2, I, 1) + GSS(3, I, 1) + GSS(4, I, 1) + GSS(5, I, 1) + GSS(6, I, 1) + GSS(7, I, 1) + GSS(8, I, 1) + GSS(9, I, 1) + GSS(10, I, 1) + GSS(11, I, 1) + GSS(12, I, 1) + GSS(13, I, 1) + GSS(14, I, 1) + GSS(15, I, 1)
+	FOR V = 1 TO VV
+	COLOR 7: PRINT TAB(20); GSS(V, I, 2);
+	PRINT TAB(34); USING "###"; GSS(V, I, 0);
+	NEXT V
+	GOSUB 1920
+	TT(33) = 0
+	PRINT : PRINT : PRINT
+	COLOR 14
+	PRINT "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
+	
+1047 I$ = GetKeyPress$
+	IF I$ = CHR$(0) THEN 1050
+	IF I$ = CHR$(27) THEN 2000
+
+1050 FOR T = 3 TO 20: LOCATE T
+	PRINT STRING$ (76," ")
+	NEXT
+	IF RT = 1 THEN 1058
+	IF RT = 2 THEN 2000
+
+1058 NEXT I
+	RETURN
+
+1820 VV = GIS(1, I, 1) + GIS(2, I, 1) + GIS(3, I, 1) + GIS(4, I, 1) + GIS(5, I, 1) + GIS(6, I, 1) + GIS(7, I, 1) + GIS(8, I, 1) + GIS(9, I, 1) + GIS(10, I, 1) + GIS(11, I, 1) + GIS(12, I, 1) + GIS(13, I, 1) + GIS(14, I, 1) + GIS(15, I, 1)
+	FOR V = 1 TO VV
+	TT(32) = TT(32) + GIS(V, I, 0)
+	NEXT V
+	PRINT : COLOR 3
+	PRINT : PRINT "TOTALS";
+	PRINT TAB(23); USING "##"; VV;
+	PRINT TAB(33); USING "####"; TT(32)
+	RETURN
+
+1920 VV = GSS(1, I, 1) + GSS(2, I, 1) + GSS(3, I, 1) + GSS(4, I, 1) + GSS(5, I, 1) + GSS(6, I, 1) + GSS(7, I, 1) + GSS(8, I, 1) + GSS(9, I, 1) + GSS(10, I, 1) + GSS(11, I, 1) + GSS(12, I, 1) + GSS(13, I, 1) + GSS(14, I, 1) + GSS(15, I, 1)
+	FOR V = 1 TO VV
+	TT(33) = TT(33) + GSS(V, I, 0)
+	NEXT V
+	PRINT : COLOR 3
+	PRINT : PRINT "TOTALS";
+	PRINT TAB(23); USING "##"; VV;
+	PRINT TAB(33); USING "####"; TT(33)
+	RETURN
+
+2000 CLS : COLOR 7: PRINT "VIEW "; : COLOR 12: PRINT "R"; : COLOR 7
+	PRINT "UNNING BACKS, "; : COLOR 12: PRINT "W"; : COLOR 7
+	PRINT "IDE RECEIVERS, "; : COLOR 12: PRINT "Q"; : COLOR 7
+	PRINT "UARTERBACKS, "; : COLOR 12: PRINT "K"; : COLOR 7
+	PRINT "ICK RETURNERS, P";
+	COLOR 12: PRINT "U"; : COLOR 7: PRINT "NT"
+	PRINT "RETURNERS, "; : COLOR 12: PRINT "P"; : COLOR 7
+	PRINT "UNTERS, KI"; : COLOR 12: PRINT "C"; : COLOR 7: PRINT "KERS, ";
+	COLOR 12: PRINT "I"; : COLOR 7: PRINT "NTERCEPTIONS, "; : COLOR 12
+	PRINT "D"; : COLOR 7: PRINT "EFENSIVE SACKS,"
+	COLOR 7: PRINT "R"; : COLOR 12: PRINT "O"; : COLOR 7
+	PRINT "STER IN SEQUENCE, OR "; : COLOR 12: PRINT "E"; : COLOR 7
+	PRINT "XIT TO MAIN MENU."
+	GOSUB 
+	
+92002005 I$ = GetKeyPress$
+	IF UCASE$(I$) = "R" THEN 2020
+	IF UCASE$(I$) = "W" THEN 2120
+	IF UCASE$(I$) = "Q" THEN 2220
+	IF UCASE$(I$) = "K" THEN 2320
+	IF UCASE$(I$) = "U" THEN 2420
+	IF UCASE$(I$) = "P" THEN 2520
+	IF UCASE$(I$) = "C" THEN 2620
+	IF UCASE$(I$) = "I" THEN 2820
+	IF UCASE$(I$) = "D" THEN 2920
+	IF UCASE$(I$) = "O" THEN 2018
+	IF UCASE$(I$) = "E" THEN 595
+
+2018 RT = 1: GOTO 101
+
+2020 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 16: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
+	FOR I = 17 TO 33: LOCATE I - 15, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
+	FOR I = 34 TO 49: LOCATE I - 32, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A1$(PX, I), 12): NEXT
+	PRINT
+	PRINT : COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 104
+
+2120 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 19: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A2$(PX, I), 12): NEXT
+	FOR I = 20 TO 39: LOCATE I - 18, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A2$(PX, I), 12): NEXT
+	PRINT
+	PRINT : COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 301
+
+2220 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A3$(PX, I), 12): NEXT
+	FOR I = 10 TO 19: LOCATE I - 8, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A3$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 334
+
+2320 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 7: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A4$(PX, I), 12): NEXT
+	FOR I = 8 TO 14: LOCATE I - 6, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A4$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 384
+
+2420 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 7: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A5$(PX, I), 12): NEXT
+	FOR I = 8 TO 14: LOCATE I - 6, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A5$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 424
+
+2520 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A6$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 464
+
+2620 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 9: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(A7$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 504
+
+2820 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 18: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
+	FOR I = 19 TO 36: LOCATE I - 17, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
+	FOR I = 37 TO 54: LOCATE I - 35, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DI$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 1001
+
+2920 CLS : COLOR 12: PRINT Z$
+	FOR I = 0 TO 18: LOCATE I + 2: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
+	FOR I = 19 TO 36: LOCATE I - 17, 20: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
+	FOR I = 37 TO 54: LOCATE I - 35, 40: COLOR 11: PRINT USING "##"; I; : PRINT " "; : COLOR 7: PRINT LEFT$(DS$(PX, I), 12): NEXT
+	PRINT
+	COLOR 15: INPUT "ENTER NUMBER OF PLAYER TO VIEW"; B9
+	RT = 2
+	CLS : GOTO 1031
+
+8999 IF QBS(V, I, 0) > 0 THEN QBS(V, I, 11) = INT(QBS(V, I, 1) / QBS(V, I, 0) * 1000) / 10
+	IF QBS(V, I, 0) = 0 THEN QBS(V, I, 11) = 0: QBS(V, I, 8) = 0: QBS(V, I, 10) = 0: QBS(V, I, 9) = 0: GOTO 9005
+	QBS(V, I, 8) = INT(QBS(V, I, 4) / QBS(V, I, 0) * 1000) / 10
+	QBS(V, I, 10) = INT(QBS(V, I, 3) / QBS(V, I, 0) * 100) / 100
+	QBS(V, I, 9) = INT(QBS(V, I, 2) / QBS(V, I, 0) * 1000) / 10
+
+9005 PP(V, I) = QBS(V, I, 11) - 30
+	IF PP(V, I) < 0 THEN PP(V, I) = 0: GOTO 9009
+	IF PP(V, I) > 77.5 THEN PP(V, I) = 2.375: GOTO 9009
+	PP(V, I) = PP(V, I) * .05
+
+9009 IF QBS(V, I, 8) > 11.9 THEN FF(V, I) = 2.375: GOTO 9011
+	FF(V, I) = QBS(V, I, 8) * .2
+
+9011 IF QBS(V, I, 9) = 0 THEN II(V, I) = 0: GOTO 9014
+	IF QBS(V, I, 9) > 9.5 THEN II(V, I) = 0: GOTO 9014
+	II(V, I) = 2.375 - (.25 * QBS(V, I, 9))
+
+9014 QBS(V, I, 10) = QBS(V, I, 10) - 3
+	IF QBS(V, I, 10) < 0 THEN YY(V, I) = 0: GOTO 9020
+	IF QBS(V, I, 10) > 12.5 THEN YY(V, I) = 2.375: GOTO 9020
+	D = INT(QBS(V, I, 10) * 100) / 2
+	IF D = QBS(V, I, 10) / 2 THEN YY(V, I) = QBS(V, I, 10) / 2 * .3 + QBS(V, I, 10) / 2 * .2: GOTO 9020
+	YY(V, I) = QBS(V, I, 10) / 2 * .3 + QBS(V, I, 10) / 2 * .2 + .003
+
+9020 QBS(V, I, 12) = PP(V, I) + FF(V, I) + II(V, I) + YY(V, I)
+	IF QBS(V, I, 12) > 9.5 THEN QBS(V, I, 12) = 158.3: GOTO 9027
+	QBS(V, I, 12) = QBS(V, I, 12) * 50 / 3
+
+9027 QBS(V, I, 12) = INT(QBS(V, I, 12) * 10) / 10
+	RETURN
+
+9099 IF TT(11) > 0 THEN TT(30) = INT(TT(10) / TT(11) * 1000) / 10
+	IF TT(11) = 0 THEN TT(30) = 0: TT(27) = 0: TT(29) = 0: TT(28) = 0: GOTO 9105
+	TT(27) = INT(TT(13) / TT(11) * 1000) / 10
+	TT(29) = INT(TT(14) / TT(11) * 100) / 100
+	TT(28) = INT(TT(12) / TT(11) * 1000) / 10
+
+9105 PPT = TT(30) - 30
+	IF PPT < 0 THEN PPT = 0: GOTO 9109
+	IF PPT > 77.5 THEN PPT = 2.375: GOTO 9109
+	PPT = PPT * .05
+
+9109 IF TT(27) > 11.9 THEN FFT = 2.375: GOTO 9111
+	FFT = TT(27) * .2
+
+9111 IF TT(28) = 0 THEN IIT = 0: GOTO 9114
+	IF TT(28) > 9.5 THEN IIT = 0: GOTO 9114
+	IIT = 2.375 - (.25 * TT(28))
+
+9114 TT(29) = TT(29) - 3
+	IF TT(29) < 0 THEN YYT = 0: GOTO 9120
+	IF TT(29) > 12.5 THEN YYT = 2.375: GOTO 9120
+	D = INT(TT(29) * 100) / 2
+	IF D = TT(29) / 2 THEN YYT = TT(29) / 2 * .3 + TT(29) / 2 * .2: GOTO 9120
+	YYT = TT(29) / 2 * .3 + TT(29) / 2 * .2 + .003
+
+9120 TT(31) = PPT + FFT + IIT + YYT
+	IF TT(31) > 9.5 THEN TT(31) = 158.3: GOTO 9127
+	TT(31) = TT(31) * 50 / 3
+
+9127 TT(31) = INT(TT(31) * 10) / 10
+	RETURN
+
+9200 FOR I = 1 TO 50: TT(I) = 0: NEXT
+	RETURN
+	IF QBS(V, B9, 1) > 0 THEN QBS(V, B9, 11) = INT(QBS(V, B9, 2) / QBS(V, B9, 1) * 1000) / 10
+	IF QBS(V, B9, 1) = 0 THEN QBS(V, B9, 11) = 0: QBS(V, B9, 8) = 0: QBS(V, B9, 10) = 0: QBS(V, B9, 9) = 0: GOTO 9405
+	QBS(V, B9, 8) = INT(QBS(V, B9, 5) / QBS(V, B9, 1) * 1000) / 10
+	QBS(V, B9, 10) = INT(QBS(V, B9, 4) / QBS(V, B9, 1) * 100) / 100
+	QBS(V, B9, 9) = INT(QBS(V, B9, 3) / QBS(V, B9, 1) * 1000) / 10
+
+9405 PP(V, B9) = QBS(V, B9, 11) - 30
+	IF PP(V, B9) < 0 THEN PP(V, B9) = 0: GOTO 9409
+	IF PP(V, B9) > 77.5 THEN PP(V, B9) = 2.375: GOTO 9409
+	PP(V, B9) = PP(V, B9) * .05
+
+9409 IF QBS(V, B9, 8) > 11.9 THEN FF(V, B9) = 2.375: GOTO 9411
+	FF(V, B9) = QBS(V, B9, 8) * .2
+
+9411 IF QBS(V, B9, 9) = 0 THEN II(V, B9) = 0: GOTO 9414
+	IF QBS(V, B9, 9) > 9.5 THEN II(V, B9) = 0: GOTO 9414
+	II(V, B9) = 2.375 - (.25 * QBS(V, B9, 9))
+
+9414 QBS(V, B9, 10) = QBS(V, B9, 10) - 3
+	IF QBS(V, B9, 10) < 0 THEN YY(V, B9) = 0: GOTO 9420
+	IF QBS(V, B9, 10) > 12.5 THEN YY(V, B9) = 2.375: GOTO 9420
+	D = INT(QBS(V, B9, 10) * 100) / 2
+	IF D = QBS(V, B9, 10) / 2 THEN YY(V, B9) = QBS(V, B9, 10) / 2 * .3 + QBS(V, B9, 10) / 2 * .2: GOTO 9420
+	YY(V, B9) = QBS(V, B9, 10) / 2 * .3 + QBS(V, B9, 10) / 2 * .2 + .003
+
+9420 QBS(V, B9, 12) = PP(V, B9) + FF(V, B9) + II(V, B9) + YY(V, B9)
+	IF QBS(V, B9, 12) > 9.5 THEN QBS(V, B9, 12) = 158.3: GOTO 9427
+	QBS(V, B9, 12) = QBS(V, B9, 12) * 50 / 3
+
+9427 QBS(V, B9, 12) = INT(QBS(V, B9, 12) * 10) / 10
+	RETURN
+
+4500 CLS
+	PRINT "NO CAREER FILES WERE FOUND"
+	PRINT "PRESS ANY KEY TO RETURN TO MAIN MENU"
+3805 I$ = GetKeyPress$
+	RUN "CAREER.EXE"
+
+'$INCLUDE: 'KeyInput.BM'
+'$INCLUDE: 'QPProEqu.BM'

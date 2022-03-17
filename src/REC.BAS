@@ -1,26 +1,13 @@
-DECLARE SUB Comline (N, A$(), Max)
-DECLARE FUNCTION GetDrive% ()
-DECLARE FUNCTION EXIST% (FILENAME$)
-  DIM D$(2), BRC(50), BRC$(50, 2), TRC(50), TRC$(50), TP$(46), TP1$(43)
-  DIM A$(1 TO 15)
-  D% = GETDRIVE%
-  CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
+'$INCLUDE: 'KeyInput.BI'
+'$INCLUDE: 'QPProEqu.BI'
 
- 'PRINT "Number of arguments = "; N ' Print out each part of the command line
- 'PRINT "Arguments are: "
- 'FOR I = 1 TO N: PRINT A$(I): NEXT I
- 
-' The following is a sample command line and output for a stand-alone
-' executable file (assumes program name is ARG.EXE):
-'
-' arg one  two   three    four     five      six
- 
-' Use SUB procedure to get command line and split into arguments.
-' Parameters:  NumArgs : Number of command-line arguments found
-'              Args$() : Array in which to return arguments
-'              MaxArgs : Maximum number of arguments array can return
-   if a$(1) = "1" then F$ = "RECORDS.PFB"
-   IF A$(1) = "2" OR A$(1) = "3" THEN F$ = "RECORDS.CFB"
+DIM D$(2), BRC(50), BRC$(50, 2), TRC(50), TRC$(50), TP$(46), TP1$(43)
+DIM A$(1 TO 15)
+
+CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
+IF A$(1) = "1" then F$ = "RECORDS.PFB"
+IF A$(1) = "2" OR A$(1) = "3" THEN F$ = "RECORDS.CFB"
+
 DATA RUSHING ATTEMPTS,RUSHING YARDS,RUSHING TOUCHDOWNS,RUSHING AVERAGE, LONGEST RUN
 DATA RECEPTIONS,RECEIVING YARDS,RECEIVING TOUCHDOWNS,RECEIVING AVERAGE, LONGEST CATCH
 DATA PASS ATTEMPTS, PASS COMPLETIONS,PASSING TOUCHDOWNS, HAD INTERCEPTED,PASSING YARDS
@@ -44,343 +31,326 @@ DATA RUSHING YARDS/GAME, RUSHING YARDS, GAIN/RUSH, PASSING YARDS/GAME
 DATA PASSING YARDS, YARDS/ATTEMPT, YARDS/COMPLETION, COMPLETION PCT.
 DATA INTERCEPTION PCT., POINTS ALLOWED, POINTS/GAME, MOST POINTS ALLOWED
 DATA MOST PTS ALLOWED/GAME, PUNT RET AVERAGE, KICKOFF RET AVERAGE
+
 FOR I = 0 TO 43: READ TP1$(I): NEXT
 
-  OPEN "DEV.BAS" FOR INPUT AS #2
-  FOR I = 0 TO 2
-  INPUT #2, D$(I)
-  NEXT
-  CLOSE 2
+OPEN "DEV.BAS" FOR INPUT AS #2
+	FOR I = 0 TO 2
+		INPUT #2, D$(I)
+	NEXT
+CLOSE 2
 
-10 IF NOT EXIST%(D$(1) + F$) THEN 5025
-   OPEN D$(1) + F$ FOR INPUT AS #1
-  FOR I = 0 TO 50
-  INPUT #1, BRC(I)
-  INPUT #1, BRC$(I, 0)
-  INPUT #1, BRC$(I, 1)
-  INPUT #1, BRC$(I, 2)
-  NEXT
-  FOR I = 0 TO 50
-  INPUT #1, TRC(I)
-  INPUT #1, TRC$(I)
-  NEXT
-  CLOSE 1
+10 IF NOT _FILEEXISTS(D$(1) + F$) THEN 5025
+OPEN D$(1) + F$ FOR INPUT AS #1
+FOR I = 0 TO 50
+INPUT #1, BRC(I)
+INPUT #1, BRC$(I, 0)
+INPUT #1, BRC$(I, 1)
+INPUT #1, BRC$(I, 2)
+NEXT
+FOR I = 0 TO 50
+INPUT #1, TRC(I)
+INPUT #1, TRC$(I)
+NEXT
+CLOSE 1
 
 2300 COLOR 0, 0: CLS : GOSUB 2375
-     LOCATE 9, 30: COLOR 3, 1: PRINT "SEASON RECORDS MENU": PRINT
-     LOCATE , 15: COLOR 15: PRINT "V"; : COLOR 7: PRINT "IEW RECORDS"
-     LOCATE , 15: COLOR 15: PRINT "P"; : COLOR 7: PRINT "RINT RECORDS"
-     LOCATE , 15: COLOR 15: PRINT "R"; : COLOR 7: PRINT "ETURN TO MAIN MENU"
-2004 I$ = INKEY$: IF I$ = "" THEN 2004
-     IF I$ = CHR$(27) THEN 2099
-     IF UCASE$(I$) = "V" THEN 3115
-     IF UCASE$(I$) = "P" THEN 3200
-     IF UCASE$(I$) = "R" THEN 2099
-     GOTO 2004
+	LOCATE 9, 30: COLOR 3, 1: PRINT "SEASON RECORDS MENU": PRINT
+	LOCATE , 15: COLOR 15: PRINT "V"; : COLOR 7: PRINT "IEW RECORDS"
+	LOCATE , 15: COLOR 15: PRINT "P"; : COLOR 7: PRINT "RINT RECORDS"
+	LOCATE , 15: COLOR 15: PRINT "R"; : COLOR 7: PRINT "ETURN TO MAIN MENU"
+2004 I$ = GetKeyPress$
+	IF I$ = CHR$(27) THEN 2099
+	IF UCASE$(I$) = "V" THEN 3115
+	IF UCASE$(I$) = "P" THEN 3200
+	IF UCASE$(I$) = "R" THEN 2099
+	GOTO 2004
 
 2375 J = 6
+
 2382 LOCATE 8, 8: COLOR 15, 1: PRINT " Ö"; STRING$(61, 196); "· ";
-     FOR II = 1 TO J: LOCATE 8 + II, 8: PRINT " º"; STRING$(61, 32); "º "; : NEXT
+	FOR II = 1 TO J: LOCATE 8 + II, 8: PRINT " º"; STRING$(61, 32); "º "; : NEXT
+
 2385 LOCATE 9 + J, 8: PRINT " Ó"; STRING$(61, 196); "½ "
+
 2400 COLOR , 2: LOCATE 1, 1: PRINT TAB(80); : LOCATE , 26: COLOR 0
-     PRINT "3 IN 1 FOOTBALL LEADERS"
-     LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
-     PRINT "(C) ROD DAHLBERG/SHANNON LYNN 1991"; TAB(70); LEFT$(TIME$, 5);
-     LOCATE 4, 1: COLOR 2, 0
-     RETURN
+	PRINT "3 IN 1 FOOTBALL LEADERS"
+	LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
+	PRINT "(C) ROD DAHLBERG/SHANNON LYNN 1991"; TAB(70); LEFT$(TIME$, 5);
+	LOCATE 4, 1: COLOR 2, 0
+	RETURN
 
 2099 CLS
-     IF D% >= 67 THEN 2095
-     PRINT "MAKE SURE GAME DISK IS IN DRIVE": GOSUB 3750
-2095 RUN "HELLO.EXE 3"
+	RUN "HELLO.EXE 3"
 
 3115 GOSUB 5000
-     COLOR 15: LOCATE 2, 23: PRINT "******* INDIVIDUAL RECORDS *******"
-     LOCATE , 4: PRINT "CATEGORY                PLAYER           TEAM            RECORD"
-     COLOR 7
-     FOR I = 0 TO 2
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(3); TAB(28); BRC$(3, 0); TAB(42); BRC$(3, 1); TAB(62); USING "##.#"; BRC(3)
-     LOCATE , 4: PRINT TP$(4); TAB(28); BRC$(4, 0); TAB(42); BRC$(4, 1); TAB(62); USING " ###"; BRC(4); : PRINT BRC$(4, 2)
-     FOR I = 5 TO 7
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(8); TAB(28); BRC$(8, 0); TAB(42); BRC$(8, 1); TAB(62); USING "##.#"; BRC(8)
-     LOCATE , 4: PRINT TP$(9); TAB(28); BRC$(9, 0); TAB(42); BRC$(9, 1); TAB(62); USING " ###"; BRC(9); : PRINT BRC$(9, 2)
-     FOR I = 10 TO 14
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(15); TAB(28); BRC$(15, 0); TAB(42); BRC$(15, 1); TAB(62); USING "##.#"; BRC(15)
-     LOCATE , 4: PRINT TP$(16); TAB(28); BRC$(16, 0); TAB(42); BRC$(16, 1); TAB(61); USING "###.#"; BRC(16)
-     LOCATE , 4: PRINT TP$(17); TAB(28); BRC$(17, 0); TAB(42); BRC$(17, 1); TAB(62); USING " ###"; BRC(17); : PRINT BRC$(17, 2)
-     GOSUB 3500
-     COLOR 7
-     LOCATE 4
-     FOR I = 18 TO 24
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(25); TAB(28); BRC$(25, 0); TAB(42); BRC$(25, 1); TAB(62); USING "##.#"; BRC(25)
-     LOCATE , 4: PRINT TP$(26); TAB(28); BRC$(26, 0); TAB(42); BRC$(26, 1); TAB(62); USING " ###"; BRC(26); : PRINT BRC$(26, 2)
-     FOR I = 27 TO 29
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(30); TAB(28); BRC$(30, 0); TAB(42); BRC$(30, 1); TAB(62); USING "##.#"; BRC(30)
-     LOCATE , 4: PRINT TP$(31); TAB(28); BRC$(31, 0); TAB(42); BRC$(31, 1); TAB(62); USING " ###"; BRC(31); : PRINT BRC$(31, 2)
-     FOR I = 32 TO 33
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(34); TAB(28); BRC$(34, 0); TAB(42); BRC$(34, 1); TAB(62); USING "##.#"; BRC(34)
-     GOSUB 3500
-     COLOR 7
-     LOCATE 4
-     FOR I = 35 TO 36
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(37); TAB(28); BRC$(37, 0); TAB(42); BRC$(37, 1); TAB(61); USING "###.#"; BRC(37)
-     LOCATE , 4: PRINT TP$(38); TAB(28); BRC$(38, 0); TAB(42); BRC$(38, 1); TAB(62); USING " ###"; BRC(38); : PRINT BRC$(38, 2)
-     FOR I = 39 TO 40
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(41); TAB(28); BRC$(41, 0); TAB(42); BRC$(41, 1); TAB(61); USING "###.#"; BRC(41)
-     FOR I = 42 TO 44
-     LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP$(45); TAB(28); BRC$(45, 0); TAB(42); BRC$(45, 1); TAB(62); USING " ###"; BRC(45); : PRINT BRC$(45, 2)
-     GOSUB 3500
-     GOSUB 5100
-     COLOR 15: LOCATE 2, 23: PRINT "******* OFFENSIVE TEAM RECORDS *******"
-     LOCATE , 4: PRINT "CATEGORY                   TEAM                  RECORD            "
-     COLOR 7
-     LOCATE , 4: PRINT TP1$(0); TAB(28); TRC$(0); TAB(53); USING "###.#"; TRC(0)
-     LOCATE , 4: PRINT TP1$(1); TAB(28); TRC$(1); TAB(53); USING "#####"; TRC(1)
-     FOR I = 2 TO 3
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LOCATE , 4: PRINT TP1$(4); TAB(28); TRC$(4); TAB(53); USING "#####"; TRC(4)
-     FOR I = 5 TO 6
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LOCATE , 4: PRINT TP1$(7); TAB(28); TRC$(7); TAB(53); USING "#####"; TRC(7)
-     FOR I = 8 TO 9
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     FOR I = 10 TO 11
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
-     NEXT I
-     LOCATE , 4: PRINT TP1$(12); TAB(28); TRC$(12); TAB(53); USING "#####"; TRC(12)
-     FOR I = 13 TO 14
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     GOSUB 3500
-     COLOR 7
-     LOCATE 4
-     FOR I = 15 TO 17
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LOCATE , 4: PRINT TP1$(18); TAB(28); TRC$(18); TAB(53); USING "#####"; TRC(18)
-     LOCATE , 4: PRINT TP1$(19); TAB(28); TRC$(19); TAB(53); USING "###.#"; TRC(19)
-     FOR I = 20 TO 22
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "#####"; TRC(I)
-     NEXT I
-     LOCATE , 4: PRINT TP1$(23); TAB(28); TRC$(23); TAB(53); USING "###.#"; TRC(23)
-     LOCATE , 4: PRINT TP1$(24); TAB(28); TRC$(24); TAB(53); USING "###.#"; TRC(24)
-     GOSUB 3500
-     COLOR 15: LOCATE 2, 23: PRINT "******* DEFENSIVE TEAM RECORDS *******"
-     LOCATE , 4: PRINT "CATEGORY                   TEAM                  RECORD            "
-     COLOR 7
-     LOCATE , 4: PRINT TP1$(25); TAB(28); TRC$(25); TAB(53); USING "###.#"; TRC(25)
-     LOCATE , 4: PRINT TP1$(26); TAB(28); TRC$(26); TAB(53); USING "#####"; TRC(26)
-     FOR I = 27 TO 29
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP1$(30); TAB(28); TRC$(30); TAB(53); USING "#####"; TRC(30)
-     FOR I = 31 TO 32
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     LOCATE , 4: PRINT TP1$(33); TAB(28); TRC$(33); TAB(53); USING "#####"; TRC(33)
-     FOR I = 34 TO 35
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     FOR I = 36 TO 37
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
-     NEXT
-     GOSUB 3500
-     COLOR 7
-     LOCATE 4
-     LOCATE , 4: PRINT TP1$(38); TAB(28); TRC$(38); TAB(53); USING "#####"; TRC(38)
-     LOCATE , 4: PRINT TP1$(39); TAB(28); TRC$(39); TAB(53); USING "###.#"; TRC(39)
-     LOCATE , 4: PRINT TP1$(40); TAB(28); TRC$(40); TAB(53); USING "#####"; TRC(40)
-     LOCATE , 4: PRINT TP1$(41); TAB(28); TRC$(41); TAB(53); USING "###.#"; TRC(41)
-     FOR I = 42 TO 43
-     LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     GOSUB 3500
-     GOTO 2300
-3200 REM: PRINT RECORDS
-     LPRINT TAB(23); "******* INDIVIDUAL RECORDS *******"
-     LPRINT
-     LPRINT "CATEGORY                   PLAYER           TEAM           RECORD"
-     FOR I = 0 TO 2
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(3); TAB(28); BRC$(3, 0); TAB(42); BRC$(3, 1); TAB(62); USING "##.#"; BRC(3)
-     LPRINT TP$(4); TAB(28); BRC$(4, 0); TAB(42); BRC$(4, 1); TAB(62); USING " ###"; BRC(4); : LPRINT BRC$(4, 2)
-     FOR I = 5 TO 7
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(8); TAB(28); BRC$(8, 0); TAB(42); BRC$(8, 1); TAB(62); USING "##.#"; BRC(8)
-     LPRINT TP$(9); TAB(28); BRC$(9, 0); TAB(42); BRC$(9, 1); TAB(62); USING " ###"; BRC(9); : LPRINT BRC$(9, 2)
-     FOR I = 10 TO 14
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(15); TAB(28); BRC$(15, 0); TAB(42); BRC$(15, 1); TAB(62); USING "##.#"; BRC(15)
-     LPRINT TP$(16); TAB(28); BRC$(16, 0); TAB(42); BRC$(16, 1); TAB(61); USING "###.#"; BRC(16)
-     LPRINT TP$(17); TAB(28); BRC$(17, 0); TAB(42); BRC$(17, 1); TAB(62); USING " ###"; BRC(17); : LPRINT BRC$(17, 2)
-     FOR I = 18 TO 24
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(25); TAB(28); BRC$(25, 0); TAB(42); BRC$(25, 1); TAB(62); USING "##.#"; BRC(25)
-     LPRINT TP$(26); TAB(28); BRC$(26, 0); TAB(42); BRC$(26, 1); TAB(62); USING " ###"; BRC(26); : LPRINT BRC$(26, 2)
-     FOR I = 27 TO 29
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(30); TAB(28); BRC$(30, 0); TAB(42); BRC$(30, 1); TAB(62); USING "##.#"; BRC(30)
-     LPRINT TP$(31); TAB(28); BRC$(31, 0); TAB(42); BRC$(31, 1); TAB(62); USING " ###"; BRC(31); : LPRINT BRC$(31, 2)
-     FOR I = 32 TO 33
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(34); TAB(28); BRC$(34, 0); TAB(42); BRC$(34, 1); TAB(62); USING "##.#"; BRC(34)
-     FOR I = 35 TO 36
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(37); TAB(28); BRC$(37, 0); TAB(42); BRC$(37, 1); TAB(61); USING "###.#"; BRC(37)
-     LPRINT TP$(38); TAB(28); BRC$(38, 0); TAB(42); BRC$(38, 1); TAB(62); USING " ###"; BRC(38); : LPRINT BRC$(38, 2)
-     FOR I = 39 TO 40
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(41); TAB(28); BRC$(41, 0); TAB(42); BRC$(41, 1); TAB(61); USING "###.#"; BRC(41)
-     FOR I = 42 TO 44
-     LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
-     NEXT
-     LPRINT TP$(45); TAB(28); BRC$(45, 0); TAB(42); BRC$(45, 1); TAB(62); USING " ###"; BRC(45); : LPRINT BRC$(45, 2)
-     LPRINT CHR$(12)
-     LPRINT TAB(23); "******* OFFENSIVE TEAM RECORDS *******"
-     LPRINT
-     LPRINT "CATEGORY                      TEAM                 RECORD            "
-     LPRINT TP1$(0); TAB(28); TRC$(0); TAB(53); USING "###.#"; TRC(0)
-     LPRINT TP1$(1); TAB(28); TRC$(1); TAB(53); USING "#####"; TRC(1)
-     FOR I = 2 TO 3
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LPRINT TP1$(4); TAB(28); TRC$(4); TAB(53); USING "#####"; TRC(4)
-     FOR I = 5 TO 6
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LPRINT TP1$(7); TAB(28); TRC$(7); TAB(53); USING "#####"; TRC(7)
-     FOR I = 8 TO 9
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     FOR I = 10 TO 11
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
-     NEXT I
-     LPRINT TP1$(12); TAB(28); TRC$(12); TAB(53); USING "#####"; TRC(12)
-     FOR I = 13 TO 14
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     FOR I = 15 TO 17
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT I
-     LPRINT TP1$(18); TAB(28); TRC$(18); TAB(53); USING "#####"; TRC(18)
-     LPRINT TP1$(19); TAB(28); TRC$(19); TAB(53); USING "###.#"; TRC(19)
-     FOR I = 20 TO 22
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "#####"; TRC(I)
-     NEXT I
-     LPRINT TP1$(23); TAB(28); TRC$(23); TAB(53); USING "###.#"; TRC(23)
-     LPRINT TP1$(24); TAB(28); TRC$(24); TAB(53); USING "###.#"; TRC(24)
-     LPRINT
-     LPRINT
-     LPRINT TAB(23); "******* DEFENSIVE TEAM RECORDS *******"
-     LPRINT
-     LPRINT "CATEGORY                      TEAM                 RECORD            "
-     LPRINT TP1$(25); TAB(28); TRC$(25); TAB(53); USING "###.#"; TRC(25)
-     LPRINT TP1$(26); TAB(28); TRC$(26); TAB(53); USING "#####"; TRC(26)
-     FOR I = 27 TO 29
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     LPRINT TP1$(30); TAB(28); TRC$(30); TAB(53); USING "#####"; TRC(30)
-     FOR I = 31 TO 32
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     LPRINT TP1$(33); TAB(28); TRC$(33); TAB(53); USING "#####"; TRC(33)
-     FOR I = 34 TO 35
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     FOR I = 36 TO 37
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
-     NEXT
-     LPRINT TP1$(38); TAB(28); TRC$(38); TAB(53); USING "#####"; TRC(38)
-     LPRINT TP1$(39); TAB(28); TRC$(39); TAB(53); USING "###.#"; TRC(39)
-     LPRINT TP1$(40); TAB(28); TRC$(40); TAB(53); USING "#####"; TRC(40)
-     LPRINT TP1$(41); TAB(28); TRC$(41); TAB(53); USING "###.#"; TRC(41)
-     FOR I = 42 TO 43
-     LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
-     NEXT
-     LPRINT CHR$(12)
-     GOTO 2300
+	COLOR 15: LOCATE 2, 23: PRINT "******* INDIVIDUAL RECORDS *******"
+	LOCATE , 4: PRINT "CATEGORY                PLAYER           TEAM            RECORD"
+	COLOR 7
+	FOR I = 0 TO 2
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(3); TAB(28); BRC$(3, 0); TAB(42); BRC$(3, 1); TAB(62); USING "##.#"; BRC(3)
+	LOCATE , 4: PRINT TP$(4); TAB(28); BRC$(4, 0); TAB(42); BRC$(4, 1); TAB(62); USING " ###"; BRC(4); : PRINT BRC$(4, 2)
+	FOR I = 5 TO 7
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(8); TAB(28); BRC$(8, 0); TAB(42); BRC$(8, 1); TAB(62); USING "##.#"; BRC(8)
+	LOCATE , 4: PRINT TP$(9); TAB(28); BRC$(9, 0); TAB(42); BRC$(9, 1); TAB(62); USING " ###"; BRC(9); : PRINT BRC$(9, 2)
+	FOR I = 10 TO 14
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(15); TAB(28); BRC$(15, 0); TAB(42); BRC$(15, 1); TAB(62); USING "##.#"; BRC(15)
+	LOCATE , 4: PRINT TP$(16); TAB(28); BRC$(16, 0); TAB(42); BRC$(16, 1); TAB(61); USING "###.#"; BRC(16)
+	LOCATE , 4: PRINT TP$(17); TAB(28); BRC$(17, 0); TAB(42); BRC$(17, 1); TAB(62); USING " ###"; BRC(17); : PRINT BRC$(17, 2)
+	GOSUB 3500
+	COLOR 7
+	LOCATE 4
+	FOR I = 18 TO 24
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(25); TAB(28); BRC$(25, 0); TAB(42); BRC$(25, 1); TAB(62); USING "##.#"; BRC(25)
+	LOCATE , 4: PRINT TP$(26); TAB(28); BRC$(26, 0); TAB(42); BRC$(26, 1); TAB(62); USING " ###"; BRC(26); : PRINT BRC$(26, 2)
+	FOR I = 27 TO 29
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(30); TAB(28); BRC$(30, 0); TAB(42); BRC$(30, 1); TAB(62); USING "##.#"; BRC(30)
+	LOCATE , 4: PRINT TP$(31); TAB(28); BRC$(31, 0); TAB(42); BRC$(31, 1); TAB(62); USING " ###"; BRC(31); : PRINT BRC$(31, 2)
+	FOR I = 32 TO 33
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(34); TAB(28); BRC$(34, 0); TAB(42); BRC$(34, 1); TAB(62); USING "##.#"; BRC(34)
+	GOSUB 3500
+	COLOR 7
+	LOCATE 4
+	FOR I = 35 TO 36
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(37); TAB(28); BRC$(37, 0); TAB(42); BRC$(37, 1); TAB(61); USING "###.#"; BRC(37)
+	LOCATE , 4: PRINT TP$(38); TAB(28); BRC$(38, 0); TAB(42); BRC$(38, 1); TAB(62); USING " ###"; BRC(38); : PRINT BRC$(38, 2)
+	FOR I = 39 TO 40
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(41); TAB(28); BRC$(41, 0); TAB(42); BRC$(41, 1); TAB(61); USING "###.#"; BRC(41)
+	FOR I = 42 TO 44
+	LOCATE , 4: PRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP$(45); TAB(28); BRC$(45, 0); TAB(42); BRC$(45, 1); TAB(62); USING " ###"; BRC(45); : PRINT BRC$(45, 2)
+	GOSUB 3500
+	GOSUB 5100
+	COLOR 15: LOCATE 2, 23: PRINT "******* OFFENSIVE TEAM RECORDS *******"
+	LOCATE , 4: PRINT "CATEGORY                   TEAM                  RECORD            "
+	COLOR 7
+	LOCATE , 4: PRINT TP1$(0); TAB(28); TRC$(0); TAB(53); USING "###.#"; TRC(0)
+	LOCATE , 4: PRINT TP1$(1); TAB(28); TRC$(1); TAB(53); USING "#####"; TRC(1)
+	FOR I = 2 TO 3
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LOCATE , 4: PRINT TP1$(4); TAB(28); TRC$(4); TAB(53); USING "#####"; TRC(4)
+	FOR I = 5 TO 6
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LOCATE , 4: PRINT TP1$(7); TAB(28); TRC$(7); TAB(53); USING "#####"; TRC(7)
+	FOR I = 8 TO 9
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	FOR I = 10 TO 11
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
+	NEXT I
+	LOCATE , 4: PRINT TP1$(12); TAB(28); TRC$(12); TAB(53); USING "#####"; TRC(12)
+	FOR I = 13 TO 14
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	GOSUB 3500
+	COLOR 7
+	LOCATE 4
+	FOR I = 15 TO 17
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LOCATE , 4: PRINT TP1$(18); TAB(28); TRC$(18); TAB(53); USING "#####"; TRC(18)
+	LOCATE , 4: PRINT TP1$(19); TAB(28); TRC$(19); TAB(53); USING "###.#"; TRC(19)
+	FOR I = 20 TO 22
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "#####"; TRC(I)
+	NEXT I
+	LOCATE , 4: PRINT TP1$(23); TAB(28); TRC$(23); TAB(53); USING "###.#"; TRC(23)
+	LOCATE , 4: PRINT TP1$(24); TAB(28); TRC$(24); TAB(53); USING "###.#"; TRC(24)
+	GOSUB 3500
+	COLOR 15: LOCATE 2, 23: PRINT "******* DEFENSIVE TEAM RECORDS *******"
+	LOCATE , 4: PRINT "CATEGORY                   TEAM                  RECORD            "
+	COLOR 7
+	LOCATE , 4: PRINT TP1$(25); TAB(28); TRC$(25); TAB(53); USING "###.#"; TRC(25)
+	LOCATE , 4: PRINT TP1$(26); TAB(28); TRC$(26); TAB(53); USING "#####"; TRC(26)
+	FOR I = 27 TO 29
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP1$(30); TAB(28); TRC$(30); TAB(53); USING "#####"; TRC(30)
+	FOR I = 31 TO 32
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	LOCATE , 4: PRINT TP1$(33); TAB(28); TRC$(33); TAB(53); USING "#####"; TRC(33)
+	FOR I = 34 TO 35
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	FOR I = 36 TO 37
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
+	NEXT
+	GOSUB 3500
+	COLOR 7
+	LOCATE 4
+	LOCATE , 4: PRINT TP1$(38); TAB(28); TRC$(38); TAB(53); USING "#####"; TRC(38)
+	LOCATE , 4: PRINT TP1$(39); TAB(28); TRC$(39); TAB(53); USING "###.#"; TRC(39)
+	LOCATE , 4: PRINT TP1$(40); TAB(28); TRC$(40); TAB(53); USING "#####"; TRC(40)
+	LOCATE , 4: PRINT TP1$(41); TAB(28); TRC$(41); TAB(53); USING "###.#"; TRC(41)
+	FOR I = 42 TO 43
+	LOCATE , 4: PRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	GOSUB 3500
+	GOTO 2300
+
+3200 ' PRINT RECORDS
+	LPRINT TAB(23); "******* INDIVIDUAL RECORDS *******"
+	LPRINT
+	LPRINT "CATEGORY                   PLAYER           TEAM           RECORD"
+	FOR I = 0 TO 2
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(3); TAB(28); BRC$(3, 0); TAB(42); BRC$(3, 1); TAB(62); USING "##.#"; BRC(3)
+	LPRINT TP$(4); TAB(28); BRC$(4, 0); TAB(42); BRC$(4, 1); TAB(62); USING " ###"; BRC(4); : LPRINT BRC$(4, 2)
+	FOR I = 5 TO 7
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(8); TAB(28); BRC$(8, 0); TAB(42); BRC$(8, 1); TAB(62); USING "##.#"; BRC(8)
+	LPRINT TP$(9); TAB(28); BRC$(9, 0); TAB(42); BRC$(9, 1); TAB(62); USING " ###"; BRC(9); : LPRINT BRC$(9, 2)
+	FOR I = 10 TO 14
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(15); TAB(28); BRC$(15, 0); TAB(42); BRC$(15, 1); TAB(62); USING "##.#"; BRC(15)
+	LPRINT TP$(16); TAB(28); BRC$(16, 0); TAB(42); BRC$(16, 1); TAB(61); USING "###.#"; BRC(16)
+	LPRINT TP$(17); TAB(28); BRC$(17, 0); TAB(42); BRC$(17, 1); TAB(62); USING " ###"; BRC(17); : LPRINT BRC$(17, 2)
+	FOR I = 18 TO 24
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(25); TAB(28); BRC$(25, 0); TAB(42); BRC$(25, 1); TAB(62); USING "##.#"; BRC(25)
+	LPRINT TP$(26); TAB(28); BRC$(26, 0); TAB(42); BRC$(26, 1); TAB(62); USING " ###"; BRC(26); : LPRINT BRC$(26, 2)
+	FOR I = 27 TO 29
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(30); TAB(28); BRC$(30, 0); TAB(42); BRC$(30, 1); TAB(62); USING "##.#"; BRC(30)
+	LPRINT TP$(31); TAB(28); BRC$(31, 0); TAB(42); BRC$(31, 1); TAB(62); USING " ###"; BRC(31); : LPRINT BRC$(31, 2)
+	FOR I = 32 TO 33
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(34); TAB(28); BRC$(34, 0); TAB(42); BRC$(34, 1); TAB(62); USING "##.#"; BRC(34)
+	FOR I = 35 TO 36
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(37); TAB(28); BRC$(37, 0); TAB(42); BRC$(37, 1); TAB(61); USING "###.#"; BRC(37)
+	LPRINT TP$(38); TAB(28); BRC$(38, 0); TAB(42); BRC$(38, 1); TAB(62); USING " ###"; BRC(38); : LPRINT BRC$(38, 2)
+	FOR I = 39 TO 40
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(41); TAB(28); BRC$(41, 0); TAB(42); BRC$(41, 1); TAB(61); USING "###.#"; BRC(41)
+	FOR I = 42 TO 44
+	LPRINT TP$(I); TAB(28); BRC$(I, 0); TAB(42); BRC$(I, 1); TAB(62); USING "####"; BRC(I)
+	NEXT
+	LPRINT TP$(45); TAB(28); BRC$(45, 0); TAB(42); BRC$(45, 1); TAB(62); USING " ###"; BRC(45); : LPRINT BRC$(45, 2)
+	LPRINT CHR$(12)
+	LPRINT TAB(23); "******* OFFENSIVE TEAM RECORDS *******"
+	LPRINT
+	LPRINT "CATEGORY                      TEAM                 RECORD            "
+	LPRINT TP1$(0); TAB(28); TRC$(0); TAB(53); USING "###.#"; TRC(0)
+	LPRINT TP1$(1); TAB(28); TRC$(1); TAB(53); USING "#####"; TRC(1)
+	FOR I = 2 TO 3
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LPRINT TP1$(4); TAB(28); TRC$(4); TAB(53); USING "#####"; TRC(4)
+	FOR I = 5 TO 6
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LPRINT TP1$(7); TAB(28); TRC$(7); TAB(53); USING "#####"; TRC(7)
+	FOR I = 8 TO 9
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	FOR I = 10 TO 11
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
+	NEXT I
+	LPRINT TP1$(12); TAB(28); TRC$(12); TAB(53); USING "#####"; TRC(12)
+	FOR I = 13 TO 14
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	FOR I = 15 TO 17
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT I
+	LPRINT TP1$(18); TAB(28); TRC$(18); TAB(53); USING "#####"; TRC(18)
+	LPRINT TP1$(19); TAB(28); TRC$(19); TAB(53); USING "###.#"; TRC(19)
+	FOR I = 20 TO 22
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "#####"; TRC(I)
+	NEXT I
+	LPRINT TP1$(23); TAB(28); TRC$(23); TAB(53); USING "###.#"; TRC(23)
+	LPRINT TP1$(24); TAB(28); TRC$(24); TAB(53); USING "###.#"; TRC(24)
+	LPRINT
+	LPRINT
+	LPRINT TAB(23); "******* DEFENSIVE TEAM RECORDS *******"
+	LPRINT
+	LPRINT "CATEGORY                      TEAM                 RECORD            "
+	LPRINT TP1$(25); TAB(28); TRC$(25); TAB(53); USING "###.#"; TRC(25)
+	LPRINT TP1$(26); TAB(28); TRC$(26); TAB(53); USING "#####"; TRC(26)
+	FOR I = 27 TO 29
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	LPRINT TP1$(30); TAB(28); TRC$(30); TAB(53); USING "#####"; TRC(30)
+	FOR I = 31 TO 32
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	LPRINT TP1$(33); TAB(28); TRC$(33); TAB(53); USING "#####"; TRC(33)
+	FOR I = 34 TO 35
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	FOR I = 36 TO 37
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I) * 100
+	NEXT
+	LPRINT TP1$(38); TAB(28); TRC$(38); TAB(53); USING "#####"; TRC(38)
+	LPRINT TP1$(39); TAB(28); TRC$(39); TAB(53); USING "###.#"; TRC(39)
+	LPRINT TP1$(40); TAB(28); TRC$(40); TAB(53); USING "#####"; TRC(40)
+	LPRINT TP1$(41); TAB(28); TRC$(41); TAB(53); USING "###.#"; TRC(41)
+	FOR I = 42 TO 43
+	LPRINT TP1$(I); TAB(28); TRC$(I); TAB(53); USING "###.#"; TRC(I)
+	NEXT
+	LPRINT CHR$(12)
+	GOTO 2300
+
 3500 COLOR 15: LOCATE 22, 30: PRINT "HIT ANY KEY TO CONTINUE"
-3501 I$ = INKEY$: IF I$ = "" THEN 3501
-     FOR I = 4 TO 21: LOCATE I, 4
-     PRINT "                                                                        "
-     NEXT
+3501 I$ = GetKeyPress$
+	FOR I = 4 TO 21: LOCATE I, 4
+	PRINT "                                                                        "
+	NEXT
+
 3502 RETURN
-3750 LOCATE 23, 1: PRINT "PRESS ANY KEY TO CONTINUE";
-3751 I$ = INKEY$: IF I$ = "" THEN 3751
-     RETURN
+
 5000 COLOR 0, 0: CLS : J = 20
+
 5001 LOCATE 1, 1: COLOR 15, 4: PRINT " Ö"; STRING$(73, 196); "· ";
-     FOR II = 1 TO J: COLOR 15, 4: LOCATE 1 + II, 1: PRINT " º"; STRING$(73, 32); "º "; : COLOR 7, 4: PRINT STRING$(2, 177): NEXT
+	FOR II = 1 TO J: COLOR 15, 4: LOCATE 1 + II, 1: PRINT " º"; STRING$(73, 32); "º "; : COLOR 7, 4: PRINT STRING$(2, 177): NEXT
+
 5002 COLOR 15, 4: LOCATE 2 + J, 1: PRINT " Ó"; STRING$(73, 196); "½ "; : COLOR 7, 4: PRINT STRING$(2, 177)
-     LOCATE , 3: PRINT STRING$(77, 177)
+	LOCATE , 3: PRINT STRING$(77, 177)
+
 5003 RETURN
+
 5100 COLOR 0, 0: CLS : J = 20
+
 5101 LOCATE 1, 1: COLOR 15, 1: PRINT " Ö"; STRING$(73, 196); "· ";
-     FOR II = 1 TO J: COLOR 15, 1: LOCATE 1 + II, 1: PRINT " º"; STRING$(73, 32); "º "; : COLOR 7, 1: PRINT STRING$(2, 177): NEXT
+	FOR II = 1 TO J: COLOR 15, 1: LOCATE 1 + II, 1: PRINT " º"; STRING$(73, 32); "º "; : COLOR 7, 1: PRINT STRING$(2, 177): NEXT
+
 5102 COLOR 15, 1: LOCATE 2 + J, 1: PRINT " Ó"; STRING$(73, 196); "½ "; : COLOR 7, 1: PRINT STRING$(2, 177)
-     LOCATE , 3: PRINT STRING$(77, 177)
+	LOCATE , 3: PRINT STRING$(77, 177)
+
 5103 RETURN
-5025 gosub 2375
-     locate 9,30 :PRINT "ERROR::: UNABLE TO LOCATE RECORDS"
-     GOSUB 3751
-     GOTO 2099
- STATIC SUB Comline (NumArgs, Args$(), MaxArgs)
- CONST TRUE = -1, FALSE = 0
- 
-     NumArgs = 0: In = FALSE
-     ' Get the command line using the COMMAND$ function
-     Cl$ = COMMAND$
-     L = LEN(Cl$)
-     ' Go through the command line a character at a time
-     FOR I = 1 TO L
-          C$ = MID$(Cl$, I, 1)
-          ' Test for character being a blank or a tab
-          IF (C$ <> " " AND C$ <> CHR$(9)) THEN
-          ' Neither blank nor tab; test if you're already inside
-          ' an argument
-               IF NOT In THEN
-               ' You've found the start of a new argument
-                    ' Test for too many arguments
-                      IF NumArgs = MaxArgs THEN EXIT FOR
-                      NumArgs = NumArgs + 1
-                      In = TRUE
-               END IF
-               ' Add the character to the current argument
-               Args$(NumArgs) = Args$(NumArgs) + C$
-          ELSE
-          ' Found a blank or a tab.
-               ' Set "Not in an argument" flag to FALSE
-               In = FALSE
-          END IF
-     NEXT I
- 
- END SUB
+
+5025 GOSUB 2375
+	locate 9,30 :PRINT "ERROR::: UNABLE TO LOCATE RECORDS"
+	GOSUB 3751
+	GOTO 2099
+
+'$INCLUDE: 'KeyInput.BM'
+'$INCLUDE: 'QPProEqu.BM'
