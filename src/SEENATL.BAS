@@ -464,8 +464,8 @@ CLOSE 2
 	PRINT #2, PR$(P); TAB(22); USING "###.#    ##   ##   ##         ###.#"; PT(P, 1); PT(P, 2); PT(P, 3); PT(P, 4); PT(P, 5)
 	NEXT
 	PRINT #2, CHR$(12)
-	  PRINT #2, "RUSHING LEADERS (MIN 10 ATT/G)" TAB(41) "RECEIVING LEADERS (MIN 4 REC/G)"
-	PRINT #2, "                            AVG  ATT" TAB(41) "                            AVG  REC"
+	  PRINT #2, "RUSHING LEADERS (MIN 10 ATT/G)" TAB(41); "RECEIVING LEADERS (MIN 4 REC/G)"
+	PRINT #2, "                            AVG  ATT" TAB(41); "                            AVG  REC"
 	FOR P = 1 TO 20
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -486,7 +486,7 @@ CLOSE 2
 
 3320 NEXT
 	PRINT #2,
-	PRINT #2, "RUSHING YARDS TOTAL" TAB(41) "RECEIVING YARDS TOTAL"
+	PRINT #2, "RUSHING YARDS TOTAL" TAB(41); "RECEIVING YARDS TOTAL"
 	FOR P = 41 TO 50
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -507,7 +507,7 @@ CLOSE 2
 
 3360 NEXT
 	PRINT #2,
-	PRINT #2, "RUSHING ATTEMPTS" TAB(41) "TOTAL RECEPTIONS"
+	PRINT #2, "RUSHING ATTEMPTS" TAB(41); "TOTAL RECEPTIONS"
 	FOR P = 81 TO 90
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -528,7 +528,7 @@ CLOSE 2
 
 3425 NEXT
 	PRINT #2,
-	PRINT #2, "ALL PURPOSE YARDAGE" TAB(41) "SCORING NON-KICKERS"
+	PRINT #2, "ALL PURPOSE YARDAGE" TAB(41); "SCORING NON-KICKERS"
 	FOR P = 101 TO 110
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -549,7 +549,7 @@ CLOSE 2
 
 3464 NEXT
 	PRINT #2, CHR$(12)
-	PRINT #2, "RUSHING TOUCHDOWNS" TAB(41) "RECEIVING TOUCHDOWNS"
+	PRINT #2, "RUSHING TOUCHDOWNS" TAB(41); "RECEIVING TOUCHDOWNS"
 	FOR P = 61 TO 70
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -570,7 +570,7 @@ CLOSE 2
 
 3474 NEXT
 	PRINT #2,
-	PRINT #2, "COMPLETION PERCENTAGE" TAB(41) "QUARTERBACK RATING"
+	PRINT #2, "COMPLETION PERCENTAGE" TAB(41); "QUARTERBACK RATING"
 	FOR P = 121 TO 130
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -591,7 +591,7 @@ CLOSE 2
 
 3494 NEXT
 	PRINT #2,
-	PRINT #2, "PASSING YARDAGE" TAB(41) "PASSING TOUCHDOWNS"
+	PRINT #2, "PASSING YARDAGE" TAB(41); "PASSING TOUCHDOWNS"
 	FOR P = 141 TO 150
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -612,7 +612,7 @@ CLOSE 2
 
 3509 NEXT
 	PRINT #2,
-	PRINT #2, "KO RETURN AVERAGE                 #" TAB(41) "PUNT RETURN AVERAGE               #"
+	PRINT #2, "KO RETURN AVERAGE                 #" TAB(41); "PUNT RETURN AVERAGE               #"
 	FOR P = 161 TO 170
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -633,7 +633,7 @@ CLOSE 2
 
 3604 NEXT
 	PRINT #2,
-	PRINT #2, "PUNTING AVERAGE" TAB(41) "SCORING (KICKERS)"
+	PRINT #2, "PUNTING AVERAGE" TAB(41); "SCORING (KICKERS)"
 	FOR P = 181 TO 190
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -654,7 +654,7 @@ CLOSE 2
 
 3619 NEXT
 	PRINT #2,
-	PRINT #2, "FIELD GOAL %                     FGA" TAB(41) "EXTRA POINT %                   EPA"
+	PRINT #2, "FIELD GOAL %                     FGA" TAB(41); "EXTRA POINT %                   EPA"
 	FOR P = 201 TO 210
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -675,7 +675,7 @@ CLOSE 2
 
 3624 NEXT
 	PRINT #2,
-	PRINT #2, "INTERCEPTIONS" TAB(41) "SACKS"
+	PRINT #2, "INTERCEPTIONS" TAB(41); "SACKS"
 	FOR P = 221 TO 230
 	IF Z2$(P) = "*" THEN
 	PRINT #2, TAB(41);
@@ -696,13 +696,13 @@ CLOSE 2
 
 3640 NEXT
 	PRINT #2, CHR$(12)
-	PRINT #2, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G" TAB(41) "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
+	PRINT #2, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G" TAB(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 	FOR P = 1 TO 20
 	CA = 1
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
 	PRINT #2, TAB(41);
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5);
 	PRINT #2, TAB(41);
 	END IF
@@ -711,19 +711,19 @@ CLOSE 2
 		PRINT #2,
 		GOTO 3793
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(56);
+	PRINT #2, TR$(CA, P); TAB(56);
 	PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
 	END IF
 
 3793 NEXT
 	PRINT #2,
-	  PRINT #2, "RUSHING OFF    G PLAYS  YDS  AVG YDS/G" TAB(41) "RUSHING DEF     G PLAYS  YDS  AVG YDS/G"
+	  PRINT #2, "RUSHING OFF    G PLAYS  YDS  AVG YDS/G" TAB(41); "RUSHING DEF     G PLAYS  YDS  AVG YDS/G"
 	FOR P = 1 TO 20
 	CA = 3
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
 	PRINT #2, TAB(41);
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5);
 	PRINT #2, TAB(41);
 	END IF
@@ -732,7 +732,7 @@ CLOSE 2
 		PRINT #2,
 		GOTO 3795
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(56);
+	PRINT #2, TR$(CA, P); TAB(56);
 	PRINT #2, USING "## #### ##### ##.# ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5)
 	END IF
 
@@ -742,7 +742,7 @@ CLOSE 2
 	CA = 7
 	FOR P = 1 TO 20
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3799
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
 
 3799 NEXT
@@ -751,18 +751,18 @@ CLOSE 2
 	CA = 8
 	FOR P = 1 TO 20
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3800
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5) * 100; TT(CA, P, 6); TT(CA, P, 7); TT(CA, P, 8)
 
 3800 NEXT
 	PRINT #2, CHR$(12)
-	PRINT #2, "SCORING OFF    G  POINTS    AVG" TAB(41) "SCORING DEF     G  POINTS    AVG"
+	PRINT #2, "SCORING OFF    G  POINTS    AVG" TAB(41); "SCORING DEF     G  POINTS    AVG"
 	FOR P = 1 TO 20
 	CA = 5
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN
 	PRINT #2, TAB(41);
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3);
 	PRINT #2, TAB(41);
 	END IF
@@ -771,7 +771,7 @@ CLOSE 2
 		PRINT #2,
 		GOTO 3797
 	ELSE
-	PRINT #2, TR$(CA, P) TAB(56);
+	PRINT #2, TR$(CA, P); TAB(56);
 	PRINT #2, USING "##   ####   ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3)
 	END IF
 
@@ -781,7 +781,7 @@ CLOSE 2
 	CA = 9
 	FOR P = 1 TO 20
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3801
-	PRINT #2, TR$(CA, P) TAB(15);
+	PRINT #2, TR$(CA, P); TAB(15);
 	PRINT #2, USING "###    ##.#"; TT(CA, P, 1); TT(CA, P, 2)
 
 3801 NEXT
@@ -791,7 +791,7 @@ CLOSE 2
 	CA = 10
 	FOR P = 1 TO 20
 	IF TR$(CA, P) = "*" OR TR$(CA, P) = "" THEN 3802
-	PRINT #2, TR$(CA, P) TAB(18);
+	PRINT #2, TR$(CA, P); TAB(18);
 	PRINT #2, USING "### ###  ###    ### ###  ###       ###.#"; TT(CA, P, 1); TT(CA, P, 2); TT(CA, P, 3); TT(CA, P, 4); TT(CA, P, 5); TT(CA, P, 6); TT(CA, P, 7)
 
 3802 NEXT
