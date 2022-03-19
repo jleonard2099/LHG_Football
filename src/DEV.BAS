@@ -1,3 +1,3 @@
-C:\FOOTBALL\TEAMS\
-C:\FOOTBALL\STATS\
-C:\FOOTBALL\STATS\
+C:\Haffner\Football\Teams
+C:\Haffner\Football\Stats\
+C:\Haffner\Football\Leaders\

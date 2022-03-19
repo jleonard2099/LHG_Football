@@ -9,7 +9,7 @@ DECLARE FUNCTION FnExt$ (X$, Length)
 DIM D$(3), ITEM$(22)
 DIM A$(1 To 15)
 
-Call BLINKOFF
+_BLINK OFF
 
 OPEN "DEV.BAS" For Input As #1
 	For I = 0 To 2
