@@ -2330,10 +2330,8 @@ End Sub
 Sub DISPFIELD ()
     Locate 2, 40
     Color 1 + BW * 6, 0
-    ' Need to get the Asc values of these char's
-    ' This way we can use Chr$ references instead
-    ' So other text editors can't screw them up
-    Print "Ü"
+    Print Chr$(220)
+
     Color 15 * (1 - BW), 1 + BW * 6
     Locate 3, 2, 0
     Print String$(22, 32); "1  2  3  4   T   ";
@@ -2356,29 +2354,37 @@ Sub DISPFIELD ()
         Locate , 35
         Print Using "###   "; S(I, 0);
     Next I
+
     Locate 4 + P1, 3
     Print "*";
     Locate 5 - P1, 3
     Print " ";
     Color 0, 1 + BW * 6
     Locate 6, 1
-    Print "Û"; String$(39, 220);
+
+    Print Chr$(219); String$(39, 220);
     Color 15, 4 + BW * 3
     Locate 2, 43
-    Print "Û"; String$(36, 223);
+    Print Chr$(219); String$(36, 223);
     Locate 3, 43
-    Print "Û";
+    Print Chr$(219);
     Locate 4, 43
-    Print "Û";
+    Print Chr$(219);
     Locate 5, 43
-    Print "Û";
-    Locate 2, 80: Color 0: Print "ß";
+    Print Chr$(219);
+    Locate 2, 80: Color 0: Print Chr$(223);
+
+    'LOCATE 2, 80: COLOR 0: PRINT "ß";
+
     Call YARDLINE
+
     Color 15 * (1 - BW)
     Color 15 * (1 - BW), 4 + BW * 3: TI = T: TI = TI + TI * (TI < 0)
     I = Int(TI / 60)
     J = TI - I * 60
+
     Call TICKUPDATE
+
     Locate 3, 44: Print Using " TIME: ##.##     QUARTER: # "; I + J / 100, Q;
     Locate 3, 53: Print ":";: Locate , 72: Print Tab(80); " ";
     Locate 4, 44: Print Using " DOWN: #"; D1;: Print Tab(60);
@@ -2389,23 +2395,67 @@ Sub DISPFIELD ()
     Locate 6, 44: Color 0, 4 + BW * 3: Print String$(37, 220);
     Color 15 * (1 - BW), 2 + 5 * BW: For I = 7 To 19: Locate I, 1
     Print String$(80, 32);: Next I
+
     Call DISPWEATHER
-    Color 15 * (1 - BW), 2 + 5 * BW: Locate 8, 4: Print "ÚÄÄÄ";
-    For II = 1 To 21: Print "ÄÄÂ";: Next: Print "ÄÄÄÄÄ¿";
-    F$ = "³°°°°°": For II = 1 To 20: F$ = F$ + "³  "
-    Next: F$ = F$ + "³°°°°°³"
-    For II = 9 To 17: Locate II, 4: Print F$: Next: Locate 18, 4
-    Print "ÀÄÄÄÄÄ";: For II = 1 To 21: Print "ÁÄÄ";: Next: Print "ÄÄÄÙ";
-    For II = 10 To 67 Step 3: For J = 1 To 2: Locate 11, II + J: Print Chr$(34);
-        Locate 16, II + J
-    Print Chr$(34);: Next: Next
-    For II = 1 To 9: For J = 9 To 17 Step 8: Locate J, II * 6 + 9
-    Print Using "#³0"; II + 2 * (II - 5) * (II > 5);: Next: Next
+
+    'Replaced special characters with Chr$ references
+    'This keeps modern text editors from messing things up
+
+    'Print top row yard markers
+    Color 15 * (1 - BW), 2 + 5 * BW: Locate 8, 4
+    Print Chr$(218) + String$(3, 196);
+
+    For II = 1 To 21
+        Print String$(2, 196) + Chr$(194);
+    Next
+    Print String$(5, 196) + Chr$(191);
+
+    'Print end zones and major yard markers
+    F$ = Chr$(179) + String$(5, 176)
+    For II = 1 To 20
+        F$ = F$ + Chr$(179) + "  "
+    Next
+
+    F$ = F$ + Chr$(179) + String$(5, 176) + Chr$(179)
+    For II = 9 To 17
+        Locate II, 4
+        Print F$
+    Next
+
+    'Print bottom row yard markers
+    Locate 18, 4
+    Print Chr$(192) + String$(5, 196);
+
+    For II = 1 To 21
+        Print Chr$(193) + String$(2, 196);
+    Next
+    Print String$(3, 196) + Chr$(217);
+
+    'Print minor yard markers
+    For II = 10 To 67 Step 3
+        For J = 1 To 2
+            Locate 11, II + J
+            Print Chr$(34);
+            Locate 16, II + J
+            Print Chr$(34);
+        Next
+    Next
+
+    'Print major yard numbers
+    For II = 1 To 9
+        For J = 9 To 17 Step 8
+            Locate J, II * 6 + 9
+            Print Using "#³0"; II + 2 * (II - 5) * (II > 5);
+        Next
+    Next
+
+    'Print play-by-play box
     Locate 19, 1: Print Tab(79): Color 14 - 7 * BW, 1 - BW
     Locate 20, 1: Print String$(80, 32);
-    Locate 21, 1: Print "Û"; String$(78, 223); "Û";
-    Locate 22, 1: Print "Û "; String$(76, 46); " Û";
-    Locate 23, 1: Print "Û"; String$(78, 220); "Û";
+    Locate 21, 1: Print Chr$(219); String$(78, 223); Chr$(219);
+    Locate 22, 1: Print Chr$(219) + " "; String$(76, 46); " " + Chr$(219);
+    Locate 23, 1: Print Chr$(219); String$(78, 220); Chr$(219);
+
 End Sub
 
 
@@ -4356,11 +4406,15 @@ End Sub
 
 Sub QBBOX ()
     Locate 6, 8: Color PA%(I, 2), PA%(I, 1)
+
     Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-    For II = 1 To JJ: Locate 6 + II, 8
-    Print " º"; String$(61, 32); "º ";: Next
+    For II = 1 To JJ
+        Locate 6 + II, 8
+        Print Chr$(186); String$(61, 32); Chr$(186);
+    Next
+
     Locate 7 + JJ, 8
-    Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";:
+    Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
     Locate 7
 End Sub
 

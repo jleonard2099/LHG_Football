@@ -211,9 +211,17 @@ Sub box0 (ULRow%, ULCol%, LRRow%, LRCol%, Char%, Colr%)
     ' TO DO:
     ' Replace print characters with Char%
     '1 = single line all around
+    ' Chr$(196)   -
+
     '2 = double line all around
+    ' Chr$(205)   =
+
     '3 = double line horizontally, single line vertically
+    ' single line vertical   |
+    ' single line corners???
+
     '4 = single line horizontally, double line vertically
+
     'If Char% is assigned to any other value, that ASCII character will be used for the entire box.
 
     Color 15, 1
