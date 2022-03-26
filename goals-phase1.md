@@ -3,8 +3,7 @@
 
 ## GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
 
-- [X] Football
-	no missing source files / references--  -- - - - - -  - 
+No missing source files / references--  -- - - - - -  - 
 
 ## GOAL: COMPILE FULL GAMES FROM SOURCES
 
