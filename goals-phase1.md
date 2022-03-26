@@ -1,12 +1,12 @@
 
-#PHASE 1 - PRELIMINARY WORK
+# PHASE 1 - PRELIMINARY WORK
 
-##GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
+## GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
 
 - [X] Football
 	no missing source files / references--  -- - - - - -  - 
 
-##GOAL: COMPILE FULL GAMES FROM SOURCES
+## GOAL: COMPILE FULL GAMES FROM SOURCES
 
 - [X] Re-create dependent functions with no QB64 equivalent in native BASIC
 	- [X] ClearEOL
