@@ -1,21 +1,20 @@
 
-* PHASE 1 - PRELIMINARY WORK
+*PHASE 1 - PRELIMINARY WORK
 
-** GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
+**GOAL: ADDRESS MISSING / EXTRANEOUS SOURCE FILES
 
 - [X] Football
 	no missing source files / references--  -- - - - - -  - 
 
-- 
-** GOAL: COMPILE FULL GAMES FROM SOURCE- S
+**GOAL: COMPILE FULL GAMES FROM SOURCES
 
 - [X] Re-create dependent functions with no QB64 equivalent in native BASIC
 	- [X] ClearEOL
 	- [X] FCopy
 	- [X] MAMenu
-	- - [X] MMenuVert
+	- [X] MMenuVert
 	- [X] MScrnSave/MScrnRest
-	- - [X] QPrint/MQPrint	
+	- [X] QPrint/MQPrint	
 	- [X] ReadFile + FCount
 	- [X] Text In
 	- [X] YesNoB
