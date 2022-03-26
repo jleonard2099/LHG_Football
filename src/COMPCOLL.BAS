@@ -49,7 +49,7 @@ REDIM f$(0 TO COUNT%)
 	  f$(X) = SPACE$(12)
 	NEXT
 	f$(0) = Spec$
-	CALL ReadFile(VARPTR(f$(0)))
+	CALL ReadFile(f$())
 	'CALL SortStr(VARPTR(f$(1)), COUNT%, 0)
 
 1310 CLS
@@ -73,7 +73,7 @@ REDIM f$(0 TO COUNT%)
 	PRINT "-SELECTS LEAGUE";
 
 _MouseShow "DEFAULT"
-20 MAMenu VARPTR(f$(1)), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu f$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN 2900

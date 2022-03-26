@@ -4,7 +4,7 @@
 
 DEFINT A-Z
 
-DECLARE FUNCTION FnExt$ (X$, Length)
+DECLARE FUNCTION PadRight$ (X$, Length)
 
 DIM Z1$(40), Z2$(40), Z1%(40), D$(2)
 DIM Q$(15), VV$(200), V%(200), T%(34), L%(13), ITEM$(3)
@@ -43,7 +43,7 @@ CLOSE 2
 CALL box0(7, 24, 11, 57, 2, 31)
 	
 _MouseShow "DEFAULT"
-MMenuVert VARPTR(item$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -227,21 +227,21 @@ CLOSE 2
 	GOTO 220
 
 4500 LOCATE 10, 8
-	CALL CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Cnf)
+	CALL CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
 	I$ = GetKeyPress$
-	CALL CSMsgBox("", 0, Cnf)
+	CALL CSMsgBox("", 0, Pass)
 	GOTO 50
 
 4600 LOCATE 10, 8
-	CALL CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Cnf)
+	CALL CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
 	I$ = GetKeyPress$
-	CALL CSMsgBox("", 0, Cnf)
+	CALL CSMsgBox("", 0, Pass)
 	GOTO 50
 
 
-FUNCTION FnExt$ (X$, Length) 
+FUNCTION PadRight$ (X$, Length) 
 'Essentially this pads space to the right of the string
-	X$ = X$ + SPACE$(Length - LEN(X$))  'for display only
+	PadRight$ = X$ + SPACE$(Length - LEN(X$))  'for display only
 END FUNCTION
 
 

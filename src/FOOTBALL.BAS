@@ -7,7 +7,6 @@ _Title "3-in-1 Football"
 '_ICON
 
 DECLARE FUNCTION FNP(X)
-
 DECLARE SUB ADDBACKS ()
 DECLARE SUB ADDTIME ()
 DECLARE SUB BLITZ ()
@@ -64,54 +63,52 @@ DECLARE SUB TICKER ()
 DECLARE SUB TICKUPDATE ()
 DECLARE SUB YARDLINE ()
 
-Dim A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9)
-Dim A9(1, 2), B(1, 2), B1(1, 2), B3(1, 2), B6(1, 7), Q6%(1), YC(1), AA$(1)
-Dim B2(1, 2), T1(1), K3(1, 6), R9%(1), C(50), T(50), PS$(9), NG%(20), XD(1), RN%(1, 38)
-Dim DI(1, 9), DS(1, 14), RP$(30), SD$(3), OT(1)
-Dim DV$(1), AP%(2), U5$(3), strG9$(5), Y8$(3), Y9$(5), LO$(2), Q7%(1), intB8%(2), NN$(1)
-Dim E%(13)
-Dim FA(1, 1, 4), FM(1, 1, 4), strPR$(1, 2), PR(1, 2), FL(1, 1), B$(1), Y$(1), LR(1, 9)
-Dim GL%(30, 2), PS%(2, 21), FP%(1), QR%(50, 2), QX%(1, 3), YN$(1), WX%(6), PA%(2, 9)
-Dim J6(1), S(1, 10), D2$(15), D$(15), D1$(11), O$(50), D3%(7, 10), P$(2), P(2), F(4), F1(4)
-Dim K(1, 36), K1(50, 6), K2(1, 13, 17), V4%(1, 3), DN$(4), DR$(1), DI$(1, 9), DS$(1, 14)
-Dim LF(1, 1), LF$(1, 1), LI$(1, 9, 1), LI(1, 9), AM(1, 1, 4), AF(1, 1, 4)
-Dim LP(1, 3), LP$(1, 3, 1), A7$(1, 1), DDI(1), LK(1, 2), LK$(1, 2, 1), PK(1, 2), PK$(1, 2, 1)
-Dim O%(120), Time%(120), H$(120), HO$(120)
-Dim GI(1, 9, 2), GS(1, 14, 1), PC%(1, 9), RB(1, 17), WR(1, 20)
-Dim strRB$(1, 17), strWR$(1, 20)
-Dim LC(1, 20), strLC$(1, 20, 1), IR(1, 9), strIR$(1, 9), strLR$(1, 9, 1)
-Dim intPR%(1, 120)
-Dim RM%(1, 14), BY%(38, 4), SGL(15)
-Dim RQ%(1), TP(1), intDS%(1), DDS(1), B4(1, 1), B5(1, 1), B7(1, 1), B8(1, 1), intG9%(1)
+Dim Shared A$, A1$, A2$, A3$, A4$, A5$, A6$, A7$, AA$, D2$, DI$, DN$, DR$, DS$, DV$
+Dim Shared F$, FF$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
+Dim Shared SD$, SITE$, ST$, SX$, U$, U5$, X$, Y8$, Y9$, YN$
+ 
+Dim Shared A$(1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2), A7$(1, 1)
+Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14), DV$(1)
+Dim Shared G$(3), strG9$(5), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
+Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LO$(2), LP$(1, 3, 1), strLR$(1, 9, 1)
+Dim Shared O$(50), NN$(1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), Q$(203), strQB$(1, 3)
+Dim Shared R$(14), strRB$(1, 17), RP$(30), SD$(3), SITE$(120), SX$(32, 1)
+Dim Shared U5$(3), V$(500), strWR$(1, 20), Y$(1), Y8$(3), Y9$(5), YN$(1), YR%(1)
 
-Dim RV%(1), HB%(1), TE%(1), TF%(1), intDI%(1)
-Dim QB(1, 3), strQB$(1, 3), KR(1, 2), strKR$(1, 2)
+Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP, ATT
+Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
+Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT, E, EY
+Dim Shared F2, F8, F9, G, G9, I, I1, I2, I3, I4, I5, I6, I7, I8, I9
+Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW, Q, QB, R1, RP, RY
+Dim Shared S, S2, S3, S6, SN, SY, T, T1, TE, TMT, TP, W5, WE, WS
+Dim Shared X, X1, X2, XD, XE, Y, Y1, Y9, YC, YF, YL, YT, Z1
+Dim Shared displayPause As Single
 
-Dim S1%(3, 10, 11), W6(1, 1): Dim A$(1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2)
-Dim S2%(5, 10, 14), SK(1, 14, 1), SI(1, 9, 2), YR%(1), CRD(120), SITE$(120), Q$(203)
-Dim SX%(32, 2, 14), SX$(32, 1), G$(3), G%(1), R$(14), ST%(32), Z(38), Z1(38), Z2(13, 17)
-Dim V$(500), V%(500)
+Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9), A9(1, 2)
+Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
+Dim Shared C(50), CRD(120), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
+Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9), J6(1), K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
+Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
+Dim Shared QB(1, 3), RB(1, 17), S(1, 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1), TP(1)
+Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1), Z(38), Z1(38), Z2(13, 17)
 
-Common Shared A5(), Q7%(), XE, YC(), XD(), P1, W%, D, T1(), Y, YT, D1, Y1, YF, intY8%
-Common Shared B7(), B4(), B3(), B6(), A8(), A7(), A6(), A1(), A(), A2(), K3(), A3(), A4()
-Common Shared BY%(), GL%(), S2%(), PS%(), QR%(), G9, D2$(), DR$(), WX%(), ST$, DV$()
-Common Shared D3, I1, P2, YN$, intB8%, intB8%(), NN$(), AA$(), I, QX%(), A9(), B(), B1(), B2()
-Common Shared DR, S6, S2, PQ, S3, S1%, PW, HB%, W5, F2, I9, RP, RP$(), SD$(), OT(), QBN%
-Common Shared DS(), intDS%(), DI(), intDI%(), PC%(), DDS(), DDI(), Q$(), HT%, EG%, TE, SX$()
-Common Shared I2, I6, D2, X$, A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$(), DS$(), DI$()
-Common Shared I3, B5(), B8(), Q, T, SX%(), AP, AP%(), S(), U$, BW, SN, PA%(), A$(), YL, G
-Common Shared J6(), H%, N7, R5%, Y8, Y9, G$(), PS$(), DN$(), U5$(), strG9$(), Y8$(), Y9$(), LO$()
-Common Shared LF(), LF$(), AM(), AF(), FM(), FA(), LI(), LI$(), NM$, X2, T(), TP()
-Common Shared LR(), strLR$(), LC(), strLC$(), LP(), LP$(), LK(), LK$(), PK(), PK$()
-Common Shared N, F%, TP, PR, F8, RF%, F9, intI%, C%, S%, CP, intG9%(), RV%(), O, E, RY
-Common Shared intPR%(), CRD(), SITE$(), ATT, H$(), SITE$, K1(), TE%(), TF%(), J, RV$, BO%
-Common Shared PR(), strPR$(), FL(), K2(), SI(), K(), W6(), SK(), O%(), HO$(), Time%(), HS$()
-Common Shared Q6%(), X1, QB, R1, I7, I8, I4, I5, Z1, WS, WE, F$, EY, SY, intYL%, V$(), V%()
-Common Shared R$(), D$(), D1$(), O$(), D3%(), P$(), P(), F(), F1(), S1%(), RM%(), RN%()
-Common Shared RB(), strRB$(), IR(), strIR$(), WR(), strWR$(), QB(), strQB$(), KR(), strKR$(), C()
-Common Shared TMT, FF$, NG%(), YN$(), YR%(), DT, JJ, RQ%(), R9%(), V4%(), NT, CT, NY$
-Common Shared TS%, X, ST%, ST%(), I$, PN, B$(), Y$(), Z(), Z1(), Z2(), GI(), GS()
+Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(7, 10), intDI%(1), intDS%(1)
+Dim Shared intG9%(1), GL%(30, 2), HB%(1)
+Dim Shared NG%(20), O%(120), PA%(2, 9), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
+Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
+Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(32), SX%(32, 2, 14), TE%(1), TF%(1), Time%(120)
+Dim Shared V%(500), V4%(1, 3), WX%(6)
 
+Dim Shared AP%, intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, HT%, intI%, intDI%, intDS%
+Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S%, S1%, S2%, ST%, SX%, TS%
+Dim Shared W%, WX%, intY8%, intYL%
+
+'----------------------------------------
+'           GAME CODE
+'----------------------------------------
+
+'Initialize variables
+'--------------------
 Data L,1,1,1,2,2,2,H,H,3,3,3,4,4,F
 Data 4-3 READ,5-2 READ,4-3 PINCH,5-2 PINCH,4-3 INSIDE STUNT
 Data 5-2 INSIDE STUNT,4-3 OUTSIDE STUNT,5-2 OUTSIDE STUNT
@@ -273,7 +270,7 @@ Data 0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2
 'QB Y/C ADJ
 Data 0,10,20,30,40,50,60,70,40,45,50,55,60,65,70,50,53,57,60,63,67
 Data 0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3
-Cls
+
 For I = 0 To 14: Read R$(I): Next
 For I = 1 To 10: Read D$(I): Next I
 For I = 1 To 11: Read D1$(I): Next I
@@ -296,6 +293,13 @@ Data OVER THE TOP,COUNTER
 Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
 Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
 Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
+
+' Setup Game
+'--------------------
+Cls
+
+Randomize Timer
+
 If G9 <> 0 Then
     For I = 1 To 10
         If Left$(D$(I), 3) = "5-2" Then D$(I) = "3-4" + Right$(D$(I), Len(D$(I)) - 3)
@@ -313,18 +317,14 @@ Open "DEFAULT" For Input As #1
 Input #1, J6(0)
 Input #1, G9
 Input #1, H%:
-Input #1, N7
+Input #1, displayPause
 Input #1, R5%
 Input #1, Y8
 Input #1, Y9
 Input #1, NG%(14)
 Close 1
 
-'Call SETUP
-
 _Blink Off
-
-Randomize Timer
 
 ST$ = "12:30P"
 Open "DEV.BAS" For Input As #1
@@ -357,6 +357,7 @@ Y9$(4) = "1991     "
 Y9$(5) = "POST-1991"
 LO$(1) = "HOME FIELD  "
 LO$(2) = "NEUTRAL SITE"
+
 If Not _FileExists("TICKER") Then TMT = 0: GoTo 23
 Open "TICKER" For Input As #2
 For I = 1 To 32: For I1 = 0 To 1: For I2 = 1 To 14
@@ -388,7 +389,7 @@ Close 1
 AP = 1
 
 28 If AP = 1 Then
-    N7 = NG%(4) / 10
+    displayPause = NG%(4) / 10
     J6(0) = NG%(10)
     G9 = NG%(3)
     Y9 = NG%(7)
@@ -406,7 +407,7 @@ Locate 4, 2: Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM: ";: Color 
 Locate 5, 2: Color 14: Print "(3) ";: Color 15: Print "HOME TEAM: ";: Color PA%(1, 2), PA%(1, 1): Print A$(1): Color , 0
 Locate 6, 2: Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; strG9$(G9)
 Locate 7, 2: Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; LO$(H%)
-Locate 8, 2: Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; N7
+Locate 8, 2: Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; displayPause
 Locate 9, 2: Color 14: Print "(7) ";: Color 15: Print "START GAME"
 Locate 10, 2: Color 14: Print "(8) ";: Color 15: Print "COLLEGE RULES: "; Y9$(Y9)
 Locate 11, 2: Color 14: Print "(9) ";: Color 15: Print "PRO RULES: "; Y8$(Y8)
@@ -430,7 +431,7 @@ If I$ = Chr$(27) Or UCase$(I$) = "Q" Then Run "HELLO.EXE"
 I = Val(I$)
 If UCase$(I$) = "A" Then I = 10
 If I < 0 Or I > 10 Then 35
-If I = 0 Then Open "DEFAULT" For Output As #1: Print #1, J6(0): Print #1, G9: Print #1, H%: Print #1, N7: Print #1, R5%: Print #1, Y8: Print #1, Y9: Print #1, NG%(14): Close 1: GoTo 60
+If I = 0 Then Open "DEFAULT" For Output As #1: Print #1, J6(0): Print #1, G9: Print #1, H%: Print #1, displayPause: Print #1, R5%: Print #1, Y8: Print #1, Y9: Print #1, NG%(14): Close 1: GoTo 60
 If I = 1 Then J6(0) = J6(0) + 1: If J6(0) > 3 Then J6(0) = 0
 If I = 1 Then 60
 If I = 2 Then I = 0: GoSub 100: GoTo 60
@@ -438,7 +439,7 @@ If I = 3 Then I = 1: GoSub 100: GoTo 60
 If I = 4 Then G9 = G9 + 1: If G9 = 6 Then G9 = 0
 If I = 5 Then H% = H% + 1: If H% = 3 Then H% = 1
 
-36 If I = 6 Then Locate 8, 32: Input N7: If N7 < 0 Then 36
+36 If I = 6 Then Locate 8, 32: Input displayPause: If displayPause < 0 Then 36
 If I = 7 Then 65
 If I = 8 Then Y9 = Y9 + 1: If Y9 > 5 Then Y9 = 0
 If I = 9 Then Y8 = Y8 + 1: If Y8 > 3 Then Y8 = 0
@@ -450,12 +451,27 @@ If Y9 = 0 And G9 = 0 Then R5% = 1
 GoTo 60
 
 65 If A$(0) = "" Or A$(1) = "" Then 60
-Cls: Color 3: JJ = 6
-SN = 1: Locate 8, 8: Color 14, 1
-Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 8 + II, 8
-Print " º"; String$(61, 32); "º ";: Next
+Cls
+Color 3
+JJ = 6
+SN = 1
+
+'TICKER PROMPT
+Locate 8, 8: Color 14, 1
+
+'Print box top
+Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+
+'Print box sides
+For II = 1 To JJ
+    Locate 8 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
 Locate 9 + JJ, 8
-Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15
+Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+
 Locate 10, 11
 Print "IF YOU ARE USING THE 10 MINUTE TICKER OPTION FOR THIS GAME,"
 Locate , 11: Print "ENTER STARTING TIME FOR GAME IN THIS FORMAT"
@@ -482,15 +498,25 @@ If J6(0) = 3 Then J6(0) = 2
 For I = 0 To 1
     intB8% = NG%(I)
     YN$ = YN$(I)
-    Call GETTEAM: GoTo 122
+    Call GETTEAM
+    GoTo 122
 
-    100 Color 15, 0: Cls
+    100 Color 15, 0
+    Cls
     JJ = 9
-    SN = 1: Locate 6, 8: Color 15, 4
-    Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
-    Print " º"; String$(61, 32); "º ";: Next
+    SN = 1
+    Locate 6, 8: Color 15, 4
+
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+    For II = 1 To JJ
+        Locate 6 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
     Locate 7 + JJ, 8
-    Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+    Locate 7, 32
     Locate , 12: Print "ENTER DISK ID: ": Print
     Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
     Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -503,7 +529,11 @@ For I = 0 To 1
     Color 15, 0
     If NY$ = "" Then Call SELECTTEAM: GoTo 56
     YN$ = NY$
-    For I1 = 1 To 500: V$(I1) = "": Next
+
+    For I1 = 1 To 500
+        V$(I1) = ""
+    Next
+
     Call FINDTEAMS
 
     56 If BO% = 1 Then BO% = 0: GoTo 100
@@ -550,7 +580,6 @@ For I3 = 0 To 1
 128 Next I3
 
 Call SETWEATHER
-
 
 'Q = 5 : T = 3600: goto 3364
 If G9 <> 0 Then Call KICKOFF: GoTo 340
@@ -2161,10 +2190,9 @@ Close 2
 GoTo 8628
 
 
-Sub SETUP ()
-End Sub
-
-
+'------------------------------
+'      SCOUT Subroutine
+'------------------------------
 Sub SCOUT ()
     For I = 0 To 1
         I2 = 0: I3 = 0: I4 = 0: I5 = 0: I6 = 0
@@ -2208,6 +2236,9 @@ Sub SCOUT ()
 End Sub
 
 
+'------------------------------
+'      HALFSTART Subroutine
+'------------------------------
 Sub HALFSTART ()
     P1 = W%: D = 1: If P1 = D Then D = 0
     T1(0) = 3: T1(1) = T1(0): Y = 35: YT = 65: D1 = 1: Y1 = 10: YF = -Y1
@@ -2217,14 +2248,36 @@ Sub HALFSTART ()
 End Sub
 
 
+'------------------------------
+'      BOXDRAW Subroutine
+'------------------------------
 Sub BOXDRAW (J)
-    PCopy 0, 1: Screen , , 1, 1: SN = 1: Locate 8, 8
-    Color 0, 7: Print " Ö"; String$(61, 196); "· ";
-    For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
-    Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15
+    PCopy 0, 1
+    Screen , , 1, 1
+    SN = 1
+    Locate 8, 8
+    Color 0, 7
+
+    'Print box top
+    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+
+    'Print box sides
+    For II = 1 To J
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 9 + J, 8
+    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+
+    Locate 10, 15
 End Sub
 
 
+'------------------------------
+'      KICKER Subroutine
+'------------------------------
 Sub KICKER ()
     Color , 1: Cls: J = 10: Call BOXDRAW(J)
     Locate , 31: Print "SELECT KICKER": Print
@@ -2244,12 +2297,18 @@ Sub KICKER ()
 End Sub
 
 
+'------------------------------
+'      DRAWABOX Subroutine
+'------------------------------
 Sub GETAKEY ()
 
     950 I$ = GetKeyPress$
 End Sub
 
 
+'------------------------------
+'     TICKUPDATE Subroutine
+'------------------------------
 Sub TICKUPDATE ()
     If AP <> 1 Or AP%(2) > 32 Then 952
     If Q = 1 And T <= 600 And SX%(AP%(2) + 1, 0, 1) = -1 Then SX%(AP%(2) + 1, 0, 1) = S(0, 0): SX%(AP%(2) + 1, 1, 1) = S(1, 0)
@@ -2269,6 +2328,9 @@ Sub TICKUPDATE ()
 End Sub
 
 
+'------------------------------
+'      PLACEPBP Subroutine
+'------------------------------
 Sub PLACEPBP ()
     U$ = Left$(U$, 76)
     Color 14 - 7 * BW, 1 - BW
@@ -2279,18 +2341,22 @@ Sub PLACEPBP ()
 End Sub
 
 
+'------------------------------
+'      PBP Subroutine
+'------------------------------
 Sub PBP ()
-    M$ = GetKeyPress$
+    M$ = InKey$
     If UCase$(M$) = "Q" Then Cls: End
     Call PLACEPBP
-    If N7 <> 0 Then
-        U! = Timer
-        While Timer < U! + N7
-        Wend
+    If displayPause > 0 Then
+        _Delay displayPause
     End If
 End Sub
 
 
+'------------------------------
+'    DISPWEATHER Subroutine
+'------------------------------
 Sub DISPWEATHER ()
     Color 15 * (1 - BW), 2 + 5 * BW
     Locate 7, 20: Print "WIND: ";
@@ -2306,11 +2372,17 @@ Sub DISPWEATHER ()
 End Sub
 
 
+'------------------------------
+'    CHANGEPOSS Subroutine
+'------------------------------
 Sub CHANGEPOSS ()
     Swap P1, D
 End Sub
 
 
+'------------------------------
+'    SETSCREEN Subroutine
+'------------------------------
 Sub SETSCREEN ()
     Screen , , 0, 0
     SN = 0
@@ -2327,6 +2399,9 @@ Sub SETSCREEN ()
 End Sub
 
 
+'------------------------------
+'     DISPFIELD Subroutine
+'------------------------------
 Sub DISPFIELD ()
     Locate 2, 40
     Color 1 + BW * 6, 0
@@ -2459,11 +2534,17 @@ Sub DISPFIELD ()
 End Sub
 
 
+'------------------------------
+'      YARDLINE Subroutine
+'------------------------------
 Sub YARDLINE ()
     YL = YT - (YT > 50) * (100 - YT - YT)
 End Sub
 
 
+'------------------------------
+'      GOALLINE Subroutine
+'------------------------------
 Sub GOALLINE ()
     '*** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
@@ -2543,6 +2624,10 @@ Sub GOALLINE ()
 End Sub
     
 
+
+'------------------------------
+'    FINDSPACE Subroutine
+'------------------------------
 Sub FINDSPACE ()
     I2 = 0
 
@@ -2555,6 +2640,9 @@ Sub FINDSPACE ()
 End Sub
 
 
+'------------------------------
+'      NAMEEDIT Subroutine
+'------------------------------
 Sub NAMEEDIT ()
     For I = 0 To 1
 
@@ -2574,6 +2662,9 @@ Sub NAMEEDIT ()
 End Sub
 
 
+'------------------------------
+'      SCOUTREPT Subroutine
+'------------------------------
 Sub SCOUTREPT ()
     J = 13: Call BOXDRAW(J): Locate 8, 30: Print "SCOUTING REPORT": Locate 10, 30
     Color PA%(0, 2), PA%(0, 1): Print A$(0);: Color 0, 7
@@ -2599,107 +2690,139 @@ Sub SCOUTREPT ()
     I$ = GetKeyPress$
 End Sub
 
+
+'------------------------------
+'     GETTEAM Subroutine
+'------------------------------
 Sub GETTEAM ()
 
-    9500 If Not _FileExists(DV$(0) + "FOOT." + YN$) Then 9650
-    Open DV$(0) + "FOOT." + YN$ As #1 Len = 934
-    Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
-    Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
-    Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
-    Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
-    Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
-    Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
-    Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
-    Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
-    Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
-    Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
-    Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
-    Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-    Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
-    Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
-    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
-    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
-    Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
-    Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
-    Get #1, intB8%: intB8%(I) = intB8%: NN$(I) = YN$
-    A$(I) = Q$(1): AA$(I) = Q$(2)
-    For I1 = 0 To 7: B6(I, I1) = CVI(Q$(I1 + 3)): Next I1
-    For I1 = 0 To 4: PA%(I, I1) = CVI(Q$(I1 + 11)): Next I1
-    For I1 = 0 To 9
-        A1$(I, I1) = Q$(I1 * 5 + 16)
-        A(I, I1) = CVI(Q$(I1 * 5 + 17))
-        A1(I, I1) = CVI(Q$(I1 * 5 + 18))
-        A2(I, I1) = CVI(Q$(I1 * 5 + 19))
-        A3(I, I1) = CVI(Q$(I1 * 5 + 20))
-    Next I1
-    For I1 = 0 To 5
-        A2$(I, I1) = Q$(I1 * 3 + 66)
-        A4(I, I1) = CVI(Q$(I1 * 3 + 67))
-        A5(I, I1) = CVI(Q$(I1 * 3 + 68))
-    Next I1
-    For I1 = 0 To 3
-        A3$(I, I1) = Q$(I1 * 5 + 84)
-        A6(I, I1) = CVI(Q$(I1 * 5 + 85))
-        A7(I, I1) = CVI(Q$(I1 * 5 + 86))
-        A8(I, I1) = CVI(Q$(I1 * 5 + 87))
-        QX%(I, I1) = CVI(Q$(I1 * 5 + 88))
-    Next I1
-    For I1 = 0 To 2
-        A4$(I, I1) = Q$(I1 * 3 + 104)
-        A9(I, I1) = CVI(Q$(I1 * 3 + 105))
-        B(I, I1) = CVI(Q$(I1 * 3 + 106))
-    Next I1
-    For I1 = 0 To 2
-        A5$(I, I1) = Q$(I1 * 3 + 113)
-        B1(I, I1) = CVI(Q$(I1 * 3 + 114))
-        B2(I, I1) = CVI(Q$(I1 * 3 + 115))
-    Next I1
-    A6$(I, 0) = Q$(122)
-    B3(I, 0) = CVI(Q$(123))
-    A7$(I, 0) = Q$(124)
-    B4(I, 0) = CVI(Q$(125))
-    B5(I, 0) = CVI(Q$(126))
-    B7(I, 0) = CVI(Q$(127))
-    B8(I, 0) = CVI(Q$(128))
-    A7$(I, 1) = Q$(129)
-    B4(I, 1) = CVI(Q$(130))
-    B5(I, 1) = CVI(Q$(131))
-    B7(I, 1) = CVI(Q$(132))
-    B8(I, 1) = CVI(Q$(133))
-    YC(I) = CVI(Q$(134))
-    For I1 = 0 To 14
-        DS$(I, I1) = Q$(I1 * 2 + 135)
-        DS(I, I1) = CVI(Q$(I1 * 2 + 136))
-    Next I1
-    For I1 = 0 To 9
-        DI$(I, I1) = Q$(I1 * 2 + 165)
-        DI(I, I1) = CVI(Q$(I1 * 2 + 166))
-    Next I1
-    Close #1
-    If Left$(AA$(I), 1) = " " Or AA$(I) = "" Then AA$(I) = A$(I)
-    PC%(I, 0) = A(I, 0)
-    For I1 = 9 To 1 Step -1
-        If A(I, I1) = 0 Then 9594
-        PC%(I, I1) = A(I, I1) - A(I, I1 - 1)
+    If _FileExists(DV$(0) + "FOOT." + YN$) Then
+        Open DV$(0) + "FOOT." + YN$ As #1 Len = 934
+        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+        Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+        Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+        Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+        Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+        Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+        Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+        Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+        Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+        Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+        Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+        Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+        Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+        Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+        Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+        Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+        Get #1, intB8%: intB8%(I) = intB8%: NN$(I) = YN$
+        A$(I) = Q$(1): AA$(I) = Q$(2)
 
-    9594 Next
-    DDS(I) = 0: DDI(I) = 0
-    For I1 = 0 To 14: DDS(I) = DDS(I) + DS(I, I1): If DS(I, 0) > 0 Then intDS%(I) = 1
-    Next I1
-    For I1 = 0 To 9: DDI(I) = DDI(I) + DI(I, I1): If DI(I, 0) > 0 Then intDI%(I) = 1
-    Next I1
-    GoTo 9595
+        For I1 = 0 To 7
+            B6(I, I1) = CVI(Q$(I1 + 3))
+        Next I1
 
-    9650 Cls:
-    Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
-    Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
-    Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
-    GoTo 9500
+        For I1 = 0 To 4
+            PA%(I, I1) = CVI(Q$(I1 + 11))
+        Next I1
 
-    9595 '
+        For I1 = 0 To 9
+            A1$(I, I1) = Q$(I1 * 5 + 16)
+            A(I, I1) = CVI(Q$(I1 * 5 + 17))
+            A1(I, I1) = CVI(Q$(I1 * 5 + 18))
+            A2(I, I1) = CVI(Q$(I1 * 5 + 19))
+            A3(I, I1) = CVI(Q$(I1 * 5 + 20))
+        Next I1
+
+        For I1 = 0 To 5
+            A2$(I, I1) = Q$(I1 * 3 + 66)
+            A4(I, I1) = CVI(Q$(I1 * 3 + 67))
+            A5(I, I1) = CVI(Q$(I1 * 3 + 68))
+        Next I1
+
+        For I1 = 0 To 3
+            A3$(I, I1) = Q$(I1 * 5 + 84)
+            A6(I, I1) = CVI(Q$(I1 * 5 + 85))
+            A7(I, I1) = CVI(Q$(I1 * 5 + 86))
+            A8(I, I1) = CVI(Q$(I1 * 5 + 87))
+            QX%(I, I1) = CVI(Q$(I1 * 5 + 88))
+        Next I1
+
+        For I1 = 0 To 2
+            A4$(I, I1) = Q$(I1 * 3 + 104)
+            A9(I, I1) = CVI(Q$(I1 * 3 + 105))
+            B(I, I1) = CVI(Q$(I1 * 3 + 106))
+        Next I1
+
+        For I1 = 0 To 2
+            A5$(I, I1) = Q$(I1 * 3 + 113)
+            B1(I, I1) = CVI(Q$(I1 * 3 + 114))
+            B2(I, I1) = CVI(Q$(I1 * 3 + 115))
+        Next I1
+
+        A6$(I, 0) = Q$(122)
+        B3(I, 0) = CVI(Q$(123))
+        A7$(I, 0) = Q$(124)
+        B4(I, 0) = CVI(Q$(125))
+        B5(I, 0) = CVI(Q$(126))
+        B7(I, 0) = CVI(Q$(127))
+        B8(I, 0) = CVI(Q$(128))
+        A7$(I, 1) = Q$(129)
+        B4(I, 1) = CVI(Q$(130))
+        B5(I, 1) = CVI(Q$(131))
+        B7(I, 1) = CVI(Q$(132))
+        B8(I, 1) = CVI(Q$(133))
+        YC(I) = CVI(Q$(134))
+
+        For I1 = 0 To 14
+            DS$(I, I1) = Q$(I1 * 2 + 135)
+            DS(I, I1) = CVI(Q$(I1 * 2 + 136))
+        Next I1
+
+        For I1 = 0 To 9
+            DI$(I, I1) = Q$(I1 * 2 + 165)
+            DI(I, I1) = CVI(Q$(I1 * 2 + 166))
+        Next I1
+
+        Close #1
+
+        If Left$(AA$(I), 1) = " " Or AA$(I) = "" Then AA$(I) = A$(I)
+        PC%(I, 0) = A(I, 0)
+
+        For I1 = 9 To 1 Step -1
+            If A(I, I1) <> 0 Then
+                PC%(I, I1) = A(I, I1) - A(I, I1 - 1)
+            End If
+        Next
+
+        DDS(I) = 0
+        DDI(I) = 0
+
+        For I1 = 0 To 14
+            DDS(I) = DDS(I) + DS(I, I1)
+            If DS(I, 0) > 0 Then intDS%(I) = 1
+        Next I1
+
+        For I1 = 0 To 9
+            DDI(I) = DDI(I) + DI(I, I1)
+            If DI(I, 0) > 0 Then intDI%(I) = 1
+        Next I1
+
+    Else
+        Cls
+        Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
+        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
+        Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
+        Call GETTEAM
+
+    End If
 End Sub
 
 
+'------------------------------
+'      TICKER Subroutine
+'------------------------------
 Sub TICKER ()
     '*** TICKER ***
     If AP = 1 And J6(0) = 2 Then 884
@@ -2875,6 +2998,9 @@ Sub TICKER ()
 End Sub
 
 
+'------------------------------
+'     SAVESTATS Subroutine
+'------------------------------
 Sub SAVESTATS ()
     Cls
     PN = Q
@@ -3092,6 +3218,9 @@ Sub SAVESTATS ()
 End Sub
 
 
+'------------------------------
+'      ADDBACKS Subroutine
+'------------------------------
 Sub ADDBACKS ()
     For I = 0 To 1
         For I1 = 0 To 9
@@ -3101,6 +3230,9 @@ Sub ADDBACKS ()
 End Sub
 
 
+'------------------------------
+'      GETSPEED Subroutine
+'------------------------------
 Sub GETSPEED ()
     If AP = 1 And J6(0) = 2 Then 4098
     I$ = GetKeyPress$
@@ -3108,17 +3240,38 @@ Sub GETSPEED ()
 4098 End Sub
 
 
+'------------------------------
+'      DECIDE Subroutine
+'------------------------------
 Sub DECIDE ()
     If X = 0 And AP <> 1 Or AP = 1 And J6(0) <> 2 Then Call GETSPEED
 End Sub
 
 
+'------------------------------
+'      DRAWABOX Subroutine
+'------------------------------
 Sub DRAWABOX ()
-    SN = 1: Locate 1, 1: Color 0, 7: Print "Ö"; String$(77, 196); "·";
-    For II = 1 To J: Locate 1 + II, 1: Print "º"; String$(77, 32); "º";: Next
-    Locate 2 + J, 1: Print "Ó"; String$(77, 196); "½";: Locate 2, 32
+    SN = 1
+    Locate 1, 1
+    Color 0, 7
+
+    Print Chr$(201); String$(77, 196); Chr$(187);
+    For II = 1 To J
+        Locate 1 + II, 1
+        Print Chr$(186); String$(77, 32); Chr$(186);
+    Next
+
+    Locate 2 + J, 1
+    Print Chr$(200); String$(77, 196); Chr$(188);
+
+    Locate 2, 32
 End Sub
 
+
+'------------------------------
+'      ONSIDE Subroutine
+'------------------------------
 
 Sub ONSIDE ()
     X = Int(Rnd(1) * 100) + 1
@@ -3140,6 +3293,9 @@ Sub ONSIDE ()
 End Sub
 
 
+'------------------------------
+'      PRINTBOX Subroutine
+'------------------------------
 Sub PRINTBOX ()
     Open DV$(1) + NM$ For Output As #1
     If H% = 2 Then Print #1, "SITE: NEUTRAL  ATTENDANCE: "; ATT
@@ -3363,6 +3519,9 @@ Sub PRINTBOX ()
 End Sub
 
 
+'------------------------------
+'     BOX2SCREEN Subroutine
+'------------------------------
 Sub BOX2SCREEN ()
     If H% = 2 Then Print "SITE: NEUTRAL  ATTENDANCE: "; ATT
     If H% <> 2 Then Print "SITE: "; SITE$;: Print Using "  ATTENDANCE: ####,###"; ATT
@@ -3440,8 +3599,14 @@ Sub BOX2SCREEN ()
 End Sub
 
 
+'------------------------------
+'   STATS2SCREEN Subroutine
+'------------------------------
 Sub STATS2SCREEN ()
-    J = 14: Call BOXDRAW(J): Locate , 32: Print "TEAM STATISTICS"
+    J = 14
+    Call BOXDRAW(J)
+    Locate , 32
+    Print "TEAM STATISTICS"
     Locate , 15: Color PA%(0, 2), PA%(0, 1): Print A$(0);
     Color 0, 7
     Locate , 50
@@ -3638,7 +3803,9 @@ Sub STATS2SCREEN ()
     Call DECIDE
 End Sub
 
-
+'------------------------------
+'    INCOMPLETE Subroutine
+'------------------------------
 Sub INCOMPLETE ()
     Call QBTHROW
 
@@ -3707,7 +3874,9 @@ Sub INCOMPLETE ()
     4145 Call PBP
 End Sub
 
-
+'------------------------------
+'      QBSNEAK Subroutine
+'------------------------------
 Sub QBSNEAK ()
     '*** QB SNEAK ***
     U$ = A3$(P1, Q6%(P1)) + " KEEPS IT ON THE SNEAK": Call PBP
@@ -3739,6 +3908,10 @@ Sub QBSNEAK ()
     U$ = U$ + " YARDS ON THE PLAY": Call PBP
 End Sub
 
+'------------------------------
+'      OVERUSE Subroutine
+
+'------------------------------
 
 Sub OVERUSE ()
     If K(P1, 1) + K(P1, 3) = 0 Then 4050
@@ -3748,7 +3921,9 @@ Sub OVERUSE ()
     4050 '
 End Sub
 
-
+'------------------------------
+'      BLITZ Subroutine
+'------------------------------
 Sub BLITZ ()
     I5 = Int(Rnd(1) * 100) + 1: XE = YC(D) / 100
     If XE > .5 Then 4706
@@ -3833,7 +4008,9 @@ Sub BLITZ ()
     4700 '
 End Sub
 
-
+'------------------------------
+'      BLITZ2 Subroutine
+'------------------------------
 Sub BLITZ2 ()
     '*** BLITZ ***
     I4 = Int(Rnd(1) * 100) + 1
@@ -3869,6 +4046,10 @@ Sub BLITZ2 ()
 End Sub
 
 
+'------------------------------
+'      COMPCHEAT Subroutine
+'------------------------------
+
 Sub COMPCHEAT ()
 
     1100 R0 = Int(Rnd(1) * 4) + 1: D3 = 1: I3 = Int(Rnd(1) * 100) + 1: If R0 <> 2 Then 1111
@@ -3886,6 +4067,9 @@ Sub COMPCHEAT ()
 End Sub
 
 
+'------------------------------
+'      PBPRINT Subroutine
+'------------------------------
 Sub PBPINT ()
     U$ = ""
     If intDS%(D) = 0 Then 685
@@ -3900,11 +4084,17 @@ Sub PBPINT ()
 End Sub
 
 
+'------------------------------
+'      ADDTIME Subroutine
+'------------------------------
 Sub ADDTIME ()
     If T <= 0 Then TP(P1) = TP(P1) + T: T = T - T
 End Sub
 
 
+'------------------------------
+'      DEFENSE Subroutine
+'------------------------------
 Sub DEFENSE ()
     '*** COMPUTER DEFENSE ***
     If Q = 2 And T <= 120 Then 8895
@@ -3970,6 +4160,9 @@ Sub DEFENSE ()
 End Sub
 
 
+'------------------------------
+'      MARKER Subroutine
+'------------------------------
 Sub MARKER ()
     If P1 Then J = FNP(YT) - 3 Else J = FNP(100 - YT) - 3
     Locate 13, 4: Color 15 * (1 - BW), 2 + 5 * BW
@@ -3996,6 +4189,9 @@ Sub MARKER ()
 End Sub
 
 
+'------------------------------
+'      MARKER1 Subroutine
+'------------------------------
 Sub MARKER1 ()
     YT = 100 - Y: YF = -Y1
     If P1 Then WS = FNP(YT + YF) - 3: WE = WS + 6 Else WE = FNP(100 - YT - YF) - 3: WS = WE - 6
@@ -4003,28 +4199,68 @@ Sub MARKER1 ()
 End Sub
 
 
+'------------------------------
+'       DBOX Subroutine
+'------------------------------
 Sub DBOX ()
-    PCopy 0, 1: Screen , , 1, 1: SN = 1: Locate 8, 8: Color PA%(D, 2), PA%(D, 1)
-    Print " Ö"; String$(61, 196); "· ";: For II = 1 To J: Locate 8 + II, 8
-    Print " º"; String$(61, 32); "º ";: Next
-    Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15
+    PCopy 0, 1
+    Screen , , 1, 1
+    SN = 1
+    Locate 8, 8: Color PA%(D, 2), PA%(D, 1)
+
+    'Print box top
+    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+
+    'Print box sides
+    For II = 1 To JJ
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 9 + JJ, 8
+    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+
+    Locate 10, 15
 End Sub
 
 
+'------------------------------
+'       PBOX Subroutine
+'------------------------------
 Sub PBOX ()
-    PCopy 0, 1: Screen , , 1, 1: SN = 1: Locate 8, 8: Color PA%(P1, 2), PA%(P1, 1)
-    Print " Ö"; String$(61, 196); "· ";: For II = 1 To J: Locate 8 + II, 8
-    Print " º"; String$(61, 32); "º ";: Next
-    Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15
+    PCopy 0, 1
+    Screen , , 1, 1
+    SN = 1
+    Locate 8, 8: Color PA%(P1, 2), PA%(P1, 1)
+
+    'Print box top
+    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+
+    'Print box sides
+    For II = 1 To JJ
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 9 + JJ, 8
+    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+
+    Locate 10, 15
 End Sub
 
 
+'------------------------------
+'   MOVEBALL Subroutine
+'------------------------------
 Sub MOVEBALL ()
-    If N7 = 0 Then 2155
+    If displayPause = 0 Then 2155
     I$ = "He's at "
     If EY > SY Then 2151
     For YT = SY To EY Step -1
-        Call MARKER: U! = Timer: While Timer < U! + N7 / 20: Wend
+        Call MARKER
+        _Delay displayPause / 20
         Call YARDLINE
         intYL% = YL
         If YT <= 0 Then YT = EY Else If Int(intYL% / 10) * 10 = intYL% Then U$ = I$ + "the" + Str$(intYL%) + " yard line": Call PLACEPBP: I$ = ""
@@ -4032,7 +4268,8 @@ Sub MOVEBALL ()
     GoTo 2154
 
     2151 For YT = SY To EY
-        Call MARKER: U! = Timer: While Timer < U! + N7 / 20: Wend
+        Call MARKER
+        _Delay displayPause / 20
         Call YARDLINE
         intYL% = YL
         If YT <= 0 Then YT = EY Else If Int(intYL% / 10) * 10 = intYL% Then U$ = I$ + "the" + Str$(intYL%) + " yard line": Call PLACEPBP: I$ = ""
@@ -4078,6 +4315,9 @@ Sub MOVEBALL ()
 End Sub
 
 
+'------------------------------
+'   SCOREBOARD Subroutine
+'------------------------------
 Sub SCOREBOARD ()
     Screen , , 0, 0
     If Screen(2, 1) <> 219 Then Call SETSCREEN: Call MARKER1: GoTo 1980
@@ -4101,6 +4341,9 @@ Sub SCOREBOARD ()
 End Sub
 
 
+'------------------------------
+'     DEFMENU Subroutine
+'------------------------------
 Sub DEFMENU ()
     If J6(0) = 1 And D = CT Or J6(0) = 2 Then Call DEFENSE: Call DEFGOALLINE: GoTo 3055
 
@@ -4139,11 +4382,17 @@ Sub DEFMENU ()
 End Sub
 
 
+'------------------------------
+'   DEGFOALLINE Subroutine
+'------------------------------
 Sub DEFGOALLINE ()
     If Y > 94.999 Then D2 = 11: D3 = 1
 End Sub
 
 
+'------------------------------
+'       LGPBP Subroutine
+'------------------------------
 Sub LGPBP ()
     '*** PBP TO START LONG GAIN ***
     RN = Int(Rnd(1) * 20) + 1
@@ -4170,6 +4419,10 @@ Sub LGPBP ()
     Call PBP
 End Sub
 
+
+'------------------------------
+'   RUNTDPBP Subroutine
+'------------------------------
 Sub RUNTDPBP ()
     '*** PBP TO START LONG GAIN ***
     RN = Int(Rnd(1) * 29) + 1
@@ -4205,6 +4458,10 @@ Sub RUNTDPBP ()
     Call PBP
 End Sub
 
+
+'------------------------------
+'   SETWEATHER Subroutine
+'------------------------------
 Sub SETWEATHER ()
     For I = 0 To 1: YR%(I) = Val(Left$(A$(I), 2)): Next
     If YR%(0) >= 0 And YR%(0) <= 15 Then YR%(0) = 99
@@ -4258,7 +4515,6 @@ Sub SETWEATHER ()
     End If
 End Sub
 
-
 Sub FGATT ()
     DT = Int(117 + intY8% - Y + .5)
     If DT <= 19 Then FA(P1, Q7%(P1), 0) = FA(P1, Q7%(P1), 0) + 1
@@ -4269,6 +4525,9 @@ Sub FGATT ()
 End Sub
 
 
+'------------------------------
+'   FGMADESubroutine
+'------------------------------
 Sub FGMADE ()
     If DT <= 19 Then FM(P1, Q7%(P1), 0) = FM(P1, Q7%(P1), 0) + 1
     If DT > 19 And DT <= 29 Then FM(P1, Q7%(P1), 1) = FM(P1, Q7%(P1), 1) + 1
@@ -4279,6 +4538,9 @@ Sub FGMADE ()
 End Sub
 
 
+'------------------------------
+'   OFFMENU Subroutine
+'------------------------------
 Sub OFFMENU ()
     If E = 1 Then
         R0 = Int(Rnd(1) * 100) + 1
@@ -4378,8 +4640,10 @@ Sub OFFMENU ()
 End Sub
 
 
+'------------------------------
+'   MEASUREMENT Subroutine
+'------------------------------
 Sub MEASUREMENT ()
-    'MEASUREMENT
     U$ = "HE'S CLOSE TO A FIRST DOWN": Call PBP
     U$ = "THE OFFICIAL SIGNALS FOR A MEASUREMENT": Call PBP: Call PBP
     If G - Y1 < -.2 Then U$ = "HE'S ABOUT A FOOT SHORT": GoTo 3427
@@ -4391,11 +4655,17 @@ Sub MEASUREMENT ()
 End Sub
 
 
+'------------------------------
+'   WHICHRECEIVER Subroutine
+'------------------------------
 Sub WHICHRECEIVER
     If I3 > 9 Then U$ = U$ + A2$(P1, I3 - 10) Else U$ = U$ + A1$(P1, I3)
 End Sub
 
 
+'------------------------------
+'   CLIPPING Subroutine
+'------------------------------
 Sub CLIPPING ()
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
     Call PBP
@@ -4404,21 +4674,27 @@ Sub CLIPPING ()
 End Sub
 
 
+'------------------------------
+'       QBBOX Subroutine
+'------------------------------
 Sub QBBOX ()
     Locate 6, 8: Color PA%(I, 2), PA%(I, 1)
 
-    Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
+    Print Chr$(201); String$(61, 205); Chr$(187)
     For II = 1 To JJ
         Locate 6 + II, 8
-        Print Chr$(186); String$(61, 32); Chr$(186);
+        Print Chr$(186); String$(61, 32); Chr$(186)
     Next
 
     Locate 7 + JJ, 8
-    Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+    Print Chr$(200); String$(61, 205); Chr$(188)
     Locate 7
 End Sub
 
 
+'------------------------------
+'   CHANGEQB Subroutine
+'------------------------------
 Sub CHANGEQB ()
 
     8300 Color 15, 0: Cls: JJ = 12: I = I3
@@ -4473,24 +4749,44 @@ Sub CHANGEQB ()
     8325 Rem
 End Sub
 
+
+'------------------------------
+'   FINDTEAMS Subroutine
+'------------------------------
+'Get list of teams from file
 Sub FINDTEAMS ()
     NT = 0
+
     Open DV$(0) + "FOOT." + YN$ As #1 Len = 934
     Y = LOF(1)
     Field #1, 15 As Q$(0), 640 As X$
-    For I1 = 1 To Y / 934
-        Get #1, I1
-        For I2 = 1 To 15
-            If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 6105
-        Next I2
-        NT = NT + 1
-        V$(NT) = Q$(0): V%(NT) = I1
 
-    6105 Next I1
+    For I1 = 1 To Y / 934
+        'Get Team Name
+        Get #1, I1
+
+        'Check for last team
+        For I2 = 1 To 15
+            If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then
+                _Continue
+            End If
+        Next I2
+
+        'Count # of teams
+        NT = NT + 1
+        V$(NT) = Q$(0)
+        V%(NT) = I1
+
+    Next I1
     Close 1
+
     Call SELECTTEAM
 End Sub
 
+
+'------------------------------
+'     KICKOFF Subroutine
+'------------------------------
 Sub KICKOFF ()
     Call SCOREBOARD
     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then I9 = 2: GoTo 1005
@@ -4537,6 +4833,10 @@ Sub KICKOFF ()
     1017 Rem
 End Sub
 
+
+'------------------------------
+'    COLKICKOFF Subroutine
+'------------------------------
 Sub COLKICKOFF ()
 
     1200 'COLL KO
@@ -4587,6 +4887,10 @@ Sub COLKICKOFF ()
     1216 Rem
 End Sub
 
+
+'------------------------------
+'    TAKESAFETY Subroutine
+'------------------------------
 Sub TAKESAFETY ()
     TP = Int(Rnd(1) * 3) + 4: T = T - TP: TP(P1) = TP(P1) + TP
     G = (Y * -1) - 1: K(P1, 1) = K(P1, 1) + 1: K(P1, 2) = K(P1, 2) + G
@@ -4594,14 +4898,23 @@ Sub TAKESAFETY ()
     S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2
 End Sub
 
-Sub DELAY ()
-    If J6(0) <> 2 Then 8412
-    For DL = 1 To N7
-    Next
 
-    8412 Rem
+'------------------------------
+'      DELAY Subroutine
+'------------------------------
+'??? What was J6(0) ???
+Sub DELAY ()
+    'If J6(0) <> 2 Then 8412
+    'For DL = 1 To displayPause
+    'Next
+	_Delay displayPause
+    '8412 Rem
 End Sub
 
+
+'------------------------------
+'      FINDINT Subroutine
+'------------------------------
 Sub FINDINT ()
     'FIND INT
     M5 = 0: RN = Int(Rnd(1) * DDI(1 - P1)) + 1
@@ -4613,10 +4926,18 @@ Sub FINDINT ()
     3660 Rem
 End Sub
 
+
+'------------------------------
+'      YARDAGE Subroutine
+'------------------------------
 Sub YARDAGE ()
     G = G + (Int(Rnd(1) * 11) - 5) / 10
 End Sub
 
+
+'------------------------------
+'      PUNTYARDS Subroutine
+'------------------------------
 Sub PUNTYARDS ()
     I3 = Int(Rnd(1) * 100) + 1: Y = Y + G: Call CHANGEPOSS: YT = Y: Y = 100 - Y: Call YARDLINE
     RN = Int(Rnd(1) * 1000) + 1
@@ -4637,6 +4958,10 @@ Sub PUNTYARDS ()
     SY = 100 - Y: EY = SY - G: Call MOVEBALL
 End Sub
 
+
+'------------------------------
+'      FAKEYARDS Subroutine
+'------------------------------
 Sub FAKEYARDS ()
     U$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -4654,6 +4979,10 @@ Sub FAKEYARDS ()
     U$ = U$ + " YARDS ON THE FAKE RUN": Call PBP
 End Sub
 
+
+'------------------------------
+'      FUMBLE Subroutine
+'------------------------------
 Sub FUMBLE ()
     F8 = Int(Rnd(1) * 100) + 1
     If RF% = 1 Then F8 = F8 - 10: RF% = 0: GoTo 3627
@@ -4670,6 +4999,10 @@ Sub FUMBLE ()
     If F8 <= B6(P1, 3) + B6(D, 4) Then F9 = 1
 End Sub
 
+
+'------------------------------
+'      FLEA Subroutine
+'------------------------------
 Sub FLEA ()
     I1 = Q6%(P1)
     C% = A7(P1, Q6%(P1)) + Int(B6(D, 1)) - 4
@@ -4691,6 +5024,10 @@ Sub FLEA ()
     RN = Int(Rnd(1) * 100) + 1
 End Sub
 
+
+'------------------------------
+'      REVGAIN Subroutine
+'------------------------------
 Sub REVGAIN ()
     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP"
     U$ = U$ + " AND HANDS OFF TO " + A1$(P1, I1) + " ON THE REVERSE!!": Call PBP
@@ -4704,6 +5041,10 @@ Sub REVGAIN ()
     RV%(P9) = 1
 End Sub
 
+
+'------------------------------
+'      FAKERUN Subroutine
+'------------------------------
 Sub FAKERUN ()
     U$ = "IT'S A FAKE!!! THE HOLDER IS RUNNING THE BALL": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -4719,6 +5060,10 @@ Sub FAKERUN ()
     U$ = U$ + " YARDS ON THE FAKE RUN": Call PBP
 End Sub
 
+
+'------------------------------
+'      HANDOFF Subroutine
+'------------------------------
 Sub HANDOFF ()
 
     4110 If D2 = 11 Then U$ = D$(D2): Call PBP: GoTo 4111
@@ -4743,6 +5088,9 @@ Sub HANDOFF ()
 End Sub
 
 
+'------------------------------
+'      PASSBALL Subroutine
+'------------------------------
 Sub PASSBALL ()
     S6 = 0
     Call QBLINE
@@ -4760,7 +5108,15 @@ Sub PASSBALL ()
     For I2 = 9 To 0 Step -1
         If I <= A2(P1, I2) Then I3 = I2
     Next I2
-    If I3 > 9 And A2$(P1, I3 - 10) = A3$(P1, Q6%(P1)) Or I3 < 10 And A1$(P1, I3) = A3$(P1, Q6%(P1)) Then 3506
+    'If I3 is getting a value less than 10, it's still trying to find an item at I3 - 10
+    'If I3 > 9 And A2$(P1, I3 - 10) = A3$(P1, Q6%(P1)) Then 3506 'Or I3 < 10 And A1$(P1, I3) = A3$(P1, Q6%(P1)) Then 3506
+    If I3 > 9 Then
+        If A2$(P1, I3 - 10) = A3$(P1, Q6%(P1)) Then 3506
+    End If
+    If I3 < 10 Then
+        If A1$(P1, I3) = A3$(P1, Q6%(P1)) Then 3506
+    End If
+
     If D2 = 11 Then U$ = D$(D2) Else U$ = D$(D2) + " " + D1$(D3)
     Call PBP
     Call PASSPBP
@@ -4792,6 +5148,10 @@ Sub PASSBALL ()
     3525 I = Int(Rnd(1) * 100) + 1
 End Sub
 
+
+'------------------------------
+'      ARMADJUST Subroutine
+'------------------------------
 Sub ARMADJUST ()
     S2 = A7(P1, I1) + Int(B6(D, 1))
     If P1 = H% Then S2 = S2 + 3
@@ -4808,6 +5168,10 @@ Sub ARMADJUST ()
     If WX%(0) <> P1 And (P2 = 12 Or P2 = 15) Then PW = WX%(3) + WX%(6)
 End Sub
 
+
+'------------------------------
+'      SCORE Subroutine
+'------------------------------
 Sub SCORE ()
     X2 = X2 + 1: T(X2) = T: C(X2) = Q
     If X1 <> 7 Then K1(X2, 1) = P1
@@ -4822,6 +5186,10 @@ Sub SCORE ()
     If K1(X2, 5) < 1 Then K1(X2, 5) = 1
 End Sub
 
+
+'------------------------------
+'      COMPILER Subroutine
+'------------------------------
 Sub COMPILER ()
     If X < 1 Or X > 4 Then 7000
     On X GOTO 7002, 7005, 7006, 7002
@@ -4874,6 +5242,10 @@ Sub COMPILER ()
     7000 Rem
 End Sub
 
+
+'------------------------------
+'      TWOMIN Subroutine
+'------------------------------
 Sub TWOMIN ()
     J = 7: Call BOXDRAW(J)
     Locate 9, 14: Print "1 - HUDDLE"
@@ -4900,6 +5272,10 @@ Sub TWOMIN ()
     3913 Color 0, 5 * (1 - BW): Screen , , 0, 0
 End Sub
 
+
+'------------------------------
+'      FGDIST Subroutine
+'------------------------------
 Sub FGDIST ()
     I9 = 0: If WX%(0) = P1 And WX%(1) = -7 Then I9 = -7
     If WX%(0) = P1 And WX%(1) = -15 Then I9 = -15
@@ -4912,6 +5288,10 @@ Sub FGDIST ()
     If F2 >= 100 Then F2 = 95
 End Sub
 
+
+'------------------------------
+'      RUNMENU Subroutine
+'------------------------------
 Sub RUNMENU ()
     J = 12: Call PBOX: Print "SELECT RUNNING PLAY "; A$(P1)
     Locate 12
@@ -4925,6 +5305,10 @@ Sub RUNMENU ()
     Locate , 14: Print "8 - QB SNEAK                              "
 End Sub
 
+
+'------------------------------
+'      PASSMENU Subroutine
+'------------------------------
 Sub PASSMENU ()
     J = 11: Call PBOX: Print "SELECT PASS PLAY "; A$(P1)
     Locate 12
@@ -4937,6 +5321,10 @@ Sub PASSMENU ()
     Locate , 14: Print "7 - LONG PLAY ACT PASS   14 - DEEP CORNER  "
 End Sub
 
+
+'------------------------------
+'    SHORTYARDAGE Subroutine
+'------------------------------
 Sub SHORTYARDAGE ()
     '*** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
@@ -5015,6 +5403,10 @@ Sub SHORTYARDAGE ()
     If I2 > 30 And I6 <= GL%(30, 1) Then G = G + GL%(30, 2)
 End Sub
 
+
+'------------------------------
+'      PASSPBP Subroutine
+'------------------------------
 Sub PASSPBP ()
     '*** PASS PLAY BY PLAY ***
     RN = Int(Rnd(1) * 100) + 1
@@ -5066,6 +5458,10 @@ Sub PASSPBP ()
     4905 Call PBP
 End Sub
 
+
+'------------------------------
+'      SACK Subroutine
+'------------------------------
 Sub SACK ()
     U$ = "BUT HE WON'T BE ABLE TO GET THIS PASS AWAY!": Call PBP
     U$ = A3$(P1, I1)
@@ -5088,6 +5484,10 @@ Sub SACK ()
     4907 U$ = U$ + " FOR A" + Str$(Int(G + .5)) + " YARD LOSS"
 End Sub
 
+
+'------------------------------
+'      QBLINE Subroutine
+'------------------------------
 Sub QBLINE ()
     QB = 0
     If RQ%(P1) = 1 Then Q6%(P1) = 0 Else QB = Q6%(P1)
@@ -5106,6 +5506,10 @@ Sub QBLINE ()
     4100 Rem
 End Sub
 
+
+'------------------------------
+'      SQUIB Subroutine
+'------------------------------
 Sub SQUIB ()
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE": Call PBP
     U$ = A$(P1) + " IS LINING UP FOR THE KICKOFF": Call PBP
@@ -5121,6 +5525,10 @@ Sub SQUIB ()
     Y = N + G: F% = 3
 End Sub
 
+
+'------------------------------
+'      PUNTPBP Subroutine
+'------------------------------
 Sub PUNTPBP ()
     RN = Int(Rnd(1) * 12) + 1
     If RN = 1 Then U$ = "HE HITS IT"
@@ -5145,6 +5553,10 @@ Sub PUNTPBP ()
     If RN = 6 Then U$ = "HE DOESN'T GET IT TO TURN OVER"
 End Sub
 
+
+'------------------------------
+'      TICK Subroutine
+'------------------------------
 Sub TICK ()
     Open "GAME82" For Input As #2
     Input #2, FF$
@@ -5172,6 +5584,10 @@ Sub TICK ()
     AP = 1
 End Sub
 
+
+'------------------------------
+'      STUFFED Subroutine
+'------------------------------
 Sub STUFFED ()
     '*** PBP FOR LOSS/STUFF ***
     RN = Int(Rnd(1) * 12) + 1
@@ -5190,6 +5606,10 @@ Sub STUFFED ()
     Call PBP
 End Sub
 
+
+'------------------------------
+'      MISSFG Subroutine
+'------------------------------
 Sub MISSFG
     DR = Int(Rnd(1) * 2)
     RN = Int(Rnd(1) * 100) + 1
@@ -5204,6 +5624,10 @@ Sub MISSFG
     Call PBP
 End Sub
 
+
+'------------------------------
+'      MADEFG Subroutine
+'------------------------------
 Sub MADEFG
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 10 Then U$ = "IT'S GOOD!!!"
@@ -5219,6 +5643,10 @@ Sub MADEFG
     Call PBP
 End Sub
 
+
+'------------------------------
+'      MADEPATSubroutine
+'------------------------------
 Sub MADEPAT
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 25 Then U$ = "IT'S GOOD!!!"
@@ -5232,6 +5660,9 @@ Sub MADEPAT
 End Sub
 
 
+'------------------------------
+'      MISSPAT Subroutine
+'------------------------------
 Sub MISSPAT
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 50 Then U$ = "NO GOOD"
@@ -5243,6 +5674,9 @@ Sub MISSPAT
 End Sub
 
 
+'------------------------------
+'      EVENTS Subroutine
+'------------------------------
 Sub EVENTS (SPECIAL%, Count%)
     Dim E%(13)
     Open "EVENTS.BOX" For Input As #1
@@ -5287,6 +5721,10 @@ Sub EVENTS (SPECIAL%, Count%)
     8635 Rem
 End Sub
 
+
+'------------------------------
+'      SELECTTEAM Subroutine
+'------------------------------
 Sub SELECTTEAM ()
     SELECTION% = 1
     Count% = NT
@@ -5298,29 +5736,45 @@ Sub SELECTTEAM ()
     Spacing% = 6
     Row% = 4
     Column% = 1
-    Color , 4: Cls: Locate , 33: Color 14
-    Print "TEAM SELECTION": Color 15
-    Locate 25, 1: Color 14: Print "ESC";: Color 15
-    Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
-    Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+    Color , 4
+
+    Cls
+
+    Locate , 33
+    Color 14: Print "TEAM SELECTION"
+    Color 15
+    Locate 25, 1
+    Color 14: Print "ESC";
+    Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+    Color 14: Print "ENTER";
+    Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
     20 MAMenu V$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
-    If EXITCODE% = 27 Then BO% = 1: GoTo 6102
-    If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 20
-    If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
     If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
     If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
+
+    If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 20
+    If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
     If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
+
+    If EXITCODE% = 27 Then BO% = 1: Exit Sub
+
     intB8% = V%(SELECTION%)
-    Locate 2, 33: Color 31: Print "LOADING..."
+
+    Locate 2, 33
+    Color 31: Print "LOADING..."
+
     Call GETTEAM
 
-    6102 Rem
 End Sub
 
+
+'------------------------------
+'      KICKSET Subroutine
+'------------------------------
 Sub KICKSET ()
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -5340,6 +5794,10 @@ Sub KICKSET ()
     If WX%(0) <> P1 Then N = N + Int(Rnd(1) * 7) - 3 + WX%(1)
 End Sub
 
+
+'------------------------------
+'     QBTHROW Subroutine
+'------------------------------
 Sub QBTHROW ()
     RN = Int(Rnd(1) * 100) + 1
     If RN = 1 Then U$ = "HE PASSES IT"
@@ -5368,6 +5826,10 @@ Sub QBTHROW ()
     If RN <= 23 Then Call PBP
 End Sub
 
+
+'------------------------------
+'      RUNPBP Subroutine
+'------------------------------
 Sub RUNPBP ()
     If P2 = 4 Or P2 = 5 Then 6616
     RN = Int(Rnd(1) * 46) + 1
@@ -5446,6 +5908,10 @@ Sub RUNPBP ()
 
 6617 End Sub
 
+
+'------------------------------
+'      PCPBP Subroutine
+'------------------------------
 Sub PCPBP ()
     Call QBTHROW
 
@@ -5485,7 +5951,6 @@ Sub PCPBP ()
 
     4175 Rem
 End Sub
-
 
 Function FNP (X)
     FNP = 11 + Int((X + Int(X / 5) - 1) / 2)

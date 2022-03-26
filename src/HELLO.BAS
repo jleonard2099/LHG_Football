@@ -4,7 +4,7 @@
 ' PROGRAM NAME: HELLO.BAS
 ' COPYRIGHT 1984-2000 BY LANCE HAFFNER ALL RIGHTS RESERVED.
 DEFINT A-Z
-DECLARE FUNCTION FnExt$ (X$, Length)
+DECLARE FUNCTION PadRight$ (X$, Length)
 
 DIM D$(3), ITEM$(22)
 DIM A$(1 To 15)
@@ -43,7 +43,7 @@ If A$(1) = "2" Then GoTo 700
 
 CALL box0(7, 24, 16, 57, 2, 31)
 _MouseShow "DEFAULT"
-MMenuVert VarPtr(ITEM$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert ITEM$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -72,11 +72,11 @@ CLS:      LOCATE , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS": 
 
 520 LOCATE , 31: Print "C:\FULL\TEAMS"
 	LOCATE 7, 1: QPrint "Path for Teams ", 30, -1
-	LOCATE , 16: QPrint FnExt$(D$(0), 30), FG, BG, -1
+	LOCATE , 16: QPrint PadRight$(D$(0), 30), FG, BG, -1
 	LOCATE 9, 1: QPrint "Path for Stats ", 30, -1
-	LOCATE , 16: QPrint FnExt$(D$(1), 30), FG, BG, -1
+	LOCATE , 16: QPrint PadRight$(D$(1), 30), FG, BG, -1
 	LOCATE 11, 1: QPrint "Path for Leaders ", 30, -1
-	LOCATE , 18: QPrint FnExt$(D$(2), 30), FG, BG, -1
+	LOCATE , 18: QPrint PadRight$(D$(2), 30), FG, BG, -1
 
 GetDiv1:
 	LOCATE 7, 16                         'location of beginning of field
@@ -84,29 +84,29 @@ GetDiv1:
 	Call TextIn(D$(0), Max, NumOnly, CapsOn, XCode, Colr)        'get input
 	If XCode = 1 Then GoTo GetDiv1:      'can't back up any more, stay here
 	If XCode = 2 Then GoTo Done          'all done entering data
-	D$(0) = QPTRIM$(D$(0))
+	D$(0) = _TRIM$(D$(0))
 GetDiv2:
 	LOCATE 9, 16                         'location of beginning of field
 	CapsOn = 0: NumOnly = 0: Max = 30    'specify field parameters
 	Call TextIn(D$(1), Max, NumOnly, CapsOn, XCode, Colr)        'get input
 	If XCode = 1 Then GoTo GetDiv1:      'can't back up any more, stay here
 	If XCode = 2 Then GoTo Done          'all done entering data
-	D$(1) = QPTRIM$(D$(1))
+	D$(1) = _TRIM$(D$(1))
 GetDiv3:
 	LOCATE 11, 18                         'location of beginning of field
 	CapsOn = 0: NumOnly = 0: Max = 30    'specify field parameters
 	Call TextIn(D$(2), Max, NumOnly, CapsOn, XCode, Colr)        'get input
 	If XCode = 1 Then GoTo GetDiv2:      'can't back up any more, stay here
 	If XCode = 2 Then GoTo Done          'all done entering data
-	D$(2) = QPTRIM$(D$(2))
+	D$(2) = _TRIM$(D$(2))
 
 Done:
 	LOCATE 23, 1
 	Print "Is this okay? (Yes/No) ";
 	X$ = ""
-	Call YesNoB(X$, XCode, Colr)
+	CALL YesNoB(X$, XCode, FG, BG)
 	LOCATE , 1
-	ClearEOL 30
+	ClearEOL 14, 1
 	If XCode = 1 Then GoTo GetDiv3
 	If X$ = "N" Then GoTo GetDiv1
 	If X$ <> "Y" Then GoTo Done          'insist on either Y or N or up-arrow
@@ -143,7 +143,7 @@ Done:
 CALL box0(7, 26, 15, 55, 2, 31)
 
 _MouseShow "DEFAULT"
-MMenuVert VarPtr(ITEM$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert ITEM$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -173,7 +173,7 @@ _MouseHide
 
 Call box0(7, 24, 12, 58, 2, 31)
 _MouseShow "DEFAULT"
-MMenuVert VarPtr(ITEM$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert ITEM$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -228,10 +228,11 @@ CALL box0(7, 53, 16, 77, 2, 31)
 	Print
 	Print "NATIONAL ORGANIZATION ALLOWS YOU TO SELECT MULTIPLE COLLEGE CONFERENCES TO"
 	Print "TRACK AND UPDATE TO GENERATE A NATIONAL POLL, NATIONAL LEADERS."
-	_MouseShow "DEFAULT"
 
-20   MAMenu VarPtr(ITEM$(1)), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+_MouseShow "DEFAULT"
+20   MAMenu ITEM$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
+
 	If ExitCode% = 27 Then GoTo 1
 	If ExitCode% = -71 Then Start% = 1: ExitCode% = 3: SELECTION% = 1: GoTo 20
 	If ExitCode% = -79 Then Start% = 15: ExitCode% = 3: SELECTION% = 15: GoTo 20
@@ -261,9 +262,9 @@ _MouseHide
 	If SELECTION% = 20 Then GoTo 1
 	If SELECTION% = 21 Then CLS: End
 
-FUNCTION FnExt$ (X$, Length) 
+FUNCTION PadRight$ (X$, Length) 
 'Essentially this pads space to the right of the string
-	X$ = X$ + SPACE$(Length - LEN(X$))  'for display only
+	PadRight$ = X$ + SPACE$(Length - LEN(X$))  'for display only
 END FUNCTION
 
 Sub TITLE()

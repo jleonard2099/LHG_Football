@@ -2,7 +2,7 @@
 '$INCLUDE: 'QPProEqu.BI'
 
 DEFINT A-Z
-DECLARE FUNCTION FnExt$ (X$, Length)
+DECLARE FUNCTION PadRight$ (X$, Length)
 DECLARE SUB TITLE ()
 
 1 CLS
@@ -11,7 +11,7 @@ DECLARE SUB TITLE ()
 
 3 DIM O1(30), Z1$(30), Z1%(30), Z2$(30), N$(25, 2), NM$(10, 6, 3), O2(30), O3(30), O4(30)
 
-4DIM B2(1, 2), T1(1), K3(1, 6), R9%(1)
+4 DIM B2(1, 2), T1(1), K3(1, 6), R9%(1)
 DIM J6(1):DIM S(1, 10), O$(16), D3%(5, 6), P$(2), P(2), F(4), F1(4):DIM S1%(7, 6, 4):DIM W6(1, 1):DIM A$(1), A1$(1, 6), A2$(1, 5), A3$(1, 2), A4$(1, 2), A5$(1, 2), A6$(1, 2), Q$(300)
 DIM D$(2), PA%(4)
 DIM VV$(500), V%(500), T%(34), L%(13), item$(3)
@@ -46,7 +46,7 @@ CLOSE 2
 
 CALL box0(7, 24, 11, 57, 2, 31)	
 _MouseShow "DEFAULT"
-MMenuVert VARPTR(item$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -285,7 +285,7 @@ TS% = INT((NT - 1) / 80)
 	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
 	
 _MouseShow "DEFAULT"
-20   MAMenu VARPTR(VV$(1)), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20   MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN BO% = 1: RETURN
@@ -334,9 +334,9 @@ CLOSE 1
 3805 I$ = GetKeyPress$
 	GOTO 1195
 
-FUNCTION FnExt$ (X$, Length) 
+FUNCTION PadRight$ (X$, Length) 
 'Essentially this pads space to the right of the string
-	X$ = X$ + SPACE$(Length - LEN(X$))  'for display only
+	PadRight$ = X$ + SPACE$(Length - LEN(X$))  'for display only
 END FUNCTION
 
 SUB TITLE ()

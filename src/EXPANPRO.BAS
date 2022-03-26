@@ -55,7 +55,7 @@ CALL CATEGORIES
 
 CALL box0(7, 24, 11, 57, 2, 31)	
 _MouseShow "DEFAULT"
-MMenuVert VARPTR(item$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -973,7 +973,7 @@ LOCATE , 33: PRINT "ANY CHANGE (YN)";
 3912 I$ = GetKeyPress$
 	IF UCASE$(I$) = "Y" THEN 1445
 
-3913 F$ = QPRTRIM$(F$)
+3913 F$ = RTrim$(F$)
 	F$ = LEFT$(F$, LEN(F$) - 4)
 	RETURN
 

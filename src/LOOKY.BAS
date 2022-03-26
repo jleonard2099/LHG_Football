@@ -501,7 +501,7 @@ NOONE:
 	IF UCASE$(I$) <> "Y" THEN 14
 	PRINT : PRINT "ARE YOU SURE ? (YN) ";
 8804 I$ = GetKeyPress$
-	IF UCASE$(I$) = "N" THEN X = FRE(0): GOTO 14
+	IF UCASE$(I$) = "N" THEN GOTO 14 'X = FRE(0)
 	IF UCASE$(I$) = "Y" THEN 8812
 
 8812 KILL D$(1) + Z$
@@ -941,7 +941,7 @@ CLOSE 1
 	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
 	
 _MouseShow "DEFAULT"
-20   MAMenu VARPTR(VV$(1)), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20   MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN BO% = 1: RETURN

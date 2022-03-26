@@ -39,7 +39,7 @@ CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
 
 CALL box0(7, 24, 12, 57, 2, 31)
 _MouseShow "DEFAULT"
-MMenuVert VARPTR(item$(1)), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -480,7 +480,7 @@ TS% = INT((NT - 1) / 80)
 	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
 	
 _MouseShow "DEFAULT"
-20   MAMenu VARPTR(VV$(1)), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20   MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN BO% = 1: RETURN
@@ -624,7 +624,7 @@ CLOSE #1
 OPEN D$(0)+"STADIUMS."+ YN$ FOR RANDOM AS #2 LEN=50
 	FIELD #2, 15 AS X$, 30 AS Q$(1), 4 AS Q$(3), 1 AS Q$(4)
 	GET #2, B8%
-	S$ = QPRTRIM$(Q$(1))
+	S$ = RTrim$(Q$(1))
 	ATT = CVL(Q$(3))
 	Z$ = Q$(4)
 CLOSE #2
