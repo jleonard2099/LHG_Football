@@ -126,6 +126,14 @@ Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
 For I = 1 To 500: teamItems$(I) = "": Next
+182 IF BO% = 1 THEN BO% = 0: GOTO 181
+183 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$: COLOR 15, 4
+    LOCATE , 33: PRINT "ANY CHANGE (YN)"; : I$ = INKEY$: IF I$ = "" THEN 183
+    IF UCASE$(I$) = "Y" THEN 181
+    COLOR 15, 0
+390 Z1$(B) = A$: Z2$(B) = YN$: Z1%(B) = B8%
+400 GOTO 220
+410 GOSUB 1170: GOTO 2237
 
 1195 Cls
 Run "HELLO.EXE 3"
