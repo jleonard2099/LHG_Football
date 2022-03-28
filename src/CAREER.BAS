@@ -1,985 +1,990 @@
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
-DEFINT A-Z
+_Title "3-in-1 Football - Career Files Menu"
+''$ExeIcon:'./lhg_3in1fb.ico'
+'_Icon
+_AllowFullScreen
 
-DIM Z2(50, 18), A1$(50), A2$(40), A3$(20), A4$(15), A5$(15), A6$(10), A7$(10)
-DIM Z(38), Z1(38),VV$(500),V%(500),PA%(2),Q$(500)
-DIM LR(50), LR$(50, 1), LC(60), LC$(60, 1), LP(20), LP$(20, 1), LK(15), LK$(15, 1), PK(15)
-DIM PK$(15, 1), DI$(55), GIS(15, 55, 3), DS$(55), GSS(15, 55, 3), GS%(55, 1), GI%(55, 2)
-DIM LF$(1), LI(9), LI$(9, 1), item$(7)
-DIM AF(1, 4), AM(1, 4), LF(1), D$(1)
-DIM Y AS LONG
-DIM RBBC(9) AS SINGLE, RBC$(9), RBYR(9)
-DIM RBR$(1), WRRC(4) AS SINGLE, WRC$(4), WRYR(4), QBBC(8) AS SINGLE, QBC$(8)
-DIM QBYR(8), KRRC(4) AS SINGLE, KRC$(4)
-DIM KRYR(4), PRRC(4) AS SINGLE, PRC$(4), PRYR(4), PUUC(2) AS SINGLE, PUC$(2)
-DIM PUYR(2), FGGC(6) AS SINGLE, FGC$(6)
-DIM FGYR(6), DFFC(1) AS SINGLE, DFC$(1), DFYR(1), PP(15, 20) AS SINGLE
-DIM FF(15, 20) AS SINGLE, II(15, 20) AS SINGLE, YY(15, 20) AS SINGLE
-DIM RBS$(15, 50, 1)
-DIM WRS$(15, 40, 1)
-DIM QBS$(15, 20, 1)
-DIM KRRS$(15, 15, 1), PRRS$(15, 15, 1)
-REDIM PUS(15, 10, 4), FGS(15, 10, 17)
-REDIM RBBS(15, 50, 10) AS SINGLE, WRRS(15, 40, 6)  AS SINGLE
-REDIM QBBS(15, 20, 12) AS SINGLE, PRS(15, 15, 6)  AS SINGLE, KRS(15, 15, 6) AS SINGLE
+DefInt A-Z
 
-1  CLS
-OPEN "DEV.BAS" FOR INPUT AS #1: FOR I = 0 TO 1: INPUT #1, D$(I): NEXT: CLOSE #1
-	TMR = 6420: NB = -1: NC = -1: ND = -1: NE = -1: NF = -1: NG = -1: NH = -1: NI = -1: NJ = 0: NK = 0: D = 0: JX = 0: VV = 0
-	COLOR , 2: LOCATE 1, 1: PRINT TAB(80); : LOCATE , 26: COLOR 0
-	PRINT "3 IN 1 FOOTBALL UTILITIES"
-	LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
-	PRINT "(C) LANCE HAFFNER/SHANNON LYNN 1991"; TAB(70); LEFT$(TIME$, 5);
-	LOCATE 4, 1: COLOR 2, 0
-	item$(1) = "CREATE AND MERGE INITIAL STAT FILE"
-	item$(2) = "MERGE / UPDATE CAREER FILES       "
-	item$(3) = "VIEW CAREER FILE                  "
-	item$(4) = "PRINT CAREER FILE                 "
-	item$(5) = "EDIT CAREER FILE                  "
-	item$(6) = "VIEW / PRINT CAREER RECORDS       "
-	item$(7) = "EXIT TO MAIN MENU                 "
-	  SELECTION% = 1
-	Count% = 7
-	Start% = 1
-	SCANCODE% = 7
-	FileFGColr% = 15:FileBGColr% = 1
-	HiLiteFGColr% = 0:HiLiteBGColr% = 7
-	Spacing% = 1
-	Row% = 8
-	Column% = 25
+Dim Z2(50, 18), A1$(50), A2$(40), A3$(20), A4$(15), A5$(15), A6$(10), A7$(10)
+Dim Z(38), Z1(38), teamItems$(500), V%(500), PA%(2), Q$(500)
+Dim LR(50), LR$(50, 1), LC(60), LC$(60, 1), LP(20), LP$(20, 1), LK(15), LK$(15, 1), PK(15)
+Dim PK$(15, 1), DI$(55), GIS(15, 55, 3), DS$(55), GSS(15, 55, 3), GS%(55, 1), GI%(55, 2)
+Dim LF$(1), LI(9), LI$(9, 1), menuItems$(7)
+Dim AF(1, 4), AM(1, 4), LF(1), D$(1)
+Dim Y As Long
+Dim RBBC(9) As Single, RBC$(9), RBYR(9)
+Dim RBR$(1), WRRC(4) As Single, WRC$(4), WRYR(4), QBBC(8) As Single, QBC$(8)
+Dim QBYR(8), KRRC(4) As Single, KRC$(4)
+Dim KRYR(4), PRRC(4) As Single, PRC$(4), PRYR(4), PUUC(2) As Single, PUC$(2)
+Dim PUYR(2), FGGC(6) As Single, FGC$(6)
+Dim FGYR(6), DFFC(1) As Single, DFC$(1), DFYR(1), PP(15, 20) As Single
+Dim FF(15, 20) As Single, II(15, 20) As Single, YY(15, 20) As Single
+Dim RBS$(15, 50, 1)
+Dim WRS$(15, 40, 1)
+Dim QBS$(15, 20, 1)
+Dim KRRS$(15, 15, 1), PRRS$(15, 15, 1)
+ReDim PUS(15, 10, 4), FGS(15, 10, 17)
+ReDim RBBS(15, 50, 10) As Single, WRRS(15, 40, 6) As Single
+ReDim QBBS(15, 20, 12) As Single, PRS(15, 15, 6) As Single, KRS(15, 15, 6) As Single
 
-CALL box0(7, 24, 15, 59, 2, 31)
+1 Cls
+Open "DEV.BAS" For Input As #1: For I = 0 To 1: Input #1, D$(I): Next: Close #1
+TMR = 6420: NB = -1: NC = -1: ND = -1: NE = -1: NF = -1: NG = -1: NH = -1: NI = -1: NJ = 0: NK = 0: D = 0: JX = 0: VV = 0
+Color , 2: Locate 1, 1: Print Tab(80);: Locate , 26: Color 0
+Print "3 IN 1 FOOTBALL UTILITIES"
+Locate 24, 1: Print Tab(80);: Locate , 1
+Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+Locate 4, 1: Color 2, 0
+menuItems$(1) = "CREATE AND MERGE INITIAL STAT FILE"
+menuItems$(2) = "MERGE / UPDATE CAREER FILES       "
+menuItems$(3) = "VIEW CAREER FILE                  "
+menuItems$(4) = "PRINT CAREER FILE                 "
+menuItems$(5) = "EDIT CAREER FILE                  "
+menuItems$(6) = "VIEW / PRINT CAREER RECORDS       "
+menuItems$(7) = "EXIT TO MAIN MENU                 "
+SELECTION% = 1
+Count% = 7
+Start% = 1
+SCANCODE% = 7
+FileFGColr% = 15: FileBGColr% = 1
+HiLiteFGColr% = 0: HiLiteBGColr% = 7
+Spacing% = 1
+Row% = 8
+Column% = 25
+
+Call box0(7, 24, 15, 59, 2, 31)
 _MouseShow "DEFAULT"
-MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
-	COLOR , 0
-	RN = SELECTION%
-	IF SCANCODE% = 27 THEN RN = 7
-	IF RN = 1 THEN 1900
-	IF RN = 2 THEN RUN "CAREER1.EXE"
-	IF RN = 3 THEN RUN "CARVIEW.EXE"
-	IF RN = 4 THEN RUN "CARPRNT.EXE"
-	IF RN = 5 THEN RUN "CAREDIT.EXE"
-	IF RN = 6 THEN 4000
-	RUN "HELLO.EXE"
+Color , 0
+RN = SELECTION%
+If SCANCODE% = 27 Then RN = 7
+If RN = 1 Then 1900
+If RN = 2 Then Run "CAREER1.EXE"
+If RN = 3 Then Run "CARVIEW.EXE"
+If RN = 4 Then Run "CARPRNT.EXE"
+If RN = 5 Then Run "CAREDIT.EXE"
+If RN = 6 Then 4000
+Run "HELLO.EXE"
 
-7  '
-	LOCATE 8, 8: COLOR 15, 1: PRINT " Ö"; STRING$(61, 196); "· ";
-	FOR II = 1 TO J: LOCATE 8 + II, 8: PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 9 + J, 8: PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 10, 15: RETURN
+7 '
+Locate 8, 8: Color 15, 1: Print " Ö"; String$(61, 196); "· ";
+For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
+Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15: Return
 
-10 CLS:FOR J = 15 TO 18: LOCATE J: PRINT "                                                                    "
-	NEXT
-	COLOR 11: LOCATE 15, 5: INPUT "ENTER NAME OF CAREER STAT FILE (MAX. - 8 CHARACTERS)"; Z$
-	GOSUB 3056
-	B$ = A$: GOSUB 6585
-	Z1$ = MID$(B$, 4, QQ) + "." + LEFT$(B$, 2)
-	CLS:LOCATE 8, 25: INPUT "ENTER YEAR TO ADD (EX. - 1961)"; Y
+10 Cls: For J = 15 To 18: Locate J: Print "                                                                    "
+Next
+Color 11: Locate 15, 5: Input "ENTER NAME OF CAREER STAT FILE (MAX. - 8 CHARACTERS)"; Z$
+GoSub 3056
+B$ = A$: GoSub 6585
+Z1$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+Cls: Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; Y
 
-	LOCATE 9, 25: PRINT "ANY CHANGE (YN)"
+Locate 9, 25: Print "ANY CHANGE (YN)"
 60 I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 10
+If UCase$(I$) = "Y" Then 10
 
-	VV = 1
-	LOCATE , 5: PRINT "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
+VV = 1
+Locate , 5: Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
 76 I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN JX = 1
-	IF UCASE$(I$) = "N" THEN JX = 0
-	
-	IF NOT _FILEEXISTS(D$(1) + Z1$) THEN 900
-	LOCATE 20, 20: COLOR 15: PRINT "MERGING CAREER STATS . . . . PLEASE WAIT"
-	LOCATE 20, 20: PRINT STRING$(50," ")
-
-OPEN D$(1) + Z1$ + "S" FOR INPUT AS #1
-	INPUT #1, GAMES
-CLOSE 1
-
-OPEN D$(1) + Z1$ FOR INPUT AS #1
-	INPUT #1, A$
-	FOR I = 0 TO 9: INPUT #1, A1$(I): NEXT I
-	FOR I = 0 TO 5: INPUT #1, A2$(I): NEXT I
-	FOR I = 0 TO 3: INPUT #1, A3$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, A4$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, A5$(I): NEXT I
-	INPUT #1, A6$(0)
-	FOR I = 0 TO 1: INPUT #1, A7$(I): NEXT I
-	FOR J = 0 TO 13
-	FOR K = 0 TO 17: INPUT #1, Z2(J, K): NEXT K
-	NEXT J
-	FOR L = 0 TO 38: INPUT #1, Z(L): NEXT L
-	FOR L = 0 TO 38: INPUT #1, Z1(L): NEXT L
-	FOR J = 0 TO 9: INPUT #1, DI$(J): FOR J1 = 0 TO 2: INPUT #1, GI%(J, J1): NEXT: NEXT
-	FOR J = 0 TO 14: INPUT #1, DS$(J): FOR J1 = 0 TO 1: INPUT #1, GS%(J, J1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LR(I): INPUT #1, LR$(I, 0): INPUT #1, LR$(I, 1): NEXT
-	FOR I = 0 TO 15: INPUT #1, LC(I): INPUT #1, LC$(I, 0): INPUT #1, LC$(I, 1): NEXT
-	FOR I = 0 TO 3: INPUT #1, LP(I): INPUT #1, LP$(I, 0): INPUT #1, LP$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, LK(I): INPUT #1, LK$(I, 0): INPUT #1, LK$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, PK(I): INPUT #1, PK$(I, 0): INPUT #1, PK$(I, 1): NEXT
-	FOR I = 0 TO 1: INPUT #1, LF(I): INPUT #1, LF$(I): FOR I1 = 0 TO 4: INPUT #1, AM(I, I1): INPUT #1, AF(I, I1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LI(I): INPUT #1, LI$(I, 0): INPUT #1, LI$(I, 1): NEXT
-CLOSE #1
-
-	FOR I = 0 TO 9
-		T% = LEN(A1$(I))
-		IF T% = 0 THEN A1$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 5
-		T% = LEN(A2$(I))
-		IF T% = 0 THEN A2$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 3
-		T% = LEN(A3$(I))
-		IF T% = 0 THEN A3$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 2
-		T% = LEN(A4$(I))
-		IF T% = 0 THEN A4$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 2
-		T% = LEN(A5$(I))
-		IF T% = 0 THEN A5$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 1
-		T% = LEN(A7$(I))
-		IF T% = 0 THEN A7$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 9
-		T% = LEN(DI$(I))
-		IF T% = 0 THEN DI$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 14
-		T% = LEN(DS$(I))
-		IF T% = 0 THEN DS$(I) = "XXX"
-	NEXT
-	FOR I = 0 TO 49
-		N = 1
-		IF A1$(I) = "END" OR A1$(I) = "XXX" OR A1$(I) = "" THEN 404
-		NB = NB + 1: GOTO 408
-
-404 	A1$(I) = ""
-
-408 	FOR J = 0 TO 5
-			RBBS(N, I, J) = Z2(I, J)
-		NEXT J
-
-		RBBS(N, I, 6) = LR(I): RBS$(N, I, 0) = LR$(I, 0)
-		RBBS(N, I, 9) = LC(I): RBS$(N, I, 1) = LC$(I, 0)
-		RBBS(N, I, 7) = 1: RBBS(N, I, 8) = Y
-	NEXT I
-
-	FOR I = 0 TO 39
-		N = 1
-		IF A2$(I) = "END" OR A2$(I) = "XXX" OR A2$(I) = "" THEN 424
-
-423 	NC = NC + 1: GOTO 428
-
-424 	A2$(I) = ""
-
-428 	FOR J = 6 TO 8
-			WRRS(N, I, J - 6) = Z2(I, J)
-		NEXT J
-
-		WRRS(N, I, 3) = LC(I + 10): WRS$(N, I, 0) = LC$(I + 10, 0)
-		WRRS(N, I, 4) = 1: WRRS(N, I, 5) = Y
-	NEXT I
-
-	FOR I = 0 TO 19
-	N = 1
-	IF A3$(I) = "END" OR A3$(I) = "XXX" OR A3$(I) = "" THEN 444
-
-443 ND = ND + 1: GOTO 448
-
-444 A3$(I) = ""
-
-448 FOR J = 9 TO 13: QBBS(N, I, J - 9) = Z2(I, J)
-	NEXT J
-	QBBS(N, I, 5) = LP(I): QBS$(N, I, 0) = LP$(I, 0)
-	QBBS(N, I, 6) = 1: QBBS(N, I, 7) = Y
-	NEXT I
-	FOR I = 0 TO 14
-	N = 1
-	IF A4$(I) = "END" OR A4$(I) = "XXX" OR A4$(I) = "" THEN 464
-
-463 NE = NE + 1: GOTO 468
-
-464 A4$(I) = ""
-
-468 FOR J = 14 TO 16: KRS(N, I, J - 14) = Z2(I, J)
-	NEXT J
-	KRS(N, I, 3) = LK(I): KRRS$(N, I, 0) = LK$(I, 0)
-	KRS(N, I, 4) = 1: KRS(N, I, 5) = Y
-	NEXT I
-	FOR I = 0 TO 14
-	N = 1
-	IF A5$(I) = "END" OR A5$(I) = "XXX" OR A5$(I) = "" THEN 484
-
-483 NF = NF + 1: GOTO 488
-
-484 A5$(I) = ""
-
-488 FOR J = 14 TO 16: PRS(N, I, J - 14) = Z2(I + 3, J)
-	NEXT J
-	PRS(N, I, 3) = PK(I): PRRS$(N, I, 0) = PK$(I, 0)
-	PRS(N, I, 4) = 1: PRS(N, I, 5) = Y
-	NEXT I
-	FOR I = 0 TO 9
-	N = 1
-	IF A6$(I) = "END" OR A6$(I) = "XXX" OR A6$(I) = "" THEN 504
-
-503 NG = NG + 1: GOTO 508
-
-504 A6$(I) = ""
-
-508 PUS(N, I, 0) = Z(7): PUS(N, I, 1) = Z(8)
-	PUS(N, I, 2) = 1: PUS(N, I, 3) = Y
-	NEXT I
-	FOR I = 0 TO 9
-	N = 1
-	IF A7$(I) = "END" OR A7$(I) = "XXX" OR A7$(I) = "" THEN 524
-
-523 NH = NH + 1: GOTO 528
-
-524 A7$(I) = ""
-
-528 IF I = 0 OR I = 2 OR I = 4 OR I = 6 OR I = 8 THEN 530
-	IF I = 1 OR I = 3 OR I = 5 OR I = 7 OR I = 9 THEN 535
-
-530 FOR J = 3 TO 6:
-	FGS(N, I, J - 3) = Z2(J, 17): NEXT J
-	FGS(N, I, 4) = LF(I)
-	FGS(N, I, 15) = 1: FGS(N, I, 16) = Y
-	FOR I1 = 0 TO 4: FGS(N, I, I1 + 5) = AM(I, I1): NEXT
-	FOR I1 = 0 TO 4: FGS(N, I, I1 + 10) = AF(I, I1): NEXT
-	GOTO 536
-
-535 FOR J = 7 TO 10:
-	FGS(N, I, J - 7) = Z2(J, 17): NEXT J
-	FGS(N, I, 4) = LF(I)
-	FGS(N, I, 15) = 1: FGS(N, I, 16) = Y
-	FOR I1 = 0 TO 4: FGS(N, I, I1 + 5) = AM(I, I1): NEXT
-	FOR I1 = 0 TO 4: FGS(N, I, I1 + 10) = AF(I, I1): NEXT
-
-536 NEXT I
-	FOR I = 0 TO 54
-	N = 1
-	IF DI$(I) = "END" OR DI$(I) = "XXX" OR DI$(I) = "" THEN 554
-
-553 NJ = NJ + 1: GOTO 558
-
-554 DI$(I) = ""
-
-558 GIS(N, I, 0) = GI%(I, 0)
-	GIS(N, I, 1) = 1: GIS(N, I, 2) = Y
-	NEXT I
-	FOR I = 0 TO 54
-	N = 1
-	IF DS$(I) = "END" OR DS$(I) = "XXX" OR DS$(I) = "" THEN 584
-
-583 NK = NK + 1: GOTO 588
-
-584 DS$(I) = ""
-
-588 GSS(N, I, 0) = GS%(I, 0)
-	GSS(N, I, 1) = 1: GSS(N, I, 2) = Y
-	NEXT I
-	IF JX = 1 THEN 704
-	IF JX = 0 THEN 705
-
-704 GOSUB 2080
-
-705 LOCATE 20, 20: COLOR 15: PRINT "MERGING CAREER STATS . . . . PLEASE WAIT"
-	LOCATE 20, 20: PRINT "                                                  "
-OPEN D$(1) + Z$ + ".CAR" FOR OUTPUT AS #2
-	WRITE #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-	FOR I = 0 TO 49: WRITE #2, A1$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 39: WRITE #2, A2$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 19: WRITE #2, A3$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 14: WRITE #2, A4$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 14: WRITE #2, A5$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 9: WRITE #2, A6$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 9: WRITE #2, A7$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 54: WRITE #2, DI$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	FOR I = 0 TO 54: WRITE #2, DS$(I): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT
-	 FOR N = 1 TO 15: FOR J = 0 TO 49: FOR K = 0 TO 9: WRITE #2, RBBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 49: WRITE #2, RBS$(N, J, 0), RBS$(N, J, 1): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 39: FOR K = 0 TO 5: WRITE #2, WRRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 39: WRITE #2, WRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 19: FOR K = 0 TO 7: WRITE #2, QBBS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 19: WRITE #2, QBS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: WRITE #2, KRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 14: WRITE #2, KRRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 14: FOR K = 0 TO 5: WRITE #2, PRS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 14: WRITE #2, PRRS$(N, J, 0): LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 3: WRITE #2, PUS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 9: FOR K = 0 TO 16: WRITE #2, FGS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: WRITE #2, GIS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-	FOR N = 1 TO 15: FOR J = 0 TO 54: FOR K = 0 TO 2: WRITE #2, GSS(N, J, K): NEXT K: LOCATE 21, 38: COLOR 5: TMR = TMR - 1: PRINT USING "####"; TMR: NEXT J: NEXT N
-CLOSE #2
-	CLEAR:GOTO 1
+If UCase$(I$) = "Y" Then JX = 1
+If UCase$(I$) = "N" Then JX = 0
+    
+If Not _FileExists(D$(1) + Z1$) Then 900
+Locate 20, 20: Color 15: Print "MERGING CAREER STATS . . . . PLEASE WAIT"
+Locate 20, 20: Print String$(50, " ")
+
+Open D$(1) + Z1$ + "S" For Input As #1
+Input #1, GAMES
+Close 1
+
+Open D$(1) + Z1$ For Input As #1
+Input #1, A$
+For I = 0 To 9: Input #1, A1$(I): Next I
+For I = 0 To 5: Input #1, A2$(I): Next I
+For I = 0 To 3: Input #1, A3$(I): Next I
+For I = 0 To 2: Input #1, A4$(I): Next I
+For I = 0 To 2: Input #1, A5$(I): Next I
+Input #1, A6$(0)
+For I = 0 To 1: Input #1, A7$(I): Next I
+For J = 0 To 13
+    For K = 0 To 17: Input #1, Z2(J, K): Next K
+Next J
+For L = 0 To 38: Input #1, Z(L): Next L
+For L = 0 To 38: Input #1, Z1(L): Next L
+For J = 0 To 9: Input #1, DI$(J): For J1 = 0 To 2: Input #1, GI%(J, J1): Next: Next
+For J = 0 To 14: Input #1, DS$(J): For J1 = 0 To 1: Input #1, GS%(J, J1): Next: Next
+For I = 0 To 9: Input #1, LR(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+For I = 0 To 15: Input #1, LC(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+For I = 0 To 3: Input #1, LP(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
+For I = 0 To 2: Input #1, LK(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
+For I = 0 To 2: Input #1, PK(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
+For I = 0 To 1: Input #1, LF(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM(I, I1): Input #1, AF(I, I1): Next: Next
+For I = 0 To 9: Input #1, LI(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+Close #1
+
+For I = 0 To 9
+    T% = Len(A1$(I))
+    If T% = 0 Then A1$(I) = "XXX"
+Next
+For I = 0 To 5
+    T% = Len(A2$(I))
+    If T% = 0 Then A2$(I) = "XXX"
+Next
+For I = 0 To 3
+    T% = Len(A3$(I))
+    If T% = 0 Then A3$(I) = "XXX"
+Next
+For I = 0 To 2
+    T% = Len(A4$(I))
+    If T% = 0 Then A4$(I) = "XXX"
+Next
+For I = 0 To 2
+    T% = Len(A5$(I))
+    If T% = 0 Then A5$(I) = "XXX"
+Next
+For I = 0 To 1
+    T% = Len(A7$(I))
+    If T% = 0 Then A7$(I) = "XXX"
+Next
+For I = 0 To 9
+    T% = Len(DI$(I))
+    If T% = 0 Then DI$(I) = "XXX"
+Next
+For I = 0 To 14
+    T% = Len(DS$(I))
+    If T% = 0 Then DS$(I) = "XXX"
+Next
+For I = 0 To 49
+    N = 1
+    If A1$(I) = "END" Or A1$(I) = "XXX" Or A1$(I) = "" Then 404
+    NB = NB + 1: GoTo 408
+
+    404 A1$(I) = ""
+
+    408 For J = 0 To 5
+        RBBS(N, I, J) = Z2(I, J)
+    Next J
+
+    RBBS(N, I, 6) = LR(I): RBS$(N, I, 0) = LR$(I, 0)
+    RBBS(N, I, 9) = LC(I): RBS$(N, I, 1) = LC$(I, 0)
+    RBBS(N, I, 7) = 1: RBBS(N, I, 8) = Y
+Next I
+
+For I = 0 To 39
+    N = 1
+    If A2$(I) = "END" Or A2$(I) = "XXX" Or A2$(I) = "" Then 424
+
+    423 NC = NC + 1: GoTo 428
+
+    424 A2$(I) = ""
+
+    428 For J = 6 To 8
+        WRRS(N, I, J - 6) = Z2(I, J)
+    Next J
+
+    WRRS(N, I, 3) = LC(I + 10): WRS$(N, I, 0) = LC$(I + 10, 0)
+    WRRS(N, I, 4) = 1: WRRS(N, I, 5) = Y
+Next I
+
+For I = 0 To 19
+    N = 1
+    If A3$(I) = "END" Or A3$(I) = "XXX" Or A3$(I) = "" Then 444
+
+    443 ND = ND + 1: GoTo 448
+
+    444 A3$(I) = ""
+
+    448 For J = 9 To 13: QBBS(N, I, J - 9) = Z2(I, J)
+    Next J
+    QBBS(N, I, 5) = LP(I): QBS$(N, I, 0) = LP$(I, 0)
+    QBBS(N, I, 6) = 1: QBBS(N, I, 7) = Y
+Next I
+For I = 0 To 14
+    N = 1
+    If A4$(I) = "END" Or A4$(I) = "XXX" Or A4$(I) = "" Then 464
+
+    463 NE = NE + 1: GoTo 468
+
+    464 A4$(I) = ""
+
+    468 For J = 14 To 16: KRS(N, I, J - 14) = Z2(I, J)
+    Next J
+    KRS(N, I, 3) = LK(I): KRRS$(N, I, 0) = LK$(I, 0)
+    KRS(N, I, 4) = 1: KRS(N, I, 5) = Y
+Next I
+For I = 0 To 14
+    N = 1
+    If A5$(I) = "END" Or A5$(I) = "XXX" Or A5$(I) = "" Then 484
+
+    483 NF = NF + 1: GoTo 488
+
+    484 A5$(I) = ""
+
+    488 For J = 14 To 16: PRS(N, I, J - 14) = Z2(I + 3, J)
+    Next J
+    PRS(N, I, 3) = PK(I): PRRS$(N, I, 0) = PK$(I, 0)
+    PRS(N, I, 4) = 1: PRS(N, I, 5) = Y
+Next I
+For I = 0 To 9
+    N = 1
+    If A6$(I) = "END" Or A6$(I) = "XXX" Or A6$(I) = "" Then 504
+
+    503 NG = NG + 1: GoTo 508
+
+    504 A6$(I) = ""
+
+    508 PUS(N, I, 0) = Z(7): PUS(N, I, 1) = Z(8)
+    PUS(N, I, 2) = 1: PUS(N, I, 3) = Y
+Next I
+For I = 0 To 9
+    N = 1
+    If A7$(I) = "END" Or A7$(I) = "XXX" Or A7$(I) = "" Then 524
+
+    523 NH = NH + 1: GoTo 528
+
+    524 A7$(I) = ""
+
+    528 If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then 530
+    If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then 535
+
+    530 For J = 3 To 6:
+    FGS(N, I, J - 3) = Z2(J, 17): Next J
+    FGS(N, I, 4) = LF(I)
+    FGS(N, I, 15) = 1: FGS(N, I, 16) = Y
+    For I1 = 0 To 4: FGS(N, I, I1 + 5) = AM(I, I1): Next
+    For I1 = 0 To 4: FGS(N, I, I1 + 10) = AF(I, I1): Next
+    GoTo 536
+
+    535 For J = 7 To 10:
+    FGS(N, I, J - 7) = Z2(J, 17): Next J
+    FGS(N, I, 4) = LF(I)
+    FGS(N, I, 15) = 1: FGS(N, I, 16) = Y
+    For I1 = 0 To 4: FGS(N, I, I1 + 5) = AM(I, I1): Next
+    For I1 = 0 To 4: FGS(N, I, I1 + 10) = AF(I, I1): Next
+
+536 Next I
+For I = 0 To 54
+    N = 1
+    If DI$(I) = "END" Or DI$(I) = "XXX" Or DI$(I) = "" Then 554
+
+    553 NJ = NJ + 1: GoTo 558
+
+    554 DI$(I) = ""
+
+    558 GIS(N, I, 0) = GI%(I, 0)
+    GIS(N, I, 1) = 1: GIS(N, I, 2) = Y
+Next I
+For I = 0 To 54
+    N = 1
+    If DS$(I) = "END" Or DS$(I) = "XXX" Or DS$(I) = "" Then 584
+
+    583 NK = NK + 1: GoTo 588
+
+    584 DS$(I) = ""
+
+    588 GSS(N, I, 0) = GS%(I, 0)
+    GSS(N, I, 1) = 1: GSS(N, I, 2) = Y
+Next I
+If JX = 1 Then 704
+If JX = 0 Then 705
+
+704 GoSub 2080
+
+705 Locate 20, 20: Color 15: Print "MERGING CAREER STATS . . . . PLEASE WAIT"
+Locate 20, 20: Print "                                                  "
+Open D$(1) + Z$ + ".CAR" For Output As #2
+Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+For I = 0 To 49: Write #2, A1$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 39: Write #2, A2$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 19: Write #2, A3$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 14: Write #2, A4$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 14: Write #2, A5$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 9: Write #2, A6$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 9: Write #2, A7$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 54: Write #2, DI$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For I = 0 To 54: Write #2, DS$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Write #2, RBBS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 49: Write #2, RBS$(N, J, 0), RBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Write #2, WRRS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 39: Write #2, WRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Write #2, QBBS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 19: Write #2, QBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Write #2, KRS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 14: Write #2, KRRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Write #2, PRS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 14: Write #2, PRRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Write #2, PUS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Write #2, FGS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Write #2, GIS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Write #2, GSS(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+Close #2
+Clear: GoTo 1
 
-900 CLS : COLOR 7: PRINT "UNABLE TO LOCATE STAT FILE"
-	PRINT : LINE INPUT "HIT ENTER TO CONTINUE"; DUMMY$
-	CLEAR:GOTO 1
+900 Cls: Color 7: Print "UNABLE TO LOCATE STAT FILE"
+Print: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
+Clear: GoTo 1
 
-2080 IF NOT _FILEEXISTS(D$(1) + LEFT$(Z$, JX) + ".CLD") THEN 2100
-	GOSUB 9500
-OPEN D$(1) + LEFT$(Z$, JX) + ".CLD" FOR INPUT AS #1
-	FOR I = 0 TO 9: INPUT #1, RBBC(I), RBC$(I), RBYR(I): NEXT
-	INPUT #1, RBR$(0), RBR$(1)
-	FOR I = 0 TO 4: INPUT #1, WRRC(I), WRC$(I), WRYR(I): NEXT
-	INPUT #1, WRR$
-	FOR I = 0 TO 8: INPUT #1, QBBC(I), QBC$(I), QBYR(I): NEXT
-	INPUT #1, QBR$
-	FOR I = 0 TO 4: INPUT #1, KRRC(I), KRC$(I), KRYR(I): NEXT
-	INPUT #1, KRR$
-	FOR I = 0 TO 4: INPUT #1, PRRC(I), PRC$(I), PRYR(I): NEXT
-	INPUT #1, PRR$
-	FOR I = 0 TO 2: INPUT #1, PUUC(I), PUC$(I), PUYR(I): NEXT
-	FOR I = 0 TO 6: INPUT #1, FGGC(I), FGC$(I), FGYR(I): NEXT
-	FOR I = 0 TO 1: INPUT #1, DFFC(I), DFC$(I), DFYR(I): NEXT
-CLOSE #1
+2080 If Not _FileExists(D$(1) + Left$(Z$, JX) + ".CLD") Then 2100
+GoSub 9500
+Open D$(1) + Left$(Z$, JX) + ".CLD" For Input As #1
+For I = 0 To 9: Input #1, RBBC(I), RBC$(I), RBYR(I): Next
+Input #1, RBR$(0), RBR$(1)
+For I = 0 To 4: Input #1, WRRC(I), WRC$(I), WRYR(I): Next
+Input #1, WRR$
+For I = 0 To 8: Input #1, QBBC(I), QBC$(I), QBYR(I): Next
+Input #1, QBR$
+For I = 0 To 4: Input #1, KRRC(I), KRC$(I), KRYR(I): Next
+Input #1, KRR$
+For I = 0 To 4: Input #1, PRRC(I), PRC$(I), PRYR(I): Next
+Input #1, PRR$
+For I = 0 To 2: Input #1, PUUC(I), PUC$(I), PUYR(I): Next
+For I = 0 To 6: Input #1, FGGC(I), FGC$(I), FGYR(I): Next
+For I = 0 To 1: Input #1, DFFC(I), DFC$(I), DFYR(I): Next
+Close #1
 
-2100 FOR I = 0 TO 49
-	IF A1$(I) = "" OR A1$(I) = "XXX" OR A1$(I) = "END" THEN 2180
-	FOR J = 1 TO 15
-	IF RBBS(J, I, 8) = 0 THEN 2180
+2100 For I = 0 To 49
+    If A1$(I) = "" Or A1$(I) = "XXX" Or A1$(I) = "END" Then 2180
+    For J = 1 To 15
+        If RBBS(J, I, 8) = 0 Then 2180
 
-2103 IF RBBS(J, I, 0)<= RBBC(0) THEN 2113
+        2103 If RBBS(J, I, 0) <= RBBC(0) Then 2113
 
-2104 RBBC(0) = RBBS(J, I, 0): RBC$(0) = A1$(I): RBYR(0) = RBBS(J, I, 8)
+        2104 RBBC(0) = RBBS(J, I, 0): RBC$(0) = A1$(I): RBYR(0) = RBBS(J, I, 8)
 
-2113 IF RBBS(J, I, 1)<= RBBC(1) THEN 2123
+        2113 If RBBS(J, I, 1) <= RBBC(1) Then 2123
 
-2114 RBBC(1) = RBBS(J, I, 1): RBC$(1) = A1$(I): RBYR(1) = RBBS(J, I, 8)
+        2114 RBBC(1) = RBBS(J, I, 1): RBC$(1) = A1$(I): RBYR(1) = RBBS(J, I, 8)
 
-2123 IF RBBS(J, I, 0) = 0 THEN 2133
-	IF RBBS(J, I, 1) / RBBS(J, I, 0)<= RBBC(2) OR RBBS(J,I,0)<GAMES*10 THEN 2133
+        2123 If RBBS(J, I, 0) = 0 Then 2133
+        If RBBS(J, I, 1) / RBBS(J, I, 0) <= RBBC(2) Or RBBS(J, I, 0) < GAMES * 10 Then 2133
 
-2125 RBBC(2) = RBBS(J, I, 1) / RBBS(J, I, 0): RBC$(2) = A1$(I): RBYR(2) = RBBS(J, I, 8)
+        2125 RBBC(2) = RBBS(J, I, 1) / RBBS(J, I, 0): RBC$(2) = A1$(I): RBYR(2) = RBBS(J, I, 8)
 
-2133 IF RBBS(J, I, 2)<= RBBC(3) THEN 2143
+        2133 If RBBS(J, I, 2) <= RBBC(3) Then 2143
 
-2134 RBBC(3) = RBBS(J, I, 2): RBC$(3) = A1$(I): RBYR(3) = RBBS(J, I, 8)
+        2134 RBBC(3) = RBBS(J, I, 2): RBC$(3) = A1$(I): RBYR(3) = RBBS(J, I, 8)
 
-2143 IF RBBS(J, I, 3)<= RBBC(4) THEN 2153
+        2143 If RBBS(J, I, 3) <= RBBC(4) Then 2153
 
-2144 RBBC(4) = RBBS(J, I, 3): RBC$(4) = A1$(I): RBYR(4) = RBBS(J, I, 8)
+        2144 RBBC(4) = RBBS(J, I, 3): RBC$(4) = A1$(I): RBYR(4) = RBBS(J, I, 8)
 
-2153 IF RBBS(J, I, 4)<= RBBC(5) THEN 2163
+        2153 If RBBS(J, I, 4) <= RBBC(5) Then 2163
 
-2154 RBBC(5) = RBBS(J, I, 4): RBC$(5) = A1$(I): RBYR(5) = RBBS(J, I, 8)
+        2154 RBBC(5) = RBBS(J, I, 4): RBC$(5) = A1$(I): RBYR(5) = RBBS(J, I, 8)
 
-2163 IF RBBS(J, I, 3) = 0 THEN 2173
-	IF RBBS(J, I, 4) / RBBS(J, I, 3) <= RBBC(6) OR RBBS(J,I,3)<GAMES*3 THEN 2173
+        2163 If RBBS(J, I, 3) = 0 Then 2173
+        If RBBS(J, I, 4) / RBBS(J, I, 3) <= RBBC(6) Or RBBS(J, I, 3) < GAMES * 3 Then 2173
 
-2165 RBBC(6) = RBBS(J, I, 4) / RBBS(J, I, 3): RBC$(6) = A1$(I): RBYR(6) = RBBS(J, I, 8)
+        2165 RBBC(6) = RBBS(J, I, 4) / RBBS(J, I, 3): RBC$(6) = A1$(I): RBYR(6) = RBBS(J, I, 8)
 
-2173 IF RBBS(J, I, 5) <= RBBC(7) THEN 2175
+        2173 If RBBS(J, I, 5) <= RBBC(7) Then 2175
 
-2174 RBBC(7) = RBBS(J, I, 5): RBC$(7) = A1$(I): RBYR(7) = RBBS(J, I, 8)
+        2174 RBBC(7) = RBBS(J, I, 5): RBC$(7) = A1$(I): RBYR(7) = RBBS(J, I, 8)
 
-2175 IF RBBS(J, I, 6) <= RBBC(8) THEN 2177
+        2175 If RBBS(J, I, 6) <= RBBC(8) Then 2177
 
-2176 RBBC(8) = RBBS(J, I, 6): RBC$(8) = A1$(I): RBYR(8) = RBBS(J, I, 8): RBR$(0) = RBS$(J, I, 0)
+        2176 RBBC(8) = RBBS(J, I, 6): RBC$(8) = A1$(I): RBYR(8) = RBBS(J, I, 8): RBR$(0) = RBS$(J, I, 0)
 
-2177 IF RBBS(J, I, 9) <= RBBC(9) THEN 2179
+        2177 If RBBS(J, I, 9) <= RBBC(9) Then 2179
 
-2178 RBBC(9) = RBBS(J, I, 9): RBC$(9) = A1$(I): RBYR(9) = RBBS(J, I, 8): RBR$(1) = RBS$(J, I, 1)
+        2178 RBBC(9) = RBBS(J, I, 9): RBC$(9) = A1$(I): RBYR(9) = RBBS(J, I, 8): RBR$(1) = RBS$(J, I, 1)
 
-2179 NEXT J
+    2179 Next J
 
-2180 NEXT I
-	FOR I = 0 TO 39
-	IF A2$(I) = "" OR A2$(I) = "XXX" OR A2$(I) = "END" THEN 2280
-	FOR J = 1 TO 15
-	IF WRRS(J, I, 5) = 0 THEN 2280 ELSE 2203
+2180 Next I
+For I = 0 To 39
+    If A2$(I) = "" Or A2$(I) = "XXX" Or A2$(I) = "END" Then 2280
+    For J = 1 To 15
+        If WRRS(J, I, 5) = 0 Then 2280 Else GoTo 2203
 
-2203 IF WRRS(J, I, 0) <= WRRC(0) THEN 2213
+        2203 If WRRS(J, I, 0) <= WRRC(0) Then 2213
 
-2204 WRRC(0) = WRRS(J, I, 0): WRC$(0) = A2$(I): WRYR(0) = WRRS(J, I, 5)
+        2204 WRRC(0) = WRRS(J, I, 0): WRC$(0) = A2$(I): WRYR(0) = WRRS(J, I, 5)
 
-2213 IF WRRS(J, I, 1) <= WRRC(1) THEN 2223
+        2213 If WRRS(J, I, 1) <= WRRC(1) Then 2223
 
-2214 WRRC(1) = WRRS(J, I, 1): WRC$(1) = A2$(I): WRYR(1) = WRRS(J, I, 5)
+        2214 WRRC(1) = WRRS(J, I, 1): WRC$(1) = A2$(I): WRYR(1) = WRRS(J, I, 5)
 
-2223 IF WRRS(J, I, 0) = 0 THEN 2233
-	IF WRRS(J, I, 1) / WRRS(J, I, 0) <= WRRC(2) OR WRRS(J,I,0)<GAMES*3 THEN 2233
+        2223 If WRRS(J, I, 0) = 0 Then 2233
+        If WRRS(J, I, 1) / WRRS(J, I, 0) <= WRRC(2) Or WRRS(J, I, 0) < GAMES * 3 Then 2233
 
-2225 WRRC(2) = WRRS(J, I, 1) / WRRS(J, I, 0): WRC$(2) = A2$(I): WRYR(2) = WRRS(J, I, 5)
+        2225 WRRC(2) = WRRS(J, I, 1) / WRRS(J, I, 0): WRC$(2) = A2$(I): WRYR(2) = WRRS(J, I, 5)
 
-2233 IF WRRS(J, I, 2) <= WRRC(3) THEN 2235
+        2233 If WRRS(J, I, 2) <= WRRC(3) Then 2235
 
-2234 WRRC(3) = WRRS(J, I, 2): WRC$(3) = A2$(I): WRYR(3) = WRRS(J, I, 5)
+        2234 WRRC(3) = WRRS(J, I, 2): WRC$(3) = A2$(I): WRYR(3) = WRRS(J, I, 5)
 
-2235 IF WRRS(J, I, 3) <= WRRC(4) THEN 2279
+        2235 If WRRS(J, I, 3) <= WRRC(4) Then 2279
 
-2236 WRRC(4) = WRRS(J, I, 3): WRC$(4) = A2$(I): WRYR(4) = WRRS(J, I, 5): WRR$ = WRS$(J, I, 0)
+        2236 WRRC(4) = WRRS(J, I, 3): WRC$(4) = A2$(I): WRYR(4) = WRRS(J, I, 5): WRR$ = WRS$(J, I, 0)
 
-2279 NEXT J
+    2279 Next J
 
-2280 NEXT I
-	FOR I = 0 TO 19
-	IF A3$(I) = "" OR A3$(I) = "XXX" OR A3$(I) = "END" THEN 2380
-	FOR J = 1 TO 15: GOSUB 8999
-	IF QBBS(J, I, 7) = 0 THEN 2380
+2280 Next I
+For I = 0 To 19
+    If A3$(I) = "" Or A3$(I) = "XXX" Or A3$(I) = "END" Then 2380
+    For J = 1 To 15: GoSub 8999
+        If QBBS(J, I, 7) = 0 Then 2380
 
-2303 IF QBBS(J, I, 1) <= QBBC(0) THEN 2313
+        2303 If QBBS(J, I, 1) <= QBBC(0) Then 2313
 
-2304 QBBC(0) = QBBS(J, I, 1): QBC$(0) = A3$(I): QBYR(0) = QBBS(J, I, 7)
+        2304 QBBC(0) = QBBS(J, I, 1): QBC$(0) = A3$(I): QBYR(0) = QBBS(J, I, 7)
 
-2313 IF QBBS(J, I, 0) <= QBBC(1) THEN 2323
+        2313 If QBBS(J, I, 0) <= QBBC(1) Then 2323
 
-2314 QBBC(1) = QBBS(J, I, 0): QBC$(1) = A3$(I): QBYR(1) = QBBS(J, I, 7)
+        2314 QBBC(1) = QBBS(J, I, 0): QBC$(1) = A3$(I): QBYR(1) = QBBS(J, I, 7)
 
-2323 IF QBBS(J, I, 2) <= QBBC(2) THEN 2333
+        2323 If QBBS(J, I, 2) <= QBBC(2) Then 2333
 
-2324 QBBC(2) = QBBS(J, I, 2): QBC$(2) = A3$(I): QBYR(2) = QBBS(J, I, 7)
+        2324 QBBC(2) = QBBS(J, I, 2): QBC$(2) = A3$(I): QBYR(2) = QBBS(J, I, 7)
 
-2333 IF QBBS(J, I, 4) <= QBBC(3) THEN 2343
+        2333 If QBBS(J, I, 4) <= QBBC(3) Then 2343
 
-2334 QBBC(3) = QBBS(J, I, 4): QBC$(3) = A3$(I): QBYR(3) = QBBS(J, I, 7)
+        2334 QBBC(3) = QBBS(J, I, 4): QBC$(3) = A3$(I): QBYR(3) = QBBS(J, I, 7)
 
-2343 IF QBBS(J, I, 3) <= QBBC(4) THEN 2353
+        2343 If QBBS(J, I, 3) <= QBBC(4) Then 2353
 
-2344 QBBC(4) = QBBS(J, I, 3): QBC$(4) = A3$(I): QBYR(4) = QBBS(J, I, 7)
+        2344 QBBC(4) = QBBS(J, I, 3): QBC$(4) = A3$(I): QBYR(4) = QBBS(J, I, 7)
 
-2353 IF QBBS(J, I, 0) = 0 THEN 2363
-	IF QBBS(J, I, 1) / QBBS(J, I, 0) <= QBBC(5) OR QBBS(J,I,0)<GAMES*15 THEN 2363
+        2353 If QBBS(J, I, 0) = 0 Then 2363
+        If QBBS(J, I, 1) / QBBS(J, I, 0) <= QBBC(5) Or QBBS(J, I, 0) < GAMES * 15 Then 2363
 
-2355 QBBC(5) = QBBS(J, I, 1) / QBBS(J, I, 0): QBC$(5) = A3$(I): QBYR(5) = QBBS(J, I, 7)
+        2355 QBBC(5) = QBBS(J, I, 1) / QBBS(J, I, 0): QBC$(5) = A3$(I): QBYR(5) = QBBS(J, I, 7)
 
-2363 IF QBBS(J, I, 1) = 0 THEN 2373
-	IF QBBS(J, I, 3) / QBBS(J, I, 1) <= QBBC(6) OR QBBS(J,I,0)<GAMES*15 THEN 2373
+        2363 If QBBS(J, I, 1) = 0 Then 2373
+        If QBBS(J, I, 3) / QBBS(J, I, 1) <= QBBC(6) Or QBBS(J, I, 0) < GAMES * 15 Then 2373
 
-2365 QBBC(6) = QBBS(J, I, 3) / QBBS(J, I, 1): QBC$(6) = A3$(I): QBYR(6) = QBBS(J, I, 7)
+        2365 QBBC(6) = QBBS(J, I, 3) / QBBS(J, I, 1): QBC$(6) = A3$(I): QBYR(6) = QBBS(J, I, 7)
 
-2373 IF QBBS(J, I, 12) <= QBBC(7) THEN 2375
+        2373 If QBBS(J, I, 12) <= QBBC(7) Then 2375
 
-2374 QBBC(7) = QBBS(J, I, 12): QBC$(7) = A3$(I): QBYR(7) = QBBS(J, I, 7)
+        2374 QBBC(7) = QBBS(J, I, 12): QBC$(7) = A3$(I): QBYR(7) = QBBS(J, I, 7)
 
-2375 IF QBBS(J, I, 5) <= QBBC(8) THEN 2379
+        2375 If QBBS(J, I, 5) <= QBBC(8) Then 2379
 
-2376 QBBC(8) = QBBS(J, I, 5)
-	QBC$(8) = A3$(I)
-	QBYR(8) = QBBS(J, I, 7)
-	QBR$ = QBS$(J, I, 0)
+        2376 QBBC(8) = QBBS(J, I, 5)
+        QBC$(8) = A3$(I)
+        QBYR(8) = QBBS(J, I, 7)
+        QBR$ = QBS$(J, I, 0)
 
-2379 NEXT J
+    2379 Next J
 
-2380 NEXT I
-	FOR I = 0 TO 14
-	IF A4$(I) = "" OR A4$(I) = "XXX" OR A4$(I) = "END" THEN 2480
-	FOR J = 1 TO 15
-	IF KRS(J, I, 5) = 0 THEN 2480
+2380 Next I
+For I = 0 To 14
+    If A4$(I) = "" Or A4$(I) = "XXX" Or A4$(I) = "END" Then 2480
+    For J = 1 To 15
+        If KRS(J, I, 5) = 0 Then 2480
 
-2403 IF KRS(J, I, 0) <= KRRC(0) THEN 2413
+        2403 If KRS(J, I, 0) <= KRRC(0) Then 2413
 
-2404 KRRC(0) = KRS(J, I, 0): KRC$(0) = A4$(I): KRYR(0) = KRS(J, I, 5)
+        2404 KRRC(0) = KRS(J, I, 0): KRC$(0) = A4$(I): KRYR(0) = KRS(J, I, 5)
 
-2413 IF KRS(J, I, 1) <= KRRC(1) THEN 2423
+        2413 If KRS(J, I, 1) <= KRRC(1) Then 2423
 
-2414 KRRC(1) = KRS(J, I, 1): KRC$(1) = A4$(I): KRYR(1) = KRS(J, I, 5)
+        2414 KRRC(1) = KRS(J, I, 1): KRC$(1) = A4$(I): KRYR(1) = KRS(J, I, 5)
 
-2423 IF KRS(J, I, 0) = 0 THEN 2433
-	IF KRS(J, I, 1) / KRS(J, I, 0) <= KRRC(2) OR KRS(J,I,0)<GAMES*1.2 THEN 2433
+        2423 If KRS(J, I, 0) = 0 Then 2433
+        If KRS(J, I, 1) / KRS(J, I, 0) <= KRRC(2) Or KRS(J, I, 0) < GAMES * 1.2 Then 2433
 
-2425 KRRC(2) = KRS(J, I, 1) / KRS(J, I, 0): KRC$(2) = A4$(I): KRYR(2) = KRS(J, I, 5)
+        2425 KRRC(2) = KRS(J, I, 1) / KRS(J, I, 0): KRC$(2) = A4$(I): KRYR(2) = KRS(J, I, 5)
 
-2433 IF KRS(J, I, 2) <= KRRC(3) THEN 2435
+        2433 If KRS(J, I, 2) <= KRRC(3) Then 2435
 
-2434 KRRC(3) = KRS(J, I, 2): KRC$(3) = A4$(I): KRYR(3) = KRS(J, I, 5)
+        2434 KRRC(3) = KRS(J, I, 2): KRC$(3) = A4$(I): KRYR(3) = KRS(J, I, 5)
 
-2435 IF KRS(J, I, 3) <= KRRC(4) THEN 2479
+        2435 If KRS(J, I, 3) <= KRRC(4) Then 2479
 
-2436 KRRC(4) = KRS(J, I, 3): KRC$(4) = A4$(I): KRYR(4) = KRS(J, I, 5): KRR$ = KRRS$(J, I, 0)
+        2436 KRRC(4) = KRS(J, I, 3): KRC$(4) = A4$(I): KRYR(4) = KRS(J, I, 5): KRR$ = KRRS$(J, I, 0)
 
-2479 NEXT J
+    2479 Next J
 
-2480 NEXT I
-	FOR I = 0 TO 14
-	IF A5$(I) = "" OR A5$(I) = "XXX" OR A5$(I) = "END" THEN 2580
-	FOR J = 1 TO 15
-	IF PRS(J, I, 5) = 0 THEN 2580
+2480 Next I
+For I = 0 To 14
+    If A5$(I) = "" Or A5$(I) = "XXX" Or A5$(I) = "END" Then 2580
+    For J = 1 To 15
+        If PRS(J, I, 5) = 0 Then 2580
 
-2503 IF PRS(J, I, 0) <= PRRC(0) THEN 2513
+        2503 If PRS(J, I, 0) <= PRRC(0) Then 2513
 
-2504 PRRC(0) = PRS(J, I, 0): PRC$(0) = A5$(I): PRYR(0) = PRS(J, I, 5)
+        2504 PRRC(0) = PRS(J, I, 0): PRC$(0) = A5$(I): PRYR(0) = PRS(J, I, 5)
 
-2513 IF PRS(J, I, 1) <= PRRC(1) THEN 2523
+        2513 If PRS(J, I, 1) <= PRRC(1) Then 2523
 
-2514 PRRC(1) = PRS(J, I, 1): PRC$(1) = A5$(I): PRYR(1) = PRS(J, I, 5)
+        2514 PRRC(1) = PRS(J, I, 1): PRC$(1) = A5$(I): PRYR(1) = PRS(J, I, 5)
 
-2523 IF PRS(J, I, 0) = 0 THEN 2533
-	IF PRS(J, I, 1) / PRS(J, I, 0) <= PRRC(2) OR PRS(J,I,0)<GAMES*1.2 THEN 2533
+        2523 If PRS(J, I, 0) = 0 Then 2533
+        If PRS(J, I, 1) / PRS(J, I, 0) <= PRRC(2) Or PRS(J, I, 0) < GAMES * 1.2 Then 2533
 
-2525 PRRC(2) = PRS(J, I, 1) / PRS(J, I, 0): PRC$(2) = A5$(I): PRYR(2) = PRS(J, I, 5)
+        2525 PRRC(2) = PRS(J, I, 1) / PRS(J, I, 0): PRC$(2) = A5$(I): PRYR(2) = PRS(J, I, 5)
 
-2533 IF PRS(J, I, 2) <= PRRC(3) THEN 2535
+        2533 If PRS(J, I, 2) <= PRRC(3) Then 2535
 
-2534 PRRC(3) = PRS(J, I, 2): PRC$(3) = A5$(I): PRYR(3) = PRS(J, I, 5)
+        2534 PRRC(3) = PRS(J, I, 2): PRC$(3) = A5$(I): PRYR(3) = PRS(J, I, 5)
 
-2535 IF PRS(J, I, 3) <= PRRC(4) THEN 2579
+        2535 If PRS(J, I, 3) <= PRRC(4) Then 2579
 
-2536 PRRC(4) = PRS(J, I, 3): PRC$(4) = A5$(I): PRYR(4) = PRS(J, I, 5): PRR$ = PRRS$(J, I, 0)
+        2536 PRRC(4) = PRS(J, I, 3): PRC$(4) = A5$(I): PRYR(4) = PRS(J, I, 5): PRR$ = PRRS$(J, I, 0)
 
-2579 NEXT J
+    2579 Next J
 
-2580 NEXT I
-	FOR I = 0 TO 9
-	IF A6$(I) = "" OR A6$(I) = "XXX" OR A6$(I) = "END" THEN 2680
-	FOR J = 1 TO 15
-	IF PUS(J, I, 3) = 0 THEN 2680
+2580 Next I
+For I = 0 To 9
+    If A6$(I) = "" Or A6$(I) = "XXX" Or A6$(I) = "END" Then 2680
+    For J = 1 To 15
+        If PUS(J, I, 3) = 0 Then 2680
 
-2603 IF PUS(J, I, 0) <= PUUC(0) THEN 2613
+        2603 If PUS(J, I, 0) <= PUUC(0) Then 2613
 
-2604 PUUC(0) = PUS(J, I, 0): PUC$(0) = A6$(I): PUYR(0) = PUS(J, I, 3)
+        2604 PUUC(0) = PUS(J, I, 0): PUC$(0) = A6$(I): PUYR(0) = PUS(J, I, 3)
 
-2613 IF PUS(J, I, 1) <= PUUC(1) THEN 2623
+        2613 If PUS(J, I, 1) <= PUUC(1) Then 2623
 
-2614 PUUC(1) = PUS(J, I, 1): PUC$(1) = A6$(I): PUYR(1) = PUS(J, I, 3)
+        2614 PUUC(1) = PUS(J, I, 1): PUC$(1) = A6$(I): PUYR(1) = PUS(J, I, 3)
 
-2623 IF PUS(J, I, 0) = 0 THEN 2679
-	IF PUS(J, I, 1) / PUS(J, I, 0) <= PUUC(2) THEN 2679
+        2623 If PUS(J, I, 0) = 0 Then 2679
+        If PUS(J, I, 1) / PUS(J, I, 0) <= PUUC(2) Then 2679
 
-2625 PUUC(2) = PUS(J, I, 1) / PUS(J, I, 0): PUC$(2) = A6$(I): PUYR(2) = PUS(J, I, 3)
+        2625 PUUC(2) = PUS(J, I, 1) / PUS(J, I, 0): PUC$(2) = A6$(I): PUYR(2) = PUS(J, I, 3)
 
-2679 NEXT J
+    2679 Next J
 
-2680 NEXT I
-	FOR I = 0 TO 9
-	IF A7$(I) = "" OR A7$(I) = "XXX" OR A7$(I) = "END" THEN 2780
-	FOR J = 1 TO 15
-	IF FGS(J, I, 16) = 0 THEN 2780
+2680 Next I
+For I = 0 To 9
+    If A7$(I) = "" Or A7$(I) = "XXX" Or A7$(I) = "END" Then 2780
+    For J = 1 To 15
+        If FGS(J, I, 16) = 0 Then 2780
 
-2703 IF FGS(J, I, 1) <= FGGC(0) THEN 2713
+        2703 If FGS(J, I, 1) <= FGGC(0) Then 2713
 
-2704 FGGC(0) = FGS(J, I, 1): FGC$(0) = A7$(I): FGYR(0) = FGS(J, I, 16)
+        2704 FGGC(0) = FGS(J, I, 1): FGC$(0) = A7$(I): FGYR(0) = FGS(J, I, 16)
 
-2713 IF FGS(J, I, 0) <= FGGC(1) THEN 2723
+        2713 If FGS(J, I, 0) <= FGGC(1) Then 2723
 
-2714 FGGC(1) = FGS(J, I, 0): FGC$(1) = A7$(I): FGYR(1) = FGS(J, I, 16)
+        2714 FGGC(1) = FGS(J, I, 0): FGC$(1) = A7$(I): FGYR(1) = FGS(J, I, 16)
 
-2723 IF FGS(J, I, 1) = 0 THEN 2733
-	IF FGS(J, I, 0) / FGS(J, I, 1) <= FGGC(2) OR FGS(J,I,1)<GAMES THEN 2733
+        2723 If FGS(J, I, 1) = 0 Then 2733
+        If FGS(J, I, 0) / FGS(J, I, 1) <= FGGC(2) Or FGS(J, I, 1) < GAMES Then 2733
 
-2725 FGGC(2) = FGS(J, I, 0) / FGS(J, I, 1): FGC$(2) = A7$(I): FGYR(2) = FGS(J, I, 16)
+        2725 FGGC(2) = FGS(J, I, 0) / FGS(J, I, 1): FGC$(2) = A7$(I): FGYR(2) = FGS(J, I, 16)
 
-2733 IF FGS(J, I, 3) <= FGGC(3) THEN 2743
+        2733 If FGS(J, I, 3) <= FGGC(3) Then 2743
 
-2734 FGGC(3) = FGS(J, I, 3): FGC$(3) = A7$(I): FGYR(3) = FGS(J, I, 16)
+        2734 FGGC(3) = FGS(J, I, 3): FGC$(3) = A7$(I): FGYR(3) = FGS(J, I, 16)
 
-2743 IF FGS(J, I, 2) <= FGGC(4) THEN 2753
+        2743 If FGS(J, I, 2) <= FGGC(4) Then 2753
 
-2744 FGGC(4) = FGS(J, I, 2): FGC$(4) = A7$(I): FGYR(4) = FGS(J, I, 16)
+        2744 FGGC(4) = FGS(J, I, 2): FGC$(4) = A7$(I): FGYR(4) = FGS(J, I, 16)
 
-2753 IF FGS(J, I, 2) = 0 THEN 2756
-	IF FGS(J, I, 2) / FGS(J, I, 3) <= FGGC(5) OR FGS(J,I,3)<GAMES THEN 2756
+        2753 If FGS(J, I, 2) = 0 Then 2756
+        If FGS(J, I, 2) / FGS(J, I, 3) <= FGGC(5) Or FGS(J, I, 3) < GAMES Then 2756
 
-2755 FGGC(5) = FGS(J, I, 2) / FGS(J, I, 3): FGC$(5) = A7$(I): FGYR(5) = FGS(J, I, 16)
+        2755 FGGC(5) = FGS(J, I, 2) / FGS(J, I, 3): FGC$(5) = A7$(I): FGYR(5) = FGS(J, I, 16)
 
-2756 IF FGS(J, I, 4) <= FGGC(6) THEN 2779
+        2756 If FGS(J, I, 4) <= FGGC(6) Then 2779
 
-2757 FGGC(6) = FGS(J, I, 4): FGC$(6) = A7$(I): FGYR(6) = FGS(J, I, 16)
+        2757 FGGC(6) = FGS(J, I, 4): FGC$(6) = A7$(I): FGYR(6) = FGS(J, I, 16)
 
-2779 NEXT J
+    2779 Next J
 
-2780 NEXT I
-	FOR I = 0 TO 54
-	IF DI$(I) = "" OR DI$(I) = "XXX" OR DI$(I) = "END" THEN 2810
-	FOR J = 1 TO 15
-	IF GIS(J, I, 2) = 0 THEN 2810
+2780 Next I
+For I = 0 To 54
+    If DI$(I) = "" Or DI$(I) = "XXX" Or DI$(I) = "END" Then 2810
+    For J = 1 To 15
+        If GIS(J, I, 2) = 0 Then 2810
 
-2803 IF GIS(J, I, 0) <= DFFC(0) THEN 2809
+        2803 If GIS(J, I, 0) <= DFFC(0) Then 2809
 
-2804 DFFC(0) = GIS(J, I, 0): DFC$(0) = DI$(I): FGYR(0) = GIS(J, I, 2)
+        2804 DFFC(0) = GIS(J, I, 0): DFC$(0) = DI$(I): FGYR(0) = GIS(J, I, 2)
 
-2809 NEXT J
+    2809 Next J
 
-2810 NEXT I
-	FOR I = 0 TO 54
-	IF DS$(I) = "" OR DS$(I) = "XXX" OR DS$(I) = "END" THEN 2830
-	FOR J = 1 TO 15
-	IF GSS(J, I, 2) = 0 THEN 2830
+2810 Next I
+For I = 0 To 54
+    If DS$(I) = "" Or DS$(I) = "XXX" Or DS$(I) = "END" Then 2830
+    For J = 1 To 15
+        If GSS(J, I, 2) = 0 Then 2830
 
-2823 IF GSS(J, I, 0) <= DFFC(1) THEN 2829
+        2823 If GSS(J, I, 0) <= DFFC(1) Then 2829
 
-2824 DFFC(1) = GSS(J, I, 0): DFC$(1) = DS$(I): FGYR(1) = GSS(J, I, 2)
+        2824 DFFC(1) = GSS(J, I, 0): DFC$(1) = DS$(I): FGYR(1) = GSS(J, I, 2)
 
-2829 NEXT J
+    2829 Next J
 
-2830 NEXT I
-	IF VV = 1 THEN 2950
-	IF VV = 0 THEN 2981
+2830 Next I
+If VV = 1 Then 2950
+If VV = 0 Then 2981
 
-2950 OPEN D$(1) + Z$ + ".CLD" FOR OUTPUT AS #1: GOTO 2982
+2950 Open D$(1) + Z$ + ".CLD" For Output As #1: GoTo 2982
 
-2981 GOSUB 9500: OPEN D$(1) + LEFT$(Z$, JX) + ".CLD" FOR OUTPUT AS #1
+2981 GoSub 9500: Open D$(1) + Left$(Z$, JX) + ".CLD" For Output As #1
 
-2982 FOR I = 0 TO 9: WRITE #1, RBBC(I), RBC$(I), RBYR(I): NEXT
-	WRITE #1, RBR$(0), RBR$(1)
-	FOR I = 0 TO 4: WRITE #1, WRRC(I), WRC$(I), WRYR(I): NEXT
-	WRITE #1, WRR$
-	FOR I = 0 TO 8: WRITE #1, QBBC(I), QBC$(I), QBYR(I): NEXT
-	WRITE #1, QBR$
-	FOR I = 0 TO 4: WRITE #1, KRRC(I), KRC$(I), KRYR(I): NEXT
-	WRITE #1, KRR$
-	FOR I = 0 TO 4: WRITE #1, PRRC(I), PRC$(I), PRYR(I): NEXT
-	WRITE #1, PRR$
-	FOR I = 0 TO 2: WRITE #1, PUUC(I), PUC$(I), PUYR(I): NEXT
-	FOR I = 0 TO 6: WRITE #1, FGGC(I), FGC$(I), FGYR(I): NEXT
-	FOR I = 0 TO 1: WRITE #1, DFFC(I), DFC$(I), DFYR(I): NEXT
-CLOSE #1
-	RETURN
+2982 For I = 0 To 9: Write #1, RBBC(I), RBC$(I), RBYR(I): Next
+Write #1, RBR$(0), RBR$(1)
+For I = 0 To 4: Write #1, WRRC(I), WRC$(I), WRYR(I): Next
+Write #1, WRR$
+For I = 0 To 8: Write #1, QBBC(I), QBC$(I), QBYR(I): Next
+Write #1, QBR$
+For I = 0 To 4: Write #1, KRRC(I), KRC$(I), KRYR(I): Next
+Write #1, KRR$
+For I = 0 To 4: Write #1, PRRC(I), PRC$(I), PRYR(I): Next
+Write #1, PRR$
+For I = 0 To 2: Write #1, PUUC(I), PUC$(I), PUYR(I): Next
+For I = 0 To 6: Write #1, FGGC(I), FGC$(I), FGYR(I): Next
+For I = 0 To 1: Write #1, DFFC(I), DFC$(I), DFYR(I): Next
+Close #1
+Return
 
 4000 Spec$ = D$(1) + "*.CLD"
-	COUNT% = FCount%(Spec$)
-	IF COUNT% = 0 THEN 4500
-REDIM F$(0 TO COUNT%)
-	FOR X = 1 TO COUNT%
-	  F$(X) = SPACE$(12)
-	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
+Count% = FCount%(Spec$)
+If Count% = 0 Then 4500
+ReDim F$(0 To Count%)
+For X = 1 To Count%
+    F$(X) = Space$(12)
+Next
+F$(0) = Spec$
+Call ReadFile(F$())
+'CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
 
-1310 CLS
-	COLOR , 1
-	CLS
-	LOCATE , 28
-	COLOR 14
-	PRINT "SELECT FILE TO VIEW": COLOR 15
-	SELECTION% = 1
-	START% = 1
-	FileFGColr% = 15:FileBGColr% = 1
-	HiLiteFGColr% = 0:HiLiteBGColr% = 7
-	Rows% = 20
-	Columns% = 4
-	Spacing% = 6
-	Row% = 4
-	Column% = 1
-	LOCATE 25, 1
-	COLOR 14
-	PRINT "ENTER"; : COLOR 15
-	PRINT "-SELECTS FILE";
+1310 Cls
+Color , 1
+Cls
+Locate , 28
+Color 14
+Print "SELECT FILE TO VIEW": Color 15
+SELECTION% = 1
+Start% = 1
+FileFGColr% = 15: FileBGColr% = 1
+HiLiteFGColr% = 0: HiLiteBGColr% = 7
+Rows% = 20
+Columns% = 4
+Spacing% = 6
+Row% = 4
+Column% = 1
+Locate 25, 1
+Color 14
+Print "ENTER";: Color 15
+Print "-SELECTS FILE";
 
 _MouseShow "DEFAULT"
-20 MAMenu F$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu F$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
-	IF EXITCODE% = 27 THEN 1
-	IF EXITCODE% = -71 THEN START% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
-	IF EXITCODE% = -79 THEN START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GOTO 20
-	IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
-	IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
-	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
-	F$ = F$(SELECTION%)
-	LOCATE 2, 33: PRINT F$
-	LOCATE , 33: PRINT "ANY CHANGE (YN)";
-	COLOR 15, 0
+If EXITCODE% = 27 Then 1
+If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 20
+If EXITCODE% = -79 Then Start% = Count%: EXITCODE% = 3: SELECTION% = Count%: GoTo 20
+If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
+If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > Count% Then Start% = Count%
+If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
+F$ = F$(SELECTION%)
+Locate 2, 33: Print F$
+Locate , 33: Print "ANY CHANGE (YN)";
+Color 15, 0
 3910 I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 1310
+If UCase$(I$) = "Y" Then 1310
 
 3911 F$ = RTrim$(F$)
-	ZZ$ = LEFT$(F$, LEN(F$) - 4)
-OPEN D$(1) + ZZ$ + ".CLD" FOR INPUT AS #1
-	FOR I = 0 TO 9: INPUT #1, RBBC(I), RBC$(I), RBYR(I): NEXT
-	INPUT #1, RBR$(0), RBR$(1)
-	FOR I = 0 TO 4: INPUT #1, WRRC(I), WRC$(I), WRYR(I): NEXT
-	INPUT #1, WRR$
-	FOR I = 0 TO 8: INPUT #1, QBBC(I), QBC$(I), QBYR(I): NEXT
-	INPUT #1, QBR$
-	FOR I = 0 TO 4: INPUT #1, KRRC(I), KRC$(I), KRYR(I): NEXT
-	INPUT #1, KRR$
-	FOR I = 0 TO 4: INPUT #1, PRRC(I), PRC$(I), PRYR(I): NEXT
-	INPUT #1, PRR$
-	FOR I = 0 TO 2: INPUT #1, PUUC(I), PUC$(I), PUYR(I): NEXT
-	FOR I = 0 TO 6: INPUT #1, FGGC(I), FGC$(I), FGYR(I): NEXT
-	FOR I = 0 TO 1: INPUT #1, DFFC(I), DFC$(I), DFYR(I): NEXT
-CLOSE #1
+ZZ$ = Left$(F$, Len(F$) - 4)
+Open D$(1) + ZZ$ + ".CLD" For Input As #1
+For I = 0 To 9: Input #1, RBBC(I), RBC$(I), RBYR(I): Next
+Input #1, RBR$(0), RBR$(1)
+For I = 0 To 4: Input #1, WRRC(I), WRC$(I), WRYR(I): Next
+Input #1, WRR$
+For I = 0 To 8: Input #1, QBBC(I), QBC$(I), QBYR(I): Next
+Input #1, QBR$
+For I = 0 To 4: Input #1, KRRC(I), KRC$(I), KRYR(I): Next
+Input #1, KRR$
+For I = 0 To 4: Input #1, PRRC(I), PRC$(I), PRYR(I): Next
+Input #1, PRR$
+For I = 0 To 2: Input #1, PUUC(I), PUC$(I), PUYR(I): Next
+For I = 0 To 6: Input #1, FGGC(I), FGC$(I), FGYR(I): Next
+For I = 0 To 1: Input #1, DFFC(I), DFC$(I), DFYR(I): Next
+Close #1
 
-	CLS : LOCATE 5, 10: COLOR 12: PRINT "P"; : COLOR 7: PRINT "rint or "; : COLOR 12: PRINT "V"; : COLOR 7: PRINT "iew"
+Cls: Locate 5, 10: Color 12: Print "P";: Color 7: Print "rint or ";: Color 12: Print "V";: Color 7: Print "iew"
 5101 I$ = GetKeyPress$
-	IF UCASE$(I$) = "V" THEN 5200
-	IF UCASE$(I$) = "P" THEN 6200
-	IF UCASE$(I$) <> "V" AND UCASE$(I$) <> "P" THEN 5101
+If UCase$(I$) = "V" Then 5200
+If UCase$(I$) = "P" Then 6200
+If UCase$(I$) <> "V" And UCase$(I$) <> "P" Then 5101
 
-5200 CLS : COLOR 12: PRINT TAB(10); "CATEGORY"; TAB(30); "RECORD"; TAB(50); "PLAYER"; TAB(65); "YEAR"
-	COLOR 3: PRINT "RUSHING ATTEMPTS"; : COLOR 7: PRINT TAB(32); USING "####"; RBBC(0); : PRINT TAB(50); RBC$(0); : PRINT TAB(64); RBYR(0)
-	COLOR 3: PRINT "RUSHING YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; RBBC(1); : PRINT TAB(50); RBC$(1); : PRINT TAB(64); RBYR(1)
-	COLOR 3: PRINT "RUSHING AVERAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; RBBC(2); : PRINT TAB(50); RBC$(2); : PRINT TAB(64); RBYR(2)
-	COLOR 3: PRINT "RUSHING TOUCHDOWNS"; : COLOR 7: PRINT TAB(33); USING "###"; RBBC(3); : PRINT TAB(50); RBC$(3); : PRINT TAB(64); RBYR(3)
-	COLOR 3: PRINT "LONGEST RUN"; : COLOR 7: PRINT TAB(33); USING "###"; RBBC(8); : PRINT TAB(36); RBR$(0); : PRINT TAB(50); RBC$(8); : PRINT TAB(64); RBYR(8)
-	COLOR 3: PRINT "RECEPTIONS (BACKS)"; : COLOR 7: PRINT TAB(32); USING "####"; RBBC(4); : PRINT TAB(50); RBC$(4); : PRINT TAB(64); RBYR(4)
-	COLOR 3: PRINT "RECEIVING YARDS (BACKS)"; : COLOR 7: PRINT TAB(32); USING "####"; RBBC(5); : PRINT TAB(50); RBC$(5); : PRINT TAB(64); RBYR(5)
-	COLOR 3: PRINT "RECEIVING AVERAGE (BACKS)"; : COLOR 7: PRINT TAB(32); USING "##.#"; RBBC(6); : PRINT TAB(50); RBC$(6); : PRINT TAB(64); RBYR(6)
-	COLOR 3: PRINT "RECEIVING TOUCHDOWNS (BACKS)"; : COLOR 7: PRINT TAB(32); USING " ###"; RBBC(7); : PRINT TAB(50); RBC$(7); : PRINT TAB(64); RBYR(7)
-	COLOR 3: PRINT "LONGEST RECEPTION (BACKS)"; : COLOR 7: PRINT TAB(33); USING "###"; RBBC(9); : PRINT TAB(37); RBR$(1); : PRINT TAB(50); RBC$(9); : PRINT TAB(64); RBYR(9)
-	COLOR 3: PRINT "RECEPTIONS"; : COLOR 7: PRINT TAB(32); USING "####"; WRRC(0); : PRINT TAB(50); WRC$(0); : PRINT TAB(64); WRYR(0)
-	COLOR 3: PRINT "RECEIVING YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; WRRC(1); : PRINT TAB(50); WRC$(1); : PRINT TAB(64); WRYR(1)
-	COLOR 3: PRINT "RECEIVING AVERAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; WRRC(2); : PRINT TAB(50); WRC$(2); : PRINT TAB(64); WRYR(2)
-	COLOR 3: PRINT "RECEIVING TOUCHDOWNS"; : COLOR 7: PRINT TAB(32); USING " ###"; WRRC(3); : PRINT TAB(50); WRC$(3); : PRINT TAB(64); WRYR(3)
-	COLOR 3: PRINT "LONGEST RECEPTION"; : COLOR 7: PRINT TAB(32); USING " ###"; WRRC(4); : PRINT TAB(36); WRR$; : PRINT TAB(50); WRC$(4); : PRINT TAB(64); WRYR(4)
-	COLOR 3: PRINT "COMPLETIONS"; : COLOR 7: PRINT TAB(32); USING "####"; QBBC(0); : PRINT TAB(50); QBC$(0); : PRINT TAB(64); QBYR(0)
-	COLOR 3: PRINT "ATTEMPTS"; : COLOR 7: PRINT TAB(32); USING "####"; QBBC(1); : PRINT TAB(50); QBC$(1); : PRINT TAB(64); QBYR(1)
-	COLOR 3: PRINT "INTERCEPTIONS"; : COLOR 7: PRINT TAB(32); USING "####"; QBBC(2); : PRINT TAB(50); QBC$(2); : PRINT TAB(64); QBYR(2)
-	COLOR 15: PRINT : PRINT "HIT ANY KEY TO CONTINUE"
+5200 Cls: Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+Color 3: Print "RUSHING ATTEMPTS";: Color 7: Print Tab(32); Using "####"; RBBC(0);: Print Tab(50); RBC$(0);: Print Tab(64); RBYR(0)
+Color 3: Print "RUSHING YARDS";: Color 7: Print Tab(32); Using "####"; RBBC(1);: Print Tab(50); RBC$(1);: Print Tab(64); RBYR(1)
+Color 3: Print "RUSHING AVERAGE";: Color 7: Print Tab(32); Using "##.#"; RBBC(2);: Print Tab(50); RBC$(2);: Print Tab(64); RBYR(2)
+Color 3: Print "RUSHING TOUCHDOWNS";: Color 7: Print Tab(33); Using "###"; RBBC(3);: Print Tab(50); RBC$(3);: Print Tab(64); RBYR(3)
+Color 3: Print "LONGEST RUN";: Color 7: Print Tab(33); Using "###"; RBBC(8);: Print Tab(36); RBR$(0);: Print Tab(50); RBC$(8);: Print Tab(64); RBYR(8)
+Color 3: Print "RECEPTIONS (BACKS)";: Color 7: Print Tab(32); Using "####"; RBBC(4);: Print Tab(50); RBC$(4);: Print Tab(64); RBYR(4)
+Color 3: Print "RECEIVING YARDS (BACKS)";: Color 7: Print Tab(32); Using "####"; RBBC(5);: Print Tab(50); RBC$(5);: Print Tab(64); RBYR(5)
+Color 3: Print "RECEIVING AVERAGE (BACKS)";: Color 7: Print Tab(32); Using "##.#"; RBBC(6);: Print Tab(50); RBC$(6);: Print Tab(64); RBYR(6)
+Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";: Color 7: Print Tab(32); Using " ###"; RBBC(7);: Print Tab(50); RBC$(7);: Print Tab(64); RBYR(7)
+Color 3: Print "LONGEST RECEPTION (BACKS)";: Color 7: Print Tab(33); Using "###"; RBBC(9);: Print Tab(37); RBR$(1);: Print Tab(50); RBC$(9);: Print Tab(64); RBYR(9)
+Color 3: Print "RECEPTIONS";: Color 7: Print Tab(32); Using "####"; WRRC(0);: Print Tab(50); WRC$(0);: Print Tab(64); WRYR(0)
+Color 3: Print "RECEIVING YARDS";: Color 7: Print Tab(32); Using "####"; WRRC(1);: Print Tab(50); WRC$(1);: Print Tab(64); WRYR(1)
+Color 3: Print "RECEIVING AVERAGE";: Color 7: Print Tab(32); Using "##.#"; WRRC(2);: Print Tab(50); WRC$(2);: Print Tab(64); WRYR(2)
+Color 3: Print "RECEIVING TOUCHDOWNS";: Color 7: Print Tab(32); Using " ###"; WRRC(3);: Print Tab(50); WRC$(3);: Print Tab(64); WRYR(3)
+Color 3: Print "LONGEST RECEPTION";: Color 7: Print Tab(32); Using " ###"; WRRC(4);: Print Tab(36); WRR$;: Print Tab(50); WRC$(4);: Print Tab(64); WRYR(4)
+Color 3: Print "COMPLETIONS";: Color 7: Print Tab(32); Using "####"; QBBC(0);: Print Tab(50); QBC$(0);: Print Tab(64); QBYR(0)
+Color 3: Print "ATTEMPTS";: Color 7: Print Tab(32); Using "####"; QBBC(1);: Print Tab(50); QBC$(1);: Print Tab(64); QBYR(1)
+Color 3: Print "INTERCEPTIONS";: Color 7: Print Tab(32); Using "####"; QBBC(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR(2)
+Color 15: Print: Print "HIT ANY KEY TO CONTINUE"
 5251 I$ = GetKeyPress$
 
-	CLS : COLOR 12: PRINT TAB(10); "CATEGORY"; TAB(30); "RECORD"; TAB(50); "PLAYER"; TAB(65); "YEAR"
-	COLOR 3: PRINT "TOUCHDOWNS"; : COLOR 7: PRINT TAB(31); USING " ####"; QBBC(3); : PRINT TAB(50); QBC$(3); : PRINT TAB(64); QBYR(3)
-	COLOR 3: PRINT "PASSING YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; QBBC(4); : PRINT TAB(50); QBC$(4); : PRINT TAB(64); QBYR(4)
-	COLOR 3: PRINT "COMPLETION PERCENTAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; QBBC(5) * 100; : PRINT TAB(50); QBC$(5); : PRINT TAB(64); QBYR(5)
-	COLOR 3: PRINT "YARDS PER COMPLETION"; : COLOR 7: PRINT TAB(32); USING "##.#"; QBBC(6); : PRINT TAB(50); QBC$(6); : PRINT TAB(64); QBYR(6)
-	COLOR 3: PRINT "QUARTERBACK RATING"; : COLOR 7: PRINT TAB(31); USING " ##.#"; QBBC(7); : PRINT TAB(50); QBC$(7); : PRINT TAB(64); QBYR(7)
-	COLOR 3: PRINT "LONGEST PASS"; : COLOR 7: PRINT TAB(32); USING " ###"; QBBC(8); : PRINT TAB(36); QBR$; : PRINT TAB(50); QBC$(8); : PRINT TAB(64); QBYR(8)
-	COLOR 3: PRINT "KICK RETURN ATTEMPTS"; : COLOR 7: PRINT TAB(33); USING "###"; KRRC(0); : PRINT TAB(50); KRC$(0); : PRINT TAB(64); KRYR(0)
-	COLOR 3: PRINT "KICK RETURN YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; KRRC(1); : PRINT TAB(50); KRC$(1); : PRINT TAB(64); KRYR(1)
-	COLOR 3: PRINT "KICK RETURN AVERAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; KRRC(2); : PRINT TAB(50); KRC$(2); : PRINT TAB(64); KRYR(2)
-	COLOR 3: PRINT "KICK RETURN TOUCHDOWNS"; : COLOR 7: PRINT TAB(32); USING " ###"; KRRC(3); : PRINT TAB(50); KRC$(3); : PRINT TAB(64); KRYR(3)
-	COLOR 3: PRINT "LONGEST KICK RETURN"; : COLOR 7: PRINT TAB(32); USING " ###"; KRRC(4); : PRINT TAB(36); KRR$; : PRINT TAB(50); KRC$(4); : PRINT TAB(64); KRYR(4)
-	COLOR 3: PRINT "PUNT RETURN ATTEMPTS"; : COLOR 7: PRINT TAB(33); USING "###"; PRRC(0); : PRINT TAB(50); PRC$(0); : PRINT TAB(64); PRYR(0)
-	COLOR 3: PRINT "PUNT RETURN YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; PRRC(1); : PRINT TAB(50); PRC$(1); : PRINT TAB(64); PRYR(1)
-	COLOR 3: PRINT "PUNT RETURN AVERAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; PRRC(2); : PRINT TAB(50); PRC$(2); : PRINT TAB(64); PRYR(2)
-	COLOR 3: PRINT "PUNT RETURN TOUCHDOWNS"; : COLOR 7: PRINT TAB(32); USING " ###"; PRRC(3); : PRINT TAB(50); PRC$(3); : PRINT TAB(64); PRYR(3)
-	COLOR 3: PRINT "LONGEST PUNT RETURN"; : COLOR 7: PRINT TAB(32); USING " ###"; PRRC(4); : PRINT TAB(36); PRR$; : PRINT TAB(50); PRC$(4); : PRINT TAB(64); PRYR(4)
-	COLOR 3: PRINT "PUNT ATTEMPTS"; : COLOR 7: PRINT TAB(32); USING "####"; PUUC(0); : PRINT TAB(50); PUC$(0); : PRINT TAB(64); PUYR(0)
-	COLOR 3: PRINT "PUNTING YARDS"; : COLOR 7: PRINT TAB(32); USING "####"; PUUC(1); : PRINT TAB(50); PUC$(1); : PRINT TAB(64); PUYR(1)
-	COLOR 15: PRINT : PRINT "HIT ANY KEY TO CONTINUE"
+Cls: Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+Color 3: Print "TOUCHDOWNS";: Color 7: Print Tab(31); Using " ####"; QBBC(3);: Print Tab(50); QBC$(3);: Print Tab(64); QBYR(3)
+Color 3: Print "PASSING YARDS";: Color 7: Print Tab(32); Using "####"; QBBC(4);: Print Tab(50); QBC$(4);: Print Tab(64); QBYR(4)
+Color 3: Print "COMPLETION PERCENTAGE";: Color 7: Print Tab(32); Using "##.#"; QBBC(5) * 100;: Print Tab(50); QBC$(5);: Print Tab(64); QBYR(5)
+Color 3: Print "YARDS PER COMPLETION";: Color 7: Print Tab(32); Using "##.#"; QBBC(6);: Print Tab(50); QBC$(6);: Print Tab(64); QBYR(6)
+Color 3: Print "QUARTERBACK RATING";: Color 7: Print Tab(31); Using " ##.#"; QBBC(7);: Print Tab(50); QBC$(7);: Print Tab(64); QBYR(7)
+Color 3: Print "LONGEST PASS";: Color 7: Print Tab(32); Using " ###"; QBBC(8);: Print Tab(36); QBR$;: Print Tab(50); QBC$(8);: Print Tab(64); QBYR(8)
+Color 3: Print "KICK RETURN ATTEMPTS";: Color 7: Print Tab(33); Using "###"; KRRC(0);: Print Tab(50); KRC$(0);: Print Tab(64); KRYR(0)
+Color 3: Print "KICK RETURN YARDS";: Color 7: Print Tab(32); Using "####"; KRRC(1);: Print Tab(50); KRC$(1);: Print Tab(64); KRYR(1)
+Color 3: Print "KICK RETURN AVERAGE";: Color 7: Print Tab(32); Using "##.#"; KRRC(2);: Print Tab(50); KRC$(2);: Print Tab(64); KRYR(2)
+Color 3: Print "KICK RETURN TOUCHDOWNS";: Color 7: Print Tab(32); Using " ###"; KRRC(3);: Print Tab(50); KRC$(3);: Print Tab(64); KRYR(3)
+Color 3: Print "LONGEST KICK RETURN";: Color 7: Print Tab(32); Using " ###"; KRRC(4);: Print Tab(36); KRR$;: Print Tab(50); KRC$(4);: Print Tab(64); KRYR(4)
+Color 3: Print "PUNT RETURN ATTEMPTS";: Color 7: Print Tab(33); Using "###"; PRRC(0);: Print Tab(50); PRC$(0);: Print Tab(64); PRYR(0)
+Color 3: Print "PUNT RETURN YARDS";: Color 7: Print Tab(32); Using "####"; PRRC(1);: Print Tab(50); PRC$(1);: Print Tab(64); PRYR(1)
+Color 3: Print "PUNT RETURN AVERAGE";: Color 7: Print Tab(32); Using "##.#"; PRRC(2);: Print Tab(50); PRC$(2);: Print Tab(64); PRYR(2)
+Color 3: Print "PUNT RETURN TOUCHDOWNS";: Color 7: Print Tab(32); Using " ###"; PRRC(3);: Print Tab(50); PRC$(3);: Print Tab(64); PRYR(3)
+Color 3: Print "LONGEST PUNT RETURN";: Color 7: Print Tab(32); Using " ###"; PRRC(4);: Print Tab(36); PRR$;: Print Tab(50); PRC$(4);: Print Tab(64); PRYR(4)
+Color 3: Print "PUNT ATTEMPTS";: Color 7: Print Tab(32); Using "####"; PUUC(0);: Print Tab(50); PUC$(0);: Print Tab(64); PUYR(0)
+Color 3: Print "PUNTING YARDS";: Color 7: Print Tab(32); Using "####"; PUUC(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR(1)
+Color 15: Print: Print "HIT ANY KEY TO CONTINUE"
 5261 I$ = GetKeyPress$
 
-	CLS : COLOR 12: PRINT TAB(10); "CATEGORY"; TAB(30); "RECORD"; TAB(50); "PLAYER"; TAB(65); "YEAR"
-	COLOR 3: PRINT "PUNTING AVERAGE"; : COLOR 7: PRINT TAB(32); USING "##.#"; PUUC(2); : PRINT TAB(50); PUC$(2); : PRINT TAB(64); PUYR(2)
-	COLOR 3: PRINT "FIELD GOAL ATTEMPTS"; : COLOR 7: PRINT TAB(32); USING "####"; FGGC(0); : PRINT TAB(50); FGC$(0); : PRINT TAB(64); FGYR(0)
-	COLOR 3: PRINT "FIELD GOALS MADE"; : COLOR 7: PRINT TAB(32); USING "####"; FGGC(1); : PRINT TAB(50); FGC$(1); : PRINT TAB(64); FGYR(1)
-	COLOR 3: PRINT "FIELD GOAL PERCENTAGE"; : COLOR 7: PRINT TAB(31); USING "###.#"; FGGC(2) * 100; : PRINT TAB(50); FGC$(2); : PRINT TAB(64); FGYR(2)
-	COLOR 3: PRINT "LONGEST FIELD GOAL MADE"; : COLOR 7: PRINT TAB(34); USING "##"; FGGC(6); : PRINT TAB(50); FGC$(6); : PRINT TAB(64); FGYR(6)
-	COLOR 3: PRINT "EXTRA POINT ATTEMPTS"; : COLOR 7: PRINT TAB(32); USING "####"; FGGC(3); : PRINT TAB(50); FGC$(3); : PRINT TAB(64); FGYR(3)
-	COLOR 3: PRINT "EXTRA POINTS MADE"; : COLOR 7: PRINT TAB(32); USING "####"; FGGC(4); : PRINT TAB(50); FGC$(4); : PRINT TAB(64); FGYR(4)
-	COLOR 3: PRINT "EXTRA POINT PERCENTAGE"; : COLOR 7: PRINT TAB(31); USING "###.#"; FGGC(5) * 100; : PRINT TAB(50); FGC$(5); : PRINT TAB(64); FGYR(5)
-	COLOR 15: PRINT : PRINT "VIEW FILE AGAIN (Y/N)"
+Cls: Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+Color 3: Print "PUNTING AVERAGE";: Color 7: Print Tab(32); Using "##.#"; PUUC(2);: Print Tab(50); PUC$(2);: Print Tab(64); PUYR(2)
+Color 3: Print "FIELD GOAL ATTEMPTS";: Color 7: Print Tab(32); Using "####"; FGGC(0);: Print Tab(50); FGC$(0);: Print Tab(64); FGYR(0)
+Color 3: Print "FIELD GOALS MADE";: Color 7: Print Tab(32); Using "####"; FGGC(1);: Print Tab(50); FGC$(1);: Print Tab(64); FGYR(1)
+Color 3: Print "FIELD GOAL PERCENTAGE";: Color 7: Print Tab(31); Using "###.#"; FGGC(2) * 100;: Print Tab(50); FGC$(2);: Print Tab(64); FGYR(2)
+Color 3: Print "LONGEST FIELD GOAL MADE";: Color 7: Print Tab(34); Using "##"; FGGC(6);: Print Tab(50); FGC$(6);: Print Tab(64); FGYR(6)
+Color 3: Print "EXTRA POINT ATTEMPTS";: Color 7: Print Tab(32); Using "####"; FGGC(3);: Print Tab(50); FGC$(3);: Print Tab(64); FGYR(3)
+Color 3: Print "EXTRA POINTS MADE";: Color 7: Print Tab(32); Using "####"; FGGC(4);: Print Tab(50); FGC$(4);: Print Tab(64); FGYR(4)
+Color 3: Print "EXTRA POINT PERCENTAGE";: Color 7: Print Tab(31); Using "###.#"; FGGC(5) * 100;: Print Tab(50); FGC$(5);: Print Tab(64); FGYR(5)
+Color 15: Print: Print "VIEW FILE AGAIN (Y/N)"
 5391 I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 5200
-	CLEAR:GOTO 1
+If UCase$(I$) = "Y" Then 5200
+Clear: GoTo 1
 
-6200 LPRINT TAB(10); "CATEGORY"; TAB(30); "RECORD"; TAB(50); "PLAYER"; TAB(65); "YEAR"
-	LPRINT "RUSHING ATTEMPTS"; : LPRINT TAB(32); USING "####"; RBBC(0); : LPRINT TAB(50); RBC$(0); : LPRINT TAB(64); RBYR(0)
-	LPRINT "RUSHING YARDS"; : LPRINT TAB(32); USING "####"; RBBC(1); : LPRINT TAB(50); RBC$(1); : LPRINT TAB(64); RBYR(1)
-	LPRINT "RUSHING AVERAGE"; : LPRINT TAB(32); USING "##.#"; RBBC(2); : LPRINT TAB(50); RBC$(2); : LPRINT TAB(64); RBYR(2)
-	LPRINT "RUSHING TOUCHDOWNS"; : LPRINT TAB(33); USING "###"; RBBC(3); : LPRINT TAB(50); RBC$(3); : LPRINT TAB(64); RBYR(3)
-	LPRINT "LONGEST RUN"; : LPRINT TAB(33); USING "###"; RBBC(8); : LPRINT TAB(36); RBR$(0); : LPRINT TAB(50); RBC$(8); : LPRINT TAB(64); RBYR(8)
-	LPRINT "RECEPTIONS (BACKS)"; : LPRINT TAB(32); USING "####"; RBBC(4); : LPRINT TAB(50); RBC$(4); : LPRINT TAB(64); RBYR(4)
-	LPRINT "RECEIVING YARDS (BACKS)"; : LPRINT TAB(32); USING "####"; RBBC(5); : LPRINT TAB(50); RBC$(5); : LPRINT TAB(64); RBYR(5)
-	LPRINT "RECEIVING AVERAGE (BACKS)"; : LPRINT TAB(32); USING "##.#"; RBBC(6); : LPRINT TAB(50); RBC$(6); : LPRINT TAB(64); RBYR(6)
-	LPRINT "RECEIVING TOUCHDOWNS (BACKS)"; : LPRINT TAB(32); USING " ###"; RBBC(7); : LPRINT TAB(50); RBC$(7); : LPRINT TAB(64); RBYR(7)
-	LPRINT "LONGEST RECEPTION (BACKS)"; : LPRINT TAB(33); USING "###"; RBBC(9); : LPRINT TAB(37); RBR$(1); : LPRINT TAB(50); RBC$(9); : LPRINT TAB(64); RBYR(9)
-	LPRINT "RECEPTIONS"; : LPRINT TAB(32); USING "####"; WRRC(0); : LPRINT TAB(50); WRC$(0); : LPRINT TAB(64); WRYR(0)
-	LPRINT "RECEIVING YARDS"; : LPRINT TAB(32); USING "####"; WRRC(1); : LPRINT TAB(50); WRC$(1); : LPRINT TAB(64); WRYR(1)
-	LPRINT "RECEIVING AVERAGE"; : LPRINT TAB(32); USING "##.#"; WRRC(2); : LPRINT TAB(50); WRC$(2); : LPRINT TAB(64); WRYR(2)
-	LPRINT "RECEIVING TOUCHDOWNS"; : LPRINT TAB(32); USING " ###"; WRRC(3); : LPRINT TAB(50); WRC$(3); : LPRINT TAB(64); WRYR(3)
-	LPRINT "LONGEST RECEPTION"; : LPRINT TAB(32); USING " ###"; WRRC(4); : LPRINT TAB(36); WRR$; : LPRINT TAB(50); WRC$(4); : LPRINT TAB(64); WRYR(4)
-	LPRINT "COMPLETIONS"; : LPRINT TAB(32); USING "####"; QBBC(0); : LPRINT TAB(50); QBC$(0); : LPRINT TAB(64); QBYR(0)
-	LPRINT "ATTEMPTS"; : LPRINT TAB(32); USING "####"; QBBC(1); : LPRINT TAB(50); QBC$(1); : LPRINT TAB(64); QBYR(1)
-	LPRINT "INTERCEPTIONS"; : LPRINT TAB(32); USING "####"; QBBC(2); : LPRINT TAB(50); QBC$(2); : LPRINT TAB(64); QBYR(2)
-	LPRINT "TOUCHDOWNS"; : LPRINT TAB(31); USING " ####"; QBBC(3); : LPRINT TAB(50); QBC$(3); : LPRINT TAB(64); QBYR(3)
-	LPRINT "PASSING YARDS"; : LPRINT TAB(32); USING "####"; QBBC(4); : LPRINT TAB(50); QBC$(4); : LPRINT TAB(64); QBYR(4)
-	LPRINT "COMPLETION PERCENTAGE"; : LPRINT TAB(32); USING "##.#"; QBBC(5) * 100; : LPRINT TAB(50); QBC$(5); : LPRINT TAB(64); QBYR(5)
-	LPRINT "YARDS PER COMPLETION"; : LPRINT TAB(32); USING "##.#"; QBBC(6); : LPRINT TAB(50); QBC$(6); : LPRINT TAB(64); QBYR(6)
-	LPRINT "QUARTERBACK RATING"; : LPRINT TAB(31); USING " ##.#"; QBBC(7); : LPRINT TAB(50); QBC$(7); : LPRINT TAB(64); QBYR(7)
-	LPRINT "LONGEST PASS"; : LPRINT TAB(32); USING " ###"; QBBC(8); : LPRINT TAB(36); QBR$; : LPRINT TAB(50); QBC$(8); : LPRINT TAB(64); QBYR(8)
-	LPRINT "KICK RETURN ATTEMPTS"; : LPRINT TAB(33); USING "###"; KRRC(0); : LPRINT TAB(50); KRC$(0); : LPRINT TAB(64); KRYR(0)
-	LPRINT "KICK RETURN YARDS"; : LPRINT TAB(32); USING "####"; KRRC(1); : LPRINT TAB(50); KRC$(1); : LPRINT TAB(64); KRYR(1)
-	LPRINT "KICK RETURN AVERAGE"; : LPRINT TAB(32); USING "##.#"; KRRC(2); : LPRINT TAB(50); KRC$(2); : LPRINT TAB(64); KRYR(2)
-	LPRINT "KICK RETURN TOUCHDOWNS"; : LPRINT TAB(32); USING " ###"; KRRC(3); : LPRINT TAB(50); KRC$(3); : LPRINT TAB(64); KRYR(3)
-	LPRINT "LONGEST KICK RETURN"; : LPRINT TAB(32); USING " ###"; KRRC(4); : LPRINT TAB(36); KRR$; : LPRINT TAB(50); KRC$(4); : LPRINT TAB(64); KRYR(4)
-	LPRINT "PUNT RETURN ATTEMPTS"; : LPRINT TAB(33); USING "###"; PRRC(0); : LPRINT TAB(50); PRC$(0); : LPRINT TAB(64); PRYR(0)
-	LPRINT "PUNT RETURN YARDS"; : LPRINT TAB(32); USING "####"; PRRC(1); : LPRINT TAB(50); PRC$(1); : LPRINT TAB(64); PRYR(1)
-	LPRINT "PUNT RETURN AVERAGE"; : LPRINT TAB(32); USING "##.#"; PRRC(2); : LPRINT TAB(50); PRC$(2); : LPRINT TAB(64); PRYR(2)
-	LPRINT "PUNT RETURN TOUCHDOWNS"; : LPRINT TAB(32); USING " ###"; PRRC(3); : LPRINT TAB(50); PRC$(3); : LPRINT TAB(64); PRYR(3)
-	LPRINT "LONGEST PUNT RETURN"; : LPRINT TAB(32); USING " ###"; PRRC(4); : LPRINT TAB(36); PRR$; : LPRINT TAB(50); PRC$(4); : LPRINT TAB(64); PRYR(4)
-	LPRINT "PUNT ATTEMPTS"; : LPRINT TAB(32); USING "####"; PUUC(0); : LPRINT TAB(50); PUC$(0); : LPRINT TAB(64); PUYR(0)
-	LPRINT "PUNTING YARDS"; : LPRINT TAB(32); USING "####"; PUUC(1); : LPRINT TAB(50); PUC$(1); : LPRINT TAB(64); PUYR(1)
-	LPRINT "PUNTING AVERAGE"; : LPRINT TAB(32); USING "##.#"; PUUC(2); : LPRINT TAB(50); PUC$(2); : LPRINT TAB(64); PUYR(2)
-	LPRINT "FIELD GOAL ATTEMPTS"; : LPRINT TAB(32); USING "####"; FGGC(0); : LPRINT TAB(50); FGC$(0); : LPRINT TAB(64); FGYR(0)
-	LPRINT "FIELD GOALS MADE"; : LPRINT TAB(32); USING "####"; FGGC(1); : LPRINT TAB(50); FGC$(1); : LPRINT TAB(64); FGYR(1)
-	LPRINT "FIELD GOAL PERCENTAGE"; : LPRINT TAB(31); USING "###.#"; FGGC(2) * 100; : LPRINT TAB(50); FGC$(2); : LPRINT TAB(64); FGYR(2)
-	LPRINT "LONGEST FIELD GOAL MADE"; : LPRINT TAB(34); USING "##"; FGGC(6); : LPRINT TAB(50); FGC$(6); : LPRINT TAB(64); FGYR(6)
-	LPRINT "EXTRA POINT ATTEMPTS"; : LPRINT TAB(32); USING "####"; FGGC(3); : LPRINT TAB(50); FGC$(3); : LPRINT TAB(64); FGYR(3)
-	LPRINT "EXTRA POINTS MADE"; : LPRINT TAB(32); USING "####"; FGGC(4); : LPRINT TAB(50); FGC$(4); : LPRINT TAB(64); FGYR(4)
-	LPRINT "EXTRA POINT PERCENTAGE"; : LPRINT TAB(31); USING "###.#"; FGGC(5) * 100; : LPRINT TAB(50); FGC$(5); : LPRINT TAB(64); FGYR(5)
-	CLEAR:GOTO 1
+6200 LPrint Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+LPrint "RUSHING ATTEMPTS";: LPrint Tab(32); Using "####"; RBBC(0);: LPrint Tab(50); RBC$(0);: LPrint Tab(64); RBYR(0)
+LPrint "RUSHING YARDS";: LPrint Tab(32); Using "####"; RBBC(1);: LPrint Tab(50); RBC$(1);: LPrint Tab(64); RBYR(1)
+LPrint "RUSHING AVERAGE";: LPrint Tab(32); Using "##.#"; RBBC(2);: LPrint Tab(50); RBC$(2);: LPrint Tab(64); RBYR(2)
+LPrint "RUSHING TOUCHDOWNS";: LPrint Tab(33); Using "###"; RBBC(3);: LPrint Tab(50); RBC$(3);: LPrint Tab(64); RBYR(3)
+LPrint "LONGEST RUN";: LPrint Tab(33); Using "###"; RBBC(8);: LPrint Tab(36); RBR$(0);: LPrint Tab(50); RBC$(8);: LPrint Tab(64); RBYR(8)
+LPrint "RECEPTIONS (BACKS)";: LPrint Tab(32); Using "####"; RBBC(4);: LPrint Tab(50); RBC$(4);: LPrint Tab(64); RBYR(4)
+LPrint "RECEIVING YARDS (BACKS)";: LPrint Tab(32); Using "####"; RBBC(5);: LPrint Tab(50); RBC$(5);: LPrint Tab(64); RBYR(5)
+LPrint "RECEIVING AVERAGE (BACKS)";: LPrint Tab(32); Using "##.#"; RBBC(6);: LPrint Tab(50); RBC$(6);: LPrint Tab(64); RBYR(6)
+LPrint "RECEIVING TOUCHDOWNS (BACKS)";: LPrint Tab(32); Using " ###"; RBBC(7);: LPrint Tab(50); RBC$(7);: LPrint Tab(64); RBYR(7)
+LPrint "LONGEST RECEPTION (BACKS)";: LPrint Tab(33); Using "###"; RBBC(9);: LPrint Tab(37); RBR$(1);: LPrint Tab(50); RBC$(9);: LPrint Tab(64); RBYR(9)
+LPrint "RECEPTIONS";: LPrint Tab(32); Using "####"; WRRC(0);: LPrint Tab(50); WRC$(0);: LPrint Tab(64); WRYR(0)
+LPrint "RECEIVING YARDS";: LPrint Tab(32); Using "####"; WRRC(1);: LPrint Tab(50); WRC$(1);: LPrint Tab(64); WRYR(1)
+LPrint "RECEIVING AVERAGE";: LPrint Tab(32); Using "##.#"; WRRC(2);: LPrint Tab(50); WRC$(2);: LPrint Tab(64); WRYR(2)
+LPrint "RECEIVING TOUCHDOWNS";: LPrint Tab(32); Using " ###"; WRRC(3);: LPrint Tab(50); WRC$(3);: LPrint Tab(64); WRYR(3)
+LPrint "LONGEST RECEPTION";: LPrint Tab(32); Using " ###"; WRRC(4);: LPrint Tab(36); WRR$;: LPrint Tab(50); WRC$(4);: LPrint Tab(64); WRYR(4)
+LPrint "COMPLETIONS";: LPrint Tab(32); Using "####"; QBBC(0);: LPrint Tab(50); QBC$(0);: LPrint Tab(64); QBYR(0)
+LPrint "ATTEMPTS";: LPrint Tab(32); Using "####"; QBBC(1);: LPrint Tab(50); QBC$(1);: LPrint Tab(64); QBYR(1)
+LPrint "INTERCEPTIONS";: LPrint Tab(32); Using "####"; QBBC(2);: LPrint Tab(50); QBC$(2);: LPrint Tab(64); QBYR(2)
+LPrint "TOUCHDOWNS";: LPrint Tab(31); Using " ####"; QBBC(3);: LPrint Tab(50); QBC$(3);: LPrint Tab(64); QBYR(3)
+LPrint "PASSING YARDS";: LPrint Tab(32); Using "####"; QBBC(4);: LPrint Tab(50); QBC$(4);: LPrint Tab(64); QBYR(4)
+LPrint "COMPLETION PERCENTAGE";: LPrint Tab(32); Using "##.#"; QBBC(5) * 100;: LPrint Tab(50); QBC$(5);: LPrint Tab(64); QBYR(5)
+LPrint "YARDS PER COMPLETION";: LPrint Tab(32); Using "##.#"; QBBC(6);: LPrint Tab(50); QBC$(6);: LPrint Tab(64); QBYR(6)
+LPrint "QUARTERBACK RATING";: LPrint Tab(31); Using " ##.#"; QBBC(7);: LPrint Tab(50); QBC$(7);: LPrint Tab(64); QBYR(7)
+LPrint "LONGEST PASS";: LPrint Tab(32); Using " ###"; QBBC(8);: LPrint Tab(36); QBR$;: LPrint Tab(50); QBC$(8);: LPrint Tab(64); QBYR(8)
+LPrint "KICK RETURN ATTEMPTS";: LPrint Tab(33); Using "###"; KRRC(0);: LPrint Tab(50); KRC$(0);: LPrint Tab(64); KRYR(0)
+LPrint "KICK RETURN YARDS";: LPrint Tab(32); Using "####"; KRRC(1);: LPrint Tab(50); KRC$(1);: LPrint Tab(64); KRYR(1)
+LPrint "KICK RETURN AVERAGE";: LPrint Tab(32); Using "##.#"; KRRC(2);: LPrint Tab(50); KRC$(2);: LPrint Tab(64); KRYR(2)
+LPrint "KICK RETURN TOUCHDOWNS";: LPrint Tab(32); Using " ###"; KRRC(3);: LPrint Tab(50); KRC$(3);: LPrint Tab(64); KRYR(3)
+LPrint "LONGEST KICK RETURN";: LPrint Tab(32); Using " ###"; KRRC(4);: LPrint Tab(36); KRR$;: LPrint Tab(50); KRC$(4);: LPrint Tab(64); KRYR(4)
+LPrint "PUNT RETURN ATTEMPTS";: LPrint Tab(33); Using "###"; PRRC(0);: LPrint Tab(50); PRC$(0);: LPrint Tab(64); PRYR(0)
+LPrint "PUNT RETURN YARDS";: LPrint Tab(32); Using "####"; PRRC(1);: LPrint Tab(50); PRC$(1);: LPrint Tab(64); PRYR(1)
+LPrint "PUNT RETURN AVERAGE";: LPrint Tab(32); Using "##.#"; PRRC(2);: LPrint Tab(50); PRC$(2);: LPrint Tab(64); PRYR(2)
+LPrint "PUNT RETURN TOUCHDOWNS";: LPrint Tab(32); Using " ###"; PRRC(3);: LPrint Tab(50); PRC$(3);: LPrint Tab(64); PRYR(3)
+LPrint "LONGEST PUNT RETURN";: LPrint Tab(32); Using " ###"; PRRC(4);: LPrint Tab(36); PRR$;: LPrint Tab(50); PRC$(4);: LPrint Tab(64); PRYR(4)
+LPrint "PUNT ATTEMPTS";: LPrint Tab(32); Using "####"; PUUC(0);: LPrint Tab(50); PUC$(0);: LPrint Tab(64); PUYR(0)
+LPrint "PUNTING YARDS";: LPrint Tab(32); Using "####"; PUUC(1);: LPrint Tab(50); PUC$(1);: LPrint Tab(64); PUYR(1)
+LPrint "PUNTING AVERAGE";: LPrint Tab(32); Using "##.#"; PUUC(2);: LPrint Tab(50); PUC$(2);: LPrint Tab(64); PUYR(2)
+LPrint "FIELD GOAL ATTEMPTS";: LPrint Tab(32); Using "####"; FGGC(0);: LPrint Tab(50); FGC$(0);: LPrint Tab(64); FGYR(0)
+LPrint "FIELD GOALS MADE";: LPrint Tab(32); Using "####"; FGGC(1);: LPrint Tab(50); FGC$(1);: LPrint Tab(64); FGYR(1)
+LPrint "FIELD GOAL PERCENTAGE";: LPrint Tab(31); Using "###.#"; FGGC(2) * 100;: LPrint Tab(50); FGC$(2);: LPrint Tab(64); FGYR(2)
+LPrint "LONGEST FIELD GOAL MADE";: LPrint Tab(34); Using "##"; FGGC(6);: LPrint Tab(50); FGC$(6);: LPrint Tab(64); FGYR(6)
+LPrint "EXTRA POINT ATTEMPTS";: LPrint Tab(32); Using "####"; FGGC(3);: LPrint Tab(50); FGC$(3);: LPrint Tab(64); FGYR(3)
+LPrint "EXTRA POINTS MADE";: LPrint Tab(32); Using "####"; FGGC(4);: LPrint Tab(50); FGC$(4);: LPrint Tab(64); FGYR(4)
+LPrint "EXTRA POINT PERCENTAGE";: LPrint Tab(31); Using "###.#"; FGGC(5) * 100;: LPrint Tab(50); FGC$(5);: LPrint Tab(64); FGYR(5)
+Clear: GoTo 1
 
-8999 IF QBBS(J, I, 0) > 0 THEN QBBS(J, I, 11) = INT(QBBS(J, I, 1) / QBBS(J, I, 0) * 1000) / 10
-	IF QBBS(J, I, 0) = 0 THEN QBBS(J, I, 11) = 0: QBBS(J, I, 8) = 0: QBBS(J, I, 10) = 0: QBBS(J, I, 9) = 0: GOTO 9005
-	QBBS(J, I, 8) = INT(QBBS(J, I, 5) / QBBS(J, I, 0) * 1000) / 10
-	QBBS(J, I, 10) = INT(QBBS(J, I, 4) / QBBS(J, I, 0) * 100) / 100
-	QBBS(J, I, 9) = INT(QBBS(J, I, 3) / QBBS(J, I, 0) * 1000) / 10
+8999 If QBBS(J, I, 0) > 0 Then QBBS(J, I, 11) = Int(QBBS(J, I, 1) / QBBS(J, I, 0) * 1000) / 10
+If QBBS(J, I, 0) = 0 Then QBBS(J, I, 11) = 0: QBBS(J, I, 8) = 0: QBBS(J, I, 10) = 0: QBBS(J, I, 9) = 0: GoTo 9005
+QBBS(J, I, 8) = Int(QBBS(J, I, 5) / QBBS(J, I, 0) * 1000) / 10
+QBBS(J, I, 10) = Int(QBBS(J, I, 4) / QBBS(J, I, 0) * 100) / 100
+QBBS(J, I, 9) = Int(QBBS(J, I, 3) / QBBS(J, I, 0) * 1000) / 10
 
 9005 PP(J, I) = QBBS(J, I, 11) - 30
-	IF PP(J, I) < 0 THEN PP(J, I) = 0: GOTO 9009
-	IF PP(J, I) > 77.5 THEN PP(J, I) = 2.375: GOTO 9009
-	PP(J, I) = PP(J, I) * .05
+If PP(J, I) < 0 Then PP(J, I) = 0: GoTo 9009
+If PP(J, I) > 77.5 Then PP(J, I) = 2.375: GoTo 9009
+PP(J, I) = PP(J, I) * .05
 
-9009 IF QBBS(J, I, 8) > 11.9 THEN FF(J, I) = 2.375: GOTO 9011
-	FF(J, I) = QBBS(J, I, 8) * .2
+9009 If QBBS(J, I, 8) > 11.9 Then FF(J, I) = 2.375: GoTo 9011
+FF(J, I) = QBBS(J, I, 8) * .2
 
-9011 IF QBBS(J, I, 9) = 0 THEN II(J, I) = 0: GOTO 9014
-	IF QBBS(J, I, 9) > 9.5 THEN II(J, I) = 0: GOTO 9014
-	II(J, I) = 2.375 - (.25 * QBBS(J, I, 9))
+9011 If QBBS(J, I, 9) = 0 Then II(J, I) = 0: GoTo 9014
+If QBBS(J, I, 9) > 9.5 Then II(J, I) = 0: GoTo 9014
+II(J, I) = 2.375 - (.25 * QBBS(J, I, 9))
 
 9014 QBBS(J, I, 10) = QBBS(J, I, 10) - 3
-	IF QBBS(J, I, 10) < 0 THEN YY(J, I) = 0: GOTO 9020
-	IF QBBS(J, I, 10) > 12.5 THEN YY(J, I) = 2.375: GOTO 9020
-	D = INT(QBBS(J, I, 10) * 100) / 2
-	IF D = QBBS(J, I, 10) / 2 THEN YY(J, I) = QBBS(J, I, 10) / 2 * .3 + QBBS(J, I, 10) / 2 * .2: GOTO 9020
-	YY(J, I) = QBBS(J, I, 10) / 2 * .3 + QBBS(J, I, 10) / 2 * .2 + .003
+If QBBS(J, I, 10) < 0 Then YY(J, I) = 0: GoTo 9020
+If QBBS(J, I, 10) > 12.5 Then YY(J, I) = 2.375: GoTo 9020
+D = Int(QBBS(J, I, 10) * 100) / 2
+If D = QBBS(J, I, 10) / 2 Then YY(J, I) = QBBS(J, I, 10) / 2 * .3 + QBBS(J, I, 10) / 2 * .2: GoTo 9020
+YY(J, I) = QBBS(J, I, 10) / 2 * .3 + QBBS(J, I, 10) / 2 * .2 + .003
 
 9020 QBBS(J, I, 12) = PP(J, I) + FF(J, I) + II(J, I) + YY(J, I)
-	IF QBBS(J, I, 12) > 9.5 THEN QBBS(J, I, 12) = 158.3: GOTO 9027
-	QBBS(J, I, 12) = QBBS(J, I, 12) * 50 / 3
+If QBBS(J, I, 12) > 9.5 Then QBBS(J, I, 12) = 158.3: GoTo 9027
+QBBS(J, I, 12) = QBBS(J, I, 12) * 50 / 3
 
-9027 QBBS(J, I, 12) = INT(QBBS(J, I, 12) * 10) / 10
-	RETURN
+9027 QBBS(J, I, 12) = Int(QBBS(J, I, 12) * 10) / 10
+Return
 
 9500 D = 0
-	FOR J = 0 TO 8
-	D = D + 1
-	X$ = MID$(Z$, D, 1)
-	IF X$ = "." THEN JX = D - 1
-	NEXT J
-	RETURN
+For J = 0 To 8
+    D = D + 1
+    X$ = Mid$(Z$, D, 1)
+    If X$ = "." Then JX = D - 1
+Next J
+Return
 
-3056 COLOR 15, 0: CLS
-	JJ = 6
-	SN = 1: LOCATE 6, 8: COLOR 15, 4
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
-	LOCATE , 12: PRINT "ENTER DISK ID: ": PRINT
-	LOCATE , 12: PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-	LOCATE , 12: PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-	PRINT
-	LOCATE , 12: PRINT "ESC TO RETURN TO MAIN MENU"
+3056 Color 15, 0: Cls
+JJ = 6
+SN = 1: Locate 6, 8: Color 15, 4
+Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
+Print " º"; String$(61, 32); "º ";: Next
+Locate 7 + JJ, 8
+Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+Locate , 12: Print "ENTER DISK ID: ": Print
+Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+Print
+Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
 3057 I$ = GetKeyPress$
-	IF I$ = CHR$(27) THEN Z$ = "END": CLEAR:GOTO 1
+If I$ = Chr$(27) Then Z$ = "END": Clear: GoTo 1
 
-	IF I$ = CHR$(13) THEN GOSUB 1102: GOTO 3060
-	LOCATE 7, 27: PRINT I$
-	LOCATE 7, 28: LINE INPUT NY$
-	NY$ = I$ + NY$
-	COLOR 15, 0
-	IF NY$ = "" THEN GOSUB 1102: GOTO 3060
-	YN$ = NY$
-	FOR I = 1 TO 500: VV$(I) = "": NEXT
-	GOSUB 1100
+If I$ = Chr$(13) Then GoSub 1102: GoTo 3060
+Locate 7, 27: Print I$
+Locate 7, 28: Line Input NY$
+NY$ = I$ + NY$
+Color 15, 0
+If NY$ = "" Then GoSub 1102: GoTo 3060
+YN$ = NY$
+For I = 1 To 500: teamItems$(I) = "": Next
+GoSub 1100
 
-3060 IF BO% = 1 THEN BO% = 0: GOTO 3056
+3060 If BO% = 1 Then BO% = 0: GoTo 3056
 
-3058 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$
-	COLOR 15, 4: LOCATE , 33: PRINT "ANY CHANGE (YN)";
-	I$=GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 3056
-	COLOR 15, 0
-	RETURN
+3058 Locate 2, 33: Color PA%(2), PA%(1): Print A$
+Color 15, 4: Locate , 33: Print "ANY CHANGE (YN)";
+I$ = GetKeyPress$
+If UCase$(I$) = "Y" Then 3056
+Color 15, 0
+Return
 
 1100 NTMS = 0
-OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
-	Y = LOF(1)
-	FIELD #1, 15 AS Q$(0), 640 AS X$
-	FOR I1 = 1 TO Y / 934
-	GET #1, I1
-	FOR I2 = 1 TO 15
-	IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 1105
-	NEXT I2
-	NTMS = NTMS + 1
-	VV$(NTMS) = Q$(0): V%(NTMS) = I1
+Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+Y = LOF(1)
+Field #1, 15 As Q$(0), 640 As X$
+For I1 = 1 To Y / 934
+    Get #1, I1
+    For I2 = 1 To 15
+        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
+    Next I2
+    NTMS = NTMS + 1
+    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
 
-1105 NEXT I1
-CLOSE 1
+1105 Next I1
+Close 1
 
 1102 SELECTION% = 1
-	Count% = NTMS
-	Start% = 1
-	FileFGColr% = 15:FileBGColr% = 4
-	HiLiteFGColr% = 0:HiLiteBGColr% = 7
-	Rows% = 20
-	Columns% = 4
-	Spacing% = 6
-	Row% = 4
-	Column% = 1
-	COLOR , 4: CLS : LOCATE , 33: COLOR 14
-	PRINT "TEAM SELECTION": COLOR 15
-	LOCATE 25, 1: COLOR 14: PRINT "ESC"; : COLOR 15
-	PRINT "-SELECT NEW ID  PGDN  PGUP  "; : COLOR 14
-	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
-	
+Count% = NTMS
+Start% = 1
+FileFGColr% = 15: FileBGColr% = 4
+HiLiteFGColr% = 0: HiLiteBGColr% = 7
+Rows% = 20
+Columns% = 4
+Spacing% = 6
+Row% = 4
+Column% = 1
+Color , 4: Cls: Locate , 33: Color 14
+Print "TEAM SELECTION": Color 15
+Locate 25, 1: Color 14: Print "ESC";: Color 15
+Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
+Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+    
 21 _MouseShow "DEFAULT"
-MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
-	IF EXITCODE% = 27 THEN BO% = 1: RETURN
-	IF EXITCODE% = -71 THEN Start% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 21
-	IF EXITCODE% = -79 THEN Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GOTO 21
-	IF EXITCODE% = -73 THEN Start% = Start% - 80: IF Start% < 1 THEN Start% = 1
-	IF EXITCODE% = -81 THEN Start% = Start% + 80: IF Start% > NTMS THEN Start% = NTMS
-	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = Start%: GOTO 21
-	T1 = V%(SELECTION%)
-OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
-	FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
+If EXITCODE% = 27 Then BO% = 1: Return
+If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 21
+If EXITCODE% = -79 Then Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GoTo 21
+If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
+If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
+If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 21
+T1 = V%(SELECTION%)
+Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
-	GET #1, T1
-	A$ = Q$(1)
-	FOR I1 = 0 TO 4: PA%(I1) = CVI(Q$(I1 + 11)): NEXT I1
-CLOSE 1
+Get #1, T1
+A$ = Q$(1)
+For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+Close 1
 
-9006 IF RIGHT$(A$, 1) = " " THEN A$ = LEFT$(A$, LEN(A$) - 1): GOTO 9006
-	RETURN
+9006 If Right$(A$, 1) = " " Then A$ = Left$(A$, Len(A$) - 1): GoTo 9006
+Return
 
-6585 FOR XX = 4 TO 11: IF MID$(B$, XX, 1) = " " OR MID$(B$, XX, 1) = "." THEN MID$(B$, XX, 1) = "_"
-	NEXT XX
-	FOR XX = 12 TO 14: IF MID$(B$, XX, 2) = "ST" THEN MID$(B$, 9, 1) = "_": MID$(B$, 10, 2) = "ST"
-	NEXT XX
-	QQ = 8: FOR XX = 11 TO 4 STEP -1: IF MID$(B$, XX, 1) = "_" THEN QQ = XX - 4: GOTO 6615
-	GOTO 6620
+6585 For XX = 4 To 11: If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
+Next XX
+For XX = 12 To 14: If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
+Next XX
+QQ = 8: For XX = 11 To 4 Step -1: If Mid$(B$, XX, 1) = "_" Then QQ = XX - 4: GoTo 6615
+    GoTo 6620
 
-6615 NEXT XX
+6615 Next XX
 
-6620 RETURN
+6620 Return
 
-4500 GOSUB 4600
-	PRINT "NO CAREER FILES WERE FOUND"
-	PRINT "PRESS ANY KEY TO RETURN TO MAIN MENU"
+4500 GoSub 4600
+Print "NO CAREER FILES WERE FOUND"
+Print "PRESS ANY KEY TO RETURN TO MAIN MENU"
 3805 I$ = GetKeyPress$
-	CLEAR:GOTO 1
+Clear: GoTo 1
 
 4600 JJ = 4
-	LOCATE 6, 8: COLOR 15, 1
-	PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
-	FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
-	RETURN
+Locate 6, 8: Color 15, 1
+Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
+For II = 1 To JJ: Locate 6 + II, 8
+Print " º"; String$(61, 32); "º ";: Next
+Locate 7 + JJ, 8
+Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
+Return
 
-1900 COLOR 14,0:CLS:LOCATE 5,27:PRINT " - - - C A U T I O N - - -"
+1900 Color 14, 0: Cls: Locate 5, 27: Print " - - - C A U T I O N - - -"
 
-1901 COLOR 15:LOCATE 8,18:PRINT "THIS OPTION SHOULD ONLY BE USED WHEN CREATING"
+1901 Color 15: Locate 8, 18: Print "THIS OPTION SHOULD ONLY BE USED WHEN CREATING"
 
-1902 LOCATE ,18:PRINT "AND MERGING THE INITIAL STAT FILE.  IF YOU ARE"
+1902 Locate , 18: Print "AND MERGING THE INITIAL STAT FILE.  IF YOU ARE"
 
-1903 LOCATE ,18:PRINT "ADDING AN ADDITIONAL YEAR TO AN EXISTING FILE,"
+1903 Locate , 18: Print "ADDING AN ADDITIONAL YEAR TO AN EXISTING FILE,"
 
-1904 LOCATE ,18:PRINT "            USE OPTION #2."
+1904 Locate , 18: Print "            USE OPTION #2."
 
-1905 PRINT:PRINT:PRINT
+1905 Print: Print: Print
 
-1906 COLOR 12:LOCATE ,25:PRINT "DO YOU WISH TO CONTINUE? (Y/N)"
-1907 I$=GetKeyPress$
-1908 IF UCASE$(I$)="Y" THEN GOTO 10
-	GOTO 1
+1906 Color 12: Locate , 25: Print "DO YOU WISH TO CONTINUE? (Y/N)"
+1907 I$ = GetKeyPress$
+1908 If UCase$(I$) = "Y" Then GoTo 10
+GoTo 1
 
 '$INCLUDE: 'KeyInput.BM'
 '$INCLUDE: 'QPProEqu.BM'

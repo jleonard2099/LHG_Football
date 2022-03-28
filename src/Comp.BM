@@ -1,12 +1,10 @@
 
-DECLARE SUB READFILES (D$(), H1$(), XW!, Y%, O%(), O$(), PTSF!(), T%(), PTSA!(), H$(), AP%())
-
 SUB BOXDRAW ()
 	JJ = 4
 	LOCATE 6, 8: COLOR 15, 1
 	PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
 	FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " บ"; STRING$(61, 32); "บ "; : NEXT
+	PRINT " ยบ"; STRING$(61, 32); "ยบ "; : NEXT
 	LOCATE 7 + JJ, 8
 	PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
 END SUB

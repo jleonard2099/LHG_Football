@@ -1,6 +1,11 @@
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
+_Title "3-in-1 Football - View Org Stats"
+''$ExeIcon:'./lhg_3in1fb.ico'
+'_Icon
+_AllowFullScreen
+
 DEFINT A-Z
 DECLARE SUB TITLE ()
 
@@ -806,6 +811,11 @@ CLOSE 2
 	LPRINT CHR$(12)
 	GOTO 3900
 
+
+'------------------------------
+'      TITLE Subroutine
+'------------------------------
+' Displays window title / game copyright
 SUB TITLE ()
 	COLOR , 2
 	LOCATE 1, 1: PRINT TAB(80); : LOCATE , 26: COLOR 0

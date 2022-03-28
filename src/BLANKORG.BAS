@@ -2,13 +2,19 @@
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
+_Title "3-in-1 Football - Delete National Stats"
+''$ExeIcon:'./lhg_3in1fb.ico'
+'_Icon
+_AllowFullScreen
+
 DEFINT A-Z
 
-DIM O1(40), TM$(40), JS(46, 42) AS SINGLE, ZM%(46), NM$(46)
-DIM H1$(40), PS$(40), D$(2), Z4$(40)
-DIM BA$(40), DFT(40, 20) AS SINGLE, ER$(40), OFT(40, 20) AS SINGLE
-DIM O2(40), Z2$(255), Z3$(255), Z1(255, 2) AS SINGLE, BAT(24), PIT(23)
-DIM J AS SINGLE
+'Dim O1(40), TM$(40), JS(46, 42) As Single, ZM%(46), NM$(46)
+Dim H1$(40), D$(2), Z4$(40)
+'Dim PS$(40)
+'Dim BA$(40), DFT(40, 20) As Single, ER$(40), OFT(40, 20) As Single
+'Dim O2(40), Z2$(255), Z3$(255), Z1(255, 2) As Single, BAT(24), PIT(23)
+'Dim J As Single
 
 4 OPEN "DEV.BAS" FOR INPUT AS #2
 	FOR I = 0 TO 1

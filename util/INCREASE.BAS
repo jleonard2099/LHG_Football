@@ -3,8 +3,8 @@
 
 DECLARE SUB TITLE ()
 
-DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), VV$(500)
-DIM V%(500), item$(4), D$(2), PA%(4), B6%(7), A5(9)
+DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamItems$(500)
+DIM V%(500), menuItems$(4), D$(2), PA%(4), B6%(7), A5(9)
 DIM A0%(9), A1%(9), A3%(9), A1$(9), A1(9), A3(9), B(9), B2(1), B3(2), B4(2), DI$(9)
 DIM A4%(5), A5%(5), A2$(5), A$(5)
 DIM A6%(3), A7%(3), A8%(3), QX%(3), A3$(3)
@@ -25,10 +25,10 @@ CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
 	IF A$(1) = "1" THEN RN = 1: GOTO 900
 
 100 CALL TITLE
-	item$(1) = "CHANGE OR EDIT AN EXISTING  TEAM"
-	item$(2) = "PRINT A TEAM ROSTER             "
-	item$(3) = "VIEW A TEAM ROSTER              "
-	item$(4) = "EXIT TO MAIN MENU               "
+	menuItems$(1) = "CHANGE OR EDIT AN EXISTING  TEAM"
+	menuItems$(2) = "PRINT A TEAM ROSTER             "
+	menuItems$(3) = "VIEW A TEAM ROSTER              "
+	menuItems$(4) = "EXIT TO MAIN MENU               "
 	SELECTION% = 1
 	Count% = 4
 	Start% = 1
@@ -40,9 +40,8 @@ CALL Comline(N, A$(), 10)     ' Get what was typed on the command line
 	Column% = 25
 
 CALL box0(7, 24, 12, 57, 2, 31)
-	
 _MouseShow "DEFAULT"
-MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
 	COLOR , 0
@@ -86,7 +85,7 @@ _MouseHide
 	LOCATE 7, 27: INPUT NY$
 	IF NY$ = "" THEN GOSUB 3102: GOTO 182
 	YN$ = NY$
-	FOR I = 1 TO 500: VV$(I) = "": NEXT
+	FOR I = 1 TO 500: teamItems$(I) = "": NEXT
 
 310 GOSUB 3100
 
@@ -333,7 +332,7 @@ OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
 	IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 3105
 	NEXT I2
 	NT = NT + 1
-	VV$(NT) = Q$(0): V%(NT) = I1
+	teamItems$(NT) = Q$(0): V%(NT) = I1
 
 3105 NEXT I1
 CLOSE 1
@@ -356,7 +355,7 @@ TS% = INT((NT - 1) / 80)
 	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
 	
 _MouseShow "DEFAULT"
-20   MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20   MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN BO% = 1: RETURN

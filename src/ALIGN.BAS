@@ -1,604 +1,621 @@
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
-DIM item$(3), D$(1), AR$(1), A$(1), GIN%(9, 2), GSN%(15, 1),LFN$(1)
-DIM Z2(14, 18), Z(38), Z1(38), GI$(1, 10), DI%(10), DS$(15)
-DIM GIR%(9, 2), LRR$(9, 1), LR$(9, 1), LCR$(15, 1), LPR$(3, 1), LP$(3, 1), LKR$(2, 1)
-DIM GI%(9, 2), LRN$(9, 1), LCN$(15, 1), LPN$(3, 1), LKN$(2, 1), PKN$(2, 1)
-DIM LK$(2, 1), PK$(2, 1), PKR$(2, 1), AMR(1, 4), AM(1, 4), AFR(1, 4), AF(1, 4), DI$(9)
-DIM VV$(500), V%(500), Q$(500), PA%(4), APR%(1, 120), CRDR(120), SITER$(120)
-DIM AMN(1, 4), AFN(1, 4), DIN$(9), DSN$(14)
-DIM AP%(1, 120), CRD(120), SITE$(120)
-DIM A1$(9), A2$(5), A3$(3), A4$(2), A5$(2), A6$(3), A7$(1)
-DIM AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
-DIM AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
-DIM GS%(15, 1), LC(15), LC$(15, 1), LFR(1), LFR$(1), LF(1), LF$(1), LFN(1)
-DIM ZR2(14, 18), ZR(38), ZR1(38), GIR$(1, 10), DIR%(10), DSR$(15), DRI$(9)
-DIM GSR%(15, 1), LCR(15), ZN2(14, 18), LCN(15)
-DIM LP(3), LPR(3), LK(2), LKR(2), PK(2), PKR(2)
-DIM LPN(3), LKN(2), PKN(2)
-DIM LR(9), LI(9), LI$(9, 1), LRR(9), LIR(9), LIR$(9, 1)
-DIM LRN(9),LIN(9), LIN$(9, 1)
-DIM O%(120), ORD%(120), O$(120), ORD$(120), T%(120), TR%(120), H$(120), HR$(120)
+_Title "3-in-1 Football - Align Stats"
+''$ExeIcon:'./lhg_3in1fb.ico'
+'_Icon
+_AllowFullScreen
 
-1  CLS
-OPEN "DEV.BAS" FOR INPUT AS #1: FOR I = 0 TO 1: INPUT #1, D$(I): NEXT: CLOSE #1
-	TMR = 6420: NB = -1: NC = -1: ND = -1: NE = -1: NF = -1: NG = -1: NH = -1: NI = -1: NJ = 0: NK = 0: D = 0: JX = 0: VV = 0
-	COLOR , 2: LOCATE 1, 1: PRINT TAB(80); : LOCATE , 26: COLOR 0
-	PRINT "3 IN 1 FOOTBALL UTILITIES"
-	LOCATE 24, 1: PRINT TAB(80); : LOCATE , 1
-	PRINT "(C) LANCE HAFFNER/SHANNON LYNN 1991"; TAB(70); LEFT$(TIME$, 5);
-	LOCATE 4, 1: COLOR 2, 0
-	item$(1) = "ALIGN STATISTICAL FILES           "
-	item$(2) = "EXIT TO MAIN MENU                 "
-	  SELECTION% = 1
-	Count% = 2
-	Start% = 1
-	SCANCODE% = 2
-	FileFGColr% = 15:FileBGColr% = 1
-	HiLiteFGColr% = 0:HiLiteBGColr% = 7
-	Spacing% = 1
-	Row% = 8
-	Column% = 25
+Dim teamItems$(500)
+Dim menuItems$(3), D$(1), AR$(1), A$(1), GIN%(9, 2), GSN%(15, 1), LFN$(1)
+Dim Z2(14, 18), Z(38), Z1(38), DS$(15)
+'Dim GI$(1, 10), DI%(10), APR%(1, 120), CRDR(120), SITER$(120)
+'Dim GIR$(1, 10), DIR%(10),
+Dim GIR%(9, 2), LRR$(9, 1), LR$(9, 1), LCR$(15, 1), LPR$(3, 1), LP$(3, 1), LKR$(2, 1)
+Dim GI%(9, 2), LRN$(9, 1), LCN$(15, 1), LPN$(3, 1), LKN$(2, 1), PKN$(2, 1)
+Dim LK$(2, 1), PK$(2, 1), PKR$(2, 1), AMR(1, 4), AM(1, 4), AFR(1, 4), AF(1, 4), DI$(9)
+Dim V%(500), Q$(500), PA%(4)
+Dim AMN(1, 4), AFN(1, 4), DIN$(9), DSN$(14)
+'Dim AP%(1, 120), CRD(120), SITE$(120)
+Dim A1$(9), A2$(5), A3$(3), A4$(2), A5$(2), A6$(3), A7$(1)
+Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
+Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
+Dim GS%(15, 1), LC(15), LC$(15, 1), LFR(1), LFR$(1), LF(1), LF$(1), LFN(1)
+Dim ZR2(14, 18), ZR(38), ZR1(38), DSR$(15), DRI$(9)
+Dim GSR%(15, 1), LCR(15), ZN2(14, 18), LCN(15)
+Dim LP(3), LPR(3), LK(2), LKR(2), PK(2), PKR(2)
+Dim LPN(3), LKN(2), PKN(2)
+Dim LR(9), LI(9), LI$(9, 1), LRR(9), LIR(9), LIR$(9, 1)
+Dim LRN(9), LIN(9), LIN$(9, 1)
+'Dim O%(120), ORD%(120), O$(120), ORD$(120), T%(120), TR%(120), H$(120), HR$(120)
 
-CALL box0(7, 24, 10, 59, 2, 31)	
+1 Cls
+
+Open "DEV.BAS" For Input As #1: For I = 0 To 1: Input #1, D$(I): Next: Close #1
+
+TMR = 6420: NB = -1: NC = -1: ND = -1: NE = -1: NF = -1: NG = -1: NH = -1: NI = -1: NJ = 0: NK = 0: D = 0: JX = 0: VV = 0
+
+Color , 2
+Locate 1, 1
+Print Tab(80);
+Locate , 26: Color 0
+Print "3 IN 1 FOOTBALL UTILITIES"
+Locate 24, 1
+Print Tab(80);
+Locate , 1
+Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+Locate 4, 1: Color 2, 0
+menuItems$(1) = "ALIGN STATISTICAL FILES           "
+menuItems$(2) = "EXIT TO MAIN MENU                 "
+SELECTION% = 1
+Count% = 2
+Start% = 1
+SCANCODE% = 2
+FileFGColr% = 15: FileBGColr% = 1
+HiLiteFGColr% = 0: HiLiteBGColr% = 7
+Spacing% = 1
+Row% = 8
+Column% = 25
+
+Call box0(7, 24, 10, 59, 2, 31)
 _MouseShow "DEFAULT"
-MMenuVert item$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
 
-	COLOR , 0
-	RN = SELECTION%
-	IF SCANCODE% = 27 THEN RN = 2
-	IF RN = 1 THEN 11
-	RUN "MERGE.EXE"
+Color , 0
+RN = SELECTION%
+If SCANCODE% = 27 Then RN = 2
+If RN = 1 Then 11
+Run "MERGE.EXE"
 
-11 COLOR 12, 0: CLS : LOCATE 2, 5: PRINT "ENTER COMPLETE PATH FOR TEAM STATS TO MERGE"
-	COLOR 15: LOCATE 4, 5: PRINT "EXAMPLE - A:"
-	LOCATE , 5: PRINT "          C:\HAFFNER"
-	LOCATE , 5: PRINT "          C:\HAFFNER\1980"
-	LOCATE , 5: PRINT "          D:\FOOTBALL"
+11 Color 12, 0: Cls: Locate 2, 5: Print "ENTER COMPLETE PATH FOR TEAM STATS TO MERGE"
+Color 15: Locate 4, 5: Print "EXAMPLE - A:"
+Locate , 5: Print "          C:\HAFFNER"
+Locate , 5: Print "          C:\HAFFNER\1980"
+Locate , 5: Print "          D:\FOOTBALL"
 
-27 FOR J = 10 TO 13: LOCATE J
-	PRINT STRING$(72," "): NEXT
-	COLOR 10: LOCATE 10, 5: LINE INPUT "ROAD STATS:     "; PR$
-	LOCATE , 5: LOCATE , 5: LINE INPUT "CURRENT STATS:  "; PC$
+27 For J = 10 To 13: Locate J
+Print String$(72, " "): Next
+Color 10: Locate 10, 5: Line Input "ROAD STATS:     "; PR$
+Locate , 5: Locate , 5: Line Input "CURRENT STATS:  "; PC$
 
-	COLOR 14: LOCATE 13, 5: PRINT "ANY CHANGE (Y/N)"
-	I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 27
+Color 14: Locate 13, 5: Print "ANY CHANGE (Y/N)"
+I$ = GetKeyPress$
+If UCase$(I$) = "Y" Then 27
 
-	GOSUB 3056
-	B$ = A$: GOSUB 6585
-	Z$ = MID$(B$, 4, QQ) + "." + LEFT$(B$, 2)
-	CLS
-	LOCATE 10, 15: PRINT "ROAD STATS ARE ON DRIVE "; PR$
-	LOCATE , 15: PRINT "MASTER STATS ARE ON DRIVE "; PC$
-	LOCATE , 15: PRINT "TEAM TO MERGE STATS FOR IS "; A$
+GoSub 3056
+B$ = A$: GoSub 6585
+Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+Cls
+Locate 10, 15: Print "ROAD STATS ARE ON DRIVE "; PR$
+Locate , 15: Print "MASTER STATS ARE ON DRIVE "; PC$
+Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; A$
 
-	LOCATE 14, 15: PRINT "ANY CHANGE (YN)"
-	I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 11
+Locate 14, 15: Print "ANY CHANGE (YN)"
+I$ = GetKeyPress$
+If UCase$(I$) = "Y" Then 11
 
-110 IF NOT _FILEEXISTS(PR$ + "\" + Z$) THEN 950
-OPEN PR$ + "\" + Z$ FOR INPUT AS #1
-	INPUT #1, AR$(PX)
-	FOR I = 0 TO 9: INPUT #1, AR1$(I): NEXT I
-	FOR I = 0 TO 5: INPUT #1, AR2$(I): NEXT I
-	FOR I = 0 TO 3: INPUT #1, AR3$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, AR4$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, AR5$(I): NEXT I
-	INPUT #1, AR6$(0)
-	FOR I = 0 TO 1: INPUT #1, AR7$(I): NEXT I
-	FOR J = 0 TO 13
-	FOR K = 0 TO 17: INPUT #1, ZR2(J, K): NEXT K
-	NEXT J
-	FOR L = 0 TO 38: INPUT #1, ZR(L): NEXT L
-	FOR L = 0 TO 38: INPUT #1, ZR1(L): NEXT L
-	FOR J = 0 TO 9: INPUT #1, DRI$(J): FOR J1 = 0 TO 2: INPUT #1, GIR%(J, J1): NEXT: NEXT
-	FOR J = 0 TO 14: INPUT #1, DSR$(J): FOR J1 = 0 TO 1: INPUT #1, GSR%(J, J1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LRR(I): INPUT #1, LRR$(I, 0): INPUT #1, LRR$(I, 1): NEXT
-	FOR I = 0 TO 15: INPUT #1, LCR(I): INPUT #1, LCR$(I, 0): INPUT #1, LCR$(I, 1): NEXT
-	FOR I = 0 TO 3: INPUT #1, LPR(I): INPUT #1, LPR$(I, 0): INPUT #1, LPR$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, LKR(I): INPUT #1, LKR$(I, 0): INPUT #1, LKR$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, PKR(I): INPUT #1, PKR$(I, 0): INPUT #1, PKR$(I, 1): NEXT
-	FOR I = 0 TO 1: INPUT #1, LFR(I): INPUT #1, LFR$(I): FOR I1 = 0 TO 4
-	INPUT #1, AMR(I, I1): INPUT #1, AFR(I, I1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LIR(I): INPUT #1, LIR$(I, 0)
-	INPUT #1, LIR$(I, 1): NEXT
-CLOSE #1
+110 If Not _FileExists(PR$ + "\" + Z$) Then 950
+Open PR$ + "\" + Z$ For Input As #1
+Input #1, AR$(PX)
+For I = 0 To 9: Input #1, AR1$(I): Next I
+For I = 0 To 5: Input #1, AR2$(I): Next I
+For I = 0 To 3: Input #1, AR3$(I): Next I
+For I = 0 To 2: Input #1, AR4$(I): Next I
+For I = 0 To 2: Input #1, AR5$(I): Next I
+Input #1, AR6$(0)
+For I = 0 To 1: Input #1, AR7$(I): Next I
+For J = 0 To 13
+    For K = 0 To 17: Input #1, ZR2(J, K): Next K
+Next J
+For L = 0 To 38: Input #1, ZR(L): Next L
+For L = 0 To 38: Input #1, ZR1(L): Next L
+For J = 0 To 9: Input #1, DRI$(J): For J1 = 0 To 2: Input #1, GIR%(J, J1): Next: Next
+For J = 0 To 14: Input #1, DSR$(J): For J1 = 0 To 1: Input #1, GSR%(J, J1): Next: Next
+For I = 0 To 9: Input #1, LRR(I): Input #1, LRR$(I, 0): Input #1, LRR$(I, 1): Next
+For I = 0 To 15: Input #1, LCR(I): Input #1, LCR$(I, 0): Input #1, LCR$(I, 1): Next
+For I = 0 To 3: Input #1, LPR(I): Input #1, LPR$(I, 0): Input #1, LPR$(I, 1): Next
+For I = 0 To 2: Input #1, LKR(I): Input #1, LKR$(I, 0): Input #1, LKR$(I, 1): Next
+For I = 0 To 2: Input #1, PKR(I): Input #1, PKR$(I, 0): Input #1, PKR$(I, 1): Next
+For I = 0 To 1: Input #1, LFR(I): Input #1, LFR$(I): For I1 = 0 To 4
+Input #1, AMR(I, I1): Input #1, AFR(I, I1): Next: Next
+For I = 0 To 9: Input #1, LIR(I): Input #1, LIR$(I, 0)
+Input #1, LIR$(I, 1): Next
+Close #1
 
-215 IF NOT _FILEEXISTS(PC$ + "\" + Z$) THEN 950
-OPEN PC$ + "\" + Z$ FOR INPUT AS #1
-	INPUT #1, A$(PX)
-	FOR I = 0 TO 9: INPUT #1, A1$(I): NEXT I
-	FOR I = 0 TO 5: INPUT #1, A2$(I): NEXT I
-	FOR I = 0 TO 3: INPUT #1, A3$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, A4$(I): NEXT I
-	FOR I = 0 TO 2: INPUT #1, A5$(I): NEXT I
-	INPUT #1, A6$(0)
-	FOR I = 0 TO 1: INPUT #1, A7$(I): NEXT I
-	FOR J = 0 TO 13
-	FOR K = 0 TO 17: INPUT #1, Z2(J, K): NEXT K
-	NEXT J
-	FOR L = 0 TO 38: INPUT #1, Z(L): NEXT L
-	FOR L = 0 TO 38: INPUT #1, Z1(L): NEXT L
-	FOR J = 0 TO 9: INPUT #1, DI$(J): FOR J1 = 0 TO 2: INPUT #1, GI%(J, J1): NEXT: NEXT
-	FOR J = 0 TO 14: INPUT #1, DS$(J): FOR J1 = 0 TO 1: INPUT #1, GS%(J, J1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LR(I): INPUT #1, LR$(I, 0): INPUT #1, LR$(I, 1): NEXT
-	FOR I = 0 TO 15: INPUT #1, LC(I): INPUT #1, LC$(I, 0): INPUT #1, LC$(I, 1): NEXT
-	FOR I = 0 TO 3: INPUT #1, LP(I): INPUT #1, LP$(I, 0): INPUT #1, LP$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, LK(I): INPUT #1, LK$(I, 0): INPUT #1, LK$(I, 1): NEXT
-	FOR I = 0 TO 2: INPUT #1, PK(I): INPUT #1, PK$(I, 0): INPUT #1, PK$(I, 1): NEXT
-	FOR I = 0 TO 1: INPUT #1, LF(I): INPUT #1, LF$(I): FOR I1 = 0 TO 4: INPUT #1, AM(I, I1): INPUT #1, AF(I, I1): NEXT: NEXT
-	FOR I = 0 TO 9: INPUT #1, LI(I): INPUT #1, LI$(I, 0): INPUT #1, LI$(I, 1): NEXT
-CLOSE 1
+215 If Not _FileExists(PC$ + "\" + Z$) Then 950
+Open PC$ + "\" + Z$ For Input As #1
+Input #1, A$(PX)
+For I = 0 To 9: Input #1, A1$(I): Next I
+For I = 0 To 5: Input #1, A2$(I): Next I
+For I = 0 To 3: Input #1, A3$(I): Next I
+For I = 0 To 2: Input #1, A4$(I): Next I
+For I = 0 To 2: Input #1, A5$(I): Next I
+Input #1, A6$(0)
+For I = 0 To 1: Input #1, A7$(I): Next I
+For J = 0 To 13
+    For K = 0 To 17: Input #1, Z2(J, K): Next K
+Next J
+For L = 0 To 38: Input #1, Z(L): Next L
+For L = 0 To 38: Input #1, Z1(L): Next L
+For J = 0 To 9: Input #1, DI$(J): For J1 = 0 To 2: Input #1, GI%(J, J1): Next: Next
+For J = 0 To 14: Input #1, DS$(J): For J1 = 0 To 1: Input #1, GS%(J, J1): Next: Next
+For I = 0 To 9: Input #1, LR(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+For I = 0 To 15: Input #1, LC(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+For I = 0 To 3: Input #1, LP(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
+For I = 0 To 2: Input #1, LK(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
+For I = 0 To 2: Input #1, PK(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
+For I = 0 To 1: Input #1, LF(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM(I, I1): Input #1, AF(I, I1): Next: Next
+For I = 0 To 9: Input #1, LI(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+Close 1
 
-400 GOTO 1000
+400 GoTo 1000
 
 404 N = 0
 
-405 FOR J = 0 TO 9
+405 For J = 0 To 9
 
-406 IF A1$(N) = AR1$(J) THEN 407 ELSE 410
+    406 If A1$(N) = AR1$(J) Then 407 Else GoTo 410
 
-407 AN1$(N) = AR1$(J): LRN(N) = LRR(J): LCN(N) = LCR(J)
-	FOR I = 0 TO 1
-	LRN$(N, I) = LRR$(J, I): LCN$(N, I) = LCR$(J, I)
-	NEXT
+    407 AN1$(N) = AR1$(J): LRN(N) = LRR(J): LCN(N) = LCR(J)
+    For I = 0 To 1
+        LRN$(N, I) = LRR$(J, I): LCN$(N, I) = LCR$(J, I)
+    Next
 
-408 FOR K = 0 TO 5: ZN2(N, K) = ZR2(J, K)
+    408 For K = 0 To 5: ZN2(N, K) = ZR2(J, K)
 
-409 NEXT K
+    409 Next K
 
-410 NEXT J
+410 Next J
 
 411 N = N + 1
 
-412 IF N = 10 GOTO 414 ELSE 405
+412 If N = 10 GoTo 414 Else GoTo 405
 
-414 GOSUB 550: N = 0
+414 GoSub 550: N = 0
 
-415 FOR J = 0 TO 5
+415 For J = 0 To 5
 
-416 IF A2$(N) = AR2$(J) THEN 417 ELSE 420
+    416 If A2$(N) = AR2$(J) Then 417 Else GoTo 420
 
-417 AN2$(N) = AR2$(J): LCN(N + 10) = LCR(J + 10)
-	LCN$(N + 10, 0) = LCR$(J + 10, 0)
-	LCN$(N + 10, 1) = LCR$(J + 10, 1)
+    417 AN2$(N) = AR2$(J): LCN(N + 10) = LCR(J + 10)
+    LCN$(N + 10, 0) = LCR$(J + 10, 0)
+    LCN$(N + 10, 1) = LCR$(J + 10, 1)
 
-418 FOR K = 6 TO 8: ZN2(N, K) = ZR2(J, K)
+    418 For K = 6 To 8: ZN2(N, K) = ZR2(J, K)
 
-419 NEXT K
+    419 Next K
 
-420 NEXT J
+420 Next J
 
 421 N = N + 1
 
-422 IF N = 6 GOTO 424 ELSE 415
+422 If N = 6 GoTo 424 Else GoTo 415
 
 424 N = 0
 
-425 FOR J = 0 TO 3
+425 For J = 0 To 3
 
-426 IF A3$(N) = AR3$(J) THEN 427 ELSE 430
+    426 If A3$(N) = AR3$(J) Then 427 Else GoTo 430
 
-427 AN3$(N) = AR3$(J): LPN(N) = LPR(J)
-	LPN$(N, 0) = LPR$(J, 0)
-	LPN$(N, 1) = LPR$(J, 1)
+    427 AN3$(N) = AR3$(J): LPN(N) = LPR(J)
+    LPN$(N, 0) = LPR$(J, 0)
+    LPN$(N, 1) = LPR$(J, 1)
 
-428 FOR K = 9 TO 13: ZN2(N, K) = ZR2(J, K)
+    428 For K = 9 To 13: ZN2(N, K) = ZR2(J, K)
 
-429 NEXT K
+    429 Next K
 
-430 NEXT J
+430 Next J
 
 431 N = N + 1
 
-432 IF N = 4 GOTO 434 ELSE 425
+432 If N = 4 GoTo 434 Else GoTo 425
 
 434 N = 0
 
-435 FOR J = 0 TO 2
+435 For J = 0 To 2
 
-436 IF A4$(N) = AR4$(J) THEN 437 ELSE 440
+    436 If A4$(N) = AR4$(J) Then 437 Else GoTo 440
 
-437 AN4$(N) = AR4$(J): LKN(N) = LKR(J)
-	LKN$(N, 0) = LKR$(J, 0)
-	LKN$(N, 1) = LKR$(J, 1)
+    437 AN4$(N) = AR4$(J): LKN(N) = LKR(J)
+    LKN$(N, 0) = LKR$(J, 0)
+    LKN$(N, 1) = LKR$(J, 1)
 
-438 FOR K = 14 TO 16: ZN2(N, K) = ZR2(J, K)
+    438 For K = 14 To 16: ZN2(N, K) = ZR2(J, K)
 
-439 NEXT K
+    439 Next K
 
-440 NEXT J
+440 Next J
 
 441 N = N + 1
 
-442 IF N = 3 GOTO 444 ELSE 435
+442 If N = 3 GoTo 444 Else GoTo 435
 
 444 N = 0
 
-445 FOR J = 0 TO 2
+445 For J = 0 To 2
 
-446 IF A5$(N) = AR5$(J) THEN 447 ELSE 450
+    446 If A5$(N) = AR5$(J) Then 447 Else GoTo 450
 
-447 AN5$(N) = AR5$(J): PKN(N) = PKR(J)
-	PKN$(N, 1) = PKR$(J, 1)
-	PKN$(N, 1) = PKR$(J, 1)
+    447 AN5$(N) = AR5$(J): PKN(N) = PKR(J)
+    PKN$(N, 1) = PKR$(J, 1)
+    PKN$(N, 1) = PKR$(J, 1)
 
-448 FOR K = 14 TO 16: ZN2(N + 3, K) = ZR2(J + 3, K)
+    448 For K = 14 To 16: ZN2(N + 3, K) = ZR2(J + 3, K)
 
-449 NEXT K
+    449 Next K
 
-450 NEXT J
+450 Next J
 
 451 N = N + 1
 
-452 IF N = 3 GOTO 460 ELSE 445
+452 If N = 3 GoTo 460 Else GoTo 445
 
-460 IF A6$(0) = AR6$(0) THEN 461 ELSE 470
+460 If A6$(0) = AR6$(0) Then 461 Else GoTo 470
 
 461 AN6$(0) = AR6$(0)
 
 470 N = 0
 
-475 FOR J = 0 TO 1
+475 For J = 0 To 1
 
-476 IF A7$(N) = AR7$(J) THEN 477 ELSE 485
+    476 If A7$(N) = AR7$(J) Then 477 Else GoTo 485
 
-477 AN7$(N) = AR7$(J): LFN(N) = LFR(J):LFN$(N)=LFR$(J)
+    477 AN7$(N) = AR7$(J): LFN(N) = LFR(J): LFN$(N) = LFR$(J)
 
-478 IF N = J THEN 480
+    478 If N = J Then 480
 
-479 IF N <> J THEN 481
+    479 If N <> J Then 481
 
-480 FOR L = 3 TO 6: ZN2(L, 17) = ZR2(L, 17): NEXT L
-	FOR L = 7 TO 10: ZN2(L, 17) = ZR2(L, 17): NEXT L: GOTO 482
+    480 For L = 3 To 6: ZN2(L, 17) = ZR2(L, 17): Next L
+    For L = 7 To 10: ZN2(L, 17) = ZR2(L, 17): Next L: GoTo 482
 
-481 FOR L = 3 TO 6: ZN2(L, 17) = ZR2(L + 4, 17): NEXT L
-	FOR L = 7 TO 10: ZN2(L, 17) = ZR2(L - 4, 17): NEXT L: GOTO 482
+    481 For L = 3 To 6: ZN2(L, 17) = ZR2(L + 4, 17): Next L
+    For L = 7 To 10: ZN2(L, 17) = ZR2(L - 4, 17): Next L: GoTo 482
 
-482 FOR J1 = 0 TO 4: AMN(N, J1) = AMR(J, J1): AFN(N, J1) = AFR(J, J1): NEXT J1
+    482 For J1 = 0 To 4: AMN(N, J1) = AMR(J, J1): AFN(N, J1) = AFR(J, J1): Next J1
 
-485 NEXT J
+485 Next J
 
 486 N = N + 1
 
-487 IF N = 2 GOTO 500 ELSE 475
+487 If N = 2 GoTo 500 Else GoTo 475
 
 500 N = 0
 
-501 FOR J = 0 TO 9
+501 For J = 0 To 9
 
-502 IF DI$(N) = DRI$(J) THEN 503 ELSE 505
+    502 If DI$(N) = DRI$(J) Then 503 Else GoTo 505
 
-503 DIN$(N) = DRI$(J)
-	FOR J1 = 0 TO 2
-	GIN%(J, J1) = GIR%(J, J1)
-	NEXT
+    503 DIN$(N) = DRI$(J)
+    For J1 = 0 To 2
+        GIN%(J, J1) = GIR%(J, J1)
+    Next
 
-505 NEXT J
+505 Next J
 
 506 N = N + 1
 
-507 IF N = 10 THEN GOTO 510 ELSE 501
+507 If N = 10 Then GoTo 510 Else GoTo 501
 
 510 N = 0
 
-511 FOR J = 0 TO 14
+511 For J = 0 To 14
 
-512 IF DS$(N) = DSR$(J) THEN 513 ELSE 515
+    512 If DS$(N) = DSR$(J) Then 513 Else GoTo 515
 
-513 DSN$(N) = DSR$(J)
-	FOR J1 = 0 TO 1
-	GSN%(J, J1) = GSR%(J, J1)
-	NEXT
+    513 DSN$(N) = DSR$(J)
+    For J1 = 0 To 1
+        GSN%(J, J1) = GSR%(J, J1)
+    Next
 
-515 NEXT J
+515 Next J
 
 516 N = N + 1
 
-517 IF N = 15 THEN GOTO 820 ELSE 511
+517 If N = 15 Then GoTo 820 Else GoTo 511
 
 550 N = 0
 
-551 FOR J = 0 TO 3
+551 For J = 0 To 3
 
-552 IF A3$(N) = AR3$(J) THEN 553 ELSE 556
+    552 If A3$(N) = AR3$(J) Then 553 Else GoTo 556
 
-553 AN3$(N) = AR3$(J)
+    553 AN3$(N) = AR3$(J)
 
-554 FOR K = 0 TO 2: ZN2(N + 10, K) = ZR2(J + 10, K)
+    554 For K = 0 To 2: ZN2(N + 10, K) = ZR2(J + 10, K)
 
-555 NEXT K
+    555 Next K
 
-556 NEXT J
+556 Next J
 
 557 N = N + 1
 
-558 IF N = 4 GOTO 559 ELSE 551
+558 If N = 4 GoTo 559 Else GoTo 551
 
-559 RETURN
+559 Return
 
-820 KKK = 1: GOTO 1300
+820 KKK = 1: GoTo 1300
 
-830 OPEN PR$ + "\" + Z$ FOR OUTPUT AS #1
+830 Open PR$ + "\" + Z$ For Output As #1
 
-831 WRITE #1, AR$(PX)
+831 Write #1, AR$(PX)
 
-832 FOR I = 0 TO 9: WRITE #1, AN1$(I): NEXT I
-	FOR I = 0 TO 5: WRITE #1, AN2$(I): NEXT I
-	FOR I = 0 TO 3: WRITE #1, AN3$(I): NEXT I
+832 For I = 0 To 9: Write #1, AN1$(I): Next I
+For I = 0 To 5: Write #1, AN2$(I): Next I
+For I = 0 To 3: Write #1, AN3$(I): Next I
 
-833 FOR I = 0 TO 2: WRITE #1, AN4$(I): NEXT I
-	FOR I = 0 TO 2: WRITE #1, AN5$(I): NEXT I
-	WRITE #1, AN6$(0)
-	FOR I = 0 TO 1: WRITE #1, AN7$(I): NEXT I
+833 For I = 0 To 2: Write #1, AN4$(I): Next I
+For I = 0 To 2: Write #1, AN5$(I): Next I
+Write #1, AN6$(0)
+For I = 0 To 1: Write #1, AN7$(I): Next I
 
-834 FOR J = 0 TO 13
+834 For J = 0 To 13
 
-835 FOR K = 0 TO 17: WRITE #1, ZN2(J, K): NEXT K
+    835 For K = 0 To 17: Write #1, ZN2(J, K): Next K
 
-836 NEXT J
+836 Next J
 
-837 FOR L = 0 TO 38: WRITE #1, ZR(L): NEXT L
+837 For L = 0 To 38: Write #1, ZR(L): Next L
 
-838 FOR L = 0 TO 38: WRITE #1, ZR1(L): NEXT L
-	FOR J = 0 TO 9: WRITE #1, DIN$(J): FOR J1 = 0 TO 2: WRITE #1, GIN%(J, J1): NEXT: NEXT
-	FOR J = 0 TO 14: WRITE #1, DSN$(J): FOR J1 = 0 TO 1: WRITE #1, GSN%(J, J1): NEXT: NEXT
-	FOR I = 0 TO 9: WRITE #1, LRN(I): WRITE #1, LRN$(I, 0): WRITE #1, LRN$(I, 1): NEXT
-	FOR I = 0 TO 15: WRITE #1, LCN(I): WRITE #1, LCN$(I, 0): WRITE #1, LCN$(I, 1): NEXT
-	FOR I = 0 TO 3: WRITE #1, LPN(I): WRITE #1, LPN$(I, 0): WRITE #1, LPN$(I, 1): NEXT
-	FOR I = 0 TO 2: WRITE #1, LKN(I): WRITE #1, LKN$(I, 0): WRITE #1, LKN$(I, 1): NEXT
-	FOR I = 0 TO 2: WRITE #1, PKN(I): WRITE #1, PKN$(I, 0): WRITE #1, PKN$(I, 1): NEXT
-	FOR I = 0 TO 1: WRITE #1, LFN(I): WRITE #1, LFN$(I): FOR I1 = 0 TO 4: WRITE #1, AMN(I, I1): WRITE #1, AFN(I, I1): NEXT: NEXT
-	FOR I = 0 TO 9: WRITE #1, LIN(I): WRITE #1, LIN$(I, 0): WRITE #1, LIN$(I, 1): NEXT
+838 For L = 0 To 38: Write #1, ZR1(L): Next L
+For J = 0 To 9: Write #1, DIN$(J): For J1 = 0 To 2: Write #1, GIN%(J, J1): Next: Next
+For J = 0 To 14: Write #1, DSN$(J): For J1 = 0 To 1: Write #1, GSN%(J, J1): Next: Next
+For I = 0 To 9: Write #1, LRN(I): Write #1, LRN$(I, 0): Write #1, LRN$(I, 1): Next
+For I = 0 To 15: Write #1, LCN(I): Write #1, LCN$(I, 0): Write #1, LCN$(I, 1): Next
+For I = 0 To 3: Write #1, LPN(I): Write #1, LPN$(I, 0): Write #1, LPN$(I, 1): Next
+For I = 0 To 2: Write #1, LKN(I): Write #1, LKN$(I, 0): Write #1, LKN$(I, 1): Next
+For I = 0 To 2: Write #1, PKN(I): Write #1, PKN$(I, 0): Write #1, PKN$(I, 1): Next
+For I = 0 To 1: Write #1, LFN(I): Write #1, LFN$(I): For I1 = 0 To 4: Write #1, AMN(I, I1): Write #1, AFN(I, I1): Next: Next
+For I = 0 To 9: Write #1, LIN(I): Write #1, LIN$(I, 0): Write #1, LIN$(I, 1): Next
 
-860 CLOSE #1
+860 Close #1
 
-880 CLS : COLOR 15: LOCATE 10, 20: PRINT "RE-ALIGNMENT COMPLETED"
+880 Cls: Color 15: Locate 10, 20: Print "RE-ALIGNMENT COMPLETED"
 
-881 PRINT : LOCATE 15, 20: COLOR 12: LINE INPUT "HIT ENTER TO CONTINUE"; DUMMY$
+881 Print: Locate 15, 20: Color 12: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
 
-900 GOSUB 1700
-	GOTO 1
+900
+GoTo 1
 
-950 CLS : LOCATE 2, 10: COLOR 7: PRINT "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
+950 Cls: Locate 2, 10: Color 7: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
 
-951 PRINT : LOCATE , 10: LINE INPUT "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
+951 Print: Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
 
-952 GOTO 11
+952 GoTo 11
 
-1000 CLS : PX = 0: LOCATE 1, 32: COLOR 12: PRINT "STAT ROSTERS"
+1000 Cls: PX = 0: Locate 1, 32: Color 12: Print "STAT ROSTERS"
 
-1001 PRINT : COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "- RUSHERS -"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- RECEIVERS -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 9: LOCATE I + 4: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A1$(I); : COLOR 12: PRINT TAB(20); I; " "; : COLOR 7: PRINT AR1$(I): NEXT
-	FOR I = 0 TO 5: LOCATE I + 4, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A2$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AR2$(I): NEXT
-	LOCATE 11, 40: COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- KICK RET. -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 2: LOCATE I + 12, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A4$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AR4$(I): NEXT
-	LOCATE 15: COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "-   QB'S  -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 3: LOCATE I + 16: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A3$(I); : COLOR 12: PRINT TAB(20); I; " "; : COLOR 7: PRINT AR3$(I): NEXT
-	LOCATE 16, 40: COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- PUNT RET. -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 2: LOCATE I + 17, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A5$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AR5$(I): NEXT
+1001 Print: Color 15: Print "CURRENT  ";: Color 14: Print "- RUSHERS -";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- RECEIVERS -";: Color 7: Print " ROAD"
+For I = 0 To 9: Locate I + 4: Color 12: Print I; " ";: Color 15: Print A1$(I);: Color 12: Print Tab(20); I; " ";: Color 7: Print AR1$(I): Next
+For I = 0 To 5: Locate I + 4, 40: Color 12: Print I; " ";: Color 15: Print A2$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AR2$(I): Next
+Locate 11, 40: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- KICK RET. -";: Color 7: Print " ROAD"
+For I = 0 To 2: Locate I + 12, 40: Color 12: Print I; " ";: Color 15: Print A4$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AR4$(I): Next
+Locate 15: Color 15: Print "CURRENT  ";: Color 14: Print "-   QB'S  -";: Color 7: Print " ROAD"
+For I = 0 To 3: Locate I + 16: Color 12: Print I; " ";: Color 15: Print A3$(I);: Color 12: Print Tab(20); I; " ";: Color 7: Print AR3$(I): Next
+Locate 16, 40: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- PUNT RET. -";: Color 7: Print " ROAD"
+For I = 0 To 2: Locate I + 17, 40: Color 12: Print I; " ";: Color 15: Print A5$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AR5$(I): Next
 
-	COLOR 15: LOCATE 23: PRINT "HIT ANY KEY TO CONTINUE"
-	I$ = GetKeyPress$
+Color 15: Locate 23: Print "HIT ANY KEY TO CONTINUE"
+I$ = GetKeyPress$
 
-	CLS : LOCATE 1, 32: COLOR 12: PRINT "STAT ROSTERS"
-	PRINT
-	COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "- PUNTERS -"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "-  KICKERS  -"; : COLOR 7: PRINT " ROAD"
-	LOCATE 4: COLOR 12: PRINT "0 "; : COLOR 15: PRINT A6$(0); : COLOR 12: PRINT TAB(20); "0 "; : COLOR 7: PRINT AR6$(0)
-	FOR I = 0 TO 1: LOCATE I + 4, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A7$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AR7$(I): NEXT
-	LOCATE 7: COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "-INTERCEPTORS-"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "-  SACKERS  -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 9: LOCATE I + 8: COLOR 12: PRINT USING "##"; I; : PRINT " "; : COLOR 15: PRINT DI$(I); : COLOR 12: PRINT TAB(20); USING "##"; I; : PRINT " "; : COLOR 7: PRINT DRI$(I): NEXT
-	FOR I = 0 TO 14: LOCATE I + 8, 40: COLOR 12: PRINT USING "##"; I; : PRINT " "; : COLOR 15: PRINT DS$(I); : COLOR 12: PRINT TAB(63); USING "##"; I; : PRINT " "; : COLOR 7: PRINT DSR$(I): NEXT
+Cls: Locate 1, 32: Color 12: Print "STAT ROSTERS"
+Print
+Color 15: Print "CURRENT  ";: Color 14: Print "- PUNTERS -";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "-  KICKERS  -";: Color 7: Print " ROAD"
+Locate 4: Color 12: Print "0 ";: Color 15: Print A6$(0);: Color 12: Print Tab(20); "0 ";: Color 7: Print AR6$(0)
+For I = 0 To 1: Locate I + 4, 40: Color 12: Print I; " ";: Color 15: Print A7$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AR7$(I): Next
+Locate 7: Color 15: Print "CURRENT  ";: Color 14: Print "-INTERCEPTORS-";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "-  SACKERS  -";: Color 7: Print " ROAD"
+For I = 0 To 9: Locate I + 8: Color 12: Print Using "##"; I;: Print " ";: Color 15: Print DI$(I);: Color 12: Print Tab(20); Using "##"; I;: Print " ";: Color 7: Print DRI$(I): Next
+For I = 0 To 14: Locate I + 8, 40: Color 12: Print Using "##"; I;: Print " ";: Color 15: Print DS$(I);: Color 12: Print Tab(63); Using "##"; I;: Print " ";: Color 7: Print DSR$(I): Next
 
-1005 COLOR 11: LOCATE 20: LINE INPUT "HIT ENTER TO ALIGN"; DUMMY$
+1005 Color 11: Locate 20: Line Input "HIT ENTER TO ALIGN"; DUMMY$
 
-1006 GOTO 1206
+1006 GoTo 1206
 
-1010 CLS : PX = 0: LOCATE 1, 32: COLOR 12: PRINT "STAT ROSTERS"
+1010 Cls: PX = 0: Locate 1, 32: Color 12: Print "STAT ROSTERS"
 
-1011 PRINT : COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "- RUSHERS -"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- RECEIVERS -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 9: LOCATE I + 4: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A1$(I); : COLOR 12: PRINT TAB(20); I; " "; : COLOR 7: PRINT AN1$(I): NEXT
-	FOR I = 0 TO 5: LOCATE I + 4, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A2$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AN2$(I): NEXT
-	LOCATE 11, 40: COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- KICK RET. -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 2: LOCATE I + 12, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A4$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AN4$(I): NEXT
-	LOCATE 15: COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "-   QB'S  -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 3: LOCATE I + 16: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A3$(I); : COLOR 12: PRINT TAB(20); I; " "; : COLOR 7: PRINT AN3$(I): NEXT
-	LOCATE 16, 40: COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "- PUNT RET. -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 2: LOCATE I + 17, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A5$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AN5$(I): NEXT
+1011 Print: Color 15: Print "CURRENT  ";: Color 14: Print "- RUSHERS -";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- RECEIVERS -";: Color 7: Print " ROAD"
+For I = 0 To 9: Locate I + 4: Color 12: Print I; " ";: Color 15: Print A1$(I);: Color 12: Print Tab(20); I; " ";: Color 7: Print AN1$(I): Next
+For I = 0 To 5: Locate I + 4, 40: Color 12: Print I; " ";: Color 15: Print A2$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AN2$(I): Next
+Locate 11, 40: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- KICK RET. -";: Color 7: Print " ROAD"
+For I = 0 To 2: Locate I + 12, 40: Color 12: Print I; " ";: Color 15: Print A4$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AN4$(I): Next
+Locate 15: Color 15: Print "CURRENT  ";: Color 14: Print "-   QB'S  -";: Color 7: Print " ROAD"
+For I = 0 To 3: Locate I + 16: Color 12: Print I; " ";: Color 15: Print A3$(I);: Color 12: Print Tab(20); I; " ";: Color 7: Print AN3$(I): Next
+Locate 16, 40: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "- PUNT RET. -";: Color 7: Print " ROAD"
+For I = 0 To 2: Locate I + 17, 40: Color 12: Print I; " ";: Color 15: Print A5$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AN5$(I): Next
 
-	COLOR 15: LOCATE 23: PRINT "HIT ANY KEY TO CONTINUE"
+Color 15: Locate 23: Print "HIT ANY KEY TO CONTINUE"
 1012 I$ = GetKeyPress$
 
-	CLS : LOCATE 1, 32: COLOR 12: PRINT "STAT ROSTERS"
-	PRINT
-	COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "- PUNTERS -"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "-  KICKERS  -"; : COLOR 7: PRINT " ROAD"
-	LOCATE 4: COLOR 12: PRINT "0 "; : COLOR 15: PRINT A6$(0); : COLOR 12: PRINT TAB(20); "0 "; : COLOR 7: PRINT AN6$(0)
-	FOR I = 0 TO 1: LOCATE I + 4, 40: COLOR 12: PRINT I; " "; : COLOR 15: PRINT A7$(I); : COLOR 12: PRINT TAB(63); I; " "; : COLOR 7: PRINT AN7$(I): NEXT
-	LOCATE 7: COLOR 15: PRINT "CURRENT  "; : COLOR 14: PRINT "-INTERCEPTORS-"; : COLOR 7: PRINT " ROAD"; : COLOR 15: PRINT TAB(45); "CURRENT  "; : COLOR 14: PRINT "-  SACKERS  -"; : COLOR 7: PRINT " ROAD"
-	FOR I = 0 TO 9: LOCATE I + 8: COLOR 12: PRINT USING "##"; I; : PRINT " "; : COLOR 15: PRINT DI$(I); : COLOR 12: PRINT TAB(20); USING "##"; I; : PRINT " "; : COLOR 7: PRINT DIN$(I): NEXT
-	FOR I = 0 TO 14: LOCATE I + 8, 40: COLOR 12: PRINT USING "##"; I; : PRINT " "; : COLOR 15: PRINT DS$(I); : COLOR 12: PRINT TAB(63); USING "##"; I; : PRINT " "; : COLOR 7: PRINT DSN$(I): NEXT
+Cls: Locate 1, 32: Color 12: Print "STAT ROSTERS"
+Print
+Color 15: Print "CURRENT  ";: Color 14: Print "- PUNTERS -";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "-  KICKERS  -";: Color 7: Print " ROAD"
+Locate 4: Color 12: Print "0 ";: Color 15: Print A6$(0);: Color 12: Print Tab(20); "0 ";: Color 7: Print AN6$(0)
+For I = 0 To 1: Locate I + 4, 40: Color 12: Print I; " ";: Color 15: Print A7$(I);: Color 12: Print Tab(63); I; " ";: Color 7: Print AN7$(I): Next
+Locate 7: Color 15: Print "CURRENT  ";: Color 14: Print "-INTERCEPTORS-";: Color 7: Print " ROAD";: Color 15: Print Tab(45); "CURRENT  ";: Color 14: Print "-  SACKERS  -";: Color 7: Print " ROAD"
+For I = 0 To 9: Locate I + 8: Color 12: Print Using "##"; I;: Print " ";: Color 15: Print DI$(I);: Color 12: Print Tab(20); Using "##"; I;: Print " ";: Color 7: Print DIN$(I): Next
+For I = 0 To 14: Locate I + 8, 40: Color 12: Print Using "##"; I;: Print " ";: Color 15: Print DS$(I);: Color 12: Print Tab(63); Using "##"; I;: Print " ";: Color 7: Print DSN$(I): Next
 
-1015 COLOR 11: LOCATE 20: LINE INPUT "HIT ENTER TO ALIGN"; DUMMY$
+1015 Color 11: Locate 20: Line Input "HIT ENTER TO ALIGN"; DUMMY$
 
-1016 GOTO 830
+1016 GoTo 830
 
-1206 LOCATE 20: PRINT STRING$ (26," ")
+1206 Locate 20: Print String$(26, " ")
 
-1209 COLOR 11: LOCATE 20: PRINT "ALIGNING FILES . . ."
+1209 Color 11: Locate 20: Print "ALIGNING FILES . . ."
 
-1212 GOTO 404
+1212 GoTo 404
 
-1300 LOCATE 20: PRINT STRING$ (26," ")
+1300 Locate 20: Print String$(26, " ")
 
 1301 SEQ = 0
 
-1302 FOR I = 0 TO 9
+1302 For I = 0 To 9
 
-1303 IF AN1$(I) = A1$(I) THEN 1305 ELSE 1304
+    1303 If AN1$(I) = A1$(I) Then 1305 Else GoTo 1304
 
-1304 SEQ = SEQ + 1
+    1304 SEQ = SEQ + 1
 
-1305 NEXT
+1305 Next
 
-1306 FOR I = 0 TO 5
+1306 For I = 0 To 5
 
-1307 IF AN2$(I) = A2$(I) THEN 1309 ELSE 1308
+    1307 If AN2$(I) = A2$(I) Then 1309 Else GoTo 1308
 
-1308 SEQ = SEQ + 1
+    1308 SEQ = SEQ + 1
 
-1309 NEXT
+1309 Next
 
-1311 FOR I = 0 TO 3
+1311 For I = 0 To 3
 
-1312 IF AN3$(I) = A3$(I) THEN 1314 ELSE 1313
+    1312 If AN3$(I) = A3$(I) Then 1314 Else GoTo 1313
 
-1313 SEQ = SEQ + 1
+    1313 SEQ = SEQ + 1
 
-1314 NEXT
+1314 Next
 
-1315 FOR I = 0 TO 2
+1315 For I = 0 To 2
 
-1316 IF AN4$(I) = A4$(I) THEN 1318 ELSE 1317
+    1316 If AN4$(I) = A4$(I) Then 1318 Else GoTo 1317
 
-1317 SEQ = SEQ + 1
+    1317 SEQ = SEQ + 1
 
-1318 NEXT
+1318 Next
 
-1319 FOR I = 0 TO 2
+1319 For I = 0 To 2
 
-1320 IF AN5$(I) = A5$(I) THEN 1322 ELSE 1321
+    1320 If AN5$(I) = A5$(I) Then 1322 Else GoTo 1321
 
-1321 SEQ = SEQ + 1
+    1321 SEQ = SEQ + 1
 
-1322 NEXT
+1322 Next
 
-1324 IF AN6$(I) = A6$(I) THEN 1326 ELSE 1325
+1324 If AN6$(I) = A6$(I) Then 1326 Else GoTo 1325
 
 1325 SEQ = SEQ + 1
 
-1326 FOR I = 0 TO 1
+1326 For I = 0 To 1
 
-1327 IF AN7$(I) = A7$(I) THEN 1329 ELSE 1328
+    1327 If AN7$(I) = A7$(I) Then 1329 Else GoTo 1328
 
-1328 SEQ = SEQ + 1
+    1328 SEQ = SEQ + 1
 
-1329 NEXT
+1329 Next
 
-1390 IF SEQ = 0 THEN 1010 ELSE 1400
+1390 If SEQ = 0 Then 1010 Else GoTo 1400
 
-1400 CLS : LOCATE 20: COLOR 14: PRINT "WARNING !! - - ROAD STAT FILE CONTAINS PLAYERS NOT IN EXISTING STATS.  YOU MUST"
+1400 Cls: Locate 20: Color 14: Print "WARNING !! - - ROAD STAT FILE CONTAINS PLAYERS NOT IN EXISTING STATS.  YOU MUST"
 
-1402 PRINT "CHANGE ROAD STAT FILE USING OPTION #6 ON GAME MENU BEFORE ATTEMPTING STAT MERGE."
+1402 Print "CHANGE ROAD STAT FILE USING OPTION #6 ON GAME MENU BEFORE ATTEMPTING STAT MERGE."
 
-1405 LOCATE 23, 30: COLOR 13: LINE INPUT "HIT ENTER TO CONTINUE"; DUMMY$
+1405 Locate 23, 30: Color 13: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
 
-1406 GOTO 900
+1406 GoTo 900
 
-1704 RETURN
+1704 Return
 
-3056 COLOR 15, 0: CLS
-	JJ = 6
-	SN = 1: LOCATE 6, 8: COLOR 15, 4
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
-	LOCATE , 12: PRINT "ENTER DISK ID: ": PRINT
-	LOCATE , 12: PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-	LOCATE , 12: PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-	PRINT
-	LOCATE , 12: PRINT "ESC TO RETURN TO MAIN MENU"
+3056 Color 15, 0: Cls
+JJ = 6
+SN = 1: Locate 6, 8: Color 15, 4
+Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
+Print " º"; String$(61, 32); "º ";: Next
+Locate 7 + JJ, 8
+Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+Locate , 12: Print "ENTER DISK ID: ": Print
+Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+Print
+Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
 3057 I$ = GetKeyPress$
-	IF I$ = CHR$(27) THEN Z$ = "END": CLEAR : GOTO 1
-	IF I$ = CHR$(13) THEN GOSUB 1102: GOTO 3060
+If I$ = Chr$(27) Then Z$ = "END": Clear: GoTo 1
+If I$ = Chr$(13) Then GoSub 1102: GoTo 3060
 
-	LOCATE 7, 27: PRINT I$
-	LOCATE 7, 28: LINE INPUT NY$
-	NY$ = I$ + NY$
-	COLOR 15, 0
-	IF NY$ = "" THEN GOSUB 1102: GOTO 3060
-	YN$ = NY$
-	FOR I = 1 TO 500: VV$(I) = "": NEXT
-	GOSUB 1101
+Locate 7, 27: Print I$
+Locate 7, 28: Line Input NY$
+NY$ = I$ + NY$
+Color 15, 0
+If NY$ = "" Then GoSub 1102: GoTo 3060
+YN$ = NY$
 
-3060 IF BO% = 1 THEN BO% = 0: GOTO 3056
+For I = 1 To 500: teamItems$(I) = "": Next
+GoSub 1101
 
-3058 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$
+3060 If BO% = 1 Then BO% = 0: GoTo 3056
 
-	COLOR 15, 4: LOCATE , 33: PRINT "ANY CHANGE (YN)";
-	I$ = GetKeyPress$
-	IF UCASE$(I$) = "Y" THEN 3056
-	
-	COLOR 15, 0
-	RETURN
+3058 Locate 2, 33: Color PA%(2), PA%(1): Print A$
+
+Color 15, 4: Locate , 33: Print "ANY CHANGE (YN)";
+I$ = GetKeyPress$
+If UCase$(I$) = "Y" Then 3056
+    
+Color 15, 0
+Return
 
 1101 NTMS = 0
-OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
-	Y = LOF(1)
-	FIELD #1, 15 AS Q$(0), 640 AS X$
-	FOR I1 = 1 TO Y / 934
-	GET #1, I1
-	FOR I2 = 1 TO 15
-	IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 1105
-	NEXT I2
-	NTMS = NTMS + 1
-	VV$(NTMS) = Q$(0): V%(NTMS) = I1
+Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+Y = LOF(1)
+Field #1, 15 As Q$(0), 640 As X$
+For I1 = 1 To Y / 934
+    Get #1, I1
+    For I2 = 1 To 15
+        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
+    Next I2
+    NTMS = NTMS + 1
+    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
 
-1105 NEXT I1
-CLOSE 1
+1105 Next I1
+Close 1
 
 1102 SELECTION% = 1
-	Count% = NTMS
-	Start% = 1
-	FileFGColr% = 15:FileBGColr% = 4
-	HiLiteFGColr% = 0:HiLiteBGColr% = 7
-	Rows% = 20
-	Columns% = 4
-	Spacing% = 6
-	Row% = 4
-	Column% = 1
-	COLOR , 4: CLS : LOCATE , 33: COLOR 14
-	PRINT "TEAM SELECTION": COLOR 15
-	LOCATE 25, 1: COLOR 14: PRINT "ESC"; : COLOR 15
-	PRINT "-SELECT NEW ID  PGDN  PGUP  "; : COLOR 14
-	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
-	
+Count% = NTMS
+Start% = 1
+FileFGColr% = 15: FileBGColr% = 4
+HiLiteFGColr% = 0: HiLiteBGColr% = 7
+Rows% = 20
+Columns% = 4
+Spacing% = 6
+Row% = 4
+Column% = 1
+Color , 4: Cls: Locate , 33: Color 14
+Print "TEAM SELECTION": Color 15
+Locate 25, 1: Color 14: Print "ESC";: Color 15
+Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
+Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+    
 21 _MouseShow "DEFAULT"
-MAMenu VV$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
-	IF EXITCODE% = 27 THEN BO% = 1: RETURN
-	IF EXITCODE% = -71 THEN Start% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 21
-	IF EXITCODE% = -79 THEN Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GOTO 21
-	IF EXITCODE% = -73 THEN Start% = Start% - 80: IF Start% < 1 THEN Start% = 1
-	IF EXITCODE% = -81 THEN Start% = Start% + 80: IF Start% > NTMS THEN Start% = NTMS
-	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = Start%: GOTO 21
-	T1 = V%(SELECTION%)
-	
-OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
-	FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
+If EXITCODE% = 27 Then BO% = 1: Return
+If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 21
+If EXITCODE% = -79 Then Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GoTo 21
+If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
+If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
+If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 21
+T1 = V%(SELECTION%)
+    
+Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
-	GET #1, T1
-	A$ = Q$(1)
-	FOR I1 = 0 TO 4: PA%(I1) = CVI(Q$(I1 + 11)): NEXT I1
-CLOSE 1
+Get #1, T1
+A$ = Q$(1)
+For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+Close 1
 
-9006 IF RIGHT$(A$, 1) = " " THEN A$ = LEFT$(A$, LEN(A$) - 1): GOTO 9006
-	RETURN
+9006 If Right$(A$, 1) = " " Then A$ = Left$(A$, Len(A$) - 1): GoTo 9006
+Return
 
-6585 FOR XX = 4 TO 11: IF MID$(B$, XX, 1) = " " OR MID$(B$, XX, 1) = "." THEN MID$(B$, XX, 1) = "_"
-	NEXT XX
-	FOR XX = 12 TO 14: IF MID$(B$, XX, 2) = "ST" THEN MID$(B$, 9, 1) = "_": MID$(B$, 10, 2) = "ST"
-	NEXT XX
-	QQ = 8: FOR XX = 11 TO 4 STEP -1: IF MID$(B$, XX, 1) = "_" THEN QQ = XX - 4: GOTO 6615
-	GOTO 6620
+6585 For XX = 4 To 11: If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
+Next XX
+For XX = 12 To 14: If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
+Next XX
+QQ = 8: For XX = 11 To 4 Step -1: If Mid$(B$, XX, 1) = "_" Then QQ = XX - 4: GoTo 6615
+    GoTo 6620
 
-6615 NEXT XX
+6615 Next XX
 
-6620 RETURN
+6620 Return
 
 '$INCLUDE: 'KeyInput.BM'
 '$INCLUDE: 'QPProEqu.BM'

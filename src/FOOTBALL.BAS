@@ -1,10 +1,10 @@
-$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
-_Title "3-in-1 Football"
-''$EXEICON:'lhg_3in1.ico'
-'_ICON
+_Title "3-in-1 Football - GRIDIRON!"
+$ExeIcon:'./lhg_3in1fb.ico'
+_Icon
+_AllowFullScreen
 
 DECLARE FUNCTION FNP(X)
 DECLARE SUB ADDBACKS ()
@@ -2193,6 +2193,7 @@ GoTo 8628
 '------------------------------
 '      SCOUT Subroutine
 '------------------------------
+' ...explanation...
 Sub SCOUT ()
     For I = 0 To 1
         I2 = 0: I3 = 0: I4 = 0: I5 = 0: I6 = 0
@@ -2239,6 +2240,7 @@ End Sub
 '------------------------------
 '      HALFSTART Subroutine
 '------------------------------
+' ...explanation...
 Sub HALFSTART ()
     P1 = W%: D = 1: If P1 = D Then D = 0
     T1(0) = 3: T1(1) = T1(0): Y = 35: YT = 65: D1 = 1: Y1 = 10: YF = -Y1
@@ -2251,6 +2253,7 @@ End Sub
 '------------------------------
 '      BOXDRAW Subroutine
 '------------------------------
+' ...explanation...
 Sub BOXDRAW (J)
     PCopy 0, 1
     Screen , , 1, 1
@@ -2278,6 +2281,7 @@ End Sub
 '------------------------------
 '      KICKER Subroutine
 '------------------------------
+' ...explanation...
 Sub KICKER ()
     Color , 1: Cls: J = 10: Call BOXDRAW(J)
     Locate , 31: Print "SELECT KICKER": Print
@@ -2298,17 +2302,9 @@ End Sub
 
 
 '------------------------------
-'      DRAWABOX Subroutine
-'------------------------------
-Sub GETAKEY ()
-
-    950 I$ = GetKeyPress$
-End Sub
-
-
-'------------------------------
 '     TICKUPDATE Subroutine
 '------------------------------
+' ...explanation...
 Sub TICKUPDATE ()
     If AP <> 1 Or AP%(2) > 32 Then 952
     If Q = 1 And T <= 600 And SX%(AP%(2) + 1, 0, 1) = -1 Then SX%(AP%(2) + 1, 0, 1) = S(0, 0): SX%(AP%(2) + 1, 1, 1) = S(1, 0)
@@ -2331,6 +2327,7 @@ End Sub
 '------------------------------
 '      PLACEPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub PLACEPBP ()
     U$ = Left$(U$, 76)
     Color 14 - 7 * BW, 1 - BW
@@ -2344,6 +2341,7 @@ End Sub
 '------------------------------
 '      PBP Subroutine
 '------------------------------
+' ...explanation...
 Sub PBP ()
     M$ = InKey$
     If UCase$(M$) = "Q" Then Cls: End
@@ -2357,6 +2355,7 @@ End Sub
 '------------------------------
 '    DISPWEATHER Subroutine
 '------------------------------
+' ...explanation...
 Sub DISPWEATHER ()
     Color 15 * (1 - BW), 2 + 5 * BW
     Locate 7, 20: Print "WIND: ";
@@ -2375,6 +2374,7 @@ End Sub
 '------------------------------
 '    CHANGEPOSS Subroutine
 '------------------------------
+' ...explanation...
 Sub CHANGEPOSS ()
     Swap P1, D
 End Sub
@@ -2383,6 +2383,7 @@ End Sub
 '------------------------------
 '    SETSCREEN Subroutine
 '------------------------------
+' ...explanation...
 Sub SETSCREEN ()
     Screen , , 0, 0
     SN = 0
@@ -2402,6 +2403,7 @@ End Sub
 '------------------------------
 '     DISPFIELD Subroutine
 '------------------------------
+' ...explanation...
 Sub DISPFIELD ()
     Locate 2, 40
     Color 1 + BW * 6, 0
@@ -2537,6 +2539,7 @@ End Sub
 '------------------------------
 '      YARDLINE Subroutine
 '------------------------------
+' ...explanation...
 Sub YARDLINE ()
     YL = YT - (YT > 50) * (100 - YT - YT)
 End Sub
@@ -2545,6 +2548,7 @@ End Sub
 '------------------------------
 '      GOALLINE Subroutine
 '------------------------------
+' ...explanation...
 Sub GOALLINE ()
     '*** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
@@ -2628,6 +2632,7 @@ End Sub
 '------------------------------
 '    FINDSPACE Subroutine
 '------------------------------
+' ...explanation...
 Sub FINDSPACE ()
     I2 = 0
 
@@ -2643,6 +2648,7 @@ End Sub
 '------------------------------
 '      NAMEEDIT Subroutine
 '------------------------------
+' ...explanation...
 Sub NAMEEDIT ()
     For I = 0 To 1
 
@@ -2665,6 +2671,7 @@ End Sub
 '------------------------------
 '      SCOUTREPT Subroutine
 '------------------------------
+' ...explanation...
 Sub SCOUTREPT ()
     J = 13: Call BOXDRAW(J): Locate 8, 30: Print "SCOUTING REPORT": Locate 10, 30
     Color PA%(0, 2), PA%(0, 1): Print A$(0);: Color 0, 7
@@ -2694,6 +2701,7 @@ End Sub
 '------------------------------
 '     GETTEAM Subroutine
 '------------------------------
+' ...explanation...
 Sub GETTEAM ()
 
     If _FileExists(DV$(0) + "FOOT." + YN$) Then
@@ -2823,6 +2831,7 @@ End Sub
 '------------------------------
 '      TICKER Subroutine
 '------------------------------
+' ...explanation...
 Sub TICKER ()
     '*** TICKER ***
     If AP = 1 And J6(0) = 2 Then 884
@@ -3001,6 +3010,7 @@ End Sub
 '------------------------------
 '     SAVESTATS Subroutine
 '------------------------------
+' ...explanation...
 Sub SAVESTATS ()
     Cls
     PN = Q
@@ -3221,6 +3231,7 @@ End Sub
 '------------------------------
 '      ADDBACKS Subroutine
 '------------------------------
+' ...explanation...
 Sub ADDBACKS ()
     For I = 0 To 1
         For I1 = 0 To 9
@@ -3233,6 +3244,7 @@ End Sub
 '------------------------------
 '      GETSPEED Subroutine
 '------------------------------
+' ...explanation...
 Sub GETSPEED ()
     If AP = 1 And J6(0) = 2 Then 4098
     I$ = GetKeyPress$
@@ -3243,6 +3255,7 @@ Sub GETSPEED ()
 '------------------------------
 '      DECIDE Subroutine
 '------------------------------
+' ...explanation...
 Sub DECIDE ()
     If X = 0 And AP <> 1 Or AP = 1 And J6(0) <> 2 Then Call GETSPEED
 End Sub
@@ -3251,6 +3264,7 @@ End Sub
 '------------------------------
 '      DRAWABOX Subroutine
 '------------------------------
+' ...explanation...
 Sub DRAWABOX ()
     SN = 1
     Locate 1, 1
@@ -3273,6 +3287,7 @@ End Sub
 '      ONSIDE Subroutine
 '------------------------------
 
+' ...explanation...
 Sub ONSIDE ()
     X = Int(Rnd(1) * 100) + 1
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE": Call PBP
@@ -3296,6 +3311,7 @@ End Sub
 '------------------------------
 '      PRINTBOX Subroutine
 '------------------------------
+' ...explanation...
 Sub PRINTBOX ()
     Open DV$(1) + NM$ For Output As #1
     If H% = 2 Then Print #1, "SITE: NEUTRAL  ATTENDANCE: "; ATT
@@ -3522,6 +3538,7 @@ End Sub
 '------------------------------
 '     BOX2SCREEN Subroutine
 '------------------------------
+' ...explanation...
 Sub BOX2SCREEN ()
     If H% = 2 Then Print "SITE: NEUTRAL  ATTENDANCE: "; ATT
     If H% <> 2 Then Print "SITE: "; SITE$;: Print Using "  ATTENDANCE: ####,###"; ATT
@@ -3602,6 +3619,7 @@ End Sub
 '------------------------------
 '   STATS2SCREEN Subroutine
 '------------------------------
+' ...explanation...
 Sub STATS2SCREEN ()
     J = 14
     Call BOXDRAW(J)
@@ -3806,6 +3824,7 @@ End Sub
 '------------------------------
 '    INCOMPLETE Subroutine
 '------------------------------
+' ...explanation...
 Sub INCOMPLETE ()
     Call QBTHROW
 
@@ -3877,6 +3896,7 @@ End Sub
 '------------------------------
 '      QBSNEAK Subroutine
 '------------------------------
+' ...explanation...
 Sub QBSNEAK ()
     '*** QB SNEAK ***
     U$ = A3$(P1, Q6%(P1)) + " KEEPS IT ON THE SNEAK": Call PBP
@@ -3910,9 +3930,8 @@ End Sub
 
 '------------------------------
 '      OVERUSE Subroutine
-
 '------------------------------
-
+' ...explanation...
 Sub OVERUSE ()
     If K(P1, 1) + K(P1, 3) = 0 Then 4050
     If (K(P1, 1) / (K(P1, 1) + K(P1, 3))) < (B6(P1, 7) / 100) And K3(P1, 3) >= 18 Then I4 = I4 * .65
@@ -3924,6 +3943,7 @@ End Sub
 '------------------------------
 '      BLITZ Subroutine
 '------------------------------
+' ...explanation...
 Sub BLITZ ()
     I5 = Int(Rnd(1) * 100) + 1: XE = YC(D) / 100
     If XE > .5 Then 4706
@@ -4011,6 +4031,7 @@ End Sub
 '------------------------------
 '      BLITZ2 Subroutine
 '------------------------------
+' ...explanation...
 Sub BLITZ2 ()
     '*** BLITZ ***
     I4 = Int(Rnd(1) * 100) + 1
@@ -4049,7 +4070,7 @@ End Sub
 '------------------------------
 '      COMPCHEAT Subroutine
 '------------------------------
-
+' ...explanation...
 Sub COMPCHEAT ()
 
     1100 R0 = Int(Rnd(1) * 4) + 1: D3 = 1: I3 = Int(Rnd(1) * 100) + 1: If R0 <> 2 Then 1111
@@ -4070,6 +4091,7 @@ End Sub
 '------------------------------
 '      PBPRINT Subroutine
 '------------------------------
+' ...explanation...
 Sub PBPINT ()
     U$ = ""
     If intDS%(D) = 0 Then 685
@@ -4087,6 +4109,7 @@ End Sub
 '------------------------------
 '      ADDTIME Subroutine
 '------------------------------
+' ...explanation...
 Sub ADDTIME ()
     If T <= 0 Then TP(P1) = TP(P1) + T: T = T - T
 End Sub
@@ -4095,6 +4118,7 @@ End Sub
 '------------------------------
 '      DEFENSE Subroutine
 '------------------------------
+' ...explanation...
 Sub DEFENSE ()
     '*** COMPUTER DEFENSE ***
     If Q = 2 And T <= 120 Then 8895
@@ -4163,6 +4187,7 @@ End Sub
 '------------------------------
 '      MARKER Subroutine
 '------------------------------
+' ...explanation...
 Sub MARKER ()
     If P1 Then J = FNP(YT) - 3 Else J = FNP(100 - YT) - 3
     Locate 13, 4: Color 15 * (1 - BW), 2 + 5 * BW
@@ -4192,6 +4217,7 @@ End Sub
 '------------------------------
 '      MARKER1 Subroutine
 '------------------------------
+' ...explanation...
 Sub MARKER1 ()
     YT = 100 - Y: YF = -Y1
     If P1 Then WS = FNP(YT + YF) - 3: WE = WS + 6 Else WE = FNP(100 - YT - YF) - 3: WS = WE - 6
@@ -4202,6 +4228,7 @@ End Sub
 '------------------------------
 '       DBOX Subroutine
 '------------------------------
+' ...explanation...
 Sub DBOX ()
     PCopy 0, 1
     Screen , , 1, 1
@@ -4228,6 +4255,7 @@ End Sub
 '------------------------------
 '       PBOX Subroutine
 '------------------------------
+' ...explanation...
 Sub PBOX ()
     PCopy 0, 1
     Screen , , 1, 1
@@ -4254,6 +4282,7 @@ End Sub
 '------------------------------
 '   MOVEBALL Subroutine
 '------------------------------
+' ...explanation...
 Sub MOVEBALL ()
     If displayPause = 0 Then 2155
     I$ = "He's at "
@@ -4318,6 +4347,7 @@ End Sub
 '------------------------------
 '   SCOREBOARD Subroutine
 '------------------------------
+' ...explanation...
 Sub SCOREBOARD ()
     Screen , , 0, 0
     If Screen(2, 1) <> 219 Then Call SETSCREEN: Call MARKER1: GoTo 1980
@@ -4344,6 +4374,7 @@ End Sub
 '------------------------------
 '     DEFMENU Subroutine
 '------------------------------
+' ...explanation...
 Sub DEFMENU ()
     If J6(0) = 1 And D = CT Or J6(0) = 2 Then Call DEFENSE: Call DEFGOALLINE: GoTo 3055
 
@@ -4385,6 +4416,7 @@ End Sub
 '------------------------------
 '   DEGFOALLINE Subroutine
 '------------------------------
+' ...explanation...
 Sub DEFGOALLINE ()
     If Y > 94.999 Then D2 = 11: D3 = 1
 End Sub
@@ -4393,6 +4425,7 @@ End Sub
 '------------------------------
 '       LGPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub LGPBP ()
     '*** PBP TO START LONG GAIN ***
     RN = Int(Rnd(1) * 20) + 1
@@ -4423,6 +4456,7 @@ End Sub
 '------------------------------
 '   RUNTDPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub RUNTDPBP ()
     '*** PBP TO START LONG GAIN ***
     RN = Int(Rnd(1) * 29) + 1
@@ -4462,6 +4496,7 @@ End Sub
 '------------------------------
 '   SETWEATHER Subroutine
 '------------------------------
+' ...explanation...
 Sub SETWEATHER ()
     For I = 0 To 1: YR%(I) = Val(Left$(A$(I), 2)): Next
     If YR%(0) >= 0 And YR%(0) <= 15 Then YR%(0) = 99
@@ -4515,6 +4550,12 @@ Sub SETWEATHER ()
     End If
 End Sub
 
+
+'------------------------------
+'      FGATT Subroutine
+'------------------------------
+' ...explanation...
+' ...explanation...
 Sub FGATT ()
     DT = Int(117 + intY8% - Y + .5)
     If DT <= 19 Then FA(P1, Q7%(P1), 0) = FA(P1, Q7%(P1), 0) + 1
@@ -4528,6 +4569,7 @@ End Sub
 '------------------------------
 '   FGMADESubroutine
 '------------------------------
+' ...explanation...
 Sub FGMADE ()
     If DT <= 19 Then FM(P1, Q7%(P1), 0) = FM(P1, Q7%(P1), 0) + 1
     If DT > 19 And DT <= 29 Then FM(P1, Q7%(P1), 1) = FM(P1, Q7%(P1), 1) + 1
@@ -4541,6 +4583,7 @@ End Sub
 '------------------------------
 '   OFFMENU Subroutine
 '------------------------------
+' ...explanation...
 Sub OFFMENU ()
     If E = 1 Then
         R0 = Int(Rnd(1) * 100) + 1
@@ -4643,6 +4686,7 @@ End Sub
 '------------------------------
 '   MEASUREMENT Subroutine
 '------------------------------
+' ...explanation...
 Sub MEASUREMENT ()
     U$ = "HE'S CLOSE TO A FIRST DOWN": Call PBP
     U$ = "THE OFFICIAL SIGNALS FOR A MEASUREMENT": Call PBP: Call PBP
@@ -4658,6 +4702,7 @@ End Sub
 '------------------------------
 '   WHICHRECEIVER Subroutine
 '------------------------------
+' ...explanation...
 Sub WHICHRECEIVER
     If I3 > 9 Then U$ = U$ + A2$(P1, I3 - 10) Else U$ = U$ + A1$(P1, I3)
 End Sub
@@ -4666,6 +4711,7 @@ End Sub
 '------------------------------
 '   CLIPPING Subroutine
 '------------------------------
+' ...explanation...
 Sub CLIPPING ()
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
     Call PBP
@@ -4677,6 +4723,7 @@ End Sub
 '------------------------------
 '       QBBOX Subroutine
 '------------------------------
+' ...explanation...
 Sub QBBOX ()
     Locate 6, 8: Color PA%(I, 2), PA%(I, 1)
 
@@ -4695,6 +4742,7 @@ End Sub
 '------------------------------
 '   CHANGEQB Subroutine
 '------------------------------
+' ...explanation...
 Sub CHANGEQB ()
 
     8300 Color 15, 0: Cls: JJ = 12: I = I3
@@ -4754,6 +4802,7 @@ End Sub
 '   FINDTEAMS Subroutine
 '------------------------------
 'Get list of teams from file
+' ...explanation...
 Sub FINDTEAMS ()
     NT = 0
 
@@ -4787,6 +4836,7 @@ End Sub
 '------------------------------
 '     KICKOFF Subroutine
 '------------------------------
+' ...explanation...
 Sub KICKOFF ()
     Call SCOREBOARD
     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then I9 = 2: GoTo 1005
@@ -4837,6 +4887,7 @@ End Sub
 '------------------------------
 '    COLKICKOFF Subroutine
 '------------------------------
+' ...explanation...
 Sub COLKICKOFF ()
 
     1200 'COLL KO
@@ -4891,6 +4942,7 @@ End Sub
 '------------------------------
 '    TAKESAFETY Subroutine
 '------------------------------
+' ...explanation...
 Sub TAKESAFETY ()
     TP = Int(Rnd(1) * 3) + 4: T = T - TP: TP(P1) = TP(P1) + TP
     G = (Y * -1) - 1: K(P1, 1) = K(P1, 1) + 1: K(P1, 2) = K(P1, 2) + G
@@ -4903,11 +4955,12 @@ End Sub
 '      DELAY Subroutine
 '------------------------------
 '??? What was J6(0) ???
+' ...explanation...
 Sub DELAY ()
     'If J6(0) <> 2 Then 8412
     'For DL = 1 To displayPause
     'Next
-	_Delay displayPause
+    _Delay displayPause
     '8412 Rem
 End Sub
 
@@ -4915,6 +4968,7 @@ End Sub
 '------------------------------
 '      FINDINT Subroutine
 '------------------------------
+' ...explanation...
 Sub FINDINT ()
     'FIND INT
     M5 = 0: RN = Int(Rnd(1) * DDI(1 - P1)) + 1
@@ -4930,6 +4984,7 @@ End Sub
 '------------------------------
 '      YARDAGE Subroutine
 '------------------------------
+' ...explanation...
 Sub YARDAGE ()
     G = G + (Int(Rnd(1) * 11) - 5) / 10
 End Sub
@@ -4938,6 +4993,7 @@ End Sub
 '------------------------------
 '      PUNTYARDS Subroutine
 '------------------------------
+' ...explanation...
 Sub PUNTYARDS ()
     I3 = Int(Rnd(1) * 100) + 1: Y = Y + G: Call CHANGEPOSS: YT = Y: Y = 100 - Y: Call YARDLINE
     RN = Int(Rnd(1) * 1000) + 1
@@ -4962,6 +5018,7 @@ End Sub
 '------------------------------
 '      FAKEYARDS Subroutine
 '------------------------------
+' ...explanation...
 Sub FAKEYARDS ()
     U$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -4983,6 +5040,7 @@ End Sub
 '------------------------------
 '      FUMBLE Subroutine
 '------------------------------
+' ...explanation...
 Sub FUMBLE ()
     F8 = Int(Rnd(1) * 100) + 1
     If RF% = 1 Then F8 = F8 - 10: RF% = 0: GoTo 3627
@@ -5003,6 +5061,7 @@ End Sub
 '------------------------------
 '      FLEA Subroutine
 '------------------------------
+' ...explanation...
 Sub FLEA ()
     I1 = Q6%(P1)
     C% = A7(P1, Q6%(P1)) + Int(B6(D, 1)) - 4
@@ -5028,6 +5087,7 @@ End Sub
 '------------------------------
 '      REVGAIN Subroutine
 '------------------------------
+' ...explanation...
 Sub REVGAIN ()
     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP"
     U$ = U$ + " AND HANDS OFF TO " + A1$(P1, I1) + " ON THE REVERSE!!": Call PBP
@@ -5045,6 +5105,7 @@ End Sub
 '------------------------------
 '      FAKERUN Subroutine
 '------------------------------
+' ...explanation...
 Sub FAKERUN ()
     U$ = "IT'S A FAKE!!! THE HOLDER IS RUNNING THE BALL": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -5064,6 +5125,7 @@ End Sub
 '------------------------------
 '      HANDOFF Subroutine
 '------------------------------
+' ...explanation...
 Sub HANDOFF ()
 
     4110 If D2 = 11 Then U$ = D$(D2): Call PBP: GoTo 4111
@@ -5091,6 +5153,7 @@ End Sub
 '------------------------------
 '      PASSBALL Subroutine
 '------------------------------
+' ...explanation...
 Sub PASSBALL ()
     S6 = 0
     Call QBLINE
@@ -5152,6 +5215,7 @@ End Sub
 '------------------------------
 '      ARMADJUST Subroutine
 '------------------------------
+' ...explanation...
 Sub ARMADJUST ()
     S2 = A7(P1, I1) + Int(B6(D, 1))
     If P1 = H% Then S2 = S2 + 3
@@ -5172,6 +5236,7 @@ End Sub
 '------------------------------
 '      SCORE Subroutine
 '------------------------------
+' ...explanation...
 Sub SCORE ()
     X2 = X2 + 1: T(X2) = T: C(X2) = Q
     If X1 <> 7 Then K1(X2, 1) = P1
@@ -5190,6 +5255,7 @@ End Sub
 '------------------------------
 '      COMPILER Subroutine
 '------------------------------
+' ...explanation...
 Sub COMPILER ()
     If X < 1 Or X > 4 Then 7000
     On X GOTO 7002, 7005, 7006, 7002
@@ -5246,6 +5312,7 @@ End Sub
 '------------------------------
 '      TWOMIN Subroutine
 '------------------------------
+' ...explanation...
 Sub TWOMIN ()
     J = 7: Call BOXDRAW(J)
     Locate 9, 14: Print "1 - HUDDLE"
@@ -5276,6 +5343,7 @@ End Sub
 '------------------------------
 '      FGDIST Subroutine
 '------------------------------
+' ...explanation...
 Sub FGDIST ()
     I9 = 0: If WX%(0) = P1 And WX%(1) = -7 Then I9 = -7
     If WX%(0) = P1 And WX%(1) = -15 Then I9 = -15
@@ -5292,6 +5360,7 @@ End Sub
 '------------------------------
 '      RUNMENU Subroutine
 '------------------------------
+' ...explanation...
 Sub RUNMENU ()
     J = 12: Call PBOX: Print "SELECT RUNNING PLAY "; A$(P1)
     Locate 12
@@ -5309,6 +5378,7 @@ End Sub
 '------------------------------
 '      PASSMENU Subroutine
 '------------------------------
+' ...explanation...
 Sub PASSMENU ()
     J = 11: Call PBOX: Print "SELECT PASS PLAY "; A$(P1)
     Locate 12
@@ -5325,6 +5395,7 @@ End Sub
 '------------------------------
 '    SHORTYARDAGE Subroutine
 '------------------------------
+' ...explanation...
 Sub SHORTYARDAGE ()
     '*** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
@@ -5407,6 +5478,7 @@ End Sub
 '------------------------------
 '      PASSPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub PASSPBP ()
     '*** PASS PLAY BY PLAY ***
     RN = Int(Rnd(1) * 100) + 1
@@ -5462,6 +5534,7 @@ End Sub
 '------------------------------
 '      SACK Subroutine
 '------------------------------
+' ...explanation...
 Sub SACK ()
     U$ = "BUT HE WON'T BE ABLE TO GET THIS PASS AWAY!": Call PBP
     U$ = A3$(P1, I1)
@@ -5488,6 +5561,7 @@ End Sub
 '------------------------------
 '      QBLINE Subroutine
 '------------------------------
+' ...explanation...
 Sub QBLINE ()
     QB = 0
     If RQ%(P1) = 1 Then Q6%(P1) = 0 Else QB = Q6%(P1)
@@ -5510,6 +5584,7 @@ End Sub
 '------------------------------
 '      SQUIB Subroutine
 '------------------------------
+' ...explanation...
 Sub SQUIB ()
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE": Call PBP
     U$ = A$(P1) + " IS LINING UP FOR THE KICKOFF": Call PBP
@@ -5529,6 +5604,7 @@ End Sub
 '------------------------------
 '      PUNTPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub PUNTPBP ()
     RN = Int(Rnd(1) * 12) + 1
     If RN = 1 Then U$ = "HE HITS IT"
@@ -5557,6 +5633,7 @@ End Sub
 '------------------------------
 '      TICK Subroutine
 '------------------------------
+' ...explanation...
 Sub TICK ()
     Open "GAME82" For Input As #2
     Input #2, FF$
@@ -5588,6 +5665,7 @@ End Sub
 '------------------------------
 '      STUFFED Subroutine
 '------------------------------
+' ...explanation...
 Sub STUFFED ()
     '*** PBP FOR LOSS/STUFF ***
     RN = Int(Rnd(1) * 12) + 1
@@ -5610,6 +5688,7 @@ End Sub
 '------------------------------
 '      MISSFG Subroutine
 '------------------------------
+' ...explanation...
 Sub MISSFG
     DR = Int(Rnd(1) * 2)
     RN = Int(Rnd(1) * 100) + 1
@@ -5628,6 +5707,7 @@ End Sub
 '------------------------------
 '      MADEFG Subroutine
 '------------------------------
+' ...explanation...
 Sub MADEFG
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 10 Then U$ = "IT'S GOOD!!!"
@@ -5647,6 +5727,7 @@ End Sub
 '------------------------------
 '      MADEPATSubroutine
 '------------------------------
+' ...explanation...
 Sub MADEPAT
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 25 Then U$ = "IT'S GOOD!!!"
@@ -5663,6 +5744,7 @@ End Sub
 '------------------------------
 '      MISSPAT Subroutine
 '------------------------------
+' ...explanation...
 Sub MISSPAT
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 50 Then U$ = "NO GOOD"
@@ -5677,6 +5759,7 @@ End Sub
 '------------------------------
 '      EVENTS Subroutine
 '------------------------------
+' ...explanation...
 Sub EVENTS (SPECIAL%, Count%)
     Dim E%(13)
     Open "EVENTS.BOX" For Input As #1
@@ -5725,6 +5808,7 @@ End Sub
 '------------------------------
 '      SELECTTEAM Subroutine
 '------------------------------
+' ...explanation...
 Sub SELECTTEAM ()
     SELECTION% = 1
     Count% = NT
@@ -5775,6 +5859,7 @@ End Sub
 '------------------------------
 '      KICKSET Subroutine
 '------------------------------
+' ...explanation...
 Sub KICKSET ()
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE": Call PBP
     RN = Int(Rnd(1) * 100) + 1
@@ -5798,6 +5883,7 @@ End Sub
 '------------------------------
 '     QBTHROW Subroutine
 '------------------------------
+' ...explanation...
 Sub QBTHROW ()
     RN = Int(Rnd(1) * 100) + 1
     If RN = 1 Then U$ = "HE PASSES IT"
@@ -5830,6 +5916,7 @@ End Sub
 '------------------------------
 '      RUNPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub RUNPBP ()
     If P2 = 4 Or P2 = 5 Then 6616
     RN = Int(Rnd(1) * 46) + 1
@@ -5912,6 +5999,7 @@ Sub RUNPBP ()
 '------------------------------
 '      PCPBP Subroutine
 '------------------------------
+' ...explanation...
 Sub PCPBP ()
     Call QBTHROW
 
@@ -5952,6 +6040,11 @@ Sub PCPBP ()
     4175 Rem
 End Sub
 
+
+'------------------------------
+'      Custom Function
+'------------------------------
+' ...explanation...
 Function FNP (X)
     FNP = 11 + Int((X + Int(X / 5) - 1) / 2)
 End Function
