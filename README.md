@@ -1,7 +1,7 @@
 # LH Games 3-in-1 Football
 
 ## Game Description
-With stats compiler for each player and team * you choose from 14 offensive plays and 6 defensive formations
+**With stats compiler for each player and team! * YOU choose from 14 offensive plays and 6 defensive formations!**
 
 ## About Project
 With permission from Lance Haffner himself, this effort is being made to bring his original source code from the DOS world into the modern world. This is due in part to cross-platform compilers for BASIC. But this effort restores his original vision for a cross-platform sports sim empire, also opening the door for any manner of improvements to accuracy and portability.
