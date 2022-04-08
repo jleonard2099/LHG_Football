@@ -28,4 +28,4 @@ No missing source files / references--  -- - - - - -  -
 
 - [X] Make code compatible with QB64
 
-- [ ] Attempt first compilation of each file
+- [X] Attempt first compilation of each file
