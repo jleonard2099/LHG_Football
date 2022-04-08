@@ -28,6 +28,7 @@ If A$(1) = "3" Then GoTo 800
 If A$(1) = "2" Then GoTo 700
 
 1 Call TITLE
+ERASE menuItems$
 menuItems$(1) = "PLAY SINGLE GAME                "
 menuItems$(2) = "TEAM MANAGEMENT / ORGANIZATION  "
 menuItems$(3) = "REPLAY STATISTICS AND REPORTS   "
@@ -129,6 +130,7 @@ Print #1, D$(2)
 GoTo 1
 
 700 Call TITLE
+ERASE menuItems$
 menuItems$(1) = "INPUT A NEW TEAM            "
 menuItems$(2) = "EDIT AN EXISTING TEAM       "
 menuItems$(3) = "PRINT TEAM ROSTER / REPORT  "
@@ -162,6 +164,7 @@ If SELECTION% = 6 Then Run "TRADE.EXE"
 If SELECTION% = 7 Then GoTo 1
 
 750 Call TITLE
+ERASE menuItems$
 menuItems$(1) = "VIEW / PRINT COMPILED STATISTICS "
 menuItems$(2) = "ENCYCLOPEDIA/ TEAM REPLAY OPTIONS"
 menuItems$(3) = "MERGE SEPARATE STATISTICAL FILES "
@@ -189,6 +192,7 @@ If SELECTION% = 3 Then Run "MERGE.EXE"
 If SELECTION% = 4 Then GoTo 1
 
 800 Call TITLE
+ERASE menuItems$
 menuItems$(1) = "CREATE/ EDIT           "
 menuItems$(2) = "UPDATE STATS/ STANDINGS"
 menuItems$(3) = "VIEW/ PRINT REPORTS    "

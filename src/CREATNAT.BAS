@@ -13,7 +13,7 @@ DECLARE FUNCTION PadRight$ (X$, Length)
 
 Dim Z1$(40), Z2$(40), Z1%(40), D$(2)
 'Dim Q$(15), V%(200), T%(34), L%(13)
-Dim menuItems$(3)
+Dim menuItems$(4)
 'Dim Y As Long
 
 'determine if the monitor is mono or color

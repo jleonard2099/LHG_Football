@@ -13,7 +13,7 @@ Dim A0%(9), A1%(9), A2%(9), A3%(9), A4%(5), A5%(5), A6%(3), A7%(3), A8%(3), A9%(
 Dim C0%(9), C1%(9), C2%(15), C3%(9), C4%(5), C5%(5), C6%(3), C7%(3), C8%(3), C9%(2)
 Dim B%(2), B1%(2), B3%(2), B6%(7), B4%(1), B5%(1), B7%(1), B8%(1)
 Dim D4%(1), D5%(1), D7%(1), D8%(1), QX%(3), D2%(2), FI$(9), FI%(9), DI$(9), DI%(9)
-Dim D%(2), D1%(2), D3%(2), D6%(7), D$(1), menuItems$(9), PA%(4), QA%(4), SX%(3)
+Dim D%(2), D1%(2), D3%(2), D6%(7), D$(1), menuItems$(4), PA%(4), QA%(4), SX%(3)
 Dim B2%(2), Q$(300), FS%(14), DS$(14), DS%(14), FS$(14)
 'Dim F$(500), Q6%(1), T1%(1), K3%(1, 6), C$(1)
 Dim A$(1), A1$(9), A2$(5), A3$(3), A4$(2), A5$(2), A6$(2), A7$(1)
@@ -156,7 +156,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 532
 YY$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 532 If BO% = 1 Then BO% = 0: GoTo 530

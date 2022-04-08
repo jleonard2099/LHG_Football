@@ -14,7 +14,7 @@ Dim DIC$(55), DSC$(55)
 Dim Z(38), Z1(38), teamItems$(500), V%(500), PA%(2), Q$(500)
 Dim LR(50), LR$(50, 1), LC(60), LC$(60, 1), LP(20), LP$(20, 1), LK(15), LK$(15, 1), PK(15)
 Dim PK$(15, 1), DI$(55), GIS(15, 55, 3), DS$(55), GSS(15, 55, 3), GS%(55, 1), GI%(55, 2)
-Dim LF$(1), LI(9), LI$(9, 1), menuItems$(7)
+Dim LF$(1), LI(9), LI$(9, 1), menuItems$(3)
 Dim AF(1, 4), AM(1, 4), LF(1), D$(1)
 Dim Y As Long
 Dim RBBC(9) As Single, RBC$(9), RBYR(9)
@@ -963,7 +963,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056

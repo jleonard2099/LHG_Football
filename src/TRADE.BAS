@@ -17,7 +17,7 @@ Dim Q$(300)
 Dim A$(1), A1$(2, 9), A2$(2, 6), A3$(2, 4), A4$(2, 3), A5$(2, 3), A6$(2, 3), teamItems$(500), V%(500)
 'Dim TT(2, 15), OT(2, 15)
 Dim DS$(1, 14), DS%(1, 14), Z2(1, 13, 17), Z(1, 38), Z1(1, 38)
-Dim D$(1), YN$(1), NY$(1), menuItems$(4), SA$(1), TN$(1), RB$(1, 9), WR$(1, 5)
+Dim D$(1), YN$(1), NY$(1), menuItems$(3), SA$(1), TN$(1), RB$(1, 9), WR$(1, 5)
 Dim QB$(1, 3), KR$(1, 2), PR$(1, 2), PU$(1), FG$(1, 1), DI$(1, 9), LR(1, 9)
 Dim LR$(1, 9, 1), LC$(1, 15, 1), LP$(1, 3, 1), F$(1), GI%(1, 9, 2)
 Dim LK(1, 2), LK$(1, 2, 1), PK(1, 2), PK$(1, 2, 1), AF(1, 1, 4), AM(1, 1, 4)
@@ -204,7 +204,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2112
 YN$(J) = NY$(J)
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 2112 If BO% = 1 Then BO% = 0: GoTo 2111
@@ -237,7 +237,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2152
 YN$(J) = NY$(J)
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 2152 If BO% = 1 Then BO% = 0: GoTo 2150

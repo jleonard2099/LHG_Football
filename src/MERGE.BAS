@@ -6,7 +6,7 @@ _Title "3-in-1 Football - Merge Stats"
 '_Icon
 _AllowFullScreen
 
-Dim menuItems$(3), D$(1), AR$(1), A$(1)
+Dim menuItems$(4), D$(1), AR$(1), A$(1)
 Dim Z2(14, 18), Z(38), Z1(38), DS$(15)
 Dim GIR%(9, 2), LRR$(9, 1), LR$(9, 1), LCR$(15, 1), LPR$(3, 1), LP$(3, 1), LKR$(2, 1)
 Dim GI%(9, 2)
@@ -349,7 +349,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1101
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056

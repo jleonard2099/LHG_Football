@@ -14,7 +14,7 @@ DECLARE SUB TITLE ()
 
 Dim teamItems$(500), V%(500), U5$(3), G9$(5), WN$(3), WT$(3), SD$(3), R5$(1)
 Dim Y8$(3), Y9$(5), LO$(2), A6(3), A7(3), A8(3), QX%(3), MO$(3), A3$(4)
-Dim PA%(4), DRI$(2), menuItems$(8), E%(13)
+Dim PA%(4), DRI$(2), menuItems$(9), E%(13)
 Dim Q$(375), AP%(1)
 'DIm A$(11), A(11), T(34)
 Dim H$(20), V$(20), Z1$(30), Z2$(30), Z1%(30)
@@ -84,6 +84,7 @@ Locate 16: Print: Color 2
 Print "GENERATING A STANDARD SEASON SCHEDULE IS TO BE USED IN CONJUNCTION"
 Print "WITH THE STANDINGS AND LEAGUE LEADERS OPTIONS. YOU MUST ALREADY HAVE"
 Print "CREATED AN APPROPRIATE LEAGUE FOR THIS OPTION TO PROPERLY FUNCTION."
+ERASE menuItems$
 menuItems$(1) = "ENTER A NEW SCHEDULE                             "
 menuItems$(2) = "RETRIEVE/EDIT/PLAY AN EXISTING SCHEDULE          "
 menuItems$(3) = "EXTRACT ONE TEAM'S SCHEDULE FROM LEAGUE SCHEDULE "
@@ -110,7 +111,10 @@ _MouseHide
 Color , 0
 If SCANCODE% = 27 Then SELECTION% = 8
 D3% = SELECTION% - 1
-On SELECTION% GOTO 26, 600, 600, 600, 600, 600, 4500
+On SELECTION% GOTO 26, 600, 600, 600, 600, 600, 4500, 15
+
+15 RUN "HELLO.EXE"
+
 
 26 AP%(0) = 0: NS% = 0: TS% = 0
 
@@ -328,7 +332,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 182
 YN$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 182 If BO% = 1 Then BO% = 0: GoTo 181
@@ -507,7 +511,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 730
 YN$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 GoSub 1100
 
 730 If BO% = 1 Then BO% = 0: GoTo 725
@@ -1050,6 +1054,7 @@ Return
 
 4500 'BOXSCORE MAINTENANCE
 Call TITLE
+ERASE menuItems$
 menuItems$(1) = "SET PARAMETERS TO SAVE SPECIAL EVENTS BOXSCORES  "
 menuItems$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
 menuItems$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "

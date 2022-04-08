@@ -4,7 +4,7 @@
 DECLARE SUB TITLE ()
 
 DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamItems$(500)
-DIM V%(500), menuItems$(4), D$(2), PA%(4), B6%(7), A5(9)
+DIM V%(500), menuItems$(5), D$(2), PA%(4), B6%(7), A5(9)
 DIM A0%(9), A1%(9), A3%(9), A1$(9), A1(9), A3(9), B(9), B2(1), B3(2), B4(2), DI$(9)
 DIM A4%(5), A5%(5), A2$(5), A$(5)
 DIM A6%(3), A7%(3), A8%(3), QX%(3), A3$(3)
@@ -85,7 +85,7 @@ _MouseHide
 	LOCATE 7, 27: INPUT NY$
 	IF NY$ = "" THEN GOSUB 3102: GOTO 182
 	YN$ = NY$
-	FOR I = 1 TO 500: teamItems$(I) = "": NEXT
+	ERASE teamItems$
 
 310 GOSUB 3100
 

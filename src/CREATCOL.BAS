@@ -19,7 +19,7 @@ DECLARE SUB TITLE ()
 4 Dim B2(1, 2), T1(1), K3(1, 6), R9%(1)
 Dim J6(1): Dim S(1, 10), O$(16), D3%(5, 6), P$(2), P(2), F(4), F1(4): Dim S1%(7, 6, 4): Dim W6(1, 1): Dim A$(1), A1$(1, 6), A2$(1, 5), A3$(1, 2), A4$(1, 2), A5$(1, 2), A6$(1, 2), Q$(300)
 Dim D$(2), PA%(4)
-Dim teamItems$(500), V%(500), T%(34), L%(13), menuItems$(3)
+Dim teamItems$(500), V%(500), T%(34), L%(13), menuItems$(4)
 Dim Y As Long
 
 'determine if the monitor is mono or color
@@ -36,8 +36,8 @@ Cls
 
 50 For X = 1 To 30: Z1$(X) = "XXX": Next
 Call TITLE
-menuItems$(2) = "ADD / REVIEW CONFERENCE MEMBERS "
 menuItems$(1) = "CREATE / DEFINE NEW CONFERENCES "
+menuItems$(2) = "ADD / REVIEW CONFERENCE MEMBERS "
 menuItems$(3) = "RETURN TO STANDINGS/LEADERS MENU"
 SELECTION% = 1
 Count% = 3
@@ -125,7 +125,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
-For I = 1 To 500: teamItems$(I) = "": Next
+ERASE teamItems$
 182 IF BO% = 1 THEN BO% = 0: GOTO 181
 183 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$: COLOR 15, 4
     LOCATE , 33: PRINT "ANY CHANGE (YN)"; : I$ = INKEY$: IF I$ = "" THEN 183

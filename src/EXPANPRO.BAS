@@ -9,38 +9,34 @@ _AllowFullScreen
 DefInt A-Z
 DECLARE SUB CATEGORIES ()
 DECLARE SUB BUILDSTATS ()
+DECLARE Sub SAVELEADER ()
 
-'Dim Z(38), Z1(38)
-Dim TT(30, 30), TT$(30, 30), Z1$(30)
-Dim menuItems$(7)
-'Dim PP(120) As Single, FF(120) As Single, YY(120) As Single
-Dim II(120) As Single
-'Dim A1$(1, 10), A2$(1, 6), A3$(1, 4), A4$(1, 3), A5$(1, 3), A6$(1, 1), A7$(1, 2)
-'Dim DI$(1, 10), GI(1, 9, 2), DS$(1, 15), GS(1, 14, 1), Z2(14, 18), LC(16), LC$(16, 1)
-Dim A1L$(300), A1T$(300), LRL$(300), A1L(300, 8), A2L$(180), A2T$(180), LCL$(480), A2L(180, 4)
-Dim A3R(120, 1), QBL$(120), A3T$(120), LPL$(120), A3L(120, 13) As Single, A4L$(90), A4T$(90), LKL$(90), A4L(90, 4)
-Dim A5L$(90), A5T$(90), PKL$(90), A5L(90, 4), A6L$(30), A6T$(30), A6L(30, 2)
-Dim A7L$(60), A7T$(60), A7L(60, 5)
-Dim A8L$(300), A8T$(300), A8L(300)
-'Dim D As Single
-Dim A9L$(450), A9T$(450), A9L(450)
-'Dim PK(2), LK(2), LK$(2, 1), PK$(2, 1), DV$(2), LR(9), LR$(9, 1)
-Dim TYY$(480)
-'Dim LP(3), LP$(3, 1), A$(1), GMA(300), GMB(180), GMC(120)
+Dim Shared A1L(300, 8), A2L(180, 4), A3R(120, 1), A4L(90, 4)
+Dim Shared A5L(90, 4), A6L(30, 2), A7L(60, 5), A8L(300), A9L(450)
+Dim Shared GI(1, 9, 2), GMA(300), GMB(180), GMC(120), GS(1, 14, 1)
+Dim Shared LC(16), LK(2), LP(3), LR(9), PK(2), Z(38), Z2(14, 18), Z1(38)
 
-Dim Shared DV$, LG$, JA, JB, JC, JD, JE, JF, JG, JH, JI, TS, JJ
-Dim Shared TT, TT$, TMR, A1L$, A1T$, LRL$, LCL$, GMA
-Dim Shared A1L, A2L$, A2T$, GMB, A2L
-Dim Shared QBL$, A3T$, LPL$, A3R, GMC, A3L As Single
-Dim Shared A4L$, A4T$, LKL$, A4L, A5L$, A5T$, PKL$, A5L
-Dim Shared A6L$, A6T$, A6L
-Dim Shared A7L$, A7T$, A7L, A8L$, A8T$, A8L
-Dim Shared A9L$, A9T$, A9L, Z1$
-Dim Shared PP As Single, FF As Single, II As Single, YY As Single
-Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$
-Dim Shared DI$, GI, DS$, GS, Z2, LC, LC$
-Dim Shared A$, Z, Z1, LR, LR$, LP, LP$, LK, LK$, PK, PK$
-Dim Shared LF(1), AM(1, 4), AF(1, 4), TP$(74), Y%(30), Y%, LF$(1)
+Dim AM(1, 4), AF(1, 4), LF(1), TT(30, 30)
+
+Dim Shared A$(1), A1$(1, 10), A2$(1, 6), A3$(1, 4), A4$(1, 3), A5$(1, 3), A6$(1, 1), A7$(1, 2)
+Dim Shared DI$(1, 10), DS$(1, 15), DV$(2), LC$(16, 1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
+Dim Shared PK$(2, 1), TP$(74), Z1$(30)
+
+Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
+Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
+Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
+Dim LF$(1), LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
+Dim QBL$(120), TT$(30, 30), TYY$(480)
+Dim menuItems$(4)
+
+Dim Shared Y%(30)
+
+Dim Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, JK, JL
+Dim Shared PX, TS, TT
+
+Dim Shared A3L(120, 13) As Single, FF(120) As Single, II(120) As Single
+Dim Shared PP(120) As Single, YY(120) As Single
+
 
 'STACK 0
 Open "DEV.BAS" For Input As #2: For X = 0 To 2: Input #2, DV$(X): Next: Close 2
