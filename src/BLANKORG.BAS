@@ -29,13 +29,13 @@ APP = 0
 	null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 	Count% = DirCount%
 	IF Count% = 0 THEN 4500
-REDIM F$(0 TO Count%)
+REDIM conferenceFiles$(0 TO Count%)
 	FOR X = 1 TO Count%
-	  F$(X) = SPACE$(12)
+	  conferenceFiles$(X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), Count%, 0)
+	conferenceFiles$(0) = Spec$
+	CALL ReadFile(conferenceFiles$())
+	'CALL SortStr(VARPTR(conferenceFiles$(1)), Count%, 0)
 
 1310 CLS
 	COLOR , 1
@@ -61,19 +61,19 @@ REDIM F$(0 TO Count%)
 	COLOR 15
 
 _MouseShow "DEFAULT"
-MAMenu F$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu conferenceFiles$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF ExitCode% = 27 THEN 99
-	F$ = F$(SELECTION%)
-	LOCATE 2, 33: PRINT F$
+	targetFile$ = conferenceFiles$(SELECTION%)
+	LOCATE 2, 33: PRINT targetFile$
 	LOCATE , 33: PRINT "ANY CHANGE (YN)";
 	COLOR 15, 0
 3910 I$ = GetKeyPress$
 	IF UCASE$(I$) = "Y" THEN 1310
 
-3911 F$ = RTrim$(F$)
-	WE$ = LEFT$(F$, LEN(F$) - 4)
+3911 targetFile$ = RTrim$(targetFile$)
+	WE$ = LEFT$(targetFile$, LEN(targetFile$) - 4)
 	LH$ = LEFT$(WE$, 8)
 
 15 CLS

@@ -101,7 +101,7 @@ CLOSE 1
 	Spacing% = 1
 	Row% = 6
 	Column% = 16
-CALL box0(5, 15, 14, 65, 2, 31)
+CALL box0(5, 15, 14, 65, 2,  15, 1)
 	
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
@@ -117,10 +117,20 @@ _MouseHide
 21 COLOR 15, 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 1
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "ENTER NAME FOR SCHEDULE: ": PRINT
 	LOCATE , 12: PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
 	LOCATE , 12: PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
@@ -316,10 +326,20 @@ LOCATE 1, 33: COLOR 14: PRINT "AUTO SCHEDULER"
 181 COLOR 15, 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 4
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "ENTER DISK ID: ": PRINT
 	LOCATE , 12: PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 	LOCATE , 12: PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -391,10 +411,20 @@ LOCATE 1, 33: COLOR 14: PRINT "AUTO SCHEDULER"
 	COLOR , 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 4
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "TOTAL GAMES ="; AP%(0)
 	LOCATE , 12: PRINT "SELECT GAME # TO START AND END WITH": PRINT
 	LOCATE , 12: INPUT "ENTER START GAME #: "; SG%: PRINT
@@ -479,10 +509,20 @@ CLOSE 1
 	COLOR 15, 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 1
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "ENTER NAME FOR SUB-SCHEDULE: ": PRINT
 	LOCATE , 12: PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
 	LOCATE , 12: PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
@@ -500,10 +540,20 @@ CLOSE 1
 	COLOR 15, 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 4
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "ENTER DISK ID: ": PRINT
 	LOCATE , 12: PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 	LOCATE , 12: PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -578,13 +628,13 @@ CLOSE 1
 	null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 	Count% = DirCount%
 	IF Count% = 0 THEN 4400
-REDIM F$(0 TO Count%)
+REDIM leagueFiles$(0 TO Count%)
 	FOR X = 1 TO Count%
-	F$(X) = SPACE$(12)
+	leagueFiles$(X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), Count%, 0)
+	leagueFiles$(0) = Spec$
+	CALL ReadFile(leagueFiles$())
+	'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 	GOSUB 1310
 OPEN DRI$(2) + F$ + ".LIB" FOR INPUT AS #1
 	 INPUT #1, X%
@@ -757,13 +807,13 @@ _MouseHide
 2100 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 	Count% = DirCount%
 	IF Count% = 0 THEN 4400
-REDIM F$(0 TO Count%)
+REDIM leagueFiles$(0 TO Count%)
 	FOR X = 1 TO Count%
-	F$(X) = SPACE$(12)
+	leagueFiles$(X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), Count%, 0)
+	leagueFiles$(0) = Spec$
+	CALL ReadFile(leagueFiles$())
+	'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 
 1310 CLS
 	COLOR , 1
@@ -786,7 +836,7 @@ REDIM F$(0 TO Count%)
 	PRINT "-SELECTS SCHEDULE";
 
 _MouseShow "DEFAULT"
-320 MAMenu F$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+320 MAMenu scheduleFiles$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN 2900
@@ -795,7 +845,7 @@ _MouseHide
 	IF EXITCODE% = -73 THEN Start% = Start% - 80: IF Start% < 1 THEN Start% = 1
 	IF EXITCODE% = -81 THEN Start% = Start% + 80: IF Start% > Count% THEN Start% = Count%
 	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = Start%: GOTO 320
-	F$ = F$(SELECTION%)
+	F$ = scheduleFiles$(SELECTION%)
 	LOCATE 2, 33: PRINT F$
 LOCATE , 33: PRINT "ANY CHANGE (YN)";
 	COLOR 15, 0
@@ -962,7 +1012,7 @@ CLOSE 1
 	LOCATE 6, 8: COLOR 15, 1
 	PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
 	FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
+	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " "; : NEXT
 	LOCATE 7 + JJ, 8
 	PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
 	RETURN
@@ -1071,7 +1121,7 @@ CLOSE 1
 	Spacing% = 1
 	Row% = 6
 	Column% = 16
-CALL box0(5, 15, 12, 65, 2, 31)
+CALL box0(5, 15, 12, 65, 2,  15, 1)
 	
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
@@ -1103,15 +1153,15 @@ _MouseHide
 	IF Count% = 0 AND SELECTION% = 4 THEN 4010
 	IF Count% = 0 AND SELECTION% = 3 THEN 4020
 	IF Count% = 0 AND SELECTION% = 5 THEN RETURN
-REDIM F$(0 TO Count%)
+REDIM boxFiles$(0 TO Count%)
 	FOR X = 1 TO Count%
-	F$(X) = SPACE$(12)
+	boxFiles$(X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
+	boxFiles$(0) = Spec$
+	CALL ReadFile(boxFiles$())
 	  FOR X = 1 TO Count%
-	KILL (DRI$(1) + F$(X))
-	LOCATE 12, 34: PRINT "DELETING "; F$(X)
+	KILL (DRI$(1) + boxFiles$(X))
+	LOCATE 12, 34: PRINT "DELETING "; boxFiles$(X)
 	NEXT
 	RETURN
 
@@ -1119,13 +1169,13 @@ REDIM F$(0 TO Count%)
 	null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 	Count% = DirCount%
 	IF Count% = 0 THEN 4010
-REDIM F$(0 TO Count%)
+REDIM boxFiles$(0 TO Count%)
 	FOR X = 1 TO Count%
-	  F$(X) = SPACE$(12)
+	  boxFiles$(X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), Count, 0)
+	boxFiles$(0) = Spec$
+	CALL ReadFile(boxFiles$())
+	'CALL SortStr(VARPTR(boxFiles$(1)), Count, 0)
 
 5065 CLS
 	COLOR , 1
@@ -1148,11 +1198,11 @@ REDIM F$(0 TO Count%)
 	PRINT "-SELECTS BOXSCORE";
 
 _MouseShow "DEFAULT"
-MAMenu F$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu boxFiles$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN 4500
-	F$ = F$(SELECTION%)
+	F$ = boxFiles$(SELECTION%)
 	LOCATE 2, 33: PRINT F$
 LOCATE , 33: PRINT "ANY CHANGE (YN)";
 	COLOR 15, 0

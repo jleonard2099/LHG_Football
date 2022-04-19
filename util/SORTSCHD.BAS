@@ -101,10 +101,20 @@ OPEN "DEV.BAS" FOR INPUT AS #1:INPUT #1,D$(2):INPUT #1,D$(2):INPUT #1,D$(2):CLOS
 21 COLOR 15,0:CLS
 	JJ=7
 	LOCATE 6,8:COLOR 15,1
-	PRINT " Ö"; STRING$(61,196);"· ";:FOR II=1 TO JJ:LOCATE 6+II,8
-	PRINT " º"; STRING$(61,32); "º ";:NEXT
-	LOCATE 7+JJ,8
-	PRINT " Ó";STRING$(61,196); "½ ";:LOCATE 7,32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE ,12:PRINT "ENTER NAME FOR SCHEDULE: ":PRINT
 	LOCATE ,12:PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
 	LOCATE ,12:PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
@@ -300,10 +310,20 @@ OPEN "DEV.BAS" FOR INPUT AS #1:INPUT #1,D$(2):INPUT #1,D$(2):INPUT #1,D$(2):CLOS
 181 COLOR 15,0:CLS
 	JJ=7
 	LOCATE 6,8:COLOR 15,4
-	PRINT " Ö"; STRING$(61,196);"· ";:FOR II=1 TO JJ:LOCATE 6+II,8
-	PRINT " º"; STRING$(61,32); "º ";:NEXT
-	LOCATE 7+JJ,8
-	PRINT " Ó";STRING$(61,196); "½ ";:LOCATE 7,32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE ,12:PRINT "ENTER DISK ID: ":PRINT
 	LOCATE ,12:PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 	LOCATE ,12:PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -371,10 +391,20 @@ OPEN "DEV.BAS" FOR INPUT AS #1:INPUT #1,D$(2):INPUT #1,D$(2):INPUT #1,D$(2):CLOS
 	COLOR ,0:CLS
 	JJ=7
 	LOCATE 6,8:COLOR 15,4
-	PRINT " Ö"; STRING$(61,196);"· ";:FOR II=1 TO JJ:LOCATE 6+II,8
-	PRINT " º"; STRING$(61,32); "º ";:NEXT
-	LOCATE 7+JJ,8
-	PRINT " Ó";STRING$(61,196); "½ ";:LOCATE 7,32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE ,12:PRINT "TOTAL GAMES ="AP%(0)
 	LOCATE ,12:PRINT "SELECT GAME # TO START AND END WITH":PRINT
 	LOCATE ,12:INPUT "ENTER START GAME #: ";SG%:PRINT
@@ -470,10 +500,20 @@ CLOSE 1:NS%=0:TS%=0
 	COLOR 15,0:CLS
 	JJ=7
 	LOCATE 6,8:COLOR 15,1
-	PRINT " Ö"; STRING$(61,196);"· ";:FOR II=1 TO JJ:LOCATE 6+II,8
-	PRINT " º"; STRING$(61,32); "º ";:NEXT
-	LOCATE 7+JJ,8
-	PRINT " Ó";STRING$(61,196); "½ ";:LOCATE 7,32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE ,12:PRINT "ENTER NAME FOR SUB-SCHEDULE: ":PRINT
 	LOCATE ,12:PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
 	LOCATE ,12:PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
@@ -492,10 +532,10 @@ CLOSE 1:NS%=0:TS%=0
 	COLOR 15,0:CLS
 	JJ=7
 	LOCATE 6,8:COLOR 15,4
-	PRINT " Ö"; STRING$(61,196);"· ";:FOR II=1 TO JJ:LOCATE 6+II,8
-	PRINT " º"; STRING$(61,32); "º ";:NEXT
+	Print " " + Chr$(214); STRING$(61,196); Chr$(183) + " ";:FOR II=1 TO JJ:LOCATE 6+II,8
+	Print " " + Chr$(186); STRING$(61,32); Chr$(186) + " ";:NEXT
 	LOCATE 7+JJ,8
-	PRINT " Ó";STRING$(61,196); "½ ";:LOCATE 7,32
+	Print " " + Chr$(211);STRING$(61,196); Chr$(189) + " ";:LOCATE 7,32
 	LOCATE ,12:PRINT "ENTER DISK ID: ":PRINT
 	LOCATE ,12:PRINT "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 	LOCATE ,12:PRINT "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."

@@ -55,7 +55,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-Call box0(7, 24, 15, 59, 2, 31)
+CALL box0(7, 24, 15, 59, 2,  15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -72,9 +72,22 @@ If RN = 6 Then 4000
 Run "HELLO.EXE"
 
 7 '
-Locate 8, 8: Color 15, 1: Print " Ö"; String$(61, 196); "· ";
-For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
-Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15: Return
+Locate 8, 8: Color 15, 1
+
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+	Locate 8 + II, 8
+	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 9 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+Locate 10, 15
+Return
 
 10 Cls: For J = 15 To 18: Locate J: Print "                                                                    "
 Next
@@ -642,13 +655,13 @@ Return
 4000 Spec$ = D$(1) + "*.CLD"
 Count% = FCount%(Spec$)
 If Count% = 0 Then 4500
-ReDim F$(0 To Count%)
+ReDim conferenceLeaderFiles$(0 To Count%)
 For X = 1 To Count%
-    F$(X) = Space$(12)
+    conferenceLeaderFiles$(X) = Space$(12)
 Next
-F$(0) = Spec$
-Call ReadFile(F$())
-'CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
+conferenceLeaderFiles$(0) = Spec$
+Call ReadFile(conferenceLeaderFiles$())
+'CALL SortStr(VARPTR(conferenceLeaderFiles$(1)), COUNT%, 0)
 
 1310 Cls
 Color , 1
@@ -671,7 +684,7 @@ Print "ENTER";: Color 15
 Print "-SELECTS FILE";
 
 _MouseShow "DEFAULT"
-20 MAMenu F$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu conferenceLeaderFiles$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then 1
@@ -680,15 +693,15 @@ If EXITCODE% = -79 Then Start% = Count%: EXITCODE% = 3: SELECTION% = Count%: GoT
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > Count% Then Start% = Count%
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-F$ = F$(SELECTION%)
-Locate 2, 33: Print F$
+targetFile$ = conferenceLeaderFiles$(SELECTION%)
+Locate 2, 33: Print targetFile$
 Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
 3910 I$ = GetKeyPress$
 If UCase$(I$) = "Y" Then 1310
 
-3911 F$ = RTrim$(F$)
-ZZ$ = Left$(F$, Len(F$) - 4)
+3911 targetFile$ = RTrim$(targetFile$)
+ZZ$ = Left$(targetFile$, Len(targetFile$) - 4)
 Open D$(1) + ZZ$ + ".CLD" For Input As #1
 For I = 0 To 9: Input #1, RBBC(I), RBC$(I), RBYR(I): Next
 Input #1, RBR$(0), RBR$(1)
@@ -858,11 +871,21 @@ Return
 
 3056 Color 15, 0: Cls
 JJ = 6
-SN = 1: Locate 6, 8: Color 15, 4
-Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
-Print " º"; String$(61, 32); "º ";: Next
+SN = 1
+Locate 6, 8: Color 15, 4
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+	Locate 6 + II, 8
+	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
 Locate 7 + JJ, 8
-Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+Locate 7, 32
 Locate , 12: Print "ENTER DISK ID: ": Print
 Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -964,7 +987,8 @@ Clear: GoTo 1
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " º"; String$(61, 32); "º ";: Next
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
 Return

@@ -19,13 +19,13 @@ DIM PT(1200, 5) AS SINGLE, PR$(1200), D$(2)
 4000 Spec$ = D$(2) + "*.CON"
 	COUNT% = FCount%(Spec$)
 	IF COUNT% = 0 THEN 4500
-REDIM F$(0 TO COUNT%)
+REDIM conferenceFiles$0 TO COUNT%)
 	FOR X = 1 TO COUNT%
-	  F$(X) = SPACE$(12)
+	  conferenceFiles$X) = SPACE$(12)
 	NEXT
-	F$(0) = Spec$
-	CALL ReadFile(F$())
-	'CALL SortStr(VARPTR(F$(1)), COUNT%, 0)
+	conferenceFiles$0) = Spec$
+	CALL ReadFile(conferenceFiles$))
+	'CALL SortStr(VARPTR(conferenceFiles$1)), COUNT%, 0)
 
 1310 CLS
 	COLOR , 1
@@ -48,7 +48,7 @@ REDIM F$(0 TO COUNT%)
 	PRINT "-SELECTS LEAGUE";
 
 _MouseShow "DEFAULT"
-20 MAMenu F$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu conferenceFiles$), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN 2900
@@ -57,15 +57,15 @@ _MouseHide
 	IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
 	IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
 	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
-	F$ = F$(SELECTION%)
-	LOCATE 2, 33: PRINT F$
+	targetFile$ = conferenceFiles$SELECTION%)
+	LOCATE 2, 33: PRINT targetFile$
 LOCATE , 33: PRINT "ANY CHANGE (YN)";
 	COLOR 15, 0
 3910 I$ = GetKeyPress$
 	IF UCASE$(I$) = "Y" THEN 1310
 
-3911 F$ = RTrim$(F$)
-	WE$ = LEFT$(F$, LEN(F$) - 4)
+3911 targetFile$ = RTrim$(targetFile$)
+	WE$ = LEFT$(targetFile$, LEN(targetFile$) - 4)
 	GOTO 7
 
 4500 LOCATE 10, 8
@@ -432,23 +432,48 @@ CLOSE 2
 	LOCATE 6, 8: COLOR 15, 1
 	PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
 	FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
+	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+	Next
 	LOCATE 7 + JJ, 8
 	PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
 	RETURN
 
 2075 '
-	LOCATE 8, 8: COLOR 15, 1: PRINT " Ö"; STRING$(61, 196); "· ";
-	FOR II = 1 TO J: LOCATE 8 + II, 8: PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 9 + J, 8: PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 10, 15: RETURN
+	LOCATE 8, 8: COLOR 15, 1
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To J
+Locate 8 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 9 + J, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
+	LOCATE 10, 15
+	RETURN
 
 3100 COLOR 15, 0: CLS
 	JJ = 7
 	LOCATE 6, 8: COLOR 15, 1
-	PRINT " Ö"; STRING$(61, 196); "· "; : FOR II = 1 TO JJ: LOCATE 6 + II, 8
-	PRINT " º"; STRING$(61, 32); "º "; : NEXT
-	LOCATE 7 + JJ, 8
-	PRINT " Ó"; STRING$(61, 196); "½ "; : LOCATE 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 	LOCATE , 12: PRINT "ENTER NAME FOR FILE: ": PRINT
 	LOCATE , 12: PRINT "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
 	LOCATE , 12: PRINT "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"

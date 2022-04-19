@@ -47,7 +47,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-Call box0(7, 24, 16, 57, 2, 31)
+CALL box0(7, 24, 16, 57, 2,  15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -147,7 +147,7 @@ HiLiteFGColr% = 0: HiLiteBGColr% = 7
 Spacing% = 1
 Row% = 8
 Column% = 27
-Call box0(7, 26, 15, 55, 2, 31)
+CALL box0(7, 26, 15, 55, 2,  15, 1)
 
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
@@ -179,7 +179,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-Call box0(7, 24, 12, 58, 2, 31)
+CALL box0(7, 24, 12, 58, 2,  15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -224,9 +224,9 @@ Columns% = 3
 Spacing% = 3
 Row% = 9
 Column% = 2
-Call box0(7, 1, 16, 25, 2, 31)
-Call box0(7, 27, 16, 51, 2, 31)
-Call box0(7, 53, 16, 77, 2, 31)
+CALL box0(7, 1, 16, 25, 2,  15, 1)
+CALL box0(7, 27, 16, 51, 2,  15, 1)
+CALL box0(7, 53, 16, 77, 2,  15, 1)
 Color 15, 0: Locate 8, 4: Print "PROFESSIONAL LEAGUE"
 Locate 8, 30: Print "COLLEGE CONFERENCE"
 Locate 8, 55: Print "NATIONAL ORGANIZATION"

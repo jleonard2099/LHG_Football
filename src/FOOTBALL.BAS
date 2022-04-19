@@ -372,21 +372,22 @@ Next
 Close 2
 TMT = 1
 
-23 If Not _FileExists("GAME82") Then 28
-Open "GAME82" For Input As #2
-Input #2, FF$
-For I = 0 To 2: Input #2, AP%(I): Next
-Close 2
-Open DV$(0) + FF$ As #1 Len = 52
-For X = 0 To 20
-    Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
-Next
-Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-Get #1, AP%(0) + AP%(2)
-For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
-For X = 0 To 1: YN$(X) = Q$(22 + X): Next
-Close 1
-AP = 1
+23 If _FileExists("GAME82") Then
+	Open "GAME82" For Input As #2
+	Input #2, FF$
+	For I = 0 To 2: Input #2, AP%(I): Next
+	Close 2
+	Open DV$(0) + FF$ As #1 Len = 52
+	For X = 0 To 20
+		Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
+	Next
+	Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+	Get #1, AP%(0) + AP%(2)
+	For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
+	For X = 0 To 1: YN$(X) = Q$(22 + X): Next
+	Close 1
+	AP = 1
+End If
 
 28 If AP = 1 Then
     displayPause = NG%(4) / 10
@@ -460,7 +461,7 @@ SN = 1
 Locate 8, 8: Color 14, 1
 
 'Print box top
-Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
@@ -470,7 +471,7 @@ Next
 
 'Print box bottom
 Locate 9 + JJ, 8
-Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
 Locate 10, 11
 Print "IF YOU ARE USING THE 10 MINUTE TICKER OPTION FOR THIS GAME,"
@@ -2140,18 +2141,21 @@ Return
 Cls
 If AP <> 1 Then 9138
 Call TICK
+
 If AP%(1) < AP%(0) + AP%(2) Then Kill "GAME82": EG = 1: GoTo 9135
+
 Open "GAME82" For Output As #2
 Print #2, FF$
-For I = 0 To 2: Print #2, AP%(I): Next: Close 2
+For I = 0 To 2: Print #2, AP%(I): Next
+Close 2
 
 9135 Cls
 
 9138 Call SAVESTATS
 If AP = 1 Then 8083
 If D% = 3 Then Run "HELLO.EXE"
-Cls: Print "PUT IN 3 IN 1 GAME DISK & HIT ANY KEY"
-I$ = GetKeyPress$
+Cls ': Print "PUT IN 3 IN 1 GAME DISK & HIT ANY KEY"
+'I$ = GetKeyPress$
 
 8083 If EG = 1 Then Run "HELLO.EXE"
 Run "FOOTBALL.EXE"
@@ -2262,7 +2266,7 @@ Sub BOXDRAW (J)
     Color 0, 7
 
     'Print box top
-    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
     'Print box sides
     For II = 1 To J
@@ -2272,7 +2276,7 @@ Sub BOXDRAW (J)
 
     'Print box bottom
     Locate 9 + J, 8
-    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
     Locate 10, 15
 End Sub
@@ -4236,7 +4240,7 @@ Sub DBOX ()
     Locate 8, 8: Color PA%(D, 2), PA%(D, 1)
 
     'Print box top
-    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
     'Print box sides
     For II = 1 To JJ
@@ -4246,7 +4250,7 @@ Sub DBOX ()
 
     'Print box bottom
     Locate 9 + JJ, 8
-    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
     Locate 10, 15
 End Sub
@@ -4263,7 +4267,7 @@ Sub PBOX ()
     Locate 8, 8: Color PA%(P1, 2), PA%(P1, 1)
 
     'Print box top
-    Print " " + Chr$(201); String$(61, 196); Chr$(187) + " ";
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
     'Print box sides
     For II = 1 To JJ
@@ -4273,7 +4277,7 @@ Sub PBOX ()
 
     'Print box bottom
     Locate 9 + JJ, 8
-    Print " " + Chr$(200); String$(61, 196); Chr$(188) + " ";
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
     Locate 10, 15
 End Sub

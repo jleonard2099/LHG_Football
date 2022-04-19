@@ -63,7 +63,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-Call box0(7, 24, 11, 57, 2, 31)
+CALL box0(7, 24, 11, 57, 2,  15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -77,8 +77,8 @@ CT% = I
     Z1$(X) = "XXX"
 Next
 Spec$ = DV$(2) + "*.TMS": GoSub 1440
-LG$ = F$
-Open DV$(2) + F$ + ".TMS" For Input As #2
+LG$ = targetFile$
+Open DV$(2) + targetFile$ + ".TMS" For Input As #2
 If I = 1 Then Input #2, LGF$: Input #2, D1$: Input #2, D2$: Input #2, D3$: For X = 1 To 30: Input #2, Z1$(X): Next
 If I = 2 Then Input #2, LGF$: Input #2, D1$: Input #2, D2$: For X = 1 To 30: Input #2, Z1$(X): Next
 Close 2
@@ -116,9 +116,9 @@ If UCase$(I$) = "L" Then 5
 GoTo 170
 
 180 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
-Locate 2, 22: Color 0, 4: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 4: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 
 182 For I = 0 To 4: Color 14: Locate I + 3, 24: Print Using "##"; I;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
@@ -132,9 +132,9 @@ If B9 = 4 Then X = 6: XX = 4: GoTo 430
 
 190 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 2: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 2: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 5 To 9: Color 14: Locate I - 2, 24: Print Using "##"; I - 5;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 5 Then 190
@@ -147,9 +147,9 @@ If B9 = 4 Then X = 3: X1 = 7: XX = 9: GoTo 480
 
 200 Color , 0: Cls: Print: Print: Print: Print: J = 12: ZZ = 1
 '
-Locate 2, 22: Color 0, 3: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 3: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 10 To 18: Color 14: Locate I - 7, 24: Print Using "##"; I - 10;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 8 Then 200
@@ -166,9 +166,9 @@ If B9 = 8 Then X = 5: XX = 18: GoTo 540
 
 210 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 5: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 5: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 19 To 23: Color 14: Locate I - 16, 24: Print Using "##"; I - 19;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 4 Then 210
@@ -181,9 +181,9 @@ If B9 = 4 Then X = 3: XX = 23: GoTo 580
 
 220 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 6: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 6: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 24 To 28: Color 14: Locate I - 21, 24: Print Using "##"; I - 24;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 4 Then 220
@@ -196,9 +196,9 @@ If B9 = 4 Then X = 3: XX = 28: GoTo 630
 
 230 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 9: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 9: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 29 To 31: Color 14: Locate I - 26, 24: Print Using "##"; I - 29;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 2 Then 230
@@ -209,9 +209,9 @@ If B9 = 2 Then X = 0: X1 = 1: XX = 31: GoTo 670
 
 240 Color , 0: Cls: Print: Print: Print: Print: J = 10: ZZ = 1
 '
-Locate 2, 22: Color 0, 10: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 10: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 32 To 38: Color 14: Locate I - 29, 24: Print Using "##"; I - 32;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 6 Then 240
@@ -226,9 +226,9 @@ If B9 = 6 Then X = 4: XX = 38: GoTo 680
 
 250 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 12: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 12: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 39 To 40: Color 14: Locate I - 36, 24: Print Using "##"; I - 39;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 1 Then 250
@@ -238,9 +238,9 @@ If B9 = 1 Then X = 0: XX = 40: GoTo 1710
 
 270 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 13: Print " Ö"; String$(36, 196); "· ";
-For II = 1 To J: Locate 2 + II, 22: Print " º"; String$(36, 32); "º ";: Next
-Locate 3 + J, 22: Print " Ó"; String$(36, 196); "½ ";: Locate 10, 15
+Locate 2, 22: Color 0, 13: Print " " + Chr$(214); String$(36, 196); "· ";
+For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 41 To 43: Color 14: Locate I - 38, 24: Print Using "##"; I - 41;: Print " ";: Color 15: Print TP$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 2 Then 270
@@ -251,9 +251,9 @@ If B9 = 2 Then X = 2: X1 = 5: XF = 0: XF1 = 2: XX = 43: KC = 3: GoTo 1720
 
 280 Color , 0: Cls: Print: Print: Print: Print: J = 17: ZZ = 1
 '
-Locate 2, 2: Color 0, 14: Print " Ö"; String$(66, 196); "· ";
-For II = 1 To J: Locate 2 + II, 2: Print " º"; String$(66, 32); "º ";: Next
-Locate 3 + J, 2: Print " Ó"; String$(66, 196); "½ ";: Locate 10, 15
+Locate 2, 2: Color 0, 14: Print " " + Chr$(214); String$(66, 196); "· ";
+For II = 1 To J: Locate 2 + II, 2: Print " " + Chr$(186); String$(66, 32); Chr$(186) + " ";: Next
+Locate 3 + J, 2: Print " " + Chr$(211); String$(66, 196); Chr$(189) + " ";: Locate 10, 15
 For I = 44 To 58: Color 14: Locate I - 41, 4: Print Using "##"; I - 44;: Print " ";: Color 15: Print TP$(I): Next
 For I = 59 To 72: Color 14: Locate I - 56, 40: Print Using "##"; I - 44;: Print " ";: Color 15: Print TP$(I): Next
 Print: Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
@@ -845,9 +845,9 @@ If UCase$(I$) = "R" Then GoTo 5017
 If UCase$(I$) <> "H" And UCase$(I$) <> "L" And UCase$(I$) <> "R" Then 5002
 
 5007 '
-Locate 8, 8: Color 15, 1: Print " Ö"; String$(57, 196); "· ";
-For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(57, 32); "º ";: Next
-Locate 9 + J, 8: Print " Ó"; String$(57, 196); "½ ";: Locate 10, 15: Return
+Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); "· ";
+For II = 1 To J: Locate 8 + II, 8: Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";: Next
+Locate 9 + J, 8: Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";: Locate 10, 15: Return
 
 5015 JX = 1: GoTo 5030
 
@@ -896,9 +896,9 @@ If UCase$(I$) = "R" Then GoTo 5017
 If UCase$(I$) <> "P" And UCase$(I$) <> "V" And UCase$(I$) <> "R" Then 7002
 
 7007 '
-Locate 9, 15: Color 15, 0: Print " Ö"; String$(40, 196); "· ";
-For II = 1 To J: Locate 9 + II, 15: Print " º"; String$(40, 32); "º ";: Next
-Locate 10 + J, 15: Print " Ó"; String$(40, 196); "½ ": Locate 10, 10
+Locate 9, 15: Color 15, 0: Print " " + Chr$(214); String$(40, 196); "· ";
+For II = 1 To J: Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";: Next
+Locate 10 + J, 15: Print " " + Chr$(211); String$(40, 196); "½ ": Locate 10, 10
 
 7015 Return
 
@@ -910,32 +910,68 @@ If LG > QW Then 8000
 GoTo 8015
 
 8007 '
-Locate 10, 20: Color 4, 15: Print " Ö"; String$(30, 196); "· ";
-For II = 1 To J: Locate 10 + II, 20: Print " º"; String$(30, 32); "º ";: Next
-Locate 11 + J, 20: Print " Ó"; String$(30, 196); "½ ": Locate 11
+Locate 10, 20: Color 4, 15: Print " " + Chr$(214); String$(30, 196); "· ";
+For II = 1 To J: Locate 10 + II, 20: Print " " + Chr$(186); String$(30, 32); Chr$(186) + " ";: Next
+Locate 11 + J, 20: Print " " + Chr$(211); String$(30, 196); "½ ": Locate 11
 
 8015 Return
 
 10000 Cls: J = 18
-Locate 1, 5: Color 15, 1: Print " Ö"; String$(67, 196); "· ";
-For II = 1 To J: Color 15, 1: Locate 1 + II, 5: Print " º"; String$(67, 32); "º ";: Color 7, 1: Print String$(2, 177): Next
-Color 15, 1: Locate 1 + J, 5: Print " Ó"; String$(67, 196); "½ ";: Color 7, 1: Print String$(2, 177)
+Locate 1, 5: Color 15, 1
+
+Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
+
+For II = 1 To J
+	Color 15, 1
+	Locate 1 + II, 5
+	Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
+	Color 7, 1: Print String$(2, 177)
+	Next
+
+Color 15, 1
+Locate 1 + J, 5
+Print " " + Chr$(211); String$(67, 196); Chr$(189) + " ";
+
+Color 7, 1: Print String$(2, 177)
 Locate , 7: Print String$(71, 177)
 
 10001 Return
 
-10100 Color 0, 0: Cls: J = 15
-Locate 1, 15: Color 4, 15: Print " Ö"; String$(40, 196); "· ";
-For II = 1 To J: Color 4, 15: Locate 1 + II, 15: Print " º"; String$(40, 32); "º ";: Color 7, 4: Print String$(2, 177): Next
-Color 4, 15: Locate 1 + J, 15: Print " Ó"; String$(40, 196); "½ ";: Color 7, 4: Print String$(2, 177)
+10100 Color 0, 0
+Cls: J = 15
+Locate 1, 15: Color 4, 15
+
+Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
+For II = 1 To J
+	Color 4, 15
+	Locate 1 + II, 15
+	Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
+	Color 7, 4: Print String$(2, 177)
+Next
+Color 4, 15
+Locate 1 + J, 15
+Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
+
+Color 7, 4: Print String$(2, 177)
 Locate , 17: Print String$(44, 177)
 
 10101 Return
 
 11000 Cls: J = 18
-Locate 1, 5: Color 15, 4: Print " Ö"; String$(67, 196); "· ";
-For II = 1 To J: Color 15, 4: Locate 1 + II, 5: Print " º"; String$(67, 32); "º ";: Color 7, 4: Print String$(2, 177): Next
-Color 15, 4: Locate 1 + J, 5: Print " Ó"; String$(67, 196); "½ ";: Color 7, 4: Print String$(2, 177)
+Locate 1, 5: Color 15, 4
+
+Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
+For II = 1 To J
+	Color 15, 4
+	Locate 1 + II, 5
+	Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
+	Color 7, 4: Print String$(2, 177)
+Next
+
+Color 15, 4: Locate 1 + J, 5
+Print " " + Chr$(211); String$(67, 196); Chr$(189) + " ";
+
+Color 7, 4: Print String$(2, 177)
 Locate , 7: Print String$(71, 177)
 
 11001 Return
@@ -943,13 +979,13 @@ Locate , 7: Print String$(71, 177)
 1440 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4600
-ReDim F$(0 To Count%)
+ReDim conferenceFiles$0 To Count%)
 For X = 1 To Count%
-    F$(X) = Space$(12)
+    conferenceFiles$X) = Space$(12)
 Next
-F$(0) = Spec$
-Call ReadFile(F$())
-'CALL SortStr(VARPTR(F$(1)), Count%, 0)
+conferenceFiles$0) = Spec$
+Call ReadFile(conferenceFiles$))
+'CALL SortStr(VARPTR(conferenceFiles$1)), Count%, 0)
 
 1445 Cls
 Color , 1
@@ -972,19 +1008,19 @@ Print "ENTER";: Color 15
 Print "-SELECTS CONFERENCE";
 
 _MouseShow "DEFAULT"
-MAMenu F$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu conferenceFiles$), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If ExitCode% = 27 Then 5
-F$ = F$(SELECTION%)
-Locate 2, 33: Print F$
+targetFile$ = conferenceFiles$SELECTION%)
+Locate 2, 33: Print targetFile$
 Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
 3912 I$ = GetKeyPress$
 If UCase$(I$) = "Y" Then 1445
 
-3913 F$ = RTrim$(F$)
-F$ = Left$(F$, Len(F$) - 4)
+3913 targetFile$ = RTrim$(targetFile$)
+targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 Return
 
 4600 Locate 10, 8

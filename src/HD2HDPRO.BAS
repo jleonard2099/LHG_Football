@@ -49,9 +49,9 @@ For I = 1 To 120: Input #2, T%(I): Next I
 For I = 1 To 120: Input #2, H$(I): Next I
 Close #2
 If SL = 1 GoTo 49
-GoSub 1440: LG$ = F$
+GoSub 1440: LG$ = targetFile$
 If X2 = 0 Then GoTo 49
-GoSub 1440: LG2$ = F$
+GoSub 1440: LG2$ = targetFile$
 
 49 J = 5: GoSub 2075: Color 7
 Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
@@ -255,9 +255,23 @@ If UCase$(I$) = "R" Then GoTo 621
 If UCase$(I$) <> "S" And UCase$(I$) <> "A" And UCase$(I$) <> "R" Then 602
 
 607 '
-Locate 8, 8: Color 15, 1: Print " Ö"; String$(61, 196); "· ";
-For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
-Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15: Return
+Locate 8, 8: Color 15, 1
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To J
+Locate 8 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 9 + J, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
+Locate 10, 15
+Return
 
 608 Color , 2: Locate 1, 1: Print Tab(80);: Locate , 26: Color 0
 Print "3 IN 1 FOOTBALL UTILITIES"
@@ -447,10 +461,20 @@ Else
     Color 15, 0: Cls
     JJ = 7
     Locate 6, 8: Color 15, 1
-    Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
-    Print " º"; String$(61, 32); "º ";: Next
-    Locate 7 + JJ, 8
-    Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 7 + JJ, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
     Locate , 12: Print "ENTER NAME FOR FILE: ": Print
     Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
     Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
@@ -729,10 +753,20 @@ GoTo 600
 3056 Color 15, 0: Cls
 JJ = 6
 SN = 1: Locate 6, 8: Color 15, 4
-Print " Ö"; String$(61, 196); "· ";: For II = 1 To JJ: Locate 6 + II, 8
-Print " º"; String$(61, 32); "º ";: Next
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To JJ
+Locate 6 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
 Locate 7 + JJ, 8
-Print " Ó"; String$(61, 196); "½ ";: Locate 7, 32
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
 Locate , 12: Print "ENTER DISK ID: ": Print
 Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -824,9 +858,24 @@ QQ = 8: For XX = 11 To 4 Step -1: If Mid$(B$, XX, 1) = "_" Then QQ = XX - 4: GoT
 6620 Return
 
 7 '
-Locate 8, 8: Color 15, 1: Print " Ö"; String$(61, 196); "· ";
-For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
-Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15: Return
+Locate 8, 8: Color 15, 1
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To J
+Locate 8 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 9 + J, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 7, 32
+
+Locate 10, 15
+Return
 
 8 Color , 2: Locate 1, 1: Print Tab(80);: Locate , 26: Color 0
 Print "3 IN 1 FOOTBALL UTILITIES"
@@ -839,13 +888,13 @@ Return
 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4600
-ReDim F$(0 To Count%)
+ReDim leagueFiles$(0 To Count%)
 For X = 1 To Count%
-    F$(X) = Space$(12)
+    leagueFiles$(X) = Space$(12)
 Next
-F$(0) = Spec$
-Call ReadFile(F$())
-'CALL SortStr(VARPTR(F$(1)), Count%, 0)
+leagueFiles$(0) = Spec$
+Call ReadFile(leagueFiles$())
+'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 
 1445 Cls
 Color , 1
@@ -868,19 +917,19 @@ Print "ENTER";: Color 15
 Print "-SELECTS CONFERENCE";
 
 _MouseShow "DEFAULT"
-MAMenu F$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu leagueFiles$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If ExitCode% = 27 Then 5
-F$ = F$(SELECTION%)
-Locate 2, 33: Print F$
+targetFile$ = leagueFiles$(SELECTION%)
+Locate 2, 33: Print targetFile$
 Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
 3912 I$ = GetKeyPress$
 If UCase$(I$) = "Y" Then 1445
 
-3913 F$ = RTrim$(F$)
-F$ = Left$(F$, Len(F$) - 4)
+3913 targetFile$ = RTrim$(targetFile$)
+targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 Return
 
 4600 Locate 10, 8
@@ -890,9 +939,22 @@ Print "PRESS ANY KEY TO RETURN TO MAIN MENU"
 GoTo 5
 
 2075 '
-Locate 8, 8: Color 15, 1: Print " Ö"; String$(61, 196); "· ";
-For II = 1 To J: Locate 8 + II, 8: Print " º"; String$(61, 32); "º ";: Next
-Locate 9 + J, 8: Print " Ó"; String$(61, 196); "½ ";: Locate 10, 15: Return
+Locate 8, 8: Color 15, 1
+'Print box top
+Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+'Print box sides
+For II = 1 To J
+Locate 8 + II, 8
+Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+Next
+
+'Print box bottom
+Locate 9 + J, 8
+Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+Locate 10, 15
+Return
 
 '$INCLUDE: 'KeyInput.BM'
 '$INCLUDE: 'QPProEqu.BM'
