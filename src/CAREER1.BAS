@@ -54,7 +54,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 10, 59, 2,  15, 1)
+Call box0(7, 24, 10, 59, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -96,7 +96,8 @@ For J = 20 To 22
 Next
 Return
 
-1150 Cls: For J = 15 To 18: Locate J: Print String$(68, " ")
+1150 Cls
+For J = 15 To 18: Locate J: Print String$(68, " ")
 Next
 GoSub 4000
 GoSub 3056
@@ -950,8 +951,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-	Locate 6 + II, 8
-	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -965,6 +966,7 @@ Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
 Locate , 12: Print "THIS IS THE ID FOR TEAM YOU ARE UPDATING"
 Print
 Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
+
 3057 I$ = GetKeyPress$
 If I$ = Chr$(27) Then Z$ = "END": Clear: GoTo 1
 If I$ = Chr$(13) Then GoSub 1102: GoTo 3060
@@ -975,7 +977,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -1115,7 +1117,7 @@ GoTo 1
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7

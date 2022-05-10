@@ -1,7 +1,7 @@
 '$INCLUDE: 'Config.BI'
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
-''$INCLUDE: 'QEditype.BI'
+'--INCLUDE: 'QEditype.BI'
 
 _Title "3-in-1 Football - Scheduler"
 ''$ExeIcon:'./lhg_3in1fb.ico'
@@ -84,7 +84,7 @@ Locate 16: Print: Color 2
 Print "GENERATING A STANDARD SEASON SCHEDULE IS TO BE USED IN CONJUNCTION"
 Print "WITH THE STANDINGS AND LEAGUE LEADERS OPTIONS. YOU MUST ALREADY HAVE"
 Print "CREATED AN APPROPRIATE LEAGUE FOR THIS OPTION TO PROPERLY FUNCTION."
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "ENTER A NEW SCHEDULE                             "
 menuItems$(2) = "RETRIEVE/EDIT/PLAY AN EXISTING SCHEDULE          "
 menuItems$(3) = "EXTRACT ONE TEAM'S SCHEDULE FROM LEAGUE SCHEDULE "
@@ -103,7 +103,7 @@ Spacing% = 1
 Row% = 6
 Column% = 16
 
-CALL box0(5, 15, 14, 65, 2,  15, 1)
+Call box0(5, 15, 14, 65, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -113,7 +113,7 @@ If SCANCODE% = 27 Then SELECTION% = 8
 D3% = SELECTION% - 1
 On SELECTION% GOTO 26, 600, 600, 600, 600, 600, 4500, 15
 
-15 RUN "HELLO.EXE"
+15 Run "HELLO.EXE"
 
 
 26 AP%(0) = 0: NS% = 0: TS% = 0
@@ -126,8 +126,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -335,8 +335,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -352,7 +352,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 182
 YN$ = NY$
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 182 If BO% = 1 Then BO% = 0: GoTo 181
@@ -420,8 +420,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -515,8 +515,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -546,8 +546,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -563,7 +563,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 730
 YN$ = NY$
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 730 If BO% = 1 Then BO% = 0: GoTo 725
@@ -808,13 +808,13 @@ Return
 2100 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4400
-ReDim leagueFiles$(0 To Count%)
+ReDim scheduleFiles$(0 To Count%)
 For X = 1 To Count%
-    leagueFiles$(X) = Space$(12)
+    scheduleFiles$(X) = Space$(12)
 Next
-leagueFiles$(0) = Spec$
-Call ReadFile(leagueFiles$())
-'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
+scheduleFiles$(0) = Spec$
+Call ReadFile(scheduleFiles$())
+'CALL SortStr(VARPTR(scheduleFiles$(1)), Count%, 0)
 
 1310 Cls
 Color , 1
@@ -837,7 +837,7 @@ Print "ENTER";: Color 15
 Print "-SELECTS SCHEDULE";
 
 _MouseShow "DEFAULT"
-320 MAMenu leagueFiles$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+320 MAMenu scheduleFiles$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then 2900
@@ -846,7 +846,7 @@ If EXITCODE% = -79 Then Start% = Count%: EXITCODE% = 3: SELECTION% = Count%: GoT
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > Count% Then Start% = Count%
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 320
-targetFile$ = leagueFiles$(SELECTION%)
+targetFile$ = scheduleFiles$(SELECTION%)
 Locate 2, 33: Print targetFile$
 Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
@@ -1013,7 +1013,7 @@ GoTo 2900
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
@@ -1107,7 +1107,7 @@ Return
 
 4500 'BOXSCORE MAINTENANCE
 Call TITLE
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "SET PARAMETERS TO SAVE SPECIAL EVENTS BOXSCORES  "
 menuItems$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
 menuItems$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "
@@ -1123,7 +1123,7 @@ HiLiteFGColr% = 0: HiLiteBGColr% = 7
 Spacing% = 1
 Row% = 6
 Column% = 16
-CALL box0(5, 15, 12, 65, 2,  15, 1)
+Call box0(5, 15, 12, 65, 2, 15, 1)
     
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%

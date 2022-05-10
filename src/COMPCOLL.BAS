@@ -7,18 +7,25 @@ _Title "3-in-1 Football - Update Conference Stats"
 '_Icon
 _AllowFullScreen
 
-Dim RB(11, 11), QB(11, 11), KR(11, 11), PR(11, 11), WR$(16), WR(16, 13)
-Dim O1(60), Z1$(60), DT(38), OT(38), TB$(18), YD(16), TD(16), TP(18), TG(16)
-Dim PS$(10), RB$(10), QB$(4), KR$(3), PR$(3), PK$(2)
-Dim FM(2), FA(2), EM(2), EA(2)
-Dim D$(2), FG(2), EP(2), BRC(50), BRC$(50, 2), TRC(50), TRC$(50)
-Dim PTSF(60), PTSA(60), O2(60), O%(120), O$(120), T%(120), H1$(30)
-Dim Z2$(240), Z3$(240), TT(10, 20, 9), TT$(10, 20)
-Dim Z1(240, 2), H$(120), O3(60), AP%(1, 120) ', CN$(40)
-Dim Z2(14, 18), DI$(9), GI%(9, 2), DS$(14), GS%(14, 1)
-'Dim N2$(240), N3$(240), N1(240, 2), NT(10, 20, 9), NT$(10, 20)
-Dim LR(9), LR$(9, 1), LC(15), LC$(15, 1), LP(3), LP$(3, 1), LK(2), LK$(2, 1)
-Dim PK(2), PKR$(2, 1), LF(1), LF$(1), AM(1, 4), AF(1, 4), LI$(9, 1), LI(9)
+Dim BRC$(50, 2), D$(2), DI$(9), DS$(14), H$(120), H1$(30)
+Dim KR$(3), LF$(1), LR$(9, 1), LC$(15, 1), LI$(9, 1), LP$(3, 1), LK$(2, 1)
+Dim O$(120), PK$(2), PKR$(2, 1), PR$(3), PS$(10), QB$(4), RB$(10)
+Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
+Dim Z1$(60), Z2$(240), Z3$(240)
+
+Dim AF(1, 4), AM(1, 4), BRC(50), DT(38)
+Dim EP(2), EA(2), EM(2), FA(2), FG(2), FM(2)
+Dim KR(11, 11)
+Dim LC(15), LF(1), LI(9), LK(2), LR(9), LP(3)
+Dim O1(60), O3(60), OT(38), PK(2), PR(11, 11)
+Dim QB(11, 11), RB(11, 11), TG(16), TD(16), TP(18), TRC(50)
+Dim WR(16, 13), YD(16)
+
+Dim O2(60), PTSF(60), PTSA(60)
+Dim TT(10, 20, 9), Z1(240, 2), Z2(14, 18)
+
+Dim AP%(1, 120), GI%(9, 2), GS%(14, 1), O%(120), T%(120)
+'Dim N2$(240), N3$(240), N1(240, 2), NT(10, 20, 9), NT$(10, 20), CN$(40)
 
 Open "DEV.BAS" For Input As #1
 For I = 0 To 2
@@ -798,7 +805,11 @@ For X = 0 To 9
     If GI%(X, 0) > BRC(42) Then BRC(42) = GI%(X, 0): BRC$(42, 0) = DI$(X): BRC$(42, 1) = TM$
     If GI%(X, 1) > BRC(43) Then BRC(43) = GI%(X, 1): BRC$(43, 0) = DI$(X): BRC$(43, 1) = TM$
     If GI%(X, 2) > BRC(44) Then BRC(44) = GI%(X, 2): BRC$(44, 0) = DI$(X): BRC$(44, 1) = TM$
-    If LI(X - 1) > BRC(45) Then BRC(45) = LI(X - 1): BRC$(45, 0) = DI$(X): BRC$(45, 1) = TM$: BRC$(45, 2) = LI$(X - 1, 0)
+
+    If X > 0 Then
+        If LI(X - 1) > BRC(45) Then BRC(45) = LI(X - 1): BRC$(45, 0) = DI$(X): BRC$(45, 1) = TM$: BRC$(45, 2) = LI$(X - 1, 0)
+    End If
+
     For Z = 221 To 230
         If Z2$(Z) = DI$(X) And Z3$(Z) = WT$ Then Z1(Z, 1) = GI%(X, 0): GoTo 3422
     Next Z: If GI%(X, 0) <= Z1(230, 1) Then 3427
@@ -811,6 +822,7 @@ For X = 0 To 9
     3426 Next Z1: Next Z
 
 3427 Next X
+
 For X = 0 To 14
     If Left$(DS$(X), 1) = " " Or DS$(X) = "" Or DS$(X) = "END" Then 3439
     If GS%(X, 0) > BRC(46) Then BRC(46) = GS%(X, 0): BRC$(46, 0) = DS$(X): BRC$(46, 1) = TM$
@@ -985,7 +997,7 @@ H1$(XW) = H1$(XW) + "." + YR$: Return
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7

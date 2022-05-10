@@ -1,3 +1,4 @@
+$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
@@ -55,7 +56,7 @@ DECLARE SUB SCOUT ()
 DECLARE SUB SCOUTREPT ()
 DECLARE SUB SELECTTEAM ()
 DECLARE SUB SETSCREEN ()
-DECLARE SUB SETUP ()
+'DECLARE SUB SETUP ()
 DECLARE SUB SETWEATHER ()
 DECLARE SUB STATS2SCREEN ()
 DECLARE SUB STUFFED ()
@@ -78,7 +79,7 @@ Dim Shared U5$(3), V$(500), strWR$(1, 20), Y$(1), Y8$(3), Y9$(5), YN$(1), YR%(1)
 Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP, ATT
 Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
 Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT, E, EY
-Dim Shared F2, F8, F9, G, G9, I, I1, I2, I3, I4, I5, I6, I7, I8, I9
+Dim Shared F2, F8, F9, G, G9, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
 Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW, Q, QB, R1, RP, RY
 Dim Shared S, S2, S3, S6, SN, SY, T, T1, TE, TMT, TP, W5, WE, WS
 Dim Shared X, X1, X2, XD, XE, Y, Y1, Y9, YC, YF, YL, YT, Z1
@@ -93,7 +94,7 @@ Dim Shared QB(1, 3), RB(1, 17), S(1, 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1
 Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1), Z(38), Z1(38), Z2(13, 17)
 
 Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(7, 10), intDI%(1), intDS%(1)
-Dim Shared intG9%(1), GL%(30, 2), HB%(1)
+Dim Shared intG9%(1), GL%(31, 2), HB%(1)
 Dim Shared NG%(20), O%(120), PA%(2, 9), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(32), SX%(32, 2, 14), TE%(1), TF%(1), Time%(120)
@@ -287,6 +288,7 @@ For I = 1 To 5: For I1 = 1 To 10: For I2 = 1 To 14: Read S2%(I, I1, I2): Next: N
 For I = 1 To 2: For I1 = 1 To 21: Read PS%(I, I1): Next: Next
 For I = 1 To 2: For I1 = 0 To 20: Read QR%(I1, I): Next: Next
 For I = 1 To 29: Read RP$(I): Next
+
 Data BLAST,DIVE,OFF TACKLE,TOSS SWEEP,OPTION RUN,DRAW PLAY,MISDIRECTION
 Data QB SNEAK,POWER SWEEP,QUICK PITCH,QUICK TRAP,ISOLATION,SPRINT DRAW
 Data OVER THE TOP,COUNTER
@@ -373,20 +375,20 @@ Close 2
 TMT = 1
 
 23 If _FileExists("GAME82") Then
-	Open "GAME82" For Input As #2
-	Input #2, FF$
-	For I = 0 To 2: Input #2, AP%(I): Next
-	Close 2
-	Open DV$(0) + FF$ As #1 Len = 52
-	For X = 0 To 20
-		Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
-	Next
-	Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-	Get #1, AP%(0) + AP%(2)
-	For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
-	For X = 0 To 1: YN$(X) = Q$(22 + X): Next
-	Close 1
-	AP = 1
+    Open "GAME82" For Input As #2
+    Input #2, FF$
+    For I = 0 To 2: Input #2, AP%(I): Next
+    Close 2
+    Open DV$(0) + FF$ As #1 Len = 52
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
+    Next
+    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+    Get #1, AP%(0) + AP%(2)
+    For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
+    For X = 0 To 1: YN$(X) = Q$(22 + X): Next
+    Close 1
+    AP = 1
 End If
 
 28 If AP = 1 Then
@@ -432,11 +434,14 @@ If I$ = Chr$(27) Or UCase$(I$) = "Q" Then Run "HELLO.EXE"
 I = Val(I$)
 If UCase$(I$) = "A" Then I = 10
 If I < 0 Or I > 10 Then 35
+
 If I = 0 Then Open "DEFAULT" For Output As #1: Print #1, J6(0): Print #1, G9: Print #1, H%: Print #1, displayPause: Print #1, R5%: Print #1, Y8: Print #1, Y9: Print #1, NG%(14): Close 1: GoTo 60
 If I = 1 Then J6(0) = J6(0) + 1: If J6(0) > 3 Then J6(0) = 0
 If I = 1 Then 60
+
 If I = 2 Then I = 0: GoSub 100: GoTo 60
 If I = 3 Then I = 1: GoSub 100: GoTo 60
+
 If I = 4 Then G9 = G9 + 1: If G9 = 6 Then G9 = 0
 If I = 5 Then H% = H% + 1: If H% = 3 Then H% = 1
 
@@ -920,15 +925,19 @@ Else
     S(P1, Q) = S(P1, Q) + 7: S(P1, 0) = S(P1, 0) + 7
 End If
 Call DISPFIELD
+
 Y = 40: Y1 = 10: D1 = 1
 Call SCOREBOARD
+
 If G9 <> 0 And Q > 4 Then 3364
 GoSub 3700: Y = 35: YT = 65: Y1 = 10: Call CHANGEPOSS: O = 4: U3 = 9
 GoSub 3900: U3 = 0
+
 Call SCOREBOARD
 If G9 <> 0 And intY8% < 0 Then Y = 40: YT = 60
 If G9 = 1 And Y8 = 3 Or G9 = 4 Then Y = 30: YT = 70
 If G9 = 0 And Y9 = 0 Then Y = 40: YT = 60
+
 Call SCOREBOARD
 If R1 > 0 And R1 < 3 And 100 - Y > 10 And G9 <> 0 Then K(D, 0) = K(D, 0) + 1
 If Q > 4 Then 3364
@@ -1058,8 +1067,16 @@ On Q - 1 GOTO 3362, 3363, 3362, 3364, 3364, 3364, 3364, 3364, 3364, 3364
 
 3362 Call SCOREBOARD: U$ = "END OF QUARTER": Call PBP: GoTo 700
 
-3363 Call SCOREBOARD: U$ = "HALF TIME": Call PBP: W% = 1 - W%: Call HALFSTART: X = 0: HT% = 1: GoSub 8530
+3363 Call SCOREBOARD: U$ = "HALF TIME"
+Call PBP
+W% = 1 - W%
+Call HALFSTART
+X = 0
+HT% = 1
+GoSub 8530
+
 GoTo 850
+
 PAH:
 If AP <> 1 Then For I3 = 0 To 1: Call CHANGEQB: Next I3
 Randomize Timer: Call SCOREBOARD
@@ -1079,7 +1096,9 @@ If NG%(14) = 3 Then 3367
 
 3366 If UCase$(I$) = "Y" And Q = 5 Then P1 = Int(Rnd(1) * 2): Call CHANGEPOSS: T1(0) = T1(0) + 1: T1(1) = T1(1) + 1: D1 = 1: Y1 = 10: GoSub 3369: GoSub 3371: OT = 1: GoTo 340
 If UCase$(I$) = "Y" And Q > 5 Then T1(0) = T1(0) + 1: T1(1) = T1(1) + 1: OT = 1: GoTo 700
-Q = Q - 1: Print " END OF GAME"
+Q = Q - 1: U$ = "END OF GAME": Call PBP 'Print " END OF GAME"
+' -- this code below should be enough to prompt us for a key press before end of game
+'CALL DECIDE
 GoTo 8500
 
 3367 Y = 75: YT = 25: Y1 = 10: D1 = 1: OT = 1
@@ -2064,7 +2083,9 @@ G = Int(Rnd(1) * (12 + ((I6 - 13) * 3) * 2))
 8350 Call YARDAGE: Return
 
 8500 If H% = 2 Then SITE$ = "NEUTRAL FIELD": ATT = Int(Rnd(1) * 10000) + 1 + 5000: GoTo 8540
+
 If Not _FileExists(DV$(0) + "STADIUMS." + NN$(H%)) Then ATT = Int(Rnd(1) * 5000) + 10000: SITE$ = "MEMORIAL STADIUM": GoTo 8540
+
 Open DV$(0) + "STADIUMS." + NN$(H%) For Random As #2 Len = 50
 Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 Get #2, intB8%(H%)
@@ -2072,6 +2093,8 @@ SITE$ = RTrim$(Q$(1))
 AVGATT = CVL(Q$(3))
 Z$ = Q$(4)
 Close #2
+
+'Determine attendance randomly
 If Z$ <> "x" Then ATT = Int(Rnd(1) * 5000) + 10000: SITE$ = "MEMORIAL STADIUM": GoTo 8540
 ATT = Int(Rnd(1) * 10000) + 1 - 5000 + AVGATT
 If ATT < 0 Then ATT = Int(Rnd(1) * 500) + 200
@@ -2392,8 +2415,10 @@ Sub SETSCREEN ()
     Screen , , 0, 0
     SN = 0
     Color 0, 0, 0
-    Cls: Color 15, 1 + BW * 6
+    Cls
+    Color 15, 1 + BW * 6
     Print
+
     'Cnoverted these Chr$ statements so the graphics
     'are preserved in any text editor
     Print Chr$(219); String$(38, 223)
@@ -2427,8 +2452,7 @@ Sub DISPFIELD ()
         Locate I + 4, 23
 
         ' Previously read as Q + (Q = 5)
-        ' What is Q?
-        For J = 1 To Q + (Q - 5)
+        For J = 1 To Q 'as in, return 0 or 1 based on value of Q / OT
             Print Using "## "; S(I, J);
         Next J
 
@@ -3084,9 +3108,12 @@ Sub SAVESTATS ()
         Next
         For I = 0 To 3
             If QB(Q, I) > LP(Q, I) Then LP(Q, I) = QB(Q, I): LP$(Q, I, 0) = strQB$(Q, I): LP$(Q, I, 1) = A$(1 - Q)
+        Next
+        For I = 0 To 2
             If KR(Q, I) > LK(Q, I) Then LK(Q, I) = KR(Q, I): LK$(Q, I, 0) = strKR$(Q, I): LK$(Q, I, 1) = A$(1 - Q)
             If PR(Q, I) > PK(Q, I) Then PK(Q, I) = PR(Q, I): PK$(Q, I, 0) = strPR$(Q, I): PK$(Q, I, 1) = A$(1 - Q)
         Next
+
         If K(Q, 26) > Z(28) Then Z(28) = K(Q, 26)
         For I = 0 To 1
             If FL(Q, I) > LF(Q, I) Then LF(Q, I) = FL(Q, I): LF$(Q, 1) = A$(1 - Q)
@@ -3274,14 +3301,14 @@ Sub DRAWABOX ()
     Locate 1, 1
     Color 0, 7
 
-    Print Chr$(201); String$(77, 196); Chr$(187);
+    Print Chr$(214); String$(77, 196); Chr$(183);
     For II = 1 To J
         Locate 1 + II, 1
         Print Chr$(186); String$(77, 32); Chr$(186);
     Next
 
     Locate 2 + J, 1
-    Print Chr$(200); String$(77, 196); Chr$(188);
+    Print Chr$(211); String$(77, 196); Chr$(189);
 
     Locate 2, 32
 End Sub
@@ -3621,7 +3648,7 @@ End Sub
 
 
 '------------------------------
-'   STATS2SCREEN Subroutine
+'       Subroutine
 '------------------------------
 ' ...explanation...
 Sub STATS2SCREEN ()
@@ -3649,11 +3676,21 @@ Sub STATS2SCREEN ()
     Locate , 18: Print Using "##"; Int(TP(0) / 60);: Print ":";: Print Using "##"; TP(0) - Int(TP(0) / 60) * 60;
     Locate , 31: Print "TIME OF POSSESSION";: Locate , 53: Print Using "##"; Int(TP(1) / 60);: Print ":";: Print Using "##"; TP(1) - Int(TP(1) / 60) * 60
     Locate , 32: Print "THIRD DOWN EFF";: Locate , 16: Print TE%(0) - TF%(0); "-"; TE%(0);: Locate , 51: Print TE%(1) - TF%(1); "-"; TE%(1)
+
     Call DECIDE
     PCopy 0, 1
-    'SCREEN,,0,0
-    Rem
-    Color 0, 7: Cls: Locate , 32: Print "RUSHING STATISTICS"
+
+    'This is what turned the whole screen gray even if the box wasn't on the whole screen
+    'Color 0, 7
+    'Cls
+
+    'This makes rushing stats look like Receiving stats
+    ' I presume Lance didn't do this originally because
+    ' rushing stats tend to take up the whole screen
+    ' However without a box around it doesn't look very
+    ' consistent with the other screens
+    J = 22: Call DRAWABOX
+    Locate , 32: Print "RUSHING STATISTICS"
     Call ADDBACKS
     For I = 0 To 1
         Locate , 10
@@ -3672,9 +3709,12 @@ Sub STATS2SCREEN ()
         8560 Next I1
         Print
     Next I
+
     Call DECIDE
     PCopy 0, 1
-    J = 22: Call DRAWABOX: Locate , 32: Print "RECEIVING STATISTICS"
+
+    J = 22: Call DRAWABOX
+    Locate , 32: Print "RECEIVING STATISTICS"
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
@@ -3695,8 +3735,10 @@ Sub STATS2SCREEN ()
         8571 Next I1
         Print
     Next I
+
     Call DECIDE
     PCopy 0, 1
+
     J = 22: Call DRAWABOX: Locate , 32: Print "PASSING STATISTICS"
     For I = 0 To 1
         Locate , 10
@@ -3713,7 +3755,9 @@ Sub STATS2SCREEN ()
         8580 Next I1
         Print
     Next I
+
     Call DECIDE
+
     J = 22: Call DRAWABOX: Locate , 25: Print "KICKOFF RETURN STATISTICS"
     For I = 0 To 1
         Locate , 10
@@ -3729,8 +3773,10 @@ Sub STATS2SCREEN ()
         8590 Next I1
         Print
     Next I
+
     Print
     Locate , 25: Print "PUNT RETURN STATISTICS"
+
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
@@ -3745,8 +3791,10 @@ Sub STATS2SCREEN ()
         8591 Next I1
         Print
     Next I
+
     Call DECIDE
     Screen , , 0, 0
+
     J = 22: Call DRAWABOX: Locate , 29: Print "PUNTING STATISTICS": Print
     For I = 0 To 1
         Locate , 10
@@ -3760,8 +3808,10 @@ Sub STATS2SCREEN ()
 
         8592 Print
     Next I
+
     Print
     Locate , 29: Print "KICKING STATISTICS": Print
+
     For I = 0 To 1
         Locate , 2
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
@@ -3796,8 +3846,10 @@ Sub STATS2SCREEN ()
 
         8594 Print
     Next I
+
     Call DECIDE
     Screen , , 0, 0
+
     J = 22: Call DRAWABOX: Locate , 35: Print "INTERCEPTIONS": Print
     For I = 0 To 1: Locate , 19
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7: Locate , 35
@@ -3808,8 +3860,10 @@ Sub STATS2SCREEN ()
             Locate , 35: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
             IX:
     Next I1: Locate , 1: Print: Next I
+
     Call DECIDE
     Screen , , 0, 0
+
     J = 22: Call DRAWABOX: Locate , 39: Print "SACKS": Print
     For I = 0 To 1
         Locate , 19
@@ -3822,6 +3876,7 @@ Sub STATS2SCREEN ()
             Locate , 35: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
             SX:
     Next I1: Locate , 1: Print: Next I
+
     Call DECIDE
 End Sub
 
@@ -4194,7 +4249,8 @@ End Sub
 ' ...explanation...
 Sub MARKER ()
     If P1 Then J = FNP(YT) - 3 Else J = FNP(100 - YT) - 3
-    Locate 13, 4: Color 15 * (1 - BW), 2 + 5 * BW
+    Locate 13, 4
+    Color 15 * (1 - BW), 2 + 5 * BW
     If J < WS Then 2110 Else If J > WE Then 2115 Else GoTo 2125
 
     2110 Print Left$(F$, J - 1);: Color 0: Print Chr$(16 + P1);: Color 15 * (1 - BW)
@@ -4224,7 +4280,13 @@ End Sub
 ' ...explanation...
 Sub MARKER1 ()
     YT = 100 - Y: YF = -Y1
-    If P1 Then WS = FNP(YT + YF) - 3: WE = WS + 6 Else WE = FNP(100 - YT - YF) - 3: WS = WE - 6
+    If P1 Then
+        WS = FNP(YT + YF) - 3
+        WE = WS + 6
+    Else
+        WE = FNP(100 - YT - YF) - 3
+        WS = WE - 6
+    End If
     Call MARKER
 End Sub
 
@@ -4355,13 +4417,21 @@ End Sub
 Sub SCOREBOARD ()
     Screen , , 0, 0
     If Screen(2, 1) <> 219 Then Call SETSCREEN: Call MARKER1: GoTo 1980
+
     YF = -Y1: YT = 100 - Y
-    Color 15 * (1 - BW), 1 + BW * 6: Locate 4 + P1, 3
+    Color 15 * (1 - BW), 1 + BW * 6
+    Locate 4 + P1, 3
+
+    'Print indicator of team with possession
     Print "*";: Locate 5 - P1, 3: Print " ";
+
     Call YARDLINE
+
     Color 15 * (1 - BW), 4 + BW * 3
     Color 15 * (1 - BW), 4 + BW * 3: TI = T: TI = TI + TI * (TI < 0): I = Int(TI / 60)
+
     Call TICKUPDATE
+
     J = TI - I * 60
     Locate 3, 44: Print Using " TIME: ##.##     QUARTER: # "; I + J / 100, Q;
     Locate 3, 53: Print ":";: Locate , 72: Print Tab(80); " ";

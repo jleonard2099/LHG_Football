@@ -1,3 +1,4 @@
+$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
@@ -11,22 +12,21 @@ DECLARE SUB CATEGORIES ()
 DECLARE SUB BUILDSTATS ()
 DECLARE Sub SAVELEADER ()
 
-Dim Shared A1L(300, 8), A2L(180, 4), A3R(120, 1), A4L(90, 4)
-Dim Shared A5L(90, 4), A6L(30, 2), A7L(60, 5), A8L(300), A9L(450)
+Dim Shared A1L(300, 8), A2L(180, 4), A3R(120, 1), A4L(90, 4), A5L(90, 4)
+Dim Shared A6L(30, 2), A7L(60, 5), A8L(300), A9L(450), AM(1, 4), AF(1, 4)
 Dim Shared GI(1, 9, 2), GMA(300), GMB(180), GMC(120), GS(1, 14, 1)
-Dim Shared LC(16), LK(2), LP(3), LR(9), PK(2), Z(38), Z2(14, 18), Z1(38)
-
-Dim AM(1, 4), AF(1, 4), LF(1), TT(30, 30)
+Dim Shared LC(16), LK(2), LF(1), LP(3), LR(9)
+Dim Shared PK(2), TT(30, 30), Z(38), Z2(14, 18), Z1(38)
 
 Dim Shared A$(1), A1$(1, 10), A2$(1, 6), A3$(1, 4), A4$(1, 3), A5$(1, 3), A6$(1, 1), A7$(1, 2)
-Dim Shared DI$(1, 10), DS$(1, 15), DV$(2), LC$(16, 1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
+Dim Shared DI$(1, 10), DS$(1, 15), DV$(2), LC$(16, 1), LF$(1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
 Dim Shared PK$(2, 1), TP$(74), Z1$(30)
 
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
-Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
-Dim LF$(1), LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
-Dim QBL$(120), TT$(30, 30), TYY$(480)
+Dim Shared A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
+Dim Shared A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
+Dim Shared A8L$(300), A8T$(300), A9L$(450), A9T$(450)
+Dim Shared LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
+Dim Shared QBL$(120), TT$(30, 30), TYY$(480)
 Dim menuItems$(4)
 
 Dim Shared Y%(30)
@@ -63,7 +63,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 11, 57, 2,  15, 1)
+Call box0(7, 24, 11, 57, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -922,11 +922,11 @@ Locate 1, 5: Color 15, 1
 Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
 
 For II = 1 To J
-	Color 15, 1
-	Locate 1 + II, 5
-	Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
-	Color 7, 1: Print String$(2, 177)
-	Next
+    Color 15, 1
+    Locate 1 + II, 5
+    Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
+    Color 7, 1: Print String$(2, 177)
+Next
 
 Color 15, 1
 Locate 1 + J, 5
@@ -943,10 +943,10 @@ Locate 1, 15: Color 4, 15
 
 Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
 For II = 1 To J
-	Color 4, 15
-	Locate 1 + II, 15
-	Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-	Color 7, 4: Print String$(2, 177)
+    Color 4, 15
+    Locate 1 + II, 15
+    Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
+    Color 7, 4: Print String$(2, 177)
 Next
 Color 4, 15
 Locate 1 + J, 15
@@ -962,10 +962,10 @@ Locate 1, 5: Color 15, 4
 
 Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
 For II = 1 To J
-	Color 15, 4
-	Locate 1 + II, 5
-	Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
-	Color 7, 4: Print String$(2, 177)
+    Color 15, 4
+    Locate 1 + II, 5
+    Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
+    Color 7, 4: Print String$(2, 177)
 Next
 
 Color 15, 4: Locate 1 + J, 5
@@ -979,12 +979,12 @@ Locate , 7: Print String$(71, 177)
 1440 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4600
-ReDim conferenceFiles$0 To Count%)
+ReDim conferenceFiles$(0 To Count%)
 For X = 1 To Count%
-    conferenceFiles$X) = Space$(12)
+    conferenceFiles$(X) = Space$(12)
 Next
-conferenceFiles$0) = Spec$
-Call ReadFile(conferenceFiles$))
+conferenceFiles$(0) = Spec$
+Call ReadFile(conferenceFiles$())
 'CALL SortStr(VARPTR(conferenceFiles$1)), Count%, 0)
 
 1445 Cls
@@ -1008,11 +1008,11 @@ Print "ENTER";: Color 15
 Print "-SELECTS CONFERENCE";
 
 _MouseShow "DEFAULT"
-MAMenu conferenceFiles$), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu conferenceFiles$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If ExitCode% = 27 Then 5
-targetFile$ = conferenceFiles$SELECTION%)
+targetFile$ = conferenceFiles$(SELECTION%)
 Locate 2, 33: Print targetFile$
 Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
@@ -1073,7 +1073,14 @@ Sub BUILDSTATS ()
         For I = 0 To 3: Input #1, LP(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
         For I = 0 To 2: Input #1, LK(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
         For I = 0 To 2: Input #1, PK(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
-        For I = 0 To 1: Input #1, LF(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM(I, I1): Input #1, AF(I, I1): Next: Next
+        For I = 0 To 1
+            Input #1, LF(I)
+            Input #1, LF$(I)
+            For I1 = 0 To 4
+                Input #1, AM(I, I1)
+                Input #1, AF(I, I1)
+            Next
+        Next
         Close #1
         Open DV$(1) + Z1$(ZX) + "S" For Input As #1
         Input #1, Y%

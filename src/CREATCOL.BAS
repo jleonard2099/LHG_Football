@@ -1,3 +1,4 @@
+$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
@@ -25,7 +26,7 @@ Dim Y As Long
 'determine if the monitor is mono or color
 FG = 0
 BG = 7
-Colr = OneColor%(FG, BG) 'pack FG and BG into a single byte
+'Colr = OneColor%(FG, BG) 'pack FG and BG into a single byte
 
 Open "DEV.BAS" For Input As #2
 For I = 0 To 2
@@ -49,7 +50,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 11, 57, 2,  15, 1)
+Call box0(7, 24, 11, 57, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -69,8 +70,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -129,8 +130,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -146,15 +147,16 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
-ERASE teamItems$
-182 IF BO% = 1 THEN BO% = 0: GOTO 181
-183 LOCATE 2, 33: COLOR PA%(2), PA%(1): PRINT A$: COLOR 15, 4
-    LOCATE , 33: PRINT "ANY CHANGE (YN)"; : I$ = INKEY$: IF I$ = "" THEN 183
-    IF UCASE$(I$) = "Y" THEN 181
-    COLOR 15, 0
+Erase teamItems$
+310 GoSub 3100
+182 If BO% = 1 Then BO% = 0: GoTo 181
+183 Locate 2, 33: Color PA%(2), PA%(1): Print A$: Color 15, 4
+Locate , 33: Print "ANY CHANGE (YN)";: I$ = InKey$: If I$ = "" Then 183
+If UCase$(I$) = "Y" Then 181
+Color 15, 0
 390 Z1$(B) = A$: Z2$(B) = YN$: Z1%(B) = B8%
-400 GOTO 220
-410 GOSUB 1170: GOTO 2237
+400 GoTo 220
+410 GoSub 1170: GoTo 2237
 
 1195 Cls
 Run "HELLO.EXE 3"
@@ -346,7 +348,7 @@ GoTo 50
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7

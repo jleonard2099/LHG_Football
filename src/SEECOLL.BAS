@@ -8,11 +8,11 @@ _AllowFullScreen
 
 DECLARE SUB TITLE ()
 
-Dim PTSF(60), PTSA(60), Z2$(240), Z3$(240)
-'Dim O2(60), O%(20), O$(20), H1$(60), Z5$(40), ZM%(40), H$(20)
-Dim T$(60), W(60), L(60), T(60), LD(240)
-Dim LZ(240), P$(60), Z4$(240), TT(10, 20, 9), TR$(10, 20)
-Dim D$(2)
+Dim L(60), LD(240), LZ(240), PTSF(60), PTSA(60), T(60), TT(10, 20, 9), W(60)
+'Dim O2(60)
+'Dim O$(20), H1$(60), Z5$(40), H$(20)
+'Dim O%(20), ZM%(40)
+Dim D$(2), P$(60), T$(60), TR$(10, 20), Z2$(240), Z3$(240), Z4$(240)
 
 5 Open "DEV.BAS" For Input As #1: For I = 0 To 2: Input #1, D$(I): Next: Close 1
 
@@ -82,6 +82,7 @@ Close 2
 GoSub 200
 Cls
 Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+
 Open D$(2) + WE$ + ".LDR" For Input As #2
 For X = 1 To 60
     Input #2, T$(X), W(X), L(X), T(X), PTSF(X), PTSA(X)
@@ -541,7 +542,7 @@ Return
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
@@ -554,8 +555,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To J
-Locate 8 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 8 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -575,8 +576,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom

@@ -1,3 +1,4 @@
+$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
@@ -12,8 +13,12 @@ Dim Z2(50, 18), A1$(50), A2$(40), A3$(20), A4$(15), A5$(15), A6$(10), A7$(10)
 Dim Z(38), Z1(38), teamItems$(500), V%(500), PA%(2), Q$(500)
 Dim LR(50), LR$(50, 1), LC(60), LC$(60, 1), LP(20), LP$(20, 1), LK(15), LK$(15, 1), PK(15)
 Dim PK$(15, 1), DI$(55), GIS(15, 55, 3), DS$(55), GSS(15, 55, 3), GS%(55, 1), GI%(55, 2)
+
+'Some of the below were changed only to work with the code
+' they may end up actually hiding issues???
 Dim LF$(1), LI(9), LI$(9, 1), menuItems$(8)
-Dim AF(1, 4), AM(1, 4), LF(1), D$(1)
+Dim AF(9, 4), AM(9, 4), LF(9), D$(1)
+
 Dim Y As Long
 Dim RBBC(9) As Single, RBC$(9), RBYR(9)
 Dim RBR$(1), WRRC(4) As Single, WRC$(4), WRYR(4), QBBC(8) As Single, QBC$(8)
@@ -55,7 +60,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 15, 59, 2,  15, 1)
+Call box0(7, 24, 15, 59, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -79,8 +84,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-	Locate 8 + II, 8
-	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 8 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -265,10 +270,13 @@ For I = 0 To 9
     528 If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then 530
     If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then 535
 
-    530 For J = 3 To 6:
-    FGS(N, I, J - 3) = Z2(J, 17): Next J
+    530 For J = 3 To 6
+        FGS(N, I, J - 3) = Z2(J, 17)
+    Next J
+
     FGS(N, I, 4) = LF(I)
     FGS(N, I, 15) = 1: FGS(N, I, 16) = Y
+
     For I1 = 0 To 4: FGS(N, I, I1 + 5) = AM(I, I1): Next
     For I1 = 0 To 4: FGS(N, I, I1 + 10) = AF(I, I1): Next
     GoTo 536
@@ -878,14 +886,15 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-	Locate 6 + II, 8
-	Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
 Locate 7 + JJ, 8
 Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 Locate 7, 32
+
 Locate , 12: Print "ENTER DISK ID: ": Print
 Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
 Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -893,15 +902,16 @@ Print
 Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
 3057 I$ = GetKeyPress$
 If I$ = Chr$(27) Then Z$ = "END": Clear: GoTo 1
-
 If I$ = Chr$(13) Then GoSub 1102: GoTo 3060
+
 Locate 7, 27: Print I$
 Locate 7, 28: Line Input NY$
 NY$ = I$ + NY$
 Color 15, 0
+
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -955,12 +965,17 @@ If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 21
 T1 = V%(SELECTION%)
+
 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
 Get #1, T1
 A$ = Q$(1)
-For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+
+'Positions 1 and 2 will hold team colors
+For I1 = 0 To 2
+    PA%(I1) = CVI(Q$(I1 + 11))
+Next I1
 Close 1
 
 9006 If Right$(A$, 1) = " " Then A$ = Left$(A$, Len(A$) - 1): GoTo 9006
@@ -987,7 +1002,7 @@ Clear: GoTo 1
 Locate 6, 8: Color 15, 1
 Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 For II = 1 To JJ: Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7

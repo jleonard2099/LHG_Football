@@ -1,3 +1,4 @@
+$Debug
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 
@@ -8,24 +9,28 @@ _AllowFullScreen
 
 DECLARE SUB TITLE ()
 
-'Dim A(2, 7), A1(2, 7), A2%(2, 15), A3(2, 7), A4(2, 6), A5(2, 6), A6(2, 3), A7(2, 3), A8(2, 3), A9(2, 3)
+'Dim A(2, 7), A1(2, 7), A3(2, 7), A4(2, 6), A5(2, 6), A6(2, 3), A7(2, 3), A8(2, 3), A9(2, 3)
 'Dim B(2, 3), B1(2, 3), B2(2, 3), B3(2, 3), B6(2, 7), Q6%(2, 1)
 'Dim K(2, 12), K1(20, 5), K2(2, 10, 17), V4%(2, 2)
-Dim C2(15), GS%(1, 14, 1), LC(2, 15)
 'Dim T1(1), K3(2, 6), R9%(1), RB(2, 11, 11), WR(2, 11, 11), QB(2, 11, 11), KR(2, 11, 11), PR(2, 11, 11)
-Dim Q$(300)
-Dim A$(1), A1$(2, 9), A2$(2, 6), A3$(2, 4), A4$(2, 3), A5$(2, 3), A6$(2, 3), teamItems$(500), V%(500)
+Dim A$(1), A1$(2, 9), A2$(2, 6), A3$(2, 4), A4$(2, 3), A5$(2, 3), A6$(2, 3), A7$(1, 1), AA$(1)
 'Dim TT(2, 15), OT(2, 15)
-Dim DS$(1, 14), DS%(1, 14), Z2(1, 13, 17), Z(1, 38), Z1(1, 38)
-Dim D$(1), YN$(1), NY$(1), menuItems$(3), SA$(1), TN$(1), RB$(1, 9), WR$(1, 5)
-Dim QB$(1, 3), KR$(1, 2), PR$(1, 2), PU$(1), FG$(1, 1), DI$(1, 9), LR(1, 9)
-Dim LR$(1, 9, 1), LC$(1, 15, 1), LP$(1, 3, 1), F$(1), GI%(1, 9, 2)
-Dim LK(1, 2), LK$(1, 2, 1), PK(1, 2), PK$(1, 2, 1), AF(1, 1, 4), AM(1, 1, 4)
-Dim LI(1, 9), LI$(1, 9, 1), PA%(1, 4), YC%(1), LP(1, 3)
-Dim LF(1, 1), LF$(1, 1), A0%(1, 9), A1%(1, 9), A3%(1, 9), B6%(1, 7), AA$(1), T(1), YC(1)
-Dim A4%(1, 5), A5%(1, 5), A6%(1, 3), A7%(1, 3), A8%(1, 3), QX%(1, 3)
-Dim A9%(1, 2), B%(1, 2), B1%(1, 2), B2%(1, 2), B3%(1, 3), DI%(1, 9)
-Dim B4%(1, 1), B5%(1, 1), B7%(1, 1), B8%(1, 1), A7$(1, 1), S(1)
+Dim D$(1), DI$(1, 9), DS$(1, 14), F$(1), FG$(1, 1), KR$(1, 2)
+Dim LI$(1, 9, 1), LF$(1, 1), LK$(1, 2, 1), LR$(1, 9, 1), LC$(1, 15, 1), LP$(1, 3, 1)
+Dim menuItems$(3), NY$(1), PK$(1, 2, 1), PR$(1, 2), PU$(1)
+Dim Q$(300), QB$(1, 3), RB$(1, 9), SA$(1), teamItems$(500), TN$(1), WR$(1, 5), YN$(1)
+
+
+Dim AF(1, 1, 4), AM(1, 1, 4), C2(15)
+Dim LC(2, 15), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9)
+Dim PK(1, 2), S(1), T(1), YC(1)
+Dim Z(1, 38), Z1(1, 38), Z2(1, 13, 17)
+
+Dim A0%(1, 9), A1%(1, 9), A2%(2, 15), A3%(1, 9), A4%(1, 5), A5%(1, 5)
+Dim A6%(1, 3), A7%(1, 3), A8%(1, 3), A9%(1, 2)
+Dim B%(1, 2), B1%(1, 2), B2%(1, 2), B3%(1, 3), B4%(1, 1), B5%(1, 1), B6%(1, 7), B7%(1, 1), B8%(1, 1)
+Dim DI%(1, 9), DS%(1, 14), GI%(1, 9, 2), GS%(1, 14, 1)
+Dim PA%(1, 4), QX%(1, 3), V%(500), YC%(1)
 
 Open "DEV.BAS" For Input As #1
 Input #1, D$(0): Input #1, D$(1)
@@ -44,7 +49,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
     
-CALL box0(7, 24, 10, 50, 2,  15, 1)
+Call box0(7, 24, 10, 50, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -155,6 +160,7 @@ For I1 = 1 To Y / 934
 
 1105 Next I1
 Close 1
+
 TS% = Int((NT - 1) / 80)
 
 1102 SELECTION% = 1
@@ -197,8 +203,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -214,7 +220,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2112
 YN$(J) = NY$(J)
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 2112 If BO% = 1 Then BO% = 0: GoTo 2111
@@ -240,8 +246,8 @@ Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
 'Print box sides
 For II = 1 To JJ
-Locate 6 + II, 8
-Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Locate 6 + II, 8
+    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
 Next
 
 'Print box bottom
@@ -257,7 +263,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2152
 YN$(J) = NY$(J)
-ERASE teamItems$
+Erase teamItems$
 GoSub 1100
 
 2152 If BO% = 1 Then BO% = 0: GoTo 2150
@@ -656,12 +662,15 @@ For J = 0 To 1
 GoTo 99
 
 9400 For I = 0 To 15: C2(I) = 0: Next
+
 For I = 9 To 1 Step -1
     If A0%(J, I) = 0 Then 9403
     A0%(J, I) = A0%(J, I) - A0%(J, I - 1)
 
 9403 Next
+
 For I = 0 To 5: A2%(J, I + 10) = A4%(J, I): Next
+
 U = 0: For I = 1 To 15
     If A2%(J, I) = 0 Then U = U + 1: GoTo 9408
     C2(I) = A2%(J, I) - A2%(J, I - 1 - U): U = 0

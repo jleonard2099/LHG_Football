@@ -28,7 +28,7 @@ If A$(1) = "3" Then GoTo 800
 If A$(1) = "2" Then GoTo 700
 
 1 Call TITLE
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "PLAY SINGLE GAME                "
 menuItems$(2) = "TEAM MANAGEMENT / ORGANIZATION  "
 menuItems$(3) = "REPLAY STATISTICS AND REPORTS   "
@@ -47,7 +47,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 16, 57, 2,  15, 1)
+Call box0(7, 24, 16, 57, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -59,7 +59,7 @@ If SELECTION% = 2 Then GoTo 700
 If SELECTION% = 3 Then GoTo 750
 If SELECTION% = 4 Then GoTo 800
 If SELECTION% = 5 Then Run "SCHEDULE.EXE"
-'If SELECTION% = 6 Then Run "HDCOPY.EXE"
+If SELECTION% = 6 Then GoTo 1
 If SELECTION% = 7 Then GoTo 505
 If SELECTION% = 8 Then Cls: End
 
@@ -69,7 +69,7 @@ BG = 7
 For I = 0 To 2
     D$(I) = Left$(D$(I), Len(D$(I)) - 1)
 Next
-Colr = OneColor%(FG, BG) 'pack FG and BG into a single byte
+'Colr = OneColor%(FG, BG) 'pack FG and BG into a single byte
 Cls: Locate , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS": Print
 
 510 Locate , 31: Print "PATHNAME EXAMPLES:": Print
@@ -130,7 +130,7 @@ Print #1, D$(2)
 GoTo 1
 
 700 Call TITLE
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "INPUT A NEW TEAM            "
 menuItems$(2) = "EDIT AN EXISTING TEAM       "
 menuItems$(3) = "PRINT TEAM ROSTER / REPORT  "
@@ -147,7 +147,7 @@ HiLiteFGColr% = 0: HiLiteBGColr% = 7
 Spacing% = 1
 Row% = 8
 Column% = 27
-CALL box0(7, 26, 15, 55, 2,  15, 1)
+Call box0(7, 26, 15, 55, 2, 15, 1)
 
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
@@ -164,7 +164,7 @@ If SELECTION% = 6 Then Run "TRADE.EXE"
 If SELECTION% = 7 Then GoTo 1
 
 750 Call TITLE
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "VIEW / PRINT COMPILED STATISTICS "
 menuItems$(2) = "ENCYCLOPEDIA/ TEAM REPLAY OPTIONS"
 menuItems$(3) = "MERGE SEPARATE STATISTICAL FILES "
@@ -179,7 +179,7 @@ Spacing% = 1
 Row% = 8
 Column% = 25
 
-CALL box0(7, 24, 12, 58, 2,  15, 1)
+Call box0(7, 24, 12, 58, 2, 15, 1)
 _MouseShow "DEFAULT"
 MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
 _MouseHide
@@ -192,7 +192,7 @@ If SELECTION% = 3 Then Run "MERGE.EXE"
 If SELECTION% = 4 Then GoTo 1
 
 800 Call TITLE
-ERASE menuItems$
+Erase menuItems$
 menuItems$(1) = "CREATE/ EDIT           "
 menuItems$(2) = "UPDATE STATS/ STANDINGS"
 menuItems$(3) = "VIEW/ PRINT REPORTS    "
@@ -224,9 +224,9 @@ Columns% = 3
 Spacing% = 3
 Row% = 9
 Column% = 2
-CALL box0(7, 1, 16, 25, 2,  15, 1)
-CALL box0(7, 27, 16, 51, 2,  15, 1)
-CALL box0(7, 53, 16, 77, 2,  15, 1)
+Call box0(7, 1, 16, 25, 2, 15, 1)
+Call box0(7, 27, 16, 51, 2, 15, 1)
+Call box0(7, 53, 16, 77, 2, 15, 1)
 Color 15, 0: Locate 8, 4: Print "PROFESSIONAL LEAGUE"
 Locate 8, 30: Print "COLLEGE CONFERENCE"
 Locate 8, 55: Print "NATIONAL ORGANIZATION"
