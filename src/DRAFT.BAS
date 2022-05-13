@@ -367,10 +367,6 @@ GoTo 751
 Return
 
 950 GoSub 9900
-If UCase$(Left$(D$(0), 1)) <> "A" And UCase$(Left$(D$(0), 1)) <> "B" Then 953
-Locate 3, 1: Print "ENTER DISK TO SAVE TEAM ON AND HIT ANY KEY"
-
-952 U$ = GetKeyPress$
 
 953 GoSub 9600
 GoTo 10
@@ -542,7 +538,7 @@ For I = 1 To 1 Step -1
 9430 Next
 Return
 
-9600 Rem
+9600 '
 S0 = 0: S1 = 0: S2 = 0: S3 = 0
 For I = 0 To 9: S0 = S0 + A0%(I): S2 = S2 + A2%(I): Next
 S4 = 100 / S0
