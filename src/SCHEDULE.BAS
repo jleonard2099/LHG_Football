@@ -12,9 +12,9 @@ DefInt A-Z
 DECLARE SUB TITLE ()
 'DECLARE SUB QEdit (array$(), Ky$, Action, Ed AS EditInfo)
 
-Dim teamItems$(500), V%(500), U5$(3), G9$(5), WN$(3), WT$(3), SD$(3), R5$(1)
+Dim teamNames$(500), teamIndex%(500), U5$(3), G9$(5), WN$(3), WT$(3), SD$(3), R5$(1)
 Dim Y8$(3), Y9$(5), LO$(2), A6(3), A7(3), A8(3), QX%(3), MO$(3), A3$(4)
-Dim PA%(4), DRI$(2), menuItems$(9), E%(13)
+Dim PA%(4), diskPaths$(2), menuItems$(9), E%(13)
 Dim Q$(375), AP%(1)
 'DIm A$(11), A(11), T(34)
 Dim H$(20), V$(20), Z1$(30), Z2$(30), Z1%(30)
@@ -49,9 +49,9 @@ DT$ = "10-01-91"
 TM$ = "07:30P"
     
 Open "DEV.BAS" For Input As #1
-Input #1, DRI$(0)
-Input #1, DRI$(1)
-Input #1, DRI$(2)
+Input #1, diskPaths$(0)
+Input #1, diskPaths$(1)
+Input #1, diskPaths$(2)
 Close 1
 
 U5$(0) = "HUMAN OPPONENT      ": U5$(1) = "COMPUTER IS TEAM 1  "
@@ -352,7 +352,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 182
 YN$ = NY$
-Erase teamItems$
+Erase teamNames$
 GoSub 1100
 
 182 If BO% = 1 Then BO% = 0: GoTo 181
@@ -460,8 +460,8 @@ Close 2
 335 Run "FOOTBALL.EXE"
 
 350 ' *** SAVE SCHEDULE FILE ***
-If _FileExists(DRI$(0) + scheduleFile$ + ".SCD") Then Kill DRI$(0) + scheduleFile$ + ".SCD"
-Open DRI$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
+If _FileExists(diskPaths$(0) + scheduleFile$ + ".SCD") Then Kill diskPaths$(0) + scheduleFile$ + ".SCD"
+Open diskPaths$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
 For X = 0 To 20
     Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
 Next
@@ -482,14 +482,14 @@ Next
 Return
 
 600 ' *** LOAD IN A SAVED SCHEDULE ***
-Spec$ = DRI$(0) + "*.SCD"
+Spec$ = diskPaths$(0) + "*.SCD"
 GoSub 2100
-Open DRI$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
+Open diskPaths$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
 Y = LOF(1)
 Close 1
 AP%(0) = Y / 52
 BS% = Int((AP%(0) - 1) / 20)
-Open DRI$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
+Open diskPaths$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
 For X = 0 To 20
     Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
 Next
@@ -563,7 +563,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 1102: GoTo 730
 YN$ = NY$
-Erase teamItems$
+Erase teamNames$
 GoSub 1100
 
 730 If BO% = 1 Then BO% = 0: GoTo 725
@@ -587,8 +587,8 @@ GoTo 10
 
 750 If D3% = 4 Then 755
 Locate 1, 1: Print NG% + 1; " MATCHES"
-'IF NOT _FILEEXISTS(DRI$(0) + SF$ + ".SCD") THEN 752
-Open DRI$(0) + SF$ + ".SCD" For Random As #1 Len = 52
+'IF NOT _FILEEXISTS(diskPaths$(0) + SF$ + ".SCD") THEN 752
+Open diskPaths$(0) + SF$ + ".SCD" For Random As #1 Len = 52
 Y = LOF(1): GoTo 753
 
 752 Y = 0
@@ -625,7 +625,7 @@ If (T1 = NG%(I, 0) And YN$ = YN$(I, 0) Or T1 = NG%(I, 1) And YN$ = YN$(I, 1)) An
 NG%(I, 4) = U6
 Return
 
-800 Spec$ = DRI$(2) + "*.LIB"
+800 Spec$ = diskPaths$(2) + "*.LIB"
 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4400
@@ -637,7 +637,7 @@ leagueFiles$(0) = Spec$
 Call ReadFile(leagueFiles$())
 'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 GoSub 1310
-Open DRI$(2) + targetFile$ + ".LIB" For Input As #1
+Open diskPaths$(2) + targetFile$ + ".LIB" For Input As #1
 Input #1, X%
 If X% = 0 Then
     Input #1, LG$
@@ -664,8 +664,8 @@ For I = 1 To AP%(0)
 GoTo 10
 
 850 Print "FOUND A MATCH"
-'    IF NOT _FILEEXISTS(DRI$(0) + SF$ + ".SCD") THEN 852
-Open DRI$(0) + SF$ + ".SCD" For Random As #1 Len = 52
+'    IF NOT _FILEEXISTS(diskPaths$(0) + SF$ + ".SCD") THEN 852
+Open diskPaths$(0) + SF$ + ".SCD" For Random As #1 Len = 52
 Y = LOF(1): GoTo 853
 
 852 Y = 0
@@ -754,7 +754,7 @@ Next
 Return
 
 1100 NT = 0
-Open DRI$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 Y = LOF(1)
 Field #1, 15 As Q$(0), 640 As X$
 For I1 = 1 To Y / 934
@@ -763,7 +763,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NT = NT + 1
-    teamItems$(NT) = Q$(0): V%(NT) = I1
+    teamNames$(NT) = Q$(0): V%(NT) = I1
 
 1105 Next I1
 Close 1
@@ -785,7 +785,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -794,7 +794,7 @@ If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-T1 = V%(SELECTION%)
+T1 = teamIndex%(SELECTION%)
 GoTo 9000
 
 1200 For I = 1 To AP%(0)
@@ -890,7 +890,7 @@ Swap VS%(Z), VS%(Z1)
 Swap HS%(Z), HS%(Z1)
 Return
 
-8600 Open DRI$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+8600 Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 Field #1, 15 As Q$(1)
 Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
 Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
@@ -902,7 +902,7 @@ Next I1
 Close 1
 Return
 
-9000 Open DRI$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+9000 Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 
 9501 FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
@@ -1139,15 +1139,15 @@ Locate 23, 1: Print "ENTER GAME # TO GO TO        "
 Locate 23, 1: Input "ENTER GAME # TO GO TO "; NG%
 If NG% < 1 Or NG% > AP%(0) Then 120
 NS% = Int((NG% - 1) / 20)
-BN$ = DRI$(1) + "box" + Mid$(Str$(NG%), 2, Len(Str$(NG%)))
+BN$ = diskPaths$(1) + "box" + Mid$(Str$(NG%), 2, Len(Str$(NG%)))
 'GOSUB 5050
 GoTo 25
 
-5010 If SELECTION% = 3 Then Spec$ = DRI$(1) + "BOX*."
-If SELECTION% = 4 Then Spec$ = DRI$(1) + "*.SPC"
-If SELECTION% = 5 Then Spec$ = DRI$(1) + "*.SPC"
+5010 If SELECTION% = 3 Then Spec$ = diskPaths$(1) + "BOX*."
+If SELECTION% = 4 Then Spec$ = diskPaths$(1) + "*.SPC"
+If SELECTION% = 5 Then Spec$ = diskPaths$(1) + "*.SPC"
 GoSub 5020
-If SELECTION% = 5 Then Spec$ = DRI$(1) + "BOX*.": GoSub 5020
+If SELECTION% = 5 Then Spec$ = diskPaths$(1) + "BOX*.": GoSub 5020
 GoTo 4500
 
 5020 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
@@ -1163,12 +1163,12 @@ Next
 boxFiles$(0) = Spec$
 Call ReadFile(boxFiles$())
 For X = 1 To Count%
-    Kill (DRI$(1) + boxFiles$(X))
+    Kill (diskPaths$(1) + boxFiles$(X))
     Locate 12, 34: Print "DELETING "; boxFiles$(X)
 Next
 Return
 
-5060 Spec$ = DRI$(1) + "*.SPC"
+5060 Spec$ = diskPaths$(1) + "*.SPC"
 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
 Count% = DirCount%
 If Count% = 0 Then 4010
@@ -1211,7 +1211,7 @@ Locate , 33: Print "ANY CHANGE (YN)";
 Color 15, 0
 3912 I$ = GetKeyPress$
 If UCase$(I$) = "Y" Then 5065
-BN$ = DRI$(1) + targetFile$
+BN$ = diskPaths$(1) + targetFile$
 ReDim array$(500) 'holds the main editor string array
 'GOSUB 5050
 GoTo 5060

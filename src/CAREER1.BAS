@@ -11,7 +11,7 @@ DefInt A-Z
 Dim Z2(50, 18), A1$(50), A2$(40), A3$(20), A4$(15), A5$(15), A6$(10), A7$(10)
 Dim A1C$(50), A2C$(40), A3C$(20), A4C$(15), A5C$(15), A6C$(10), A7C$(10)
 Dim DIC$(55), DSC$(55)
-Dim Z(38), Z1(38), teamItems$(500), V%(500), PA%(2), Q$(500)
+Dim Z(38), Z1(38), teamNames$(500), teamIndex%(500), PA%(2), Q$(500)
 Dim LR(50), LR$(50, 1), LC(60), LC$(60, 1), LP(20), LP$(20, 1), LK(15), LK$(15, 1), PK(15)
 Dim PK$(15, 1), DI$(55), GIS(15, 55, 3), DS$(55), GSS(15, 55, 3), GS%(55, 1), GI%(55, 2)
 Dim LF$(1), LI(9), LI$(9, 1), menuItems$(3)
@@ -977,7 +977,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-Erase teamItems$
+Erase teamNames$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -1000,7 +1000,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NTMS = NTMS + 1
-    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
+    teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
 
 1105 Next I1
 Close 1
@@ -1022,7 +1022,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-21 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+21 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -1031,7 +1031,7 @@ If EXITCODE% = -79 Then Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GoTo 21
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 21
-T1 = V%(SELECTION%)
+T1 = teamIndex%(SELECTION%)
 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)
@@ -1063,7 +1063,7 @@ For X = 1 To Count%
 Next
 careerFiles$(0) = Spec$
 Call ReadFile(careerFiles$())
-'CALL SortStr(VARPTR(careerFiles$(1)), COUNT%, 0)
+'CALL SortStr(VARPTR(careerFiles$(1)), Count%, 0)
 
 1310 Cls
 Color , 1

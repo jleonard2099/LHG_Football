@@ -3,8 +3,8 @@
 
 DECLARE SUB TITLE ()
 
-DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamItems$(500)
-DIM V%(500), menuItems$(5), D$(2), PA%(4), B6%(7), A5(9)
+DIM Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamNames$(500)
+DIM teamIndex%(500), menuItems$(5), D$(2), PA%(4), B6%(7), A5(9)
 DIM A0%(9), A1%(9), A3%(9), A1$(9), A1(9), A3(9), B(9), B2(1), B3(2), B4(2), DI$(9)
 DIM A4%(5), A5%(5), A2$(5), A$(5)
 DIM A6%(3), A7%(3), A8%(3), QX%(3), A3$(3)
@@ -95,7 +95,7 @@ Locate 7, 32
 	LOCATE 7, 27: INPUT NY$
 	IF NY$ = "" THEN GOSUB 3102: GOTO 182
 	YN$ = NY$
-	ERASE teamItems$
+	ERASE teamNames$
 
 310 GOSUB 3100
 
@@ -342,7 +342,7 @@ OPEN D$(0) + "FOOT." + YN$ FOR RANDOM AS #1 LEN = 934
 	IF ASC(MID$(Q$(0), I2, 1)) < 32 OR ASC(MID$(Q$(0), I2, 1)) > 123 OR UCASE$(LEFT$(Q$(0), 3)) = "NOT" OR UCASE$(LEFT$(Q$(0), 3)) = "UN" THEN 3105
 	NEXT I2
 	NT = NT + 1
-	teamItems$(NT) = Q$(0): V%(NT) = I1
+	teamNames$(NT) = Q$(0): V%(NT) = I1
 
 3105 NEXT I1
 CLOSE 1
@@ -365,7 +365,7 @@ TS% = INT((NT - 1) / 80)
 	PRINT "ENTER"; : COLOR 15: PRINT "-SELECTS TEAM";
 	
 _MouseShow "DEFAULT"
-20   MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20   MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 	IF EXITCODE% = 27 THEN BO% = 1: RETURN
@@ -374,7 +374,7 @@ _MouseHide
 	IF EXITCODE% = -73 THEN Start% = Start% - 80: IF Start% < 1 THEN Start% = 1
 	IF EXITCODE% = -81 THEN Start% = Start% + 80: IF Start% > NT THEN Start% = NT
 	IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = Start%: GOTO 20
-	B8% = V%(SELECTION%)
+	B8% = teamIndex%(SELECTION%)
 	GOTO 9500
 
 4100 CLOSE 1

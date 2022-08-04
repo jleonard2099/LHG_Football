@@ -15,7 +15,7 @@ Dim G12(100), G22(100), G32(100), G42(100), Q2$(101)
 Dim D$(2), QQ$(1), Z1%(30), Z2$(30), Z12%(30), Z22$(30)
 Dim THW(4), THL(4), TAW(4), TAL(4), THT(4), TRT(4), TG1(4), TG2(4), TG3(4), TG4(4)
 Dim THW2(4), THL2(4), TAW2(4), TAL2(4), THT2(4), TRT2(4), TG12(4), TG22(4), TG32(4), TG42(4)
-Dim DV$(3), DV2$(3), teamItems$(500), V%(500), PA%(4)
+Dim DV$(3), DV2$(3), teamNames$(500), teamIndex%(500), PA%(4)
 Dim Y As Long
 
 Open "DEV.BAS" For Input As #2
@@ -781,7 +781,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-ERASE teamItems$
+ERASE teamNames$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -803,7 +803,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NTMS = NTMS + 1
-    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
+    teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
 
 1105 Next I1
 Close 1
@@ -825,7 +825,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If ExitCode% = 27 Then BO% = 1: Return
@@ -834,7 +834,7 @@ If ExitCode% = -79 Then Start% = NTMS: ExitCode% = 3: SELECTION% = NTMS: GoTo 20
 If ExitCode% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If ExitCode% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
 If ExitCode% = -81 Or ExitCode% = -73 Then ExitCode% = 3: SELECTION% = Start%: GoTo 20
-T1 = V%(SELECTION%)
+T1 = teamIndex%(SELECTION%)
 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)

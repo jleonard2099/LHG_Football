@@ -12,7 +12,7 @@ DefInt A-Z
 DECLARE FUNCTION PadRight$ (X$, Length)
 
 Dim Z1$(40), Z2$(40), Z1%(40), D$(2)
-'Dim Q$(15), V%(200), T%(34), L%(13)
+'Dim Q$(15), teamIndex%(500), T%(34), L%(13)
 Dim menuItems$(4)
 'Dim Y As Long
 

@@ -8,8 +8,8 @@ _AllowFullScreen
 
 DECLARE SUB TITLE ()
 
-Dim O%(120), O$(120), T%(120), P%(1), LC(15), LC$(15, 1), Q$(500), teamItems$(500)
-Dim V%(500), LR(9), LI(9), LI$(9, 1)
+Dim O%(120), O$(120), T%(120), P%(1), LC(15), LC$(15, 1), Q$(500), teamNames$(500)
+Dim teamIndex%(500), LR(9), LI(9), LI$(9, 1)
 Dim K(1, 12), K2(1, 13, 17), Z2(13, 17), Z(38), PA%(5), LP(3), LK(2), PK(2), LF(1)
 Dim W6(1, 1), A$(1), A1$(1, 9), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2)
 Dim Z1(38), CRD(120), SITE$(120), D$(2), TT(3), II(3), PP(3), YY(3)
@@ -912,7 +912,7 @@ NY$ = I$ + NY$
 Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
-ERASE teamItems$
+ERASE teamNames$
 GoSub 1100
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -934,7 +934,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NTMS = NTMS + 1
-    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
+    teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
 
 1105 Next I1
 Close 1
@@ -956,7 +956,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -965,7 +965,7 @@ If EXITCODE% = -79 Then Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-T1 = V%(SELECTION%)
+T1 = teamIndex%(SELECTION%)
 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
 AS Q$, 78 AS Q$(0)

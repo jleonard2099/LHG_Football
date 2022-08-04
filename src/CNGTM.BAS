@@ -6,8 +6,8 @@ _Title "3-in-1 Football - Change Team"
 '_Icon
 _AllowFullScreen
 
-Dim Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamItems$(500)
-Dim V%(500), menuItems$(5), D$(2), PA%(4), B6%(7), A5(9)
+Dim Q$(203), DS$(14), DS%(14), DI%(9), A2%(15), C2(15), C3(15), teamNames$(500)
+Dim teamIndex%(500), menuItems$(5), D$(2), PA%(4), B6%(7), A5(9)
 Dim A0%(9), A1%(9), A3%(9), A1$(9), A1(9), A3(9), B(9), B2(1), B3(2), B4(2), DI$(9)
 Dim A4%(5), A5%(5), A2$(5), a$(5)
 Dim A6%(3), A7%(3), A8%(3), QX%(3), A3$(3)
@@ -99,7 +99,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
-ERASE teamItems$
+ERASE teamNames$
 If UCase$(Left$(D$(1), 1)) <> "A" And UCase$(Left$(D$(1), 1)) <> "B" Then 310
 Cls: Print "INSERT APPROPRIATE TEAM DISK": Print "PRESS ANY KEY TO CONTINUE"
 360 I$ = GetKeyPress$
@@ -473,7 +473,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 3105
     Next I2
     NT = NT + 1
-    teamItems$(NT) = Q$(0): V%(NT) = I1
+    teamNames$(NT) = Q$(0): V%(NT) = I1
 
 3105 Next I1
 Close 1
@@ -496,7 +496,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -505,7 +505,7 @@ If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-B8% = V%(SELECTION%)
+B8% = teamIndex%(SELECTION%)
 GoTo 9500
 
 4100 Close 1

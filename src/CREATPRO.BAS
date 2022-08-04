@@ -28,7 +28,7 @@ Dim B(1, 2)
 'Dim A$(1), A1$(1, 6), A2$(1, 5), A3$(1, 2), A4$(1, 2), A5$(1, 2), A6$(1, 2)
 Dim Q$(300)
 Dim D$(2), PA%(4)
-Dim teamItems$(500), V%(500), menuItems$(4)
+Dim teamNames$(500), teamIndex%(500), menuItems$(4)
 'Dim T%(34), L%(13)
 Dim Y As Long
 
@@ -154,7 +154,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
-ERASE teamItems$
+ERASE teamNames$
 
 310 GoSub 3100
 
@@ -297,7 +297,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 3105
     Next I2
     NT = NT + 1
-    teamItems$(NT) = Q$(0): V%(NT) = I1
+    teamNames$(NT) = Q$(0): V%(NT) = I1
 
 3105 Next I1
 Close 1
@@ -320,7 +320,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -329,7 +329,7 @@ If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-B8% = V%(SELECTION%)
+B8% = teamIndex%(SELECTION%)
 
 9500 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 

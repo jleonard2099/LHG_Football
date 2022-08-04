@@ -20,7 +20,7 @@ DECLARE SUB TITLE ()
 4 Dim B2(1, 2), T1(1), K3(1, 6), R9%(1)
 Dim J6(1): Dim S(1, 10), O$(16), D3%(5, 6), P$(2), P(2), F(4), F1(4): Dim S1%(7, 6, 4): Dim W6(1, 1): Dim A$(1), A1$(1, 6), A2$(1, 5), A3$(1, 2), A4$(1, 2), A5$(1, 2), A6$(1, 2), Q$(300)
 Dim D$(2), PA%(4)
-Dim teamItems$(500), V%(500), T%(34), L%(13), menuItems$(4)
+Dim teamNames$(500), teamIndex%(500), T%(34), L%(13), menuItems$(4)
 Dim Y As Long
 
 'determine if the monitor is mono or color
@@ -147,7 +147,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 27: Input NY$
 If NY$ = "" Then GoSub 3102: GoTo 182
 YN$ = NY$
-Erase teamItems$
+Erase teamNames$
 310 GoSub 3100
 182 If BO% = 1 Then BO% = 0: GoTo 181
 183 Locate 2, 33: Color PA%(2), PA%(1): Print A$: Color 15, 4
@@ -286,7 +286,7 @@ For I1 = 1 To Y / 934
         If Asc(Left$(Q$(0), I2)) <= 32 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 2)) = "UN" Then 3105
     Next I2
     NT = NT + 1
-    teamItems$(NT) = Q$(0): V%(NT) = I1
+    teamNames$(NT) = Q$(0): V%(NT) = I1
 
 3105 Next I1
 Close 1
@@ -309,7 +309,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -318,7 +318,7 @@ If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-B8% = V%(SELECTION%)
+B8% = teamIndex%(SELECTION%)
 
 9500 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 

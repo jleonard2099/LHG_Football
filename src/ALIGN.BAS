@@ -6,7 +6,7 @@ _Title "3-in-1 Football - Align Stats"
 '_Icon
 _AllowFullScreen
 
-Dim teamItems$(500)
+Dim teamNames$(500)
 Dim menuItems$(3), D$(1), AR$(1), A$(1), GIN%(9, 2), GSN%(15, 1), LFN$(1)
 Dim Z2(14, 18), Z(38), Z1(38), DS$(15)
 'Dim GI$(1, 10), DI%(10), APR%(1, 120), CRDR(120), SITER$(120)
@@ -14,7 +14,7 @@ Dim Z2(14, 18), Z(38), Z1(38), DS$(15)
 Dim GIR%(9, 2), LRR$(9, 1), LR$(9, 1), LCR$(15, 1), LPR$(3, 1), LP$(3, 1), LKR$(2, 1)
 Dim GI%(9, 2), LRN$(9, 1), LCN$(15, 1), LPN$(3, 1), LKN$(2, 1), PKN$(2, 1)
 Dim LK$(2, 1), PK$(2, 1), PKR$(2, 1), AMR(1, 4), AM(1, 4), AFR(1, 4), AF(1, 4), DI$(9)
-Dim V%(500), Q$(500), PA%(4)
+Dim teamIndex%(500), Q$(500), PA%(4)
 Dim AMN(1, 4), AFN(1, 4), DIN$(9), DSN$(14)
 'Dim AP%(1, 120), CRD(120), SITE$(120)
 Dim A1$(9), A2$(5), A3$(3), A4$(2), A5$(2), A6$(3), A7$(1)
@@ -551,7 +551,7 @@ Color 15, 0
 If NY$ = "" Then GoSub 1102: GoTo 3060
 YN$ = NY$
 
-ERASE teamItems$
+ERASE teamNames$
 GoSub 1101
 
 3060 If BO% = 1 Then BO% = 0: GoTo 3056
@@ -575,7 +575,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NTMS = NTMS + 1
-    teamItems$(NTMS) = Q$(0): V%(NTMS) = I1
+    teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
 
 1105 Next I1
 Close 1
@@ -597,7 +597,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 21 _MouseShow "DEFAULT"
-MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -606,7 +606,7 @@ If EXITCODE% = -79 Then Start% = NTMS: EXITCODE% = 3: SELECTION% = NTMS: GoTo 21
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 21
-T1 = V%(SELECTION%)
+T1 = teamIndex%(SELECTION%)
     
 Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
     FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _

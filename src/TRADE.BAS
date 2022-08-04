@@ -18,7 +18,7 @@ Dim A$(1), A1$(2, 9), A2$(2, 6), A3$(2, 4), A4$(2, 3), A5$(2, 3), A6$(2, 3), A7$
 Dim D$(1), DI$(1, 9), DS$(1, 14), F$(1), FG$(1, 1), KR$(1, 2)
 Dim LI$(1, 9, 1), LF$(1, 1), LK$(1, 2, 1), LR$(1, 9, 1), LC$(1, 15, 1), LP$(1, 3, 1)
 Dim menuItems$(3), NY$(1), PK$(1, 2, 1), PR$(1, 2), PU$(1)
-Dim Q$(300), QB$(1, 3), RB$(1, 9), SA$(1), teamItems$(500), TN$(1), WR$(1, 5), YN$(1)
+Dim Q$(300), QB$(1, 3), RB$(1, 9), SA$(1), teamNames$(500), TN$(1), WR$(1, 5), YN$(1)
 
 
 Dim AF(1, 1, 4), AM(1, 1, 4), C2(15)
@@ -30,7 +30,7 @@ Dim A0%(1, 9), A1%(1, 9), A2%(2, 15), A3%(1, 9), A4%(1, 5), A5%(1, 5)
 Dim A6%(1, 3), A7%(1, 3), A8%(1, 3), A9%(1, 2)
 Dim B%(1, 2), B1%(1, 2), B2%(1, 2), B3%(1, 3), B4%(1, 1), B5%(1, 1), B6%(1, 7), B7%(1, 1), B8%(1, 1)
 Dim DI%(1, 9), DS%(1, 14), GI%(1, 9, 2), GS%(1, 14, 1)
-Dim PA%(1, 4), QX%(1, 3), V%(500), YC%(1)
+Dim PA%(1, 4), QX%(1, 3), teamIndex%(500), YC%(1)
 
 Open "DEV.BAS" For Input As #1
 Input #1, D$(0): Input #1, D$(1)
@@ -156,7 +156,7 @@ For I1 = 1 To Y / 934
         If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
     Next I2
     NT = NT + 1
-    teamItems$(NT) = Q$(0): V%(NT) = I1
+    teamNames$(NT) = Q$(0): V%(NT) = I1
 
 1105 Next I1
 Close 1
@@ -180,7 +180,7 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamItems$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then BO% = 1: Return
@@ -189,7 +189,7 @@ If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
 If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
 If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-T(J) = V%(SELECTION%)
+T(J) = teamIndex%(SELECTION%)
 GoTo 9500
 
 2110 GoSub 9900
@@ -220,7 +220,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2112
 YN$(J) = NY$(J)
-Erase teamItems$
+Erase teamNames$
 GoSub 1100
 
 2112 If BO% = 1 Then BO% = 0: GoTo 2111
@@ -263,7 +263,7 @@ Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
 Locate 7, 38: Input NY$(J)
 If NY$(J) = "" Then GoSub 1102: GoTo 2152
 YN$(J) = NY$(J)
-Erase teamItems$
+Erase teamNames$
 GoSub 1100
 
 2152 If BO% = 1 Then BO% = 0: GoTo 2150

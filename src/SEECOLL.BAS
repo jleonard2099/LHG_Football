@@ -17,15 +17,15 @@ Dim D$(2), P$(60), T$(60), TR$(10, 20), Z2$(240), Z3$(240), Z4$(240)
 5 Open "DEV.BAS" For Input As #1: For I = 0 To 2: Input #1, D$(I): Next: Close 1
 
 4000 Spec$ = D$(2) + "*.LDR"
-COUNT% = FCount%(Spec$)
-If COUNT% = 0 Then 4500
-ReDim leagueLeaderFiles$(0 To COUNT%)
-For X = 1 To COUNT%
+Count% = FCount%(Spec$)
+If Count% = 0 Then 4500
+ReDim leagueLeaderFiles$(0 To Count%)
+For X = 1 To Count%
     leagueLeaderFiles$(X) = Space$(12)
 Next
 leagueLeaderFiles$(0) = Spec$
 Call ReadFile(leagueLeaderFiles$())
-'CALL SortStr(VARPTR(leagueLeaderFiles$(1)), COUNT%, 0)
+'CALL SortStr(VARPTR(leagueLeaderFiles$(1)), Count%, 0)
 
 1310 Cls
 Color , 1
@@ -48,14 +48,14 @@ Print "ENTER";: Color 15
 Print "-SELECTS CONFERENCE";
 
 _MouseShow "DEFAULT"
-20 MAMenu leagueLeaderFiles$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu leagueLeaderFiles$(), SELECTION%, START%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
 If EXITCODE% = 27 Then 2900
 If EXITCODE% = -71 Then START% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 20
-If EXITCODE% = -79 Then START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GoTo 20
+If EXITCODE% = -79 Then START% = Count%: EXITCODE% = 3: SELECTION% = Count%: GoTo 20
 If EXITCODE% = -73 Then START% = START% - 80: If START% < 1 Then START% = 1
-If EXITCODE% = -81 Then START% = START% + 80: If START% > COUNT% Then START% = COUNT%
+If EXITCODE% = -81 Then START% = START% + 80: If START% > Count% Then START% = Count%
 If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = START%: GoTo 20
 targetFile$ = leagueLeaderFiles$(SELECTION%)
 Locate 2, 33: Print targetFile$

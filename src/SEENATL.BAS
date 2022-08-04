@@ -17,15 +17,15 @@ Dim PT(1200, 5) As Single, PR$(1200), D$(2)
 5 Open "DEV.BAS" For Input As #1: For I = 0 To 2: Input #1, D$(I): Next: Close 1
 
 4000 Spec$ = D$(2) + "*.CON"
-COUNT% = FCount%(Spec$)
-If COUNT% = 0 Then 4500
-REDIM conferenceFiles$(0 TO COUNT%)
-    FOR X = 1 TO COUNT%
+Count% = FCount%(Spec$)
+If Count% = 0 Then 4500
+REDIM conferenceFiles$(0 TO Count%)
+    FOR X = 1 TO Count%
       conferenceFiles$(X) = SPACE$(12)
     NEXT
     conferenceFiles$(0) = Spec$
     CALL ReadFile(conferenceFiles$())
-    'CALL SortStr(VARPTR(conferenceFiles$(1)), COUNT%, 0)
+    'CALL SortStr(VARPTR(conferenceFiles$(1)), Count%, 0)
 
 1310 CLS
     COLOR , 1
@@ -48,14 +48,14 @@ REDIM conferenceFiles$(0 TO COUNT%)
     PRINT "-SELECTS LEAGUE";
 
 _MouseShow "DEFAULT"
-20 MAMenu conferenceFiles$(), SELECTION%, START%, COUNT%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu conferenceFiles$(), SELECTION%, START%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
     IF EXITCODE% = 27 THEN 2900
     IF EXITCODE% = -71 THEN START% = 1: EXITCODE% = 3: SELECTION% = 1: GOTO 20
-    IF EXITCODE% = -79 THEN START% = COUNT%: EXITCODE% = 3: SELECTION% = COUNT%: GOTO 20
+    IF EXITCODE% = -79 THEN START% = Count%: EXITCODE% = 3: SELECTION% = Count%: GOTO 20
     IF EXITCODE% = -73 THEN START% = START% - 80: IF START% < 1 THEN START% = 1
-    IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > COUNT% THEN START% = COUNT%
+    IF EXITCODE% = -81 THEN START% = START% + 80: IF START% > Count% THEN START% = Count%
     IF EXITCODE% = -81 OR EXITCODE% = -73 THEN EXITCODE% = 3: SELECTION% = START%: GOTO 20
     targetFile$ = conferenceFiles$(SELECTION%)
     LOCATE 2, 33: PRINT targetFile$
