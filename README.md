@@ -29,6 +29,11 @@ Teams files will not be included at this time. However, if you're nice enough, t
 Contact me at my [profile page](https://github.com/jleonard2099/jleonard2099/tree/main) for now.
 See future revisions to this for possible links to bug trackers / etc. as they are considered.
 
+# Project Status
+Code has been re-worked to compile in a modern environment. Next stages will be cleaning up and refactoring code, as well as consolidating so it can be supported for Linux / Mac compile in QB64.
+
+Things are moving along as fast as personal time allows for now, which is pretty well now. Anticipate finished product in October 20222.
+
 # Roadmap
 ## Phase 1
 
@@ -38,7 +43,7 @@ First work from this point will focus on further code efficiency and cleanup suc
 - Make wording of menus and options consistent for all products
 
 The following improvements to functionality are also planned:
-- Improve handling of required defeault files
+- Improve handling of required default files
 - Improve error handling to catch / provide helpful messages
 - Update key input handling / routines (handling Esc vs. Ctrl+C, etc.)
 
@@ -59,7 +64,7 @@ This final phase will involve the following:
 Contact me directly if interested in contributing. Only considering people who share my vision for these games and are able to honor Lance's work and legacy.
 
 # Authors / Acknowledgment
-- I am responsible for maintaining / updating most of the code and will spend equal effort to code cleanup as to code improvement.
+- I am responsible for maintaining / updating most of the code and will spend equal effort cleaning up code as improving it
 - Jason Lamb, for lending his expertise in BASIC to helping me learn some standards and rewriting the menu functions.
 - Lance Haffner, for his hard work over 2 decades giving people endless hours of playable sports games and making dreams come true.
 - [Lance Haffner Sports Sims](https://www.facebook.com/groups/115923978469802) Facebook group admin Philip Lupi, for his hard work keeping Lance's games alive and active with fans old and new.
@@ -68,8 +73,3 @@ Contact me directly if interested in contributing. Only considering people who s
 
 # License
 Affero GNU GPL v3
-
-# Project Status
-Preliminary work has completed so that code can compile in a modern environment. Next stages will be cleaning up code and commenting it so we can later consolidate for purporses of going cross-platform.
-
-Things are moving along as fast as personal time allows for now, which is reasonable given the scope of the project.
