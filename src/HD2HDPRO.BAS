@@ -1,30 +1,25 @@
-'$INCLUDE: 'KeyInput.BI'
-'$INCLUDE: 'QPProEqu.BI'
+SUB HD2HDPRO ()
 
 _Title "3-in-1 Football - Head-to-Head League Stats"
-''$ExeIcon:'./lhg_3in1fb.ico'
-'_Icon
-_AllowFullScreen
 
 1 Dim O%(120), O$(120), T%(120), H$(120), Z1$(30), HT(30), RT(30), HW(30), HL(30), AW(30), AL(30)
 'Dim O1$(20)
-Dim G1(100), G2(100), G3(100), G4(100), Q$(203), Z12$(30)
+Dim G1(100), G2(100), G3(100), G4(100), Z12$(30)
 'Dim TM1$(30), TM12$(30), LGD$(2), LD$(2)
 Dim HT2(30), RT2(30), HW2(30), HL2(30), AW2(30), AL2(30)
 Dim G12(100), G22(100), G32(100), G42(100), Q2$(101)
-Dim D$(2), QQ$(1), Z1%(30), Z2$(30), Z12%(30), Z22$(30)
+Dim QQ$(1), Z1%(30), Z2$(30), Z12%(30), Z22$(30)
 Dim THW(4), THL(4), TAW(4), TAL(4), THT(4), TRT(4), TG1(4), TG2(4), TG3(4), TG4(4)
 Dim THW2(4), THL2(4), TAW2(4), TAL2(4), THT2(4), TRT2(4), TG12(4), TG22(4), TG32(4), TG42(4)
-Dim DV$(3), DV2$(3), teamNames$(500), teamIndex%(500), PA%(4)
-Dim Y As Long
+Dim DV$(3), DV2$(3), PA%(4)
 
-Open "DEV.BAS" For Input As #2
-For I = 0 To 2
-    Input #2, D$(I)
-Next
-Close #2
 
-5 Color , 0: Cls: GoSub 8
+5 Color , 0
+Cls
+
+Call TITLE_UTILS
+Locate 4, 1: Color 2, 0
+
 Print: Print: Print: Print: J = 6: GoSub 7: Color 3: Locate , 25: Print "SELECT OPTION:"
 Locate , 25: Color 15: Print "O";: Color 7: Print "NE LEAGUE"
 Locate , 25: Color 15: Print "T";: Color 7: Print "WO LEAGUES WITH INTERLEAGUE PLAY"
@@ -33,15 +28,15 @@ Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
 If UCase$(I$) = "O" Then X2 = 0: GoTo 39
 If UCase$(I$) = "T" Then X2 = 1: GoTo 39
 
-90 Run "HELLO.EXE 3"
+90 Exit Sub
 
 39 ER = 0
 
 40 GoSub 3056
 B$ = QQ$(1): GoSub 6585
 Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
-If Not _FileExists(D$(1) + Z$ + "S") Then GoSub 1600: GoTo 39
-Open D$(1) + Z$ + "S" For Input As #2
+If Not _FileExists(diskPaths$(1) + Z$ + "S") Then GoSub 1600: GoTo 39
+Open diskPaths$(1) + Z$ + "S" For Input As #2
 Input #2, YY%
 For I = 1 To 120: Input #2, O%(I): Next I
 For I = 1 To 120: Input #2, O$(I): Next I
@@ -63,13 +58,13 @@ If UCase$(I$) = "P" Then X1 = 1
 If UCase$(I$) = "S" Then VPP = 1
 
 78 W$ = LG$ + ".LIB"
-Open D$(2) + W$ For Input As #1
+Open diskPaths$(2) + W$ For Input As #1
 Input #1, X%
 If X% = 0 Then Input #1, LG$: Input #1, D1$: Input #1, D2$: For X = 1 To 15: Input #1, Z1$(X): Input #1, Z1%(X): Input #1, Z2$(X): Next: NT = 15: Close 1
 If X% = 1 Then Input #1, LG$: Input #1, D1$: Input #1, D2$: Input #1, D3$: For X = 1 To 30: Input #1, Z1$(X): Input #1, Z1%(X): Input #1, Z2$(X): Next: NT = 30: Close 1
 If X2 <> 1 Then 145
 Q2$ = LG2$ + ".LIB"
-Open D$(2) + Q2$ For Input As #1
+Open diskPaths$(2) + Q2$ For Input As #1
 Input #1, X%
 If X% = 0 Then Input #1, LG2$: Input #1, D12$: Input #1, D22$: For X = 1 To 15: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next: NT = 15: Close 1
 If X% = 1 Then Input #1, LG2$: Input #1, D12$: Input #1, D22$: Input #1, D32$: For X = 1 To 30: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next: NT = 30: Close 1
@@ -105,8 +100,7 @@ DV$(3) = D3$
 200 Color 12, 0: Cls
 Locate 2, 35: Print Z$
 Color 3: Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T"; _
-TAB(64); "PTF"; TAB(68); "PTA"
+    LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
 RDD = RDD + 1
 If RDD = 1 Then 210
 If RDD = 2 Then 211
@@ -182,8 +176,7 @@ Print "HIT ANY KEY TO CONTINUE"
 
 400 Cls: Color 12: Locate 1, 35: Print Z$
 Color 3: Locate 3: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    LOCATE 4: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T"; _
-TAB(64); "PTF"; TAB(68); "PTA"
+    LOCATE 4: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
 Color 11: Print LG$;: Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 For W = 1 To 3
     If DV$(W) = "XXX" Or DV$(W) = "" Then 490 Else GoTo 461
@@ -273,12 +266,14 @@ Locate 7, 32
 Locate 10, 15
 Return
 
+
 608 Color , 2: Locate 1, 1: Print Tab(80);: Locate , 26: Color 0
 Print "3 IN 1 FOOTBALL UTILITIES"
 Locate 24, 1: Print Tab(80);: Locate , 1
 Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
 Locate 4, 1: Color 2, 0
 Return
+
 
 620 RDD = 0: SL = 1: VPP = 0: GoTo 40
 
@@ -288,10 +283,11 @@ Return
 For K = 1 To 3: THW2(K) = 0: THL2(K) = 0: TAW2(K) = 0: TAL2(K) = 0: THT2(K) = 0: TRT2(K) = 0: TG12(K) = 0: TG22(K) = 0: TG32(K) = 0: TG42(K) = 0: Next
 GoTo 49
 
-1600 Cls: Color 14: Print "UNABLE TO LOCATE STAT FILE "; D$(1) + Z$
+1600 Cls: Color 14: Print "UNABLE TO LOCATE STAT FILE "; diskPaths$(1) + Z$
 Print: Print: Print: Print "HIT ANY KEY TO CONTINUE"
 1602 I$ = GetKeyPress$
 Return
+
 
 1900 For K = 1 To 30: AW2(K) = 0: HW2(K) = 0: AL2(K) = 0: HL2(K) = 0: RT2(K) = 0: HT2(K) = 0: Next
 For K = 1 To 3: THW2(K) = 0: THL2(K) = 0: TAW2(K) = 0: TAL2(K) = 0: THT2(K) = 0: TRT(K) = 0: TG12(K) = 0: TG22(K) = 0: TG32(K) = 0: TG42(K) = 0: Next
@@ -322,8 +318,7 @@ RDD = 0
 2200 Cls: Color 12
 Locate 2, 35: Print Z$
 Color 3: Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T" _
-; TAB(64); "PTF"; TAB(68); "PTA"
+    LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T"; TAB(64); "PTF"; TAB(68); "PTA"
 RDD = RDD + 1
 If RDD = 1 Then 2210
 If RDD = 2 Then 2211
@@ -793,23 +788,26 @@ If UCase$(I$) = "Y" Then 3056
 Color 15, 0
 Return
 
-1100 NTMS = 0
-Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
+1100 numberTeams = 0
+Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 Y = LOF(1)
 Field #1, 15 As Q$(0), 640 As X$
 For I1 = 1 To Y / 934
     Get #1, I1
     For I2 = 1 To 15
-        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
+        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
     Next I2
-    NTMS = NTMS + 1
-    teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
-
+	If nullTeam <> 1 Then
+		numberTeams = numberTeams + 1
+		teamNames$(numberTeams) = Q$(0)
+		teamIndex%(numberTeams) = I1
+	End If
 1105 Next I1
 Close 1
 
-1102 SELECTION% = 1
-Count% = NTMS
+1102 Selection% = 1
+Count% = numberTeams
 Start% = 1
 FileFGColr% = 15: FileBGColr% = 4
 HiLiteFGColr% = 0: HiLiteBGColr% = 7
@@ -825,26 +823,19 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
-If ExitCode% = 27 Then BO% = 1: Return
-If ExitCode% = -71 Then Start% = 1: ExitCode% = 3: SELECTION% = 1: GoTo 20
-If ExitCode% = -79 Then Start% = NTMS: ExitCode% = 3: SELECTION% = NTMS: GoTo 20
-If ExitCode% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
-If ExitCode% = -81 Then Start% = Start% + 80: If Start% > NTMS Then Start% = NTMS
-If ExitCode% = -81 Or ExitCode% = -73 Then ExitCode% = 3: SELECTION% = Start%: GoTo 20
-T1 = teamIndex%(SELECTION%)
-Open D$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
-AS Q$, 78 AS Q$(0)
+If ExitCode% = 27 Then BO% = 1: Exit Sub
+
+T1 = teamIndex%(Selection%)
+Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
 Get #1, T1
-QQ$(1) = Q$(1)
+QQ$(1) = RTrim$(Q$(1))
 For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
 Close 1
 
-9005 If Right$(QQ$(1), 1) = " " Then QQ$(1) = Left$(QQ$(1), Len(QQ$(1)) - 1): GoTo 9005
-Return
 
 6585 For XX = 4 To 11: If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
 Next XX
@@ -856,6 +847,7 @@ QQ = 8: For XX = 11 To 4 Step -1: If Mid$(B$, XX, 1) = "_" Then QQ = XX - 4: GoT
 6615 Next XX
 
 6620 Return
+
 
 7 '
 Locate 8, 8: Color 15, 1
@@ -877,65 +869,76 @@ Locate 7, 32
 Locate 10, 15
 Return
 
-8 Color , 2: Locate 1, 1: Print Tab(80);: Locate , 26: Color 0
-Print "3 IN 1 FOOTBALL UTILITIES"
-Locate 24, 1: Print Tab(80);: Locate , 1
-Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
-Locate 4, 1: Color 2, 0
-Return
 
-1440 Spec$ = D$(2) + "*.LIB"
-null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-Count% = DirCount%
-If Count% = 0 Then 4600
-ReDim leagueFiles$(0 To Count%)
-For X = 1 To Count%
-    leagueFiles$(X) = Space$(12)
-Next
-leagueFiles$(0) = Spec$
-Call ReadFile(leagueFiles$())
-'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 
-1445 Cls
-Color , 1
-Cls
-Locate , 28
-Color 14
-Print "SELECT CONFERENCE": Color 15
-SELECTION% = 1
-Start% = 1
-FileFGColr% = 15: FileBGColr% = 1
-HiLiteFGColr% = 0: HiLiteBGColr% = 7
-Rows% = 20
-Columns% = 4
-Spacing% = 6
-Row% = 4
-Column% = 1
-Locate 25, 1
-Color 14
-Print "ENTER";: Color 15
-Print "-SELECTS CONFERENCE";
 
-_MouseShow "DEFAULT"
-MAMenu leagueFiles$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-_MouseHide
+Do
 
-If ExitCode% = 27 Then 5
-targetFile$ = leagueFiles$(SELECTION%)
-Locate 2, 33: Print targetFile$
-Locate , 33: Print "ANY CHANGE (YN)";
-Color 15, 0
-3912 I$ = GetKeyPress$
-If UCase$(I$) = "Y" Then 1445
+	1440 Spec$ = diskPaths$(2) + "*.LIB"
+	null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
+	Count% = DirCount%
+	If Count% = 0 Then 
+		GoTo 4600
+	Else
+		ReDim leagueFiles$(0 To Count%)
+		For X = 1 To Count%
+			leagueFiles$(X) = Space$(12)
+		Next
+		leagueFiles$(0) = Spec$
+		Call ReadFile(leagueFiles$())
+		'CALL SortStr(VARPTR(leagueFiles$(1)), Count%, 0)
 
-3913 targetFile$ = RTrim$(targetFile$)
-targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
-Return
+		Do
+
+			1445 Cls
+			Color , 1
+			Cls
+			Locate , 28
+			Color 14
+			Print "SELECT CONFERENCE": Color 15
+			Selection% = 1
+			Start% = 1
+			FileFGColr% = 15: FileBGColr% = 1
+			HiLiteFGColr% = 0: HiLiteBGColr% = 7
+			Rows% = 20
+			Columns% = 4
+			Spacing% = 6
+			Row% = 4
+			Column% = 1
+			Locate 25, 1
+			Color 14
+			Print "ENTER";: Color 15
+			Print "-SELECTS CONFERENCE";
+
+			_MouseShow "DEFAULT"
+			MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+			_MouseHide
+
+			'Work out this logic better
+			If ExitCode% = 27 Then 5
+			targetFile$ = leagueFiles$(Selection%)
+			Locate 2, 33: Print targetFile$
+			Locate , 33: Print "ANY CHANGE (YN)";
+			Color 15, 0
+			3912 I$ = GetKeyPress$
+			'If UCase$(I$) = "Y" Then 1445
+			
+		Loop Until If UCase$(I$) = "N"
+
+		3913 targetFile$ = RTrim$(targetFile$)
+		targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
+		'Return
+		
+	End If
+	
+Loop Until ExitCode% = 27 Or Count% = 0
+
+
 
 4600 Locate 10, 8
-Print "NO CONFERENCE FILES WERE FOUND"
-Print "PRESS ANY KEY TO RETURN TO MAIN MENU"
-3806 I$ = GetKeyPress$
+Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+I$ = GetKeyPress$
+Call CSMsgBox("", 0, Pass)
 GoTo 5
 
 2075 '
@@ -956,5 +959,5 @@ Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 Locate 10, 15
 Return
 
-'$INCLUDE: 'KeyInput.BM'
-'$INCLUDE: 'QPProEqu.BM'
+
+END SUB

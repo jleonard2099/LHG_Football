@@ -1,13 +1,6 @@
-$Debug
-'$INCLUDE: 'KeyInput.BI'
-'$INCLUDE: 'QPProEqu.BI'
+SUB TRADE ()
 
 _Title "3-in-1 Football - Trade Players"
-''$ExeIcon:'./lhg_3in1fb.ico'
-'_Icon
-_AllowFullScreen
-
-DECLARE SUB TITLE ()
 
 'Dim A(2, 7), A1(2, 7), A3(2, 7), A4(2, 6), A5(2, 6), A6(2, 3), A7(2, 3), A8(2, 3), A9(2, 3)
 'Dim B(2, 3), B1(2, 3), B2(2, 3), B3(2, 3), B6(2, 7), Q6%(2, 1)
@@ -15,11 +8,10 @@ DECLARE SUB TITLE ()
 'Dim T1(1), K3(2, 6), R9%(1), RB(2, 11, 11), WR(2, 11, 11), QB(2, 11, 11), KR(2, 11, 11), PR(2, 11, 11)
 Dim A$(1), A1$(2, 9), A2$(2, 6), A3$(2, 4), A4$(2, 3), A5$(2, 3), A6$(2, 3), A7$(1, 1), AA$(1)
 'Dim TT(2, 15), OT(2, 15)
-Dim D$(1), DI$(1, 9), DS$(1, 14), F$(1), FG$(1, 1), KR$(1, 2)
+Dim DI$(1, 9), DS$(1, 14), F$(1), FG$(1, 1), KR$(1, 2)
 Dim LI$(1, 9, 1), LF$(1, 1), LK$(1, 2, 1), LR$(1, 9, 1), LC$(1, 15, 1), LP$(1, 3, 1)
-Dim menuItems$(3), NY$(1), PK$(1, 2, 1), PR$(1, 2), PU$(1)
-Dim Q$(300), QB$(1, 3), RB$(1, 9), SA$(1), teamNames$(500), TN$(1), WR$(1, 5), YN$(1)
-
+Dim NY$(1), PK$(1, 2, 1), PR$(1, 2), PU$(1)
+Dim QB$(1, 3), RB$(1, 9), SA$(1), TN$(1), WR$(1, 5), YN$(1)
 
 Dim AF(1, 1, 4), AM(1, 1, 4), C2(15)
 Dim LC(2, 15), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9)
@@ -30,35 +22,47 @@ Dim A0%(1, 9), A1%(1, 9), A2%(2, 15), A3%(1, 9), A4%(1, 5), A5%(1, 5)
 Dim A6%(1, 3), A7%(1, 3), A8%(1, 3), A9%(1, 2)
 Dim B%(1, 2), B1%(1, 2), B2%(1, 2), B3%(1, 3), B4%(1, 1), B5%(1, 1), B6%(1, 7), B7%(1, 1), B8%(1, 1)
 Dim DI%(1, 9), DS%(1, 14), GI%(1, 9, 2), GS%(1, 14, 1)
-Dim PA%(1, 4), QX%(1, 3), teamIndex%(500), YC%(1)
+Dim PA%(1, 4), QX%(1, 3), YC%(1)
 
-Open "DEV.BAS" For Input As #1
-Input #1, D$(0): Input #1, D$(1)
-Close #1
+'-----
+ReDim menuChoices$(1 to 2)
 
-99 Call TITLE
-menuItems$(1) = "TRADE PLAYERS            "
-menuItems$(2) = "RETURN TO 3 & 1 MAIN MENU"
-SELECTION% = 1
-Count% = 2
-Start% = 1
-SCANCODE% = 2
-FileFGColr% = 15: FileBGColr% = 1
-HiLiteFGColr% = 0: HiLiteBGColr% = 7
-Spacing% = 1
-Row% = 8
-Column% = 25
-    
-Call box0(7, 24, 10, 50, 2, 15, 1)
-_MouseShow "DEFAULT"
-MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
-_MouseHide
+Do
+	Cls
+	
+	99 Call TITLE
+	menuChoices$(1) = "TRADE PLAYERS            "
+	menuChoices$(2) = "RETURN TO 3 & 1 MAIN MENU"
+	Selection% = 1
+	Count% = 2
+	Start% = 1
+	ExitCode% = 2
+	FileFGColr% = 15: FileBGColr% = 1
+	HiLiteFGColr% = 0: HiLiteBGColr% = 7
+	Spacing% = 1
+	Row% = 8
+	Column% = 25
+		
+	Call box0(7, 24, 10, 50, 2, 15, 1)
+	_MouseShow "DEFAULT"
+	MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+	_MouseHide
 
-Color , 0
-If SCANCODE% = 27 Or SELECTION% = 2 Then 1
-If SELECTION% = 1 Then 2110
+	Color , 0
+	If ExitCode% <> 27 Then
+		Select Case Selection%
+			Case 1: GoTo 2110
+			Case 2: Cls
+		End Select
+	End If
 
-1 Run "HELLO.EXE 2"
+Loop Until Selection% = 2 OR ExitCode% = 27
+
+End Sub
+
+
+
+
 
 100 For XX = 4 To 11: If Mid$(SA$(J), XX, 1) = " " Or Mid$(SA$(J), XX, 1) = "/" Or Mid$(SA$(J), XX, 1) = "." Then Mid$(SA$(J), XX, 1) = "_"
 Next XX
@@ -70,8 +74,8 @@ QQ = 8: For XX = 11 To 4 Step -1: If Mid$(SA$(J), XX, 1) = "_" Then QQ = XX - 4:
 106 Next XX
 
 107 YR$ = Left$(SA$(J), 2): F$(J) = Mid$(SA$(J), 4, QQ) + "." + YR$
-If Not _FileExists(D$(1) + F$(J)) Then S(J) = 1: GoTo 108
-Open D$(1) + F$(J) For Input As #1
+If Not _FileExists(diskPaths$(1) + F$(J)) Then S(J) = 1: GoTo 108
+Open diskPaths$(1) + F$(J) For Input As #1
 Input #1, TN$(J)
 For I = 0 To 9: Input #1, RB$(J, I): Next
 For I = 0 To 5: Input #1, WR$(J, I): Next
@@ -98,11 +102,12 @@ Close #1
 
 108 Return
 
+
 330 Locate 12, 1
 Print "SAVING ";: Color PA%(J, 2), PA%(J, 1)
 Print A$(J);
 Color 7, 0: Print " STATS": Z = 0
-Open D$(1) + F$(J) For Output As #1
+Open diskPaths$(1) + F$(J) For Output As #1
 Print #1, TN$(J)
 For I = 0 To 9: Print #1, RB$(J, I): Next
 For I = 0 To 5: Print #1, WR$(J, I): Next
@@ -128,6 +133,7 @@ For I = 0 To 9: Print #1, LI(J, I): Print #1, LI$(J, I, 0): Print #1, LI$(J, I, 
 Close #1
 Return
 
+
 1000 For I = 0 To 9
     A0%(J, I) = 0: A1%(J, I) = 0: A2%(J, I) = 0: A3%(J, I) = 0: A1$(J, I) = ""
 Next
@@ -146,25 +152,29 @@ For I = 0 To 1
 Next
 Return
 
-1100 NT = 0
-Open D$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
+
+1100 numberTeams = 0
+Open diskPaths$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
 Y = LOF(1)
 Field #1, 15 As Q$(0), 640 As X$
 For I1 = 1 To Y / 934
     Get #1, I1
     For I2 = 1 To 15
-        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then 1105
+        If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
     Next I2
-    NT = NT + 1
-    teamNames$(NT) = Q$(0): V%(NT) = I1
+	If nullTeam <> 1 Then
+		numberTeams = numberTeams + 1
+		teamNames$(numberTeams) = Q$(0)
+		teamIndex%(numberTeams) = I1
+	End If
 
 1105 Next I1
 Close 1
 
-TS% = Int((NT - 1) / 80)
+TS% = Int((numberTeams - 1) / 80)
 
-1102 SELECTION% = 1
-Count% = NT
+1102 Selection% = 1
+Count% = numberTeams
 Start% = 1
 FileFGColr% = 15: FileBGColr% = 4
 HiLiteFGColr% = 0: HiLiteBGColr% = 7
@@ -180,16 +190,12 @@ Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
 Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     
 _MouseShow "DEFAULT"
-20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+20 MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
 _MouseHide
 
-If EXITCODE% = 27 Then BO% = 1: Return
-If EXITCODE% = -71 Then Start% = 1: EXITCODE% = 3: SELECTION% = 1: GoTo 20
-If EXITCODE% = -79 Then Start% = NT: EXITCODE% = 3: SELECTION% = NT: GoTo 20
-If EXITCODE% = -73 Then Start% = Start% - 80: If Start% < 1 Then Start% = 1
-If EXITCODE% = -81 Then Start% = Start% + 80: If Start% > NT Then Start% = NT
-If EXITCODE% = -81 Or EXITCODE% = -73 Then EXITCODE% = 3: SELECTION% = Start%: GoTo 20
-T(J) = teamIndex%(SELECTION%)
+If ExitCode% = 27 Then Exit Sub
+
+T(J) = teamIndex%(Selection%)
 GoTo 9500
 
 2110 GoSub 9900
@@ -310,6 +316,7 @@ If UCase$(I$) = "Z" Then W1 = 0
 
 2221 Return
 
+
 2222 GoSub 9900:: Locate 4, 1: Color PA%(0, 2), PA%(0, 1): Print A$(0): Color 7, 0: Locate 4, 20: Color PA%(1, 2), PA%(1, 1): Print A$(1): Color 7, 0
 For I = 0 To 9: Locate I + 5, 1: Print I; " "; A1$(0, I): Locate I + 5, 20: Print I; " "; A1$(1, I)
 Next I
@@ -348,6 +355,7 @@ If Z2(1, I1, 3) > 0 Then Print Using "##.#"; Z2(1, I1, 4) / Z2(1, I1, 3) Else Pr
 Locate , 5: Print Using "      TDS     ##                                TDS     ##"; Z2(0, I, 5); Z2(1, I1, 5)
 2212 I$ = GetKeyPress$
 Return
+
 
 2237 Swap A1$(0, I), A1$(1, I1)
 Swap A0%(0, I), A0%(1, I1)
@@ -400,6 +408,7 @@ Locate , 5: Print Using "      TDS     ##                                TDS    
 2269 I$ = GetKeyPress$
 Return
 
+
 2270 Swap A2$(0, I), A2$(1, I1)
 Swap LC(0, I + 10), LC(1, I1 + 10)
 Swap LC$(0, I + 10, 0), LC$(1, I1 + 10, 0)
@@ -451,6 +460,7 @@ If Z2(1, I1, 9) > 0 Then Print Using "##.#"; Z2(1, I1, 11) / Z2(1, I1, 9) * 100 
 2303 I$ = GetKeyPress$
 Return
 
+
 2304 Swap A3$(0, I), A3$(1, I1)
 Swap LP(0, I), LP(1, I1)
 Swap LP$(0, I, 0), LP$(1, I1, 0)
@@ -499,6 +509,7 @@ Locate , 5: Print Using "      TDS     ##                                TDS    
 2337 I$ = GetKeyPress$
 Return
 
+
 2338 Swap A4$(0, I), A4$(1, I1)
 Swap A9%(0, I), A9%(1, I1)
 Swap LK(0, I), LK(1, I1)
@@ -544,6 +555,7 @@ Locate , 5: Print Using "      TDS     ##                                TDS    
 2371 I$ = GetKeyPress$
 Return
 
+
 2372 Swap A5$(0, I), A5$(1, I1)
 Swap PK(0, I), PK(1, I1)
 Swap PK$(0, I, 0), PK$(1, I1, 0)
@@ -577,6 +589,7 @@ Print Using "                           ##.# AVG   "; B3%(1, 0) * 2 + 28;
 If Z(1, 7) > 0 Then Print Using "##.#"; Z(1, 8) / Z(1, 7) Else Print " -.-"
 2398 I$ = GetKeyPress$
 Return
+
 
 2399 Swap A6$(0, 0), A6$(1, 0)
 Swap B3%(0, 0), B3%(1, 0)
@@ -621,6 +634,7 @@ Print Using "                             ###  EP% "; B7%(1, I1);
 If Z2(1, 4 * I1 + 6, 17) > 0 Then Print Using "### "; Z2(1, 4 * I1 + 5, 17) / Z2(1, 4 * I1 + 6, 17) * 100 Else Print " -.-"
 2432 I$ = GetKeyPress$
 Return
+
 
 2433 Swap A7$(0, I), A7$(1, I1)
 Swap B4%(0, I), B4%(1, I1)
@@ -705,9 +719,9 @@ For I = 1 To 1 Step -1
 9430 Next
 Return
 
-9500 Open D$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
-    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
-AS Q$, 78 AS Q$(0)
+
+9500 Open diskPaths$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
 Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
 Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
 Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
@@ -719,17 +733,21 @@ Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 
 Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
 Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
 Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
-AS Q$
+    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150 AS Q$
 Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
 Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
 Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 Get #1, T(J)
-A$(J) = Q$(1): AA$(J) = Q$(2)
+
+A$(J) = RTrim$(Q$(1))
+AA$(J) = Q$(2)
+
 For I = 0 To 7: B6%(J, I) = CVI(Q$(I + 3)): Next I
+
 For I = 0 To 4: PA%(J, I) = CVI(Q$(I + 11)): Next I
+
 For I = 0 To 9
     A1$(J, I) = Q$(I * 5 + 16)
     A0%(J, I) = CVI(Q$(I * 5 + 17))
@@ -737,11 +755,13 @@ For I = 0 To 9
     A2%(J, I) = CVI(Q$(I * 5 + 19))
     A3%(J, I) = CVI(Q$(I * 5 + 20))
 Next I
+
 For I = 0 To 5
     A2$(J, I) = Q$(I * 3 + 66)
     A4%(J, I) = CVI(Q$(I * 3 + 67))
     A5%(J, I) = CVI(Q$(I * 3 + 68))
 Next I
+
 For I = 0 To 3
     A3$(J, I) = Q$(I * 5 + 84)
     A6%(J, I) = CVI(Q$(I * 5 + 85))
@@ -749,16 +769,19 @@ For I = 0 To 3
     A8%(J, I) = CVI(Q$(I * 5 + 87))
     QX%(J, I) = CVI(Q$(I * 5 + 88))
 Next I
+
 For I = 0 To 2
     A4$(J, I) = Q$(I * 3 + 104)
     A9%(J, I) = CVI(Q$(I * 3 + 105))
     B%(J, I) = CVI(Q$(I * 3 + 106))
 Next I
+
 For I = 0 To 2
     A5$(J, I) = Q$(I * 3 + 113)
     B1%(J, I) = CVI(Q$(I * 3 + 114))
     B2%(J, I) = CVI(Q$(I * 3 + 115))
 Next I
+
 A6$(J, 0) = Q$(122)
 B3%(J, 0) = CVI(Q$(123))
 A7$(J, 0) = Q$(124)
@@ -772,18 +795,21 @@ B5%(J, 1) = CVI(Q$(131))
 B7%(J, 1) = CVI(Q$(132))
 B8%(J, 1) = CVI(Q$(133))
 YC(J) = CVI(Q$(134))
+
 For I = 0 To 14
     DS$(J, I) = Q$(I * 2 + 135)
     DS%(J, I) = CVI(Q$(I * 2 + 136))
 Next I
+
 For I = 0 To 9
     DI$(J, I) = Q$(I * 2 + 165)
     DI%(J, I) = CVI(Q$(I * 2 + 166))
 Next I
 
-9598 If Right$(A$(J), 1) = " " Then A$(J) = Left$(A$(J), Len(A$(J)) - 1): GoTo 9598
 SA$(J) = A$(J)
 Close #1: GoTo 9400
+
+
 
 9600 Rem
 YC%(J) = YC(J)
@@ -846,9 +872,8 @@ Next
 9786 For I = 1 To 0 Step -1: If B8%(J, I) <> 0 Then B8%(J, I) = 100: GoTo 9800
 Next
 
-9800 Open D$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
-    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
-AS Q$, 78 AS Q$(0)
+9800 Open diskPaths$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
 Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
 Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
 Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
@@ -860,8 +885,7 @@ Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 
 Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
 Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
 Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
-AS Q$
+    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150 AS Q$
 Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
@@ -926,27 +950,11 @@ Close #1
 GoSub 1000
 Return
 
+
 9900 Call TITLE
 For XY = 2 To 23: Locate XY, 1: Print Tab(79);
 Next
 Return
 
 
-'------------------------------
-'      TITLE Subroutine
-'------------------------------
-' Displays window title / game copyright
-Sub TITLE ()
-    Color , 0: KEY Off: Cls
-    Color , 1: Locate 1, 1: Print Tab(80);: Locate , 32: Color 12
-    Print "3 IN 1 FOOTBALL V6.0"
-    Locate 24, 1: Print Tab(80);: Locate , 1
-    Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1994"; Tab(70); Left$(Time$, 5);
-    Locate 3, 1: Color 2, 0
-    Color 15: Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
-    Print "              FOR TECHNICAL SUPPORT, CALL (615) 366-8088"
-    Color 10
-End Sub
-
-'$INCLUDE: 'KeyInput.BM'
-'$INCLUDE: 'QPProEqu.BM'
+END SUB

@@ -11,9 +11,9 @@
  13 
  13 
  13 
- 19 
  7 
  7 
+ 7 
  14 
  14 
  14 
@@ -25,7 +25,7 @@
  16 
  16 
  16 
- 16 
+ 3 
  0 
  0 
  0 
@@ -39,7 +39,7 @@
  3 
  3 
  3 
- 3 
+ 0 
  0 
  0 
  7 
@@ -53,7 +53,7 @@
  42 
  42 
  42 
- 42 
+ 7 
  0 
  0 
  0 
@@ -67,7 +67,7 @@
  3 
  10 
  17 
- 24 
+ 3 
  0 
  0 
  0 
@@ -81,7 +81,7 @@
  0 
  0 
  0 
- 0 
+ 14 
  0 
  2 
  2 
@@ -95,7 +95,7 @@
  9 
  15 
  15 
- 18 
+ 5 
  0 
  0 
  0 
@@ -109,7 +109,7 @@
  0 
  0 
  8 
- 15 
+ 0 
  7 
  7 
  10 
@@ -123,7 +123,7 @@
  17 
  17 
  17 
- 17 
+ 0 
  0 
  0 
  0 
@@ -137,7 +137,7 @@
  7 
  7 
  10 
- 10 
+ 7 
  0 
  0 
  0 
@@ -151,7 +151,7 @@
  24 
  24 
  24 
- 24 
+ 0 
  0 
  7 
  7 
@@ -165,9 +165,9 @@
  14 
  14 
  14 
- 17 
  0 
  0 
+ 0 
  6 
  6 
  6 
@@ -179,7 +179,7 @@
  6 
  6 
  6 
- 6 
+ 10 
  0 
  7 
  7 
@@ -193,12 +193,12 @@
  17 
  17 
  17 
- 17 
  0 
  0 
  0 
  0 
  0 
+ 0 
  2 
  2 
  2 
@@ -207,7 +207,7 @@
  2 
  2 
  2 
- 2 
+ 0 
  0 
  0 
  0 
@@ -221,7 +221,7 @@
  0 
  3 
  3 
- 6 
+ 7 
  0 
  0 
  0 
@@ -235,21 +235,9 @@
  14 
  14 
  21 
- 21 
  0 
  0 
  0 
- 0 
- 7 
- 7 
- 7 
- 7 
- 7 
- 7 
- 7 
- 7 
- 7 
- 7 
  0 
  0 
  7 
@@ -261,9 +249,21 @@
  7 
  7 
  7 
+ 3 
+ 0 
+ 0 
  7 
  7 
  7 
+ 7 
+ 7 
+ 7 
+ 7 
+ 7 
+ 7 
+ 7 
+ 7 
+ 0 
  7 
  7 
  14 
@@ -277,7 +277,7 @@
  21 
  21 
  21 
- 24 
+ 3 
  0 
  3 
  10 
@@ -291,7 +291,7 @@
  10 
  13 
  13 
- 13 
+ 0 
  0 
  3 
  3 
@@ -305,7 +305,7 @@
  20 
  20 
  20 
- 34 
+ 0 
  0 
  0 
  0 
@@ -333,7 +333,7 @@
  0 
  3 
  6 
- 8 
+ 0 
  0 
  7 
  7 
@@ -347,7 +347,7 @@
  14 
  17 
  17 
- 17 
+ 2 
  0 
  0 
  0 
@@ -361,7 +361,7 @@
  17 
  17 
  23 
- 23 
+ 14 
  7 
  10 
  10 
@@ -375,7 +375,7 @@
  30 
  30 
  37 
- 37 
+ 3 
  7 
  7 
  9 
@@ -389,7 +389,7 @@
  33 
  33 
  33 
- 40 
+ 0 
  0 
  0 
  0 
@@ -403,7 +403,7 @@
  7 
  7 
  7 
- 21 
+ 7 
  0 
  0 
  3 
@@ -417,7 +417,7 @@
  20 
  23 
  30 
- 44 
+ 0 
  0 
  0 
  0 
@@ -431,7 +431,7 @@
  9 
  9 
  9 
- 15 
+ 0 
  0 
  7 
  7 
@@ -445,7 +445,7 @@
  24 
  24 
  24 
- 24 
+ 7 
  0 
  0 
  0 
@@ -894,38 +894,38 @@
  6 
  6 
  9 
-01 OAKLAND
-01 KANSAS CITY
-01 DETROIT
-01 GREEN BAY
-01 TAMPA BAY
-01 DALLAS
-01 CAROLINA
-01 MINNESOTA
-01 SEATTLE
-01 CLEVELAND
-01 CHICAGO
-01 BALTIMORE
-01 NEW ENGLAND
-01 CINCINNATI
-01 INDIANAPOLIS
-01 NY JETS
-01 PITTSBURGH
-01 JACKSONVILLE
-01 NEW ORLEANS
-01 BUFFALO
-01 ATLANTA
-01 SN FRANCISCO
-01 WASHINGTON
-01 SAN DIEGO
-01 ST.LOUIS
-01 PHILADELPHIA
-01 MIAMI
-01 TENNESSEE
-01 NY GIANTS
-01 DENVER
-01 NY GIANTS
-01 KANSAS CITY
+10 MINNESOTA
+10 NEW ORLEANS
+10 ATLANTA
+10 PITTSBURGH
+10 DETROIT
+10 CHICAGO
+10 CLEVELAND
+10 TAMPA BAY
+10 INDIANAPOLIS
+10 HOUSTON
+10 CINCINNATI
+10 NEW ENGLAND
+10 MIAMI
+10 BUFFALO
+10 OAKLAND
+10 TENNESSEE
+10 DENVER
+10 JACKSONVILLE
+10 CAROLINA
+10 NY GIANTS
+10 ARIZONA
+10 ST.LOUIS
+10 GREEN BAY
+10 PHILADELPHIA
+10 SN FRANCISCO
+10 SEATTLE
+10 DALLAS
+10 WASHINGTON
+10 BALTIMORE
+10 NY JETS
+10 SAN DIEGO
+10 KANSAS CITY
 01 MINNESOTA
 01 CHICAGO
 01 BUFFALO

@@ -1,16 +1,8 @@
-$Debug
-'$INCLUDE: 'KeyInput.BI'
-'$INCLUDE: 'QPProEqu.BI'
+SUB EXPANPRO ()
 
 _Title "3-in-1 Football - View Stat Leaders"
-''$ExeIcon:'./lhg_3in1fb.ico'
-'_Icon
-_AllowFullScreen
 
 DefInt A-Z
-DECLARE SUB CATEGORIES ()
-DECLARE SUB BUILDSTATS ()
-DECLARE Sub SAVELEADER ()
 
 Dim Shared A1L(300, 8), A2L(180, 4), A3R(120, 1), A4L(90, 4), A5L(90, 4)
 Dim Shared A6L(30, 2), A7L(60, 5), A8L(300), A9L(450), AM(1, 4), AF(1, 4)
@@ -19,15 +11,14 @@ Dim Shared LC(16), LK(2), LF(1), LP(3), LR(9)
 Dim Shared PK(2), TT(30, 30), Z(38), Z2(14, 18), Z1(38)
 
 Dim Shared A$(1), A1$(1, 10), A2$(1, 6), A3$(1, 4), A4$(1, 3), A5$(1, 3), A6$(1, 1), A7$(1, 2)
-Dim Shared DI$(1, 10), DS$(1, 15), DV$(2), LC$(16, 1), LF$(1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
-Dim Shared PK$(2, 1), TP$(74), Z1$(30)
+Dim Shared DI$(1, 10), DS$(1, 15), LC$(16, 1), LF$(1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
+Dim Shared PK$(2, 1), Z1$(30)
 
 Dim Shared A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
 Dim Shared A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
 Dim Shared A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim Shared LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim Shared QBL$(120), TT$(30, 30), TYY$(480)
-Dim menuItems$(4)
 
 Dim Shared Y%(30)
 
@@ -37,56 +28,76 @@ Dim Shared PX, TS, TT
 Dim Shared A3L(120, 13) As Single, FF(120) As Single, II(120) As Single
 Dim Shared PP(120) As Single, YY(120) As Single
 
-
-'STACK 0
-Open "DEV.BAS" For Input As #2: For X = 0 To 2: Input #2, DV$(X): Next: Close 2
-
 ReDim TPP$(480), TMM$(480), TYP(480) As Single
+
+'-----
+ReDim menuChoices$(1 to 4)
+
 TMR = 1660
 TS = 0
 PV = 0
 
 Call CATEGORIES
 
-5 Call TITLE
-menuItems$(1) = "VIEW EXPANDED PRO LEAGUE FILES  "
-menuItems$(2) = "VIEW EXPANDED COLLEGE CONFERENCE"
-menuItems$(3) = "RETURN TO LEAGUE LEADER MENU    "
-JA = 0: JB = 0: JC = 0: JD = 0: JE = 0: JF = 0: JG = 0: JH = 0: JI = 0: JJ = 0: TS = 0
-SELECTION% = 1
-Count% = 3
-Start% = 1
-SCANCODE% = 3
-FileFGColr% = 15: FileBGColr% = 1
-HiLiteFGColr% = 0: HiLiteBGColr% = 7
-Spacing% = 1
-Row% = 8
-Column% = 25
+Do
 
-Call box0(7, 24, 11, 57, 2, 15, 1)
-_MouseShow "DEFAULT"
-MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
-_MouseHide
+	Cls
 
-Color , 0
-If SCANCODE% = 27 Or SCANCODE% = 3 Then Run "HELLO.EXE  3"
-I = SELECTION%
-CT% = I
+	5 Call TITLE
+	menuChoices$(1) = "VIEW EXPANDED PRO LEAGUE FILES  "
+	menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE"
+	menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU    "
+	JA = 0: JB = 0: JC = 0: JD = 0: JE = 0: JF = 0: JG = 0: JH = 0: JI = 0: JJ = 0: TS = 0
+	Selection% = 1
+	Count% = 3
+	Start% = 1
+	ExitCode% = 3
+	FileFGColr% = 15: FileBGColr% = 1
+	HiLiteFGColr% = 0: HiLiteBGColr% = 7
+	Spacing% = 1
+	Row% = 8
+	Column% = 25
+
+	Call box0(7, 24, 11, 57, 2, 15, 1)
+	_MouseShow "DEFAULT"
+	MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+	_MouseHide
+
+	Color , 0
+	If ExitCode% <> 27 Then
+		I = Selection%
+		CT% = I
+		Select Case Selection%
+			Case 1 Or 2: GoTo 2500
+			Case 3: Cls
+		End Select
+	End If
+
+Loop Until Selection% = 3 OR ExitCode% = 27
+
+End Sub
+
+
+
 
 2500 For X = 1 To 30
     Z1$(X) = "XXX"
 Next
-Spec$ = DV$(2) + "*.TMS": GoSub 1440
+
+Spec$ = diskPaths$(2) + "*.TMS": GoSub 1440
 LG$ = targetFile$
-Open DV$(2) + targetFile$ + ".TMS" For Input As #2
+
+Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
 If I = 1 Then Input #2, LGF$: Input #2, D1$: Input #2, D2$: Input #2, D3$: For X = 1 To 30: Input #2, Z1$(X): Next
 If I = 2 Then Input #2, LGF$: Input #2, D1$: Input #2, D2$: For X = 1 To 30: Input #2, Z1$(X): Next
 Close 2
+
 Cls
+
 Call BUILDSTATS
 Call SAVELEADER
 
-170 For I = 1 To 30: TMM$(I) = "": Next
+170 Erase TMM$
 GoSub 10100: RR = 0: Locate 2, 24: Color 4, 15: Print "LEADER SELECTION MENU": Print
 Locate , 20: Color 14: Print "(A) ";: Color 1: Print "VIEW RUSHING LEADERS"
 Locate , 20: Color 14: Print "(B) ";: Color 1: Print "VIEW RECEIVING LEADERS"
@@ -116,11 +127,11 @@ If UCase$(I$) = "L" Then 5
 GoTo 170
 
 180 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
-Locate 2, 22: Color 0, 4: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 4: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
 
-182 For I = 0 To 4: Color 14: Locate I + 3, 24: Print Using "##"; I;: Print " ";: Color 15: Print TP$(I): Next
+182 For I = 0 To 4: Color 14: Locate I + 3, 24: Print Using "##"; I;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 5 Then 182
 stpl = 0: PPP = 0: GoSub 5000
@@ -132,10 +143,10 @@ If B9 = 4 Then X = 6: XX = 4: GoTo 430
 
 190 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 2: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 2: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 5 To 9: Color 14: Locate I - 2, 24: Print Using "##"; I - 5;: Print " ";: Color 15: Print TP$(I): Next
+For I = 5 To 9: Color 14: Locate I - 2, 24: Print Using "##"; I - 5;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 5 Then 190
 stpl = 0: PPP = 0: GoSub 5000
@@ -147,10 +158,10 @@ If B9 = 4 Then X = 3: X1 = 7: XX = 9: GoTo 480
 
 200 Color , 0: Cls: Print: Print: Print: Print: J = 12: ZZ = 1
 '
-Locate 2, 22: Color 0, 3: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 3: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 10 To 18: Color 14: Locate I - 7, 24: Print Using "##"; I - 10;: Print " ";: Color 15: Print TP$(I): Next
+For I = 10 To 18: Color 14: Locate I - 7, 24: Print Using "##"; I - 10;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 8 Then 200
 stpl = 0: PPP = 0: GoSub 5000
@@ -166,10 +177,10 @@ If B9 = 8 Then X = 5: XX = 18: GoTo 540
 
 210 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 5: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 5: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 19 To 23: Color 14: Locate I - 16, 24: Print Using "##"; I - 19;: Print " ";: Color 15: Print TP$(I): Next
+For I = 19 To 23: Color 14: Locate I - 16, 24: Print Using "##"; I - 19;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 4 Then 210
 stpl = 0: PPP = 0: GoSub 5000
@@ -181,10 +192,10 @@ If B9 = 4 Then X = 3: XX = 23: GoTo 580
 
 220 Color , 0: Cls: Print: Print: Print: Print: J = 8: ZZ = 1
 '
-Locate 2, 22: Color 0, 6: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 6: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 24 To 28: Color 14: Locate I - 21, 24: Print Using "##"; I - 24;: Print " ";: Color 15: Print TP$(I): Next
+For I = 24 To 28: Color 14: Locate I - 21, 24: Print Using "##"; I - 24;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 4 Then 220
 stpl = 0: PPP = 0: GoSub 5000
@@ -196,10 +207,10 @@ If B9 = 4 Then X = 3: XX = 28: GoTo 630
 
 230 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 9: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 9: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 29 To 31: Color 14: Locate I - 26, 24: Print Using "##"; I - 29;: Print " ";: Color 15: Print TP$(I): Next
+For I = 29 To 31: Color 14: Locate I - 26, 24: Print Using "##"; I - 29;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 2 Then 230
 stpl = 0: PPP = 0: GoSub 5000
@@ -209,10 +220,10 @@ If B9 = 2 Then X = 0: X1 = 1: XX = 31: GoTo 670
 
 240 Color , 0: Cls: Print: Print: Print: Print: J = 10: ZZ = 1
 '
-Locate 2, 22: Color 0, 10: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 10: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 32 To 38: Color 14: Locate I - 29, 24: Print Using "##"; I - 32;: Print " ";: Color 15: Print TP$(I): Next
+For I = 32 To 38: Color 14: Locate I - 29, 24: Print Using "##"; I - 32;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 6 Then 240
 stpl = 0: PPP = 0: GoSub 5000
@@ -226,10 +237,10 @@ If B9 = 6 Then X = 4: XX = 38: GoTo 680
 
 250 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 12: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 12: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 39 To 40: Color 14: Locate I - 36, 24: Print Using "##"; I - 39;: Print " ";: Color 15: Print TP$(I): Next
+For I = 39 To 40: Color 14: Locate I - 36, 24: Print Using "##"; I - 39;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 1 Then 250
 stpl = 0: PPP = 0: GoSub 5000
@@ -238,10 +249,10 @@ If B9 = 1 Then X = 0: XX = 40: GoTo 1710
 
 270 Color , 0: Cls: Print: Print: Print: Print: J = 6: ZZ = 1
 '
-Locate 2, 22: Color 0, 13: Print " " + Chr$(214); String$(36, 196); "� ";
+Locate 2, 22: Color 0, 13: Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 22: Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 41 To 43: Color 14: Locate I - 38, 24: Print Using "##"; I - 41;: Print " ";: Color 15: Print TP$(I): Next
+For I = 41 To 43: Color 14: Locate I - 38, 24: Print Using "##"; I - 41;: Print " ";: Color 15: Print categories$(I): Next
 Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 2 Then 270
 stpl = 0: PPP = 0: GoSub 5000
@@ -251,11 +262,11 @@ If B9 = 2 Then X = 2: X1 = 5: XF = 0: XF1 = 2: XX = 43: KC = 3: GoTo 1720
 
 280 Color , 0: Cls: Print: Print: Print: Print: J = 17: ZZ = 1
 '
-Locate 2, 2: Color 0, 14: Print " " + Chr$(214); String$(66, 196); "� ";
+Locate 2, 2: Color 0, 14: Print " " + Chr$(214); String$(66, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 2 + II, 2: Print " " + Chr$(186); String$(66, 32); Chr$(186) + " ";: Next
 Locate 3 + J, 2: Print " " + Chr$(211); String$(66, 196); Chr$(189) + " ";: Locate 10, 15
-For I = 44 To 58: Color 14: Locate I - 41, 4: Print Using "##"; I - 44;: Print " ";: Color 15: Print TP$(I): Next
-For I = 59 To 72: Color 14: Locate I - 56, 40: Print Using "##"; I - 44;: Print " ";: Color 15: Print TP$(I): Next
+For I = 44 To 58: Color 14: Locate I - 41, 4: Print Using "##"; I - 44;: Print " ";: Color 15: Print categories$(I): Next
+For I = 59 To 72: Color 14: Locate I - 56, 40: Print Using "##"; I - 44;: Print " ";: Color 15: Print categories$(I): Next
 Print: Print: Locate , 25: Input "SELECT NUMBER TO VIEW"; B9
 If B9 > 28 Then 280
 GoSub 5000
@@ -595,7 +606,7 @@ TVN = 4: QW = PPP: GoSub 8000
 If PV = 1 Then 700
 If PV = 2 Then 850
 
-700 GoSub 10000: R = Len(TP$(XX)): Locate 2, 11: Color 14, 1: Print "PLAYER             TEAM";: Locate , 60 - (Int(R) / 2): Print TP$(XX)
+700 GoSub 10000: R = Len(categories$(XX)): Locate 2, 11: Color 14, 1: Print "PLAYER             TEAM";: Locate , 60 - (Int(R) / 2): Print categories$(XX)
 For W = 1 To QW
     RR = RR + 1
     If W = 17 Or W = 33 Or W = 49 Or W = 65 Or W = 81 Or W = 97 Or W = 113 Or W = 129 Or W = 145 Or W = 161 Then GoSub 731: GoSub 743
@@ -635,11 +646,13 @@ I$ = GetKeyPress$
 If I$ = Chr$(27) Then 170
 Return
 
+
 743 For I = 3 To 18: Color 1, 1
 Locate I, 7: Print "                                                                  ": Next
 Return
 
-850 LPrint "     PLAYER                  TEAM                     "; TP$(XX)
+
+850 LPrint "     PLAYER                  TEAM                     "; categories$(XX)
 For W = 1 To LG
     If W = 50 Or W = 100 Or W = 150 Or W = 200 Then GoSub 943
     If W = 250 Or W = 300 Or W = 350 Or W = 400 Then GoSub 943
@@ -663,8 +676,9 @@ For W = 1 To LG
 GoTo 170
 
 943 LPrint Chr$(12)
-LPrint "     PLAYER                  TEAM                     "; TP$(XX)
+LPrint "     PLAYER                  TEAM                     "; categories$(XX)
 Return
+
 
 1700 Cls: PPP = 0
 For I = 1 To JH
@@ -762,7 +776,7 @@ Next I
 GoTo 1775
 GoTo 5
 
-3650 GoSub 11000: Color 14, 4: R = Len(TP$(XX)): Locate 2, 40 - (Int(R) / 2): Print TP$(XX)
+3650 GoSub 11000: Color 14, 4: R = Len(categories$(XX)): Locate 2, 40 - (Int(R) / 2): Print categories$(XX)
 Locate 3, 11: Color 14, 4: Print "TEAM                               TEAM "
 For W = 1 To 15
     If TVN = 1 Then 3709
@@ -801,9 +815,11 @@ Locate 22: Color 15: Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)"
 I$ = GetKeyPress$
 If I$ = Chr$(27) Then 170
 Return
-Cls: Color 14: Print "     TEAM                     "; TP$(XX)
+
+Cls: Color 14: Print "     TEAM                     "; categories$(XX)
 Return
-LPrint "     TEAM                     "; TP$(XX)
+
+LPrint "     TEAM                     "; categories$(XX)
 For W = 1 To QW
     If TVN = 1 Then 3909
     If TVN = 2 Then 3908
@@ -815,7 +831,7 @@ For W = 1 To QW
 3910 Next W
 GoTo 170
 
-4650 LPrint "     TEAM                     "; TP$(XX)
+4650 LPrint "     TEAM                     "; categories$(XX)
 For W = 1 To LG
     If TVN = 1 Then 4709
     If TVN = 2 Then 4708
@@ -845,9 +861,10 @@ If UCase$(I$) = "R" Then GoTo 5017
 If UCase$(I$) <> "H" And UCase$(I$) <> "L" And UCase$(I$) <> "R" Then 5002
 
 5007 '
-Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); "� ";
+Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 8 + II, 8: Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";: Next
 Locate 9 + J, 8: Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";: Locate 10, 15: Return
+
 
 5015 JX = 1: GoTo 5030
 
@@ -856,6 +873,7 @@ Locate 9 + J, 8: Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";: Loca
 5017 If ZZ = 1 GoTo 170
 
 5030 Return
+
 
 5300 For I = 2 To PPP: stpl = stpl + 1: Locate 5, 5: Print "sorting player "; stpl
     For J = PPP To I Step -1
@@ -871,6 +889,7 @@ Locate 9 + J, 8: Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";: Loca
 Next I
 Return
 
+
 5500 Cls: For I = 2 To TS: stpl = stpl + 1: Locate 5, 5: Print "sorting team "; stpl
     For J = TS To I Step -1
         If JX = 1 Then 5505
@@ -885,6 +904,7 @@ Return
 Next I
 Return
 
+
 7000 Print: Print: Print: Print: Print: J = 4: GoSub 7007: Color 12: Locate , 30: Print "SELECT OPTION:"
 Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
 Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
@@ -896,11 +916,12 @@ If UCase$(I$) = "R" Then GoTo 5017
 If UCase$(I$) <> "P" And UCase$(I$) <> "V" And UCase$(I$) <> "R" Then 7002
 
 7007 '
-Locate 9, 15: Color 15, 0: Print " " + Chr$(214); String$(40, 196); "� ";
+Locate 9, 15: Color 15, 0: Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";: Next
 Locate 10 + J, 15: Print " " + Chr$(211); String$(40, 196); "� ": Locate 10, 10
 
 7015 Return
+
 
 8000 Color , 0: Cls: If PV = 1 Then 8015
 Print: Print: Print: Print: Print: J = 2: GoSub 8007
@@ -910,11 +931,12 @@ If LG > QW Then 8000
 GoTo 8015
 
 8007 '
-Locate 10, 20: Color 4, 15: Print " " + Chr$(214); String$(30, 196); "� ";
+Locate 10, 20: Color 4, 15: Print " " + Chr$(214); String$(30, 196); Chr$(183) + " ";
 For II = 1 To J: Locate 10 + II, 20: Print " " + Chr$(186); String$(30, 32); Chr$(186) + " ";: Next
 Locate 11 + J, 20: Print " " + Chr$(211); String$(30, 196); "� ": Locate 11
 
 8015 Return
+
 
 10000 Cls: J = 18
 Locate 1, 5: Color 15, 1
@@ -937,6 +959,7 @@ Locate , 7: Print String$(71, 177)
 
 10001 Return
 
+
 10100 Color 0, 0
 Cls: J = 15
 Locate 1, 15: Color 4, 15
@@ -957,6 +980,7 @@ Locate , 17: Print String$(44, 177)
 
 10101 Return
 
+
 11000 Cls: J = 18
 Locate 1, 5: Color 15, 4
 
@@ -976,272 +1000,67 @@ Locate , 7: Print String$(71, 177)
 
 11001 Return
 
-1440 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-Count% = DirCount%
-If Count% = 0 Then 4600
-ReDim conferenceFiles$(0 To Count%)
-For X = 1 To Count%
-    conferenceFiles$(X) = Space$(12)
-Next
-conferenceFiles$(0) = Spec$
-Call ReadFile(conferenceFiles$())
-'CALL SortStr(VARPTR(conferenceFiles$1)), Count%, 0)
 
-1445 Cls
-Color , 1
-Cls
-Locate , 28
-Color 14
-Print "SELECT CONFERENCE": Color 15
-SELECTION% = 1
-Start% = 1
-FileFGColr% = 15: FileBGColr% = 1
-HiLiteFGColr% = 0: HiLiteBGColr% = 7
-Rows% = 20
-Columns% = 4
-Spacing% = 6
-Row% = 4
-Column% = 1
-Locate 25, 1
-Color 14
-Print "ENTER";: Color 15
-Print "-SELECTS CONFERENCE";
+Do
 
-_MouseShow "DEFAULT"
-MAMenu conferenceFiles$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-_MouseHide
+	1440 null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
+	Count% = DirCount%
+	If Count% = 0 Then 
+		4600 Locate 10, 8
+		Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+		I$ = GetKeyPress$
+		Call CSMsgBox("", 0, Pass)
+		GoTo 5
+	Else
+		ReDim conferenceFiles$(0 To Count%)
+		For X = 1 To Count%
+			conferenceFiles$(X) = Space$(12)
+		Next
+		conferenceFiles$(0) = Spec$
+		Call ReadFile(conferenceFiles$())
+		'CALL SortStr(VARPTR(conferenceFiles$1)), Count%, 0)
 
-If ExitCode% = 27 Then 5
-targetFile$ = conferenceFiles$(SELECTION%)
-Locate 2, 33: Print targetFile$
-Locate , 33: Print "ANY CHANGE (YN)";
-Color 15, 0
-3912 I$ = GetKeyPress$
-If UCase$(I$) = "Y" Then 1445
+		Do
 
-3913 targetFile$ = RTrim$(targetFile$)
-targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
-Return
+			1445 Cls
+			Color , 1
+			Cls
+			Locate , 28
+			Color 14
+			Print "SELECT CONFERENCE": Color 15
+			Selection% = 1
+			Start% = 1
+			FileFGColr% = 15: FileBGColr% = 1
+			HiLiteFGColr% = 0: HiLiteBGColr% = 7
+			Rows% = 20
+			Columns% = 4
+			Spacing% = 6
+			Row% = 4
+			Column% = 1
+			Locate 25, 1
+			Color 14
+			Print "ENTER";: Color 15
+			Print "-SELECTS CONFERENCE";
 
-4600 Locate 10, 8
-Print "NO CONFERENCE FILES WERE FOUND"
-Print "PRESS ANY KEY TO RETURN TO MAIN MENU"
-I$ = GetKeyPress$
-GoTo 5
+			_MouseShow "DEFAULT"
+			MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+			_MouseHide
 
-Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,RUSING TOUCHDOWNS,LONGEST RUN
-Data RECEPTIONS,RECEIVING YARDS,RECEIVING AVERAGE,RECEIVING TOUCHDOWNS,LONGEST RECEPTION
-Data PASS ATTEMPTS,PASS COMPLETIONS,INTERCEPTIONS,PASSING YARDS,TOUCHDOWN PASSES,COMPLETION PERCENTAGE,AVERAGE YDS/COMP.,QUARTERBACK RATING,LONGEST PASS
-Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF RETURN
-Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT RETURN
-Data PUNTS,PUNTING YARDS,AVERAGE PER PUNT
-Data F.G.'s MADE,F.G. ATTEMPES,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST FIELD GOAL
-Data INTERCEPTIONS,SACKS
-Data NON-KICKERS,KICKERS,ALL PLAYERS
-Data FIRST DOWNS,RUSH ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,PASSING YARDS,TOTAL YARDS,PASS COMPLETION PCT.,FUMBLES,FUMBLES LOST,INTERCEPTIONS THROWN,TURNOVER RATIO,PENALTIES,PENALTY YARDAGE,SACKS ALLOWED,SACK YARDAGE
-Data OPP. FIRST DOWNS,OPP. RUSH ATTEMPTS,OPP. RUSHING YARDS,OPP. RUSHING AVERAGE,OPP. PASSING YARDS,OPP. TOTAL YARDS,OPP. PASS COMPLETION PCT.,OPP. FUMBLES,OPP. FUMBLES RECOVERED,INTERCEPTIONS,OPP. PENALTIES,OPP. PENALTY YARDAGE,SACKS
-Data SACK YARDAGE LOST,ALL-PURPOSE YARDS
+			If ExitCode% = 27 Then 5
+			targetFile$ = conferenceFiles$(Selection%)
+			Locate 2, 33: Print targetFile$
+			Locate , 33: Print "ANY CHANGE (YN)";
+			Color 15, 0
+			3912 I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "N"
+		
+		3913 targetFile$ = RTrim$(targetFile$)
+		targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
+	
+	End If
+	
+'Return
+Loop Until ExitCode% = 27 Or Count% = 0
 
 
-'------------------------------
-'    BUILDSTATS Subroutine
-'------------------------------
-' ...explanation...
-Sub BUILDSTATS ()
-    For ZX = 1 To 30
-        If Z1$(ZX) = "XXX" Or Z1$(ZX) = "*" Or Z1$(ZX) = " " Then 150
-        If Not _FileExists(DV$(1) + Z1$(ZX)) Then 150
-        Print "CONVERTING STAT FILE OF "; Z1$(ZX)
-        Open DV$(1) + Z1$(ZX) For Input As #1
-        Input #1, A$(PX)
-        For I = 0 To 9: Input #1, A1$(PX, I): Next I
-        For I = 0 To 5: Input #1, A2$(PX, I): Next I
-        For I = 0 To 3: Input #1, A3$(PX, I): Next I
-        For I = 0 To 2: Input #1, A4$(PX, I): Next I
-        For I = 0 To 2: Input #1, A5$(PX, I): Next I
-        Input #1, A6$(PX, 0)
-        For I = 0 To 1: Input #1, A7$(PX, I): Next I
-        For J = 0 To 13
-            For K = 0 To 17: Input #1, Z2(J, K): Next K
-        Next J
-        For L = 0 To 38: Input #1, Z(L): Next L
-        For L = 0 To 38: Input #1, Z1(L): Next L
-        For J = 0 To 9: Input #1, DI$(PX, J): For J1 = 0 To 2: Input #1, GI(PX, J, J1): Next: Next
-        For J = 0 To 14: Input #1, DS$(PX, J): For J1 = 0 To 1: Input #1, GS(PX, J, J1): Next: Next
-        For I = 0 To 9: Input #1, LR(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
-        For I = 0 To 15: Input #1, LC(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
-        For I = 0 To 3: Input #1, LP(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
-        For I = 0 To 2: Input #1, LK(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
-        For I = 0 To 2: Input #1, PK(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
-        For I = 0 To 1
-            Input #1, LF(I)
-            Input #1, LF$(I)
-            For I1 = 0 To 4
-                Input #1, AM(I, I1)
-                Input #1, AF(I, I1)
-            Next
-        Next
-        Close #1
-        Open DV$(1) + Z1$(ZX) + "S" For Input As #1
-        Input #1, Y%
-        Close #1
-        TS = TS + 1
-        For I = 0 To 14
-            TT(TS, I) = Z(I)
-            TT$(TS, I) = A$(PX)
-        Next
-        For I = 15 To 29
-            TT(TS, I) = Z1(I - 15)
-            TT$(TS, I) = A$(PX)
-        Next
-        For I = 0 To 9
-            JA = JA + 1: A1L$(JA) = A1$(PX, I): A1T$(JA) = A$(PX): LRL$(JA) = LR$(I, 0): LCL$(JA) = LC$(I, 0)
-            For I1 = 0 To 5: A1L(JA, I1) = Z2(I, I1): Next I1
-            A1L(JA, 6) = LR(I): A1L(JA, 7) = LC(I)
-        Next I
-        For I = 0 To 5
-            JB = JB + 1: A2L$(JB) = A2$(PX, I): A2T$(JB) = A$(PX): LCL$(JB) = LC$(I + 10, 0): GMB(JB) = Y%
-            For I1 = 6 To 8: A2L(JB, I1 - 6) = Z2(I, I1): Next I1
-            A2L(JB, 3) = LC(I + 10)
-        Next I
-        For I = 0 To 3
-            JC = JC + 1: QBL$(JC) = A3$(PX, I): A3T$(JC) = A$(PX): LPL$(JC) = LP$(I, 0): GMC(JC) = Y%
-            For I1 = 9 To 13: A3L(JC, I1 - 9) = Z2(I, I1): Next I1
-            A3L(JC, 5) = LP(I)
-            GoSub 8900: A3R(JC, 0) = A3L(JC, 12)
-        Next I
-        For I = 0 To 2
-            JD = JD + 1: A4L$(JD) = A4$(PX, I): A4T$(JD) = A$(PX): LKL$(JD) = LK$(I, 0)
-            For I1 = 14 To 16: A4L(JD, I1 - 14) = Z2(I, I1): Next I1
-            A4L(JD, 3) = LK(I)
-        Next I
-        For I = 0 To 2
-            JE = JE + 1: A5L$(JE) = A5$(PX, I): A5T$(JE) = A$(PX): PKL$(JE) = PK$(I, 0)
-            For I1 = 14 To 16: A5L(JE, I1 - 14) = Z2(I + 3, I1): Next I1
-            A5L(JE, 3) = PK(I)
-        Next I
-        JF = JF + 1: A6L$(JF) = A6$(PX, 0): A6T$(JF) = A$(PX): A6L(JF, 0) = Z(7): A6L(JF, 1) = Z(8)
-        JG = JG + 1: A7L$(JG) = A7$(PX, 0): A7T$(JG) = A$(PX)
-        For I = 0 To 3: A7L(JG, I) = Z2(I + 3, 17): Next
-        A7L(JG, 4) = LF(0)
-        JG = JG + 1: A7L$(JG) = A7$(PX, 1): A7T$(JG) = A$(PX)
-        For I = 0 To 3: A7L(JG, I) = Z2(I + 7, 17): Next
-        A7L(JG, 4) = LF(1)
-        For I = 0 To 9
-            JH = JH + 1: A8L$(JH) = DI$(PX, I): A8T$(JH) = A$(PX): A8L(JH) = GI(PX, I, 0)
-        Next
-        For I = 0 To 14
-            JI = JI + 1: A9L$(JI) = DS$(PX, I): A9T$(JI) = A$(PX): A9L(JI) = GS(PX, I, 0)
-        Next
-        JJ = JJ + 1
-        Y%(JJ) = Y%
-
-    150 Next ZX
-    GoTo 155
-
-    8900 'QUARTERBACK PASSER RATINGS
-    If A3L(JC, 0) > 0 Then A3L(JC, 11) = Int(A3L(JC, 1) / A3L(JC, 0) * 1000) / 10
-    If CT% = 3 Then 9100: ' GO TO COLLEGE QB
-    If A3L(JC, 0) = 0 Then A3L(JC, 11) = 0: A3L(JC, 8) = 0: A3L(JC, 10) = 0: A3L(JC, 9) = 0: GoTo 9005
-    A3L(JC, 8) = Int(A3L(JC, 4) / A3L(JC, 0) * 1000) / 10
-    A3L(JC, 10) = Int(A3L(JC, 3) / A3L(JC, 0) * 100) / 100
-    A3L(JC, 9) = Int(A3L(JC, 2) / A3L(JC, 0) * 1000) / 10
-
-    9005 PP(JC) = A3L(JC, 11) - 30
-    If PP(JC) < 0 Then PP(JC) = 0: GoTo 9009
-    If PP(JC) > 77.5 Then PP(JC) = 2.375: GoTo 9009
-    PP(JC) = PP(JC) * .05
-
-    9009 If A3L(JC, 8) > 11.9 Then FF(JC) = 2.375: GoTo 9011
-    FF(JC) = A3L(JC, 8) * .2
-
-    9011 If A3L(JC, 9) = 0 Then II(JC) = 0: GoTo 9014
-    If A3L(JC, 9) > 9.5 Then II(JC) = 0: GoTo 9014
-    II(JC) = 2.375 - (.25 * A3L(JC, 9))
-
-    9014 A3L(JC, 10) = A3L(JC, 10) - 3
-    If A3L(JC, 10) < 0 Then YY(JC) = 0: GoTo 9020
-    If A3L(JC, 10) > 12.5 Then YY(JC) = 2.375: GoTo 9020
-    D = Int(A3L(JC, 10) * 100) / 2
-    If D = A3L(JC, 10) / 2 Then YY(JC) = A3L(JC, 10) / 2 * .3 + A3L(JC, 10) / 2 * .2: GoTo 9020
-    YY(JC) = A3L(JC, 10) / 2 * .3 + A3L(JC, 10) / 2 * .2 + .003
-
-    9020 A3L(JC, 12) = PP(JC) + FF(JC) + II(JC) + YY(JC)
-    If A3L(JC, 12) > 9.5 Then A3L(JC, 12) = 158.3: GoTo 9027
-    A3L(JC, 12) = A3L(JC, 12) * 50 / 3
-
-    9027 A3L(JC, 12) = Int(A3L(JC, 12) * 10) / 10
-    Return
-
-    9100 'COL QB RATING
-    '********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    '* QB(1)=PASS ATT, QB(2)=COMP, QB(3)=INT, QB(4)=YDS, QB(5)=TD'S     *
-    '* QB(6)=COMP%, QB(7)=RATING, QB(8)=TD%, QB(9)=INT%, QB(10)=YDS/ATT *
-    '********************************************************************
-    If A3L(JC, 0) = 0 Then A3L(JC, 11) = 0: A3L(JC, 8) = 0: A3L(JC, 10) = 0: A3L(JC, 9) = 0: GoTo 9105
-    A3L(JC, 12) = Int(A3L(JC, 3) / A3L(JC, 0)) * 8.399999 + A3L(JC, 11) + Int(A3L(JC, 4) / A3L(JC, 0) * 1000) / 10 * 3.3 - Int(A3L(JC, 2) / A3L(JC, 0) * 1000) / 10 * 2
-    A3L(JC, 12) = Int(A3L(JC, 12) * 10) / 10
-
-    9105 Return
-
-    155 '
-End Sub
-
-'------------------------------
-'    SAVELEADER Subroutine
-'------------------------------
-' ...explanation...
-Sub SAVELEADER ()
-    Print "SAVING LEADER FILES . . . . PLEASE WAIT"
-    Open DV$(2) + LG$ + ".LDS" For Output As #1
-    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, TS, JJ
-    For I = 1 To 30: For I1 = 0 To 29: Write #1, TT(I, I1), TT$(I, I1): Next
-    Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next
-    For I = 1 To 300: Write #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA(I)
-    For I1 = 0 To 7: Write #1, A1L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 180: Write #1, A2L$(I), A2T$(I), LCL$(I), GMB(I)
-    For I1 = 0 To 3: Write #1, A2L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 120: Write #1, QBL$(I), A3T$(I), LPL$(I), A3R(I, 0), GMC(I)
-    For I1 = 0 To 6: Write #1, A3L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 90: Write #1, A4L$(I), A4T$(I), LKL$(I)
-    For I1 = 0 To 3: Write #1, A4L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 90: Write #1, A5L$(I), A5T$(I), PKL$(I)
-    For I1 = 0 To 3: Write #1, A5L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 30: Write #1, A6L$(I), A6T$(I)
-    For I1 = 0 To 1: Write #1, A6L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 60: Write #1, A7L$(I), A7T$(I)
-    For I1 = 0 To 4: Write #1, A7L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 300: Write #1, A8L$(I), A8T$(I), A8L(I): Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 450: Write #1, A9L$(I), A9T$(I), A9L(I): Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
-    For I = 1 To 30: Write #1, Y%(I): Next
-    Close #1
-End Sub
-
-
-'------------------------------
-'    CATEGORIES Subroutine
-'------------------------------
-' ...explanation...
-Sub CATEGORIES ()
-    For I = 0 To 73: Read TP$(I): Next
-End Sub
-
-
-'------------------------------
-'      TITLE Subroutine
-'------------------------------
-' Displays window title / game copyright
-Sub TITLE ()
-    Color , 0: KEY Off: Cls
-    Color , 1: Locate 1, 1: Print Tab(80);: Locate , 32: Color 12
-    Print "3 IN 1 FOOTBALL V6.0"
-    Locate 24, 1: Print Tab(80);: Locate , 1
-    Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1994"; Tab(70); Left$(Time$, 5);
-    Locate 3, 1: Color 2, 0
-    Color 15: Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
-    Print "              FOR TECHNICAL SUPPORT, CALL (615) 366-8088"
-    Color 10
-End Sub
-
-'$INCLUDE: 'KeyInput.BM'
-'$INCLUDE: 'QPProEqu.BM'
+END SUB

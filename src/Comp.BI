@@ -1,5 +1,0 @@
-DECLARE SUB POSTLEADERS (Z1$(), O1!(), O2!(), O3!(), PTSF!(), PTSA!(), Z2$(), Z3$(), Z1!(), TT!(), TT$(), D$(), NC!, CN$())
-DECLARE SUB READFILES (D$(), H1$(), XW!, Y%, O%(), O$(), PTSF!(), T%(), PTSA!(), H$(), AP%())
-DECLARE SUB POSTNATIONAL (D$(), WE$, Z1$(), O1!(), O2!(), O3!(), PTSF!(), PTSA!(), N2$(), N3$(), N1!(), NT!(), NT$())
-DECLARE SUB STATNAME (O$(), I)
-DECLARE SUB BOXDRAW ()

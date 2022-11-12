@@ -1,0 +1,63 @@
+'------------------------------
+'     BOXDRAW Subroutine
+'------------------------------
+'...explanation...
+SUB BOXDRAW ()
+	JJ = 4
+	LOCATE 6, 8: COLOR 15, 1
+	PRINT " "; CHR$(201); STRING$(61, 205); CHR$(187); " ";
+	FOR II = 1 TO JJ: LOCATE 6 + II, 8
+	PRINT " º"; STRING$(61, 32); "º "; : NEXT
+	LOCATE 7 + JJ, 8
+	PRINT " "; CHR$(200); STRING$(61, 205); CHR$(188); " "; : LOCATE 7
+END SUB
+
+'------------------------------
+'     FILENAME Subroutine
+'------------------------------
+' ...explanation...
+SUB FILENAME (H1$(), XW)
+	FOR XX = 4 TO 11: IF MID$(H1$(XW), XX, 1) = " " OR MID$(H1$(XW), XX, 1) = "." THEN MID$(H1$(XW), XX, 1) = "_"
+	NEXT XX
+	FOR XX = 12 TO 14: IF MID$(H1$(XW), XX, 2) = "ST" THEN MID$(H1$(XW), 9, 1) = "_": MID$(H1$(XW), 10, 2) = "ST"
+	NEXT XX
+	QQ = 8: FOR XX = 11 TO 4 STEP -1: IF MID$(H1$(XW), XX, 1) = "_" THEN QQ = XX - 4: GOTO 9906
+	GOTO 9907
+
+9906 NEXT XX
+
+9907 G$ = H1$(XW): H1$(XW) = RIGHT$(H1$(XW), LEN(H1$(XW)) - 3): YR$ = LEFT$(G$, 2)
+	IF LEN(H1$(XW)) > 8 THEN H1$(XW) = LEFT$(H1$(XW), 8)
+	H1$(XW) = H1$(XW) + "." + YR$
+END SUB
+
+
+'------------------------------
+'   STATNAME Subroutine
+'------------------------------
+' ...explanation...
+SUB STATNAME (O$(), I)
+
+	FOR P = 4 TO 11: 
+		IF MID$(O$(I), P, 1) = " " OR MID$(O$(I), P, 1) = "." THEN MID$(O$(I), P, 1) = "_"
+	NEXT P
+	
+	FOR P = 12 TO 14: 
+		IF MID$(O$(I), P, 2) = "ST" THEN MID$(O$(I), 9, 1) = "_": MID$(O$(I), 10, 2) = "ST"
+	NEXT P
+	
+	QQ = 8
+	FOR P = 11 TO 4 STEP -1: 
+		IF MID$(O$(I), P, 1) = "_" THEN 
+			QQ = P - 4
+		Else
+			Exit For
+		End If
+
+	NEXT P
+
+	F$ = MID$(O$(I), 4, QQ): R$ = f$ + "." + LEFT$(O$(I), 2)
+
+	O$(I) = R$
+
+END SUB

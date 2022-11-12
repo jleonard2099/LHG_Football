@@ -1,43 +1,56 @@
-'$INCLUDE: 'KeyInput.BI'
-'$INCLUDE: 'QPProEqu.BI'
+SUB TINPUT ()
 
 _Title "3-in-1 Football - Team Input"
-''$ExeIcon:'./lhg_3in1fb.ico'
-'_Icon
-_AllowFullScreen
 
-Dim Q$(205), B3(1), menuItems$(3)
+Dim B3(1)
 Dim A1$(9), A2$(5), A3$(3), A4$(2), A5$(2), A6$(2), A7$(2), DS$(14), DI$(9), DS%(14), DI%(9)
 Dim B6%(7), A0%(9), A1(9), A1%(9), A2%(9), A3%(9), A4%(5), A5%(5), A6%(3), A7%(3), A8%(3), A9%(2), B%(2), B1%(2), B2%(2), B3%(2)
 Dim PA%(4), QX%(3), B5%(1), B4%(1), B7%(1), B8%(1)
 'Dim A(11, 18), N$(11)
 
-Open "DEV.BAS" For Input As #1
-Input #1, G$
-Close 1
+'-----
 
-10 Call TITLE
-menuItems$(1) = "INPUT A NEW TEAM                "
-menuItems$(2) = "RETURN TO 3 IN 1 FOOTBALL   MENU"
-SELECTION% = 1
-Count% = 2
-Start% = 1
-SCANCODE% = 2
-FileFGColr% = 15: FileBGColr% = 1
-HiLiteFGColr% = 0: HiLiteBGColr% = 7
-Spacing% = 1
-Row% = 8
-Column% = 25
+ReDim menuChoices$(1 to 3)
 
-CALL box0(7, 24, 10, 57, 2,  15, 1)
-_MouseShow "DEFAULT"
-MMenuVert menuItems$(), SELECTION%, Start%, SCANCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
-_MouseHide
+Do
 
-Color , 0
-If SCANCODE% = 27 Then SELECTION% = 2
-I1 = SELECTION%
-If I1 = 2 Then 633
+	Cls
+
+	10 Call TITLE
+	menuChoices$(1) = "INPUT A NEW TEAM                "
+	menuChoices$(2) = "RETURN TO 3 IN 1 FOOTBALL   MENU"
+	Selection% = 1
+	Count% = 2
+	Start% = 1
+	ExitCode% = 2
+	FileFGColr% = 15: FileBGColr% = 1
+	HiLiteFGColr% = 0: HiLiteBGColr% = 7
+	Spacing% = 1
+	Row% = 8
+	Column% = 25
+
+	CALL box0(7, 24, 10, 57, 2,  15, 1)
+	_MouseShow "DEFAULT"
+	MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+	_MouseHide
+
+	Color , 0
+	If ExitCode% <> 27 Then
+		Select Case Selection%
+			Case 1: Call DoTheStuff ()
+			Case 2: Cls
+		End Select
+	End If
+
+Loop Until Selection% = 2 OR ExitCode% = 27
+
+End Sub
+
+
+
+
+Sub DoTheStuff ()
+
 Color 15, 1: Cls
 
 400 Locate 1: Input " 1. DISK ID  "; YN$
@@ -271,8 +284,11 @@ Color 15, 0
 631 I$ = GetKeyPress$
 If UCase$(I$) = "Y" Then 10
 
-633 Run "HELLO.EXE 2"
-End
+'633 Exit Sub
+End Sub
+
+
+
 
 4600 JJ = 3
 Locate 6, 8: Color 15, 1
@@ -284,10 +300,12 @@ Locate 7 + JJ, 8
 Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
 Return
 
+
 1000 For I = 0 To 9: If A0%(I) <> 0 Then A0%(I) = Int(SK * A0%(I) + .5) + ST: ST = A0%(I)
     If A0%(I) > 100 Then A0%(I) = 100
 Next I
 Return
+
 
 2000 Cls
 For I = 0 To 9: Cls
@@ -324,11 +342,11 @@ NU = Y / 934
 NU = NU + 1
 Return
 
+
 9500 If NU = 0 Then GoSub 3000
 
 Open G$ + "FOOT." + YN$ For Random As #1 Len = 934
-    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200  _
-AS Q$, 78 AS Q$(0)
+    FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
 Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
 Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
 Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
@@ -340,8 +358,7 @@ Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 
 Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
 Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
 Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150  _
-AS Q$
+    FIELD #1, 200 AS Q$, 200 AS Q$, 128 AS Q$, 12 AS Q$(122), 2 AS Q$(123), 12 AS Q$(124), 2 AS Q$(125), 2 AS Q$(126), 2 AS Q$(127), 2 AS Q$(128), 12 AS Q$(129), 2 AS Q$(130), 2 AS Q$(131), 2 AS Q$(132), 2 AS Q$(133), 2 AS Q$(134), 200 AS Q$, 150 AS Q$
 Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
 Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
@@ -415,21 +432,4 @@ Close 2
 Return
 
 
-'------------------------------
-'      TITLE Subroutine
-'------------------------------
-' Displays window title / game copyright
-Sub TITLE ()
-    Color , 0: KEY Off: Cls
-    Color , 1: Locate 1, 1: Print Tab(80);: Locate , 32: Color 12
-    Print "3 IN 1 FOOTBALL V6.0"
-    Locate 24, 1: Print Tab(80);: Locate , 1
-    Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1994"; Tab(70); Left$(Time$, 5);
-    Locate 3, 1: Color 2, 0
-    Color 15: Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
-    Print "              FOR TECHNICAL SUPPORT, CALL (615) 366-8088"
-    Color 10
-End Sub
-
-'$INCLUDE: 'KeyInput.BM'
-'$INCLUDE: 'QPProEqu.BM'
+END SUB

@@ -1,0 +1,256 @@
+
+'------------------------------
+'    POSTLEADERS Subroutine
+'------------------------------
+' ...explanation...
+SUB POSTLEADERS (Z1$(), O1(), O2(), O3(), PTSF(), PTSA(), Z2$(), Z3$(), Z1(), TT(), TT$(), D$(), NC, CN$())
+	CLS
+	OPEN diskPaths$(2) + CN$(NC) + ".LDR" FOR OUTPUT AS #2
+	PRINT "POSTING "; CN$(NC); " CONFERENCE LEADERS"
+	FOR X = 1 TO 60: WRITE #2, Z1$(X), O1(X), O2(X), O3(X), PTSF(X), PTSA(X): NEXT
+	FOR X = 1 TO 240
+	WRITE #2, Z2$(X), Z3$(X), Z1(X, 1), Z1(X, 2): NEXT X
+	FOR I = 1 TO 10
+	FOR I1 = 1 TO 20
+	FOR I2 = 1 TO 9
+	WRITE #2, TT(I, I1, I2)
+	NEXT: NEXT: NEXT
+	FOR I = 1 TO 10
+	FOR I1 = 1 TO 20
+	WRITE #2, TT$(I, I1)
+	NEXT: NEXT
+	CLOSE 2
+END SUB
+
+
+'------------------------------
+'   POSTNATIONAL Subroutine
+'------------------------------
+' ...explanation...
+SUB POSTNATIONAL (D$(), WE$, Z1$(), O1(), O2(), O3(), PTSF(), PTSA(), N2$(), N3$(), N1(), NT(), NT$())
+	CLS
+	OPEN diskPaths$(2) + WE$ + ".NLD" FOR OUTPUT AS #2
+	PRINT "POSTING "; WE$; " LEADERS"
+	FOR X = 1 TO 60: WRITE #2, Z1$(X), O1(X), O2(X), O3(X), PTSF(X), PTSA(X): NEXT
+	FOR X = 1 TO 240
+	WRITE #2, N2$(X), N3$(X), N1(X, 1), N1(X, 2): NEXT X
+	FOR I = 1 TO 10
+	FOR I1 = 1 TO 20
+	FOR I2 = 1 TO 9
+	WRITE #2, NT(I, I1, I2)
+	NEXT: NEXT: NEXT
+	FOR I = 1 TO 10
+	FOR I1 = 1 TO 20
+	WRITE #2, NT$(I, I1)
+	NEXT: NEXT
+	CLOSE 2
+END SUB
+
+
+'------------------------------
+'   READFILES Subroutine
+'------------------------------
+' ...explanation...
+SUB READFILES (D$(), H1$(), XW, Y%, O%(), O$(), PTSF(), T%(), PTSA(), H$(), AP%())
+	OPEN diskPaths$(1) + H1$(XW) + "S" FOR INPUT AS #2
+	INPUT #2, Y%
+	FOR I = 1 TO 120: INPUT #2, O%(I): NEXT I
+	FOR I = 1 TO 120: INPUT #2, O$(I): PTSF(XW) = PTSF(XW) + O%(I): NEXT I
+	FOR I = 1 TO 120: INPUT #2, T%(I): PTSA(XW) = PTSA(XW) + T%(I): NEXT I
+	FOR I = 1 TO 120: INPUT #2, H$(I): NEXT I
+	FOR I = 0 TO 1
+	FOR I1 = 1 TO 120
+	INPUT #2, AP%(I, I1)
+	NEXT: NEXT
+CLOSE 2
+END SUB
+
+
+'------------------------------
+'    BUILDSTATS Subroutine
+'------------------------------
+' ...explanation...
+Sub BUILDSTATS ()
+    For ZX = 1 To 30
+        If Z1$(ZX) = "XXX" Or Z1$(ZX) = "*" Or Z1$(ZX) = " " Then 150
+        If Not _FileExists(D$(1) + Z1$(ZX)) Then 150
+        Print "CONVERTING STAT FILE OF "; Z1$(ZX)
+        Open D$(1) + Z1$(ZX) For Input As #1
+        Input #1, A$(PX)
+        For I = 0 To 9: Input #1, A1$(PX, I): Next I
+        For I = 0 To 5: Input #1, A2$(PX, I): Next I
+        For I = 0 To 3: Input #1, A3$(PX, I): Next I
+        For I = 0 To 2: Input #1, A4$(PX, I): Next I
+        For I = 0 To 2: Input #1, A5$(PX, I): Next I
+        Input #1, A6$(PX, 0)
+        For I = 0 To 1: Input #1, A7$(PX, I): Next I
+        For J = 0 To 13
+            For K = 0 To 17: Input #1, Z2(J, K): Next K
+        Next J
+        For L = 0 To 38: Input #1, Z(L): Next L
+        For L = 0 To 38: Input #1, Z1(L): Next L
+        For J = 0 To 9: Input #1, DI$(PX, J): For J1 = 0 To 2: Input #1, GI(PX, J, J1): Next: Next
+        For J = 0 To 14: Input #1, DS$(PX, J): For J1 = 0 To 1: Input #1, GS(PX, J, J1): Next: Next
+        For I = 0 To 9: Input #1, LR(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+        For I = 0 To 15: Input #1, LC(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+        For I = 0 To 3: Input #1, LP(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
+        For I = 0 To 2: Input #1, LK(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
+        For I = 0 To 2: Input #1, PK(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
+        For I = 0 To 1
+            Input #1, LF(I)
+            Input #1, LF$(I)
+            For I1 = 0 To 4
+                Input #1, AM(I, I1)
+                Input #1, AF(I, I1)
+            Next
+        Next
+        Close #1
+        Open D$(1) + Z1$(ZX) + "S" For Input As #1
+        Input #1, Y%
+        Close #1
+        TS = TS + 1
+        For I = 0 To 14
+            TT(TS, I) = Z(I)
+            TT$(TS, I) = A$(PX)
+        Next
+        For I = 15 To 29
+            TT(TS, I) = Z1(I - 15)
+            TT$(TS, I) = A$(PX)
+        Next
+        For I = 0 To 9
+            JA = JA + 1: A1L$(JA) = A1$(PX, I): A1T$(JA) = A$(PX): LRL$(JA) = LR$(I, 0): LCL$(JA) = LC$(I, 0)
+            For I1 = 0 To 5: A1L(JA, I1) = Z2(I, I1): Next I1
+            A1L(JA, 6) = LR(I): A1L(JA, 7) = LC(I)
+        Next I
+        For I = 0 To 5
+            JB = JB + 1: A2L$(JB) = A2$(PX, I): A2T$(JB) = A$(PX): LCL$(JB) = LC$(I + 10, 0): GMB(JB) = Y%
+            For I1 = 6 To 8: A2L(JB, I1 - 6) = Z2(I, I1): Next I1
+            A2L(JB, 3) = LC(I + 10)
+        Next I
+        For I = 0 To 3
+            JC = JC + 1: QBL$(JC) = A3$(PX, I): A3T$(JC) = A$(PX): LPL$(JC) = LP$(I, 0): GMC(JC) = Y%
+            For I1 = 9 To 13: A3L(JC, I1 - 9) = Z2(I, I1): Next I1
+            A3L(JC, 5) = LP(I)
+            GoSub 8900: A3R(JC, 0) = A3L(JC, 12)
+        Next I
+        For I = 0 To 2
+            JD = JD + 1: A4L$(JD) = A4$(PX, I): A4T$(JD) = A$(PX): LKL$(JD) = LK$(I, 0)
+            For I1 = 14 To 16: A4L(JD, I1 - 14) = Z2(I, I1): Next I1
+            A4L(JD, 3) = LK(I)
+        Next I
+        For I = 0 To 2
+            JE = JE + 1: A5L$(JE) = A5$(PX, I): A5T$(JE) = A$(PX): PKL$(JE) = PK$(I, 0)
+            For I1 = 14 To 16: A5L(JE, I1 - 14) = Z2(I + 3, I1): Next I1
+            A5L(JE, 3) = PK(I)
+        Next I
+        JF = JF + 1: A6L$(JF) = A6$(PX, 0): A6T$(JF) = A$(PX): A6L(JF, 0) = Z(7): A6L(JF, 1) = Z(8)
+        JG = JG + 1: A7L$(JG) = A7$(PX, 0): A7T$(JG) = A$(PX)
+        For I = 0 To 3: A7L(JG, I) = Z2(I + 3, 17): Next
+        A7L(JG, 4) = LF(0)
+        JG = JG + 1: A7L$(JG) = A7$(PX, 1): A7T$(JG) = A$(PX)
+        For I = 0 To 3: A7L(JG, I) = Z2(I + 7, 17): Next
+        A7L(JG, 4) = LF(1)
+        For I = 0 To 9
+            JH = JH + 1: A8L$(JH) = DI$(PX, I): A8T$(JH) = A$(PX): A8L(JH) = GI(PX, I, 0)
+        Next
+        For I = 0 To 14
+            JI = JI + 1: A9L$(JI) = DS$(PX, I): A9T$(JI) = A$(PX): A9L(JI) = GS(PX, I, 0)
+        Next
+        JJ = JJ + 1
+        Y%(JJ) = Y%
+
+    150 Next ZX
+    GoTo 155
+
+    8900 'QUARTERBACK PASSER RATINGS
+    If A3L(JC, 0) > 0 Then A3L(JC, 11) = Int(A3L(JC, 1) / A3L(JC, 0) * 1000) / 10
+    If CT% = 3 Then 9100: ' GO TO COLLEGE QB
+    If A3L(JC, 0) = 0 Then A3L(JC, 11) = 0: A3L(JC, 8) = 0: A3L(JC, 10) = 0: A3L(JC, 9) = 0: GoTo 9005
+    A3L(JC, 8) = Int(A3L(JC, 4) / A3L(JC, 0) * 1000) / 10
+    A3L(JC, 10) = Int(A3L(JC, 3) / A3L(JC, 0) * 100) / 100
+    A3L(JC, 9) = Int(A3L(JC, 2) / A3L(JC, 0) * 1000) / 10
+
+    9005 PP(JC) = A3L(JC, 11) - 30
+    If PP(JC) < 0 Then PP(JC) = 0: GoTo 9009
+    If PP(JC) > 77.5 Then PP(JC) = 2.375: GoTo 9009
+    PP(JC) = PP(JC) * .05
+
+    9009 If A3L(JC, 8) > 11.9 Then FF(JC) = 2.375: GoTo 9011
+    FF(JC) = A3L(JC, 8) * .2
+
+    9011 If A3L(JC, 9) = 0 Then II(JC) = 0: GoTo 9014
+    If A3L(JC, 9) > 9.5 Then II(JC) = 0: GoTo 9014
+    II(JC) = 2.375 - (.25 * A3L(JC, 9))
+
+    9014 A3L(JC, 10) = A3L(JC, 10) - 3
+    If A3L(JC, 10) < 0 Then YY(JC) = 0: GoTo 9020
+    If A3L(JC, 10) > 12.5 Then YY(JC) = 2.375: GoTo 9020
+    D = Int(A3L(JC, 10) * 100) / 2
+    If D = A3L(JC, 10) / 2 Then YY(JC) = A3L(JC, 10) / 2 * .3 + A3L(JC, 10) / 2 * .2: GoTo 9020
+    YY(JC) = A3L(JC, 10) / 2 * .3 + A3L(JC, 10) / 2 * .2 + .003
+
+    9020 A3L(JC, 12) = PP(JC) + FF(JC) + II(JC) + YY(JC)
+    If A3L(JC, 12) > 9.5 Then A3L(JC, 12) = 158.3: GoTo 9027
+    A3L(JC, 12) = A3L(JC, 12) * 50 / 3
+
+    9027 A3L(JC, 12) = Int(A3L(JC, 12) * 10) / 10
+    Return
+
+
+    9100 'COL QB RATING
+    '********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
+    '* QB(1)=PASS ATT, QB(2)=COMP, QB(3)=INT, QB(4)=YDS, QB(5)=TD'S     *
+    '* QB(6)=COMP%, QB(7)=RATING, QB(8)=TD%, QB(9)=INT%, QB(10)=YDS/ATT *
+    '********************************************************************
+    If A3L(JC, 0) = 0 Then A3L(JC, 11) = 0: A3L(JC, 8) = 0: A3L(JC, 10) = 0: A3L(JC, 9) = 0: GoTo 9105
+    A3L(JC, 12) = Int(A3L(JC, 3) / A3L(JC, 0)) * 8.399999 + A3L(JC, 11) + Int(A3L(JC, 4) / A3L(JC, 0) * 1000) / 10 * 3.3 - Int(A3L(JC, 2) / A3L(JC, 0) * 1000) / 10 * 2
+    A3L(JC, 12) = Int(A3L(JC, 12) * 10) / 10
+
+    9105 Return
+
+
+    155 '
+End Sub
+
+
+'------------------------------
+'    SAVELEADER Subroutine
+'------------------------------
+' ...explanation...
+Sub SAVELEADER ()
+    Print "SAVING LEADER FILES . . . . PLEASE WAIT"
+    Open D$(2) + LG$ + ".LDS" For Output As #1
+    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, TS, JJ
+    For I = 1 To 30: For I1 = 0 To 29: Write #1, TT(I, I1), TT$(I, I1): Next
+    Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next
+    For I = 1 To 300: Write #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA(I)
+    For I1 = 0 To 7: Write #1, A1L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 180: Write #1, A2L$(I), A2T$(I), LCL$(I), GMB(I)
+    For I1 = 0 To 3: Write #1, A2L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 120: Write #1, QBL$(I), A3T$(I), LPL$(I), A3R(I, 0), GMC(I)
+    For I1 = 0 To 6: Write #1, A3L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 90: Write #1, A4L$(I), A4T$(I), LKL$(I)
+    For I1 = 0 To 3: Write #1, A4L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 90: Write #1, A5L$(I), A5T$(I), PKL$(I)
+    For I1 = 0 To 3: Write #1, A5L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 30: Write #1, A6L$(I), A6T$(I)
+    For I1 = 0 To 1: Write #1, A6L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 60: Write #1, A7L$(I), A7T$(I)
+    For I1 = 0 To 4: Write #1, A7L(I, I1): Next I1: Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 300: Write #1, A8L$(I), A8T$(I), A8L(I): Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 450: Write #1, A9L$(I), A9T$(I), A9L(I): Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR: Next I
+    For I = 1 To 30: Write #1, Y%(I): Next
+    Close #1
+End Sub
+
+
+'------------------------------
+'    CATEGORIES Subroutine
+'------------------------------
+' ...explanation...
+Sub CATEGORIES ()
+    Shared categories$()
+	
+	For I = 0 To 73: Read categories$(I): Next
+
+End Sub
