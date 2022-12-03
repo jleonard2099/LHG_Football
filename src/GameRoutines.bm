@@ -4,7 +4,7 @@
 ' ...explanation...
 Sub POSTGAME
 
-	Shared scheduleFile$
+    Shared scheduleFile$
 
     Cls
 
@@ -14,11 +14,8 @@ Sub POSTGAME
     Call QBBOX
 
     U$ = "SAVE STATISTICS (YN)"
-
     Locate , (80 - Len(U$)) / 2
-
     Print U$
-
     Color 15, 0
 
     gameOver% = 0
@@ -132,12 +129,12 @@ Sub SCOUT ()
         K3(I, 4) = (B3(I, 0) * 2) + 28
         K3(I, 5) = (B4(I, Q7%(I)) * 5) + 25
         K3(I, 6) = B7(I, Q7%(I))
-        
+
         XE = YC(I1) / 100
 
         If XE < .5 Then XD(I1) = Int(XE * 30)
         If XE > .5 Then XD(I1) = Int(((1 - XE) * 30) * -1)
-        
+
         I4 = I
 
         If I4 = H% Then
@@ -167,7 +164,7 @@ Sub HALFSTART ()
 
     P1 = W%
     D = 1
-    
+
     If P1 = D Then D = 0
 
     T1(0) = 3
@@ -228,7 +225,7 @@ Sub KICKER ()
 
     Color , 1
     Cls
-    
+
     J = 10
     Call BOXDRAW(J)
 
@@ -243,20 +240,20 @@ Sub KICKER ()
             Locate , 36
             Print Using " ###   ###  ###   ###"; B4(I3, I) * 5 + 25, B5(I3, I), B7(I3, I), B8(I3, I)
         End If
-        
+
         Locate , 1
     Next I
 
     Print
-    
+
     Locate , 19: Print "SELECT (0-1) ";
 
     Do
         I$ = GetKeyPress$
-        I2 = Val(I$)
-    Loop Until I2 = 0 Or I2 = 1
+        choice = Val(I$)
+    Loop Until choice = 0 Or choice = 1
 
-    Q7%(I3) = I2
+    Q7%(I3) = choice
 
 End Sub
 
@@ -268,6 +265,7 @@ End Sub
 Sub TICKUPDATE ()
 
     If AP = 1 And AP%(2) <= 32 Then
+
         If Q = 1 And T <= 600 And SX%(AP%(2) + 1, 0, 1) = -1 Then SX%(AP%(2) + 1, 0, 1) = S(0, 0): SX%(AP%(2) + 1, 1, 1) = S(1, 0)
         If Q = 1 And T <= 300 And SX%(AP%(2) + 1, 0, 2) = -1 Then SX%(AP%(2) + 1, 0, 2) = S(0, 0): SX%(AP%(2) + 1, 1, 2) = S(1, 0)
 
@@ -499,10 +497,10 @@ Sub DisplayField ()
     Print Using " ##.# YD LINE "; YL;
     Print Tab(80); " ";
     Locate 6, 44
-    
+
     Color 0, 4 + BW * 3: Print String$(37, 220);
     Color 15 * (1 - BW), 2 + 5 * BW
-    
+
     For I = 7 To 19:
         Locate I, 1
         Print String$(80, 32);
@@ -521,7 +519,7 @@ Sub DisplayField ()
     For II = 1 To 21
         Print String$(2, 196) + Chr$(194);
     Next
-    
+
     Print String$(5, 196) + Chr$(191);
 
     'Print end zones and major yard markers
@@ -532,7 +530,7 @@ Sub DisplayField ()
     Next
 
     F$ = F$ + Chr$(179) + String$(5, 176) + Chr$(179)
-    
+
     For II = 9 To 17
         Locate II, 4
         Print F$
@@ -545,7 +543,7 @@ Sub DisplayField ()
     For II = 1 To 21
         Print Chr$(193) + String$(2, 196);
     Next
-    
+
     Print String$(3, 196) + Chr$(217);
 
     'Print minor yard markers
@@ -595,7 +593,7 @@ Sub GOALLINE ()
 
     ' *** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
-    
+
     If D2 > 3 And D2 < 6 Then
         4500 '
         Select Case Y
@@ -665,7 +663,7 @@ Sub GOALLINE ()
 
         4400 '
         Select Case Y
-        
+
             Case 94.999 TO 95.998
                 Select Case I6
                     Case 1 TO 17: G = 6
@@ -717,12 +715,24 @@ Sub GOALLINE ()
 
     4550 '
     I6 = Int(Rnd(1) * 100) + 1
-    
-    If I2 <= 30 And I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
-    If I2 > 30 And I6 <= GL%(30, 1) Then G = G + GL%(30, 2)
+
+    If I2 <= 30 Then
+		'Added this to avoid scenarios
+		'where the rushing average from
+		'OTHERS was negative, therefore
+		'leading to a negative index
+		If I2 < 0 Then I2 = 1
+
+        If I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
+    Else
+        'I2 > 30
+        'Given how I2 is calculated (based on Rushing Avg),
+        'it is not clear how you get a value this high
+        If I6 <= GL%(30, 1) Then G = G + GL%(30, 2)
+    End If
 
 End Sub
-    
+
 
 
 '------------------------------
@@ -740,7 +750,7 @@ Sub FINDSPACE ()
     9611 '
     I2 = I2 + 1
     I3 = I2 + 1
-    
+
     If I3 = 13 Then I3 = 12
 
     If I2 <> 13 Then
@@ -855,9 +865,10 @@ End Sub
 '     GETTEAM Subroutine
 '------------------------------
 ' ...explanation...
-Sub GETTEAM ()
+Sub GETTEAM (I)
 
     If _FileExists(diskPaths$(0) + "FOOT." + YN$) Then
+
         Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
 
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
@@ -897,6 +908,7 @@ Sub GETTEAM ()
         Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
         Get #1, intB8%
+
         intB8%(I) = intB8%
         NN$(I) = YN$
 
@@ -998,7 +1010,7 @@ Sub GETTEAM ()
         Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
         Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
         Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
-        Call GETTEAM
+        Call GETTEAM(I)
 
     End If
 
@@ -1043,10 +1055,10 @@ Sub TICKER ()
                 Select Case RN
                     Case 1 TO 33
                         Locate , 27: Print "USA TODAY FINAL SCOREBOARD"
-                        
+
                     Case 34 TO 67
                         Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
-                        
+
                     Case 68 TO 100
                         Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
                 End Select
@@ -1091,7 +1103,7 @@ Sub TICKER ()
                 Print Left$(SX$(1, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(1, 1, TS%)
             End If
-            
+
             If Left$(SX$(2, 0), 3) <> "XXX" Then
                 Locate 5, 1: X = 2
                 GoSub 885
@@ -1432,7 +1444,8 @@ Sub SAVESTATS ()
     PN = Q
 
     For I = 0 To 1
-        B$(I) = A$(I): Y$(I) = B$(I)
+        B$(I) = A$(I)
+		Y$(I) = B$(I)
     Next
 
     For Q = 0 To 1
@@ -1458,17 +1471,18 @@ Sub SAVESTATS ()
 
         8093 '
         If C% = 1 Then _Continue
-        
+
+		'Determine stat file name
         For XX = 4 To 11:
             If Mid$(B$(Q), XX, 1) = " " Or Mid$(B$(Q), XX, 1) = "." Then Mid$(B$(Q), XX, 1) = "_"
         Next XX
-        
+
         For XX = 12 To 14:
             If Mid$(B$(Q), XX, 2) = "ST" Then Mid$(B$(Q), 9, 1) = "_": Mid$(B$(Q), 10, 2) = "ST"
         Next XX
 
         QQ = 8
-        
+
         For XX = 11 To 4 Step -1:
             If Mid$(B$(Q), XX, 1) = "_" Then
                 QQ = XX - 4
@@ -1480,18 +1494,22 @@ Sub SAVESTATS ()
         8138 '
         F$ = Mid$(B$(Q), 4, QQ)
         R$ = F$ + "." + Left$(B$(Q), 2)
-        
+
+		'Read existing stats from the file
         If _FileExists(diskPaths$(1) + R$) Then
 
             Open diskPaths$(1) + R$ For Input As #2
 
             Input #2, B$(Q)
 
-            For I = 0 To 9: Input #2, A1$(Q, I): Next: For I = 0 To 5: Input #2, A2$(Q, I): Next: For I = 0 To 3: Input #2, A3$(Q, I): Next
-            For I = 0 To 2: Input #2, A4$(Q, I): Next: For I = 0 To 2: Input #2, A5$(Q, I): Next
+            For I = 0 To 9: Input #2, A1$(Q, I): Next
+			For I = 0 To 5: Input #2, A2$(Q, I): Next
+			For I = 0 To 3: Input #2, A3$(Q, I): Next
+            For I = 0 To 2: Input #2, A4$(Q, I): Next
+			For I = 0 To 2: Input #2, A5$(Q, I): Next
 
             Input #2, A6$(Q, 0)
-            
+
             For I = 0 To 1: Input #2, A7$(Q, I): Next
             For J = 0 To 13: For K = 0 To 17: Input #2, Z2(J, K): Next: Next
             For L = 0 To 38: Input #2, Z(L): Next
@@ -1528,22 +1546,22 @@ Sub SAVESTATS ()
             If RB(Q, I) > LR(Q, I) Then LR(Q, I) = RB(Q, I): strLR$(Q, I, 0) = strRB$(Q, I): strLR$(Q, I, 1) = A$(1 - Q)
             If IR(Q, I) > LI(Q, I) Then LI(Q, I) = IR(Q, I): LI$(Q, I, 0) = strIR$(Q, I): LI$(Q, I, 1) = A$(1 - Q)
         Next
-        
+
         For I = 0 To 15
             If WR(Q, I) > LC(Q, I) Then LC(Q, I) = WR(Q, I): strLC$(Q, I, 0) = strWR$(Q, I): strLC$(Q, I, 1) = A$(1 - Q)
         Next
-        
+
         For I = 0 To 3
             If QB(Q, I) > LP(Q, I) Then LP(Q, I) = QB(Q, I): LP$(Q, I, 0) = strQB$(Q, I): LP$(Q, I, 1) = A$(1 - Q)
         Next
-        
+
         For I = 0 To 2
             If KR(Q, I) > LK(Q, I) Then LK(Q, I) = KR(Q, I): LK$(Q, I, 0) = strKR$(Q, I): LK$(Q, I, 1) = A$(1 - Q)
             If PR(Q, I) > PK(Q, I) Then PK(Q, I) = PR(Q, I): PK$(Q, I, 0) = strPR$(Q, I): PK$(Q, I, 1) = A$(1 - Q)
         Next
 
         If K(Q, 26) > Z(28) Then Z(28) = K(Q, 26)
-        
+
         For I = 0 To 1
             If FL(Q, I) > LF(Q, I) Then LF(Q, I) = FL(Q, I): LF$(Q, 1) = A$(1 - Q)
             For I1 = 0 To 4
@@ -1648,7 +1666,7 @@ Sub SAVESTATS ()
         Print "THE FOLLOWING NAME::: ";
         Color PA%(Q, 2), PA%(Q, 1): Print R$
         Color 15, 0
-        
+
         Open diskPaths$(1) + R$ For Output As #1
         Print #1, Y$(Q)
         For I = 0 To 9: Print #1, A1$(Q, I): Next
@@ -1657,32 +1675,32 @@ Sub SAVESTATS ()
         For I = 0 To 2: Print #1, A4$(Q, I): Next
         For I = 0 To 2: Print #1, A5$(Q, I): Next
         Print #1, A6$(Q, 0)
-        
+
         For I = 0 To 1: Print #1, A7$(Q, I): Next
-        
+
         For J = 0 To 13
             For K = 0 To 17:
                 Print #1, Z2(J, K)
             Next
         Next
-        
+
         For L = 0 To 38: Print #1, Z(L): Next
         For L = 0 To 38: Print #1, Z1(L): Next
-        
+
         For J = 0 To 9
             Print #1, DI$(Q, J)
             For J1 = 0 To 2
                 Print #1, GI(Q, J, J1)
             Next
         Next
-        
+
         For J = 0 To 14
             Print #1, DS$(Q, J)
             For J1 = 0 To 1
                 Print #1, GS(Q, J, J1)
             Next
         Next
-        
+
         For I = 0 To 9: Print #1, LR(Q, I): Print #1, strLR$(Q, I, 0): Print #1, strLR$(Q, I, 1): Next
         For I = 0 To 15: Print #1, LC(Q, I): Print #1, strLC$(Q, I, 0): Print #1, strLC$(Q, I, 1): Next
         For I = 0 To 3: Print #1, LP(Q, I): Print #1, LP$(Q, I, 0): Print #1, LP$(Q, I, 1): Next
@@ -1697,7 +1715,8 @@ Sub SAVESTATS ()
 
         Y% = 0
         R$ = R$ + "S"
-        
+
+		'Read stats in from file
         If _FileExists(diskPaths$(1) + R$) Then
             Open diskPaths$(1) + R$ For Input As #1
             Input #1, Y%
@@ -1729,6 +1748,7 @@ Sub SAVESTATS ()
         intPR%(0, Y%) = PA%(Q, 4)
         intPR%(1, Y%) = PA%(1 - Q, 4)
 
+		'Write stats to new file
         Open diskPaths$(1) + R$ For Output As #1
         Print #1, Y%
         For I = 1 To 120: Print #1, O%(I): Next
@@ -1755,12 +1775,12 @@ Sub SAVESTATS ()
                 Z2(J, K) = 0
             Next
         Next
-        
+
         For L = 0 To 38: Z(L) = 0: Next
         For L = 0 To 38: Z1(L) = 0: Next
 
     Next Q
-    
+
 End Sub
 
 
@@ -1793,7 +1813,7 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub GetKey_PBPDelay ()
-   
+
     'If we're not in autoplay
     If AP <> 1 Or J6(0) <> 2 Then
         I$ = GetKeyPress$
@@ -1847,7 +1867,7 @@ Sub ONSIDE ()
     X = Int(Rnd(1) * 100) + 1
 
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(6734)
 
     If X <= 50 Then
         U$ = A$(P1) + " IS LINING UP FOR THE KICKOFF"
@@ -1855,10 +1875,10 @@ Sub ONSIDE ()
         U$ = AA$(P1) + " ARE LINING UP FOR THE KICKOFF"
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(6742)
 
     U$ = "IT'S AN ONSIDE KICK!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(6745)
 
     Swap P1, D
 
@@ -1867,20 +1887,20 @@ Sub ONSIDE ()
     G = I
 
     Call AddPossessionTime(4, 7)
-    
+
     If Int(G * 10 + .5) / 10 < 9.95 Then
         U$ = "BALL DID NOT TRAVEL 10 YDS"
-        Call PBP
+        Call PBP ': Call PBP_Logger(6757)
         Y = 100 - Y
     Else
         I = (Rnd(1) * 100) + 1
         If I <= 78 Then
             U$ = A$(P1) + " RECOVERS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(6763)
             Y = 100 - Y
         Else
             U$ = A$(D) + " RECOVERS !!!"
-            Call PBP
+            Call PBP ': Call PBP_Logger(6767)
             Call CHANGEPOSS
         End If
     End If
@@ -1931,26 +1951,26 @@ Sub PRINTBOX ()
             TI = TI + TI * (TI < 0)
             IR% = Int(TI / 60)
             J = TI - IR% * 60
-            
+
             Print #1, Tab(17);
             Print #1, Using "##"; IR%;: Print #1, ":";
-            
+
             If J >= 10 Then Print #1, Using "## "; J; Else Print #1, Using "0#"; J;
-            
+
             Print #1, Tab(23);
-            
+
             If C(I) = 1 Then Print #1, "OF 1ST -";
             If C(I) = 2 Then Print #1, "OF 2ND -";
             If C(I) = 3 Then Print #1, "OF 3RD -";
             If C(I) = 4 Then Print #1, "OF 4TH -";
             If C(I) > 4 Then Print #1, "OF OT "; C(I) - 4; " -";
-            
+
             If K1(I, 0) <> 7 Then Print #1, Int(K1(I, 5) + .5);
-            
+
             skipPAT% = 0
 
             Select Case K1(I, 0)
-            
+
                 Case 1
                     Print #1, "RUN BY "; A1$(K1(I, 1), K1(I, 2))
 
@@ -1985,7 +2005,7 @@ Sub PRINTBOX ()
 
                 Case 11
                     Print #1, "FAKE PUNT", K1(I, 2)
-                    
+
                 Case 12
                     Print #1, "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
 
@@ -2001,9 +2021,9 @@ Sub PRINTBOX ()
                 If K1(I, 4) = 21 Then Print #1, " (RUN GOOD)"
                 If K1(I, 4) = 31 Then Print #1, " (PASS GOOD)"
             End If
-        
+
         Next I
-    
+
     End If
 
     Print #1,
@@ -2060,21 +2080,21 @@ Sub PRINTBOX ()
 
     For I = 0 To 1
         Print #1, A$(I); Tab(19); "TC    YDS    AVG   LG    TD"
-        
+
         For I1 = 0 To 5
             If K2(I, I1, 6) <> 0 Then
                 Print #1, A2$(I, I1); Tab(19);
                 Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
             End If
         Next I1
-        
+
         For I1 = 0 To 9
             If K2(I, I1, 3) <> 0 Then
                 Print #1, A1$(I, I1); Tab(19);
                 Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
             End If
         Next I1
-        
+
         Print #1,
 
     Next I
@@ -2082,9 +2102,9 @@ Sub PRINTBOX ()
     Print #1, Tab(17); "PASSING"
 
     For I = 0 To 1
-        
+
         Print #1, A$(I); Tab(19); "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
-        
+
         For I1 = 0 To 3
 
             If K2(I, I1, 9) <> 0 Then
@@ -2145,7 +2165,7 @@ Sub PRINTBOX ()
 
     For I = 0 To 1
         Print #1, A$(I); Tab(19); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
-        
+
         If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
 
             Print #1, A7$(I, 0); Tab(19);
@@ -2182,7 +2202,7 @@ Sub PRINTBOX ()
                 Print #1, "- ";: Print #1, Using "#"; FA(I, 1, 4)
             End If
         End If
-        
+
         Print #1,
     Next I
 
@@ -2213,9 +2233,9 @@ Sub PRINTBOX ()
         Next I1
         Locate , 1: Print #1,
     Next I
-    
+
     Print #1, Chr$(12)
-    
+
     Close #1
 
 End Sub
@@ -2266,7 +2286,7 @@ Sub BOX2SCREEN ()
             If C(I) = 4 Then Print "OF 4TH -";
             If C(I) = 5 Then Print "OF OVERTIME -";
             If K1(I, 0) <> 7 Then Print Int(K1(I, 5) + .5);
-            
+
             skipPAT% = 0
 
             Select Case K1(I, 0)
@@ -2277,37 +2297,37 @@ Sub BOX2SCREEN ()
                 Case 2
                     Print "PASS BY "; A3$(K1(I, 1), K1(I, 2)); " TO ";: If K1(I, 3) > 9 Then Print A2$(K1(I, 1), K1(I, 3) - 10)
                     If K1(I, 3) <= 9 Then Print A1$(K1(I, 1), K1(I, 3))
-                    
+
                 Case 3
                     Print "K.O. RETURN BY "; A4$(K1(I, 1), K1(I, 2))
 
                 Case 4
                     Print "PUNT RETURN BY "; A5$(K1(I, 1), K1(I, 2))
-                    
+
                 Case 5
                     Print "INTERCEPTION RETURN BY "; DI$(K1(I, 1), K1(I, 2))
-                    
+
                 Case 6
                     Print "BLOCKED KICK RECOVERED IN END ZONE"
-                    
+
                 Case 7
                     Print "SAFETY": skipPAT% = 1
-                    
+
                 Case 8
                     Print "FG BY "; A7$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-                    
+
                 Case 9
                     Print "RUN BY "; A3$(K1(I, 1), K1(I, 2))
-                    
+
                 Case 10
                     Print "FUMBLE RETURN "
-                    
+
                 Case 11
                     Print "FAKE PUNT ", K1(I, 2)
-                    
+
                 Case 12
                     Print "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-                    
+
             End Select
 
             If skipPAT% <> 1 Then
@@ -2371,11 +2391,11 @@ Sub STATS2SCREEN ()
     Locate , 20: Print Int(K(0, 6) + .5);
     Locate , 34: Print "PASSING YDS";
     Locate , 55: Print Int(K(1, 6) + .5)
-    
+
     Locate , 35: Print "TOTAL YDS";
     Locate , 20: Print Int(K(0, 6) + .5) + Int(K(0, 2) + .5);
     Locate , 55: Print Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
-    
+
     Locate , 37: Print "PASSES";
     Locate , 16: Print K(0, 4); "-"; K(0, 3); "-"; K(0, 5);
     Locate , 51: Print K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
@@ -2385,7 +2405,7 @@ Sub STATS2SCREEN ()
         Locate , 15: Print K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10;
         Locate , 50: Print K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
     End If
-    
+
     Locate , 36: Print "FUM/LOST";
     Locate , 18: Print K(0, 9); "-"; K(0, 10);
     Locate , 53: Print K(1, 9); "-"; K(1, 10)
@@ -2393,11 +2413,11 @@ Sub STATS2SCREEN ()
     Locate , 35: Print "PENALTIES";
     Locate , 18: Print K(0, 11); "-"; Int(K(0, 12) + .5);
     Locate , 53: Print K(1, 11); "-"; Int(K(1, 12) + .5)
-    
+
     Locate , 37: Print "SACKED";
     Locate , 18: Print W6(0, 0); "-"; Int(W6(0, 1) + .5);
     Locate , 53: Print W6(1, 0); "-"; Int(W6(1, 1) + .5)
-    
+
     Locate , 18: Print Using "##"; Int(TP(0) / 60);: Print ":";: Print Using "##"; TP(0) - Int(TP(0) / 60) * 60;
     Locate , 31: Print "TIME OF POSSESSION";
     Locate , 53: Print Using "##"; Int(TP(1) / 60);: Print ":";: Print Using "##"; TP(1) - Int(TP(1) / 60) * 60
@@ -2452,7 +2472,7 @@ Sub STATS2SCREEN ()
     J = 22
     Call DRAWABOX
     Locate , 32: Print "RECEIVING STATISTICS"
-    
+
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
@@ -2484,7 +2504,7 @@ Sub STATS2SCREEN ()
     J = 22
     Call DRAWABOX
     Locate , 32: Print "PASSING STATISTICS"
-    
+
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
@@ -2497,7 +2517,7 @@ Sub STATS2SCREEN ()
                 Locate , 10
                 Print A3$(I, I1);
                 Locate , 26: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
-                
+
                 If K2(I, I1, 10) <> 0 Then
                     Print Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
                 Else
@@ -2518,9 +2538,9 @@ Sub STATS2SCREEN ()
 
     J = 22
     Call DRAWABOX
-    
+
     Locate , 25: Print "KICKOFF RETURN STATISTICS"
-    
+
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1): Print A$(I);
@@ -2538,7 +2558,7 @@ Sub STATS2SCREEN ()
             End If
 
         Next I1
-        
+
         Print
     Next I
 
@@ -2570,7 +2590,7 @@ Sub STATS2SCREEN ()
     Call DRAWABOX
     Locate , 29: Print "PUNTING STATISTICS"
     Print
-    
+
     For I = 0 To 1
         Locate , 10
         Color PA%(I, 2), PA%(I, 1)
@@ -2583,7 +2603,7 @@ Sub STATS2SCREEN ()
             Locate , 26
             Print Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
         End If
-        
+
         Print
     Next I
 
@@ -2614,7 +2634,7 @@ Sub STATS2SCREEN ()
                 Print "- ";: Print Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
                 Print "- ";: Print Using "#"; FA(I, 0, 4)
             End If
-            
+
         End If
 
         8593 '
@@ -2622,13 +2642,13 @@ Sub STATS2SCREEN ()
             Locate , 2
             Print A7$(I, 1);
             Locate , 18
-        
+
             If K2(I, 10, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
 
             If K2(I, 8, 17) = 0 Then
                 Print
             Else
-            
+
                 Locate , 32
                 Print Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
@@ -2640,7 +2660,7 @@ Sub STATS2SCREEN ()
             End If
 
         End If
-        
+
         8594 Print
     Next I
 
@@ -2650,7 +2670,7 @@ Sub STATS2SCREEN ()
 
     J = 22
     Call DRAWABOX
-    
+
     Locate , 35: Print "INTERCEPTIONS"
     Print
 
@@ -2713,7 +2733,7 @@ Sub INCOMPLETE ()
 
     4135 '
     RN = Int(Rnd(1) * 100) + 1
-    
+
     If RN > 10 Then
 
         RN = Int(Rnd(1) * 100) + 1
@@ -2731,7 +2751,7 @@ Sub INCOMPLETE ()
                         Case 56 TO 60: U$ = "BUT " + RV$ + " CAN'T HANDLE THE PASS"
                         Case 61 TO 100: U$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
                     End Select
-                    
+
                 Case 12
                     Select Case RN
                         Case 1 TO 15: U$ = "BUT THE PASS IS BROKEN UP"
@@ -2740,7 +2760,7 @@ Sub INCOMPLETE ()
                         Case 75 TO 80: U$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
                         Case 81 TO 100: U$ = "BUT " + RV$ + " IS COVERED...INCOMPLETE"
                     End Select
-                    
+
                 Case Else
                     Select Case RN
                         Case 1 TO 23: U$ = "BUT THE PASS FALLS INCOMPLETE"
@@ -2754,7 +2774,7 @@ Sub INCOMPLETE ()
             End Select
 
         Else
-        
+
             RN = Int(Rnd(1) * 26) + 1
             Select Case RN
                 Case 1: U$ = RV$ + " DROPS A PASS RIGHT TO HIM"
@@ -2804,7 +2824,7 @@ Sub INCOMPLETE ()
 
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(7691)
 
 End Sub
 
@@ -2816,7 +2836,7 @@ Sub QBSNEAK ()
 
     ' *** QB SNEAK ***
     U$ = A3$(P1, Q6%(P1)) + " KEEPS IT ON THE SNEAK"
-    Call PBP
+    Call PBP ': Call PBP_Logger(7703)
 
     I4 = Int(Rnd(1) * 100) + 1
 
@@ -2844,10 +2864,10 @@ Sub QBSNEAK ()
                 Select Case I4
                     Case 1 TO 10
                         G = (Int(Rnd(1) * 6) - 3) / 10
-                        
+
                     Case 11 TO 80
                         G = (Int(Rnd(1) * 7) + 3) / 10
-                        
+
                     Case 81 TO 100
                         G = Int(Rnd(1) * 2) + 1
                 End Select
@@ -2897,7 +2917,7 @@ Sub QBSNEAK ()
     End If
 
     U$ = U$ + " YARDS ON THE PLAY"
-    Call PBP
+    Call PBP ': Call PBP_Logger(7784)
 
 End Sub
 
@@ -2927,7 +2947,7 @@ Sub BLITZ ()
 
     I5 = Int(Rnd(1) * 100) + 1
     XE = YC(D) / 100
-    
+
     If XE <= .5 Then
         XE = Int(XE * 100 + .5)
         If XE > 21 Then XE = 21
@@ -2939,18 +2959,18 @@ Sub BLITZ ()
         If XE < 1 Then XE = 1
         If I5 <= PS%(1, XE) Then I4 = I4 - PS%(2, XE)
     End If
-    
+
     4709 '
     RN = Int(Rnd(1) * 100) + 1
     If QX%(P1, Q6%(P1)) > 20 Then QX%(P1, Q6%(P1)) = 20
     If QX%(P1, Q6%(P1)) < -20 Then QX%(P1, Q6%(P1)) = -20
-    
+
     QX = QX%(P1, Q6%(P1))
-    
+
     If QX <> 0 Then
 
         If QX < 0 Then QX = QX * -1
-    
+
         If RN <= QR%(QX, 1) Then
             If QX%(P1, Q6%(P1)) > 0 Then
                 I4 = I4 + QR%(QX, 2)
@@ -2958,19 +2978,19 @@ Sub BLITZ ()
                 I4 = I4 - QR%(QX, 2)
             End If
         End If
-        
+
     End If
-    
+
     4710 '
     Call OVERUSE
     I7 = 4
 
     altYdg% = 0
-    
+
     Select Case P2
         Case 9
             I7 = 1
-            
+
         Case 10
             I7 = 3
             If D3 = 9 Or D3 = 10 Then I8 = 21: Call BlitzYardageLong(I8): altYdg% = 1
@@ -3048,7 +3068,7 @@ Sub BLITZ ()
         End Select
 
     End If
-    
+
 End Sub
 
 
@@ -3095,7 +3115,7 @@ Sub BLITZ2 ()
 
                 Case 1 TO 15
                     G = Int(Rnd(1) * 5) - 4
-                    
+
                 Case 16 TO 60
                     G = Int(Rnd(1) * 2) + 1
 
@@ -3125,7 +3145,7 @@ Sub BLITZ2 ()
 
                 Case 1 TO 10
                     G = Int(Rnd(1) * 5) - 4
-                
+
                 Case 11 TO 40
                     G = Int(Rnd(1) * 2) + 1
 
@@ -3140,7 +3160,7 @@ Sub BLITZ2 ()
 
                 Case 1 TO 5
                     G = Int(Rnd(1) * 5) - 4
-                
+
                 Case 6 TO 30
                     G = Int(Rnd(1) * 2) + 1
 
@@ -3152,7 +3172,7 @@ Sub BLITZ2 ()
         Case Else
 
             Select Case I4
-                
+
                 Case 1 TO 5
                     G = Int(Rnd(1) * 5) - 4
 
@@ -3178,10 +3198,10 @@ Sub COMPCHEAT ()
     R0 = Int(Rnd(1) * 4) + 1
     D3 = 1
     I3 = Int(Rnd(1) * 100) + 1
-    
+
     If R0 = 2 Then
         Select Case P2
-        
+
             Case 1, 2, 6, 8
                 If I3 <= 50 Then
                     D2 = 3
@@ -3204,15 +3224,15 @@ Sub COMPCHEAT ()
 
             Case 12, 15
                 D3 = 1
-        
+
             Case 16
                 D3 = 2
-        
+
             Case Is >= 17
                 D3 = 3
 
         End Select
-        
+
     End If
 
 End Sub
@@ -3267,7 +3287,7 @@ Sub DEFENSE ()
     If Not (Q = 2 And T <= 120) Or Not (Q >= 4 And T <= 120) Then
 
         Select Case D1
-        
+
             Case 1
                 If Y1 > 10 Then
                     '8860 '
@@ -3315,11 +3335,11 @@ Sub DEFENSE ()
                     Else
                         D2 = 4
                     End If
-                    
+
                     skipY90% = 1
-                    
+
                 End If
-        
+
             Case 2
                 If Y1 > 8 Then
                     '8860 '
@@ -3356,7 +3376,7 @@ Sub DEFENSE ()
                     End Select
 
                 End If
-                
+
                 If Y1 < 5 Then
                     '8867
                     R0 = Int(Rnd(1) * 100) + 1
@@ -3368,9 +3388,9 @@ Sub DEFENSE ()
                     Else
                         D2 = 4
                     End If
-                    
+
                     skipY90% = 1
-                    
+
                 End If
 
             Case 3
@@ -3419,9 +3439,9 @@ Sub DEFENSE ()
                     Else
                         D2 = 4
                     End If
-                    
+
                     skipY90% = 1
-                    
+
                 End If
 
             Case 4
@@ -3509,11 +3529,11 @@ Sub DEFENSE ()
                     Else
                         D2 = 4
                     End If
-                    
+
                     skipY90% = 1
-                    
+
                 End If
-                
+
             Case Else
                 R0 = Int(Rnd(1) * 100) + 1
 
@@ -3566,7 +3586,7 @@ Sub DEFENSE ()
                 End If
 
         End Select
-        
+
         8865 '
         If skipY90% <> 1 Then
             If Y >= 90 And D3 = 5 Or Y1 < 7 And D3 = 5 Then D3 = 3
@@ -3577,13 +3597,13 @@ Sub DEFENSE ()
 
         If S(P1, 0) - S(D, 0) <= 0 Then
             R0 = Int(Rnd(1) * 100) + 1
-            
+
             If R0 <= 50 Then
                 D2 = Int(Rnd(1) * 3) + 4
             Else
                 D2 = 3
             End If
-                            
+
             R0 = Int(Rnd(1) * 100) + 1
 
             Select Case R0
@@ -3606,7 +3626,7 @@ Sub DEFENSE ()
                     Else
                         D3 = 2
                     End If
-                    
+
                 Case 51 TO 70
                     D2 = 2
                     If R0 <= 90 Then
@@ -3630,14 +3650,14 @@ Sub DEFENSE ()
                 Case 96
                     D2 = 10
                     D3 = 9
-                    
+
                 Case 97, 98
                     D2 = 9
-                    
+
                 Case 99, 100
                     D2 = 10
                     D3 = 7
-                    
+
             End Select
 
         End If
@@ -3699,7 +3719,7 @@ Sub MARKER1 ()
 
     YT = 100 - Y
     YF = -Y1
-    
+
     If P1 Then
         WS = FNP(YT + YF) - 3
         WE = WS + 6
@@ -3707,7 +3727,7 @@ Sub MARKER1 ()
         WE = FNP(100 - YT - YF) - 3
         WS = WE - 6
     End If
-    
+
     Call MARKER
 
 End Sub
@@ -3879,7 +3899,7 @@ Sub MOVEBALL ()
 
         End If
 
-        If YT <> 0 Then Call PBP
+        If YT <> 0 Then Call PBP ': Call PBP_Logger(8766)
 
     End If
 
@@ -3891,9 +3911,9 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub SCOREBOARD ()
-    
+
     Screen , , 0, 0
-    
+
     If Screen(2, 1) <> 219 Then
         Call SETSCREEN
         Call MARKER1
@@ -3926,7 +3946,7 @@ Sub SCOREBOARD ()
 
         Print Using " TO GO: ##.#"; Y1;
         Print Tab(80); " ";
-        
+
         Locate 5, 44: Print " BALL ON ";
         If Y <= 50 Then
             Print "OWN";
@@ -3946,9 +3966,15 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub DEFMENU ()
-    
+    'D1 = down
+    'Q = quarter
+    'T = time
+    'Y = yardline
+    'T1() = timeouts
+    'S() = Score
+
     goodSelection% = 1
-    
+
     If J6(0) = 1 And D = CT Or J6(0) = 2 Then
 
         Call DEFENSE
@@ -3964,7 +3990,8 @@ Sub DEFMENU ()
 
             Print "SELECT DEFENSIVE LINE PLAY "; A$(D)
 
-            For D2 = 1 To 5: Locate 11 + D2, 14
+            For D2 = 1 To 5:
+                Locate 11 + D2, 14
                 Print D2 - 1; "- "; D2$(D2); Tab(41); D2 + 4; "- "; D2$(D2 + 5)
             Next D2
 
@@ -4005,7 +4032,7 @@ Sub DEFMENU ()
                 Locate 11 + D3, 14
                 Print D3 - 1; "- "; D1$(D3); Tab(41); D3 + 4; "- "; D1$(D3 + 5)
             Next D3
-            
+
             Locate , 41: Print " B - BLITZ ENGAGE"
 
             Do
@@ -4023,15 +4050,15 @@ Sub DEFMENU ()
                 ' 3065
                 D3 = D3 + 1
                 Screen , , 0, 0
-                
+
                 'More loop conditions
                 If (D2 = 5 Or D2 = 6) And (D3 = 7 Or D3 = 9 Or D3 = 11) Then goodSelection% = 0
                 If (D2 = 7 Or D2 = 8) And (D3 = 8 Or D3 = 10 Or D3 = 11) Then goodSelection% = 0
 
             End If
-        
+
         Loop Until goodSelection% = 1
-    
+
     End If
 
 End Sub
@@ -4081,7 +4108,7 @@ Sub LGPBP ()
         Case 20: U$ = "HE SEES A BREAK"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(8974)
 
 End Sub
 
@@ -4126,7 +4153,7 @@ Sub RUNTDPBP ()
         Case 29: U$ = "HE'S IN THE SECONDARY"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(9019)
 
 End Sub
 
@@ -4136,12 +4163,6 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub SETWEATHER ()
-
-    For I = 0 To 1: YR%(I) = Val(Left$(A$(I), 2)): Next
-
-    If YR%(0) >= 0 And YR%(0) <= 15 Then YR%(0) = 99
-
-    If YR%(1) >= 0 And YR%(1) <= 15 Then YR%(1) = 99
 
     If PA%(H%, 3) <> 1 Then
 
@@ -4165,20 +4186,20 @@ Sub SETWEATHER ()
 
             Do
                 I$ = GetKeyPress$
-                I2 = Val(I$)
-            Loop Until I2 >= 1 And I2 <= 3 Or I$ = "0"
+                choice = Val(I$)
+            Loop Until choice >= 1 And choice <= 3 Or I$ = "0"
 
         End If
 
         Screen , , 0, 0
 
-        'If I2 = 0 Then 200
+        'If choice = 0 Then 200
 
-        If I2 = 1 Then WX%(4) = -3: WX%(5) = 1: WX%(6) = -10
+        If choice = 1 Then WX%(4) = -3: WX%(5) = 1: WX%(6) = -10
 
-        If I2 = 2 Then WX%(4) = -6: WX%(5) = 2: WX%(6) = -20
+        If choice = 2 Then WX%(4) = -6: WX%(5) = 2: WX%(6) = -20
 
-        If I2 = 3 Then
+        If choice = 3 Then
             I = Int(Rnd(1) * 22) + 1
             If I = 18 Then WX%(4) = -3: WX%(5) = 1: WX%(6) = -10
             If I = 7 Then WX%(4) = -6: WX%(5) = 2: WX%(6) = -20
@@ -4193,20 +4214,20 @@ Sub SETWEATHER ()
         Locate , 14: Print "3 - COMPUTER SELECT"
 
         If AP = 1 Then
-            I2 = NG%(19)
+            choice = NG%(19)
         Else
             Do
                 I$ = GetKeyPress$
-                I2 = Val(I$)
-            Loop Until I2 >= 0 And I2 <= 3
+                choice = Val(I$)
+            Loop Until choice >= 0 And choice <= 3
         End If
 
         Screen , , 0, 0
 
-        'If I2 = 0 Then 299
-        If I2 = 1 Then WX%(1) = -7: WX%(2) = -5: WX%(3) = -10
-        If I2 = 2 Then WX%(1) = -15: WX%(2) = -15: WX%(3) = -30
-        If I2 = 3 Then
+        'If choice = 0 Then 299
+        If choice = 1 Then WX%(1) = -7: WX%(2) = -5: WX%(3) = -10
+        If choice = 2 Then WX%(1) = -15: WX%(2) = -15: WX%(3) = -30
+        If choice = 3 Then
             I = Int(Rnd(1) * 22) + 1
             If I = 14 Then WX%(1) = -7: WX%(2) = -5: WX%(3) = -10
             If I = 3 Then WX%(1) = -15: WX%(2) = -15: WX%(3) = -30
@@ -4215,30 +4236,30 @@ Sub SETWEATHER ()
     End If
 
     W% = Int(Rnd(1) * 2)
-    
+
     Call SCOUT
     Call HALFSTART
-    
+
     Q = 1
     T = 900
-    
+
     For I = 0 To 1
         For I1 = 0 To 4
             S(I, I1) = 0
         Next I1
     Next I
-    
+
     Call SETSCREEN
 
     RN = Int(Rnd(1) * 100) + 1
-    
+
     If RN <= 50 Then
         U$ = A$(W%) + " WON THE COIN TOSS"
     Else
         U$ = AA$(W%) + " WON THE COIN TOSS"
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(9125)
 
 End Sub
 
@@ -4256,21 +4277,21 @@ Sub FGATT ()
 
         Case 1 TO 19
             FA(P1, Q7%(P1), 0) = FA(P1, Q7%(P1), 0) + 1
-            
+
         Case 20 TO 29
             FA(P1, Q7%(P1), 1) = FA(P1, Q7%(P1), 1) + 1
-            
+
         Case 30 TO 39
             FA(P1, Q7%(P1), 2) = FA(P1, Q7%(P1), 2) + 1
 
         Case 40 TO 49
             FA(P1, Q7%(P1), 3) = FA(P1, Q7%(P1), 3) + 1
-            
+
         Case Is >= 50
             FA(P1, Q7%(P1), 4) = FA(P1, Q7%(P1), 4) + 1
 
     End Select
-    
+
 End Sub
 
 
@@ -4299,10 +4320,11 @@ Sub FGMADE ()
 
         Case Is > FL(P1, Q7%(P1))
             FL(P1, Q7%(P1)) = DT
-    
+
     End Select
-    
+
 End Sub
+
 
 
 '------------------------------
@@ -4310,16 +4332,16 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub OFFMENU ()
-	'D1 = down
-	'Q = quarter
-	'T = time
-	'Y = yardline
-	'T1() = timeouts
-	'S() = Score
-	
+    'D1 = down
+    'Q = quarter
+    'T = time
+    'Y = yardline
+    'T1() = timeouts
+    'S() = Score
+
     If E = 1 Then
-	'E = 1 means play reached endzone ??
-	'So we'd only be here if going for 2
+        'E = 1 means play reached endzone ??
+        'So we'd only be here if going for 2 ??
         R0 = Int(Rnd(1) * 100) + 1
         Select Case R0
             Case 1 TO 25: P2 = 17
@@ -4332,63 +4354,119 @@ Sub OFFMENU ()
 
     End If
 
+    '4th Quarter
+    'Any down, Less than 105 seconds to go, 0 Timeouts Opponent, Offense leading
     If Q = 4 And T <= 35 * (4 - D1) And T1(D) = 0 And S(P1, 0) > S(D, 0) Then
-		'Select kicker
+        'Select kicker
         P2 = 9
         R1 = 1
         QBN% = 1
     Else
 
+        'If not inside 2 minute warning and past Own 40 Yd Line
         If Not (Q = 2 And T <= 120 And Y > 40 Or Q >= 4 And T <= 120) Then
 
+            '4th Quarter+,
+            '4th Down, Opponent's side of field, Score = Down by 11 or more
             If D1 = 4 And Q >= 4 And Y >= 50 And S(D, 0) - S(P1, 0) > 10 Then 8833
+
+            '3rd Quarter+,
+            '4th Down, Inside opponent's 45, Score = Down by 15 or more
             If D1 = 4 And Q >= 3 And Y >= 55 And S(D, 0) - S(P1, 0) > 14 Then 8833
+
+            '4th Down, 1 Yd To Go, 3 Pt. Lead, Opponent's 32 to 38, Score Not Tied
             If D1 = 4 And Y1 <= 1 And S(P1, 0) - S(D, 0) <= 3 And S(P1, 0) - S(D, 0) > 0 And Y >= 62 + intY8% And Y <= 68 + intY8% Then 8827
 
-            If Q >= 4 And D1 = 4 And S(P1, 0) - S(D, 0) <= 3 And S(P1, 0) - S(D, 0) >= -3 And Y >= 62 + intY8% And Y < 68 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
-            If Q >= 4 And D1 = 4 And Y >= 62 + intY8% And Y < 68 + intY8% And S(D, 0) - S(P1, 0) <= 3 And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
+            '4th Quarter+
+            '---------------
+            '4th Down, Opponent's 32 to 38, Score = 3 Pt. Margin, Pro Rules or College Rules + Team after 1960 = Field Goal
+            If Q >= 4 And D1 = 4 And S(P1, 0) - S(D, 0) <= 3 And S(P1, 0) - S(D, 0) >= -3 And Y >= 62 + intY8% And Y < 68 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+            '4th Down, Opponent's 32 to 38, Score <= 3 Pt. Lead, Pro Rules or College Rules + Team after 1960 = Field Goal
+            If Q >= 4 And D1 = 4 And Y >= 62 + intY8% And Y < 68 + intY8% And S(D, 0) - S(P1, 0) <= 3 And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+            '4th Down, <= 2 Yds to Go, Opponent's 25 - 35, Score - Down by 11 or more
             If Q >= 4 And Y >= 65 + intY8% And Y < 75 + intY8% And Y1 <= 2 And S(D, 0) - S(P1, 0) > 10 Then 8827
-            If Q >= 4 And Y >= 65 + intY8% And Y < 75 + intY8% And S(D, 0) - S(P1, 0) <= 10 And S(D, 0) - S(P1, 0) > 0 And D1 = 4 And T < 240 And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
-            
+
+            '4th Down, <= 2 Yds to Go, Opponent's 25 - 35, Score - Down by 10 or less, 4 Minutes Remaining, Pro Rules or College Rules + Team after 1960 = Field Goal
+            If Q >= 4 And Y >= 65 + intY8% And Y < 75 + intY8% And S(D, 0) - S(P1, 0) <= 10 And S(D, 0) - S(P1, 0) > 0 And D1 = 4 And T < 240 And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+
+
+            '4th Quarter Only
+            '---------------
+            '4th Down, More Than 2 Minutes, Score - Down by 4 to 10, Inside Red Zone = Field Goal
             If D1 = 4 And Q = 4 And T > 240 And S(D, 0) - S(P1, 0) >= 4 And S(D, 0) - S(P1, 0) <= 10 And Y > 80 + intY8% Then P2 = 20: GoTo 8800
+
+            '4th Down, Down by 4 or More, Inside Red Zone
             If D1 = 4 And Q = 4 And S(D, 0) - S(P1, 0) >= 4 And Y >= 80 + intY8% Then 8833
+
+
+            'Any Quarter
+            '---------------
+            '4th Down, Any Time, <= 2 Yds to Go, Inside Opponent's 40
             If D1 = 4 And Y >= 60 And Y1 <= 2 Then 8827
 
-            If D1 = 4 And Y >= 68 + intY8% And Y1 > 2 And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
+            '4th Down, Any Time, >= 3 Yds To Go, Inside Opponent's 32, Pro Rules or College Rules + Team after 1960 = Field Goal
+            If D1 = 4 And Y >= 68 + intY8% And Y1 > 2 And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+            '4th Down, Any Time, Outside Opponent's 32 = Punt
             If D1 = 4 And Y < 68 + intY8% Then P2 = 19: GoTo 8800
 
             R0 = Int(Rnd(1) * 100) + 1
-			
-			If Y <= 8 Then 8827
+
+            'Any Time, Inside Team's Own 8 Yd Line
+            If Y <= 8 Then 8827
+
+            '2nd Down, Any Time, <=12 Yds To Go
             If B6(P1, 7) > 75 And D1 = 2 And Y1 <= 12 Then 8827
+
+            '3rd Down, Any Time, <= 5 Yds to Go
             If B6(P1, 7) > 75 And D1 = 3 And Y1 <= 5 Then 8827
-            
-			If D1 = 1 And B6(P1, 7) >= 70 Or D1 <= 2 And B6(P1, 7) >= 80 Then 8827
+
+            '1st or 2nd Down, Any Time
+            If D1 = 1 And B6(P1, 7) >= 70 Or D1 <= 2 And B6(P1, 7) >= 80 Then 8827
+
+            '1st Down, Any Time, >= 11 Yds To Go
             If D1 = 1 And Y1 > 10 Then 8833
 
+            '2nd Down, Any Time, >= 11 Yds To Go
             If D1 = 2 And Y1 > 10 Then 8833
+
+            '2nd Down, Any Time, <= 4 Yds to Go
             If D1 = 2 And Y1 < 5 Then 8827
 
+            '3nd Down, Any Time, >= 4 Yds to Go
             If D1 = 3 And Y1 >= 4 Then 8833
+
+            '3rd Down, Any Time, 1 Yds to Go
             If D1 = 3 And Y1 < 2 Then 8827
 
+            '4th Down, Any Time, >= 4 Yds to Go
             If D1 = 4 And Y1 >= 4 Then 8833
+
+            '4th Down, Any Time, 1 Yds To Go
             If D1 = 4 And Y1 < 2 Then 8827
 
+            '4th Quarter
+            '---------------
+            'Less than 8 Minutes in Game
+            'Either team is ahead by 9 or more pts
             If Q = 4 And T <= 480 And S(D, 0) - S(P1, 0) >= 9 And R0 >= B6(P1, 7) - B6(P1, 7) / 2 Then 8833
             If Q = 4 And T <= 480 And S(P1, 0) - S(D, 0) >= 9 And R0 >= B6(P1, 7) + B6(P1, 7) / 2 Then 8833
 
+
             If R0 > B6(P1, 7) Then 8833
-			
-			
-			'1st / 2nd down and close to goal or short yardage
-			'3rd / 4th down and 1 yard to-go
+
+
+            '----- DECISION BRANCH 1 -----
             8827 If K(P1, 1) + K(P1, 3) <> 0 Then
                 If K(P1, 1) / (K(P1, 1) + K(P1, 3)) > B6(P1, 7) / 100 And B6(P1, 7) < 50 Then 8833
             End If
 
             8828 '
             R0 = Int(Rnd(1) * 100) + 1
+
             P2 = 1
 
             Select Case R0
@@ -4403,11 +4481,13 @@ Sub OFFMENU ()
 
             GoTo 8800
 
-			'1st / 2nd Down, > 10 yards to-go
-			'3rd / 4th Down, > 4  yards to-go
+
+
+            '----- DECISION BRANCH 2 -----
             8833 '
             R0 = Int(Rnd(1) * 100) + 1
             P2 = 10
+
             Select Case R0
                 Case 1 TO 5: P2 = 6
                 Case 6 TO 30: P2 = 17
@@ -4417,75 +4497,151 @@ Sub OFFMENU ()
                 Case 64 TO 89: P2 = 11
             End Select
 
+            '3rd / 4th Down, Any Time, >= 5 Yds To Go, Picked (P2 = 6) = Pass (???)
             If D1 >= 3 And Y1 >= 5 And P2 = 6 Then P2 = 12
+
+            '3rd / 4th Down, Any Time, >= 5 Yds To Go, Picked (P2 = 10) = Pass (???)
             If D1 >= 3 And Y1 >= 5 And P2 = 10 Then P2 = 11
+
+            '3rd / 4th Down, Any Time, >= 5 Yds To Go, Picked (P2 = 9 / 13) = Pass (???)
             If D1 >= 3 And Y1 >= 5 And (P2 = 13 Or P2 = 9) Then P2 = 17
+
+            'Any Down, Any Time, Inside Opponent's 10, Picked (P2 = 12 | 15) ---Or--- < 7 Yds To Go and Picked (P2 = 12 | 15) = Pass (???)
             If Y > 90 And (P2 = 12 Or P2 = 15) Or Y1 < 7 And (P2 = 12 Or P2 = 15) Then P2 = 11
+
             GoTo 8800
-        
+
+        Else
+            '2nd / 4th Quarter
+            '2 Min Warning
+            '--------------------
+
+            8871 '
+            'Score - Down by >= 4
+            If S(D, 0) - S(P1, 0) > 3 Then
+                If Q >= 4 Then 8880
+                If Q = 2 Then 8885
+            End If
+
+            'Score Tied or Down
+            If S(D, 0) - S(P1, 0) >= 0 Then 8885
+
+            R0 = Int(Rnd(1) * 100) + 1
+
+            '2nd Quarter, Past Own 40 Yd Line
+            If Y > 40 And Q = 2 Then 8885
+
+            P2 = 4
+
+            If R0 <= 60 Then P2 = 3
+
+            '2nd Quarter / Overtime / 4th Quarter and Tied Score
+            'Any down, Inside Opponent's 35, Less than 22 seconds to go = Field Goal
+            If Y >= 65 + intY8% And T <= 22 And Q = 2 Or Y >= 65 + intY8% And T <= 22 And Q > 4 Or Y >= 65 + intY8% And T <= 22 And Q = 4 And S(P1, 0) - S(D, 0) = 0 Then P2 = 20
+
+            '4th Down, Inside Opponent's 35, >= 1 Yard to go, Pro Rules or College Rules + Team after 1960 = Field Goal
+            If Y >= 65 + intY8% And D1 = 4 And Y1 >= 2 And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20
+
+            '4th Down, Outside Opponents' 35 = Punt
+            If D1 = 4 And Y <= 65 + intY8% Then P2 = 19
+
         End If
-        
-        8871 '
-        If S(D, 0) - S(P1, 0) > 3 Then
-            If Q >= 4 Then 8880
-            If Q = 2 Then 8885
-        End If
 
-        If S(D, 0) - S(P1, 0) >= 0 Then 8885
-
-        R0 = Int(Rnd(1) * 100) + 1
-        
-        If Y > 40 And Q = 2 Then 8885
-        
-        P2 = 4
-        
-        If R0 <= 60 Then P2 = 3
-        If Y >= 65 + intY8% And T <= 22 And Q = 2 Or Y >= 65 + intY8% And T <= 22 And Q > 4 Or Y >= 65 + intY8% And T <= 22 And Q = 4 And S(P1, 0) - S(D, 0) = 0 Then P2 = 20
-        If Y >= 65 + intY8% And D1 = 4 And Y1 >= 2 And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20
-        If D1 = 4 And Y <= 65 + intY8% Then P2 = 19
-
-        'GoTo 8800
-
-        '-----
-
+        '----- DECISION MADE -----
         8880 '
+        '2nd Quarter
+        '4th Down, Any Time
         If Q = 2 And D1 = 4 Then
+
             If Y < 65 + intY8% Then
+                'Outside Opponent's 35 = Punt
                 P2 = 19
             Else
-                If (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then
+                'Inside Opponent's 35, Pro Rules, or College Rules + Team after 1960 = Field Goal
+                '--- COMPARE A
+                If (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then
                     P2 = 20
                 End If
             End If
+
             GoTo 8800
+
         End If
 
+        'Any Quarter
+        '---------------
+        'Any Down, Less than 22 seconds to go, 0 Timeouts Offense = Pass
         If T <= 22 And T1(P1) = 0 Then P2 = 12: GoTo 8800
+
+        'Any Down, Less than 12 sceonds to go, 1 or more timeouts Offense = Pass
         If T <= 12 And T1(P1) <> 0 Then P2 = 12: GoTo 8800
+
         GoTo 8892
 
         '-----
 
-        8885 If Q = 2 And D1 = 4 And Y < 65 + intY8% Or Q >= 4 And Y < 65 + intY8% And S(P1, 0) = S(D, 0) And D1 = 4 Then P2 = 19: GoTo 8800
-        If Q = 2 And D1 = 4 And Y >= 65 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
-        If T <= 37 And T1(P1) = 0 And Y < 65 + intY8% Then P2 = 12: GoTo 8800
-        If T <= 12 And T1(P1) <> 0 And Y < 65 + intY8% Then P2 = 12: GoTo 8800
-        If T <= 22 And T1(P1) = 0 And Y >= 65 + intY8% Then P2 = 20: GoTo 8800
-        If T <= 12 And T1(P1) <> 0 And Y >= 65 + intY8% Then P2 = 20: GoTo 8800
-        If D1 = 4 And Y >= 65 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 60 And YR%(0) > 60) Then P2 = 20: GoTo 8800
+        8885 '
 
-        8892 R0 = Int(Rnd(1) * 100) + 1
+        '2nd / 4th Quarter
+        '4th Down, Any Time, Outside Opponent's 35, Score Tied = Punt
+        If Q = 2 And D1 = 4 And Y < 65 + intY8% Or Q >= 4 And Y < 65 + intY8% And S(P1, 0) = S(D, 0) And D1 = 4 Then P2 = 19: GoTo 8800
+
+
+        '2nd Quarter Only
+        '4th Down, Any Time, Inside Opponent's 35, Pro Rules or College Rules + Team after 1960 = FIeld Goal
+        '--- COMPARE B
+        If Q = 2 And D1 = 4 And Y >= 65 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+
+        'Any Quarter
+        '---------------
+        'Any Down, Less than 37 seconds to go, 0 Timeouts Offense, Outside Opponent's 35 = Pass (???)
+        If T <= 37 And T1(P1) = 0 And Y < 65 + intY8% Then P2 = 12: GoTo 8800
+
+        'Any Down, Less than 22 seconds to go, 0 Timeouts Offense, Outside opponent's 35 = Pass
+        If T <= 12 And T1(P1) <> 0 And Y < 65 + intY8% Then P2 = 12: GoTo 8800
+
+        'Any Down, Less than 22 seconds to go, 0 Timeouts Offense, Inside Opponent's 35 = Field Goal
+        If T <= 22 And T1(P1) = 0 And Y >= 65 + intY8% Then P2 = 20: GoTo 8800
+
+        'Any Down, Less than 12 seconds to go, 0 Timeouts Offense, Inside Opponent's 35 = Field Goal
+        '--- This is essentially the same as above ???
+        If T <= 12 And T1(P1) <> 0 And Y >= 65 + intY8% Then P2 = 20: GoTo 8800
+
+        '4th Down, Any Time, Inside Opponent's 35, Pro Rules or College Rules + Team after 1960 = Field Goal
+        If D1 = 4 And Y >= 65 + intY8% And (G9 <> 0 Or G9 = 0 And YR%(1) > 1960 And YR%(0) > 1960) Then P2 = 20: GoTo 8800
+
+
+        8892 '
+        R0 = Int(Rnd(1) * 100) + 1
         P2 = 16
+
+        '50% random chance of Pass # 10-12
         If R0 < 50 Then P2 = Int(Rnd(1) * 3) + 10
+
+        'Inside Opponent's 10 = Pass (???)
         If Y >= 90 Then P2 = 11
+
+        'In the Red Zone, Score - Down by <3 ---or--- Inside Opponent's 10 and Down by 3 = (Random choice of run)
         If Y > 80 And S(D, 0) - S(P1, 0) < 3 Or Y > 90 And S(D, 0) - S(P1, 0) = 3 Then P2 = Int(Rnd(1) * 4) + 1
 
     End If
 
+
+    'Final Checks
+    '-----
+
     8800 '
+    'Overtime and 4th Down
     If Q > 4 And NG%(14) = 3 And D1 = 4 Then
+
+        'Punt chosen, Score Tied = Pass (what kind?)
         If P2 = 19 And S(D, 0) = S(P1, 0) Then P2 = 12
+
+        'Punt or FG chosen, Down by 4 or more = Pass (what kind?)
         If (P2 = 19 Or P2 = 20) And S(D, 0) - S(P1, 0) > 3 Then P2 = 12
+
+        'Punt chosen, Score - Down by 3 or less = Pass (what kind?)
         If P2 = 19 And S(D, 0) - S(P1, 0) <= 3 Then P2 = 12
     End If
 
@@ -4499,11 +4655,11 @@ End Sub
 Sub MEASUREMENT ()
 
     U$ = "HE'S CLOSE TO A FIRST DOWN"
-    Call PBP
+    Call PBP ': Call PBP_Logger(9521)
 
     U$ = "THE OFFICIAL SIGNALS FOR A MEASUREMENT"
-    Call PBP
-    Call PBP
+    Call PBP ': Call PBP_Logger(9524)
+    Call PBP ': Call PBP_Logger(9525)
 
     'Are these numbers accurate?
     'I'm not confident they are
@@ -4512,23 +4668,23 @@ Sub MEASUREMENT ()
     'feet / inches???
     '1 yard = 36 inches
     Select Case G - Y1
-        
+
         Case Is < -.2
             U$ = "HE'S ABOUT A FOOT SHORT"
 
         Case -0.20 TO -0.11
             U$ = "HE'S ABOUT 6 INCHES SHORT"
-        
+
         Case -0.10 TO -0.01
             U$ = "HE'S SHORT BY INCHES"
-        
+
         Case Else
             U$ = "THE OFFICIAL SIGNALS FIRST DOWN!"
-            
+
     End Select
 
-    Call PBP
-    Call PBP
+    Call PBP ': Call PBP_Logger(9549)
+    Call PBP ': Call PBP_Logger(9550)
 
 End Sub
 
@@ -4538,7 +4694,7 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub WHICHRECEIVER
-    
+
     If I3 > 9 Then U$ = U$ + A2$(P1, I3 - 10) Else U$ = U$ + A1$(P1, I3)
 
 End Sub
@@ -4551,7 +4707,7 @@ End Sub
 Sub CLIPPING ()
 
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
-    Call PBP
+    Call PBP ': Call PBP_Logger(9573)
 
     If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
@@ -4658,18 +4814,18 @@ Sub CHANGEQB ()
 
     Do
         I$ = GetKeyPress$
-        I2 = Val(I$)
-    Loop Until I2 >= 0 And I2 <= 4
+        choice = Val(I$)
+    Loop Until choice >= 0 And choice <= 4
 
-    If I2 <= 3 Then Q6%(I3) = I2
-    If I2 = 4 Then RQ%(I3) = 1
+    If choice <= 3 Then Q6%(I3) = choice
+    If choice = 4 Then RQ%(I3) = 1
 
-    If G9 <> 0 And I2 <= 3 And RQ%(I3) <> 1 Then
+    If G9 <> 0 And choice <= 3 And RQ%(I3) <> 1 Then
 
         JJ = 12
         I = I3
         Call QBBOX
-        Locate 8, 15: Print "ENTER "; A3$(I3, I2); " MOBILITY RATING (1-9)"
+        Locate 8, 15: Print "ENTER "; A3$(I3, choice); " MOBILITY RATING (1-9)"
         Print
         Locate , 16: Print "THIS IS HOW OFTEN HE RUNS OUT OF THE POCKET"
         Locate , 16: Print "SOME QB'S LIKE MARINO & FOUTS ALMOST NEVER DO"
@@ -4686,7 +4842,7 @@ Sub CHANGEQB ()
     End If
 
     For I = 0 To 3: V4%(I3, I) = -1: Next I
-    
+
     If RQ%(I3) <> 1 Then
         For I4 = 0 To 9:
             For I5 = 0 To 3
@@ -4704,7 +4860,7 @@ End Sub
 '------------------------------
 'Get list of teams from file
 ' ...explanation...
-Sub FINDTEAMS ()
+Sub FINDTEAMS (I)
     NT = 0
 
     Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
@@ -4716,11 +4872,11 @@ Sub FINDTEAMS ()
         Get #1, I1
 
         'Check for last team
-        For I2 = 1 To 15
-            If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then
+        For J = 1 To 15
+            If Asc(Mid$(Q$(0), J, 1)) < 32 Or Asc(Mid$(Q$(0), J, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then
                 _Continue
             End If
-        Next I2
+        Next J
 
         'Count # of teams
         NT = NT + 1
@@ -4730,7 +4886,7 @@ Sub FINDTEAMS ()
     Next I1
     Close 1
 
-    Call SELECTTEAM
+    Call SELECTTEAM(I)
 
 End Sub
 
@@ -4765,11 +4921,11 @@ Sub KICKOFF ()
     End If
 
     Screen , , 0, 0
-    
+
     If I9 = 1 Or I9 = 2 Then
 
         Call SCOREBOARD
-        
+
         If J6(0) = 1 And D = CT Or J6(0) = 2 Then
 
             I1 = 1
@@ -4778,12 +4934,12 @@ Sub KICKOFF ()
 
             J = 7
             Call BOXDRAW(J)
-            
+
             Print A$(1 - W%); " DO YOU ELECT TO:"
             Locate 12, 14
             Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
             Locate , 14: Print "2 - DEFEND GOAL WITH WIND IN FACE"
-            
+
             Do
                 I$ = GetKeyPress$
                 I1 = Val(I$)
@@ -4803,11 +4959,11 @@ Sub KICKOFF ()
 
         If I9 = 3 Then WX%(0) = P1
         If I9 = 4 Then WX%(0) = D
-        
+
         Swap P1, D
-        
+
         Call SCOREBOARD
-        
+
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
             I1 = 2
         Else
@@ -4885,7 +5041,7 @@ Sub COLKICKOFF ()
                     Locate 12, 14
                     Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
                     Locate , 14: Print "2 - DEFEND GOAL WITH WIND IN FACE"
-                
+
                     Do
                         I$ = GetKeyPress$
                         I1 = Val(I$)
@@ -4894,7 +5050,7 @@ Sub COLKICKOFF ()
 
                 Screen , , 0, 0
                 WX%(0) = D
-            
+
                 If I1 = 2 Then WX%(0) = 1 - D
                 If I9 = 1 Then Call CHANGEPOSS: W% = 1 - W%
 
@@ -4951,11 +5107,11 @@ Sub TAKESAFETY ()
     K(P1, 2) = K(P1, 2) + G
 
     U$ = A6$(P1, 0) + " IS HEADED OUT OF THE END ZONE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(9973)
 
     S(D, Q) = S(D, Q) + 2
     S(D, 0) = S(D, 0) + 2
-    
+
 End Sub
 
 
@@ -4978,7 +5134,7 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub FINDINT ()
-    
+
     'FIND INT
     M5 = 0
     RN = Int(Rnd(1) * DDI(1 - P1)) + 1
@@ -5010,12 +5166,12 @@ Sub PUNTYARDS ()
 
     I3 = Int(Rnd(1) * 100) + 1
     Y = Y + G
-    
+
     Call CHANGEPOSS
-    
+
     YT = Y
     Y = 100 - Y
-    
+
     Call YARDLINE
 
     RN = Int(Rnd(1) * 1000) + 1
@@ -5031,13 +5187,13 @@ Sub PUNTYARDS ()
 
                 Case 51 TO 899
                     G = Int((Rnd(1) * 14) + 0) + (B2(P1, PR) - 3) * 3
-                    
+
                 Case 900 TO 988
                     If I2 <> 1 Then G = Int((Rnd(1) * 39) + 12) + (B2(P1, PR) - 3) * 3
 
                 Case 989 TO 1000
                     If I2 <> 1 Then G = 110
-                                        
+
             End Select
 
         Case 5
@@ -5051,7 +5207,7 @@ Sub PUNTYARDS ()
 
                 Case 941 TO 1000
                     If I2 <> 1 Then G = 110
-            
+
             End Select
 
         Case Is >= 6
@@ -5067,13 +5223,13 @@ Sub PUNTYARDS ()
     X1 = 4
     Call YARDAGE
     Call MARKER
-    
+
     U$ = "THE BALL IS TAKEN BY " + A5$(P1, PR) + " AT THE" + Str$(Int(YL))
-    Call PBP
-    
+    Call PBP ': Call PBP_Logger(10091)
+
     SY = 100 - Y
     EY = SY - G
-    
+
     Call MOVEBALL
 
 End Sub
@@ -5083,13 +5239,14 @@ End Sub
 '      FAKEYARDS Subroutine
 '------------------------------
 ' ...explanation...
-Sub FAKEYARDS ()
+Sub FAKEYARDS (choice)
 
     U$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10108)
 
     RN = Int(Rnd(1) * 100) + 1
-    Select Case I2
+
+    Select Case choice
 
         Case 0
 
@@ -5104,10 +5261,10 @@ Sub FAKEYARDS ()
             Select Case RN
                 Case 1 TO 36
                     G = Int(Rnd(1) * 21)
-                    
+
                 Case 37 TO 90
                     G = Int(Rnd(1) * 11) - 4
-                
+
                 Case 91 TO 100
                     G = 100 - Y
             End Select
@@ -5122,13 +5279,14 @@ Sub FAKEYARDS ()
     End Select
 
     Call YARDAGE
+
     O = 1
-    
+
     SY = 100 - Y
     EY = SY - G
-    
+
     Call MOVEBALL
-    
+
     U$ = "THE UPBACK GAINED"
     Print
     X = 10
@@ -5141,7 +5299,7 @@ Sub FAKEYARDS ()
     End If
 
     U$ = U$ + " YARDS ON THE FAKE RUN"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10163)
 
 End Sub
 
@@ -5218,15 +5376,15 @@ Sub FLEA ()
     intG9%(P1) = 1
 
     U$ = A1$(P1, 0) + " TAKES THE HANDOFF"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10240)
 
     U$ = "HE TOSSES IT BACK TO " + A3$(P1, Q6%(P1)) + " FOR A FLEA FLICKER!!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10243)
 
     I3 = Int(Rnd(1) * 3)
 
     U$ = A2$(P1, I3) + " IS OPEN DOWNFIELD"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10248)
 
     RN = Int(Rnd(1) * 100) + 1
 
@@ -5242,7 +5400,7 @@ Sub REVGAIN ()
     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP"
 
     U$ = U$ + " AND HANDS OFF TO " + A1$(P1, I1) + " ON THE REVERSE!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10264)
 
     RN = Int(Rnd(1) * 100) + 1
 
@@ -5279,13 +5437,14 @@ End Sub
 '      FAKERUN Subroutine
 '------------------------------
 ' ...explanation...
-Sub FAKERUN ()
+Sub FAKERUN (choice)
 
     U$ = "IT'S A FAKE!!! THE HOLDER IS RUNNING THE BALL"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10304)
 
     RN = Int(Rnd(1) * 100) + 1
-    Select Case I2
+
+    Select Case choice
         Case 1
             Select Case RN
                 Case 1 TO 20: G = Int(Rnd(1) * 21)
@@ -5307,9 +5466,9 @@ Sub FAKERUN ()
 
     SY = 100 - Y
     EY = SY - G
-    
+
     Call MOVEBALL
-    
+
     U$ = "THE HOLDER GAINED"
     Print
 
@@ -5323,7 +5482,7 @@ Sub FAKERUN ()
     End If
 
     U$ = U$ + " YARDS ON THE FAKE RUN"
-    Call PBP
+    Call PBP ': Call PBP_Logger(10345)
 
 End Sub
 
@@ -5341,31 +5500,31 @@ Sub HANDOFF ()
         U$ = D$(D2) + " " + D1$(D3)
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(10363)
 
     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP"
-    
+
     If P2 <> 4 And P2 <> 5 Then
         DR = Int(Rnd(1) * 2)
-        
+
         If A1$(P1, I1) = A3$(P1, Q6%(P1)) Then
             U$ = U$ + " AND KEEPS IT ON THE " + RP$(RP)
-            Call PBP
+            Call PBP ': Call PBP_Logger(10372)
         Else
             RN = Int(Rnd(1) * 2) + 1:
-            
+
             If RN = 1 Then
                 U$ = U$ + " AND TOSSES OUT TO " + A1$(P1, I1)
             Else
                 'RN = 2
                 U$ = U$ + " AND PITCHES OUT TO " + A1$(P1, I1)
             End If
-            
-            Call PBP
-            
+
+            Call PBP ': Call PBP_Logger(10383)
+
             U$ = A1$(P1, I1) + " GOES AROUND THE " + DR$(DR) + " END"
-            Call PBP
-            
+            Call PBP ': Call PBP_Logger(10386)
+
         End If
 
     Else
@@ -5376,7 +5535,7 @@ Sub HANDOFF ()
             U$ = U$ + " AND HANDS OFF TO " + A1$(P1, I1) + " ON THE " + RP$(RP)
         End If
 
-        Call PBP
+        Call PBP ': Call PBP_Logger(10398)
 
     End If
 
@@ -5388,18 +5547,19 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub PASSBALL ()
-    
+
     S6 = 0
 
     Call QBLINE
 
     I = Int(Rnd(1) * 100) + 1
-    
+
     R1 = 2
 
-    For I2 = 3 To 0 Step -1
-        If I <= A6(P1, I2) Then I1 = I2
-    Next I2
+    '--- This was I2 previously not J
+    For J = 3 To 0 Step -1
+        If I <= A6(P1, J) Then I1 = J
+    Next J
 
     If RQ%(P1) = 1 Then
         Q6%(P1) = I1
@@ -5407,30 +5567,27 @@ Sub PASSBALL ()
         I1 = Q6%(P1)
     End If
 
-
-    newRandomNum% = 0
-
     Do
 
+        ' 3506
         I = Int(Rnd(1) * 100) + 1
+        newRandomNum% = 0
 
-        For I2 = 15 To 10 Step -1
-            If I <= A4(P1, I2 - 10) Then I3 = I2
-        Next I2
+        'Call PBP_Logger(10470)
+        '--- This was I2 previously not J
+        For J = 15 To 10 Step -1
+            If I <= A4(P1, J - 10) Then I3 = J
+        Next J
 
-        For I2 = 9 To 0 Step -1
-            If I <= A2(P1, I2) Then I3 = I2
-        Next I2
+        '--- This was I2 previously not J
+        For J = 9 To 0 Step -1
+            If I <= A2(P1, J) Then I3 = J
+        Next J
 
-        'If I3 is getting a value less than 10, it's still trying to find an item at I3 - 10
-        'If I3 > 9 And A2$(P1, I3 - 10) = A3$(P1, Q6%(P1)) Then 3506 'Or I3 < 10 And A1$(P1, I3) = A3$(P1, Q6%(P1)) Then 3506
-
-        'I3 = 10+
         If I3 > 9 Then
             If A2$(P1, I3 - 10) = A3$(P1, Q6%(P1)) Then newRandomNum% = 1
         End If
 
-        'I3 0 to 9
         If I3 < 10 Then
             If A1$(P1, I3) = A3$(P1, Q6%(P1)) Then newRandomNum% = 1
         End If
@@ -5459,33 +5616,33 @@ Sub PASSBALL ()
 
     I = Int(Rnd(1) * 5) + 1
     DR = Int(Rnd(1) * 2)
-    
+
     Select Case I
         Case 1, 6
             3516 '
             U$ = U$ + " IN THE OPEN"
-            Call PBP
-        
+            Call PBP ': Call PBP_Logger(10489)
+
         Case 2
             U$ = U$ + " ON THE SIDELINE"
-            Call PBP
+            Call PBP ': Call PBP_Logger(10493)
 
             ' I'm not confident the below is accurate
             'I think Case 3 should also run code for 4/5
             'And Case 4 should also run code for 5
         Case 3
-            If P2 <> 13 Then U$ = U$ + " OVER THE MIDDLE": Call PBP
-            
+            If P2 <> 13 Then U$ = U$ + " OVER THE MIDDLE": Call PBP ': Call PBP_Logger(10499)
+
         Case 4
-            If P2 <> 13 Then U$ = U$ + " DOWNFIELD": Call PBP
-            
+            If P2 <> 13 Then U$ = U$ + " DOWNFIELD": Call PBP ': Call PBP_Logger(10502)
+
         Case 5
-            If P2 = 12 Or P2 = 15 Then U$ = U$ + " DEEP": Call PBP
+            If P2 = 12 Or P2 = 15 Then U$ = U$ + " DEEP": Call PBP ': Call PBP_Logger(10505)
 
     End Select
 
     I = Int(Rnd(1) * 100) + 1
-    
+
 End Sub
 
 
@@ -5533,7 +5690,7 @@ Sub SCORE ()
     X2 = X2 + 1
     T(X2) = T
     C(X2) = Q
-    
+
     If X1 <> 7 Then
         K1(X2, 1) = P1
     Else
@@ -5566,7 +5723,7 @@ Sub COMPILER ()
     If X >= 1 And X <= 4 Then
 
         Select Case X
-        
+
             Case 1, 4
                 K(P1, 1) = K(P1, 1) + 1
                 If G + Y < 99.95 Then
@@ -5577,7 +5734,7 @@ Sub COMPILER ()
 
             Case 2
                 K(P1, 3) = K(P1, 3) + 1
-                
+
             Case 3
                 K(P1, 3) = K(P1, 3) + 1
                 K(P1, 4) = K(P1, 4) + 1
@@ -5592,7 +5749,7 @@ Sub COMPILER ()
 
 
         Select Case X
-        
+
             Case 1
                 7009
                 K2(P1, I1, 0) = K2(P1, I1, 0) + 1
@@ -5608,12 +5765,12 @@ Sub COMPILER ()
 
                 If HB% = 1 Then HB% = 0
                 X = 0
-                
+
             Case 2
                 If HB% = 0 Then K2(P1, I1, 9) = K2(P1, I1, 9) + 1
                 If HB% = 1 Then HB% = 0
                 X = 0
-                
+
             Case 3
                 If HB% <> 1 Then
 
@@ -5655,7 +5812,7 @@ Sub COMPILER ()
 
                 If HB% = 1 Then HB% = 0
                 X = 0
-                
+
             Case 4
                 7022 '
 
@@ -5772,10 +5929,10 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub RUNMENU ()
-    
+
     J = 12
     Call PBOX
-    
+
     Print "SELECT RUNNING PLAY "; A$(P1)
     Locate 12
     Locate , 14: Print "1 - BLAST                 9 - POWER SWEEP "
@@ -5798,7 +5955,7 @@ Sub PASSMENU ()
 
     J = 11
     Call PBOX
-    
+
     Print "SELECT PASS PLAY "; A$(P1)
     Locate 12
     Locate , 14: Print "1 - 3 STEP DROP           8 - SIDELINE PASS"
@@ -5817,7 +5974,7 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub SHORTYARDAGE ()
-    
+
     ' *** GOAL LINE DEFENSE ***
     I6 = Int(Rnd(1) * 100) + 1
     If D2 > 3 And D2 < 6 Then
@@ -5834,7 +5991,7 @@ Sub SHORTYARDAGE ()
                     Case 77 TO 93: G = 0
                     Case 94 TO 100: G = -1
                 End Select
-                
+
             Case 95.999 TO 96.998
 
                 Select Case I6
@@ -5949,9 +6106,12 @@ Sub SHORTYARDAGE ()
 
     I6 = Int(Rnd(1) * 100) + 1
 
-    If I2 <= 30 And I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
-
-    If I2 > 30 And I6 <= GL%(30, 1) Then G = G + GL%(30, 2)
+    If I2 <= 30 Then
+        If I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
+    Else
+        'I2 < 30
+        If I6 <= GL%(30, 1) Then G = G + GL%(30, 2)
+    End If
 
 End Sub
 
@@ -5971,15 +6131,15 @@ Sub PASSPBP ()
 
             Case 1 TO 33:
                 U$ = "BLITZ IS COMING...!!"
-                Call PBP
+                Call PBP ': Call PBP_Logger(10996)
 
             Case 34 TO 66:
                 U$ = "HERE COMES THE BLITZ...!!"
-                Call PBP
+                Call PBP ': Call PBP_Logger(11000)
 
             Case 67 TO 109:
                 U$ = "BLITZ IS ON...!!"
-                Call PBP
+                Call PBP ': Call PBP_Logger(11004)
 
                 If intDS%(1 - P1) = 0 Then
                     X$ = A$(1 - P1)
@@ -6017,13 +6177,13 @@ Sub PASSPBP ()
                 Case 13: U$ = "HERE COMES " + X$
                 Case 14: U$ = X$ + " BREAKS THROUGH"
                 Case 15: U$ = X$ + " IS COMING THROUGH"
-            
+
             End Select
-            
+
         Else
 
             Select Case P2
-            
+
                 Case 9, 10
                     If RN <= 50 Then
                         U$ = A3$(P1, I1) + " TAKES THE SNAP AND DROPS BACK...LOOKING SHORT..."
@@ -6069,14 +6229,14 @@ Sub PASSPBP ()
 
                 Case 18
                     U$ = A3$(P1, I1) + " HAS IT ON THE BOOTLEG"
-            
+
             End Select
 
         End If
 
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11101)
 
 End Sub
 
@@ -6088,7 +6248,7 @@ End Sub
 Sub SACK ()
 
     U$ = "BUT HE WON'T BE ABLE TO GET THIS PASS AWAY!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11113)
 
     U$ = A3$(P1, I1)
 
@@ -6147,7 +6307,7 @@ Sub QBLINE ()
             Case 8: U$ = "HERE IS THE " + DN$(D1) + " DOWN AND" + Str$(Int(Y1)) + " YARD PLAY FOR THE " + AA$(P1)
         End Select
 
-        Call PBP
+        Call PBP ': Call PBP_Logger(11172)
 
     End If
 
@@ -6161,13 +6321,13 @@ End Sub
 Sub SQUIB ()
 
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11186)
 
     U$ = A$(P1) + " IS LINING UP FOR THE KICKOFF"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11189)
 
     U$ = "IT'S A SQUIBBER DOWN THE FIELD"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11192)
 
     Swap P1, D
 
@@ -6179,9 +6339,9 @@ Sub SQUIB ()
 
     Call MARKER
     Call YARDLINE
-    
+
     U$ = "KICK TAKEN BY AN UPMAN AT THE" + Str$(Int(N + .5)) + " YD LINE "
-    Call PBP
+    Call PBP ': Call PBP_Logger(11206)
 
     G = Int(Rnd(1) * 7) + 9
 
@@ -6217,7 +6377,7 @@ Sub PUNTPBP ()
         Case 12: U$ = "HE BOOMS ONE"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11242)
 
     RN = Int(Rnd(1) * 6) + 1
 
@@ -6239,7 +6399,7 @@ End Sub
 ' ...explanation...
 Sub TICK ()
 
-	Shared scheduleFile$
+    Shared scheduleFile$
 
     Open "GAME82" For Input As #2
     Input #2, scheduleFile$
@@ -6288,11 +6448,11 @@ Sub TICK ()
 
     LSet Q$(24) = MKI$(S(0, 0))
     LSet Q$(25) = MKI$(S(1, 0))
-    
+
     Put #1, AP%(0) + AP%(2)
-    
+
     Close 1
-    
+
     AP%(2) = AP%(2) + 1
 
     AP = 1
@@ -6324,7 +6484,7 @@ Sub STUFFED ()
         Case 12: U$ = "HE CAN'T KEEP HIS FOOTING"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11349)
 
 End Sub
 
@@ -6354,8 +6514,8 @@ Sub MISSFG
         Case 96 TO 100: U$ = "IT'S NO GOOD!"
 
     End Select
-    
-    Call PBP
+
+    Call PBP ': Call PBP_Logger(11380)
 
 End Sub
 
@@ -6380,7 +6540,7 @@ Sub MADEFG
         Case 91 TO 100: U$ = "IT'S GOOD!"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11405)
 
 End Sub
 
@@ -6403,7 +6563,7 @@ Sub MADEPAT
         Case 91 TO 100: U$ = "RIGHT DOWN THE MIDDLE!!!"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11428)
 
 End Sub
 
@@ -6423,8 +6583,8 @@ Sub MISSPAT
         Case 76 TO 95: U$ = "THE KICK SAILS WIDE!!...NO GOOD!"
         Case 96 TO 100: U$ = "IT HITS THE UPRIGHTS!!...NO GOOD!"
     End Select
-    
-    Call PBP
+
+    Call PBP ': Call PBP_Logger(11449)
 
 End Sub
 
@@ -6448,7 +6608,7 @@ Sub EVENTS (SPECIAL%, Count%)
     If Q > E%(1) Then
         Call FindSpecial
     Else
-        
+
         If S(1, 0) > E%(2) Or S(0, 0) > E%(2) Or S(1, 0) < E%(3) Or S(0, 0) < E%(3) Then
             Call FindSpecial
         Else
@@ -6556,7 +6716,7 @@ End Sub
 '      SELECTTEAM Subroutine
 '------------------------------
 ' ...explanation...
-Sub SELECTTEAM ()
+Sub SELECTTEAM (I)
 
     SELECTION% = 1
     Count% = NT
@@ -6595,7 +6755,7 @@ Sub SELECTTEAM ()
         Locate 2, 33
         Color 31: Print "LOADING..."
 
-        Call GETTEAM
+        Call GETTEAM(I)
 
     End If
 
@@ -6609,7 +6769,7 @@ End Sub
 Sub KICKSET ()
 
     U$ = A7$(P1, Q7%(P1)) + " IS PLACING THE BALL ON THE TEE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11634)
 
     RN = Int(Rnd(1) * 100) + 1
     If RN <= 50 Then
@@ -6618,10 +6778,10 @@ Sub KICKSET ()
         U$ = "THE " + AA$(P1) + " ARE LINING UP FOR THE KICKOFF"
     End If
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11643)
 
     U$ = "AND THE KICK IS ON ITS WAY"
-    Call PBP
+    Call PBP ': Call PBP_Logger(11646)
     Swap P1, D
 
     RN = Int(Rnd(1) * 100) + 1
@@ -6676,7 +6836,7 @@ Sub QBTHROW ()
         Case 23: U$ = "HE FIRES A BULLET"
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(11701)
 
 End Sub
 
@@ -6793,14 +6953,14 @@ Sub PCPBP ()
                 Else
                     CP = Int(Rnd(1) * 6) + 2
                 End If
-                                
+
             Case 13:
                 If RY < 3 Then
                     CP = Int(Rnd(1) * 4) - 7
                 Else
                     CP = (Int(Rnd(1) * 4) + 1) * -1
                 End If
-                
+
             Case 11, 14, 16, 17, 18:
                 If RY < 4 Then
                     CP = Int(Rnd(1) * 5) + 3
@@ -6828,20 +6988,20 @@ Sub PCPBP ()
 
     4165 '
     PC = CP
-    
+
     If CP > G Then CP = G: IT = 1
-    
+
     YT = 100 - Y - CP
-    
+
     Call YARDLINE
     Call MARKER
-    
+
     If YT <= 0 Then
         U$ = RV$ + " MAKES THE CATCH IN THE END ZONE!!!"
-        Call PBP
+        Call PBP ': Call PBP_Logger(11863)
     Else
         RN = Int(Rnd(1) * 100) + 1
-        
+
         Select Case P2
             Case 9, 10
                 Select Case RN
@@ -6884,10 +7044,10 @@ Sub PCPBP ()
                 Select Case RN
                     Case 1 TO 50
                         U$ = "HE HITS " + RV$
-                
+
                     Case 51 TO 90
                         U$ = "HE FIRES IT TO " + RV$
-                    
+
                     Case 91 TO 100
                         U$ = RV$ + " MAKES A GREAT CATCH"
                 End Select
@@ -6899,11 +7059,11 @@ Sub PCPBP ()
 
         If IT = 1 Then
             IT = 0
-            Call PBP
-            Call PBP
+            Call PBP ': Call PBP_Logger(11924)
+            Call PBP ': Call PBP_Logger(11925)
         Else
-            Call PBP
-            Call PBP
+            Call PBP ': Call PBP_Logger(11926)
+            Call PBP ': Call PBP_Logger(11927)
             SY = 100 - Y - CP
             EY = 100 - Y - G
             Call MOVEBALL
@@ -6958,7 +7118,7 @@ Sub GetDiskID (I)
 
         If NY$ = "" Then
 
-            Call SELECTTEAM
+            Call SELECTTEAM(I)
 
         Else
 
@@ -6966,7 +7126,7 @@ Sub GetDiskID (I)
 
             Erase teamNames$
 
-            Call FINDTEAMS
+            Call FINDTEAMS(I)
 
         End If
 
@@ -7004,7 +7164,7 @@ Sub Touchback
 
     U$ = "TOUCHBACK"
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(12029)
     Call MARKER
     Call YARDLINE
 
@@ -7079,7 +7239,7 @@ End Sub
 '     FumblePBP Subroutine
 '------------------------------
 ' ...explanation...
-Sub FumblePBP
+Sub FumblePBP ()
 
     RN = Int(Rnd(1) * 6) + 1
 
@@ -7094,7 +7254,7 @@ Sub FumblePBP
 
     End Select
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(12119)
 
 End Sub
 
@@ -7114,15 +7274,15 @@ Sub GoForTwo ()
 
     If G < 2 And G9 = 1 And Y8 = 3 Then
         U$ = U$ + "NO GOOD"
-        Call PBP
+        Call PBP ': Call PBP_Logger(12139)
     Else
         If G < 3 And G9 <> 1 And Y8 <> 3 Then
             U$ = U$ + "NO GOOD"
-            Call PBP
+            Call PBP ': Call PBP_Logger(12143)
         Else
             'If G >= 3 Or G9 = 1 And Y8 = 3 And G >= 2 Then
             U$ = U$ + "GOOD"
-            Call PBP
+            Call PBP ': Call PBP_Logger(12147)
 
             S(P1, 0) = S(P1, 0) + 2
             S(P1, Q) = S(P1, Q) + 2
@@ -7134,6 +7294,23 @@ Sub GoForTwo ()
         End If
 
     End If
+
+End Sub
+
+
+
+
+'------------------------------
+'   PBP_Logger Subroutine
+'------------------------------
+' ...explanation...
+Sub PBP_Logger (lineNumber%)
+
+    Print #7, "Calling from     :"; lineNumber%
+    Print #7, "Next play type   :"; P2
+    Print #7, "Last play gain   :"; G
+    Print #7, "Yardline         :"; Y
+    Print #7, "Last PBP         :"; U$
 
 End Sub
 
@@ -7152,3 +7329,51 @@ End Sub
 Function FNP (X)
     FNP = 11 + Int((X + Int(X / 5) - 1) / 2)
 End Function
+
+
+'------------------------------
+'      GetTeamYear Function
+'------------------------------
+' Determines 4-digit team year
+' from the team loaded by the
+' file. Assumes that teams from
+' 00 to 24 are year 2000.
+' This limit was chosen because
+' the earliest files with 1900
+' teams are NFL / 1925.
+Function GetTeamYear% (teamName$)
+
+    teamYear% = Val(teamName$)
+
+    If teamYear% >= 0 And teamYear% <= 24 Then
+        GetTeamYear% = 2000 + teamYear%
+    Else
+        GetTeamYear% = 1900 + teamYear%
+    End If
+
+End Function
+
+
+'------------------------------
+'   varlog Subroutine
+'------------------------------
+' ...explanation...
+Sub varlog (lineNumber%)
+
+    If I2 < 0 Then
+        Print #5, "Source   : line # "; lineNumber%
+        Print #5, "I1       :"; I1
+        Print #5, "I2       :"; I2
+        Print #5, "P1       :"; P1
+        'Print #5, "P2       :"; P2
+        Print #5, "D2       :"; D2
+        'Print #5, "D3%()     :"; D3%(P2, D2)
+        Print #5, "Name     :"; A1$(P1, I1)
+        Print #5, "Val0     :"; A(P1, I1)
+        Print #5, "Val1     :"; A1(P1, I1)
+        Print #5, "Val2     :"; A2(P1, I1)
+        Print #5, "Val3     :"; A3(P1, I1)
+        Print #5, ""
+    End If
+
+End Sub

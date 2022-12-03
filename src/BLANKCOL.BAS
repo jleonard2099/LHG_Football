@@ -38,8 +38,6 @@ SUB BLANKCOL ()
 
 End Sub
 
-
-
 '----------------------------------------
 '		SelectConference Subroutine
 '----------------------------------------
@@ -94,8 +92,7 @@ Do
 				Locate 10, 8
 				Call CSMsgBox("WARNING!!!::: THIS WILL ERASE ALL COMPILED STATS AND LEAGUE FILES FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL LEAGUE FILES AND STATS, HIT 'Y' FOR YES", 26, Pass)
 				I2$ = GetKeyPress$
-				Call CSMsgBox("", 0, Pass)
-				
+				Call CSMsgBox("", 0, Pass)	
 				If I2$ = "Y" Then 
 					'Delete everything
 					Open diskPaths$(1) + LH$ + ".TMS" For Input As #2
@@ -114,24 +111,20 @@ Do
 						End If
 					74 Next
 					Cls
-					Exit Do					
+					Exit Do	
 					'SHOULD go to the file selection
-				End If
-				
+				End If	
 				'If we are here ,the user did not "Y" at the message box
 				'They want to change parameters
 				'We should go back to the beginning
-			End If
-			
+			End If	
 			'If we are here, the user picked "Y"
 			'They want to change parameters
-			'We should go back to the beginning			
-		End If
-		
+			'We should go back to the beginning	
+		End If	
 		'We can get here 1 of 2 ways
 		'1) we are done deleting stuff
-		'2) ESC was pressed from file selection menu
-	
+		'2) ESC was pressed from file selection menu	
 	Loop Until I$ = "N"
 
 Loop Until ExitCode% = 27

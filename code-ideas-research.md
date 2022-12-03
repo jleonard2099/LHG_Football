@@ -1,5 +1,11 @@
 ## RECOMMENDATIONS ##
 
+Rumbling, bumbling, stumbling...
+
+- How is QB mobility used?
+	- I presume it only impacts ability to avoid a rush
+	- Does it impact the likelihood of scrambling for a play? (I think it should)
+
 - Incomplete passes are sometimes "throw aways"
 	- Pressure situations are the primary cause
 	- Need to account for this, especially with PBP

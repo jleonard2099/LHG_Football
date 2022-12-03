@@ -4,6 +4,9 @@
 
 On Error GoTo Errhandler
 
+'----------------------------------------
+'           GAME CODE
+'----------------------------------------
 _Title "3-in-1 Football - GRIDIRON!"
 $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
@@ -124,10 +127,11 @@ Data 11,90,11,90
 Data 11,90,11,90
 Data 11,90,11,90
 
-' BEGIN GOAL LINE
+'GOAL LINE
 Data 72,-5,83,-4,75,-4,68,-4,80,-3,70,-3,60,-3,75,-2,60,-2,45,-2,60,-1
 Data 30,-1,100,0,30,1,60,1,45,2,60,2,75,2,60,3,70,3,80,3,68,4,75,4,83,4
 Data 72,5,78,5,84,5,90,5,96,5,96,5
+
 Data 28,89,99,100,0,0,0,0,0,0,0,0,0,0: 'HITCH 1
 Data 10,53,96,97,98,99,100,0,0,0,0,0,0,0: 'HITCH 2
 Data 2,37,83,96,97,98,99,100,0,0,0,0,0,0: ' HITCH 3
@@ -192,12 +196,12 @@ For I = 1 To 20: Read O$(I): Next I
 For I = 1 To 7: For I1 = 1 To 10: Read D3%(I, I1): Next I1: Next I
 For I = 0 To 2: Read P$(I): Read P(I): Next I
 For I = 0 To 4: Read F(I): Read F1(I): Next I
-For I = 0 To 3: For I1 = 1 To 10: For I2 = 1 To 11: Read S1%(I, I1, I2): Next I2: Next I1: Next I
+For I = 0 To 3: For I1 = 1 To 10: For J = 1 To 11: Read S1%(I, I1, J): Next J: Next I1: Next I
 For I = 0 To 1: For I1 = 0 To 14: Read RM%(I, I1): Next: Next
 For I = 0 To 1: For I1 = 1 To 38: Read RN%(I, I1): Next: Next
 For I = 1 To 38: For I1 = 1 To 4: Read BY%(I, I1): Next: Next
 For I = 1 To 30: For I1 = 1 To 2: Read GL%(I, I1): Next: Next
-For I = 1 To 5: For I1 = 1 To 10: For I2 = 1 To 14: Read S2%(I, I1, I2): Next: Next: Next
+For I = 1 To 5: For I1 = 1 To 10: For J = 1 To 14: Read S2%(I, I1, J): Next: Next: Next
 For I = 1 To 2: For I1 = 1 To 21: Read PS%(I, I1): Next: Next
 For I = 1 To 2: For I1 = 0 To 20: Read QR%(I1, I): Next: Next
 For I = 1 To 29: Read RP$(I): Next
@@ -370,6 +374,8 @@ If _FileExists("GAME82") Then
 
 End If
 
+' Open "pbplog" For Append As #7
+' Open "varlog" For Append As #5
 
 If AP = 1 Then
     'Assign settings from schedule / etc.
@@ -379,8 +385,18 @@ If AP = 1 Then
     Y9 = NG%(7)
     Y8 = NG%(11)
 
-    If Y8 = 1 And G9 <> 0 Then intY8% = -10
-    If G9 = 4 Then intY8% = 0
+    'If college rules, pre-1974
+    If Y8 = 1 And G9 <> 0 Then
+        'is this an adjustment for
+        'kicking distance based on
+        'placement of the goal posts???
+        intY8% = -10
+    End If
+
+    'If WFL rules
+    If G9 = 4 Then
+        intY8% = 0
+    End If
 
     H% = NG%(2)
 
@@ -469,7 +485,7 @@ Else
                 Case 2:
                     I = 0
                     Call GetDiskID(I)
-                    Call GETTEAM
+                    Call GETTEAM(I)
                     A$(I) = _Trim$(A$(I))
                     AA$(I) = _Trim$(AA$(I))
                     X = 0
@@ -477,7 +493,7 @@ Else
                 Case 3:
                     I = 1
                     Call GetDiskID(I)
-                    Call GETTEAM
+                    Call GETTEAM(I)
                     A$(I) = _Trim$(A$(I))
                     AA$(I) = _Trim$(AA$(I))
                     X = 0
@@ -579,6 +595,10 @@ Else
 End If
 
 
+For I = 0 To 1:
+    YR%(I) = GetTeamYear%(Left$(A$(I), 2))
+Next I
+
 intY8% = 0
 R5% = 0
 
@@ -602,7 +622,7 @@ If AP = 1 Then
         intB8% = NG%(I)
         YN$ = YN$(I)
 
-        Call GETTEAM
+        Call GETTEAM(I)
 
         A$(I) = _Trim$(A$(I))
         AA$(I) = _Trim$(AA$(I))
@@ -668,6 +688,7 @@ For I3 = 0 To 1
 
 Next I3
 
+
 Call SETWEATHER
 
 
@@ -712,7 +733,7 @@ Select Case KN
 
     Case 0
         U$ = A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) IS DEEP TO RECEIVE THE KICK"
-        Call PBP
+        Call PBP ': Call PBP_Logger(833)
 
     Case 1
         If I1 = 1 Then KN2 = 0
@@ -730,7 +751,7 @@ Else
     U$ = A4$(D, KN2) + " (" + Str$(Int(B(D, KN2) * 3)) + " AVG) AND " + A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) ARE DEEP"
 End If
 
-Call PBP
+Call PBP ': Call PBP_Logger(851)
 
 If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
     I$ = "0"
@@ -740,7 +761,7 @@ If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 Else
 
     U$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + A$(P1)
-    Call PBP
+    Call PBP ': Call PBP_Logger(861)
 
     Do
         I$ = GetKeyPress$
@@ -778,17 +799,17 @@ Select Case Val(I$)
 
                 U$ = "KICK TAKEN BY " + A4$(P1, I1) + Str$(Int((N - 2 * N) + .5)) + " YDS DEEP IN THE END ZONE"
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(899)
 
                 If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 
                     I$ = "2"
                     If N < -2 Then I$ = "1"
-            
+
                 Else
 
                     U$ = "1-DOWN IT 2-RETURN IT"
-                    Call PBP
+                    Call PBP ': Call PBP_Logger(909)
                     Do
                         I$ = GetKeyPress$
                     Loop Until I$ = "1" Or I$ = "2"
@@ -796,14 +817,14 @@ Select Case Val(I$)
                 End If
 
                 If Val(I$) = 1 Then
-                    
+
                     Call CHANGEPOSS
 
                     Call Touchback
 
                     skipReturnYds% = 1
                     skipReturnCatch% = 1
-                    
+
                 Else
 
                     skipReturnYds% = 1
@@ -811,9 +832,9 @@ Select Case Val(I$)
                 End If
 
             End If
-        
+
         End If
-        
+
         If skipReturnCatch% <> 1 Then
 
             N = N + (Int(Rnd(1) * 11) - 5) / 10
@@ -824,7 +845,7 @@ Select Case Val(I$)
             Call YARDLINE
 
             U$ = "KICK TAKEN BY " + A4$(P1, I1) + " AT THE" + Str$(Int(N + .5)) + " YD LINE "
-            Call PBP
+            Call PBP ': Call PBP_Logger(945)
 
         End If
 
@@ -835,7 +856,7 @@ Select Case Val(I$)
         'This is likely what was intended,
         'because 110 represents yards gained
         'on the return (which ~ TOUCHDOWN)
-        
+
         'That also means the % chance of
         'a return for TD is fairly small
         'Yet I feel like it still happens
@@ -844,7 +865,7 @@ Select Case Val(I$)
         'simming games where the average
         'return yards were high (ie,
         '"Greatest Teams")
-        
+
         'All-in-all, a good item to review
         'and be sure the percentages are decent
         '----------------------------------------
@@ -906,7 +927,7 @@ Select Case Val(I$)
                 
                 Call CHANGEPOSS
                 Call Touchback
-                
+
             Else
 
                 Y = G + N
@@ -981,11 +1002,14 @@ GoTo 700
 PointsAfterTD:
 
 If G9 = 4 Then
+    'WFL = No PAT
     I$ = "2"
+
 Else
 
     U$ = "1-KICK EP 2-GO FOR TWO"
-    Call PBP
+
+    Call PBP ': Call PBP_Logger(1109)
 
     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 
@@ -1048,9 +1072,10 @@ K1(X2, 4) = K1(X2, 4) + 10
 
 I = Int(Rnd(1) * 100) + 1
 
-For I2 = 1 To 0 Step -1:
-    If I <= B8(P1, I2) Then I1 = I2
-Next I2
+'Was previously I2 not J
+For J = 1 To 0 Step -1:
+    If I <= B8(P1, J) Then I1 = J
+Next J
 
 Q7%(P1) = I1
 
@@ -1060,7 +1085,7 @@ K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) + 1
 
 U$ = A7$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
 
-Call PBP
+Call PBP ': Call PBP_Logger(1184)
 
 If I <= B7(P1, Q7%(P1)) Then
 
@@ -1068,7 +1093,7 @@ If I <= B7(P1, Q7%(P1)) Then
 
     U$ = "THE KICK IS UP..."
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(1192)
 
     Call MADEPAT
 
@@ -1086,7 +1111,7 @@ Else
 
     If I <= 9 Then
         U$ = "KICK IS BLOCKED!!"
-        Call PBP
+        Call PBP ': Call PBP_Logger(1210)
 
         If G9 <> 1 Then
             GoTo 6605
@@ -1130,7 +1155,7 @@ If I6 <= 50 Then
     Call PBPINT
 
     U$ = U$ + A$(D) + " RECOVERS!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(1260)
 
     D1 = 1
     Y1 = 10
@@ -1161,12 +1186,12 @@ If I6 <= 50 Then
 
             If returnYards >= 99.99 Then
                 U$ = U$ + Str$(Int((100 - Y) * 10 + .5) / 10) + " YDS "
-                Call PBP
+                Call PBP ': Call PBP_Logger(1291)
                 GoTo 3200
             Else
                 'returnYards < 99.99
                 U$ = U$ + Str$(Int((G1) * 10 + .5) / 10) + " YDS"
-                Call PBP
+                Call PBP ': Call PBP_Logger(1296)
                 If returnYards <= .01 Then
                     GoTo 3250
                 End If
@@ -1183,7 +1208,7 @@ If I6 <= 50 Then
 Else
     'I6 > 50 Then
     U$ = A$(P1) + " RECOVERS!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(1313)
 
     I = 50
     O = 1
@@ -1220,13 +1245,14 @@ Do
 
     Call DEFMENU
 
+    'Call PBP_Logger(1351)
     'Offense Play Selection
     validPlay% = 1
     autoPlaySelect% = 0
 
     3117 '
     Do
-        
+
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 
             Call OFFMENU
@@ -1311,11 +1337,19 @@ Do
 
                                 Call QBLINE
 
-                                If KJ = 1 Then KJ = 0: R1 = 1: I2 = A1(P1, I1) + B6(D, 0): Call REVGAIN: GoTo 3416
-
+                                If KJ = 1 Then
+                                    KJ = 0
+                                    R1 = 1
+                                    I2 = A1(P1, I1) + B6(D, 0)
+                                    'Call varlog(1448)
+                                    Call REVGAIN
+                                    GoTo 3416
+                                End If
 
                                 3181 I2 = Int(Rnd(1) * 100) + 1
-                                
+
+                                'Check contribution % and
+                                'assign rusher index to I1
                                 For I = 9 To 0 Step -1:
                                     If I2 <= A(P1, I) Then I1 = I
                                 Next I
@@ -1334,6 +1368,7 @@ Do
                                 End If
 
                                 I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
+                                'Call varlog(1472)
 
                                 If RV% = 1 Then
                                     Call REVGAIN
@@ -1352,7 +1387,7 @@ Do
                                     Locate 12 + KK, 14
                                     Print KK; "-"; A1$(P1, KK); Tab(41); KK + 5; "-"; A1$(P1, KK + 5)
                                 Next KK
-                                
+
                                 Do
                                     I$ = GetKeyPress$
                                     I1 = Val(I$)
@@ -1361,26 +1396,26 @@ Do
                                 Screen , , 0, 0
 
                                 C% = 5
-                                
+
                                 If (D3 = 1 Or D3 = 3) And HB%(P9) = 0 Then C% = 30
                                 intI% = 20
                                 RN = Int(Rnd(1) * 100) + 1
                                 G = Int(Rnd(1) * 71) + 30
                                 CP = Int(Rnd(1) * 11) + 30
-                                
+
                                 HB%(P9) = 1
-                                
+
                                 U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND HANDS OFF TO " + A1$(P1, I1)
-                                Call PBP
+                                Call PBP ': Call PBP_Logger(1501)
 
                                 U$ = A1$(P1, I1) + " HAS THE BALL AND WANTS TO THROW!!!"
-                                Call PBP
+                                Call PBP ': Call PBP_Logger(1504)
 
                                 RN = Int(Rnd(1) * 100) + 1
                                 I3 = Int(Rnd(1) * 3)
 
                                 U$ = "HE HAS " + A2$(P1, I3) + " OPEN DOWNFIELD"
-                                Call PBP
+                                Call PBP ': Call PBP_Logger(1510)
 
                                 If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then G = (Int(Rnd(1) * 4) + 4): GoTo 3541
 
@@ -1452,12 +1487,13 @@ Do
 
             If XX = 8 Then
                 U$ = A$(P1) + " IS LETTING THE PLAY CLOCK WIND DOWN"
-                Call PBP
-                
+                Call PBP ': Call PBP_Logger(1582)
+
                 U$ = "PENALTY - " + A$(P1) + " - DELAY OF GAME"
-                Call PBP
-                
+                Call PBP ': Call PBP_Logger(1585)
+
                 O = 8
+
                 I2 = 0
                 P = 5
                 GoTo 3326
@@ -1466,7 +1502,7 @@ Do
 
             If (Q = 3 Or Q = 1) And P2 = 16 Or T > 120 And P2 = 16 Then
                 U$ = "CAN ONLY USE LAST 2 MIN. OF EACH HALF"
-                Call PBP
+                Call PBP ': Call PBP_Logger(1596)
                 validPlay% = 0
             End If
 
@@ -1474,6 +1510,7 @@ Do
 
     Loop Until validPlay% = 1
 
+    'Call PBP_Logger(1606)
 
     If autoPlaySelect% = 0 Then
 
@@ -1525,23 +1562,29 @@ Do
 
     End If
 
+    'Call PBP_Logger(1658)
 
     703 '
     If J6(0) = 1 And P1 = CT And (P2 = 12 Or P2 = 15) And Y >= 85 Or J6(0) = 2 And (P2 = 12 Or P2 = 15) And Y >= 85 Then P2 = 11
 
     If T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16 Then
         U$ = "THERE'S SOME CONFUSION AT THE LINE OF SCRIMMAGE"
-        Call PBP
+        Call PBP ': Call PBP_Logger(1661)
 
         U$ = A3$(P1, Q6%(P1)) + " HAS TO CALL TIME OUT TO AVOID DELAY OF GAME"
-        Call PBP
+        Call PBP ': Call PBP_Logger(1664)
 
         T1(P1) = T1(P1) - 1
         QBN% = 0
 
     End If
 
+    'Call PBP_Logger(1675)
+
+    'Going to guess this might be the issue ???
 Loop While (T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
+
+'Call PBP_Logger(1680)
 
 Call SCOREBOARD
 
@@ -1563,22 +1606,22 @@ If I <= 36 And E <> 1 And P2 < 21 Then
 
         Case 1 TO 2 + PA%(P1, 0)
             U$ = U$ + "OFFENSE... OFFSIDES 5 YARDS ***"
-            Call PBP
+            Call PBP ': Call PBP_Logger(1696)
             P = -5
 
         Case 2 + PA%(P1, 0) TO 20 + PA%(P1, 0)
             U$ = U$ + "ILLEGAL PROCEDURE OFFENSE... 5 YARDS ***"
-            Call PBP
+            Call PBP ': Call PBP_Logger(1701)
             P = -5
 
         Case 20 + PA%(P1, 0) TO 27 + PA%(P1, 0)
             U$ = U$ + "OFFENSE... DELAY OF GAME 5 YARDS ***"
-            Call PBP
+            Call PBP ': Call PBP_Logger(1706)
             P = -5
 
         Case 27 + PA%(P1, 0) TO 36 + PA%(P1, 0) + PA%(D, 0)
             U$ = U$ + "DEFENSE... ENCROACHMENT 5 YARDS ***"
-            Call PBP
+            Call PBP ': Call PBP_Logger(1711)
             P = 5
 
     End Select
@@ -1594,6 +1637,8 @@ If I <= 36 And E <> 1 And P2 < 21 Then
 
 End If
 
+'Call PBP_Logger(1732)
+
 709 '
 Select Case P2
 
@@ -1607,12 +1652,23 @@ Select Case P2
 
             KJ = 0
             R1 = 1
-            I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
+            'I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
 
             3403 '
-            I2 = A1(P1, I1)
-            RY = I2
-            I2 = I2 + B6(D, 0) + WX%(4)
+            'A1(P1, I1) is rushing average
+
+            'I2 = A1(P1, I1)
+            RY = A1(P1, I1)
+
+            'We essentially restore our value of I2 here
+            'RY will be negative for several "OTHERS" entries
+            'This is stored as a larger value than the actual
+            'average, and therefore almost never becomes a
+            'positive integer
+
+            I2 = RY + B6(D, 0) + WX%(4)
+
+            'Call varlog(1767)
 
             If K(P1, 1) >= 20 And K2(P1, I1, 0) / K(P1, 1) > PC%(P1, I1) / 100 + .1 Then I2 = Int(I2 * .4)
 
@@ -1621,7 +1677,7 @@ Select Case P2
             If RN = 97 And Y <= 98.899 And Y >= 1.101 Then
 
                 U$ = A3$(P1, Q6%(P1)) + " FUMBLES THE SNAP!"
-                Call PBP
+                Call PBP ': Call PBP_Logger(1754)
 
                 G = Int((Rnd(1) * 20) - 10) / 10
 
@@ -1634,7 +1690,7 @@ Select Case P2
                 End If
 
                 U$ = "HE GAINS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                Call PBP
+                Call PBP ': Call PBP_Logger(1767)
 
                 3452 '
                 If E = 1 Then Call GoForTwo
@@ -1673,14 +1729,16 @@ Select Case P2
 
             If P2 = 9 Then
                 U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
-                Call PBP
+                Call PBP ': Call PBP_Logger(1806)
                 G = -1.0
                 GoTo 3546
             End If
 
             If P2 = 5 And Int(Rnd(1) * 100) + 1 = 49 Then
-                U$ = A3$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!": Call PBP
-                G = Int((Rnd(1) * 7) + 6) * -1: X = 4: X1 = 9: I1 = Q6%(P1): U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS": Call PBP
+                U$ = A3$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
+                Call PBP ': Call PBP_Logger(1813)
+                G = Int((Rnd(1) * 7) + 6) * -1: X = 4: X1 = 9: I1 = Q6%(P1): U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
+                Call PBP ': Call PBP_Logger(1815)
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
 
                 If E = 1 Then Call GoForTwo
@@ -1710,6 +1768,14 @@ Select Case P2
 
             Else
 
+                '--- WEIRD PROBLEM -----
+                'This sometimes throws a subscript error
+                'D2 is getting a 0 value
+                'But it should be 1 to 11?
+                'P2 should be 1 - 8
+                'For now I indexed D3% to start with 9
+                'This will basically result in some 0's
+                'being added to I2 below
                 I2 = I2 + D3%(P2, D2)
 
                 S6 = 0
@@ -1724,6 +1790,7 @@ Select Case P2
 
                 If P1 = H% Then I2 = I2 + 1
                 If P1 <> H% And H% <> 2 Then I2 = I2 - 1
+
                 If I2 < 1 Then I2 = 1
 
                 'I2 = 1 to 38
@@ -1931,7 +1998,7 @@ Select Case P2
             End If
 
             U$ = U$ + " YARDS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(2066)
 
             If RV% > 0 Then RV% = 0
 
@@ -1981,7 +2048,7 @@ Select Case P2
 
             End If
 
-        End If
+        End If 'Done checking KJ
 
 
     Case 9 TO 18
@@ -1991,6 +2058,8 @@ Select Case P2
         If I < S1%(3, P2 - 8, D3) + B6(P1, 5) + B6(D, 6) + 1 Then
             R1 = 1
             W5 = 1
+
+            'Call PBP_Logger(2135)
 
             ' 3538
             ' *** SACKED ***
@@ -2010,6 +2079,8 @@ Select Case P2
                 M5 = 0
                 RN = Int(Rnd(1) * DDS(1 - P1)) + 1
 
+                'Call PBP_Logger(2155)
+
                 For Z1 = 0 To 14
 
                     M5 = M5 + DS(1 - P1, Z1)
@@ -2022,7 +2093,7 @@ Select Case P2
                 Next
             End If
 
-            Call PBP
+            Call PBP ': Call PBP_Logger(2157)
 
             X = 4
             R1 = 1
@@ -2037,6 +2108,8 @@ Select Case P2
         Else
 
             'FORCED TO RUN ON BOOTLEG/ROLLOUT/KEEPER
+            'Call PBP_Logger(2182)
+
             If R9%(P1) > 0 Then
 
                 I = Int(Rnd(1) * 100) + 1
@@ -2052,8 +2125,10 @@ Select Case P2
 
             End If
 
+            'Call PBP_Logger(2199)
+
             If flag% = 1 Then
-            
+
                 3545 '
                 If R9%(P1) > 0 Then
                     R1 = Int((R9%(P1) * .67) + .5)
@@ -2108,7 +2183,7 @@ Select Case P2
 
                 Else
                     U$ = A3$(P1, I1) + " IS CHASED FROM THE POCKET"
-                    Call PBP
+                    Call PBP ': Call PBP_Logger(2243)
                     U$ = "HE IS FORCED TO RUN FOR"
                 End If
 
@@ -2125,7 +2200,7 @@ Select Case P2
 
                 U$ = U$ + " YARDS"
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(2260)
 
                 If E = 1 Then Call GoForTwo
 
@@ -2138,6 +2213,8 @@ Select Case P2
 
             End If
 
+            'Call PBP_Logger(2287)
+
             GoTo 3309
 
             '----
@@ -2146,13 +2223,17 @@ Select Case P2
 
             'INTERCEPTED
             If I > 100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2) Then 3552
+
             Call ARMADJUST
+
             If I <= S2 + S3 + PQ + PW Then
                 3575 '
                 If I3 > 9 Then I4 = A5(P1, I3 - 10): RY = I4
                 If I3 <= 9 Then I4 = A3(P1, I3): RY = I4
                 If WX%(4) = -3 Then I4 = I4 - 1
                 If WX%(4) = -6 Then I4 = I4 - 2
+
+                'Call PBP_Logger(2141)
 
                 If I4 < 11 Then
                     Call BLITZ
@@ -2190,18 +2271,18 @@ Select Case P2
 
                 X = 3
                 X1 = 2
-            
+
                 If G + Y > 99.9499 Then G = 109 - Y
 
                 Call PCPBP
 
                 If FF% <> 0 Then FF% = 0
-            
+
                 If Y + G < 99.9499 Then
-            
+
                     F% = 2
                     Call FUMBLE
-                
+
                     If F9 <> 1 Then
                         If G - Y1 >= -.3 And G - Y1 <= .3 Then Call MEASUREMENT
                     End If
@@ -2218,7 +2299,7 @@ Select Case P2
                     G = 100 - Y
                     If G > WR(P1, I3) Then strWR$(P1, I3) = "t": WR(P1, I3) = G
                     If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "t": QB(P1, Q6%(P1)) = G
-                    Call PBP
+                    Call PBP ': Call PBP_Logger(2353)
 
                 Else
 
@@ -2242,12 +2323,12 @@ Select Case P2
 
                 End If
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(2377)
 
                 If E = 1 Then F9 = 0: Call GoForTwo
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then F9 = 0: K(P1, 0) = K(P1, 0) + 1: GoTo 3200
-            
+
                 If P2 = 16 Then
 
                     I = Int(Rnd(1) * 10) + 1
@@ -2265,7 +2346,7 @@ Select Case P2
                             Case 5: U$ = "AND HE'S SHOVED OUT OF BOUNDS"
                         End Select
 
-                        Call PBP
+                        Call PBP ': Call PBP_Logger(2400)
                         F9 = 0
                         'GoTo 3309
 
@@ -2274,12 +2355,14 @@ Select Case P2
                 End If
 
                 3594 'F%=2:CALL FUMBLE
-        
+
             Else
+
+                'Call PBP_Logger(2432)
 
                 3535 X = 2
                 I = Int(Rnd(1) * 1000) + 1
-            
+
                 If I <= 50 + PA%(D, 0) And P2 <> 13 And E = 0 Then
                     '3750
                     U$ = "DEFENSIVE PASS INTERFERENCE"
@@ -2297,15 +2380,15 @@ Select Case P2
                         If G9 <> 0 Then
                             K(D, 12) = K(D, 12) + 100 - Y - 1
                             U$ = U$ + " IN THE END ZONE"
-                            Call PBP
-                        
+                            Call PBP ': Call PBP_Logger(2432)
+
                             Y = 99
                             Y1 = 1
                         Else
                             K(D, 12) = K(D, 12) + 100 - Y - 2
                             U$ = U$ + " IN THE END ZONE"
-                            Call PBP
-                        
+                            Call PBP ': Call PBP_Logger(2439)
+
                             Y = 98
                             Y1 = 2
                         End If
@@ -2322,7 +2405,7 @@ Select Case P2
                         End If
 
                         U$ = U$ + " YARD LINE"
-                        Call PBP
+                        Call PBP ': Call PBP_Logger(2457)
                         Y = Y + G
                         Y1 = 10
 
@@ -2358,14 +2441,15 @@ Select Case P2
         3800 '
         I3 = Int(Rnd(1) * 100) + 1
 
-        For I2 = 2 To 0 Step -1
-            If I3 <= B1(D, I2) Then I1 = I2
-        Next I2
+        'Was previously I2 not J
+        For J = 2 To 0 Step -1
+            If I3 <= B1(D, J) Then I1 = J
+        Next J
 
         PR = I1
 
         U$ = A5$(D, PR) + " (" + Str$(Int(B2(D, PR) * 3)) + " AVG) IS DEEP TO RECEIVE"
-        Call PBP
+        Call PBP ': Call PBP_Logger(2500)
 
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
             I1 = 0
@@ -2381,10 +2465,10 @@ Select Case P2
             Locate , 14: Print "3 - FAKE PUNT (PASS)"
             Locate , 14: Print "4 - TAKE INTENTIONAL SAFETY (INSIDE OWN 20)"
             Locate , 14: Print "5 - QUICK KICK (1ST-3RD DOWN)"
-            
+
             Do
                 I$ = GetKeyPress$
-                
+
                 If I$ = Chr$(27) Then
                     Screen , , 0, 0
                     GoTo 3118
@@ -2415,28 +2499,28 @@ Select Case P2
                 Else
                     U$ = AA$(P1) + " ARE QUICK KICKING!!"
                 End If
-                Call PBP
+                Call PBP ': Call PBP_Logger(2550)
 
                 If (D3 > 6 And I >= 60 And I <= 72) Or (D3 <= 6 And I >= 50 And I <= 56) Then 3840
-                
+
                 U$ = "THE KICK IS UP AND ON ITS WAY"
-                Call PBP
-                
+                Call PBP ': Call PBP_Logger(2555)
+
                 G = G + 2
-                
+
                 Call YARDAGE
-                
+
                 U$ = "KICK BY " + A$(P1) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                Call PBP
-                
+                Call PBP ': Call PBP_Logger(2562)
+
                 K(P1, 7) = K(P1, 7) + 1
-                
+
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then
-                    
+
                     K(P1, 8) = K(P1, 8) + 100 - Y
                     
                     If 100 - Y > K(P1, 26) Then K(P1, 26) = 100 - Y
-                    
+
                     T = T - 5
                     TP(P1) = TP(P1) + 5
                     K(P1, 27) = K(P1, 27) + 1
@@ -2461,15 +2545,15 @@ Select Case P2
                 
                 If RN <= 11 Or I1 = 1 Then
                     U$ = "THE BALL GOES OUT OF BOUNDS AT THE" + Str$(Int(YL)) + " YARD LINE"
-                    Call PBP
+                    Call PBP ': Call PBP_Logger(2596)
                 Else
                     If RN <= 20 Or YL <= 15 Then
                         U$ = "THE BALL IS DOWNED AT THE" + Str$(Int(YL)) + " YARD LINE"
-                        Call PBP
+                        Call PBP ': Call PBP_Logger(2600)
                     Else
                         If D1 = 4 Then
                             U$ = "A FAIR CATCH IS CALLED AT THE" + Str$(Int(YL)) + " YARD LINE"
-                            Call PBP
+                            Call PBP ': Call PBP_Logger(2604)
                         End If
                     End If
                 End If
@@ -2508,9 +2592,9 @@ Select Case P2
 
         If J6(0) = 1 And D = CT Or J6(0) = 2 Then
             If RN <= 10 Then
-                I2 = 1
+                choice = 1
             Else
-                I2 = 0
+                choice = 0
             End If
 
         Else
@@ -2527,20 +2611,19 @@ Select Case P2
 
             Do
                 I$ = GetKeyPress$
-                I2 = Val(I$)
-            Loop Until I2 >= 0 And I2 <= 2
+                choice = Val(I$)
+            Loop Until choice >= 0 And choice <= 2
             Screen , , 0, 0
 
         End If
 
         'PUNTSNAP
-
         If I1 = 2 Or I1 = 3 Then
 
             ' *** FAKE PUNT - RUN/PASS ***
-            If I2 = 2 Then
+            If choice = 2 Then
                 U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT (YN)"
-                Call PBP
+                Call PBP ': Call PBP_Logger(2675)
 
                 Do
                     I$ = GetKeyPress$
@@ -2553,40 +2636,80 @@ Select Case P2
             If I1 = 3 Then
                 3875 '
                 ' *** FAKE W/PASS ***
-                G = 0: U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS": Call PBP
+                G = 0
+                U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
+                Call PBP ': Call PBP_Logger(2688)
+                
                 RN = Int(Rnd(1) * 100) + 1
-                If I2 = 0 Then
+                
+                If choice = 0 Then
+
                     Select Case RN
-                        Case 1 TO 36: G = Int(Rnd(1) * 27)
-                        Case 37 TO 90: U$ = "THE PASS FALLS INCOMPLETE": Call PBP: O = 4: GoTo 3309
-                        Case 91 TO 100: U$ = "THE PASS IS INTERCEPTED!": Call PBP: GoTo 3876
+                        Case 1 TO 36:
+                            G = Int(Rnd(1) * 27)
+
+                        Case 37 TO 90:
+                            U$ = "THE PASS FALLS INCOMPLETE"
+                            Call PBP: ': Call PBP_Logger(2696)
+                            O = 4: GoTo 3309
+
+                        Case 91 TO 100:
+                            U$ = "THE PASS IS INTERCEPTED!"
+                            Call PBP ': Call PBP_Logger(2700)
+                            GoTo 3876
                     End Select
+
                 End If
 
-                If I2 = 1 Then
+                If choice = 1 Then
+
                     Select Case RN
-                        Case 1 TO 26: G = Int(Rnd(1) * 20)
-                        Case 27 TO 80: U$ = "THE PASS FALLS INCOMPLETE": Call PBP: O = 4: GoTo 3309
-                        Case 81 TO 90: U$ = "THE PASS IS INTERCEPTED!": Call PBP: GoTo 3876
+                        Case 1 TO 26:
+                            G = Int(Rnd(1) * 20)
+
+                        Case 27 TO 80:
+                            U$ = "THE PASS FALLS INCOMPLETE"
+                            Call PBP ': Call PBP_Logger(2710)
+                            O = 4
+                            GoTo 3309
+
+                        Case 81 TO 90:
+                            U$ = "THE PASS IS INTERCEPTED!"
+                            Call PBP ': Call PBP_Logger(2714)
+                            GoTo 3876
+
                         Case 91 TO 100: G = 100 - Y
                     End Select
+
                 End If
 
-                If I2 = 2 Then
+                If choice = 2 Then
+
                     Select Case RN
-                        Case 1 TO 10: G = Int(Rnd(1) * 7) + 6
-                        Case 11 TO 80: U$ = "THE PASS FALLS INCOMPLETE": Call PBP: O = 4: GoTo 3309
-                        Case 81 TO 100: U$ = "THE PASS IS INTERCEPTED!": Call PBP: GoTo 3876
+                        Case 1 TO 10:
+                            G = Int(Rnd(1) * 7) + 6
+
+                        Case 11 TO 80:
+                            U$ = "THE PASS FALLS INCOMPLETE"
+                            Call PBP ': Call PBP_Logger(2725)
+                            O = 4: GoTo 3309
+                        Case 81 TO 100:
+                            U$ = "THE PASS IS INTERCEPTED!"
+                            Call PBP ': Call PBP_Logger(2729)
+                            GoTo 3876
                     End Select
+
                 End If
 
                 3878 '
                 U$ = "PASS IS COMPLETE FOR"
                 
                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
-                    U$ = U$ + Str$(Int(100 - Y)) + " YARDS": Call PBP
+                    U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
+                    Call PBP ': Call PBP_Logger(2739)
                 Else
-                    U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS": Call PBP
+                    U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
+                    Call PBP ': Call PBP_Logger(2742)
                 End If
 
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
@@ -2596,8 +2719,8 @@ Select Case P2
                 Call FUMBLE
 
             Else
-            
-                Call FAKEYARDS
+
+                Call FAKEYARDS(choice)
 
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then 3200
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
@@ -2623,13 +2746,13 @@ Select Case P2
 
         PSNAP:
         U$ = A6$(P1, 0) + " WAITS FOR THE SNAP"
-        Call PBP
+        Call PBP ': Call PBP_Logger(2779)
 
         I5 = Int(Rnd(1) * 300) + 1
 
         If I5 = 12 Then
             U$ = "THERE'S A BAD SNAP FROM CENTER!!"
-            Call PBP
+            Call PBP ': Call PBP_Logger(2785)
 
             G = (Int(Rnd(1) * 14) + 12) * -1
             '3890 '
@@ -2641,6 +2764,7 @@ Select Case P2
             K(P1, 9) = K(P1, 9) + 1
 
             If Y + G < -9.999 Then S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2: GoTo 3251
+
             If Y + G <= .001 And Y + G >= -9.999 Then
                 If Int(Rnd(1) * 100) + 1 <= 50 Then
                     S(D, Q) = S(D, Q) + 2
@@ -2682,19 +2806,19 @@ Select Case P2
 
             I5 = Int(Rnd(1) * 100) + 1
 
-            If I2 = 1 Then U$ = "THERE'S A HEAVY RUSH!!!": Call PBP
+            If choice = 1 Then U$ = "THERE'S A HEAVY RUSH!!!": Call PBP ': Call PBP_Logger(2838)
 
-            If I2 = 1 And I5 >= 72 And I5 <= 76 Then 3840
+            If choice = 1 And I5 >= 72 And I5 <= 76 Then 3840
 
-            If I2 = 1 And I5 >= 13 And I5 <= 17 Then
+            If choice = 1 And I5 >= 13 And I5 <= 17 Then
                 3846 '
                 U$ = "THERE'S A FLAG ON THE PLAY!!"
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(2846)
 
                 U$ = "ROUGHING THE KICKER !!!...AUTOMATIC FIRST DOWN !!!"
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(2850)
 
                 K(D, 11) = K(D, 11) + 1
                 K(D, 12) = K(D, 12) + 15
@@ -2712,7 +2836,7 @@ Select Case P2
             End If
 
             U$ = A6$(P1, 0) + " TAKES THE SNAP"
-            Call PBP
+            Call PBP ': Call PBP_Logger(2868)
 
             RN = Int(Rnd(1) * 100) + 1
 
@@ -2736,10 +2860,10 @@ Select Case P2
 
             End If
 
-            Call PBP
+            Call PBP ': Call PBP_Logger(2892)
 
             U$ = "PUNT BY " + A6$(P1, 0) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(2895)
 
             K(P1, 7) = K(P1, 7) + 1
 
@@ -2755,13 +2879,13 @@ Select Case P2
             Else
 
                 K(P1, 8) = K(P1, 8) + G
-                
+
                 I = Int(Rnd(1) * 100) + 1
 
                 If G + Y > 80 Then K(P1, 29) = K(P1, 29) + 1
                 If G > K(P1, 26) Then K(P1, 26) = G
-                
-                If G + Y >= 90 And I >= 5 Or I2 = 2 Or I > 60 Or I1 = 1 And Int(Rnd(1) * 100) + 1 <= 80 Then
+
+                If G + Y >= 90 And I >= 5 Or choice = 2 Or I > 60 Or I1 = 1 And Int(Rnd(1) * 100) + 1 <= 80 Then
 
                     Y = Y + G
                     YT = Y
@@ -2785,8 +2909,8 @@ Select Case P2
                             End If
                         End If
                     End If
-                    
-                    Call PBP
+
+                    Call PBP ': Call PBP_Logger(2942)
 
                     13855 '
                     Call CHANGEPOSS
@@ -2829,7 +2953,7 @@ Select Case P2
 
                     If I >= 960 - PA%(P1, 0) Then
                         U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
-                        Call PBP
+                        Call PBP ': Call PBP_Logger(2985)
 
                         If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
@@ -2868,15 +2992,20 @@ Select Case P2
         3600 '
         I = Int(Rnd(1) * 100) + 1
 
-        For I2 = 1 To 0 Step -1
-            If I <= B5(P1, I2) Then I1 = I2
-        Next I2
+        'Was previously I2 not J
+        For J = 1 To 0 Step -1
+            If I <= B5(P1, J) Then I1 = J
+        Next J
 
         Q7%(P1) = I1
 
+        'FG range is considered up to 62 yards
+        '--- this should be changed, but not
+        '--- without considering how the
+        '--- distance impacts accuracy
         If Y < 52 + intY8% Then
             U$ = "NOT IN FIELD GOAL RANGE"
-            Call PBP
+            Call PBP ': Call PBP_Logger(3036)
             GoTo 700
         Else
 
@@ -2907,7 +3036,7 @@ Select Case P2
             RN = Int(Rnd(1) * 100) + 1
 
             If J6(0) = 1 And D = CT Or J6(0) = 2 Then
-                I2 = 1
+                choice = 1
             Else
                 J = 9
                 Call DBOX
@@ -2921,8 +3050,8 @@ Select Case P2
 
                 Do
                     I$ = GetKeyPress$
-                    I2 = Val(I$)
-                Loop Until I2 >= 1 And I2 <= 2
+                    choice = Val(I$)
+                Loop Until choice >= 1 And choice <= 2
 
             End If
 
@@ -2931,9 +3060,9 @@ Select Case P2
             If I1 = 2 Or I1 = 1 Then
 
                 4860 ' *** FAKE PUNT - RUN/PASS ***
-                If I2 = 2 Then
+                If choice = 2 Then
                     U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL (YN)"
-                    Call PBP
+                    Call PBP ': Call PBP_Logger(3093)
                 Else
                     Do
                         I$ = GetKeyPress$
@@ -2947,7 +3076,8 @@ Select Case P2
                 If I1 = 2 Then
 
                     4875 ' *** FAKE W/PASS ***
-                    U$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS": Call PBP
+                    U$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS"
+                    Call PBP ': Call PBP_Logger(3108)
                     G = 0
                     RN = Int(Rnd(1) * 100) + 1
 
@@ -2962,12 +3092,12 @@ Select Case P2
                                     G = Int(Rnd(1) * 20)
                                 Case 21 TO 80:
                                     U$ = "THE PASS FALLS INCOMPLETE"
-                                    Call PBP
+                                    Call PBP ': Call PBP_Logger(3123)
                                     O = 4
                                     passIncomplete% = 1
                                 Case 81 TO 90:
                                     U$ = "THE PASS IS INTERCEPTED!"
-                                    Call PBP
+                                    Call PBP ': Call PBP_Logger(3128)
                                     passIntercepted% = 1
                                 Case 91 TO 100:
                                     G = 100 - Y
@@ -2979,13 +3109,13 @@ Select Case P2
                                     G = Int(Rnd(1) * 7) + 6
                                 Case 11 TO 80:
                                     U$ = "THE PASS FALLS INCOMPLETE"
-                                    Call PBP
+                                    Call PBP ': Call PBP_Logger(3140)
                                     O = 4
                                     passIncomplete% = 1
                                     GoTo 3309
                                 Case 81 TO 100:
                                     U$ = "THE PASS IS INTERCEPTED!"
-                                    Call PBP
+                                    Call PBP ': Call PBP_Logger(3146)
                                     passIntercepted% = 1
                             End Select
 
@@ -3008,11 +3138,11 @@ Select Case P2
 
                         If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
                             U$ = U$ + " IN THE END ZONE"
-                            Call PBP
+                            Call PBP ': Call PBP_Logger(3169)
                             Call Touchback
                         Else
-                            If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
-                            If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
+                            If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(3172)
+                            If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(3173)
 
                             Call CHANGEPOSS
                             D1 = 1
@@ -3037,11 +3167,11 @@ Select Case P2
 
                             If G + Y > 99.99 Then
                                 U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-                                Call PBP
+                                Call PBP ': Call PBP_Logger(3198)
                                 GoTo 3200
                             Else
                                 U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                                Call PBP
+                                Call PBP ': Call PBP_Logger(3202)
                                 O = 5
                                 Y = Y + G
                                 Y1 = 10
@@ -3068,7 +3198,7 @@ Select Case P2
                                 U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                             End If
 
-                            Call PBP
+                            Call PBP ': Call PBP_Logger(3229)
 
                             If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
                             If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then 3200
@@ -3085,7 +3215,7 @@ Select Case P2
 
                 End If
 
-                Call FAKERUN
+                Call FAKERUN(choice)
 
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then 3200
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
@@ -3129,8 +3259,9 @@ Select Case P2
 
 End Select
 
-
 '----------
+
+'Call PBP_Logger(3301)
 
 
 3200 '
@@ -3148,14 +3279,18 @@ Else
     U$ = "T O U C H D O W N !!! " + AA$(P1)
 End If
 
-Call PBP
+Call PBP ': Call PBP_Logger(3309)
 Call SCORE
 Call COMPILER
 
 If G9 <> 4 Then
+    'Not WFL
+    'Touchdowns worth 6
     S(P1, Q) = S(P1, Q) + 6
     S(P1, 0) = S(P1, 0) + 6
 Else
+    'WFL
+    'Touchdowns worth 7
     S(P1, Q) = S(P1, Q) + 7
     S(P1, 0) = S(P1, 0) + 7
 End If
@@ -3227,7 +3362,7 @@ GoSub 3900
 U3 = 0
 U$ = "S A F E T Y  !!!"
 
-Call PBP
+Call PBP ': Call PBP_Logger(3392)
 
 Call DisplayField
 
@@ -3274,7 +3409,7 @@ If I <= 6 + PA%(D, 0) Then
     Select Case I
         Case 1
             U$ = U$ + "OFF PERSONAL FOUL - 15 YARDS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(3439)
 
             K(P1, 11) = K(P1, 11) + 1
 
@@ -3290,7 +3425,7 @@ If I <= 6 + PA%(D, 0) Then
 
         Case 2 TO 6
             U$ = U$ + "DEF PERSONAL FOUL - 15 YARDS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(3455)
 
             K(D, 11) = K(D, 11) + 1
 
@@ -3308,7 +3443,7 @@ If I <= 6 + PA%(D, 0) Then
 
         Case 7 TO 9
             U$ = U$ + "DEF INCIDENTAL FACEMASK - 5 YARDS"
-            Call PBP
+            Call PBP ': Call PBP_Logger(3473)
 
             K(D, 11) = K(D, 11) + 1
 
@@ -3326,7 +3461,7 @@ If I <= 6 + PA%(D, 0) Then
 
         Case 10
             U$ = U$ + "DEF FLAGRANT FACEMASK - 15 YARDS 1ST DOWN!"
-            Call PBP
+            Call PBP ': Call PBP_Logger(3491)
 
             K(D, 11) = K(D, 11) + 1
 
@@ -3449,7 +3584,7 @@ End If
 HL% = 0
 
 U$ = U$ + " 1-ACCEPT 2-DECLINE "
-Call PBP
+Call PBP ': Call PBP_Logger(3614)
 
 If J6(0) <> 0 Then
 
@@ -3494,7 +3629,7 @@ Else
 
     U$ = "PENALTY DECLINED"
 
-    Call PBP
+    Call PBP ': Call PBP_Logger(3659)
     Call COMPILER
 
     IH = 0
@@ -3533,7 +3668,7 @@ End If
 
 3325 If G9 = 0 And Y9 = 0 Then O = 1
 U$ = "PENALTY ACCEPTED"
-Call PBP
+Call PBP ': Call PBP_Logger(3698)
 
 If P > 0 Then 3330
 
@@ -3682,7 +3817,7 @@ Select Case Q - 1
         '3362
         Call SCOREBOARD
         U$ = "END OF QUARTER"
-        Call PBP
+        Call PBP ': Call PBP_Logger(3847)
 
         GoTo 700
 
@@ -3690,7 +3825,7 @@ Select Case Q - 1
         '3363
         Call SCOREBOARD
         U$ = "HALF TIME"
-        Call PBP
+        Call PBP ': Call PBP_Logger(3855)
 
         W% = 1 - W%
 
@@ -3785,11 +3920,14 @@ Select Case Q - 1
                         D = 1 - P1
                         Call CHANGEPOSS
                         OT(P1) = 1
+
                     ElseIf OT(0) = 1 Then
                         OT(1) = 1
                         P1 = 1
+
                         D = 0
                         If S(P1, 0) > S(D, 0) Then 3364
+
                     ElseIf OT(1) = 1 Then
                         OT(0) = 1
                         P1 = 0
@@ -3843,7 +3981,7 @@ Select Case Q - 1
 
             U$ = "END OF GAME"
 
-            Call PBP
+            Call PBP ': Call PBP_Logger(4008)
 
             'Call DECIDE
 
@@ -3979,6 +4117,8 @@ Select Case Q - 1
 
             8632 '
             If AP = 1 Then
+                'Close #7
+                'Close #5
                 Call POSTGAME
             Else
                 endOfGames% = 1
@@ -4014,7 +4154,7 @@ If FF% <> 1 Then K2(P1, I1, 9) = K2(P1, I1, 9) + 1: K2(P1, I1, 11) = K2(P1, I1, 
 
 If E = 1 Then
     U$ = U$ + " IN THE END ZONE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4179)
 
     GoTo 6605
 
@@ -4035,14 +4175,14 @@ Call YARDAGE
 
 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
     U$ = U$ + " IN THE END ZONE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4200)
     If NG%(14) = 3 And Q > 4 Then 3364
     Call Touchback
     GoTo 700
 End If
 
-If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
-If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
+If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(4206)
+If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(4207)
 
 Call CHANGEPOSS
 
@@ -4073,12 +4213,12 @@ If G + Y > 99.99 Then
     SI(P1, Z1, 1) = SI(P1, Z1, 1) + 100 - Y
     SI(P1, Z1, 2) = SI(P1, Z1, 2) + 1
     If 100 - Y > IR(P1, Z1) Then strIR$(P1, Z1) = "t": IR(P1, Z1) = 100 - Y
-    Call PBP
+    Call PBP ': Call PBP_Logger(4238)
     GoTo 3200
 End If
 
 U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-Call PBP
+Call PBP ': Call PBP_Logger(4243)
 
 O = 5
 Y = Y + G
@@ -4101,7 +4241,7 @@ I = Int(Rnd(1) * 1000) + 1
 If I > 950 - PA%(P1, 0) Then
 
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4266)
 
     If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
@@ -4118,6 +4258,145 @@ GoTo 700
 
 '----------
 
+3900 '
+
+'Call PBP_Logger(4662)
+
+If O <> 8 Then
+
+    'Pro Rules
+    If G9 <> 0 Then
+
+        3930 '
+        If T <= 120.01 And Q <> 1 And Q <> 3 And Not (T > 159.99 And O = 0) And Not (T > 147 And O = 1) And Not (T > 142 And O = 2) And Not (T > 137 And O = 3) And Not (T > 126 And O = 4) And Not (T > 128 And O = 5) And Not (T > 130 And O = 6) And Not (T > 132 And O = 7) Then
+
+            U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
+            Call PBP ': Call PBP_Logger(4670)
+
+            If T <= 126.01 And T >= 120.99 Then T = T - 6: TP(P1) = TP(P1) + 6
+
+            If T > 125.99 Then TP(P1) = TP(P1) + (T - 120): T = 120
+
+        End If
+
+    End If
+
+    'Call PBP_Logger(4682)
+
+    3901 '
+    If (T <= 120 And Q = 2) Or (T <= 120 And Q >= 4) Then
+
+        3907 '
+        If O < 4 Then
+
+            If T <= 0 Then Call ADDTIME: GoTo 3360
+
+            Call TWOMIN
+
+            Select Case I1
+
+                Case 1:
+                    U$ = "HUDDLE"
+                    Call PBP ': Call PBP_Logger(4694)
+
+                Case 2:
+                    If T1(P1) = 0 Then
+                        'If no timeouts
+                        U$ = "HUDDLE"
+                        Call PBP ': Call PBP_Logger(4700)
+                    Else
+                        U$ = "TIME OUT " + A$(P1) + " - THEY HAVE" + Str$(T1(P1) - 1) + " REMAINING"
+                        Call PBP ': Call PBP_Logger(4703)
+                        T1(P1) = T1(P1) - 1
+                        O = 9
+
+                        Call AddPossessionTime(7, 10)
+
+                        If T <= 0 Then Call ADDTIME: GoTo 3360
+
+                        Return 'aka Exit Sub
+
+                    End If
+
+                Case 3
+
+                    If T1(D) = 0 Then
+                        'If no timeouts
+                        U$ = "HUDDLE"
+                        Call PBP ': Call PBP_Logger(4720)
+                    Else
+                        U$ = "TIME OUT " + A$(D) + " - THEY HAVE" + Str$(T1(D) - 1) + " REMAINING"
+                        Call PBP ': Call PBP_Logger(4723)
+                        T1(D) = T1(D) - 1
+                        O = 9
+
+                        Call AddPossessionTime(7, 10)
+
+                        If T <= 0 Then Call ADDTIME: GoTo 3360
+
+                        Return 'aka Exit Sub
+
+                    End If
+
+                Case 4
+                    If O = 0 Or O = 1 Then
+                        U$ = "HURRY UP"
+                        Call PBP ': Call PBP_Logger(4738)
+                        O = O + 2
+                    End If
+
+                Case 5
+                    U$ = A3$(P1, Q6%(P1)) + " IS TRYING TO GET THE TEAM LINED UP"
+                    Call PBP ': Call PBP_Logger(4744)
+
+                    O = 3
+                    U$ = "HE STEPS BACK AND THROWS IT OUT OF BOUNDS"
+                    Call PBP ': Call PBP_Logger(4748)
+
+                    K(P1, 3) = K(P1, 3) + 1
+                    K2(P1, Q6%(P1), 9) = K2(P1, Q6%(P1), 9) + 1
+                    D1 = D1 + 1
+
+                    If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+
+                    Call AddPossessionTime(7, 10)
+
+                    If T <= 0 Then Call ADDTIME: GoTo 3360
+
+                    Return 'aka Exit Sub
+
+            End Select
+
+        End If
+
+    End If
+
+    3902 '
+
+    'Call PBP_Logger(4774)
+
+    If O = 0 Then Call AddPossessionTime(33, 38)
+
+    If O = 0 And G9 <> 0 And T > 40 Then T = T - 4: TP(P1) = TP(P1) + 4
+    If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 90 And Val(Left$(A$(1), 2)) >= 90 Then T = T - 3: TP(P1) = TP(P1) + 3
+
+    If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 56 And Val(Left$(A$(1), 2)) = 56 Then T = T + 3: TP(P1) = TP(P1) - 3
+    If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 57 And Val(Left$(A$(1), 2)) = 57 Then T = T + 3: TP(P1) = TP(P1) - 3
+
+    If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 93 And Val(Left$(A$(1), 2)) >= 93 Then T = T + 3: TP(P1) = TP(P1) - 3
+
+    If O >= 1 And O <= 3 Then TP = 27 - (O * 5) + (Int(Rnd(1) * 5) + 1): T = T - TP: TP(P1) = TP(P1) + TP
+
+    If O >= 4 Then TP = (2 * O) - 5 + (Int(Rnd(1) * 3) + 1): T = T - TP: TP(P1) = TP(P1) + TP
+
+    If T <= 0 Then Call ADDTIME: GoTo 3360
+
+End If
+
+Return
+
+'----------
+
 
 3602 'FIELD GOAL
 
@@ -4128,20 +4407,20 @@ Else
 End If
 
 U$ = A7$(P1, Q7%(P1)) + " TROTS ON TO TRY A FIELD GOAL"
-Call PBP
+Call PBP ': Call PBP_Logger(4293)
 
 U$ = "THIS WILL BE A" + Str$(Int(117 + intY8% - Y + .5)) + " YARD ATTEMPT"
-Call PBP
+Call PBP ': Call PBP_Logger(4296)
 
 U$ = "HE WAITS FOR THE SNAP"
-Call PBP
+Call PBP ': Call PBP_Logger(4299)
 
 I5 = Int(Rnd(1) * 300) + 1
 
 If I5 = 12 Then
 
     U$ = "THERE'S A BAD SNAP FROM CENTER!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4306)
     G = (Int(Rnd(1) * 9) + 6) * -1
 
     3890 '
@@ -4203,7 +4482,7 @@ Else
         3640 '
         K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
         U$ = "KICK IS BLOCKED!!!"
-        Call PBP
+        Call PBP ': Call PBP_Logger(4368)
 
         Call AddPossessionTime(4, 7)
 
@@ -4224,7 +4503,7 @@ Else
                 U$ = AA$(P1) + " RECOVER IT IN THE END ZONE!!"
             End If
 
-            Call PBP
+            Call PBP ': Call PBP_Logger(4389)
 
             X1 = 6
 
@@ -4264,7 +4543,7 @@ Else
                     U$ = AA$(P1) + " TAKE IT INTO THE END ZONE!!"
                 End If
 
-                Call PBP
+                Call PBP ': Call PBP_Logger(4429)
 
                 X1 = 6
 
@@ -4279,7 +4558,7 @@ Else
     K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
 
     U$ = "THE KICK IS UP AND ON ITS WAY"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4444)
 
     If WX%(0) <> P1 Then
         F2 = F2 - Int(Rnd(1) * 7) + 3 - WX%(1)
@@ -4356,7 +4635,7 @@ GoTo 700
 K(P1, 28) = K(P1, 28) + 1
 U$ = "KICK IS BLOCKED!!!"
 
-Call PBP
+Call PBP ': Call PBP_Logger(4521)
 
 Call AddPossessionTime(4, 7)
 
@@ -4371,7 +4650,7 @@ If Y >= 100 Then
     Call CHANGEPOSS
 
     U$ = A$(P1) + " RECOVERS IT IN THE END ZONE!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4536)
 
     X1 = 6
     GoTo 3200
@@ -4389,7 +4668,7 @@ If RN > 60 Then
     Call MOVEBALL
 
     U$ = A$(P1) + " TAKES THE BALL INTO THE END ZONE!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4554)
 
     X1 = 6
 
@@ -4432,12 +4711,12 @@ Call YARDAGE
 
 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
     U$ = U$ + " IN THE END ZONE"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4597)
     Call Touchback
 Else
 
-    If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
-    If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
+    If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(4601)
+    If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP ': Call PBP_Logger(4602)
 
     Call CHANGEPOSS
 
@@ -4462,22 +4741,22 @@ Else
     Call MOVEBALL
 
     U$ = "RETURNED FOR "
-    
+
     If G + Y > 99.99 Then
 
         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-        Call PBP
+        Call PBP ': Call PBP_Logger(4631)
         GoTo 3200
 
     Else
 
         U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-        Call PBP
-        
+        Call PBP ': Call PBP_Logger(4637)
+
         O = 5
         Y = Y + G
         Y1 = 10
-        
+
         If Y >= 90 Then Y1 = 100 - Y
 
     End If
@@ -4490,141 +4769,8 @@ End If
 
 GoTo 700
 
-
 '--------------------
 
-3900 '
-
-If O <> 8 Then
-
-    If G9 <> 0 Then
-
-        3930 '
-        If T <= 120.01 Or Q <> 1 Or Q <> 3 Or Not (T > 159.99 And O = 0) Or Not (T > 147 And O = 1) Or Not (T > 142 And O = 2) Or Not (T > 137 And O = 3) Or Not (T > 126 And O = 4) Or Not (T > 128 And O = 5) Or Not (T > 130 And O = 6) Or Not (T > 132 And O = 7) Then
-
-            U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
-            Call PBP
-
-            If T <= 126.01 And T >= 120.99 Then T = T - 6: TP(P1) = TP(P1) + 6
-
-            If T > 125.99 Then TP(P1) = TP(P1) + (T - 120): T = 120
-
-        End If
-
-    End If
-
-    3901 '
-    If (T <= 120 And Q = 2) Or (T <= 120 And Q >= 4) Then
-
-        3907 '
-        If O < 4 Then
-
-            If T <= 0 Then Call ADDTIME: GoTo 3360
-
-            Call TWOMIN
-
-            Select Case I1
-
-                Case 1:
-                    U$ = "HUDDLE"
-                    Call PBP
-
-                Case 2:
-                    If T1(P1) = 0 Then
-                        'If no timeouts
-                        U$ = "HUDDLE"
-                        Call PBP
-                    Else
-                        U$ = "TIME OUT " + A$(P1) + " - THEY HAVE" + Str$(T1(P1) - 1) + " REMAINING"
-                        Call PBP
-                        T1(P1) = T1(P1) - 1
-                        O = 9
-
-                        Call AddPossessionTime(7, 10)
-
-                        If T <= 0 Then Call ADDTIME: GoTo 3360
-
-                        Return 'aka Exit Sub
-
-                    End If
-
-                Case 3
-
-                    If T1(D) = 0 Then
-                        'If no timeouts
-                        U$ = "HUDDLE"
-                        Call PBP
-                    Else
-                        U$ = "TIME OUT " + A$(D) + " - THEY HAVE" + Str$(T1(D) - 1) + " REMAINING"
-                        Call PBP
-                        T1(D) = T1(D) - 1
-                        O = 9
-
-                        Call AddPossessionTime(7, 10)
-
-                        If T <= 0 Then Call ADDTIME: GoTo 3360
-
-                        Return 'aka Exit Sub
-
-                    End If
-
-                Case 4
-                    If O = 0 Or O = 1 Then
-                        U$ = "HURRY UP"
-                        Call PBP
-                        O = O + 2
-                    End If
-
-                Case 5
-                    U$ = A3$(P1, Q6%(P1)) + " IS TRYING TO GET THE TEAM LINED UP"
-                    Call PBP
-
-                    O = 3
-                    U$ = "HE STEPS BACK AND THROWS IT OUT OF BOUNDS"
-                    Call PBP
-
-                    K(P1, 3) = K(P1, 3) + 1
-                    K2(P1, Q6%(P1), 9) = K2(P1, Q6%(P1), 9) + 1
-                    D1 = D1 + 1
-
-                    If D1 = 3 Then TE%(P1) = TE%(P1) + 1
-
-                    Call AddPossessionTime(7, 10)
-
-                    If T <= 0 Then Call ADDTIME: GoTo 3360
-                    
-                    Return 'aka Exit Sub
-
-            End Select
-
-        End If
-
-    End If
-
-    3902 '
-
-    If O = 0 Then Call AddPossessionTime(33, 38)
-
-    If O = 0 And G9 <> 0 And T > 40 Then T = T - 4: TP(P1) = TP(P1) + 4
-    If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 90 And Val(Left$(A$(1), 2)) >= 90 Then T = T - 3: TP(P1) = TP(P1) + 3
-
-    If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 56 And Val(Left$(A$(1), 2)) = 56 Then T = T + 3: TP(P1) = TP(P1) - 3
-    If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 57 And Val(Left$(A$(1), 2)) = 57 Then T = T + 3: TP(P1) = TP(P1) - 3
-
-    If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 93 And Val(Left$(A$(1), 2)) >= 93 Then T = T + 3: TP(P1) = TP(P1) - 3
-
-    If O >= 1 And O <= 3 Then TP = 27 - (O * 5) + (Int(Rnd(1) * 5) + 1): T = T - TP: TP(P1) = TP(P1) + TP
-
-    If O >= 4 Then TP = (2 * O) - 5 + (Int(Rnd(1) * 3) + 1): T = T - TP: TP(P1) = TP(P1) + TP
-
-    If T <= 0 Then Call ADDTIME: GoTo 3360
-
-End If
-
-Return
-
-
-'--------------------
 'start of a subroutine??
 
 6605 '
@@ -4654,13 +4800,13 @@ U$ = "RETURNED FOR "
 If G + Y > 99.99 Then
 
     U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4821)
 
     S(P1, Q) = S(P1, Q) + 2
     S(P1, 0) = S(P1, 0) + 2
 
     U$ = "GOOD FOR 2 POINTS!!"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4827)
 
     Call DisplayField
     Call SCORE
@@ -4668,7 +4814,7 @@ If G + Y > 99.99 Then
 Else
 
     U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-    Call PBP
+    Call PBP ': Call PBP_Logger(4835)
 
 End If
 
@@ -4705,14 +4851,14 @@ If HT% = 1 Then
 Else
     If endOfGames% = 1 Then
         endOfGames% = 0
+        'Close #7
+        'Close #5
         Call POSTGAME
     End If
 End If
 
 GoTo 700
 
-
 '$INCLUDE: 'KeyInput.BM'
 '$INCLUDE: 'QPProEqu.BM'
 '$INCLUDE: 'GameRoutines.BM'
-

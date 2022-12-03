@@ -11,7 +11,16 @@
 [ ] Title routine to take parameters
 - 1 for the text to use
 - 1 for the actual window title
-[ ] "Does this team have saved stats"??? - update to just detect it!!!
+[ ] Change Pro to support 4 divisions not just 3
+[ ] Stats Considerations
+- "Does this team have saved stats"??? - update to just detect it!!!
+- View Standings - doesn't confirm it's pro / college
 [ ] Develop "Select File" function (for LDR/LIB/etc)
 - should only take a file as a parameter
 - set as function to just return the file name
+[ ] AutoPlay global variable
+	- If AP=1 and u5 = 6 or u5...
+	- Use this conditional once to set a flag
+		- Use that flag later in the game to make decisions
+		- Give the flag a user-friendly name like silentPBP
+	

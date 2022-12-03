@@ -45,13 +45,11 @@ Function FCount% (fileSpec$)
         Close #ff%
         Kill TmpFile$
 
-        'SHARED variable can return the file count
+        ' Shared variable can return the file count
         FCount% = Index%
     End If
 
 End Function
-
-
 
 '-----------------------------------
 ' FileSize Copycat Function
@@ -61,8 +59,6 @@ Function FileSize& (sourceFile$)
     FileSize& = LOF(1)
     Close #1
 End Function
-
-
 
 '-----------------------------------
 ' FUsing Copycat Function
@@ -92,7 +88,7 @@ Function FUsing$ (Number$, Image$, Typ%)
     '                     1 = argument is a STR$() number string
 
     'Notes:
-    '   This function is adapted and slightly altered from 
+    '   This function is adapted and slightly altered from
     '   an idea posted in the QB64 Forum by Fellippe Heitor
 
     shan& = _Source: dhan& = _Dest: than& = _NewImage(256, 1, 0) 'if results may get longer, then raise the 256 value
@@ -108,7 +104,6 @@ Function FUsing$ (Number$, Image$, Typ%)
     _Source shan&: _Dest dhan&: _FreeImage than&
     FUsing$ = res$
 End Function
-
 
 '-----------------------------------
 ' MGetKey Copycat Function
@@ -131,8 +126,6 @@ Function MGetKey (Row%, Col%)
     KeyCode% = CVI(k$ + Chr$(0))
 
 End Function
-
-
 
 '-----------------------------------
 ' Monitor Copycat Function
@@ -184,8 +177,6 @@ Function Monitor% ()
     Monitor% = 12
 End Function
 
-
-
 '-----------------------------------
 ' OneColor Copycat Function
 '-----------------------------------
@@ -196,8 +187,6 @@ Function OneColor% (FGColor%, BGColor%)
     'But this is the doumented function from QPPro
     OneColor% = (FGColor% And 16) * 8 + ((BGColor% And 7) * 16) + (FGColor% And 15)
 End Function
-
-
 
 '-----------------------------------
 ' Reads DIR into file list
@@ -227,7 +216,7 @@ Function READDIR$ (spec$)
             Index% = Index% + 1
             Line Input #ff%, DirList$(Index%)
         Loop
-        DirCount% = Index% 'SHARED variable can return the file count
+        DirCount% = Index% ' Shared variable can return the file count
         Close #ff%
 
         Kill TmpFile$
@@ -237,15 +226,12 @@ Function READDIR$ (spec$)
     READDIR$ = DirList$(Index%)
 End Function
 
-
 '-----------------------------------
 ' AddInt Copycat Subroutine
 '-----------------------------------
 ' NOT IMPLEMENTED
 Sub AddInt (AElement, Value, NumEls)
 End Sub
-
-
 
 ' ------------------------------------------------------------
 ' Subroutine to draw box in Screen Mode 0
@@ -318,8 +304,6 @@ Sub box0 (ULRow%, ULCol%, LRRow%, LRCol%, Char%, FGColor%, BGColor%)
 
 End Sub
 
-
-
 '-----------------------------------
 ' Print NumLock / CapsLock Status
 '-----------------------------------
@@ -344,7 +328,6 @@ Sub CapNum ()
         Print Space$(5) 'Print or erase message
     End If
 
-
     QNumCheck:
     If Num = NumStatus Then GoTo QCapNumExit 'No change since last check
 
@@ -361,8 +344,6 @@ Sub CapNum ()
     Locate V, H 'Restore cursor position
 End Sub
 
-
-
 '-----------------------------------
 ' ClearEOL Copycat Subroutine
 '-----------------------------------
@@ -375,7 +356,6 @@ Sub ClearEOL (FGColor%, BGColor%)
     'Start at the cursor position
     Locate row% - 1, column%
 
-
     'Print all spaces
     '--If using OneColor:
     '--Color (Colr% And 15), ((Colr% And 240) / 16)
@@ -383,8 +363,6 @@ Sub ClearEOL (FGColor%, BGColor%)
     Print Space$(80 - column%)
 
 End Sub
-
-
 
 '-----------------------------------
 ' Get Command Line Subroutine
@@ -423,13 +401,13 @@ Sub Comline (NumArgs%, Args$(), MaxArgs%)
 
 End Sub
 
-
-
 '-----------------------------------
 ' ClearScrn + MsgBox Subroutine
 '-----------------------------------
-Sub CSMsgBox (Message$, Wdth%, Pass)
+Sub CSMsgBox (Message$, MsgWidth%, Pass)
+
     If Len(Message$) Then
+
         Row = CsrLin 'Get the Row Position
 
         ReDim Temp$(23) 'Make temporary array to hold the parsed up lines
@@ -444,30 +422,34 @@ Sub CSMsgBox (Message$, Wdth%, Pass)
             While Mid$(Message$, Strt, 1) = " " 'Skip over blanks
                 Strt = Strt + 1
             Wend
-            ND = Strt + Wdth 'Guess at the end of line
+
+            ND = Strt + MsgWidth% 'Guess at the end of line
+
             'Loop backwards to find
             While Mid$(Message$, ND, 1) <> " " And ND <= MesLen And ND > Strt
                 ND = ND - 1 '  blank space
             Wend
+
             LN = LN + 1 'Increment the Line number
+
             'Pull out the new line
             Temp$(LN) = Mid$(Message$, Strt, ND - Strt)
-            Strt = ND + 1 'Reset starting posit. for
-            '  next line
+            Strt = ND + 1 'Reset starting pos. for next line
         Loop Until ND >= MesLen 'Get more unless @ end of mes
+
         BotRow = Row + LN + 1 'Find the bottom row #
 
         'Save current screen
         oldmode& = _CopyImage(0) 'the 0 value designates the current destination SCREEN
         'PCopy 0, 1
 
-        BoxWdth = Wdth + 4 'Find the outer box width
-        ColPos = 40 - (BoxWdth \ 2) 'Starting pos. for centered box
+        BoxWidth% = MsgWidth% + 4 'Find the outer box width
+        ColPos = 40 - (BoxWidth% \ 2) 'Starting pos. for centered box
         Locate Row, ColPos 'Print the top of box
 
-        MQPrint "É" + String$(Wdth + 2, "Í") + "»", 0, 7
+        MQPrint Chr$(214) + String$(MsgWidth% + 2, 196) + Chr$(183), 0, 7
 
-        Box$ = "º" + Space$(Wdth + 2) + "º" 'Make the box sides
+        Box$ = Chr$(186) + Space$(MsgWidth% + 2) + Chr$(186) 'Make the box sides
 
         For N = 1 To LN 'Print message lines
             Locate N + Row, ColPos
@@ -477,26 +459,27 @@ Sub CSMsgBox (Message$, Wdth%, Pass)
         Next
 
         Locate N + Row, ColPos 'Print the bottom of box
-        MQPrint "È" + String$(Wdth + 2, "Í") + "¼", 0, 7
+        MQPrint Chr$(211) + String$(MsgWidth% + 2, 196) + Chr$(189), 0, 7
 
-        'MPaintBox Row + 1, ColPos + BoxWdth, N + Row, ColPos + BoxWdth + 1, 8
-        'MPaintBox N + Row + 1, ColPos + 2, N + Row + 1, ColPos + BoxWdth + 1, 8
+        'MPaintBox Row + 1, ColPos + BoxWidth%, N + Row, ColPos + BoxWidth% + 1, 8
+        'MPaintBox N + Row + 1, ColPos + 2, N + Row + 1, ColPos + BoxWidth% + 1, 8
         Locate Row,
 
         Pass = 1 'Set flag say we've been here
+
         Erase Temp$ 'Don't need this anymore
 
-    ElseIf Pass = 1 Then 'If we've been here before...
-        'Restore the original screen
-        'PCopy 1, 0
-        Screen oldmode&
+    Else
+        If Pass = 1 Then 'If we've been here before...
+            'Restore the original screen
+            'PCopy 1, 0
+            Screen oldmode&
 
-        Pass = 0 'Reset flag for next call
+            Pass = 0 'Reset flag for next call
+        End If
     End If
 
 End Sub
-
-
 
 '-----------------------------------
 ' FCopy Copycat Subroutine
@@ -519,7 +502,7 @@ Sub FCopy (srcFile$, dstFile$, Buff$, copyErr%)
         size& = LOF(ffSrc)
         BufferSize& = 1024
         Buff$ = Space$(BufferSize&)
-     
+
         For o& = 1 To size& Step BufferSize&
             If o& + BufferSize& - 1 > size& Then Buffer$ = Space$(size& - o& + 1)
             Get ffSrc, , Buff$
@@ -538,8 +521,6 @@ Sub FCopy (srcFile$, dstFile$, Buff$, copyErr%)
 
 End Sub
 
- 
-
 '-----------------------------------
 ' InitInt Copycat Subroutine
 '-----------------------------------
@@ -547,18 +528,12 @@ Sub InitInt (AElement, StartValue, NumEls)
     ' NOT IMPLEMENTED / OBSOLETE
 End Sub
 
-
-
 '-----------------------------------
 ' ISortI Copycat Subroutine
 '-----------------------------------
 Sub ISortI (Element%, IndexElement%, NumElements%, Direction%)
     ' NOT IMPLEMENTED / OBSOLETE
 End Sub
-
-
-
-
 
 '-----------------------------------
 ' MAMenu Copycat Subroutine
@@ -613,7 +588,7 @@ Sub MAMenu (menuChoices$(), Selected%, Start%, Count%, ScanCode%, ItemFGColor%, 
     'Selected% = 1
 
     Dim itemLength%, numberItems%, maxItemsPerScreen%
-	Dim ColWidth%, TotalColsData%
+    Dim ColWidth%, TotalColsData%
 
     maxItemsPerScreen% = NumRows% * NumCols%
     If maxItemsPerScreen% > Count% Then maxItemsPerScreen% = Count%
@@ -646,8 +621,6 @@ Sub MAMenu (menuChoices$(), Selected%, Start%, Count%, ScanCode%, ItemFGColor%, 
     ScanCode% = Asc(UserIn$)
 
     Exit Sub
-
-
 
     '*** Draw the menu - obviously ***
     DrawMenu:
@@ -702,8 +675,6 @@ Sub MAMenu (menuChoices$(), Selected%, Start%, Count%, ScanCode%, ItemFGColor%, 
     Print menuChoices$(Selected%);
 
     Return
-
-
 
     '*** Get and process the user input ***
     UserInput:
@@ -772,9 +743,7 @@ Sub MAMenu (menuChoices$(), Selected%, Start%, Count%, ScanCode%, ItemFGColor%, 
 
     Return
 
-
 End Sub
-
 
 '-----------------------------------
 ' MMenuVert Copycat Subroutine
@@ -832,18 +801,17 @@ Sub MMenuVert (menuChoices$(), Selected%, Start%, ScanCode%, ItemFGColor%, ItemB
         If UserIn$ = "1" Or UserIn$ = Chr$(79) Then Selected% = UBound(MenuItem)
 
         GoSub DrawMenu
-		
+
     Loop Until UserIn$ = Chr$(13) Or UserIn$ = Chr$(27)
 
-	ScanCode% = Asc(UserIn$)
+    ScanCode% = Asc(UserIn$)
 
     Exit Sub
-
 
     DrawMenu:
     'Draw the menu
     Locate Row%, Column%
-    For Count = Start% To numberItems% '(Start% + NumRows%) 
+    For Count = Start% To numberItems% '(Start% + NumRows%)
         If Count = Selected% Then
             Color HighlightFGColor%, HighlightBGColor%
         Else
@@ -854,7 +822,6 @@ Sub MMenuVert (menuChoices$(), Selected%, Start%, ScanCode%, ItemFGColor%, ItemB
     Next Count
     Return
 
-
     MoveUp:
     If Selected% = 1 Then
         Selected% = UBound(menuChoices$)
@@ -862,7 +829,6 @@ Sub MMenuVert (menuChoices$(), Selected%, Start%, ScanCode%, ItemFGColor%, ItemB
         Selected% = Selected% - 1
     End If
     Return
-
 
     MoveDown:
     If Selected% = UBound(menuChoices$) Then
@@ -872,10 +838,7 @@ Sub MMenuVert (menuChoices$(), Selected%, Start%, ScanCode%, ItemFGColor%, ItemB
     End If
     Return
 
-
 End Sub
-
-
 
 '-----------------------------------
 ' MPaintBox Copycat Subroutine
@@ -885,8 +848,6 @@ Sub MPaintBox (ULRow%, ULCol%, LRRow%, LRCol%, Colr%)
 
     _MouseShow "DEFAULT"
 End Sub
-
-
 
 '-----------------------------------
 ' MQPrint Copycat Subroutine
@@ -901,8 +862,6 @@ Sub MQPrint (X$, FGColor%, BGColor%)
     Locate V, H
     _MouseShow "DEFAULT"
 End Sub
-
-
 
 '-----------------------------------
 ' QuickSort Subroutine
@@ -923,8 +882,6 @@ Sub QuickSort (start As Integer, finish As Integer, array() As Single)
     If Lo < finish Then Call QuickSort(Lo, finish, array())
 End Sub
 
-
-
 '-----------------------------------
 ' NumIn Subroutine
 '-----------------------------------
@@ -935,9 +892,9 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
 
     X$ = String$(Max, "#") 'build a formatting string
     If Places Then X$ = X$ + "." + String$(Places, "#")
-       
+
     X$ = FUsing$(Str$(Number#), X$, 1) 'let FUsing do the real work
-       
+
     Zero = InStr(X$, "0") 'did FUsing leave a leading 0?
     If Left$(LTrim$(X$), 1) = "0" Then Mid$(X$, Zero, 1) = " " 'yes, delete it
 
@@ -952,23 +909,24 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
     Call QPrint(X$, FGColor%, BGColor%, -1) 'print it
     Locate , Pos(0) + Max - ALength + 1, 1 'locate and turn on the cursor
 
-
     NGetKey:
-    Call CapNum 'print Cap/Num if active
-    If Curpo > Len(X$) GoTo NEnter 'field full, handle as Enter
-    If Mid$(X$, Curpo, 1) = "." Then 'cursor is on the point, skip
-        Locate , Pos(0) + 1
-        Curpo = Curpo + 1
-    End If
+    Do
+        Call CapNum 'print Cap/Num if active
 
-    A$ = InKey$
-    If A$ = "" GoTo NGetKey
+        If Curpo > Len(X$) GoTo NEnter 'field full, handle as Enter
+        If Mid$(X$, Curpo, 1) = "." Then 'cursor is on the point, skip
+            Locate , Pos(0) + 1
+            Curpo = Curpo + 1
+        End If
+
+        A$ = InKey$
+    Loop Until A$ <> "" 'GoTo NGetKey
+
     If Len(A$) = 1 GoTo NRegularKey
 
     A$ = Right$(A$, 1) 'extended key, get the code
     On InStr(Chr$(15) + ".HKMPS", A$) GOTO NShiftTab, NClear, NUp, NLeft, NRight, NDown, NDel
     GoTo NGetKey 'none of the above, ignore
-
 
     NShiftTab: 'this space is provided to put
     '  your own handler for the
@@ -977,12 +935,10 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
     ExitCode = 1 'user wants to go back a field
     GoTo NEnter 'handle as if it were Enter
 
-
     NClear:
     Locate , Pos(0) - (Curpo - 1) 'position cursor at beginning
     Number# = 0# 'clear the field
     GoTo NInitialize
-
 
     NLeft:
     Insrt = 0 'cancel insert mode
@@ -1001,21 +957,17 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
 
     GoTo NGetKey
 
-
     NRight:
     Insrt = 0 'cancel insert mode
     Curpo = Curpo + 1
     Locate , Pos(0) + 1 'advance the cursor
     GoTo NGetKey
 
-
     NDown:
     GoTo NEnter 'handle as Enter
 
-
     NDel:
     GoTo NSB2 'handle as a space
-
 
     NRegularKey:
     If A$ < " " Then 'a control key
@@ -1039,7 +991,6 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
         GoTo NGetKey 'get another keypress
     End If
 
-
     NSpaceBar:
     If A$ = " " Then
         Insrt = 0
@@ -1061,7 +1012,6 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
 
     If A$ < "0" Or A$ > "9" GoTo NGetKey 'invalid character
 
-
     NNumericOkay:
     Call QPrint(A$, FGColor%, BGColor%, -1) 'print the digit
     If Insrt GoTo NHandleInsert 'special treatment for insert
@@ -1069,7 +1019,6 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
     Curpo = Curpo + 1 'show the cursor being forward
     Locate , Pos(0) + 1
     GoTo NGetKey
-
 
     NHandleInsert:
     Locate , Pos(0) - Curpo + 1 'back the cursor to beginning
@@ -1079,20 +1028,17 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
         QPrint Mid$(X$, A, 1), FGColor%, BGColor%, -1 'and reprint them in new place
         Locate , Pos(0) + 1
     Next
-     
+
     Mid$(X$, Curpo, 1) = A$ 'assign the digit
     Call QPrint(A$, FGColor%, BGColor%, -1)
     If Asc(X$) = 32 GoTo NGetKey 'field not full, get another
     GoTo NRight 'field full, do a cursor right
 
-
     NBackSpace:
     GoTo NLeft 'handle as Left-Arrow key
 
-
     NEscape:
     ExitCode = 2
-
 
     NTabKey: 'you may handle Tab separately
     '  if you'd like
@@ -1101,8 +1047,6 @@ Sub NumIn (Number#, Max, XCode, FGColor%, BGColor%)
     Locate , , 0 'turn off the cursor
 
 End Sub
-
-
 
 '-----------------------------------
 ' QPrint Copycat Subroutine
@@ -1131,8 +1075,6 @@ Sub QPrint (X$, FGColor%, BGColor%, Page%)
     'Restore cursor position
     Locate V, H
 End Sub
-
-
 
 '-----------------------------------
 ' ReadFile Copycat Subroutine
@@ -1167,8 +1109,6 @@ Sub ReadFile (fileList$())
     Kill TmpFile$
 End Sub
 
-
-
 '-----------------------------------
 ' SplitColor Copycat Subroutine
 '-----------------------------------
@@ -1181,8 +1121,6 @@ Sub SplitColor (Colr%, FG%, BG%)
     BG% = ((Colr% And 240) / 16)
 
 End Sub
-
-
 
 '-----------------------------------
 ' Text Input Subroutine
@@ -1212,7 +1150,6 @@ Sub TextIn (T$, Max%, NumOnly%, CapsOn%, ExitCode%, FGColor%, BGColor%)
 
     GoSub TInsertOff 'Set cursor size according to display
 
-
     TGetKey:
     Call CapNum 'display Cap/Num if active
 
@@ -1228,11 +1165,9 @@ Sub TextIn (T$, Max%, NumOnly%, CapsOn%, ExitCode%, FGColor%, BGColor%)
     On InStr(Chr$(15) + ".GHKMOPRSstu" + Chr$(19), A$) GOTO TShiftTab, TClear, THome, TUp, TLeft, TRight, TEndKey, TDown, TIns, TDel, TCtrlLeft, TCtrlRight, TCtrlEnd, TRestore
     GoTo TGetKey 'none of the above, get again
 
-
     TShiftTab:
     ExitCode% = 1 'User wants to go to previous field
     GoTo TEnter 'Behavior is similar to the Enter key
-
 
     TClear:
     X$ = "" 'Alt-C, erase the current string
@@ -1240,17 +1175,14 @@ Sub TextIn (T$, Max%, NumOnly%, CapsOn%, ExitCode%, FGColor%, BGColor%)
     Locate , Pos(0) - (CursorPos - 1)
     GoTo TC 'and start all over again
 
-
     THome:
     Locate , Pos(0) - (CursorPos - 1) 'put cursor at beginning of line
     CursorPos = 1 'show cursor as being on 1st character
     GoTo TGetKey
 
-
     TUp:
     ExitCode% = 1 'user wants to go back a field
     GoTo TEnter 'handle as if it were the Enter key
-
 
     TLeft:
     If CursorPos = 1 GoTo TShiftTab 'cursor is on 1st character, handle as Shift-Tab
@@ -1414,7 +1346,7 @@ Sub TextIn (T$, Max%, NumOnly%, CapsOn%, ExitCode%, FGColor%, BGColor%)
 
     TTabKey: 'reserved for your Tab routine if you
     '  want to handle it differently
-	
+
     TEnter:
     GoSub TInsertOff 'clear insert, restore cursor size
     X$ = Left$(X$, Length) 'retain only the current length
@@ -1438,10 +1370,7 @@ Sub TextIn (T$, Max%, NumOnly%, CapsOn%, ExitCode%, FGColor%, BGColor%)
     End If
     Return
 
-
 End Sub
-
-
 
 '-----------------------------------
 ' Yes / No Input Routine
@@ -1450,7 +1379,6 @@ Sub YesNoB (YN$, ExitCode, FGColor%, BGColor%)
     '********** YESNOB.BAS - BASIC yes/no input subprogram
 
     'Copyright (c) 1987 Ethan Winer
-
 
     '----- entry parameters
     '
@@ -1476,7 +1404,6 @@ Sub YesNoB (YN$, ExitCode, FGColor%, BGColor%)
     Color FGColor%, BGColor%: Print X$;
     Locate , Pos(0) - 1, 1
 
-
     YGetKey:
     Call CapNum 'print Cap/Num if active
     X$ = InKey$
@@ -1491,7 +1418,6 @@ Sub YesNoB (YN$, ExitCode, FGColor%, BGColor%)
         GoTo YD2
     End If
 
-
     If Len(X$) = 2 Then 'extended key
         X$ = Right$(X$, 1)
         If X$ = "P" Or X$ = "M" Then GoTo YD2 'Down arrow, Right arrow
@@ -1503,7 +1429,6 @@ Sub YesNoB (YN$, ExitCode, FGColor%, BGColor%)
 
     GoTo YGetKey
 
-
     YDone:
     If X$ > "Y" Then X$ = Chr$(Asc(X$) - 32) 'capitalize if necessary
     YN$ = X$
@@ -1513,7 +1438,6 @@ Sub YesNoB (YN$, ExitCode, FGColor%, BGColor%)
     Locate , , 0
 
 End Sub
-
 
 '-----------------------------------
 ' Lts2Menu Subroutine
@@ -1690,3 +1614,4 @@ Sub Lts2Menu (Item$(), Prompt$(), Choice%, FGColor%, BGColor%)
     Erase Break%, ScrBuf%
 
 End Sub
+
