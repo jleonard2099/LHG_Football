@@ -68,12 +68,12 @@ Sub SEEPRO ()
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
             If ExitCode% <> 27 Then
-				targetFile$ = RTrim$(targetFile$)
-				WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-				WE$ = Left$(WE$, 8)
+                targetFile$ = RTrim$(targetFile$)
+                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+                WE$ = Left$(WE$, 8)
 
-                Call LoadLeaderFiles_Pro(FF$, D1$, D2$, D3$, WE$)
-                Call StatOptions_Pro(FF$, D1$, D2$, D3$)
+                Call LoadLeaderFiles_Pro(FF$, WE$)
+                Call StatOptions_Pro(FF$)
 
             End If
 
@@ -88,7 +88,7 @@ End Sub
 '       LoadLeaderFiles_Pro Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Pro (FF$, D1$, D2$, D3$, WE$)
+Sub LoadLeaderFiles_Pro (leagueName$, WE$)
 
     Shared compZ2$(), compZ3$()
     Shared P$(), TM$(), TR$()
@@ -97,8 +97,10 @@ Sub LoadLeaderFiles_Pro (FF$, D1$, D2$, D3$, WE$)
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
+    Shared D1$, D2$, D3$
+
     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-    Input #2, FF$, D1$, D2$, D3$
+    Input #2, leagueName$, D1$, D2$, D3$
     Close 2
 
     D1$ = PadRight$(D1$, 8)
@@ -309,7 +311,7 @@ End Sub
 '       StatOptions_Pro Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatOptions_Pro (FF$, D1$, D2$, D3$)
+Sub StatOptions_Pro (leagueName$)
 
     Do
         Cls
@@ -351,17 +353,17 @@ Sub StatOptions_Pro (FF$, D1$, D2$, D3$)
             Case "F":
                 X1 = 1
                 Call StatFilePrompt_Pro(SF$)
-                Call StatsToFile_Pro(X1, SF$, FF$, D1$, D2$, D3$)
+                Call StatsToFile_Pro(X1, SF$, leagueName$)
 
             Case "P":
-                Call StatsToFile_Pro(X1, SF$, FF$, D1$, D2$, D3$)
+                Call StatsToFile_Pro(X1, SF$, leagueName$)
 
             Case "S":
-                Call StatsToScreen_Pro(FF$, D1$, D2$)
+                Call StatsToScreen_Pro(leagueName$)
         End Select
 
-		Cls
-		
+        Cls
+
         JJ = 4
         Locate 6, 8: Color 15, 1
 
@@ -373,16 +375,17 @@ Sub StatOptions_Pro (FF$, D1$, D2$, D3$)
         Next
 
         Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
+        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
+        Locate 8
         U$ = "VIEW LEAGUE STATS AGAIN (YN)"
         Locate , (80 - Len(U$)) / 2
         Print U$
         Color 15, 0
-		
-		Do
-			A$ = GetKeyPress$
-		Loop Until UCase$(A$) = "Y" Or Ucase$(A$) = "N"
+
+        Do
+            A$ = GetKeyPress$
+        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
     Loop Until UCase$(A$) = "N"
 
@@ -392,7 +395,7 @@ End Sub
 '     StatsToScreen_Pro Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Pro (FF$, D1$, D2$)
+Sub StatsToScreen_Pro (leagueName$)
 
     Shared compZ2$(), compZ3$()
     Shared P$(), TM$(), TR$()
@@ -400,6 +403,8 @@ Sub StatsToScreen_Pro (FF$, D1$, D2$)
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
+
+    Shared D1$, D2$, D3$
 
     Cls
 
@@ -482,7 +487,7 @@ Sub StatsToScreen_Pro (FF$, D1$, D2$)
 
     For P = 21 To 30:
 
-        If P$(P) <> "" Then
+        If P$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 6 - RT), 20
@@ -935,7 +940,7 @@ Sub StatsToScreen_Pro (FF$, D1$, D2$)
     CA = 7
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) = "" Then
+        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
@@ -1050,7 +1055,7 @@ End Sub
 '       StatsToFile_Pro Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Pro (X1, statFile$, FF$, D1$, D2$, D3$)
+Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
     Shared compZ2$(), compZ3$()
     Shared P$(), TM$(), TR$()
@@ -1058,6 +1063,8 @@ Sub StatsToFile_Pro (X1, statFile$, FF$, D1$, D2$, D3$)
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
+
+    Shared D1$, D2$, D3$
 
     Color 15, 0
 
@@ -1069,7 +1076,7 @@ Sub StatsToFile_Pro (X1, statFile$, FF$, D1$, D2$, D3$)
         Open statFile$ + ".RPT" For Output As #2
     End If
 
-    Print #2, FF$ + " OVERALL RECORD"
+    Print #2, leagueName$ + " OVERALL RECORD"
     Print #2, D1$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 

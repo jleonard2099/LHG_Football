@@ -8,79 +8,90 @@ Sub REC (recordOption%)
     Select Case recordOption%
         Case 1
             recordsFile$ = "RECORDS.PFB"
-        Case 2,3
+        Case 2, 3
             recordsFile$ = "RECORDS.CFB"
     End Select
 
-    J = 6
+    Erase BRC!
+    Erase BRC$
+    Erase TRC!
+    Erase TRC$
 
-    Locate 8, 8: Color 15, 1
+    Do
 
-    'Print box top
-    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-    'Print box sides
-    For II = 1 To J
-    Locate 8 + II, 8
-    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    'Print box bottom
-    Locate 9 + J, 8
-    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-    Call TITLE_LEADERS
-
-    If  Not _FileExists(diskPaths$(1) + recordsFile$) Then
-
-        Locate 9, 30: Print "ERROR::: UNABLE TO LOCATE RECORDS"
-        I$ = GetKeyPress
-
-    Else
-
-        Open diskPaths$(1) + recordsFile$ For Input As #1
-
-        For I = 0 To 50
-            Input #1, BRC!(I)
-            Input #1, BRC$(I, 0)
-            Input #1, BRC$(I, 1)
-            Input #1, BRC$(I, 2)
-        Next
-
-        For I = 0 To 50
-            Input #1, TRC!(I)
-            Input #1, TRC$(I)
-        Next
-
-        Close 1
-
-        Do
-
-            Color 0, 0
-            Cls
-
-            Locate 9, 30: Color 3, 1: Print "SEASON RECORDS MENU": Print
-            Locate , 15: Color 15: Print "V";: Color 7: Print "IEW RECORDS"
-            Locate , 15: Color 15: Print "P";: Color 7: Print "RINT RECORDS"
-            Locate , 15: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
-
+        If Not _FileExists(diskPaths$(1) + recordsFile$) Then
+            Locate 10, 8
+            Call CSMsgBox("ERROR::: UNABLE TO LOCATE RECORDS", 23, Pass)
             I$ = GetKeyPress$
+            Call CSMsgBox("", 0, Pass)
+        Else
 
-            If I$ <> Chr$(27) Then
-                Select Case UCase$(I$)
-                    Case "V"
-                        Call ViewRecords
+            Open diskPaths$(1) + recordsFile$ For Input As #1
 
-                    Case "P"
-                        Call PrintRecords
-                End Select
-            End If
+            For I = 0 To 50
+                Input #1, BRC!(I)
+                Input #1, BRC$(I, 0)
+                Input #1, BRC$(I, 1)
+                Input #1, BRC$(I, 2)
+            Next
 
-        Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
+            For I = 0 To 50
+                Input #1, TRC!(I)
+                Input #1, TRC$(I)
+            Next
 
-    End If
+            Close 1
 
-    Cls
+            Do
+
+                Color 0, 0
+
+                Cls
+
+                J = 6
+
+                Locate 8, 8: Color 15, 1
+
+                'Print box top
+                Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+                'Print box sides
+                For II = 1 To J
+                    Locate 8 + II, 8
+                    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+                Next
+
+                'Print box bottom
+                Locate 9 + J, 8
+                Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+                Call TITLE_LEADERS
+
+
+                Locate 9, 30: Color 3, 1: Print "SEASON RECORDS MENU": Print
+                Locate , 15: Color 15: Print "V";: Color 7: Print "IEW RECORDS"
+                Locate , 15: Color 15: Print "P";: Color 7: Print "RINT RECORDS"
+                Locate , 15: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
+
+                I$ = GetKeyPress$
+
+                If I$ <> Chr$(27) Then
+                    Select Case UCase$(I$)
+                        Case "V"
+                            Call ViewRecords
+
+                        Case "P"
+                            Call PrintRecords
+                    End Select
+                End If
+
+            Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
+
+        End If
+
+        Cls
+
+    Loop Until Count% = 0 Or UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
@@ -95,17 +106,23 @@ Sub ViewRecords ()
     Shared BRC!(), TRC!()
 
     Color 0, 0
+
     Cls
+
     J = 20
 
-    Locate 1, 1: Color 15, 4
+    Locate 1, 1
+    Color 15, 4
     Print " " + Chr$(214); String$(73, 196); Chr$(183) + " ";
-    For II = 1 To J: 
-        Color 15, 4: Locate 1 + II, 1: Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 4: Print String$(2, 177)
+    For II = 1 To J:
+        Color 15, 4
+        Locate 1 + II, 1
+        Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 4: Print String$(2, 177)
     Next
 
     Color 15, 4: Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";: Color 7, 4: Print String$(2, 177)
-    Locate , 3: Print String$(77, 177)
+    Locate , 3
+    Print String$(77, 177)
 
     Color 15
     Locate 2, 23: Print "******* INDIVIDUAL RECORDS *******"
@@ -137,7 +154,10 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -166,7 +186,10 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -194,15 +217,21 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21
+        Locate I, 4
         Print Space$(72)
     Next
 
-    Color 0, 0: Cls: J = 20
+    Color 0, 0
+    Cls
+
+    J = 20
 
     Locate 1, 1: Color 15, 1
     Print " " + Chr$(214); String$(73, 196); Chr$(183) + " ";
-    For II = 1 To J: 
+    For II = 1 To J:
         Color 15, 1: Locate 1 + II, 1: Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 1: Print String$(2, 177)
     Next
 
@@ -244,7 +273,10 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -268,7 +300,9 @@ Sub ViewRecords ()
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
-    For I = 4 To 21: Locate I, 4
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -301,7 +335,10 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -318,7 +355,10 @@ Sub ViewRecords ()
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-    For I = 4 To 21: Locate I, 4
+
+    'Clear existing categories, leaving border
+    For I = 4 To 21:
+        Locate I, 4
         Print Space$(72)
     Next
 
@@ -485,4 +525,3 @@ Sub PrintRecords ()
     LPrint Chr$(12)
 
 End Sub
-

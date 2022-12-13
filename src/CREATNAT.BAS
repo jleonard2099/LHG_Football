@@ -198,15 +198,15 @@ Sub AddConference (targetFile$)
             Call CSMsgBox("", 0, Pass)
         Else
 
-            ReDim leagueFiles$(0 To Count%)
+            ReDim conferenceFiles$(0 To Count%)
 
             For X = 1 To Count%
-                leagueFiles$(X) = Space$(12)
+                conferenceFiles$(X) = Space$(12)
             Next
 
-            leagueFiles$(0) = Spec$
+            conferenceFiles$(0) = Spec$
 
-            Call ReadFile(leagueFiles$())
+            Call ReadFile(conferenceFiles$())
 
             Do
                 Cls
@@ -230,11 +230,11 @@ Sub AddConference (targetFile$)
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then 'Exit Sub
-                    targetFile$ = leagueFiles$(Selection%)
+                    targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
                     Do
                         Locate , 33: Print "ANY CHANGE (YN)";
@@ -276,7 +276,7 @@ Sub ReviewConf_Natl (targetFile$)
         If Count% = 0 Then
 
             Locate 10, 8
-            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
 
@@ -298,7 +298,7 @@ Sub ReviewConf_Natl (targetFile$)
                 Cls
                 Locate , 28
                 Color 14
-                Print "SELECT LEAGUE TO SCHEDULE": Color 15
+                Print "SELECT CONFERENCE TO SCHEDULE": Color 15
                 Selection% = 1
                 Start% = 1
                 FileFGColr% = 15: FileBGColr% = 1
@@ -311,7 +311,7 @@ Sub ReviewConf_Natl (targetFile$)
                 Locate 25, 1
                 Color 14
                 Print "ENTER";: Color 15
-                Print "-SELECTS LEAGUE";
+                Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
                 MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%

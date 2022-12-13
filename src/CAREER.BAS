@@ -438,7 +438,7 @@ Sub CreateMergeInitial ()
                 'If JX = 0 Then 705
 
                 Locate 20, 20: Color 15: Print "MERGING CAREER STATS . . . . PLEASE WAIT"
-                Locate 20, 20: Print "                                                  "
+                Locate 20, 20: Print Space$(50)
 
                 Open diskPaths$(1) + Z$ + ".CAR" For Output As #2
                 Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
@@ -487,9 +487,9 @@ Sub ViewPrintCareer ()
     Shared PRC$(), PUC$(), QBC$()
     Shared RBR$(), WRC$()
 
-    Shared DFYR(), FGYR(), KRYR()
-    Shared PRYR(), PUYR(), QBYR()
-    Shared RBYR(), WRYR()
+    Shared DFYR%(), FGYR%(), KRYR%()
+    Shared PRYR%(), PUYR%(), QBYR%()
+    Shared RBYR%(), WRYR%()
 
     Shared DFFC!(), FGGC!(), KRRC!()
     Shared PRRC!(), PUUC!(), QBBC!()
@@ -509,12 +509,12 @@ Sub ViewPrintCareer ()
 
         Else
 
-            ReDim conferenceLeaderFiles$(0 To Count%)
+            ReDim careerLeaderFiles$(0 To Count%)
             For X = 1 To Count%
-                conferenceLeaderFiles$(X) = Space$(12)
+                careerLeaderFiles$(X) = Space$(12)
             Next
-            conferenceLeaderFiles$(0) = Spec$
-            Call ReadFile(conferenceLeaderFiles$())
+            careerLeaderFiles$(0) = Spec$
+            Call ReadFile(careerLeaderFiles$())
 
             Do
                 Cls
@@ -538,12 +538,12 @@ Sub ViewPrintCareer ()
                 Print "-SELECTS FILE";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceLeaderFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu careerLeaderFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% = 27 Then Exit Sub
 
-                targetFile$ = conferenceLeaderFiles$(Selection%)
+                targetFile$ = careerLeaderFiles$(Selection%)
                 Locate 2, 33: Print targetFile$
                 Locate , 33: Print "ANY CHANGE (YN)";
                 Color 15, 0
@@ -558,19 +558,19 @@ Sub ViewPrintCareer ()
             ZZ$ = Left$(targetFile$, Len(targetFile$) - 4)
 
             Open diskPaths$(1) + ZZ$ + ".CLD" For Input As #1
-            For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR(I): Next
+            For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
             Input #1, RBR$(0), RBR$(1)
-            For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR(I): Next
+            For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
             Input #1, WRR$
-            For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR(I): Next
+            For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR%(I): Next
             Input #1, QBR$
-            For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR(I): Next
+            For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR%(I): Next
             Input #1, KRR$
-            For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR(I): Next
+            For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR%(I): Next
             Input #1, PRR$
-            For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR(I): Next
-            For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR(I): Next
-            For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR(I): Next
+            For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR%(I): Next
+            For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR%(I): Next
+            For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
             Close #1
 
             Cls
@@ -587,41 +587,41 @@ Sub ViewPrintCareer ()
                     Cls
                     Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
                     Color 3: Print "RUSHING ATTEMPTS";
-                    Color 7: Print Tab(32); Using "####"; RBBC!(0);: Print Tab(50); careerRBC$(0);: Print Tab(64); RBYR(0)
+                    Color 7: Print Tab(32); Using "####"; RBBC!(0);: Print Tab(50); careerRBC$(0);: Print Tab(64); RBYR%(0)
                     Color 3: Print "RUSHING YARDS";
-                    Color 7: Print Tab(32); Using "####"; RBBC!(1);: Print Tab(50); careerRBC$(1);: Print Tab(64); RBYR(1)
+                    Color 7: Print Tab(32); Using "####"; RBBC!(1);: Print Tab(50); careerRBC$(1);: Print Tab(64); RBYR%(1)
                     Color 3: Print "RUSHING AVERAGE";
-                    Color 7: Print Tab(32); Using "##.#"; RBBC!(2);: Print Tab(50); careerRBC$(2);: Print Tab(64); RBYR(2)
+                    Color 7: Print Tab(32); Using "##.#"; RBBC!(2);: Print Tab(50); careerRBC$(2);: Print Tab(64); RBYR%(2)
                     Color 3: Print "RUSHING TOUCHDOWNS";
-                    Color 7: Print Tab(33); Using "###"; RBBC!(3);: Print Tab(50); careerRBC$(3);: Print Tab(64); RBYR(3)
+                    Color 7: Print Tab(33); Using "###"; RBBC!(3);: Print Tab(50); careerRBC$(3);: Print Tab(64); RBYR%(3)
                     Color 3: Print "LONGEST RUN";
-                    Color 7: Print Tab(33); Using "###"; RBBC!(8);: Print Tab(36); RBR$(0);: Print Tab(50); careerRBC$(8);: Print Tab(64); RBYR(8)
+                    Color 7: Print Tab(33); Using "###"; RBBC!(8);: Print Tab(36); RBR$(0);: Print Tab(50); careerRBC$(8);: Print Tab(64); RBYR%(8)
                     Color 3: Print "RECEPTIONS (BACKS)";
-                    Color 7: Print Tab(32); Using "####"; RBBC!(4);: Print Tab(50); careerRBC$(4);: Print Tab(64); RBYR(4)
+                    Color 7: Print Tab(32); Using "####"; RBBC!(4);: Print Tab(50); careerRBC$(4);: Print Tab(64); RBYR%(4)
                     Color 3: Print "RECEIVING YARDS (BACKS)";
-                    Color 7: Print Tab(32); Using "####"; RBBC!(5);: Print Tab(50); careerRBC$(5);: Print Tab(64); RBYR(5)
+                    Color 7: Print Tab(32); Using "####"; RBBC!(5);: Print Tab(50); careerRBC$(5);: Print Tab(64); RBYR%(5)
                     Color 3: Print "RECEIVING AVERAGE (BACKS)";
-                    Color 7: Print Tab(32); Using "##.#"; RBBC!(6);: Print Tab(50); careerRBC$(6);: Print Tab(64); RBYR(6)
+                    Color 7: Print Tab(32); Using "##.#"; RBBC!(6);: Print Tab(50); careerRBC$(6);: Print Tab(64); RBYR%(6)
                     Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";
-                    Color 7: Print Tab(32); Using " ###"; RBBC!(7);: Print Tab(50); careerRBC$(7);: Print Tab(64); RBYR(7)
+                    Color 7: Print Tab(32); Using " ###"; RBBC!(7);: Print Tab(50); careerRBC$(7);: Print Tab(64); RBYR%(7)
                     Color 3: Print "LONGEST RECEPTION (BACKS)";
-                    Color 7: Print Tab(33); Using "###"; RBBC!(9);: Print Tab(37); RBR$(1);: Print Tab(50); careerRBC$(9);: Print Tab(64); RBYR(9)
+                    Color 7: Print Tab(33); Using "###"; RBBC!(9);: Print Tab(37); RBR$(1);: Print Tab(50); careerRBC$(9);: Print Tab(64); RBYR%(9)
                     Color 3: Print "RECEPTIONS";
-                    Color 7: Print Tab(32); Using "####"; WRRC!(0);: Print Tab(50); WRC$(0);: Print Tab(64); WRYR(0)
+                    Color 7: Print Tab(32); Using "####"; WRRC!(0);: Print Tab(50); WRC$(0);: Print Tab(64); WRYR%(0)
                     Color 3: Print "RECEIVING YARDS";
-                    Color 7: Print Tab(32); Using "####"; WRRC!(1);: Print Tab(50); WRC$(1);: Print Tab(64); WRYR(1)
+                    Color 7: Print Tab(32); Using "####"; WRRC!(1);: Print Tab(50); WRC$(1);: Print Tab(64); WRYR%(1)
                     Color 3: Print "RECEIVING AVERAGE";
-                    Color 7: Print Tab(32); Using "##.#"; WRRC!(2);: Print Tab(50); WRC$(2);: Print Tab(64); WRYR(2)
+                    Color 7: Print Tab(32); Using "##.#"; WRRC!(2);: Print Tab(50); WRC$(2);: Print Tab(64); WRYR%(2)
                     Color 3: Print "RECEIVING TOUCHDOWNS";
-                    Color 7: Print Tab(32); Using " ###"; WRRC!(3);: Print Tab(50); WRC$(3);: Print Tab(64); WRYR(3)
+                    Color 7: Print Tab(32); Using " ###"; WRRC!(3);: Print Tab(50); WRC$(3);: Print Tab(64); WRYR%(3)
                     Color 3: Print "LONGEST RECEPTION";
-                    Color 7: Print Tab(32); Using " ###"; WRRC!(4);: Print Tab(36); WRR$;: Print Tab(50); WRC$(4);: Print Tab(64); WRYR(4)
+                    Color 7: Print Tab(32); Using " ###"; WRRC!(4);: Print Tab(36); WRR$;: Print Tab(50); WRC$(4);: Print Tab(64); WRYR%(4)
                     Color 3: Print "COMPLETIONS";
-                    Color 7: Print Tab(32); Using "####"; QBBC!(0);: Print Tab(50); QBC$(0);: Print Tab(64); QBYR(0)
+                    Color 7: Print Tab(32); Using "####"; QBBC!(0);: Print Tab(50); QBC$(0);: Print Tab(64); QBYR%(0)
                     Color 3: Print "ATTEMPTS";
-                    Color 7: Print Tab(32); Using "####"; QBBC!(1);: Print Tab(50); QBC$(1);: Print Tab(64); QBYR(1)
+                    Color 7: Print Tab(32); Using "####"; QBBC!(1);: Print Tab(50); QBC$(1);: Print Tab(64); QBYR%(1)
                     Color 3: Print "INTERCEPTIONS";
-                    Color 7: Print Tab(32); Using "####"; QBBC!(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR(2)
+                    Color 7: Print Tab(32); Using "####"; QBBC!(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR%(2)
                     Color 15: Print: Print "HIT ANY KEY TO CONTINUE"
 
                     I$ = GetKeyPress$
@@ -629,41 +629,41 @@ Sub ViewPrintCareer ()
                     Cls
                     Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
                     Color 3: Print "TOUCHDOWNS";
-                    Color 7: Print Tab(31); Using " ####"; QBBC!(3);: Print Tab(50); QBC$(3);: Print Tab(64); QBYR(3)
+                    Color 7: Print Tab(31); Using " ####"; QBBC!(3);: Print Tab(50); QBC$(3);: Print Tab(64); QBYR%(3)
                     Color 3: Print "PASSING YARDS";
-                    Color 7: Print Tab(32); Using "####"; QBBC!(4);: Print Tab(50); QBC$(4);: Print Tab(64); QBYR(4)
+                    Color 7: Print Tab(32); Using "####"; QBBC!(4);: Print Tab(50); QBC$(4);: Print Tab(64); QBYR%(4)
                     Color 3: Print "COMPLETION PERCENTAGE";
-                    Color 7: Print Tab(32); Using "##.#"; QBBC!(5) * 100;: Print Tab(50); QBC$(5);: Print Tab(64); QBYR(5)
+                    Color 7: Print Tab(32); Using "##.#"; QBBC!(5) * 100;: Print Tab(50); QBC$(5);: Print Tab(64); QBYR%(5)
                     Color 3: Print "YARDS PER COMPLETION";
-                    Color 7: Print Tab(32); Using "##.#"; QBBC!(6);: Print Tab(50); QBC$(6);: Print Tab(64); QBYR(6)
+                    Color 7: Print Tab(32); Using "##.#"; QBBC!(6);: Print Tab(50); QBC$(6);: Print Tab(64); QBYR%(6)
                     Color 3: Print "QUARTERBACK RATING";
-                    Color 7: Print Tab(31); Using " ##.#"; QBBC!(7);: Print Tab(50); QBC$(7);: Print Tab(64); QBYR(7)
+                    Color 7: Print Tab(31); Using " ##.#"; QBBC!(7);: Print Tab(50); QBC$(7);: Print Tab(64); QBYR%(7)
                     Color 3: Print "LONGEST PASS";
-                    Color 7: Print Tab(32); Using " ###"; QBBC!(8);: Print Tab(36); QBR$;: Print Tab(50); QBC$(8);: Print Tab(64); QBYR(8)
+                    Color 7: Print Tab(32); Using " ###"; QBBC!(8);: Print Tab(36); QBR$;: Print Tab(50); QBC$(8);: Print Tab(64); QBYR%(8)
                     Color 3: Print "KICK RETURN ATTEMPTS";
-                    Color 7: Print Tab(33); Using "###"; KRRC!(0);: Print Tab(50); KRC$(0);: Print Tab(64); KRYR(0)
+                    Color 7: Print Tab(33); Using "###"; KRRC!(0);: Print Tab(50); KRC$(0);: Print Tab(64); KRYR%(0)
                     Color 3: Print "KICK RETURN YARDS";
-                    Color 7: Print Tab(32); Using "####"; KRRC!(1);: Print Tab(50); KRC$(1);: Print Tab(64); KRYR(1)
+                    Color 7: Print Tab(32); Using "####"; KRRC!(1);: Print Tab(50); KRC$(1);: Print Tab(64); KRYR%(1)
                     Color 3: Print "KICK RETURN AVERAGE";
-                    Color 7: Print Tab(32); Using "##.#"; KRRC!(2);: Print Tab(50); KRC$(2);: Print Tab(64); KRYR(2)
+                    Color 7: Print Tab(32); Using "##.#"; KRRC!(2);: Print Tab(50); KRC$(2);: Print Tab(64); KRYR%(2)
                     Color 3: Print "KICK RETURN TOUCHDOWNS";
-                    Color 7: Print Tab(32); Using " ###"; KRRC!(3);: Print Tab(50); KRC$(3);: Print Tab(64); KRYR(3)
+                    Color 7: Print Tab(32); Using " ###"; KRRC!(3);: Print Tab(50); KRC$(3);: Print Tab(64); KRYR%(3)
                     Color 3: Print "LONGEST KICK RETURN";
-                    Color 7: Print Tab(32); Using " ###"; KRRC!(4);: Print Tab(36); KRR$;: Print Tab(50); KRC$(4);: Print Tab(64); KRYR(4)
+                    Color 7: Print Tab(32); Using " ###"; KRRC!(4);: Print Tab(36); KRR$;: Print Tab(50); KRC$(4);: Print Tab(64); KRYR%(4)
                     Color 3: Print "PUNT RETURN ATTEMPTS";
-                    Color 7: Print Tab(33); Using "###"; PRRC!(0);: Print Tab(50); PRC$(0);: Print Tab(64); PRYR(0)
+                    Color 7: Print Tab(33); Using "###"; PRRC!(0);: Print Tab(50); PRC$(0);: Print Tab(64); PRYR%(0)
                     Color 3: Print "PUNT RETURN YARDS";
-                    Color 7: Print Tab(32); Using "####"; PRRC!(1);: Print Tab(50); PRC$(1);: Print Tab(64); PRYR(1)
+                    Color 7: Print Tab(32); Using "####"; PRRC!(1);: Print Tab(50); PRC$(1);: Print Tab(64); PRYR%(1)
                     Color 3: Print "PUNT RETURN AVERAGE";
-                    Color 7: Print Tab(32); Using "##.#"; PRRC!(2);: Print Tab(50); PRC$(2);: Print Tab(64); PRYR(2)
+                    Color 7: Print Tab(32); Using "##.#"; PRRC!(2);: Print Tab(50); PRC$(2);: Print Tab(64); PRYR%(2)
                     Color 3: Print "PUNT RETURN TOUCHDOWNS";
-                    Color 7: Print Tab(32); Using " ###"; PRRC!(3);: Print Tab(50); PRC$(3);: Print Tab(64); PRYR(3)
+                    Color 7: Print Tab(32); Using " ###"; PRRC!(3);: Print Tab(50); PRC$(3);: Print Tab(64); PRYR%(3)
                     Color 3: Print "LONGEST PUNT RETURN";
-                    Color 7: Print Tab(32); Using " ###"; PRRC!(4);: Print Tab(36); PRR$;: Print Tab(50); PRC$(4);: Print Tab(64); PRYR(4)
+                    Color 7: Print Tab(32); Using " ###"; PRRC!(4);: Print Tab(36); PRR$;: Print Tab(50); PRC$(4);: Print Tab(64); PRYR%(4)
                     Color 3: Print "PUNT ATTEMPTS";
-                    Color 7: Print Tab(32); Using "####"; PUUC!(0);: Print Tab(50); PUC$(0);: Print Tab(64); PUYR(0)
+                    Color 7: Print Tab(32); Using "####"; PUUC!(0);: Print Tab(50); PUC$(0);: Print Tab(64); PUYR%(0)
                     Color 3: Print "PUNTING YARDS";
-                    Color 7: Print Tab(32); Using "####"; PUUC!(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR(1)
+                    Color 7: Print Tab(32); Using "####"; PUUC!(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR%(1)
                     Color 15: Print: Print "HIT ANY KEY TO CONTINUE"
 
                     I$ = GetKeyPress$
@@ -671,21 +671,21 @@ Sub ViewPrintCareer ()
                     Cls
                     Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
                     Color 3: Print "PUNTING AVERAGE";
-                    Color 7: Print Tab(32); Using "##.#"; PUUC!(2);: Print Tab(50); PUC$(2);: Print Tab(64); PUYR(2)
+                    Color 7: Print Tab(32); Using "##.#"; PUUC!(2);: Print Tab(50); PUC$(2);: Print Tab(64); PUYR%(2)
                     Color 3: Print "FIELD GOAL ATTEMPTS";
-                    Color 7: Print Tab(32); Using "####"; FGGC!(0);: Print Tab(50); FGC$(0);: Print Tab(64); FGYR(0)
+                    Color 7: Print Tab(32); Using "####"; FGGC!(0);: Print Tab(50); FGC$(0);: Print Tab(64); FGYR%(0)
                     Color 3: Print "FIELD GOALS MADE";
-                    Color 7: Print Tab(32); Using "####"; FGGC!(1);: Print Tab(50); FGC$(1);: Print Tab(64); FGYR(1)
+                    Color 7: Print Tab(32); Using "####"; FGGC!(1);: Print Tab(50); FGC$(1);: Print Tab(64); FGYR%(1)
                     Color 3: Print "FIELD GOAL PERCENTAGE";
-                    Color 7: Print Tab(31); Using "###.#"; FGGC!(2) * 100;: Print Tab(50); FGC$(2);: Print Tab(64); FGYR(2)
+                    Color 7: Print Tab(31); Using "###.#"; FGGC!(2) * 100;: Print Tab(50); FGC$(2);: Print Tab(64); FGYR%(2)
                     Color 3: Print "LONGEST FIELD GOAL MADE";
-                    Color 7: Print Tab(34); Using "##"; FGGC!(6);: Print Tab(50); FGC$(6);: Print Tab(64); FGYR(6)
+                    Color 7: Print Tab(34); Using "##"; FGGC!(6);: Print Tab(50); FGC$(6);: Print Tab(64); FGYR%(6)
                     Color 3: Print "EXTRA POINT ATTEMPTS";
-                    Color 7: Print Tab(32); Using "####"; FGGC!(3);: Print Tab(50); FGC$(3);: Print Tab(64); FGYR(3)
+                    Color 7: Print Tab(32); Using "####"; FGGC!(3);: Print Tab(50); FGC$(3);: Print Tab(64); FGYR%(3)
                     Color 3: Print "EXTRA POINTS MADE";
-                    Color 7: Print Tab(32); Using "####"; FGGC!(4);: Print Tab(50); FGC$(4);: Print Tab(64); FGYR(4)
+                    Color 7: Print Tab(32); Using "####"; FGGC!(4);: Print Tab(50); FGC$(4);: Print Tab(64); FGYR%(4)
                     Color 3: Print "EXTRA POINT PERCENTAGE";
-                    Color 7: Print Tab(31); Using "###.#"; FGGC!(5) * 100;: Print Tab(50); FGC$(5);: Print Tab(64); FGYR(5)
+                    Color 7: Print Tab(31); Using "###.#"; FGGC!(5) * 100;: Print Tab(50); FGC$(5);: Print Tab(64); FGYR%(5)
                     Color 15: Print: Print "VIEW FILE AGAIN (Y/N)"
 
                     Do
@@ -699,99 +699,99 @@ Sub ViewPrintCareer ()
             If UCase$(I$) = "P" Then
                 LPrint Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
                 LPrint "RUSHING ATTEMPTS";
-                LPrint Tab(32); Using "####"; RBBC!(0);: LPrint Tab(50); careerRBC$(0);: LPrint Tab(64); RBYR(0)
+                LPrint Tab(32); Using "####"; RBBC!(0);: LPrint Tab(50); careerRBC$(0);: LPrint Tab(64); RBYR%(0)
                 LPrint "RUSHING YARDS";
-                LPrint Tab(32); Using "####"; RBBC!(1);: LPrint Tab(50); careerRBC$(1);: LPrint Tab(64); RBYR(1)
+                LPrint Tab(32); Using "####"; RBBC!(1);: LPrint Tab(50); careerRBC$(1);: LPrint Tab(64); RBYR%(1)
                 LPrint "RUSHING AVERAGE";
-                LPrint Tab(32); Using "##.#"; RBBC!(2);: LPrint Tab(50); careerRBC$(2);: LPrint Tab(64); RBYR(2)
+                LPrint Tab(32); Using "##.#"; RBBC!(2);: LPrint Tab(50); careerRBC$(2);: LPrint Tab(64); RBYR%(2)
                 LPrint "RUSHING TOUCHDOWNS";
-                LPrint Tab(33); Using "###"; RBBC!(3);: LPrint Tab(50); careerRBC$(3);: LPrint Tab(64); RBYR(3)
+                LPrint Tab(33); Using "###"; RBBC!(3);: LPrint Tab(50); careerRBC$(3);: LPrint Tab(64); RBYR%(3)
                 LPrint "LONGEST RUN";
                 LPrint Tab(33); Using "###"; RBBC!(8);
-                LPrint Tab(36); RBR$(0);: LPrint Tab(50); careerRBC$(8);: LPrint Tab(64); RBYR(8)
+                LPrint Tab(36); RBR$(0);: LPrint Tab(50); careerRBC$(8);: LPrint Tab(64); RBYR%(8)
                 LPrint "RECEPTIONS (BACKS)";
-                LPrint Tab(32); Using "####"; RBBC!(4);: LPrint Tab(50); careerRBC$(4);: LPrint Tab(64); RBYR(4)
+                LPrint Tab(32); Using "####"; RBBC!(4);: LPrint Tab(50); careerRBC$(4);: LPrint Tab(64); RBYR%(4)
                 LPrint "RECEIVING YARDS (BACKS)";
-                LPrint Tab(32); Using "####"; RBBC!(5);: LPrint Tab(50); careerRBC$(5);: LPrint Tab(64); RBYR(5)
+                LPrint Tab(32); Using "####"; RBBC!(5);: LPrint Tab(50); careerRBC$(5);: LPrint Tab(64); RBYR%(5)
                 LPrint "RECEIVING AVERAGE (BACKS)";
-                LPrint Tab(32); Using "##.#"; RBBC!(6);: LPrint Tab(50); careerRBC$(6);: LPrint Tab(64); RBYR(6)
+                LPrint Tab(32); Using "##.#"; RBBC!(6);: LPrint Tab(50); careerRBC$(6);: LPrint Tab(64); RBYR%(6)
                 LPrint "RECEIVING TOUCHDOWNS (BACKS)";
-                LPrint Tab(32); Using " ###"; RBBC!(7);: LPrint Tab(50); careerRBC$(7);: LPrint Tab(64); RBYR(7)
+                LPrint Tab(32); Using " ###"; RBBC!(7);: LPrint Tab(50); careerRBC$(7);: LPrint Tab(64); RBYR%(7)
                 LPrint "LONGEST RECEPTION (BACKS)";
                 LPrint Tab(33); Using "###"; RBBC!(9);
-                LPrint Tab(37); RBR$(1);: LPrint Tab(50); careerRBC$(9);: LPrint Tab(64); RBYR(9)
+                LPrint Tab(37); RBR$(1);: LPrint Tab(50); careerRBC$(9);: LPrint Tab(64); RBYR%(9)
                 LPrint "RECEPTIONS";
-                LPrint Tab(32); Using "####"; WRRC!(0);: LPrint Tab(50); WRC$(0);: LPrint Tab(64); WRYR(0)
+                LPrint Tab(32); Using "####"; WRRC!(0);: LPrint Tab(50); WRC$(0);: LPrint Tab(64); WRYR%(0)
                 LPrint "RECEIVING YARDS";
-                LPrint Tab(32); Using "####"; WRRC!(1);: LPrint Tab(50); WRC$(1);: LPrint Tab(64); WRYR(1)
+                LPrint Tab(32); Using "####"; WRRC!(1);: LPrint Tab(50); WRC$(1);: LPrint Tab(64); WRYR%(1)
                 LPrint "RECEIVING AVERAGE";
-                LPrint Tab(32); Using "##.#"; WRRC!(2);: LPrint Tab(50); WRC$(2);: LPrint Tab(64); WRYR(2)
+                LPrint Tab(32); Using "##.#"; WRRC!(2);: LPrint Tab(50); WRC$(2);: LPrint Tab(64); WRYR%(2)
                 LPrint "RECEIVING TOUCHDOWNS";
-                LPrint Tab(32); Using " ###"; WRRC!(3);: LPrint Tab(50); WRC$(3);: LPrint Tab(64); WRYR(3)
+                LPrint Tab(32); Using " ###"; WRRC!(3);: LPrint Tab(50); WRC$(3);: LPrint Tab(64); WRYR%(3)
                 LPrint "LONGEST RECEPTION";
                 LPrint Tab(32); Using " ###"; WRRC!(4);
-                LPrint Tab(36); WRR$;: LPrint Tab(50); WRC$(4);: LPrint Tab(64); WRYR(4)
+                LPrint Tab(36); WRR$;: LPrint Tab(50); WRC$(4);: LPrint Tab(64); WRYR%(4)
                 LPrint "COMPLETIONS";
-                LPrint Tab(32); Using "####"; QBBC!(0);: LPrint Tab(50); QBC$(0);: LPrint Tab(64); QBYR(0)
+                LPrint Tab(32); Using "####"; QBBC!(0);: LPrint Tab(50); QBC$(0);: LPrint Tab(64); QBYR%(0)
                 LPrint "ATTEMPTS";
-                LPrint Tab(32); Using "####"; QBBC!(1);: LPrint Tab(50); QBC$(1);: LPrint Tab(64); QBYR(1)
+                LPrint Tab(32); Using "####"; QBBC!(1);: LPrint Tab(50); QBC$(1);: LPrint Tab(64); QBYR%(1)
                 LPrint "INTERCEPTIONS";
-                LPrint Tab(32); Using "####"; QBBC!(2);: LPrint Tab(50); QBC$(2);: LPrint Tab(64); QBYR(2)
+                LPrint Tab(32); Using "####"; QBBC!(2);: LPrint Tab(50); QBC$(2);: LPrint Tab(64); QBYR%(2)
                 LPrint "TOUCHDOWNS";
-                LPrint Tab(31); Using " ####"; QBBC!(3);: LPrint Tab(50); QBC$(3);: LPrint Tab(64); QBYR(3)
+                LPrint Tab(31); Using " ####"; QBBC!(3);: LPrint Tab(50); QBC$(3);: LPrint Tab(64); QBYR%(3)
                 LPrint "PASSING YARDS";
-                LPrint Tab(32); Using "####"; QBBC!(4);: LPrint Tab(50); QBC$(4);: LPrint Tab(64); QBYR(4)
+                LPrint Tab(32); Using "####"; QBBC!(4);: LPrint Tab(50); QBC$(4);: LPrint Tab(64); QBYR%(4)
                 LPrint "COMPLETION PERCENTAGE";
-                LPrint Tab(32); Using "##.#"; QBBC!(5) * 100;: LPrint Tab(50); QBC$(5);: LPrint Tab(64); QBYR(5)
+                LPrint Tab(32); Using "##.#"; QBBC!(5) * 100;: LPrint Tab(50); QBC$(5);: LPrint Tab(64); QBYR%(5)
                 LPrint "YARDS PER COMPLETION";
-                LPrint Tab(32); Using "##.#"; QBBC!(6);: LPrint Tab(50); QBC$(6);: LPrint Tab(64); QBYR(6)
+                LPrint Tab(32); Using "##.#"; QBBC!(6);: LPrint Tab(50); QBC$(6);: LPrint Tab(64); QBYR%(6)
                 LPrint "QUARTERBACK RATING";
-                LPrint Tab(31); Using " ##.#"; QBBC!(7);: LPrint Tab(50); QBC$(7);: LPrint Tab(64); QBYR(7)
+                LPrint Tab(31); Using " ##.#"; QBBC!(7);: LPrint Tab(50); QBC$(7);: LPrint Tab(64); QBYR%(7)
                 LPrint "LONGEST PASS";
                 LPrint Tab(32); Using " ###"; QBBC!(8);
-                LPrint Tab(36); QBR$;: LPrint Tab(50); QBC$(8);: LPrint Tab(64); QBYR(8)
+                LPrint Tab(36); QBR$;: LPrint Tab(50); QBC$(8);: LPrint Tab(64); QBYR%(8)
                 LPrint "KICK RETURN ATTEMPTS";
-                LPrint Tab(33); Using "###"; KRRC!(0);: LPrint Tab(50); KRC$(0);: LPrint Tab(64); KRYR(0)
+                LPrint Tab(33); Using "###"; KRRC!(0);: LPrint Tab(50); KRC$(0);: LPrint Tab(64); KRYR%(0)
                 LPrint "KICK RETURN YARDS";
-                LPrint Tab(32); Using "####"; KRRC!(1);: LPrint Tab(50); KRC$(1);: LPrint Tab(64); KRYR(1)
+                LPrint Tab(32); Using "####"; KRRC!(1);: LPrint Tab(50); KRC$(1);: LPrint Tab(64); KRYR%(1)
                 LPrint "KICK RETURN AVERAGE";
-                LPrint Tab(32); Using "##.#"; KRRC!(2);: LPrint Tab(50); KRC$(2);: LPrint Tab(64); KRYR(2)
+                LPrint Tab(32); Using "##.#"; KRRC!(2);: LPrint Tab(50); KRC$(2);: LPrint Tab(64); KRYR%(2)
                 LPrint "KICK RETURN TOUCHDOWNS";
-                LPrint Tab(32); Using " ###"; KRRC!(3);: LPrint Tab(50); KRC$(3);: LPrint Tab(64); KRYR(3)
+                LPrint Tab(32); Using " ###"; KRRC!(3);: LPrint Tab(50); KRC$(3);: LPrint Tab(64); KRYR%(3)
                 LPrint "LONGEST KICK RETURN";
                 LPrint Tab(32); Using " ###"; KRRC!(4);
-                LPrint Tab(36); KRR$;: LPrint Tab(50); KRC$(4);: LPrint Tab(64); KRYR(4)
+                LPrint Tab(36); KRR$;: LPrint Tab(50); KRC$(4);: LPrint Tab(64); KRYR%(4)
                 LPrint "PUNT RETURN ATTEMPTS";
-                LPrint Tab(33); Using "###"; PRRC!(0);: LPrint Tab(50); PRC$(0);: LPrint Tab(64); PRYR(0)
+                LPrint Tab(33); Using "###"; PRRC!(0);: LPrint Tab(50); PRC$(0);: LPrint Tab(64); PRYR%(0)
                 LPrint "PUNT RETURN YARDS";
-                LPrint Tab(32); Using "####"; PRRC!(1);: LPrint Tab(50); PRC$(1);: LPrint Tab(64); PRYR(1)
+                LPrint Tab(32); Using "####"; PRRC!(1);: LPrint Tab(50); PRC$(1);: LPrint Tab(64); PRYR%(1)
                 LPrint "PUNT RETURN AVERAGE";
-                LPrint Tab(32); Using "##.#"; PRRC!(2);: LPrint Tab(50); PRC$(2);: LPrint Tab(64); PRYR(2)
+                LPrint Tab(32); Using "##.#"; PRRC!(2);: LPrint Tab(50); PRC$(2);: LPrint Tab(64); PRYR%(2)
                 LPrint "PUNT RETURN TOUCHDOWNS";
-                LPrint Tab(32); Using " ###"; PRRC!(3);: LPrint Tab(50); PRC$(3);: LPrint Tab(64); PRYR(3)
+                LPrint Tab(32); Using " ###"; PRRC!(3);: LPrint Tab(50); PRC$(3);: LPrint Tab(64); PRYR%(3)
                 LPrint "LONGEST PUNT RETURN";
                 LPrint Tab(32); Using " ###"; PRRC!(4);
-                LPrint Tab(36); PRR$;: LPrint Tab(50); PRC$(4);: LPrint Tab(64); PRYR(4)
+                LPrint Tab(36); PRR$;: LPrint Tab(50); PRC$(4);: LPrint Tab(64); PRYR%(4)
                 LPrint "PUNT ATTEMPTS";
-                LPrint Tab(32); Using "####"; PUUC!(0);: LPrint Tab(50); PUC$(0);: LPrint Tab(64); PUYR(0)
+                LPrint Tab(32); Using "####"; PUUC!(0);: LPrint Tab(50); PUC$(0);: LPrint Tab(64); PUYR%(0)
                 LPrint "PUNTING YARDS";
-                LPrint Tab(32); Using "####"; PUUC!(1);: LPrint Tab(50); PUC$(1);: LPrint Tab(64); PUYR(1)
+                LPrint Tab(32); Using "####"; PUUC!(1);: LPrint Tab(50); PUC$(1);: LPrint Tab(64); PUYR%(1)
                 LPrint "PUNTING AVERAGE";
-                LPrint Tab(32); Using "##.#"; PUUC!(2);: LPrint Tab(50); PUC$(2);: LPrint Tab(64); PUYR(2)
+                LPrint Tab(32); Using "##.#"; PUUC!(2);: LPrint Tab(50); PUC$(2);: LPrint Tab(64); PUYR%(2)
                 LPrint "FIELD GOAL ATTEMPTS";
-                LPrint Tab(32); Using "####"; FGGC!(0);: LPrint Tab(50); FGC$(0);: LPrint Tab(64); FGYR(0)
+                LPrint Tab(32); Using "####"; FGGC!(0);: LPrint Tab(50); FGC$(0);: LPrint Tab(64); FGYR%(0)
                 LPrint "FIELD GOALS MADE";
-                LPrint Tab(32); Using "####"; FGGC!(1);: LPrint Tab(50); FGC$(1);: LPrint Tab(64); FGYR(1)
+                LPrint Tab(32); Using "####"; FGGC!(1);: LPrint Tab(50); FGC$(1);: LPrint Tab(64); FGYR%(1)
                 LPrint "FIELD GOAL PERCENTAGE";
-                LPrint Tab(31); Using "###.#"; FGGC!(2) * 100;: LPrint Tab(50); FGC$(2);: LPrint Tab(64); FGYR(2)
+                LPrint Tab(31); Using "###.#"; FGGC!(2) * 100;: LPrint Tab(50); FGC$(2);: LPrint Tab(64); FGYR%(2)
                 LPrint "LONGEST FIELD GOAL MADE";
-                LPrint Tab(34); Using "##"; FGGC!(6);: LPrint Tab(50); FGC$(6);: LPrint Tab(64); FGYR(6)
+                LPrint Tab(34); Using "##"; FGGC!(6);: LPrint Tab(50); FGC$(6);: LPrint Tab(64); FGYR%(6)
                 LPrint "EXTRA POINT ATTEMPTS";
-                LPrint Tab(32); Using "####"; FGGC!(3);: LPrint Tab(50); FGC$(3);: LPrint Tab(64); FGYR(3)
+                LPrint Tab(32); Using "####"; FGGC!(3);: LPrint Tab(50); FGC$(3);: LPrint Tab(64); FGYR%(3)
                 LPrint "EXTRA POINTS MADE";
-                LPrint Tab(32); Using "####"; FGGC!(4);: LPrint Tab(50); FGC$(4);: LPrint Tab(64); FGYR(4)
+                LPrint Tab(32); Using "####"; FGGC!(4);: LPrint Tab(50); FGC$(4);: LPrint Tab(64); FGYR%(4)
                 LPrint "EXTRA POINT PERCENTAGE";
-                LPrint Tab(31); Using "###.#"; FGGC!(5) * 100;: LPrint Tab(50); FGC$(5);: LPrint Tab(64); FGYR(5)
+                LPrint Tab(31); Using "###.#"; FGGC!(5) * 100;: LPrint Tab(50); FGC$(5);: LPrint Tab(64); FGYR%(5)
                 'GoTo 1
 
             End If
@@ -966,7 +966,7 @@ End Sub
 Sub PerformFinalUpdate (careerFile$)
 
     Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
+    Shared careerDI$(), careerDS$(), careerQBS$()
     Shared careerRBC$(), careerRBS$(), careerWRS$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!()
@@ -976,9 +976,9 @@ Sub PerformFinalUpdate (careerFile$)
     Shared PRC$(), PRRS$(), PUC$(), QBC$()
     Shared RBR$(), WRC$()
 
-    Shared DFYR(), FGYR(), KRYR()
-    Shared PRYR(), PUYR(), QBYR()
-    Shared RBYR(), WRYR()
+    Shared DFYR%(), FGYR%(), KRYR%()
+    Shared PRYR%(), PUYR%(), QBYR%()
+    Shared RBYR%(), WRYR%()
 
     Shared DFFC!(), FGGC!(), KRRC!()
     Shared PRRC!(), PUUC!(), QBBC!(), QBBS!()
@@ -996,19 +996,19 @@ Sub PerformFinalUpdate (careerFile$)
         Next J
 
         Open diskPaths$(1) + Left$(careerFile$, JX) + ".CLD" For Input As #1
-        For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR(I): Next
+        For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
         Input #1, RBR$(0), RBR$(1)
-        For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR(I): Next
+        For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
         Input #1, WRR$
-        For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR(I): Next
+        For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR%(I): Next
         Input #1, QBR$
-        For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR(I): Next
+        For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR%(I): Next
         Input #1, KRR$
-        For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR(I): Next
+        For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR%(I): Next
         Input #1, PRR$
-        For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR(I): Next
-        For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR(I): Next
-        For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR(I): Next
+        For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR%(I): Next
+        For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR%(I): Next
+        For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
         Close #1
 
     End If
@@ -1026,18 +1026,18 @@ Sub PerformFinalUpdate (careerFile$)
                 If RBBS!(J, I, 0) > RBBC!(0) Then
                     RBBC!(0) = RBBS!(J, I, 0)
                     careerRBC$(0) = careerA1$(I)
-                    RBYR(0) = RBBS!(J, I, 8)
+                    RBYR%(0) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 1) > RBBC!(1) Then
-                    RBBC!(1) = RBBS!(J, I, 1): careerRBC$(1) = careerA1$(I): RBYR(1) = RBBS!(J, I, 8)
+                    RBBC!(1) = RBBS!(J, I, 1): careerRBC$(1) = careerA1$(I): RBYR%(1) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 0) <> 0 Then
 
                     If RBBS!(J, I, 1) / RBBS!(J, I, 0) > RBBC!(2) And RBBS!(J, I, 0) >= GAMES * 10 Then
                         RBBC!(2) = RBBS!(J, I, 1) / RBBS!(J, I, 0)
-                        careerRBC$(2) = careerA1$(I): RBYR(2) = RBBS!(J, I, 8)
+                        careerRBC$(2) = careerA1$(I): RBYR%(2) = RBBS!(J, I, 8)
                     End If
 
                 End If
@@ -1045,43 +1045,43 @@ Sub PerformFinalUpdate (careerFile$)
                 If RBBS!(J, I, 2) > RBBC!(3) Then
                     RBBC!(3) = RBBS!(J, I, 2)
                     careerRBC$(3) = careerA1$(I)
-                    RBYR(3) = RBBS!(J, I, 8)
+                    RBYR%(3) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 3) > RBBC!(4) Then
                     RBBC!(4) = RBBS!(J, I, 3)
                     careerRBC$(4) = careerA1$(I)
-                    RBYR(4) = RBBS!(J, I, 8)
+                    RBYR%(4) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 4) > RBBC!(5) Then
                     RBBC!(5) = RBBS!(J, I, 4)
                     careerRBC$(5) = careerA1$(I)
-                    RBYR(5) = RBBS!(J, I, 8)
+                    RBYR%(5) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 3) <> 0 Then
                     If RBBS!(J, I, 4) / RBBS!(J, I, 3) > RBBC!(6) And RBBS!(J, I, 3) >= GAMES * 3 Then
                         RBBC!(6) = RBBS!(J, I, 4) / RBBS!(J, I, 3)
                         careerRBC$(6) = careerA1$(I)
-                        RBYR(6) = RBBS!(J, I, 8)
+                        RBYR%(6) = RBBS!(J, I, 8)
                     End If
                 End If
 
                 If RBBS!(J, I, 5) > RBBC!(7) Then
                     RBBC!(7) = RBBS!(J, I, 5)
                     careerRBC$(7) = careerA1$(I)
-                    RBYR(7) = RBBS!(J, I, 8)
+                    RBYR%(7) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 6) > RBBC!(8) Then
-                    RBBC!(8) = RBBS!(J, I, 6): careerRBC$(8) = careerA1$(I): RBYR(8) = RBBS!(J, I, 8): RBR$(0) = careerRBS$(J, I, 0)
+                    RBBC!(8) = RBBS!(J, I, 6): careerRBC$(8) = careerA1$(I): RBYR%(8) = RBBS!(J, I, 8): RBR$(0) = careerRBS$(J, I, 0)
                 End If
 
                 If RBBS!(J, I, 9) > RBBC!(9) Then
                     RBBC!(9) = RBBS!(J, I, 9)
                     careerRBC$(9) = careerA1$(I)
-                    RBYR(9) = RBBS!(J, I, 8)
+                    RBYR%(9) = RBBS!(J, I, 8)
                     RBR$(1) = careerRBS$(J, I, 1)
                 End If
 
@@ -1106,29 +1106,29 @@ Sub PerformFinalUpdate (careerFile$)
                     If WRRS!(J, I, 0) > WRRC!(0) Then
                         WRRC!(0) = WRRS!(J, I, 0)
                         WRC$(0) = careerA2$(I)
-                        WRYR(0) = WRRS!(J, I, 5)
+                        WRYR%(0) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 1) > WRRC!(1) Then
-                        WRRC!(1) = WRRS!(J, I, 1): WRC$(1) = careerA2$(I): WRYR(1) = WRRS!(J, I, 5)
+                        WRRC!(1) = WRRS!(J, I, 1): WRC$(1) = careerA2$(I): WRYR%(1) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 0) <> 0 Then
                         If WRRS!(J, I, 1) / WRRS!(J, I, 0) > WRRC!(2) And WRRS!(J, I, 0) >= GAMES * 3 Then
-                            WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = careerA2$(I): WRYR(2) = WRRS!(J, I, 5)
+                            WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = careerA2$(I): WRYR%(2) = WRRS!(J, I, 5)
                         End If
                     End If
 
                     If WRRS!(J, I, 2) > WRRC!(3) Then
                         WRRC!(3) = WRRS!(J, I, 2)
                         WRC$(3) = careerA2$(I)
-                        WRYR(3) = WRRS!(J, I, 5)
+                        WRYR%(3) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 3) > WRRC!(4) Then
                         WRRC!(4) = WRRS!(J, I, 3)
                         WRC$(4) = careerA2$(I)
-                        WRYR(4) = WRRS!(J, I, 5)
+                        WRYR%(4) = WRRS!(J, I, 5)
                         WRR$ = careerWRS$(J, I, 0)
                     End If
 
@@ -1219,38 +1219,38 @@ Sub PerformFinalUpdate (careerFile$)
                 If QBBS!(J, I, 1) > QBBC!(0) Then
                     QBBC!(0) = QBBS!(J, I, 1)
                     QBC$(0) = careerA3$(I)
-                    QBYR(0) = QBBS!(J, I, 7)
+                    QBYR%(0) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 0) > QBBC!(1) Then
                     QBBC!(1) = QBBS!(J, I, 0)
                     QBC$(1) = careerA3$(I)
-                    QBYR(1) = QBBS!(J, I, 7)
+                    QBYR%(1) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 2) > QBBC!(2) Then
                     QBBC!(2) = QBBS!(J, I, 2)
                     QBC$(2) = careerA3$(I)
-                    QBYR(2) = QBBS!(J, I, 7)
+                    QBYR%(2) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 4) > QBBC!(3) Then
                     QBBC!(3) = QBBS!(J, I, 4)
                     QBC$(3) = careerA3$(I)
-                    QBYR(3) = QBBS!(J, I, 7)
+                    QBYR%(3) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 3) > QBBC!(4) Then
                     QBBC!(4) = QBBS!(J, I, 3)
                     QBC$(4) = careerA3$(I)
-                    QBYR(4) = QBBS!(J, I, 7)
+                    QBYR%(4) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 0) <> 0 Then
                     If QBBS!(J, I, 1) / QBBS!(J, I, 0) > QBBC!(5) And QBBS!(J, I, 0) >= GAMES * 15 Then
                         QBBC!(5) = QBBS!(J, I, 1) / QBBS!(J, I, 0)
                         QBC$(5) = careerA3$(I)
-                        QBYR(5) = QBBS!(J, I, 7)
+                        QBYR%(5) = QBBS!(J, I, 7)
                     End If
                 End If
 
@@ -1258,19 +1258,19 @@ Sub PerformFinalUpdate (careerFile$)
                     If QBBS!(J, I, 3) / QBBS!(J, I, 1) > QBBC!(6) And QBBS!(J, I, 0) >= GAMES * 15 Then
                         QBBC!(6) = QBBS!(J, I, 3) / QBBS!(J, I, 1)
                         QBC$(6) = careerA3$(I)
-                        QBYR(6) = QBBS!(J, I, 7)
+                        QBYR%(6) = QBBS!(J, I, 7)
                     End If
 
                 End If
 
                 If QBBS!(J, I, 12) > QBBC!(7) Then
-                    QBBC!(7) = QBBS!(J, I, 12): QBC$(7) = careerA3$(I): QBYR(7) = QBBS!(J, I, 7)
+                    QBBC!(7) = QBBS!(J, I, 12): QBC$(7) = careerA3$(I): QBYR%(7) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 5) > QBBC!(8) Then
                     QBBC!(8) = QBBS!(J, I, 5)
                     QBC$(8) = careerA3$(I)
-                    QBYR(8) = QBBS!(J, I, 7)
+                    QBYR%(8) = QBBS!(J, I, 7)
                     QBR$ = careerQBS$(J, I, 0)
                 End If
 
@@ -1293,33 +1293,33 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerKRS!(J, I, 0) <= KRRC!(0) Then
                     KRRC!(0) = careerKRS!(J, I, 0)
                     KRC$(0) = careerA4$(I)
-                    KRYR(0) = careerKRS!(J, I, 5)
+                    KRYR%(0) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 1) <= KRRC!(1) Then
                     KRRC!(1) = careerKRS!(J, I, 1)
                     KRC$(1) = careerA4$(I)
-                    KRYR(1) = careerKRS!(J, I, 5)
+                    KRYR%(1) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 0) = 0 Then
                     If careerKRS!(J, I, 1) / careerKRS!(J, I, 0) > KRRC!(2) And careerKRS!(J, I, 0) >= GAMES * 1.2 Then
                         KRRC!(2) = careerKRS!(J, I, 1) / careerKRS!(J, I, 0)
                         KRC$(2) = careerA4$(I)
-                        KRYR(2) = careerKRS!(J, I, 5)
+                        KRYR%(2) = careerKRS!(J, I, 5)
                     End If
                 End If
 
                 If careerKRS!(J, I, 2) > KRRC!(3) Then
                     KRRC!(3) = careerKRS!(J, I, 2)
                     KRC$(3) = careerA4$(I)
-                    KRYR(3) = careerKRS!(J, I, 5)
+                    KRYR%(3) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 3) > KRRC!(4) Then
                     KRRC!(4) = careerKRS!(J, I, 3)
                     KRC$(4) = careerA4$(I)
-                    KRYR(4) = careerKRS!(J, I, 5)
+                    KRYR%(4) = careerKRS!(J, I, 5)
                     KRR$ = KRRS$(J, I, 0)
                 End If
 
@@ -1342,33 +1342,33 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerPRS!(J, I, 0) > PRRC!(0) Then
                     PRRC!(0) = careerPRS!(J, I, 0)
                     PRC$(0) = careerA5$(I)
-                    PRYR(0) = careerPRS!(J, I, 5)
+                    PRYR%(0) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 1) > PRRC!(1) Then
                     PRRC!(1) = careerPRS!(J, I, 1)
                     PRC$(1) = careerA5$(I)
-                    PRYR(1) = careerPRS!(J, I, 5)
+                    PRYR%(1) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 0) <> 0 Then
                     If careerPRS!(J, I, 1) / careerPRS!(J, I, 0) > PRRC!(2) And careerPRS!(J, I, 0) >= GAMES * 1.2 Then
                         PRRC!(2) = careerPRS!(J, I, 1) / careerPRS!(J, I, 0)
                         PRC$(2) = careerA5$(I)
-                        PRYR(2) = careerPRS!(J, I, 5)
+                        PRYR%(2) = careerPRS!(J, I, 5)
                     End If
                 End If
 
                 If careerPRS!(J, I, 2) > PRRC!(3) Then
                     PRRC!(3) = careerPRS!(J, I, 2)
                     PRC$(3) = careerA5$(I)
-                    PRYR(3) = careerPRS!(J, I, 5)
+                    PRYR%(3) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 3) > PRRC!(4) Then
                     PRRC!(4) = careerPRS!(J, I, 3)
                     PRC$(4) = careerA5$(I)
-                    PRYR(4) = careerPRS!(J, I, 5)
+                    PRYR%(4) = careerPRS!(J, I, 5)
                     PRR$ = PRRS$(J, I, 0)
                 End If
 
@@ -1391,20 +1391,20 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerPUS!(J, I, 0) > PUUC!(0) Then
                     PUUC!(0) = careerPUS!(J, I, 0)
                     PUC$(0) = careerA6$(I)
-                    PUYR(0) = careerPUS!(J, I, 3)
+                    PUYR%(0) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 1) > PUUC!(1) Then
                     PUUC!(1) = careerPUS!(J, I, 1)
                     PUC$(1) = careerA6$(I)
-                    PUYR(1) = careerPUS!(J, I, 3)
+                    PUYR%(1) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 0) <> 0 Then
                     If careerPUS!(J, I, 1) / careerPUS!(J, I, 0) > PUUC!(2) Then
                         PUUC!(2) = careerPUS!(J, I, 1) / careerPUS!(J, I, 0)
                         PUC$(2) = careerA6$(I)
-                        PUYR(2) = careerPUS!(J, I, 3)
+                        PUYR%(2) = careerPUS!(J, I, 3)
                     End If
                 End If
 
@@ -1427,47 +1427,47 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerFGS!(J, I, 1) > FGGC!(0) Then
                     FGGC!(0) = careerFGS!(J, I, 1)
                     FGC$(0) = careerA7$(I)
-                    FGYR(0) = careerFGS!(J, I, 16)
+                    FGYR%(0) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 0) > FGGC!(1) Then
                     FGGC!(1) = careerFGS!(J, I, 0)
                     FGC$(1) = careerA7$(I)
-                    FGYR(1) = careerFGS!(J, I, 16)
+                    FGYR%(1) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 1) <> 0 Then
                     If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > FGGC!(2) And careerFGS!(J, I, 1) >= GAMES Then
                         FGGC!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
                         FGC$(2) = careerA7$(I)
-                        FGYR(2) = careerFGS!(J, I, 16)
+                        FGYR%(2) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 3) > FGGC!(3) Then
                     FGGC!(3) = careerFGS!(J, I, 3)
                     FGC$(3) = careerA7$(I)
-                    FGYR(3) = careerFGS!(J, I, 16)
+                    FGYR%(3) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) > FGGC!(4) Then
                     FGGC!(4) = careerFGS!(J, I, 2)
                     FGC$(4) = careerA7$(I)
-                    FGYR(4) = careerFGS!(J, I, 16)
+                    FGYR%(4) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) <> 0 Then
                     If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > FGGC!(5) And careerFGS!(J, I, 3) >= GAMES Then
                         FGGC!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
                         FGC$(5) = careerA7$(I)
-                        FGYR(5) = careerFGS!(J, I, 16)
+                        FGYR%(5) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 4) > FGGC!(6) Then
                     FGGC!(6) = careerFGS!(J, I, 4)
                     FGC$(6) = careerA7$(I)
-                    FGYR(6) = careerFGS!(J, I, 16)
+                    FGYR%(6) = careerFGS!(J, I, 16)
                 End If
 
             Next J
@@ -1489,7 +1489,7 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerGIS!(J, I, 0) > DFFC!(0) Then
                     DFFC!(0) = careerGIS!(J, I, 0)
                     DFC$(0) = careerDI$(I)
-                    FGYR(0) = careerGIS!(J, I, 2)
+                    FGYR%(0) = careerGIS!(J, I, 2)
                 End If
 
             Next J
@@ -1510,7 +1510,7 @@ Sub PerformFinalUpdate (careerFile$)
                 If careerGSS!(J, I, 0) > DFFC!(1) Then
                     DFFC!(1) = careerGSS!(J, I, 0)
                     DFC$(1) = careerDS$(I)
-                    FGYR(1) = careerGSS!(J, I, 2)
+                    FGYR%(1) = careerGSS!(J, I, 2)
                 End If
 
             Next J
@@ -1536,31 +1536,31 @@ Sub PerformFinalUpdate (careerFile$)
 
     If VV = 1 Then Open diskPaths$(1) + careerFile$ + ".CLD" For Output As #1
 
-    For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR(I): Next
+    For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 
     Write #1, RBR$(0), RBR$(1)
 
-    For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR(I): Next
+    For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR%(I): Next
 
     Write #1, WRR$
 
-    For I = 0 To 8: Write #1, QBBC!(I), QBC$(I), QBYR(I): Next
+    For I = 0 To 8: Write #1, QBBC!(I), QBC$(I), QBYR%(I): Next
 
     Write #1, QBR$
 
-    For I = 0 To 4: Write #1, KRRC!(I), KRC$(I), KRYR(I): Next
+    For I = 0 To 4: Write #1, KRRC!(I), KRC$(I), KRYR%(I): Next
 
     Write #1, KRR$
 
-    For I = 0 To 4: Write #1, PRRC!(I), PRC$(I), PRYR(I): Next
+    For I = 0 To 4: Write #1, PRRC!(I), PRC$(I), PRYR%(I): Next
 
     Write #1, PRR$
 
-    For I = 0 To 2: Write #1, PUUC!(I), PUC$(I), PUYR(I): Next
+    For I = 0 To 2: Write #1, PUUC!(I), PUC$(I), PUYR%(I): Next
 
-    For I = 0 To 6: Write #1, FGGC!(I), FGC$(I), FGYR(I): Next
+    For I = 0 To 6: Write #1, FGGC!(I), FGC$(I), FGYR%(I): Next
 
-    For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR(I): Next
+    For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR%(I): Next
 
     Close #1
 

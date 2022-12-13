@@ -743,8 +743,8 @@ Sub InputTeam ()
         Next
 
         Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
-
+        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+		Locate 7
 
         U$ = "INPUT ANOTHER TEAM (YN)"
         Locate , (80 - Len(U$)) / 2

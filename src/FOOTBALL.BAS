@@ -1,221 +1,7 @@
+
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 '$INCLUDE: 'GameRoutines.BI'
-
-On Error GoTo Errhandler
-
-'----------------------------------------
-'           GAME CODE
-'----------------------------------------
-_Title "3-in-1 Football - GRIDIRON!"
-$ExeIcon:'./lhg_3in1fb.ico'
-_Icon
-_AllowFullScreen
-
-Color 7, 0
-Cls
-
-Randomize Timer
-
-_Blink Off
-
-
-'----------------------------------------
-'          READ IN ALL DATA
-'----------------------------------------
-
-Data L,1,1,1,2,2,2,H,H,3,3,3,4,4,F
-Data 4-3 READ,5-2 READ,4-3 PINCH,5-2 PINCH,4-3 INSIDE STUNT
-Data 5-2 INSIDE STUNT,4-3 OUTSIDE STUNT,5-2 OUTSIDE STUNT
-Data 4-3 PASS RUSH,5-2 PASS RUSH
-Data STANDARD ZONE,STANDARD M-M,SHORT ZONE,MAN UNDER,NICKEL,PREVENT
-Data BLITZ (1-ILB),BLITZ (1-OLB),BLITZ (2-ILB),BLITZ (2-OLB),BLITZ ENGAGE
-Data BLAST,DIVE,OFF TACKLE,END SWEEP,OPTION RUN
-Data DRAW PLAY,TRAP,3 STEP DROP,SHORT PASS,MED PASS
-Data LONG PASS,SHORT SCREEN,MED-PLAY ACT PASS,LONG-PLAY ACT PASS,SIDELINE PASS
-Data ROLLOUT PASS,BOOTLEG PASS,PUNT,FG ATT,SCOUT REPORT
-Data 0,3,-6,0,-3,0,0,3,-3,-3: 'BLAST DATA
-Data 0,3,-3,0,-6,0,0,6,0,0: 'DIVE
-Data -3,0,0,3,3,0,0,-3,0,0: 'OFF TACKLE
-Data 0,-3,3,0,3,3,-3,-3,0,0: 'SWEEP
-Data 0,-3,6,0,6,3,-3,-6,0,0: 'OPTION
-Data -6,-6,-3,-3,-3,-3,-3,-3,6,6: 'DRAW
-Data 3,3,-3,-3,-6,-6,-6,-6,-3,-3: 'TRAP
-Data OFF,5,DEF,5,OFF,10: 'PENALTY INFO
-Data 90,88,80,78,60,68,20,62,-5,52: 'FIELD GOAL INFO
-Data -3,-4,0,3,-6,-6,0,0,0,0,0: ' INT HITCH
-Data -3,-4,0,-1,-6,-6,0,0,0,0,0: ' INT SP
-Data 0,-1,0,-1,0,-1,0,0,0,0,0: ' INT MP
-Data 3,2,0,-1,4,5,0,0,0,0,0: ' INT LP
-Data -6,-6,-6,-6,-6,-6,0,0,0,0,0: ' INT SCREEN
-Data 0,-1,0,0,2,0,0,0,0,0,0: ' INT MED PA
-Data 3,2,3,2,4,5,0,0,0,0,0: ' INT L PA
-Data 0,1,-1,-1,0,0,0,0,0,0,0: ' INT SL
-Data 0,0,0,0,0,0,0,0,0,0,0: ' INT ROLLOUT
-Data 0,0,0,0,0,0,0,0,0,0,0: ' INT BOOTLEG
-Data 31,21,21,11,40,50,8,8,-5,-5,-13: ' C% HITCH
-Data 21,11,11,1,30,40,-10,-10,-20,-20,-23: ' C% SP
-Data 1,-9,6,-4,-5,-10,-19,-19,-17,-17,-13: ' C% MP
-Data -19,-29,-9,-19,-30,-40,-25,-25,-25,-25,-17: ' C% LP
-Data 40,40,40,40,50,50,20,20,-24,-24,-33: ' C% SCREEN
-Data 6,-19,-9,-19,-10,-10,-17,-17,-13,-13,-6: ' C% MED PA
-Data -14,-29,-19,-29,-30,-40,-25,-25,-17,-17,-6: ' C% L PA
-Data 6,-14,1,-4,10,10,-13,-13,-19,-19,-17: ' C% SL
-Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% ROLLOUT
-Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% BOOTLEG
-Data 0,1,-1,0,1,2,1,1,2,2,3: ' Y/C HITCH
-Data 0,1,-1,0,1,2,3,3,21,21,25: ' Y/C SP
-Data 0,1,0,0,1,2,21,21,25,25,28: ' Y/C MED
-Data 0,1,1,2,-1,-1,33,33,42,42,42: ' Y/C LP
-Data 0,1,-1,0,1,2,1,1,25,25,36: ' Y/C SCREEN
-Data 1,1,-1,-2,-1,-1,25,25,28,28,31: ' Y/C MED PA
-Data 1,1,1,2,-1,-1,42,42,42,42,42: ' Y/C L PA
-Data 0,-1,1,2,1,2,18,18,28,28,33: ' Y/C SL
-Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C ROLL
-Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C BOOTLEG
-Data -8,-8,-4,-4,-8,-8,-6,-8,-4,-8,-4: ' SCK HITCH
-Data -4,-4,0,0,-8,-8,-2,-2,0,0,2: ' SCK SP
-Data 0,0,-2,-2,2,-6,3,3,13,13,23: ' SCK MP
-Data 4,4,0,0,8,-4,13,13,23,23,33: ' SCK LP
-Data -8,-8,-8,-4,-8,-8,-4,-4,0,0,3: ' SCK SCRN
-Data 0,0,-2,-2,2,-4,13,13,23,23,33: ' SCK MED PA
-Data 4,4,0,0,8,-2,23,23,33,33,43: ' SCK L PA
-Data -4,-4,-2,-2,2,-6,0,0,3,3,13: ' SCK SL
-Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK ROLL
-Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK BOOTLEG
-Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0, )
-Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1, )
-Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' RN%(0, )
-Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' RN%(1, )
-'BY%
-Data 11,-5,11,0
-Data 11,-5,11,0
-Data 11,0,21,0
-Data 11,0,21,0
-Data 11,0,11,10
-Data 11,0,11,10
-Data 11,0,21,10
-Data 11,0,21,10
-Data 11,0,21,10
-Data 11,10,21,10
-Data 11,10,31,10
-Data 11,10,31,10
-Data 21,10,31,10
-Data 21,10,51,10
-Data 21,10,51,10
-Data 21,10,41,20
-Data 21,10,51,20
-Data 21,10,81,20
-Data 21,10,71,30
-Data 21,10,61,40
-Data 21,10,31,70
-Data 31,10,51,50
-Data 31,10,31,70
-Data 41,10,31,70
-Data 51,10,31,70
-Data 41,20,11,90
-Data 41,20,11,90
-Data 21,40,11,90
-Data 21,40,11,90
-Data 71,30,11,90
-Data 61,40,11,90
-Data 51,50,11,90
-Data 11,90,11,90
-Data 11,90,11,90
-Data 11,90,11,90
-Data 11,90,11,90
-Data 11,90,11,90
-Data 11,90,11,90
-
-'GOAL LINE
-Data 72,-5,83,-4,75,-4,68,-4,80,-3,70,-3,60,-3,75,-2,60,-2,45,-2,60,-1
-Data 30,-1,100,0,30,1,60,1,45,2,60,2,75,2,60,3,70,3,80,3,68,4,75,4,83,4
-Data 72,5,78,5,84,5,90,5,96,5,96,5
-
-Data 28,89,99,100,0,0,0,0,0,0,0,0,0,0: 'HITCH 1
-Data 10,53,96,97,98,99,100,0,0,0,0,0,0,0: 'HITCH 2
-Data 2,37,83,96,97,98,99,100,0,0,0,0,0,0: ' HITCH 3
-Data 2,32,71,92,94,96,97,98,99,100,0,0,0,0: ' HITCH 4
-Data 2,22,59,92,93,94,100,0,0,0,0,0,0,0: ' HITCH 5
-Data 2,12,63,88,90,92,93,94,95,96,97,98,99,100: ' HITCH 6
-Data 2,6,38,86,88,90,92,94,95,96,97,98,99,100: ' HITCH 7
-Data 2,6,25,74,82,90,92,94,95,96,97,98,99,100: ' HITCH 8
-Data 2,6,25,69,77,85,87,90,92,95,97,98,99,100: ' HITCH 9
-Data 2,6,25,66,74,82,84,87,89,92,94,96,98,100: ' HITCH 10
-Data 34,72,98,99,100,0,0,0,0,0,0,0,0,0: ' SCREEN 1
-Data 14,54,97,98,99,100,0,0,0,0,0,0,0,0: ' SCREEN 2
-Data 10,55,80,95,96,97,98,99,100,0,0,0,0,0: ' SCREEN 3
-Data 10,51,75,91,93,95,96,97,98,99,100,0,0,0: ' SCREEN 4
-Data 10,30,70,90,92,94,95,96,97,98,99,100,0,0: ' SCREEN 5
-Data 10,35,71,86,88,90,92,94,95,96,97,98,99,100: ' SCREEN 6
-Data 10,32,68,83,85,87,89,91,93,95,96,98,99,100: ' SCREEN 7
-Data 10,29,65,80,82,85,87,89,91,93,95,97,99,100: ' SCREEN 8
-Data 10,21,57,72,77,82,86,89,91,93,95,97,99,100: ' SCREEN 9
-Data 10,13,49,64,72,79,85,89,91,93,95,97,99,100: ' SCREEN 10
-Data 0,97,99,100,0,0,0,0,0,0,0,0,0,0: ' SP 1
-Data 0,45,96,98,99,100,0,0,0,0,0,0,0,0: ' SP 2
-Data 0,10,82,97,98,99,100,0,0,0,0,0,0,0: ' SP 3
-Data 0,0,63,94,95,96,97,98,99,100,0,0,0,0: ' SP 4
-Data 0,0,45,91,93,95,96,97,98,99,100,0,0,0: ' SP 5
-Data 0,0,45,80,86,92,94,95,96,97,98,99,100,0: ' SP 6
-Data 0,0,40,70,80,90,93,94,95,96,97,98,99,100: ' SP 7
-Data 0,0,40,65,75,85,88,90,93,94,96,98,99,100: ' SP 8
-Data 0,0,30,51,66,81,88,90,92,94,96,98,99,100: ' SP 9
-Data 0,0,20,37,57,77,88,90,92,94,96,98,99,100: ' SP 10
-Data 17,77,94,99,100,0,0,0,0,0,0,0,0,0: ' MP 1
-Data 6,35,76,96,97,98,99,100,0,0,0,0,0,0: ' MP 2
-Data 0,0,52,92,96,98,100,0,0,0,0,0,0,0: ' MP 3
-Data 0,0,40,80,87,93,95,97,99,100,0,0,0,0: ' MP 4
-Data 0,0,4,69,81,89,94,96,98,100,0,0,0,0: ' MP 5
-Data 0,0,5,58,70,78,83,87,91,95,98,100,0,0: ' MP 6
-Data 0,0,0,41,57,70,78,83,88,92,95,98,100,0: ' MP 7
-Data 0,0,0,19,36,51,66,78,88,92,94,96,98,100: ' MP 8
-Data 0,0,0,13,26,43,61,76,86,90,93,96,98,100: ' MP 9
-Data 0,0,0,11,22,33,51,66,76,82,87,92,96,100: ' MP 10
-Data 1,56,98,100,0,0,0,0,0,0,0,0,0,0: ' LP 1
-Data 0,0,53,95,96,100,0,0,0,0,0,0,0,0: ' LP 2
-Data 0,0,0,67,87,97,98,99,100,0,0,0,0,0: ' LP 3
-Data 0,0,0,13,65,97,98,99,100,0,0,0,0,0: ' LP 4
-Data 0,0,0,0,32,64,96,97,98,99,100,0,0,0: ' LP 5
-Data 0,0,0,0,12,40,82,86,90,93,96,98,100,0: ' LP 6
-Data 0,0,0,0,0,26,69,75,81,86,91,94,97,100: ' LP 7
-Data 0,0,0,0,0,0,17,40,64,72,80,88,94,100: ' LP 8
-Data 0,0,0,0,0,0,6,29,54,64,74,84,92,100: ' LP 9
-Data 0,0,0,0,0,0,3,23,44,56,68,80,90,100: ' LP 10
-Data 0,10,20,30,40,50,60,70,80,90,50,55,60,65,70,75,80,85,90,95,100
-Data 0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2
-
-'QB Y/C ADJ
-Data 0,10,20,30,40,50,60,70,40,45,50,55,60,65,70,50,53,57,60,63,67
-Data 0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3
-
-For I = 0 To 14: Read R$(I): Next
-For I = 1 To 10: Read D$(I): Next I
-For I = 1 To 11: Read D1$(I): Next I
-For I = 1 To 20: Read O$(I): Next I
-For I = 1 To 7: For I1 = 1 To 10: Read D3%(I, I1): Next I1: Next I
-For I = 0 To 2: Read P$(I): Read P(I): Next I
-For I = 0 To 4: Read F(I): Read F1(I): Next I
-For I = 0 To 3: For I1 = 1 To 10: For J = 1 To 11: Read S1%(I, I1, J): Next J: Next I1: Next I
-For I = 0 To 1: For I1 = 0 To 14: Read RM%(I, I1): Next: Next
-For I = 0 To 1: For I1 = 1 To 38: Read RN%(I, I1): Next: Next
-For I = 1 To 38: For I1 = 1 To 4: Read BY%(I, I1): Next: Next
-For I = 1 To 30: For I1 = 1 To 2: Read GL%(I, I1): Next: Next
-For I = 1 To 5: For I1 = 1 To 10: For J = 1 To 14: Read S2%(I, I1, J): Next: Next: Next
-For I = 1 To 2: For I1 = 1 To 21: Read PS%(I, I1): Next: Next
-For I = 1 To 2: For I1 = 0 To 20: Read QR%(I1, I): Next: Next
-For I = 1 To 29: Read RP$(I): Next
-
-'I think these are alternate offense options
-'that did not get implemented. There is some
-'overlap so perhaps a rewrite of sorts was
-'in progress.
-Data BLAST,DIVE,OFF TACKLE,TOSS SWEEP,OPTION RUN,DRAW PLAY,MISDIRECTION
-Data QB SNEAK,POWER SWEEP,QUICK PITCH,QUICK TRAP,ISOLATION,SPRINT DRAW
-Data OVER THE TOP,COUNTER
-Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
-Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
-Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
 
 
 '----------------------------------------
@@ -270,7 +56,7 @@ U5$(1) = "COMPUTER IS VISITING TEAM"
 U5$(3) = "COMPUTER VS COMPUTER     "
 
 strG9$(0) = "PLAY USING COLLEGE RULES"
-strG9$(1) = "PLAY USING NFL RULES    "
+strG9$(1) = "PLAY USING NFL RULEDS    "
 strG9$(2) = "PLAY USING USFL RULES   "
 strG9$(3) = "PLAY USING AFL RULES    "
 strG9$(4) = "PLAY USING WFL RULES    "
@@ -301,7 +87,6 @@ LO$(2) = "NEUTRAL SITE"
 '       DETERMINE GAME OPTIONS
 '----------------------------------------
 
-
 Open "DEV.BAS" For Input As #1
 Input #1, diskPaths$(0)
 Input #1, diskPaths$(1)
@@ -309,14 +94,14 @@ Close #1
 
 
 Open "DEFAULT" For Input As #1
-Input #1, J6(0)
-Input #1, G9
-Input #1, H%:
-Input #1, pbpDelay!
-Input #1, R5%
-Input #1, Y8
-Input #1, Y9
-Input #1, NG%(14)
+Input #1, J6(0) '
+Input #1, G9 '
+Input #1, H%: ' Home Field Advantage
+Input #1, pbpDelay! '
+Input #1, R5% '
+Input #1, Y8 '
+Input #1, Y9 '
+Input #1, NG%(14) 'Overtime setting
 Close 1
 
 
@@ -354,10 +139,14 @@ If _FileExists("GAME82") Then
 
     Open "GAME82" For Input As #2
     Input #2, scheduleFile$
+
     For I = 0 To 2: Input #2, AP%(I): Next
+
     Close 2
 
+    'Read in schedule options
     Open diskPaths$(0) + scheduleFile$ As #1 Len = 52
+
     For X = 0 To 20
         Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
     Next
@@ -368,14 +157,15 @@ If _FileExists("GAME82") Then
 
     For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
     For X = 0 To 1: YN$(X) = Q$(22 + X): Next
+
     Close 1
 
     AP = 1
 
 End If
 
-' Open "pbplog" For Append As #7
-' Open "varlog" For Append As #5
+'Open "pbplog" For Append As #7
+'Open "varlog" For Append As #5
 
 If AP = 1 Then
     'Assign settings from schedule / etc.
@@ -468,14 +258,14 @@ Else
 
                 Case 0:
                     Open "DEFAULT" For Output As #1
-                    Print #1, J6(0)
-                    Print #1, G9
-                    Print #1, H%
-                    Print #1, pbpDelay!
-                    Print #1, R5%
-                    Print #1, Y8
-                    Print #1, Y9
-                    Print #1, NG%(14)
+                    Print #1, J6(0) '
+                    Print #1, G9 '
+                    Print #1, H% ' Home Field advantage
+                    Print #1, pbpDelay! '
+                    Print #1, R5% '
+                    Print #1, Y8 '
+                    Print #1, Y9 '
+                    Print #1, NG%(14) 'overtime setting
                     Close 1
 
                 Case 1
@@ -878,11 +668,11 @@ Select Case Val(I$)
 
                 Case Is <= 8
                     Select Case RN
-                        Case 1 TO 5
+                        Case 1 To 5
                             G = 110
-                        Case 6 TO 20
+                        Case 6 To 20
                             G = Int((Rnd(1) * 21) + 45) + (B(P1, I1) - 7) * 3
-                        Case 21 TO 70
+                        Case 21 To 70
                             G = Int((Rnd(1) * 21) + 25) + (B(P1, I1) - 7) * 3
                         Case Is >= 71
                             G = Int((Rnd(1) * 10) + 15) + (B(P1, I1) - 7) * 3
@@ -933,7 +723,7 @@ Select Case Val(I$)
                 Y = G + N
 
                 If G > KR(P1, I1) Then strKR$(P1, I1) = "": KR(P1, I1) = G
-                
+
                 K2(P1, I1, 15) = K2(P1, I1, 15) + G
                 F% = 3
                 
@@ -1221,6 +1011,7 @@ O = 5
 
 GoSub 3900
 
+'College Overtime
 If NG%(14) = 3 And Q > 4 Then 3364
 
 'GoTo 700
@@ -1581,8 +1372,9 @@ Do
 
     'Call PBP_Logger(1675)
 
-    'Going to guess this might be the issue ???
 Loop While (T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
+
+
 
 'Call PBP_Logger(1680)
 
@@ -1595,6 +1387,8 @@ If J6(0) = 1 And D = CT Then Call COMPCHEAT
 If QBN% = 1 Then QBN% = 0: GoTo 3403
 
 I = Int(Rnd(1) * 1000) + 1
+'I = Int(Rnd(1) * 100) + 1
+
 
 If I <= 36 And E <> 1 And P2 < 21 Then
 
@@ -1604,22 +1398,22 @@ If I <= 36 And E <> 1 And P2 < 21 Then
 
     Select Case I
 
-        Case 1 TO 2 + PA%(P1, 0)
+        Case 1 To 2 + PA%(P1, 0)
             U$ = U$ + "OFFENSE... OFFSIDES 5 YARDS ***"
             Call PBP ': Call PBP_Logger(1696)
             P = -5
 
-        Case 2 + PA%(P1, 0) TO 20 + PA%(P1, 0)
+        Case 2 + PA%(P1, 0) To 20 + PA%(P1, 0)
             U$ = U$ + "ILLEGAL PROCEDURE OFFENSE... 5 YARDS ***"
             Call PBP ': Call PBP_Logger(1701)
             P = -5
 
-        Case 20 + PA%(P1, 0) TO 27 + PA%(P1, 0)
+        Case 20 + PA%(P1, 0) To 27 + PA%(P1, 0)
             U$ = U$ + "OFFENSE... DELAY OF GAME 5 YARDS ***"
             Call PBP ': Call PBP_Logger(1706)
             P = -5
 
-        Case 27 + PA%(P1, 0) TO 36 + PA%(P1, 0) + PA%(D, 0)
+        Case 27 + PA%(P1, 0) To 36 + PA%(P1, 0) + PA%(D, 0)
             U$ = U$ + "DEFENSE... ENCROACHMENT 5 YARDS ***"
             Call PBP ': Call PBP_Logger(1711)
             P = 5
@@ -1637,12 +1431,13 @@ If I <= 36 And E <> 1 And P2 < 21 Then
 
 End If
 
-'Call PBP_Logger(1732)
+'Call varlog(2072)
 
 709 '
 Select Case P2
 
-    Case 1 TO 8
+    Case 1 To 8
+
         3400 '
         ' ****  RUNNING PLAYS  ****
 
@@ -1652,13 +1447,13 @@ Select Case P2
 
             KJ = 0
             R1 = 1
-            'I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
+            I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
 
             3403 '
             'A1(P1, I1) is rushing average
 
-            'I2 = A1(P1, I1)
-            RY = A1(P1, I1)
+            I2 = A1(P1, I1)
+            RY = I2
 
             'We essentially restore our value of I2 here
             'RY will be negative for several "OTHERS" entries
@@ -1666,7 +1461,7 @@ Select Case P2
             'average, and therefore almost never becomes a
             'positive integer
 
-            I2 = RY + B6(D, 0) + WX%(4)
+            I2 = I2 + B6(D, 0) + WX%(4)
 
             'Call varlog(1767)
 
@@ -1798,7 +1593,7 @@ Select Case P2
 
                     3456 '
                     If (P2 <= 2 And D2 = 5 Or P2 <= 2 And D2 = 6 Or P2 >= 6 And D2 = 5 Or P2 >= 6 And D2 = 6) Or (P2 > 2 And P2 < 5 And D2 = 7 Or P2 > 2 And P2 < 5 And D2 = 8) Then
-
+                        
                         ' *** STUNTS ***
                         I4 = Int(Rnd(1) * 100) + 1
 
@@ -1806,37 +1601,37 @@ Select Case P2
 
                             Case Is <= 15
                                 Select Case I4
-                                    Case 1 TO 15: G = Int(Rnd(1) * 3) - 2
-                                    Case 16 TO 60: G = Int(Rnd(1) * 2) + 1
-                                    Case 61 TO 100: G = Int(Rnd(1) * (I2 * 2.13)) + 1
+                                    Case 1 To 15: G = Int(Rnd(1) * 3) - 2
+                                    Case 16 To 60: G = Int(Rnd(1) * 2) + 1
+                                    Case 61 To 100: G = Int(Rnd(1) * (I2 * 2.13)) + 1
                                 End Select
 
                             Case 16, 17
                                 Select Case I4
-                                    Case 1 TO 10: G = Int(Rnd(1) * 3) - 2
-                                    Case 11 TO 50: G = Int(Rnd(1) * 2) + 1
-                                    Case 51 TO 100: G = Int(Rnd(1) * (I2 * 1.73)) + 1
+                                    Case 1 To 10: G = Int(Rnd(1) * 3) - 2
+                                    Case 11 To 50: G = Int(Rnd(1) * 2) + 1
+                                    Case 51 To 100: G = Int(Rnd(1) * (I2 * 1.73)) + 1
                                 End Select
 
                             Case 18, 19
                                 Select Case I4
-                                    Case 1 TO 10: G = Int(Rnd(1) * 3) - 2
-                                    Case 11 TO 40: G = Int(Rnd(1) * 2) + 1
-                                    Case 41 TO 100: G = Int(Rnd(1) * (I2 * 1.5)) + 1
+                                    Case 1 To 10: G = Int(Rnd(1) * 3) - 2
+                                    Case 11 To 40: G = Int(Rnd(1) * 2) + 1
+                                    Case 41 To 100: G = Int(Rnd(1) * (I2 * 1.5)) + 1
                                 End Select
 
                             Case 20, 21
                                 Select Case I4
-                                    Case 1 TO 5: G = Int(Rnd(1) * 3) - 2
-                                    Case 6 TO 30: G = Int(Rnd(1) * 2) + 1
-                                    Case 31 TO 100: G = Int(Rnd(1) * (I2 * 1.3)) + 1
+                                    Case 1 To 5: G = Int(Rnd(1) * 3) - 2
+                                    Case 6 To 30: G = Int(Rnd(1) * 2) + 1
+                                    Case 31 To 100: G = Int(Rnd(1) * (I2 * 1.3)) + 1
                                 End Select
 
                             Case Is >= 22
                                 Select Case I4
-                                    Case 1 TO 5: G = Int(Rnd(1) * 3) - 2
-                                    Case 6 TO 20: G = Int(Rnd(1) * 2) + 1
-                                    Case 21 TO 100: G = Int(Rnd(1) * (I2 * 1.2)) + 1
+                                    Case 1 To 5: G = Int(Rnd(1) * 3) - 2
+                                    Case 6 To 20: G = Int(Rnd(1) * 2) + 1
+                                    Case 21 To 100: G = Int(Rnd(1) * (I2 * 1.2)) + 1
                                 End Select
 
                         End Select
@@ -1877,13 +1672,13 @@ Select Case P2
 
                             Select Case G
 
-                                Case 1 TO 44
+                                Case 1 To 44
                                     G = (Int(Rnd(1) * 11) - 1) - (((18 - I2) * 2) / 10)
 
                                 Case 45
                                     G = Int(Rnd(1) * 2 * I2) + 1
 
-                                Case 46 TO 47
+                                Case 46 To 47
                                     G = Int(Rnd(1) * I2) + 1
 
                                 Case 48
@@ -1930,13 +1725,13 @@ Select Case P2
 
                     Select Case G
 
-                        Case 1 TO 44
+                        Case 1 To 44
                             G = (Int(Rnd(1) * 11) - 1) - (((18 - I2) * 2) / 10)
 
                         Case 45
                             G = Int(Rnd(1) * 2 * I2) + 1
 
-                        Case 46 TO 47
+                        Case 46 To 47
                             G = Int(Rnd(1) * I2) + 1
 
                         Case 48
@@ -2051,15 +1846,17 @@ Select Case P2
         End If 'Done checking KJ
 
 
-    Case 9 TO 18
+    Case 9 To 18
+        3500 '
         Call PASSBALL
+
+        'Call varlog(2072)
 
         'SACKED
         If I < S1%(3, P2 - 8, D3) + B6(P1, 5) + B6(D, 6) + 1 Then
+
             R1 = 1
             W5 = 1
-
-            'Call PBP_Logger(2135)
 
             ' 3538
             ' *** SACKED ***
@@ -2071,15 +1868,13 @@ Select Case P2
             Call YARDAGE
             Call SACK
 
+            'Yardage for sack is negative
             G = G * -1
-            'SACK
 
             If intDS%(1 - P1) <> 0 Then
 
                 M5 = 0
                 RN = Int(Rnd(1) * DDS(1 - P1)) + 1
-
-                'Call PBP_Logger(2155)
 
                 For Z1 = 0 To 14
 
@@ -2091,8 +1886,10 @@ Select Case P2
                     End If
 
                 Next
+
             End If
 
+            '3699
             Call PBP ': Call PBP_Logger(2157)
 
             X = 4
@@ -2103,133 +1900,142 @@ Select Case P2
             If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
 
             F% = 1
+
             Call FUMBLE
 
-        Else
+            GoTo 3309
 
-            'FORCED TO RUN ON BOOTLEG/ROLLOUT/KEEPER
-            'Call PBP_Logger(2182)
+        End If
 
+        'FORCED TO RUN ON BOOTLEG/ROLLOUT/KEEPER
+        rollout% = 0
+
+        'When would mobility ever be 0???
+        If R9%(P1) > 0 Then
+            I = Int(Rnd(1) * 100) + 1
+            If I <= R9%(P1) Then GoTo 3545
+        End If
+
+        If R9%(P1) > 0 Then GoTo 3532
+
+        If (P2 = 9 Or P2 = 10 Or P2 = 13) And I <= 5 Then rollout% = 1
+        If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17) And I <= 10 Then rollout% = 1
+        If (P2 = 12 Or P2 = 15) And I <= 15 Then rollout% = 1
+        If P2 = 18 And I <= 35 Then rollout% = 1
+
+        If rollout% = 1 Then
+            3545 '
             If R9%(P1) > 0 Then
-
-                I = Int(Rnd(1) * 100) + 1
-
-                If I <= R9%(P1) Then flag% = 1
-
-            Else
-
-                If (P2 = 9 Or P2 = 10 Or P2 = 13) And I <= 5 Then flag% = 1
-                If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17) And I <= 10 Then flag% = 1
-                If (P2 = 12 Or P2 = 15) And I <= 15 Then flag% = 1
-                If P2 = 18 And I <= 35 Then flag% = 1
-
+                R1 = Int((R9%(P1) * .67) + .5)
+                R1 = (R1 * 2)
+                G = Int(Rnd(1) * R1)
             End If
 
-            'Call PBP_Logger(2199)
+            If R9%(P1) = 0 Then
+                G = Int(Rnd(1) * 12) + 1
+            End If
 
-            If flag% = 1 Then
+            Call YARDAGE
 
-                3545 '
-                If R9%(P1) > 0 Then
-                    R1 = Int((R9%(P1) * .67) + .5)
-                    R1 = (R1 * 2)
-                    G = Int(Rnd(1) * R1)
+            'QB Keeper
+            If P2 = 17 Or P2 = 18 Then
+
+                'Call PBP_Logger(2252)
+                'QB RUN
+                I6 = 0
+
+                For I4 = 0 To 9
+                    If A1$(P1, I4) = A3$(P1, Q6%(P1)) Then
+                        I6 = A1(P1, I4)
+                        Exit For
+                    End If
+                Next I4
+
+                I7 = Int(Rnd(1) * 10) + 1
+
+                If I6 = 0 Then
+                    If I7 <= 9 Then
+                        G = Int(Rnd(1) * 5)
+                    Else
+                        G = Int(Rnd(1) * 16)
+                    End If
                 Else
-                    'R9%(P1) = 0
-                    G = Int(Rnd(1) * 12) + 1
+                    If I7 <= 9 Then
+                        G = Int(Rnd(1) * 7)
+                    Else
+                        G = Int(Rnd(1) * (12 + ((I6 - 13) * 3) * 2))
+                    End If
                 End If
 
                 Call YARDAGE
 
-                If P2 = 17 Or P2 = 18 Then
+                SY = 100 - Y
+                EY = SY - G
+                Call MOVEBALL
 
-                    'QB RUN
-                    I6 = 0
-
-                    For I4 = 0 To 9
-                        If A1$(P1, I4) = A3$(P1, Q6%(P1)) Then
-                            I6 = A1(P1, I4)
-                            Exit For
-                        End If
-                    Next I4
-
-                    I7 = Int(Rnd(1) * 10) + 1
-
-                    If I6 = 0 Then
-                        If I7 <= 9 Then
-                            G = Int(Rnd(1) * 5)
-                        Else
-                            G = Int(Rnd(1) * 16)
-                        End If
-                    Else
-                        If I7 <= 9 Then
-                            G = Int(Rnd(1) * 7)
-                        Else
-                            G = Int(Rnd(1) * (12 + ((I6 - 13) * 3) * 2))
-                        End If
-                    End If
-
-                    Call YARDAGE
-
-                    SY = 100 - Y
-                    EY = SY - G
-                    Call MOVEBALL
-
-                    If P2 = 17 Then
-                        U$ = A3$(P1, I1) + " KEEPS IT ON THE ROLLOUT AND RUNS FOR"
-                    Else
-                        U$ = A3$(P1, I1) + " KEEPS IT ON THE BOOTLEG AND RUNS FOR"
-                    End If
-
+                If P2 = 17 Then
+                    U$ = A3$(P1, I1) + " KEEPS IT ON THE ROLLOUT AND RUNS FOR"
                 Else
-                    U$ = A3$(P1, I1) + " IS CHASED FROM THE POCKET"
-                    Call PBP ': Call PBP_Logger(2243)
-                    U$ = "HE IS FORCED TO RUN FOR"
+                    U$ = A3$(P1, I1) + " KEEPS IT ON THE BOOTLEG AND RUNS FOR"
                 End If
 
-                3546 '
-                X = 4
-                X1 = 9
-                R1 = 1
-
-                If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then
-                    U$ = U$ + Str$(Int(100 - Y))
-                Else
-                    U$ = U$ + Str$(Int((G) * 10 + .5) / 10)
-                End If
-
-                U$ = U$ + " YARDS"
-
-                Call PBP ': Call PBP_Logger(2260)
-
-                If E = 1 Then Call GoForTwo
-
-                If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then K(P1, 0) = K(P1, 0) + 1: GoTo 3200
-
-                If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
-
-                F% = 2
-                Call FUMBLE
-
+            Else
+                U$ = A3$(P1, I1) + " IS CHASED FROM THE POCKET"
+                Call PBP ': Call PBP_Logger(2243)
+                U$ = "HE IS FORCED TO RUN FOR"
             End If
 
-            'Call PBP_Logger(2287)
+            3546 '
+            X = 4
+            X1 = 9
+            R1 = 1
+
+            If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then
+                U$ = U$ + Str$(Int(100 - Y))
+            Else
+                U$ = U$ + Str$(Int((G) * 10 + .5) / 10)
+            End If
+
+            U$ = U$ + " YARDS"
+
+            Call PBP ': Call PBP_Logger(2260)
+
+            If E = 1 Then Call GoForTwo
+
+            If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then K(P1, 0) = K(P1, 0) + 1: GoTo 3200
+
+            If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
+
+            F% = 2
+
+            Call FUMBLE
 
             GoTo 3309
+        Else
 
-            '----
-
-            3532 I = Int(Rnd(1) * 100) + 1
+            3532 '
+            'Pass Completion %
+            I = Int(Rnd(1) * 100) + 1
 
             'INTERCEPTED
-            If I > 100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2) Then 3552
+            If I > (100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2)) Then 3552
 
             Call ARMADJUST
 
+            'Call varlog(2151)
+
             If I <= S2 + S3 + PQ + PW Then
+                'Pass completed
+
                 3575 '
-                If I3 > 9 Then I4 = A5(P1, I3 - 10): RY = I4
-                If I3 <= 9 Then I4 = A3(P1, I3): RY = I4
+                If I3 > 9 Then
+                    I4 = A5(P1, I3 - 10)
+                    RY = I4
+                Else
+                    I4 = A3(P1, I3)
+                    RY = I4
+                End If
+
                 If WX%(4) = -3 Then I4 = I4 - 1
                 If WX%(4) = -6 Then I4 = I4 - 2
 
@@ -2290,7 +2096,6 @@ Select Case P2
                 End If
 
                 3617 '
-
                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
                     U$ = "THAT CATCH BY "
                     Call WHICHRECEIVER
@@ -2299,6 +2104,7 @@ Select Case P2
                     G = 100 - Y
                     If G > WR(P1, I3) Then strWR$(P1, I3) = "t": WR(P1, I3) = G
                     If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "t": QB(P1, Q6%(P1)) = G
+
                     Call PBP ': Call PBP_Logger(2353)
 
                 Else
@@ -2326,6 +2132,7 @@ Select Case P2
                 Call PBP ': Call PBP_Logger(2377)
 
                 If E = 1 Then F9 = 0: Call GoForTwo
+
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then F9 = 0: K(P1, 0) = K(P1, 0) + 1: GoTo 3200
 
@@ -2348,94 +2155,21 @@ Select Case P2
 
                         Call PBP ': Call PBP_Logger(2400)
                         F9 = 0
-                        'GoTo 3309
 
                     End If
 
                 End If
 
-                3594 'F%=2:CALL FUMBLE
-
+                GoTo 3309
             Else
 
-                'Call PBP_Logger(2432)
+                'Incomplete pass
+                GoTo 3535
 
-                3535 X = 2
-                I = Int(Rnd(1) * 1000) + 1
+            End If 'Done checking for pass complete
 
-                If I <= 50 + PA%(D, 0) And P2 <> 13 And E = 0 Then
-                    '3750
-                    U$ = "DEFENSIVE PASS INTERFERENCE"
-                    If P2 = 9 Or P2 = 10 Or P2 = 13 Then G = Int(Rnd(1) * 10) + 1
-                    If P2 = 12 Or P2 = 15 Then G = Int(Rnd(1) * 20) + 21
-                    If P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18 Then G = Int(Rnd(1) * 10) + 11
+        End If 'Done checking if rollout
 
-                    If G9 = 0 And Y9 >= 3 And G > 15 Then G = 15
-
-                    K(D, 11) = K(D, 11) + 1
-                    Call YARDAGE
-
-                    If G + Y >= 99.99 Then
-
-                        If G9 <> 0 Then
-                            K(D, 12) = K(D, 12) + 100 - Y - 1
-                            U$ = U$ + " IN THE END ZONE"
-                            Call PBP ': Call PBP_Logger(2432)
-
-                            Y = 99
-                            Y1 = 1
-                        Else
-                            K(D, 12) = K(D, 12) + 100 - Y - 2
-                            U$ = U$ + " IN THE END ZONE"
-                            Call PBP ': Call PBP_Logger(2439)
-
-                            Y = 98
-                            Y1 = 2
-                        End If
-
-                    Else
-
-                        K(D, 12) = K(D, 12) + G
-                        U$ = U$ + " AT THE "
-
-                        If G + Y < 50 Then
-                            U$ = U$ + Str$(Int((G + Y) * 10 + .5) / 10)
-                        Else
-                            U$ = U$ + Str$(Int((100 - Y - G) * 10 + .5) / 10)
-                        End If
-
-                        U$ = U$ + " YARD LINE"
-                        Call PBP ': Call PBP_Logger(2457)
-                        Y = Y + G
-                        Y1 = 10
-
-                        If Y >= 90 Then Y1 = 100 - Y
-
-                    End If
-
-                    D1 = 1
-                    K(P1, 0) = K(P1, 0) + 1
-                    O = 4
-
-                    GoSub 3900
-
-                    If T <= 0 Then T = 1
-
-                    GoTo 700
-
-                Else
-
-                    Call INCOMPLETE
-                    If E = 1 Then Call GoForTwo
-                    O = 4
-
-                End If
-
-            End If
-
-            GoTo 3309
-
-        End If
 
     Case 19
         3800 '
@@ -2645,15 +2379,15 @@ Select Case P2
                 If choice = 0 Then
 
                     Select Case RN
-                        Case 1 TO 36:
+                        Case 1 To 36:
                             G = Int(Rnd(1) * 27)
 
-                        Case 37 TO 90:
+                        Case 37 To 90:
                             U$ = "THE PASS FALLS INCOMPLETE"
                             Call PBP: ': Call PBP_Logger(2696)
                             O = 4: GoTo 3309
 
-                        Case 91 TO 100:
+                        Case 91 To 100:
                             U$ = "THE PASS IS INTERCEPTED!"
                             Call PBP ': Call PBP_Logger(2700)
                             GoTo 3876
@@ -2664,21 +2398,21 @@ Select Case P2
                 If choice = 1 Then
 
                     Select Case RN
-                        Case 1 TO 26:
+                        Case 1 To 26:
                             G = Int(Rnd(1) * 20)
 
-                        Case 27 TO 80:
+                        Case 27 To 80:
                             U$ = "THE PASS FALLS INCOMPLETE"
                             Call PBP ': Call PBP_Logger(2710)
                             O = 4
                             GoTo 3309
 
-                        Case 81 TO 90:
+                        Case 81 To 90:
                             U$ = "THE PASS IS INTERCEPTED!"
                             Call PBP ': Call PBP_Logger(2714)
                             GoTo 3876
 
-                        Case 91 TO 100: G = 100 - Y
+                        Case 91 To 100: G = 100 - Y
                     End Select
 
                 End If
@@ -2686,14 +2420,14 @@ Select Case P2
                 If choice = 2 Then
 
                     Select Case RN
-                        Case 1 TO 10:
+                        Case 1 To 10:
                             G = Int(Rnd(1) * 7) + 6
 
-                        Case 11 TO 80:
+                        Case 11 To 80:
                             U$ = "THE PASS FALLS INCOMPLETE"
                             Call PBP ': Call PBP_Logger(2725)
                             O = 4: GoTo 3309
-                        Case 81 TO 100:
+                        Case 81 To 100:
                             U$ = "THE PASS IS INTERCEPTED!"
                             Call PBP ': Call PBP_Logger(2729)
                             GoTo 3876
@@ -3088,32 +2822,32 @@ Select Case P2
 
                         Case 1
                             Select Case RN
-                                Case 1 TO 20:
+                                Case 1 To 20:
                                     G = Int(Rnd(1) * 20)
-                                Case 21 TO 80:
+                                Case 21 To 80:
                                     U$ = "THE PASS FALLS INCOMPLETE"
                                     Call PBP ': Call PBP_Logger(3123)
                                     O = 4
                                     passIncomplete% = 1
-                                Case 81 TO 90:
+                                Case 81 To 90:
                                     U$ = "THE PASS IS INTERCEPTED!"
                                     Call PBP ': Call PBP_Logger(3128)
                                     passIntercepted% = 1
-                                Case 91 TO 100:
+                                Case 91 To 100:
                                     G = 100 - Y
                             End Select
 
                         Case 2
                             Select Case RN
-                                Case 1 TO 10:
+                                Case 1 To 10:
                                     G = Int(Rnd(1) * 7) + 6
-                                Case 11 TO 80:
+                                Case 11 To 80:
                                     U$ = "THE PASS FALLS INCOMPLETE"
                                     Call PBP ': Call PBP_Logger(3140)
                                     O = 4
                                     passIncomplete% = 1
                                     GoTo 3309
-                                Case 81 TO 100:
+                                Case 81 To 100:
                                     U$ = "THE PASS IS INTERCEPTED!"
                                     Call PBP ': Call PBP_Logger(3146)
                                     passIntercepted% = 1
@@ -3230,7 +2964,6 @@ Select Case P2
 
             GoTo 3602
 
-
         End If
 
     Case 21
@@ -3258,6 +2991,90 @@ Select Case P2
         GoTo 700
 
 End Select
+
+'----------
+
+
+3535 'PASS NOT COMPLETE
+'Incomplete / Interference Penalty
+X = 2
+I = Int(Rnd(1) * 1000) + 1
+
+If I <= 50 + PA%(D, 0) And P2 <> 13 And E = 0 Then
+
+    3750 '
+    U$ = "DEFENSIVE PASS INTERFERENCE"
+    If P2 = 9 Or P2 = 10 Or P2 = 13 Then G = Int(Rnd(1) * 10) + 1
+    If P2 = 12 Or P2 = 15 Then G = Int(Rnd(1) * 20) + 21
+    If P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18 Then G = Int(Rnd(1) * 10) + 11
+
+    If G9 = 0 And Y9 >= 3 And G > 15 Then G = 15
+
+    K(D, 11) = K(D, 11) + 1
+
+    Call YARDAGE
+
+    If G + Y >= 99.99 Then
+
+        If G9 <> 0 Then
+            K(D, 12) = K(D, 12) + 100 - Y - 1
+            U$ = U$ + " IN THE END ZONE"
+            Call PBP ': Call PBP_Logger(2432)
+
+            Y = 99
+            Y1 = 1
+        Else
+            K(D, 12) = K(D, 12) + 100 - Y - 2
+            U$ = U$ + " IN THE END ZONE"
+            Call PBP ': Call PBP_Logger(2439)
+
+            Y = 98
+            Y1 = 2
+        End If
+
+    Else
+
+        K(D, 12) = K(D, 12) + G
+        U$ = U$ + " AT THE "
+
+        If G + Y < 50 Then
+            U$ = U$ + Str$(Int((G + Y) * 10 + .5) / 10)
+        Else
+            U$ = U$ + Str$(Int((100 - Y - G) * 10 + .5) / 10)
+        End If
+
+        U$ = U$ + " YARD LINE"
+        Call PBP ': Call PBP_Logger(2457)
+        Y = Y + G
+        Y1 = 10
+
+        If Y >= 90 Then Y1 = 100 - Y
+
+    End If
+
+    D1 = 1
+    K(P1, 0) = K(P1, 0) + 1
+    O = 4
+
+    GoSub 3900
+
+    If T <= 0 Then T = 1
+
+    GoTo 700
+
+Else
+
+    Call INCOMPLETE
+
+    If E = 1 Then Call GoForTwo
+
+    O = 4
+
+End If
+
+
+GoTo 3309
+
 
 '----------
 
@@ -3302,6 +3119,7 @@ Y1 = 10
 D1 = 1
 Call SCOREBOARD
 
+'Pro Overtime
 If G9 <> 0 And Q > 4 Then 3364
 
 GoSub PointsAfterTD
@@ -3329,6 +3147,7 @@ Call SCOREBOARD
 
 If R1 > 0 And R1 < 3 And 100 - Y > 10 And G9 <> 0 Then K(D, 0) = K(D, 0) + 1
 
+'Overtime
 If Q > 4 Then 3364
 
 GoTo 340
@@ -3366,6 +3185,7 @@ Call PBP ': Call PBP_Logger(3392)
 
 Call DisplayField
 
+'Overtime
 If Q > 4 Then 3364
 
 GoTo 340
@@ -3423,7 +3243,7 @@ If I <= 6 + PA%(D, 0) Then
                 K(P1, 12) = K(P1, 12) + 15
             End If
 
-        Case 2 TO 6
+        Case 2 To 6
             U$ = U$ + "DEF PERSONAL FOUL - 15 YARDS"
             Call PBP ': Call PBP_Logger(3455)
 
@@ -3441,7 +3261,7 @@ If I <= 6 + PA%(D, 0) Then
 
             If T <= 0 Then T = 1
 
-        Case 7 TO 9
+        Case 7 To 9
             U$ = U$ + "DEF INCIDENTAL FACEMASK - 5 YARDS"
             Call PBP ': Call PBP_Logger(3473)
 
@@ -3501,11 +3321,11 @@ Select Case R1
     Case 1
 
         Select Case I4
-            Case 1 TO 7 + PA%(P1, 0)
+            Case 1 To 7 + PA%(P1, 0)
                 U$ = U$ + "OFFENSE... ILLEGAL MOTION 5 YARDS ***"
                 P = -5
 
-            Case 7 + PA%(P1, 0) TO 25 + PA%(P1, 0)
+            Case 7 + PA%(P1, 0) To 25 + PA%(P1, 0)
                 If (G9 <> 0 And Y8 = 1 Or G9 = 0 And Y9 < 3) Then
                     U$ = U$ + "OFF... HOLDING 15 YARDS ***"
                     P = -15
@@ -3516,7 +3336,7 @@ Select Case R1
 
                 HL% = 1
 
-            Case 25 + PA%(P1, 0) TO 42 + PA%(P1, 0) + PA%(D, 0)
+            Case 25 + PA%(P1, 0) To 42 + PA%(P1, 0) + PA%(D, 0)
                 U$ = U$ + "DEF... LINED IN NEUTRAL ZONE 5 YARDS ***"
                 P = 5
 
@@ -3536,7 +3356,7 @@ Select Case R1
     Case 2
         Select Case I4
 
-            Case 1 TO 17 + PA%(P1, 0)
+            Case 1 To 17 + PA%(P1, 0)
                 If (G9 <> 0 And Y8 <> 0 And Y8 <> 3 Or G9 = 0 And Y9 < 3) Then
                     U$ = U$ + "OFF... HOLDING 15 YARDS ***"
                     P = -15
@@ -3547,15 +3367,15 @@ Select Case R1
                     HL% = 1
                 End If
 
-            Case 17 + PA%(P1, 0) TO 22 + PA%(P1, 0)
+            Case 17 + PA%(P1, 0) To 22 + PA%(P1, 0)
                 U$ = U$ + "OFF... ILLEGAL MOTION 5 YARDS ***"
                 P = -5
 
-            Case 22 + PA%(P1, 0) TO 27 + PA%(P1, 0) + PA%(D, 0)
+            Case 22 + PA%(P1, 0) To 27 + PA%(P1, 0) + PA%(D, 0)
                 U$ = U$ + "DEF... LINED IN NEUTRAL ZONE 5 YARDS ***"
                 P = 5
 
-            Case 27 + PA%(P1, 0) + PA%(D, 0) TO 42 + PA%(P1, 0) + PA%(D, 0)
+            Case 27 + PA%(P1, 0) + PA%(D, 0) To 42 + PA%(P1, 0) + PA%(D, 0)
                 U$ = U$ + "DEF... HOLDING 5 YARDS - 1ST DOWN! ***"
                 IH = 1
                 P = 5
@@ -3749,6 +3569,7 @@ GoTo 700
 '----------
 
 
+'College Overtime
 3339 If NG%(14) = 3 And Q > 4 Then 3364
 
 D1 = 1
@@ -3873,12 +3694,13 @@ Select Case Q - 1
     Case Else
         'Quarter 4 + Overtime
 
-        '-- start of a routine
+        '-- Start of a routine
         3364 '
         Call SCOREBOARD
 
+        'Check if we're configured for overtime
         If NG%(14) = 0 Or (S(0, 0) <> S(1, 0) And NG%(14) <> 3) Or (S(0, 0) <> S(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
-
+            
             If OT <> 1 Then
                 Q = Q - 1
             End If
@@ -3889,28 +3711,46 @@ Select Case Q - 1
 
         End If
 
+        'Check if game is over
         If endGame% <> 1 Then
-
+            'Game not over
             Call SCOREBOARD
             Call MARKER1
 
+            'Determine if we should display stats
             Select Case NG%(14)
 
                 Case 1
+                    'Show stats before overtime
                     I$ = "Y"
+
+                    'Sudden Death 1 Quarter
+                    'play overtime as 1 quarter with no overtime
                     NG%(14) = 0
 
                 Case 2
+                    'Show stats before overtime
                     I$ = "Y"
 
+                    'Sudden Death to Win
+                    'keep playing quarters
+
                 Case 3
+                    'Not showing stats
                     3367 '
+
+                    'Sudden Death
+                    'College Rules
+                    '1st and 10 from the 25
                     Y = 75
                     YT = 25
                     Y1 = 10
                     D1 = 1
+                    
+                    '1st Overtime
                     OT = 1
 
+                    'Track overtime possesions for each team
                     If OT(0) = 1 And OT(1) = 1 Then Q = Q + 1
 
                     If OT(0) = 1 And OT(1) = 1 Or OT(0) = 0 And OT(1) = 0 Then
@@ -3941,6 +3781,7 @@ Select Case Q - 1
 
 
             3366 '
+            'We're going into overtime
             If UCase$(I$) = "Y" Then
 
                 If Q = 5 Then
@@ -3949,13 +3790,19 @@ Select Case Q - 1
 
                     Call CHANGEPOSS
 
+                    '1 timeout for each team
                     T1(0) = T1(0) + 1
                     T1(1) = T1(1) + 1
+
+                    '1st and 10
                     D1 = 1
                     Y1 = 10
 
                     'Starting yard line for possession
+                    '-- College Rules ??
                     Y = 40
+                    
+                    '-- Pro Rules
                     If G9 <> 0 Then Y = 35
 
                     If P1 = 0 Then D = 1
@@ -4171,11 +4018,13 @@ Else
     If P2 = 11 Or P2 = 14 Or P2 = 17 Or P2 = 16 Or P2 = 18 Then G = G + 10
 End If
 
+3565 '
 Call YARDAGE
 
 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
     U$ = U$ + " IN THE END ZONE"
     Call PBP ': Call PBP_Logger(4200)
+    'College overtime
     If NG%(14) = 3 And Q > 4 Then 3364
     Call Touchback
     GoTo 700
@@ -4228,6 +4077,7 @@ SI(P1, Z1, 1) = SI(P1, Z1, 1) + G
 
 If G > IR(P1, Z1) Then strIR$(P1, Z1) = "": IR(P1, Z1) = G
 If Y >= 90 Then Y1 = 100 - Y
+'College overtime
 If NG%(14) = 3 And Q > 4 Then 3364
 
 F% = 5
@@ -4268,7 +4118,7 @@ If O <> 8 Then
     If G9 <> 0 Then
 
         3930 '
-        If T <= 120.01 And Q <> 1 And Q <> 3 And Not (T > 159.99 And O = 0) And Not (T > 147 And O = 1) And Not (T > 142 And O = 2) And Not (T > 137 And O = 3) And Not (T > 126 And O = 4) And Not (T > 128 And O = 5) And Not (T > 130 And O = 6) And Not (T > 132 And O = 7) Then
+        If T > 120.01 And Q <> 1 And Q <> 3 And Not (T > 159.99 And O = 0) And Not (T > 147 And O = 1) And Not (T > 142 And O = 2) And Not (T > 137 And O = 3) And Not (T > 126 And O = 4) And Not (T > 128 And O = 5) And Not (T > 130 And O = 6) And Not (T > 132 And O = 7) Then
 
             U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
             Call PBP ': Call PBP_Logger(4670)
@@ -4621,6 +4471,7 @@ Else
     Call AddPossessionTime(4, 7)
 
     If T <= 0 Then Call ADDTIME: GoTo 3360
+    'College overtime
     If Q > 4 And NG%(14) = 3 Then 3364
 
 End If

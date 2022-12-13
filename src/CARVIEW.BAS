@@ -149,7 +149,6 @@ Sub CARVIEW ()
 
                     Select Case UCase$(I$)
                         Case "R"
-                            2020 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
@@ -165,7 +164,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 1, escPressed%)
 
                         Case "W"
-                            2120 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
@@ -179,7 +177,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 2, escPressed%)
 
                         Case "Q"
-                            2220 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
@@ -192,7 +189,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 3, escPressed%)
 
                         Case "K"
-                            2320 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
@@ -205,7 +201,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 4, escPressed%)
 
                         Case "U"
-                            2420 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
@@ -218,7 +213,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 5, escPressed%)
 
                         Case "P"
-                            2520 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA6$(PX, I), 12): Next
@@ -230,7 +224,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 6, escPressed%)
 
                         Case "C"
-                            2620 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA7$(PX, I), 12): Next
@@ -242,7 +235,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 7, escPressed%)
 
                         Case "I"
-                            2820 '
                             Cls
                             Color 12: Print Z$
                             For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
@@ -270,7 +262,6 @@ Sub CARVIEW ()
                             Call CareerPrintCategory(RT, 9, escPressed%)
 
                         Case "O"
-                            2018 '
                             RT = 1
                             Cls
                             For I = 1 To 50: careerTT!(I) = 0: Next

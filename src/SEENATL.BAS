@@ -11,21 +11,21 @@ Sub SEENATL ()
         If Count% = 0 Then
 
             Locate 10, 8
-            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            Call CSMsgBox("NO ORGANIZATION FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
 
         Else
 
-            ReDim conferenceFiles$(0 To Count%)
+            ReDim organizationFiles$(0 To Count%)
 
             For X = 1 To Count%
-                conferenceFiles$(X) = Space$(12)
+                organizationFiles$(X) = Space$(12)
             Next
 
-            conferenceFiles$(0) = Spec$
+            organizationFiles$(0) = Spec$
 
-            Call ReadFile(conferenceFiles$())
+            Call ReadFile(organizationFiles$())
 
             Do
                 Cls
@@ -33,7 +33,7 @@ Sub SEENATL ()
                 Cls
                 Locate , 28
                 Color 14
-                Print "SELECT LEAGUE TO VIEW": Color 15
+                Print "SELECT ORGANIZATION TO VIEW": Color 15
                 Selection% = 1
                 START% = 1
                 FileFGColr% = 15: FileBGColr% = 1
@@ -46,15 +46,15 @@ Sub SEENATL ()
                 Locate 25, 1
                 Color 14
                 Print "ENTER";: Color 15
-                Print "-SELECTS LEAGUE";
+                Print "-SELECTS ORGANIZATION";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu organizationFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
 
-                    targetFile$ = conferenceFiles$(Selection%)
+                    targetFile$ = organizationFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
                     Locate , 33: Print "ANY CHANGE (YN)";
                     Color 15, 0
@@ -69,8 +69,8 @@ Sub SEENATL ()
                 WE$ = Left$(targetFile$, Len(targetFile$) - 4)
                 WE$ = Left$(WE$, 8)
 
-                Call LoadLeaderFiles_Natl(FF$, D1$, D2$, WE$)
-                Call StatOptions_Natl(FF$, D1$, D2$)
+                Call LoadLeaderFiles_Natl(FF$, D1$, D2$, WE$, NRT)
+                Call StatOptions_Natl(FF$, D1$, D2$, NRT)
 
             End If
 
@@ -85,7 +85,7 @@ End Sub
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Natl (FF$, D1$, D2$, WE$)
+Sub LoadLeaderFiles_Natl (FF$, D1$, D2$, WE$, NRT)
 
     Shared L!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
@@ -138,7 +138,7 @@ End Sub
 '      StatOptions_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatOptions_Natl (FF$, D1$, D2$)
+Sub StatOptions_Natl (FF$, D1$, D2$, NRT)
 
     Do
         Cls
@@ -182,17 +182,17 @@ Sub StatOptions_Natl (FF$, D1$, D2$)
             Case "F":
                 X1 = 1
                 Call StatFilePrompt_Natl(SF$)
-                Call StatsToFile_Natl(X1, SF$, FF$, D1$, D2$)
+                Call StatsToFile_Natl(SF$, FF$, D1$, D2$, X1, NRT)
 
             Case "P":
-                Call StatsToFile_Natl(X1, SF$, FF$, D1$, D2$)
+                Call StatsToFile_Natl(SF$, FF$, D1$, D2$, X1, NRT)
 
             Case "S":
-                Call StatsToScreen_Natl(FF$, D1$, D2$)
+                Call StatsToScreen_Natl(FF$, D1$, D2$, NRT)
         End Select
 
-		Cls
-		
+        Cls
+
         JJ = 4
 
         Locate 6, 8: Color 15, 1
@@ -205,16 +205,17 @@ Sub StatOptions_Natl (FF$, D1$, D2$)
 
         Locate 7 + JJ, 8
 
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
+        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
+		Locate 8
         U$ = "VIEW NATIONAL STATS AGAIN (YN)"
         Locate , (80 - Len(U$)) / 2
         Print U$
         Color 15, 0
 
-		Do
-			A$ = GetKeyPress$
-		Loop Until UCase$(A$) = "Y" Or Ucase$(A$) = "N"
+        Do
+            A$ = GetKeyPress$
+        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
     Loop Until UCase$(A$) = "N"
 
@@ -224,7 +225,7 @@ End Sub
 '     StatsToScreen_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Natl (FF$, D1$, D2$)
+Sub StatsToScreen_Natl (FF$, D1$, D2$, NRT)
 
     Shared LD!(), LZ!(), PT!()
     Shared T!(), TT!()
@@ -249,8 +250,8 @@ Sub StatsToScreen_Natl (FF$, D1$, D2$)
         If (P Mod 20) = 0 Then
 
             Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
-
             QK$ = GetKeyPress$
+
             Cls
             Color 12: Print FF$ + " OVERALL RANKINGS"
             Locate , 1
@@ -272,7 +273,7 @@ Sub StatsToScreen_Natl (FF$, D1$, D2$)
     Color 15
 
     For P = 1 To 20
-        If compZ2$(P) = "*" Then
+        If compZ2$(P) <> "*" Then
             Print compZ2$(P) + ", " + compZ3$(P);
             Locate , 28
             Print Using "##.# ####"; LD!(P); LZ!(P)
@@ -816,7 +817,7 @@ End Sub
 '     StatsToFile_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Natl (X1, statFile$, FF$, D1$, D2$)
+Sub StatsToFile_Natl (statFile$, FF$, D1$, D2$, X1, NRT)
 
     Shared LZ!(), PT!()
     Shared T!(), TT!()

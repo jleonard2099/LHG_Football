@@ -11,11 +11,11 @@ Sub BLANKPRO ()
 
         Cls
 
-        Spec$ = diskPaths$(1) + "*.LIB"
+        Spec$ = diskPaths$(2) + "*.LIB"
         null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
         Count% = DirCount%
 
-        If Count% = 0 Then 
+        If Count% = 0 Then
             Locate 10, 8
             Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
@@ -59,7 +59,7 @@ Sub BLANKPRO ()
                 MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
-                If ExitCode% <> 27 Then 
+                If ExitCode% <> 27 Then
                     targetFile$ = leagueFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
                     Locate , 33: Print "ANY CHANGE (YN)";
@@ -71,7 +71,7 @@ Sub BLANKPRO ()
 
                 End If
 
-            Loop Until UCase$(I$) = "N"
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
             If ExitCode% <> 27 Then
 
@@ -81,13 +81,13 @@ Sub BLANKPRO ()
 
                 Cls
                 Locate 10, 8
-                Call CSMsgBox("WARNING!!!::: THIS WILL ERASE ALL COMPILED STATS AND LEAGUE FILES FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL LEAGUE FILES AND STATS, HIT 'Y' FOR YES", 26, Pass)
+                Call CSMsgBox("WARNING!!!::: THIS WILL ERASE ALL COMPILED STATS FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL STATS, HIT 'Y' FOR YES", 26, Pass)
                 I2$ = GetKeyPress$
                 Call CSMsgBox("", 0, Pass)
 
-                If I2$ = "Y" Then
+                If UCase$(I2$) = "Y" Then
 
-                    Open diskPaths$(1) + LH$ + ".TMS" For Input As #2
+                    Open diskPaths$(2) + LH$ + ".TMS" For Input As #2
                     Input #2, LG$, D1$, D2$, D3$
                     For XW = 1 To 30
                         Input #2, H1$(XW)
@@ -96,10 +96,10 @@ Sub BLANKPRO ()
 
                     For XW = 1 To 30
                         If H1$(XW) <> Chr$(42) Then
-                            statFile$ = diskPaths$(1) + H1$(XW)
+                            statFile$ = diskPaths$(2) + H1$(XW)
                             Print "DELETING "; statFile$; " STATS"
-                            If _FileExists (statFile$) Then Kill statFile$
-                            If _FileExists (statFile$ + "S") Then Kill statFile$ + "S"
+                            If _FileExists(statFile$) Then Kill statFile$
+                            If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
                         End If
                     Next
 
@@ -109,8 +109,8 @@ Sub BLANKPRO ()
 
         End If 'Done checking file count
 
-    '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0
+        '...Until we press ESC
+    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I2$) = "Y"
 
 End Sub
 

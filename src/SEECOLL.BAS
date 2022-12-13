@@ -1,5 +1,7 @@
 Sub SEECOLL ()
 
+    Shared D1$, D2$
+
     _Title "3-in-1 Football - View Conference Stats"
 
     Do
@@ -14,12 +16,12 @@ Sub SEECOLL ()
             Call CSMsgBox("", 0, Pass)
         Else
 
-            ReDim leagueLeaderFiles$(0 To Count%)
+            ReDim conferenceLeaderFiles$(0 To Count%)
             For X = 1 To Count%
-                leagueLeaderFiles$(X) = Space$(12)
+                conferenceLeaderFiles$(X) = Space$(12)
             Next
-            leagueLeaderFiles$(0) = Spec$
-            Call ReadFile(leagueLeaderFiles$())
+            conferenceLeaderFiles$(0) = Spec$
+            Call ReadFile(conferenceLeaderFiles$())
 
             Do
 
@@ -44,12 +46,12 @@ Sub SEECOLL ()
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu leagueLeaderFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceLeaderFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
 
-                    targetFile$ = leagueLeaderFiles$(Selection%)
+                    targetFile$ = conferenceLeaderFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
                     Locate , 33: Print "ANY CHANGE (YN)";
                     Color 15, 0
@@ -61,8 +63,8 @@ Sub SEECOLL ()
 
             If ExitCode% <> 27 Then
 
-                Call LoadLeaderFiles_Coll(targetFile$, FF$, D1$, D2$)
-                Call StatOptions_Coll(FF$, D1$, D2$)
+                Call LoadLeaderFiles_Coll(targetFile$, FF$)
+                Call StatOptions_Coll(FF$)
 
             End If
 
@@ -77,7 +79,7 @@ End Sub
 '    LoadLeaderFiles_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Coll (targetFile$, FF$, D1$, D2$)
+Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -85,6 +87,8 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$, D1$, D2$)
 
     Shared P$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
+
+    Shared D1$, D2$
 
     3911 '
     targetFile$ = RTrim$(targetFile$)
@@ -332,7 +336,10 @@ End Sub
 '       StatOptions_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatOptions_Coll (FF$, D1$, D2$)
+Sub StatOptions_Coll (FF$)
+
+    Shared D1$, D2$
+
 
     Do
 
@@ -377,37 +384,40 @@ Sub StatOptions_Coll (FF$, D1$, D2$)
             Case "F":
                 X1 = 1
                 Call StatFilePrompt_Coll(SF$)
-                Call StatsToFile_Coll(X1, SF$, FF$, D1$, D2$)
+                Call StatsToFile_Coll(X1, SF$, FF$)
 
             Case "P":
-                Call StatsToFile_Coll(X1, SF$, FF$, D1$, D2$)
+                Call StatsToFile_Coll(X1, SF$, FF$)
 
             Case "S":
-                Call StatsToScreen_Coll(FF$, D1$, D2$)
+                Call StatsToScreen_Coll(FF$)
         End Select
 
-		Cls
-		
+        Cls
+
         JJ = 4
-        Locate 6, 8: Color 15, 1
+        Locate 6, 8
+		Color 15, 1
 
         Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 
-        For II = 1 To JJ: Locate 6 + II, 8
+        For II = 1 To JJ: 
+			Locate 6 + II, 8
             Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";: Locate 7
+        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
+		Locate 8
         U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
         Locate , (80 - Len(U$)) / 2
         Print U$
         Color 15, 0
 
-		Do
-			A$ = GetKeyPress$
-		Loop Until UCase$(A$) = "Y" Or Ucase$(A$) = "N"
+        Do
+            A$ = GetKeyPress$
+        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
     Loop Until UCase$(A$) = "N"
 
@@ -417,7 +427,7 @@ End Sub
 '     StatsToScreen_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Coll (FF$, D1$, D2$)
+Sub StatsToScreen_Coll (FF$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -425,6 +435,9 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
 
     Shared P$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
+
+    Shared D1$, D2$
+
 
     Cls
     Color 12
@@ -480,7 +493,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
 
         For P = 16 To 30
 
-            If P$(P) <> "" Then
+            If P$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 12 - RT), 41
@@ -529,7 +542,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
 
     For P = 31 To 45
 
-        If P$(P) <> "" Then
+        If P$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 27 - RT)
@@ -564,7 +577,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
         Color 15
 
         For P = 46 To 60
-            If P$(P) <> "" Then
+            If P$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 42 - RT), 41
@@ -924,7 +937,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
     CA = 1
 
     For P = 1 To 20
-        If TR$(CA, P) <= "*" And TR$(CA, P) <> "" Then
+        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
             Print Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
@@ -1044,7 +1057,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
     CA = 8
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) = "" Then
+        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
@@ -1062,7 +1075,7 @@ Sub StatsToScreen_Coll (FF$, D1$, D2$)
     CA = 9
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) = "" Then
+        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);: Locate , 15
             Print Using "###    ##.#"; TT!(CA, P, 1); TT!(CA, P, 2)
         End If
@@ -1142,7 +1155,7 @@ End Sub
 '     StatFilePrompt_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Coll (X1, statFile$, FF$, D1$, D2$)
+Sub StatsToFile_Coll (X1, statFile$, FF$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -1150,6 +1163,8 @@ Sub StatsToFile_Coll (X1, statFile$, FF$, D1$, D2$)
 
     Shared P$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
+
+    Shared D1$, D2$
 
     Color 15, 0
 

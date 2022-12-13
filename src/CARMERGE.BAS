@@ -134,7 +134,7 @@ Sub MergeCareerStats ()
                         Locate 25, 1
                         Color 14
                         Print "ENTER";: Color 15
-                        Print "-SELECTS TEAM LIBRARY";
+                        Print "-SELECTS FILE";
 
                         _MouseShow "DEFAULT"
                         MAMenu careerFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
@@ -991,8 +991,8 @@ Sub ProcessLeaders (careerFile$)
 
     Shared careerGIS!(), careerGSS!()
     Shared careerFGS!(), careerPUS!()
-    Shared DFYR(), FGYR(), KRYR(), PRYR()
-    Shared PUYR(), QBYR(), RBYR(), WRYR()
+    Shared DFYR%(), FGYR%(), KRYR%(), PRYR%()
+    Shared PUYR%(), QBYR%(), RBYR%(), WRYR%()
 
     Shared A1C$(), A2C$(), A3C$(), A4C$(), A5C$(), A6C$(), A7C$()
     Shared DIC$(), DSC$(), KRRS$()
@@ -1012,31 +1012,31 @@ Sub ProcessLeaders (careerFile$)
 
         Open diskPaths$(1) + careerFile$ + ".CLD" For Input As #1
 
-        For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR(I): Next
+        For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 
         Input #1, RBR$(0), RBR$(1)
 
-        For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR(I): Next
+        For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
 
         Input #1, WRR$
 
-        For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR(I): Next
+        For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR%(I): Next
 
         Input #1, QBR$
 
-        For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR(I): Next
+        For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR%(I): Next
 
         Input #1, KRR$
 
-        For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR(I): Next
+        For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR%(I): Next
 
         Input #1, PRR$
 
-        For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR(I): Next
+        For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR%(I): Next
 
-        For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR(I): Next
+        For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR%(I): Next
 
-        For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR(I): Next
+        For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
 
         Close #1
 
@@ -1056,66 +1056,66 @@ Sub ProcessLeaders (careerFile$)
                     If RBBS!(J, I, 0) > RBBC!(0) Then
                         RBBC!(0) = RBBS!(J, I, 0)
                         careerRBC$(0) = A1C$(I)
-                        RBYR(0) = RBBS!(J, I, 8)
+                        RBYR%(0) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 1) > RBBC!(1) Then
                         RBBC!(1) = RBBS!(J, I, 1)
                         careerRBC$(1) = A1C$(I)
-                        RBYR(1) = RBBS!(J, I, 8)
+                        RBYR%(1) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 0) <> 0 Then
                         If RBBS!(J, I, 1) / RBBS!(J, I, 0) > RBBC!(2) And RBBS!(J, I, 0) >= GAMES * 10 Then
                             RBBC!(2) = RBBS!(J, I, 1) / RBBS!(J, I, 0)
                             careerRBC$(2) = A1C$(I)
-                            RBYR(2) = RBBS!(J, I, 8)
+                            RBYR%(2) = RBBS!(J, I, 8)
                         End If
                     End If
 
                     If RBBS!(J, I, 2) > RBBC!(3) Then
                         RBBC!(3) = RBBS!(J, I, 2)
                         careerRBC$(3) = A1C$(I)
-                        RBYR(3) = RBBS!(J, I, 8)
+                        RBYR%(3) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 3) > RBBC!(4) Then
                         RBBC!(4) = RBBS!(J, I, 3)
                         careerRBC$(4) = A1C$(I)
-                        RBYR(4) = RBBS!(J, I, 8)
+                        RBYR%(4) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 4) > RBBC!(5) Then
                         RBBC!(5) = RBBS!(J, I, 4)
                         careerRBC$(5) = A1C$(I)
-                        RBYR(5) = RBBS!(J, I, 8)
+                        RBYR%(5) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 3) <> 0 Then
                         If RBBS!(J, I, 4) / RBBS!(J, I, 3) > RBBC!(6) And RBBS!(J, I, 3) >= GAMES * 3 Then
                             RBBC!(6) = RBBS!(J, I, 4) / RBBS!(J, I, 3)
                             careerRBC$(6) = A1C$(I)
-                            RBYR(6) = RBBS!(J, I, 8)
+                            RBYR%(6) = RBBS!(J, I, 8)
                         End If
                     End If
 
                     If RBBS!(J, I, 5) > RBBC!(7) Then
                         RBBC!(7) = RBBS!(J, I, 5)
                         careerRBC$(7) = A1C$(I)
-                        RBYR(7) = RBBS!(J, I, 8)
+                        RBYR%(7) = RBBS!(J, I, 8)
                     End If
 
                     If RBBS!(J, I, 6) > RBBC!(8) Then
                         RBBC!(8) = RBBS!(J, I, 6)
                         careerRBC$(8) = A1C$(I)
-                        RBYR(8) = RBBS!(J, I, 8)
+                        RBYR%(8) = RBBS!(J, I, 8)
                         RBR$(0) = careerRBS$(J, I, 0)
                     End If
 
                     If RBBS!(J, I, 9) > RBBC!(9) Then
                         RBBC!(9) = RBBS!(J, I, 9)
                         careerRBC$(9) = A1C$(I)
-                        RBYR(9) = RBBS!(J, I, 8)
+                        RBYR%(9) = RBBS!(J, I, 8)
                         RBR$(1) = careerRBS$(J, I, 1)
                     End If
 
@@ -1139,31 +1139,31 @@ Sub ProcessLeaders (careerFile$)
                 If WRRS!(J, I, 0) > WRRC!(0) Then
                     WRRC!(0) = WRRS!(J, I, 0)
                     WRC$(0) = A2C$(I)
-                    WRYR(0) = WRRS!(J, I, 5)
+                    WRYR%(0) = WRRS!(J, I, 5)
                 End If
 
                 If WRRS!(J, I, 1) > WRRC!(1) Then
                     WRRC!(1) = WRRS!(J, I, 1)
                     WRC$(1) = A2C$(I)
-                    WRYR(1) = WRRS!(J, I, 5)
+                    WRYR%(1) = WRRS!(J, I, 5)
                 End If
 
                 If WRRS!(J, I, 0) <> 0 Then
                     If WRRS!(J, I, 1) / WRRS!(J, I, 0) > WRRC!(2) And WRRS!(J, I, 0) >= GAMES * 3 Then
-                        WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = A2C$(I): WRYR(2) = WRRS!(J, I, 5)
+                        WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = A2C$(I): WRYR%(2) = WRRS!(J, I, 5)
                     End If
                 End If
 
                 If WRRS!(J, I, 2) > WRRC!(3) Then
                     WRRC!(3) = WRRS!(J, I, 2)
                     WRC$(3) = A2C$(I)
-                    WRYR(3) = WRRS!(J, I, 5)
+                    WRYR%(3) = WRRS!(J, I, 5)
                 End If
 
                 If WRRS!(J, I, 3) > WRRC!(4) Then
                     WRRC!(4) = WRRS!(J, I, 3)
                     WRC$(4) = A2C$(I)
-                    WRYR(4) = WRRS!(J, I, 5)
+                    WRYR%(4) = WRRS!(J, I, 5)
                     WRR$ = careerWRS$(J, I, 0)
                 End If
 
@@ -1177,7 +1177,7 @@ Sub ProcessLeaders (careerFile$)
 
     For I = 0 To 19
 
-        If A3C$(I) <> "" And A3C$(I) <> "XXX" Or A3C$(I) <> "END" Then
+        If A3C$(I) <> "" And A3C$(I) <> "XXX" And A3C$(I) <> "END" Then
 
             For J = 1 To 15:
 
@@ -1254,58 +1254,58 @@ Sub ProcessLeaders (careerFile$)
                     If QBBS!(J, I, 1) > QBBC!(0) Then
                         QBBC!(0) = QBBS!(J, I, 1)
                         QBC$(0) = A3C$(I)
-                        QBYR(0) = QBBS!(J, I, 7)
+                        QBYR%(0) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 0) > QBBC!(1) Then
                         QBBC!(1) = QBBS!(J, I, 0)
                         QBC$(1) = A3C$(I)
-                        QBYR(1) = QBBS!(J, I, 7)
+                        QBYR%(1) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 2) > QBBC!(2) Then
                         QBBC!(2) = QBBS!(J, I, 2)
                         QBC$(2) = A3C$(I)
-                        QBYR(2) = QBBS!(J, I, 7)
+                        QBYR%(2) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 4) > QBBC!(3) Then
                         QBBC!(3) = QBBS!(J, I, 4)
                         QBC$(3) = A3C$(I)
-                        QBYR(3) = QBBS!(J, I, 7)
+                        QBYR%(3) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 3) > QBBC!(4) Then
                         QBBC!(4) = QBBS!(J, I, 3)
                         QBC$(4) = A3C$(I)
-                        QBYR(4) = QBBS!(J, I, 7)
+                        QBYR%(4) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 0) <> 0 Then
                         If QBBS!(J, I, 1) / QBBS!(J, I, 0) > QBBC!(5) And QBBS!(J, I, 0) >= GAMES * 15 Then
                             QBBC!(5) = QBBS!(J, I, 1) / QBBS!(J, I, 0)
                             QBC$(5) = A3C$(I)
-                            QBYR(5) = QBBS!(J, I, 7)
+                            QBYR%(5) = QBBS!(J, I, 7)
                         End If
                     End If
 
                     If QBBS!(J, I, 1) <> 0 Then
                         If QBBS!(J, I, 3) / QBBS!(J, I, 1) > QBBC!(6) And QBBS!(J, I, 0) >= GAMES * 15 Then
                             QBBC!(6) = QBBS!(J, I, 3) / QBBS!(J, I, 1)
-                            QBC$(6) = A3C$(I): QBYR(6) = QBBS!(J, I, 7)
+                            QBC$(6) = A3C$(I): QBYR%(6) = QBBS!(J, I, 7)
                         End If
                     End If
 
                     If QBBS!(J, I, 12) > QBBC!(7) Then
                         QBBC!(7) = QBBS!(J, I, 12)
                         QBC$(7) = A3C$(I)
-                        QBYR(7) = QBBS!(J, I, 7)
+                        QBYR%(7) = QBBS!(J, I, 7)
                     End If
 
                     If QBBS!(J, I, 5) > QBBC!(8) Then
                         QBBC!(8) = QBBS!(J, I, 5)
                         QBC$(8) = A3C$(I)
-                        QBYR(8) = QBBS!(J, I, 7)
+                        QBYR%(8) = QBBS!(J, I, 7)
                         QBR$ = careerQBS$(J, I, 0)
                     End If
 
@@ -1330,33 +1330,33 @@ Sub ProcessLeaders (careerFile$)
                 If KRS!(J, I, 0) > KRRC!(0) Then
                     KRRC!(0) = KRS!(J, I, 0)
                     KRC$(0) = A4C$(I)
-                    KRYR(0) = KRS!(J, I, 5)
+                    KRYR%(0) = KRS!(J, I, 5)
                 End If
 
                 If KRS!(J, I, 1) > KRRC!(1) Then
                     KRRC!(1) = KRS!(J, I, 1)
                     KRC$(1) = A4C$(I)
-                    KRYR(1) = KRS!(J, I, 5)
+                    KRYR%(1) = KRS!(J, I, 5)
                 End If
 
                 If KRS!(J, I, 0) <> 0 Then
                     If KRS!(J, I, 1) / KRS!(J, I, 0) > KRRC!(2) And KRS!(J, I, 0) >= GAMES * 1.2 Then
                         KRRC!(2) = KRS!(J, I, 1) / KRS!(J, I, 0)
                         KRC$(2) = A4C$(I)
-                        KRYR(2) = KRS!(J, I, 5)
+                        KRYR%(2) = KRS!(J, I, 5)
                     End If
                 End If
 
                 If KRS!(J, I, 2) > KRRC!(3) Then
                     KRRC!(3) = KRS!(J, I, 2)
                     KRC$(3) = A4C$(I)
-                    KRYR(3) = KRS!(J, I, 5)
+                    KRYR%(3) = KRS!(J, I, 5)
                 End If
 
                 If KRS!(J, I, 3) > KRRC!(4) Then
                     KRRC!(4) = KRS!(J, I, 3)
                     KRC$(4) = A4C$(I)
-                    KRYR(4) = KRS!(J, I, 5)
+                    KRYR%(4) = KRS!(J, I, 5)
                     KRR$ = KRRS$(J, I, 0)
                 End If
 
@@ -1379,33 +1379,33 @@ Sub ProcessLeaders (careerFile$)
                 If PRS!(J, I, 0) > PRRC!(0) Then
                     PRRC!(0) = PRS!(J, I, 0)
                     PRC$(0) = A5C$(I)
-                    PRYR(0) = PRS!(J, I, 5)
+                    PRYR%(0) = PRS!(J, I, 5)
                 End If
 
                 If PRS!(J, I, 1) > PRRC!(1) Then
                     PRRC!(1) = PRS!(J, I, 1)
                     PRC$(1) = A5C$(I)
-                    PRYR(1) = PRS!(J, I, 5)
+                    PRYR%(1) = PRS!(J, I, 5)
                 End If
 
                 If PRS!(J, I, 0) <> 0 Then
                     If PRS!(J, I, 1) / PRS!(J, I, 0) > PRRC!(2) And PRS!(J, I, 0) >= GAMES * 1.2 Then
                         PRRC!(2) = PRS!(J, I, 1) / PRS!(J, I, 0)
                         PRC$(2) = A5C$(I)
-                        PRYR(2) = PRS!(J, I, 5)
+                        PRYR%(2) = PRS!(J, I, 5)
                     End If
                 End If
 
                 If PRS!(J, I, 2) > PRRC!(3) Then
                     PRRC!(3) = PRS!(J, I, 2)
                     PRC$(3) = A5C$(I)
-                    PRYR(3) = PRS!(J, I, 5)
+                    PRYR%(3) = PRS!(J, I, 5)
                 End If
 
                 If PRS!(J, I, 3) > PRRC!(4) Then
                     PRRC!(4) = PRS!(J, I, 3)
                     PRC$(4) = A5C$(I)
-                    PRYR(4) = PRS!(J, I, 5)
+                    PRYR%(4) = PRS!(J, I, 5)
                     PRR$ = PRRS$(J, I, 0)
                 End If
 
@@ -1428,20 +1428,20 @@ Sub ProcessLeaders (careerFile$)
                 If careerPUS!(J, I, 0) > PUUC!(0) Then
                     PUUC!(0) = careerPUS!(J, I, 0)
                     PUC$(0) = A6C$(I)
-                    PUYR(0) = careerPUS!(J, I, 3)
+                    PUYR%(0) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 1) > PUUC!(1) Then
                     PUUC!(1) = careerPUS!(J, I, 1)
                     PUC$(1) = A6C$(I)
-                    PUYR(1) = careerPUS!(J, I, 3)
+                    PUYR%(1) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 0) <> 0 Then
                     If careerPUS!(J, I, 1) / careerPUS!(J, I, 0) > PUUC!(2) Then
                         PUUC!(2) = careerPUS!(J, I, 1) / careerPUS!(J, I, 0)
                         PUC$(2) = A6C$(I)
-                        PUYR(2) = careerPUS!(J, I, 3)
+                        PUYR%(2) = careerPUS!(J, I, 3)
                     End If
                 End If
 
@@ -1462,47 +1462,47 @@ Sub ProcessLeaders (careerFile$)
                 If careerFGS!(J, I, 16) = 0 Then Exit For
 
                 If careerFGS!(J, I, 1) > FGGC!(0) Then
-                    FGGC!(0) = careerFGS!(J, I, 1): FGC$(0) = A7C$(I): FGYR(0) = careerFGS!(J, I, 16)
+                    FGGC!(0) = careerFGS!(J, I, 1): FGC$(0) = A7C$(I): FGYR%(0) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 0) > FGGC!(1) Then
                     FGGC!(1) = careerFGS!(J, I, 0)
                     FGC$(1) = A7C$(I)
-                    FGYR(1) = careerFGS!(J, I, 16)
+                    FGYR%(1) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 1) <> 0 Then
                     If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > FGGC!(2) And careerFGS!(J, I, 1) >= GAMES Then
                         FGGC!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
                         FGC$(2) = A7C$(I)
-                        FGYR(2) = careerFGS!(J, I, 16)
+                        FGYR%(2) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 3) > FGGC!(3) Then
                     FGGC!(3) = careerFGS!(J, I, 3)
                     FGC$(3) = A7C$(I)
-                    FGYR(3) = careerFGS!(J, I, 16)
+                    FGYR%(3) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) > FGGC!(4) Then
                     FGGC!(4) = careerFGS!(J, I, 2)
                     FGC$(4) = A7C$(I)
-                    FGYR(4) = careerFGS!(J, I, 16)
+                    FGYR%(4) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) <> 0 Then
                     If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > FGGC!(5) And careerFGS!(J, I, 3) >= GAMES Then
                         FGGC!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
                         FGC$(5) = A7C$(I)
-                        FGYR(5) = careerFGS!(J, I, 16)
+                        FGYR%(5) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 4) > FGGC!(6) Then
                     FGGC!(6) = careerFGS!(J, I, 4)
                     FGC$(6) = A7C$(I)
-                    FGYR(6) = careerFGS!(J, I, 16)
+                    FGYR%(6) = careerFGS!(J, I, 16)
                 End If
 
             Next J
@@ -1523,7 +1523,7 @@ Sub ProcessLeaders (careerFile$)
                 If careerGIS!(J, I, 0) > DFFC!(0) Then
                     DFFC!(0) = careerGIS!(J, I, 0)
                     DFC$(0) = DIC$(I)
-                    FGYR(0) = careerGIS!(J, I, 2)
+                    FGYR%(0) = careerGIS!(J, I, 2)
                 End If
             Next J
 
@@ -1541,7 +1541,7 @@ Sub ProcessLeaders (careerFile$)
                 If careerGSS!(J, I, 2) = 0 Then Exit For
 
                 If careerGSS!(J, I, 0) > DFFC!(1) Then
-                    DFFC!(1) = careerGSS!(J, I, 0): DFC$(1) = DSC$(I): FGYR(1) = careerGSS!(J, I, 2)
+                    DFFC!(1) = careerGSS!(J, I, 0): DFC$(1) = DSC$(I): FGYR%(1) = careerGSS!(J, I, 2)
                 End If
 
             Next J
@@ -1553,19 +1553,19 @@ Sub ProcessLeaders (careerFile$)
     '-----
 
     Open diskPaths$(1) + careerFile$ + ".CLD" For Output As #1
-    For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR(I): Next
+    For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
     Write #1, RBR$(0), RBR$(1)
-    For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR(I): Next
+    For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR%(I): Next
     Write #1, WRR$
-    For I = 0 To 8: Write #1, QBBC!(I), QBC$(I), QBYR(I): Next
+    For I = 0 To 8: Write #1, QBBC!(I), QBC$(I), QBYR%(I): Next
     Write #1, QBR$
-    For I = 0 To 4: Write #1, KRRC!(I), KRC$(I), KRYR(I): Next
+    For I = 0 To 4: Write #1, KRRC!(I), KRC$(I), KRYR%(I): Next
     Write #1, KRR$
-    For I = 0 To 4: Write #1, PRRC!(I), PRC$(I), PRYR(I): Next
+    For I = 0 To 4: Write #1, PRRC!(I), PRC$(I), PRYR%(I): Next
     Write #1, PRR$
-    For I = 0 To 2: Write #1, PUUC!(I), PUC$(I), PUYR(I): Next
-    For I = 0 To 6: Write #1, FGGC!(I), FGC$(I), FGYR(I): Next
-    For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR(I): Next
+    For I = 0 To 2: Write #1, PUUC!(I), PUC$(I), PUYR%(I): Next
+    For I = 0 To 6: Write #1, FGGC!(I), FGC$(I), FGYR%(I): Next
+    For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR%(I): Next
     Close #1
 
 End Sub

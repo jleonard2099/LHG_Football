@@ -346,8 +346,11 @@ Sub AlignStats (PR$, Z$)
     Shared LPN!(), LPR!(), LKN!(), LKR!()
     Shared LRN!(), LRR!(), PKN!(), PKR!()
     Shared ZN2!(), ZR2!()
+
     Cls
+
     PX = 0
+
     Locate 1, 32
     Color 12: Print "STAT ROSTERS"
 
@@ -731,7 +734,9 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
     Shared ZN2!(), ZR!(), ZR1!()
 
     Cls
+
     PX = 0
+
     Locate 1, 32
     Color 12: Print "STAT ROSTERS"
 

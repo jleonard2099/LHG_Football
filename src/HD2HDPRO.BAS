@@ -2,28 +2,26 @@ Sub HD2HDPRO ()
 
     _Title "3-in-1 Football - Head-to-Head League Stats"
 
+
     Color , 0
     Cls
 
     Call TITLE_UTILS
 
-    Locate 4, 1: Color 2, 0
+    Locate 4, 1
+    Color 2, 0
 
-    Print
-    Print
-    Print
-    Print
+    JJ = 6
+    Locate 8, 8
+    Color 15, 1
 
-    J = 6
-
-    Locate 8, 8: Color 15, 1
     'Print box top
     Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
     'Print box sides
     For II = 1 To JJ
-    Locate 8 + II, 8
-    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
     Next
 
     'Print box bottom
@@ -40,15 +38,16 @@ Sub HD2HDPRO ()
     Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
 
     Do
+
         I$ = GetKeyPress$
         If UCase$(I$) = "O" Then X2 = 0
         If UCase$(I$) = "T" Then X2 = 1
 
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call HeadToHead_Pro_League (X2)
+            Call HeadToHead_Pro_League(X2)
         End If
 
-    Loop Until UCase$(I$) = "R"
+    Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
@@ -58,7 +57,7 @@ End Sub
 '...explanation...
 Sub HeadToHead_Pro_League (X2)
 
-    Dim D1$, D2$, D3$, D12$, D22$, D32$
+    Shared D1$, D2$, D3$, D12$, D22$, D32$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -72,12 +71,11 @@ Sub HeadToHead_Pro_League (X2)
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
     Shared O%(), T%(), Z1%()
+
     Dim Z12%(30)
 
-    Shared H$(), O$()
-    Shared Z1$(), Z12$(), Z2$()
-
-    Dim DV$(3), DV2$(3), Z22$(30)
+    Shared DV$(), DV2$(), H$(), O$()
+    Shared Z1$(), Z12$(), Z2$(), Z22$()
 
     newTeam = 1
 
@@ -89,22 +87,22 @@ Sub HeadToHead_Pro_League (X2)
 
                 ER = 0
 
-                Call GetDiskID_HD2HDPRO
+                Call GetDiskID_HD2HDPRO(A$)
 
                 B$ = A$
 
-                For XX = 4 To 11: 
+                For XX = 4 To 11:
                     If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
                 Next XX
 
-                For XX = 12 To 14: 
+                For XX = 12 To 14:
                     If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
                 Next XX
 
                 QQ = 8
 
-                For XX = 11 To 4 Step -1: 
-                    If Mid$(B$, XX, 1) = "_" Then 
+                For XX = 11 To 4 Step -1:
+                    If Mid$(B$, XX, 1) = "_" Then
                         QQ = XX - 4
                     Else
                         Exit For
@@ -113,14 +111,14 @@ Sub HeadToHead_Pro_League (X2)
 
                 Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
 
-                If Not _FileExists(diskPaths$(1) + Z$ + "S") Then 
+                If Not _FileExists(diskPaths$(1) + Z$ + "S") Then
                     Cls
                     Color 14: Print "UNABLE TO LOCATE STAT FILE "; diskPaths$(1) + Z$
                     Print
                     Print
                     Print
                     Print "HIT ANY KEY TO CONTINUE"
-                    I$ = GetKeyPress$
+                    J$ = GetKeyPress$
                 End If
 
             Loop Until _FileExists(diskPaths$(1) + Z$ + "S")
@@ -136,17 +134,19 @@ Sub HeadToHead_Pro_League (X2)
             'Check if same league
             If SL <> 1 Then
 
-                Call ChooseLeague (targetFile$)
+                Call ChooseLeague(targetFile$)
                 LG$ = targetFile$
 
                 If X2 <> 0 Then
-                    Call ChooseLeague (targetFile$)
+                    Call ChooseLeague(targetFile$)
                     LG2$ = targetFile$
                 End If
 
             End If
 
         End If
+
+        Cls
 
         J = 5
 
@@ -156,8 +156,8 @@ Sub HeadToHead_Pro_League (X2)
 
         'Print box sides
         For II = 1 To J
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Locate 8 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
@@ -172,18 +172,18 @@ Sub HeadToHead_Pro_League (X2)
         Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
 
         Do
-            I$ = GetKeyPress$
+            J$ = GetKeyPress$
             Color 14, 0
-            If UCase$(I$) = "P" Then X1 = 1
-            If UCase$(I$) = "S" Then VPP = 1
-        Loop Until Ucase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+            If UCase$(J$) = "P" Then X1 = 1
+            If UCase$(J$) = "S" Then VPP = 1
+        Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
 
         W$ = LG$ + ".LIB"
 
         Open diskPaths$(2) + W$ For Input As #1
         Input #1, X%
 
-        If X% = 0 Then 
+        If X% = 0 Then
             Input #1, LG$
             Input #1, D1$
             Input #1, D2$
@@ -192,7 +192,7 @@ Sub HeadToHead_Pro_League (X2)
             Close 1
         End If
 
-        If X% = 1 Then 
+        If X% = 1 Then
             Input #1, LG$
             Input #1, D1$
             Input #1, D2$
@@ -209,7 +209,7 @@ Sub HeadToHead_Pro_League (X2)
             Open diskPaths$(2) + Q2$ For Input As #1
             Input #1, X%
 
-            If X% = 0 Then 
+            If X% = 0 Then
                 Input #1, LG2$
                 Input #1, D12$
                 Input #1, D22$
@@ -218,7 +218,7 @@ Sub HeadToHead_Pro_League (X2)
                 Close 1
             End If
 
-            If X% = 1 Then 
+            If X% = 1 Then
                 Input #1, LG2$
                 Input #1, D12$
                 Input #1, D22$
@@ -231,7 +231,7 @@ Sub HeadToHead_Pro_League (X2)
 
         Color 15
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
-
+        'Initialization for 1st league
         For K = 1 To 30
             AW!(K) = 0
             HW!(K) = 0
@@ -261,6 +261,7 @@ Sub HeadToHead_Pro_League (X2)
             G4!(K) = 0
         Next
 
+        'Calculations for 1st league
         For K = 1 To 30
             If Z1$(K) <> "XXX" Then
                 For I = 1 To YY%
@@ -278,11 +279,39 @@ Sub HeadToHead_Pro_League (X2)
             End If
         Next K
 
-        If X2 = 1 Then 
-            For K = 1 To 30: AW2!(K) = 0: HW2!(K) = 0: AL2!(K) = 0: HL2!(K) = 0: RT2!(K) = 0: HT2!(K) = 0: Next
-            For K = 1 To 3: THW2!(K) = 0: THL2!(K) = 0: TAW2!(K) = 0: TAL2!(K) = 0: THT2!(K) = 0: TRT!(K) = 0: TG12!(K) = 0: TG22!(K) = 0: TG32!(K) = 0: TG42!(K) = 0: Next
-            For K = 1 To 30: G12!(K) = 0: G22!(K) = 0: G32!(K) = 0: G42!(K) = 0: Next
+        'If we're doing a 2nd league..
+        If X2 = 1 Then
+            'Initialization for 2nd league
+            For K = 1 To 30:
+                AW2!(K) = 0
+                HW2!(K) = 0
+                AL2!(K) = 0
+                HL2!(K) = 0
+                RT2!(K) = 0
+                HT2!(K) = 0
+            Next
 
+            For K = 1 To 3:
+                THW2!(K) = 0
+                THL2!(K) = 0
+                TAW2!(K) = 0
+                TAL2!(K) = 0
+                THT2!(K) = 0
+                TRT!(K) = 0
+                TG12!(K) = 0
+                TG22!(K) = 0
+                TG32!(K) = 0
+                TG42!(K) = 0
+            Next
+
+            For K = 1 To 30:
+                G12!(K) = 0
+                G22!(K) = 0
+                G32!(K) = 0
+                G42!(K) = 0
+            Next
+
+            'Calculations for 2nd league
             For K = 1 To 30
                 If Z12$(K) <> "XXX" Then
                     For I = 1 To YY%
@@ -302,13 +331,14 @@ Sub HeadToHead_Pro_League (X2)
 
         End If
 
+        'Generate output
         If VPP <> 1 Then
 
-            Call CreateReportPro (LG$, DV$(), DV2$())
+            Call CreateReportPro(LG$, LG2$, DV$(), DV2$())
 
         Else
 
-            Call HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
+            Call HeadToHead_Pro_Screen(LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
 
         End If
 
@@ -325,15 +355,10 @@ Sub HeadToHead_Pro_League (X2)
             X1 = 0
         End If
 
-        600 
+        600
         Cls
 
         Call TITLE_UTILS
-
-        Print
-        Print
-        Print
-        Print
 
         J = 6
 
@@ -343,21 +368,23 @@ Sub HeadToHead_Pro_League (X2)
 
         'Print box sides
         For II = 1 To J
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Locate 8 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Locate 7, 32
         Locate 10, 15
 
         Color 3: Locate , 25: Print "SELECT OPTION:"
-        Color 7: Locate , 25: Print "VIEW ";: Color 15: Print "S";: Color 7: Print "AME TEAM AGAIN"
-        Color 7: Locate , 25: Print "VIEW ";: Color 15: Print "A";: Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
-        Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
+        Color 7: Locate , 25: Print "VIEW ";
+        Color 15: Print "S";: Color 7: Print "AME TEAM AGAIN"
+        Color 7: Locate , 25: Print "VIEW ";
+        Color 15: Print "A";: Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
+        Locate , 25: Color 15: Print "R";
+        Color 7: Print "ETURN TO MAIN MENU"
 
         Do
             I$ = GetKeyPress$
@@ -375,8 +402,15 @@ Sub HeadToHead_Pro_League (X2)
 
                 Case "S"
                     RDD = 0
-                    For K = 1 To 3: THW!(K) = 0: THL!(K) = 0: TAW!(K) = 0: TAL!(K) = 0: THT!(K) = 0: TRT!(K) = 0: TG1!(K) = 0: TG2!(K) = 0: TG3!(K) = 0: TG4!(K) = 0: Next
-                    For K = 1 To 3: THW2!(K) = 0: THL2!(K) = 0: TAW2!(K) = 0: TAL2!(K) = 0: THT2!(K) = 0: TRT2!(K) = 0: TG12!(K) = 0: TG22!(K) = 0: TG32!(K) = 0: TG42!(K) = 0: Next
+
+                    'Re-initialize for the next loop
+                    For K = 1 To 3:
+                        THW!(K) = 0: THL!(K) = 0: TAW!(K) = 0: TAL!(K) = 0: THT!(K) = 0: TRT!(K) = 0: TG1!(K) = 0: TG2!(K) = 0: TG3!(K) = 0: TG4!(K) = 0
+                    Next
+
+                    For K = 1 To 3:
+                        THW2!(K) = 0: THL2!(K) = 0: TAW2!(K) = 0: TAL2!(K) = 0: THT2!(K) = 0: TRT2!(K) = 0: TG12!(K) = 0: TG22!(K) = 0: TG32!(K) = 0: TG42!(K) = 0
+                    Next
 
                     newTeam = 0
 
@@ -384,7 +418,7 @@ Sub HeadToHead_Pro_League (X2)
 
         Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R"
 
-    Loop Until UCase$(I$) = "R"
+    Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
@@ -392,9 +426,9 @@ End Sub
 '     HeadToHead_Pro_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
+Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
 
-    Dim D1$, D2$, D3$, D12$, D22$, D32$
+    Shared D1$, D2$, D3$, D12$, D22$, D32$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -407,13 +441,14 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
+    Shared DV$(), DV2$()
     Shared Z1$(), Z12$()
-    Dim DV$(3), DV2$(3)
 
     190 '
     DV$(1) = D1$
     DV$(2) = D2$
     DV$(3) = D3$
+    RDD = 0
 
     Do
         200 '
@@ -421,17 +456,17 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
         Locate 2, 35: Print Z$
         Color 3
         Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-        LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
+        Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
         RDD = RDD + 1
 
         Select Case RDD
 
-            Case 1 
+            Case 1
                 DD = 1: EE = 10
-            Case 2 
+            Case 2
                 DD = 11: EE = 20
-            Case 3 
+            Case 3
                 DD = 21: EE = 30
 
         End Select
@@ -519,7 +554,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
     397 '
     If X2 = 1 Then
 
-        2190 
+        2190
         DV2$(1) = D12$
         DV2$(2) = D22$
         DV2$(3) = D32$
@@ -531,7 +566,8 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
             Locate 2, 35: Print Z$
             Color 3
             Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-            LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T"; TAB(64); "PTF"; TAB(68); "PTA"
+            Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+
             RDD = RDD + 1
 
             Select Case RDD
@@ -539,7 +575,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
                 Case 1
                     DD = 1: EE = 10
 
-                Case 2 
+                Case 2
                     DD = 11: EE = 20
 
                 Case 3
@@ -555,25 +591,33 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
             For K = DD To EE
 
                 If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
+
                     Color 15: Locate , 1: Print Left$(Z12$(K), 15);
                     Color 7: Locate , 17: Print Using "##"; HW2!(K);
+
                     Locate , 20: Print Using "##"; HL2!(K);
                     Locate , 23: Print Using "##"; HT2!(K);
                     Locate , 27: Print Using "###"; G12!(K);
                     Locate , 32: Print Using "###"; G22!(K);
+
                     Color 3: Print Tab(35); Chr$(179);
                     Color 7: Locate , 36: Print Using "##"; AW2!(K);
+
                     Locate , 39: Print Using "##"; AL2!(K);
                     Locate , 42: Print Using "##"; RT2!(K);
                     Locate , 47: Print Using "##"; G32!(K);
                     Locate , 51: Print Using "##"; G42!(K);
+
                     Color 3: Print Tab(53); Chr$(179);
                     Color 7: Locate , 54: Print Using "##"; HW2!(K) + AW2!(K);
+
                     Locate , 57: Print Using "##"; HL2!(K) + AL2!(K);
                     Locate , 60: Print Using "##"; HT2!(K) + RT2!(K);
                     Locate , 64: Print Using "###"; G12!(K) + G32!(K);
                     Locate , 68: Print Using "###"; G22!(K) + G42!(K)
+
                     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
+
                     THW2!(RDD) = THW2!(RDD) + HW2!(K)
                     THL2!(RDD) = THL2!(RDD) + HL2!(K)
                     TAW2!(RDD) = TAW2!(RDD) + AW2!(K)
@@ -590,6 +634,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
             Print
 
             Color 11
+
             Locate , 2: Print "TOTALS";
             Locate , 17: Print Using "##"; THW2!(RDD);
             Locate , 20: Print Using "##"; THL2!(RDD);
@@ -609,11 +654,13 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
             Color 3: Print Tab(53); Chr$(179);
 
             Color 11
+
             Locate , 54: Print Using "##"; THW2!(RDD) + TAW2!(RDD);
             Locate , 57: Print Using "##"; THL2!(RDD) + TAL2!(RDD);
             Locate , 60: Print Using "##"; THT2!(RDD) + TRT2!(RDD);
             Locate , 64: Print Using "###"; TG12!(RDD) + TG32!(RDD);
             Locate , 68: Print Using "###"; TG22!(RDD) + TG42!(RDD)
+
             Print
             Print
             Print
@@ -626,11 +673,16 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
     End If
 
     Cls
+
     Color 12
+
     Locate 1, 35: Print Z$
+
     Color 3
+
     Locate 3: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    LOCATE 4: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
+    Locate 4: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+
     Color 11: Print LG$;
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -668,7 +720,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
-    End If
+        End If
 
     Next W
 
@@ -701,7 +753,9 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
     Next
 
     Print
+
     Color 11
+
     Locate , 2: Print "TOTALS";
     Locate , 17: Print Using "##"; THWW;
     Locate , 20: Print Using "##"; THLL;
@@ -721,6 +775,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
     Color 3: Print Tab(53); Chr$(179);
 
     Color 11
+
     Locate , 54: Print Using "##"; THWW + TAWW;
     Locate , 57: Print Using "##"; THLL + TALL;
     Locate , 60: Print Using "##"; THTT + TRTT;
@@ -764,7 +819,7 @@ Sub HeadToHead_Pro_Screen (DV$(), DV2$(), RDD)
 
                 Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
-        End If
+            End If
 
         Next W
 
@@ -847,7 +902,7 @@ End Sub
 '     CreateReportPro Subroutine
 '----------------------------------------
 '...explanation...
-Sub CreateReportPro (LG$, DV$(), DV2$())
+Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -866,17 +921,21 @@ Sub CreateReportPro (LG$, DV$(), DV2$())
         If X1 = 1 Then
             reportFile$ = "REPORT"
         Else
-            Color 15, 0: Cls
+            Color 15, 0
+
+            Cls
+
             JJ = 7
-            Locate 6, 8: Color 15, 1
+            Locate 6, 8
+            Color 15, 1
 
             'Print box top
             Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
             'Print box sides
             For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+                Locate 6 + II, 8
+                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
             Next
 
             'Print box bottom
@@ -1092,7 +1151,7 @@ Sub CreateReportPro (LG$, DV$(), DV2$())
 
     End If
 
-        Print #2, Tab(48); Z$
+    Print #2, Tab(48); Z$
     Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
     Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
     Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
@@ -1251,9 +1310,9 @@ Sub ChooseLeague (targetFile$)
         Spec$ = diskPaths$(2) + "*.LIB"
         null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
         Count% = DirCount%
-        If Count% = 0 Then 
+        If Count% = 0 Then
             Locate 10, 8
-            Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
         Else
@@ -1270,7 +1329,7 @@ Sub ChooseLeague (targetFile$)
                 Cls
                 Locate , 28
                 Color 14
-                Print "SELECT CONFERENCE": Color 15
+                Print "SELECT LEAGUE": Color 15
                 Selection% = 1
                 Start% = 1
                 FileFGColr% = 15: FileBGColr% = 1
@@ -1283,7 +1342,7 @@ Sub ChooseLeague (targetFile$)
                 Locate 25, 1
                 Color 14
                 Print "ENTER";: Color 15
-                Print "-SELECTS CONFERENCE";
+                Print "-SELECTS LEAGUE";
 
                 _MouseShow "DEFAULT"
                 MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
@@ -1312,26 +1371,29 @@ End Sub
 '     GetDiskID_HD2HDPRO Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetDiskID_HD2HDPRO ()
+Sub GetDiskID_HD2HDPRO (A$)
 
     Shared PA%()
 
     Do
 
         Color 15, 0
+
         Cls
-        JJ = 6
+
         SN = 1
 
-        Locate 6, 8: Color 15, 4
+        JJ = 6
+        Locate 6, 8
+        Color 15, 4
 
         'Print box top
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
         'Print box sides
         For II = 1 To JJ
-        Locate 6 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
@@ -1350,7 +1412,7 @@ Sub GetDiskID_HD2HDPRO ()
 
             If I$ = Chr$(13) Then
 
-                Call SelectTeam_HD2HDPRO (numberTeams, YN$)
+                Call SelectTeam_HD2HDPRO(numberTeams, YN$)
 
             Else
 
@@ -1361,11 +1423,11 @@ Sub GetDiskID_HD2HDPRO ()
 
                 Color 15, 0
 
-                If NY$ = "" Then 
-                    Call SelectTeam_HD2HDPRO (numberTeams, YN$)
+                If NY$ = "" Then
+                    Call SelectTeam_HD2HDPRO(numberTeams, YN$)
                 Else
                     YN$ = NY$
-                    ERASE teamNames$
+                    Erase teamNames$
 
                     numberTeams = 0
 
@@ -1392,7 +1454,7 @@ Sub GetDiskID_HD2HDPRO ()
 
                     Close 1
 
-                    Call SelectTeam_HD2HDPRO (numberTeams, YN$)
+                    Call SelectTeam_HD2HDPRO(numberTeams, YN$)
 
                 End If
 
@@ -1400,7 +1462,7 @@ Sub GetDiskID_HD2HDPRO ()
 
             A$ = RTrim$(Q$(1))
 
-            If BO% = 1 Then 
+            If BO% = 1 Then
                 BO% = 0
             Else
                 Locate 2, 33: Color PA%(2), PA%(1): Print A$
@@ -1420,7 +1482,7 @@ End Sub
 '     SelectTeam_HD2HDPRO Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_HD2HDPRO  (numberTeams, YN$)
+Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
 
     Shared PA%()
 
@@ -1449,7 +1511,7 @@ Sub SelectTeam_HD2HDPRO  (numberTeams, YN$)
         T1 = teamIndex%(Selection%)
 
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-            FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
+        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
         Get #1, T1
 
         For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
@@ -1462,4 +1524,3 @@ Sub SelectTeam_HD2HDPRO  (numberTeams, YN$)
     End If
 
 End Sub
-

@@ -10,21 +10,17 @@ Sub HD2HDCOL ()
     Locate 4, 1
     Color 2, 0
 
-    Print
-    Print
-    Print
-    Print
+    JJ = 6
+    Locate 8, 8
+    Color 15, 1
 
-    J = 6
-
-    Locate 8, 8: Color 15, 1
     'Print box top
     Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
     'Print box sides
     For II = 1 To JJ
-    Locate 8 + II, 8
-    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
     Next
 
     'Print box bottom
@@ -32,8 +28,8 @@ Sub HD2HDCOL ()
     Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
     Locate 10, 15
-
     Color 3
+
     Locate , 25: Print "SELECT OPTION:"
     Locate , 25: Color 15: Print "O";: Color 7: Print "NE CONFERENCE"
     Locate , 25: Color 15: Print "T";: Color 7: Print "WO CONFERENCES WITH INTERCONFERENCE PLAY"
@@ -44,12 +40,11 @@ Sub HD2HDCOL ()
         I$ = GetKeyPress$
         If UCase$(I$) = "O" Then X2 = 0
         If UCase$(I$) = "T" Then X2 = 1
-
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call HeadToHead_Coll_Conf (X2)
+            Call HeadToHead_Coll_Conf(X2)
         End If
 
-    Loop Until UCase$(I$) = "R"
+    Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
@@ -59,7 +54,7 @@ End Sub
 '...explanation...
 Sub HeadToHead_Coll_Conf (X2)
 
-    Dim D1$, D2$, D3$, D12$, D22$, D32$
+    Shared D1$, D2$, D3$, D12$, D22$, D32$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -76,10 +71,9 @@ Sub HeadToHead_Coll_Conf (X2)
 
     Dim Z12%(30)
 
-    Shared H$(), O$()
-    Shared Z1$(), Z12$(), Z2$()
+    Shared DV$(), DV2$(), H$(), O$()
+    Shared Z1$(), Z12$(), Z2$(), Z22$()
 
-    Dim DV$(3), DV2$(3), Z22$(30)
 
     newTeam = 1
 
@@ -88,25 +82,25 @@ Sub HeadToHead_Coll_Conf (X2)
         If newTeam = 1 Then
 
             Do
+
                 ER = 0
 
-                '40
-                Call GetDiskID_HD2HDCOL
+                Call GetDiskID_HD2HDCOL(A$)
 
                 B$ = A$
 
-                For XX = 4 To 11: 
+                For XX = 4 To 11:
                     If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
                 Next XX
 
-                For XX = 12 To 14: 
+                For XX = 12 To 14:
                     If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
                 Next XX
 
                 QQ = 8
 
-                For XX = 11 To 4 Step -1: 
-                    If Mid$(B$, XX, 1) = "_" Then 
+                For XX = 11 To 4 Step -1:
+                    If Mid$(B$, XX, 1) = "_" Then
                         QQ = XX - 4
                     Else
                         Exit For
@@ -115,14 +109,14 @@ Sub HeadToHead_Coll_Conf (X2)
 
                 Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
 
-                If Not _FileExists(diskPaths$(1) + Z$ + "S") Then 
+                If Not _FileExists(diskPaths$(1) + Z$ + "S") Then
                     Cls
                     Color 14: Print "UNABLE TO LOCATE STAT FILE "; diskPaths$(1) + Z$
                     Print
                     Print
                     Print
                     Print "HIT ANY KEY TO CONTINUE"
-                    I$ = GetKeyPress$
+                    J$ = GetKeyPress$
                 End If
 
             Loop Until _FileExists(diskPaths$(1) + Z$ + "S")
@@ -135,6 +129,7 @@ Sub HeadToHead_Coll_Conf (X2)
             For I = 1 To 120: Input #2, H$(I): Next I
             Close #2
 
+            'Check if same league
             If SL <> 1 Then
 
                 Call ChooseConference_Coll(targetFile$)
@@ -149,6 +144,8 @@ Sub HeadToHead_Coll_Conf (X2)
 
         End If
 
+        Cls
+
         J = 5
 
         Locate 8, 8: Color 15, 1
@@ -157,8 +154,8 @@ Sub HeadToHead_Coll_Conf (X2)
 
         'Print box sides
         For II = 1 To J
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Locate 8 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
@@ -167,7 +164,6 @@ Sub HeadToHead_Coll_Conf (X2)
 
         Locate 10, 15
 
-        '49
         Color 7
         Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
         Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
@@ -176,20 +172,18 @@ Sub HeadToHead_Coll_Conf (X2)
         VPP = 0
 
         Do
-            I$ = GetKeyPress$
-
+            J$ = GetKeyPress$
             Color 14, 0
-            If UCase$(I$) = "P" Then X1 = 1
-            If UCase$(I$) = "S" Then VPP = 1
-        Loop Until Ucase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+            If UCase$(J$) = "P" Then X1 = 1
+            If UCase$(J$) = "S" Then VPP = 1
+        Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
 
         W$ = LG$ + ".LIB"
 
         Open diskPaths$(2) + W$ For Input As #1
-
         Input #1, X%
 
-        If X% = 0 Then 
+        If X% = 0 Then
             Input #1, LG$
             Input #1, D1$
             Input #1, D2$
@@ -198,7 +192,7 @@ Sub HeadToHead_Coll_Conf (X2)
             Close 1
         End If
 
-        If X% = 1 Then 
+        If X% = 1 Then
             Input #1, LG$
             Input #1, D1$
             Input #1, D2$
@@ -215,7 +209,7 @@ Sub HeadToHead_Coll_Conf (X2)
             Open diskPaths$(2) + Q2$ For Input As #1
             Input #1, X%
 
-            If X% = 0 Then 
+            If X% = 0 Then
                 Input #1, LG2$
                 Input #1, D12$
                 Input #1, D22$
@@ -223,7 +217,7 @@ Sub HeadToHead_Coll_Conf (X2)
                 NT = 30
             End If
 
-            If X% = 1 Then 
+            If X% = 1 Then
                 Input #1, LG2$
                 Input #1, D12$
                 Input #1, D22$
@@ -236,7 +230,6 @@ Sub HeadToHead_Coll_Conf (X2)
 
         End If
 
-        145 '
         Color 15
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
@@ -298,7 +291,7 @@ Sub HeadToHead_Coll_Conf (X2)
                 HT2!(K) = 0
             Next
 
-            For K = 1 To 3 
+            For K = 1 To 3
                 THW2!(K) = 0
                 THL2!(K) = 0
                 TAW2!(K) = 0
@@ -311,7 +304,7 @@ Sub HeadToHead_Coll_Conf (X2)
                 TG42!(K) = 0
             Next
 
-            For K = 1 To 30: 
+            For K = 1 To 30:
                 G12!(K) = 0
                 G22!(K) = 0
                 G32!(K) = 0
@@ -340,11 +333,11 @@ Sub HeadToHead_Coll_Conf (X2)
         183 '
         If VPP <> 1 Then
 
-            Call CreateReportColl (LG$, DV$(), DV2$())
+            Call CreateReportColl(LG$, LG2$, DV$(), DV2$())
 
         Else
 
-            Call HeadToHead_Coll_Screen (RDD)
+            Call HeadToHead_Coll_Screen(RDD, Z$, A$, LG$, LG2$)
 
         End If
 
@@ -370,11 +363,6 @@ Sub HeadToHead_Coll_Conf (X2)
         Cls
 
         Call TITLE_UTILS
-
-        Print
-        Print
-        Print
-        Print
 
         J = 6
 
@@ -417,11 +405,11 @@ Sub HeadToHead_Coll_Conf (X2)
 
                 Case "S"
                     RDD = 0
-                    For K = 1 To 3: 
+                    For K = 1 To 3:
                         THW!(K) = 0: THL!(K) = 0: TAW!(K) = 0: TAL!(K) = 0: THT!(K) = 0: TRT!(K) = 0: TG1!(K) = 0: TG2!(K) = 0: TG3!(K) = 0: TG4!(K) = 0
                     Next
 
-                    For K = 1 To 3: 
+                    For K = 1 To 3:
                         THW2!(K) = 0: THL2!(K) = 0: TAW2!(K) = 0: TAL2!(K) = 0: THT2!(K) = 0: TRT2!(K) = 0: TG12!(K) = 0: TG22!(K) = 0: TG32!(K) = 0: TG42!(K) = 0
                     Next
 
@@ -429,9 +417,9 @@ Sub HeadToHead_Coll_Conf (X2)
 
             End Select
 
-        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R"
+        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R" Or I$ = Chr$(27)
 
-    Loop Until UCase$(I$) = "R"
+    Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
@@ -439,7 +427,9 @@ End Sub
 '   HeadToHead_Coll_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub HeadToHead_Coll_Screen (RDD)
+Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
+
+    Shared D1$, D2$, D12$, D22$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -452,9 +442,8 @@ Sub HeadToHead_Coll_Screen (RDD)
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
+    Shared DV$(), DV2$()
     Shared Z1$(), Z12$()
-
-    Dim DV$(3), DV2$(3)
 
     190 '
     DV$(1) = D1$
@@ -469,8 +458,8 @@ Sub HeadToHead_Coll_Screen (RDD)
         Color 3
         Locate 4
         Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-        LOCATE 5
-        PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
+        Locate 5
+        Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
         RDD = RDD + 1
 
@@ -480,7 +469,7 @@ Sub HeadToHead_Coll_Screen (RDD)
 
             Case 2
                 DD = 16: EE = 30
-                If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then 
+                If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then
                     RDD = 3
                 End If
 
@@ -587,7 +576,7 @@ Sub HeadToHead_Coll_Screen (RDD)
 
     Loop Until RDD = 3
 
-    If X2 = 1 Then 
+    If X2 = 1 Then
         DV2$(1) = D12$
         DV2$(2) = D22$
         RDD = 0
@@ -595,13 +584,13 @@ Sub HeadToHead_Coll_Screen (RDD)
         Do
             RDD = RDD + 1
 
-            If RDD = 1 Then 
+            If RDD = 1 Then
                 DD = 1: EE = 15
             End If
 
-            If RDD = 2 Then 
+            If RDD = 2 Then
                 DD = 11: EE = 30
-                If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then 
+                If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then
                     RDD = 3
                 End If
             End If
@@ -613,7 +602,7 @@ Sub HeadToHead_Coll_Screen (RDD)
 
                 Color 3
                 Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-                LOCATE 5: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T"; TAB(64); "PTF"; TAB(68); "PTA"
+                Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
                 Color 11
                 Print LG2$; " "; DV2$(RDD);
@@ -721,7 +710,7 @@ Sub HeadToHead_Coll_Screen (RDD)
 
     Color 3
     Locate 3: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    LOCATE 4: PRINT TAB(18); "W"; TAB(21); "L"; TAB(24); "T"; TAB(27); "PTF"; TAB(32); "PTA"; TAB(35); CHR$(179); TAB(37); "W"; TAB(40); "L"; TAB(43); "T"; TAB(46); "PTF"; TAB(50); "PTA"; TAB(53); CHR$(179); TAB(55); "W"; TAB(58); "L"; TAB(61); "T";TAB(64); "PTF"; TAB(68); "PTA"
+    Locate 4: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
     Color 11: Print LG$;
 
     Color 3
@@ -826,8 +815,8 @@ Sub HeadToHead_Coll_Screen (RDD)
     Locate , 64: Print Using "###"; TG11 + TG33;
     Locate , 68: Print Using "###"; TG22 + TG44
 
-    If X2 = 1 Then 
-        '2400 
+    If X2 = 1 Then
+        '2400
         Print
         Print LG2$
 
@@ -929,9 +918,9 @@ End Sub
 '     CreateReportColl Subroutine
 '----------------------------------------
 '...explanation...
-Sub CreateReportColl (LG$, DV$(), DV2$())
+Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
 
-    Dim D1$, D2$, D3$, D12$, D22$, D32$
+    Shared D1$, D2$, D12$, D22$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -950,17 +939,21 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
         If X1 = 1 Then
             reportFile$ = "REPORT"
         Else
-            Color 15, 0: Cls
+            Color 15, 0
+
+            Cls
+
             JJ = 7
-            Locate 6, 8: Color 15, 1
+            Locate 6, 8
+            Color 15, 1
 
             'Print box top
             Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
             'Print box sides
             For II = 1 To J
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+                Locate 6 + II, 8
+                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
             Next
 
             'Print box bottom
@@ -968,16 +961,16 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
             Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
             Locate 7, 32
-                Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-                Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-                Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
-                Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-                Locate 7, 37: Input reportFile$
+            Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+            Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
+            Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+            Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+            Locate 7, 37: Input reportFile$
 
-                If reportFile$ <> "" Then
-                    Locate 13, 12: Print "ANY CHANGE (YN) "
-                    I$ = GetKeyPress$
-                End If
+            If reportFile$ <> "" Then
+                Locate 13, 12: Print "ANY CHANGE (YN) "
+                I$ = GetKeyPress$
+            End If
         End If
 
     Loop Until UCase$(I$) = "N" And reportFile$ <> ""
@@ -1002,7 +995,7 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
 
             Case 2
                 DD = 16: EE = 30
-                If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then 
+                If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
                     RDD = 3
                 End If
 
@@ -1018,7 +1011,7 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
             Print #2, LG$; " "; DV$(RDD)
 
             For K = DD To EE
-                If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then 
+                If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
                     Print #2, Left$(Z1$(K), 15);
                     Print #2, Tab(17); Using "##"; HW!(K);
                     Print #2, Tab(20); Using "##"; HL!(K);
@@ -1072,7 +1065,7 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
     Loop Until RDD <> 3
 
     If X2 = 1 Then
-        6190 
+        6190
         DV2$(1) = D12$
         DV2$(2) = D22$
         RDD = 0
@@ -1083,10 +1076,10 @@ Sub CreateReportColl (LG$, DV$(), DV2$())
             6202 '
             RDD = RDD + 1
             Select Case RDD
-                Case 1 
+                Case 1
                     DD = 1: EE = 15
 
-                Case 2 
+                Case 2
                     DD = 16: EE = 30
                     If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
@@ -1328,12 +1321,12 @@ Sub ChooseConference_Coll (targetFile$)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
         Else
-            ReDim leagueFiles$(0 To Count%)
+            ReDim conferenceFiles$(0 To Count%)
             For X = 1 To Count%
-                leagueFiles$(X) = Space$(12)
+                conferenceFiles$(X) = Space$(12)
             Next
-            leagueFiles$(0) = Spec$
-            Call ReadFile(leagueFiles$())
+            conferenceFiles$(0) = Spec$
+            Call ReadFile(conferenceFiles$())
 
             Do
                 Color , 1
@@ -1356,11 +1349,11 @@ Sub ChooseConference_Coll (targetFile$)
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
-                    targetFile$ = leagueFiles$(Selection%)
+                    targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
                     Locate , 33: Print "ANY CHANGE (YN)";
                     Color 15, 0
@@ -1381,15 +1374,18 @@ End Sub
 '     GetDiskID_HD2HDCOL Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetDiskID_HD2HDCOL ()
+Sub GetDiskID_HD2HDCOL (A$)
 
     Shared PA%()
 
     Do
         Color 15, 0
+
         Cls
-        JJ = 6
+
         SN = 1
+
+        JJ = 6
         Locate 6, 8
         Color 15, 4
 
@@ -1397,14 +1393,15 @@ Sub GetDiskID_HD2HDCOL ()
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
         'Print box sides
-        For II = 1 To J
-        Locate 6 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
-        Locate 7 + J, 8
+        Locate 7 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
 
         Locate 7, 32
 
@@ -1420,7 +1417,7 @@ Sub GetDiskID_HD2HDCOL ()
 
             If I$ = Chr$(13) Then
 
-                Call SelectTeam_HD2HDCOL (numberTeams, YN$)
+                Call SelectTeam_HD2HDCOL(numberTeams, YN$)
 
             Else
 
@@ -1431,12 +1428,12 @@ Sub GetDiskID_HD2HDCOL ()
 
                 Color 15, 0
 
-                If NY$ = "" Then 
-                    Call SelectTeam_HD2HDCOL (numberTeams, NY$)
+                If NY$ = "" Then
+                    Call SelectTeam_HD2HDCOL(numberTeams, NY$)
                 Else
 
                     YN$ = NY$
-                    ERASE teamNames$
+                    Erase teamNames$
 
                     numberTeams = 0
 
@@ -1460,7 +1457,7 @@ Sub GetDiskID_HD2HDCOL ()
 
                     Close 1
 
-                    Call SelectTeam_HD2HDCOL (numberTeams, YN$)
+                    Call SelectTeam_HD2HDCOL(numberTeams, YN$)
 
                 End If
 
@@ -1468,7 +1465,7 @@ Sub GetDiskID_HD2HDCOL ()
 
             A$ = RTrim$(Q$(1))
 
-            If BO% = 1 Then 
+            If BO% = 1 Then
                 BO% = 0
             Else
                 Locate 2, 33: Color PA%(2), PA%(1): Print A$
@@ -1518,7 +1515,7 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
         T1 = teamIndex%(Selection%)
 
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-        FIELD #1, 15 AS Q$(1), 15 AS Q$(2), 2 AS Q$(3), 2 AS Q$(4), 2 AS Q$(5), 2 AS Q$(6), 2 AS Q$(7), 2 AS Q$(8), 2 AS Q$(9), 2 AS Q$(10), 2 AS Q$(11), 2 AS Q$(12), 2 AS Q$(13), 2 AS Q$(14), 2 AS Q$(15), 200 AS Q$(0), 200 AS Q$(199), 200 AS Q$, 200 AS Q$, 78 AS Q$(0)
+        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
         Get #1, T1
 
         For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
@@ -1530,4 +1527,3 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
     End If
 
 End Sub
-

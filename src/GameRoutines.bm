@@ -470,7 +470,7 @@ Sub DisplayField ()
     Locate 2, 80
     Color 0: Print Chr$(223);
 
-    'LOCATE 2, 80: COLOR 0: PRINT "ß";
+    'LOCATE 2, 80: COLOR 0: PRINT "ߢ;
 
     Call YARDLINE
 
@@ -598,63 +598,63 @@ Sub GOALLINE ()
         4500 '
         Select Case Y
 
-            Case 94.999 TO 95.998
+            Case 94.999 To 95.998
                 Select Case I6
-                    Case 1 TO 14: G = 6
-                    Case 15 TO 17: G = 4
-                    Case 18 TO 29: G = 3
-                    Case 30 TO 43: G = 2
-                    Case 44 TO 63: G = 1
-                    Case 64 TO 77: G = 0
-                    Case 78 TO 84: G = -1
-                    Case 85 TO 91: G = -2
-                    Case 92 TO 98: G = -3
-                    Case 99 TO 100: G = -4
+                    Case 1 To 14: G = 6
+                    Case 15 To 17: G = 4
+                    Case 18 To 29: G = 3
+                    Case 30 To 43: G = 2
+                    Case 44 To 63: G = 1
+                    Case 64 To 77: G = 0
+                    Case 78 To 84: G = -1
+                    Case 85 To 91: G = -2
+                    Case 92 To 98: G = -3
+                    Case 99 To 100: G = -4
                 End Select
 
-            Case 95.999 TO 96.998
+            Case 95.999 To 96.998
                 Select Case I6
-                    Case 1 TO 29: G = 5
-                    Case 30 TO 31: G = 3
-                    Case 32 TO 45: G = 2
-                    Case 46 TO 72: G = 1
-                    Case 73 TO 86: G = 0
-                    Case 87 TO 90: G = -1
+                    Case 1 To 29: G = 5
+                    Case 30 To 31: G = 3
+                    Case 32 To 45: G = 2
+                    Case 46 To 72: G = 1
+                    Case 73 To 86: G = 0
+                    Case 87 To 90: G = -1
                     Case 91: G = -2
-                    Case 92 TO 94: G = -3
-                    Case 95 TO 97: G = -4
-                    Case 98 TO 100: G = -5
+                    Case 92 To 94: G = -3
+                    Case 95 To 97: G = -4
+                    Case 98 To 100: G = -5
                 End Select
 
-            Case 96.999 TO 97.998
+            Case 96.999 To 97.998
                 Select Case I6
-                    Case 1 TO 24: G = 4
-                    Case 25 TO 28: G = 2
-                    Case 29 TO 69: G = 1
-                    Case 70 TO 85: G = 0
-                    Case 86 TO 88: G = -1
-                    Case 89 TO 93: G = -2
-                    Case 94 TO 100: G = -4
+                    Case 1 To 24: G = 4
+                    Case 25 To 28: G = 2
+                    Case 29 To 69: G = 1
+                    Case 70 To 85: G = 0
+                    Case 86 To 88: G = -1
+                    Case 89 To 93: G = -2
+                    Case 94 To 100: G = -4
                 End Select
 
-            Case 97.999 TO 98.998
+            Case 97.999 To 98.998
                 Select Case I6
-                    Case 1 TO 43: G = 3
-                    Case 44 TO 65: G = 1
-                    Case 66 TO 83: G = 0
-                    Case 84 TO 92: G = -1
-                    Case 93 TO 94: G = -2
-                    Case 95 TO 100: G = -4
+                    Case 1 To 43: G = 3
+                    Case 44 To 65: G = 1
+                    Case 66 To 83: G = 0
+                    Case 84 To 92: G = -1
+                    Case 93 To 94: G = -2
+                    Case 95 To 100: G = -4
                 End Select
 
             Case Is >= 98.999
                 Select Case I6
-                    Case 1 TO 57: G = 2
-                    Case 58 TO 74: G = 0
-                    Case 75 TO 83: G = -1
-                    Case 84 TO 90: G = -2
-                    Case 91 TO 97: G = -3
-                    Case 98 TO 100: G = -4
+                    Case 1 To 57: G = 2
+                    Case 58 To 74: G = 0
+                    Case 75 To 83: G = -1
+                    Case 84 To 90: G = -2
+                    Case 91 To 97: G = -3
+                    Case 98 To 100: G = -4
                 End Select
 
         End Select
@@ -664,49 +664,49 @@ Sub GOALLINE ()
         4400 '
         Select Case Y
 
-            Case 94.999 TO 95.998
+            Case 94.999 To 95.998
                 Select Case I6
-                    Case 1 TO 17: G = 6
-                    Case 18 TO 22: G = 4
-                    Case 23 TO 35: G = 3
-                    Case 36 TO 52: G = 2
-                    Case 53 TO 76: G = 1
-                    Case 77 TO 93: G = 0
-                    Case 94 TO 100: G = -1
+                    Case 1 To 17: G = 6
+                    Case 18 To 22: G = 4
+                    Case 23 To 35: G = 3
+                    Case 36 To 52: G = 2
+                    Case 53 To 76: G = 1
+                    Case 77 To 93: G = 0
+                    Case 94 To 100: G = -1
                 End Select
 
-            Case 95.999 TO 96.998
+            Case 95.999 To 96.998
                 Select Case I6
-                    Case 1 TO 26: G = 5
-                    Case 27 TO 29: G = 3
-                    Case 30 TO 49: G = 2
-                    Case 50 TO 78: G = 1
-                    Case 79 TO 94: G = 0
-                    Case 95 TO 100: G = -1
+                    Case 1 To 26: G = 5
+                    Case 27 To 29: G = 3
+                    Case 30 To 49: G = 2
+                    Case 50 To 78: G = 1
+                    Case 79 To 94: G = 0
+                    Case 95 To 100: G = -1
                 End Select
 
-            Case 96.999 TO 97.998
+            Case 96.999 To 97.998
                 Select Case I6
-                    Case 1 TO 27: G = 4
-                    Case 28 TO 32: G = 2
-                    Case 33 TO 80: G = 1
-                    Case 81 TO 98: G = 0
-                    Case 99 TO 100: G = -1
+                    Case 1 To 27: G = 4
+                    Case 28 To 32: G = 2
+                    Case 33 To 80: G = 1
+                    Case 81 To 98: G = 0
+                    Case 99 To 100: G = -1
                 End Select
 
-            Case 97.999 TO 98.998
+            Case 97.999 To 98.998
                 Select Case I6
-                    Case 1 TO 46: G = 3
-                    Case 47 TO 72: G = 1
-                    Case 73 TO 91: G = 0
-                    Case 92 TO 100: G = -1
+                    Case 1 To 46: G = 3
+                    Case 47 To 72: G = 1
+                    Case 73 To 91: G = 0
+                    Case 92 To 100: G = -1
                 End Select
 
             Case Is >= 98.999
                 Select Case I6
-                    Case 1 TO 61: G = 2
-                    Case 62 TO 96: G = 0
-                    Case 97 TO 100: G = -1
+                    Case 1 To 61: G = 2
+                    Case 62 To 96: G = 0
+                    Case 97 To 100: G = -1
                 End Select
 
         End Select
@@ -717,11 +717,11 @@ Sub GOALLINE ()
     I6 = Int(Rnd(1) * 100) + 1
 
     If I2 <= 30 Then
-		'Added this to avoid scenarios
-		'where the rushing average from
-		'OTHERS was negative, therefore
-		'leading to a negative index
-		If I2 < 0 Then I2 = 1
+        'Added this to avoid scenarios
+        'where the rushing average from
+        'OTHERS was negative, therefore
+        'leading to a negative index
+        If I2 < 0 Then I2 = 1
 
         If I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
     Else
@@ -1053,13 +1053,13 @@ Sub TICKER ()
                 Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
             Else
                 Select Case RN
-                    Case 1 TO 33
+                    Case 1 To 33
                         Locate , 27: Print "USA TODAY FINAL SCOREBOARD"
 
-                    Case 34 TO 67
+                    Case 34 To 67
                         Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
 
-                    Case 68 TO 100
+                    Case 68 To 100
                         Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
                 End Select
             End If
@@ -1068,6 +1068,7 @@ Sub TICKER ()
         If HT% = 0 Then Locate , 30: Print "LANCE HAFFNER GAMES SCOREBOARD"
 
         Color 15
+
         If TMT = 0 Then
             Locate 10, 28: Print "NO OTHER GAMES SCHEDULED"
         Else
@@ -1094,8 +1095,12 @@ Sub TICKER ()
             If HT% = 1 Then TE = 8
 
             If Left$(SX$(1, 0), 3) <> "XXX" Then
-                Locate 2, 1: X = 1
-                GoSub 885
+                Locate 2, 1
+                X = 1
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(1, 0), 13);
                 Locate , 15
                 Print Using "## "; SX%(1, 0, TS%);
@@ -1105,8 +1110,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(2, 0), 3) <> "XXX" Then
-                Locate 5, 1: X = 2
-                GoSub 885
+                Locate 5, 1
+                X = 2
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(2, 0), 13);
                 Locate , 15: Print Using "## "; SX%(2, 0, TS%);
                 Print R$(TS%)
@@ -1115,8 +1124,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(3, 0), 3) <> "XXX" Then
-                Locate 8, 1: X = 3
-                GoSub 885
+                Locate 8, 1
+                X = 3
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(3, 0), 13);
                 Locate , 15: Print Using "## "; SX%(3, 0, TS%);
                 Print R$(TS%)
@@ -1125,8 +1138,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(4, 0), 3) <> "XXX" Then
-                Locate 11, 1: X = 4
-                GoSub 885
+                Locate 11, 1
+                X = 4
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(4, 0), 13);
                 Locate , 15: Print Using "## "; SX%(4, 0, TS%);
                 Print R$(TS%)
@@ -1135,8 +1152,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(5, 0), 3) <> "XXX" Then
-                Locate 14, 1: X = 5
-                GoSub 885
+                Locate 14, 1
+                X = 5
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(5, 0), 13);
                 Locate , 15: Print Using "## "; SX%(5, 0, TS%);
                 Print R$(TS%)
@@ -1145,8 +1166,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(6, 0), 3) <> "XXX" Then
-                Locate 17, 1: X = 6
-                GoSub 885
+                Locate 17, 1
+                X = 6
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(6, 0), 13);
                 Locate , 15: Print Using "## "; SX%(6, 0, TS%);
                 Print R$(TS%)
@@ -1155,8 +1180,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(7, 0), 3) <> "XXX" Then
-                Locate 20, 1: X = 7
-                GoSub 885
+                Locate 20, 1
+                X = 7
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(7, 0), 13);
                 Locate , 15: Print Using "## "; SX%(7, 0, TS%);
                 Print R$(TS%)
@@ -1165,8 +1194,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(8, 0), 3) <> "XXX" Then
-                Locate 23, 1: X = 8
-                GoSub 885
+                Locate 23, 1
+                X = 8
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(8, 0), 13);
                 Locate , 15: Print Using "## "; SX%(8, 0, TS%);
                 Print R$(TS%)
@@ -1175,8 +1208,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(9, 0), 3) <> "XXX" Then
-                Locate 2, 21: X = 9
-                GoSub 885
+                Locate 2, 21
+                X = 9
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(9, 0), 13);
                 Locate , 35: Print Using "## "; SX%(9, 0, TS%);
                 Print R$(TS%)
@@ -1185,8 +1222,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(10, 0), 3) <> "XXX" Then
-                Locate 5, 21: X = 10
-                GoSub 885
+                Locate 5, 21
+                X = 10
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(10, 0), 13);
                 Locate , 35: Print Using "## "; SX%(10, 0, TS%);
                 Print R$(TS%)
@@ -1195,8 +1236,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(11, 0), 3) <> "XXX" Then
-                Locate 8, 21: X = 11
-                GoSub 885
+                Locate 8, 21
+                X = 11
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(11, 0), 13);
                 Locate , 35: Print Using "## "; SX%(11, 0, TS%);
                 Print R$(TS%)
@@ -1205,8 +1250,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(12, 0), 3) <> "XXX" Then
-                Locate 11, 21: X = 12
-                GoSub 885
+                Locate 11, 21
+                X = 12
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(12, 0), 13);
                 Locate , 35: Print Using "## "; SX%(12, 0, TS%);
                 Print R$(TS%)
@@ -1215,8 +1264,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(13, 0), 3) <> "XXX" Then
-                Locate 14, 21: X = 13
-                GoSub 885
+                Locate 14, 21
+                X = 13
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(13, 0), 13);
                 Locate , 35: Print Using "## "; SX%(13, 0, TS%);
                 Print R$(TS%)
@@ -1225,8 +1278,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(14, 0), 3) <> "XXX" Then
-                Locate 17, 21: X = 14
-                GoSub 885
+                Locate 17, 21
+                X = 14
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(14, 0), 13);
                 Locate , 35: Print Using "## "; SX%(14, 0, TS%);
                 Print R$(TS%)
@@ -1235,8 +1292,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(15, 0), 3) <> "XXX" Then
-                Locate 20, 21: X = 15
-                GoSub 885
+                Locate 20, 21
+                X = 15
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(15, 0), 13);
                 Locate , 35: Print Using "## "; SX%(15, 0, TS%);
                 Print R$(TS%)
@@ -1245,8 +1306,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(16, 0), 3) <> "XXX" Then
-                Locate 23, 21: X = 16
-                GoSub 885
+                Locate 23, 21
+                X = 16
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(16, 0), 13);
                 Locate , 35: Print Using "## "; SX%(16, 0, TS%);
                 Print R$(TS%)
@@ -1255,8 +1320,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(17, 0), 3) <> "XXX" Then
-                Locate 2, 41: X = 17
-                GoSub 885
+                Locate 2, 41
+                X = 17
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(17, 0), 13);
                 Locate , 55: Print Using "## "; SX%(17, 0, TS%);
                 Print R$(TS%)
@@ -1265,8 +1334,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(18, 0), 3) <> "XXX" Then
-                Locate 5, 41: X = 18
-                GoSub 885
+                Locate 5, 41
+                X = 18
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(18, 0), 13);
                 Locate , 55: Print Using "## "; SX%(18, 0, TS%);
                 Print R$(TS%)
@@ -1275,8 +1348,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(19, 0), 3) <> "XXX" Then
-                Locate 8, 41: X = 19
-                GoSub 885
+                Locate 8, 41
+                X = 19
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(19, 0), 13);
                 Locate , 55: Print Using "## "; SX%(19, 0, TS%);
                 Print R$(TS%)
@@ -1285,8 +1362,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(20, 0), 3) <> "XXX" Then
-                Locate 11, 41: X = 20
-                GoSub 885
+                Locate 11, 41
+                X = 20
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(20, 0), 13);
                 Locate , 55: Print Using "## "; SX%(20, 0, TS%);
                 Print R$(TS%)
@@ -1295,8 +1376,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(21, 0), 3) <> "XXX" Then
-                Locate 14, 41: X = 21
-                GoSub 885
+                Locate 14, 41
+                X = 21
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(21, 0), 13);
                 Locate , 55: Print Using "## "; SX%(21, 0, TS%);
                 Print R$(TS%)
@@ -1305,8 +1390,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(22, 0), 3) <> "XXX" Then
-                Locate 17, 41: X = 22
-                GoSub 885
+                Locate 17, 41
+                X = 22
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(22, 0), 13);
                 Locate , 55: Print Using "## "; SX%(22, 0, TS%);
                 Print R$(TS%)
@@ -1315,8 +1404,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(23, 0), 3) <> "XXX" Then
-                Locate 20, 41: X = 23
-                GoSub 885
+                Locate 20, 41
+                X = 23
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(23, 0), 13);
                 Locate , 55: Print Using "## "; SX%(23, 0, TS%);
                 Print R$(TS%)
@@ -1325,8 +1418,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(24, 0), 3) <> "XXX" Then
-                Locate 23, 41: X = 24
-                GoSub 885
+                Locate 23, 41
+                X = 24
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(24, 0), 13);
                 Locate , 55: Print Using "## "; SX%(24, 0, TS%);
                 Print R$(TS%)
@@ -1335,8 +1432,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(25, 0), 3) <> "XXX" Then
-                Locate 2, 61: X = 25
-                GoSub 885
+                Locate 2, 61
+                X = 25
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(25, 0), 13);
                 Locate , 75: Print Using "## "; SX%(25, 0, TS%);
                 Print R$(TS%)
@@ -1345,8 +1446,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(26, 0), 3) <> "XXX" Then
-                Locate 5, 61: X = 26
-                GoSub 885
+                Locate 5, 61
+                X = 26
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(26, 0), 13);
                 Locate , 75: Print Using "## "; SX%(26, 0, TS%);
                 Print R$(TS%)
@@ -1355,8 +1460,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(27, 0), 3) <> "XXX" Then
-                Locate 8, 61: X = 27
-                GoSub 885
+                Locate 8, 61
+                X = 27
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(27, 0), 13);
                 Locate , 75: Print Using "## "; SX%(27, 0, TS%);
                 Print R$(TS%)
@@ -1365,8 +1474,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(28, 0), 3) <> "XXX" Then
-                Locate 11, 61: X = 28
-                GoSub 885
+                Locate 11, 61
+                X = 28
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(28, 0), 13);
                 Locate , 75: Print Using "## "; SX%(28, 0, TS%);
                 Print R$(TS%)
@@ -1375,8 +1488,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(29, 0), 3) <> "XXX" Then
-                Locate 14, 61: X = 29
-                GoSub 885
+                Locate 14, 61
+                X = 29
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(29, 0), 13);
                 Locate , 75: Print Using "## "; SX%(29, 0, TS%);
                 Print R$(TS%)
@@ -1385,8 +1502,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(30, 0), 3) <> "XXX" Then
-                Locate 17, 61: X = 30
-                GoSub 885
+                Locate 17, 61
+                X = 30
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(30, 0), 13);
                 Locate , 75: Print Using "## "; SX%(30, 0, TS%);
                 Print R$(TS%)
@@ -1395,8 +1516,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(31, 0), 3) <> "XXX" Then
-                Locate 20, 61: X = 31
-                GoSub 885
+                Locate 20, 61
+                X = 31
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(31, 0), 13);
                 Locate , 75: Print Using "## "; SX%(31, 0, TS%);
                 Print R$(TS%)
@@ -1405,8 +1530,12 @@ Sub TICKER ()
             End If
 
             If Left$(SX$(32, 0), 3) <> "XXX" Then
-                Locate 23, 61: X = 32
-                GoSub 885
+                Locate 23, 61
+                X = 32
+                TS% = TE + (ST% - ST%(X)) * 3
+                If TS% < 0 Then TS% = 0
+                If TS% > 14 Then TS% = 14
+                If endOfGames% = 1 Then TS% = 14
                 Print Left$(SX$(32, 0), 13);
                 Locate , 75: Print Using "## "; SX%(32, 0, TS%);
                 Print R$(TS%)
@@ -1420,17 +1549,8 @@ Sub TICKER ()
 
     End If
 
-    884 '
     Screen , , 0, 0
-    GoTo 886
 
-    885 TS% = TE + (ST% - ST%(X)) * 3
-    If TS% < 0 Then TS% = 0
-    If TS% > 14 Then TS% = 14
-    If endOfGames% = 1 Then TS% = 14
-    Return
-
-    886 '
 End Sub
 
 
@@ -1445,7 +1565,7 @@ Sub SAVESTATS ()
 
     For I = 0 To 1
         B$(I) = A$(I)
-		Y$(I) = B$(I)
+        Y$(I) = B$(I)
     Next
 
     For Q = 0 To 1
@@ -1472,7 +1592,7 @@ Sub SAVESTATS ()
         8093 '
         If C% = 1 Then _Continue
 
-		'Determine stat file name
+        'Determine stat file name
         For XX = 4 To 11:
             If Mid$(B$(Q), XX, 1) = " " Or Mid$(B$(Q), XX, 1) = "." Then Mid$(B$(Q), XX, 1) = "_"
         Next XX
@@ -1495,7 +1615,7 @@ Sub SAVESTATS ()
         F$ = Mid$(B$(Q), 4, QQ)
         R$ = F$ + "." + Left$(B$(Q), 2)
 
-		'Read existing stats from the file
+        'Read existing stats from the file
         If _FileExists(diskPaths$(1) + R$) Then
 
             Open diskPaths$(1) + R$ For Input As #2
@@ -1503,10 +1623,10 @@ Sub SAVESTATS ()
             Input #2, B$(Q)
 
             For I = 0 To 9: Input #2, A1$(Q, I): Next
-			For I = 0 To 5: Input #2, A2$(Q, I): Next
-			For I = 0 To 3: Input #2, A3$(Q, I): Next
+            For I = 0 To 5: Input #2, A2$(Q, I): Next
+            For I = 0 To 3: Input #2, A3$(Q, I): Next
             For I = 0 To 2: Input #2, A4$(Q, I): Next
-			For I = 0 To 2: Input #2, A5$(Q, I): Next
+            For I = 0 To 2: Input #2, A5$(Q, I): Next
 
             Input #2, A6$(Q, 0)
 
@@ -1563,7 +1683,10 @@ Sub SAVESTATS ()
         If K(Q, 26) > Z(28) Then Z(28) = K(Q, 26)
 
         For I = 0 To 1
-            If FL(Q, I) > LF(Q, I) Then LF(Q, I) = FL(Q, I): LF$(Q, 1) = A$(1 - Q)
+            If FL(Q, I) > LF(Q, I) Then
+                LF(Q, I) = FL(Q, I)
+                LF$(Q, 1) = A$(1 - Q)
+            End If
             For I1 = 0 To 4
                 AM(Q, I, I1) = AM(Q, I, I1) + FM(Q, I, I1)
                 AF(Q, I, I1) = AF(Q, I, I1) + FA(Q, I, I1)
@@ -1716,7 +1839,7 @@ Sub SAVESTATS ()
         Y% = 0
         R$ = R$ + "S"
 
-		'Read stats in from file
+        'Read stats in from file
         If _FileExists(diskPaths$(1) + R$) Then
             Open diskPaths$(1) + R$ For Input As #1
             Input #1, Y%
@@ -1748,7 +1871,7 @@ Sub SAVESTATS ()
         intPR%(0, Y%) = PA%(Q, 4)
         intPR%(1, Y%) = PA%(1 - Q, 4)
 
-		'Write stats to new file
+        'Write stats to new file
         Open diskPaths$(1) + R$ For Output As #1
         Print #1, Y%
         For I = 1 To 120: Print #1, O%(I): Next
@@ -2746,30 +2869,30 @@ Sub INCOMPLETE ()
             Select Case P2
                 Case 13
                     Select Case RN
-                        Case 1 TO 40: U$ = "BUT THE SCREEN FALLS INCOMPLETE"
-                        Case 41 TO 55: U$ = "BUT THE SCREEN IS BROKEN UP"
-                        Case 56 TO 60: U$ = "BUT " + RV$ + " CAN'T HANDLE THE PASS"
-                        Case 61 TO 100: U$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
+                        Case 1 To 40: U$ = "BUT THE SCREEN FALLS INCOMPLETE"
+                        Case 41 To 55: U$ = "BUT THE SCREEN IS BROKEN UP"
+                        Case 56 To 60: U$ = "BUT " + RV$ + " CAN'T HANDLE THE PASS"
+                        Case 61 To 100: U$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
                     End Select
 
                 Case 12
                     Select Case RN
-                        Case 1 TO 15: U$ = "BUT THE PASS IS BROKEN UP"
-                        Case 16 TO 44: U$ = "BUT THE PASS IS OVERTHROWN"
-                        Case 45 TO 74: U$ = "BUT " + RV$ + " CAN'T GET TO THE BALL...INCOMPLETE"
-                        Case 75 TO 80: U$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
-                        Case 81 TO 100: U$ = "BUT " + RV$ + " IS COVERED...INCOMPLETE"
+                        Case 1 To 15: U$ = "BUT THE PASS IS BROKEN UP"
+                        Case 16 To 44: U$ = "BUT THE PASS IS OVERTHROWN"
+                        Case 45 To 74: U$ = "BUT " + RV$ + " CAN'T GET TO THE BALL...INCOMPLETE"
+                        Case 75 To 80: U$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
+                        Case 81 To 100: U$ = "BUT " + RV$ + " IS COVERED...INCOMPLETE"
                     End Select
 
                 Case Else
                     Select Case RN
-                        Case 1 TO 23: U$ = "BUT THE PASS FALLS INCOMPLETE"
-                        Case 24 TO 47: U$ = "BUT THE PASS IS THROWN BEHIND " + RV$ + "...INCOMPLETE"
-                        Case 48 TO 70: U$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
-                        Case 71 TO 75: U$ = RV$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
-                        Case 76 TO 81: U$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
-                        Case 82 TO 96: U$ = "BUT THE PASS TO " + RV$ + " IS BROKEN UP"
-                        Case 97 TO 199: U$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
+                        Case 1 To 23: U$ = "BUT THE PASS FALLS INCOMPLETE"
+                        Case 24 To 47: U$ = "BUT THE PASS IS THROWN BEHIND " + RV$ + "...INCOMPLETE"
+                        Case 48 To 70: U$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
+                        Case 71 To 75: U$ = RV$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
+                        Case 76 To 81: U$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
+                        Case 82 To 96: U$ = "BUT THE PASS TO " + RV$ + " IS BROKEN UP"
+                        Case 97 To 199: U$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
                     End Select
             End Select
 
@@ -2862,13 +2985,13 @@ Sub QBSNEAK ()
             Case 1, 2
 
                 Select Case I4
-                    Case 1 TO 10
+                    Case 1 To 10
                         G = (Int(Rnd(1) * 6) - 3) / 10
 
-                    Case 11 TO 80
+                    Case 11 To 80
                         G = (Int(Rnd(1) * 7) + 3) / 10
 
-                    Case 81 TO 100
+                    Case 81 To 100
                         G = Int(Rnd(1) * 2) + 1
                 End Select
 
@@ -2886,15 +3009,15 @@ Sub QBSNEAK ()
                     G = (Int(Rnd(1) * 7) + 3) / 10
                 End If
 
-            Case 7 TO 10
+            Case 7 To 10
                 Select Case I4
-                    Case 1 TO 10
+                    Case 1 To 10
                         G = (Int(Rnd(1) * 6) - 3) / 10
 
-                    Case 11 TO 80
+                    Case 11 To 80
                         G = (Int(Rnd(1) * 7) + 3) / 10
 
-                    Case 81 TO 100
+                    Case 81 To 100
                         G = Int(Rnd(1) * 2) + 1
 
                 End Select
@@ -3113,13 +3236,13 @@ Sub BLITZ2 ()
 
             Select Case I4
 
-                Case 1 TO 15
+                Case 1 To 15
                     G = Int(Rnd(1) * 5) - 4
 
-                Case 16 TO 60
+                Case 16 To 60
                     G = Int(Rnd(1) * 2) + 1
 
-                Case 61 TO 100
+                Case 61 To 100
                     G = Int(Rnd(1) * (I2 * 2.22)) + 1
 
             End Select
@@ -3128,13 +3251,13 @@ Sub BLITZ2 ()
 
             Select Case I4
 
-                Case 1 TO 10
+                Case 1 To 10
                     G = Int(Rnd(1) * 5) - 4
 
-                Case 11 TO 50
+                Case 11 To 50
                     G = Int(Rnd(1) * 2) + 1
 
-                Case 51 TO 100
+                Case 51 To 100
                     G = Int(Rnd(1) * (I2 * 1.78)) + 1
 
             End Select
@@ -3143,13 +3266,13 @@ Sub BLITZ2 ()
 
             Select Case I4
 
-                Case 1 TO 10
+                Case 1 To 10
                     G = Int(Rnd(1) * 5) - 4
 
-                Case 11 TO 40
+                Case 11 To 40
                     G = Int(Rnd(1) * 2) + 1
 
-                Case 41 TO 100
+                Case 41 To 100
                     G = Int(Rnd(1) * (I2 * 1.54)) + 1
 
             End Select
@@ -3158,13 +3281,13 @@ Sub BLITZ2 ()
 
             Select Case I4
 
-                Case 1 TO 5
+                Case 1 To 5
                     G = Int(Rnd(1) * 5) - 4
 
-                Case 6 TO 30
+                Case 6 To 30
                     G = Int(Rnd(1) * 2) + 1
 
-                Case 31 TO 100
+                Case 31 To 100
                     G = Int(Rnd(1) * (I2 * 1.32)) + 1
 
             End Select
@@ -3173,13 +3296,13 @@ Sub BLITZ2 ()
 
             Select Case I4
 
-                Case 1 TO 5
+                Case 1 To 5
                     G = Int(Rnd(1) * 5) - 4
 
-                Case 6 TO 20
+                Case 6 To 20
                     G = Int(Rnd(1) * 2) + 1
 
-                Case 21 TO 100
+                Case 21 To 100
                     G = Int(Rnd(1) * (I2 * 1.2)) + 1
 
             End Select
@@ -3295,29 +3418,29 @@ Sub DEFENSE ()
                     D2 = 1
                     D3 = 2
                     Select Case R0
-                        Case 1 TO 5
+                        Case 1 To 5
                             D2 = 9
                             '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
-                                Case 1 TO 45: D3 = 7
-                                Case 46 TO 90: D3 = 8
-                                Case 91 TO 95: D3 = 9
-                                Case 96 TO 100: D3 = 10
+                                Case 1 To 45: D3 = 7
+                                Case 46 To 90: D3 = 8
+                                Case 91 To 95: D3 = 9
+                                Case 96 To 100: D3 = 10
                             End Select
 
-                        Case 6 TO 20
+                        Case 6 To 20
                             D2 = 10
                             D3 = 3
 
-                        Case 21 TO 55
+                        Case 21 To 55
                             D2 = 1
                             D3 = 5
 
-                        Case 56 TO 90
+                        Case 56 To 90
                             D2 = 2
 
-                        Case 91 TO 95
+                        Case 91 To 95
                             D3 = 1
 
                     End Select
@@ -3348,29 +3471,29 @@ Sub DEFENSE ()
                     D3 = 2
 
                     Select Case R0
-                        Case 1 TO 5
+                        Case 1 To 5
                             D2 = 9
                             '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
-                                Case 1 TO 45: D3 = 7
-                                Case 46 TO 90: D3 = 8
-                                Case 91 TO 95: D3 = 9
-                                Case 96 TO 100: D3 = 10
+                                Case 1 To 45: D3 = 7
+                                Case 46 To 90: D3 = 8
+                                Case 91 To 95: D3 = 9
+                                Case 96 To 100: D3 = 10
                             End Select
 
-                        Case 6 TO 20
+                        Case 6 To 20
                             D2 = 10
                             D3 = 3
 
-                        Case 21 TO 55
+                        Case 21 To 55
                             D2 = 1
                             D3 = 5
 
-                        Case 56 TO 90
+                        Case 56 To 90
                             D2 = 2
 
-                        Case 91 TO 95
+                        Case 91 To 95
                             D3 = 1
 
                     End Select
@@ -3401,29 +3524,29 @@ Sub DEFENSE ()
                     D3 = 2
 
                     Select Case R0
-                        Case 1 TO 5
+                        Case 1 To 5
                             D2 = 9
                             '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
-                                Case 1 TO 45: D3 = 7
-                                Case 46 TO 90: D3 = 8
-                                Case 91 TO 95: D3 = 9
-                                Case 96 TO 100: D3 = 10
+                                Case 1 To 45: D3 = 7
+                                Case 46 To 90: D3 = 8
+                                Case 91 To 95: D3 = 9
+                                Case 96 To 100: D3 = 10
                             End Select
 
-                        Case 6 TO 20
+                        Case 6 To 20
                             D2 = 10
                             D3 = 3
 
-                        Case 21 TO 55
+                        Case 21 To 55
                             D2 = 1
                             D3 = 5
 
-                        Case 56 TO 90
+                        Case 56 To 90
                             D2 = 2
 
-                        Case 91 TO 95
+                        Case 91 To 95
                             D3 = 1
 
                     End Select
@@ -3453,29 +3576,29 @@ Sub DEFENSE ()
                         D3 = 2
 
                         Select Case R0
-                            Case 1 TO 5
+                            Case 1 To 5
                                 D2 = 9
                                 '8960 '
                                 RN = Int(Rnd(1) * 100) + 1
                                 Select Case RN
-                                    Case 1 TO 45: D3 = 7
-                                    Case 46 TO 90: D3 = 8
-                                    Case 91 TO 95: D3 = 9
-                                    Case 96 TO 100: D3 = 10
+                                    Case 1 To 45: D3 = 7
+                                    Case 46 To 90: D3 = 8
+                                    Case 91 To 95: D3 = 9
+                                    Case 96 To 100: D3 = 10
                                 End Select
 
-                            Case 6 TO 20
+                            Case 6 To 20
                                 D2 = 10
                                 D3 = 3
 
-                            Case 21 TO 55
+                            Case 21 To 55
                                 D2 = 1
                                 D3 = 5
 
-                            Case 56 TO 90
+                            Case 56 To 90
                                 D2 = 2
 
-                            Case 91 TO 95
+                            Case 91 To 95
                                 D3 = 1
 
                         End Select
@@ -3491,29 +3614,29 @@ Sub DEFENSE ()
                     D3 = 2
 
                     Select Case R0
-                        Case 1 TO 5
+                        Case 1 To 5
                             D2 = 9
                             '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
-                                Case 1 TO 45: D3 = 7
-                                Case 46 TO 90: D3 = 8
-                                Case 91 TO 95: D3 = 9
-                                Case 96 TO 100: D3 = 10
+                                Case 1 To 45: D3 = 7
+                                Case 46 To 90: D3 = 8
+                                Case 91 To 95: D3 = 9
+                                Case 96 To 100: D3 = 10
                             End Select
 
-                        Case 6 TO 20
+                        Case 6 To 20
                             D2 = 10
                             D3 = 3
 
-                        Case 21 TO 55
+                        Case 21 To 55
                             D2 = 1
                             D3 = 5
 
-                        Case 56 TO 90
+                        Case 56 To 90
                             D2 = 2
 
-                        Case 91 TO 95
+                        Case 91 To 95
                             D3 = 1
 
                     End Select
@@ -3556,29 +3679,29 @@ Sub DEFENSE ()
                     D3 = 2
 
                     Select Case R0
-                        Case 1 TO 5
+                        Case 1 To 5
                             D2 = 9
                             '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
-                                Case 1 TO 45: D3 = 7
-                                Case 46 TO 90: D3 = 8
-                                Case 91 TO 95: D3 = 9
-                                Case 96 TO 100: D3 = 10
+                                Case 1 To 45: D3 = 7
+                                Case 46 To 90: D3 = 8
+                                Case 91 To 95: D3 = 9
+                                Case 96 To 100: D3 = 10
                             End Select
 
-                        Case 6 TO 20
+                        Case 6 To 20
                             D2 = 10
                             D3 = 3
 
-                        Case 21 TO 55
+                        Case 21 To 55
                             D2 = 1
                             D3 = 5
 
-                        Case 56 TO 90
+                        Case 56 To 90
                             D2 = 2
 
-                        Case 91 TO 95
+                        Case 91 To 95
                             D3 = 1
 
                     End Select
@@ -3607,9 +3730,9 @@ Sub DEFENSE ()
             R0 = Int(Rnd(1) * 100) + 1
 
             Select Case R0
-                Case 1 TO 33: D3 = 1
-                Case 34 TO 67: D3 = 2
-                Case 68 TO 100: D3 = 5
+                Case 1 To 33: D3 = 1
+                Case 34 To 67: D3 = 2
+                Case 68 To 100: D3 = 5
             End Select
 
         Else
@@ -3619,7 +3742,7 @@ Sub DEFENSE ()
             RN = Int(Rnd(1) * 100) + 1
 
             Select Case RN
-                Case 1 TO 50:
+                Case 1 To 50:
                     D2 = 1
                     If R0 <= 90 Then
                         D3 = 1
@@ -3627,7 +3750,7 @@ Sub DEFENSE ()
                         D3 = 2
                     End If
 
-                Case 51 TO 70
+                Case 51 To 70
                     D2 = 2
                     If R0 <= 90 Then
                         D3 = 1
@@ -3635,7 +3758,7 @@ Sub DEFENSE ()
                         D3 = 2
                     End If
 
-                Case 71 TO 94
+                Case 71 To 94
                     D2 = 3
                     If R0 <= 90 Then
                         D3 = 1
@@ -4019,7 +4142,7 @@ Sub DEFMENU ()
             Select Case D2
                 Case 5, 6
                     D2 = D2 + 4
-                Case 7 TO 10
+                Case 7 To 10
                     D2 = D2 - 2
             End Select
 
@@ -4275,16 +4398,16 @@ Sub FGATT ()
 
     Select Case DT
 
-        Case 1 TO 19
+        Case 1 To 19
             FA(P1, Q7%(P1), 0) = FA(P1, Q7%(P1), 0) + 1
 
-        Case 20 TO 29
+        Case 20 To 29
             FA(P1, Q7%(P1), 1) = FA(P1, Q7%(P1), 1) + 1
 
-        Case 30 TO 39
+        Case 30 To 39
             FA(P1, Q7%(P1), 2) = FA(P1, Q7%(P1), 2) + 1
 
-        Case 40 TO 49
+        Case 40 To 49
             FA(P1, Q7%(P1), 3) = FA(P1, Q7%(P1), 3) + 1
 
         Case Is >= 50
@@ -4303,19 +4426,19 @@ Sub FGMADE ()
 
     Select Case DT
 
-        Case 1 TO 19
+        Case 1 To 19
             FM(P1, Q7%(P1), 0) = FM(P1, Q7%(P1), 0) + 1
 
-        Case 20 TO 29
+        Case 20 To 29
             FM(P1, Q7%(P1), 1) = FM(P1, Q7%(P1), 1) + 1
 
-        Case 30 TO 39
+        Case 30 To 39
             FM(P1, Q7%(P1), 2) = FM(P1, Q7%(P1), 2) + 1
 
-        Case 40 TO 49
+        Case 40 To 49
             FM(P1, Q7%(P1), 3) = FM(P1, Q7%(P1), 3) + 1
 
-        Case 50 TO FL(P1, Q7%(P1))
+        Case 50 To FL(P1, Q7%(P1))
             FM(P1, Q7%(P1), 4) = FM(P1, Q7%(P1), 4) + 1
 
         Case Is > FL(P1, Q7%(P1))
@@ -4344,12 +4467,12 @@ Sub OFFMENU ()
         'So we'd only be here if going for 2 ??
         R0 = Int(Rnd(1) * 100) + 1
         Select Case R0
-            Case 1 TO 25: P2 = 17
-            Case 26 TO 50: P2 = 11
-            Case 51 TO 70: P2 = 10
-            Case 71 TO 80: P2 = 5
-            Case 81 TO 90: P2 = 4
-            Case 91 TO 100: P2 = 3
+            Case 1 To 25: P2 = 17
+            Case 26 To 50: P2 = 11
+            Case 51 To 70: P2 = 10
+            Case 71 To 80: P2 = 5
+            Case 81 To 90: P2 = 4
+            Case 91 To 100: P2 = 3
         End Select
 
     End If
@@ -4470,13 +4593,13 @@ Sub OFFMENU ()
             P2 = 1
 
             Select Case R0
-                Case 1 TO 2: If B6(P1, 7) < 75 Then P2 = 15
-                Case 3 TO 5: If B6(P1, 7) < 75 Then P2 = 14
-                Case 6 TO 10: P2 = 5
-                Case 11 TO 20: P2 = 4
-                Case 21 TO 30: P2 = 7
-                Case 31 TO 50: P2 = 3
-                Case 51 TO 70: P2 = 2
+                Case 1 To 2: If B6(P1, 7) < 75 Then P2 = 15
+                Case 3 To 5: If B6(P1, 7) < 75 Then P2 = 14
+                Case 6 To 10: P2 = 5
+                Case 11 To 20: P2 = 4
+                Case 21 To 30: P2 = 7
+                Case 31 To 50: P2 = 3
+                Case 51 To 70: P2 = 2
             End Select
 
             GoTo 8800
@@ -4489,12 +4612,12 @@ Sub OFFMENU ()
             P2 = 10
 
             Select Case R0
-                Case 1 TO 5: P2 = 6
-                Case 6 TO 30: P2 = 17
-                Case 31 TO 36: P2 = 9
-                Case 37 TO 44: P2 = 13
-                Case 45 TO 63: P2 = 12
-                Case 64 TO 89: P2 = 11
+                Case 1 To 5: P2 = 6
+                Case 6 To 30: P2 = 17
+                Case 31 To 36: P2 = 9
+                Case 37 To 44: P2 = 13
+                Case 45 To 63: P2 = 12
+                Case 64 To 89: P2 = 11
             End Select
 
             '3rd / 4th Down, Any Time, >= 5 Yds To Go, Picked (P2 = 6) = Pass (???)
@@ -4672,10 +4795,10 @@ Sub MEASUREMENT ()
         Case Is < -.2
             U$ = "HE'S ABOUT A FOOT SHORT"
 
-        Case -0.20 TO -0.11
+        Case -0.20 To -0.11
             U$ = "HE'S ABOUT 6 INCHES SHORT"
 
-        Case -0.10 TO -0.01
+        Case -0.10 To -0.01
             U$ = "HE'S SHORT BY INCHES"
 
         Case Else
@@ -5178,20 +5301,20 @@ Sub PUNTYARDS ()
 
     Select Case B2(P1, PR)
 
-        Case 1 TO 4
+        Case 1 To 4
 
             Select Case RN
 
-                Case 1 TO 50
+                Case 1 To 50
                     G = Int((Rnd(1) * 6) - 5)
 
-                Case 51 TO 899
+                Case 51 To 899
                     G = Int((Rnd(1) * 14) + 0) + (B2(P1, PR) - 3) * 3
 
-                Case 900 TO 988
+                Case 900 To 988
                     If I2 <> 1 Then G = Int((Rnd(1) * 39) + 12) + (B2(P1, PR) - 3) * 3
 
-                Case 989 TO 1000
+                Case 989 To 1000
                     If I2 <> 1 Then G = 110
 
             End Select
@@ -5199,13 +5322,13 @@ Sub PUNTYARDS ()
         Case 5
             Select Case RN
 
-                Case 1 TO 900
+                Case 1 To 900
                     G = Int((Rnd(1) * 25) + 0)
 
-                Case 901 TO 940
+                Case 901 To 940
                     G = Int((Rnd(1) * 39) + 12)
 
-                Case 941 TO 1000
+                Case 941 To 1000
                     If I2 <> 1 Then G = 110
 
             End Select
@@ -5259,13 +5382,13 @@ Sub FAKEYARDS (choice)
         Case 1
 
             Select Case RN
-                Case 1 TO 36
+                Case 1 To 36
                     G = Int(Rnd(1) * 21)
 
-                Case 37 TO 90
+                Case 37 To 90
                     G = Int(Rnd(1) * 11) - 4
 
-                Case 91 TO 100
+                Case 91 To 100
                     G = 100 - Y
             End Select
 
@@ -5407,13 +5530,13 @@ Sub REVGAIN ()
     If RV%(P9) = 0 Then
         Select Case RN
 
-            Case 1 TO 20
+            Case 1 To 20
                 G = (Int(Rnd(1) * 8) + 5) * -1: RF% = 1
 
-            Case 21 TO 80
+            Case 21 To 80
                 G = Int(Rnd(1) * 11)
 
-            Case 81 TO 100
+            Case 81 To 100
                 G = Int(Rnd(1) * 81)
 
         End Select
@@ -5421,9 +5544,9 @@ Sub REVGAIN ()
     Else
 
         Select Case RN
-            Case 1 TO 5: G = Int(Rnd(1) * 81)
-            Case 6 TO 55: G = Int(Rnd(1) * 11)
-            Case 56 TO 100: G = (Int(Rnd(1) * 8) + 5) * -1: RF% = 1
+            Case 1 To 5: G = Int(Rnd(1) * 81)
+            Case 6 To 55: G = Int(Rnd(1) * 11)
+            Case 56 To 100: G = (Int(Rnd(1) * 8) + 5) * -1: RF% = 1
         End Select
 
     End If
@@ -5447,9 +5570,9 @@ Sub FAKERUN (choice)
     Select Case choice
         Case 1
             Select Case RN
-                Case 1 TO 20: G = Int(Rnd(1) * 21)
-                Case 21 TO 95: G = Int(Rnd(1) * 11) - 4
-                Case 96 TO 100: G = 100 - Y
+                Case 1 To 20: G = Int(Rnd(1) * 21)
+                Case 21 To 95: G = Int(Rnd(1) * 11) - 4
+                Case 96 To 100: G = 100 - Y
             End Select
 
         Case 2
@@ -5662,11 +5785,11 @@ Sub ARMADJUST ()
     End If
 
     Select Case Y
-        Case 0 TO 40.001: PQ = 3
-        Case 40.002 TO 80.001: PQ = -2
-        Case 80.002 TO 85.001: PQ = -4
-        Case 85.002 TO 90.001: PQ = -10
-        Case 90.002 TO 95.001: PQ = -26
+        Case 0 To 40.001: PQ = 3
+        Case 40.002 To 80.001: PQ = -2
+        Case 80.002 To 85.001: PQ = -4
+        Case 85.002 To 90.001: PQ = -10
+        Case 90.002 To 95.001: PQ = -26
         Case Is > 95.001: PQ = -13
     End Select
 
@@ -5980,54 +6103,54 @@ Sub SHORTYARDAGE ()
     If D2 > 3 And D2 < 6 Then
 
         Select Case Y
-            Case 94.999 TO 95.998
+            Case 94.999 To 95.998
 
                 Select Case I6
-                    Case 1 TO 17: G = 6
-                    Case 18 TO 22: G = 4
-                    Case 23 TO 35: G = 3
-                    Case 36 TO 52: G = 2
-                    Case 53 TO 76: G = 1
-                    Case 77 TO 93: G = 0
-                    Case 94 TO 100: G = -1
+                    Case 1 To 17: G = 6
+                    Case 18 To 22: G = 4
+                    Case 23 To 35: G = 3
+                    Case 36 To 52: G = 2
+                    Case 53 To 76: G = 1
+                    Case 77 To 93: G = 0
+                    Case 94 To 100: G = -1
                 End Select
 
-            Case 95.999 TO 96.998
+            Case 95.999 To 96.998
 
                 Select Case I6
-                    Case 1 TO 26: G = 5
-                    Case 27 TO 29: G = 3
-                    Case 30 TO 49: G = 2
-                    Case 50 TO 78: G = 1
-                    Case 79 TO 94: G = 0
-                    Case 95 TO 100: G = -1
+                    Case 1 To 26: G = 5
+                    Case 27 To 29: G = 3
+                    Case 30 To 49: G = 2
+                    Case 50 To 78: G = 1
+                    Case 79 To 94: G = 0
+                    Case 95 To 100: G = -1
                 End Select
 
-            Case 96.999 TO 97.998
+            Case 96.999 To 97.998
 
                 Select Case I6
-                    Case 1 TO 27: G = 4
-                    Case 28 TO 32: G = 2
-                    Case 33 TO 80: G = 1
-                    Case 81 TO 98: G = 0
-                    Case 99 TO 100: G = -1
+                    Case 1 To 27: G = 4
+                    Case 28 To 32: G = 2
+                    Case 33 To 80: G = 1
+                    Case 81 To 98: G = 0
+                    Case 99 To 100: G = -1
                 End Select
 
-            Case 97.999 TO 98.998
+            Case 97.999 To 98.998
 
                 Select Case I6
-                    Case 1 TO 46: G = 3
-                    Case 47 TO 72: G = 1
-                    Case 73 TO 91: G = 0
-                    Case 92 TO 100: G = -1
+                    Case 1 To 46: G = 3
+                    Case 47 To 72: G = 1
+                    Case 73 To 91: G = 0
+                    Case 92 To 100: G = -1
                 End Select
 
             Case Is >= 98.999
 
                 Select Case I6
-                    Case 1 TO 61: G = 2
-                    Case 62 TO 96: G = 0
-                    Case 97 TO 100: G = -1
+                    Case 1 To 61: G = 2
+                    Case 62 To 96: G = 0
+                    Case 97 To 100: G = -1
                 End Select
 
         End Select
@@ -6036,68 +6159,68 @@ Sub SHORTYARDAGE ()
 
         Select Case Y
 
-            Case 94.999 TO 95.998
+            Case 94.999 To 95.998
 
                 Select Case I6
-                    Case 1 TO 14: G = 6
-                    Case 15 TO 17: G = 4
-                    Case 18 TO 29: G = 3
-                    Case 30 TO 43: G = 2
-                    Case 44 TO 63: G = 1
-                    Case 64 TO 77: G = 0
-                    Case 78 TO 84: G = -1
-                    Case 85 TO 91: G = -2
-                    Case 92 TO 98: G = -3
-                    Case 99 TO 100: G = -4
+                    Case 1 To 14: G = 6
+                    Case 15 To 17: G = 4
+                    Case 18 To 29: G = 3
+                    Case 30 To 43: G = 2
+                    Case 44 To 63: G = 1
+                    Case 64 To 77: G = 0
+                    Case 78 To 84: G = -1
+                    Case 85 To 91: G = -2
+                    Case 92 To 98: G = -3
+                    Case 99 To 100: G = -4
                 End Select
 
-            Case 95.999 TO 96.998
+            Case 95.999 To 96.998
 
                 Select Case I6
-                    Case 1 TO 29: G = 5
-                    Case 30 TO 31: G = 3
-                    Case 32 TO 45: G = 2
-                    Case 46 TO 72: G = 1
-                    Case 73 TO 86: G = 0
-                    Case 87 TO 90: G = -1
+                    Case 1 To 29: G = 5
+                    Case 30 To 31: G = 3
+                    Case 32 To 45: G = 2
+                    Case 46 To 72: G = 1
+                    Case 73 To 86: G = 0
+                    Case 87 To 90: G = -1
                     Case 91: G = -2
-                    Case 92 TO 94: G = -3
-                    Case 95 TO 97: G = -4
-                    Case 98 TO 100: G = -5
+                    Case 92 To 94: G = -3
+                    Case 95 To 97: G = -4
+                    Case 98 To 100: G = -5
                 End Select
 
-            Case 96.999 TO 97.998
+            Case 96.999 To 97.998
 
                 Select Case I6
-                    Case 1 TO 24: G = 4
-                    Case 25 TO 28: G = 2
-                    Case 29 TO 69: G = 1
-                    Case 70 TO 85: G = 0
-                    Case 86 TO 88: G = -1
-                    Case 89 TO 93: G = -2
-                    Case 94 TO 100: G = -4
+                    Case 1 To 24: G = 4
+                    Case 25 To 28: G = 2
+                    Case 29 To 69: G = 1
+                    Case 70 To 85: G = 0
+                    Case 86 To 88: G = -1
+                    Case 89 To 93: G = -2
+                    Case 94 To 100: G = -4
                 End Select
 
-            Case 97.999 TO 98.998
+            Case 97.999 To 98.998
 
                 Select Case I6
-                    Case 1 TO 43: G = 3
-                    Case 44 TO 65: G = 1
-                    Case 66 TO 83: G = 0
-                    Case 84 TO 92: G = -1
-                    Case 93 TO 94: G = -2
-                    Case 95 TO 100: G = -4
+                    Case 1 To 43: G = 3
+                    Case 44 To 65: G = 1
+                    Case 66 To 83: G = 0
+                    Case 84 To 92: G = -1
+                    Case 93 To 94: G = -2
+                    Case 95 To 100: G = -4
                 End Select
 
             Case Is >= 98.999
 
                 Select Case I6
-                    Case 1 TO 57: G = 2
-                    Case 58 TO 74: G = 0
-                    Case 75 TO 83: G = -1
-                    Case 84 TO 90: G = -2
-                    Case 91 TO 97: G = -3
-                    Case 98 TO 100: G = -4
+                    Case 1 To 57: G = 2
+                    Case 58 To 74: G = 0
+                    Case 75 To 83: G = -1
+                    Case 84 To 90: G = -2
+                    Case 91 To 97: G = -3
+                    Case 98 To 100: G = -4
                 End Select
 
         End Select
@@ -6129,15 +6252,15 @@ Sub PASSPBP ()
 
         Select Case RN
 
-            Case 1 TO 33:
+            Case 1 To 33:
                 U$ = "BLITZ IS COMING...!!"
                 Call PBP ': Call PBP_Logger(10996)
 
-            Case 34 TO 66:
+            Case 34 To 66:
                 U$ = "HERE COMES THE BLITZ...!!"
                 Call PBP ': Call PBP_Logger(11000)
 
-            Case 67 TO 109:
+            Case 67 To 109:
                 U$ = "BLITZ IS ON...!!"
                 Call PBP ': Call PBP_Logger(11004)
 
@@ -6194,12 +6317,12 @@ Sub PASSPBP ()
                 Case 11, 16
                     Select Case RN
 
-                        Case 1 TO 30: U$ = A3$(P1, I1) + " DROPS BACK AND LOOKS..."
-                        Case 31 TO 40: U$ = A3$(P1, I1) + " DROPS BACK...HE'S UNDER PRESSURE..."
-                        Case 41 TO 60: U$ = A3$(P1, I1) + " TO THROW...HAS TIME..."
-                        Case 61 TO 70: U$ = A3$(P1, I1) + " BACK TO PASS...HAS PROTECTION..."
-                        Case 71 TO 80: U$ = A3$(P1, I1) + " DROPS BACK...IS BEING CHASED!!"
-                        Case 81 TO 100: U$ = A3$(P1, I1) + " HAS PLENTY OF TIME TO THROW..."
+                        Case 1 To 30: U$ = A3$(P1, I1) + " DROPS BACK AND LOOKS..."
+                        Case 31 To 40: U$ = A3$(P1, I1) + " DROPS BACK...HE'S UNDER PRESSURE..."
+                        Case 41 To 60: U$ = A3$(P1, I1) + " TO THROW...HAS TIME..."
+                        Case 61 To 70: U$ = A3$(P1, I1) + " BACK TO PASS...HAS PROTECTION..."
+                        Case 71 To 80: U$ = A3$(P1, I1) + " DROPS BACK...IS BEING CHASED!!"
+                        Case 81 To 100: U$ = A3$(P1, I1) + " HAS PLENTY OF TIME TO THROW..."
 
                     End Select
 
@@ -6426,7 +6549,9 @@ Sub TICK ()
             Next
         Next
 
-        For I = 1 To 32: Print #2, ST%(I): Next
+        For I = 1 To 32: 
+			Print #2, ST%(I)
+		Next
 
         Close 2
 
@@ -6500,18 +6625,18 @@ Sub MISSFG
 
     Select Case RN
 
-        Case 1 TO 35: U$ = "NO GOOD"
-        Case 36 TO 60: U$ = "IT SAILS WIDE...NO GOOD"
-        Case 61 TO 80: U$ = "HE MISSED IT!"
-        Case 81 TO 85: U$ = "IT HITS THE UPRIGHTS....NO GOOD!"
-        Case 86 TO 90: U$ = "HE HOOKS IT...NO GOOD!"
-        Case 91 TO 95:
+        Case 1 To 35: U$ = "NO GOOD"
+        Case 36 To 60: U$ = "IT SAILS WIDE...NO GOOD"
+        Case 61 To 80: U$ = "HE MISSED IT!"
+        Case 81 To 85: U$ = "IT HITS THE UPRIGHTS....NO GOOD!"
+        Case 86 To 90: U$ = "HE HOOKS IT...NO GOOD!"
+        Case 91 To 95:
             If 117 + intY8% - Y > 45 Then
                 U$ = "IT FALLS SHORT....NO GOOD!"
             Else
                 U$ = "IT'S NO GOOD ... OFF TO THE " + DR$(DR)
             End If
-        Case 96 TO 100: U$ = "IT'S NO GOOD!"
+        Case 96 To 100: U$ = "IT'S NO GOOD!"
 
     End Select
 
@@ -6528,16 +6653,16 @@ Sub MADEFG
     RN = Int(Rnd(1) * 100) + 1
 
     Select Case RN
-        Case 1 TO 10: U$ = "IT'S GOOD!!!"
-        Case 11 TO 20: U$ = "THE KICK IS GOOD!!!"
-        Case 21 TO 30: U$ = "HE PUTS IT THROUGH THE UPRIGHTS!!!"
-        Case 31 TO 40: U$ = "HE SPLITS THE UPRIGHTS!!!"
-        Case 41 TO 50: U$ = "IT'S GOOD!!!"
-        Case 51 TO 60: U$ = "HE HAMMERS IT THROUGH!!!"
-        Case 61 TO 70: U$ = "RIGHT DOWN THE MIDDLE!!!"
-        Case 71 TO 80: U$ = "IT HAS THE DISTANCE...IT'S GOOD!!!"
-        Case 81 TO 90: U$ = "HE NAILS IT...IT'S GOOD!!!"
-        Case 91 TO 100: U$ = "IT'S GOOD!"
+        Case 1 To 10: U$ = "IT'S GOOD!!!"
+        Case 11 To 20: U$ = "THE KICK IS GOOD!!!"
+        Case 21 To 30: U$ = "HE PUTS IT THROUGH THE UPRIGHTS!!!"
+        Case 31 To 40: U$ = "HE SPLITS THE UPRIGHTS!!!"
+        Case 41 To 50: U$ = "IT'S GOOD!!!"
+        Case 51 To 60: U$ = "HE HAMMERS IT THROUGH!!!"
+        Case 61 To 70: U$ = "RIGHT DOWN THE MIDDLE!!!"
+        Case 71 To 80: U$ = "IT HAS THE DISTANCE...IT'S GOOD!!!"
+        Case 81 To 90: U$ = "HE NAILS IT...IT'S GOOD!!!"
+        Case 91 To 100: U$ = "IT'S GOOD!"
     End Select
 
     Call PBP ': Call PBP_Logger(11405)
@@ -6554,13 +6679,13 @@ Sub MADEPAT
     RN = Int(Rnd(1) * 100) + 1
 
     Select Case RN
-        Case 1 TO 25: U$ = "IT'S GOOD!!!"
-        Case 26 TO 50: U$ = "THE KICK IS GOOD!!!"
-        Case 51 TO 60: U$ = "HE PUTS IT THROUGH THE UPRIGHTS!!!"
-        Case 61 TO 70: U$ = "HE SPLITS THE UPRIGHTS!!!"
-        Case 71 TO 80: U$ = "IT'S GOOD!!!"
-        Case 81 TO 90: U$ = "HE HAMMERS IT THROUGH!!!"
-        Case 91 TO 100: U$ = "RIGHT DOWN THE MIDDLE!!!"
+        Case 1 To 25: U$ = "IT'S GOOD!!!"
+        Case 26 To 50: U$ = "THE KICK IS GOOD!!!"
+        Case 51 To 60: U$ = "HE PUTS IT THROUGH THE UPRIGHTS!!!"
+        Case 61 To 70: U$ = "HE SPLITS THE UPRIGHTS!!!"
+        Case 71 To 80: U$ = "IT'S GOOD!!!"
+        Case 81 To 90: U$ = "HE HAMMERS IT THROUGH!!!"
+        Case 91 To 100: U$ = "RIGHT DOWN THE MIDDLE!!!"
     End Select
 
     Call PBP ': Call PBP_Logger(11428)
@@ -6577,11 +6702,11 @@ Sub MISSPAT
     RN = Int(Rnd(1) * 100) + 1
 
     Select Case RN
-        Case 1 TO 50: U$ = "NO GOOD"
-        Case 51 TO 70: U$ = "HE MISSED IT!"
-        Case 71 TO 75: U$ = "BAD SNAP FROM CENTER!! NO KICK": K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) - 1
-        Case 76 TO 95: U$ = "THE KICK SAILS WIDE!!...NO GOOD!"
-        Case 96 TO 100: U$ = "IT HITS THE UPRIGHTS!!...NO GOOD!"
+        Case 1 To 50: U$ = "NO GOOD"
+        Case 51 To 70: U$ = "HE MISSED IT!"
+        Case 71 To 75: U$ = "BAD SNAP FROM CENTER!! NO KICK": K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) - 1
+        Case 76 To 95: U$ = "THE KICK SAILS WIDE!!...NO GOOD!"
+        Case 96 To 100: U$ = "IT HITS THE UPRIGHTS!!...NO GOOD!"
     End Select
 
     Call PBP ': Call PBP_Logger(11449)
@@ -7005,31 +7130,31 @@ Sub PCPBP ()
         Select Case P2
             Case 9, 10
                 Select Case RN
-                    Case 1 TO 33
+                    Case 1 To 33
                         U$ = RV$ + " HAS IT OVER THE MIDDLE"
-                    Case 34 TO 67
+                    Case 34 To 67
                         U$ = RV$ + " CATCHES IT IN THE FLAT"
-                    Case 68 TO 199
+                    Case 68 To 199
                         U$ = "HE DUMPS IT TO " + RV$
                 End Select
 
             Case 13
                 Select Case RN
-                    Case 1 TO 33
+                    Case 1 To 33
                         U$ = "HE SCREENS IT TO " + RV$
-                    Case 34 TO 67
+                    Case 34 To 67
                         U$ = "HE DUMPS THE SCREEN TO " + RV$
-                    Case 68 TO 199
+                    Case 68 To 199
                         U$ = "HE HAS " + RV$ + " ON THE SCREEN PASS"
                 End Select
 
             Case 11, 12, 14, 15
                 Select Case RN
-                    Case 1 TO 33
+                    Case 1 To 33
                         U$ = RV$ + " TAKES IT OVER THE MIDDLE"
-                    Case 34 TO 67
+                    Case 34 To 67
                         U$ = "HE HAS " + RV$
-                    Case 68 TO 199
+                    Case 68 To 199
                         U$ = "HE COMPLETES IT TO " + RV$
                 End Select
 
@@ -7042,13 +7167,13 @@ Sub PCPBP ()
 
             Case 17, 18
                 Select Case RN
-                    Case 1 TO 50
+                    Case 1 To 50
                         U$ = "HE HITS " + RV$
 
-                    Case 51 TO 90
+                    Case 51 To 90
                         U$ = "HE FIRES IT TO " + RV$
 
-                    Case 91 TO 100
+                    Case 91 To 100
                         U$ = RV$ + " MAKES A GREAT CATCH"
                 End Select
 
@@ -7308,9 +7433,6 @@ Sub PBP_Logger (lineNumber%)
 
     Print #7, "Calling from     :"; lineNumber%
     Print #7, "Next play type   :"; P2
-    Print #7, "Last play gain   :"; G
-    Print #7, "Yardline         :"; Y
-    Print #7, "Last PBP         :"; U$
 
 End Sub
 
@@ -7360,20 +7482,12 @@ End Function
 ' ...explanation...
 Sub varlog (lineNumber%)
 
-    If I2 < 0 Then
-        Print #5, "Source   : line # "; lineNumber%
-        Print #5, "I1       :"; I1
-        Print #5, "I2       :"; I2
-        Print #5, "P1       :"; P1
-        'Print #5, "P2       :"; P2
-        Print #5, "D2       :"; D2
-        'Print #5, "D3%()     :"; D3%(P2, D2)
-        Print #5, "Name     :"; A1$(P1, I1)
-        Print #5, "Val0     :"; A(P1, I1)
-        Print #5, "Val1     :"; A1(P1, I1)
-        Print #5, "Val2     :"; A2(P1, I1)
-        Print #5, "Val3     :"; A3(P1, I1)
-        Print #5, ""
-    End If
+    Print #5, "Source   : line # "; lineNumber%
+    Print #5, "I(rand)  :"; I
+    Print #5, "P1       :"; P1
+    Print #5, "P1       :"; P2
+    Print #5, "R9%(0)   :"; R9%(0)
+    Print #5, "R9%(1)   :"; R9%(1)
 
 End Sub
+
