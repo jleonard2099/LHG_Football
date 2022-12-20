@@ -10,16 +10,12 @@
 	- SEECOLL
 	- SEENATL
 
-___
-
 ## Ticker Scores ##
 Scores are 0's too much
 - SX%(), SX$() are related variables
 - assume it's because we only look at games to 32
 - If so we should increase upper bound to cover max games in a schedule
 - Need to test behavior against original game (is it a BUG?)
-
-___
 
 ## Menu Redundancy ##
 
@@ -28,7 +24,7 @@ ___
 - Trade Player --> Trade Player
 - Align Statistical Files --> Align Statistical Files
 
-### Game Play ###
+## Game Play ##
 
 #### Halftime Stats ####
 - First page of halftime stats is not full screen
@@ -43,7 +39,9 @@ ___
 #### DECIDE function ####
 - It relies on GetSpeed but that's probably unecessary
 - GetSpeed is called by BoxScreen without DECIDE
-		
+
+## Miscellaneous ##
+
 #### Scheduler ####
 - Doesn't look to see if files exist (Box scores, etc.)
 - ACCESS USER SAVED BOXSCORES ---> no prompt (CsMsgBox) if none are found!!!!
@@ -60,9 +58,6 @@ NOT SO MUCH A BUG, BUT...
 (1) Before game starts
 (2) Immediately when a TOUCHDOWN is scored
 (3) At HalfTime
-
-___
-
 
 ## "QB SNEAK" BUG ##
 
@@ -83,8 +78,6 @@ Plans to Fix
 - Larger part of my plans for the game involve on-the-fly calcs for mobility
 - It is important to note the game doesn't use mobility with simulated seasons
 - But mobility should be related to likelihood to sneak
-
-___
 
 ## "THE FIELD GOAL BUG" ##
 
@@ -121,7 +114,7 @@ IDEA
 	- this should only be partially based on circumstance
 	- it should also be based on coaching agressiveness
 	- older years are "more agressive" and not go for a FG
-
+___
 
 ## AI Field Goal Choice Situations  ##
 
