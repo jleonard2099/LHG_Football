@@ -1,5 +1,10 @@
 ## Variables ##
 
+#### Naming ####
+
+???
+
+#### Useage ####
 BRC = Best Record (Individual)
 
 TRC = Team Record
@@ -34,7 +39,7 @@ If so, need to rewrite GoTo 3360
 - Make subroutines from 8530?
 - InputKey loops: evaluate 3814, 4801
 
-## Miscellaneous ##
+## Misc / Menus ##
 
 #### Game82 File Format ####
 FILE.SCD
@@ -91,30 +96,36 @@ So, for example: anywhere you see "P2 = 20" as an assignment (not a comparison),
 ### Breakdown ###
 
 #### Runs ####
-1	??
-2	??
-3	??
-4	??
-5	??
-6	??
-7	??
-8	??
+|Value	|Play	|
+|-------|-------|
+|1	|??	|
+|2	|??	|
+|3	|??	|
+|4	|??	|
+|5	|??	|
+|6	|??	|
+|7	|??	|
+|8	|??	|
 
 #### Passes ####
-9	??
-10	??
-11	??
-12	??
-13	??
-14	??
-15	??
-16	??
-17	??
-18	??
+|Value	|Play	|
+|-------|-------|
+|9	|??	|
+|10	|??	|
+|11	|??	|
+|12	|??	|
+|13	|??	|
+|14	|??	|
+|15	|??	|
+|16	|??	|
+|17	|??	|
+|18	|??	|
 
 #### Special ####
-19	Punt
-20	FG
+|Value	|Play	|
+|-------|-------|
+|19	|Punt	|
+|20	|FG	|
 
 ## "DEFAULTS" file ##
 
