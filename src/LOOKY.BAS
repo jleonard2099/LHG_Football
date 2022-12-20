@@ -42,6 +42,7 @@ Sub LOOKY ()
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
         Locate 7, 32
+
         Locate 10, 15
         Locate , 30: Color 3: Print "VIEW/PRINT STATS IN:"
         Locate , 30: Color 15: Print "C";: Color 7: Print "OLLEGE FORMAT"
@@ -181,7 +182,10 @@ Sub LOOKY ()
 
                     Cls
                     Print "DISPLAY STATISTICS AGAIN (YN)";
-                    I$ = GetKeyPress$
+
+                    Do
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
                     If UCase$(I$) = "N" Then
 
@@ -352,7 +356,8 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                             teamNames$(numberTeams) = Q$(0)
                             teamIndex%(numberTeams) = I1
                         End If
-                    1105 Next I1
+                    Next I1
+
                     Close 1
 
                     Call SelectTeam_LOOKY(numberTeams, yearNumber$)
@@ -364,13 +369,17 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
             If BO% = 1 Then
                 BO% = 0
             Else
-                'This could go in thte SelectTeam routine,
-                'if we use A$ as a parameter (ie, teamName)
                 A$ = RTrim$(Q$(1))
+                Locate 2, 33
+				Color PA%(2), PA%(1): Print A$
 
-                Locate 2, 33: Color PA%(2), PA%(1): Print A$
-                Color 15, 4: Locate , 33: Print "ANY CHANGE (YN)";
-                I$ = GetKeyPress$
+                Color 15, 4
+
+				Do
+					Locate , 33: Print "ANY CHANGE (YN)";
+					I$ = GetKeyPress$
+				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
             End If
 
         End If
@@ -413,11 +422,12 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
         T1 = teamIndex%(Selection%)
 
         If Not _FileExists(diskPaths$(0) + "FOOT." + yearNumber$) Then
+            BO% = 1
             Locate 10, 8
             Call CSMsgBox("NO TEAM FILES WERE FOUND MATCHING THIS ID.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
-            BO% = 1
+
         Else
             Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
 
@@ -428,8 +438,11 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
             For I1 = 0 To 4
                 PA%(I1) = CVI(Q$(I1 + 11))
             Next I1
+
             Close 1
+
         End If
+
     Else
         BO% = 1
     End If

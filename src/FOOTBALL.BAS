@@ -3673,17 +3673,14 @@ Select Case Q - 1
 
         Call QBBOX
 
-        U$ = "DISPLAY STATISTICS AGAIN (YN)"
-
-        Locate , (80 - Len(U$)) / 2
-
-        Print U$
-
-        Color 15, 0
 
         If AP <> 1 Or J6(0) <> 2 Then
 
             Do
+				U$ = "DISPLAY STATISTICS AGAIN (YN)"
+				Locate , (80 - Len(U$)) / 2
+				Print U$
+				Color 15, 0
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -3924,17 +3921,14 @@ Select Case Q - 1
 
             Call QBBOX
 
-            U$ = "DISPLAY STATISTICS AGAIN (YN)"
-
-            Locate , (80 - Len(U$)) / 2
-
-            Print U$
-
-            Color 15, 0
 
             If AP <> 1 Or J6(0) <> 2 Then
 
                 Do
+					U$ = "DISPLAY STATISTICS AGAIN (YN)"
+					Locate , (80 - Len(U$)) / 2
+					Print U$
+					Color 15, 0
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

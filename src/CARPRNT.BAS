@@ -76,14 +76,16 @@ Sub CARPRNT ()
 
                 If ExitCode% <> 27 Then
 
+                    Color 15, 1
                     targetFile$ = careerFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-
+					
                     Do
+						Locate , 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+
+					Color 15, 0
 
                 End If
 
@@ -93,7 +95,9 @@ Sub CARPRNT ()
 
                 targetFile$ = RTrim$(targetFile$)
                 Z$ = Left$(targetFile$, Len(targetFile$) - 4)
-                Color 15
+
+				Color 15, 0
+				Cls
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
                 Open diskPaths$(1) + Z$ + ".CAR" For Input As #1

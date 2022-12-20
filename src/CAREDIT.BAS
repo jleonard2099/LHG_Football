@@ -54,624 +54,639 @@ Sub CAREDIT ()
                 Column% = 1
                 Locate 25, 1
                 Color 14
-                Print "ENTER";: Color 15
+                Print "ENTER";
+				Color 15
                 Print "-SELECTS FILE   ESC-RETURN TO MAIN MENU";
 
                 _MouseShow "DEFAULT"
                 MAMenu careerFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
-                If ExitCode% = 27 Then Exit Sub
-
-                targetFile$ = careerFiles$(Selection%)
-
-                Locate 2, 33: Print targetFile$
-                Locate , 33: Print "ANY CHANGE (YN)";
-                Color 15, 0
-                I$ = GetKeyPress$
-
-            Loop Until UCase$(I$) = "N"
-
-            targetFile$ = RTrim$(targetFile$)
-            Z$ = Left$(targetFile$, Len(targetFile$) - 4)
-            Color 15: Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
-
-            Open diskPaths$(1) + Z$ + ".CAR" For Input As #2
-            Input #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-            For I = 0 To 49: Input #2, careerA1$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 39: Input #2, careerA2$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 19: Input #2, careerA3$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 14: Input #2, careerA4$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 14: Input #2, careerA5$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 9: Input #2, careerA6$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 9: Input #2, careerA7$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 54: Input #2, careerDI$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For I = 0 To 54: Input #2, careerDS$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-            For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Input #2, careerRBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 49: Input #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Input #2, careerWRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 39: Input #2, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Input #2, careerQBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 19: Input #2, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerKRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 14: Input #2, careerKRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerPRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 14: Input #2, careerPRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Input #2, careerPUS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Input #2, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-            Close 2
-
-            Do
-
-                Cls
-                Color 7: Print "EDIT ";
-                Color 12: Print "R";: Color 7: Print "UNNING BACKS, ";
-                Color 12: Print "W";: Color 7: Print "IDE RECEIVERS, ";
-                Color 12: Print "Q";: Color 7: Print "UARTERBACKS, KI";
-                Color 12:PRINT "C";:COLOR 7:PRINT "K RETURNERS, P";:_
-                COLOR 12:PRINT "U";:COLOR 7:PRINT "NT RETURNERS, ";
-                Color 12: Print "P";: Color 7: Print "UNTERS, ";
-                Color 12: Print "K";: Color 7: Print "ICKERS, ";
-                Color 12: Print "I";: Color 7: Print "NTERCEPTIONS, DE";
-                Color 12:PRINT "F";:COLOR 7:PRINT "ENSIVE SACKS, UP";:_
-                COLOR 12:PRINT"D";:COLOR 7:PRINT "ATE CAREER FILE"
-                Color 7: Print "OR ";
-                Color 12: Print "E";: Color 7: Print "XIT WITHOUT UPDATING"
-
-                I$ = GetKeyPress$
-
-                Select Case UCase$(I$)
-                    Case "R"
-                        Cls
-                        Color 12: Print Z$
-
-                        For I = 0 To 16:
-                            Locate I + 2
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA1$(I), 12)
-                        Next
-
-                        For I = 17 To 33:
-                            Locate I - 15, 20
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA1$(I), 12)
-                        Next
-
-                        For I = 34 To 50:
-                            Locate I - 32, 40
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA1$(I), 12)
-                        Next
-
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (51 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 51
-
-                        If B9 <> 51 Then
-
-                            If B9 <> 50 Then
-
-                                Call PrintCareerStatsRB(exitFlag%, B9)
-
-                                If exitFlag% <> 1 Then
-
-                                    Cls
-
-                                    Locate 5, 15: Print "CHANGING RUNNING BACK FILE . . . . . PLEASE WAIT"
-
-                                    For I = B9 To 49: careerA1$(I) = careerA1$(I + 1): Next
+                If ExitCode% <> 27 Then
+
+					Color 15, 1
+					targetFile$ = careerFiles$(Selection%)
+					Locate 2, 33: Print targetFile$
+					
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+
+					Color 15, 0
+
+				End If
+
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
+
+			If ExitCode% <> 27 Then
+
+				targetFile$ = RTrim$(targetFile$)
+				Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+
+				Color 15, 0
+				Cls
+				Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
+
+				Open diskPaths$(1) + Z$ + ".CAR" For Input As #2
+				Input #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+				For I = 0 To 49: Input #2, careerA1$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 39: Input #2, careerA2$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 19: Input #2, careerA3$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 14: Input #2, careerA4$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 14: Input #2, careerA5$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 9: Input #2, careerA6$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 9: Input #2, careerA7$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 54: Input #2, careerDI$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For I = 0 To 54: Input #2, careerDS$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
+				For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Input #2, careerRBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 49: Input #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Input #2, careerWRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 39: Input #2, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Input #2, careerQBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 19: Input #2, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerKRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 14: Input #2, careerKRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerPRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 14: Input #2, careerPRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Input #2, careerPUS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Input #2, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+				Close 2
+
+				Do
+
+					Cls
+					Color 7: Print "EDIT ";
+					Color 12: Print "R";: Color 7: Print "UNNING BACKS, ";
+					Color 12: Print "W";: Color 7: Print "IDE RECEIVERS, ";
+					Color 12: Print "Q";: Color 7: Print "UARTERBACKS, KI";
+					Color 12:PRINT "C";:COLOR 7:PRINT "K RETURNERS, P";:_
+					COLOR 12:PRINT "U";:COLOR 7:PRINT "NT RETURNERS, ";
+					Color 12: Print "P";: Color 7: Print "UNTERS, ";
+					Color 12: Print "K";: Color 7: Print "ICKERS, ";
+					Color 12: Print "I";: Color 7: Print "NTERCEPTIONS, DE";
+					Color 12:PRINT "F";:COLOR 7:PRINT "ENSIVE SACKS, UP";:_
+					COLOR 12:PRINT"D";:COLOR 7:PRINT "ATE CAREER FILE"
+					Color 7: Print "OR ";
+					Color 12: Print "E";: Color 7: Print "XIT WITHOUT UPDATING"
+
+					I$ = GetKeyPress$
+
+					Select Case UCase$(I$)
+						Case "R"
+							Cls
+							Color 12: Print Z$
+
+							For I = 0 To 16:
+								Locate I + 2
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA1$(I), 12)
+							Next
+
+							For I = 17 To 33:
+								Locate I - 15, 20
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA1$(I), 12)
+							Next
+
+							For I = 34 To 50:
+								Locate I - 32, 40
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA1$(I), 12)
+							Next
+
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (51 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 51
+
+							If B9 <> 51 Then
 
-                                    UPP = (50 - B9) * 15
-                                    I = B9
+								If B9 <> 50 Then
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 48:
-                                            For I1 = 0 To 9:
-                                                careerRBS!(J, I, I1) = careerRBS!(J, I + 1, I1)
-                                                careerRBS$(J, I, 0) = careerRBS$(J, I + 1, 0)
-                                                careerRBS$(J, I, 1) = careerRBS$(J, I + 1, 1)
-                                            Next
+									Call PrintCareerStatsRB(exitFlag%, B9)
 
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+									If exitFlag% <> 1 Then
 
-                                End If
+										Cls
 
-                            End If
+										Locate 5, 15: Print "CHANGING RUNNING BACK FILE . . . . . PLEASE WAIT"
 
-                            If exitFlag% <> 1 Then
+										For I = B9 To 49: careerA1$(I) = careerA1$(I + 1): Next
 
-                                careerA1$(49) = ""
+										UPP = (50 - B9) * 15
+										I = B9
 
-                                For J = 1 To 15:
-                                    For I1 = 0 To 9:
-                                        careerRBS!(J, 50, I1) = 0
-                                        careerRBS$(J, 50, 0) = ""
-                                        careerRBS$(J, 50, 1) = ""
-                                    Next
-                                Next
+										For J = 1 To 15:
+											For I = B9 To 48:
+												For I1 = 0 To 9:
+													careerRBS!(J, I, I1) = careerRBS!(J, I + 1, I1)
+													careerRBS$(J, I, 0) = careerRBS$(J, I + 1, 0)
+													careerRBS$(J, I, 1) = careerRBS$(J, I + 1, 1)
+												Next
 
-                            End If
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                        End If
+									End If
 
-                    Case "W"
-                        Cls
-                        Color 12: Print Z$
+								End If
 
-                        For I = 0 To 19:
-                            Locate I + 2
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA2$(I), 12)
-                        Next
+								If exitFlag% <> 1 Then
 
-                        For I = 20 To 39:
-                            Locate I - 18, 20
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA2$(I), 12)
-                        Next
+									careerA1$(49) = ""
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (40 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 40
+									For J = 1 To 15:
+										For I1 = 0 To 9:
+											careerRBS!(J, 50, I1) = 0
+											careerRBS$(J, 50, 0) = ""
+											careerRBS$(J, 50, 1) = ""
+										Next
+									Next
 
-                        If B9 <> 40 Then
+								End If
 
-                            If B9 <> 39 Then
+							End If
 
-                                Call PrintCareerStatsWR(exitFlag%, B9)
+						Case "W"
+							Cls
+							Color 12: Print Z$
 
-                                If exitFlag% <> 1 Then
+							For I = 0 To 19:
+								Locate I + 2
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA2$(I), 12)
+							Next
 
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING RECEIVER FILE . . . . . PLEASE WAIT"
+							For I = 20 To 39:
+								Locate I - 18, 20
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA2$(I), 12)
+							Next
 
-                                    For I = B9 To 38: careerA2$(I) = careerA2$(I + 1): Next
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (40 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 40
 
-                                    UPP = (39 - B9) * 15
-                                    I = B9
+							If B9 <> 40 Then
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 38:
-                                            For I1 = 0 To 5:
-                                                careerWRS!(J, I, I1) = careerWRS!(J, I + 1, I1)
-                                                careerWRS$(J, I, 0) = careerWRS$(J, I + 1, 0)
-                                            Next
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+								If B9 <> 39 Then
 
-                                End If
+									Call PrintCareerStatsWR(exitFlag%, B9)
 
-                            End If
+									If exitFlag% <> 1 Then
 
-                            If exitFlag% <> 1 Then
-                                careerA2$(39) = ""
+										Cls
+										Locate 5, 15: Print "CHANGING RECEIVER FILE . . . . . PLEASE WAIT"
 
-                                For J = 1 To 15:
-                                    For I1 = 0 To 5:
-                                        careerWRS!(J, 39, I1) = 0
-                                        careerWRS$(J, 39, 0) = ""
-                                    Next
-                                Next
+										For I = B9 To 38: careerA2$(I) = careerA2$(I + 1): Next
 
-                            End If
+										UPP = (39 - B9) * 15
+										I = B9
 
-                        End If
+										For J = 1 To 15:
+											For I = B9 To 38:
+												For I1 = 0 To 5:
+													careerWRS!(J, I, I1) = careerWRS!(J, I + 1, I1)
+													careerWRS$(J, I, 0) = careerWRS$(J, I + 1, 0)
+												Next
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                    Case "Q"
-                        Cls
-                        Color 12: Print Z$
+									End If
 
-                        For I = 0 To 9:
-                            Locate I + 2
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA3$(I), 12)
-                        Next
+								End If
 
-                        For I = 10 To 19:
-                            Locate I - 8, 20
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA3$(I), 12)
-                        Next
+								If exitFlag% <> 1 Then
+									careerA2$(39) = ""
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (20 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 20
+									For J = 1 To 15:
+										For I1 = 0 To 5:
+											careerWRS!(J, 39, I1) = 0
+											careerWRS$(J, 39, 0) = ""
+										Next
+									Next
 
-                        If B9 <> 20 Then
+								End If
 
-                            If B9 <> 19 Then
-                                Call PrintCareerStatsQB(exitFlag%, B9)
+							End If
 
-                                If exitFlag% <> 1 Then
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING QUARTERBACK FILE . . . . . PLEASE WAIT"
+						Case "Q"
+							Cls
+							Color 12: Print Z$
 
-                                    For I = B9 To 18: careerA3$(I) = careerA3$(I + 1): Next
+							For I = 0 To 9:
+								Locate I + 2
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA3$(I), 12)
+							Next
 
-                                    UPP = (19 - B9) * 15
-                                    I = B9
+							For I = 10 To 19:
+								Locate I - 8, 20
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA3$(I), 12)
+							Next
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 18:
-                                            For I1 = 0 To 7:
-                                                careerQBS!(J, I, I1) = careerQBS!(J, I + 1, I1)
-                                                careerQBS$(J, I, 0) = careerQBS$(J, I + 1, 0)
-                                            Next
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (20 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 20
 
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+							If B9 <> 20 Then
 
-                                End If
+								If B9 <> 19 Then
+									Call PrintCareerStatsQB(exitFlag%, B9)
 
-                            End If
+									If exitFlag% <> 1 Then
+										Cls
+										Locate 5, 15: Print "CHANGING QUARTERBACK FILE . . . . . PLEASE WAIT"
 
-                        End If
+										For I = B9 To 18: careerA3$(I) = careerA3$(I + 1): Next
 
-                        If exitFlag% <> 1 Then
-                            careerA3$(19) = ""
+										UPP = (19 - B9) * 15
+										I = B9
 
-                            For J = 1 To 15:
-                                For I1 = 0 To 7:
-                                    careerQBS!(J, 19, I1) = 0
-                                    careerQBS$(J, 19, 0) = ""
-                                Next
-                            Next
+										For J = 1 To 15:
+											For I = B9 To 18:
+												For I1 = 0 To 7:
+													careerQBS!(J, I, I1) = careerQBS!(J, I + 1, I1)
+													careerQBS$(J, I, 0) = careerQBS$(J, I + 1, 0)
+												Next
 
-                        End If
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                    Case "C"
-                        Cls
-                        Color 12: Print Z$
+									End If
 
-                        For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA4$(I), 12): Next
+								End If
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 15
+							End If
 
-                        If B9 <> 15 Then
+							If exitFlag% <> 1 Then
+								careerA3$(19) = ""
 
-                            If B9 <> 14 Then
+								For J = 1 To 15:
+									For I1 = 0 To 7:
+										careerQBS!(J, 19, I1) = 0
+										careerQBS$(J, 19, 0) = ""
+									Next
+								Next
 
-                                Call PrintCareerStatsKR(exitFlag%, B9)
+							End If
 
-                                If exitFlag% <> 1 Then
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING KICK RETURNER FILE . . . . . PLEASE WAIT"
+						Case "C"
+							Cls
+							Color 12: Print Z$
 
-                                    For I = B9 To 13: careerA4$(I) = careerA4$(I + 1): Next
+							For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA4$(I), 12): Next
 
-                                    UPP = (14 - B9) * 15
-                                    I = B9
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 15
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 13:
-                                            For I1 = 0 To 5:
-                                                careerKRS!(J, I, I1) = careerKRS!(J, I + 1, I1)
-                                                careerKRS$(J, I, 0) = careerKRS$(J, I + 1, 0)
-                                            Next
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
-                                End If
+							If B9 <> 15 Then
 
-                            End If
+								If B9 <> 14 Then
 
-                            If exitFlag% <> 1 Then
-                                careerA4$(14) = ""
+									Call PrintCareerStatsKR(exitFlag%, B9)
 
-                                For J = 1 To 15:
-                                    For I1 = 0 To 5:
-                                        careerKRS!(J, 14, I1) = 0
-                                        careerKRS$(J, 14, 0) = ""
-                                    Next
-                                Next
-                            End If
+									If exitFlag% <> 1 Then
+										Cls
+										Locate 5, 15: Print "CHANGING KICK RETURNER FILE . . . . . PLEASE WAIT"
 
-                        End If
+										For I = B9 To 13: careerA4$(I) = careerA4$(I + 1): Next
 
-                    Case "U"
-                        Cls
-                        Color 12: Print Z$
+										UPP = (14 - B9) * 15
+										I = B9
 
-                        For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA5$(I), 12): Next
+										For J = 1 To 15:
+											For I = B9 To 13:
+												For I1 = 0 To 5:
+													careerKRS!(J, I, I1) = careerKRS!(J, I + 1, I1)
+													careerKRS$(J, I, 0) = careerKRS$(J, I + 1, 0)
+												Next
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
+									End If
 
-                        2441 Locate 22: Color 15: Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9: If B9 < 0 Or B9 > 15 Then 2441
+								End If
 
-                        If B9 <> 15 Then
+								If exitFlag% <> 1 Then
+									careerA4$(14) = ""
 
-                            If B9 <> 14 Then
+									For J = 1 To 15:
+										For I1 = 0 To 5:
+											careerKRS!(J, 14, I1) = 0
+											careerKRS$(J, 14, 0) = ""
+										Next
+									Next
+								End If
 
-                                Call PrintCareerStatsPR(exitFlag%, B9)
+							End If
 
-                                If exitFlag% <> 1 Then
-                                    Cls
+						Case "U"
+							Cls
+							Color 12: Print Z$
 
-                                    Locate 5, 15: Print "CHANGING PUNT RETURNER FILE . . . . . PLEASE WAIT"
-                                    For I = B9 To 13: careerA5$(I) = careerA5$(I + 1): Next
-                                    UPP = (14 - B9) * 15
-                                    I = B9
+							For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA5$(I), 12): Next
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 13:
-                                            For I1 = 0 To 5:
-                                                careerPRS!(J, I, I1) = careerPRS!(J, I + 1, I1)
-                                                careerPRS$(J, I, 0) = careerPRS$(J, I + 1, 0)
-                                            Next
-                                            Locate 7, 36: Color 12: UPP = UPP - 1: Print Using "####"; UPP
-                                        Next
-                                    Next
-                                End If
+							2441 Locate 22: Color 15: Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9: If B9 < 0 Or B9 > 15 Then 2441
 
-                            End If
+							If B9 <> 15 Then
 
-                            If exitFlag% <> 1 Then
-                                careerA5$(14) = ""
+								If B9 <> 14 Then
 
-                                For J = 1 To 15:
-                                    For I1 = 0 To 5:
-                                        careerPRS!(J, 14, I1) = 0
-                                        careerPRS$(J, 14, 0) = ""
-                                    Next
-                                Next
+									Call PrintCareerStatsPR(exitFlag%, B9)
 
-                            End If
+									If exitFlag% <> 1 Then
+										Cls
 
-                        End If
+										Locate 5, 15: Print "CHANGING PUNT RETURNER FILE . . . . . PLEASE WAIT"
+										For I = B9 To 13: careerA5$(I) = careerA5$(I + 1): Next
+										UPP = (14 - B9) * 15
+										I = B9
 
-                    Case "P"
-                        Cls
-                        Color 12: Print Z$
+										For J = 1 To 15:
+											For I = B9 To 13:
+												For I1 = 0 To 5:
+													careerPRS!(J, I, I1) = careerPRS!(J, I + 1, I1)
+													careerPRS$(J, I, 0) = careerPRS$(J, I + 1, 0)
+												Next
+												Locate 7, 36: Color 12: UPP = UPP - 1: Print Using "####"; UPP
+											Next
+										Next
+									End If
 
-                        For I = 0 To 9:
-                            Locate I + 2
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA6$(I), 12)
-                        Next
+								End If
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (10 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 10
+								If exitFlag% <> 1 Then
+									careerA5$(14) = ""
 
-                        If B9 <> 10 Then
+									For J = 1 To 15:
+										For I1 = 0 To 5:
+											careerPRS!(J, 14, I1) = 0
+											careerPRS$(J, 14, 0) = ""
+										Next
+									Next
 
-                            If B9 <> 9 Then
+								End If
 
-                                Call PrintCareerStatsP(exitFlag%, B9)
+							End If
 
-                                If exitFlag% <> 1 Then
-                                    Cls
+						Case "P"
+							Cls
+							Color 12: Print Z$
 
-                                    Locate 5, 15: Print "CHANGING PUNTER FILE . . . . . PLEASE WAIT"
+							For I = 0 To 9:
+								Locate I + 2
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA6$(I), 12)
+							Next
 
-                                    For I = B9 To 8: careerA6$(I) = careerA6$(I + 1): Next
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (10 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 10
 
-                                    UPP = (9 - B9) * 15
-                                    I = B9
+							If B9 <> 10 Then
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 8:
-                                            For I1 = 0 To 3:
-                                                careerPUS!(J, I, I1) = careerPUS!(J, I + 1, I1)
-                                            Next
+								If B9 <> 9 Then
 
-                                            UPP = UPP - 1:
+									Call PrintCareerStatsP(exitFlag%, B9)
 
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
+									If exitFlag% <> 1 Then
+										Cls
 
-                                    Next
+										Locate 5, 15: Print "CHANGING PUNTER FILE . . . . . PLEASE WAIT"
 
-                                End If
+										For I = B9 To 8: careerA6$(I) = careerA6$(I + 1): Next
 
-                            End If
+										UPP = (9 - B9) * 15
+										I = B9
 
-                            If exitFlag% <> 1 Then
-                                careerA6$(9) = ""
+										For J = 1 To 15:
+											For I = B9 To 8:
+												For I1 = 0 To 3:
+													careerPUS!(J, I, I1) = careerPUS!(J, I + 1, I1)
+												Next
 
-                                For J = 1 To 15:
-                                    For I1 = 0 To 3:
-                                        careerPUS!(J, 9, I1) = 0
-                                    Next
-                                Next
+												UPP = UPP - 1:
 
-                            End If
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
 
-                        End If
+										Next
 
-                    Case "K"
-                        Cls
-                        Color 12: Print Z$
+									End If
 
-                        For I = 0 To 9:
-                            Locate I + 2: Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerA7$(I), 12)
-                        Next
+								End If
 
-                        Do
-                            Locate 22: Color 15:
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (10 TO EXIT)"; B9
-                        Loop Until B9 >= 0 Or B9 <= 10
+								If exitFlag% <> 1 Then
+									careerA6$(9) = ""
 
-                        If B9 <> 10 Then
-                            If B9 <> 9 Then
-                                Call PrintCareerStatsK(exitFlag%, B9)
+									For J = 1 To 15:
+										For I1 = 0 To 3:
+											careerPUS!(J, 9, I1) = 0
+										Next
+									Next
 
-                                If exitFlag% <> 1 Then
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING FIELD GOAL KICKER FILE . . . . . PLEASE WAIT"
-                                    For I = B9 To 8: careerA7$(I) = careerA7$(I + 1): Next
-                                    UPP = (9 - B9) * 15
-                                    I = B9
-                                    For J = 1 To 15:
-                                        For I = B9 To 8:
-                                            For I1 = 0 To 16:
-                                                careerFGS!(J, I, I1) = careerFGS!(J, I + 1, I1)
-                                            Next
+								End If
 
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+							End If
 
-                                End If
+						Case "K"
+							Cls
+							Color 12: Print Z$
 
-                            End If
+							For I = 0 To 9:
+								Locate I + 2: Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerA7$(I), 12)
+							Next
 
-                            If exitFlag% <> 1 Then
-                                For J = 1 To 15:
-                                    For I1 = 0 To 16:
-                                        careerFGS!(J, 9, I1) = 0
-                                    Next
-                                Next
-                            End If
+							Do
+								Locate 22: Color 15:
+								Input "ENTER NUMBER OF PLAYER TO DELETE (10 TO EXIT)"; B9
+							Loop Until B9 >= 0 Or B9 <= 10
 
-                        End If
+							If B9 <> 10 Then
+								If B9 <> 9 Then
+									Call PrintCareerStatsK(exitFlag%, B9)
 
-                    Case "I"
-                        Cls
-                        Color 12: Print Z$
+									If exitFlag% <> 1 Then
+										Cls
+										Locate 5, 15: Print "CHANGING FIELD GOAL KICKER FILE . . . . . PLEASE WAIT"
+										For I = B9 To 8: careerA7$(I) = careerA7$(I + 1): Next
+										UPP = (9 - B9) * 15
+										I = B9
+										For J = 1 To 15:
+											For I = B9 To 8:
+												For I1 = 0 To 16:
+													careerFGS!(J, I, I1) = careerFGS!(J, I + 1, I1)
+												Next
 
-                        For I = 0 To 17:
-                            Locate I + 2
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerDI$(I), 12)
-                        Next
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                        For I = 18 To 35:
-                            Locate I - 16, 20
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerDI$(I), 12)
-                        Next
+									End If
 
-                        For I = 36 To 54:
-                            Locate I - 34, 40
-                            Color 11: Print Using "##"; I;: Print " ";
-                            Color 7: Print Left$(careerDI$(I), 12)
-                        Next
+								End If
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (55 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 55
+								If exitFlag% <> 1 Then
+									For J = 1 To 15:
+										For I1 = 0 To 16:
+											careerFGS!(J, 9, I1) = 0
+										Next
+									Next
+								End If
 
-                        If B9 <> 55 Then
+							End If
 
-                            If B9 <> 54 Then
+						Case "I"
+							Cls
+							Color 12: Print Z$
 
-                                Call PrintCareerStatsINT(exitFlag%, B9)
+							For I = 0 To 17:
+								Locate I + 2
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerDI$(I), 12)
+							Next
 
-                                If exitFlag% <> 1 Then
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
+							For I = 18 To 35:
+								Locate I - 16, 20
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerDI$(I), 12)
+							Next
 
-                                    For I = B9 To 8: careerDI$(I) = careerDI$(I + 1): Next
+							For I = 36 To 54:
+								Locate I - 34, 40
+								Color 11: Print Using "##"; I;: Print " ";
+								Color 7: Print Left$(careerDI$(I), 12)
+							Next
 
-                                    UPP = (54 - B9) * 15
-                                    I = B9
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (55 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 55
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 53:
-                                            For I1 = 0 To 2:
-                                                careerGIS!(J, I, I1) = careerGIS!(J, I + 1, I1)
-                                            Next
+							If B9 <> 55 Then
 
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+								If B9 <> 54 Then
 
-                                End If
+									Call PrintCareerStatsINT(exitFlag%, B9)
 
-                            End If
+									If exitFlag% <> 1 Then
+										Cls
+										Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
-                            If exitFlag% <> 1 Then
+										For I = B9 To 8: careerDI$(I) = careerDI$(I + 1): Next
 
-                                careerDI$(54) = ""
-                                For J = 1 To 15:
-                                    For I1 = 0 To 2:
-                                        careerGIS!(J, 54, I1) = 0
-                                    Next
-                                Next
+										UPP = (54 - B9) * 15
+										I = B9
 
-                            End If
+										For J = 1 To 15:
+											For I = B9 To 53:
+												For I1 = 0 To 2:
+													careerGIS!(J, I, I1) = careerGIS!(J, I + 1, I1)
+												Next
 
-                        End If
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                    Case "F"
-                        Cls
-                        Color 12: Print Z$
+									End If
 
-                        For I = 0 To 17: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
-                        For I = 18 To 35: Locate I - 16, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
-                        For I = 36 To 54: Locate I - 34, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
+								End If
 
-                        Do
-                            Locate 22: Color 15
-                            Input "ENTER NUMBER OF PLAYER TO DELETE (55 TO EXIT)"; B9
-                        Loop Until B9 >= 0 And B9 <= 55
+								If exitFlag% <> 1 Then
 
-                        If B9 <> 55 Then
+									careerDI$(54) = ""
+									For J = 1 To 15:
+										For I1 = 0 To 2:
+											careerGIS!(J, 54, I1) = 0
+										Next
+									Next
 
-                            If B9 <> 54 Then
+								End If
 
-                                Call PrintCareerStatsSACK(exitFlag%, B9)
+							End If
 
-                                If exitFlag% <> 1 Then
-                                    Cls
-                                    Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
+						Case "F"
+							Cls
+							Color 12: Print Z$
 
-                                    For I = B9 To 8: careerDS$(I) = careerDS$(I + 1): Next
-                                    UPP = (54 - B9) * 15
-                                    I = B9
+							For I = 0 To 17: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
+							For I = 18 To 35: Locate I - 16, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
+							For I = 36 To 54: Locate I - 34, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
 
-                                    For J = 1 To 15:
-                                        For I = B9 To 53:
-                                            For I1 = 0 To 2:
-                                                careerGSS!(J, I, I1) = careerGSS!(J, I + 1, I1)
-                                            Next
-                                            UPP = UPP - 1
-                                            Locate 7, 36: Color 12: Print Using "####"; UPP
-                                        Next
-                                    Next
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (55 TO EXIT)"; B9
+							Loop Until B9 >= 0 And B9 <= 55
 
-                                End If
+							If B9 <> 55 Then
 
-                            End If
+								If B9 <> 54 Then
 
-                            If exitFlag% <> 1 Then
-                                careerDS$(54) = ""
-                                For J = 1 To 15: For I1 = 0 To 2: careerGSS!(J, 54, I1) = 0: Next: Next
-                            End If
+									Call PrintCareerStatsSACK(exitFlag%, B9)
 
-                        End If
+									If exitFlag% <> 1 Then
+										Cls
+										Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
-                    Case "D"
-                        Call UpdateCareerFile(Z$)
+										For I = B9 To 8: careerDS$(I) = careerDS$(I + 1): Next
+										UPP = (54 - B9) * 15
+										I = B9
 
-                    Case "E"
-                        Exit Sub
-                        'Go back to CAREER
+										For J = 1 To 15:
+											For I = B9 To 53:
+												For I1 = 0 To 2:
+													careerGSS!(J, I, I1) = careerGSS!(J, I + 1, I1)
+												Next
+												UPP = UPP - 1
+												Locate 7, 36: Color 12: Print Using "####"; UPP
+											Next
+										Next
 
-                End Select
+									End If
 
-            Loop Until UCase$(I$) = "E"
+								End If
 
+								If exitFlag% <> 1 Then
+									careerDS$(54) = ""
+									For J = 1 To 15: For I1 = 0 To 2: careerGSS!(J, 54, I1) = 0: Next: Next
+								End If
+
+							End If
+
+						Case "D"
+							Call UpdateCareerFile(Z$)
+
+						Case "E"
+							Exit Sub
+							'Go back to CAREER
+
+					End Select
+
+				Loop Until UCase$(I$) = "E"
+			
+			End If 'Done checking for ESC
+			
         End If 'Done checking for file count
 
         '...Until we press ESC

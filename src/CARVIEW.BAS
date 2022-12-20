@@ -70,11 +70,18 @@ Sub CARVIEW ()
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+
+                    Color 15, 1
                     targetFile$ = careerFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
+
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
@@ -83,7 +90,9 @@ Sub CARVIEW ()
 
                 targetFile$ = RTrim$(targetFile$)
                 Z$ = Left$(targetFile$, Len(targetFile$) - 4)
-                Color 15
+
+				Color 15, 0
+				Cls
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
                 Open diskPaths$(1) + Z$ + ".CAR" For Input As #1
@@ -1223,12 +1232,15 @@ Sub CareerPrintCategory (RT, categoryID%, escPressed%)
 
         If escPressed% = 0 Then
             Cls
-            Locate 5, 20
-            Color 14: Print "VIEW AGAIN (Y/N)"
+
+			Color 14
 
             Do
+				Locate 5, 20
+				Print "VIEW AGAIN (Y/N)"
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
         End If
 
     Loop Until UCase$(I$) = "N" Or escPressed% = 1 Or targetFile$ <> ""

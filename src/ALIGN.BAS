@@ -87,41 +87,45 @@ Sub GetParameters ()
         Locate , 5: Print "          C:\HAFFNER\1980"
         Locate , 5: Print "          D:\FOOTBALL"
 
+		For J = 10 To 13:
+			Locate J
+			Print String$(72, " ")
+		Next
+
         Do
-            For J = 10 To 13:
-                Locate J
-                Print String$(72, " ")
-            Next
-            Color 10: Locate 10, 5: Line Input "ROAD STATS:     "; PR$
-            Locate , 5: Locate , 5: Line Input "CURRENT STATS:  "; PC$
+            Color 10
+			Locate 10, 5: Line Input "ROAD STATS:     "; PR$
+            Locate , 5
+			Locate , 5: Line Input "CURRENT STATS:  "; PC$
             Color 14
             Locate 13, 5: Print "ANY CHANGE (Y/N)"
             I$ = GetKeyPress$
 
         Loop Until UCase$(I$) = "N"
 
+		Color 15, 0
+		Cls
+		JJ = 6
+		SN = 1
+		Locate 6, 8
+		Color 15, 4
+
+		'Print box top
+		Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+		'Print box sides
+		For II = 1 To JJ
+			Locate 6 + II, 8
+			Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+		Next
+
+		'Print box bottom
+		Locate 7 + JJ, 8
+		Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+		
+		Locate 7, 32
+
         Do
-            Color 15, 0
-            Cls
-            JJ = 6
-            SN = 1
-            Locate 6, 8
-            Color 15, 4
-
-            'Print box top
-            Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-            'Print box sides
-            For II = 1 To JJ
-                Locate 6 + II, 8
-                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-            Next
-
-            'Print box bottom
-            Locate 7 + JJ, 8
-            Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-            Locate 7, 32
-
             Locate , 12: Print "ENTER DISK ID: ": Print
             Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
             Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -178,15 +182,24 @@ Sub GetParameters ()
             End Select
 
             A$ = RTrim$(Q$(1))
+			
             If BO% = 1 Then
                 BO% = 0
             Else
-                Locate 2, 33: Color PA%(2), PA%(1): Print A$
-                Color 15, 4: Locate , 33: Print "ANY CHANGE (YN)";
-                I$ = GetKeyPress$
+                Locate 2, 3
+				Color PA%(2), PA%(1): Print A$
+                
+				Color 15, 4
+				
+				Do
+					Locate , 33: Print "ANY CHANGE (YN)";
+					I$ = GetKeyPress$
+				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
             End If
 
         Loop Until UCase$(I$) = "N"
+
         Color 15, 0
         B$ = A$
 
@@ -214,8 +227,8 @@ Sub GetParameters ()
         Locate , 15: Print "MASTER STATS ARE ON DRIVE "; PC$
         Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; A$
 
-        Locate 14, 15: Print "ANY CHANGE (YN)"
         Do
+			Locate 14, 15: Print "ANY CHANGE (YN)"
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -322,7 +335,7 @@ Sub GetParameters ()
 		
 		End If 'Done checking for Y/N
 		
-    Loop Until UCase$(I$) = "N"
+    Loop Until DUMMY$ <> "" Or UCase$(I$) = "N"
 
 End Sub
 
@@ -376,30 +389,36 @@ Sub AlignStats (PR$, Z$)
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR2$(I):
     Next
+
     Locate 11, 4
     Color 15: Print Tab(45); "CURRENT  ";
     Color 14: Print "- KICK RET. -";
     Color 7: Print " ROAD"
+
     For I = 0 To 2
         Locate I + 12, 40: Color 12: Print I; " ";
         Color 15: Print A4$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR4$(I)
     Next
+
     Locate 15
     Color 15: Print "CURRENT  ";
     Color 14: Print "-   QB'S  -";
     Color 7: Print " ROAD"
+
     For I = 0 To 3:
         Locate I + 16: Color 12: Print I; " ";
         Color 15: Print A3$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR3$(I)
     Next
+
     Locate 16, 40
     Color 15: Print Tab(45); "CURRENT  ";
     Color 14: Print "- PUNT RET. -";
     Color 7: Print " ROAD"
+
     For I = 0 To 2:
         Locate I + 17, 40: Color 12: Print I; " ";
         Color 15: Print A5$(I);
@@ -426,12 +445,14 @@ Sub AlignStats (PR$, Z$)
     Color 15: Print A6$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AR6$(0)
+
     For I = 0 To 1:
         Locate I + 4, 40: Color 12: Print I; " ";
         Color 15: Print A7$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR7$(I):
     Next
+
     Locate 7: Color 15: Print "CURRENT  ";
     Color 14: Print "-INTERCEPTORS-";
     Color 7: Print " ROAD";
@@ -549,9 +570,11 @@ Sub AlignStats (PR$, Z$)
                 Next K
 
             End If
+
         Next J
 
         N = N + 1
+
     Loop Until N = 4
 
     N = 0
@@ -591,6 +614,7 @@ Sub AlignStats (PR$, Z$)
                 Next K
 
             End If
+
         Next J
 
         N = N + 1
@@ -626,6 +650,7 @@ Sub AlignStats (PR$, Z$)
                 Next J1
 
             End If
+
         Next J
 
         N = N + 1
@@ -716,6 +741,8 @@ Sub AlignStats (PR$, Z$)
     '900 GoTo 1
 
 End Sub
+
+
 '----------------------------------------
 '    ReviewAndSaveAlignment Subroutine
 '----------------------------------------

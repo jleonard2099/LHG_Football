@@ -10,7 +10,9 @@
 	- SEECOLL
 	- SEENATL
 
-## Ticker Scores 
+___
+
+## Ticker Scores ##
 Scores are 0's too much
 - SX%(), SX$() are related variables
 - assume it's because we only look at games to 32
@@ -61,6 +63,29 @@ NOT SO MUCH A BUG, BUT...
 
 ___
 
+
+## "QB SNEAK" BUG ##
+
+- The AI favors QB runs more frequently than normal
+- Bug confirmed in the original after thorough testing
+- I was tipped off after QB's like Tom Brady had 60+ attempts; 2-3x as often as in real life
+- Even very mobile QB's with frequent rushes, ran twice as often
+
+Considerations
+- This is likely related to auto QB selection in the schedule file
+- QB mobility is captured as 0 when RANDOM option is chosen
+- This would leave all QB's with a generic mobility rating that may be too high
+- The game logic then sees this and ...
+
+Plans to Fix
+- Evaluate AI for determining when to sneak
+- At a minimum, adjust frequency statically
+- Larger part of my plans for the game involve on-the-fly calcs for mobility
+- It is important to note the game doesn't use mobility with simulated seasons
+- But mobility should be related to likelihood to sneak
+
+___
+
 ## "THE FIELD GOAL BUG" ##
 
 ### College ###
@@ -74,7 +99,31 @@ ___
 
 _In other words, it seems the real issue is using Pro rules_
 
-### AI Field Goal Choice Situations  ###
+### The Fix ###
+
+Currently, it's based on the year of the team
+- 00 - 22 = 20xx
+- 23 - 99 = 19xx
+
+To improve without modifying team files:
+- check average FG/team each year of NFL
+- find when the average is more "modern"
+- make the change based on that
+
+### FUTURE ###
+We need to adjust logic for FG attempts
+- older teams simply wouldn't try them b/c of the %'s
+- they were also more dominant with running
+
+IDEA
+- Factor in the avg FG / team (league) each year
+- That is, we need to figure a "chance" the team will try for a FG
+	- this should only be partially based on circumstance
+	- it should also be based on coaching agressiveness
+	- older years are "more agressive" and not go for a FG
+
+
+## AI Field Goal Choice Situations  ##
 
 #### 4th Quarter ####
 I haven't considered yet if I agree with these choices

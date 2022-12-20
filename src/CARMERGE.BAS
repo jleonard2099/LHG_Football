@@ -140,20 +140,29 @@ Sub MergeCareerStats ()
                         MAMenu careerFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                         _MouseHide
 
-                        If ExitCode% = 27 Then Exit Sub
+                        If ExitCode% <> 27 Then 
 
-                        targetFile$ = careerFiles$(Selection%)
-                        Locate 2, 33: Print targetFile$
-                        Locate , 33: Print "ANY CHANGE (YN)";
-                        Color 15, 0
-                        Do
-                            I$ = GetKeyPress$
-                        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+							Color 15, 1
+							targetFile$ = careerFiles$(Selection%)
+							Locate 2, 33: Print targetFile$
+
+							Do
+								Locate , 33: Print "ANY CHANGE (YN)";
+								I$ = GetKeyPress$
+							Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+							Color 15, 0
+
+						End If
 
                     Loop Until UCase$(I$) = "N"
 
-                    targetFile$ = RTrim$(targetFile$)
-                    Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+					If ExitCode% <> 27 Then
+						targetFile$ = RTrim$(targetFile$)
+						Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+					Else
+						Exit Sub
+					End If
 
                 End If
 
@@ -187,9 +196,9 @@ Sub MergeCareerStats ()
 
             Cls
             Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; Y
-            Locate 9, 25: Print "ANY CHANGE (YN)"
 
             Do
+				Locate 9, 25: Print "ANY CHANGE (YN)"
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1657,10 +1666,11 @@ Sub GetTeam_CARMERGE ()
                 Else
                     Locate 2, 33: Color PA%(2), PA%(1)
                     Print A$
+
                     Color 15, 4
-                    Locate , 33: Print "ANY CHANGE (YN)";
 
                     Do
+						Locate , 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

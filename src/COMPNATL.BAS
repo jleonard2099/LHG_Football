@@ -105,312 +105,323 @@ Sub COMPNATL ()
                 MAMenu organizationFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
-                If ExitCode% = 27 Then Exit Sub
+                If ExitCode% <> 27 Then
 
-                targetFile$ = organizationFiles$(Selection%)
-                Locate 2, 33: Print targetFile$
-                Locate , 33: Print "ANY CHANGE (YN)";
-                Color 15, 0
-                I$ = GetKeyPress$
+					Color 15, 1
+					targetFile$ = organizationFiles$(Selection%)
+					Locate 2, 33: Print targetFile$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
+
+				End If
+
             Loop Until UCase$(I$) = "N"
 
-            targetFile$ = RTrim$(targetFile$)
-            WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-            Cls
-            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-            Color 15, 0
-
-            Do
-                I$ = GetKeyPress$
-                finalUpdate$ = UCase$(I$)
-            Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
-
-            For X = 1 To 240
-                N2$(X) = "*"
-                N3$(X) = "*"
-                N1!(X, 1) = 0
-                N1!(X, 2) = 0
-            Next X
-
-            For I = 1 To 10
-                For I1 = 1 To 20
-                    For I2 = 1 To 9
-                        NT!(I, I1, I2) = 0
-                    Next
-                Next
-            Next
+			If ExitCode% <> 27 Then
+				targetFile$ = RTrim$(targetFile$)
+				WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+
+				Cls
+				Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
+				Color 15, 0
+
+				Do
+					I$ = GetKeyPress$
+					finalUpdate$ = UCase$(I$)
+				Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
+
+				For X = 1 To 240
+					N2$(X) = "*"
+					N3$(X) = "*"
+					N1!(X, 1) = 0
+					N1!(X, 2) = 0
+				Next X
+
+				For I = 1 To 10
+					For I1 = 1 To 20
+						For I2 = 1 To 9
+							NT!(I, I1, I2) = 0
+						Next
+					Next
+				Next
 
-            For I = 1 To 10
-                For I1 = 1 To 20
-                    NT$(I, I1) = "*"
-                Next
-            Next
+				For I = 1 To 10
+					For I1 = 1 To 20
+						NT$(I, I1) = "*"
+					Next
+				Next
 
-            CA = 2
+				CA = 2
 
-            For I = 1 To 20
-                NT!(CA, I, 5) = 9999
-            Next
+				For I = 1 To 20
+					NT!(CA, I, 5) = 9999
+				Next
 
-            CA = 4
+				CA = 4
 
-            For I = 1 To 20
-                NT!(CA, I, 5) = 9999
-            Next
+				For I = 1 To 20
+					NT!(CA, I, 5) = 9999
+				Next
 
-            CA = 6
+				CA = 6
 
-            For I = 1 To 20
-                NT!(CA, I, 3) = 9999
-            Next
+				For I = 1 To 20
+					NT!(CA, I, 3) = 9999
+				Next
 
-            CA = 8
+				CA = 8
 
-            For I = 1 To 20
-                NT!(CA, I, 8) = 9999
-            Next
+				For I = 1 To 20
+					NT!(CA, I, 8) = 9999
+				Next
 
-            CA = 10
+				CA = 10
 
-            For I = 1 To 20
-                NT!(CA, I, 7) = -99
-            Next
+				For I = 1 To 20
+					NT!(CA, I, 7) = -99
+				Next
 
-            Open diskPaths$(2) + WE$ + ".CON" For Input As #2
+				Open diskPaths$(2) + WE$ + ".CON" For Input As #2
 
-            Input #2, X$
+				Input #2, X$
 
-            For I = 1 To 40
-                Input #2, CN$(I)
-            Next
+				For I = 1 To 40
+					Input #2, CN$(I)
+				Next
 
-            Close 2
+				Close 2
 
-            For NC = 1 To 40
+				For NC = 1 To 40
 
-                If CN$(NC) <> "XXX" Then
+					If CN$(NC) <> "XXX" Then
 
-                    For X = 1 To 60
-                        compZ1$(X) = "*"
-                        O1!(X) = 0
-                        O2!(X) = 0
-                        O3!(X) = 0
-                        PTSF!(X) = 0
-                        PTSA!(X) = 0
-                    Next
+						For X = 1 To 60
+							compZ1$(X) = "*"
+							O1!(X) = 0
+							O2!(X) = 0
+							O3!(X) = 0
+							PTSF!(X) = 0
+							PTSA!(X) = 0
+						Next
 
-                    For X = 1 To 240
-                        compZ2$(X) = "*"
-                        compZ3$(X) = "*"
-                        compZ1!(X, 1) = 0
-                        compZ1!(X, 2) = 0
-                    Next X
+						For X = 1 To 240
+							compZ2$(X) = "*"
+							compZ3$(X) = "*"
+							compZ1!(X, 1) = 0
+							compZ1!(X, 2) = 0
+						Next X
 
-                    For I = 1 To 10
-                        For I1 = 1 To 20
-                            For I2 = 1 To 9
-                                TT!(I, I1, I2) = 0
-                            Next
-                        Next
-                    Next
+						For I = 1 To 10
+							For I1 = 1 To 20
+								For I2 = 1 To 9
+									TT!(I, I1, I2) = 0
+								Next
+							Next
+						Next
 
-                    For I = 1 To 10
-                        For I1 = 1 To 20
-                            TT$(I, I1) = "*"
-                        Next
-                    Next
+						For I = 1 To 10
+							For I1 = 1 To 20
+								TT$(I, I1) = "*"
+							Next
+						Next
 
-                    CA = 2
+						CA = 2
 
-                    For I = 1 To 20
-                        TT!(CA, I, 5) = 9999
-                    Next
+						For I = 1 To 20
+							TT!(CA, I, 5) = 9999
+						Next
 
-                    CA = 4
+						CA = 4
 
-                    For I = 1 To 20
-                        TT!(CA, I, 5) = 9999
-                    Next
+						For I = 1 To 20
+							TT!(CA, I, 5) = 9999
+						Next
 
-                    CA = 6
+						CA = 6
 
-                    For I = 1 To 20
-                        TT!(CA, I, 3) = 9999
-                    Next
+						For I = 1 To 20
+							TT!(CA, I, 3) = 9999
+						Next
 
-                    CA = 8
+						CA = 8
 
-                    For I = 1 To 20
-                        TT!(CA, I, 8) = 9999
-                    Next
+						For I = 1 To 20
+							TT!(CA, I, 8) = 9999
+						Next
 
-                    CA = 10
+						CA = 10
 
-                    For I = 1 To 20
-                        TT!(CA, I, 7) = -99
-                    Next
+						For I = 1 To 20
+							TT!(CA, I, 7) = -99
+						Next
 
-                    Cls
+						Cls
 
-                    Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+						Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+
+						Input #2, FF$
+						Input #2, D1$
+						Input #2, D2$
 
-                    Input #2, FF$
-                    Input #2, D1$
-                    Input #2, D2$
+						For XW = 1 To 30
+							Input #2, H1$(XW)
+						Next
 
-                    For XW = 1 To 30
-                        Input #2, H1$(XW)
-                    Next
+						Close 2
 
-                    Close 2
+						Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
+						Input #2, LG%
+						Close 2
 
-                    Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
-                    Input #2, LG%
-                    Close 2
+						If LG% <> 0 Then
+							Cls
+							Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
+							Print "        RETURNING TO MAIN MENU"
+							Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+							I$ = GetKeyPress$
+							Exit Sub
+						Else
 
-                    If LG% <> 0 Then
-                        Cls
-                        Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
-                        Print "        RETURNING TO MAIN MENU"
-                        Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
-                        I$ = GetKeyPress$
-                        Exit Sub
-                    Else
+							Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+							Input #2, FF$
+							Input #2, D1$: Input #2, D2$
+							For X = 1 To 30
+								Input #2, compZ1$(X)
+							Next X
+							Close 2
 
-                        Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
-                        Input #2, FF$
-                        Input #2, D1$: Input #2, D2$
-                        For X = 1 To 30
-                            Input #2, compZ1$(X)
-                        Next X
-                        Close 2
+							For XW = 1 To 30
 
-                        For XW = 1 To 30
+								Call FindStatsNatl(XW, numberGames%, NRT)
 
-                            Call FindStatsNatl(XW, numberGames%, NRT)
+								900 '
+								L = Len(H1$(XW))
+								WT$ = ""
 
-                            900 '
-                            L = Len(H1$(XW))
-                            WT$ = ""
+								For X = 1 To L:
+									A = Asc(Mid$(H1$(XW), X, 1))
+									WT$ = WT$ + Chr$(A)
+								Next X
 
-                            For X = 1 To L:
-                                A = Asc(Mid$(H1$(XW), X, 1))
-                                WT$ = WT$ + Chr$(A)
-                            Next X
+								skipMe% = 0
 
-                            skipMe% = 0
+								For X = 1 To 30
 
-                            For X = 1 To 30
+									If compZ1$(X) = WT$ Then
 
-                                If compZ1$(X) = WT$ Then
+										If O1!(X) = WN And O2!(X) = LS And O3!(X) = TY Then
+											skipMe% = 1
+											Exit For
+										End If
 
-                                    If O1!(X) = WN And O2!(X) = LS And O3!(X) = TY Then
-                                        skipMe% = 1
-                                        Exit For
-                                    End If
+										O1!(X) = WN
+										O2!(X) = LS
+										O3!(X) = TY
+										O1!(X + 30) = CW
+										O2!(X + 30) = CL
+										O3!(X + 30) = CT
+										PTSF!(X + 30) = PTSFC
+										PTSA!(X + 30) = PTSAC
+										compZ1$(X + 30) = compZ1$(X)
+									End If
+								Next X
 
-                                    O1!(X) = WN
-                                    O2!(X) = LS
-                                    O3!(X) = TY
-                                    O1!(X + 30) = CW
-                                    O2!(X + 30) = CL
-                                    O3!(X + 30) = CT
-                                    PTSF!(X + 30) = PTSFC
-                                    PTSA!(X + 30) = PTSAC
-                                    compZ1$(X + 30) = compZ1$(X)
-                                End If
-                            Next X
+								If skipMe% <> 1 Then
+									Call ReadStatsNatl(XW, numberGames%, TM$)
+									Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
+									Call CheckStatsNatl(XW, numberGames%, TM$, WT$, finalUpdate$)
+								End If
 
-                            If skipMe% <> 1 Then
-                                Call ReadStatsNatl(XW, numberGames%, TM$)
-								Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
-                                Call CheckStatsNatl(XW, numberGames%, TM$, WT$, finalUpdate$)
-                            End If
+							Next
 
-                        Next
+						End If
 
-                    End If
+						950 '
+						For Z = 1 To 4
 
-                    950 '
-                    For Z = 1 To 4
+							AA = (15 * (Z - 1)) + 1
+							ZZ = 15 * Z
 
-                        AA = (15 * (Z - 1)) + 1
-                        ZZ = 15 * Z
+							For X = AA To ZZ - 1:
+								For Y = X + 1 To ZZ:
+									diffX = O1!(X) - O2!(X)
+									diffY = O1!(Y) - O2!(Y)
 
-                        For X = AA To ZZ - 1:
-                            For Y = X + 1 To ZZ:
-                                diffX = O1!(X) - O2!(X)
-                                diffY = O1!(Y) - O2!(Y)
+									If diffX <= diffY Then
+										If diffX <> diffY Then
+											If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
+												Swap compZ1$(X), compZ1$(Y)
+												Swap O1!(X), O1!(Y)
+												Swap O2!(X), O2!(Y)
+												Swap O3!(X), O3!(Y)
+												Swap PTSF!(X), PTSF!(Y)
+												Swap PTSA!(X), PTSA!(Y)
+											End If
+										End If
+									End If
 
-                                If diffX <= diffY Then
-                                    If diffX <> diffY Then
-                                        If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
-                                            Swap compZ1$(X), compZ1$(Y)
-                                            Swap O1!(X), O1!(Y)
-                                            Swap O2!(X), O2!(Y)
-                                            Swap O3!(X), O3!(Y)
-                                            Swap PTSF!(X), PTSF!(Y)
-                                            Swap PTSA!(X), PTSA!(Y)
-                                        End If
-                                    End If
-                                End If
+								Next Y
 
-                            Next Y
+							Next X
 
-                        Next X
+						Next Z
 
-                    Next Z
+						Call POSTLEADERS(NC, CN$())
+						Call SortStatsNatl
 
-                    Call POSTLEADERS(NC, CN$())
-                    Call SortStatsNatl
+					End If
 
-                End If
+				Next NC
 
-            Next NC
+				4010 '
+				Call POSTNATIONAL(WE$)
 
-            4010 '
-            Call POSTNATIONAL(WE$)
+				4020 '
+				For Z = 1 To NRT - 1
+					For Z1 = Z + 1 To NRT
+						If PT!(Z, 1) < PT!(Z1, 1) Then
+							Swap PT$(Z1), PT$(Z)
+							For MN = 1 To 5
+								Swap PT!(Z1, MN), PT!(Z, MN)
+							Next MN
+						End If
+					Next Z1
+				Next Z
 
-            4020 '
-            For Z = 1 To NRT - 1
-                For Z1 = Z + 1 To NRT
-                    If PT!(Z, 1) < PT!(Z1, 1) Then
-                        Swap PT$(Z1), PT$(Z)
-                        For MN = 1 To 5
-                            Swap PT!(Z1, MN), PT!(Z, MN)
-                        Next MN
-                    End If
-                Next Z1
-            Next Z
+				Open diskPaths$(2) + WE$ + ".POL" For Output As #2
+				Print "POSTING "; WE$; " POLL"
+				Write #2, NRT
 
-            Open diskPaths$(2) + WE$ + ".POL" For Output As #2
-            Print "POSTING "; WE$; " POLL"
-            Write #2, NRT
+				For X = 1 To 1200
+					Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
+				Next
 
-            For X = 1 To 1200
-                Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
-            Next
+				Close 2
 
-            Close 2
+				Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
 
-            Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
+				For I = 0 To 50:
+					Print #1, BRC!(I)
+					Print #1, BRC$(I, 0)
+					Print #1, BRC$(I, 1)
+					Print #1, BRC$(I, 2)
+				Next
 
-            For I = 0 To 50:
-                Print #1, BRC!(I)
-                Print #1, BRC$(I, 0)
-                Print #1, BRC$(I, 1)
-                Print #1, BRC$(I, 2)
-            Next
+				For I = 0 To 50: 
+					Print #1, TRC!(I)
+					Print #1, TRC$(I)
+				Next
 
-            For I = 0 To 50: 
-				Print #1, TRC!(I)
-				Print #1, TRC$(I)
-			Next
+				Close 1
 
-            Close 1
-
-        End If
+			End If 'Done checking ESC
+			
+        End If 'Done checking file count
 
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0

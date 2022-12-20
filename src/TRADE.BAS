@@ -64,9 +64,12 @@ Sub StartTrade ()
         Locate XY, 1: Print Tab(79);
     Next
 
-    Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
     S!(0) = 0
-    I$ = GetKeyPress$
+
+	Do
+		Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
+		I$ = GetKeyPress$
+	Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     If UCase$(I$) = "N" Then
         S!(0) = 1
@@ -84,9 +87,11 @@ Sub StartTrade ()
         Locate XY, 1: Print Tab(79);
     Next
 
-    Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
     S!(1) = 0
-    I$ = GetKeyPress$
+	Do
+		Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
+		I$ = GetKeyPress$
+	Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Call LoadStatsForTrade(1)
 
@@ -240,8 +245,11 @@ Sub TradeRBs (W1)
         Loop Until I >= 0 And I <= 9
 
         Print tradeA1$(1, I1)
-        Locate 23, 1: Print "ANY CHANGE (YN) ";
-        I$ = GetKeyPress$
+
+		Do
+			Locate 23, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -404,8 +412,11 @@ Sub TradeWRs (W1)
         Loop Until I1 >= 0 And I1 <= 5
 
         Print tradeA2$(1, I1)
-        Locate 23, 1: Print "ANY CHANGE (YN) ";
-        I$ = GetKeyPress$
+
+		Do
+			Locate 23, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -546,8 +557,10 @@ Sub TradeQBs (W1)
 
         Print tradeA3$(1, I1)
 
-        Locate 23, 1: Print "ANY CHANGE (YN) ";
-        I$ = GetKeyPress$
+		Do
+			Locate 23, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -705,9 +718,10 @@ Sub TradeKRs (W1)
 
         Print tradeA4$(1, I1)
 
-        Locate 23, 1: Print "ANY CHANGE (YN) ";
-
-        I$ = GetKeyPress$
+		Do
+			Locate 23, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -845,9 +859,10 @@ Sub TradePRs (W1)
 
         Print tradeA5$(1, I1)
 
-        Locate 23, 1: Print "ANY CHANGE (YN) ";
-
-        I$ = GetKeyPress$
+		Do
+			Locate 23, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -958,8 +973,11 @@ Sub TradePunters (W1)
         Print
         Print tradeA6$(0, 0);
         Locate , 20: Print " "; tradeA6$(1, 0)
-        Locate 22, 1: Print "ANY CHANGE (YN) ";
-        I$ = GetKeyPress$
+		
+		Do
+			Locate 22, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         If UCase$(I$) = "N" Then
 
@@ -1090,8 +1108,11 @@ Sub TradeKickers (W1)
         Loop Until I >= 0 And I <= 1
 
         Print tradeA7$(1, I1)
-        Locate 22, 1: Print "ANY CHANGE (YN) ";
-        I$ = GetKeyPress$
+		
+		Do
+			Locate 22, 1: Print "ANY CHANGE (YN) ";
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -1651,10 +1672,16 @@ Sub GetDiskID_TEAM (J)
 
         If BO% <> 1 Then
 
-            Locate 2, 33: Color tradePA%(J, 2), tradePA%(J, 1): Print A$(J)
+            Locate 2, 33
+			Color tradePA%(J, 2), tradePA%(J, 1): Print A$(J)
+
             Color 15, 4
-            Locate , 33: Print "ANY CHANGE (YN)";
-            I$ = GetKeyPress$
+
+			Do
+				Locate , 33: Print "ANY CHANGE (YN)";
+				I$ = GetKeyPress$
+			Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
         Else
             BO% = 0
         End If

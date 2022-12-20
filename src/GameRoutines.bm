@@ -7260,9 +7260,11 @@ Sub GetDiskID (I)
         Else
             Locate 2, 33
             Color PA%(I, 2), PA%(I, 1): Print A$(I)
-            Color 15, 4: Locate , 33
-            Print "ANY CHANGE (YN)";
+
+            Color 15, 4
+			
             Do
+				Locate , 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

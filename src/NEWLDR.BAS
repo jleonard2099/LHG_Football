@@ -1412,16 +1412,17 @@ Sub TeamStatsToPrinter ()
             Color 0, 0
             Locate 22: Print Space$(68)
             Locate 23: Print Space$(68)
-            Locate 22, 32: Color 0, 15
-
-            Print "VIEW AGAIN (Y/N)";
-
-            Color 4, 0
-            Print Chr$(220)
-            Locate , 33
-            Print String$(16, 223)
 
             Do
+				Locate 22, 32
+				Color 0, 15
+				Print "VIEW AGAIN (Y/N)";
+
+				Color 4, 0
+				Print Chr$(220)
+				Locate , 33
+				Print String$(16, 223)
+
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1573,18 +1574,19 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
             Color 0, 0
             Locate 22: Print Space$(69)
             Locate 23: Print Space$(69)
-            Locate 22, 32
-            Color 0, 15
-
-            Print "VIEW AGAIN (Y/N)";
-
-            Color 1, 0
-            Print Chr$(220)
-            Locate , 33
-            Print String$(16, 223)
 
             Do
+				Locate 22, 32
+				Color 0, 15
+				Print "VIEW AGAIN (Y/N)";
+
+				Color 1, 0
+				Print Chr$(220)
+				Locate , 33
+				Print String$(16, 223)
+
                 I$ = GetKeyPress$
+
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
             If UCase$(I$) = "Y" Then
@@ -1797,11 +1799,18 @@ Sub ChooseConference_Expanded (targetFile$)
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+
+                    Color 15, 1
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
+
                 End If
 
             Loop Until UCase$(I$) = "N"

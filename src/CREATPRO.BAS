@@ -294,7 +294,9 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
                         BO% = 0
                     Else
 
-                        Locate 2, 33: Color PA%(2), PA%(1): Print A$
+                        Locate 2, 33
+						Color PA%(2), PA%(1): Print A$
+
                         Do
                             Locate , 33: Print "ANY CHANGE (YN)";
                             I$ = GetKeyPress$
@@ -431,13 +433,16 @@ Sub ReviewLeague ()
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+					Color 15, 1
                     targetFile$ = leagueFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
+
                     Do
                         Locate , 33: Print "ANY CHANGE (YN)";
-                        Color 15, 0
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
 
                 End If
 

@@ -234,13 +234,16 @@ Sub AddConference (targetFile$)
                 _MouseHide
 
                 If ExitCode% <> 27 Then 'Exit Sub
+					Color 15, 1
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
+
                     Do
                         Locate , 33: Print "ANY CHANGE (YN)";
-                        Color 15, 0
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
 
                 End If
 
@@ -318,13 +321,18 @@ Sub ReviewConf_Natl (targetFile$)
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+
+					Color 15, 1
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
+
                     Do
                         Locate , 33: Print "ANY CHANGE (YN)";
-                        Color 15, 0
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
+
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27

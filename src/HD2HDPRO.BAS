@@ -950,8 +950,10 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
             Locate 7, 37: Input reportFile$
 
             If reportFile$ <> "" Then
-                Locate 13, 12: Print "ANY CHANGE (YN) "
-                I$ = GetKeyPress$
+				Do
+					Locate 13, 12: Print "ANY CHANGE (YN) "
+					I$ = GetKeyPress$
+				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
             End If
 
         End If
@@ -1350,12 +1352,20 @@ Sub ChooseLeague (targetFile$)
 
                 'Work out this logic better
                 If ExitCode% <> 27 Then
+                    Color 15, 0
                     targetFile$ = leagueFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+
+					Color 15, 0
+
                 End If
+
             Loop Until UCase$(I$) = "N"
 
             targetFile$ = RTrim$(targetFile$)
@@ -1465,9 +1475,16 @@ Sub GetDiskID_HD2HDPRO (A$)
             If BO% = 1 Then
                 BO% = 0
             Else
-                Locate 2, 33: Color PA%(2), PA%(1): Print A$
-                Color 15, 4: Locate , 33: Print "ANY CHANGE (YN)";
-                I$ = GetKeyPress$
+                Locate 2, 33
+				Color PA%(2), PA%(1): Print A$
+
+                Color 15, 4
+				
+				Do
+					Locate , 33: Print "ANY CHANGE (YN)";
+					I$ = GetKeyPress$
+				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
             End If
 
             Color 15, 0

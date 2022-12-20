@@ -438,6 +438,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
         'Print box bottom
         Locate 7 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+		
         Locate 7, 32
         Locate , 12: Print "ENTER DISK ID: ": Print
         Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
@@ -477,16 +478,16 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
 
         End If
 
-        532 '
         If BO% = 1 Then
             BO% = 0
         Else
             Locate 2, 33
             Color QA%(2), QA%(1): Print N$
+
             Color 15, 4
-            Locate , 33: Print "ANY CHANGE (YN)";
 
             Do
+				Locate , 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

@@ -60,14 +60,16 @@ Sub BLANKPRO ()
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+                    Color 15, 1
                     targetFile$ = leagueFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
 
                     Do
+						Locate , 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+
+					Color 15, 0
 
                 End If
 

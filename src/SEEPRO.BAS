@@ -57,12 +57,17 @@ Sub SEEPRO ()
 
                 If ExitCode% <> 27 Then
 
+					Color 15, 1
                     targetFile$ = leagueLeaderFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+					
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
+					Color 15, 0
+					
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
@@ -1040,8 +1045,8 @@ Sub StatFilePrompt_Pro (statFile$)
 
         If statFile$ <> "" Then
 
-            Locate 13, 12: Print "ANY CHANGE (YN) "
             Do
+				Locate 13, 12: Print "ANY CHANGE (YN) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

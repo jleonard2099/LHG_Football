@@ -55,6 +55,9 @@ Sub COMPPRO ()
 
     End If
 
+
+    '-- this should be it's own routine now that I see it
+
     Do
         'Display list of files...
 
@@ -100,173 +103,183 @@ Sub COMPPRO ()
                 MAMenu leagueFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
-                If ExitCode% = 27 Then Exit Sub
+                If ExitCode% <> 27 Then
 
-                targetFile$ = leagueFiles$(Selection%)
-                Locate 2, 33: Print targetFile$
-                Locate , 33: Print "ANY CHANGE (YN)";
+                    Color 15, 1
+                    targetFile$ = leagueFiles$(Selection%)
+                    Locate 2, 33: Print targetFile$
+
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Color 15, 0
+
+                End If
+
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
+
+            If ExitCode% <> 27 Then
+
+                targetFile$ = RTrim$(targetFile$)
+                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+
+                Cls
+                Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
                 Color 15, 0
 
-                I$ = GetKeyPress$
+                Do
+                    I$ = GetKeyPress$
+                    finalUpdate$ = UCase$(I$)
+                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-            Loop Until UCase$(I$) = "N"
+                C$ = ","
 
-            targetFile$ = RTrim$(targetFile$)
-            WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+                'Initialize values first
+                For X = 1 To 30
+                    PTSF!(X) = 0
+                    PTSA!(X) = 0
+                Next X
 
-            Cls
-            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-            Color 15, 0
+                For X = 1 To 240
+                    compZ2$(X) = "*"
+                Next
 
-            Do
-                I$ = GetKeyPress$
-                finalUpdate$ = UCase$(I$)
-            Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
+                CA = 2
 
-            C$ = ","
+                For I = 1 To 20
+                    TT!(CA, I, 5) = 9999
+                Next
 
-            'Initialize values first
-            For X = 1 To 30
-                PTSF!(X) = 0
-                PTSA!(X) = 0
-            Next X
+                CA = 4
 
-            For X = 1 To 240
-                compZ2$(X) = "*"
-            Next
+                For I = 1 To 20
+                    TT!(CA, I, 5) = 9999
+                Next
 
-            CA = 2
+                CA = 6
 
-            For I = 1 To 20
-                TT!(CA, I, 5) = 9999
-            Next
+                For I = 1 To 20
+                    TT!(CA, I, 3) = 9999
+                Next
 
-            CA = 4
+                CA = 8
 
-            For I = 1 To 20
-                TT!(CA, I, 5) = 9999
-            Next
+                For I = 1 To 20
+                    TT!(CA, I, 8) = 9999
+                Next
 
-            CA = 6
+                CA = 10
 
-            For I = 1 To 20
-                TT!(CA, I, 3) = 9999
-            Next
-
-            CA = 8
-
-            For I = 1 To 20
-                TT!(CA, I, 8) = 9999
-            Next
-
-            CA = 10
-
-            For I = 1 To 20
-                TT!(CA, I, 7) = -99
-            Next
-
-            Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-            Input #2, FF$, D1$, D2$, D3
-            For XW = 1 To 30
-                Input #2, H1$(XW)
-            Next XW
-            Close 2
-
-
-            3018 '
-            Open diskPaths$(2) + WE$ + ".LIB" For Input As #2
-            Input #2, LG%
-            Close 2
-
-
-            If LG% <> 1 Then
-                Cls
-                Print "ERROR:: THIS IS A COLLEGE CONFERENCE"
-                Print "        RETURNING TO MAIN MENU"
-                Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
-                I$ = GetKeyPress$
-            Else
+                For I = 1 To 20
+                    TT!(CA, I, 7) = -99
+                Next
 
                 Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
                 Input #2, FF$, D1$, D2$, D3
-
-                For X = 1 To 30
-                    Input #2, compZ1$(X)
-                Next X
+                For XW = 1 To 30
+                    Input #2, H1$(XW)
+                Next XW
                 Close 2
 
-                For XW = 1 To 30
 
-                    Call FindStatsPro(XW, numberGames%)
+                3018 '
+                Open diskPaths$(2) + WE$ + ".LIB" For Input As #2
+                Input #2, LG%
+                Close 2
 
-                    L = Len(H1$(XW))
 
-                    WT$ = ""
+                If LG% <> 1 Then
+                    Cls
+                    Print "ERROR:: THIS IS A COLLEGE CONFERENCE"
+                    Print "        RETURNING TO MAIN MENU"
+                    Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+                    I$ = GetKeyPress$
+                Else
 
-                    For X = 1 To L:
-                        A = Asc(Mid$(H1$(XW), X, 1))
-                        WT$ = WT$ + Chr$(A)
+                    Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
+                    Input #2, FF$, D1$, D2$, D3
+
+                    For X = 1 To 30
+                        Input #2, compZ1$(X)
                     Next X
+                    Close 2
 
-                    skipMe% = 0
+                    For XW = 1 To 30
 
-                    For X = 1 To 30:
+                        Call FindStatsPro(XW, numberGames%)
 
-                        If compZ1$(X) = WT$ Then
+                        L = Len(H1$(XW))
 
-                            If O1!(X) = WN And O2!(X) = LS And O3!(X) = TY Then skipMe% = 1: Exit For
+                        WT$ = ""
 
-                            O1!(X) = WN
-                            O2!(X) = LS
-                            O3!(X) = TY
+                        For X = 1 To L:
+                            A = Asc(Mid$(H1$(XW), X, 1))
+                            WT$ = WT$ + Chr$(A)
+                        Next X
 
+                        skipMe% = 0
+
+                        For X = 1 To 30:
+
+                            If compZ1$(X) = WT$ Then
+
+                                If O1!(X) = WN And O2!(X) = LS And O3!(X) = TY Then skipMe% = 1: Exit For
+
+                                O1!(X) = WN
+                                O2!(X) = LS
+                                O3!(X) = TY
+
+                            End If
+
+                        Next X
+
+                        If skipMe% <> 1 Then
+                            Call ReadStatsPro(XW, numberGames%, TM$)
+                            Call StatsByCategoryPro(TM$, numberGames%, WT$, finalUpdate$)
+                            Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
                         End If
 
-                    Next X
+                    Next
 
-                    If skipMe% <> 1 Then
-                        Call ReadStatsPro(XW, numberGames%, TM$)
-                        Call StatsByCategoryPro(TM$, numberGames%, WT$, finalUpdate$)
-                        Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
-                    End If
+                    950 '
+                    For Z = 1 To 3
 
-                Next
+                        AA = (10 * (Z - 1)) + 1
+                        ZZ = 10 * Z
 
-                950 '
-                For Z = 1 To 3
+                        For X = AA To ZZ - 1:
 
-                    AA = (10 * (Z - 1)) + 1
-                    ZZ = 10 * Z
+                            For Y = X + 1 To ZZ:
+                                diffX = O1!(X) - O2!(X)
+                                diffY = O1!(Y) - O2!(Y)
 
-                    For X = AA To ZZ - 1:
-
-                        For Y = X + 1 To ZZ:
-                            diffX = O1!(X) - O2!(X)
-                            diffY = O1!(Y) - O2!(Y)
-
-                            If diffX <= diffY Then
-                                If diffX <> diffY Then
-                                    If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
-                                        Swap compZ1$(X), compZ1$(Y)
-                                        Swap O1!(X), O1!(Y)
-                                        Swap O2!(X), O2!(Y)
-                                        Swap O3!(X), O3!(Y)
-                                        Swap PTSF!(X), PTSF!(Y)
-                                        Swap PTSA!(X), PTSA!(Y)
+                                If diffX <= diffY Then
+                                    If diffX <> diffY Then
+                                        If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
+                                            Swap compZ1$(X), compZ1$(Y)
+                                            Swap O1!(X), O1!(Y)
+                                            Swap O2!(X), O2!(Y)
+                                            Swap O3!(X), O3!(Y)
+                                            Swap PTSF!(X), PTSF!(Y)
+                                            Swap PTSA!(X), PTSA!(Y)
+                                        End If
                                     End If
                                 End If
-                            End If
-                        Next Y
+                            Next Y
 
-                    Next X
+                        Next X
 
-                Next Z
+                    Next Z
 
-                Call SortStatsPro(WE$)
+                    Call SortStatsPro(WE$)
 
-            End If
-
-        End If
+                End If 'Done checking file type
+        
+            End If 'Done checking for ESC
+        
+        End If 'Done checking file count
 
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0
@@ -368,17 +381,17 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
     Open diskPaths$(1) + H1$(XW) For Input As #1
     Input #1, TM$
 
-	'Positions
+    'Positions
     For I = 1 To 10: Input #1, RB$(I): Next
     For I = 1 To 6: Input #1, WR$(I): Next
     For I = 1 To 4: Input #1, QB$(I): Next
     For I = 1 To 3: Input #1, KR$(I): Next
     For I = 1 To 3: Input #1, PR$(I): Next I
 
-	'Punter
+    'Punter
     Input #1, PU$
 
-	'Kickers
+    'Kickers
     For I = 1 To 2: Input #1, compPK$(I): Next
 
     For J = 1 To 14

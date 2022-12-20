@@ -51,11 +51,16 @@ Sub SEECOLL ()
 
                 If ExitCode% <> 27 Then
 
+                    Color 15, 1
                     targetFile$ = conferenceLeaderFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
 
                 End If
 
@@ -409,13 +414,12 @@ Sub StatOptions_Coll (FF$)
         Locate 7 + JJ, 8
         Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
-		Locate 8
-        U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
-        Locate , (80 - Len(U$)) / 2
-        Print U$
-        Color 15, 0
-
         Do
+			Locate 8
+			U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
+			Locate , (80 - Len(U$)) / 2
+			Print U$
+			Color 15, 0
             A$ = GetKeyPress$
         Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
@@ -1140,8 +1144,8 @@ Sub StatFilePrompt_Coll (statFile$)
 
         If statFile$ <> "" Then
 
-            Locate 13, 12: Print "ANY CHANGE (YN) "
             Do
+				Locate 13, 12: Print "ANY CHANGE (YN) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

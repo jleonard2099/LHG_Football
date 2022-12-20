@@ -59,27 +59,28 @@ Sub DefineConference ()
     Shared Z1$(), Z2$()
     Shared PA%(), Z1%()
 
-    Do
+	Color 15, 0
+
+	Cls
+
+	JJ = 7
+	Locate 6, 8: Color 15, 1
+	'Print box top
+	Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+	'Print box sides
+	For II = 1 To JJ
+		Locate 6 + II, 8
+		Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+	Next
+
+	'Print box bottom
+	Locate 7 + JJ, 8
+	Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+	Do
+
         Do
-            Color 15, 0
-
-            Cls
-
-            JJ = 7
-            Locate 6, 8: Color 15, 1
-            'Print box top
-            Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-            'Print box sides
-            For II = 1 To JJ
-                Locate 6 + II, 8
-                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-            Next
-
-            'Print box bottom
-            Locate 7 + JJ, 8
-            Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
             Locate 7, 32
             Locate , 12: Print "ENTER NAME FOR CONFERENCE: ": Print
             Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
@@ -90,11 +91,13 @@ Sub DefineConference ()
         Loop Until LG$ <> ""
 
         LG$ = Left$(LG$, 8)
-        Locate 13, 12: Print "ANY CHANGE (YN) "
+        
+		Do
+			Locate 13, 12: Print "ANY CHANGE (YN) "
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-        I$ = GetKeyPress$
-
-    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
 
     'Determine division names
     Color 15, 0
@@ -283,10 +286,16 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
                     If BO% = 1 Then
                         BO% = 0
                     Else
-                        Locate 2, 33: Color PA%(2), PA%(1): Print A$
-                        Color 15, 4
-                        Locate , 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
+                        Locate 2, 33
+						Color PA%(2), PA%(1): Print A$
+                        
+						Color 15, 4
+						
+                        Do
+							Locate , 33: Print "ANY CHANGE (YN)";
+							I$ = GetKeyPress$
+						Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
                     End If
 
                 Loop Until UCase$(I$) = "N"
@@ -374,11 +383,18 @@ Sub ReviewConf_Coll ()
                 _MouseHide
 
                 If ExitCode% <> 27 Then
+
+					Color 15, 1
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-                    Locate , 33: Print "ANY CHANGE (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
+
+					Do
+						Locate , 33: Print "ANY CHANGE (YN)";
+						I$ = GetKeyPress$
+					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+					Color 15, 0
+
                 End If
 
             Loop Until UCase$(I$) = "N"

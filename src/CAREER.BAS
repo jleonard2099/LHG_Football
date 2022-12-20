@@ -151,8 +151,8 @@ Sub CreateMergeInitial ()
 
         Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
 
-        Locate 9, 25: Print "ANY CHANGE (YN)"
         Do
+			Locate 9, 25: Print "ANY CHANGE (YN)"
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
@@ -543,14 +543,16 @@ Sub ViewPrintCareer ()
 
                 If ExitCode% = 27 Then Exit Sub
 
+                Color 15, 1
                 targetFile$ = careerLeaderFiles$(Selection%)
                 Locate 2, 33: Print targetFile$
-                Locate , 33: Print "ANY CHANGE (YN)";
-                Color 15, 0
 
                 Do
+					Locate , 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+				Color 15, 0
 
             Loop Until UCase$(I$) = "N"
 
@@ -574,11 +576,11 @@ Sub ViewPrintCareer ()
             Close #1
 
             Cls
-            Locate 5, 10
-            Color 12: Print "P";: Color 7: Print "rint or ";
-            Color 12: Print "V";: Color 7: Print "iew"
 
             Do
+				Locate 5, 10
+				Color 12: Print "V";: Color 7: Print "iew or ";
+				Color 12: Print "P";: Color 7: Print "rint"
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "V" Or UCase$(I$) = "P"
 
@@ -830,8 +832,8 @@ Sub GetTeam_CAREER (A$)
         'Print box bottom
         Locate 7 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-        Locate 7, 32
 
+        Locate 7, 32
         Locate , 12: Print "ENTER DISK ID: ": Print
         Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
         Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -894,10 +896,11 @@ Sub GetTeam_CAREER (A$)
             Else
                 Locate 2, 33
                 Color PA%(2), PA%(1): Print A$
+
                 Color 15, 4
-                Locate , 33: Print "ANY CHANGE (YN)";
 
                 Do
+					Locate , 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
