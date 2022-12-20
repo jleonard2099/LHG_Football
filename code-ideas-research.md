@@ -2,14 +2,14 @@
 
 Rumbling, bumbling, stumbling...
 
-- How is QB mobility used?
-	- I presume it only impacts ability to avoid a rush
-	- Does it impact the likelihood of scrambling for a play? (I think it should)
+- QB mobility
+	- is only used to determine likelihood of scramble
+	- Should also impact ability to avoid a rush / blitz (I did not check if response to blitz calls rollout code)
 
 - Incomplete passes are sometimes "throw aways"
 	- Pressure situations are the primary cause
-	- Need to account for this, especially with PBP
-	- Also need to account for blocked passes as part of this (it does happen!)
+	- Account for this in game, especially with PBP
+	- Also account for blocked passes as part of this (it does happen!)
 
 - Penalties
 	- We have penalty frequency for each team
