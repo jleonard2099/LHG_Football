@@ -23,7 +23,7 @@ Sub CAREER ()
 
     Do
 
-        Color 7, 0
+        Color 15, 0
 
         Cls
 

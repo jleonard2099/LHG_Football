@@ -45,12 +45,11 @@ Sub NEWLDR ()
         _MouseHide
 
         Color , 0
+
         If ExitCode% <> 27 Then
-            I = Selection%
-            CT% = I
             Select Case Selection%
                 Case 1, 2:
-                    Call ViewExpanded(I)
+                    Call ViewExpanded(Selection%)
                 Case 3: Cls
             End Select
         End If
@@ -81,6 +80,10 @@ Sub ViewExpanded (statType%)
 
     Shared Y%()
 
+    Dim CT%
+
+    CT% = statType%
+
     printOrView% = 0
 
     2500 '
@@ -88,1231 +91,1235 @@ Sub ViewExpanded (statType%)
         Z1$(X) = "XXX"
     Next
 
-    Call ChooseConference_Expanded(targetFile$)
+    Call ChooseConference_Expanded(targetFile$, menuExit%)
 
-    LG$ = targetFile$
+    If menuExit% <> 27 Then
 
-    Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
+        LG$ = targetFile$
 
-    If statType% = 1 Then
-        Input #2, LGF$
-        Input #2, D1$
-        Input #2, D2$
-        Input #2, D3$
-        For X = 1 To 30: Input #2, Z1$(X): Next
-    End If
+        Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
 
-    If statType% = 2 Then
-        Input #2, LGF$
-        Input #2, D1$
-        Input #2, D2$
-        For X = 1 To 30: Input #2, Z1$(X): Next
-    End If
-
-    Close 2
-
-    Cls
-
-    Call BUILDSTATS
-
-    Call SAVELEADER(LG$)
-
-    170 '
-    Do
-
-        Erase TMM$
-
-        Color 0, 0
-        Cls
-
-        J = 15
-        Locate 1, 15: Color 4, 15
-
-        Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
-
-        For II = 1 To J
-            Color 4, 15
-            Locate 1 + II, 15
-            Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-            Color 7, 4: Print String$(2, 177)
-        Next
-
-        Color 4, 15
-        Locate 1 + J, 15
-        Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
-
-        Color 7, 4: Print String$(2, 177)
-        Locate , 17: Print String$(44, 177)
-
-        RR = 0
-
-        Locate 2, 24
-        Color 4, 15: Print "LEADER SELECTION MENU"
-        Print
-        Locate , 20: Color 14: Print "(A) ";: Color 1: Print "VIEW RUSHING LEADERS"
-        Locate , 20: Color 14: Print "(B) ";: Color 1: Print "VIEW RECEIVING LEADERS"
-        Locate , 20: Color 14: Print "(C) ";: Color 1: Print "VIEW QUARTERBACK LEADERS"
-        Locate , 20: Color 14: Print "(D) ";: Color 1: Print "VIEW KICKOFF RETURN LEADERS"
-        Locate , 20: Color 14: Print "(E) ";: Color 1: Print "VIEW PUNT RETURN LEADERS"
-        Locate , 20: Color 14: Print "(F) ";: Color 1: Print "VIEW PUNTING LEADERS"
-        Locate , 20: Color 14: Print "(G) ";: Color 1: Print "VIEW PLACE KICKING LEADERS"
-        Locate , 20: Color 14: Print "(H) ";: Color 1: Print "VIEW INTERCEPTION, SACK LEADERS"
-        Locate , 20: Color 14: Print "(I) ";: Color 1: Print "VIEW ALL-PURPOSE LEADERS"
-        Locate , 20: Color 14: Print "(J) ";: Color 1: Print "VIEW SCORING LEADERS"
-        Locate , 20: Color 14: Print "(K) ";: Color 1: Print "VIEW TEAM TOTALS"
-        Locate , 20: Color 14: Print "(L) ";: Color 1: Print "RETURN TO MAIN MENU"
-
-        171 I$ = GetKeyPress$
-
-        If UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
-
-            Color , 0
-
-            Cls
-
-            Print
-            Print
-            Print
-            Print
+        If statType% = 1 Then
+            Input #2, LGF$
+            Input #2, D1$
+            Input #2, D2$
+            Input #2, D3$
+            For X = 1 To 30: Input #2, Z1$(X): Next
         End If
 
-        Select Case UCase$(I$)
-            Case "A":
-                J = 8
-                ZZ = 1
+        If statType% = 2 Then
+            Input #2, LGF$
+            Input #2, D1$
+            Input #2, D2$
+            For X = 1 To 30: Input #2, Z1$(X): Next
+        End If
 
-                Locate 2, 22
+        Close 2
 
-                Color 0, 4
+        Cls
 
-                Call CATEGORY_BOX(J)
+        Call BUILDSTATS(CT%)
 
-                Do
-                    For I = 0 To 4:
-                        Color 14
-                        Locate I + 3, 24
-                        Print Using "##"; I;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
+        Call SAVELEADER(LG$)
 
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
+        170 '
+        Do
 
-                Loop Until B9 <= 5
+            Erase TMM$
 
-            Case "B":
-                J = 8
-                ZZ = 1
+            Color 0, 0
+            Cls
 
-                Locate 2, 22
+            J = 15
+            Locate 1, 15: Color 4, 15
 
-                Color 0, 2
+            Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
 
-                Call CATEGORY_BOX(J)
+            For II = 1 To J
+                Color 4, 15
+                Locate 1 + II, 15
+                Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
+                Color 7, 4: Print String$(2, 177)
+            Next
 
-                Do
-                    For I = 5 To 9:
-                        Color 14
-                        Locate I - 2, 24
-                        Print Using "##"; I - 5;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
+            Color 4, 15
+            Locate 1 + J, 15
+            Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
 
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
+            Color 7, 4: Print String$(2, 177)
+            Locate , 17: Print String$(44, 177)
 
-                Loop Until B9 <= 5
+            RR = 0
 
-            Case "C":
-                200 '
-                J = 12
-                ZZ = 1
+            Locate 2, 24
+            Color 4, 15: Print "LEADER SELECTION MENU"
+            Print
+            Locate , 20: Color 14: Print "(A) ";: Color 1: Print "VIEW RUSHING LEADERS"
+            Locate , 20: Color 14: Print "(B) ";: Color 1: Print "VIEW RECEIVING LEADERS"
+            Locate , 20: Color 14: Print "(C) ";: Color 1: Print "VIEW QUARTERBACK LEADERS"
+            Locate , 20: Color 14: Print "(D) ";: Color 1: Print "VIEW KICKOFF RETURN LEADERS"
+            Locate , 20: Color 14: Print "(E) ";: Color 1: Print "VIEW PUNT RETURN LEADERS"
+            Locate , 20: Color 14: Print "(F) ";: Color 1: Print "VIEW PUNTING LEADERS"
+            Locate , 20: Color 14: Print "(G) ";: Color 1: Print "VIEW PLACE KICKING LEADERS"
+            Locate , 20: Color 14: Print "(H) ";: Color 1: Print "VIEW INTERCEPTION, SACK LEADERS"
+            Locate , 20: Color 14: Print "(I) ";: Color 1: Print "VIEW ALL-PURPOSE LEADERS"
+            Locate , 20: Color 14: Print "(J) ";: Color 1: Print "VIEW SCORING LEADERS"
+            Locate , 20: Color 14: Print "(K) ";: Color 1: Print "VIEW TEAM TOTALS"
+            Locate , 20: Color 14: Print "(L) ";: Color 1: Print "RETURN TO MAIN MENU"
 
-                Locate 2, 22
-                Color 0, 13
+            171 I$ = GetKeyPress$
 
-                Call CATEGORY_BOX(J)
+            If UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
 
-                Do
-                    For I = 10 To 18:
-                        Color 14
-                        Locate I - 7, 24
-                        Print Using "##"; I - 10;: Print " ";
-                        Color 15: Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 8
-
-            Case "D":
-                J = 8
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 5
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 19 To 23:
-                        Color 14
-                        Locate I - 16, 24
-                        Print Using "##"; I - 19;: Print " ";
-                        Color 15
-                        Print expCategories$(I):
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 4
-
-            Case "E":
-
-                J = 8
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 5
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 24 To 28:
-                        Color 14
-                        Locate I - 21, 24
-                        Print Using "##"; I - 24;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 4
-
-            Case "F":
-                J = 6
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 5
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 29 To 31:
-                        Color 14
-                        Locate I - 26, 24
-                        Print Using "##"; I - 29;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 2
-
-            Case "G":
-                J = 10
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 10
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 32 To 38:
-                        Color 14
-                        Locate I - 29, 24
-                        Print Using "##"; I - 32;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 6
-
-            Case "H":
-                J = 6
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 12
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 39 To 40:
-                        Color 14
-                        Locate I - 36, 24
-                        Print Using "##"; I - 39;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 1
-
-            Case "I":
-                Color 0, 0
+                Color , 0
 
                 Cls
 
-            Case "J":
-                J = 6
-                ZZ = 1
-
-                Locate 2, 22
-                Color 0, 13
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 41 To 43:
-                        Color 14
-                        Locate I - 38, 24
-                        Print Using "##"; I - 41;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 2
-
-            Case "K":
-                J = 17
-                ZZ = 1
-
-                Locate 2, 2
-
-                Color 0, 14
-
-                Call CATEGORY_BOX(J)
-
-                Do
-                    For I = 44 To 58:
-                        Color 14
-                        Locate I - 41, 4
-                        Print Using "##"; I - 44;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    For I = 59 To 72:
-                        Color 14
-                        Locate I - 56, 40
-                        Print Using "##"; I - 44;: Print " ";
-                        Color 15
-                        Print expCategories$(I)
-                    Next
-
-                    Print
-                    Print
-                    Locate , 25
-                    Input "SELECT NUMBER TO VIEW"; B9
-
-                Loop Until B9 <= 28
-
-        End Select
-
-        ' This is how we should do it
-        If UCase$(I$) <> "I" And UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
-            stpl = 0
-            PPP = 0
-        End If
-
-        If UCase$(I$) <> "L" Then
-            5000 '
-            Print
-            Print
-            Print
-            Print
-
-            J = 6
-
-            Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
-
-            For II = 1 To J:
-                Locate 8 + II, 8
-                Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";
-            Next
-
-            Locate 9 + J, 8
-            Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
-            Locate 10, 15
-
-            Color 3: Locate , 30: Print "SELECT OPTION:"
-            Locate , 30: Color 15: Print "H";: Color 7: Print "IGHEST TO LOWEST"
-            Locate , 30: Color 15: Print "L";: Color 7: Print "OWEST TO HIGHEST"
-            Locate , 30: Color 15: Print "R";: Color 7: Print "E-SELECT CATEGORY"
-
-            Do
-                J$ = GetKeyPress$
-
-                If UCase$(J$) = "H" Or UCase$(J$) = "L" Then
-
-                    Print
-                    Print
-                    Print
-                    Print
-                    Print
-
-                    J = 4
-
-                    Locate 9, 15
-                    Color 15, 0
-
-                    Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
-
-                    For II = 1 To J
-                        Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-                    Next
-
-                    Locate 10 + J, 15
-                    Print " " + Chr$(211); String$(40, 196); Chr$(189) + " "
-                    Locate 10, 10
-
-                    Color 12
-
-                    Locate , 30: Print "SELECT OPTION:"
-                    Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
-                    Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
-                    Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
-
-                    Do
-                        K$ = GetKeyPress$
-
-                        Select Case UCase$(K$)
-                            Case "P":
-                                printOrView% = 2
-
-                            Case "V":
-                                printOrView% = 1
-
-                            Case "R", Chr$(27):
-                                If ZZ = 1 Then
-                                    GoTo 170
-                                    'this is part of View Expanded
-                                End If
-                        End Select
-
-                    Loop Until UCase$(K$) = "P" Or UCase$(K$) = "V" Or UCase$(K$) = "R" Or K$ = Chr$(27)
-
-                End If
-
-                Select Case UCase$(J$)
-                    Case "H":
-                        sortType% = 1
-
-                    Case "L"
-                        sortType% = 2
-
-                    Case "R", Chr$(27)
-                        If ZZ = 1 Then
-                            GoTo 170
-                            'this is part of View Expanded
-                        End If
-
-                End Select
-
-            Loop Until UCase$(J$) = "H" Or UCase$(J$) = "L" Or UCase$(J$) = "R" Or J$ = Chr$(27)
+                Print
+                Print
+                Print
+                Print
+            End If
 
             Select Case UCase$(I$)
                 Case "A":
-                    Select Case B9
-                        Case 0:
-                            X = 0: XX = 0
-                        Case 1
-                            X = 1: XX = 1
-                        Case 2
-                            X = 0: X1 = 1: XX = 2
-                        Case 3
-                            X = 2: XX = 3
-                        Case 4
-                            X = 6: XX = 4
-                    End Select
+                    J = 8
+                    ZZ = 1
 
-                    Cls
-                    PPP = 0
+                    Locate 2, 22
 
-                    Select Case B9
-                        Case 0, 1, 3
+                    Color 0, 4
 
-                            For I = 1 To JA
-                                If A1L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X)
-                                End If
-                            Next I
+                    Call CATEGORY_BOX(J)
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                    Do
+                        For I = 0 To 4:
+                            Color 14
+                            Locate I + 3, 24
+                            Print Using "##"; I;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                            TVN = 1
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                        Case 2
-                            For I = 1 To JA
-                                If A1L!(I, X) > Y%(1) * 10 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 2
-
-                        Case 4
-                            Cls
-                            PPP = 0
-                            For I = 1 To JA
-                                If A1L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X)
-                                    TYY$(PPP) = LRL$(I)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 3
-
-                    End Select
-
-                    QW = PPP
-
-                    Call GetListLength(printOrView%, LG, QW)
-
-                    If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                    If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                    Loop Until B9 <= 5
 
                 Case "B":
-                    Select Case B9
-                        Case 0: X = 3: X1 = 0: XX = 5
-                        Case 1: X = 4: X1 = 1: XX = 6
-                        Case 2: X = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
-                        Case 3: X = 5: X1 = 2: XX = 8
-                        Case 4: X = 3: X1 = 7: XX = 9
+                    J = 8
+                    ZZ = 1
 
-                    End Select
+                    Locate 2, 22
 
-                    Cls
-                    PPP = 0
+                    Color 0, 2
 
-                    Select Case B9
-                        Case 0, 1, 3:
-                            For I = 1 To JA
-                                If A1L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X)
-                                End If
-                            Next I
+                    Call CATEGORY_BOX(J)
 
-                            For I = 1 To JB
-                                If A2L!(I, X1) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A2L$(I)
-                                    TMM$(PPP) = A2T$(I)
-                                    TYP!(PPP) = A2L!(I, X1)
-                                End If
-                            Next I
+                    Do
+                        For I = 5 To 9:
+                            Color 14
+                            Locate I - 2, 24
+                            Print Using "##"; I - 5;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                            TVN = 1
-
-                        Case 2:
-                            Cls
-                            PPP = 0
-
-                            For I = 1 To JA
-                                If A1L!(I, X) >= Y%(1) * 4 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
-                                End If
-                            Next I
-
-                            For I = 1 To JB
-                                If A2L!(I, X2) >= Y%(1) * 4 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A2L$(I)
-                                    TMM$(PPP) = A2T$(I)
-                                    TYP!(PPP) = A2L!(I, X3) / A2L!(I, X2)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 2
-
-                        Case 3:
-                            Cls
-                            PPP = 0
-
-                            For I = 1 To JB
-                                If A2L!(I, 0) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A2L$(I)
-                                    TMM$(PPP) = A2T$(I)
-                                    TYP!(PPP) = A2L!(I, X)
-                                    TYY$(PPP) = LCL$(I)
-                                End If
-                            Next I
-
-                            For I = 1 To JA
-                                If A1L!(I, 4) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = A1L!(I, X1)
-                                    TYY$(PPP) = LCL$(I)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 3
-
-                    End Select
+                    Loop Until B9 <= 5
 
                 Case "C":
-                    Select Case B9
-                        Case 0: X = 0: XX = 10
-                        Case 1: X = 1: XX = 11
-                        Case 2: X = 2: XX = 12
-                        Case 3: X = 3: XX = 13
-                        Case 4: X = 4: XX = 14
-                        Case 5: X = 0: X1 = 1: XX = 15
-                        Case 6: X = 1: X1 = 3: X2 = 0: XX = 16
-                        Case 7: X = 0: XX = 17
-                        Case 8: X = 5: XX = 18
+                    200 '
+                    J = 12
+                    ZZ = 1
 
-                    End Select
+                    Locate 2, 22
+                    Color 0, 13
 
-                    Cls
-                    PPP = 0
+                    Call CATEGORY_BOX(J)
 
-                    Select Case B9
-                        Case 0 To 4:
-                            For I = 1 To JC
-                                If A3L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = QBL$(I)
-                                    TMM$(PPP) = A3T$(I)
-                                    TYP!(PPP) = A3L!(I, X)
-                                End If
-                            Next I
+                    Do
+                        For I = 10 To 18:
+                            Color 14
+                            Locate I - 7, 24
+                            Print Using "##"; I - 10;: Print " ";
+                            Color 15: Print expCategories$(I)
+                        Next
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                            TVN = 1
-
-                        Case 5:
-                            For I = 1 To JC
-                                If A3L!(I, X) >= Y%(1) * 15 Then
-                                    PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    If A3L!(I, X1) <> 0 Then
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = 0
-                                    Else
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = (A3L!(I, X1) / A3L!(I, X)) * 100
-                                    End If
-
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 2
-
-                        Case 6:
-                            For I = 1 To JC
-                                If A3L!(I, X2) >= Y%(1) * 15 Then
-                                    PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    If A3L!(I, X1) <> 0 Then
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = A3L!(I, X1) / A3L!(I, X)
-                                    Else
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = 0
-                                    End If
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 4
-
-                        Case 7:
-                            For I = 1 To JC
-                                If A3L!(I, X) >= Y%(1) * 15 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = QBL$(I)
-                                    TMM$(PPP) = A3T$(I)
-                                    TYP!(PPP) = A3R!(I, X)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 4
-
-                        Case 8:
-                            Cls
-                            PPP = 0
-
-                            For I = 1 To JC
-                                If A3L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = QBL$(I)
-                                    TMM$(PPP) = A3T$(I)
-                                    TYP!(PPP) = A3L!(I, X)
-                                    TYY$(PPP) = LPL$(I)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 3
-
-                    End Select
+                    Loop Until B9 <= 8
 
                 Case "D":
-                    Select Case B9
-                        Case 0: X = 0: XX = 19
-                        Case 1: X = 1: XX = 20
-                        Case 2: X = 0: X1 = 1: XX = 21
-                        Case 3: X = 2: XX = 22
-                        Case 4: X = 3: XX = 23
-                    End Select
+                    J = 8
+                    ZZ = 1
 
-                    Cls
-                    PPP = 0
+                    Locate 2, 22
+                    Color 0, 5
 
-                    Select Case B9
-                        Case 0, 1, 3:
-                            For I = 1 To JD
-                                If A4L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A4L$(I)
-                                    TMM$(PPP) = A4T$(I)
-                                    TYP!(PPP) = A4L!(I, X)
-                                End If
-                            Next I
+                    Call CATEGORY_BOX(J)
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                    Do
+                        For I = 19 To 23:
+                            Color 14
+                            Locate I - 16, 24
+                            Print Using "##"; I - 19;: Print " ";
+                            Color 15
+                            Print expCategories$(I):
+                        Next
 
-                            TVN = 1
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                        Case 2:
-                            For I = 1 To JD
-                                If A4L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    If A4L!(I, X1) <> 0 Then
-                                        TPP$(PPP) = A4L$(I)
-                                        TMM$(PPP) = A4T$(I)
-                                        TYP!(PPP) = A4L!(I, X1) / A4L!(I, X)
-                                    Else
-                                        TPP$(PPP) = A4L$(I)
-                                        TMM$(PPP) = A4T$(I)
-                                        TYP = 0
-                                    End If
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 2
-
-                        Case 4:
-                            For I = 1 To JD
-                                If A4L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A4L$(I)
-                                    TMM$(PPP) = A4T$(I)
-                                    TYP!(PPP) = A4L!(I, X): TYY$(PPP) = LKL$(I)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 3
-
-                    End Select
+                    Loop Until B9 <= 4
 
                 Case "E":
-                    Select Case B9
-                        Case 0: X = 0: XX = 24
-                        Case 1: X = 1: XX = 25
-                        Case 2: X = 0: X1 = 1: XX = 26
-                        Case 3: X = 2: XX = 27
-                        Case 4: X = 3: XX = 28
-                    End Select
 
-                    Select Case B9
-                        Case 0, 1, 3:
-                            For I = 1 To JE
-                                If A5L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A5L$(I)
-                                    TMM$(PPP) = A5T$(I)
-                                    TYP!(PPP) = A5L!(I, X)
-                                End If
-                            Next I
+                    J = 8
+                    ZZ = 1
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                    Locate 2, 22
+                    Color 0, 5
 
-                            TVN = 1
+                    Call CATEGORY_BOX(J)
 
-                        Case 2:
-                            620 '
-                            For I = 1 To JE
-                                If A5L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    If A5L!(I, X1) <> 0 Then
-                                        TPP$(PPP) = A5L$(I)
-                                        TMM$(PPP) = A5T$(I)
-                                        TYP!(PPP) = A5L!(I, X1) / A5L!(I, X)
-                                    Else
-                                        TPP$(PPP) = A5L$(I)
-                                        TMM$(PPP) = A5T$(I)
-                                        TYP = 0
-                                    End If
-                                End If
-                            Next I
+                    Do
+                        For I = 24 To 28:
+                            Color 14
+                            Locate I - 21, 24
+                            Print Using "##"; I - 24;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                            TVN = 2
-
-                        Case 4:
-                            For I = 1 To JE
-                                If A5L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A5L$(I)
-                                    TMM$(PPP) = A5T$(I)
-                                    TYP!(PPP) = A5L!(I, X)
-                                    TYY$(PPP) = PKL$(I)
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                    End Select
-
-                    Cls
-                    PPP = 0
+                    Loop Until B9 <= 4
 
                 Case "F":
-                    Select Case B9
-                        Case 0: X = 0: XX = 29
-                        Case 1: X = 1: XX = 30
-                        Case 2: X = 0: X1 = 1: XX = 31
-                    End Select
+                    J = 6
+                    ZZ = 1
 
-                    Select Case B9
-                        Case 0, 1:
-                            For I = 1 To JF
-                                If A6L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A6L$(I)
-                                    TMM$(PPP) = A6T$(I)
-                                    TYP!(PPP) = A6L!(I, X)
-                                End If
-                            Next I
+                    Locate 2, 22
+                    Color 0, 5
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                    Call CATEGORY_BOX(J)
 
-                            TVN = 1
+                    Do
+                        For I = 29 To 31:
+                            Color 14
+                            Locate I - 26, 24
+                            Print Using "##"; I - 29;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                        Case 2:
-                            For I = 1 To JF
-                                If A6L!(I, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    If A6L!(I, X1) <> 0 Then
-                                        TPP$(PPP) = A6L$(I)
-                                        TMM$(PPP) = A6T$(I)
-                                        TYP!(PPP) = A6L!(I, X1) / A6L!(I, X)
-                                    Else
-                                        TPP$(PPP) = A6L$(I)
-                                        TMM$(PPP) = A6T$(I)
-                                        TYP = 0
-                                    End If
-                                End If
-                            Next I
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 2
-
-                    End Select
+                    Loop Until B9 <= 2
 
                 Case "G":
-                    Select Case B9
-                        Case 0: X = 0: XX = 32
-                        Case 1: X = 1: XX = 33
-                        Case 2: X = 0: X1 = 1: XX = 34
-                        Case 3: X = 2: XX = 35
-                        Case 4: X = 3: XX = 36
-                        Case 5: X = 2: X1 = 3: XX = 37
-                        Case 6: X = 4: XX = 38
+                    J = 10
+                    ZZ = 1
 
-                    End Select
+                    Locate 2, 22
+                    Color 0, 10
 
-                    Cls
-                    PPP = 0
+                    Call CATEGORY_BOX(J)
 
-                    Select Case B9
-                        Case 0, 1, 3, 4, 6
-                            For I = 1 To JG
-                                If A7L!(JI, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A7L$(I)
-                                    TMM$(PPP) = A7T$(I)
-                                    TYP!(PPP) = A7L!(JI, X)
-                                End If
-                            Next I
+                    Do
+                        For I = 32 To 38:
+                            Color 14
+                            Locate I - 29, 24
+                            Print Using "##"; I - 32;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                            Call SortPlayer(stpl, PPP, sortType%)
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                            TVN = 1
-
-                        Case 2, 5
-                            For I = 1 To JG
-                                If A7L!(JI, X) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-
-                                    If A7L!(JI, X1) <> 0 Then
-                                        TPP$(PPP) = A7L$(I)
-                                        TMM$(PPP) = A7T$(I)
-                                        TYP!(PPP) = (A7L!(JI, X) / A7L!(JI, X1)) * 100
-                                    Else
-                                        TPP$(PPP) = A7L$(I)
-                                        TMM$(PPP) = A7T$(I)
-                                        TYP = 0
-                                    End If
-
-                                End If
-                            Next I
-
-                            Call SortPlayer(stpl, PPP, sortType%)
-
-                            TVN = 4
-
-                    End Select
-
-                    QW = PPP
-
-                    Call GetListLength(printOrView%, LG, QW)
-
-                    If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                    If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                    Loop Until B9 <= 6
 
                 Case "H":
-                    If B9 = 0 Then X = 0: XX = 39
-                    If B9 = 1 Then X = 0: XX = 40
+                    J = 6
+                    ZZ = 1
 
-                    Cls
-                    PPP = 0
+                    Locate 2, 22
+                    Color 0, 12
 
-                    If B9 = 0 Then
+                    Call CATEGORY_BOX(J)
 
-                        For I = 1 To JH
-                            If A8L!(I) <> 0 Then
-                                PPP = PPP + 1
-                                Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                TPP$(PPP) = A8L$(I)
-                                TMM$(PPP) = A8T$(I)
-                                TYP!(PPP) = A8L!(I)
-                            End If
-                        Next I
+                    Do
+                        For I = 39 To 40:
+                            Color 14
+                            Locate I - 36, 24
+                            Print Using "##"; I - 39;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
 
-                    End If
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
 
-                    If B9 = 1 Then
-                        For I = 1 To JI
-                            If A9L!(I) <> 0 Then
-                                PPP = PPP + 1
-                                Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                TPP$(PPP) = A9L$(I)
-                                TMM$(PPP) = A9T$(I)
-                                TYP!(PPP) = A9L!(I)
-                            End If
-                        Next I
-
-                    End If
-
-                    Call SortPlayer(stpl, PPP, sortType%)
-
-                    TVN = 1
-                    QW = PPP
-
-                    Call GetListLength(printOrView%, LG, QW)
-
-                    If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                    If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                    Loop Until B9 <= 1
 
                 Case "I":
+                    Color 0, 0
+
                     Cls
 
-                    PPP = 0
-                    X = 1
-                    X1 = 4
-                    XX = 73
-
-                    For I = 1 To JA
-                        If A1L!(I, X) + A1L!(I, X1) <> 0 Then
-                            PPP = PPP + 1
-                            Locate 1, 5
-                            Print "CHANGING PLAYER "; PPP
-                            TPP$(PPP) = A1L$(I)
-                            TMM$(PPP) = A1T$(I)
-                            TYP!(PPP) = A1L!(I, X) + A1L!(I, X1)
-                        End If
-                    Next I
-
-                    For I = 1 To JB
-                        If A2L!(I, X) <> 0 Then
-                            PPP = PPP + 1
-                            Locate 1, 5
-                            Print "CHANGING PLAYER "; PPP
-                            TPP$(PPP) = A2L$(I)
-                            TMM$(PPP) = A2T$(I)
-                            TYP!(PPP) = A2L!(I, X)
-                        End If
-                    Next I
-
-                    Call SortPlayer(stpl, PPP, sortType%)
-
-                    TVN = 1
-                    QW = PPP
-
-                    Call GetListLength(printOrView%, LG, QW)
-
-                    If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                    If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
-
                 Case "J":
-                    Select Case B9
-                        Case 0
-                            X = 2: X1 = 5: XX = 41: KC = 1
+                    J = 6
+                    ZZ = 1
 
-                        Case 1
-                            XF = 0: XF1 = 2: XX = 42: KC = 2
+                    Locate 2, 22
+                    Color 0, 13
 
-                        Case 2
-                            X = 2: X1 = 5: XF = 0: XF1 = 2: XX = 43: KC = 3
+                    Call CATEGORY_BOX(J)
+
+                    Do
+                        For I = 41 To 43:
+                            Color 14
+                            Locate I - 38, 24
+                            Print Using "##"; I - 41;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
+
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
+
+                    Loop Until B9 <= 2
+
+                Case "K":
+                    J = 17
+                    ZZ = 1
+
+                    Locate 2, 2
+
+                    Color 0, 14
+
+                    Call CATEGORY_BOX(J)
+
+                    Do
+                        For I = 44 To 58:
+                            Color 14
+                            Locate I - 41, 4
+                            Print Using "##"; I - 44;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
+
+                        For I = 59 To 72:
+                            Color 14
+                            Locate I - 56, 40
+                            Print Using "##"; I - 44;: Print " ";
+                            Color 15
+                            Print expCategories$(I)
+                        Next
+
+                        Print
+                        Print
+                        Locate , 25
+                        Input "SELECT NUMBER TO VIEW"; B9
+
+                    Loop Until B9 <= 28
+
+            End Select
+
+            ' This is how we should do it
+            If UCase$(I$) <> "I" And UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
+                stpl = 0
+                PPP = 0
+            End If
+
+            If UCase$(I$) <> "L" Then
+                5000 '
+                Print
+                Print
+                Print
+                Print
+
+                J = 6
+
+                Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
+
+                For II = 1 To J:
+                    Locate 8 + II, 8
+                    Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";
+                Next
+
+                Locate 9 + J, 8
+                Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
+                Locate 10, 15
+
+                Color 3: Locate , 30: Print "SELECT OPTION:"
+                Locate , 30: Color 15: Print "H";: Color 7: Print "IGHEST TO LOWEST"
+                Locate , 30: Color 15: Print "L";: Color 7: Print "OWEST TO HIGHEST"
+                Locate , 30: Color 15: Print "R";: Color 7: Print "E-SELECT CATEGORY"
+
+                Do
+                    J$ = GetKeyPress$
+
+                    If UCase$(J$) = "H" Or UCase$(J$) = "L" Then
+
+                        Print
+                        Print
+                        Print
+                        Print
+                        Print
+
+                        J = 4
+
+                        Locate 9, 15
+                        Color 15, 0
+
+                        Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
+
+                        For II = 1 To J
+                            Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
+                        Next
+
+                        Locate 10 + J, 15
+                        Print " " + Chr$(211); String$(40, 196); Chr$(189) + " "
+                        Locate 10, 10
+
+                        Color 12
+
+                        Locate , 30: Print "SELECT OPTION:"
+                        Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
+                        Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
+                        Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
+
+                        Do
+                            K$ = GetKeyPress$
+
+                            Select Case UCase$(K$)
+                                Case "P":
+                                    printOrView% = 2
+
+                                Case "V":
+                                    printOrView% = 1
+
+                                Case "R", Chr$(27):
+                                    If ZZ = 1 Then
+                                        GoTo 170
+                                        'this is part of View Expanded
+                                    End If
+                            End Select
+
+                        Loop Until UCase$(K$) = "P" Or UCase$(K$) = "V" Or UCase$(K$) = "R" Or K$ = Chr$(27)
+
+                    End If
+
+                    Select Case UCase$(J$)
+                        Case "H":
+                            sortType% = 1
+
+                        Case "L"
+                            sortType% = 2
+
+                        Case "R", Chr$(27)
+                            If ZZ = 1 Then
+                                GoTo 170
+                                'this is part of View Expanded
+                            End If
 
                     End Select
 
-                    Cls
-                    PPP = 0
+                Loop Until UCase$(J$) = "H" Or UCase$(J$) = "L" Or UCase$(J$) = "R" Or J$ = Chr$(27)
 
-                    If KC = 1 Or KC = 3 Then
+                Select Case UCase$(I$)
+                    Case "A":
+                        Select Case B9
+                            Case 0:
+                                X = 0: XX = 0
+                            Case 1
+                                X = 1: XX = 1
+                            Case 2
+                                X = 0: X1 = 1: XX = 2
+                            Case 3
+                                X = 2: XX = 3
+                            Case 4
+                                X = 6: XX = 4
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        Select Case B9
+                            Case 0, 1, 3
+
+                                For I = 1 To JA
+                                    If A1L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2
+                                For I = 1 To JA
+                                    If A1L!(I, X) > Y%(1) * 10 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                            Case 4
+                                Cls
+                                PPP = 0
+                                For I = 1 To JA
+                                    If A1L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X)
+                                        TYY$(PPP) = LRL$(I)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 3
+
+                        End Select
+
+                        QW = PPP
+
+                        Call GetListLength(printOrView%, LG, QW)
+
+                        If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
+                        If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+
+                    Case "B":
+                        Select Case B9
+                            Case 0: X = 3: X1 = 0: XX = 5
+                            Case 1: X = 4: X1 = 1: XX = 6
+                            Case 2: X = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
+                            Case 3: X = 5: X1 = 2: XX = 8
+                            Case 4: X = 3: X1 = 7: XX = 9
+
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        Select Case B9
+                            Case 0, 1, 3:
+                                For I = 1 To JA
+                                    If A1L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X)
+                                    End If
+                                Next I
+
+                                For I = 1 To JB
+                                    If A2L!(I, X1) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A2L$(I)
+                                        TMM$(PPP) = A2T$(I)
+                                        TYP!(PPP) = A2L!(I, X1)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2:
+                                Cls
+                                PPP = 0
+
+                                For I = 1 To JA
+                                    If A1L!(I, X) >= Y%(1) * 4 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
+                                    End If
+                                Next I
+
+                                For I = 1 To JB
+                                    If A2L!(I, X2) >= Y%(1) * 4 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A2L$(I)
+                                        TMM$(PPP) = A2T$(I)
+                                        TYP!(PPP) = A2L!(I, X3) / A2L!(I, X2)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                            Case 3:
+                                Cls
+                                PPP = 0
+
+                                For I = 1 To JB
+                                    If A2L!(I, 0) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A2L$(I)
+                                        TMM$(PPP) = A2T$(I)
+                                        TYP!(PPP) = A2L!(I, X)
+                                        TYY$(PPP) = LCL$(I)
+                                    End If
+                                Next I
+
+                                For I = 1 To JA
+                                    If A1L!(I, 4) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A1L$(I)
+                                        TMM$(PPP) = A1T$(I)
+                                        TYP!(PPP) = A1L!(I, X1)
+                                        TYY$(PPP) = LCL$(I)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 3
+
+                        End Select
+
+                    Case "C":
+                        Select Case B9
+                            Case 0: X = 0: XX = 10
+                            Case 1: X = 1: XX = 11
+                            Case 2: X = 2: XX = 12
+                            Case 3: X = 3: XX = 13
+                            Case 4: X = 4: XX = 14
+                            Case 5: X = 0: X1 = 1: XX = 15
+                            Case 6: X = 1: X1 = 3: X2 = 0: XX = 16
+                            Case 7: X = 0: XX = 17
+                            Case 8: X = 5: XX = 18
+
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        Select Case B9
+                            Case 0 To 4:
+                                For I = 1 To JC
+                                    If A3L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = QBL$(I)
+                                        TMM$(PPP) = A3T$(I)
+                                        TYP!(PPP) = A3L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 5:
+                                For I = 1 To JC
+                                    If A3L!(I, X) >= Y%(1) * 15 Then
+                                        PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        If A3L!(I, X1) <> 0 Then
+                                            TPP$(PPP) = QBL$(I)
+                                            TMM$(PPP) = A3T$(I)
+                                            TYP!(PPP) = 0
+                                        Else
+                                            TPP$(PPP) = QBL$(I)
+                                            TMM$(PPP) = A3T$(I)
+                                            TYP!(PPP) = (A3L!(I, X1) / A3L!(I, X)) * 100
+                                        End If
+
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                            Case 6:
+                                For I = 1 To JC
+                                    If A3L!(I, X2) >= Y%(1) * 15 Then
+                                        PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        If A3L!(I, X1) <> 0 Then
+                                            TPP$(PPP) = QBL$(I)
+                                            TMM$(PPP) = A3T$(I)
+                                            TYP!(PPP) = A3L!(I, X1) / A3L!(I, X)
+                                        Else
+                                            TPP$(PPP) = QBL$(I)
+                                            TMM$(PPP) = A3T$(I)
+                                            TYP!(PPP) = 0
+                                        End If
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 4
+
+                            Case 7:
+                                For I = 1 To JC
+                                    If A3L!(I, X) >= Y%(1) * 15 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = QBL$(I)
+                                        TMM$(PPP) = A3T$(I)
+                                        TYP!(PPP) = A3R!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 4
+
+                            Case 8:
+                                Cls
+                                PPP = 0
+
+                                For I = 1 To JC
+                                    If A3L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = QBL$(I)
+                                        TMM$(PPP) = A3T$(I)
+                                        TYP!(PPP) = A3L!(I, X)
+                                        TYY$(PPP) = LPL$(I)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 3
+
+                        End Select
+
+                    Case "D":
+                        Select Case B9
+                            Case 0: X = 0: XX = 19
+                            Case 1: X = 1: XX = 20
+                            Case 2: X = 0: X1 = 1: XX = 21
+                            Case 3: X = 2: XX = 22
+                            Case 4: X = 3: XX = 23
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        Select Case B9
+                            Case 0, 1, 3:
+                                For I = 1 To JD
+                                    If A4L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A4L$(I)
+                                        TMM$(PPP) = A4T$(I)
+                                        TYP!(PPP) = A4L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2:
+                                For I = 1 To JD
+                                    If A4L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        If A4L!(I, X1) <> 0 Then
+                                            TPP$(PPP) = A4L$(I)
+                                            TMM$(PPP) = A4T$(I)
+                                            TYP!(PPP) = A4L!(I, X1) / A4L!(I, X)
+                                        Else
+                                            TPP$(PPP) = A4L$(I)
+                                            TMM$(PPP) = A4T$(I)
+                                            TYP = 0
+                                        End If
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                            Case 4:
+                                For I = 1 To JD
+                                    If A4L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A4L$(I)
+                                        TMM$(PPP) = A4T$(I)
+                                        TYP!(PPP) = A4L!(I, X): TYY$(PPP) = LKL$(I)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 3
+
+                        End Select
+
+                    Case "E":
+                        Select Case B9
+                            Case 0: X = 0: XX = 24
+                            Case 1: X = 1: XX = 25
+                            Case 2: X = 0: X1 = 1: XX = 26
+                            Case 3: X = 2: XX = 27
+                            Case 4: X = 3: XX = 28
+                        End Select
+
+                        Select Case B9
+                            Case 0, 1, 3:
+                                For I = 1 To JE
+                                    If A5L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A5L$(I)
+                                        TMM$(PPP) = A5T$(I)
+                                        TYP!(PPP) = A5L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2:
+                                620 '
+                                For I = 1 To JE
+                                    If A5L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        If A5L!(I, X1) <> 0 Then
+                                            TPP$(PPP) = A5L$(I)
+                                            TMM$(PPP) = A5T$(I)
+                                            TYP!(PPP) = A5L!(I, X1) / A5L!(I, X)
+                                        Else
+                                            TPP$(PPP) = A5L$(I)
+                                            TMM$(PPP) = A5T$(I)
+                                            TYP = 0
+                                        End If
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                            Case 4:
+                                For I = 1 To JE
+                                    If A5L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A5L$(I)
+                                        TMM$(PPP) = A5T$(I)
+                                        TYP!(PPP) = A5L!(I, X)
+                                        TYY$(PPP) = PKL$(I)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                    Case "F":
+                        Select Case B9
+                            Case 0: X = 0: XX = 29
+                            Case 1: X = 1: XX = 30
+                            Case 2: X = 0: X1 = 1: XX = 31
+                        End Select
+
+                        Select Case B9
+                            Case 0, 1:
+                                For I = 1 To JF
+                                    If A6L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A6L$(I)
+                                        TMM$(PPP) = A6T$(I)
+                                        TYP!(PPP) = A6L!(I, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2:
+                                For I = 1 To JF
+                                    If A6L!(I, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        If A6L!(I, X1) <> 0 Then
+                                            TPP$(PPP) = A6L$(I)
+                                            TMM$(PPP) = A6T$(I)
+                                            TYP!(PPP) = A6L!(I, X1) / A6L!(I, X)
+                                        Else
+                                            TPP$(PPP) = A6L$(I)
+                                            TMM$(PPP) = A6T$(I)
+                                            TYP = 0
+                                        End If
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 2
+
+                        End Select
+
+                    Case "G":
+                        Select Case B9
+                            Case 0: X = 0: XX = 32
+                            Case 1: X = 1: XX = 33
+                            Case 2: X = 0: X1 = 1: XX = 34
+                            Case 3: X = 2: XX = 35
+                            Case 4: X = 3: XX = 36
+                            Case 5: X = 2: X1 = 3: XX = 37
+                            Case 6: X = 4: XX = 38
+
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        Select Case B9
+                            Case 0, 1, 3, 4, 6
+                                For I = 1 To JG
+                                    If A7L!(JI, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                        TPP$(PPP) = A7L$(I)
+                                        TMM$(PPP) = A7T$(I)
+                                        TYP!(PPP) = A7L!(JI, X)
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 1
+
+                            Case 2, 5
+                                For I = 1 To JG
+                                    If A7L!(JI, X) <> 0 Then
+                                        PPP = PPP + 1
+                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
+
+                                        If A7L!(JI, X1) <> 0 Then
+                                            TPP$(PPP) = A7L$(I)
+                                            TMM$(PPP) = A7T$(I)
+                                            TYP!(PPP) = (A7L!(JI, X) / A7L!(JI, X1)) * 100
+                                        Else
+                                            TPP$(PPP) = A7L$(I)
+                                            TMM$(PPP) = A7T$(I)
+                                            TYP = 0
+                                        End If
+
+                                    End If
+                                Next I
+
+                                Call SortPlayer(stpl, PPP, sortType%)
+
+                                TVN = 4
+
+                        End Select
+
+                        QW = PPP
+
+                        Call GetListLength(printOrView%, LG, QW)
+
+                        If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
+                        If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+
+                    Case "H":
+                        If B9 = 0 Then X = 0: XX = 39
+                        If B9 = 1 Then X = 0: XX = 40
+
+                        Cls
+                        PPP = 0
+
+                        If B9 = 0 Then
+
+                            For I = 1 To JH
+                                If A8L!(I) <> 0 Then
+                                    PPP = PPP + 1
+                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                    TPP$(PPP) = A8L$(I)
+                                    TMM$(PPP) = A8T$(I)
+                                    TYP!(PPP) = A8L!(I)
+                                End If
+                            Next I
+
+                        End If
+
+                        If B9 = 1 Then
+                            For I = 1 To JI
+                                If A9L!(I) <> 0 Then
+                                    PPP = PPP + 1
+                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                    TPP$(PPP) = A9L$(I)
+                                    TMM$(PPP) = A9T$(I)
+                                    TYP!(PPP) = A9L!(I)
+                                End If
+                            Next I
+
+                        End If
+
+                        Call SortPlayer(stpl, PPP, sortType%)
+
+                        TVN = 1
+                        QW = PPP
+
+                        Call GetListLength(printOrView%, LG, QW)
+
+                        If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
+                        If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+
+                    Case "I":
+                        Cls
+
+                        PPP = 0
+                        X = 1
+                        X1 = 4
+                        XX = 73
+
                         For I = 1 To JA
                             If A1L!(I, X) + A1L!(I, X1) <> 0 Then
                                 PPP = PPP + 1
-                                Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                Locate 1, 5
+                                Print "CHANGING PLAYER "; PPP
                                 TPP$(PPP) = A1L$(I)
                                 TMM$(PPP) = A1T$(I)
-                                TYP!(PPP) = (A1L!(I, X) + A1L!(I, X1)) * 6
+                                TYP!(PPP) = A1L!(I, X) + A1L!(I, X1)
                             End If
                         Next I
 
                         For I = 1 To JB
                             If A2L!(I, X) <> 0 Then
                                 PPP = PPP + 1
-                                Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                Locate 1, 5
+                                Print "CHANGING PLAYER "; PPP
                                 TPP$(PPP) = A2L$(I)
                                 TMM$(PPP) = A2T$(I)
-                                TYP!(PPP) = A2L!(I, X) * 6
+                                TYP!(PPP) = A2L!(I, X)
                             End If
                         Next I
 
-                    End If
+                        Call SortPlayer(stpl, PPP, sortType%)
 
-                    If KC <> 1 Then
-                        For I = 1 To JG
-                            If A7L!(JI, XF) + A7L!(JI, XF1) <> 0 Then
-                                PPP = PPP + 1
-                                Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                TPP$(PPP) = A7L$(I)
-                                TMM$(PPP) = A7T$(I)
-                                TYP!(PPP) = (A7L!(JI, XF) * 3) + A7L!(JI, XF1)
-                            End If
-                        Next I
-                    End If
+                        TVN = 1
+                        QW = PPP
 
-                    Call SortPlayer(stpl, PPP, sortType%)
+                        Call GetListLength(printOrView%, LG, QW)
 
-                    TVN = 1
-                    QW = PPP
+                        If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
+                        If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
 
-                    Call GetListLength(printOrView%, LG, QW)
+                    Case "J":
+                        Select Case B9
+                            Case 0
+                                X = 2: X1 = 5: XX = 41: KC = 1
 
-                    If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                    If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            Case 1
+                                XF = 0: XF1 = 2: XX = 42: KC = 2
 
-                Case "K":
-                    Select Case B9
-                        Case 0: X = 0: XX = 44
-                        Case 1: X = 1: X1 = 13: XX = 45
-                        Case 2: X = 2: X1 = 14: XX = 46
-                        Case 3: X = 1: X1 = 13: X2 = 2: X3 = 14: XX = 47
-                        Case 4: X = 6: XX = 48
-                        Case 5: X = 2: X1 = 6: XX = 49
-                        Case 6: X = 4: X1 = 3: XX = 50
-                        Case 7: X = 9: XX = 51
-                        Case 8: X = 10: XX = 52
-                        Case 9: X = 5: XX = 53
-                        Case 10: X = 5: X1 = 10: X2 = 20: X3 = 25: XX = 54
-                        Case 11: X = 11: XX = 55
-                        Case 12: X = 12: XX = 56
-                        Case 13: X = 13: XX = 57
-                        Case 14: X = 14: XX = 58
-                        Case 15: X = 15: XX = 59
-                        Case 16: X = 16: X1 = 28: XX = 60
-                        Case 17: X = 17: X1 = 29: XX = 61
-                        Case 18: X = 16: X1 = 28: X2 = 17: X3 = 29: XX = 62
-                        Case 19: X = 21: XX = 63
-                        Case 20: X = 17: X1 = 21: XX = 64
-                        Case 21: X = 19: X1 = 18: XX = 65
-                        Case 22: X = 24: XX = 66
-                        Case 23: X = 25: XX = 67
-                        Case 24: X = 20: XX = 68
-                        Case 25: X = 26: XX = 69
-                        Case 26: X = 27: XX = 70
-                        Case 27: X = 28: XX = 71
-                        Case 28: X = 29: XX = 72
-                    End Select
+                            Case 2
+                                X = 2: X1 = 5: XF = 0: XF1 = 2: XX = 43: KC = 3
 
-                    Select Case B9
-                        Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X)
+                        End Select
+
+                        Cls
+                        PPP = 0
+
+                        If KC = 1 Or KC = 3 Then
+                            For I = 1 To JA
+                                If A1L!(I, X) + A1L!(I, X1) <> 0 Then
+                                    PPP = PPP + 1
+                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                    TPP$(PPP) = A1L$(I)
+                                    TMM$(PPP) = A1T$(I)
+                                    TYP!(PPP) = (A1L!(I, X) + A1L!(I, X1)) * 6
+                                End If
                             Next I
 
-                            Call SortTeam(TS, stpl, sortType%)
-
-                            TVN = 1
-
-                        Case 1, 16
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
+                            For I = 1 To JB
+                                If A2L!(I, X) <> 0 Then
+                                    PPP = PPP + 1
+                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                    TPP$(PPP) = A2L$(I)
+                                    TMM$(PPP) = A2T$(I)
+                                    TYP!(PPP) = A2L!(I, X) * 6
+                                End If
                             Next I
 
-                            Call SortTeam(TS, stpl, sortType%)
+                        End If
 
-                            TVN = 1
-
-                        Case 2, 5, 17, 20
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
+                        If KC <> 1 Then
+                            For I = 1 To JG
+                                If A7L!(JI, XF) + A7L!(JI, XF1) <> 0 Then
+                                    PPP = PPP + 1
+                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                    TPP$(PPP) = A7L$(I)
+                                    TMM$(PPP) = A7T$(I)
+                                    TYP!(PPP) = (A7L!(JI, XF) * 3) + A7L!(JI, XF1)
+                                End If
                             Next I
+                        End If
 
-                            Call SortTeam(TS, stpl, sortType%)
+                        Call SortPlayer(stpl, PPP, sortType%)
 
-                            TVN = 1
+                        TVN = 1
+                        QW = PPP
 
-                        Case 3, 18
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
-                            Next I
+                        Call GetListLength(printOrView%, LG, QW)
 
-                            Call SortTeam(TS, stpl, sortType%)
+                        If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
+                        If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
 
-                            TVN = 2
+                    Case "K":
+                        Select Case B9
+                            Case 0: X = 0: XX = 44
+                            Case 1: X = 1: X1 = 13: XX = 45
+                            Case 2: X = 2: X1 = 14: XX = 46
+                            Case 3: X = 1: X1 = 13: X2 = 2: X3 = 14: XX = 47
+                            Case 4: X = 6: XX = 48
+                            Case 5: X = 2: X1 = 6: XX = 49
+                            Case 6: X = 4: X1 = 3: XX = 50
+                            Case 7: X = 9: XX = 51
+                            Case 8: X = 10: XX = 52
+                            Case 9: X = 5: XX = 53
+                            Case 10: X = 5: X1 = 10: X2 = 20: X3 = 25: XX = 54
+                            Case 11: X = 11: XX = 55
+                            Case 12: X = 12: XX = 56
+                            Case 13: X = 13: XX = 57
+                            Case 14: X = 14: XX = 58
+                            Case 15: X = 15: XX = 59
+                            Case 16: X = 16: X1 = 28: XX = 60
+                            Case 17: X = 17: X1 = 29: XX = 61
+                            Case 18: X = 16: X1 = 28: X2 = 17: X3 = 29: XX = 62
+                            Case 19: X = 21: XX = 63
+                            Case 20: X = 17: X1 = 21: XX = 64
+                            Case 21: X = 19: X1 = 18: XX = 65
+                            Case 22: X = 24: XX = 66
+                            Case 23: X = 25: XX = 67
+                            Case 24: X = 20: XX = 68
+                            Case 25: X = 26: XX = 69
+                            Case 26: X = 27: XX = 70
+                            Case 27: X = 28: XX = 71
+                            Case 28: X = 29: XX = 72
+                        End Select
 
-                        Case 6, 21
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
-                            Next I
+                        Select Case B9
+                            Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X)
+                                Next I
 
-                            Call SortTeam(TS, stpl, sortType%)
+                                Call SortTeam(TS, stpl, sortType%)
 
-                            TVN = 2
+                                TVN = 1
 
-                        Case 10
-                            For I = 1 To TS
-                                TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
-                            Next I
+                            Case 1, 16
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
+                                Next I
 
-                            Call SortTeam(TS, stpl, sortType%)
+                                Call SortTeam(TS, stpl, sortType%)
 
-                            TVN = 1
+                                TVN = 1
 
-                    End Select
+                            Case 2, 5, 17, 20
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
+                                Next I
 
-                    QW = TS
+                                Call SortTeam(TS, stpl, sortType%)
 
-                    Call GetListLength(printOrView%, LG, QW)
+                                TVN = 1
 
-                    If printOrView% = 1 Then TeamStatsToPrinter
-                    If printOrView% = 2 Then CategoryToPrinter
+                            Case 3, 18
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
+                                Next I
 
-            End Select
+                                Call SortTeam(TS, stpl, sortType%)
 
-        End If
+                                TVN = 2
 
-    Loop Until UCase$(I$) = "L" Or I$ = Chr$(27)
+                            Case 6, 21
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
+                                Next I
+
+                                Call SortTeam(TS, stpl, sortType%)
+
+                                TVN = 2
+
+                            Case 10
+                                For I = 1 To TS
+                                    TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
+                                Next I
+
+                                Call SortTeam(TS, stpl, sortType%)
+
+                                TVN = 1
+
+                        End Select
+
+                        QW = TS
+
+                        Call GetListLength(printOrView%, LG, QW)
+
+                        If printOrView% = 1 Then TeamStatsToPrinter
+                        If printOrView% = 2 Then CategoryToPrinter
+
+                End Select
+
+            End If
+
+        Loop Until UCase$(I$) = "L" Or I$ = Chr$(27)
+
+    End If
 
 End Sub
 
@@ -1414,14 +1421,14 @@ Sub TeamStatsToPrinter ()
             Locate 23: Print Space$(68)
 
             Do
-				Locate 22, 32
-				Color 0, 15
-				Print "VIEW AGAIN (Y/N)";
+                Locate 22, 32
+                Color 0, 15
+                Print "VIEW AGAIN (Y/N)";
 
-				Color 4, 0
-				Print Chr$(220)
-				Locate , 33
-				Print String$(16, 223)
+                Color 4, 0
+                Print Chr$(220)
+                Locate , 33
+                Print String$(16, 223)
 
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
@@ -1576,14 +1583,14 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
             Locate 23: Print Space$(69)
 
             Do
-				Locate 22, 32
-				Color 0, 15
-				Print "VIEW AGAIN (Y/N)";
+                Locate 22, 32
+                Color 0, 15
+                Print "VIEW AGAIN (Y/N)";
 
-				Color 1, 0
-				Print Chr$(220)
-				Locate , 33
-				Print String$(16, 223)
+                Color 1, 0
+                Print Chr$(220)
+                Locate , 33
+                Print String$(16, 223)
 
                 I$ = GetKeyPress$
 
@@ -1751,7 +1758,7 @@ End Sub
 '   Subroutine
 '------------------------------
 ' ...explanation...
-Sub ChooseConference_Expanded (targetFile$)
+Sub ChooseConference_Expanded (targetFile$, ExitCode%)
 
     Do
 
@@ -1804,16 +1811,16 @@ Sub ChooseConference_Expanded (targetFile$)
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
 
-					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-					Color 15, 0
+                    Color 15, 0
 
                 End If
 
-            Loop Until UCase$(I$) = "N"
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
             If ExitCode% <> 27 Then
                 targetFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
@@ -1829,9 +1836,10 @@ End Sub
 '    BUILDSTATS Subroutine
 '------------------------------
 ' ...explanation...
-Sub BUILDSTATS ()
+Sub BUILDSTATS (CT%)
 
     Dim PX
+
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, TS
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
@@ -1968,7 +1976,7 @@ Sub BUILDSTATS ()
 
                     A3L!(JC, 5) = LP!(I)
 
-                    Call QBRatings
+                    Call QBRatings(CT%)
 
                     A3R!(JC, 0) = A3L!(JC, 12)
 
@@ -2044,7 +2052,7 @@ End Sub
 '    QBRatings Subroutine
 '------------------------------
 ' ...explanation...
-Sub QBRatings
+Sub QBRatings (CT%)
 
     Shared A3L!()
     Dim FF!(120), II!(120), PP!(120), YY!(120)

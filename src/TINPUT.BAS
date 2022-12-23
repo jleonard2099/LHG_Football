@@ -27,7 +27,8 @@ Sub TINPUT ()
         _MouseHide
 
         Color , 0
-        If ExitCode% <> 27 Then
+        
+		If ExitCode% <> 27 Then
             Select Case Selection%
                 Case 1: Call InputTeam
                 Case 2: Cls

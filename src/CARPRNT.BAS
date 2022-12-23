@@ -83,7 +83,7 @@ Sub CARPRNT ()
                     Do
 						Locate , 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
 					Color 15, 0
 
@@ -91,7 +91,7 @@ Sub CARPRNT ()
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-            If ExitCode% <> 27 Or I$ <> Chr$(27) Then
+            If ExitCode% <> 27 Then
 
                 targetFile$ = RTrim$(targetFile$)
                 Z$ = Left$(targetFile$, Len(targetFile$) - 4)

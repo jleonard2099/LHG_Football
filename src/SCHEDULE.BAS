@@ -1280,6 +1280,7 @@ Sub BoxscoreMaintenance ()
                                     'ReDim array$(500) 'holds the main editor string array
                                 End If
                             End If
+
                         Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
                     End If

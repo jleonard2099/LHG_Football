@@ -46,10 +46,12 @@ Sub CARMERGE ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case Selection%
                 Case 1: Call MergeCareerStats
                 Case 2: Cls
             End Select
+
         End If
 
     Loop Until Selection% = 2 Or ExitCode% = 27
@@ -84,7 +86,7 @@ Sub MergeCareerStats ()
 
     Do
         I$ = GetKeyPress$
-    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
     If UCase$(I$) = "Y" Then
 
@@ -155,7 +157,7 @@ Sub MergeCareerStats ()
 
 						End If
 
-                    Loop Until UCase$(I$) = "N"
+                    Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
 					If ExitCode% <> 27 Then
 						targetFile$ = RTrim$(targetFile$)

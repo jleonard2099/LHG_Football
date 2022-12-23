@@ -1,3 +1,4 @@
+$Debug
 
 Const GAME_VERSION$ = "6.40"
 Const MAX_TEAMS = 500
@@ -49,7 +50,6 @@ System
 Sub Main_Menu (menuSelection%)
 
     Dim A$(1 To 15)
-    ReDim menuChoices$(1 To 8)
 
     Do
         Cls
@@ -57,6 +57,7 @@ Sub Main_Menu (menuSelection%)
         Call TITLE
 
         'Erase menuChoices$
+        ReDim menuChoices$(1 To 8)
         menuChoices$(1) = "PLAY SINGLE GAME                "
         menuChoices$(2) = "TEAM MANAGEMENT / ORGANIZATION  "
         menuChoices$(3) = "REPLAY STATISTICS AND REPORTS   "
@@ -248,11 +249,13 @@ End Sub
 Sub Replay_Menu ()
 
     Do
+
         Cls
 
         Call TITLE
-        ReDim menuChoices$(1 To 4)
+
         'Erase menuChoices$
+        ReDim menuChoices$(1 To 4)
         menuChoices$(1) = "VIEW / PRINT COMPILED STATISTICS "
         menuChoices$(2) = "ENCYCLOPEDIA/ TEAM REPLAY OPTIONS"
         menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES "
@@ -273,6 +276,7 @@ Sub Replay_Menu ()
         _MouseHide
 
         Color , 0
+
         If ExitCode% <> 27 Then
             Select Case Selection%
                 Case 1: Call LOOKY

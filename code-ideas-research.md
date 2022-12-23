@@ -83,7 +83,14 @@ Rumbling, bumbling, stumbling...
 
 - If pass play is called and runner is the QB, let PBP reflect that it's a trick play
 
-- Helpful links
+- Consider implementing an aggression level for the AI
+	- this can take form in a "scoring focus" - how likely the team is to go for a score
+	- this can also affect how many long passes, out of bounds attempts, timeout calls, etc
+
+- How often do plays go out-of-bounds normally?
+
+
+## Helpful Links ##
 
 [Play Tendencies](https://sites.northwestern.edu/msia/2020/01/31/nfl-tendency-analysis-and-basic-play-type-prediction/)
 
@@ -98,3 +105,9 @@ Rumbling, bumbling, stumbling...
 [NFL Savant](http://nflsavant.com/about.php)
 
 [Play Call Analysis](https://github.com/msf894/nfl-playcall-analysis-and-predictions)
+
+[Weather Effects](https://www.covers.com/nfl/how-weather-affects-betting)
+
+[Sports and Normal Distribution](https://sports.stackexchange.com/questions/8676/normal-distribution-and-sports)
+
+[Stats and Regression to mean](http://statscenter.org/videos/)

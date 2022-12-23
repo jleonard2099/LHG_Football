@@ -88,6 +88,7 @@ Sub StartTrade ()
     Next
 
     S!(1) = 0
+
 	Do
 		Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
 		I$ = GetKeyPress$

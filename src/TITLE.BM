@@ -5,15 +5,21 @@
 Sub TITLE_HEADER ()
 
     Color , 0
+
     KEY Off
     Cls
-    Color , 1
-    Locate 1, 1: Print Tab(80);
-    Locate , 23
-    Color 12
 
+    Color , 1
+
+    Locate 1, 1
+    Print Tab(80);
+    Locate , 23
+
+    Color 12
     Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
+
     Locate 3, 1
+
     Color 2, 0
 
 End Sub
@@ -25,10 +31,12 @@ End Sub
 Sub TITLE_LEADERS
 
     Color , 2
+
     Locate 1, 1
     Print Tab(80);
-    Locate , 26: Color 0
+    Locate , 26
 
+    Color 0
     Print "3 IN 1 FOOTBALL LEADERS"
 
     Locate 24, 1
@@ -37,6 +45,7 @@ Sub TITLE_LEADERS
 
     Print "(C) ROD DAHLBERG/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
     Locate 4, 1
+
     Color 2, 0
 
 End Sub
@@ -48,17 +57,26 @@ End Sub
 Sub TITLE_SCHEDULER ()
 
     Color , 0
+
     KEY Off
     Cls
+
     Color , 1
-    Locate 1, 1: Print Tab(80);
+
+    Locate 1, 1
+    Print Tab(80);
     Locate , 33
+
     Color 14
     Print "AUTO SCHEDULER"
-    Locate 24, 1: Print Tab(80);
+
+    Locate 24, 1
+    Print Tab(80);
     Locate , 1
+
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1995";
     Locate 5, 1
+
     Color , 0
 
 End Sub
@@ -70,15 +88,23 @@ End Sub
 Sub TITLE_STATS ()
 
     Color , 2
-    Locate 1, 1: Print Tab(80);
+
+    Locate 1, 1
+    Print Tab(80);
     Locate , 26
+
     Color 0
     Print "3 IN 1 FOOTBALL STATISTICS"
-    Locate 24, 1: Print Tab(80);
+
+    Locate 24, 1
+    Print Tab(80);
     Locate , 1
+
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
     Locate 4, 1
+
     Color 2, 0
+
 End Sub
 
 '------------------------------
@@ -87,14 +113,19 @@ End Sub
 ' Displays window title / game copyright
 Sub TITLE_UTILS ()
 
-    Color , 2
+    Color , 1
+
     Locate 1, 1
     Print Tab(80);
-    Locate , 26: Color 0
+    Locate , 26
+
+    Color 14
     Print "3 IN 1 FOOTBALL UTILITIES"
+
     Locate 24, 1
     Print Tab(80);
     Locate , 1
+
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
 
 End Sub
@@ -106,30 +137,42 @@ End Sub
 Sub TITLE ()
 
     Color , 0
+
     KEY Off
     Cls
+
     Color , 1
-    Locate 1, 1: Print Tab(80);
+
+    'Header
+    Locate 1, 1
+    Print Tab(80);
     Locate , 32
+
     Color 12
     Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
-    Locate 24, 1: Print Tab(80);
+
+    'Footer
+    Locate 24, 1
+    Print Tab(80);
     Locate , 1
+
     Print "(C) LANCE HAFFNER 1984-2000"; Tab(70); Left$(Time$, 5);
+
+    'Contact
     Locate 3, 1
-    Color 2, 0
-    Color 15
+    Color 15, 0
     Print
-    Color 15
     Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER"
     Print "     FOR TECHNICAL SUPPORT, CALL (800) 477-7032 OR LANCE@LHGAMES.COM"
     Print "      LANCE HAFFNER GAMES ON THE INTERNET AT  HTTP://WWW.LHGAMES.COM"
+
     Locate 12, 1
+
     Print "LANCE HAFFNER GAMES"
     Print "P.O. BOX 100594"
     Print "NASHVILLE, TN 37224"
     Print "LANCE@LHGAMES.COM"
+
     Color 10
 
 End Sub
-

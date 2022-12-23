@@ -1366,7 +1366,7 @@ Sub ChooseLeague (targetFile$)
 
                 End If
 
-            Loop Until UCase$(I$) = "N"
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
             targetFile$ = RTrim$(targetFile$)
             targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
