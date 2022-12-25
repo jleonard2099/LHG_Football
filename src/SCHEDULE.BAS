@@ -1296,6 +1296,7 @@ Sub BoxscoreMaintenance ()
                 Case 5:
                     Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteSchedules(Selection%, Spec$)
+
                     Spec$ = diskPaths$(1) + "BOX*."
                     Call DeleteSchedules(Selection%, Spec$)
             End Select

@@ -1417,110 +1417,119 @@ Sub ViewRoster ()
     Shared PA%()
     Shared QX%()
 
-    Cls
-    Color 11: Print "TEAM ROSTER FOR ";: Color PA%(2), PA%(1): Print A$;
-    Color 11, 0: Print "   TEAM NUMBER =";
-    Color 14: Print B8%
-    Print
-    Color 15: Print Using "DEF RUSH ADJ   = ###"; B6%(0);
-    Print Tab(35); Using "SACKED %         = ##"; B6%(5)
-    Print Using "DEF COMP % ADJ = ###"; B6%(1);
-    Print Tab(35); Using "DEF SACK ADJ     = ##"; B6%(6)
-    Print Using "DEF INT % ADJ  = ###"; B6%(2);
-    Print Tab(35); Using "RUN/PASS %       = ##"; B6%(7)
-    Print Using "OFF FUMBLE  %  = ###"; B6%(3);
-    Print Tab(35); "DEF YDS/COMP ADJ = ";
+	Do
+		Cls
+		Color 11: Print "TEAM ROSTER FOR ";: Color PA%(2), PA%(1): Print A$;
+		Color 11, 0: Print "   TEAM NUMBER =";
+		Color 14: Print B8%
+		Print
+		Color 15: Print Using "DEF RUSH ADJ   = ###"; B6%(0);
+		Print Tab(35); Using "SACKED %         = ##"; B6%(5)
+		Print Using "DEF COMP % ADJ = ###"; B6%(1);
+		Print Tab(35); Using "DEF SACK ADJ     = ##"; B6%(6)
+		Print Using "DEF INT % ADJ  = ###"; B6%(2);
+		Print Tab(35); Using "RUN/PASS %       = ##"; B6%(7)
+		Print Using "OFF FUMBLE  %  = ###"; B6%(3);
+		Print Tab(35); "DEF YDS/COMP ADJ = ";
 
-    If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
-    If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
+		If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
+		If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-    Print Using "DEF FUMBLE  %  = ###"; B6%(4);
-    Print Tab(35); Using "PENALTY ADJ      = ##"; PA%(0)
-    Print Using "STAD TYPE      = ###"; PA%(3)
-    Print Using "BACKGRND COLOR = ###"; PA%(1);
-    Print Tab(35); Using "FOREGRND COLOR   = ##"; PA%(2)
-    Print
-    Color 12: Print "RUNNING BACKS-"
-    Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+		Print Using "DEF FUMBLE  %  = ###"; B6%(4);
+		Print Tab(35); Using "PENALTY ADJ      = ##"; PA%(0)
+		Print Using "STAD TYPE      = ###"; PA%(3)
+		Print Using "BACKGRND COLOR = ###"; PA%(1);
+		Print Tab(35); Using "FOREGRND COLOR   = ##"; PA%(2)
+		Print
+		Color 12: Print "RUNNING BACKS-"
+		Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
-    For I = 0 To 9:
-        If Left$(A1$(I), 1) <> " " And Left$(A1$(I), 3) <> "END" Then
-            Color 3: Print A1$(I);
-            Color 15
-            Locate , 23: Print Using "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
-        End If
-    Next
+		For I = 0 To 9:
+			If Left$(A1$(I), 1) <> " " And Left$(A1$(I), 3) <> "END" Then
+				Color 3: Print A1$(I);
+				Color 15
+				Locate , 23: Print Using "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+			End If
+		Next
 
-    Locate 23
-    Color 15: Print "HIT ANY KEY TO CONTINUE";
-    I$ = GetKeyPress$
+		Locate 23
+		Color 15: Print "HIT ANY KEY TO CONTINUE";
+		I$ = GetKeyPress$
 
-    Cls
-    Color 12: Print "WIDE RECEIVERS-"
-    Color 14: Print "NAME-              REC AVG     CX%"
+		Cls
+		Color 12: Print "WIDE RECEIVERS-"
+		Color 14: Print "NAME-              REC AVG     CX%"
 
-    For I = 0 To 5:
-        If Left$(A2$(I), 1) <> " " And Left$(A2$(I), 3) <> "END" Then
-            Color 3: Print A2$(I);
-            Color 15: Locate , 23: Print Using "##       ###"; A5%(I) * 3; A4%(I)
-        End If
-    Next
+		For I = 0 To 5:
+			If Left$(A2$(I), 1) <> " " And Left$(A2$(I), 3) <> "END" Then
+				Color 3: Print A2$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; A5%(I) * 3; A4%(I)
+			End If
+		Next
 
-    Print
-    Color 12: Print "QUARTERBACKS-                     YDS/CMP"
-    Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
-    For I = 0 To 3:
-        If Left$(A3$(I), 1) <> " " And Left$(A3$(I), 3) <> "END" Then
-            Color 3: Print A3$(I);
-            Color 15: Locate , 21: Print Using "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
-        End If
-    Next
+		Print
+		Color 12: Print "QUARTERBACKS-                     YDS/CMP"
+		Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
+		For I = 0 To 3:
+			If Left$(A3$(I), 1) <> " " And Left$(A3$(I), 3) <> "END" Then
+				Color 3: Print A3$(I);
+				Color 15: Locate , 21: Print Using "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+			End If
+		Next
 
-    Print
-    Color 12: Print "KICKOFF RETURNMEN-"
-    Color 14: Print "NAME-              RET AVG     CX%"
+		Print
+		Color 12: Print "KICKOFF RETURNMEN-"
+		Color 14: Print "NAME-              RET AVG     CX%"
 
-    For I = 0 To 2:
-        If Left$(A4$(I), 1) <> " " And Left$(A4$(I), 3) <> "END" Then
-            Color 3: Print A4$(I);
-            Color 15: Locate , 23: Print Using "##       ###"; B%(I) * 3; A9%(I)
-        End If
-    Next
+		For I = 0 To 2:
+			If Left$(A4$(I), 1) <> " " And Left$(A4$(I), 3) <> "END" Then
+				Color 3: Print A4$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; B%(I) * 3; A9%(I)
+			End If
+		Next
 
-    Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
+		Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
 
-    I$ = GetKeyPress$
-    Cls
-    Color 12: Print "PUNT RETURNMEN-"
-    Color 14: Print "NAME-              RET AVG     CX%"
+		I$ = GetKeyPress$
+		Cls
+		Color 12: Print "PUNT RETURNMEN-"
+		Color 14: Print "NAME-              RET AVG     CX%"
 
-    For I = 0 To 2:
-        If Left$(A5$(I), 1) <> " " And Left$(A5$(I), 3) <> "END" Then
-            Color 3: Print A5$(I);
-            Color 15: Locate , 23: Print Using "##       ###"; B2%(I) * 3; B1%(I)
-        End If
-    Next
+		For I = 0 To 2:
+			If Left$(A5$(I), 1) <> " " And Left$(A5$(I), 3) <> "END" Then
+				Color 3: Print A5$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; B2%(I) * 3; B1%(I)
+			End If
+		Next
 
-    Print
-    Color 12: Print "PLACE KICKERS-"
-    Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
+		Print
+		Color 12: Print "PLACE KICKERS-"
+		Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
 
-    For I = 0 To 1:
-        If Left$(A7$(I), 1) <> " " And Left$(A7$(I), 3) <> "END" Then
-            Color 3: Print A7$(I);
-            Color 15: Locate , 21: Print Using "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
-        End If
-    Next
+		For I = 0 To 1:
+			If Left$(A7$(I), 1) <> " " And Left$(A7$(I), 3) <> "END" Then
+				Color 3: Print A7$(I);
+				Color 15: Locate , 21: Print Using "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+			End If
+		Next
 
-    Print
-    Color 12: Print "PUNTER-"
-    Color 14: Print "NAME-              AVG"
-    Color 3: Print A6$(0);
-    Color 15
-    Locate , 21: Print Using "##"; B3%(0) * 2 + 28
-    Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
+		Print
+		Color 12: Print "PUNTER-"
+		Color 14: Print "NAME-              AVG"
+		Color 3: Print A6$(0);
+		Color 15
+		Locate , 21: Print Using "##"; B3%(0) * 2 + 28
 
-    I$ = GetKeyPress$
+		Do
+			Locate 21
+			Color 15
+			Print "VIEW AGAIN (Y/N)"
+			I$ = GetKeyPress$
+		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+	Loop Until UCase$(I$) = "N"
+
+
 
 End Sub
 

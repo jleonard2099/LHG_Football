@@ -1,6 +1,5 @@
-$Debug
 
-Const GAME_VERSION$ = "6.40"
+Const GAME_VERSION$ = "6.43"
 Const MAX_TEAMS = 500
 Const MAX_GAMES = 1500
 'Const MAX_CONFERENCES = 40
