@@ -17,7 +17,6 @@ Const MAX_GAMES = 1500
 
 DefInt A-Z
 
-
 '----------------------------------------
 '               MAIN CODE
 '----------------------------------------
@@ -26,13 +25,23 @@ $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
 _AllowFullScreen
 
-Open "DEV.BAS" For Input As #1
-For I = 0 To 2
-    Input #1, diskPaths$(I)
-Next
-Close 1
+If _FileExists ("DEV.BAS") Then
+	Open "DEV.BAS" For Input As #1
+	For I = 0 To 2
+		Input #1, diskPaths$(I)
+	Next
+	Close 1
+Else
+	Open "DEV.BAS" For Output As #1
+	For I = 0 To 2
+		Print #1, _CWD$
+	Next
+	Close 1
+End If
+
 
 Selection% = 1
+
 
 Do
     Call Main_Menu(Selection%)

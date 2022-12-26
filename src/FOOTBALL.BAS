@@ -87,10 +87,26 @@ LO$(2) = "NEUTRAL SITE"
 '       DETERMINE GAME OPTIONS
 '----------------------------------------
 
-Open "DEV.BAS" For Input As #1
-Input #1, diskPaths$(0)
-Input #1, diskPaths$(1)
-Close #1
+If _FileExists ("DEV.BAS") Then
+	Open "DEV.BAS" For Input As #1
+	For I = 0 To 2
+		Input #1, diskPaths$(I)
+	Next
+	Close 1
+Else
+	Open "DEV.BAS" For Output As #1
+	For I = 0 To 2
+		Print #1, _CWD$
+	Next
+	Close 1
+End If
+
+
+If Not _FileExists("DEFAULT") Then
+    Open "DEFAULT" For Output As #1
+    For I = 1 To 8: Print #1, 0: Next
+    Close 1
+End If
 
 
 Open "DEFAULT" For Input As #1

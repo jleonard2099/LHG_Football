@@ -15,7 +15,7 @@ LH Games were some of the premier simulators of the 80's. They were a staple of 
 
 ### Visuals ###
 ![football box art](fb-box.jpg)
-![football in action](fb-action.jpg)
+![football in action](fb-screen1.png)
 
 # The Game #
 ### Installation ###
