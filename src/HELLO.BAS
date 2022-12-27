@@ -25,20 +25,19 @@ $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
 _AllowFullScreen
 
-If _FileExists ("DEV.BAS") Then
-	Open "DEV.BAS" For Input As #1
-	For I = 0 To 2
-		Input #1, diskPaths$(I)
-	Next
-	Close 1
-Else
+If Not _FileExists ("DEV.BAS") Then
 	Open "DEV.BAS" For Output As #1
 	For I = 0 To 2
-		Print #1, _CWD$
+		Print #1, _CWD$ + "\"
 	Next
 	Close 1
 End If
 
+Open "DEV.BAS" For Input As #1
+For I = 0 To 2
+	Input #1, diskPaths$(I)
+Next
+Close 1
 
 Selection% = 1
 
@@ -130,10 +129,11 @@ Sub ConfigureDrives ()
 
     Locate , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS"
     Print
-
-    Locate , 31: Print "PATHNAME EXAMPLES:": Print
+    Locate , 31: Print "PATHNAME EXAMPLES:"
+	Print
     Locate , 31: Print "A:"
     Locate , 31: Print "C:\FULL\TEAMS"
+	
     Locate 7, 1: QPrint "Path for Teams ", 14, 1, -1
     Locate , 16: QPrint PadRight$(diskPaths$(0), 30), FG, BG, -1
     Locate 9, 1: QPrint "Path for Stats ", 14, 1, -1
@@ -177,10 +177,10 @@ Sub ConfigureDrives ()
     If X$ <> "Y" Then GoTo Done 'insist on either Y or N or up-arrow
 
     Open "DEV.BAS" For Output As #1
-    For R = 0 To 2: diskPaths$(R) = diskPaths$(R) + "\": Next R
-    Print #1, diskPaths$(0)
-    Print #1, diskPaths$(1)
-    Print #1, diskPaths$(2)
+    For R = 0 To 2: 
+		diskPaths$(R) = diskPaths$(R) + "\"
+		Print #1, diskPaths$(R)
+	Next R
     Close #1
 
 End Sub
