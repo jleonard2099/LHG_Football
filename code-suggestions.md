@@ -1,3 +1,4 @@
+#### SIDENOTE: Do any of these fall into the "Issues" realm? If so, create GitHub issue items ####
 
 [ ] Paths / folders
 - add "Boxes" subfolder to structure and adapt code
@@ -11,6 +12,7 @@
 
 [ ] Integrate team file selection, stat file name functions
 - College BB already has "STATCONVERT" subroutine
+- Team file functions already built, just not tested
 
 [ ] Condense similar subroutines
 - Menu / box routines
