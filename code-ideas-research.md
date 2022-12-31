@@ -29,6 +29,12 @@ Rumbling, bumbling, stumbling...
 	- do we account for touchback (also with kicks?)
 	- time for the play = time for punt (more with longer punts) + time for return
 
+- Alternate rule types
+	- Candian football rules
+	- 3 downs
+	- XFL rulesets
+	- custom option for kickoffs
+
 - Turnovers
 	- do we account for turnovers in the end zone?
 	- how are interceptions in the end zone handled?

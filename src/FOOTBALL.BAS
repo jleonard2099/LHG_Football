@@ -213,8 +213,11 @@ Else
     intY8% = 0
 
     Do
-        Cls
-        Color 2: Print Tab(29); "SELECT OPENING OPTIONS"
+        Color 15, 0
+		Cls
+        Color 2
+		
+		Print Tab(29); "SELECT OPENING OPTIONS"
         Print
         Locate 3, 2
         Color 14: Print "(1) ";: Color 15: Print U5$(J6(0))
@@ -3696,7 +3699,7 @@ Select Case Q - 1
 
             Do
 				U$ = "DISPLAY STATISTICS AGAIN (YN)"
-				Locate , (80 - Len(U$)) / 2
+				Locate 7, (80 - Len(U$)) / 2
 				Print U$
 				Color 15, 0
                 I$ = GetKeyPress$
@@ -3939,12 +3942,11 @@ Select Case Q - 1
 
             Call QBBOX
 
-
             If AP <> 1 Or J6(0) <> 2 Then
 
                 Do
 					U$ = "DISPLAY STATISTICS AGAIN (YN)"
-					Locate , (80 - Len(U$)) / 2
+					Locate 7, (80 - Len(U$)) / 2
 					Print U$
 					Color 15, 0
                     I$ = GetKeyPress$
