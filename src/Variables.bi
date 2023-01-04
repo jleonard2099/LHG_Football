@@ -300,4 +300,3 @@ Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
 Dim L!(60), LD!(240), LZ!(240), T!(60), W!(60)
 Dim P$(60), TM$(60), TR$(10, 20)
 Dim seePR$(1200), seeT$(60)
-

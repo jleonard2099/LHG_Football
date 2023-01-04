@@ -6053,7 +6053,7 @@ End Sub
 ' ...explanation...
 Sub RUNMENU ()
 
-    J = 12
+    JJ = 12
     Call PBOX
 
     Print "SELECT RUNNING PLAY "; A$(P1)
@@ -6076,7 +6076,7 @@ End Sub
 ' ...explanation...
 Sub PASSMENU ()
 
-    J = 11
+    JJ = 11
     Call PBOX
 
     Print "SELECT PASS PLAY "; A$(P1)
@@ -6549,9 +6549,9 @@ Sub TICK ()
             Next
         Next
 
-        For I = 1 To 32: 
-			Print #2, ST%(I)
-		Next
+        For I = 1 To 32:
+            Print #2, ST%(I)
+        Next
 
         Close 2
 
@@ -7262,9 +7262,9 @@ Sub GetDiskID (I)
             Color PA%(I, 2), PA%(I, 1): Print A$(I)
 
             Color 15, 4
-			
+            
             Do
-				Locate , 33: Print "ANY CHANGE (YN)";
+                Locate , 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

@@ -3,6 +3,219 @@
 '$INCLUDE: 'QPProEqu.BI'
 '$INCLUDE: 'GameRoutines.BI'
 
+'----------------------------------------
+'           GAME CODE
+'----------------------------------------
+_Title "3-in-1 Football - GRIDIRON!"
+$ExeIcon:'./lhg_3in1fb.ico'
+_Icon
+_AllowFullScreen
+
+Color 7, 0
+Cls
+
+Randomize Timer
+
+_Blink Off
+
+
+'----------------------------------------
+'          READ IN ALL DATA
+'----------------------------------------
+
+Data L,1,1,1,2,2,2,H,H,3,3,3,4,4,F
+Data 4-3 READ,5-2 READ,4-3 PINCH,5-2 PINCH,4-3 INSIDE STUNT
+Data 5-2 INSIDE STUNT,4-3 OUTSIDE STUNT,5-2 OUTSIDE STUNT
+Data 4-3 PASS RUSH,5-2 PASS RUSH
+Data STANDARD ZONE,STANDARD M-M,SHORT ZONE,MAN UNDER,NICKEL,PREVENT
+Data BLITZ (1-ILB),BLITZ (1-OLB),BLITZ (2-ILB),BLITZ (2-OLB),BLITZ ENGAGE
+Data BLAST,DIVE,OFF TACKLE,END SWEEP,OPTION RUN
+Data DRAW PLAY,TRAP,3 STEP DROP,SHORT PASS,MED PASS
+Data LONG PASS,SHORT SCREEN,MED-PLAY ACT PASS,LONG-PLAY ACT PASS,SIDELINE PASS
+Data ROLLOUT PASS,BOOTLEG PASS,PUNT,FG ATT,SCOUT REPORT
+Data 0,3,-6,0,-3,0,0,3,-3,-3: 'BLAST DATA
+Data 0,3,-3,0,-6,0,0,6,0,0: 'DIVE
+Data -3,0,0,3,3,0,0,-3,0,0: 'OFF TACKLE
+Data 0,-3,3,0,3,3,-3,-3,0,0: 'SWEEP
+Data 0,-3,6,0,6,3,-3,-6,0,0: 'OPTION
+Data -6,-6,-3,-3,-3,-3,-3,-3,6,6: 'DRAW
+Data 3,3,-3,-3,-6,-6,-6,-6,-3,-3: 'TRAP
+Data OFF,5,DEF,5,OFF,10: 'PENALTY INFO
+Data 90,88,80,78,60,68,20,62,-5,52: 'FIELD GOAL INFO
+Data -3,-4,0,3,-6,-6,0,0,0,0,0: ' INT HITCH
+Data -3,-4,0,-1,-6,-6,0,0,0,0,0: ' INT SP
+Data 0,-1,0,-1,0,-1,0,0,0,0,0: ' INT MP
+Data 3,2,0,-1,4,5,0,0,0,0,0: ' INT LP
+Data -6,-6,-6,-6,-6,-6,0,0,0,0,0: ' INT SCREEN
+Data 0,-1,0,0,2,0,0,0,0,0,0: ' INT MED PA
+Data 3,2,3,2,4,5,0,0,0,0,0: ' INT L PA
+Data 0,1,-1,-1,0,0,0,0,0,0,0: ' INT SL
+Data 0,0,0,0,0,0,0,0,0,0,0: ' INT ROLLOUT
+Data 0,0,0,0,0,0,0,0,0,0,0: ' INT BOOTLEG
+Data 31,21,21,11,40,50,8,8,-5,-5,-13: ' C% HITCH
+Data 21,11,11,1,30,40,-10,-10,-20,-20,-23: ' C% SP
+Data 1,-9,6,-4,-5,-10,-19,-19,-17,-17,-13: ' C% MP
+Data -19,-29,-9,-19,-30,-40,-25,-25,-25,-25,-17: ' C% LP
+Data 40,40,40,40,50,50,20,20,-24,-24,-33: ' C% SCREEN
+Data 6,-19,-9,-19,-10,-10,-17,-17,-13,-13,-6: ' C% MED PA
+Data -14,-29,-19,-29,-30,-40,-25,-25,-17,-17,-6: ' C% L PA
+Data 6,-14,1,-4,10,10,-13,-13,-19,-19,-17: ' C% SL
+Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% ROLLOUT
+Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% BOOTLEG
+Data 0,1,-1,0,1,2,1,1,2,2,3: ' Y/C HITCH
+Data 0,1,-1,0,1,2,3,3,21,21,25: ' Y/C SP
+Data 0,1,0,0,1,2,21,21,25,25,28: ' Y/C MED
+Data 0,1,1,2,-1,-1,33,33,42,42,42: ' Y/C LP
+Data 0,1,-1,0,1,2,1,1,25,25,36: ' Y/C SCREEN
+Data 1,1,-1,-2,-1,-1,25,25,28,28,31: ' Y/C MED PA
+Data 1,1,1,2,-1,-1,42,42,42,42,42: ' Y/C L PA
+Data 0,-1,1,2,1,2,18,18,28,28,33: ' Y/C SL
+Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C ROLL
+Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C BOOTLEG
+Data -8,-8,-4,-4,-8,-8,-6,-8,-4,-8,-4: ' SCK HITCH
+Data -4,-4,0,0,-8,-8,-2,-2,0,0,2: ' SCK SP
+Data 0,0,-2,-2,2,-6,3,3,13,13,23: ' SCK MP
+Data 4,4,0,0,8,-4,13,13,23,23,33: ' SCK LP
+Data -8,-8,-8,-4,-8,-8,-4,-4,0,0,3: ' SCK SCRN
+Data 0,0,-2,-2,2,-4,13,13,23,23,33: ' SCK MED PA
+Data 4,4,0,0,8,-2,23,23,33,33,43: ' SCK L PA
+Data -4,-4,-2,-2,2,-6,0,0,3,3,13: ' SCK SL
+Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK ROLL
+Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK BOOTLEG
+Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0, )
+Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1, )
+Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' RN%(0, )
+Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' RN%(1, )
+'BY%
+Data 11,-5,11,0
+Data 11,-5,11,0
+Data 11,0,21,0
+Data 11,0,21,0
+Data 11,0,11,10
+Data 11,0,11,10
+Data 11,0,21,10
+Data 11,0,21,10
+Data 11,0,21,10
+Data 11,10,21,10
+Data 11,10,31,10
+Data 11,10,31,10
+Data 21,10,31,10
+Data 21,10,51,10
+Data 21,10,51,10
+Data 21,10,41,20
+Data 21,10,51,20
+Data 21,10,81,20
+Data 21,10,71,30
+Data 21,10,61,40
+Data 21,10,31,70
+Data 31,10,51,50
+Data 31,10,31,70
+Data 41,10,31,70
+Data 51,10,31,70
+Data 41,20,11,90
+Data 41,20,11,90
+Data 21,40,11,90
+Data 21,40,11,90
+Data 71,30,11,90
+Data 61,40,11,90
+Data 51,50,11,90
+Data 11,90,11,90
+Data 11,90,11,90
+Data 11,90,11,90
+Data 11,90,11,90
+Data 11,90,11,90
+Data 11,90,11,90
+
+'GOAL LINE
+Data 72,-5,83,-4,75,-4,68,-4,80,-3,70,-3,60,-3,75,-2,60,-2,45,-2,60,-1
+Data 30,-1,100,0,30,1,60,1,45,2,60,2,75,2,60,3,70,3,80,3,68,4,75,4,83,4
+Data 72,5,78,5,84,5,90,5,96,5,96,5
+
+Data 28,89,99,100,0,0,0,0,0,0,0,0,0,0: 'HITCH 1
+Data 10,53,96,97,98,99,100,0,0,0,0,0,0,0: 'HITCH 2
+Data 2,37,83,96,97,98,99,100,0,0,0,0,0,0: ' HITCH 3
+Data 2,32,71,92,94,96,97,98,99,100,0,0,0,0: ' HITCH 4
+Data 2,22,59,92,93,94,100,0,0,0,0,0,0,0: ' HITCH 5
+Data 2,12,63,88,90,92,93,94,95,96,97,98,99,100: ' HITCH 6
+Data 2,6,38,86,88,90,92,94,95,96,97,98,99,100: ' HITCH 7
+Data 2,6,25,74,82,90,92,94,95,96,97,98,99,100: ' HITCH 8
+Data 2,6,25,69,77,85,87,90,92,95,97,98,99,100: ' HITCH 9
+Data 2,6,25,66,74,82,84,87,89,92,94,96,98,100: ' HITCH 10
+Data 34,72,98,99,100,0,0,0,0,0,0,0,0,0: ' SCREEN 1
+Data 14,54,97,98,99,100,0,0,0,0,0,0,0,0: ' SCREEN 2
+Data 10,55,80,95,96,97,98,99,100,0,0,0,0,0: ' SCREEN 3
+Data 10,51,75,91,93,95,96,97,98,99,100,0,0,0: ' SCREEN 4
+Data 10,30,70,90,92,94,95,96,97,98,99,100,0,0: ' SCREEN 5
+Data 10,35,71,86,88,90,92,94,95,96,97,98,99,100: ' SCREEN 6
+Data 10,32,68,83,85,87,89,91,93,95,96,98,99,100: ' SCREEN 7
+Data 10,29,65,80,82,85,87,89,91,93,95,97,99,100: ' SCREEN 8
+Data 10,21,57,72,77,82,86,89,91,93,95,97,99,100: ' SCREEN 9
+Data 10,13,49,64,72,79,85,89,91,93,95,97,99,100: ' SCREEN 10
+Data 0,97,99,100,0,0,0,0,0,0,0,0,0,0: ' SP 1
+Data 0,45,96,98,99,100,0,0,0,0,0,0,0,0: ' SP 2
+Data 0,10,82,97,98,99,100,0,0,0,0,0,0,0: ' SP 3
+Data 0,0,63,94,95,96,97,98,99,100,0,0,0,0: ' SP 4
+Data 0,0,45,91,93,95,96,97,98,99,100,0,0,0: ' SP 5
+Data 0,0,45,80,86,92,94,95,96,97,98,99,100,0: ' SP 6
+Data 0,0,40,70,80,90,93,94,95,96,97,98,99,100: ' SP 7
+Data 0,0,40,65,75,85,88,90,93,94,96,98,99,100: ' SP 8
+Data 0,0,30,51,66,81,88,90,92,94,96,98,99,100: ' SP 9
+Data 0,0,20,37,57,77,88,90,92,94,96,98,99,100: ' SP 10
+Data 17,77,94,99,100,0,0,0,0,0,0,0,0,0: ' MP 1
+Data 6,35,76,96,97,98,99,100,0,0,0,0,0,0: ' MP 2
+Data 0,0,52,92,96,98,100,0,0,0,0,0,0,0: ' MP 3
+Data 0,0,40,80,87,93,95,97,99,100,0,0,0,0: ' MP 4
+Data 0,0,4,69,81,89,94,96,98,100,0,0,0,0: ' MP 5
+Data 0,0,5,58,70,78,83,87,91,95,98,100,0,0: ' MP 6
+Data 0,0,0,41,57,70,78,83,88,92,95,98,100,0: ' MP 7
+Data 0,0,0,19,36,51,66,78,88,92,94,96,98,100: ' MP 8
+Data 0,0,0,13,26,43,61,76,86,90,93,96,98,100: ' MP 9
+Data 0,0,0,11,22,33,51,66,76,82,87,92,96,100: ' MP 10
+Data 1,56,98,100,0,0,0,0,0,0,0,0,0,0: ' LP 1
+Data 0,0,53,95,96,100,0,0,0,0,0,0,0,0: ' LP 2
+Data 0,0,0,67,87,97,98,99,100,0,0,0,0,0: ' LP 3
+Data 0,0,0,13,65,97,98,99,100,0,0,0,0,0: ' LP 4
+Data 0,0,0,0,32,64,96,97,98,99,100,0,0,0: ' LP 5
+Data 0,0,0,0,12,40,82,86,90,93,96,98,100,0: ' LP 6
+Data 0,0,0,0,0,26,69,75,81,86,91,94,97,100: ' LP 7
+Data 0,0,0,0,0,0,17,40,64,72,80,88,94,100: ' LP 8
+Data 0,0,0,0,0,0,6,29,54,64,74,84,92,100: ' LP 9
+Data 0,0,0,0,0,0,3,23,44,56,68,80,90,100: ' LP 10
+Data 0,10,20,30,40,50,60,70,80,90,50,55,60,65,70,75,80,85,90,95,100
+Data 0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2
+
+'QB Y/C ADJ
+Data 0,10,20,30,40,50,60,70,40,45,50,55,60,65,70,50,53,57,60,63,67
+Data 0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3
+
+For I = 0 To 14: Read R$(I): Next
+For I = 1 To 10: Read D$(I): Next I
+For I = 1 To 11: Read D1$(I): Next I
+For I = 1 To 20: Read O$(I): Next I
+For I = 1 To 7: For I1 = 1 To 10: Read D3%(I, I1): Next I1: Next I
+For I = 0 To 2: Read P$(I): Read P(I): Next I
+For I = 0 To 4: Read F(I): Read F1(I): Next I
+For I = 0 To 3: For I1 = 1 To 10: For J = 1 To 11: Read S1%(I, I1, J): Next J: Next I1: Next I
+For I = 0 To 1: For I1 = 0 To 14: Read RM%(I, I1): Next: Next
+For I = 0 To 1: For I1 = 1 To 38: Read RN%(I, I1): Next: Next
+For I = 1 To 38: For I1 = 1 To 4: Read BY%(I, I1): Next: Next
+For I = 1 To 30: For I1 = 1 To 2: Read GL%(I, I1): Next: Next
+For I = 1 To 5: For I1 = 1 To 10: For J = 1 To 14: Read S2%(I, I1, J): Next: Next: Next
+For I = 1 To 2: For I1 = 1 To 21: Read PS%(I, I1): Next: Next
+For I = 1 To 2: For I1 = 0 To 20: Read QR%(I1, I): Next: Next
+For I = 1 To 29: Read RP$(I): Next
+
+'I think these are alternate offense options
+'that did not get implemented. There is some
+'overlap so perhaps a rewrite of sorts was
+'in progress.
+Data BLAST,DIVE,OFF TACKLE,TOSS SWEEP,OPTION RUN,DRAW PLAY,MISDIRECTION
+Data QB SNEAK,POWER SWEEP,QUICK PITCH,QUICK TRAP,ISOLATION,SPRINT DRAW
+Data OVER THE TOP,COUNTER
+Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
+Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
+Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
+
 
 '----------------------------------------
 '    INITIALIZE ALL VARIABLES
@@ -87,26 +300,26 @@ LO$(2) = "NEUTRAL SITE"
 '       DETERMINE GAME OPTIONS
 '----------------------------------------
 
-If Not _FileExists ("DEV.BAS") Then
-	Open "DEV.BAS" For Output As #1
-	For I = 0 To 2
-		Print #1, _CWD$
-	Next
-	Close 1
+If Not _FileExists("DEV.BAS") Then
+    Open "DEV.BAS" For Output As #1
+    For I = 0 To 2
+        Print #1, _CWD$ + "\"
+    Next
+    Close 1
 End If
 
 Open "DEV.BAS" For Input As #1
 For I = 0 To 2
-	Input #1, diskPaths$(I)
+    Input #1, diskPaths$(I)
 Next
 Close 1
 
 
 If Not _FileExists("DEFAULT") Then
     Open "DEFAULT" For Output As #1
-    For I = 1 To 8: 
-		Print #1, 0
-	Next
+    For I = 1 To 8:
+        Print #1, 0
+    Next
     Close 1
 End If
 
@@ -214,10 +427,10 @@ Else
 
     Do
         Color 15, 0
-		Cls
+        Cls
         Color 2
-		
-		Print Tab(29); "SELECT OPENING OPTIONS"
+        
+        Print Tab(29); "SELECT OPENING OPTIONS"
         Print
         Locate 3, 2
         Color 14: Print "(1) ";: Color 15: Print U5$(J6(0))
@@ -1079,7 +1292,7 @@ Do
 
             Do
                 3118 '
-                J = 10
+                JJ = 10
                 Call PBOX
                 Print "SELECT OFFENSE "; A$(P1)
 
@@ -1100,7 +1313,7 @@ Do
                     If UCase$(I$) = "Q" Then Cls: End: System
                     If UCase$(I$) = "G" Then
                         3160 '
-                        J = 8
+                        JJ = 8
                         Call PBOX
                         Print "SELECT GADGET PLAY "; A$(P1)
 
@@ -1192,7 +1405,7 @@ Do
                             Case 3
                                 3190 '*** HB PASS ***
                                 HB% = 1
-                                J = 11
+                                JJ = 11
                                 Call PBOX
                                 Print "SELECT PASSER":
                                 For KK = 0 To 4
@@ -1334,7 +1547,7 @@ Do
 
             3128 '
             KJ = 1
-            J = 11
+            JJ = 11
             Call PBOX
 
             Print "SELECT BALL CARRIER":
@@ -2210,7 +2423,7 @@ Select Case P2
             I1 = 0
         Else
 
-            J = 9
+            JJ = 9
             Call PBOX
             Print "PUNTING OPTIONS "; A$(P1)
             Locate 12, 14
@@ -2713,7 +2926,7 @@ Select Case P2
                         If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
                         K(P1, 11) = K(P1, 11) + 1
-                        
+
                         If Y >= 20 Then Y = Y - 10: K(P1, 12) = K(P1, 12) + 10
 
                     Else
@@ -2768,7 +2981,7 @@ Select Case P2
             If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
                 I1 = 0
             Else
-                J = 6
+                JJ = 6
                 Call PBOX
                 Print "FIELD GOAL OPTIONS "; A$(P1)
                 Locate 12, 14
@@ -2795,7 +3008,7 @@ Select Case P2
             Else
                 J = 9
                 Call DBOX
-                
+
                 Print "THE FIELD GOAL UNIT FOR "; A$(P1); " IS ON THE FIELD"
                 Locate 12, 14
                 Locate , 14: Print "1 - GO FOR THE BLOCK"
@@ -3698,10 +3911,10 @@ Select Case Q - 1
         If AP <> 1 Or J6(0) <> 2 Then
 
             Do
-				U$ = "DISPLAY STATISTICS AGAIN (YN)"
-				Locate 7, (80 - Len(U$)) / 2
-				Print U$
-				Color 15, 0
+                U$ = "DISPLAY STATISTICS AGAIN (YN)"
+                Locate 7, (80 - Len(U$)) / 2
+                Print U$
+                Color 15, 0
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -3718,7 +3931,7 @@ Select Case Q - 1
 
         'Check if we're configured for overtime
         If NG%(14) = 0 Or (S(0, 0) <> S(1, 0) And NG%(14) <> 3) Or (S(0, 0) <> S(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
-            
+
             If OT <> 1 Then
                 Q = Q - 1
             End If
@@ -3764,7 +3977,7 @@ Select Case Q - 1
                     YT = 25
                     Y1 = 10
                     D1 = 1
-                    
+
                     '1st Overtime
                     OT = 1
 
@@ -3819,7 +4032,7 @@ Select Case Q - 1
                     'Starting yard line for possession
                     '-- College Rules ??
                     Y = 40
-                    
+
                     '-- Pro Rules
                     If G9 <> 0 Then Y = 35
 
@@ -3945,10 +4158,10 @@ Select Case Q - 1
             If AP <> 1 Or J6(0) <> 2 Then
 
                 Do
-					U$ = "DISPLAY STATISTICS AGAIN (YN)"
-					Locate 7, (80 - Len(U$)) / 2
-					Print U$
-					Color 15, 0
+                    U$ = "DISPLAY STATISTICS AGAIN (YN)"
+                    Locate 7, (80 - Len(U$)) / 2
+                    Print U$
+                    Color 15, 0
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -4727,3 +4940,4 @@ GoTo 700
 '$INCLUDE: 'KeyInput.BM'
 '$INCLUDE: 'QPProEqu.BM'
 '$INCLUDE: 'GameRoutines.BM'
+

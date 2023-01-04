@@ -222,6 +222,7 @@ Sub NewSchedule (scheduleFile$)
                 scheduleQB_H$(X) = A3$(NG%(X + NS% * 20, 8))
 
                 Print Using "####  "; X + NS% * 20;
+				
                 Print Using "##/##/##"; NG%(X + NS% * 20, 17); NG%(X + NS% * 20, 16); NG%(X + NS% * 20, 18);
                 Locate , 17
 
@@ -232,19 +233,28 @@ Sub NewSchedule (scheduleFile$)
 
                 If HR% = 12 Then I$ = "P"
                 If HR% > 12 Then HR% = HR% - 12: I$ = "P"
+
                 TM$ = Right$(Str$(HR%), 2) + ":"
 
                 If MIN% < 10 Then TM$ = TM$ + "0" + Right$(Str$(MIN%), 1)
                 If MIN% >= 10 Then TM$ = TM$ + Right$(Str$(MIN%), 2)
-                TM$ = TM$ + I$
 
+				'Time
+                TM$ = TM$ + I$
                 Print TM$;
+				
+                'Visitor
                 Locate , 25: Print scheduleV$(X); " ";
                 If NG%(X + NS% * 20, 13) = 1 Then Print Using "###"; visitingScore%(X + NS% * 20);
+
+                'Home
                 Locate , 46: Print scheduleH$(X); " ";
                 If NG%(X + NS% * 20, 13) = 1 Then Print Using "###"; homeScore%(X + NS% * 20);
 
+                'Mode of Play
                 Locate , 67: Print MO$(NG%(X + NS% * 20, 10));
+
+                'Home field advantage
                 Locate , 72: If NG%(X + NS% * 20, 2) = 1 Then Print "Y" Else Print "N"
             End If
 
