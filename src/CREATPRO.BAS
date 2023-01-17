@@ -9,10 +9,6 @@ Sub CREATPRO ()
     FG = 0
     BG = 7
 
-    For X = 1 To 30:
-        Z1$(X) = "XXX"
-    Next
-
     Do
 
         Cls
@@ -38,11 +34,17 @@ Sub CREATPRO ()
 
         Color , 0
         If ExitCode% <> 27 Then
+
+			For X = 1 To 30:
+				Z1$(X) = "XXX"
+			Next
+
             Select Case Selection%
                 Case 1: Call DefineLeaguePro
                 Case 2: Call ReviewLeague
                 Case 3: Cls
             End Select
+
         End If
 
     Loop Until Selection% = 2 Or ExitCode% = 27
@@ -251,9 +253,9 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
                     Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
                     Locate 7, 27: Input NY$
 
-                    If NY$ = "" Then
+                    If NY$ = "" And YN$ <> "" Then
 
-                        Call SelectTeam_CREATPRO(NY$, NTMS)
+                        Call SelectTeam_CREATPRO(YN$, NTMS)
 
                     Else
                         YN$ = NY$

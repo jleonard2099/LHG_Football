@@ -226,6 +226,8 @@ Sub CARPRNT ()
 
                 Close #1
 
+				Color 0, 15
+
                 Open "REPORT" For Output As #2
                 Print #2, Z$
                 Print #2, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
@@ -892,6 +894,7 @@ Sub CARPRNT ()
                 Close 2
 
                 Open "REPORT" For Input As #2
+
                 Do While Not EOF(2)
                     Line Input #2, X$
                     LPrint X$

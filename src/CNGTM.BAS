@@ -373,6 +373,8 @@ Sub PrintRoster ()
     Shared B5%(), B6%(), B7%(), B8%()
     Shared PA%(), QX%()
 
+	Color 0, 15
+
     ' *** PRINT TEAM ROSTER ***
     LPrint "TEAM ROSTER FOR "; A$; " "; AA$; " TEAM NUMBER ="; B8%: LPrint
     LPrint Using "DEF RUSH ADJ   = ###"; B6%(0);: LPrint Tab(35); Using "SACKED %         = ##"; B6%(5)
@@ -456,6 +458,7 @@ Sub PrintRoster ()
     LPrint "PUNTER-"
     LPrint "NAME-              AVG"
     LPrint A6$(0); Tab(21);: LPrint Using "##"; B3%(0) * 2 + 28
+
     LPrint Chr$(12)
 
 End Sub

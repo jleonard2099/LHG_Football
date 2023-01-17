@@ -1,16 +1,73 @@
 '------------------------------
+'   TITLE_CAREER Subroutine
+'------------------------------
+' Displays window title / game copyright
+Sub TITLE_CAREER ()
+
+	Color 12, 1
+
+	Locate 1, 1
+	Print Tab(80);
+	Locate , 22
+
+	Color 14
+	Print "3 IN 1 FOOTBALL: CAREER STATS"
+
+	Locate 24, 1
+	Print Tab(80);
+	Locate , 1
+
+	Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+
+	Locate 4, 1
+
+	Color 1, 0
+
+End Sub
+
+'----------------------------------------
+'       Title_EDITSTATS Subroutine
+'----------------------------------------
+' Displays window title / game copyright
+Sub Title_EDITSTATS (titleType, subtitle$)
+
+    Color 12, 1
+    
+	Locate 1, 1
+    Print Tab(80);
+
+    If (titleType = 1) Then
+        Locate , 28
+        Color 14
+        Print "EDIT COMPILED STATISTICS"
+    Else
+        Locate , Int(80 - Len(X$)) / 2
+        Color 14
+        Print subtitle$
+    End If
+
+    Locate 24, 1
+	Print Tab(80);
+	Locate , 1
+    
+	Print "(C) SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+    
+	Locate 4, 1
+
+	Color 15, 0
+
+End Sub
+
+'------------------------------
 '   TITLE_HEADER Subroutine
 '------------------------------
 ' Displays window title / game copyright
 Sub TITLE_HEADER ()
 
-    Color , 0
-
     KEY Off
     Cls
 
-    Color , 1
-
+    Color 12, 1
     Locate 1, 1
     Print Tab(80);
     Locate , 23
@@ -30,7 +87,7 @@ End Sub
 ' Displays window title / game copyright
 Sub TITLE_LEADERS
 
-    Color , 2
+    Color 12, 1
 
     Locate 1, 1
     Print Tab(80);
@@ -51,17 +108,42 @@ Sub TITLE_LEADERS
 End Sub
 
 '------------------------------
+'   TITLE_MERGE Subroutine
+'------------------------------
+' Displays window title / game copyright
+Sub TITLE_MERGE ()
+
+	Color 12, 1
+
+	Locate 1, 1
+	Print Tab(80);
+	Locate , 26
+
+	Color 0
+	Print "3 IN 1 FOOTBALL: MERGE"
+
+	Locate 24, 1
+	Print Tab(80);
+	Locate , 1
+
+	Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+
+	Locate 4, 1
+
+	Color 1, 0
+
+End Sub
+
+'------------------------------
 '  TITLE_SCHEDULER Subroutine
 '------------------------------
 ' Displays window title / game copyright
 Sub TITLE_SCHEDULER ()
 
-    Color , 0
-
-    KEY Off
+    KEY Off	
     Cls
 
-    Color , 1
+    Color 12, 1
 
     Locate 1, 1
     Print Tab(80);
@@ -75,6 +157,7 @@ Sub TITLE_SCHEDULER ()
     Locate , 1
 
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1995";
+	
     Locate 5, 1
 
     Color , 0
@@ -87,13 +170,13 @@ End Sub
 ' Displays window title / game copyright
 Sub TITLE_STATS ()
 
-    Color , 2
+    Color 12, 1
 
     Locate 1, 1
     Print Tab(80);
     Locate , 26
 
-    Color 0
+    Color 14
     Print "3 IN 1 FOOTBALL STATISTICS"
 
     Locate 24, 1
@@ -101,9 +184,72 @@ Sub TITLE_STATS ()
     Locate , 1
 
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+
     Locate 4, 1
 
     Color 2, 0
+
+End Sub
+
+'----------------------------------------
+'       TITLE_STAT_HEADER Subroutine
+'----------------------------------------
+'... explain here ...
+Sub TITLE_STAT_HEADER (header$)
+
+    Color 12, 1
+    
+	Locate 1, 1
+	Print Tab(80);
+    Locate , Int(80 - Len(header$)) / 2
+    
+	Color 14
+	Print header$
+    
+	Locate 24, 1
+	Print Tab(80);
+    Locate , 1
+    
+	Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
+    
+	Locate 4, 1
+    
+	Color 15, 0
+
+End Sub
+
+'------------------------------
+'    TITLE_TOURN Subroutine
+'------------------------------
+' Displays window title / game copyright
+Sub TITLE_TOURN ()
+    
+	KEY Off
+	Cls
+    
+	Color 12, 1
+	
+	Locate 1, 1
+	Print Tab(80);
+	Locate , 16
+	
+	Color 12
+    Print "3 IN 1 FOOTBALL TOURNAMENT SCHEDULER"
+    
+	Locate 24, 1
+	Print Tab(80);
+	Locate , 1
+    
+	Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1994";
+    
+	Locate 3, 1
+	Color 2, 0
+
+    Color 15
+	Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
+    Print "              FOR TECHNICAL SUPPORT, CALL (615) 366-8088"
+
+    Color 10
 
 End Sub
 
@@ -113,7 +259,7 @@ End Sub
 ' Displays window title / game copyright
 Sub TITLE_UTILS ()
 
-    Color , 1
+    Color 12, 1
 
     Locate 1, 1
     Print Tab(80);
@@ -128,6 +274,8 @@ Sub TITLE_UTILS ()
 
     Print "(C) LANCE HAFFNER/SHANNON LYNN 1991"; Tab(70); Left$(Time$, 5);
 
+	Locate 4, 1
+
 End Sub
 
 '------------------------------
@@ -137,8 +285,8 @@ End Sub
 Sub TITLE ()
 
     Color , 0
-
     KEY Off
+
     Cls
 
     Color , 1
@@ -146,7 +294,7 @@ Sub TITLE ()
     'Header
     Locate 1, 1
     Print Tab(80);
-    Locate , 32
+    Locate , 30
 
     Color 12
     Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
@@ -156,22 +304,22 @@ Sub TITLE ()
     Print Tab(80);
     Locate , 1
 
-    Print "(C) LANCE HAFFNER 1984-2000"; Tab(70); Left$(Time$, 5);
-
+	Color 12, 1
+	Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1997"; Tab(75); Left$(Time$, 5);
+	
     'Contact
     Locate 3, 1
     Color 15, 0
-    Print
-    Print "        PROGRAMMED AND DEVELOPED BY LANCE HAFFNER"
-    Print "     FOR TECHNICAL SUPPORT, CALL (800) 477-7032 OR LANCE@LHGAMES.COM"
-    Print "      LANCE HAFFNER GAMES ON THE INTERNET AT  HTTP://WWW.LHGAMES.COM"
+	Print "           PROGRAMMED AND DEVELOPED BY LANCE HAFFNER AND SHANNON LYNN"
+    Print "         FOR TECHNICAL SUPPORT, CALL (800) 477-7032 OR LANCE@LHGAMES.COM"
+    Print "          LANCE HAFFNER GAMES ON THE INTERNET AT HTTP://WWW.LHGAMES.COM"
 
     Locate 12, 1
 
     Print "LANCE HAFFNER GAMES"
     Print "P.O. BOX 100594"
     Print "NASHVILLE, TN 37224"
-    Print "LANCE@LHGAMES.COM"
+    'Print "LANCE@LHGAMES.COM"
 
     Color 10
 

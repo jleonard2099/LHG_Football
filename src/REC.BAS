@@ -374,7 +374,9 @@ Sub PrintRecords ()
     Shared TP$(), TP1$(), TRC$()
     Shared BRC!(), TRC!()
 
-    3200 ' PRINT RECORDS
+	Color 0, 15
+
+    ' PRINT RECORDS
     LPrint Tab(23); "******* INDIVIDUAL RECORDS *******"
     LPrint
     LPrint "CATEGORY                   PLAYER           TEAM           RECORD"

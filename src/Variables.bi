@@ -7,8 +7,9 @@ Dim Shared ATT&
 
 'Used only with career files
 Dim Shared TN$
-Dim Shared CL, CT, CW, LS, TY, WN
 Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+Dim Shared confLosses, confTies, confWins
+Dim Shared fullLosses, fullTies, fullWins
 
 
 Dim Shared DT$, TM$
@@ -23,7 +24,7 @@ Dim Shared teamIndex%(MAX_TEAMS)
 
 Dim Shared DirCount%
 
-'Dim yearNumber$(MAX_GAMES, 1)
+Dim yearNumber$(MAX_GAMES, 1)
 Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
 Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 
@@ -50,7 +51,8 @@ Dim LC!(16), LCN!(15), LCR!(15), LI!(0 To 9), LIN!(0 To 9), LIR!(0 To 9)
 Dim LF!(0 To 9), LFR!(1), LFN!(1), LK!(2), LKN!(2), LKR!(2)
 Dim LP!(3), LPN!(3), LPR!(3), LR!(9), LRN!(0 To 9), LRR!(0 To 9)
 Dim PK!(2), PKN!(2), PKR!(2)
-Dim Z!(38), Z1!(38), Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
+Dim Z!(38), Z1!(38)
+Dim Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 
 
 '----------------------------------------
@@ -98,20 +100,25 @@ Dim careerRC!(6), careerTT!(50)
 Dim FG, PN
 Dim PU$
 
+Dim H1$(30)
+Dim TR$(10, 20)
+
 Dim BRC$(50, 2), compZ1$(60), compZ2$(240), compZ3$(240)
-Dim H1$(30), KR$(3), compPK$(2)
+Dim KR$(3), compPK$(2)
 Dim N2$(240), N3$(240), NT$(10, 20)
 Dim PR$(3), PS$(10), PT$(1200), QB$(4), RB$(10)
 Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
 
-Dim BRC!(50), compZ1!(240, 2), DT!(38)
+Dim DT!(38), TT!(10, 20, 9)
+
+Dim BRC!(50), compZ1!(240, 2) ', DT!(38)
 Dim EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
 Dim QB!(11, 11), RB!(11, 11)
-Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
+Dim TD!(16), TG!(16), TP!(18), TRC!(50) 'TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 
 Dim AP%(1, 120), APR%(1, 120)
@@ -140,13 +147,14 @@ Dim PW, SS, TMR, TS
 Dim O%(120), P%(1)
 Dim T%(120), TR%(120), Y%(30)
 
-Dim GMA(300), GMB(180), GMC(120)
+Dim GMA!(300), GMB!(180), GMC!(120)
 
-Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R(120, 1)
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim CRD!(120), CRDR!(120)
-Dim GI!(1, 9, 2), GS!(1, 14, 1), K!(1, 12), K2!(1, 13, 17)
+Dim GI!(1, 9, 2), GS!(1, 14, 1)
+Dim K!(1, 12), K2!(1, 13, 17)
 Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
@@ -159,6 +167,7 @@ Dim lookyDI$(1, 9), lookyDS$(1, 14), lookyTT$(31, 30)
 Dim O$(120), QBL$(120), SITE$(120), SITER$(120)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
+Dim Z1$(40), Z2$(40)
 
 
 '----------------------------------------
@@ -254,7 +263,7 @@ Dim scheduleYN$(MAX_GAMES, 1)
 scheduleYN$(0, 0) = ""
 scheduleYN$(0, 1) = ""
 
-Dim MO$(3), Z1$(40), Z2$(40)
+Dim MO$(3) ', Z1$(40), Z2$(40)
 
 Dim E%(13)
 
@@ -298,5 +307,6 @@ Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
 ' Used across SEExxx.BAS routines
 '----------------------------------------
 Dim L!(60), LD!(240), LZ!(240), T!(60), W!(60)
-Dim P$(60), TM$(60), TR$(10, 20)
+Dim P$(60), TM$(60) ', TR$(10, 20)
 Dim seePR$(1200), seeT$(60)
+

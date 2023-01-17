@@ -269,8 +269,11 @@ Sub NewSchedule (scheduleFile$)
                 H$ = ""
                 QV$ = ""
                 QH$ = ""
+
+                'number of games in schedule
                 scheduleAP%(0) = scheduleAP%(0) + 1
                 targetGame% = scheduleAP%(0)
+
                 BS% = Int((targetGame% - 1) / 20)
                 If NS% < BS% Then NS% = BS%
 
@@ -323,7 +326,9 @@ Sub NewSchedule (scheduleFile$)
                         scheduleYN$(X, X1) = scheduleYN$(X + 1, X1)
                     Next
                 Next
-                scheduleAP%(0) = scheduleAP%(0) - 1: BS% = Int((scheduleAP%(0) - 1) / 20)
+
+                scheduleAP%(0) = scheduleAP%(0) - 1
+				BS% = Int((scheduleAP%(0) - 1) / 20)
                 If NS% > BS% Then NS% = BS%
 
             Case "S":
@@ -331,20 +336,6 @@ Sub NewSchedule (scheduleFile$)
 
             Case "C", "X":
                 Call SaveScheduleFile(scheduleFile$)
-
-            Case Chr$(0) + "Q":
-                ' *** PAGE DOWN ***
-                If NS% >= BS% Then
-                    NS% = BS%
-                Else
-                    NS% = NS% + 1
-                End If
-
-            Case Chr$(0) + "I":
-                ' *** PAGE UP ***
-                If NS% <> 0 Then
-                    NS% = NS% - 1
-                End If
 
             Case "Q", Chr$(27): '
 
@@ -420,6 +411,20 @@ Sub NewSchedule (scheduleFile$)
                 For I = 1 To scheduleAP%(0)
                     NG%(I, 13) = 0
                 Next
+
+            Case Chr$(0) + "Q":
+                ' *** PAGE DOWN ***
+                If NS% >= BS% Then
+                    NS% = BS%
+                Else
+                    NS% = NS% + 1
+                End If
+
+            Case Chr$(0) + "I":
+                ' *** PAGE UP ***
+                If NS% <> 0 Then
+                    NS% = NS% - 1
+                End If
 
         End Select
 
@@ -1610,13 +1615,9 @@ Sub LoadSchedule (targetFile$)
 
 				Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = 52
 				Y = LOF(1)
-				Close 1
 
 				scheduleAP%(0) = Y / 52
-
 				BS% = Int((scheduleAP%(0) - 1) / 20)
-
-				Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = 52
 
 				For X = 0 To 20
 					Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$

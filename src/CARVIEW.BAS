@@ -122,9 +122,12 @@ Sub CARVIEW ()
                 For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #1, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
                 Close #1
 
+				
                 Do
-                    2000 '
+					Erase careerTT!
+
                     Cls
+
                     Color 7: Print "VIEW ";
                     Color 12: Print "R";: Color 7
                     Print "UNNING BACKS, ";
@@ -150,13 +153,13 @@ Sub CARVIEW ()
                     Color 12: Print "E";: Color 7
                     Print "XIT TO MAIN MENU."
 
-                    For I = 1 To 50: careerTT!(I) = 0: Next
 
                     escPressed% = 0
 
                     I$ = GetKeyPress$
 
                     Select Case UCase$(I$)
+
                         Case "R"
                             Cls
                             Color 12: Print Z$
@@ -170,7 +173,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 1, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 1, escPressed%)
 
                         Case "W"
                             Cls
@@ -183,7 +186,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 2, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 2, escPressed%)
 
                         Case "Q"
                             Cls
@@ -195,7 +198,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 3, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 3, escPressed%)
 
                         Case "K"
                             Cls
@@ -207,7 +210,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 4, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 4, escPressed%)
 
                         Case "U"
                             Cls
@@ -219,7 +222,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 5, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 5, escPressed%)
 
                         Case "P"
                             Cls
@@ -230,7 +233,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 6, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 6, escPressed%)
 
                         Case "C"
                             Cls
@@ -241,7 +244,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 7, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 7, escPressed%)
 
                         Case "I"
                             Cls
@@ -254,7 +257,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 8, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 8, escPressed%)
 
                         Case "D"
                             2920 '
@@ -268,7 +271,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, 9, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 9, escPressed%)
 
                         Case "O"
                             RT = 1
@@ -276,7 +279,7 @@ Sub CARVIEW ()
                             For I = 1 To 50: careerTT!(I) = 0: Next
 
                             For category% = 1 To 9:
-                                Call CareerPrintCategory(RT, category%, escPressed%)
+                                Call CareerPrintCategory(RT, B9, category%, escPressed%)
                                 If escPressed% = 1 Then Exit For
                             Next
 
@@ -294,7 +297,7 @@ Sub CARVIEW ()
         End If 'Done checking for file count
 
         '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0
+    Loop Until ExitCode% = 27 Or Count% = 0 Or escPressed% = 1
 
     Color 0, 0
 
@@ -304,7 +307,7 @@ End Sub
 '    CareerPrintCategory Subroutine
 '----------------------------------------
 '...explanation...
-Sub CareerPrintCategory (RT, categoryID%, escPressed%)
+Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
     Shared careerRC$()
     Shared careerRC!()
@@ -326,7 +329,7 @@ Sub CareerPrintCategory (RT, categoryID%, escPressed%)
         Select Case categoryID%
 
             Case 1
-                104 '
+
                 Color 11: Locate 1: Print Z$
                 Color 12: Locate 2: Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
 
@@ -359,7 +362,6 @@ Sub CareerPrintCategory (RT, categoryID%, escPressed%)
                             Print Tab(79); careerRBS$(V, I, 1)
                         Next V
 
-                        600 '
                         VV = careerRBS!(1, B9, 7) + careerRBS!(2, B9, 7) + careerRBS!(3, B9, 7) + careerRBS!(4, B9, 7) + careerRBS!(5, B9, 7) + careerRBS!(6, B9, 7) + careerRBS!(7, B9, 7) + careerRBS!(7, B9, 7) + careerRBS!(9, B9, 7) + careerRBS!(10, B9, 7) + careerRBS!(11, B9, 7) + careerRBS!(12, B9, 7) + careerRBS!(13, B9, 7) + careerRBS!(14, B9, 7) + careerRBS!(15, B9, 7)
 
                         For V = 1 To VV
@@ -434,7 +436,6 @@ Sub CareerPrintCategory (RT, categoryID%, escPressed%)
 
             Case 2
 
-                301 '
                 Cls
 
                 Color 11: Locate 1: Print Z$
@@ -749,7 +750,7 @@ Sub CareerPrintCategory (RT, categoryID%, escPressed%)
                 Next I
 
             Case 4
-                384 '
+
                 Cls
 
                 Color 11: Locate 1: Print Z$

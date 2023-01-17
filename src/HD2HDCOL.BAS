@@ -144,6 +144,8 @@ Sub HeadToHead_Coll_Conf (X2)
 
         End If
 
+        Color 7, 0
+
         Cls
 
         J = 5
@@ -162,21 +164,24 @@ Sub HeadToHead_Coll_Conf (X2)
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Locate 10, 15
-
-        Color 7
-        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
-
-        VPP = 0
+        Locate 7, 32
 
         Do
+            Locate 10, 15
+            Color 7, 1
+
+            Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
             J$ = GetKeyPress$
+
             Color 14, 0
-            If UCase$(J$) = "P" Then X1 = 1
-            If UCase$(J$) = "S" Then VPP = 1
+
         Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
+
+        VPP = 0
+        If UCase$(J$) = "P" Then X1 = 1
+        If UCase$(J$) = "S" Then VPP = 1
 
         W$ = LG$ + ".LIB"
 
@@ -359,7 +364,6 @@ Sub HeadToHead_Coll_Conf (X2)
 
         End If
 
-        600 '
         Cls
 
         Call TITLE_UTILS
@@ -706,11 +710,11 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
     400 '
     Cls
     Color 12
-    Locate 1, 35: Print Z$
+    Locate 2, 35: Print Z$
 
     Color 3
-    Locate 3: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    Locate 4: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+    Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+    Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
     Color 11: Print LG$;
 
     Color 3
@@ -718,7 +722,7 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
 
     For W = 1 To 2
 
-        If W = 2 And DV$(2) <> "" Then
+        If DV$(W) <> "" Then
 
             Color 15
             Locate , 2: Print DV$(W);
@@ -968,10 +972,10 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
             Locate 7, 37: Input reportFile$
 
             If reportFile$ <> "" Then
-				Do
-					Locate 13, 12: Print "ANY CHANGE (YN) "
-					I$ = GetKeyPress$
-				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                Do
+                    Locate 13, 12: Print "ANY CHANGE (YN) "
+                    I$ = GetKeyPress$
+                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
             End If
 
         End If
@@ -1357,16 +1361,16 @@ Sub ChooseConference_Coll (targetFile$)
 
                 If ExitCode% <> 27 Then
 
-					Color 15, 1
+                    Color 15, 1
                     targetFile$ = conferenceFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-					
-					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-										
-					Color 15, 0
+
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Color 15, 0
 
                 End If
 
@@ -1479,14 +1483,14 @@ Sub GetDiskID_HD2HDCOL (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-				Color PA%(2), PA%(1): Print A$
+                Color PA%(2), PA%(1): Print A$
 
                 Color 15, 4
 
-				Do
-					Locate , 33: Print "ANY CHANGE (YN)";
-					I$ = GetKeyPress$
-				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                Do
+                    Locate , 33: Print "ANY CHANGE (YN)";
+                    I$ = GetKeyPress$
+                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
             End If
 

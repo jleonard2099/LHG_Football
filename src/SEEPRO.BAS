@@ -113,7 +113,9 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
     D3$ = PadRight$(D3$, 8)
 
     Cls
+
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+
     Open diskPaths$(2) + WE$ + ".LDR" For Input As #2
 
     For X = 1 To 30
@@ -339,19 +341,20 @@ Sub StatOptions_Pro (leagueName$)
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Locate 10, 15
-
-        Color 7
-
-        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+		Locate 7, 32
 
         Do
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+			Locate 10, 15
+			Color 7, 1
 
-        Color 14, 0
+			Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
+			Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
+			Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+            I$ = GetKeyPress$
+			
+			Color 14, 0
+
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
         Select Case UCase$(I$)
 
@@ -367,10 +370,14 @@ Sub StatOptions_Pro (leagueName$)
                 Call StatsToScreen_Pro(leagueName$)
         End Select
 
+        Color 15, 0
         Cls
 
         JJ = 4
-        Locate 6, 8: Color 15, 1
+
+		Locate 6, 8
+
+		Color 15, 1
 
         Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 
@@ -382,13 +389,13 @@ Sub StatOptions_Pro (leagueName$)
         Locate 7 + JJ, 8
         Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
-        Locate 8
-        U$ = "VIEW LEAGUE STATS AGAIN (YN)"
-        Locate , (80 - Len(U$)) / 2
-        Print U$
-        Color 15, 0
-
         Do
+			Color 15, 1
+			Locate 8
+			U$ = "VIEW LEAGUE STATS AGAIN (YN)"
+			Locate , (80 - Len(U$)) / 2
+			Print U$
+			Color 15, 0
             A$ = GetKeyPress$
         Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
@@ -410,6 +417,8 @@ Sub StatsToScreen_Pro (leagueName$)
     Shared T!(), TT!(), W!()
 
     Shared D1$, D2$, D3$
+
+	Color 15, 0
 
     Cls
 
@@ -1071,7 +1080,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
     Shared D1$, D2$, D3$
 
-    Color 15, 0
+	Color 0, 15
 
     Cls
 
@@ -1553,13 +1562,18 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     Close 2
 
     If X1 <> 1 Then
+
         Open "REPORT" For Input As #2
+
         Do While Not EOF(2)
             Line Input #2, X$
             LPrint X$
         Loop
+
         Close 2
+
         LPrint Chr$(12)
+
     End If
 
 End Sub

@@ -264,8 +264,8 @@ DN$(3) = "THIRD"
 DN$(4) = "FOURTH"
 
 U5$(0) = "HUMAN OPPONENT           "
-U5$(2) = "COMPUTER IS HOME TEAM    "
 U5$(1) = "COMPUTER IS VISITING TEAM"
+U5$(2) = "COMPUTER IS HOME TEAM    "
 U5$(3) = "COMPUTER VS COMPUTER     "
 
 strG9$(0) = "PLAY USING COLLEGE RULES"
@@ -429,7 +429,7 @@ Else
         Color 15, 0
         Cls
         Color 2
-        
+
         Print Tab(29); "SELECT OPENING OPTIONS"
         Print
         Locate 3, 2
@@ -634,7 +634,7 @@ Color 15, 0
 
 Select Case J6(0)
     Case 1: CT = 0
-    Case 2: CT = 1
+    Case 2: J6(0) = 1: CT = 1
     Case 3: J6(0) = 2
 
 End Select
@@ -1827,7 +1827,7 @@ Select Case P2
 
                     3456 '
                     If (P2 <= 2 And D2 = 5 Or P2 <= 2 And D2 = 6 Or P2 >= 6 And D2 = 5 Or P2 >= 6 And D2 = 6) Or (P2 > 2 And P2 < 5 And D2 = 7 Or P2 > 2 And P2 < 5 And D2 = 8) Then
-                        
+
                         ' *** STUNTS ***
                         I4 = Int(Rnd(1) * 100) + 1
 
@@ -3116,21 +3116,21 @@ Select Case P2
                             D1 = 1
                             Y = 100 - G - Y
                             YT = 100 - Y
-                            
+
                             Call YARDLINE
-                            
+
                             G = Int(Rnd(1) * 25) + 1
-                            
+
                             If G >= 24 Then G = Int(Rnd(1) * 70) + 31
-                            
+
                             Call YARDAGE
-                            
+
                             X1 = 5
                             SY = 100 - Y
                             EY = SY - G
-                            
+
                             Call MOVEBALL
-                            
+
                             U$ = "RETURNED FOR "
 
                             If G + Y > 99.99 Then
@@ -4077,12 +4077,12 @@ Select Case Q - 1
             If H% = 2 Then
                 'Neutral stadium and attendance
                 SITE$ = "NEUTRAL FIELD"
-                ATT& = Int(Rnd(1) * 10000) + 1 + 5000
+                actualAttendance& = Int(Rnd(1) * 10000) + 1 + 5000
             Else
 
                 If Not _FileExists(diskPaths$(0) + "STADIUMS." + NN$(H%)) Then
                     'Generic stadium and attendance
-                    ATT& = Int(Rnd(1) * 5000) + 10000
+                    actualAttendance& = Int(Rnd(1) * 5000) + 10000
                     SITE$ = "MEMORIAL STADIUM"
 
                 Else
@@ -4095,7 +4095,7 @@ Select Case Q - 1
 
                     SITE$ = RTrim$(Q$(1))
 
-                    AVGATT& = CVL(Q$(3))
+                    AVGactualAttendance& = CVL(Q$(3))
 
                     Z$ = Q$(4)
 
@@ -4103,10 +4103,10 @@ Select Case Q - 1
 
                     'Determine attendance randomly
                     If Z$ <> "x" Then
-                        ATT& = Int(Rnd(1) * 5000) + 10000: SITE$ = "MEMORIAL STADIUM"
+                        actualAttendance& = Int(Rnd(1) * 5000) + 10000: SITE$ = "MEMORIAL STADIUM"
                     Else
-                        ATT& = Int(Rnd(1) * 10000) + 1 - 5000 + AVGATT
-                        If ATT& < 0 Then ATT& = Int(Rnd(1) * 500) + 200
+                        actualAttendance& = Int(Rnd(1) * 10000) + 1 - 5000 + AVGATT
+                        If actualAttendance& < 0 Then actualAttendance& = Int(Rnd(1) * 500) + 200
                     End If
 
                 End If

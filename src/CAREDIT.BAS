@@ -1050,8 +1050,12 @@ Sub PrintCareerStatsRB (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
+			Color 0, 15
+
             LPrint Z$
+
             LPrint "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
             VV = 0
 
@@ -1126,6 +1130,8 @@ Sub PrintCareerStatsRB (exitFlag%, B9)
             TT4 = 0
             TT5 = 0
             TT6 = 0
+
+			LPrint Chr$(12)
 
         Case "N"
             Exit Sub

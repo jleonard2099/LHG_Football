@@ -8,6 +8,8 @@ Const MAX_GAMES = 1500
 
 'Const DIVS_PER_CONFERENCE = 2
 
+DefInt A-Z
+
 '$INCLUDE: 'KeyInput.BI'
 '$INCLUDE: 'QPProEqu.BI'
 '$INCLUDE: 'PadRight.BI'
@@ -15,7 +17,7 @@ Const MAX_GAMES = 1500
 '$INCLUDE: 'TITLE.BI'
 '$INCLUDE: 'Variables.BI'
 
-DefInt A-Z
+
 
 '----------------------------------------
 '               MAIN CODE

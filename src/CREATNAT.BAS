@@ -11,12 +11,6 @@ Sub CREATNAT ()
     FG = 0
     BG = 7
 
-    For X = 1 To 40
-        Z1$(X) = "XXX"
-        Z2$(X) = "XXX"
-        Z1%(X) = -1
-    Next
-
     Do
         Cls
 
@@ -44,6 +38,13 @@ Sub CREATNAT ()
         I1 = Selection%
 
         If ExitCode% <> 27 Then
+
+			For X = 1 To 40
+				Z1$(X) = "XXX"
+				Z2$(X) = "XXX"
+				Z1%(X) = -1
+			Next
+
             Select Case Selection%
                 Case 1:
                     Call DefineLeagueNatl(LG$)
@@ -55,6 +56,7 @@ Sub CREATNAT ()
                     Cls
 
             End Select
+
         End If
 
     Loop Until Selection% = 3 Or ExitCode% = 27

@@ -146,11 +146,15 @@ Sub HeadToHead_Pro_League (X2)
 
         End If
 
+		Color 7, 0
+
         Cls
 
         J = 5
 
-        Locate 8, 8: Color 15, 1
+        Locate 8, 8
+        Color 15, 1
+
         'Print box top
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
@@ -164,20 +168,23 @@ Sub HeadToHead_Pro_League (X2)
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Locate 10, 15
-
-        Color 7
-        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+		Locate 7, 32
 
         Do
+            Locate 10, 15
+			Color 7, 1
+
+            Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
             J$ = GetKeyPress$
+
             Color 14, 0
-            If UCase$(J$) = "P" Then X1 = 1
-            If UCase$(J$) = "S" Then VPP = 1
+
         Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
 
+        If UCase$(J$) = "P" Then X1 = 1
+        If UCase$(J$) = "S" Then VPP = 1
         W$ = LG$ + ".LIB"
 
         Open diskPaths$(2) + W$ For Input As #1
@@ -345,17 +352,21 @@ Sub HeadToHead_Pro_League (X2)
         Close 2
 
         If X1 = 1 Then
+
             Open "REPORT" For Input As #2
+
             Do While Not EOF(2)
                 Line Input #2, X$
                 LPrint X$
             Loop
+
             Close 2
+
             LPrint Chr$(12)
             X1 = 0
+
         End If
 
-        600
         Cls
 
         Call TITLE_UTILS
@@ -950,10 +961,10 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
             Locate 7, 37: Input reportFile$
 
             If reportFile$ <> "" Then
-				Do
-					Locate 13, 12: Print "ANY CHANGE (YN) "
-					I$ = GetKeyPress$
-				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                Do
+                    Locate 13, 12: Print "ANY CHANGE (YN) "
+                    I$ = GetKeyPress$
+                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
             End If
 
         End If
@@ -1352,17 +1363,18 @@ Sub ChooseLeague (targetFile$)
 
                 'Work out this logic better
                 If ExitCode% <> 27 Then
-                    Color 15, 0
+
                     targetFile$ = leagueFiles$(Selection%)
+                    Color 15, 1
                     Locate 2, 33: Print targetFile$
 
-					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
 
-					Color 15, 0
+                    Color 15, 0
 
                 End If
 
@@ -1476,14 +1488,14 @@ Sub GetDiskID_HD2HDPRO (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-				Color PA%(2), PA%(1): Print A$
+                Color PA%(2), PA%(1): Print A$
 
                 Color 15, 4
-				
-				Do
-					Locate , 33: Print "ANY CHANGE (YN)";
-					I$ = GetKeyPress$
-				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                Do
+                    Locate , 33: Print "ANY CHANGE (YN)";
+                    I$ = GetKeyPress$
+                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
             End If
 

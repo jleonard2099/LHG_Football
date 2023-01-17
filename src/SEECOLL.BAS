@@ -370,19 +370,18 @@ Sub StatOptions_Coll (FF$)
 
         Locate 7, 32
 
-        Locate 10, 15
-
-        Color 7
-
-        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
-
         Do
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+			Locate 10, 15
+			Color 7, 1
 
-        Color 14, 0
+			Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
+			Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
+			Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+            I$ = GetKeyPress$
+			
+			Color 14, 0
+			
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
         Select Case UCase$(I$)
 
@@ -415,6 +414,7 @@ Sub StatOptions_Coll (FF$)
         Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
 
         Do
+			Color 15, 1
 			Locate 8
 			U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
 			Locate , (80 - Len(U$)) / 2
@@ -1170,7 +1170,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
 
     Shared D1$, D2$
 
-    Color 15, 0
+	Color 0, 15
 
     Cls
 
@@ -1632,13 +1632,18 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Close 2
 
     If X1 <> 1 Then
+
         Open "REPORT" For Input As #2
+
         Do While Not EOF(2)
             Line Input #2, X$
             LPrint X$
         Loop
+
         Close 2
+
         LPrint Chr$(12)
+
     End If
 
 End Sub

@@ -1019,9 +1019,9 @@ Sub ProcessLeaders (careerFile$)
 
     Dim DFC$(1)
 
-    If _FileExists(diskPaths$(1) + careerFile$ + ".CLD") Then
+    If _FileExists(diskPaths$(2) + careerFile$ + ".CLD") Then
 
-        Open diskPaths$(1) + careerFile$ + ".CLD" For Input As #1
+        Open diskPaths$(2) + careerFile$ + ".CLD" For Input As #1
 
         For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 
@@ -1563,7 +1563,7 @@ Sub ProcessLeaders (careerFile$)
 
     '-----
 
-    Open diskPaths$(1) + careerFile$ + ".CLD" For Output As #1
+    Open diskPaths$(2) + careerFile$ + ".CLD" For Output As #1
     For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
     Write #1, RBR$(0), RBR$(1)
     For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR%(I): Next

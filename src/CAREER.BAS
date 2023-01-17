@@ -53,7 +53,9 @@ Sub CAREER ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case Selection%
+
                 Case 1: Call CreateMergeInitial
                 Case 2: Call CARMERGE
                 Case 3: Call CARVIEW
@@ -61,7 +63,9 @@ Sub CAREER ()
                 Case 5: Call CAREDIT
                 Case 6: Call ViewPrintCareer
                 Case 7: Cls
+
             End Select
+
         End If
 
     Loop Until Selection% = 7 Or ExitCode% = 27
@@ -434,7 +438,7 @@ Sub CreateMergeInitial ()
 
                 Next I
 
-                If JX = 1 Then Call PerformFinalUpdate(Z$)
+                If JX = 1 Then Call PerformFinalUpdate(Z1$)
                 'If JX = 0 Then 705
 
                 Locate 20, 20: Color 15: Print "MERGING CAREER STATS . . . . PLEASE WAIT"
@@ -497,11 +501,10 @@ Sub ViewPrintCareer ()
 
     Do
         'Display list of files...
-
-        Spec$ = diskPaths$(1) + "*.CLD"
+        Spec$ = diskPaths$(2) + "*.CLD"
         Count% = FCount%(Spec$)
         If Count% = 0 Then
-            4500 'GoSub 4600
+
             Call CSMsgBox("NO CAREER FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
@@ -517,9 +520,9 @@ Sub ViewPrintCareer ()
             Call ReadFile(careerLeaderFiles$())
 
             Do
-                Cls
                 Color , 1
                 Cls
+
                 Locate , 28
                 Color 14
                 Print "SELECT FILE TO VIEW": Color 15
@@ -559,7 +562,7 @@ Sub ViewPrintCareer ()
             targetFile$ = RTrim$(targetFile$)
             ZZ$ = Left$(targetFile$, Len(targetFile$) - 4)
 
-            Open diskPaths$(1) + ZZ$ + ".CLD" For Input As #1
+            Open diskPaths$(2) + ZZ$ + ".CLD" For Input As #1
             For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
             Input #1, RBR$(0), RBR$(1)
             For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
@@ -575,7 +578,7 @@ Sub ViewPrintCareer ()
             For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
             Close #1
 
-            Cls
+			Cls
 
             Do
 				Locate 5, 10
@@ -585,6 +588,7 @@ Sub ViewPrintCareer ()
             Loop Until UCase$(I$) = "V" Or UCase$(I$) = "P"
 
             If UCase$(I$) = "V" Then
+
                 Do
                     Cls
                     Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
@@ -699,6 +703,9 @@ Sub ViewPrintCareer ()
             End If
 
             If UCase$(I$) = "P" Then
+
+				Color 0, 15
+
                 LPrint Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
                 LPrint "RUSHING ATTEMPTS";
                 LPrint Tab(32); Using "####"; RBBC!(0);: LPrint Tab(50); careerRBC$(0);: LPrint Tab(64); RBYR%(0)
@@ -794,7 +801,8 @@ Sub ViewPrintCareer ()
                 LPrint Tab(32); Using "####"; FGGC!(4);: LPrint Tab(50); FGC$(4);: LPrint Tab(64); FGYR%(4)
                 LPrint "EXTRA POINT PERCENTAGE";
                 LPrint Tab(31); Using "###.#"; FGGC!(5) * 100;: LPrint Tab(50); FGC$(5);: LPrint Tab(64); FGYR%(5)
-                'GoTo 1
+
+				LPrint Chr$(12)
 
             End If
 
@@ -989,7 +997,7 @@ Sub PerformFinalUpdate (careerFile$)
 
     Dim PP(15, 20), FF(15, 20), II(15, 20), YY(15, 20)
 
-    If _FileExists(diskPaths$(1) + Left$(careerFile$, JX) + ".CLD") Then
+    If _FileExists(diskPaths$(2) + Left$(careerFile$, JX) + ".CLD") Then
         D = 0
 
         For J = 0 To 8
@@ -998,7 +1006,7 @@ Sub PerformFinalUpdate (careerFile$)
             If X$ = "." Then JX = D - 1
         Next J
 
-        Open diskPaths$(1) + Left$(careerFile$, JX) + ".CLD" For Input As #1
+        Open diskPaths$(2) + Left$(careerFile$, JX) + ".CLD" For Input As #1
         For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
         Input #1, RBR$(0), RBR$(1)
         For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
@@ -1525,6 +1533,7 @@ Sub PerformFinalUpdate (careerFile$)
     '-----
 
     If VV = 0 Then
+
         D = 0
 
         For J = 0 To 8
@@ -1533,11 +1542,11 @@ Sub PerformFinalUpdate (careerFile$)
             If X$ = "." Then JX = D - 1
         Next J
 
-        Open diskPaths$(1) + Left$(careerFile$, JX) + ".CLD" For Output As #1
+        Open diskPaths$(2) + Left$(careerFile$, JX) + ".CLD" For Output As #1
 
     End If
 
-    If VV = 1 Then Open diskPaths$(1) + careerFile$ + ".CLD" For Output As #1
+    If VV = 1 Then Open diskPaths$(2) + careerFile$ + ".CLD" For Output As #1
 
     For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 

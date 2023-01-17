@@ -54,16 +54,16 @@ Sub SEENATL ()
 
                 If ExitCode% <> 27 Then
 
-					Color 15, 1
+                    Color 15, 1
                     targetFile$ = organizationFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
-					
-					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-					Color 15, 0
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Color 15, 0
 
                 End If
 
@@ -101,11 +101,11 @@ Sub LoadLeaderFiles_Natl (FF$, D1$, D2$, WE$, NRT)
     Shared compZ2$(), compZ3$()
     Shared TR$()
 
-    3911 '
     Cls
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
     Open diskPaths$(2) + WE$ + ".NLD" For Input As #2
+
     For X = 1 To 60
         Input #2, seeT$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
     Next
@@ -170,19 +170,18 @@ Sub StatOptions_Natl (FF$, D1$, D2$, NRT)
 
         Locate 7, 32
 
-        Locate 10, 15
-
-        Color 7
-
-        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-        Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
-
         Do
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+            Locate 10, 15
+            Color 7, 1
 
-        Color 14, 0
+            Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+            I$ = GetKeyPress$
+
+            Color 14, 0
+
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
         Select Case UCase$(I$)
 
@@ -216,11 +215,12 @@ Sub StatOptions_Natl (FF$, D1$, D2$, NRT)
 
 
         Do
-			Locate 8
-			U$ = "VIEW NATIONAL STATS AGAIN (YN)"
-			Locate , (80 - Len(U$)) / 2
-			Print U$
-			Color 15, 0
+            Color 15, 1
+            Locate 8
+            U$ = "VIEW NATIONAL STATS AGAIN (YN)"
+            Locate , (80 - Len(U$)) / 2
+            Print U$
+            Color 15, 0
             A$ = GetKeyPress$
         Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
 
@@ -809,7 +809,7 @@ Sub StatFilePrompt_Natl (statFile$)
         If statFile$ <> "" Then
 
             Do
-				Locate 13, 12: Print "ANY CHANGE (YN) "
+                Locate 13, 12: Print "ANY CHANGE (YN) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -830,6 +830,8 @@ Sub StatsToFile_Natl (statFile$, FF$, D1$, D2$, X1, NRT)
 
     Shared seePR$(), TR$()
     Shared compZ2$(), compZ3$()
+
+    Color 0, 15
 
     Cls
 
@@ -1240,13 +1242,18 @@ Sub StatsToFile_Natl (statFile$, FF$, D1$, D2$, X1, NRT)
     Close 2
 
     If X1 <> 1 Then
+
         Open "REPORT" For Input As #2
+
         Do While Not EOF(2)
             Line Input #2, X$
             LPrint X$
         Loop
+
         Close 2
+
         LPrint Chr$(12)
+
     End If
 
 End Sub

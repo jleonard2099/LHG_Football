@@ -20,16 +20,10 @@ Sub COMPNATL ()
 
     _Title "3-in-1 Football - Update Org Stats"
 
-    Erase BRC!
-    Erase BRC$
-    Erase TRC!
-    Erase TRC$
-
     UP$ = "N"
 
     Cls
 
-    4001
     TRC!(11) = 999
     TRC!(22) = 999
 
@@ -45,17 +39,17 @@ Sub COMPNATL ()
 
         Open diskPaths$(1) + "RECORDS.CFB" For Input As #1
 
-        For I = 0 To 50: 
-			Input #1, BRC!(I)
-			Input #1, BRC$(I, 0)
-			Input #1, BRC$(I, 1)
+        For I = 0 To 50:
+            Input #1, BRC!(I)
+            Input #1, BRC$(I, 0)
+            Input #1, BRC$(I, 1)
             Input #1, BRC$(I, 2)
         Next
-		
-        For I = 0 To 50: 
-			Input #1, TRC!(I)
-			Input #1, TRC$(I)
-		Next
+
+        For I = 0 To 50:
+            Input #1, TRC!(I)
+            Input #1, TRC$(I)
+        Next
 
         Close 1
 
@@ -107,320 +101,267 @@ Sub COMPNATL ()
 
                 If ExitCode% <> 27 Then
 
-					Color 15, 1
-					targetFile$ = organizationFiles$(Selection%)
-					Locate 2, 33: Print targetFile$
+                    Color 15, 1
+                    targetFile$ = organizationFiles$(Selection%)
+                    Locate 2, 33: Print targetFile$
 
-					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                    Do
+                        Locate , 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-					Color 15, 0
+                    Color 15, 0
 
-				End If
+                End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-			If ExitCode% <> 27 Then
-				targetFile$ = RTrim$(targetFile$)
-				WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-				Cls
-				Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-				Color 15, 0
-
-				Do
-					I$ = GetKeyPress$
-					finalUpdate$ = UCase$(I$)
-				Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
-
-				For X = 1 To 240
-					N2$(X) = "*"
-					N3$(X) = "*"
-					N1!(X, 1) = 0
-					N1!(X, 2) = 0
-				Next X
-
-				For I = 1 To 10
-					For I1 = 1 To 20
-						For I2 = 1 To 9
-							NT!(I, I1, I2) = 0
-						Next
-					Next
-				Next
+            If ExitCode% <> 27 Then
+                targetFile$ = RTrim$(targetFile$)
+                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+
+                Cls
+                Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
+                Color 15, 0
+
+                Do
+                    I$ = GetKeyPress$
+                    finalUpdate$ = UCase$(I$)
+                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
+
+                'Initialize values first
+                'Erase N2$, N3$, NT$
+
+                For X = 1 To 240
+                    N2$(X) = "*"
+                    N3$(X) = "*"
+                Next X
+
+                For I = 1 To 10
+                    For I1 = 1 To 20
+                        NT$(I, I1) = "*"
+                    Next
+                Next
+
+                For I = 1 To 20
+                    NT!(2, I, 5) = 9999
+                    NT!(4, I, 5) = 9999
+                    NT!(6, I, 3) = 9999
+                    NT!(8, I, 8) = 9999
+                    NT!(10, I, 7) = -99
+                Next
+
+                Open diskPaths$(2) + WE$ + ".CON" For Input As #2
+
+                Input #2, X$
+
+                For I = 1 To 40
+                    Input #2, CN$(I)
+                Next
+
+                Close 2
+
+                For NC = 1 To 40
+
+                    If CN$(NC) <> "XXX" Then
+
+                        'Initialize values first
+                        Erase compZ1!, NT!, PT!, PTSF!, PTSA!, TT!
+                        'Erase compZ1$, compZ2$, compZ3$,
+                        'Erase PT$, TT$
+                        Erase O1!, O2!, O3!
+
+                        For X = 1 To 60
+                            compZ1$(X) = "*"
+                            'O1!(X) = 0
+                            'O2!(X) = 0
+                            'O3!(X) = 0
+                        Next
+
+                        For X = 1 To 240
+                            compZ2$(X) = "*"
+                            compZ3$(X) = "*"
+                        Next X
+
+                        For I = 1 To 10
+                            For I1 = 1 To 20
+                                TT$(I, I1) = "*"
+                            Next
+                        Next
+
+                        For I = 1 To 20
+                            TT!(2, I, 5) = 9999
+                            TT!(4, I, 5) = 9999
+                            TT!(6, I, 3) = 9999
+                            TT!(8, I, 8) = 9999
+                            TT!(10, I, 7) = -99
+                        Next
+
+                        Cls
+
+                        Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+
+                        Input #2, FF$
+                        Input #2, D1$
+                        Input #2, D2$
+
+                        For XW = 1 To 30
+                            Input #2, H1$(XW)
+                        Next
+
+                        Close 2
+
+                        Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
+                        Input #2, LG%
+                        Close 2
+
+                        If LG% <> 0 Then
+                            Cls
+                            Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
+                            Print "        RETURNING TO MAIN MENU"
+                            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+                            I$ = GetKeyPress$
+                            Exit Sub
+                        Else
 
-				For I = 1 To 10
-					For I1 = 1 To 20
-						NT$(I, I1) = "*"
-					Next
-				Next
+                            Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+                            Input #2, FF$
+                            Input #2, D1$
+                            Input #2, D2$
+                            For X = 1 To 30
+                                Input #2, compZ1$(X)
+                            Next X
+                            Close 2
 
-				CA = 2
+                            For XW = 1 To 30
 
-				For I = 1 To 20
-					NT!(CA, I, 5) = 9999
-				Next
+                                If H1$(XW) <> Chr$(42) Then
 
-				CA = 4
+                                    Call FindStatsNatl(XW, numberGames%, NRT)
 
-				For I = 1 To 20
-					NT!(CA, I, 5) = 9999
-				Next
+                                    L = Len(H1$(XW))
+                                    WT$ = ""
+
+                                    For X = 1 To L:
+                                        A = Asc(Mid$(H1$(XW), X, 1))
+                                        WT$ = WT$ + Chr$(A)
+                                    Next X
 
-				CA = 6
+                                    skipMe% = 0
 
-				For I = 1 To 20
-					NT!(CA, I, 3) = 9999
-				Next
+                                    For X = 1 To 30
 
-				CA = 8
+                                        If compZ1$(X) = WT$ Then
 
-				For I = 1 To 20
-					NT!(CA, I, 8) = 9999
-				Next
+                                            If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
+                                                skipMe% = 1
+                                                Exit For
+                                            End If
+
+                                            O1!(X) = fullWins
+                                            O2!(X) = fullLosses
+                                            O3!(X) = fullTies
+                                            O1!(X + 30) = confWins
+                                            O2!(X + 30) = confLosses
+                                            O3!(X + 30) = confTies
+                                            PTSF!(X + 30) = PTSFC
+                                            PTSA!(X + 30) = PTSAC
+                                            compZ1$(X + 30) = compZ1$(X)
+                                        End If
 
-				CA = 10
+                                    Next X
+                                    'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
-				For I = 1 To 20
-					NT!(CA, I, 7) = -99
-				Next
+                                    If skipMe% <> 1 Then
+                                        Call ReadStatsNatl(XW, numberGames%, TM$)
+                                        Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
+                                        Call CheckStatsNatl(XW, numberGames%, TM$, WT$, finalUpdate$)
+                                    End If
 
-				Open diskPaths$(2) + WE$ + ".CON" For Input As #2
+                                End If
 
-				Input #2, X$
+                            Next XW
 
-				For I = 1 To 40
-					Input #2, CN$(I)
-				Next
+                        End If
 
-				Close 2
+                        For Z = 1 To 4
 
-				For NC = 1 To 40
+                            AA = (15 * (Z - 1)) + 1
+                            ZZ = 15 * Z
 
-					If CN$(NC) <> "XXX" Then
+                            For X = AA To ZZ - 1:
+                                For Y = X + 1 To ZZ:
+                                    diffX = O1!(X) - O2!(X)
+                                    diffY = O1!(Y) - O2!(Y)
 
-						For X = 1 To 60
-							compZ1$(X) = "*"
-							O1!(X) = 0
-							O2!(X) = 0
-							O3!(X) = 0
-							PTSF!(X) = 0
-							PTSA!(X) = 0
-						Next
+                                    If diffX <= diffY Then
+                                        If diffX <> diffY Then
+                                            If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
+                                                Swap compZ1$(X), compZ1$(Y)
+                                                Swap O1!(X), O1!(Y)
+                                                Swap O2!(X), O2!(Y)
+                                                Swap O3!(X), O3!(Y)
+                                                Swap PTSF!(X), PTSF!(Y)
+                                                Swap PTSA!(X), PTSA!(Y)
+                                            End If
+                                        End If
+                                    End If
 
-						For X = 1 To 240
-							compZ2$(X) = "*"
-							compZ3$(X) = "*"
-							compZ1!(X, 1) = 0
-							compZ1!(X, 2) = 0
-						Next X
+                                Next Y
 
-						For I = 1 To 10
-							For I1 = 1 To 20
-								For I2 = 1 To 9
-									TT!(I, I1, I2) = 0
-								Next
-							Next
-						Next
+                            Next X
 
-						For I = 1 To 10
-							For I1 = 1 To 20
-								TT$(I, I1) = "*"
-							Next
-						Next
+                        Next Z
 
-						CA = 2
+                        Call POSTLEADERS(NC, CN$())
 
-						For I = 1 To 20
-							TT!(CA, I, 5) = 9999
-						Next
+                        Call SortStatsNatl
 
-						CA = 4
+                    End If
 
-						For I = 1 To 20
-							TT!(CA, I, 5) = 9999
-						Next
+                Next NC
 
-						CA = 6
+                Call POSTNATIONAL(WE$)
 
-						For I = 1 To 20
-							TT!(CA, I, 3) = 9999
-						Next
+                For Z = 1 To NRT - 1
+                    For Z1 = Z + 1 To NRT
+                        If PT!(Z, 1) < PT!(Z1, 1) Then
+                            Swap PT$(Z1), PT$(Z)
+                            For MN = 1 To 5
+                                Swap PT!(Z1, MN), PT!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
 
-						CA = 8
+                Open diskPaths$(2) + WE$ + ".POL" For Output As #2
+                Print "POSTING "; WE$; " POLL"
+                Write #2, NRT
 
-						For I = 1 To 20
-							TT!(CA, I, 8) = 9999
-						Next
+                For X = 1 To 1200
+                    Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
+                Next
 
-						CA = 10
+                Close 2
 
-						For I = 1 To 20
-							TT!(CA, I, 7) = -99
-						Next
+                Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
 
-						Cls
+                For I = 0 To 50:
+                    Print #1, BRC!(I)
+                    Print #1, BRC$(I, 0)
+                    Print #1, BRC$(I, 1)
+                    Print #1, BRC$(I, 2)
+                Next
 
-						Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
-
-						Input #2, FF$
-						Input #2, D1$
-						Input #2, D2$
+                For I = 0 To 50:
+                    Print #1, TRC!(I)
+                    Print #1, TRC$(I)
+                Next
 
-						For XW = 1 To 30
-							Input #2, H1$(XW)
-						Next
+                Close 1
 
-						Close 2
+            End If 'Done checking ESC
 
-						Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
-						Input #2, LG%
-						Close 2
-
-						If LG% <> 0 Then
-							Cls
-							Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
-							Print "        RETURNING TO MAIN MENU"
-							Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
-							I$ = GetKeyPress$
-							Exit Sub
-						Else
-
-							Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
-							Input #2, FF$
-							Input #2, D1$: Input #2, D2$
-							For X = 1 To 30
-								Input #2, compZ1$(X)
-							Next X
-							Close 2
-
-							For XW = 1 To 30
-
-								Call FindStatsNatl(XW, numberGames%, NRT)
-
-								900 '
-								L = Len(H1$(XW))
-								WT$ = ""
-
-								For X = 1 To L:
-									A = Asc(Mid$(H1$(XW), X, 1))
-									WT$ = WT$ + Chr$(A)
-								Next X
-
-								skipMe% = 0
-
-								For X = 1 To 30
-
-									If compZ1$(X) = WT$ Then
-
-										If O1!(X) = WN And O2!(X) = LS And O3!(X) = TY Then
-											skipMe% = 1
-											Exit For
-										End If
-
-										O1!(X) = WN
-										O2!(X) = LS
-										O3!(X) = TY
-										O1!(X + 30) = CW
-										O2!(X + 30) = CL
-										O3!(X + 30) = CT
-										PTSF!(X + 30) = PTSFC
-										PTSA!(X + 30) = PTSAC
-										compZ1$(X + 30) = compZ1$(X)
-									End If
-								Next X
-
-								If skipMe% <> 1 Then
-									Call ReadStatsNatl(XW, numberGames%, TM$)
-									Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
-									Call CheckStatsNatl(XW, numberGames%, TM$, WT$, finalUpdate$)
-								End If
-
-							Next
-
-						End If
-
-						950 '
-						For Z = 1 To 4
-
-							AA = (15 * (Z - 1)) + 1
-							ZZ = 15 * Z
-
-							For X = AA To ZZ - 1:
-								For Y = X + 1 To ZZ:
-									diffX = O1!(X) - O2!(X)
-									diffY = O1!(Y) - O2!(Y)
-
-									If diffX <= diffY Then
-										If diffX <> diffY Then
-											If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
-												Swap compZ1$(X), compZ1$(Y)
-												Swap O1!(X), O1!(Y)
-												Swap O2!(X), O2!(Y)
-												Swap O3!(X), O3!(Y)
-												Swap PTSF!(X), PTSF!(Y)
-												Swap PTSA!(X), PTSA!(Y)
-											End If
-										End If
-									End If
-
-								Next Y
-
-							Next X
-
-						Next Z
-
-						Call POSTLEADERS(NC, CN$())
-						Call SortStatsNatl
-
-					End If
-
-				Next NC
-
-				4010 '
-				Call POSTNATIONAL(WE$)
-
-				4020 '
-				For Z = 1 To NRT - 1
-					For Z1 = Z + 1 To NRT
-						If PT!(Z, 1) < PT!(Z1, 1) Then
-							Swap PT$(Z1), PT$(Z)
-							For MN = 1 To 5
-								Swap PT!(Z1, MN), PT!(Z, MN)
-							Next MN
-						End If
-					Next Z1
-				Next Z
-
-				Open diskPaths$(2) + WE$ + ".POL" For Output As #2
-				Print "POSTING "; WE$; " POLL"
-				Write #2, NRT
-
-				For X = 1 To 1200
-					Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
-				Next
-
-				Close 2
-
-				Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
-
-				For I = 0 To 50:
-					Print #1, BRC!(I)
-					Print #1, BRC$(I, 0)
-					Print #1, BRC$(I, 1)
-					Print #1, BRC$(I, 2)
-				Next
-
-				For I = 0 To 50: 
-					Print #1, TRC!(I)
-					Print #1, TRC$(I)
-				Next
-
-				Close 1
-
-			End If 'Done checking ESC
-			
         End If 'Done checking file count
 
         '...Until we press ESC
@@ -448,9 +389,9 @@ Sub FindStatsNatl (XW, numberGames%, NRT)
     Shared O%(), T%()
 
     700 '
-    WN = 0
-    LS = 0
-    TY = 0
+    fullWins = 0
+    fullLosses = 0
+    fullTies = 0
 
     If H1$(XW) <> Chr$(42) Then
 
@@ -462,12 +403,12 @@ Sub FindStatsNatl (XW, numberGames%, NRT)
 
             Call READFILES(H1$(), XW, numberGames%)
 
-            WN = 0
-            LS = 0
-            TY = 0
-            CW = 0
-            CT = 0
-            CL = 0
+            fullWins = 0
+            fullLosses = 0
+            fullTies = 0
+            confWins = 0
+            confTies = 0
+            confLosses = 0
 
             5500 '
             PTSFC = 0
@@ -478,25 +419,31 @@ Sub FindStatsNatl (XW, numberGames%, NRT)
 
                 Call STATNAME(O$(), I)
 
-                For EC = 1 To 30:
+                confGame = 0
+
+                For EC = 1 To 30
+
                     If O$(I) = H1$(EC) Then
-                        If O%(I) > T%(I) Then WN = WN + 1: CW = CW + 1
-                        If O%(I) < T%(I) Then LS = LS + 1: CL = CL + 1
-                        If O%(I) = T%(I) Then TY = TY + 1: CT = CT + 1
-                        PTSFC = PTSFC + O%(I)
-                        PTSAC = PTSAC + T%(I)
-                        doneCalc% = 1
+                        confGame = 1
                         Exit For
                     End If
+
                 Next EC
 
-                If doneCalc% <> 1 Then
-                    If O%(I) > T%(I) Then WN = WN + 1
-                    If O%(I) < T%(I) Then LS = LS + 1
-                    If O%(I) = T%(I) Then TY = TY + 1
+                If confGame <> 1 Then
+                    If O%(I) > T%(I) Then fullWins = fullWins + 1
+                    If O%(I) < T%(I) Then fullLosses = fullLosses + 1
+                    If O%(I) = T%(I) Then fullTies = fullTies + 1
+                Else
+                    If O%(I) > T%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                    If O%(I) < T%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                    If O%(I) = T%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
                 End If
 
+                PTSFC = PTSFC + O%(I)
+                PTSAC = PTSAC + T%(I)
                 EC = 0
+
             Next I
 
             'STRENGTH OF SCHEDULE
@@ -527,9 +474,9 @@ Sub FindStatsNatl (XW, numberGames%, NRT)
             NRT = NRT + 1
             PT$(NRT) = H1$(XW)
             PT!(NRT, 1) = PW
-            PT!(NRT, 2) = WN
-            PT!(NRT, 3) = LS
-            PT!(NRT, 4) = TY
+            PT!(NRT, 2) = fullWins
+            PT!(NRT, 3) = fullLosses
+            PT!(NRT, 4) = fullTies
             PT!(NRT, 5) = SS
 
             Print "FINDING "; H1$(XW); " STATS"
@@ -719,8 +666,8 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared O%(), T%()
 
-	Cls
-	
+    Cls
+
     'TEAM CATEGORIES
     'CATEGORY 1 - TOTAL OFFENSE
     CA = 1
@@ -749,8 +696,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2506 'CATEGORY 2 - TOTAL DEFENSE
+    'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
+
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2)) / numberGames%: TRC$(25) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) < TRC!(26) Then TRC!(26) = DT!(6) + DT!(2): TRC$(26) = TM$
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)): TRC$(27) = TM$
@@ -775,8 +723,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2507 'CATEGORY 3 - RUSHING OFFENSE
+    'CATEGORY 3 - RUSHING OFFENSE
     CA = 3
+
     If UCase$(finalUpdate$) = "Y" And OT!(2) / numberGames% > TRC!(3) Then TRC!(3) = OT!(2) / numberGames%: TRC$(3) = TM$
     If OT!(2) > TRC!(4) Then TRC!(4) = OT!(2): TRC$(4) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(2) / OT!(1) > TRC!(5) Then TRC!(5) = OT!(2) / OT!(1): TRC$(5) = TM$
@@ -802,8 +751,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     End If
 
-    2516 'CATEGORY 4 - RUSHING DEFENSE
+    'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
+
     If UCase$(finalUpdate$) = "Y" And DT!(2) / numberGames% < TRC!(29) Then TRC!(29) = DT!(2) / numberGames%: TRC$(29) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(2) < TRC!(30) Then TRC!(30) = DT!(2): TRC$(30) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(2) / DT!(1) < TRC!(31) Then TRC!(31) = DT!(2) / DT!(1): TRC$(31) = TM$
@@ -827,8 +777,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2521 'CATEGORY 5 - SCORING OFFENSE
+    'CATEGORY 5 - SCORING OFFENSE
     CA = 5
+
     PTS = 0
     OPTS = 0
 
@@ -840,43 +791,16 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
     If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
     If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
-    If PTS / numberGames% <= TT!(CA, 20, 3) Then 2526
+    If PTS / numberGames% > TT!(CA, 20, 3) Then
 
-    TT!(CA, 20, 1) = numberGames%
-    TT!(CA, 20, 2) = PTS
-    TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
-    TT$(CA, 20) = WT$
-
-    For Z = 1 To 19
-        For Z1 = Z + 1 To 20
-            If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
-                Swap TT$(CA, Z1), TT$(CA, Z)
-                For MN = 1 To 9
-                    Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                Next MN
-            End If
-        Next Z1
-    Next Z
-
-    2526 'CATEGORY 6 - SCORING DEFENSE
-    CA = 6
-    PTS = 0
-    For I = 1 To numberGames%
-        PTS = PTS + T%(I)
-    Next
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
-    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
-
-    If PTS / numberGames% < TT!(CA, 20, 3) Then
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = PTS
         TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
+                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
                         Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
@@ -887,8 +811,46 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     End If
 
-    2531 'CATEGORY 7 - PASSING OFFENSE
+    'CATEGORY 6 - SCORING DEFENSE
+    CA = 6
+
+    PTS = 0
+
+    For I = 1 To numberGames%
+        PTS = PTS + T%(I)
+    Next
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
+
+    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
+
+    If PTS / numberGames% < TT!(CA, 20, 3) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = PTS
+        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+
+        Next Z
+
+    End If
+
+    'CATEGORY 7 - PASSING OFFENSE
     CA = 7
+
     If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
     If OT!(6) > TRC!(7) Then TRC!(7) = OT!(6): TRC$(7) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > TRC!(8) Then TRC!(8) = OT!(6) / OT!(3): TRC$(8) = TM$
@@ -918,8 +880,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2536 'CATEGORY 8 - PASSING DEFENSE
+    'CATEGORY 8 - PASSING DEFENSE
     CA = 8
+
     If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(6) < TRC!(33) Then TRC!(33) = DT!(6): TRC$(33) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < TRC!(34) Then TRC!(34) = DT!(6) / DT!(3): TRC$(34) = TM$
@@ -949,8 +912,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2541 'CATEGORY 9 - PUNTING
+    'CATEGORY 9 - PUNTING
     CA = 9
+
     If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
 
     If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
@@ -969,8 +933,9 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2546 'CATEGORY 10 - TURNOVER MARGIN
+    'CATEGORY 10 - TURNOVER MARGIN
     CA = 10
+
     FG = OT!(9) - OT!(10) + DT!(10)
     IG = DT!(5)
     FL = OT!(10) + DT!(9) - DT!(10)
@@ -998,7 +963,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
     End If
 
-    2599 'PUNT RETURNS
+    'PUNT RETURNS
     If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
 
@@ -1040,11 +1005,14 @@ Sub SortStatsNatl ()
 
     ' RUSHING AVERAGE
     For X = 1 To 20
+
         If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
 
             If compZ1!(X, 1) >= N1!(20, 1) Then
+
                 N1!(20, 1) = compZ1!(X, 1): N1!(20, 2) = compZ1!(X, 2)
                 N2$(20) = compZ2$(X): N3$(20) = compZ3$(X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If N1!(Z, 1) < N1!(Z1, 1) Then
@@ -1056,7 +1024,9 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
 
     Next X
@@ -1087,7 +1057,7 @@ Sub SortStatsNatl ()
 
         End If
 
-    2810 Next X
+    Next X
 
     ' RUSHING YARDAGE
     For X = 41 To 50
@@ -1506,12 +1476,15 @@ Sub SortStatsNatl ()
 
     ' INT'S
     For X = 221 To 230
+
         If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
             If compZ1!(X, 1) >= N1!(230, 1) Then
                 N1!(230, 1) = compZ1!(X, 1)
                 N1!(230, 2) = compZ1!(X, 2)
                 N2$(230) = compZ2$(X)
                 N3$(230) = compZ3$(X)
+
                 For Z = 221 To 229
                     For Z1 = Z + 1 To 230
                         If N1!(Z, 1) < N1!(Z1, 1) Then
@@ -1523,18 +1496,25 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' SACKS
     For X = 231 To 240
+
         If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
             If compZ1!(X, 1) >= N1!(240, 1) Then
+
                 N1!(240, 1) = compZ1!(X, 1)
                 N1!(240, 2) = compZ1!(X, 2)
                 N2$(240) = compZ2$(X)
                 N3$(240) = compZ3$(X)
+
                 For Z = 231 To 239
                     For Z1 = Z + 1 To 240
                         If N1!(Z, 1) < N1!(Z1, 1) Then
@@ -1546,19 +1526,28 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' TEAM OFFENSE
     CA = 1
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
+
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
                 Next
+
                 NT$(CA, 20) = TT$(CA, X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If NT!(CA, Z, 5) < NT!(CA, Z1, 5) Then
@@ -1569,19 +1558,28 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' TEAM DEFENSE
     CA = 2
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
                 Next
+
                 NT$(CA, 20) = TT$(CA, X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
@@ -1592,14 +1590,20 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' RUSHING OFFENSE
     CA = 3
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" Or TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
@@ -1616,18 +1620,26 @@ Sub SortStatsNatl ()
                     Next Z1
                 Next Z
             End If
+
         End If
+
     Next X
 
     ' RUSHING DEFENSE
     CA = 4
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
                 Next
+
                 NT$(CA, 20) = TT$(CA, X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
@@ -1638,8 +1650,11 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' SCORING OFFENSE
@@ -1667,13 +1682,19 @@ Sub SortStatsNatl ()
 
     ' SCORING DEFENSE
     CA = 6
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 3) <= NT!(CA, 20, 3) Then
+
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
                 Next
+
                 NT$(CA, 20) = TT$(CA, X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If NT!(CA, Z, 3) > NT!(CA, Z1, 3) Then
@@ -1684,19 +1705,28 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' PASSING OFFENSE
     CA = 7
+
     For X = 1 To 20
+
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
             If TT!(CA, X, 8) >= NT!(CA, 20, 8) Then
+
                 For I = 1 To 8
                     NT!(CA, 20, I) = TT!(CA, X, I)
                 Next
+
                 NT$(CA, 20) = TT$(CA, X)
+
                 For Z = 1 To 19
                     For Z1 = Z + 1 To 20
                         If NT!(CA, Z, 8) < NT!(CA, Z1, 8) Then
@@ -1707,8 +1737,11 @@ Sub SortStatsNatl ()
                         End If
                     Next Z1
                 Next Z
+
             End If
+
         End If
+
     Next X
 
     ' PASSING DEFENSE

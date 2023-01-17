@@ -470,7 +470,7 @@ Sub DisplayField ()
     Locate 2, 80
     Color 0: Print Chr$(223);
 
-    'LOCATE 2, 80: COLOR 0: PRINT "ߢ;
+    'LOCATE 2, 80: COLOR 0: PRINT "?;
 
     Call YARDLINE
 
@@ -867,7 +867,15 @@ End Sub
 ' ...explanation...
 Sub GETTEAM (I)
 
-    If _FileExists(diskPaths$(0) + "FOOT." + YN$) Then
+    If Not _FileExists(diskPaths$(0) + "FOOT." + YN$) Then
+
+        Cls
+        Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
+        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
+        Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
+        Call GETTEAM(I)
+
+    Else
 
         Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
 
@@ -1004,13 +1012,6 @@ Sub GETTEAM (I)
             DDI(I) = DDI(I) + DI(I, I1)
             If DI(I, 0) > 0 Then intDI%(I) = 1
         Next I1
-
-    Else
-        Cls
-        Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
-        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
-        Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
-        Call GETTEAM(I)
 
     End If
 
@@ -1836,16 +1837,16 @@ Sub SAVESTATS ()
 
         Print
 
-        Y% = 0
+        numberGames = 0
         R$ = R$ + "S"
 
         'Read stats in from file
         If _FileExists(diskPaths$(1) + R$) Then
             Open diskPaths$(1) + R$ For Input As #1
-            Input #1, Y%
+            Input #1, numberGames
             For I = 1 To 120: Input #1, O%(I): Next
             For I = 1 To 120: Input #1, HO$(I): Next
-            For I = 1 To 120: Input #1, Time%(I): Next
+            For I = 1 To 120: Input #1, TeamScore%(I): Next
             For I = 1 To 120: Input #1, H$(I): Next
             For I = 1 To 120: Input #1, intPR%(0, I): Next
             For I = 1 To 120: Input #1, intPR%(1, I): Next
@@ -1855,28 +1856,28 @@ Sub SAVESTATS ()
         End If
 
         8103 '
-        If Y% < 120 Then Y% = Y% + 1
-        If H% = Q Then H$(Y%) = "H"
-        If H% <> Q Then H$(Y%) = "A"
-        If H% = 2 Then H$(Y%) = "X"
-        If H% = Q And PN > 4 Then H$(Y%) = "H-" + Str$(PN - 4) + " OT"
-        If H% <> Q And PN > 4 Then H$(Y%) = "A-" + Str$(PN - 4) + " OT"
-        If H% = 2 And PN > 4 Then H$(Y%) = "X-" + Str$(PN - 4) + " OT"
+        If numberGames < 120 Then numberGames = numberGames + 1
+        If H% = Q Then H$(numberGames) = "H"
+        If H% <> Q Then H$(numberGames) = "A"
+        If H% = 2 Then H$(numberGames) = "X"
+        If H% = Q And PN > 4 Then H$(numberGames) = "H-" + Str$(PN - 4) + " OT"
+        If H% <> Q And PN > 4 Then H$(numberGames) = "A-" + Str$(PN - 4) + " OT"
+        If H% = 2 And PN > 4 Then H$(numberGames) = "X-" + Str$(PN - 4) + " OT"
 
-        O%(Y%) = S(Q, 0)
-        HO$(Y%) = A$(1 - Q)
-        Time%(Y%) = S(1 - Q, 0)
-        CRD(Y%) = ATT&
-        SITE$(Y%) = SITE$
-        intPR%(0, Y%) = PA%(Q, 4)
-        intPR%(1, Y%) = PA%(1 - Q, 4)
+        O%(numberGames) = S(Q, 0)
+        HO$(numberGames) = A$(1 - Q)
+        TeamScore%(numberGames) = S(1 - Q, 0)
+        CRD(numberGames) = actualAttendance&
+        SITE$(numberGames) = SITE$
+        intPR%(0, numberGames) = PA%(Q, 4)
+        intPR%(1, numberGames) = PA%(1 - Q, 4)
 
         'Write stats to new file
         Open diskPaths$(1) + R$ For Output As #1
         Print #1, Y%
         For I = 1 To 120: Print #1, O%(I): Next
         For I = 1 To 120: Print #1, HO$(I): Next
-        For I = 1 To 120: Print #1, Time%(I): Next
+        For I = 1 To 120: Print #1, TeamScore%(I): Next
         For I = 1 To 120: Print #1, H$(I): Next
         For I = 1 To 120: Print #1, intPR%(0, I): Next
         For I = 1 To 120: Print #1, intPR%(1, I): Next
@@ -1888,7 +1889,7 @@ Sub SAVESTATS ()
             intPR%(0, I) = 0
             intPR%(1, I) = 0
             O%(I) = 0
-            Time%(I) = 0
+            TeamScore%(I) = 0
             HO$(I) = ""
             H$(I) = ""
         Next
@@ -2040,9 +2041,9 @@ Sub PRINTBOX ()
     Open diskPaths$(1) + NM$ For Output As #1
 
     If H% = 2 Then
-        Print #1, "SITE: NEUTRAL  ATTENDANCE: "; ATT&
+        Print #1, "SITE: NEUTRAL  ATTENDANCE: "; actualAttendance&
     Else
-        Print #1, "SITE: "; SITE$;: Print #1, Using "  ATTENDANCE: ####,###"; ATT&
+        Print #1, "SITE: "; SITE$;: Print #1, Using "  ATTENDANCE: ####,###"; actualAttendance&
     End If
 
     Print #1,
@@ -2371,9 +2372,9 @@ End Sub
 Sub BOX2SCREEN ()
 
     If H% = 2 Then
-        Print "SITE: NEUTRAL  ATTENDANCE: "; ATT&
+        Print "SITE: NEUTRAL  ATTENDANCE: "; actualAttendance&
     Else
-        Print "SITE: "; SITE$;: Print Using "  ATTENDANCE: ####,###"; ATT&
+        Print "SITE: "; SITE$;: Print Using "  ATTENDANCE: ####,###"; actualAttendance&
     End If
 
     Print
@@ -4984,13 +4985,16 @@ End Sub
 'Get list of teams from file
 ' ...explanation...
 Sub FINDTEAMS (I)
+
+    Dim fileLength&
+
     NT = 0
 
     Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
-    Y = LOF(1)
+    fileLength& = LOF(1)
     Field #1, 15 As Q$(0), 640 As X$
 
-    For I1 = 1 To Y / 934
+    For I1 = 1 To fileLength& / 934
         'Get Team Name
         Get #1, I1
 
@@ -7262,7 +7266,7 @@ Sub GetDiskID (I)
             Color PA%(I, 2), PA%(I, 1): Print A$(I)
 
             Color 15, 4
-            
+
             Do
                 Locate , 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
@@ -7492,4 +7496,3 @@ Sub varlog (lineNumber%)
     Print #5, "R9%(1)   :"; R9%(1)
 
 End Sub
-
