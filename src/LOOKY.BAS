@@ -20,6 +20,7 @@ Sub LOOKY ()
 
     Do
 
+        Color , 0
         Cls
         Call TITLE_STATS
         Print
@@ -56,10 +57,10 @@ Sub LOOKY ()
         Select Case UCase$(I$)
             Case "C": statFormat = 0
             Case "P": statFormat = 1
-            Case "E", Chr$(27): Z$ = "END"
+            Case "E", Chr$(27): statFile$ = "END"
         End Select
 
-        If Z$ <> "END" Then
+        If statFile$ <> "END" Then
 
             'for "C", "P"
             Call GetDisk_LOOKY(numberTeams, YN$)
@@ -89,7 +90,7 @@ Sub LOOKY ()
 
             Call TITLE_STATS
 
-            Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+            statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
 
             D% = 0
             PX = 0
@@ -99,9 +100,9 @@ Sub LOOKY ()
             W% = 0
             X% = 0
 
-            Call LoadTeamStats(Z$, numberGames%)
+            Call LoadTeamStats(statFile$, numberGames%)
 
-            If Not _FileExists(diskPaths$(1) + Z$) Then
+            If Not _FileExists(diskPaths$(1) + statFile$) Then
                 Locate 10, 8
                 Call CSMsgBox("UNABLE TO LOCATE COMPILED STATS FILE PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
                 I$ = GetKeyPress$
@@ -109,7 +110,7 @@ Sub LOOKY ()
 
             Else
                 'Load player stats
-                Open diskPaths$(1) + Z$ For Input As #1
+                Open diskPaths$(1) + statFile$ For Input As #1
 
                 Input #1, A$(PX)
 
@@ -200,41 +201,15 @@ Sub LOOKY ()
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-                    'If UCase$(I$) = "N" Then
-
-                    'Cls
-                    'Print "RESET STATS TO 0 ? (YN)";:
-
-                    'Do
-                    '    J$ = GetKeyPress$
-                    'Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
-
-                    'If UCase$(J$) = "Y" Then
-                    'Print
-                    'Print "ARE YOU SURE ? (YN) ";
-
-                    'Do
-                    'K$ = GetKeyPress$
-                    'Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N"
-
-                    'If UCase$(K$) = "Y" Then
-
-                    'Kill diskPaths$(1) + Z$
-                    'Kill diskPaths$(1) + Z$ + "S"
-                    'Cls
-                    'End If
-
-                    'End If 'Done confirming reset
-
-                    'End If 'Done checking if we show stats again
+                    'Call ResetStatsPrompt (statFile$)
 
                 Loop Until UCase$(I$) = "N"
 
             End If 'Done checking for file existence
 
-        End If 'Done checking for Z$ / "END"
+        End If 'Done checking for statFile$ / "END"
 
-    Loop Until Z$ = "END"
+    Loop Until statFile$ = "END"
 
 End Sub
 
@@ -1208,6 +1183,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     Print #2, "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD"
 
     For I = 1 To numberGames%
+
         Print #2, O$(I); Tab(19); Using "###"; O%(I);
         Print #2, "-";: Print #2, Using "###   "; T%(I);
 
@@ -1813,3 +1789,83 @@ Function QBRating! (I, I1, teamType)
     QBRating! = QB!(I1, 7)
 
 End Function
+
+
+'----------------------------------------
+'       ResetStatPrompt Subroutine
+'----------------------------------------
+' Prompts user with choice to reset stats
+' If they chose so, and confirm, then
+' it will proceed to delete the files.
+Sub ResetStatPrompt (statFile$)
+
+    Cls
+
+    JJ = 1
+    Locate 6, 8
+
+    'Print box top
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+    'Print box sides
+    For II = 1 To JJ
+        Locate 6 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 7 + JJ, 8
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+    Locate 7
+
+    Do
+        U$ = "RESET COMPILED STATS TO 0 (YN)"
+        Locate , (80 - Len(U$)) / 2
+        Print U$
+        I$ = GetKeyPress$
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+    Color 15, 0
+
+    If UCase$(I$) = "Y" Then
+
+        'Do
+        JJ = 1
+        Locate 6, 8
+
+        'Print box top
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+        'Print box sides
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Next
+
+        'Print box bottom
+        Locate 7 + JJ, 8
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+        Locate 7
+
+        Do
+            U$ = "ARE YOU SURE (YN)"
+            Locate , (80 - Len(U$)) / 2
+            Print U$
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        Color 15, 0
+
+        If UCase$(I$) = "Y" Then
+            Kill diskPaths$(1) + statFile$
+            Kill diskPaths$(1) + statFile$ + "S"
+            If _FileExists(diskPaths$(1) + statFile$ + "R") Then Kill diskPaths$(1) + statFile$ + "R"
+        End If
+
+        'Loop Until UCase$(I$) = "N"
+
+    End If 'Done checking if reset stats
+
+End Sub

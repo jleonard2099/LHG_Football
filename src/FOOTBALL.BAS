@@ -3,6 +3,8 @@
 '$INCLUDE: 'QPProEqu.BI'
 '$INCLUDE: 'GameRoutines.BI'
 
+On Error GoTo Errhandler
+
 '----------------------------------------
 '           GAME CODE
 '----------------------------------------
@@ -1366,7 +1368,6 @@ Do
                                     KJ = 0
                                     R1 = 1
                                     I2 = A1(P1, I1) + B6(D, 0)
-                                    'Call varlog(1448)
                                     Call REVGAIN
                                     GoTo 3416
                                 End If
@@ -1393,7 +1394,6 @@ Do
                                 End If
 
                                 I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
-                                'Call varlog(1472)
 
                                 If RV% = 1 Then
                                     Call REVGAIN
@@ -1665,8 +1665,6 @@ If I <= 36 And E <> 1 And P2 < 21 Then
 
 End If
 
-'Call varlog(2072)
-
 709 '
 Select Case P2
 
@@ -1696,8 +1694,6 @@ Select Case P2
             'positive integer
 
             I2 = I2 + B6(D, 0) + WX%(4)
-
-            'Call varlog(1767)
 
             If K(P1, 1) >= 20 And K2(P1, I1, 0) / K(P1, 1) > PC%(P1, I1) / 100 + .1 Then I2 = Int(I2 * .4)
 
@@ -2084,8 +2080,6 @@ Select Case P2
         3500 '
         Call PASSBALL
 
-        'Call varlog(2072)
-
         'SACKED
         If I < S1%(3, P2 - 8, D3) + B6(P1, 5) + B6(D, 6) + 1 Then
 
@@ -2255,8 +2249,6 @@ Select Case P2
             If I > (100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2)) Then 3552
 
             Call ARMADJUST
-
-            'Call varlog(2151)
 
             If I <= S2 + S3 + PQ + PW Then
                 'Pass completed

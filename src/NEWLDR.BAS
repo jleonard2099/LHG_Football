@@ -630,10 +630,13 @@ Sub ViewExpanded (statType%)
 
                             QW = PPP
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                            If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                         Case "B":
                             Select Case B9
@@ -1080,10 +1083,13 @@ Sub ViewExpanded (statType%)
 
                             QW = PPP
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                            If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                         Case "H":
                             If B9 = 0 Then X = 0: XX = 39
@@ -1124,10 +1130,13 @@ Sub ViewExpanded (statType%)
                             TVN = 1
                             QW = PPP
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                            If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                         Case "I":
                             Cls
@@ -1164,10 +1173,13 @@ Sub ViewExpanded (statType%)
                             TVN = 1
                             QW = PPP
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                            If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                         Case "J":
                             Select Case B9
@@ -1225,10 +1237,13 @@ Sub ViewExpanded (statType%)
                             TVN = 1
                             QW = PPP
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then Call ExpandedStatsToScreen(XX, QW, TVN)
-                            If printOrView% = 2 Then Call PlayerToPrinter(XX, LG, TVN)
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                         Case "K":
                             Select Case B9
@@ -1322,10 +1337,13 @@ Sub ViewExpanded (statType%)
 
                             QW = TS
 
-                            Call GetListLength(printOrView%, LG, QW)
-
-                            If printOrView% = 1 Then TeamStatsToPrinter
-                            If printOrView% = 2 Then CategoryToPrinter
+                            If printOrView% = 1 Then 
+								Call ExpandedStatsToScreen(XX, QW, TVN)
+							Else
+								'printOrView% = 2 
+								Call GetListLength(printOrView%, LG, QW)
+								Call PlayerToPrinter(XX, LG, TVN)
+							End If
 
                     End Select
 
@@ -1542,7 +1560,7 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
 
             RR = RR + 1
 
-            If (W <> 1 And W Mod 16 = 1) Then
+            If W <> 1 And (W Mod 16 = 1) Then
 
                 RR = 1
                 Locate 22, 17: Color 0, 15
@@ -1762,6 +1780,8 @@ Sub GetListLength (printOrView%, listLength, maxItems)
     Cls
 
     If printOrView% <> 1 Then
+		'If printing...
+
         Do
             Print
             Print
@@ -1783,6 +1803,7 @@ Sub GetListLength (printOrView%, listLength, maxItems)
 
             Locate , 25: Color 1: Print "MAXIMUM = "; maxItems
             Locate , 25: Input "ENTER LENGTH OF LIST"; listLength
+
         Loop Until listLength <= maxItems
 
     End If

@@ -345,7 +345,6 @@ Sub StatOptions_Coll (FF$)
 
     Shared D1$, D2$
 
-
     Do
 
         Cls

@@ -581,7 +581,7 @@ Sub ViewPrintCareer ()
 			Cls
 
             Do
-				Locate 5, 10
+				Locate 15, 10
 				Color 12: Print "V";: Color 7: Print "iew or ";
 				Color 12: Print "P";: Color 7: Print "rint"
                 I$ = GetKeyPress$

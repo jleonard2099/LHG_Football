@@ -254,7 +254,7 @@ Sub StatsToScreen_Natl (FF$, D1$, D2$, NRT)
 
         Print seePR$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; PT!(P, 1); PT!(P, 2); PT!(P, 3); PT!(P, 4); PT!(P, 5)
 
-        If (P Mod 20) = 0 Then
+        If P <> 0 And (P Mod 20 = 0) Then
 
             Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
             QK$ = GetKeyPress$

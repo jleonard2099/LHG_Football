@@ -17,6 +17,11 @@ Rumbling, bumbling, stumbling...
 	- How is the game determining which penalties are called
 	- We need to consider timing of certain penalties (pass interference)
 	- also consider when in the play they happen (how is the clock affected?)
+	- consider penalty frequency as % of plays
+
+- Sacks
+	- how does the game determine sacks?
+	- consider sack frequency as % of plays
 
 - Punting / returns
 	- be sure older teams (without punter) don't punt
