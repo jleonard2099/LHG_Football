@@ -43,8 +43,10 @@ Sub CREATCOL ()
             Select Case Selection%
                 Case 1:
                     Call DefineConference
-                Case 2: Call ReviewConf_Coll
-                Case 3: Cls
+                Case 2:
+                    Call ReviewConf_Coll
+                Case 3:
+                    Cls
 
             End Select
 
@@ -59,9 +61,6 @@ End Sub
 '----------------------------------------
 '...explanation...
 Sub DefineConference ()
-
-    Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
 
     Color 15, 0
 
@@ -111,6 +110,19 @@ Sub DefineConference ()
     Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; D2$
 
     Call ViewConference_Coll(LG$, D1$, D2$)
+    Call SaveConferences(LG$, D1$, D2$)
+
+End Sub
+
+
+'----------------------------------------
+'     SaveConferences Subroutine
+'----------------------------------------
+'...explanation...
+Sub SaveConferences (LG$, D1$, D2$)
+
+    Shared Z1$(), Z2$()
+    Shared PA%(), Z1%()
 
     'Ready to save work
     Open diskPaths$(2) + LG$ + ".LIB" For Output As #2
@@ -317,6 +329,8 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
         End If 'Done checking for 3
 
     Loop Until I$ = "3"
+
+    Call SaveConferences(LG$, D1$, D2$)
 
 End Sub
 
