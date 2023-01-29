@@ -7,7 +7,7 @@ Sub COMPPRO ()
     Shared BRC!()
     Shared O1!(), O2!(), O3!()
     Shared PTSF!(), PTSA!()
-    Shared TRC!(), TT!()
+    Shared TRC!(), TT!(), Z2!()
 
     Shared D1$, D2$, D3$
 
@@ -140,8 +140,8 @@ Sub COMPPRO ()
 
                 For I = 1 To 20
                     TT!(2, I, 5) = 9999
-                    TT!(4, I, 5) = 9999					
-                    TT!(6, I, 3) = 9999					
+                    TT!(4, I, 5) = 9999
+                    TT!(6, I, 3) = 9999
                     TT!(8, I, 8) = 9999
                     TT!(10, I, 7) = -99
                 Next
@@ -167,6 +167,7 @@ Sub COMPPRO ()
                     Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
                     I$ = GetKeyPress$
                 Else
+                    Erase Z2!
 
                     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
                     Input #2, FF$, D1$, D2$, D3
@@ -207,7 +208,7 @@ Sub COMPPRO ()
                                     End If
 
                                 End If
-								'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
+                                'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
                             Next EC
 
@@ -350,8 +351,6 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
     Shared WR!(), YD!(), Z2!()
 
     Shared GI%(), GS%()
-
-    file$ = H1$(XW)
 
     Open diskPaths$(1) + H1$(XW) For Input As #1
     Input #1, TM$
@@ -500,13 +499,19 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
 
     For I = 1 To 16
         For I1 = 1 To 3
-            If KR$(I1) = TB$(I) Then YD!(I) = YD!(I) + KR!(I1, 2): TD!(I) = TD!(I) + KR!(I1, 3)
+            If KR$(I1) = TB$(I) Then
+                YD!(I) = YD!(I) + KR!(I1, 2)
+                TD!(I) = TD!(I) + KR!(I1, 3)
+            End If
         Next
     Next
 
     For I = 1 To 16
         For I1 = 1 To 3
-            If PR$(I1) = TB$(I) Then YD!(I) = YD!(I) + PR!(I1, 2): TD!(I) = TD!(I) + PR!(I1, 3)
+            If PR$(I1) = TB$(I) Then
+                YD!(I) = YD!(I) + PR!(I1, 2)
+                TD!(I) = TD!(I) + PR!(I1, 3)
+            End If
         Next
     Next
 
@@ -655,13 +660,18 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     CA = 1
 
     If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TRC!(0) Then
-        TRC!(0) = (OT!(6) + OT!(2) + OT!(14)) / numberGames%: TRC$(0) = TM$
+        TRC!(0) = (OT!(6) + OT!(2) + OT!(14)) / numberGames%
+        TRC$(0) = TM$
     End If
 
-    If OT!(6) + OT!(2) + OT!(14) > TRC!(1) Then TRC!(1) = OT!(6) + OT!(2) + OT!(14): TRC$(1) = TM$
+    If OT!(6) + OT!(2) + OT!(14) > TRC!(1) Then
+        TRC!(1) = OT!(6) + OT!(2) + OT!(14)
+        TRC$(1) = TM$
+    End If
 
     If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13)) > TRC!(2) Then
-        TRC!(2) = (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13)): TRC$(2) = TM$
+        TRC!(2) = (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13))
+        TRC$(2) = TM$
     End If
 
     If (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
@@ -683,9 +693,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2506 'CATEGORY 2 - TOTAL DEFENSE
+    'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(25) = TM$
@@ -694,6 +705,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(28) = TM$
 
     If (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = DT!(1) + DT!(3) - DT!(13)
         TT!(CA, 20, 3) = DT!(6) + DT!(2) + DT!(14)
@@ -711,6 +723,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
     'CATEGORY 3 - RUSHING OFFENSE
@@ -721,6 +734,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > TRC!(5) Then TRC!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)): TRC$(5) = TM$
 
     If (OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = OT!(1) - OT!(13)
         TT!(CA, 20, 3) = OT!(2) + OT!(14)
@@ -738,9 +752,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2516 'CATEGORY 4 - RUSHING DEFENSE
+    'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
     If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames% < TRC!(29) Then TRC!(29) = (DT!(2) + DT!(14)) / numberGames%: TRC$(29) = TM$
@@ -748,12 +763,14 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < TRC!(31) Then TRC!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)): TRC$(31) = TM$
 
     If (DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = DT!(1) - DT!(13)
         TT!(CA, 20, 3) = DT!(2) + DT!(14)
         TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
         TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
@@ -764,9 +781,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2521 'CATEGORY 5 - SCORING OFFENSE
+    'CATEGORY 5 - SCORING OFFENSE
     CA = 5
     PTS = 0
     OPTS = 0
@@ -781,10 +799,12 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
 
     If PTS / numberGames% > TT!(CA, 20, 3) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = PTS
         TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
@@ -795,9 +815,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2526 'CATEGORY 6 - SCORING DEFENSE
+    'CATEGORY 6 - SCORING DEFENSE
     CA = 6
 
     PTS = 0
@@ -812,10 +833,12 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
 
     If PTS / numberGames% < TT!(CA, 20, 3) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = PTS
         TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
@@ -826,9 +849,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2531 'CATEGORY 7 - PASSING OFFENSE
+    'CATEGORY 7 - PASSING OFFENSE
     CA = 7
 
     If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
@@ -839,6 +863,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
 
     If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
+
         TT!(CA, 20, 1) = numberGames%
         TT!(CA, 20, 2) = OT!(3)
         TT!(CA, 20, 3) = OT!(4)
@@ -848,6 +873,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
         TT!(CA, 20, 7) = OT!(6) / OT!(3)
         TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
@@ -858,9 +884,10 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2536 'CATEGORY 8 - PASSING DEFENSE
+    'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
     If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
@@ -870,36 +897,42 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
 
-    If DT!(6) / numberGames% >= TT!(CA, 20, 8) Then 2541
-    TT!(CA, 20, 1) = numberGames%
-    TT!(CA, 20, 2) = DT!(3)
-    TT!(CA, 20, 3) = DT!(4)
-    TT!(CA, 20, 4) = DT!(5)
-    TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-    TT!(CA, 20, 6) = DT!(6)
-    TT!(CA, 20, 7) = DT!(6) / DT!(3)
-    TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
-    TT$(CA, 20) = WT$
-    For Z = 1 To 19
-        For Z1 = Z + 1 To 20
-            If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
-                Swap TT$(CA, Z1), TT$(CA, Z)
-                For MN = 1 To 9
-                    Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                Next MN
-            End If
-        Next Z1
-    Next Z
+    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
 
-    2541 'CATEGORY 9 - PUNTING
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(3)
+        TT!(CA, 20, 3) = DT!(4)
+        TT!(CA, 20, 4) = DT!(5)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 6) = DT!(6)
+        TT!(CA, 20, 7) = DT!(6) / DT!(3)
+        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 9 - PUNTING
     CA = 9
 
     If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
 
     If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
+
         TT!(CA, 20, 1) = OT!(7)
         TT!(CA, 20, 2) = OT!(8) / OT!(7)
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
@@ -910,15 +943,17 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
-    2546 'CATEGORY 10 - TURNOVER MARGIN
+    'CATEGORY 10 - TURNOVER MARGIN
     CA = 10
+
     FG = OT!(9) - OT!(10) + DT!(10)
     IG = DT!(5)
     FL = OT!(10) + DT!(9) - DT!(10)
     IL = OT!(5)
-    TM = (FG + IG - FL - IL) / numberGames%
+    TM! = (FG + IG - FL - IL) / numberGames%
 
     If TM > TT!(CA, 20, 7) Then
         TT!(CA, 20, 1) = FG
@@ -927,8 +962,9 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
         TT!(CA, 20, 4) = FL
         TT!(CA, 20, 5) = IL
         TT!(CA, 20, 6) = FL + IL
-        TT!(CA, 20, 7) = TM
+        TT!(CA, 20, 7) = TM!
         TT$(CA, 20) = WT$
+
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
                 If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
@@ -942,7 +978,7 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
 
     End If
 
-    2599 'PUNT RETURNS
+    'PUNT RETURNS
     If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
 
@@ -1021,31 +1057,30 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             PS$(X) = WT$
 
             For Y = 1 To 20:
+
                 If compZ2$(Y) = RB$(X) And compZ3$(Y) = WT$ Then
-                    4818 '
+
                     compZ1!(Y, 1) = RB!(X, 9)
                     compZ1!(Y, 2) = RB!(X, 1)
 
-                    If compZ1!(Y, 2) < RA Then
+                    'Only include players with 10 ATT / game
+                    If compZ1!(Y, 2) < numberGames% * 10 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
                         compZ1!(Y, 2) = 0
                     End If
 
-                    4820 '
                     For Y = 1 To 19:
 
                         For Z = Y + 1 To 20:
 
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                TN$ = compZ3$(Y): compZ3$(Y) = compZ3$(Z)
-                                compZ3$(Z) = TN$
-                                TN$ = compZ2$(Y): compZ2$(Y) = compZ2$(Z)
-                                compZ2$(Z) = TN$
+                                Swap compZ3$(Y), compZ3$(Z)
+                                Swap compZ2$(Y), compZ2$(Z)
 
                                 For Z1 = 1 To 2:
-                                    J = compZ1!(Y, Z1): compZ1!(Y, Z1) = compZ1!(Z, Z1): compZ1!(Z, Z1) = J
+                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                                 Next Z1
 
                             End If
@@ -1053,34 +1088,35 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         Next Z
 
                     Next Y
+
                     GoTo 3118
                 End If
+
             Next Y
 
-            If RB!(X, 1) >= numberGames% * 10 And RB!(X, 9) >= compZ1!(20, 1) Then
+            If Not (RB!(X, 1) < numberGames% * 10 Or RB!(X, 9) < compZ1!(20, 1)) Then
+
                 compZ2$(20) = RB$(X)
                 compZ3$(20) = WT$
                 compZ1!(20, 1) = RB!(X, 9)
                 compZ1!(20, 2) = RB!(X, 1)
+
                 For Y = 1 To 19:
 
                     For Z = Y + 1 To 20:
 
                         If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            TN$ = compZ3$(Y): compZ3$(Y) = compZ3$(Z)
-                            compZ3$(Z) = TN$
-                            TN$ = compZ2$(Y): compZ2$(Y) = compZ2$(Z)
-                            compZ2$(Z) = TN$
-
-                            For Z1 = 1 To 2:
-                                J = compZ1!(Y, Z1): compZ1!(Y, Z1) = compZ1!(Z, Z1): compZ1!(Z, Z1) = J
+                            Swap compZ3$(Y), compZ3$(Z)
+                            Swap compZ2$(Y), compZ2$(Z)
+                            For Z1 = 1 To 2
+                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                             Next Z1
-
                         End If
 
                     Next Z
 
                 Next Y
+
             End If
 
             3118 '
@@ -1092,6 +1128,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If Int(RB!(X, 2)) > compZ1!(50, 1) Then
+
                 compZ1!(50, 1) = Int(RB!(X, 2))
                 compZ2$(50) = RB$(X)
                 compZ3$(50) = WT$
@@ -1106,9 +1143,10 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         End If
                     Next Z1
                 Next Z
+
             End If
 
-            3150 For Z = 61 To 70
+            For Z = 61 To 70
                 If compZ2$(Z) = RB$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = RB!(X, 3)
                     GoTo 3155
@@ -1116,6 +1154,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If RB!(X, 3) > compZ1!(70, 1) Then
+
                 compZ1!(70, 1) = RB!(X, 3)
                 compZ2$(70) = RB$(X)
                 compZ3$(70) = WT$
@@ -1131,31 +1170,32 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                     Next Z1
                 Next Z
 
-                '3162
-                3520 '
-                For Z = 81 To 90
-                    If compZ2$(Z) = RB$(X) And compZ3$(Z) = WT$ Then
-                        compZ1!(Z, 1) = RB!(X, 1)
-                        GoTo 3525
-                    End If
+            End If
+
+            For Z = 81 To 90
+                If compZ2$(Z) = RB$(X) And compZ3$(Z) = WT$ Then
+                    compZ1!(Z, 1) = RB!(X, 1)
+                    GoTo 3525
+                End If
+            Next Z
+
+            If RB!(X, 1) > compZ1!(90, 1) Then
+
+                compZ1!(90, 1) = RB!(X, 1)
+                compZ2$(90) = RB$(X)
+                compZ3$(90) = WT$
+
+                3525 '
+                For Z = 81 To 89:
+                    For Z1 = Z + 1 To 90:
+                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
+                            Swap compZ2$(Z1), compZ2$(Z)
+                            Swap compZ3$(Z1), compZ3$(Z)
+                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        End If
+                    Next Z1
                 Next Z
 
-                If RB!(X, 1) > compZ1!(90, 1) Then
-                    compZ1!(90, 1) = RB!(X, 1)
-                    compZ2$(90) = RB$(X)
-                    compZ3$(90) = WT$
-
-                    3525 '
-                    For Z = 81 To 89:
-                        For Z1 = Z + 1 To 90:
-                            If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                                Swap compZ2$(Z1), compZ2$(Z)
-                                Swap compZ3$(Z1), compZ3$(Z)
-                                Swap compZ1!(Z1, 1), compZ1!(Z, 1)
-                            End If
-                        Next Z1
-                    Next Z
-                End If
             End If
 
         End If
@@ -1175,7 +1215,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             If WR!(X, 2) > BRC!(6) Then BRC!(6) = WR!(X, 2): BRC$(6, 0) = WR$(X): BRC$(6, 1) = TM$
             If WR!(X, 3) > BRC!(7) Then BRC!(7) = WR!(X, 3): BRC$(7, 0) = WR$(X): BRC$(7, 1) = TM$
 
-            If WR!(X, 4) > BRC!(8) And UCase$(finalUpdate$) = "Y" And WR!(X, 1) >= numberGames% * 3 Then
+            If WR!(X, 4) > BRC!(8) And UCase$(finalUpdate$) = "Y" And WR!(X, 1) >= numberGames% * 4 Then
                 'Receiving Average
                 BRC!(8) = WR!(X, 4)
                 BRC$(8, 0) = WR$(X)
@@ -1191,48 +1231,62 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 21 To 40:
+
                 If compZ2$(Z) = WR$(X) And compZ3$(Z) = WT$ Then
-                    4825 '
+
                     compZ1!(Z, 1) = WR!(X, 4)
                     compZ1!(Z, 2) = WR!(X, 1)
 
-                    If compZ1!(Z, 2) < RC Then
+                    'Only include players with 4 RECs / game
+                    If compZ1!(Z, 2) < numberGames% * 4 Then
+
                         compZ2$(Z) = "*"
                         compZ3$(Z) = "*"
                         compZ1!(Z, 1) = 0
                         compZ1!(Z, 2) = 0
                     End If
 
-                    4827 '
                     For Y = 21 To 39:
                         For Z = Y + 1 To 40:
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                TN$ = compZ3$(Y)
-                                compZ3$(Y) = compZ3$(Z)
-                                compZ3$(Z) = TN$
-                                TN$ = compZ2$(Y)
-                                compZ2$(Y) = compZ2$(Z)
-                                compZ2$(Z) = TN$
-
+                                Swap compZ3$(Y), compZ3$(Z)
+                                Swap compZ2$(Y), compZ2$(Z)
                                 For Z1 = 1 To 2:
-                                    J = compZ1!(Y, Z1)
-                                    compZ1!(Y, Z1) = compZ1!(Z, Z1)
-                                    compZ1!(Z, Z1) = J
+                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                                 Next Z1
                             End If
+
                         Next Z
+
                     Next Y
 
                     GoTo 3178
+
                 End If
+
             Next Z
 
-            If WR!(X, 1) >= numberGames% * 3 And WR!(X, 4) >= compZ1!(40, 1) Then
+            If Not ((WR!(X, 1) < numberGames% * 4 Or WR!(X, 4) < compZ1!(40, 1))) Then
+
                 compZ2$(40) = WR$(X)
                 compZ3$(40) = WT$
                 compZ1!(40, 1) = WR!(X, 4)
                 compZ1!(40, 2) = WR!(X, 1)
-                GoSub 4827
+
+                For Y = 21 To 39:
+                    For Z = Y + 1 To 40:
+                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
+                            Swap compZ3$(Y), compZ3$(Z)
+                            Swap compZ2$(Y), compZ2$(Z)
+                            For Z1 = 1 To 2:
+                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                            Next Z1
+                        End If
+
+                    Next Z
+
+                Next Y
+
             End If
 
             3178 '
@@ -1244,7 +1298,8 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If Int(WR!(X, 2)) > compZ1!(60, 1) Then
-                compZ1!(60, 1) = Int(WR!(X, 2)): compZ2$(60) = WR$(X)
+                compZ1!(60, 1) = Int(WR!(X, 2))
+                compZ2$(60) = WR$(X)
                 compZ3$(60) = WT$
 
                 3183 '
@@ -1267,6 +1322,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If WR!(X, 1) > compZ1!(100, 1) Then
+
                 compZ1!(100, 1) = WR!(X, 1)
                 compZ2$(100) = WR$(X)
                 compZ3$(100) = WT$
@@ -1274,7 +1330,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 3215 '
                 For Z = 91 To 99:
                     For Z1 = Z + 1 To 100
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
+                        If compZ1!(Z, 1) <= compZ1!(Z1, 1) Then
                             Swap compZ2$(Z1), compZ2$(Z)
                             Swap compZ3$(Z1), compZ3$(Z)
                             Swap compZ1!(Z1, 1), compZ1!(Z, 1)
@@ -1283,7 +1339,6 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 Next Z
             End If
 
-            3225 '
             For Z = 71 To 80
                 If compZ2$(Z) = WR$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = WR!(X, 3)
@@ -1292,6 +1347,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If WR!(X, 3) > compZ1!(80, 1) Then
+
                 compZ1!(80, 1) = WR!(X, 3)
                 compZ2$(80) = WR$(X)
                 compZ3$(80) = WT$
@@ -1306,6 +1362,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         End If
                     Next Z1
                 Next Z
+
             End If
 
         End If
@@ -1313,7 +1370,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
     Next X
 
     '---------------
-    ' ???
+    ' All Purpose Yds
     '---------------
     For X = 1 To 16
 
@@ -1333,6 +1390,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If YD!(X) > compZ1!(110, 1) Then
+
                 compZ1!(110, 1) = YD!(X)
                 compZ2$(110) = TB$(X)
                 compZ3$(110) = WT$
@@ -1350,7 +1408,6 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
             End If
 
-            3255 '
             For Z = 111 To 120
                 If compZ2$(Z) = TB$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = TP!(X)
@@ -1359,6 +1416,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If TP!(X) > compZ1!(120, 1) Then
+
                 compZ1!(120, 1) = TP!(X)
                 compZ2$(120) = TB$(X)
                 compZ3$(120) = WT$
@@ -1373,13 +1431,13 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         End If
                     Next Z1
                 Next Z
+
             End If
 
         End If
 
     Next X
 
-    3500 '
     For X = 17 To 18
 
         If TP!(X) > BRC!(20) Then BRC!(20) = TP!(X): BRC$(20, 0) = TB$(X): BRC$(20, 1) = TM$
@@ -1393,6 +1451,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
 
         If TP!(X) > compZ1!(200, 1) Then
+
             compZ1!(200, 1) = TP!(X)
             compZ2$(200) = TB$(X)
             compZ3$(200) = WT$
@@ -1407,6 +1466,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                     End If
                 Next Z1
             Next Z
+
         End If
 
     Next X
@@ -1431,11 +1491,11 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
             For Y = 121 To 130:
                 If compZ2$(Y) = QB$(X) And compZ3$(Y) = WT$ Then
-                    4832 '
+
                     compZ1!(Y, 1) = QB!(X, 6)
                     compZ1!(Y, 2) = QB!(X, 1)
 
-                    If compZ1!(Y, 2) < PA Then
+                    If compZ1!(Y, 2) < numberGames% * 15 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
@@ -1446,17 +1506,10 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                TN$ = compZ3$(Y)
-                                compZ3$(Y) = compZ3$(Z)
-                                compZ3$(Z) = TN$
-                                TN$ = compZ2$(Y)
-                                compZ2$(Y) = compZ2$(Z)
-                                compZ2$(Z) = TN$
-
+                                Swap compZ3$(Y), compZ3$(Z)
+                                Swap compZ2$(Y), compZ2$(Z)
                                 For Z1 = 1 To 2:
-                                    J = compZ1!(Y, Z1)
-                                    compZ1!(Y, Z1) = compZ1!(Z, Z1)
-                                    compZ1!(Z, Z1) = J
+                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                                 Next Z1
 
                             End If
@@ -1467,24 +1520,21 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Y
 
-            If QB!(X, 1) >= numberGames% * 15 And QB!(X, 6) >= compZ1!(130, 1) Then
+            If Not (QB!(X, 1) < numberGames% * 15 Or QB!(X, 6) < compZ1!(130, 1)) Then
+
                 compZ2$(130) = QB$(X)
-                compZ3$(130) = WT$: compZ1!(130, 1) = QB!(X, 6)
+                compZ3$(130) = WT$
+                compZ1!(130, 1) = QB!(X, 6)
                 compZ1!(130, 2) = QB!(X, 1)
+
                 For Y = 121 To 129:
                     For Z = Y + 1 To 130:
                         If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            TN$ = compZ3$(Y)
-                            compZ3$(Y) = compZ3$(Z)
-                            compZ3$(Z) = TN$
-                            TN$ = compZ2$(Y)
-                            compZ2$(Y) = compZ2$(Z)
-                            compZ2$(Z) = TN$
+                            Swap compZ3$(Y), compZ3$(Z)
+                            Swap compZ2$(Y), compZ2$(Z)
 
                             For Z1 = 1 To 2:
-                                J = compZ1!(Y, Z1)
-                                compZ1!(Y, Z1) = compZ1!(Z, Z1)
-                                compZ1!(Z, Z1) = J
+                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                             Next Z1
 
                         End If
@@ -1494,33 +1544,32 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
             3279 '
             For Y = 131 To 140:
+
                 If compZ2$(Y) = QB$(X) And compZ3$(Y) = WT$ Then
+
                     compZ1!(Y, 1) = QB!(X, 7)
                     compZ1!(Y, 2) = QB!(X, 1)
-                    If compZ1!(Y, 2) < PA Then
+
+                    If compZ1!(Y, 2) < numberGames% * 15 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
                         compZ1!(Y, 2) = 0
                     End If
 
-                    4841 '
                     For Y = 131 To 139:
                         For Z = Y + 1 To 140:
+
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                TN$ = compZ3$(Y)
-                                compZ3$(Y) = compZ3$(Z)
-                                compZ3$(Z) = TN$
-                                TN$ = compZ2$(Y)
-                                compZ2$(Y) = compZ2$(Z)
-                                compZ2$(Z) = TN$
+
+                                Swap compZ3$(Y), compZ3$(Z)
+                                Swap compZ2$(Y), compZ2$(Z)
 
                                 For Z1 = 1 To 2:
-                                    J = compZ1!(Y, Z1)
-                                    compZ1!(Y, Z1) = compZ1!(Z, Z1)
-                                    compZ1!(Z, Z1) = J
+                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                                 Next Z1
                             End If
+
                         Next Z
                     Next Y
 
@@ -1528,29 +1577,27 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Y
 
-            If QB!(X, 1) >= numberGames% * 15 And QB!(X, 7) >= compZ1!(140, 1) Then
+            If Not (QB!(X, 1) < numberGames% * 15 Or QB!(X, 6) < compZ1!(140, 1)) Then
+
                 compZ2$(140) = QB$(X)
                 compZ3$(140) = WT$
                 compZ1!(140, 1) = QB!(X, 7)
                 compZ1!(140, 2) = QB!(X, 1)
+
                 For Y = 131 To 139:
                     For Z = Y + 1 To 140:
-                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            TN$ = compZ3$(Y)
-                            compZ3$(Y) = compZ3$(Z)
-                            compZ3$(Z) = TN$
-                            TN$ = compZ2$(Y)
-                            compZ2$(Y) = compZ2$(Z)
-                            compZ2$(Z) = TN$
 
+                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
+                            Swap compZ3$(Y), compZ3$(Z)
+                            Swap compZ2$(Y), compZ2$(Z)
                             For Z1 = 1 To 2:
-                                J = compZ1!(Y, Z1)
-                                compZ1!(Y, Z1) = compZ1!(Z, Z1)
-                                compZ1!(Z, Z1) = J
+                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                             Next Z1
                         End If
+
                     Next Z
                 Next Y
+
             End If
 
             3287 '
@@ -1562,11 +1609,13 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If Int(QB!(X, 4)) > compZ1!(150, 1) Then
+
                 compZ1!(150, 1) = Int(QB!(X, 4))
                 compZ2$(150) = QB$(X)
 
                 3294 '
                 compZ3$(150) = WT$
+
                 For Z = 141 To 149:
                     For Z1 = Z + 1 To 150:
                         If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
@@ -1579,7 +1628,6 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
             End If
 
-            3302 '
             For Z = 151 To 160
                 If compZ2$(Z) = QB$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = QB!(X, 5)
@@ -1614,6 +1662,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
     ' Kick Returns
     '---------------
     For X = 1 To 3
+
         Print "   CHECKING STATS OF "; KR$(X)
 
         If KR$(X) <> "OTHERS" Then
@@ -1632,13 +1681,17 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Z
 
-            If KR!(X, 1) >= numberGames% * 1.2 And KR!(X, 4) > compZ1!(170, 1) Then
-                compZ1!(170, 1) = KR!(X, 4): compZ2$(170) = KR$(X)
-                compZ3$(170) = WT$: compZ1!(170, 2) = KR!(X, 1)
+            If Not (KR!(X, 1) < numberGames% * 1.2 Or KR!(X, 4) <= compZ1!(170, 1)) Then
+
+                compZ1!(170, 1) = KR!(X, 4)
+                compZ2$(170) = KR$(X)
+                compZ3$(170) = WT$
+                compZ1!(170, 2) = KR!(X, 1)
 
                 3345 '
                 For Z = 161 To 169:
                     For Z1 = Z + 1 To 170:
+
                         If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
                             Swap compZ2$(Z1), compZ2$(Z)
                             Swap compZ3$(Z1), compZ3$(Z)
@@ -1646,8 +1699,10 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                                 Swap compZ1!(Z1, MN), compZ1!(Z, MN)
                             Next MN
                         End If
+
                     Next Z1
                 Next Z
+
             End If
 
         End If
@@ -1658,6 +1713,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
     ' Punt Returns
     '---------------
     For X = 1 To 3
+
         Print "   CHECKING STATS OF "; PR$(X)
 
         If PR$(X) <> "OTHERS" Then
@@ -1669,13 +1725,19 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             If PK!(X - 1) > BRC!(31) Then BRC!(31) = PK!(X - 1): BRC$(31, 0) = PR$(X): BRC$(31, 1) = TM$: BRC$(31, 2) = PKR$(X - 1, 0)
 
             For Z = 171 To 180
-                If compZ2$(Z) = PR$(X) And compZ3$(Z) = WT$ Then compZ1!(Z, 1) = PR!(X, 4): compZ1!(Z, 2) = PR!(X, 1): GoTo 3365
+                If compZ2$(Z) = PR$(X) And compZ3$(Z) = WT$ Then
+                    compZ1!(Z, 1) = PR!(X, 4)
+                    compZ1!(Z, 2) = PR!(X, 1)
+                    GoTo 3365
+                End If
             Next Z
 
-            If PR!(X, 1) >= numberGames% * 1.2 And PR!(X, 4) > compZ1!(180, 1) Then
+            If Not (PR!(X, 1) < numberGames% * 1.2 And PR!(X, 4) <= compZ1!(180, 1)) Then
+
                 compZ1!(180, 1) = PR!(X, 4)
                 compZ2$(180) = PR$(X)
-                compZ3$(180) = WT$: compZ1!(180, 2) = PR!(X, 1)
+                compZ3$(180) = WT$
+                compZ1!(180, 2) = PR!(X, 1)
 
                 3365 '
                 For Z = 171 To 179:
@@ -1689,6 +1751,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         End If
                     Next Z1
                 Next Z
+
             End If
 
         End If
@@ -1699,6 +1762,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
     ' Punting
     '---------------
     Print "   CHECKING STATS OF "; PU$
+
     If TG!(8) > BRC!(32) Then BRC!(32) = TG!(8): BRC$(32, 0) = PU$: BRC$(32, 1) = TM$
     If TG!(9) > BRC!(33) Then BRC!(33) = TG!(9): BRC$(33, 0) = PU$: BRC$(33, 1) = TM$
     If PN > BRC!(34) And UCase$(finalUpdate$) = "Y" Then BRC!(34) = PN: BRC$(34, 0) = PU$: BRC$(34, 1) = TM$
@@ -1730,12 +1794,12 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
+
     End If
 
     '---------------
     ' Place Kicks
     '---------------
-    3390 '
     For X = 1 To 2
 
         Print "   CHECKING STATS OF "; compPK$(X)
@@ -1743,7 +1807,9 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
         If FM!(X) > BRC!(35) Then BRC!(35) = FM!(X): BRC$(35, 0) = compPK$(X): BRC$(35, 1) = TM$
         If FA!(X) > BRC!(36) Then BRC!(36) = FA!(X): BRC$(36, 0) = compPK$(X): BRC$(36, 1) = TM$
         If FG!(X) > BRC!(37) And UCase$(finalUpdate$) = "Y" Then BRC!(37) = FG!(X): BRC$(37, 0) = compPK$(X): BRC$(37, 1) = TM$
+
         If LF!(X - 1) > BRC!(38) Then BRC!(38) = LF!(X - 1): BRC$(38, 0) = compPK$(X): BRC$(38, 1) = TM$: BRC$(38, 2) = LF$(X - 1)
+
         If EM!(X) > BRC!(39) Then BRC!(39) = EM!(X): BRC$(39, 0) = compPK$(X): BRC$(39, 1) = TM$
         If EA!(X) > BRC!(40) Then BRC!(40) = EA!(X): BRC$(40, 0) = compPK$(X): BRC$(40, 1) = TM$
         If EP!(X) > BRC!(41) And UCase$(finalUpdate$) = "Y" Then BRC!(41) = EP!(X): BRC$(41, 0) = compPK$(X): BRC$(41, 1) = TM$
@@ -1757,6 +1823,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
         Next Z
 
         If FG!(X) > compZ1!(210, 1) Then
+
             compZ1!(210, 1) = FG!(X)
             compZ2$(210) = compPK$(X)
             compZ3$(210) = WT$
@@ -1768,15 +1835,17 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                     If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
                         Swap compZ2$(Z1), compZ2$(Z)
                         Swap compZ3$(Z1), compZ3$(Z)
+
                         For MN = 1 To 2
                             Swap compZ1!(Z1, MN), compZ1!(Z, MN)
                         Next MN
                     End If
                 Next Z1
             Next Z
+
         End If
 
-        3403 'PRINT"   CHECKING STATS OF ";EP$
+        'PRINT"   CHECKING STATS OF ";EP$
         For Z = 211 To 220
             If compZ2$(Z) = compPK$(X) And compZ3$(Z) = WT$ Then
                 compZ1!(Z, 1) = EP!(X)
@@ -1795,6 +1864,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             3409 '
             For Z = 211 To 219:
                 For Z1 = Z + 1 To 220:
+
                     If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
                         Swap compZ2$(Z1), compZ2$(Z)
                         Swap compZ3$(Z1), compZ3$(Z)
@@ -1802,6 +1872,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                             Swap compZ1!(Z1, MN), compZ1!(Z, MN)
                         Next MN
                     End If
+
                 Next Z1
             Next Z
 
@@ -1821,6 +1892,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             If GI%(X, 0) > BRC!(42) Then BRC!(42) = GI%(X, 0): BRC$(42, 0) = DI$(X): BRC$(42, 1) = TM$
             If GI%(X, 1) > BRC!(43) Then BRC!(43) = GI%(X, 1): BRC$(43, 0) = DI$(X): BRC$(43, 1) = TM$
             If GI%(X, 2) > BRC!(44) Then BRC!(44) = GI%(X, 2): BRC$(44, 0) = DI$(X): BRC$(44, 1) = TM$
+
             If X > 0 Then
                 If LI!(X - 1) > BRC!(45) Then
                     BRC!(45) = LI!(X - 1)
@@ -1846,12 +1918,15 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                 3422 '
                 For Z = 221 To 229:
                     For Z1 = Z + 1 To 230:
+
                         If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
                             Swap compZ2$(Z1), compZ2$(Z)
                             Swap compZ3$(Z1), compZ3$(Z)
                             Swap compZ1!(Z1, 1), compZ1!(Z, 1)
                         End If
+
                     Next Z1
+
                 Next Z
 
             End If
@@ -1866,7 +1941,11 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
         If Left$(DS$(X), 1) <> " " And DS$(X) <> "" And DS$(X) <> "END" Then
 
-            If GS%(X, 0) > BRC!(46) Then BRC!(46) = GS%(X, 0): BRC$(46, 0) = DS$(X): BRC$(46, 1) = TM$
+            If GS%(X, 0) > BRC!(46) Then
+                BRC!(46) = GS%(X, 0)
+                BRC$(46, 0) = DS$(X)
+                BRC$(46, 1) = TM$
+            End If
 
             For Z = 231 To 240
                 If compZ2$(Z) = DS$(X) And compZ3$(Z) = WT$ Then
@@ -1876,6 +1955,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             Next Z
 
             If GS%(X, 0) > compZ1!(240, 1) Then
+
                 compZ1!(240, 1) = GS%(X, 0)
                 compZ2$(240) = DS$(X)
                 compZ3$(240) = WT$
@@ -1889,7 +1969,9 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                             Swap compZ1!(Z1, 1), compZ1!(Z, 1)
                         End If
                     Next Z1
+
                 Next Z
+
             End If
 
         End If

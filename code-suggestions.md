@@ -1,5 +1,11 @@
 #### SIDENOTE: Do any of these fall into the "Issues" realm? If so, create GitHub issue items ####
 
+[ ] CheckStats
+- Coll = Natl = Pro
+- routines are all mostly identical
+- I suspect other routines in COMPCOLL/COMPNATL are
+- Org should essentially be looping over all Conf, then posting Poll
+
 [ ] Paths / folders
 - add "Boxes" subfolder to structure and adapt code
 - add "Schedules" subfolder to structure and adapt code

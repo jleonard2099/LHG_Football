@@ -48,7 +48,7 @@ Sub CREATNAT ()
             Select Case Selection%
                 Case 1:
                     Call DefineLeagueNatl(LG$)
-                    Call NatlLeagueMenu(LG$)
+                    If LG$ <> "" Then Call NatlLeagueMenu(LG$)
                 Case 2:
                     Call ReviewConf_Natl(LG$)
                     Call NatlLeagueMenu(LG$)

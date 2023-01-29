@@ -596,7 +596,6 @@ Sub StatsToScreen_Natl (FF$, D1$, D2$, NRT)
     Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
     QK$ = GetKeyPress$
 
-    1792 '
     Cls
 
     Color 14

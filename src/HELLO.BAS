@@ -1,4 +1,3 @@
-$Debug
 
 Const GAME_VERSION$ = "6.39"
 Const MAX_TEAMS = 500
@@ -6,7 +5,6 @@ Const MAX_GAMES = 1500
 'Const MAX_CONFERENCES = 40
 'Const TEAMS_PER_CONFERENCE = 30
 'Const TEAMS_PER_DIV = 15
-
 'Const DIVS_PER_CONFERENCE = 2
 
 DefInt A-Z
@@ -18,6 +16,12 @@ DefInt A-Z
 '$INCLUDE: 'TITLE.BI'
 '$INCLUDE: 'Variables.BI'
 
+Dim KR$(3), compPK$(2)
+Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
+
+Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
+Dim TD!(16), TG!(16), TP!(18), TRC!(50)
+Dim WR!(16, 13), YD!(16)
 
 
 '----------------------------------------
@@ -43,7 +47,6 @@ Next
 Close 1
 
 Selection% = 1
-
 
 Do
     Call Main_Menu(Selection%)
@@ -346,12 +349,16 @@ Sub Leaders_Menu ()
         Spacing% = 3
         Row% = 9
         Column% = 2
+
         Call box0(7, 1, 16, 25, 2, 15, 1)
         Call box0(7, 27, 16, 51, 2, 15, 1)
         Call box0(7, 53, 16, 77, 2, 15, 1)
-        Color 15, 0: Locate 8, 4: Print "PROFESSIONAL LEAGUE"
+
+        Color 15, 0
+        Locate 8, 4: Print "PROFESSIONAL LEAGUE"
         Locate 8, 30: Print "COLLEGE CONFERENCE"
         Locate 8, 55: Print "NATIONAL ORGANIZATION"
+
         Locate 18
         Print "PROFESSIONAL LEAGUE IS USED TO DEFINE A GROUP OF PRO TEAMS AND DIVISIONS"
         Print
@@ -397,7 +404,6 @@ Sub Leaders_Menu ()
             End
             System
         End If
-
     Loop Until Selection% >= 20 Or ExitCode% = 27
 
 End Sub

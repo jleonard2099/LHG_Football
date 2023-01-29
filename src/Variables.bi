@@ -8,9 +8,9 @@ Dim Shared ATT&
 'Used only with career files
 Dim Shared TN$
 Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
 Dim Shared confLosses, confTies, confWins
 Dim Shared fullLosses, fullTies, fullWins
-
 
 Dim Shared DT$, TM$
 
@@ -104,22 +104,22 @@ Dim H1$(30)
 Dim TR$(10, 20)
 
 Dim BRC$(50, 2), compZ1$(60), compZ2$(240), compZ3$(240)
-Dim KR$(3), compPK$(2)
+'Dim KR$(3), compPK$(2)
 Dim N2$(240), N3$(240), NT$(10, 20)
 Dim PR$(3), PS$(10), PT$(1200), QB$(4), RB$(10)
-Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
+'Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
 
 Dim DT!(38), TT!(10, 20, 9)
 
 Dim BRC!(50), compZ1!(240, 2) ', DT!(38)
 Dim EA!(2), EM!(2), EP!(2)
-Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
+'Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
 Dim QB!(11, 11), RB!(11, 11)
-Dim TD!(16), TG!(16), TP!(18), TRC!(50) 'TT!(10, 20, 9)
-Dim WR!(16, 13), YD!(16)
+'Dim TD!(16), TG!(16), TP!(18), TRC!(50)
+'Dim WR!(16, 13), YD!(16)
 
 Dim AP%(1, 120), APR%(1, 120)
 
