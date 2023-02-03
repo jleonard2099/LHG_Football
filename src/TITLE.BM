@@ -284,8 +284,9 @@ End Sub
 ' Displays window title / game copyright
 Sub TITLE ()
 
-    Color , 0
     KEY Off
+
+	Color 15, 0
 
     Cls
 
