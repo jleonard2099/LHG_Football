@@ -306,7 +306,7 @@ Sub TITLE ()
     Locate , 1
 
 	Color 12, 1
-	Print "(C) LANCE HAFFNER/SHANNON LYNN 1987-1997"; Tab(75); Left$(Time$, 5);
+	Print "(C) LANCE HAFFNER 1984-2000"; Tab(75); Left$(Time$, 5);
 	
     'Contact
     Locate 3, 1

@@ -449,17 +449,17 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
     Shared DV$(), DV2$()
     Shared Z1$(), Z12$()
 
-    190 '
     DV$(1) = D1$
     DV$(2) = D2$
 
     Do
-        200 '
-        Color 12, 0
-        Cls
-        Locate 2, 35: Print Z$
+		Cls
+        Locate 2, 35
+		Color PA%(2), PA%(1): Print A$
+        Color 3, 0
 
         Color 3
+
         Locate 4
         Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
         Locate 5
@@ -473,6 +473,7 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
 
             Case 2
                 DD = 16: EE = 30
+
                 If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then
                     RDD = 3
                 End If
@@ -480,7 +481,6 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
         End Select
 
         If RDD <> 3 Then
-            215 '
             Color 11
             Print LG$; " "; DV$(RDD);
 
@@ -707,16 +707,17 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
 
     End If
 
-    400 '
-    Cls
-    Color 12
-    Locate 2, 35: Print Z$
+	Cls
+	Locate 2, 35
+	Color PA%(2), PA%(1): Print A$
+	Color 3, 0
 
-    Color 3
-    Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
-    Color 11: Print LG$;
-
+    Locate 4
+	Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+    Locate 5
+	Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+    
+	Color 11: Print LG$;
     Color 3
     Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -1009,7 +1010,6 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
         End Select
 
         If RDD <> 3 Then
-            4215 '
             Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
             Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
             Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
@@ -1072,7 +1072,7 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
     Loop Until RDD <> 3
 
     If X2 = 1 Then
-        6190
+
         DV2$(1) = D12$
         DV2$(2) = D22$
         RDD = 0
@@ -1080,7 +1080,6 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
         Print #2,
 
         Do
-            6202 '
             RDD = RDD + 1
             Select Case RDD
                 Case 1
@@ -1094,7 +1093,6 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
 
             If RDD <> 3 Then
 
-                6215 '
                 Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
                 Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
                 Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";

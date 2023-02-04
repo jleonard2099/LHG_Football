@@ -455,19 +455,21 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
     Shared DV$(), DV2$()
     Shared Z1$(), Z12$()
 
-    190 '
     DV$(1) = D1$
     DV$(2) = D2$
     DV$(3) = D3$
     RDD = 0
 
     Do
-        200 '
-        Color 12, 0: Cls
-        Locate 2, 35: Print Z$
-        Color 3
-        Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-        Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+		Cls
+        Locate 2, 35
+		Color PA%(2), PA%(1): Print A$
+        Color 3, 0
+        
+		Locate 4
+		Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+        Locate 5
+		Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
         RDD = RDD + 1
 
@@ -572,12 +574,15 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
         RDD = 0
 
         Do
-            Cls
-            Color 12
-            Locate 2, 35: Print Z$
-            Color 3
-            Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-            Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+			Cls
+			Locate 2, 35
+			Color PA%(2), PA%(1): Print A$
+			Color 3, 0
+
+            Locate 4
+			Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+            Locate 5
+			Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
             RDD = RDD + 1
 
@@ -683,16 +688,15 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
 
     End If
 
-    Cls
+	Cls
+	Locate 1, 35
+	Color PA%(2), PA%(1): Print A$
+	Color 3, 0
 
-    Color 12
-
-    Locate 1, 35: Print Z$
-
-    Color 3
-
-    Locate 3: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-    Locate 4: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+    Locate 3
+	Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+    Locate 4
+	Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
     Color 11: Print LG$;
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)

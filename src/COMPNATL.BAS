@@ -291,13 +291,18 @@ Sub COMPNATL ()
                             ZZ = 15 * Z
 
                             For X = AA To ZZ - 1:
+
                                 For Y = X + 1 To ZZ:
+
                                     diffX = O1!(X) - O2!(X)
                                     diffY = O1!(Y) - O2!(Y)
 
                                     If diffX <= diffY Then
-                                        If diffX <> diffY Then
-                                            If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
+
+										If diffX = diffY Then
+                                        'If diffX <> diffY Then
+											If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
+                                            'If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
                                                 Swap compZ1$(X), compZ1$(Y)
                                                 Swap O1!(X), O1!(Y)
                                                 Swap O2!(X), O2!(Y)
@@ -305,7 +310,9 @@ Sub COMPNATL ()
                                                 Swap PTSF!(X), PTSF!(Y)
                                                 Swap PTSA!(X), PTSA!(Y)
                                             End If
+
                                         End If
+
                                     End If
 
                                 Next Y
