@@ -1784,8 +1784,6 @@ Sub SAVESTATS ()
         Next
 
         Print ">>>>>"
-        Print
-        Print
         Print " THE STATS ARE BEING SAVED UNDER"
         Print "THE FOLLOWING NAME::: ";
         Color PA%(Q, 2), PA%(Q, 1): Print R$
@@ -1835,6 +1833,8 @@ Sub SAVESTATS ()
 
         Close #1
 
+		Print "<<<<<"
+        Print
         Print
 
         numberGames = 0
