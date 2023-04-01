@@ -5631,14 +5631,17 @@ Sub HANDOFF ()
 
     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP"
 
-    If P2 <> 4 And P2 <> 5 Then
+    If P2 = 4 Or P2 = 5 Then
+
         DR = Int(Rnd(1) * 2)
 
         If A1$(P1, I1) = A3$(P1, Q6%(P1)) Then
+
             U$ = U$ + " AND KEEPS IT ON THE " + RP$(RP)
             Call PBP ': Call PBP_Logger(10372)
+
         Else
-            RN = Int(Rnd(1) * 2) + 1:
+            RN = Int(Rnd(1) * 2) + 1
 
             If RN = 1 Then
                 U$ = U$ + " AND TOSSES OUT TO " + A1$(P1, I1)

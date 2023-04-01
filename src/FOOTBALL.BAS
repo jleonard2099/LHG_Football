@@ -1268,7 +1268,7 @@ If T <= 0 Then Call ADDTIME: GoTo 3360
 
 Do
 
-    702 Call SCOREBOARD
+    Call SCOREBOARD
 
     Call DEFMENU
 
