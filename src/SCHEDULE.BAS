@@ -287,7 +287,7 @@ Sub NewSchedule (scheduleFile$)
 
                 DT$ = "10-01-91"
                 TM$ = "07:30P"
-                Call NewGame(V$, QV$, H$, QH$, targetGame%)
+                Call NewGame(V$, QV$, H$, QH$, YN$, NTMS, targetGame%)
 
             Case "E":
                 Call EditGame
@@ -449,16 +449,18 @@ Sub EditGame ()
         Locate 23, 1: Input "ENTER GAME # TO EDIT "; targetGame%
     Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
-    V$ = scheduleV$(targetGame% - Int(targetGame% / 20) * 20)
-    H$ = scheduleH$(targetGame% - Int(targetGame% / 20) * 20)
-    QBV$ = scheduleQB_V$(targetGame% - Int(targetGame% / 20) * 20)
-    QBH$ = scheduleQB_H$(targetGame% - Int(targetGame% / 20) * 20)
-
-    If targetGame% - Int(targetGame% / 20) * 20 = 0 Then
+    If targetGame% - Int(targetGame% / 20) * 20 = 0 Then 
         V$ = scheduleV$(20)
         H$ = scheduleH$(20)
         QV$ = scheduleQB_V$(20)
         QH$ = scheduleQB_H$(20)
+        YN$ = scheduleYN$(20, 0)
+    Else
+        V$ = scheduleV$(targetGame% - Int(targetGame% / 20) * 20)
+        H$ = scheduleH$(targetGame% - Int(targetGame% / 20) * 20)
+		QBV$ = scheduleQB_V$(targetGame% - Int(targetGame% / 20) * 20)
+		QBH$ = scheduleQB_H$(targetGame% - Int(targetGame% / 20) * 20)
+        YN$ = scheduleYN$(targetGame% - Int(targetGame% / 20) * 20, 0)
     End If
 
     I$ = "A"
@@ -470,19 +472,25 @@ Sub EditGame ()
 
     TM$ = Right$(Str$(HR%), 2) + ":"
 
-    If MIN% < 10 Then TM$ = TM$ + "0" + Right$(Str$(MIN%), 1)
-    If MIN% >= 10 Then TM$ = TM$ + Right$(Str$(MIN%), 2)
+    If MIN% < 10 Then 
+		TM$ = TM$ + "0" + Right$(Str$(MIN%), 1)
+	Else
+		TM$ = TM$ + Right$(Str$(MIN%), 2)
+	End If
 
     TM$ = TM$ + I$
     DT$ = Right$(Str$(NG%(targetGame%, 17)), 2) + "/"
     DYMO% = Val(Right$(Str$(NG%(targetGame%, 16)), 2))
 
-    If DYMO% < 10 Then DYMO$ = "0" + Right$(Str$(NG%(targetGame%, 16)), 1)
-    If DYMO% >= 10 Then DYMO$ = Right$(Str$(NG%(targetGame%, 16)), 2)
+    If DYMO% < 10 Then 
+		DYMO$ = "0" + Right$(Str$(NG%(targetGame%, 16)), 1)
+	Else
+		DYMO$ = Right$(Str$(NG%(targetGame%, 16)), 2)
+	End If
 
     DT$ = DT$ + DYMO$ + "/" + Right$(Str$(NG%(targetGame%, 18)), 2)
 
-    Call NewGame(V$, QBV$, H$, QBH$, targetGame%)
+    Call NewGame(V$, QBV$, H$, QBH$, YN$, NTMS, targetGame%)
 
 End Sub
 
@@ -490,7 +498,7 @@ End Sub
 '           NewGame SubRoutine
 '----------------------------------------
 '...explanation...
-Sub NewGame (visitor$, visitorQB$, home$, homeQB$, gameIndex%)
+Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
     Shared N$
 
