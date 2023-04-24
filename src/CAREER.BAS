@@ -96,7 +96,7 @@ Sub CreateMergeInitial ()
     Dim careerLC$(60, 1), careerLK$(15, 1)
     Dim careerLP$(20, 1), careerLR$(50, 1)
     Dim careerPK$(15, 1)
-    Shared LF$(), LI$(), careerWRS$()
+    Shared statsLF$(), statsLI$(), careerWRS$()
 
     Dim careerGS%(55, 1), careerGI%(55, 2)
 
@@ -205,8 +205,8 @@ Sub CreateMergeInitial ()
                 For I = 0 To 3: Input #1, careerLP!(I): Input #1, careerLP$(I, 0): Input #1, careerLP$(I, 1): Next
                 For I = 0 To 2: Input #1, careerLK!(I): Input #1, careerLK$(I, 0): Input #1, careerLK$(I, 1): Next
                 For I = 0 To 2: Input #1, careerPK!(I): Input #1, careerPK$(I, 0): Input #1, careerPK$(I, 1): Next
-                For I = 0 To 1: Input #1, LF!(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, careerAM!(I, I1): Input #1, careerAF!(I, I1): Next: Next
-                For I = 0 To 9: Input #1, LI!(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+                For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, careerAM!(I, I1): Input #1, careerAF!(I, I1): Next: Next
+                For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
                 Close #1
 
                 For I = 0 To 9
@@ -551,7 +551,7 @@ Sub ViewPrintCareer ()
                 Locate 2, 33: Print targetFile$
 
                 Do
-					Locate , 33: Print "ANY CHANGE (YN)";
+					Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -819,7 +819,7 @@ End Sub
 '...explanation...
 Sub GetTeam_CAREER (A$)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Do
 
@@ -903,12 +903,12 @@ Sub GetTeam_CAREER (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color PA%(2), PA%(1): Print A$
+                Color statsPA%(2), statsPA%(1): Print A$
 
                 Color 15, 4
 
                 Do
-					Locate , 33: Print "ANY CHANGE (YN)";
+					Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -928,7 +928,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = numberTeams
@@ -961,7 +961,7 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
 
         'Positions 1 and 2 will hold team colors
         For I1 = 0 To 2
-            PA%(I1) = CVI(Q$(I1 + 11))
+            statsPA%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
         Close 1

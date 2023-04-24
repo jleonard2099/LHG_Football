@@ -149,7 +149,7 @@ Sub MergeCareerStats ()
 							Locate 2, 33: Print targetFile$
 
 							Do
-								Locate , 33: Print "ANY CHANGE (YN)";
+								Locate 3, 33: Print "ANY CHANGE (YN)";
 								I$ = GetKeyPress$
 							Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -258,8 +258,8 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Shared careerFGS!(), careerPUS!()
     Shared Z!(), Z1!(), Z2!()
 
-    Dim LC$(60, 1), LF$(1), LI$(9, 1), LK$(15, 1), LP$(20, 1), LR$(50, 1)
-    Dim PK$(15, 1)
+    Dim LC$(60, 1), statsLF$(1), statsLI$(9, 1), statsLK$(15, 1), statsLP$(20, 1), LR$(50, 1)
+    Dim careerPK$(15, 1)
 
     Dim careerLC!(60), careerLF!(1), careerLK!(15)
     Dim careerLP!(20), careerLR!(50), careerPK!(15)
@@ -348,11 +348,11 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
         For J = 0 To 14: Input #1, careerDS$(J): For J1 = 0 To 1: Input #1, careerGS%(J, J1): Next: Next
         For I = 0 To 9: Input #1, careerLR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
         For I = 0 To 15: Input #1, careerLC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
-        For I = 0 To 3: Input #1, careerLP!(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
-        For I = 0 To 2: Input #1, careerLK!(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
-        For I = 0 To 2: Input #1, careerPK!(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
-        For I = 0 To 1: Input #1, careerLF!(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
-        For I = 0 To 9: Input #1, LI!(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+        For I = 0 To 3: Input #1, careerLP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+        For I = 0 To 2: Input #1, careerLK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+        For I = 0 To 2: Input #1, careerPK!(I): Input #1, careerPK$(I, 0): Input #1, careerPK$(I, 1): Next
+        For I = 0 To 1: Input #1, careerLF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+        For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
         Close #1
 
@@ -544,7 +544,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     Next K
 
                     QBBS!(N, J, 5) = careerLP!(I)
-                    careerQBS$(N, J, 0) = LP$(I, 0)
+                    careerQBS$(N, J, 0) = statsLP$(I, 0)
                     QBBS!(N, J, 6) = 1
                     QBBS!(N, J, 7) = Y
 
@@ -561,7 +561,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             A3C$(ND) = careerA3$(I)
                             N = 1
                             For K = 9 To 13: QBBS!(N, ND, K - 9) = Z2!(I, K): Next
-                            QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = LP$(I, 0)
+                            QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = statsLP$(I, 0)
                             QBBS!(N, ND, 6) = 1: QBBS!(N, ND, 7) = Y
                         End If
 
@@ -603,7 +603,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     Next K
 
                     KRS!(N, J, 3) = careerLK!(I)
-                    KRRS$(N, J, 0) = LK$(I, 0)
+                    KRRS$(N, J, 0) = statsLK$(I, 0)
                     KRS!(N, J, 4) = 1
                     KRS!(N, J, 5) = Y
 
@@ -624,7 +624,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             For K = 14 To 16: KRS!(N, NE, K - 14) = Z2!(I, K): Next
 
                             KRS!(N, NE, 3) = careerLK!(I)
-                            KRRS$(N, NE, 0) = LK$(I, 0)
+                            KRRS$(N, NE, 0) = statsLK$(I, 0)
                             KRS!(N, NE, 4) = 1
                             KRS!(N, NE, 5) = Y
 
@@ -668,7 +668,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     Next K
 
                     PRS!(N, J, 3) = careerPK!(I)
-                    PRRS$(N, J, 0) = PK$(I, 0)
+                    PRRS$(N, J, 0) = careerPK$(I, 0)
                     PRS!(N, J, 4) = 1
                     PRS!(N, J, 5) = Y
 
@@ -686,7 +686,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             For K = 14 To 16: PRS!(N, NF, K - 14) = Z2!(I + 3, K): Next
 
                             PRS!(N, NF, 3) = careerPK!(I)
-                            PRRS$(N, NF, 0) = PK$(I, 0)
+                            PRRS$(N, NF, 0) = careerPK$(I, 0)
                             PRS!(N, NF, 4) = 1
                             PRS!(N, NF, 5) = Y
                         End If
@@ -1587,7 +1587,7 @@ End Sub
 '...explanation...
 Sub GetTeam_CARMERGE ()
 
-    Shared PA%()
+    Shared statsPA%()
 
     Do
 
@@ -1666,13 +1666,13 @@ Sub GetTeam_CARMERGE ()
                 If BO% = 1 Then
                     BO% = 0
                 Else
-                    Locate 2, 33: Color PA%(2), PA%(1)
+                    Locate 2, 33: Color statsPA%(2), statsPA%(1)
                     Print A$
 
                     Color 15, 4
 
                     Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1694,7 +1694,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1725,7 +1725,7 @@ Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
         Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
         Get #1, teamIdx%
-        For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
         Close 1
 
     End If

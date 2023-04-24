@@ -59,7 +59,7 @@ End Sub
 Sub DefineLeaguePro
 
     Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
+    Shared statsPA%(), statsZ1%()
 
     Do
         Do
@@ -101,24 +101,24 @@ Sub DefineLeaguePro
     'Determine Division names
     Color 15, 0
     Print: Print
-    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; D1$
-    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; D2$
-    Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; D3$
+    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
+    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
+    Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
 
-    Call ViewProLeague(LG$, D1$, D2$, D3$)
+    Call ViewProLeague(LG$, div1$, div2$, div3$)
 
     'Save the work
     Open diskPaths$(2) + LG$ + ".LIB" For Output As #2
 
     Print #2, 1
     Print #2, LG$
-    Print #2, D1$
-    Print #2, D2$
-    Print #2, D3$
+    Print #2, div1$
+    Print #2, div2$
+    Print #2, div3$
 
     For X = 1 To 30:
         Print #2, Z1$(X)
-        Print #2, Z1%(X)
+        Print #2, statsZ1%(X)
         Print #2, Z2$(X)
     Next
 
@@ -163,9 +163,9 @@ Sub DefineLeaguePro
     Open diskPaths$(2) + Q$ For Output As #2
 
     Write #2, LG$
-    Write #2, D1$
-    Write #2, D2$
-    Write #2, D3$
+    Write #2, div1$
+    Write #2, div2$
+    Write #2, div3$
 
     For X = 1 To 30: Write #2, Z1$(X): Next
 
@@ -178,10 +178,10 @@ End Sub
 '       ViewProLeague Subroutine
 '----------------------------------------
 '...explanation...
-Sub ViewProLeague (LG$, D1$, D2$, D3$)
+Sub ViewProLeague (LG$, div1$, div2$, div3$)
 
     Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
+    Shared statsPA%(), statsZ1%()
 
     Do
         Cls
@@ -189,7 +189,7 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
         Color 14: Print "  "; LG$; " LEAGUE"
         Print
         Color 15
-        Print Tab(6); D1$; Tab(30); D2$; Tab(55); D3$: Print
+        Print Tab(6); div1$; Tab(30); div2$; Tab(55); div3$: Print
 
         For I = 1 To 10
             Print Using "  ##"; I;: Print " "; Z1$(I);
@@ -255,7 +255,7 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
 
                     If NY$ = "" And YN$ <> "" Then
 
-                        Call SelectTeam_CREATPRO(YN$, NTMS)
+                        Call SelectTeam_CREATPRO(YN$, NTMS, teamNbr)
 
                     Else
                         YN$ = NY$
@@ -285,7 +285,7 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
 
                         TS% = Int((NTMS - 1) / 80)
 
-                        Call SelectTeam_CREATPRO(YN$, NTMS)
+                        Call SelectTeam_CREATPRO(YN$, NTMS, teamNbr)
 
                     End If
 
@@ -297,10 +297,10 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
                     Else
 
                         Locate 2, 33
-						Color PA%(2), PA%(1): Print A$
+						Color statsPA%(2), statsPA%(1): Print A$
 
                         Do
-                            Locate , 33: Print "ANY CHANGE (YN)";
+                            Locate 3, 33: Print "ANY CHANGE (YN)";
                             I$ = GetKeyPress$
                         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -312,7 +312,7 @@ Sub ViewProLeague (LG$, D1$, D2$, D3$)
 
                 Z1$(B) = A$
                 Z2$(B) = YN$
-                Z1%(B) = B8%
+                statsZ1%(B) = teamNbr
 
             Else
                 'I$ = 2
@@ -329,9 +329,9 @@ End Sub
 '    SelectTeam_CREATPRO Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_CREATPRO (YN$, NTMS)
+Sub SelectTeam_CREATPRO (YN$, NTMS, teamNbr)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = NTMS
@@ -355,15 +355,15 @@ Sub SelectTeam_CREATPRO (YN$, NTMS)
 
     If ExitCode% <> 27 Then
 
-        B8% = teamIndex%(Selection%)
+        teamNbr = teamIndex%(Selection%)
 
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
-        Get #1, B8%
+        Get #1, teamNbr
 
-        For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
 
         Close 1
 
@@ -383,7 +383,7 @@ End Sub
 Sub ReviewLeague ()
 
     Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
+    Shared statsPA%(), statsZ1%()
 
     wrongFormat% = 0
 
@@ -440,7 +440,7 @@ Sub ReviewLeague ()
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -469,13 +469,13 @@ Sub ReviewLeague ()
                     wrongFormat% = 1
                 Else
                     Input #2, LG$
-                    Input #2, D1$
-                    Input #2, D2$
-                    Input #2, D3$
+                    Input #2, div1$
+                    Input #2, div2$
+                    Input #2, div3$
 
                     For X = 1 To 30:
                         Input #2, Z1$(X)
-                        Input #2, Z1%(X)
+                        Input #2, statsZ1%(X)
                         Input #2, Z2$(X)
                     Next
 
@@ -490,6 +490,6 @@ Sub ReviewLeague ()
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
 
-    Call ViewProLeague(LG$, D1$, D2$, D3$)
+    Call ViewProLeague(LG$, div1$, div2$, div3$)
 
 End Sub

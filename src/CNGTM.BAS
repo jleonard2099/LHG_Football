@@ -36,11 +36,11 @@ Sub CNGTM ()
 
         If ExitCode% <> 27 Then
 
-            Call GetTeam_CNGTM(YN$)
+            Call GetTeam_CNGTM(YN$, teamNbr)
 
             Select Case RN
                 Case 1
-                    Call ChangeTeam(YN$)
+                    Call ChangeTeam(YN$, teamNbr)
 
                 Case 2
                     Call PrintRoster
@@ -59,9 +59,9 @@ End Sub
 '      GetTeam_CNGTM Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetTeam_CNGTM (YN$)
+Sub GetTeam_CNGTM (YN$, teamNbr)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Do
         Color 15, 0
@@ -125,12 +125,12 @@ Sub GetTeam_CNGTM (YN$)
             BO% = 0
         Else
             Locate 2, 33
-			Color PA%(2), PA%(1): Print A$
+			Color statsPA%(2), statsPA%(1): Print A$
             
 			Color 15, 4
 
             Do
-				Locate , 33: Print "ANY CHANGE (YN)";
+				Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -170,9 +170,9 @@ Sub SelectTeam_CNGTM (NTMS, YN$)
 
     If ExitCode% = 27 Then BO% = 1: Exit Sub
 
-    B8% = teamIndex%(Selection%)
+    teamNbr = teamIndex%(Selection%)
 
-    Call ReadTeam_CNGTM(YN$, B8%)
+    Call ReadTeam_CNGTM(YN$, teamNbr)
 
 End Sub
 
@@ -182,14 +182,14 @@ End Sub
 '...explanation...
 Sub ReadTeam_CNGTM (YN$, B8%)
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
-    Shared DI$(), DS$()
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
-    Shared DI%(), DS%(), PA%(), QX%()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared statsDI$(), statsDS$()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared careerDI%(), careerDS%(), statsPA%(), careerQX%()
 
     Dim C2(15), C3(15)
 
@@ -212,68 +212,69 @@ Sub ReadTeam_CNGTM (YN$, B8%)
     Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
     Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+
     Get #1, B8%
 
-    For I = 0 To 7: B6%(I) = CVI(Q$(I + 3)): Next I
+    For I = 0 To 7: careerB6%(I) = CVI(Q$(I + 3)): Next I
 
-    For I = 0 To 4: PA%(I) = CVI(Q$(I + 11)): Next I
+    For I = 0 To 4: statsPA%(I) = CVI(Q$(I + 11)): Next I
 
     For I = 0 To 9
-        A1$(I) = Q$(I * 5 + 16)
-        A0%(I) = CVI(Q$(I * 5 + 17))
-        A1%(I) = CVI(Q$(I * 5 + 18))
-        A2%(I) = CVI(Q$(I * 5 + 19))
-        A3%(I) = CVI(Q$(I * 5 + 20))
+        statsA1$(I) = Q$(I * 5 + 16)
+        careerA0%(I) = CVI(Q$(I * 5 + 17))
+        careerA1%(I) = CVI(Q$(I * 5 + 18))
+        careerA2%(I) = CVI(Q$(I * 5 + 19))
+        careerA3%(I) = CVI(Q$(I * 5 + 20))
     Next I
 
     For I = 0 To 5
-        A2$(I) = Q$(I * 3 + 66)
-        A4%(I) = CVI(Q$(I * 3 + 67))
-        A5%(I) = CVI(Q$(I * 3 + 68))
+        statsA2$(I) = Q$(I * 3 + 66)
+        careerA4%(I) = CVI(Q$(I * 3 + 67))
+        careerA5%(I) = CVI(Q$(I * 3 + 68))
     Next I
 
     For I = 0 To 3
-        A3$(I) = Q$(I * 5 + 84)
-        A6%(I) = CVI(Q$(I * 5 + 85))
-        A7%(I) = CVI(Q$(I * 5 + 86))
-        A8%(I) = CVI(Q$(I * 5 + 87))
-        QX%(I) = CVI(Q$(I * 5 + 88))
+        statsA3$(I) = Q$(I * 5 + 84)
+        careerA6%(I) = CVI(Q$(I * 5 + 85))
+        careerA7%(I) = CVI(Q$(I * 5 + 86))
+        careerA8%(I) = CVI(Q$(I * 5 + 87))
+        careerQX%(I) = CVI(Q$(I * 5 + 88))
     Next I
 
     For I = 0 To 2
-        A4$(I) = Q$(I * 3 + 104)
-        A9%(I) = CVI(Q$(I * 3 + 105))
-        B%(I) = CVI(Q$(I * 3 + 106))
+        statsA4$(I) = Q$(I * 3 + 104)
+        careerA9%(I) = CVI(Q$(I * 3 + 105))
+        careerB%(I) = CVI(Q$(I * 3 + 106))
     Next I
 
     For I = 0 To 2
-        A5$(I) = Q$(I * 3 + 113)
-        B1%(I) = CVI(Q$(I * 3 + 114))
-        B2%(I) = CVI(Q$(I * 3 + 115))
+        statsA5$(I) = Q$(I * 3 + 113)
+        careerB1%(I) = CVI(Q$(I * 3 + 114))
+        careerB2%(I) = CVI(Q$(I * 3 + 115))
     Next I
 
-    A6$(0) = Q$(122)
-    B3%(0) = CVI(Q$(123))
-    A7$(0) = Q$(124)
-    B4%(0) = CVI(Q$(125))
-    B5%(0) = CVI(Q$(126))
-    B7%(0) = CVI(Q$(127))
-    B8%(0) = CVI(Q$(128))
-    A7$(1) = Q$(129)
-    B4%(1) = CVI(Q$(130))
-    B5%(1) = CVI(Q$(131))
-    B7%(1) = CVI(Q$(132))
-    B8%(1) = CVI(Q$(133))
+    statsA6$(0) = Q$(122)
+    careerB3%(0) = CVI(Q$(123))
+    statsA7$(0) = Q$(124)
+    careerB4%(0) = CVI(Q$(125))
+    careerB5%(0) = CVI(Q$(126))
+    careerB7%(0) = CVI(Q$(127))
+    careerB8%(0) = CVI(Q$(128))
+    statsA7$(1) = Q$(129)
+    careerB4%(1) = CVI(Q$(130))
+    careerB5%(1) = CVI(Q$(131))
+    careerB7%(1) = CVI(Q$(132))
+    careerB8%(1) = CVI(Q$(133))
     YC! = CVI(Q$(134))
 
     For I = 0 To 14
-        DS$(I) = Q$(I * 2 + 135)
-        DS%(I) = CVI(Q$(I * 2 + 136))
+        statsDS$(I) = Q$(I * 2 + 135)
+        careerDS%(I) = CVI(Q$(I * 2 + 136))
     Next I
 
     For I = 0 To 9
-        DI$(I) = Q$(I * 2 + 165)
-        DI%(I) = CVI(Q$(I * 2 + 166))
+        statsDI$(I) = Q$(I * 2 + 165)
+        careerDI%(I) = CVI(Q$(I * 2 + 166))
     Next I
 
     Close #1
@@ -300,58 +301,58 @@ Sub ReadTeam_CNGTM (YN$, B8%)
     U = 0
 
     For I = 1 To 9
-        If A0%(I) = 0 Then
+        If careerA0%(I) = 0 Then
             U = U + 1
         Else
-            C3(I) = A0%(I) - A0%(I - 1 - U)
+            C3(I) = careerA0%(I) - careerA0%(I - 1 - U)
             U = 0
         End If
     Next
 
-    For I = 1 To 9: A0%(I) = C3(I): Next
-    For I = 0 To 5: A2%(I + 10) = A4%(I): Next
+    For I = 1 To 9: careerA0%(I) = C3(I): Next
+    For I = 0 To 5: careerA2%(I + 10) = careerA4%(I): Next
 
     U = 0
 
     For I = 1 To 15
-        If A2%(I) = 0 Then
+        If careerA2%(I) = 0 Then
             U = U + 1
         Else
-            C2(I) = A2%(I) - A2%(I - 1 - U)
+            C2(I) = careerA2%(I) - careerA2%(I - 1 - U)
             U = 0
         End If
     Next
 
-    For I = 1 To 15: A2%(I) = C2(I): Next
-    For I = 0 To 5: A4%(I) = A2%(I + 10): Next
+    For I = 1 To 15: careerA2%(I) = C2(I): Next
+    For I = 0 To 5: careerA4%(I) = careerA2%(I + 10): Next
 
     For I = 3 To 1 Step -1
-        If A6%(I) <> 0 Then
-            A6%(I) = A6%(I) - A6%(I - 1)
+        If careerA6%(I) <> 0 Then
+            careerA6%(I) = careerA6%(I) - careerA6%(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If A9%(I) <> 0 Then
-            A9%(I) = A9%(I) - A9%(I - 1)
+        If careerA9%(I) <> 0 Then
+            careerA9%(I) = careerA9%(I) - careerA9%(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If B1%(I) <> 0 Then
-            B1%(I) = B1%(I) - B1%(I - 1)
+        If careerB1%(I) <> 0 Then
+            careerB1%(I) = careerB1%(I) - careerB1%(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If B5%(I) <> 0 Then
-            B5%(I) = B5%(I) - B5%(I - 1)
+        If careerB5%(I) <> 0 Then
+            careerB5%(I) = careerB5%(I) - careerB5%(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If B8%(I) <> 0 Then
-            B8%(I) = B8%(I) - B8%(I - 1)
+        If careerB8%(I) <> 0 Then
+            careerB8%(I) = careerB8%(I) - careerB8%(I - 1)
         End If
     Next
 
@@ -363,39 +364,39 @@ End Sub
 '...explanation...
 Sub PrintRoster ()
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
 
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
-    Shared PA%(), QX%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared statsPA%(), careerQX%()
 
 	Color 0, 15
 
     ' *** PRINT TEAM ROSTER ***
     LPrint "TEAM ROSTER FOR "; A$; " "; AA$; " TEAM NUMBER ="; B8%: LPrint
-    LPrint Using "DEF RUSH ADJ   = ###"; B6%(0);: LPrint Tab(35); Using "SACKED %         = ##"; B6%(5)
-    LPrint Using "DEF COMP % ADJ = ###"; B6%(1);: LPrint Tab(35); Using "DEF SACK ADJ     = ##"; B6%(6)
-    LPrint Using "DEF INT % ADJ  = ###"; B6%(2);: LPrint Tab(35); Using "RUN/PASS %       = ##"; B6%(7)
-    LPrint Using "OFF FUMBLE  %  = ###"; B6%(3);: LPrint Tab(35); "DEF YDS/COMP ADJ = ";
+    LPrint Using "DEF RUSH ADJ   = ###"; careerB6%(0);: LPrint Tab(35); Using "SACKED %         = ##"; careerB6%(5)
+    LPrint Using "DEF COMP % ADJ = ###"; careerB6%(1);: LPrint Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
+    LPrint Using "DEF INT % ADJ  = ###"; careerB6%(2);: LPrint Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
+    LPrint Using "OFF FUMBLE  %  = ###"; careerB6%(3);: LPrint Tab(35); "DEF YDS/COMP ADJ = ";
 
     If YC! < 50 Then LPrint Using "+#.#"; YC! / 100 * 30
     If YC! > 50 Then LPrint Using "+#.#"; (100 - YC!) / 100 * -30
 
-    LPrint Using "DEF FUMBLE  %  = ###"; B6%(4);: LPrint Tab(35); Using "PENALTY ADJ      = ##"; PA%(0)
-    LPrint Using "STAD TYPE      = ###"; PA%(3);: LPrint Tab(35); Using "GEOGRAPH REGION  = ##"; PA%(4)
-    LPrint Using "BACKGRND COLOR = ###"; PA%(1);: LPrint Tab(35); Using "FOREGRND COLOR   = ##"; PA%(2)
+    LPrint Using "DEF FUMBLE  %  = ###"; careerB6%(4);: LPrint Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
+    LPrint Using "STAD TYPE      = ###"; statsPA%(3);: LPrint Tab(35); Using "GEOGRAPH REGION  = ##"; statsPA%(4)
+    LPrint Using "BACKGRND COLOR = ###"; statsPA%(1);: LPrint Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
     LPrint
     LPrint "RUNNING BACKS-"
     LPrint "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
     For I = 0 To 9:
-        If Left$(A1$(I), 1) <> " " And Left$(A1$(I), 3) <> "END" Then
-            LPrint A1$(I); Tab(23);
-            LPrint Using "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+        If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
+            LPrint statsA1$(I); Tab(23);
+            LPrint Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
         End If
     Next
 
@@ -404,9 +405,9 @@ Sub PrintRoster ()
     LPrint "NAME-              REC AVG     CX%"
 
     For I = 0 To 5:
-        If Left$(A2$(I), 1) <> " " And Left$(A2$(I), 3) <> "END" Then
-            LPrint A2$(I); Tab(23);
-            LPrint Using "##       ###"; A5%(I) * 3; A4%(I)
+        If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
+            LPrint statsA2$(I); Tab(23);
+            LPrint Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
         End If
     Next
 
@@ -415,9 +416,9 @@ Sub PrintRoster ()
     LPrint "NAME-               COMP%   INT%    ADJ     CX%"
 
     For I = 0 To 3:
-        If Left$(A3$(I), 1) <> " " And Left$(A3$(I), 3) <> "END" Then
-            LPrint A3$(I); Tab(21);
-            LPrint Using "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+        If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
+            LPrint statsA3$(I); Tab(21);
+            LPrint Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
         End If
     Next
 
@@ -426,9 +427,9 @@ Sub PrintRoster ()
     LPrint "NAME-              RET AVG     CX%"
 
     For I = 0 To 2:
-        If Left$(A4$(I), 1) <> " " And Left$(A4$(I), 3) <> "END" Then
-            LPrint A4$(I); Tab(23);
-            LPrint Using "##       ###"; B%(I) * 3; A9%(I)
+        If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
+            LPrint statsA4$(I); Tab(23);
+            LPrint Using "##       ###"; careerB%(I) * 3; careerA9%(I)
         End If
     Next
 
@@ -437,9 +438,9 @@ Sub PrintRoster ()
     LPrint "NAME-              RET AVG     CX%"
 
     For I = 0 To 2:
-        If Left$(A5$(I), 1) <> " " And Left$(A5$(I), 3) <> "END" Then
-            LPrint A5$(I); Tab(23);
-            LPrint Using "##       ###"; B2%(I) * 3; B1%(I)
+        If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
+            LPrint statsA5$(I); Tab(23);
+            LPrint Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
         End If
     Next
 
@@ -448,16 +449,16 @@ Sub PrintRoster ()
     LPrint "NAME-                FG%  CX%   EP%  CX%"
 
     For I = 0 To 1:
-        If Left$(A7$(I), 1) <> " " And Left$(A7$(I), 3) <> "END" Then
-            LPrint A7$(I); Tab(21);
-            LPrint Using "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+        If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
+            LPrint statsA7$(I); Tab(21);
+            LPrint Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
         End If
     Next
 
     LPrint
     LPrint "PUNTER-"
     LPrint "NAME-              AVG"
-    LPrint A6$(0); Tab(21);: LPrint Using "##"; B3%(0) * 2 + 28
+    LPrint statsA6$(0); Tab(21);: LPrint Using "##"; careerB3%(0) * 2 + 28
 
     LPrint Chr$(12)
 
@@ -467,17 +468,17 @@ End Sub
 '       ViewRoster Subroutine
 '----------------------------------------
 '...explanation...
-Sub ChangeTeam (YN$)
+Sub ChangeTeam (YN$, teamNbr)
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
 
-    Shared DI$(), DS$()
-    Shared A1%(), A3%(), A5%(), A7%(), A8%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
-    Shared DI%(), DS%()
-    Shared PA%(), QX%()
+    Shared statsDI$(), statsDS$()
+    Shared careerA1%(), careerA3%(), careerA5%(), careerA7%(), careerA8%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared careerDI%(), careerDS%()
+    Shared statsPA%(), careerQX%()
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
@@ -533,33 +534,33 @@ Sub ChangeTeam (YN$)
                     Locate 1, 40 - Len(U$) / 2
                     Color 14: Print U$
                     Color 15
-                    Locate 2: Print " 1. TEAM NUMBER "; B8%
+                    Locate 2: Print " 1. TEAM NUMBER "; teamNbr
                     Locate 3: Print " 2. TEAM NAME "; A$
                     Locate 4: Print " 3. NICKNAME "; AA$
-                    Locate 5: Print " 4. DEF RUSHING ADJ "; B6%(0)
-                    Locate 6: Print " 5. DEF COMPLETION % ADJ "; B6%(1)
-                    Locate 7: Print " 6. DEF INTERCEPTION % ADJ "; B6%(2)
-                    Locate 8: Print " 7. OFF FUMBLE % "; B6%(3)
-                    Locate 9: Print " 8. DEF FUMBLE % "; B6%(4)
-                    Locate 10: Print " 9. OFF SACK ADJ % "; B6%(5)
-                    Locate 11: Print "10. DEF SACK ADJ % "; B6%(6)
+                    Locate 5: Print " 4. DEF RUSHING ADJ "; careerB6%(0)
+                    Locate 6: Print " 5. DEF COMPLETION % ADJ "; careerB6%(1)
+                    Locate 7: Print " 6. DEF INTERCEPTION % ADJ "; careerB6%(2)
+                    Locate 8: Print " 7. OFF FUMBLE % "; careerB6%(3)
+                    Locate 9: Print " 8. DEF FUMBLE % "; careerB6%(4)
+                    Locate 10: Print " 9. OFF SACK ADJ % "; careerB6%(5)
+                    Locate 11: Print "10. DEF SACK ADJ % "; careerB6%(6)
                     Locate 12: Print "11. DEF YDS/COMP ADJ ";
                     If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
                     If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
-                    Locate 13: Print "12. TM PENALTY ADJ "; PA%(0)
-                    Locate 14: Print "13. OFF RUN/PASS % "; B6%(7)
-                    Locate 15: Print "14. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
-                    Locate 16: Print "15. POWER INDEX "; PA%(4)
-                    Locate 17: Print "16. TM BACKGROUND COLOR (0-7) "; PA%(1)
-                    Locate 18: Print "17. TM TEXT COLOR (0-15) "; PA%(2)
+                    Locate 13: Print "12. TM PENALTY ADJ "; statsPA%(0)
+                    Locate 14: Print "13. OFF RUN/PASS % "; careerB6%(7)
+                    Locate 15: Print "14. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
+                    Locate 16: Print "15. POWER INDEX "; statsPA%(4)
+                    Locate 17: Print "16. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
+                    Locate 18: Print "17. TM TEXT COLOR (0-15) "; statsPA%(2)
                     Locate 19: Print "18. DISK ID "; YN$
                     Locate 20: Print "19. STADIUM NAME "; S$
                     Locate 21: Print "20. AVERAGE ATTENDANCE "; ATT&
-                    Locate 22: Color PA%(2), PA%(1): Print "SAMPLE TEAM COLOR"
+                    Locate 22: Color statsPA%(2), statsPA%(1): Print "SAMPLE TEAM COLOR"
                     Color 15, 0
 
                     1170
-                    Locate 22: Color PA%(2), PA%(1): Print "SAMPLE TEAM COLOR"
+                    Locate 22: Color statsPA%(2), statsPA%(1): Print "SAMPLE TEAM COLOR"
                     Color 15, 0
                     C1 = 1
                     Do
@@ -581,31 +582,31 @@ Sub ChangeTeam (YN$)
                             If C1 = 1 Then 1170
 
                         Case 4
-                            Locate 5: Input " 4. DEF RUSHING ADJ "; B6%(0)
+                            Locate 5: Input " 4. DEF RUSHING ADJ "; careerB6%(0)
                             If C1 = 1 Then 1170
 
                         Case 5
-                            Locate 6: Input " 5. DEF COMPLETION % ADJ "; B6%(1)
+                            Locate 6: Input " 5. DEF COMPLETION % ADJ "; careerB6%(1)
                             If C1 = 1 Then 1170
 
                         Case 6
-                            Locate 7: Input " 6. DEF INTERCEPTION % ADJ "; B6%(2)
+                            Locate 7: Input " 6. DEF INTERCEPTION % ADJ "; careerB6%(2)
                             If C1 = 1 Then 1170
 
                         Case 7
-                            Locate 8: Input " 7. OFF FUMBLE % "; B6%(3)
+                            Locate 8: Input " 7. OFF FUMBLE % "; careerB6%(3)
                             If C1 = 1 Then 1170
 
                         Case 8
-                            Locate 9: Input " 8. DEF FUMBLE % "; B6%(4)
+                            Locate 9: Input " 8. DEF FUMBLE % "; careerB6%(4)
                             If C1 = 1 Then 1170
 
                         Case 9
-                            Locate 10: Input " 9. OFF SACK ADJ % "; B6%(5)
+                            Locate 10: Input " 9. OFF SACK ADJ % "; careerB6%(5)
                             If C1 = 1 Then 1170
 
                         Case 10
-                            Locate 11: Input "10. DEF SACK ADJ % "; B6%(6)
+                            Locate 11: Input "10. DEF SACK ADJ % "; careerB6%(6)
                             If C1 = 1 Then 1170
 
                         Case 11
@@ -613,27 +614,27 @@ Sub ChangeTeam (YN$)
                             If YC! <= 0 Then YC! = 100 + (YC! * 10 / 3): GoTo 1170
 
                         Case 12
-                            Locate 13: Input "12. TM PENALTY ADJ "; PA%(0)
+                            Locate 13: Input "12. TM PENALTY ADJ "; statsPA%(0)
                             If C1 = 1 Then 1170
 
                         Case 13
-                            Locate 14: Input "13. OFF RUN/PASS % "; B6%(7)
+                            Locate 14: Input "13. OFF RUN/PASS % "; careerB6%(7)
                             If C1 = 1 Then 1170
 
                         Case 14
-                            Locate 15: Input "14. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
+                            Locate 15: Input "14. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
                             If C1 = 1 Then 1170
 
                         Case 15
-                            Locate 16: Input "15. POWER INDEX "; PA%(4)
+                            Locate 16: Input "15. POWER INDEX "; statsPA%(4)
                             If C1 = 1 Then 1170
 
                         Case 16
-                            Locate 17: Input "16. TM BACKGROUND COLOR (0-7) "; PA%(1)
+                            Locate 17: Input "16. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
                             If C1 = 1 Then 1170
 
                         Case 17
-                            Locate 18: Input "17. TM TEXT COLOR (0-15) "; PA%(2)
+                            Locate 18: Input "17. TM TEXT COLOR (0-15) "; statsPA%(2)
                             If C1 = 1 Then 1170
 
                         Case 18
@@ -670,7 +671,7 @@ Sub ChangeTeam (YN$)
 
                     For I = 0 To 9:
                         Print Using "## "; I + 1;
-                        Print " "; A1$(I); Tab(20);: Print Using "##.#       ## ##"; A1%(I) * .3; A3%(I) * 3
+                        Print " "; statsA1$(I); Tab(20);: Print Using "##.#       ## ##"; careerA1%(I) * .3; careerA3%(I) * 3
                     Next
 
                     Locate 13
@@ -689,9 +690,9 @@ Sub ChangeTeam (YN$)
                         Locate 1, 40 - Len(U$) / 2
                         Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A1$(I1)
-                        Print "2. RUSHING AVG ";: Print Using "##.#"; A1%(I1) * .3
-                        Print "3. RECEIVING AVG ";: Print Using "##"; A3%(I1) * 3
+                        Print "1. NAME "; statsA1$(I1)
+                        Print "2. RUSHING AVG ";: Print Using "##.#"; careerA1%(I1) * .3
+                        Print "3. RECEIVING AVG ";: Print Using "##"; careerA3%(I1) * 3
                         C1 = 1
 
                         Do
@@ -701,15 +702,15 @@ Sub ChangeTeam (YN$)
 
                             Select Case C9
                                 Case 1
-                                    Locate 2: Input "1. NAME "; A1$(I1)
+                                    Locate 2: Input "1. NAME "; statsA1$(I1)
 
                                 Case 2
                                     Locate 3: Input "2. RUSHING AVG "; A1!(I1)
-                                    A1%(I1) = Int(A1!(I1) / .3 + .5)
+                                    careerA1%(I1) = Int(A1!(I1) / .3 + .5)
 
                                 Case 3
                                     Locate 4: Input "3. RECEIVING AVG "; A3!(I1)
-                                    A3%(I1) = Int(A3!(I1) / 3 + .5)
+                                    careerA3%(I1) = Int(A3!(I1) / 3 + .5)
 
                             End Select
 
@@ -730,7 +731,7 @@ Sub ChangeTeam (YN$)
                     Color 15
                     Print "   NAME"; Tab(20); "REC AVG"
 
-                    For I = 0 To 5: Print Using "## "; I + 1;: Print " "; A2$(I); Tab(20);: Print Using "   ##"; A5%(I) * 3: Next
+                    For I = 0 To 5: Print Using "## "; I + 1;: Print " "; statsA2$(I); Tab(20);: Print Using "   ##"; careerA5%(I) * 3: Next
 
                     Do
                         Locate 9: Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -746,8 +747,8 @@ Sub ChangeTeam (YN$)
                         Locate 1, 40 - Len(U$) / 2
                         Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A2$(I1)
-                        Print "2. RECEIVING AVG ";: Print Using "##"; A5%(I1) * 3
+                        Print "1. NAME "; statsA2$(I1)
+                        Print "2. RECEIVING AVG ";: Print Using "##"; careerA5%(I1) * 3
 
                         1325 '
                         C1 = 1
@@ -757,10 +758,10 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A2$(I1): If C1 = 1 Then 1325
+                                Locate 2: Input "1. NAME "; statsA2$(I1): If C1 = 1 Then 1325
 
                             Case 2
-                                Locate 3: Input "2. RECEIVING AVG "; A5!(I1): A5%(I1) = Int(A5!(I1) / 3 + .5): If C1 = 1 Then 1325
+                                Locate 3: Input "2. RECEIVING AVG "; A5!(I1): careerA5%(I1) = Int(A5!(I1) / 3 + .5): If C1 = 1 Then 1325
 
                         End Select
 
@@ -779,7 +780,7 @@ Sub ChangeTeam (YN$)
 
                     For I = 0 To 3:
                         Print Using "## "; I + 1;
-                        Print " "; A3$(I); Tab(20);: Print Using " ##      ##       +##"; A7%(I); A8%(I); QX%(I)
+                        Print " "; statsA3$(I); Tab(20);: Print Using " ##      ##       +##"; careerA7%(I); careerA8%(I); careerQX%(I)
                     Next
 
                     Do
@@ -794,10 +795,10 @@ Sub ChangeTeam (YN$)
                         U$ = "QUARTERBACK RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A3$(I1)
-                        Print "2. COMPLETION % "; A7%(I1)
-                        Print "3. INTERCEPTION % "; A8%(I1)
-                        Print "4. YDS/COMP ADJ "; QX%(I1)
+                        Print "1. NAME "; statsA3$(I1)
+                        Print "2. COMPLETION % "; careerA7%(I1)
+                        Print "3. INTERCEPTION % "; careerA8%(I1)
+                        Print "4. YDS/COMP ADJ "; careerQX%(I1)
 
                         1425 '
                         Do
@@ -807,19 +808,19 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A3$(I1)
+                                Locate 2: Input "1. NAME "; statsA3$(I1)
                                 If C1 = 1 Then 1425
 
                             Case 2
-                                Locate 3: Input "2. COMPLETION % "; A7%(I1)
+                                Locate 3: Input "2. COMPLETION % "; careerA7%(I1)
                                 If C1 = 1 Then 1425
 
                             Case 3
-                                Locate 4: Input "3. INTERCEPTION % "; A8%(I1)
+                                Locate 4: Input "3. INTERCEPTION % "; careerA8%(I1)
                                 If C1 = 1 Then 1425
 
                             Case 4
-                                Locate 5: Input "4. YDS/COMP ADJ "; QX%(I1)
+                                Locate 5: Input "4. YDS/COMP ADJ "; careerQX%(I1)
                                 If C1 = 1 Then 1425
 
                         End Select
@@ -838,7 +839,7 @@ Sub ChangeTeam (YN$)
                     Color 15
                     Print "   NAME"; Tab(20); "RET AVG"
 
-                    For I = 0 To 2: Print Using "## "; I + 1;: Print " "; A4$(I); Tab(20);: Print Using "  ##"; B%(I) * 3: Next
+                    For I = 0 To 2: Print Using "## "; I + 1;: Print " "; statsA4$(I); Tab(20);: Print Using "  ##"; careerB%(I) * 3: Next
 
                     Do
                         Locate 9: Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -851,8 +852,8 @@ Sub ChangeTeam (YN$)
                         U$ = "KICK-OFF RETURNMEN RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A4$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; B%(I1) * 3
+                        Print "1. NAME "; statsA4$(I1)
+                        Print "2. RETURN AVG ";: Print Using "##"; careerB%(I1) * 3
 
                         1525 C1 = 1
 
@@ -862,12 +863,12 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A4$(I1)
+                                Locate 2: Input "1. NAME "; statsA4$(I1)
                                 If C1 = 1 Then 1525
 
                             Case 2
                                 Locate 3: Input "2. RETURN AVG "; B!(I1)
-                                B%(I1) = Int(B!(I1) / 3 + .5)
+                                careerB%(I1) = Int(B!(I1) / 3 + .5)
                                 If C1 = 1 Then 1525
                         End Select
 
@@ -885,7 +886,7 @@ Sub ChangeTeam (YN$)
                     Color 15
                     Print "   NAME"; Tab(20); "RET AVG"
 
-                    For I = 0 To 2: Print Using "## "; I + 1;: Print " "; A5$(I); Tab(20);: Print Using "  ##"; B2%(I) * 3: Next
+                    For I = 0 To 2: Print Using "## "; I + 1;: Print " "; statsA5$(I); Tab(20);: Print Using "  ##"; careerB2%(I) * 3: Next
 
                     Do
                         Locate 9: Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -899,8 +900,8 @@ Sub ChangeTeam (YN$)
                         U$ = "PUNT RETURNMEN RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A5$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; B2%(I1) * 3
+                        Print "1. NAME "; statsA5$(I1)
+                        Print "2. RETURN AVG ";: Print Using "##"; careerB2%(I1) * 3
 
                         1625 C1 = 1
 
@@ -910,11 +911,11 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A5$(I1)
+                                Locate 2: Input "1. NAME "; statsA5$(I1)
                                 If C1 = 1 Then 1625
 
                             Case 2
-                                Locate 3: Input "2. RETURN AVG "; B2!(I1): B2%(I1) = Int(B2!(I1) / 3 + .5)
+                                Locate 3: Input "2. RETURN AVG "; B2!(I1): careerB2%(I1) = Int(B2!(I1) / 3 + .5)
                                 If C1 = 1 Then 1625
 
                         End Select
@@ -934,7 +935,7 @@ Sub ChangeTeam (YN$)
                     Color 15
                     Print "   NAME"; Tab(20); "AVG"
 
-                    For I = 0 To 0: Print Using "## "; I + 1;: Print " "; A6$(I); Tab(20);: Print Using "##"; B3%(I) * 2 + 28: Next
+                    For I = 0 To 0: Print Using "## "; I + 1;: Print " "; statsA6$(I); Tab(20);: Print Using "##"; careerB3%(I) * 2 + 28: Next
 
                     Do
                         Locate 9: Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -947,8 +948,8 @@ Sub ChangeTeam (YN$)
                         U$ = "PUNTER RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; A6$(I1)
-                        Print "2. PUNTING AVG ";: Print Using "##"; B3%(I1) * 2 + 28
+                        Print "1. NAME "; statsA6$(I1)
+                        Print "2. PUNTING AVG ";: Print Using "##"; careerB3%(I1) * 2 + 28
 
                         1725 C1 = 1
 
@@ -958,11 +959,11 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A6$(I1)
+                                Locate 2: Input "1. NAME "; statsA6$(I1)
                                 If C1 = 1 Then 1725
 
                             Case 2
-                                Locate 3: Input "2. PUNTING AVG "; B3!(I1): B3%(I1) = Int(((B3!(I1) - 28) / 2) + .5)
+                                Locate 3: Input "2. PUNTING AVG "; B3!(I1): careerB3%(I1) = Int(((B3!(I1) - 28) / 2) + .5)
                                 If C1 = 1 Then 1725
                         End Select
 
@@ -980,7 +981,7 @@ Sub ChangeTeam (YN$)
                     Color 15
                     Print "   NAME"; Tab(20); "FG%   EP%"
 
-                    For I = 0 To 1: Print Using "## "; I + 1;: Print " "; A7$(I); Tab(20);: Print Using "###    ###"; B4%(I) * 5 + 25; B7%(I): Next
+                    For I = 0 To 1: Print Using "## "; I + 1;: Print " "; statsA7$(I); Tab(20);: Print Using "###    ###"; careerB4%(I) * 5 + 25; careerB7%(I): Next
 
                     Do
                         Locate 13: Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -990,9 +991,9 @@ Sub ChangeTeam (YN$)
 
                         B9 = B9 - 1: I1 = B9
                         Cls: U$ = "PLACE KICKER RATINGS": Locate 1, 40 - Len(U$) / 2: Color 14: Print U$: Color 15: Locate 2
-                        Print "1. NAME "; A7$(I1)
-                        Print "2. FIELD GOAL % ";: Print B4%(I1) * 5 + 25
-                        Print "3. EXTRA POINT % ";: Print B7%(I1)
+                        Print "1. NAME "; statsA7$(I1)
+                        Print "2. FIELD GOAL % ";: Print careerB4%(I1) * 5 + 25
+                        Print "3. EXTRA POINT % ";: Print careerB7%(I1)
                         1825 C1 = 1
 
                         Do
@@ -1001,16 +1002,16 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; A7$(I1)
+                                Locate 2: Input "1. NAME "; statsA7$(I1)
                                 If C1 = 1 Then 1825
 
                             Case 2
                                 Locate 3: Input "2. FIELD GOAL % "; B4!(I1)
-                                B4%(I1) = Int((B4!(I1) / 5) + .5) - 5
+                                careerB4%(I1) = Int((B4!(I1) / 5) + .5) - 5
                                 If C1 = 1 Then 1825
 
                             Case 3
-                                Locate 4: Input "3. EXTRA POINT % "; B7%(I1)
+                                Locate 4: Input "3. EXTRA POINT % "; careerB7%(I1)
                                 If C1 = 1 Then 1825
                         End Select
 
@@ -1029,7 +1030,7 @@ Sub ChangeTeam (YN$)
                 Locate 3
                 TSR% = 0
 
-                For I = 0 To 14: Print Using "## "; I + 1;: Print " "; DS$(I); Tab(20); DS%(I): Next
+                For I = 0 To 14: Print Using "## "; I + 1;: Print " "; statsDS$(I); Tab(20); careerDS%(I): Next
 
                 Do
                     Locate 20: Input "ENTER PLAYER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -1043,8 +1044,8 @@ Sub ChangeTeam (YN$)
                     Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                     Color 15: Locate 2
 
-                    Print "1. NAME "; DS$(I1)
-                    Print "2. SACKS "; DS%(I1)
+                    Print "1. NAME "; statsDS$(I1)
+                    Print "2. SACKS "; careerDS%(I1)
 
                     1925 C1 = 1
 
@@ -1054,11 +1055,11 @@ Sub ChangeTeam (YN$)
 
                     Select Case C9
                         Case 1
-                            Locate 2: Input "1. NAME "; DS$(I1)
+                            Locate 2: Input "1. NAME "; statsDS$(I1)
                             If C1 = 1 Then 1925
 
                         Case 2
-                            Locate 3: Input "2. SACKS "; DS%(I1)
+                            Locate 3: Input "2. SACKS "; careerDS%(I1)
                             If C1 = 1 Then 1925
 
                     End Select
@@ -1077,7 +1078,7 @@ Sub ChangeTeam (YN$)
                     Print "   NAME"; Tab(20); "INTERCEPTIONS"
                     Locate 3
 
-                    For I = 0 To 9: Print Using "## "; I + 1;: Print " "; DI$(I); Tab(27); DI%(I): Next
+                    For I = 0 To 9: Print Using "## "; I + 1;: Print " "; statsDI$(I); Tab(27); careerDI%(I): Next
 
                     Do
                         Locate 20: Input "ENTER PLAYER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
@@ -1090,8 +1091,8 @@ Sub ChangeTeam (YN$)
                         U$ = "INTERCEPTION RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
-                        Print "1. NAME "; DI$(I1)
-                        Print "2. INTERCEPTIONS "; DI%(I1)
+                        Print "1. NAME "; statsDI$(I1)
+                        Print "2. INTERCEPTIONS "; careerDI%(I1)
 
                         1975 C1 = 1
 
@@ -1101,11 +1102,11 @@ Sub ChangeTeam (YN$)
 
                         Select Case C9
                             Case 1
-                                Locate 2: Input "1. NAME "; DI$(I1)
+                                Locate 2: Input "1. NAME "; statsDI$(I1)
                                 If C1 = 1 Then 1975
 
                             Case 2
-                                Locate 3: Input "2. INTERCEPTIONS "; DI%(I1)
+                                Locate 3: Input "2. INTERCEPTIONS "; careerDI%(I1)
                                 If C1 = 1 Then 1975
 
                         End Select
@@ -1137,17 +1138,17 @@ End Sub
 '...explanation...
 Sub SaveChangedTeam ()
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
 
-    Shared DI$(), DS$()
+    Shared statsDI$(), statsDS$()
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
 
-    Shared DI%(), DS%(), PA%(), QX%()
+    Shared careerDI%(), careerDS%(), statsPA%(), careerQX%()
 
     '-- Why do we do this???
     '-- We lose accuracy here!!!
@@ -1164,38 +1165,38 @@ Sub SaveChangedTeam ()
     S2 = 0
     S3 = 0
 
-    For I = 0 To 9: S0 = S0 + A0%(I): S2 = S2 + A2%(I): Next
+    For I = 0 To 9: S0 = S0 + careerA0%(I): S2 = S2 + careerA2%(I): Next
 
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If A0%(I) <> 0 Then A0%(I) = Int(S4 * A0%(I) + .5) + S1: S1 = A0%(I)
-        If A0%(I) > 100 Then A0%(I) = 100
+        If careerA0%(I) <> 0 Then careerA0%(I) = Int(S4 * careerA0%(I) + .5) + S1: S1 = careerA0%(I)
+        If careerA0%(I) > 100 Then careerA0%(I) = 100
     Next I
 
-    For I = 0 To 5: S2 = S2 + A4%(I): Next
+    For I = 0 To 5: S2 = S2 + careerA4%(I): Next
 
     S5 = 100 / S2
 
     For I = 0 To 9:
-        If A2%(I) <> 0 Then A2%(I) = Int(S5 * A2%(I) + .5) + S3: S3 = A2%(I)
-        If A2%(I) > 100 Then A2%(I) = 100
+        If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
+        If careerA2%(I) > 100 Then careerA2%(I) = 100
     Next I
 
     For I = 0 To 5:
-        If A4%(I) <> 0 Then A4%(I) = Int(S5 * A4%(I) + .5) + S3: S3 = A4%(I)
-        If A4%(I) > 100 Then A4%(I) = 100
+        If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
+        If careerA4%(I) > 100 Then careerA4%(I) = 100
     Next I
 
     S6 = 0: S7 = 0
 
-    For I = 0 To 3: S6 = S6 + A6%(I): Next
+    For I = 0 To 3: S6 = S6 + careerA6%(I): Next
 
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If A6%(I) <> 0 Then A6%(I) = Int(S8 * A6%(I) + .5) + S7: S7 = A6%(I)
-        If A6%(I) > 100 Then A6%(I) = 100
+        If careerA6%(I) <> 0 Then careerA6%(I) = Int(S8 * careerA6%(I) + .5) + S7: S7 = careerA6%(I)
+        If careerA6%(I) > 100 Then careerA6%(I) = 100
     Next
 
     G0 = 0
@@ -1203,62 +1204,62 @@ Sub SaveChangedTeam ()
     G3 = 0
     G4 = 0
 
-    For I = 0 To 2: G0 = G0 + A9%(I): G3 = G3 + B1%(I): Next
+    For I = 0 To 2: G0 = G0 + careerA9%(I): G3 = G3 + careerB1%(I): Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 2:
-        If A9%(I) <> 0 Then A9%(I) = Int(G2 * A9%(I) + .5) + G1: G1 = A9%(I)
-        If A9%(I) > 100 Then A9%(I) = 100
+        If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
+        If careerA9%(I) > 100 Then careerA9%(I) = 100
     Next
 
     For I = 0 To 2:
-        If B1%(I) <> 0 Then B1%(I) = Int(G5 * B1%(I) + .5) + G4: G4 = B1%(I)
-        If B1%(I) > 100 Then B1%(I) = 100
+        If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
+        If careerB1%(I) > 100 Then careerB1%(I) = 100
     Next
 
     G0 = 0: G1 = 0: G3 = 0: G4 = 0
 
-    For I = 0 To 1: G0 = G0 + B5%(I): G3 = G3 + B8%(I): Next
+    For I = 0 To 1: G0 = G0 + careerB5%(I): G3 = G3 + careerB8%(I): Next
 
     G2 = 100 / G0: G5 = 100 / G3
 
     For I = 0 To 1:
-        If B5%(I) <> 0 Then B5%(I) = Int(G2 * B5%(I) + .5) + G1: G1 = B5%(I)
-        If B5%(I) > 100 Then B5%(I) = 100
+        If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
+        If careerB5%(I) > 100 Then careerB5%(I) = 100
     Next
 
-    For I = 0 To 1: If B8%(I) <> 0 Then B8%(I) = Int(G5 * B8%(I) + .5) + G4: G4 = B8%(I)
-        If B8%(I) > 100 Then B8%(I) = 100
+    For I = 0 To 1: If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
+        If careerB8%(I) > 100 Then careerB8%(I) = 100
     Next
 
     For I = 9 To 0 Step -1:
-        If A0%(I) <> 0 Then A0%(I) = 100: Exit For
+        If careerA0%(I) <> 0 Then careerA0%(I) = 100: Exit For
     Next
 
     For I = 5 To 0 Step -1:
-        If A4%(I) <> 0 Then A4%(I) = 100: Exit For
+        If careerA4%(I) <> 0 Then careerA4%(I) = 100: Exit For
     Next
 
     For I = 3 To 0 Step -1:
-        If A6%(I) <> 0 Then A6%(I) = 100: Exit For
+        If careerA6%(I) <> 0 Then careerA6%(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
-        If A9%(I) <> 0 Then A9%(I) = 100: Exit For
+        If careerA9%(I) <> 0 Then careerA9%(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
-        If B1%(I) <> 0 Then B1%(I) = 100: Exit For
+        If careerB1%(I) <> 0 Then careerB1%(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If B5%(I) <> 0 Then B5%(I) = 100: Exit For
+        If careerB5%(I) <> 0 Then careerB5%(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If B8%(I) <> 0 Then B8%(I) = 100: Exit For
+        If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
     Next
 
     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
@@ -1283,65 +1284,65 @@ Sub SaveChangedTeam ()
     LSet Q$(1) = A$
     LSet Q$(2) = AA$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(B6%(I)): Next I
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(PA%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next I
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(statsPA%(I)): Next I
 
     For I = 0 To 9
-        LSet Q$(I * 5 + 16) = A1$(I)
-        LSet Q$(I * 5 + 17) = MKI$(A0%(I))
-        LSet Q$(I * 5 + 18) = MKI$(A1%(I))
-        LSet Q$(I * 5 + 19) = MKI$(A2%(I))
-        LSet Q$(I * 5 + 20) = MKI$(A3%(I))
+        LSet Q$(I * 5 + 16) = statsA1$(I)
+        LSet Q$(I * 5 + 17) = MKI$(careerA0%(I))
+        LSet Q$(I * 5 + 18) = MKI$(careerA1%(I))
+        LSet Q$(I * 5 + 19) = MKI$(careerA2%(I))
+        LSet Q$(I * 5 + 20) = MKI$(careerA3%(I))
     Next I
 
     For I = 0 To 5
-        LSet Q$(I * 3 + 66) = A2$(I)
-        LSet Q$(I * 3 + 67) = MKI$(A4%(I))
-        LSet Q$(I * 3 + 68) = MKI$(A5%(I))
+        LSet Q$(I * 3 + 66) = statsA2$(I)
+        LSet Q$(I * 3 + 67) = MKI$(careerA4%(I))
+        LSet Q$(I * 3 + 68) = MKI$(careerA5%(I))
     Next I
 
     For I = 0 To 3
-        LSet Q$(I * 5 + 84) = A3$(I)
-        LSet Q$(I * 5 + 85) = MKI$(A6%(I))
-        LSet Q$(I * 5 + 86) = MKI$(A7%(I))
-        LSet Q$(I * 5 + 87) = MKI$(A8%(I))
-        LSet Q$(I * 5 + 88) = MKI$(QX%(I))
+        LSet Q$(I * 5 + 84) = statsA3$(I)
+        LSet Q$(I * 5 + 85) = MKI$(careerA6%(I))
+        LSet Q$(I * 5 + 86) = MKI$(careerA7%(I))
+        LSet Q$(I * 5 + 87) = MKI$(careerA8%(I))
+        LSet Q$(I * 5 + 88) = MKI$(careerQX%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 104) = A4$(I)
-        LSet Q$(I * 3 + 105) = MKI$(A9%(I))
-        LSet Q$(I * 3 + 106) = MKI$(B%(I))
+        LSet Q$(I * 3 + 104) = statsA4$(I)
+        LSet Q$(I * 3 + 105) = MKI$(careerA9%(I))
+        LSet Q$(I * 3 + 106) = MKI$(careerB%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 113) = A5$(I)
-        LSet Q$(I * 3 + 114) = MKI$(B1%(I))
-        LSet Q$(I * 3 + 115) = MKI$(B2%(I))
+        LSet Q$(I * 3 + 113) = statsA5$(I)
+        LSet Q$(I * 3 + 114) = MKI$(careerB1%(I))
+        LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
     Next I
 
-    LSet Q$(122) = A6$(0)
-    LSet Q$(123) = MKI$(B3%(0))
-    LSet Q$(124) = A7$(0)
-    LSet Q$(125) = MKI$(B4%(0))
-    LSet Q$(126) = MKI$(B5%(0))
-    LSet Q$(127) = MKI$(B7%(0))
-    LSet Q$(128) = MKI$(B8%(0))
-    LSet Q$(129) = A7$(1)
-    LSet Q$(130) = MKI$(B4%(1))
-    LSet Q$(131) = MKI$(B5%(1))
-    LSet Q$(132) = MKI$(B7%(1))
-    LSet Q$(133) = MKI$(B8%(1))
+    LSet Q$(122) = statsA6$(0)
+    LSet Q$(123) = MKI$(careerB3%(0))
+    LSet Q$(124) = statsA7$(0)
+    LSet Q$(125) = MKI$(careerB4%(0))
+    LSet Q$(126) = MKI$(careerB5%(0))
+    LSet Q$(127) = MKI$(careerB7%(0))
+    LSet Q$(128) = MKI$(careerB8%(0))
+    LSet Q$(129) = statsA7$(1)
+    LSet Q$(130) = MKI$(careerB4%(1))
+    LSet Q$(131) = MKI$(careerB5%(1))
+    LSet Q$(132) = MKI$(careerB7%(1))
+    LSet Q$(133) = MKI$(careerB8%(1))
     LSet Q$(134) = MKI$(YC%)
 
     For I = 0 To 14
-        LSet Q$(I * 2 + 135) = DS$(I)
-        LSet Q$(I * 2 + 136) = MKI$(DS%(I))
+        LSet Q$(I * 2 + 135) = statsDS$(I)
+        LSet Q$(I * 2 + 136) = MKI$(careerDS%(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 2 + 165) = DI$(I)
-        LSet Q$(I * 2 + 166) = MKI$(DI%(I))
+        LSet Q$(I * 2 + 165) = statsDI$(I)
+        LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
     Next I
 
     Put #1, B8%
@@ -1361,45 +1362,45 @@ Sub SaveChangedTeam ()
     ATT& = 0
 
     For I = 0 To 9
-        A0%(I) = 0
-        A1%(I) = 0
-        A2%(I) = 0
-        A3%(I) = 0
-        A1$(I) = ""
+        careerA0%(I) = 0
+        careerA1%(I) = 0
+        careerA2%(I) = 0
+        careerA3%(I) = 0
+        statsA1$(I) = ""
     Next
 
     For I = 0 To 5
-        A4%(I) = 0
-        A5%(I) = 0
-        A2$(I) = ""
+        careerA4%(I) = 0
+        careerA5%(I) = 0
+        statsA2$(I) = ""
     Next
 
     For I = 0 To 3
-        A6%(I) = 0
-        A7%(I) = 0
-        A8%(I) = 0
-        QX%(I) = 0
-        A3$(I) = ""
+        careerA6%(I) = 0
+        careerA7%(I) = 0
+        careerA8%(I) = 0
+        careerQX%(I) = 0
+        statsA3$(I) = ""
     Next
 
     For I = 0 To 2
-        A9%(I) = 0
-        B%(I) = 0
-        B1%(I) = 0
-        B2%(I) = 0
-        A4$(I) = ""
-        A5$(I) = ""
+        careerA9%(I) = 0
+        careerB%(I) = 0
+        careerB1%(I) = 0
+        careerB2%(I) = 0
+        statsA4$(I) = ""
+        statsA5$(I) = ""
     Next
 
-    A6$(0) = ""
+    statsA6$(0) = ""
 
     For I = 0 To 1
-        B3%(I) = 0
-        B4%(I) = 0
-        B5%(I) = 0
-        B7%(I) = 0
-        B8%(I) = 0
-        A7$(I) = ""
+        careerB3%(I) = 0
+        careerB4%(I) = 0
+        careerB5%(I) = 0
+        careerB7%(I) = 0
+        careerB8%(I) = 0
+        statsA7$(I) = ""
     Next
 
 End Sub
@@ -1410,48 +1411,48 @@ End Sub
 '...explanation...
 Sub ViewRoster ()
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
 
-    Shared PA%()
-    Shared QX%()
+    Shared statsPA%()
+    Shared careerQX%()
 
 	Do
 		Cls
-		Color 11: Print "TEAM ROSTER FOR ";: Color PA%(2), PA%(1): Print A$;
+		Color 11: Print "TEAM ROSTER FOR ";: Color statsPA%(2), statsPA%(1): Print A$;
 		Color 11, 0: Print "   TEAM NUMBER =";
 		Color 14: Print B8%
 		Print
-		Color 15: Print Using "DEF RUSH ADJ   = ###"; B6%(0);
-		Print Tab(35); Using "SACKED %         = ##"; B6%(5)
-		Print Using "DEF COMP % ADJ = ###"; B6%(1);
-		Print Tab(35); Using "DEF SACK ADJ     = ##"; B6%(6)
-		Print Using "DEF INT % ADJ  = ###"; B6%(2);
-		Print Tab(35); Using "RUN/PASS %       = ##"; B6%(7)
-		Print Using "OFF FUMBLE  %  = ###"; B6%(3);
+		Color 15: Print Using "DEF RUSH ADJ   = ###"; careerB6%(0);
+		Print Tab(35); Using "SACKED %         = ##"; careerB6%(5)
+		Print Using "DEF COMP % ADJ = ###"; careerB6%(1);
+		Print Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
+		Print Using "DEF INT % ADJ  = ###"; careerB6%(2);
+		Print Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
+		Print Using "OFF FUMBLE  %  = ###"; careerB6%(3);
 		Print Tab(35); "DEF YDS/COMP ADJ = ";
 
 		If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
 		If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-		Print Using "DEF FUMBLE  %  = ###"; B6%(4);
-		Print Tab(35); Using "PENALTY ADJ      = ##"; PA%(0)
-		Print Using "STAD TYPE      = ###"; PA%(3)
-		Print Using "BACKGRND COLOR = ###"; PA%(1);
-		Print Tab(35); Using "FOREGRND COLOR   = ##"; PA%(2)
+		Print Using "DEF FUMBLE  %  = ###"; careerB6%(4);
+		Print Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
+		Print Using "STAD TYPE      = ###"; statsPA%(3)
+		Print Using "BACKGRND COLOR = ###"; statsPA%(1);
+		Print Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
 		Print
 		Color 12: Print "RUNNING BACKS-"
 		Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
 		For I = 0 To 9:
-			If Left$(A1$(I), 1) <> " " And Left$(A1$(I), 3) <> "END" Then
-				Color 3: Print A1$(I);
+			If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
+				Color 3: Print statsA1$(I);
 				Color 15
-				Locate , 23: Print Using "##.#     ###    ##     ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+				Locate , 23: Print Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
 			End If
 		Next
 
@@ -1464,9 +1465,9 @@ Sub ViewRoster ()
 		Color 14: Print "NAME-              REC AVG     CX%"
 
 		For I = 0 To 5:
-			If Left$(A2$(I), 1) <> " " And Left$(A2$(I), 3) <> "END" Then
-				Color 3: Print A2$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; A5%(I) * 3; A4%(I)
+			If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
+				Color 3: Print statsA2$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
 			End If
 		Next
 
@@ -1474,9 +1475,9 @@ Sub ViewRoster ()
 		Color 12: Print "QUARTERBACKS-                     YDS/CMP"
 		Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
 		For I = 0 To 3:
-			If Left$(A3$(I), 1) <> " " And Left$(A3$(I), 3) <> "END" Then
-				Color 3: Print A3$(I);
-				Color 15: Locate , 21: Print Using "###     ##     ###      ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+			If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
+				Color 3: Print statsA3$(I);
+				Color 15: Locate , 21: Print Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
 			End If
 		Next
 
@@ -1485,9 +1486,9 @@ Sub ViewRoster ()
 		Color 14: Print "NAME-              RET AVG     CX%"
 
 		For I = 0 To 2:
-			If Left$(A4$(I), 1) <> " " And Left$(A4$(I), 3) <> "END" Then
-				Color 3: Print A4$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; B%(I) * 3; A9%(I)
+			If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
+				Color 3: Print statsA4$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; careerB%(I) * 3; careerA9%(I)
 			End If
 		Next
 
@@ -1499,9 +1500,9 @@ Sub ViewRoster ()
 		Color 14: Print "NAME-              RET AVG     CX%"
 
 		For I = 0 To 2:
-			If Left$(A5$(I), 1) <> " " And Left$(A5$(I), 3) <> "END" Then
-				Color 3: Print A5$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; B2%(I) * 3; B1%(I)
+			If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
+				Color 3: Print statsA5$(I);
+				Color 15: Locate , 23: Print Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
 			End If
 		Next
 
@@ -1510,18 +1511,18 @@ Sub ViewRoster ()
 		Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
 
 		For I = 0 To 1:
-			If Left$(A7$(I), 1) <> " " And Left$(A7$(I), 3) <> "END" Then
-				Color 3: Print A7$(I);
-				Color 15: Locate , 21: Print Using "###   ###   ###  ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+			If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
+				Color 3: Print statsA7$(I);
+				Color 15: Locate , 21: Print Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
 			End If
 		Next
 
 		Print
 		Color 12: Print "PUNTER-"
 		Color 14: Print "NAME-              AVG"
-		Color 3: Print A6$(0);
+		Color 3: Print statsA6$(0);
 		Color 15
-		Locate , 21: Print Using "##"; B3%(0) * 2 + 28
+		Locate , 21: Print Using "##"; careerB3%(0) * 2 + 28
 
 		Do
 			Locate 21
@@ -1542,11 +1543,11 @@ End Sub
 '...explanation...
 Sub CheckContributions
 
-    Shared A1$(), A2$(), A3$(), A4$()
-    Shared A5$(), A6$(), A7$()
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B1%(), B5%(), B8%()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
+    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB1%(), careerB5%(), careerB8%()
 
     9900 ' *** CHECK CONTRIBUTION RATINGS ***
     Cls
@@ -1570,8 +1571,8 @@ Sub CheckContributions
 
         For I = 0 To 9:
             Print Using "## "; I + 1;
-            Print " "; A1$(I); Tab(20);: Print Using "     ###"; A0%(I)
-            BC% = BC% + A0%(I)
+            Print " "; statsA1$(I); Tab(20);: Print Using "     ###"; careerA0%(I)
+            BC% = BC% + careerA0%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1587,7 +1588,7 @@ Sub CheckContributions
 
         If I1 <> 10 Then
             Locate I1 + 3, 24: Print "   "
-            Locate I1 + 3, 24: Input A0%(I1)
+            Locate I1 + 3, 24: Input careerA0%(I1)
         Else
             If BC% <> 100 Then
                 Locate 18: Print "TOTAL IS NOT 100%!"
@@ -1616,14 +1617,14 @@ Sub CheckContributions
         BC% = 0
         For I = 0 To 9:
             Print Using "## "; I + 1;
-            Print " "; A1$(I); Tab(20);: Print Using "      ##"; A2%(I)
-            BC% = BC% + A2%(I)
+            Print " "; statsA1$(I); Tab(20);: Print Using "      ##"; careerA2%(I)
+            BC% = BC% + careerA2%(I)
         Next
 
         For I = 0 To 5
             Print Using "## "; I + 11;
-            Print " "; A2$(I); Tab(20);: Print Using "      ##"; A4%(I)
-            BC% = BC% + A4%(I)
+            Print " "; statsA2$(I); Tab(20);: Print Using "      ##"; careerA4%(I)
+            BC% = BC% + careerA4%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1640,9 +1641,9 @@ Sub CheckContributions
         If I1 <> 16 Then
             Locate I1 + 3, 24: Print "   ": Locate I1 + 3, 24
             If I1 <= 9 Then
-                Input A2%(I1)
+                Input careerA2%(I1)
             Else
-                Input A4%(I1 - 10)
+                Input careerA4%(I1 - 10)
             End If
         Else
             If BC% <> 100 Then
@@ -1672,9 +1673,9 @@ Sub CheckContributions
 
         For I = 0 To 3:
             Print Using "## "; I + 1;
-            Print " "; A3$(I); Tab(20);
-            Print Using "     ###"; A6%(I)
-            BC% = BC% + A6%(I)
+            Print " "; statsA3$(I); Tab(20);
+            Print Using "     ###"; careerA6%(I)
+            BC% = BC% + careerA6%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1690,7 +1691,7 @@ Sub CheckContributions
 
         If I1 <> 4 Then
             Locate I1 + 3, 24: Print "   ": Locate I1 + 3, 24
-            Input A6%(I1)
+            Input careerA6%(I1)
         Else
             If BC% <> 100 Then
                 Locate 16: Print "TOTAL IS NOT 100%!"
@@ -1718,9 +1719,9 @@ Sub CheckContributions
         BC% = 0
         For I = 0 To 2
             Print Using "## "; I + 1;
-            Print " "; A4$(I); Tab(20);
-            Print Using "     ###"; A9%(I)
-            BC% = BC% + A9%(I)
+            Print " "; statsA4$(I); Tab(20);
+            Print Using "     ###"; careerA9%(I)
+            BC% = BC% + careerA9%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1737,7 +1738,7 @@ Sub CheckContributions
         If I1 <> 3 Then
             Locate I1 + 3, 24
             Print "   ": Locate I1 + 3, 24
-            Input A9%(I1)
+            Input careerA9%(I1)
         Else
             If BC% <> 100 Then
                 Locate 16: Print "TOTAL IS NOT 100%!"
@@ -1765,9 +1766,9 @@ Sub CheckContributions
 
         For I = 0 To 2:
             Print Using "## "; I + 1;
-            Print " "; A5$(I); Tab(20);
-            Print Using "     ###"; B1%(I)
-            BC% = BC% + B1%(I)
+            Print " "; statsA5$(I); Tab(20);
+            Print Using "     ###"; careerB1%(I)
+            BC% = BC% + careerB1%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1783,7 +1784,7 @@ Sub CheckContributions
 
         If I1 <> 3 Then
             Locate I1 + 3, 24: Print "   ": Locate I1 + 3, 24
-            Input B1%(I1)
+            Input careerB1%(I1)
         Else
             If BC% <> 100 Then
                 Locate 16: Print "TOTAL IS NOT 100%!"
@@ -1812,9 +1813,9 @@ Sub CheckContributions
 
         For I = 0 To 1:
             Print Using "## "; I + 1;
-            Print " "; A7$(I); Tab(20);
-            Print Using "     ###"; B5%(I)
-            BC% = BC% + B5%(I)
+            Print " "; statsA7$(I); Tab(20);
+            Print Using "     ###"; careerB5%(I)
+            BC% = BC% + careerB5%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1830,7 +1831,7 @@ Sub CheckContributions
 
         If I1 <> 2 Then
             Locate I1 + 3, 24: Print "   ": Locate I1 + 3, 24
-            Input B5%(I1)
+            Input careerB5%(I1)
         Else
             If BC% <> 100 Then
                 Locate 16: Print "TOTAL IS NOT 100%!"
@@ -1860,8 +1861,8 @@ Sub CheckContributions
 
         For I = 0 To 1
             Print Using "## "; I + 1;
-            Print " "; A7$(I); Tab(20);
-            Print Using "     ###"; B8%(I): BC% = BC% + B8%(I)
+            Print " "; statsA7$(I); Tab(20);
+            Print Using "     ###"; careerB8%(I): BC% = BC% + careerB8%(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1879,7 +1880,7 @@ Sub CheckContributions
             Locate I1 + 3, 24: Print "   "
             Locate I1 + 3, 24
 
-            Input B8%(I1)
+            Input careerB8%(I1)
         Else
             If BC% <> 100 Then
                 Locate 16: Print "TOTAL IS NOT 100%!"

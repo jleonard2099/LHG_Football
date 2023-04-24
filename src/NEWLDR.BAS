@@ -6,7 +6,7 @@ Sub NEWLDR ()
 
     ReDim menuChoices$(1 To 4)
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, TS
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
 
     Do
 
@@ -53,7 +53,7 @@ End Sub
 Sub ViewExpanded (statType%)
 
     Dim printOrView%, PPP, sortType%
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, TS
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
@@ -94,12 +94,12 @@ Sub ViewExpanded (statType%)
         JH = 0
         JI = 0
         JJ = 0
-        TS = 0
+        totStats = 0
 
         LGF$ = ""
-        D1$ = ""
-        D2$ = ""
-        D3$ = ""
+        div1$ = ""
+        div2$ = ""
+        div3$ = ""
 
         Erase TMM$, TPP$
 
@@ -109,16 +109,16 @@ Sub ViewExpanded (statType%)
 
         If statType% = 1 Then
             Input #2, LGF$
-            Input #2, D1$
-            Input #2, D2$
-            Input #2, D3$
+            Input #2, div1$
+            Input #2, div2$
+            Input #2, div3$
             For X = 1 To 30: Input #2, Z1$(X): Next
         End If
 
         If statType% = 2 Then
             Input #2, LGF$
-            Input #2, D1$
-            Input #2, D2$
+            Input #2, div1$
+            Input #2, div2$
             For X = 1 To 30: Input #2, Z1$(X): Next
         End If
 
@@ -1280,62 +1280,62 @@ Sub ViewExpanded (statType%)
 
                             Select Case B9
                                 Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X)
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 1
 
                                 Case 1, 16
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 1
 
                                 Case 2, 5, 17, 20
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 1
 
                                 Case 3, 18
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 2
 
                                 Case 6, 21
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 2
 
                                 Case 10
-                                    For I = 1 To TS
+                                    For I = 1 To totStats
                                         TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(TS, stpl, sortType%)
+                                    Call SortTeam(totStats, stpl, sortType%)
 
                                     TVN = 1
 
                             End Select
 
-                            QW = TS
+                            QW = totStats
 
                             If printOrView% = 1 Then 
 								Call ExpandedStatsToScreen(XX, QW, TVN)
@@ -1367,7 +1367,7 @@ Sub TeamStatsToPrinter ()
     Shared TYP!()
 
     Do
-        3650 '
+
         Cls
 
         J = 18
@@ -1869,7 +1869,7 @@ Sub ChooseConference_Expanded (targetFile$, ExitCode%)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1897,7 +1897,7 @@ Sub BUILDSTATS (CT%)
 
     Dim PX
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, TS
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
@@ -1907,14 +1907,14 @@ Sub BUILDSTATS (CT%)
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared PK!(), lookyTT!(), Z!(), Z1!(), Z2!()
 
-    Dim DI$(1, 10), DS$(1, 15), LC$(16, 1), LK$(2, 1), LP$(3, 1), LR$(9, 1)
+    Dim statsDI$(1, 10), statsDS$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
 
-    Shared A$()
+    Shared statsA$()
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared LF$(), PK$()
+    Shared statsLF$(), statsPK$()
     Shared QBL$(), lookyTT$(), Z1$()
 
     Shared GMA!(), GMB!(), GMC!()
@@ -1939,7 +1939,7 @@ Sub BUILDSTATS (CT%)
 
                 Open diskPaths$(1) + teamStatFile$ For Input As #1
 
-                Input #1, A$(PX)
+                Input #1, statsA$(PX)
 
                 For I = 0 To 9: Input #1, lookyA1$(PX, I): Next I
                 For I = 0 To 5: Input #1, lookyA2$(PX, I): Next I
@@ -1959,23 +1959,23 @@ Sub BUILDSTATS (CT%)
 
                 For L = 0 To 38: Input #1, Z1!(L): Next L
 
-                For J = 0 To 9: Input #1, DI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
+                For J = 0 To 9: Input #1, statsDI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
 
-                For J = 0 To 14: Input #1, DS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
+                For J = 0 To 14: Input #1, statsDS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
 
                 For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
 
                 For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
 
-                For I = 0 To 3: Input #1, LP!(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
+                For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
 
-                For I = 0 To 2: Input #1, LK!(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
+                For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
 
-                For I = 0 To 2: Input #1, PK!(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
+                For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
 
                 For I = 0 To 1
                     Input #1, LF!(I)
-                    Input #1, LF$(I)
+                    Input #1, statsLF$(I)
                     For I1 = 0 To 4
                         Input #1, AM!(I, I1)
                         Input #1, AF!(I, I1)
@@ -1988,22 +1988,22 @@ Sub BUILDSTATS (CT%)
                 Input #1, Y%
                 Close #1
 
-                TS = TS + 1
+                totStats = totStats + 1
 
                 For I = 0 To 14
-                    lookyTT!(TS, I) = Z!(I)
-                    lookyTT$(TS, I) = A$(PX)
+                    lookyTT!(totStats, I) = Z!(I)
+                    lookyTT$(totStats, I) = statsA$(PX)
                 Next
 
                 For I = 15 To 29
-                    lookyTT!(TS, I) = Z1!(I - 15)
-                    lookyTT$(TS, I) = A$(PX)
+                    lookyTT!(totStats, I) = Z1!(I - 15)
+                    lookyTT$(totStats, I) = statsA$(PX)
                 Next
 
                 For I = 0 To 9
                     JA = JA + 1
                     A1L$(JA) = lookyA1$(PX, I)
-                    A1T$(JA) = A$(PX)
+                    A1T$(JA) = statsA$(PX)
                     LRL$(JA) = LR$(I, 0)
                     LCL$(JA) = LC$(I, 0)
                     'I added the line below based on patterns in this routine
@@ -2020,7 +2020,7 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 5
                     JB = JB + 1
                     A2L$(JB) = lookyA2$(PX, I)
-                    A2T$(JB) = A$(PX)
+                    A2T$(JB) = statsA$(PX)
                     LCL$(JB) = LC$(I + 10, 0)
                     GMB!(JB) = Y%
 
@@ -2032,8 +2032,8 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 3
                     JC = JC + 1
                     QBL$(JC) = lookyA3$(PX, I)
-                    A3T$(JC) = A$(PX)
-                    LPL$(JC) = LP$(I, 0)
+                    A3T$(JC) = statsA$(PX)
+                    LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = Y%
 
                     For I1 = 9 To 13: A3L!(JC, I1 - 9) = Z2!(I, I1): Next I1
@@ -2049,8 +2049,8 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 2
                     JD = JD + 1
                     A4L$(JD) = lookyA4$(PX, I)
-                    A4T$(JD) = A$(PX)
-                    LKL$(JD) = LK$(I, 0)
+                    A4T$(JD) = statsA$(PX)
+                    LKL$(JD) = statsLK$(I, 0)
 
                     For I1 = 14 To 16: A4L!(JD, I1 - 14) = Z2!(I, I1): Next I1
                     A4L!(JD, 3) = LK!(I)
@@ -2059,8 +2059,8 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 2
                     JE = JE + 1
                     A5L$(JE) = lookyA5$(PX, I)
-                    A5T$(JE) = A$(PX)
-                    PKL$(JE) = PK$(I, 0)
+                    A5T$(JE) = statsA$(PX)
+                    PKL$(JE) = statsPK$(I, 0)
 
                     For I1 = 14 To 16: A5L!(JE, I1 - 14) = Z2!(I + 3, I1): Next I1
 
@@ -2069,19 +2069,19 @@ Sub BUILDSTATS (CT%)
 
                 JF = JF + 1
                 A6L$(JF) = lookyA6$(PX, 0)
-                A6T$(JF) = A$(PX)
+                A6T$(JF) = statsA$(PX)
                 A6L!(JF, 0) = Z!(7)
                 A6L!(JF, 1) = Z!(8)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 0)
-                A7T$(JG) = A$(PX)
+                A7T$(JG) = statsA$(PX)
 
                 For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 3, 17): Next
 
                 A7L!(JJG, 4) = LF!(0)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 1)
-                A7T$(JG) = A$(PX)
+                A7T$(JG) = statsA$(PX)
 
                 For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 7, 17): Next
 
@@ -2089,15 +2089,15 @@ Sub BUILDSTATS (CT%)
 
                 For I = 0 To 9
                     JH = JH + 1
-                    A8L$(JH) = DI$(PX, I)
-                    A8T$(JH) = A$(PX)
+                    A8L$(JH) = statsDI$(PX, I)
+                    A8T$(JH) = statsA$(PX)
                     A8L!(JH) = GI!(PX, I, 0)
                 Next
 
                 For I = 0 To 14
                     JI = JI + 1
-                    A9L$(JI) = DS$(PX, I)
-                    A9T$(JI) = A$(PX)
+                    A9L$(JI) = statsDS$(PX, I)
+                    A9T$(JI) = statsA$(PX)
                     A9L!(JI) = GS!(PX, I, 0)
                 Next
 
@@ -2216,7 +2216,7 @@ End Sub
 ' ...explanation...
 Sub SAVELEADER (leaderFile$)
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, TS
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
@@ -2236,7 +2236,7 @@ Sub SAVELEADER (leaderFile$)
     Print "SAVING LEADER FILES . . . . PLEASE WAIT"
 
     Open diskPaths$(2) + leaderFile$ + ".LDS" For Output As #1
-    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, TS, JJ
+    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totStats, JJ
 
     For I = 1 To 30:
         For I1 = 0 To 29:

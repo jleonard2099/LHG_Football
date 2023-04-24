@@ -47,15 +47,15 @@ Sub InputTeam ()
 
     Dim A1!(9), B3!(1)
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
-    Shared DI$(), DS$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared statsDI$(), statsDS$()
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
 
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
-    Shared DS%(), DI%(), PA%(), QX%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared careerDS%(), careerDI%(), statsPA%(), careerQX%()
 
     Do
 
@@ -68,25 +68,25 @@ Sub InputTeam ()
         Locate 2: Input " 2. TEAM # (ENTER FOR PROGRAM TO ASSIGN) "; teamNumber
         Locate 3: Input " 3. TEAM NAME (IE. 94 ARKANSAS) "; A$
         Locate 4: Input " 4. TEAM NICKNAME (IE. PANTHERS) "; AA$
-        Locate 5: Input " 5. DEF RUSH ADJ "; B6%(0)
-        Locate 6: Input " 6. DEF COMP % ADJ "; B6%(1)
-        Locate 7: Input " 7. DEF INT % ADJ "; B6%(2)
-        Locate 8: Input " 8. FUM % (AVG=4) "; B6%(3)
-        Locate 9: Input " 9. DEF FUM % (AVG=0) "; B6%(4)
-        Locate 10: Input " 10. OFF SACKED % (AVG=8) "; B6%(5)
-        Locate 11: Input "11. DEF SACK ADJ "; B6%(6)
+        Locate 5: Input " 5. DEF RUSH ADJ "; careerB6%(0)
+        Locate 6: Input " 6. DEF COMP % ADJ "; careerB6%(1)
+        Locate 7: Input " 7. DEF INT % ADJ "; careerB6%(2)
+        Locate 8: Input " 8. FUM % (AVG=4) "; careerB6%(3)
+        Locate 9: Input " 9. DEF FUM % (AVG=0) "; careerB6%(4)
+        Locate 10: Input " 10. OFF SACKED % (AVG=8) "; careerB6%(5)
+        Locate 11: Input "11. DEF SACK ADJ "; careerB6%(6)
         Locate 12: Input "12. DEF YD/COMP ADJ "; Q
-        Locate 13: Input "13. TM PENALTY ADJ "; PA%(0)
-        Locate 14: Input "14. OFF RUN/PASS % "; B6%(7)
-        Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
-        Locate 16: Input "16. POWER RATING "; PA%(4)
-        Locate 17: Input "17. BACKGROUND COLOR (0-7) "; PA%(1)
-        Locate 18: Input "18. TEXT COLOR (0-15) "; PA%(2)
+        Locate 13: Input "13. TM PENALTY ADJ "; statsPA%(0)
+        Locate 14: Input "14. OFF RUN/PASS % "; careerB6%(7)
+        Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
+        Locate 16: Input "16. POWER RATING "; statsPA%(4)
+        Locate 17: Input "17. BACKGROUND COLOR (0-7) "; statsPA%(1)
+        Locate 18: Input "18. TEXT COLOR (0-15) "; statsPA%(2)
         Locate 19: Input "19. OFF POWER ADJ "; O9
         Locate 20: Input "20. DEF POWER ADJ "; D9
         Locate 21: Input "21. STADIUM NAME "; S$
         Locate 22: Input "22. AVERAGE ATTENDANCE "; ATT
-        Locate 1, 40: Color PA%(2), PA%(1): Print "SAMPLE TEXT COLOR"
+        Locate 1, 40: Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
 
         Color 15, 0
         C1 = 1
@@ -110,46 +110,46 @@ Sub InputTeam ()
                     403 Locate 4: Input " 4. TEAM NICKNAME (IE. PANTHERS) "; AA$
 
                 Case 5
-                    404 Locate 5: Input " 5. DEF RUSH ADJ "; B6%(0)
+                    404 Locate 5: Input " 5. DEF RUSH ADJ "; careerB6%(0)
 
                 Case 6
-                    405 Locate 6: Input " 6. DEF COMP % ADJ "; B6%(1)
+                    405 Locate 6: Input " 6. DEF COMP % ADJ "; careerB6%(1)
 
                 Case 7
-                    406 Locate 7: Input " 7. DEF INT % ADJ "; B6%(2)
+                    406 Locate 7: Input " 7. DEF INT % ADJ "; careerB6%(2)
 
                 Case 8
-                    407 Locate 8: Input " 8. FUM % (AVG=4) "; B6%(3)
+                    407 Locate 8: Input " 8. FUM % (AVG=4) "; careerB6%(3)
 
                 Case 9
-                    408 Locate 9: Input " 9. DEF FUM % (AVG=0) "; B6%(4)
+                    408 Locate 9: Input " 9. DEF FUM % (AVG=0) "; careerB6%(4)
 
                 Case 10
-                    409 Locate 10: Input " 10. OFF SACKED % (AVG=8) "; B6%(5)
+                    409 Locate 10: Input " 10. OFF SACKED % (AVG=8) "; careerB6%(5)
 
                 Case 11
-                    410 Locate 11: Input "11. DEF SACK ADJ "; B6%(6)
+                    410 Locate 11: Input "11. DEF SACK ADJ "; careerB6%(6)
 
                 Case 12
                     411 Locate 12: Input "12. DEF YD/COMP ADJ "; Q
 
                 Case 13
-                    412 Locate 13: Input "13. TM PENALTY ADJ "; PA%(0)
+                    412 Locate 13: Input "13. TM PENALTY ADJ "; statsPA%(0)
 
                 Case 14
-                    413 Locate 14: Input "14. OFF RUN/PASS % "; B6%(7)
+                    413 Locate 14: Input "14. OFF RUN/PASS % "; careerB6%(7)
 
                 Case 15
-                    414 Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
+                    414 Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
 
                 Case 16
-                    415 Locate 16: Input "16. POWER RATING "; PA%(4)
+                    415 Locate 16: Input "16. POWER RATING "; statsPA%(4)
 
                 Case 17
-                    416 Locate 17: Input "17. BACKGROUND COLOR (0-7) "; PA%(1)
+                    416 Locate 17: Input "17. BACKGROUND COLOR (0-7) "; statsPA%(1)
 
                 Case 18
-                    417 Locate 18: Input "18. TEXT COLOR (0-15) "; PA%(2)
+                    417 Locate 18: Input "18. TEXT COLOR (0-15) "; statsPA%(2)
 
                 Case 19
                     418 Locate 19: Input "19. OFF POWER ADJ "; O9
@@ -168,7 +168,7 @@ Sub InputTeam ()
         Loop Until B9 = 0
 
         420 '
-        Locate 1, 40: Color PA%(2), PA%(1): Print "SAMPLE TEXT COLOR"
+        Locate 1, 40: Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
 
         'Case 0 / Continue
         C1 = 0
@@ -181,14 +181,14 @@ Sub InputTeam ()
 
             Locate 3: Print "RUNNING BACKS -"; I + 1
 
-            Locate 5: Input "1. NAME "; A1$(I)
+            Locate 5: Input "1. NAME "; statsA1$(I)
 
-            If UCase$(A1$(I)) <> "END" Then
+            If UCase$(statsA1$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF RUSHES "; A0%(I)
+                Locate 6: Input "2. # OF RUSHES "; careerA0%(I)
                 Locate 7: Input "3. RUSHING AVERAGE "; A1!(I)
-                Locate 8: Input "4. # OF RECEPTIONS "; A2%(I)
-                Locate 9: Input "5. RECEIVING AVERAGE "; A3%(I)
+                Locate 8: Input "4. # OF RECEPTIONS "; careerA2%(I)
+                Locate 9: Input "5. RECEIVING AVERAGE "; careerA3%(I)
 
                 432 '
                 C1 = 1
@@ -199,19 +199,19 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            426 Locate 5: Input "1. NAME "; A1$(I)
+                            426 Locate 5: Input "1. NAME "; statsA1$(I)
 
                         Case 2
-                            428 Locate 6: Input "2. # OF RUSHES "; A0%(I)
+                            428 Locate 6: Input "2. # OF RUSHES "; careerA0%(I)
 
                         Case 3
                             429 Locate 7: Input "3. RUSHING AVERAGE "; A1!(I)
 
                         Case 4
-                            430 Locate 8: Input "4. # OF RECEPTIONS "; A2%(I)
+                            430 Locate 8: Input "4. # OF RECEPTIONS "; careerA2%(I)
 
                         Case 5
-                            431 Locate 9: Input "5. RECEIVING AVERAGE "; A3%(I)
+                            431 Locate 9: Input "5. RECEIVING AVERAGE "; careerA3%(I)
 
                     End Select
 
@@ -235,12 +235,12 @@ Sub InputTeam ()
 
             Locate 3: Print "WIDE RECEIVERS/TIGHT ENDS -"; I + 1
 
-            Locate 5: Input "1. NAME "; A2$(I)
+            Locate 5: Input "1. NAME "; statsA2$(I)
 
-            If UCase$(A2$(I)) <> "END" Then
+            If UCase$(statsA2$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF RECEPTIONS "; A4%(I)
-                Locate 7: Input "3. RECEIVING AVERAGE "; A5%(I)
+                Locate 6: Input "2. # OF RECEPTIONS "; careerA4%(I)
+                Locate 7: Input "3. RECEIVING AVERAGE "; careerA5%(I)
 
                 C1 = 1
 
@@ -250,13 +250,13 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            443 Locate 5: Input "1. NAME "; A2$(I)
+                            443 Locate 5: Input "1. NAME "; statsA2$(I)
 
                         Case 2
-                            445 Locate 6: Input "2. # OF RECEPTIONS "; A4%(I)
+                            445 Locate 6: Input "2. # OF RECEPTIONS "; careerA4%(I)
 
                         Case 3
-                            446 Locate 7: Input "3. RECEIVING AVERAGE "; A5%(I)
+                            446 Locate 7: Input "3. RECEIVING AVERAGE "; careerA5%(I)
 
                     End Select
 
@@ -279,14 +279,14 @@ Sub InputTeam ()
 
             Locate 3: Print "QUARTERBACKS -"; I + 1
 
-            Locate 5: Input "1. NAME "; A3$(I)
+            Locate 5: Input "1. NAME "; statsA3$(I)
 
-            If UCase$(A3$(I)) <> "END" Then
+            If UCase$(statsA3$(I)) <> "END" Then
 
-                Locate 6: Input "2. PASSES ATTEMPTED "; A6%(I)
-                Locate 7: Input "3. COMPLETION % "; A7%(I)
-                Locate 8: Input "4. INTERCEPTION % "; A8%(I)
-                Locate 9: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; QX%(I)
+                Locate 6: Input "2. PASSES ATTEMPTED "; careerA6%(I)
+                Locate 7: Input "3. COMPLETION % "; careerA7%(I)
+                Locate 8: Input "4. INTERCEPTION % "; careerA8%(I)
+                Locate 9: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; careerQX%(I)
 
                 C1 = 1
 
@@ -296,19 +296,19 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            463 Locate 5: Input "1. NAME "; A3$(I)
+                            463 Locate 5: Input "1. NAME "; statsA3$(I)
 
                         Case 2
-                            465 Locate 6: Input "2. PASSES ATTEMPTED "; A6%(I)
+                            465 Locate 6: Input "2. PASSES ATTEMPTED "; careerA6%(I)
 
                         Case 3
-                            466 Locate 7: Input "3. COMPLETION % "; A7%(I)
+                            466 Locate 7: Input "3. COMPLETION % "; careerA7%(I)
 
                         Case 4
-                            467 Locate 8: Input "4. INTERCEPTION % "; A8%(I)
+                            467 Locate 8: Input "4. INTERCEPTION % "; careerA8%(I)
 
                         Case 5
-                            468 Locate 9: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; QX%(I)
+                            468 Locate 9: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; careerQX%(I)
 
                     End Select
 
@@ -332,12 +332,12 @@ Sub InputTeam ()
 
             Locate 3: Print "KICKOFF RETURNMEN -"; I + 1
 
-            Locate 5: Input "1. NAME "; A4$(I)
+            Locate 5: Input "1. NAME "; statsA4$(I)
 
-            If UCase$(A4$(I)) <> "END" Then
+            If UCase$(statsA4$(I)) <> "END" Then
 
-                Locate 6: Input "2. KICKOFFS RETURNED "; A9%(I)
-                Locate 7: Input "3. RETURN AVERAGE "; B%(I)
+                Locate 6: Input "2. KICKOFFS RETURNED "; careerA9%(I)
+                Locate 7: Input "3. RETURN AVERAGE "; careerB%(I)
 
                 C1 = 1
 
@@ -347,13 +347,13 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            483 Locate 5: Input "1. NAME "; A4$(I)
+                            483 Locate 5: Input "1. NAME "; statsA4$(I)
 
                         Case 2
-                            485 Locate 6: Input "2. KICKOFFS RETURNED "; A9%(I)
+                            485 Locate 6: Input "2. KICKOFFS RETURNED "; careerA9%(I)
 
                         Case 3
-                            486 Locate 7: Input "3. RETURN AVERAGE "; B%(I)
+                            486 Locate 7: Input "3. RETURN AVERAGE "; careerB%(I)
 
                     End Select
 
@@ -377,12 +377,12 @@ Sub InputTeam ()
 
             Locate 3: Print "PUNT RETURNMEN -"; I + 1
 
-            Locate 5: Input "1. NAME "; A5$(I)
+            Locate 5: Input "1. NAME "; statsA5$(I)
 
-            If UCase$(A5$(I)) <> "END" Then
+            If UCase$(statsA5$(I)) <> "END" Then
 
-                Locate 6: Input "2. PUNTS RETURNED "; B1%(I)
-                Locate 7: Input "3. PUNT RETURN AVERAGE "; B2%(I)
+                Locate 6: Input "2. PUNTS RETURNED "; careerB1%(I)
+                Locate 7: Input "3. PUNT RETURN AVERAGE "; careerB2%(I)
 
                 C1 = 1
 
@@ -392,13 +392,13 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            503 Locate 5: Input "1. NAME "; A5$(I)
+                            503 Locate 5: Input "1. NAME "; statsA5$(I)
 
                         Case 2
-                            505 Locate 6: Input "2. PUNTS RETURNED "; B1%(I)
+                            505 Locate 6: Input "2. PUNTS RETURNED "; careerB1%(I)
 
                         Case 3
-                            506 Locate 7: Input "3. PUNT RETURN AVERAGE "; B2%(I)
+                            506 Locate 7: Input "3. PUNT RETURN AVERAGE "; careerB2%(I)
 
                     End Select
 
@@ -418,7 +418,7 @@ Sub InputTeam ()
         520 '
         Cls
 
-        Locate 3: Input "1. PUNTER NAME "; A6$(0)
+        Locate 3: Input "1. PUNTER NAME "; statsA6$(0)
         Locate 4: Input "2. PUNT AVERAGE "; B3!(0)
 
         C1 = 1
@@ -429,7 +429,7 @@ Sub InputTeam ()
 
             Select Case B9
                 Case 1
-                    521 Locate 3: Input "1. PUNTER NAME "; A6$(0)
+                    521 Locate 3: Input "1. PUNTER NAME "; statsA6$(0)
 
                 Case 2
                     522 Locate 4: Input "2. PUNT AVERAGE "; B3!(0)
@@ -449,14 +449,14 @@ Sub InputTeam ()
 
             Locate 3: Print "PLACE KICKER -"; I + 1
 
-            Locate 5: Input "1. NAME "; A7$(I)
+            Locate 5: Input "1. NAME "; statsA7$(I)
 
-            If UCase$(A7$(I)) <> "END" Then
+            If UCase$(statsA7$(I)) <> "END" Then
 
-                Locate 6: Input "2. FGA "; B5%(I)
-                Locate 7: Input "3. FG% "; B4%(I)
-                Locate 8: Input "4. PAT ATTEMPTED "; B8%(I)
-                Locate 9: Input "5. PAT% "; B7%(I)
+                Locate 6: Input "2. FGA "; careerB5%(I)
+                Locate 7: Input "3. FG% "; careerB4%(I)
+                Locate 8: Input "4. PAT ATTEMPTED "; careerB8%(I)
+                Locate 9: Input "5. PAT% "; careerB7%(I)
 
                 C1 = 1
 
@@ -467,19 +467,19 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            529 Locate 5: Input "1. NAME "; A7$(I)
+                            529 Locate 5: Input "1. NAME "; statsA7$(I)
 
                         Case 2
-                            531 Locate 6: Input "2. FGA "; B5%(I)
+                            531 Locate 6: Input "2. FGA "; careerB5%(I)
 
                         Case 3
-                            532 Locate 7: Input "3. FG% "; B4%(I)
+                            532 Locate 7: Input "3. FG% "; careerB4%(I)
 
                         Case 4
-                            533 Locate 8: Input "4. PAT ATTEMPTED "; B8%(I)
+                            533 Locate 8: Input "4. PAT ATTEMPTED "; careerB8%(I)
 
                         Case 5
-                            534 Locate 9: Input "5. PAT% "; B7%(I)
+                            534 Locate 9: Input "5. PAT% "; careerB7%(I)
 
                     End Select
 
@@ -496,11 +496,11 @@ Sub InputTeam ()
         Next
 
         537 '
-        B3%(0) = Int((B3!(0) - 28) / 2! + .5)
+        careerB3%(0) = Int((B3!(0) - 28) / 2! + .5)
 
         For I = 0 To 1
-            B4%(I) = Int((B4%(I) / 5) + .5) - 5
-            If B4%(I) < 1 Then B4%(I) = 1
+            careerB4%(I) = Int((careerB4%(I) / 5) + .5) - 5
+            If careerB4%(I) < 1 Then careerB4%(I) = 1
         Next
 
         'Interceptions
@@ -509,11 +509,11 @@ Sub InputTeam ()
         For I = 0 To 9: Cls
             Locate 3: Print "PLAYERS WITH INTERCEPTIONS -"; I + 1
 
-            Locate 5: Input "1. NAME "; DI$(I)
+            Locate 5: Input "1. NAME "; statsDI$(I)
 
-            If UCase$(DI$(I)) <> "END" Then
+            If UCase$(statsDI$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF INTERCEPTIONS "; DI%(I)
+                Locate 6: Input "2. # OF INTERCEPTIONS "; careerDI%(I)
 
                 C1 = 1
 
@@ -523,10 +523,10 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            Locate 5: Input "1. NAME "; DI$(I)
+                            Locate 5: Input "1. NAME "; statsDI$(I)
 
                         Case 2
-                            Locate 6: Input "2. # OF INTERCEPTIONS "; DI%(I)
+                            Locate 6: Input "2. # OF INTERCEPTIONS "; careerDI%(I)
 
                     End Select
 
@@ -549,11 +549,11 @@ Sub InputTeam ()
 
             Locate 3: Print "PLAYERS WITH SACKS -"; I + 1
 
-            Locate 5: Input "1. NAME "; DS$(I)
+            Locate 5: Input "1. NAME "; statsDS$(I)
 
-            If UCase$(DS$(I)) <> "END" Then
+            If UCase$(statsDS$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF SACKS "; DS%(I)
+                Locate 6: Input "2. # OF SACKS "; careerDS%(I)
 
                 C1 = 1
 
@@ -563,10 +563,10 @@ Sub InputTeam ()
 
                     Select Case B9
                         Case 1
-                            Locate 5: Input "1. NAME "; DS$(I)
+                            Locate 5: Input "1. NAME "; statsDS$(I)
 
                         Case 2
-                            Locate 6: Input "2. # OF SACKS "; DS%(I)
+                            Locate 6: Input "2. # OF SACKS "; careerDS%(I)
 
                     End Select
 
@@ -589,47 +589,47 @@ Sub InputTeam ()
         RM = 0
         RT = 0
 
-        For I = 0 To 9: SM = SM + A0%(I): RM = RM + A2%(I): Next I
+        For I = 0 To 9: SM = SM + careerA0%(I): RM = RM + careerA2%(I): Next I
 
         SK = 100 / SM
 
         For I = 0 To 9:
-            If A0%(I) <> 0 Then A0%(I) = Int(SK * A0%(I) + .5) + ST: ST = A0%(I)
-            If A0%(I) > 100 Then A0%(I) = 100
+            If careerA0%(I) <> 0 Then careerA0%(I) = Int(SK * careerA0%(I) + .5) + ST: ST = careerA0%(I)
+            If careerA0%(I) > 100 Then careerA0%(I) = 100
         Next I
 
-        For I = 0 To 9: A1%(I) = Int(A1!(I) / .3 + .5): Next I
+        For I = 0 To 9: careerA1%(I) = Int(A1!(I) / .3 + .5): Next I
 
-        For I = 0 To 9: If O9 <> 0 And A1%(I) <> 0 Then A1%(I) = A1%(I) - O9
-            'IF A1%(I) <  = 0 THEN A1%(I) = 1
+        For I = 0 To 9: If O9 <> 0 And careerA1%(I) <> 0 Then careerA1%(I) = careerA1%(I) - O9
+            'IF careerA1%(I) <  = 0 THEN careerA1%(I) = 1
         Next I
 
-        For I = 0 To 5: RM = RM + A4%(I): Next I
+        For I = 0 To 5: RM = RM + careerA4%(I): Next I
 
         RK = 100 / RM
 
         For I = 0 To 9:
-            If A2%(I) <> 0 Then A2%(I) = Int(RK * A2%(I) + .5) + RT: RT = A2%(I): If A2%(I) > 100 Then A2%(I) = 100
+            If careerA2%(I) <> 0 Then careerA2%(I) = Int(RK * careerA2%(I) + .5) + RT: RT = careerA2%(I): If careerA2%(I) > 100 Then careerA2%(I) = 100
         Next I
 
         For I = 0 To 5:
-            If A4%(I) <> 0 Then A4%(I) = Int(RK * A4%(I) + .5) + RT: RT = A4%(I): If A4%(I) > 100 Then A4%(I) = 100
+            If careerA4%(I) <> 0 Then careerA4%(I) = Int(RK * careerA4%(I) + .5) + RT: RT = careerA4%(I): If careerA4%(I) > 100 Then careerA4%(I) = 100
         Next I
 
-        For I = 0 To 9: A3%(I) = Int(A3%(I) / 3 + .5): Next I
-        For I = 0 To 5: A5%(I) = Int(A5%(I) / 3 + .5): Next I
+        For I = 0 To 9: careerA3%(I) = Int(careerA3%(I) / 3 + .5): Next I
+        For I = 0 To 5: careerA5%(I) = Int(careerA5%(I) / 3 + .5): Next I
 
         PM = 0: PT = 0
 
-        For I = 0 To 3: PM = PM + A6%(I): Next I
+        For I = 0 To 3: PM = PM + careerA6%(I): Next I
 
         PK = 100 / PM
 
         For I = 0 To 3:
-            If A6%(I) <> 0 Then
-                A6%(I) = Int(PK * A6%(I) + .5) + PT
-                PT = A6%(I)
-                If A6%(I) > 100 Then A6%(I) = 100
+            If careerA6%(I) <> 0 Then
+                careerA6%(I) = Int(PK * careerA6%(I) + .5) + PT
+                PT = careerA6%(I)
+                If careerA6%(I) > 100 Then careerA6%(I) = 100
             End If
         Next I
 
@@ -639,53 +639,53 @@ Sub InputTeam ()
         QT = 0
 
         For I = 0 To 3:
-            If O9 <> 0 And A7%(I) <> 0 Then A7%(I) = A7%(I) - O9
+            If O9 <> 0 And careerA7%(I) <> 0 Then careerA7%(I) = careerA7%(I) - O9
         Next I
 
         For I = 0 To 2:
-            KM = KM + A9%(I)
-            QM = QM + B1%(I)
-            B%(I) = Int(B%(I) / 3! + .5)
-            B2%(I) = Int(B2%(I) / 3 + .5)
+            KM = KM + careerA9%(I)
+            QM = QM + careerB1%(I)
+            careerB%(I) = Int(careerB%(I) / 3! + .5)
+            careerB2%(I) = Int(careerB2%(I) / 3 + .5)
         Next I
 
         KK = 100 / KM: QK = 100 / QM
 
         For I = 0 To 2:
-            If A9%(I) <> 0 Then
-                A9%(I) = Int(KK * A9%(I) + .5) + KT: KT = A9%(I)
-                If A9%(I) > 100 Then A9%(I) = 100
+            If careerA9%(I) <> 0 Then
+                careerA9%(I) = Int(KK * careerA9%(I) + .5) + KT: KT = careerA9%(I)
+                If careerA9%(I) > 100 Then careerA9%(I) = 100
             End If
         Next I
 
         For I = 0 To 2:
-            If B1%(I) <> 0 Then B1%(I) = Int(QK * B1%(I) + .5) + QT
-            QT = B1%(I): If B1%(I) > 100 Then B1%(I) = 100
+            If careerB1%(I) <> 0 Then careerB1%(I) = Int(QK * careerB1%(I) + .5) + QT
+            QT = careerB1%(I): If careerB1%(I) > 100 Then careerB1%(I) = 100
         Next I
 
         PM = 0
         PT = 0
-        B5%(0) = Int(B5%(0) / (B5%(0) + B5%(1)) * 100 + .5): B5%(1) = 100
-        B8%(0) = Int(B8%(0) / (B8%(0) + B8%(1)) * 100 + .5): B8%(1) = 100
+        careerB5%(0) = Int(careerB5%(0) / (careerB5%(0) + careerB5%(1)) * 100 + .5): careerB5%(1) = 100
+        careerB8%(0) = Int(careerB8%(0) / (careerB8%(0) + careerB8%(1)) * 100 + .5): careerB8%(1) = 100
 
         For I = 9 To 0 Step -1:
-            If A0%(I) <> 0 Then A0%(I) = 100: Exit For
+            If careerA0%(I) <> 0 Then careerA0%(I) = 100: Exit For
         Next I
 
         For I = 5 To 0 Step -1:
-            If A4%(I) <> 0 Then A4%(I) = 100: Exit For
+            If careerA4%(I) <> 0 Then careerA4%(I) = 100: Exit For
         Next I
 
         For I = 3 To 0 Step -1:
-            If A6%(I) <> 0 Then A6%(I) = 100: Exit For
+            If careerA6%(I) <> 0 Then careerA6%(I) = 100: Exit For
         Next I
 
         For I = 2 To 0 Step -1:
-            If A9%(I) <> 0 Then A9%(I) = 100: Exit For
+            If careerA9%(I) <> 0 Then careerA9%(I) = 100: Exit For
         Next I
 
         For I = 2 To 0 Step -1:
-            If B1%(I) <> 0 Then B1%(I) = 100: Exit For
+            If careerB1%(I) <> 0 Then careerB1%(I) = 100: Exit For
         Next I
 
         QV = 0
@@ -694,41 +694,41 @@ Sub InputTeam ()
 
         YC% = X
 
-        If D9 > 0 Then B6%(0) = B6%(0) + D9: B6%(1) = B6%(1) + D9
+        If D9 > 0 Then careerB6%(0) = careerB6%(0) + D9: careerB6%(1) = careerB6%(1) + D9
 
         Call SaveTeam(teamNumber, YN$)
 
-        For I = 0 To 7: B6%(I) = 0: Next I
+        For I = 0 To 7: careerB6%(I) = 0: Next I
 
         For I = 0 To 9:
-            A1$(I) = ""
-            A0%(I) = 0
+            statsA1$(I) = ""
+            careerA0%(I) = 0
             A1!(I) = 0
-            A1%(I) = 0
-            A2%(I) = 0
-            A3%(I) = 0
+            careerA1%(I) = 0
+            careerA2%(I) = 0
+            careerA3%(I) = 0
         Next I
 
-        For I = 0 To 5: A2$(I) = "": A4%(I) = 0: A5%(I) = 0: Next I
+        For I = 0 To 5: statsA2$(I) = "": careerA4%(I) = 0: careerA5%(I) = 0: Next I
 
-        For I = 0 To 3: A3$(I) = "": A6%(I) = 0: A7%(I) = 0: A8%(I) = 0: Next I
+        For I = 0 To 3: statsA3$(I) = "": careerA6%(I) = 0: careerA7%(I) = 0: careerA8%(I) = 0: Next I
 
-        For I = 0 To 2: A4$(I) = "": A9%(I) = 0: B%(I) = 0: Next I
+        For I = 0 To 2: statsA4$(I) = "": careerA9%(I) = 0: careerB%(I) = 0: Next I
 
-        For I = 0 To 2: A5$(I) = "": B1%(I) = 0: B2%(I) = 0: Next I
+        For I = 0 To 2: statsA5$(I) = "": careerB1%(I) = 0: careerB2%(I) = 0: Next I
 
-        A6$(0) = "": B3%(0) = 0
+        statsA6$(0) = "": careerB3%(0) = 0
 
         For I = 0 To 1:
-            A7$(I) = ""
-            B4%(I) = 0
-            B7%(I) = 0
-            B5%(I) = 0
-            B8%(I) = 0
+            statsA7$(I) = ""
+            careerB4%(I) = 0
+            careerB7%(I) = 0
+            careerB5%(I) = 0
+            careerB8%(I) = 0
         Next
 
-        For I = 0 To 9: DI$(I) = "": DI%(I) = 0: Next
-        For I = 0 To 14: DS$(I) = "": DS%(I) = 0: Next
+        For I = 0 To 9: statsDI$(I) = "": careerDI%(I) = 0: Next
+        For I = 0 To 14: statsDS$(I) = "": careerDS%(I) = 0: Next
 
         Cls
 
@@ -763,15 +763,15 @@ End Sub
 '...explanation...
 Sub SaveTeam (teamNumber, YN$)
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
-    Shared DI$(), DS$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared statsDI$(), statsDS$()
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%()
-    Shared A5%(), A6%(), A7%(), A8%(), A9%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
+    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
 
-    Shared B%(), B1%(), B2%(), B3%(), B4%()
-    Shared B5%(), B6%(), B7%(), B8%()
-    Shared DS%(), DI%(), PA%(), QX%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
+    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared careerDS%(), careerDI%(), statsPA%(), careerQX%()
 
     9500 '
     If teamNumber = 0 Then
@@ -805,65 +805,65 @@ Sub SaveTeam (teamNumber, YN$)
     LSet Q$(1) = A$
     LSet Q$(2) = AA$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(B6%(I)): Next I
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(PA%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next I
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(statsPA%(I)): Next I
 
     For I = 0 To 9
-        LSet Q$(I * 5 + 16) = A1$(I)
-        LSet Q$(I * 5 + 17) = MKI$(A0%(I))
-        LSet Q$(I * 5 + 18) = MKI$(A1%(I))
-        LSet Q$(I * 5 + 19) = MKI$(A2%(I))
-        LSet Q$(I * 5 + 20) = MKI$(A3%(I))
+        LSet Q$(I * 5 + 16) = statsA1$(I)
+        LSet Q$(I * 5 + 17) = MKI$(careerA0%(I))
+        LSet Q$(I * 5 + 18) = MKI$(careerA1%(I))
+        LSet Q$(I * 5 + 19) = MKI$(careerA2%(I))
+        LSet Q$(I * 5 + 20) = MKI$(careerA3%(I))
     Next I
 
     For I = 0 To 5
-        LSet Q$(I * 3 + 66) = A2$(I)
-        LSet Q$(I * 3 + 67) = MKI$(A4%(I))
-        LSet Q$(I * 3 + 68) = MKI$(A5%(I))
+        LSet Q$(I * 3 + 66) = statsA2$(I)
+        LSet Q$(I * 3 + 67) = MKI$(careerA4%(I))
+        LSet Q$(I * 3 + 68) = MKI$(careerA5%(I))
     Next I
 
     For I = 0 To 3
-        LSet Q$(I * 5 + 84) = A3$(I)
-        LSet Q$(I * 5 + 85) = MKI$(A6%(I))
-        LSet Q$(I * 5 + 86) = MKI$(A7%(I))
-        LSet Q$(I * 5 + 87) = MKI$(A8%(I))
-        LSet Q$(I * 5 + 88) = MKI$(QX%(I))
+        LSet Q$(I * 5 + 84) = statsA3$(I)
+        LSet Q$(I * 5 + 85) = MKI$(careerA6%(I))
+        LSet Q$(I * 5 + 86) = MKI$(careerA7%(I))
+        LSet Q$(I * 5 + 87) = MKI$(careerA8%(I))
+        LSet Q$(I * 5 + 88) = MKI$(careerQX%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 104) = A4$(I)
-        LSet Q$(I * 3 + 105) = MKI$(A9%(I))
-        LSet Q$(I * 3 + 106) = MKI$(B%(I))
+        LSet Q$(I * 3 + 104) = statsA4$(I)
+        LSet Q$(I * 3 + 105) = MKI$(careerA9%(I))
+        LSet Q$(I * 3 + 106) = MKI$(careerB%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 113) = A5$(I)
-        LSet Q$(I * 3 + 114) = MKI$(B1%(I))
-        LSet Q$(I * 3 + 115) = MKI$(B2%(I))
+        LSet Q$(I * 3 + 113) = statsA5$(I)
+        LSet Q$(I * 3 + 114) = MKI$(careerB1%(I))
+        LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
     Next I
 
-    LSet Q$(122) = A6$(0)
-    LSet Q$(123) = MKI$(B3%(0))
-    LSet Q$(124) = A7$(0)
-    LSet Q$(125) = MKI$(B4%(0))
-    LSet Q$(126) = MKI$(B5%(0))
-    LSet Q$(127) = MKI$(B7%(0))
-    LSet Q$(128) = MKI$(B8%(0))
-    LSet Q$(129) = A7$(1)
-    LSet Q$(130) = MKI$(B4%(1))
-    LSet Q$(131) = MKI$(B5%(1))
-    LSet Q$(132) = MKI$(B7%(1))
-    LSet Q$(133) = MKI$(B8%(1))
+    LSet Q$(122) = statsA6$(0)
+    LSet Q$(123) = MKI$(careerB3%(0))
+    LSet Q$(124) = statsA7$(0)
+    LSet Q$(125) = MKI$(careerB4%(0))
+    LSet Q$(126) = MKI$(careerB5%(0))
+    LSet Q$(127) = MKI$(careerB7%(0))
+    LSet Q$(128) = MKI$(careerB8%(0))
+    LSet Q$(129) = statsA7$(1)
+    LSet Q$(130) = MKI$(careerB4%(1))
+    LSet Q$(131) = MKI$(careerB5%(1))
+    LSet Q$(132) = MKI$(careerB7%(1))
+    LSet Q$(133) = MKI$(careerB8%(1))
     LSet Q$(134) = MKI$(YC%)
 
     For I = 0 To 14
-        LSet Q$(I * 2 + 135) = DS$(I)
-        LSet Q$(I * 2 + 136) = MKI$(DS%(I))
+        LSet Q$(I * 2 + 135) = statsDS$(I)
+        LSet Q$(I * 2 + 136) = MKI$(careerDS%(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 2 + 165) = DI$(I)
-        LSet Q$(I * 2 + 166) = MKI$(DI%(I))
+        LSet Q$(I * 2 + 165) = statsDI$(I)
+        LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
     Next I
 
     Put #1, teamNumber

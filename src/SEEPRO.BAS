@@ -6,7 +6,7 @@ Sub SEEPRO ()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared P$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TR$()
     Shared compZ2$(), compZ3$()
 
     Do
@@ -62,7 +62,7 @@ Sub SEEPRO ()
                     Locate 2, 33: Print targetFile$
 					
 					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
 						I$ = GetKeyPress$
 					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -96,21 +96,21 @@ End Sub
 Sub LoadLeaderFiles_Pro (leagueName$, WE$)
 
     Shared compZ2$(), compZ3$()
-    Shared P$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TR$()
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared D1$, D2$, D3$
+    Shared div1$, div2$, div3$
 
     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-    Input #2, leagueName$, D1$, D2$, D3$
+    Input #2, leagueName$, div1$, div2$, div3$
     Close 2
 
-    D1$ = PadRight$(D1$, 8)
-    D2$ = PadRight$(D2$, 8)
-    D3$ = PadRight$(D3$, 8)
+    div1$ = PadRight$(div1$, 8)
+    div2$ = PadRight$(div2$, 8)
+    div3$ = PadRight$(div3$, 8)
 
     Cls
 
@@ -146,22 +146,22 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
 
     For P = 1 To 10:
         If TM$(P) = "*" Or TM$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
 
-            P$(P) = PadRight$(TM$(P), 12)
+            seeP$(P) = PadRight$(TM$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
 
@@ -170,7 +170,7 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
                 A$ = Str$(A)
                 L = Len(A$)
@@ -180,21 +180,21 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
                     A$ = "0" + A$
                 Loop
 
-                P$(P) = P$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
             A = PTSF!(P)
 
             A$ = Right$("     " + Str$(A), 3)
 
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
             A = PTSA!(P)
 
             A$ = Right$("     " + Str$(A), 4)
 
-            P$(P) = P$(P) + A$
-            'P$(P) = P$(P)
+            seeP$(P) = seeP$(P) + A$
+            'seeP$(P) = seeP$(P)
         End If
 
     Next P
@@ -204,22 +204,22 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
     For P = 11 To 20:
 
         If TM$(P) = "*" Or TM$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
 
-            P$(P) = PadRight$(TM$(P), 12)
+            seeP$(P) = PadRight$(TM$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
 
@@ -228,7 +228,7 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
                 A$ = Str$(A)
                 L = Len(A$)
@@ -238,19 +238,19 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
                     A$ = "0" + A$
                 Loop
 
-                P$(P) = P$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
-            'P$(P) = P$(P)
+            'seeP$(P) = seeP$(P)
         End If
 
     Next P
@@ -260,22 +260,22 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
     For P = 21 To 30:
 
         If TM$(P) = "*" Or TM$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
 
-            P$(P) = PadRight$(TM$(P), 12)
+            seeP$(P) = PadRight$(TM$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
 
@@ -284,7 +284,7 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
                 A$ = Str$(A)
                 L = Len(A$)
@@ -294,20 +294,20 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
                     A$ = "0" + A$
                 Loop
 
-                P$(P) = P$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
-            'P$(P) = P$(P)
+            'seeP$(P) = seeP$(P)
         End If
 
     Next P
@@ -410,19 +410,19 @@ End Sub
 Sub StatsToScreen_Pro (leagueName$)
 
     Shared compZ2$(), compZ3$()
-    Shared P$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TR$()
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared D1$, D2$, D3$
+    Shared div1$, div2$, div3$
 
 	Color 15, 0
 
     Cls
 
-    Color 12: Print D1$; " DIVISION"
+    Color 12: Print div1$; " DIVISION"
 
     Color 14
     Print "              W   L   T   PCT  PF  PA"
@@ -430,7 +430,7 @@ Sub StatsToScreen_Pro (leagueName$)
 
     For P = 1 To 10:
 
-        If P$(P) = "" Then
+        If seeP$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P + 2 - RT)
@@ -457,7 +457,7 @@ Sub StatsToScreen_Pro (leagueName$)
     RT = 0
 
     Color 12
-    Locate 1, 41: Print D2$ + " DIVISION"
+    Locate 1, 41: Print div2$ + " DIVISION"
     Color 14
 
     Locate 2, 41
@@ -466,7 +466,7 @@ Sub StatsToScreen_Pro (leagueName$)
 
     For P = 11 To 20:
 
-        If P$(P) = "" Then
+        If seeP$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 8 - RT), 41
@@ -493,7 +493,7 @@ Sub StatsToScreen_Pro (leagueName$)
     RT = 0
 
     Locate 13, 20
-    Color 12: Print D3$ + " DIVISION"
+    Color 12: Print div3$ + " DIVISION"
 
     Color 14
     Locate 14, 20: Print "              W   L   T   PCT  PF  PA"
@@ -501,7 +501,7 @@ Sub StatsToScreen_Pro (leagueName$)
 
     For P = 21 To 30:
 
-        If P$(P) = "" Then
+        If seeP$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 6 - RT), 20
@@ -1072,13 +1072,13 @@ End Sub
 Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
     Shared compZ2$(), compZ3$()
-    Shared P$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TR$()
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared D1$, D2$, D3$
+    Shared div1$, div2$, div3$
 
 	Color 0, 15
 
@@ -1091,12 +1091,12 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     End If
 
     Print #2, leagueName$ + " OVERALL RECORD"
-    Print #2, D1$; " DIVISION"
+    Print #2, div1$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 1 To 10
 
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
 
             If W!(P) + L!(P) + T!(P) = 0 Then
@@ -1118,11 +1118,11 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     Next
 
     Print #2,
-    Print #2, D2$; " DIVISION"
+    Print #2, div2$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 11 To 20
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
 
             If W!(P) + L!(P) + T!(P) = 0 Then
@@ -1144,11 +1144,11 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     Next
 
     Print #2,
-    Print #2, D3$; " DIVISION"
+    Print #2, div3$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 21 To 30
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
 
             Print #2, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
 

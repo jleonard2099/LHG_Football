@@ -70,80 +70,80 @@ End Sub
 '...explanation...
 Sub DraftNewTeam (YN$, N$, CC$, T2)
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%(), A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%(), B5%(), B6%(), B7%(), B8%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
     Shared C0%(), C1%(), C2%(), C3%(), C4%(), C5%(), C6%(), C7%(), C8%(), C9%()
-    Shared D%(), D1%(), D2%(), D3%(), D4%(), D5%(), D6%(), D7%(), D8%()
-    Shared DI%(), DS%(), FI%(), FS%()
-    Shared PA%(), SX%(), QA%(), QX%()
+    Shared D%(), D1%(), D2%(), draftD3%(), D4%(), D5%(), D6%(), D7%(), D8%()
+    Shared careerDI%(), careerDS%(), FI%(), FS%()
+    Shared statsPA%(), draftSX%(), QA%(), careerQX%()
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
-    Shared DI$(), DS$()
+    Shared statsDI$(), statsDS$()
     Shared FI$(), FS$()
 
     A$ = N$
     AA$ = CC$
 
-    For I = 0 To 7: B6%(I) = D6%(I): Next I
+    For I = 0 To 7: careerB6%(I) = D6%(I): Next I
 
-    For I = 0 To 4: PA%(I) = QA%(I): Next I
+    For I = 0 To 4: statsPA%(I) = QA%(I): Next I
 
     For I = 0 To 9
-        A1$(I) = C1$(I)
-        A0%(I) = C0%(I)
-        A1%(I) = C1%(I)
-        A2%(I) = C2%(I)
-        A3%(I) = C3%(I)
+        statsA1$(I) = C1$(I)
+        careerA0%(I) = C0%(I)
+        careerA1%(I) = C1%(I)
+        careerA2%(I) = C2%(I)
+        careerA3%(I) = C3%(I)
     Next I
 
     For I = 0 To 5
-        A2$(I) = C2$(I)
-        A4%(I) = C4%(I)
-        A5%(I) = C5%(I)
+        statsA2$(I) = C2$(I)
+        careerA4%(I) = C4%(I)
+        careerA5%(I) = C5%(I)
     Next I
 
     For I = 0 To 3
-        A3$(I) = C3$(I)
-        A6%(I) = C6%(I)
-        A7%(I) = C7%(I)
-        A8%(I) = C8%(I)
-        QX%(I) = SX%(I)
+        statsA3$(I) = C3$(I)
+        careerA6%(I) = C6%(I)
+        careerA7%(I) = C7%(I)
+        careerA8%(I) = C8%(I)
+        careerQX%(I) = draftSX%(I)
     Next I
 
     For I = 0 To 2
-        A4$(I) = C4$(I)
-        A9%(I) = C9%(I)
-        B%(I) = D%(I)
+        statsA4$(I) = C4$(I)
+        careerA9%(I) = C9%(I)
+        careerB%(I) = D%(I)
     Next I
 
     For I = 0 To 2
-        A5$(I) = C5$(I)
-        B1%(I) = D1%(I)
-        B2%(I) = D2%(I)
+        statsA5$(I) = C5$(I)
+        careerB1%(I) = D1%(I)
+        careerB2%(I) = D2%(I)
     Next I
 
-    A6$(0) = C6$(0)
-    B3%(0) = D3%(0)
-    A7$(0) = C7$(0)
-    B4%(0) = D4%(0)
-    B5%(0) = D5%(0)
-    B7%(0) = D7%(0)
-    B8%(0) = D8%(0)
-    A7$(1) = C7$(1)
-    B4%(1) = D4%(1)
-    B5%(1) = D5%(1)
-    B7%(1) = D7%(1)
-    B8%(1) = D8%(1)
+    statsA6$(0) = C6$(0)
+    careerB3%(0) = draftD3%(0)
+    statsA7$(0) = C7$(0)
+    careerB4%(0) = D4%(0)
+    careerB5%(0) = D5%(0)
+    careerB7%(0) = D7%(0)
+    careerB8%(0) = D8%(0)
+    statsA7$(1) = C7$(1)
+    careerB4%(1) = D4%(1)
+    careerB5%(1) = D5%(1)
+    careerB7%(1) = D7%(1)
+    careerB8%(1) = D8%(1)
 
     For I = 0 To 14
-        DS$(I) = FS$(I)
-        DS%(I) = FS%(I)
+        statsDS$(I) = FS$(I)
+        careerDS%(I) = FS%(I)
     Next I
 
     For I = 0 To 9
-        DI$(I) = FI$(I)
-        DI%(I) = FI%(I)
+        statsDI$(I) = FI$(I)
+        careerDI%(I) = FI%(I)
     Next I
 
     If Not _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
@@ -172,14 +172,14 @@ End Sub
 '...explanation...
 Sub DoTheDraft (YN$, NU)
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%(), A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%(), B5%(), B6%(), B7%(), B8%()
-    Shared PA%(), QX%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared statsPA%(), careerQX%()
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
-    Shared DI$(), DS$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared statsDI$(), statsDS$()
 
-    Shared DI%(), DS%()
+    Shared careerDI%(), careerDS%()
 
     9600 '
     S0 = 0
@@ -188,43 +188,43 @@ Sub DoTheDraft (YN$, NU)
     S3 = 0
 
     For I = 0 To 9:
-        S0 = S0 + A0%(I)
-        S2 = S2 + A2%(I)
+        S0 = S0 + careerA0%(I)
+        S2 = S2 + careerA2%(I)
     Next
 
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If A0%(I) <> 0 Then A0%(I) = Int(S4 * A0%(I) + .5) + S1: S1 = A0%(I)
-        If A0%(I) > 100 Then A0%(I) = 100
+        If careerA0%(I) <> 0 Then careerA0%(I) = Int(S4 * careerA0%(I) + .5) + S1: S1 = careerA0%(I)
+        If careerA0%(I) > 100 Then careerA0%(I) = 100
     Next I
 
     For I = 0 To 5:
-        S2 = S2 + A4%(I)
+        S2 = S2 + careerA4%(I)
     Next
 
     S5 = 100 / S2
 
-    For I = 0 To 9: If A2%(I) <> 0 Then A2%(I) = Int(S5 * A2%(I) + .5) + S3: S3 = A2%(I)
-        If A2%(I) > 100 Then A2%(I) = 100
+    For I = 0 To 9: If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
+        If careerA2%(I) > 100 Then careerA2%(I) = 100
     Next I
 
-    For I = 0 To 5: If A4%(I) <> 0 Then A4%(I) = Int(S5 * A4%(I) + .5) + S3: S3 = A4%(I)
-        If A4%(I) > 100 Then A4%(I) = 100
+    For I = 0 To 5: If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
+        If careerA4%(I) > 100 Then careerA4%(I) = 100
     Next I
 
     S6 = 0
     S7 = 0
 
     For I = 0 To 3:
-        S6 = S6 + A6%(I)
+        S6 = S6 + careerA6%(I)
     Next
 
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If A6%(I) <> 0 Then A6%(I) = Int(S8 * A6%(I) + .5) + S7: S7 = A6%(I)
-        If A6%(I) > 100 Then A6%(I) = 100
+        If careerA6%(I) <> 0 Then careerA6%(I) = Int(S8 * careerA6%(I) + .5) + S7: S7 = careerA6%(I)
+        If careerA6%(I) > 100 Then careerA6%(I) = 100
     Next
 
     G0 = 0
@@ -232,17 +232,17 @@ Sub DoTheDraft (YN$, NU)
     G3 = 0
     G4 = 0
 
-    For I = 0 To 2: G0 = G0 + A9%(I): G3 = G3 + B1%(I): Next
+    For I = 0 To 2: G0 = G0 + careerA9%(I): G3 = G3 + careerB1%(I): Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
-    For I = 0 To 2: If A9%(I) <> 0 Then A9%(I) = Int(G2 * A9%(I) + .5) + G1: G1 = A9%(I)
-        If A9%(I) > 100 Then A9%(I) = 100
+    For I = 0 To 2: If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
+        If careerA9%(I) > 100 Then careerA9%(I) = 100
     Next
 
-    For I = 0 To 2: If B1%(I) <> 0 Then B1%(I) = Int(G5 * B1%(I) + .5) + G4: G4 = B1%(I)
-        If B1%(I) > 100 Then B1%(I) = 100
+    For I = 0 To 2: If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
+        If careerB1%(I) > 100 Then careerB1%(I) = 100
     Next
 
     G0 = 0
@@ -251,47 +251,47 @@ Sub DoTheDraft (YN$, NU)
     G4 = 0
 
     For I = 0 To 1:
-        G0 = G0 + B5%(I)
-        G3 = G3 + B8%(I)
+        G0 = G0 + careerB5%(I)
+        G3 = G3 + careerB8%(I)
     Next
 
     G2 = 100 / G0: G5 = 100 / G3
 
-    For I = 0 To 1: If B5%(I) <> 0 Then B5%(I) = Int(G2 * B5%(I) + .5) + G1: G1 = B5%(I)
-        If B5%(I) > 100 Then B5%(I) = 100
+    For I = 0 To 1: If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
+        If careerB5%(I) > 100 Then careerB5%(I) = 100
     Next
 
-    For I = 0 To 1: If B8%(I) <> 0 Then B8%(I) = Int(G5 * B8%(I) + .5) + G4: G4 = B8%(I)
-        If B8%(I) > 100 Then B8%(I) = 100
+    For I = 0 To 1: If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
+        If careerB8%(I) > 100 Then careerB8%(I) = 100
     Next
 
     For I = 9 To 0 Step -1:
-        If A0%(I) <> 0 Then A0%(I) = 100: Exit For
+        If careerA0%(I) <> 0 Then careerA0%(I) = 100: Exit For
     Next
 
     For I = 5 To 0 Step -1:
-        If A4%(I) <> 0 Then A4%(I) = 100: Exit For
+        If careerA4%(I) <> 0 Then careerA4%(I) = 100: Exit For
     Next
 
     For I = 3 To 0 Step -1:
-        If A6%(I) <> 0 Then A6%(I) = 100: Exit For
+        If careerA6%(I) <> 0 Then careerA6%(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
-        If A9%(I) <> 0 Then A9%(I) = 100: Exit For
+        If careerA9%(I) <> 0 Then careerA9%(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
 
-        If B1%(I) <> 0 Then B1%(I) = 100: Exit For
+        If careerB1%(I) <> 0 Then careerB1%(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If B5%(I) <> 0 Then B5%(I) = 100: Exit For
+        If careerB5%(I) <> 0 Then careerB5%(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If B8%(I) <> 0 Then B8%(I) = 100: Exit For
+        If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
     Next
 
     X = Int((Q / .3) + .5)
@@ -330,66 +330,66 @@ Sub DoTheDraft (YN$, NU)
     LSet Q$(1) = A$
     LSet Q$(2) = AA$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(B6%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next I
 
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(PA%(I)): Next I
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(statsPA%(I)): Next I
 
     For I = 0 To 9
-        LSet Q$(I * 5 + 16) = A1$(I)
-        LSet Q$(I * 5 + 17) = MKI$(A0%(I))
-        LSet Q$(I * 5 + 18) = MKI$(A1%(I))
-        LSet Q$(I * 5 + 19) = MKI$(A2%(I))
-        LSet Q$(I * 5 + 20) = MKI$(A3%(I))
+        LSet Q$(I * 5 + 16) = statsA1$(I)
+        LSet Q$(I * 5 + 17) = MKI$(careerA0%(I))
+        LSet Q$(I * 5 + 18) = MKI$(careerA1%(I))
+        LSet Q$(I * 5 + 19) = MKI$(careerA2%(I))
+        LSet Q$(I * 5 + 20) = MKI$(careerA3%(I))
     Next I
 
     For I = 0 To 5
-        LSet Q$(I * 3 + 66) = A2$(I)
-        LSet Q$(I * 3 + 67) = MKI$(A4%(I))
-        LSet Q$(I * 3 + 68) = MKI$(A5%(I))
+        LSet Q$(I * 3 + 66) = statsA2$(I)
+        LSet Q$(I * 3 + 67) = MKI$(careerA4%(I))
+        LSet Q$(I * 3 + 68) = MKI$(careerA5%(I))
     Next I
 
     For I = 0 To 3
-        LSet Q$(I * 5 + 84) = A3$(I)
-        LSet Q$(I * 5 + 85) = MKI$(A6%(I))
-        LSet Q$(I * 5 + 86) = MKI$(A7%(I))
-        LSet Q$(I * 5 + 87) = MKI$(A8%(I))
-        LSet Q$(I * 5 + 88) = MKI$(QX%(I))
+        LSet Q$(I * 5 + 84) = statsA3$(I)
+        LSet Q$(I * 5 + 85) = MKI$(careerA6%(I))
+        LSet Q$(I * 5 + 86) = MKI$(careerA7%(I))
+        LSet Q$(I * 5 + 87) = MKI$(careerA8%(I))
+        LSet Q$(I * 5 + 88) = MKI$(careerQX%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 104) = A4$(I)
-        LSet Q$(I * 3 + 105) = MKI$(A9%(I))
-        LSet Q$(I * 3 + 106) = MKI$(B%(I))
+        LSet Q$(I * 3 + 104) = statsA4$(I)
+        LSet Q$(I * 3 + 105) = MKI$(careerA9%(I))
+        LSet Q$(I * 3 + 106) = MKI$(careerB%(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 113) = A5$(I)
-        LSet Q$(I * 3 + 114) = MKI$(B1%(I))
-        LSet Q$(I * 3 + 115) = MKI$(B2%(I))
+        LSet Q$(I * 3 + 113) = statsA5$(I)
+        LSet Q$(I * 3 + 114) = MKI$(careerB1%(I))
+        LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
     Next I
 
-    LSet Q$(122) = A6$(0)
-    LSet Q$(123) = MKI$(B3%(0))
-    LSet Q$(124) = A7$(0)
-    LSet Q$(125) = MKI$(B4%(0))
-    LSet Q$(126) = MKI$(B5%(0))
-    LSet Q$(127) = MKI$(B7%(0))
-    LSet Q$(128) = MKI$(B8%(0))
-    LSet Q$(129) = A7$(1)
-    LSet Q$(130) = MKI$(B4%(1))
-    LSet Q$(131) = MKI$(B5%(1))
-    LSet Q$(132) = MKI$(B7%(1))
-    LSet Q$(133) = MKI$(B8%(1))
+    LSet Q$(122) = statsA6$(0)
+    LSet Q$(123) = MKI$(careerB3%(0))
+    LSet Q$(124) = statsA7$(0)
+    LSet Q$(125) = MKI$(careerB4%(0))
+    LSet Q$(126) = MKI$(careerB5%(0))
+    LSet Q$(127) = MKI$(careerB7%(0))
+    LSet Q$(128) = MKI$(careerB8%(0))
+    LSet Q$(129) = statsA7$(1)
+    LSet Q$(130) = MKI$(careerB4%(1))
+    LSet Q$(131) = MKI$(careerB5%(1))
+    LSet Q$(132) = MKI$(careerB7%(1))
+    LSet Q$(133) = MKI$(careerB8%(1))
     LSet Q$(134) = MKI$(YC%)
 
     For I = 0 To 14
-        LSet Q$(I * 2 + 135) = DS$(I)
-        LSet Q$(I * 2 + 136) = MKI$(DS%(I))
+        LSet Q$(I * 2 + 135) = statsDS$(I)
+        LSet Q$(I * 2 + 136) = MKI$(careerDS%(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 2 + 165) = DI$(I)
-        LSet Q$(I * 2 + 166) = MKI$(DI%(I))
+        LSet Q$(I * 2 + 165) = statsDI$(I)
+        LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
     Next I
 
     Put #1, NU
@@ -487,7 +487,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
             Color 15, 4
 
             Do
-				Locate , 33: Print "ANY CHANGE (YN)";
+				Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -575,8 +575,8 @@ Sub ReadTeam_DRAFT ()
     Dim C2!(15), C3!(15)
 
     Shared C0%(), C1%(), C2%(), C3%(), C4%(), C5%(), C6%(), C7%(), C8%(), C9%()
-    Shared D%(), D1%(), D2%(), D3%(), D4%(), D5%(), D6%(), D7%(), D8%()
-    Shared FI%(), FS%(), QA%(), SX%()
+    Shared D%(), D1%(), D2%(), draftD3%(), D4%(), D5%(), D6%(), D7%(), D8%()
+    Shared FI%(), FS%(), QA%(), draftSX%()
 
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
     Shared FI$(), FS$()
@@ -604,7 +604,7 @@ Sub ReadTeam_DRAFT ()
         C6%(I) = CVI(Q$(I * 5 + 85))
         C7%(I) = CVI(Q$(I * 5 + 86))
         C8%(I) = CVI(Q$(I * 5 + 87))
-        SX%(I) = CVI(Q$(I * 5 + 88))
+        draftSX%(I) = CVI(Q$(I * 5 + 88))
     Next I
 
     For I = 0 To 2
@@ -620,7 +620,7 @@ Sub ReadTeam_DRAFT ()
     Next I
 
     C6$(0) = Q$(122)
-    D3%(0) = CVI(Q$(123))
+    draftD3%(0) = CVI(Q$(123))
     C7$(0) = Q$(124)
     D4%(0) = CVI(Q$(125))
     D5%(0) = CVI(Q$(126))
@@ -714,8 +714,8 @@ End Sub
 '...explanation...
 Sub DraftExistingTeam (YN$, NU)
 
-    Shared B6%()
-    Shared PA%()
+    Shared careerB6%()
+    Shared statsPA%()
 
     Call TITLE
 
@@ -728,20 +728,20 @@ Sub DraftExistingTeam (YN$, NU)
     Locate 4: Print " 2. TEAM # "; NU
     Locate 5: Print " 3. TEAM NAME "; A$
     Locate 6: Print " 4. TEAM NICKNAME "; AA$
-    Locate 7: Print " 5. DEF RUSH ADJ "; B6%(0)
-    Locate 8: Print " 6. DEF COMP % ADJ "; B6%(1)
-    Locate 9: Print " 7. DEF INT % ADJ "; B6%(2)
-    Locate 10: Print " 8. FUM % "; B6%(3)
-    Locate 11: Print " 9. DEF FUM % "; B6%(4)
-    Locate 12: Print "10. OFF SACKED % "; B6%(5)
-    Locate 13: Print "11. DEF SACK ADJ "; B6%(6)
+    Locate 7: Print " 5. DEF RUSH ADJ "; careerB6%(0)
+    Locate 8: Print " 6. DEF COMP % ADJ "; careerB6%(1)
+    Locate 9: Print " 7. DEF INT % ADJ "; careerB6%(2)
+    Locate 10: Print " 8. FUM % "; careerB6%(3)
+    Locate 11: Print " 9. DEF FUM % "; careerB6%(4)
+    Locate 12: Print "10. OFF SACKED % "; careerB6%(5)
+    Locate 13: Print "11. DEF SACK ADJ "; careerB6%(6)
     Locate 14: Print "12. DEF YD/COMP ADJ "; Q
-    Locate 15: Print "13. TM PENALTY ADJ "; PA%(0)
-    Locate 16: Print "14. OFF RUN/PASS % "; B6%(7)
-    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3)
-    Locate 18: Print "16. POWER RATING "; PA%(4)
-    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; PA%(1)
-    Locate 20: Print "18. TM TEXT COLOR (0-15) "; PA%(2)
+    Locate 15: Print "13. TM PENALTY ADJ "; statsPA%(0)
+    Locate 16: Print "14. OFF RUN/PASS % "; careerB6%(7)
+    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
+    Locate 18: Print "16. POWER RATING "; statsPA%(4)
+    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
+    Locate 20: Print "18. TM TEXT COLOR (0-15) "; statsPA%(2)
     Locate 21: Print "19. STADIUM NAME "; S$
     Locate 22: Print "20. AVERAGE ATTENDANCE "; ATT
 
@@ -754,13 +754,13 @@ End Sub
 '...explanation...
 Sub DraftChoices (N$, CC$, T2, existingTeam)
 
-    Shared A0%(), A1%(), A2%(), A3%(), A4%(), A5%(), A6%(), A7%(), A8%(), A9%()
-    Shared B%(), B1%(), B2%(), B3%(), B4%(), B5%(), B6%(), B7%(), B8%()
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
     Shared C0%(), C1%(), C2%(), C3%(), C4%(), C5%(), C6%(), C7%(), C8%(), C9%()
-    Shared D%(), D1%(), D2%(), D3%(), D4%(), D5%(), D7%(), D8%()
-    Shared PA%(), SX%(), QA%(), QX%()
+    Shared D%(), D1%(), D2%(), draftD3%(), D4%(), D5%(), D7%(), D8%()
+    Shared statsPA%(), draftSX%(), QA%(), careerQX%()
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
 
     If existingTeam = 0 Then
@@ -768,26 +768,26 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
         401 Locate 4: Input " 2. TEAM # (0 FOR PROGRAM TO ASSIGN) "; NU: If C1 = 1 Then 420
         402 Locate 5: Input " 3. TEAM NAME "; A$: If C1 = 1 Then 420
         403 Locate 6: Input " 4. TEAM NICKNAME "; AA$: If C1 = 1 Then 420
-        404 Locate 7: Input " 5. DEF RUSH ADJ "; B6%(0): If C1 = 1 Then 420
-        405 Locate 8: Input " 6. DEF COMP % ADJ "; B6%(1): If C1 = 1 Then 420
-        406 Locate 9: Input " 7. DEF INT % ADJ "; B6%(2): If C1 = 1 Then 420
-        407 Locate 10: Input " 8. FUM % "; B6%(3): If C1 = 1 Then 420
-        408 Locate 11: Input " 9. DEF FUM % "; B6%(4): If C1 = 1 Then 420
-        409 Locate 12: Input "10. OFF SACKED % "; B6%(5): If C1 = 1 Then 420
-        410 Locate 13: Input "11. DEF SACK ADJ "; B6%(6): If C1 = 1 Then 420
+        404 Locate 7: Input " 5. DEF RUSH ADJ "; careerB6%(0): If C1 = 1 Then 420
+        405 Locate 8: Input " 6. DEF COMP % ADJ "; careerB6%(1): If C1 = 1 Then 420
+        406 Locate 9: Input " 7. DEF INT % ADJ "; careerB6%(2): If C1 = 1 Then 420
+        407 Locate 10: Input " 8. FUM % "; careerB6%(3): If C1 = 1 Then 420
+        408 Locate 11: Input " 9. DEF FUM % "; careerB6%(4): If C1 = 1 Then 420
+        409 Locate 12: Input "10. OFF SACKED % "; careerB6%(5): If C1 = 1 Then 420
+        410 Locate 13: Input "11. DEF SACK ADJ "; careerB6%(6): If C1 = 1 Then 420
         411 Locate 14: Input "12. DEF YD/COMP ADJ "; Q: If C1 = 1 Then 420
-        412 Locate 15: Input "13. TM PENALTY ADJ "; PA%(0): If C1 = 1 Then 420
-        413 Locate 16: Input "14. OFF RUN/PASS % "; B6%(7): If C1 = 1 Then 420
-        414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; PA%(3): If C1 = 1 Then 420
-        415 Locate 18: Input "16. POWER RATING "; PA%(4): If C1 = 1 Then 420
-        416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; PA%(1): If C1 = 1 Then 420
-        417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; PA%(2): If C1 = 1 Then 420
+        412 Locate 15: Input "13. TM PENALTY ADJ "; statsPA%(0): If C1 = 1 Then 420
+        413 Locate 16: Input "14. OFF RUN/PASS % "; careerB6%(7): If C1 = 1 Then 420
+        414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3): If C1 = 1 Then 420
+        415 Locate 18: Input "16. POWER RATING "; statsPA%(4): If C1 = 1 Then 420
+        416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1): If C1 = 1 Then 420
+        417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; statsPA%(2): If C1 = 1 Then 420
         418 Locate 21: Input "19. STADIUM NAME "; S$: If C1 = 1 Then 420
         419 Locate 22: Input "20. AVERAGE ATTENDANCE "; ATT: If C1 = 1 Then 420
     End If
 
     420 Locate 3, 40
-    Color PA%(2), PA%(1): Print "SAMPLE TEXT COLOR"
+    Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
     Color 15, 0
 
     C1 = 1
@@ -837,7 +837,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "RUNNING BACKS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "RUN AVG CX% RC AVG CX%";
 
@@ -850,8 +850,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0
 
                     For I = 0 To 9: Locate I + 4, 1
-                        Print I; " "; A1$(I); Tab(19);
-                        Print Using "##.#  ###   ##  ###"; A1%(I) * .3; A0%(I); A3%(I) * 3; A2%(I)
+                        Print I; " "; statsA1$(I); Tab(19);
+                        Print Using "##.#  ###   ##  ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
                         Locate I + 4, 41
                         Print I; " "; C1$(I); Tab(59);
                         Print Using "##.#  ###   ##  ###"; C1%(I) * .3; C0%(I); C3%(I) * 3; C2%(I)
@@ -868,11 +868,11 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 9
 
-                        A1$(P) = C1$(P1)
-                        A0%(P) = C0%(P1)
-                        A1%(P) = C1%(P1)
-                        A2%(P) = C2%(P1)
-                        A3%(P) = C3%(P1)
+                        statsA1$(P) = C1$(P1)
+                        careerA0%(P) = C0%(P1)
+                        careerA1%(P) = C1%(P1)
+                        careerA2%(P) = C2%(P1)
+                        careerA3%(P) = C3%(P1)
 
                     End If
 
@@ -892,7 +892,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "WIDE RECEIVERS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "REC AVG  CX% ";
 
@@ -905,8 +905,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0
 
                     For I = 0 To 5:
-                        Locate I + 4, 1: Print I; " "; A2$(I);
-                        Print Tab(17); Using "  ##    ###"; A5%(I) * 3; A4%(I)
+                        Locate I + 4, 1: Print I; " "; statsA2$(I);
+                        Print Tab(17); Using "  ##    ###"; careerA5%(I) * 3; careerA4%(I)
                         Locate I + 4, 41
                         Print I; " "; C2$(I);
                         Print Tab(57); Using "  ##    ###"; C5%(I) * 3; C4%(I)
@@ -923,9 +923,9 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Locate 16, 45: Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 5
 
-                        A2$(P) = C2$(P1)
-                        A4%(P) = C4%(P1)
-                        A5%(P) = C5%(P1)
+                        statsA2$(P) = C2$(P1)
+                        careerA4%(P) = C4%(P1)
+                        careerA5%(P) = C5%(P1)
 
                     End If
 
@@ -946,7 +946,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "QUARTERBACKS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0: Print Tab(17); " C%  I%   ARM  CX% ";
 
                     Print Tab(41);
@@ -958,11 +958,11 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0
 
                     For I = 0 To 3: Locate I + 4, 1
-                        Print I; " "; A3$(I);
-                        Print Tab(17); Using "###  ##  ###  ###"; A7%(I); A8%(I); QX%(I); A6%(I)
+                        Print I; " "; statsA3$(I);
+                        Print Tab(17); Using "###  ##  ###  ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
                         Locate I + 4, 41
                         Print I; " "; C3$(I);
-                        Print Tab(57); Using "###  ##  ###  ###"; C7%(I); C8%(I); SX%(I); C6%(I)
+                        Print Tab(57); Using "###  ##  ###  ###"; C7%(I); C8%(I); draftSX%(I); C6%(I)
                     Next I
 
                     355 '
@@ -978,11 +978,11 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 3
 
-                        A3$(P) = C3$(P1)
-                        A6%(P) = C6%(P1)
-                        A7%(P) = C7%(P1)
-                        A8%(P) = C8%(P1)
-                        QX%(P) = SX%(P1)
+                        statsA3$(P) = C3$(P1)
+                        careerA6%(P) = C6%(P1)
+                        careerA7%(P) = C7%(P1)
+                        careerA8%(P) = C8%(P1)
+                        careerQX%(P) = draftSX%(P1)
 
                     End If
 
@@ -1001,7 +1001,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "KICKOFF RETURNERS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
@@ -1014,8 +1014,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0
 
                     For I = 0 To 2: Locate I + 4, 1
-                        Print I; " "; A4$(I);
-                        Print Tab(17); Using "  ##     ###"; B%(I) * 3; A9%(I)
+                        Print I; " "; statsA4$(I);
+                        Print Tab(17); Using "  ##     ###"; careerB%(I) * 3; careerA9%(I)
                         Locate I + 4, 41
                         Print I; " "; C4$(I);
                         Print Tab(57); Using "  ##     ###"; D%(I) * 3; C9%(I)
@@ -1035,9 +1035,9 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 2
 
-                        A4$(P) = C4$(P1)
-                        A9%(P) = C9%(P1)
-                        B%(P) = D%(P1)
+                        statsA4$(P) = C4$(P1)
+                        careerA9%(P) = C9%(P1)
+                        careerB%(P) = D%(P1)
 
                     End If
 
@@ -1056,7 +1056,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PUNT RETURNERS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
@@ -1070,8 +1070,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
 
                     For I = 0 To 2
                         Locate I + 4, 1
-                        Print I; " "; A5$(I);
-                        Print Tab(17); Using "  ##    ###"; B2%(I) * 3; B1%(I)
+                        Print I; " "; statsA5$(I);
+                        Print Tab(17); Using "  ##    ###"; careerB2%(I) * 3; careerB1%(I)
                         Locate I + 4, 41
                         Print I; " "; C5$(I);
                         Print Tab(57); Using "  ##    ###"; D2%(I) * 3; D1%(I)
@@ -1088,9 +1088,9 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 2
 
-                        A5$(P) = C5$(P1)
-                        B1%(P) = D1%(P1)
-                        B2%(P) = D2%(P1)
+                        statsA5$(P) = C5$(P1)
+                        careerB1%(P) = D1%(P1)
+                        careerB2%(P) = D2%(P1)
 
                     End If
 
@@ -1109,7 +1109,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PUNTER"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "PUNT AVG";
 
@@ -1122,12 +1122,12 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0
 
                     Locate 4, 1
-                    Print 0; " "; A6$(0);
-                    Print Tab(17); Using "   ##"; B3%(0) * 2 + 28
+                    Print 0; " "; statsA6$(0);
+                    Print Tab(17); Using "   ##"; careerB3%(0) * 2 + 28
 
                     Locate 4, 41
                     Print 0; " "; C6$(0);
-                    Print Tab(57); Using "   ##"; D3%(0) * 2 + 28
+                    Print Tab(57); Using "   ##"; draftD3%(0) * 2 + 28
 
                     Do
                         Locate 16, 5
@@ -1138,8 +1138,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                         Locate 20, 1: Print "ANY KEY TO CONTINUE"
                         I$ = GetKeyPress$
 
-                        A6$(0) = C6$(0)
-                        B3%(0) = D3%(0)
+                        statsA6$(0) = C6$(0)
+                        careerB3%(0) = draftD3%(0)
                     End If
 
                 Loop Until P = 1
@@ -1157,7 +1157,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PLACE KICKERS"
                     Locate 3, 1
 
-                    Color PA%(2), PA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print A$;
                     Color 7, 0
                     Print Tab(17); "FG%  CX   EP%  CX";
 
@@ -1171,8 +1171,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
 
                     For I = 0 To 1:
                         Locate I + 4, 1
-                        Print I; " "; A7$(I);
-                        Print Tab(17); Using "### ###   ### ###"; B4%(I) * 5 + 25; B5%(I); B7%(I); B8%(I)
+                        Print I; " "; statsA7$(I);
+                        Print Tab(17); Using "### ###   ### ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
                         Locate I + 4, 41
                         Print I; " "; C7$(I);
                         Print Tab(57); Using "### ###   ### ###"; D4%(I) * 5 + 25; D5%(I); D7%(I); D8%(I)
@@ -1189,11 +1189,11 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 1
 
-                        A7$(P) = C7$(P1)
-                        B4%(P) = D4%(P1)
-                        B5%(P) = D5%(P1)
-                        B7%(P) = D7%(P1)
-                        B8%(P) = D8%(P1)
+                        statsA7$(P) = C7$(P1)
+                        careerB4%(P) = D4%(P1)
+                        careerB5%(P) = D5%(P1)
+                        careerB7%(P) = D7%(P1)
+                        careerB8%(P) = D8%(P1)
 
                     End If
 

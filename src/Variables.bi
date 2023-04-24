@@ -32,7 +32,6 @@ Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 '----------------------------------------
 ' Used across multiple routines
 '----------------------------------------
-
 Dim A1$(9), A2$(5), A3$(4), A4$(2), A5$(2), A6$(3), A7$(1)
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
 Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
@@ -58,7 +57,6 @@ Dim Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 '----------------------------------------
 ' Used across CAREER routines
 '----------------------------------------
-
 Dim A0%(9), A1%(9), A2%(15), A3%(9), A4%(5)
 Dim A5%(5), A6%(0 To 3), A7%(3), A8%(3), A9%(2)
 Dim B%(2), B1%(2), B2%(2), B3%(1), B4%(1)
@@ -104,22 +102,22 @@ Dim H1$(30)
 Dim TR$(10, 20)
 
 Dim BRC$(50, 2), compZ1$(60), compZ2$(240), compZ3$(240)
-'Dim KR$(3), compPK$(2)
+Dim KR$(3), compPK$(2)
 Dim N2$(240), N3$(240), NT$(10, 20)
 Dim PR$(3), PS$(10), PT$(1200), QB$(4), RB$(10)
-'Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
+Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
 
 Dim DT!(38), TT!(10, 20, 9)
 
 Dim BRC!(50), compZ1!(240, 2) ', DT!(38)
 Dim EA!(2), EM!(2), EP!(2)
-'Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
+Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
 Dim QB!(11, 11), RB!(11, 11)
-'Dim TD!(16), TG!(16), TP!(18), TRC!(50)
-'Dim WR!(16, 13), YD!(16)
+Dim TD!(16), TG!(16), TP!(18), TRC!(50)
+Dim WR!(16, 13), YD!(16)
 
 Dim AP%(1, 120), APR%(1, 120)
 
@@ -140,7 +138,6 @@ Dim FI$(9), FS$(14)
 ' Used across NEWLDR.BAS,
 '   LOOKY.BAS routines
 '----------------------------------------
-
 Dim GL, JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 Dim PW, SS, TMR, TS
 
@@ -195,59 +192,6 @@ Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
 
 
 '----------------------------------------
-'      Used across REC.BAS routines
-'----------------------------------------
-'TP$() = individual record categories
-'TP1$() = team record categories
-Dim TP$(46), TP1$(43)
-
-Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING TOUCHDOWNS,RUSHING AVERAGE,LONGEST RUN
-Data RECEPTIONS,RECEIVING YARDS,RECEIVING TOUCHDOWNS,RECEIVING AVERAGE,LONGEST CATCH
-Data PASS ATTEMPTS,PASS COMPLETIONS,PASSING TOUCHDOWNS,HAD INTERCEPTED,PASSING YARDS
-Data COMPLETION PCT.,PASSER RATING,LONGEST PASS,TOTAL YARDS,SCORING (NON-KICKER)
-Data SCORING (KICKERS),TOTAL SCORING,KICKOFF RETURNS,KICKOFF YARDS,KICKOFF TOUCHDOWNS
-Data KICKOFF RETURN AVERAGE,LONGEST KO RETURN,PUNT RETURNS,PUNT RETURN YARDS
-Data PUNT RETURN TOUCHDOWNS,PUNT RETURN AVERAGE,LONGEST PUNT RETURN,PUNTS
-Data PUNTING YARDS,PUNTING AVERAGE,FIELD GOALS MADE,FIELD GOALS ATTEMPTED
-Data FIELD GOAL %,LONGEST FIELD GOAL,POINT AFTER MADE,POINT AFTER ATTEMPTS,PAT%
-Data INTERCEPTIONS,INTERCEPTION YARDS,INTERCEPTION TD'S,LONGEST INTERCEPTION
-
-For I = 0 To 45: Read TP$(I): Next
-
-Data YARDS/GAME,TOTAL YARDS,GAIN/PLAY,RUSHING YARDS/GAME,TOTAL RUSHING
-Data GAIN/RUSH,PASSING YARDS/GAME,PASSING YARDS,YARDS/ATTEMPT
-Data YARDS/COMPLETION,COMPLETION PCT.,INTERCEPTION PCT.,POINTS SCORED
-Data POINTS/GAME,MARGIN OF VICTORY,PUNTING AVERAGE,PUNT RETURN AVG
-Data KICKOFF RETURN AVG,FIRST DOWNS,FIRST DOWNS/GAME,MOST FUMBLES
-Data MOST FUMBLES LOST,FEWEST FUMBLES LOST,PENALTIES/GAME,PENALTY YARDS/GAME
-Data YARDS/GAME,YARDS ALLOWED,YARDS/PLAY,MOST YARDS/GAME
-Data RUSHING YARDS/GAME,RUSHING YARDS,GAIN/RUSH,PASSING YARDS/GAME
-Data PASSING YARDS,YARDS/ATTEMPT,YARDS/COMPLETION,COMPLETION PCT.
-Data INTERCEPTION PCT.,POINTS ALLOWED,POINTS/GAME,MOST POINTS ALLOWED
-Data MOST PTS ALLOWED/GAME,PUNT RET AVERAGE,KICKOFF RET AVERAGE
-
-For I = 0 To 43: Read TP1$(I): Next
-
-
-Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,RUSING TOUCHDOWNS,LONGEST RUN
-Data RECEPTIONS,RECEIVING YARDS,RECEIVING AVERAGE,RECEIVING TOUCHDOWNS,LONGEST RECEPTION
-Data PASS ATTEMPTS,PASS COMPLETIONS,INTERCEPTIONS,PASSING YARDS,TOUCHDOWN PASSES,COMPLETION PERCENTAGE,AVERAGE YDS/COMP.,QUARTERBACK RATING,LONGEST PASS
-Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF Return
-Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT Return
-
-Data PUNTS,PUNTING YARDS,AVERAGE PER PUNT
-Data F.G.'s MADE,F.G. ATTEMPES,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST FIELD GOAL
-Data INTERCEPTIONS,SACKS
-Data NON-KICKERS,KICKERS,ALL PLAYERS
-Data FIRST DOWNS,RUSH ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,PASSING YARDS,TOTAL YARDS,PASS COMPLETION PCT.,FUMBLES,FUMBLES LOST,INTERCEPTIONS THROWN,TURNOVER RATIO,PENALTIES,PENALTY YARDAGE,SACKS ALLOWED,SACK YARDAGE
-Data OPP. FIRST DOWNS,OPP. RUSH ATTEMPTS,OPP. RUSHING YARDS,OPP. RUSHING AVERAGE,OPP. PASSING YARDS,OPP. TOTAL YARDS,OPP. PASS COMPLETION PCT.,OPP. FUMBLES,OPP. FUMBLES RECOVERED,INTERCEPTIONS,OPP. PENALTIES,OPP. PENALTY YARDAGE,SACKS
-Data SACK YARDAGE LOST,ALL-PURPOSE YARDS
-
-For I = 0 To 73: Read expCategories$(I): Next
-
-
-
-'----------------------------------------
 ' Used across SCHEDULE.BAS routines
 '----------------------------------------
 Dim BS%, NS%
@@ -260,23 +204,15 @@ Dim scheduleAP%(1), scheduleL%(13)
 Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
 Dim scheduleQB_V$(20), scheduleQB_H$(20)
 Dim scheduleYN$(MAX_GAMES, 1)
-scheduleYN$(0, 0) = ""
-scheduleYN$(0, 1) = ""
 
 Dim MO$(3) ', Z1$(40), Z2$(40)
 
 Dim E%(13)
 
-MO$(0) = "HH"
-MO$(1) = "C1"
-MO$(2) = "C2"
-MO$(3) = "CC"
-
 
 '----------------------------------------
 ' Used across TRADE.BAS routines
 '----------------------------------------
-
 Dim tradeA1$(2, 9), tradeA2$(2, 6), tradeA3$(2, 4), tradeA4$(2, 3)
 Dim tradeA5$(2, 3), tradeA6$(2, 3), tradeA7$(1, 1)
 Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
@@ -310,3 +246,53 @@ Dim L!(60), LD!(240), LZ!(240), T!(60), W!(60)
 Dim P$(60), TM$(60) ', TR$(10, 20)
 Dim seePR$(1200), seeT$(60)
 
+
+'----------------------------------------
+' Used across Game Routines
+'----------------------------------------
+Dim scheduleFile$
+
+Dim Shared A$, A1$, A2$, A3$, A4$, A5$, A6$, A7$, AA$, D2$, DI$, DN$, DR$, DS$, DV$
+Dim Shared F$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
+Dim Shared SD$, SITE$, ST$, SX$, U$, U5$, X$, Y8$, Y9$, YN$
+
+Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2), A7$(1, 1)
+Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14), diskPaths$(2)
+Dim Shared G$(3), strG9$(5), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
+Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LO$(2), LP$(1, 3, 1), strLR$(1, 9, 1)
+Dim Shared O$(50), NN$(1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), Q$(203), strQB$(1, 3)
+Dim Shared R$(14), strRB$(1, 17), RP$(30), SD$(3), SITE$(120), SX$(1 To 33, 0 To 1)
+Dim Shared U5$(3), teamNames$(500), strWR$(1, 20), Y$(1), Y8$(3), Y9$(5), YN$(1), YR%(1)
+
+Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP
+Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
+Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT, E, EY
+Dim Shared F2, F8, F9, G, G9, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
+Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW, Q, QB, R1, RP, RY
+Dim Shared S, S2, S3, S6, SN, SY, T, T1, TE, TMT, TP, W5, WE, WS
+Dim Shared X, X1, X2, XD, XE, Y, Y1, Y9, YC, YF, YL, YT, Z1
+
+Dim Shared pbpDelay!
+
+Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9), A9(1, 2)
+Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
+Dim Shared C(50), CRD(120), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
+Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9)
+Dim Shared J6(1), K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
+Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
+Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1), TP(1)
+Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1), Z(38), Z1(38), Z2(13, 17)
+
+Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(0 To 8, 0 To 10), intDI%(1), intDS%(1)
+Dim Shared intG9%(1), GL%(1 To 30, 1 To 2), HB%(1)
+Dim Shared NG%(20), O%(120), PA%(2, 9), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
+Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
+Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14), TE%(1), TF%(1), TeamScore%(120)
+
+Dim Shared teamIndex%(500), V4%(1, 3), WX%(6)
+
+Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, HT%, intI%, intDI%, intDS%
+Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, ST%, SX%, TS%
+Dim Shared W%, WX%, intY8%, intYL%
+
+Dim Shared actualAttendance&

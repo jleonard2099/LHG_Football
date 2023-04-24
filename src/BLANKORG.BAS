@@ -65,7 +65,7 @@ Sub BLANKORG ()
                     Locate 2, 33: Print targetFile$
 
 					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
 						I1$ = GetKeyPress$
 					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -105,7 +105,7 @@ Sub BLANKORG ()
                     Next
 
                     Open diskPaths$(2) + Z4$(X) + ".TMS" For Input As #2
-                    Input #2, LG$, D1$, D2$
+                    Input #2, LG$, div1$, div2$
                     For XW = 1 To 30
                         Input #2, H1$(XW)
                     Next

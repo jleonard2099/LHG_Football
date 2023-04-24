@@ -1,6 +1,6 @@
 Sub SEECOLL ()
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
     _Title "3-in-1 Football - View Conference Stats"
 
@@ -56,7 +56,7 @@ Sub SEECOLL ()
                     Locate 2, 33: Print targetFile$
 
 					Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
 						I$ = GetKeyPress$
 					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -90,10 +90,10 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared P$(), seeT$(), TR$()
+    Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
     3911 '
     targetFile$ = RTrim$(targetFile$)
@@ -102,11 +102,11 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
     WE$ = Left$(WE$, 8)
 
     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-    Input #2, FF$, D1$, D2$
+    Input #2, FF$, div1$, div2$
     Close 2
 
-    D1$ = PadRight(D1$, 8)
-    D2$ = PadRight(D2$, 8)
+    div1$ = PadRight(div1$, 8)
+    div2$ = PadRight(div2$, 8)
 
     Cls
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
@@ -141,21 +141,21 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     For P = 1 To 15:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
-            P$(P) = PadRight$(seeT$(P), 12)
+            seeP$(P) = PadRight$(seeT$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
             If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
@@ -163,7 +163,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
 
                 A$ = Str$(A)
@@ -174,20 +174,20 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
                     A$ = "0" + A$
                 Else
                     A$ = " ." + Right$(A$, 3)
-                    P$(P) = P$(P) + A$
+                    seeP$(P) = seeP$(P) + A$
                 End If
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
-            'P$(P) = P$(P)
+            seeP$(P) = seeP$(P) + A$
+            'seeP$(P) = seeP$(P)
 
         End If
 
@@ -197,36 +197,36 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     For P = 16 To 30:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
-            P$(P) = PadRight$(seeT$(P), 12)
+            seeP$(P) = PadRight$(seeT$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
             If W!(P) + L!(P) > 0 Then A = Int(W!(P) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
 
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 30)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 30)
 
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
-            'P$(P) = P$(P)
+            seeP$(P) = seeP$(P) + A$
+            'seeP$(P) = seeP$(P)
         End If
     Next P
 
@@ -234,28 +234,28 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     For P = 31 To 45:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
-            P$(P) = PadRight$(seeT$(P), 12)
+            seeP$(P) = PadRight$(seeT$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
             If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
 
                 A$ = Str$(A)
@@ -266,20 +266,20 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
                     A$ = "0" + A$
                 Else
                     A$ = " ." + Right$(A$, 3)
-                    P$(P) = P$(P) + A$
+                    seeP$(P) = seeP$(P) + A$
                 End If
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
-            'P$(P) = P$(P)
+            seeP$(P) = seeP$(P) + A$
+            'seeP$(P) = seeP$(P)
         End If
     Next P
 
@@ -287,27 +287,27 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     For P = 46 To 60:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
-            P$(P) = ""
+            seeP$(P) = ""
         Else
-            P$(P) = PadRight$(seeT$(P), 12)
+            seeP$(P) = PadRight$(seeT$(P), 12)
 
             A = Int(W!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 16)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
             A = Int(L!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 20)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
             A = Int(T!(P))
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = PadRight$(P$(P) + A$, 24)
+            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0
             If W!(P) + L!(P) > 0 Then A = Int(W!(P) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
             A = Int(1000 * A + .5)
             If A = 1000 Then
-                P$(P) = P$(P) + "1.000 "
+                seeP$(P) = seeP$(P) + "1.000 "
             Else
 
                 A$ = Str$(A)
@@ -318,20 +318,20 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
                     A$ = "0" + A$
                 Else
                     A$ = " ." + Right$(A$, 3)
-                    P$(P) = P$(P) + A$
+                    seeP$(P) = seeP$(P) + A$
                 End If
             End If
 
-            P$(P) = PadRight$(P$(P), 30)
+            seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
             A$ = Right$("     " + Str$(A), 3)
-            P$(P) = P$(P) + A$
+            seeP$(P) = seeP$(P) + A$
 
             A = PTSA!(P)
             A$ = Right$("     " + Str$(A), 4)
-            P$(P) = P$(P) + A$
-            'P$(P) = P$(P)
+            seeP$(P) = seeP$(P) + A$
+            'seeP$(P) = seeP$(P)
         End If
     Next P
 
@@ -343,7 +343,7 @@ End Sub
 '...explanation...
 Sub StatOptions_Coll (FF$)
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
     Do
 
@@ -436,10 +436,10 @@ Sub StatsToScreen_Coll (FF$)
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared P$(), seeT$(), TR$()
+    Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
 
     Cls
@@ -447,11 +447,11 @@ Sub StatsToScreen_Coll (FF$)
 
     Print FF$ + " OVERALL RECORD"
 
-    If D1$ <> "" Then Print D1$; " DIVISION"
+    If div1$ <> "" Then Print div1$; " DIVISION"
 
     Locate 2, 41
 
-    If D2$ <> "" Then Print D2$; " DIVISION"
+    If div2$ <> "" Then Print div2$; " DIVISION"
 
     Locate , 1
     Color 14
@@ -460,7 +460,7 @@ Sub StatsToScreen_Coll (FF$)
 
     For P = 1 To 15:
 
-        If P$(P) = "" Then
+        If seeP$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P + 3 - RT)
@@ -488,7 +488,7 @@ Sub StatsToScreen_Coll (FF$)
 
     RT = 0
 
-    If D2$ <> "" Then
+    If div2$ <> "" Then
 
         Locate 3, 41
         Color 14: Print "              W   L   T   PCT  PF  PA"
@@ -496,7 +496,7 @@ Sub StatsToScreen_Coll (FF$)
 
         For P = 16 To 30
 
-            If P$(P) = "" Then
+            If seeP$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 12 - RT), 41
@@ -533,11 +533,11 @@ Sub StatsToScreen_Coll (FF$)
     Color 12
     Print FF$ + " CONFERENCE RECORD"
 
-    If D1$ <> "" Then Print D1$; " DIVISION"
+    If div1$ <> "" Then Print div1$; " DIVISION"
 
     Locate 2, 41
 
-    If D2$ <> "" Then Print D2$; " DIVISION"
+    If div2$ <> "" Then Print div2$; " DIVISION"
 
     Locate , 1
     Color 14: Print "              W   L   T   PCT  PF  PA"
@@ -545,7 +545,7 @@ Sub StatsToScreen_Coll (FF$)
 
     For P = 31 To 45
 
-        If P$(P) = "" Then
+        If seeP$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 27 - RT)
@@ -573,14 +573,14 @@ Sub StatsToScreen_Coll (FF$)
 
     RT = 0
 
-    If D2$ <> "" Then
+    If div2$ <> "" Then
 
         Locate 3, 41
         Color 14: Print "              W   L   T   PCT  PF  PA"
         Color 15
 
         For P = 46 To 60
-            If P$(P) = "" Then
+            If seeP$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 42 - RT), 41
@@ -1164,10 +1164,10 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Shared PTSA!(), PTSF!()
     Shared T!(), TT!(), W!()
 
-    Shared P$(), seeT$(), TR$()
+    Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
 	Color 0, 15
 
@@ -1181,12 +1181,12 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
 
     Print #2, FF$ + " OVERALL RECORD"
 
-    If D1$ <> "" Then Print #2, D1$; " DIVISION"
+    If div1$ <> "" Then Print #2, div1$; " DIVISION"
 
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 1 To 15
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3256
             If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3256
@@ -1198,11 +1198,11 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Next
 
     Print #2,
-    If D2$ <> "" Then Print #2, D2$; " DIVISION"
+    If div2$ <> "" Then Print #2, div2$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 16 To 30
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3258
             If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3258
@@ -1216,12 +1216,12 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2,
     Print #2, FF$ + " CONFERENCE RECORD"
 
-    If D1$ <> "" Then Print #2, D1$; " DIVISION"
+    If div1$ <> "" Then Print #2, div1$; " DIVISION"
 
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 31 To 45
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3260
             If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3260
@@ -1233,11 +1233,11 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Next
 
     Print #2,
-    If D2$ <> "" Then Print #2, D2$; " DIVISION"
+    If div2$ <> "" Then Print #2, div2$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 46 To 60
-        If P$(P) <> "" Then
+        If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3262
             If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3262

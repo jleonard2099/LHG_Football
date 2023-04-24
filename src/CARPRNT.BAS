@@ -17,7 +17,7 @@ Sub CARPRNT ()
     Shared careerII!(), careerPP!(), careerTT!(), careerYY!()
     Shared careerRC!()
 
-    Dim GS%(1, 55), GI%(1, 55)
+    Dim statsGS%(1, 55), statsGI%(1, 55)
 
     TMR = 6420
 
@@ -81,7 +81,7 @@ Sub CARPRNT ()
                     Locate 2, 33: Print targetFile$
 					
                     Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
