@@ -1,5 +1,6 @@
+$Debug
 
-Const GAME_VERSION$ = "6.39R"
+Const GAME_VERSION$ = "6.40"
 Const MAX_TEAMS = 500
 Const MAX_GAMES = 1500
 Const MAX_FILES = 10240
@@ -626,7 +627,7 @@ Resume Next ' moves program to code following the error.
 '----------------------------------------
 Sub Main_Menu (menuSelection%)
 
-    Dim A$(1 To 15)
+    'Dim A$(1 To 15)
 
     Do
         Cls

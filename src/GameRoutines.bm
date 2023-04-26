@@ -42,7 +42,7 @@ Sub POSTGAME
 
             If AP%(1) < AP%(0) + AP%(2) Then
                 Kill "GAME82"
-                endOfGames = 1
+                endOfGames% = 1
             Else
 
                 Open "GAME82" For Output As #2
@@ -1827,7 +1827,7 @@ Sub SAVESTATS ()
 
         Close #1
 
-		Print "<<<<<"
+        Print "<<<<<"
         Print
         Print
 

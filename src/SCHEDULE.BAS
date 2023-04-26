@@ -426,7 +426,7 @@ Sub NewSchedule (scheduleFile$)
                 Call FOOTBALL
 
                 '-- This code actually loads a schedule
-                Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = 52
+                Open diskPaths$(0) + scheduleFile$ + ".SCD" For Random As #1 Len = 52
                 Y = LOF(1)
 
                 scheduleAP%(0) = Y / 52

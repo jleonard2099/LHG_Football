@@ -121,6 +121,7 @@ Sub FOOTBALL ()
 
 
     If AP = 1 Then
+
         'Assign settings from schedule / etc.
         pbpDelay! = NG%(4) / 10
         J6(0) = NG%(10)
@@ -484,7 +485,7 @@ Sub FOOTBALL ()
 
         Case 0
             U$ = A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) IS DEEP TO RECEIVE THE KICK"
-            Call PBP 
+            Call PBP
 
         Case 1
             If I1 = 1 Then KN2 = 0
@@ -502,7 +503,7 @@ Sub FOOTBALL ()
         U$ = A4$(D, KN2) + " (" + Str$(Int(B(D, KN2) * 3)) + " AVG) AND " + A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) ARE DEEP"
     End If
 
-    Call PBP 
+    Call PBP
 
     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
         I$ = "0"
@@ -512,7 +513,7 @@ Sub FOOTBALL ()
     Else
 
         U$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + A$(P1)
-        Call PBP 
+        Call PBP
 
         Do
             I$ = GetKeyPress$
@@ -550,7 +551,7 @@ Sub FOOTBALL ()
 
                     U$ = "KICK TAKEN BY " + A4$(P1, I1) + Str$(Int((N - 2 * N) + .5)) + " YDS DEEP IN THE END ZONE"
 
-                    Call PBP 
+                    Call PBP
 
                     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 
@@ -560,7 +561,7 @@ Sub FOOTBALL ()
                     Else
 
                         U$ = "1-DOWN IT 2-RETURN IT"
-                        Call PBP 
+                        Call PBP
                         Do
                             I$ = GetKeyPress$
                         Loop Until I$ = "1" Or I$ = "2"
@@ -596,7 +597,7 @@ Sub FOOTBALL ()
                 Call YARDLINE
 
                 U$ = "KICK TAKEN BY " + A4$(P1, I1) + " AT THE" + Str$(Int(N + .5)) + " YD LINE "
-                Call PBP 
+                Call PBP
 
             End If
 
@@ -675,7 +676,7 @@ Sub FOOTBALL ()
                 End If
 
                 If G + N <= -.05 Then
-                    
+
                     Call CHANGEPOSS
                     Call Touchback
 
@@ -687,13 +688,13 @@ Sub FOOTBALL ()
 
                     K2(P1, I1, 15) = K2(P1, I1, 15) + G
                     F% = 3
-                    
+
                     Call FUMBLE
-                    
+
                     If F9 = 1 Then Call FumblePBP: GoTo 650
 
                     Call AddPossessionTime(4, 7)
-                    
+
                     I = Int(Rnd(1) * 1000) + 1
                     If I >= 960 - PA%(P1, 0) Then Call CLIPPING
 
@@ -701,7 +702,7 @@ Sub FOOTBALL ()
                     Call ADDTIME
 
                     If T <= 0 Then Call ADDTIME: GoTo 3360
-                    
+
                 End If
 
             End If
@@ -744,12 +745,17 @@ Sub FOOTBALL ()
     '           END OF GAME!!!
     '----------------------------------------
 
+    '================================================================================
+    ' Below are all the different GoTo branches for the gameplay
+    ' These have not been worked out into a different flow
+    ' yet for the game's logic.
+    '================================================================================
+
+    '----- NOODLE -----
     'If we can get rid of references
     'to labels in the main game then
     'this can be a formal subroutine
 
-
-    '----- NOODLE -----
     PointsAfterTD:
 
     If G9 = 4 Then
@@ -760,7 +766,7 @@ Sub FOOTBALL ()
 
         U$ = "1-KICK EP 2-GO FOR TWO"
 
-        Call PBP 
+        Call PBP
 
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
 
@@ -836,7 +842,7 @@ Sub FOOTBALL ()
 
     U$ = A7$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
 
-    Call PBP 
+    Call PBP
 
     If I <= B7(P1, Q7%(P1)) Then
 
@@ -844,7 +850,7 @@ Sub FOOTBALL ()
 
         U$ = "THE KICK IS UP..."
 
-        Call PBP 
+        Call PBP
 
         Call MADEPAT
 
@@ -862,7 +868,7 @@ Sub FOOTBALL ()
 
         If I <= 9 Then
             U$ = "KICK IS BLOCKED!!"
-            Call PBP 
+            Call PBP
 
             If G9 <> 1 Then
                 GoTo 6605
@@ -876,23 +882,8 @@ Sub FOOTBALL ()
 
     End If
 
-    Return
+    Return 'For PointsAfterTD "sub"
 
-    '================================================================================
-
-    Errhandler:
-    Open "errlog" For Append As #9
-    Print #9, "Error occurred! " '; Date$; " "; Time$
-    Print #9, "Error #"; Err; "on program file line"; _ErrorLine
-    Print #9, ""
-    Close #9
-    Resume Next ' moves program to code following the error.
-
-    '================================================================================
-    ' Below are all the different GoTo branches for the gameplay
-    ' These have not yet been worked out into a different flow
-    ' yet for the game's logic.
-    '================================================================================
 
     '----- NOODLE -----
 
@@ -907,7 +898,7 @@ Sub FOOTBALL ()
         Call PBPINT
 
         U$ = U$ + A$(D) + " RECOVERS!!"
-        Call PBP 
+        Call PBP
 
         D1 = 1
         Y1 = 10
@@ -938,12 +929,12 @@ Sub FOOTBALL ()
 
                 If returnYards >= 99.99 Then
                     U$ = U$ + Str$(Int((100 - Y) * 10 + .5) / 10) + " YDS "
-                    Call PBP 
+                    Call PBP
                     GoTo 3200
                 Else
                     'returnYards < 99.99
                     U$ = U$ + Str$(Int((G1) * 10 + .5) / 10) + " YDS"
-                    Call PBP 
+                    Call PBP
                     If returnYards <= .01 Then
                         GoTo 3250
                     End If
@@ -960,7 +951,7 @@ Sub FOOTBALL ()
     Else
         'I6 > 50 Then
         U$ = A$(P1) + " RECOVERS!!"
-        Call PBP 
+        Call PBP
 
         I = 50
         O = 1
@@ -1038,7 +1029,7 @@ Sub FOOTBALL ()
 
                         If I$ = "8" Then I$ = "T"
 
-                        If UCase$(I$) = "Q" Then 
+                        If UCase$(I$) = "Q" Then
                             'End
                             'System
                             Exit Sub
@@ -1162,16 +1153,16 @@ Sub FOOTBALL ()
                                     HB%(P9) = 1
 
                                     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND HANDS OFF TO " + A1$(P1, I1)
-                                    Call PBP 
+                                    Call PBP
 
                                     U$ = A1$(P1, I1) + " HAS THE BALL AND WANTS TO THROW!!!"
-                                    Call PBP 
+                                    Call PBP
 
                                     RN = Int(Rnd(1) * 100) + 1
                                     I3 = Int(Rnd(1) * 3)
 
                                     U$ = "HE HAS " + A2$(P1, I3) + " OPEN DOWNFIELD"
-                                    Call PBP 
+                                    Call PBP
 
                                     If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then G = (Int(Rnd(1) * 4) + 4): GoTo 3541
 
@@ -1243,10 +1234,10 @@ Sub FOOTBALL ()
 
                 If XX = 8 Then
                     U$ = A$(P1) + " IS LETTING THE PLAY CLOCK WIND DOWN"
-                    Call PBP 
+                    Call PBP
 
                     U$ = "PENALTY - " + A$(P1) + " - DELAY OF GAME"
-                    Call PBP 
+                    Call PBP
 
                     O = 8
 
@@ -1258,7 +1249,7 @@ Sub FOOTBALL ()
 
                 If (Q = 3 Or Q = 1) And P2 = 16 Or T > 120 And P2 = 16 Then
                     U$ = "CAN ONLY USE LAST 2 MIN. OF EACH HALF"
-                    Call PBP 
+                    Call PBP
                     validPlay% = 0
                 End If
 
@@ -1325,10 +1316,10 @@ Sub FOOTBALL ()
 
         If T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16 Then
             U$ = "THERE'S SOME CONFUSION AT THE LINE OF SCRIMMAGE"
-            Call PBP 
+            Call PBP
 
             U$ = A3$(P1, Q6%(P1)) + " HAS TO CALL TIME OUT TO AVOID DELAY OF GAME"
-            Call PBP 
+            Call PBP
 
             T1(P1) = T1(P1) - 1
             QBN% = 0
@@ -1363,22 +1354,22 @@ Sub FOOTBALL ()
 
             Case 1 To 2 + PA%(P1, 0)
                 U$ = U$ + "OFFENSE... OFFSIDES 5 YARDS ***"
-                Call PBP 
+                Call PBP
                 P = -5
 
             Case 2 + PA%(P1, 0) To 20 + PA%(P1, 0)
                 U$ = U$ + "ILLEGAL PROCEDURE OFFENSE... 5 YARDS ***"
-                Call PBP 
+                Call PBP
                 P = -5
 
             Case 20 + PA%(P1, 0) To 27 + PA%(P1, 0)
                 U$ = U$ + "OFFENSE... DELAY OF GAME 5 YARDS ***"
-                Call PBP 
+                Call PBP
                 P = -5
 
             Case 27 + PA%(P1, 0) To 36 + PA%(P1, 0) + PA%(D, 0)
                 U$ = U$ + "DEFENSE... ENCROACHMENT 5 YARDS ***"
-                Call PBP 
+                Call PBP
                 P = 5
 
         End Select
@@ -1431,7 +1422,7 @@ Sub FOOTBALL ()
                 If RN = 97 And Y <= 98.899 And Y >= 1.101 Then
 
                     U$ = A3$(P1, Q6%(P1)) + " FUMBLES THE SNAP!"
-                    Call PBP 
+                    Call PBP
 
                     G = Int((Rnd(1) * 20) - 10) / 10
 
@@ -1444,7 +1435,7 @@ Sub FOOTBALL ()
                     End If
 
                     U$ = "HE GAINS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                    Call PBP 
+                    Call PBP
 
                     3452 '
                     If E = 1 Then Call GoForTwo
@@ -1483,16 +1474,16 @@ Sub FOOTBALL ()
 
                 If P2 = 9 Then
                     U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
-                    Call PBP 
+                    Call PBP
                     G = -1.0
                     GoTo 3546
                 End If
 
                 If P2 = 5 And Int(Rnd(1) * 100) + 1 = 49 Then
                     U$ = A3$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
-                    Call PBP 
+                    Call PBP
                     G = Int((Rnd(1) * 7) + 6) * -1: X = 4: X1 = 9: I1 = Q6%(P1): U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
-                    Call PBP 
+                    Call PBP
                     If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
 
                     If E = 1 Then Call GoForTwo
@@ -1752,12 +1743,12 @@ Sub FOOTBALL ()
                 End If
 
                 U$ = U$ + " YARDS"
-                Call PBP 
+                Call PBP
 
                 If RV% > 0 Then RV% = 0
 
                 If E = 1 Then F9 = 0: Call GoForTwo
-                
+
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then F9 = 0: GoTo 3200
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
 
@@ -1847,7 +1838,7 @@ Sub FOOTBALL ()
                 End If
 
                 '3699
-                Call PBP 
+                Call PBP
 
                 X = 4
                 R1 = 1
@@ -1938,7 +1929,7 @@ Sub FOOTBALL ()
 
                 Else
                     U$ = A3$(P1, I1) + " IS CHASED FROM THE POCKET"
-                    Call PBP 
+                    Call PBP
                     U$ = "HE IS FORCED TO RUN FOR"
                 End If
 
@@ -1955,7 +1946,7 @@ Sub FOOTBALL ()
 
                 U$ = U$ + " YARDS"
 
-                Call PBP 
+                Call PBP
 
                 If E = 1 Then Call GoForTwo
 
@@ -2060,7 +2051,7 @@ Sub FOOTBALL ()
                         If G > WR(P1, I3) Then strWR$(P1, I3) = "t": WR(P1, I3) = G
                         If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "t": QB(P1, Q6%(P1)) = G
 
-                        Call PBP 
+                        Call PBP
 
                     Else
 
@@ -2084,7 +2075,7 @@ Sub FOOTBALL ()
 
                     End If
 
-                    Call PBP 
+                    Call PBP
 
                     If E = 1 Then F9 = 0: Call GoForTwo
 
@@ -2108,7 +2099,7 @@ Sub FOOTBALL ()
                                 Case 5: U$ = "AND HE'S SHOVED OUT OF BOUNDS"
                             End Select
 
-                            Call PBP 
+                            Call PBP
                             F9 = 0
 
                         End If
@@ -2138,7 +2129,7 @@ Sub FOOTBALL ()
             PR = I1
 
             U$ = A5$(D, PR) + " (" + Str$(Int(B2(D, PR) * 3)) + " AVG) IS DEEP TO RECEIVE"
-            Call PBP 
+            Call PBP
 
             If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
                 I1 = 0
@@ -2188,34 +2179,34 @@ Sub FOOTBALL ()
                     Else
                         U$ = AA$(P1) + " ARE QUICK KICKING!!"
                     End If
-                    Call PBP 
+                    Call PBP
 
                     If (D3 > 6 And I >= 60 And I <= 72) Or (D3 <= 6 And I >= 50 And I <= 56) Then 3840
 
                     U$ = "THE KICK IS UP AND ON ITS WAY"
-                    Call PBP 
+                    Call PBP
 
                     G = G + 2
 
                     Call YARDAGE
 
                     U$ = "KICK BY " + A$(P1) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                    Call PBP 
+                    Call PBP
 
                     K(P1, 7) = K(P1, 7) + 1
 
                     If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then
 
                         K(P1, 8) = K(P1, 8) + 100 - Y
-                        
+
                         If 100 - Y > K(P1, 26) Then K(P1, 26) = 100 - Y
 
                         T = T - 5
                         TP(P1) = TP(P1) + 5
                         K(P1, 27) = K(P1, 27) + 1
-                        
+
                         Call Touchback
-                        
+
                         GoTo 700
                     End If
 
@@ -2231,18 +2222,18 @@ Sub FOOTBALL ()
                     Call AddPossessionTime(4, 7)
 
                     RN = Int(Rnd(1) * 48) + 1
-                    
+
                     If RN <= 11 Or I1 = 1 Then
                         U$ = "THE BALL GOES OUT OF BOUNDS AT THE" + Str$(Int(YL)) + " YARD LINE"
-                        Call PBP 
+                        Call PBP
                     Else
                         If RN <= 20 Or YL <= 15 Then
                             U$ = "THE BALL IS DOWNED AT THE" + Str$(Int(YL)) + " YARD LINE"
-                            Call PBP 
+                            Call PBP
                         Else
                             If D1 = 4 Then
                                 U$ = "A FAIR CATCH IS CALLED AT THE" + Str$(Int(YL)) + " YARD LINE"
-                                Call PBP 
+                                Call PBP
                             End If
                         End If
                     End If
@@ -2312,7 +2303,7 @@ Sub FOOTBALL ()
                 ' *** FAKE PUNT - RUN/PASS ***
                 If choice = 2 Then
                     U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT (YN)"
-                    Call PBP 
+                    Call PBP
 
                     Do
                         I$ = GetKeyPress$
@@ -2327,10 +2318,10 @@ Sub FOOTBALL ()
                     ' *** FAKE W/PASS ***
                     G = 0
                     U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
-                    Call PBP 
-                    
+                    Call PBP
+
                     RN = Int(Rnd(1) * 100) + 1
-                    
+
                     If choice = 0 Then
 
                         Select Case RN
@@ -2339,12 +2330,12 @@ Sub FOOTBALL ()
 
                             Case 37 To 90:
                                 U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP: 
+                                Call PBP:
                                 O = 4: GoTo 3309
 
                             Case 91 To 100:
                                 U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP 
+                                Call PBP
                                 GoTo 3876
                         End Select
 
@@ -2358,13 +2349,13 @@ Sub FOOTBALL ()
 
                             Case 27 To 80:
                                 U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP 
+                                Call PBP
                                 O = 4
                                 GoTo 3309
 
                             Case 81 To 90:
                                 U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP 
+                                Call PBP
                                 GoTo 3876
 
                             Case 91 To 100: G = 100 - Y
@@ -2380,11 +2371,11 @@ Sub FOOTBALL ()
 
                             Case 11 To 80:
                                 U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP 
+                                Call PBP
                                 O = 4: GoTo 3309
                             Case 81 To 100:
                                 U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP 
+                                Call PBP
                                 GoTo 3876
                         End Select
 
@@ -2392,13 +2383,13 @@ Sub FOOTBALL ()
 
                     3878 '
                     U$ = "PASS IS COMPLETE FOR"
-                    
+
                     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
                         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-                        Call PBP 
+                        Call PBP
                     Else
                         U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                        Call PBP 
+                        Call PBP
                     End If
 
                     If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
@@ -2435,13 +2426,13 @@ Sub FOOTBALL ()
 
             PSNAP:
             U$ = A6$(P1, 0) + " WAITS FOR THE SNAP"
-            Call PBP 
+            Call PBP
 
             I5 = Int(Rnd(1) * 300) + 1
 
             If I5 = 12 Then
                 U$ = "THERE'S A BAD SNAP FROM CENTER!!"
-                Call PBP 
+                Call PBP
 
                 G = (Int(Rnd(1) * 14) + 12) * -1
                 '3890 '
@@ -2495,7 +2486,7 @@ Sub FOOTBALL ()
 
                 I5 = Int(Rnd(1) * 100) + 1
 
-                If choice = 1 Then U$ = "THERE'S A HEAVY RUSH!!!": Call PBP 
+                If choice = 1 Then U$ = "THERE'S A HEAVY RUSH!!!": Call PBP
 
                 If choice = 1 And I5 >= 72 And I5 <= 76 Then 3840
 
@@ -2503,11 +2494,11 @@ Sub FOOTBALL ()
                     3846 '
                     U$ = "THERE'S A FLAG ON THE PLAY!!"
 
-                    Call PBP 
+                    Call PBP
 
                     U$ = "ROUGHING THE KICKER !!!...AUTOMATIC FIRST DOWN !!!"
 
-                    Call PBP 
+                    Call PBP
 
                     K(D, 11) = K(D, 11) + 1
                     K(D, 12) = K(D, 12) + 15
@@ -2525,7 +2516,7 @@ Sub FOOTBALL ()
                 End If
 
                 U$ = A6$(P1, 0) + " TAKES THE SNAP"
-                Call PBP 
+                Call PBP
 
                 RN = Int(Rnd(1) * 100) + 1
 
@@ -2549,10 +2540,10 @@ Sub FOOTBALL ()
 
                 End If
 
-                Call PBP 
+                Call PBP
 
                 U$ = "PUNT BY " + A6$(P1, 0) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                Call PBP 
+                Call PBP
 
                 K(P1, 7) = K(P1, 7) + 1
 
@@ -2599,7 +2590,7 @@ Sub FOOTBALL ()
                             End If
                         End If
 
-                        Call PBP 
+                        Call PBP
 
                         13855 '
                         Call CHANGEPOSS
@@ -2642,7 +2633,7 @@ Sub FOOTBALL ()
 
                         If I >= 960 - PA%(P1, 0) Then
                             U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
-                            Call PBP 
+                            Call PBP
 
                             If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
@@ -2694,7 +2685,7 @@ Sub FOOTBALL ()
             '--- distance impacts accuracy
             If Y < 52 + intY8% Then
                 U$ = "NOT IN FIELD GOAL RANGE"
-                Call PBP 
+                Call PBP
                 GoTo 700
             Else
 
@@ -2751,7 +2742,7 @@ Sub FOOTBALL ()
                     4860 ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
                         U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL (YN)"
-                        Call PBP 
+                        Call PBP
                     Else
                         Do
                             I$ = GetKeyPress$
@@ -2766,7 +2757,7 @@ Sub FOOTBALL ()
 
                         4875 ' *** FAKE W/PASS ***
                         U$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS"
-                        Call PBP 
+                        Call PBP
                         G = 0
                         RN = Int(Rnd(1) * 100) + 1
 
@@ -2781,12 +2772,12 @@ Sub FOOTBALL ()
                                         G = Int(Rnd(1) * 20)
                                     Case 21 To 80:
                                         U$ = "THE PASS FALLS INCOMPLETE"
-                                        Call PBP 
+                                        Call PBP
                                         O = 4
                                         passIncomplete% = 1
                                     Case 81 To 90:
                                         U$ = "THE PASS IS INTERCEPTED!"
-                                        Call PBP 
+                                        Call PBP
                                         passIntercepted% = 1
                                     Case 91 To 100:
                                         G = 100 - Y
@@ -2798,13 +2789,13 @@ Sub FOOTBALL ()
                                         G = Int(Rnd(1) * 7) + 6
                                     Case 11 To 80:
                                         U$ = "THE PASS FALLS INCOMPLETE"
-                                        Call PBP 
+                                        Call PBP
                                         O = 4
                                         passIncomplete% = 1
                                         GoTo 3309
                                     Case 81 To 100:
                                         U$ = "THE PASS IS INTERCEPTED!"
-                                        Call PBP 
+                                        Call PBP
                                         passIntercepted% = 1
                                 End Select
 
@@ -2827,11 +2818,11 @@ Sub FOOTBALL ()
 
                             If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
                                 U$ = U$ + " IN THE END ZONE"
-                                Call PBP 
+                                Call PBP
                                 Call Touchback
                             Else
-                                If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP 
-                                If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP 
+                                If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
+                                If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
 
                                 Call CHANGEPOSS
                                 D1 = 1
@@ -2856,11 +2847,11 @@ Sub FOOTBALL ()
 
                                 If G + Y > 99.99 Then
                                     U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-                                    Call PBP 
+                                    Call PBP
                                     GoTo 3200
                                 Else
                                     U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                                    Call PBP 
+                                    Call PBP
                                     O = 5
                                     Y = Y + G
                                     Y1 = 10
@@ -2887,7 +2878,7 @@ Sub FOOTBALL ()
                                     U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                                 End If
 
-                                Call PBP 
+                                Call PBP
 
                                 If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
                                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then 3200
@@ -2973,14 +2964,14 @@ Sub FOOTBALL ()
             If G9 <> 0 Then
                 K(D, 12) = K(D, 12) + 100 - Y - 1
                 U$ = U$ + " IN THE END ZONE"
-                Call PBP 
+                Call PBP
 
                 Y = 99
                 Y1 = 1
             Else
                 K(D, 12) = K(D, 12) + 100 - Y - 2
                 U$ = U$ + " IN THE END ZONE"
-                Call PBP 
+                Call PBP
 
                 Y = 98
                 Y1 = 2
@@ -2998,7 +2989,7 @@ Sub FOOTBALL ()
             End If
 
             U$ = U$ + " YARD LINE"
-            Call PBP 
+            Call PBP
             Y = Y + G
             Y1 = 10
 
@@ -3047,7 +3038,7 @@ Sub FOOTBALL ()
         U$ = "T O U C H D O W N !!! " + AA$(P1)
     End If
 
-    Call PBP 
+    Call PBP
     Call SCORE
     Call COMPILER
 
@@ -3130,7 +3121,7 @@ Sub FOOTBALL ()
     U3 = 0
     U$ = "S A F E T Y  !!!"
 
-    Call PBP 
+    Call PBP
 
     Call DisplayField
 
@@ -3176,7 +3167,7 @@ Sub FOOTBALL ()
         Select Case I
             Case 1
                 U$ = U$ + "OFF PERSONAL FOUL - 15 YARDS"
-                Call PBP 
+                Call PBP
 
                 K(P1, 11) = K(P1, 11) + 1
 
@@ -3192,7 +3183,7 @@ Sub FOOTBALL ()
 
             Case 2 To 6
                 U$ = U$ + "DEF PERSONAL FOUL - 15 YARDS"
-                Call PBP 
+                Call PBP
 
                 K(D, 11) = K(D, 11) + 1
 
@@ -3210,7 +3201,7 @@ Sub FOOTBALL ()
 
             Case 7 To 9
                 U$ = U$ + "DEF INCIDENTAL FACEMASK - 5 YARDS"
-                Call PBP 
+                Call PBP
 
                 K(D, 11) = K(D, 11) + 1
 
@@ -3228,7 +3219,7 @@ Sub FOOTBALL ()
 
             Case 10
                 U$ = U$ + "DEF FLAGRANT FACEMASK - 15 YARDS 1ST DOWN!"
-                Call PBP 
+                Call PBP
 
                 K(D, 11) = K(D, 11) + 1
 
@@ -3349,7 +3340,7 @@ Sub FOOTBALL ()
     HL% = 0
 
     U$ = U$ + " 1-ACCEPT 2-DECLINE "
-    Call PBP 
+    Call PBP
 
     If J6(0) <> 0 Then
 
@@ -3394,7 +3385,7 @@ Sub FOOTBALL ()
 
         U$ = "PENALTY DECLINED"
 
-        Call PBP 
+        Call PBP
         Call COMPILER
 
         IH = 0
@@ -3433,7 +3424,7 @@ Sub FOOTBALL ()
 
     3325 If G9 = 0 And Y9 = 0 Then O = 1
     U$ = "PENALTY ACCEPTED"
-    Call PBP 
+    Call PBP
 
     If P > 0 Then 3330
 
@@ -3577,7 +3568,7 @@ Sub FOOTBALL ()
             '3362
             Call SCOREBOARD
             U$ = "END OF QUARTER"
-            Call PBP 
+            Call PBP
 
             GoTo 700
 
@@ -3585,7 +3576,7 @@ Sub FOOTBALL ()
             '3363
             Call SCOREBOARD
             U$ = "HALF TIME"
-            Call PBP 
+            Call PBP
 
             W% = 1 - W%
 
@@ -3764,7 +3755,7 @@ Sub FOOTBALL ()
 
                 U$ = "END OF GAME"
 
-                Call PBP 
+                Call PBP
 
                 'Call DECIDE
 
@@ -3896,15 +3887,14 @@ Sub FOOTBALL ()
                 SPECIAL% = 0
 
                 If AP = 1 Then
-                    'Close #7
-                    'Close #5
+
                     Call POSTGAME
 
-                    If endOfGames% = 1 Or gameOver% = 1 Then
-                        Exit Sub
-                    Else
+                    If Not (endOfGames% = 1 Or gameOver% = 1) Then
                         Call FOOTBALL
                     End If
+
+                    Exit Sub
 
                 Else
                     endOfGames% = 1
@@ -3941,7 +3931,7 @@ Sub FOOTBALL ()
 
     If E = 1 Then
         U$ = U$ + " IN THE END ZONE"
-        Call PBP 
+        Call PBP
 
         GoTo 6605
 
@@ -3963,15 +3953,15 @@ Sub FOOTBALL ()
 
     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
         U$ = U$ + " IN THE END ZONE"
-        Call PBP 
+        Call PBP
         'College overtime
         If NG%(14) = 3 And Q > 4 Then 3364
         Call Touchback
         GoTo 700
     End If
 
-    If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP 
-    If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP 
+    If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
+    If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
 
     Call CHANGEPOSS
 
@@ -4002,12 +3992,12 @@ Sub FOOTBALL ()
         SI(P1, Z1, 1) = SI(P1, Z1, 1) + 100 - Y
         SI(P1, Z1, 2) = SI(P1, Z1, 2) + 1
         If 100 - Y > IR(P1, Z1) Then strIR$(P1, Z1) = "t": IR(P1, Z1) = 100 - Y
-        Call PBP 
+        Call PBP
         GoTo 3200
     End If
 
     U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-    Call PBP 
+    Call PBP
 
     O = 5
     Y = Y + G
@@ -4031,7 +4021,7 @@ Sub FOOTBALL ()
     If I > 950 - PA%(P1, 0) Then
 
         U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
-        Call PBP 
+        Call PBP
 
         If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
@@ -4058,7 +4048,7 @@ Sub FOOTBALL ()
             If T > 120.01 And Q <> 1 And Q <> 3 And Not (T > 159.99 And O = 0) And Not (T > 147 And O = 1) And Not (T > 142 And O = 2) And Not (T > 137 And O = 3) And Not (T > 126 And O = 4) And Not (T > 128 And O = 5) And Not (T > 130 And O = 6) And Not (T > 132 And O = 7) Then
 
                 U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
-                Call PBP 
+                Call PBP
 
                 If T <= 126.01 And T >= 120.99 Then T = T - 6: TP(P1) = TP(P1) + 6
 
@@ -4084,16 +4074,16 @@ Sub FOOTBALL ()
 
                     Case 1:
                         U$ = "HUDDLE"
-                        Call PBP 
+                        Call PBP
 
                     Case 2:
                         If T1(P1) = 0 Then
                             'If no timeouts
                             U$ = "HUDDLE"
-                            Call PBP 
+                            Call PBP
                         Else
                             U$ = "TIME OUT " + A$(P1) + " - THEY HAVE" + Str$(T1(P1) - 1) + " REMAINING"
-                            Call PBP 
+                            Call PBP
                             T1(P1) = T1(P1) - 1
                             O = 9
 
@@ -4110,10 +4100,10 @@ Sub FOOTBALL ()
                         If T1(D) = 0 Then
                             'If no timeouts
                             U$ = "HUDDLE"
-                            Call PBP 
+                            Call PBP
                         Else
                             U$ = "TIME OUT " + A$(D) + " - THEY HAVE" + Str$(T1(D) - 1) + " REMAINING"
-                            Call PBP 
+                            Call PBP
                             T1(D) = T1(D) - 1
                             O = 9
 
@@ -4128,17 +4118,17 @@ Sub FOOTBALL ()
                     Case 4
                         If O = 0 Or O = 1 Then
                             U$ = "HURRY UP"
-                            Call PBP 
+                            Call PBP
                             O = O + 2
                         End If
 
                     Case 5
                         U$ = A3$(P1, Q6%(P1)) + " IS TRYING TO GET THE TEAM LINED UP"
-                        Call PBP 
+                        Call PBP
 
                         O = 3
                         U$ = "HE STEPS BACK AND THROWS IT OUT OF BOUNDS"
-                        Call PBP 
+                        Call PBP
 
                         K(P1, 3) = K(P1, 3) + 1
                         K2(P1, Q6%(P1), 9) = K2(P1, Q6%(P1), 9) + 1
@@ -4193,20 +4183,20 @@ Sub FOOTBALL ()
     End If
 
     U$ = A7$(P1, Q7%(P1)) + " TROTS ON TO TRY A FIELD GOAL"
-    Call PBP 
+    Call PBP
 
     U$ = "THIS WILL BE A" + Str$(Int(117 + intY8% - Y + .5)) + " YARD ATTEMPT"
-    Call PBP 
+    Call PBP
 
     U$ = "HE WAITS FOR THE SNAP"
-    Call PBP 
+    Call PBP
 
     I5 = Int(Rnd(1) * 300) + 1
 
     If I5 = 12 Then
 
         U$ = "THERE'S A BAD SNAP FROM CENTER!!"
-        Call PBP 
+        Call PBP
         G = (Int(Rnd(1) * 9) + 6) * -1
 
         3890 '
@@ -4268,7 +4258,7 @@ Sub FOOTBALL ()
             3640 '
             K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
             U$ = "KICK IS BLOCKED!!!"
-            Call PBP 
+            Call PBP
 
             Call AddPossessionTime(4, 7)
 
@@ -4289,7 +4279,7 @@ Sub FOOTBALL ()
                     U$ = AA$(P1) + " RECOVER IT IN THE END ZONE!!"
                 End If
 
-                Call PBP 
+                Call PBP
 
                 X1 = 6
 
@@ -4329,7 +4319,7 @@ Sub FOOTBALL ()
                         U$ = AA$(P1) + " TAKE IT INTO THE END ZONE!!"
                     End If
 
-                    Call PBP 
+                    Call PBP
 
                     X1 = 6
 
@@ -4344,7 +4334,7 @@ Sub FOOTBALL ()
         K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
 
         U$ = "THE KICK IS UP AND ON ITS WAY"
-        Call PBP 
+        Call PBP
 
         If WX%(0) <> P1 Then
             F2 = F2 - Int(Rnd(1) * 7) + 3 - WX%(1)
@@ -4359,9 +4349,9 @@ Sub FOOTBALL ()
             K2(P1, 3 + Q7%(P1) * 4, 17) = K2(P1, 3 + Q7%(P1) * 4, 17) + 1
             X1 = 8
             I1 = Q7%(P1)
-            
+
             Call SCORE
-            
+
             D1 = 1
             Y1 = 10
             S(P1, 0) = S(P1, 0) + 3
@@ -4422,7 +4412,7 @@ Sub FOOTBALL ()
     K(P1, 28) = K(P1, 28) + 1
     U$ = "KICK IS BLOCKED!!!"
 
-    Call PBP 
+    Call PBP
 
     Call AddPossessionTime(4, 7)
 
@@ -4437,7 +4427,7 @@ Sub FOOTBALL ()
         Call CHANGEPOSS
 
         U$ = A$(P1) + " RECOVERS IT IN THE END ZONE!!"
-        Call PBP 
+        Call PBP
 
         X1 = 6
         GoTo 3200
@@ -4455,7 +4445,7 @@ Sub FOOTBALL ()
         Call MOVEBALL
 
         U$ = A$(P1) + " TAKES THE BALL INTO THE END ZONE!!"
-        Call PBP 
+        Call PBP
 
         X1 = 6
 
@@ -4498,12 +4488,12 @@ Sub FOOTBALL ()
 
     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
         U$ = U$ + " IN THE END ZONE"
-        Call PBP 
+        Call PBP
         Call Touchback
     Else
 
-        If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP 
-        If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP 
+        If G + Y > 49.99 Then U$ = U$ + " AT THE " + Str$(Int(100 - G - Y)) + " YARD LINE": Call PBP
+        If G + Y < 49.99 Then U$ = U$ + " AT THE " + Str$(Int(G + Y)) + " YARD LINE": Call PBP
 
         Call CHANGEPOSS
 
@@ -4532,13 +4522,13 @@ Sub FOOTBALL ()
         If G + Y > 99.99 Then
 
             U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-            Call PBP 
+            Call PBP
             GoTo 3200
 
         Else
 
             U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-            Call PBP 
+            Call PBP
 
             O = 5
             Y = Y + G
@@ -4587,13 +4577,13 @@ Sub FOOTBALL ()
     If G + Y > 99.99 Then
 
         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-        Call PBP 
+        Call PBP
 
         S(P1, Q) = S(P1, Q) + 2
         S(P1, 0) = S(P1, 0) + 2
 
         U$ = "GOOD FOR 2 POINTS!!"
-        Call PBP 
+        Call PBP
 
         Call DisplayField
         Call SCORE
@@ -4601,7 +4591,7 @@ Sub FOOTBALL ()
     Else
 
         U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-        Call PBP 
+        Call PBP
 
     End If
 
@@ -4621,6 +4611,7 @@ Sub FOOTBALL ()
     Call TICKER
 
     If HT% = 1 Then
+
         HT% = 0
 
         'PAH
@@ -4636,15 +4627,17 @@ Sub FOOTBALL ()
         GoTo 330
 
     Else
+
         If endOfGames% = 1 Then
-            endOfGames% = 0
             'Close #7
             'Close #5
             Call POSTGAME
+            'Exit Sub
+        Else
+            GoTo 700
         End If
-    End If
 
-    GoTo 700
+    End If
 
 
 End Sub
@@ -4665,23 +4658,23 @@ Sub InitVar ()
     If G9 <> 0 Then
         For I = 1 To 10
             If Left$(D$(I), 3) = "5-2" Then D$(I) = "3-4" + Right$(D$(I), Len(D$(I)) - 3)
-            If Left$(div2$(I), 3) = "5-2" Then div2$(I) = "3-4" + Right$(div2$(I), Len(div2$(I)) - 3)
+            If Left$(D2$(I), 3) = "5-2" Then D2$(I) = "3-4" + Right$(D2$(I), Len(D2$(I)) - 3)
         Next
     End If
 
-    For J1 = 1 To 15: 
-        div2$(J1) = D$(J1)
+    For J1 = 1 To 15:
+        D2$(J1) = D$(J1)
     Next
 
-    For J1 = 12 To 15: 
-        div2$(J1) = div2$(J1 - 7)
+    For J1 = 12 To 15:
+        D2$(J1) = D2$(J1 - 7)
     Next
 
-    div2$(5) = div2$(9)
-    div2$(6) = div2$(10)
+    D2$(5) = D2$(9)
+    D2$(6) = D2$(10)
 
-    For J1 = 12 To 15: 
-        div2$(J1 - 5) = div2$(J1)
+    For J1 = 12 To 15:
+        D2$(J1 - 5) = D2$(J1)
     Next
     '-- Does this really belong here???
 
@@ -4721,7 +4714,7 @@ Sub InitVar ()
     U5$(3) = "COMPUTER VS COMPUTER     "
 
     strG9$(0) = "PLAY USING COLLEGE RULES"
-    strG9$(1) = "PLAY USING NFL RULEDS    "
+    strG9$(1) = "PLAY USING NFL RULES    "
     strG9$(2) = "PLAY USING USFL RULES   "
     strG9$(3) = "PLAY USING AFL RULES    "
     strG9$(4) = "PLAY USING WFL RULES    "
@@ -4908,9 +4901,10 @@ Sub InitVar ()
     intYL% = 0
 
     actualAttendance& = 0
+    endOfGames% = 0
 
     Erase A$, A1$, A2$, A3$, A4$, A5$, A6$, A7$
-    Erase AA$, B$, div2$, DI$, DS$, diskPaths$
+    Erase AA$, B$, DI$, DS$, diskPaths$
     Erase H$, HO$, strIR$, strKR$
     Erase strLC$, LF$, LI$, LK$, LP$, strLR$
     Erase NN$, PK$, strPR$, Q$, strQB$
@@ -4935,3 +4929,4 @@ Sub InitVar ()
     Erase teamIndex%, V4%
 
 End Sub
+
