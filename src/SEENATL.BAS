@@ -59,7 +59,7 @@ Sub SEENATL ()
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -75,8 +75,8 @@ Sub SEENATL ()
                 WE$ = Left$(targetFile$, Len(targetFile$) - 4)
                 WE$ = Left$(WE$, 8)
 
-                Call LoadLeaderFiles_Natl(FF$, D1$, D2$, WE$, NRT)
-                Call StatOptions_Natl(FF$, D1$, D2$, NRT)
+                Call LoadLeaderFiles_Natl(FF$, div1$, div2$, WE$, NRT)
+                Call StatOptions_Natl(FF$, div1$, div2$, NRT)
 
             End If
 
@@ -91,7 +91,7 @@ End Sub
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Natl (FF$, D1$, D2$, WE$, NRT)
+Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, WE$, NRT)
 
     Shared L!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
@@ -144,7 +144,7 @@ End Sub
 '      StatOptions_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatOptions_Natl (FF$, D1$, D2$, NRT)
+Sub StatOptions_Natl (FF$, div1$, div2$, NRT)
 
     Do
         Cls
@@ -188,13 +188,13 @@ Sub StatOptions_Natl (FF$, D1$, D2$, NRT)
             Case "F":
                 X1 = 1
                 Call StatFilePrompt_Natl(SF$)
-                Call StatsToFile_Natl(SF$, FF$, D1$, D2$, X1, NRT)
+                Call StatsToFile_Natl(SF$, FF$, div1$, div2$, X1, NRT)
 
             Case "P":
-                Call StatsToFile_Natl(SF$, FF$, D1$, D2$, X1, NRT)
+                Call StatsToFile_Natl(SF$, FF$, div1$, div2$, X1, NRT)
 
             Case "S":
-                Call StatsToScreen_Natl(FF$, D1$, D2$, NRT)
+                Call StatsToScreen_Natl(FF$, div1$, div2$, NRT)
         End Select
 
         Cls
@@ -232,7 +232,7 @@ End Sub
 '     StatsToScreen_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Natl (FF$, D1$, D2$, NRT)
+Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
 
     Shared LD!(), LZ!(), PT!()
     Shared T!(), TT!()
@@ -822,7 +822,7 @@ End Sub
 '     StatsToFile_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Natl (statFile$, FF$, D1$, D2$, X1, NRT)
+Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
 
     Shared LZ!(), PT!()
     Shared T!(), TT!()

@@ -101,7 +101,7 @@ End Sub
 '...explanation...
 Sub ViewRecords ()
 
-    Shared A$(), BRC$()
+    Shared statsA$(), BRC$()
     Shared TP$(), TP1$(), TRC$()
     Shared BRC!(), TRC!()
 
@@ -370,7 +370,7 @@ End Sub
 '...explanation...
 Sub PrintRecords ()
 
-    Shared A$(), BRC$()
+    Shared statsA$(), BRC$()
     Shared TP$(), TP1$(), TRC$()
     Shared BRC!(), TRC!()
 

@@ -42,7 +42,7 @@ Sub POSTGAME
 
             If AP%(1) < AP%(0) + AP%(2) Then
                 Kill "GAME82"
-                endOfGames = 1
+                endOfGames% = 1
             Else
 
                 Open "GAME82" For Output As #2
@@ -64,12 +64,6 @@ Sub POSTGAME
             Cls
         End If
 
-    End If
-
-    If endOfGames% = 1 Or gameOver% = 1 Then
-        Run "HELLO.EXE"
-    Else
-        Run "FOOTBALL.EXE"
     End If
 
 End Sub
@@ -185,10 +179,10 @@ End Sub
 
 
 '------------------------------
-'      BOXDRAW Subroutine
+'      GAME_BOXDRAW Subroutine
 '------------------------------
 ' ...explanation...
-Sub BOXDRAW (J)
+Sub GAME_BOXDRAW (J)
 
     PCopy 0, 1
 
@@ -227,7 +221,7 @@ Sub KICKER ()
     Cls
 
     J = 10
-    Call BOXDRAW(J)
+    Call GAME_BOXDRAW(J)
 
     Locate , 31: Print "SELECT KICKER": Print
     Locate , 18
@@ -806,7 +800,7 @@ End Sub
 Sub SCOUTREPT ()
 
     J = 13
-    Call BOXDRAW(J)
+    Call GAME_BOXDRAW(J)
     Locate 8, 30: Print "SCOUTING REPORT"
 
     Locate 10, 30
@@ -1833,7 +1827,7 @@ Sub SAVESTATS ()
 
         Close #1
 
-		Print "<<<<<"
+        Print "<<<<<"
         Print
         Print
 
@@ -2486,7 +2480,7 @@ End Sub
 Sub STATS2SCREEN ()
 
     J = 14
-    Call BOXDRAW(J)
+    Call GAME_BOXDRAW(J)
     Locate , 32
     Print "TEAM STATISTICS"
 
@@ -4294,7 +4288,7 @@ Sub SETWEATHER ()
 
         J = 9
 
-        Call BOXDRAW(J)
+        Call GAME_BOXDRAW(J)
 
         Print "WEATHER OPTIONS "
         Locate 12, 14
@@ -4330,7 +4324,7 @@ Sub SETWEATHER ()
         End If
 
         J = 9
-        Call BOXDRAW(J): Print "WIND OPTIONS "
+        Call GAME_BOXDRAW(J): Print "WIND OPTIONS "
         Locate 12, 14
         Locate , 14: Print "0 - NONE"
         Locate , 14: Print "1 - LIGHT TO MODERATE"
@@ -5032,7 +5026,7 @@ Sub KICKOFF ()
 
     Else
         J = 9
-        Call BOXDRAW(J)
+        Call GAME_BOXDRAW(J)
         Print A$(W%); " DO YOU ELECT TO:"
         Locate 12, 14
         Locate , 14: Print "1 - KICK OFF"
@@ -5060,7 +5054,7 @@ Sub KICKOFF ()
         Else
 
             J = 7
-            Call BOXDRAW(J)
+            Call GAME_BOXDRAW(J)
 
             Print A$(1 - W%); " DO YOU ELECT TO:"
             Locate 12, 14
@@ -5095,7 +5089,7 @@ Sub KICKOFF ()
             I1 = 2
         Else
             J = 7
-            Call BOXDRAW(J)
+            Call GAME_BOXDRAW(J)
             Print A$(1 - W%); " DO YOU ELECT TO:"
             Locate 12, 14
             Locate , 14: Print "1 - KICK OFF"
@@ -5137,7 +5131,7 @@ Sub COLKICKOFF ()
         Else
 
             J = 9
-            Call BOXDRAW(J)
+            Call GAME_BOXDRAW(J)
             Print A$(P1); " DO YOU ELECT TO:"
             Locate 12, 14
             Locate , 14: Print "1 - KICK OFF"
@@ -5163,7 +5157,7 @@ Sub COLKICKOFF ()
                     I1 = 1
                 Else
                     J = 7
-                    Call BOXDRAW(J)
+                    Call GAME_BOXDRAW(J)
                     Print A$(D); " DO YOU ELECT TO:"
                     Locate 12, 14
                     Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
@@ -5192,7 +5186,7 @@ Sub COLKICKOFF ()
                     I1 = 2
                 Else
                     J = 7
-                    Call BOXDRAW(J)
+                    Call GAME_BOXDRAW(J)
                     Print A$(P1); " DO YOU ELECT TO:"
 
                     Locate 12, 14
@@ -5967,7 +5961,7 @@ End Sub
 Sub TWOMIN ()
 
     J = 7
-    Call BOXDRAW(J)
+    Call GAME_BOXDRAW(J)
 
     Locate 9, 14: Print "1 - HUDDLE"
     Locate , 14: Print "2 - TIME OUT "; A$(P1); " "; T1(P1)
@@ -7271,7 +7265,7 @@ Sub GetDiskID (I)
             Color 15, 4
 
             Do
-                Locate , 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -7483,3 +7477,4 @@ Function GetTeamYear% (teamName$)
     End If
 
 End Function
+

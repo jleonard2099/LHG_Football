@@ -65,7 +65,7 @@ Sub BLANKPRO ()
                     Locate 2, 33: Print targetFile$
 
                     Do
-						Locate , 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
@@ -90,7 +90,7 @@ Sub BLANKPRO ()
                 If UCase$(I2$) = "Y" Then
 
                     Open diskPaths$(2) + LH$ + ".TMS" For Input As #2
-                    Input #2, LG$, D1$, D2$, D3$
+                    Input #2, LG$, div1$, div2$, div3$
                     For XW = 1 To 30
                         Input #2, H1$(XW)
                     Next

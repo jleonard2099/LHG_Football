@@ -6,14 +6,14 @@ Sub COMPCOLL ()
     Shared H1$()
     Shared TRC$()
 
-    Shared T%()
+    Shared statsT%()
 
     Shared BRC!()
     Shared O1!(), O2!(), O3!()
     Shared PTSA!(), PTSF!()
     Shared TRC!(), TT!()
 
-    Shared D1$, D2$
+    Shared div1$, div2$
 
     _Title "3-in-1 Football - Update Conference Stats"
 
@@ -106,7 +106,7 @@ Sub COMPCOLL ()
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -153,8 +153,8 @@ Sub COMPCOLL ()
 
                 Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
                 Input #2, FF$
-                Input #2, D1$
-                Input #2, D2$
+                Input #2, div1$
+                Input #2, div2$
 
                 For XW = 1 To 30
                     Input #2, H1$(XW)
@@ -181,8 +181,8 @@ Sub COMPCOLL ()
 
                     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
                     Input #2, FF$
-                    Input #2, D1$
-                    Input #2, D2$
+                    Input #2, div1$
+                    Input #2, div2$
 
                     For X = 1 To 30
                         Input #2, compZ1$(X)
@@ -357,13 +357,11 @@ End Sub
 '...explanation...
 Sub FindStatsColl (XW, numberGames%, PTSFC, PTSAC)
 
-    Shared H$(), H1$(), O$()
+    Shared statsH$(), H1$(), compO$()
 
     Shared PTSA!(), PTSF!()
 
-    Shared O%(), T%()
-
-    Dim compAP%(1, 120)
+    Shared compAP%(), statsO%(), statsT%()
 
     If H1$(XW) <> Chr$(42) Then
 
@@ -377,13 +375,13 @@ Sub FindStatsColl (XW, numberGames%, PTSFC, PTSAC)
 
             Input #2, numberGames%
 
-            For I = 1 To 120: Input #2, O%(I): PTSF!(XW) = PTSF!(XW) + O%(I): Next I
+            For I = 1 To 120: Input #2, statsO%(I): PTSF!(XW) = PTSF!(XW) + statsO%(I): Next I
 
-            For I = 1 To 120: Input #2, O$(I): Next I
+            For I = 1 To 120: Input #2, compO$(I): Next I
 
-            For I = 1 To 120: Input #2, T%(I): PTSA!(XW) = PTSA!(XW) + T%(I): Next I
+            For I = 1 To 120: Input #2, statsT%(I): PTSA!(XW) = PTSA!(XW) + statsT%(I): Next I
 
-            For I = 1 To 120: Input #2, H$(I): Next I
+            For I = 1 To 120: Input #2, statsH$(I): Next I
 
             For I = 0 To 1
                 For I1 = 1 To 120
@@ -407,30 +405,30 @@ Sub FindStatsColl (XW, numberGames%, PTSFC, PTSAC)
             For I = 1 To numberGames%
 
                 For P = 4 To 11:
-                    If Mid$(O$(I), P, 1) = " " Or Mid$(O$(I), P, 1) = "." Then Mid$(O$(I), P, 1) = "_"
+                    If Mid$(compO$(I), P, 1) = " " Or Mid$(compO$(I), P, 1) = "." Then Mid$(compO$(I), P, 1) = "_"
                 Next P
 
                 For P = 12 To 14:
-                    If Mid$(O$(I), P, 2) = "ST" Then Mid$(O$(I), 9, 1) = "_": Mid$(O$(I), 10, 2) = "ST"
+                    If Mid$(compO$(I), P, 2) = "ST" Then Mid$(compO$(I), 9, 1) = "_": Mid$(compO$(I), 10, 2) = "ST"
                 Next P
 
                 QQ = 8
                 For P = 11 To 4 Step -1:
-                    If Mid$(O$(I), P, 1) = "_" Then
+                    If Mid$(compO$(I), P, 1) = "_" Then
                         QQ = P - 4
                     Else
                         Exit For
                     End If
                 Next P
 
-                f$ = Mid$(O$(I), 4, QQ): R$ = f$ + "." + Left$(O$(I), 2)
-                O$(I) = R$
+                f$ = Mid$(compO$(I), 4, QQ): R$ = f$ + "." + Left$(compO$(I), 2)
+                compO$(I) = R$
 
                 confGame = 0
 
                 For EC = 1 To 30
 
-                    If O$(I) = H1$(EC) Then
+                    If compO$(I) = H1$(EC) Then
                         confGame = 1
                         Exit For
                     End If
@@ -438,15 +436,15 @@ Sub FindStatsColl (XW, numberGames%, PTSFC, PTSAC)
                 Next EC
 
                 If confGame <> 1 Then
-                    If O%(I) > T%(I) Then fullWins = fullWins + 1
-                    If O%(I) < T%(I) Then fullLosses = fullLosses + 1
-                    If O%(I) = T%(I) Then fullTies = fullTies + 1
+                    If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
+                    If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
+                    If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
                 Else
-                    If O%(I) > T%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                    If O%(I) < T%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                    If O%(I) = T%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
-                    PTSFC = PTSFC + O%(I)
-                    PTSAC = PTSAC + T%(I)
+                    If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                    If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                    If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+                    PTSFC = PTSFC + statsO%(I)
+                    PTSAC = PTSAC + statsT%(I)
                 End If
 
                 EC = 0
@@ -467,16 +465,16 @@ End Sub
 '...explanation...
 Sub ReadStatsColl (XW, numberGames%, TM$)
 
-    Shared PN
+    Shared puntNum
     Shared PU$
 
-    Shared BRC$(), DI$(), DS$(), H1$()
+    Shared BRC$(), statsDI$(), statsDS$(), H1$()
     Shared KR$()
-    Shared LR$(), LC$(), LF$(), LI$(), LK$(), LP$()
+    Shared LR$(), LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$()
     Shared compPK$(), PKR$(), PR$(), QB$()
     Shared RB$(), TB$(), WR$()
 
-    Shared GI%(), GS%()
+    Shared statsGI%(), statsGS%()
 
     Shared AF!(), AM!(), DT!()
     Shared EA!(), EM!(), EP!()
@@ -513,16 +511,16 @@ Sub ReadStatsColl (XW, numberGames%, TM$)
 
     For L = 0 To 38: Input #1, DT!(L): Next L
 
-    For J = 0 To 9: Input #1, DI$(J)
+    For J = 0 To 9: Input #1, statsDI$(J)
         For J1 = 0 To 2
-            Input #1, GI%(J, J1)
+            Input #1, statsGI%(J, J1)
         Next
     Next
 
     For J = 0 To 14:
-        Input #1, DS$(J)
+        Input #1, statsDS$(J)
         For J1 = 0 To 1
-            Input #1, GS%(J, J1)
+            Input #1, statsGS%(J, J1)
         Next
     Next
 
@@ -534,16 +532,16 @@ Sub ReadStatsColl (XW, numberGames%, TM$)
 
     For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
 
-    For I = 0 To 3: Input #1, LP!(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
+    For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
 
-    For I = 0 To 2: Input #1, LK!(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
+    For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
 
     For I = 0 To 2: Input #1, PK!(I): Input #1, PKR$(I, 0): Input #1, PKR$(I, 1): Next
 
     For I = 0 To 1:
 
         Input #1, LF!(I)
-        Input #1, LF$(I)
+        Input #1, statsLF$(I)
 
         For I1 = 0 To 4:
             Input #1, AM!(I, I1)
@@ -554,8 +552,8 @@ Sub ReadStatsColl (XW, numberGames%, TM$)
 
     For I = 0 To 9:
         Input #1, LI!(I)
-        Input #1, LI$(I, 0)
-        Input #1, LI$(I, 1)
+        Input #1, statsLI$(I, 0)
+        Input #1, statsLI$(I, 1)
     Next
 
     Close 1
@@ -699,9 +697,9 @@ Sub ReadStatsColl (XW, numberGames%, TM$)
         End If
     Next
 
-    PN = 0
+    puntNum = 0
 
-    If TG!(8) > 0 Then PN = Int(TG!(9) / TG!(8) * 10) / 10
+    If TG!(8) > 0 Then puntNum = Int(TG!(9) / TG!(8) * 10) / 10
 
     For I = 1 To 2
         FG!(I) = 0
@@ -718,14 +716,14 @@ End Sub
 '...explanation...
 Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 
-    Shared FG, PN
+    Shared FG, puntNum
     Shared PU$
 
     Shared BRC$()
     Shared compPK$(), compZ2$(), compZ3$()
-    Shared DI$(), DS$(), KR$()
-    Shared LC$(), LF$(), LI$(), LK$(), LP$(), LR$()
-    Shared PKR$(), PR$(), PS$()
+    Shared statsDI$(), statsDS$(), KR$()
+    Shared LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared PKR$(), PR$(), compPS$()
     Shared QB$(), RB$(), TB$(), WR$()
 
     Shared BRC!(), compZ1!()
@@ -736,7 +734,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared TG!(), TP!(), WR!(), YD!()
 
-    Shared GI%(), GS%()
+    Shared statsGI%(), statsGS%()
 
     '---------------
     ' Running Backs
@@ -766,7 +764,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 				BRC$(4, 2) = LR$(X - 1, 0)
 			End If
 
-            PS$(X) = WT$
+            compPS$(X) = WT$
 
             For Y = 1 To 20:
 
@@ -1200,7 +1198,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
             If QB!(X, 4) > BRC!(14) Then BRC!(14) = QB!(X, 4): BRC$(14, 0) = QB$(X): BRC$(14, 1) = TM$
             If QB!(X, 6) > BRC!(15) And UCase$(finalUpdate$) = "Y" And QB!(X, 1) >= numberGames% * 15 Then BRC!(15) = QB!(X, 6): BRC$(15, 0) = QB$(X): BRC$(15, 1) = TM$
             If QB!(X, 7) > BRC!(16) And UCase$(finalUpdate$) = "Y" And QB!(X, 1) >= numberGames% * 15 Then BRC!(16) = QB!(X, 7): BRC$(16, 0) = QB$(X): BRC$(16, 1) = TM$
-            If LP!(X - 1) > BRC!(17) Then BRC!(17) = LP!(X - 1): BRC$(17, 0) = QB$(X): BRC$(17, 1) = TM$: BRC$(17, 2) = LP$(X - 1, 0)
+            If LP!(X - 1) > BRC!(17) Then BRC!(17) = LP!(X - 1): BRC$(17, 0) = QB$(X): BRC$(17, 1) = TM$: BRC$(17, 2) = statsLP$(X - 1, 0)
 
             For Y = 121 To 130:
                 If compZ2$(Y) = QB$(X) And compZ3$(Y) = WT$ Then
@@ -1383,7 +1381,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
             If KR!(X, 2) > BRC!(23) Then BRC!(23) = KR!(X, 2): BRC$(23, 0) = KR$(X): BRC$(23, 1) = TM$
             If KR!(X, 3) > BRC!(24) Then BRC!(24) = KR!(X, 3): BRC$(24, 0) = KR$(X): BRC$(24, 1) = TM$
             If KR!(X, 4) > BRC!(25) And UCase$(finalUpdate$) = "Y" And KR!(X, 1) >= numberGames% * 1.2 Then BRC!(25) = KR!(X, 4): BRC$(25, 0) = KR$(X): BRC$(25, 1) = TM$
-            If LK!(X - 1) > BRC!(26) Then BRC!(26) = LK!(X - 1): BRC$(26, 0) = KR$(X): BRC$(26, 1) = TM$: BRC$(26, 2) = LK$(X - 1, 0)
+            If LK!(X - 1) > BRC!(26) Then BRC!(26) = LK!(X - 1): BRC$(26, 0) = KR$(X): BRC$(26, 1) = TM$: BRC$(26, 2) = statsLK$(X - 1, 0)
 
             For Z = 161 To 170
                 If compZ2$(Z) = KR$(X) And compZ3$(Z) = WT$ Then
@@ -1477,19 +1475,19 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 
     If TG!(8) > BRC!(32) Then BRC!(32) = TG!(8): BRC$(32, 0) = PU$: BRC$(32, 1) = TM$
     If TG!(9) > BRC!(33) Then BRC!(33) = TG!(9): BRC$(33, 0) = PU$: BRC$(33, 1) = TM$
-    If PN > BRC!(34) And UCase$(finalUpdate$) = "Y" Then BRC!(34) = PN: BRC$(34, 0) = PU$: BRC$(34, 1) = TM$
+    If puntNum > BRC!(34) And UCase$(finalUpdate$) = "Y" Then BRC!(34) = puntNum: BRC$(34, 0) = PU$: BRC$(34, 1) = TM$
 
     For Z = 181 To 190
         If compZ2$(Z) = PU$ And compZ3$(Z) = WT$ Then
-            compZ1!(Z, 1) = PN
+            compZ1!(Z, 1) = puntNum
             compZ1!(Z, 2) = TG!(8)
             GoTo 3382
         End If
     Next Z
 
-    If PN > compZ1!(190, 1) Then
+    If puntNum > compZ1!(190, 1) Then
 
-        compZ1!(190, 1) = PN
+        compZ1!(190, 1) = puntNum
         compZ2$(190) = PU$
         compZ3$(190) = WT$
         compZ1!(190, 2) = TG!(8)
@@ -1520,7 +1518,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
         If FA!(X) > BRC!(36) Then BRC!(36) = FA!(X): BRC$(36, 0) = compPK$(X): BRC$(36, 1) = TM$
         If FG!(X) > BRC!(37) And UCase$(finalUpdate$) = "Y" Then BRC!(37) = FG!(X): BRC$(37, 0) = compPK$(X): BRC$(37, 1) = TM$
 
-        If LF!(X - 1) > BRC!(38) Then BRC!(38) = LF!(X - 1): BRC$(38, 0) = compPK$(X): BRC$(38, 1) = TM$: BRC$(38, 2) = LF$(X - 1)
+        If LF!(X - 1) > BRC!(38) Then BRC!(38) = LF!(X - 1): BRC$(38, 0) = compPK$(X): BRC$(38, 1) = TM$: BRC$(38, 2) = statsLF$(X - 1)
 
         If EM!(X) > BRC!(39) Then BRC!(39) = EM!(X): BRC$(39, 0) = compPK$(X): BRC$(39, 1) = TM$
         If EA!(X) > BRC!(40) Then BRC!(40) = EA!(X): BRC$(40, 0) = compPK$(X): BRC$(40, 1) = TM$
@@ -1598,32 +1596,32 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 
     For X = 0 To 9
 
-        If Left$(DI$(X), 1) <> " " And DI$(X) <> "" And DI$(X) <> "END" Then
+        If Left$(statsDI$(X), 1) <> " " And statsDI$(X) <> "" And statsDI$(X) <> "END" Then
 
-            If GI%(X, 0) > BRC!(42) Then BRC!(42) = GI%(X, 0): BRC$(42, 0) = DI$(X): BRC$(42, 1) = TM$
-            If GI%(X, 1) > BRC!(43) Then BRC!(43) = GI%(X, 1): BRC$(43, 0) = DI$(X): BRC$(43, 1) = TM$
-            If GI%(X, 2) > BRC!(44) Then BRC!(44) = GI%(X, 2): BRC$(44, 0) = DI$(X): BRC$(44, 1) = TM$
+            If statsGI%(X, 0) > BRC!(42) Then BRC!(42) = statsGI%(X, 0): BRC$(42, 0) = statsDI$(X): BRC$(42, 1) = TM$
+            If statsGI%(X, 1) > BRC!(43) Then BRC!(43) = statsGI%(X, 1): BRC$(43, 0) = statsDI$(X): BRC$(43, 1) = TM$
+            If statsGI%(X, 2) > BRC!(44) Then BRC!(44) = statsGI%(X, 2): BRC$(44, 0) = statsDI$(X): BRC$(44, 1) = TM$
 
             If X > 0 Then
                 If LI!(X - 1) > BRC!(45) Then
                     BRC!(45) = LI!(X - 1)
-                    BRC$(45, 0) = DI$(X)
+                    BRC$(45, 0) = statsDI$(X)
                     BRC$(45, 1) = TM$
-                    BRC$(45, 2) = LI$(X - 1, 0)
+                    BRC$(45, 2) = statsLI$(X - 1, 0)
                 End If
             End If
 
             For Z = 221 To 230
-                If compZ2$(Z) = DI$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = GI%(X, 0)
+                If compZ2$(Z) = statsDI$(X) And compZ3$(Z) = WT$ Then
+                    compZ1!(Z, 1) = statsGI%(X, 0)
                     GoTo 3422
                 End If
             Next Z
 
-            If GI%(X, 0) > compZ1!(230, 1) Then
+            If statsGI%(X, 0) > compZ1!(230, 1) Then
 
-                compZ1!(230, 1) = GI%(X, 0)
-				compZ2$(230) = DI$(X)
+                compZ1!(230, 1) = statsGI%(X, 0)
+				compZ2$(230) = statsDI$(X)
                 compZ3$(230) = WT$
 
                 3422 '
@@ -1650,25 +1648,25 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
 
     For X = 0 To 14
 
-        If Left$(DS$(X), 1) <> " " And DS$(X) <> "" And DS$(X) <> "END" Then
+        If Left$(statsDS$(X), 1) <> " " And statsDS$(X) <> "" And statsDS$(X) <> "END" Then
 
-            If GS%(X, 0) > BRC!(46) Then
-                BRC!(46) = GS%(X, 0)
-                BRC$(46, 0) = DS$(X)
+            If statsGS%(X, 0) > BRC!(46) Then
+                BRC!(46) = statsGS%(X, 0)
+                BRC$(46, 0) = statsDS$(X)
                 BRC$(46, 1) = TM$
             End If
 
             For Z = 231 To 240
-                If compZ2$(Z) = DS$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = GS%(X, 0)
+                If compZ2$(Z) = statsDS$(X) And compZ3$(Z) = WT$ Then
+                    compZ1!(Z, 1) = statsGS%(X, 0)
                     GoTo 3434
                 End If
             Next Z
 
-            If GS%(X, 0) > compZ1!(240, 1) Then
+            If statsGS%(X, 0) > compZ1!(240, 1) Then
 
-                compZ1!(240, 1) = GS%(X, 0)
-                compZ2$(240) = DS$(X)
+                compZ1!(240, 1) = statsGS%(X, 0)
+                compZ2$(240) = statsDS$(X)
                 compZ3$(240) = WT$
 
                 3434 '
@@ -1703,7 +1701,7 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared TRC$(), TT$()
 
-    Shared O%(), T%()
+    Shared statsO%(), statsT%()
 
     Cls
 
@@ -1830,8 +1828,8 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
     OPTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + O%(I)
-        OPTS = OPTS + T%(I)
+        PTS = PTS + statsO%(I)
+        OPTS = OPTS + statsT%(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
@@ -1862,7 +1860,7 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + T%(I)
+        PTS = PTS + statsT%(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$

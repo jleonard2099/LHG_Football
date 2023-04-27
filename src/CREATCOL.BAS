@@ -106,11 +106,11 @@ Sub DefineConference ()
     Color 15, 0
     Print
     Print
-    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; D1$
-    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; D2$
+    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
+    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
 
-    Call ViewConference_Coll(LG$, D1$, D2$)
-    Call SaveConferences(LG$, D1$, D2$)
+    Call ViewConference_Coll(LG$, div1$, div2$)
+    Call SaveConferences(LG$, div1$, div2$)
 
 End Sub
 
@@ -119,21 +119,21 @@ End Sub
 '     SaveConferences Subroutine
 '----------------------------------------
 '...explanation...
-Sub SaveConferences (LG$, D1$, D2$)
+Sub SaveConferences (LG$, div1$, div2$)
 
     Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
+    Shared statsPA%(), statsZ1%()
 
     'Ready to save work
     Open diskPaths$(2) + LG$ + ".LIB" For Output As #2
 
     Print #2, 0
     Print #2, LG$
-    Print #2, D1$
-    Print #2, D2$
+    Print #2, div1$
+    Print #2, div2$
 
     For X = 1 To 30:
-        Print #2, Z1$(X): Print #2, Z1%(X): Print #2, Z2$(X)
+        Print #2, Z1$(X): Print #2, statsZ1%(X): Print #2, Z2$(X)
     Next
 
     Close 2
@@ -173,8 +173,8 @@ Sub SaveConferences (LG$, D1$, D2$)
 
     Open diskPaths$(2) + Q$ For Output As #2
     Write #2, LG$
-    Write #2, D1$
-    Write #2, D2$
+    Write #2, div1$
+    Write #2, div2$
     For X = 1 To 30: Write #2, Z1$(X): Next
     Close 2
 
@@ -185,10 +185,10 @@ End Sub
 '     ViewConference_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub ViewConference_Coll (LG$, D1$, D2$)
+Sub ViewConference_Coll (LG$, div1$, div2$)
 
     Shared Z1$(), Z2$()
-    Shared PA%(), Z1%()
+    Shared statsPA%(), statsZ1%()
 
     Do
 
@@ -198,8 +198,8 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
 
         Print
         Color 15
-        Locate , 6: Print D1$
-        Locate , 53: Print D2$
+        Locate , 6: Print div1$
+        Locate , 53: Print div2$
 
         For I = 1 To 15
             Print Using "  ##"; I;
@@ -264,7 +264,7 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
                     Locate 7, 27: Input NY$
 
                     If NY$ = "" And YN$ <> "" Then
-                        Call SelectTeam_CREATCOL(YN$, NTMS)
+                        Call SelectTeam_CREATCOL(YN$, NTMS, teamNbr)
                     Else
                         YN$ = NY$
                         Erase teamNames$
@@ -292,7 +292,7 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
 
                         TS% = Int((NTMS - 1) / 80)
 
-                        Call SelectTeam_CREATCOL(YN$, NTMS)
+                        Call SelectTeam_CREATCOL(YN$, NTMS, teamNbr)
                     End If
 
                     A$ = Q$(1)
@@ -302,12 +302,12 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
                         BO% = 0
                     Else
                         Locate 2, 33
-                        Color PA%(2), PA%(1): Print A$
+                        Color statsPA%(2), statsPA%(1): Print A$
 
                         Color 15, 4
 
                         Do
-                            Locate , 33: Print "ANY CHANGE (YN)";
+                            Locate 3, 33: Print "ANY CHANGE (YN)";
                             I$ = GetKeyPress$
                         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -318,7 +318,7 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
                 Color 15, 0
                 Z1$(B) = A$
                 Z2$(B) = YN$
-                Z1%(B) = B8%
+                statsZ1%(B) = teamNbr
 
             Else
                 'Delete a team
@@ -330,7 +330,7 @@ Sub ViewConference_Coll (LG$, D1$, D2$)
 
     Loop Until I$ = "3"
 
-    Call SaveConferences(LG$, D1$, D2$)
+    Call SaveConferences(LG$, div1$, div2$)
 
 End Sub
 
@@ -342,7 +342,7 @@ End Sub
 Sub ReviewConf_Coll ()
 
     Shared Z1$(), Z2$()
-    Shared Z1%()
+    Shared statsZ1%()
 
     wrongFormat% = 0
 
@@ -406,7 +406,7 @@ Sub ReviewConf_Coll ()
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -436,12 +436,12 @@ Sub ReviewConf_Coll ()
                 Else
 
                     Input #2, LG$
-                    Input #2, D1$
-                    Input #2, D2$
+                    Input #2, div1$
+                    Input #2, div2$
 
                     For X = 1 To 30:
                         Input #2, Z1$(X)
-                        Input #2, Z1%(X)
+                        Input #2, statsZ1%(X)
                         Input #2, Z2$(X)
                     Next
 
@@ -455,7 +455,7 @@ Sub ReviewConf_Coll ()
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
 
-    Call ViewConference_Coll(LG$, D1$, D2$)
+    Call ViewConference_Coll(LG$, div1$, div2$)
 
 
 End Sub
@@ -464,9 +464,9 @@ End Sub
 '     SelectTeam_CREATCOL Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_CREATCOL (YN$, NTMS)
+Sub SelectTeam_CREATCOL (YN$, NTMS, teamNbr)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = NTMS
@@ -490,16 +490,16 @@ Sub SelectTeam_CREATCOL (YN$, NTMS)
 
     If ExitCode% <> 27 Then
 
-        B8% = teamIndex%(Selection%)
+        teamNbr = teamIndex%(Selection%)
 
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
-        Get #1, B8%
+        Get #1, teamNbr
 
         For I1 = 0 To 4
-            PA%(I1) = CVI(Q$(I1 + 11))
+            statsPA%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
         Close 1

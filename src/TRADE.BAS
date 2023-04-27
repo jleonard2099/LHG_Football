@@ -45,7 +45,7 @@ End Sub
 '...explanation...
 Sub StartTrade ()
 
-    Shared NY$(), YN$()
+    Shared NY$(), tradeYN$()
     Shared S!()
 
     Call TITLE
@@ -66,10 +66,10 @@ Sub StartTrade ()
 
     S!(0) = 0
 
-	Do
-		Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
-		I$ = GetKeyPress$
-	Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+    Do
+        Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
+        I$ = GetKeyPress$
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     If UCase$(I$) = "N" Then
         S!(0) = 1
@@ -89,10 +89,10 @@ Sub StartTrade ()
 
     S!(1) = 0
 
-	Do
-		Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
-		I$ = GetKeyPress$
-	Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+    Do
+        Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
+        I$ = GetKeyPress$
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Call LoadStatsForTrade(1)
 
@@ -199,7 +199,7 @@ End Sub
 '...explanation...
 Sub TradeRBs (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA1$(), tradeLC$(), tradeLR$(), tradeRB$()
 
     Shared S!(), tradeLC!(), tradeLR!(), tradeZ2!()
@@ -214,10 +214,10 @@ Sub TradeRBs (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
     Color 7, 0
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
     Color 7, 0
 
     For I = 0 To 9:
@@ -231,7 +231,7 @@ Sub TradeRBs (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0: Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 9
@@ -240,17 +240,17 @@ Sub TradeRBs (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0: Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I >= 0 And I <= 9
 
         Print tradeA1$(1, I1)
 
-		Do
-			Locate 23, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -367,7 +367,7 @@ End Sub
 '...explanation...
 Sub TradeWRs (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA2$(), tradeLC$(), tradeWR$()
 
     Shared S!(), tradeLC!(), tradeZ2!()
@@ -382,10 +382,10 @@ Sub TradeWRs (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
     Color 7, 0
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
     Color 7, 0
 
     For I = 0 To 5:
@@ -396,7 +396,7 @@ Sub TradeWRs (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -406,7 +406,7 @@ Sub TradeWRs (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -414,10 +414,10 @@ Sub TradeWRs (W1)
 
         Print tradeA2$(1, I1)
 
-		Do
-			Locate 23, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -505,7 +505,7 @@ End Sub
 '...explanation...
 Sub TradeQBs (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA3$(), tradeLP$(), tradeQB$()
 
     Shared S!(), tradeLP!(), tradeZ2!()
@@ -520,12 +520,12 @@ Sub TradeQBs (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
 
     Color 7, 0
 
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
 
     Color 7, 0
 
@@ -540,7 +540,7 @@ Sub TradeQBs (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -550,7 +550,7 @@ Sub TradeQBs (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -558,10 +558,10 @@ Sub TradeQBs (W1)
 
         Print tradeA3$(1, I1)
 
-		Do
-			Locate 23, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -669,7 +669,7 @@ End Sub
 '...explanation...
 Sub TradeKRs (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA4$(), tradeKR$(), tradeLK$()
 
     Shared S!(), tradeLK!(), tradeZ2!()
@@ -684,10 +684,10 @@ Sub TradeKRs (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
     Color 7, 0
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
     Color 7, 0
 
     For I = 0 To 2:
@@ -701,7 +701,7 @@ Sub TradeKRs (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -711,7 +711,7 @@ Sub TradeKRs (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -719,10 +719,10 @@ Sub TradeKRs (W1)
 
         Print tradeA4$(1, I1)
 
-		Do
-			Locate 23, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -810,7 +810,7 @@ End Sub
 '...explanation...
 Sub TradePRs (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA5$(), tradePK$(), tradePR$()
 
     Shared S!(), tradePK!(), tradeZ2!()
@@ -825,10 +825,10 @@ Sub TradePRs (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
     Color 7, 0
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
     Color 7, 0
 
     For I = 0 To 2:
@@ -842,7 +842,7 @@ Sub TradePRs (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -852,7 +852,7 @@ Sub TradePRs (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -860,10 +860,10 @@ Sub TradePRs (W1)
 
         Print tradeA5$(1, I1)
 
-		Do
-			Locate 23, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -949,7 +949,7 @@ End Sub
 '...explanation...
 Sub TradePunters (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA6$(), PU$()
 
     Shared S!()
@@ -966,19 +966,19 @@ Sub TradePunters (W1)
         Next
 
         Locate 4, 1
-        Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+        Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
         Color 7, 0
         Locate 4, 20
-        Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+        Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
         Color 7, 0
         Print
         Print tradeA6$(0, 0);
         Locate , 20: Print " "; tradeA6$(1, 0)
-		
-		Do
-			Locate 22, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        
+        Do
+            Locate 22, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         If UCase$(I$) = "N" Then
 
@@ -1058,7 +1058,7 @@ End Sub
 '...explanation...
 Sub TradeKickers (W1)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA7$(), tradeFG$()
 
     Shared S!()
@@ -1075,10 +1075,10 @@ Sub TradeKickers (W1)
     Next
 
     Locate 4, 1
-    Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0)
+    Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
     Color 7, 0
     Locate 4, 20
-    Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1)
+    Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
     Color 7, 0
 
     For I = 0 To 1:
@@ -1092,7 +1092,7 @@ Sub TradeKickers (W1)
 
         Do
             Locate 17, 1
-            Color tradePA%(0, 2), tradePA%(0, 1): Print A$(0);
+            Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -1102,18 +1102,18 @@ Sub TradeKickers (W1)
 
         Do
             Locate 19, 1
-            Color tradePA%(1, 2), tradePA%(1, 1): Print A$(1);
+            Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
             Color 7, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I >= 0 And I <= 1
 
         Print tradeA7$(1, I1)
-		
-		Do
-			Locate 22, 1: Print "ANY CHANGE (YN) ";
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        
+        Do
+            Locate 22, 1: Print "ANY CHANGE (YN) ";
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     Loop Until UCase$(I$) = "N"
 
@@ -1256,9 +1256,9 @@ End Sub
 '...explanation...
 Sub DoTheTrade (tradeIdx)
 
-    Shared A$(), AA$()
+    Shared statsA$(), statsAA$()
     Shared lookyDI$(), lookyDS$()
-    Shared NY$(), YN$()
+    Shared NY$(), tradeYN$()
     Shared tradeA1$(), tradeA2$(), tradeA3$(), tradeA4$(), tradeA5$(), tradeA6$(), tradeA7$()
 
     Shared tradeT!(), YC!()
@@ -1268,10 +1268,10 @@ Sub DoTheTrade (tradeIdx)
     Shared tradeB%(), tradeB1%(), tradeB2%(), tradeB3%(), tradeB4%()
     Shared tradeB5%(), tradeB6%(), tradeB7%(), tradeB8%()
     Shared tradeDI%(), tradeDS%(), tradePA%(), tradeQX%()
-    Shared YC%()
+    Shared tradeYC%()
 
     9600 'Rem
-    YC%(tradeIdx) = YC!(tradeIdx)
+    tradeYC%(tradeIdx) = YC!(tradeIdx)
     S0 = 0
     S1 = 0
     S2 = 0
@@ -1387,7 +1387,7 @@ Sub DoTheTrade (tradeIdx)
     Next
 
     9800 '
-    Open diskPaths$(0) + "FOOT." + YN$(tradeIdx) For Random As #1 Len = 934
+    Open diskPaths$(0) + "FOOT." + tradeYN$(tradeIdx) For Random As #1 Len = 934
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
     Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
     Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
@@ -1407,8 +1407,8 @@ Sub DoTheTrade (tradeIdx)
     Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    LSet Q$(1) = A$(tradeIdx)
-    LSet Q$(2) = AA$(tradeIdx)
+    LSet Q$(1) = statsA$(tradeIdx)
+    LSet Q$(2) = statsAA$(tradeIdx)
 
     For I = 0 To 7: LSet Q$(I + 3) = MKI$(tradeB6%(tradeIdx, I)): Next I
     For I = 0 To 4: LSet Q$(I + 11) = MKI$(tradePA%(tradeIdx, I)): Next I
@@ -1459,7 +1459,7 @@ Sub DoTheTrade (tradeIdx)
     LSet Q$(131) = MKI$(tradeB5%(tradeIdx, 1))
     LSet Q$(132) = MKI$(tradeB7%(tradeIdx, 1))
     LSet Q$(133) = MKI$(tradeB8%(tradeIdx, 1))
-    LSet Q$(134) = MKI$(YC%(tradeIdx))
+    LSet Q$(134) = MKI$(tradeYC%(tradeIdx))
 
     For I = 0 To 14
         LSet Q$(I * 2 + 135) = lookyDS$(tradeIdx, I)
@@ -1526,7 +1526,7 @@ End Sub
 '...explanation...
 Sub SaveTradeStats (J)
 
-    Shared A$(), AA$()
+    Shared statsA$(), statsAA$()
     Shared tradeF$(), tradeFG$(), tradeKR$()
     Shared lookyDI$(), lookyDS$()
     Shared PU$(), TN$()
@@ -1547,7 +1547,7 @@ Sub SaveTradeStats (J)
 
     Print "SAVING ";: Color tradePA%(J, 2), tradePA%(J, 1)
 
-    Print A$(J);
+    Print statsA$(J);
 
     Color 7, 0: Print " STATS": Z = 0
 
@@ -1596,7 +1596,7 @@ Sub GetDiskID_TEAM (J)
     Shared tradeT!()
     Shared tradePA%()
 
-    Shared A$(), AA$(), NY$(), YN$()
+    Shared statsA$(), statsAA$(), NY$(), tradeYN$()
 
     If J = 0 Then team$ = "A"
     If J = 1 Then team$ = "B"
@@ -1634,12 +1634,12 @@ Sub GetDiskID_TEAM (J)
 
         Else
 
-            YN$(J) = NY$(J)
+            tradeYN$(J) = NY$(J)
             Erase teamNames$
 
             numberTeams = 0
 
-            Open diskPaths$(0) + "FOOT." + YN$(J) For Random As #1 Len = 934
+            Open diskPaths$(0) + "FOOT." + tradeYN$(J) For Random As #1 Len = 934
 
             Y = LOF(1)
 
@@ -1667,21 +1667,21 @@ Sub GetDiskID_TEAM (J)
 
         End If
 
-        A$(J) = RTrim$(Q$(1))
-        AA$(J) = Q$(2)
+        statsA$(J) = RTrim$(Q$(1))
+        statsAA$(J) = Q$(2)
         Call ReadTeam(J)
 
         If BO% <> 1 Then
 
             Locate 2, 33
-			Color tradePA%(J, 2), tradePA%(J, 1): Print A$(J)
+            Color tradePA%(J, 2), tradePA%(J, 1): Print statsA$(J)
 
             Color 15, 4
 
-			Do
-				Locate , 33: Print "ANY CHANGE (YN)";
-				I$ = GetKeyPress$
-			Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+            Do
+                Locate 3, 33: Print "ANY CHANGE (YN)";
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         Else
             BO% = 0
@@ -1834,7 +1834,7 @@ Sub ReadTeam (J)
 
     Dim C2!(15)
 
-    Shared A$()
+    Shared statsA$()
     Shared tradeA1$(), tradeA2$(), tradeA3$(), tradeA4$(), tradeA5$(), tradeA6$(), tradeA7$()
     Shared lookyDI$(), lookyDS$()
     Shared SA$()
@@ -1847,7 +1847,7 @@ Sub ReadTeam (J)
     Shared tradeB%(), tradeB1%(), tradeB2%(), tradeB3%(), tradeB4%()
     Shared tradeB5%(), tradeB6%(), tradeB7%(), tradeB8%()
     Shared tradeDI%(), tradeDS%()
-    Shared tradeQX%(), YC%()
+    Shared tradeQX%(), tradeYC%()
 
     For I = 0 To 7: tradeB6%(J, I) = CVI(Q$(I + 3)): Next I
 
@@ -1911,7 +1911,7 @@ Sub ReadTeam (J)
         tradeDI%(J, I) = CVI(Q$(I * 2 + 166))
     Next I
 
-    SA$(J) = A$(J)
+    SA$(J) = statsA$(J)
 
     Close #1
 

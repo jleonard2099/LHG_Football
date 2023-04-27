@@ -54,7 +54,7 @@ End Sub
 '...explanation...
 Sub HeadToHead_Coll_Conf (X2)
 
-    Shared D1$, D2$, D3$, D12$, D22$, D32$
+    Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -67,11 +67,11 @@ Sub HeadToHead_Coll_Conf (X2)
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
-    Shared O%(), T%(), Z1%()
+    Shared statsO%(), statsT%(), statsZ1%()
 
     Dim Z12%(30)
 
-    Shared DV$(), DV2$(), H$(), O$()
+    Shared DV$(), DV2$(), statsH$(), compO$()
     Shared Z1$(), Z12$(), Z2$(), Z22$()
 
 
@@ -123,10 +123,10 @@ Sub HeadToHead_Coll_Conf (X2)
 
             Open diskPaths$(1) + Z$ + "S" For Input As #2
             Input #2, YY%
-            For I = 1 To 120: Input #2, O%(I): Next I
-            For I = 1 To 120: Input #2, O$(I): Next I
-            For I = 1 To 120: Input #2, T%(I): Next I
-            For I = 1 To 120: Input #2, H$(I): Next I
+            For I = 1 To 120: Input #2, statsO%(I): Next I
+            For I = 1 To 120: Input #2, compO$(I): Next I
+            For I = 1 To 120: Input #2, statsT%(I): Next I
+            For I = 1 To 120: Input #2, statsH$(I): Next I
             Close #2
 
             'Check if same league
@@ -190,19 +190,19 @@ Sub HeadToHead_Coll_Conf (X2)
 
         If X% = 0 Then
             Input #1, LG$
-            Input #1, D1$
-            Input #1, D2$
-            For X = 1 To 30: Input #1, Z1$(X): Input #1, Z1%(X): Input #1, Z2$(X): Next
+            Input #1, div1$
+            Input #1, div2$
+            For X = 1 To 30: Input #1, Z1$(X): Input #1, statsZ1%(X): Input #1, Z2$(X): Next
             NT = 30
             Close 1
         End If
 
         If X% = 1 Then
             Input #1, LG$
-            Input #1, D1$
-            Input #1, D2$
-            Input #1, D3$
-            For X = 1 To 30: Input #1, Z1$(X): Input #1, Z1%(X): Input #1, Z2$(X): Next
+            Input #1, div1$
+            Input #1, div2$
+            Input #1, div3$
+            For X = 1 To 30: Input #1, Z1$(X): Input #1, statsZ1%(X): Input #1, Z2$(X): Next
             NT = 30
             Close 1
         End If
@@ -216,17 +216,17 @@ Sub HeadToHead_Coll_Conf (X2)
 
             If X% = 0 Then
                 Input #1, LG2$
-                Input #1, D12$
-                Input #1, D22$
+                Input #1, div1_2$
+                Input #1, div2_2$
                 For X = 1 To 30: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next
                 NT = 30
             End If
 
             If X% = 1 Then
                 Input #1, LG2$
-                Input #1, D12$
-                Input #1, D22$
-                Input #1, D32$
+                Input #1, div1_2$
+                Input #1, div2_2$
+                Input #1, div3_2$
                 For X = 1 To 30: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next
             End If
 
@@ -271,16 +271,16 @@ Sub HeadToHead_Coll_Conf (X2)
 
             If Z1$(K) <> "XXX" Then
                 For I = 1 To YY%
-                    If O%(I) > T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z1$(K) Then AW!(K) = AW!(K) + 1
-                    If O%(I) > T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z1$(K) Then HW!(K) = HW!(K) + 1
-                    If O%(I) < T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z1$(K) Then AL!(K) = AL!(K) + 1
-                    If O%(I) < T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z1$(K) Then HL!(K) = HL!(K) + 1
-                    If O%(I) = T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z1$(K) Then RT!(K) = RT!(K) + 1
-                    If O%(I) = T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z1$(K) Then HT!(K) = HT!(K) + 1
-                    If O$(I) = Z1$(K) And Left$(H$(I), 1) = "H" Then G1!(K) = G1!(K) + O%(I)
-                    If O$(I) = Z1$(K) And Left$(H$(I), 1) = "H" Then G2!(K) = G2!(K) + T%(I)
-                    If O$(I) = Z1$(K) And Left$(H$(I), 1) = "A" Then G3!(K) = G3!(K) + O%(I)
-                    If O$(I) = Z1$(K) And Left$(H$(I), 1) = "A" Then G4!(K) = G4!(K) + T%(I)
+                    If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AW!(K) = AW!(K) + 1
+                    If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HW!(K) = HW!(K) + 1
+                    If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AL!(K) = AL!(K) + 1
+                    If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HL!(K) = HL!(K) + 1
+                    If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then RT!(K) = RT!(K) + 1
+                    If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HT!(K) = HT!(K) + 1
+                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "H" Then G1!(K) = G1!(K) + statsO%(I)
+                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "H" Then G2!(K) = G2!(K) + statsT%(I)
+                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G3!(K) = G3!(K) + statsO%(I)
+                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G4!(K) = G4!(K) + statsT%(I)
                 Next I
             End If
         Next K
@@ -319,16 +319,16 @@ Sub HeadToHead_Coll_Conf (X2)
             For K = 1 To 30
                 If Z12$(K) <> "XXX" Then
                     For I = 1 To YY%
-                        If O%(I) > T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
-                        If O%(I) > T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
-                        If O%(I) < T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
-                        If O%(I) < T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
-                        If O%(I) = T%(I) And Left$(H$(I), 1) = "A" And O$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
-                        If O%(I) = T%(I) And Left$(H$(I), 1) = "H" And O$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
-                        If O$(I) = Z12$(K) And Left$(H$(I), 1) = "H" Then G12!(K) = G12!(K) + O%(I)
-                        If O$(I) = Z12$(K) And Left$(H$(I), 1) = "H" Then G22!(K) = G22!(K) + T%(I)
-                        If O$(I) = Z12$(K) And Left$(H$(I), 1) = "A" Then G32!(K) = G32!(K) + O%(I)
-                        If O$(I) = Z12$(K) And Left$(H$(I), 1) = "A" Then G42!(K) = G42!(K) + T%(I)
+                        If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
+                        If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
+                        If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
+                        If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
+                        If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
+                        If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
+                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G12!(K) = G12!(K) + statsO%(I)
+                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G22!(K) = G22!(K) + statsT%(I)
+                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G32!(K) = G32!(K) + statsO%(I)
+                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G42!(K) = G42!(K) + statsT%(I)
                     Next I
                 End If
             Next K
@@ -433,7 +433,7 @@ End Sub
 '...explanation...
 Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
 
-    Shared D1$, D2$, D12$, D22$
+    Shared div1$, div2$, div1_2$, div2_2$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -449,13 +449,13 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
     Shared DV$(), DV2$()
     Shared Z1$(), Z12$()
 
-    DV$(1) = D1$
-    DV$(2) = D2$
+    DV$(1) = div1$
+    DV$(2) = div2$
 
     Do
 		Cls
         Locate 2, 35
-		Color PA%(2), PA%(1): Print A$
+		Color statsPA%(2), statsPA%(1): Print A$
         Color 3, 0
 
         Color 3
@@ -581,8 +581,8 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
     Loop Until RDD = 3
 
     If X2 = 1 Then
-        DV2$(1) = D12$
-        DV2$(2) = D22$
+        DV2$(1) = div1_2$
+        DV2$(2) = div2_2$
         RDD = 0
 
         Do
@@ -709,7 +709,7 @@ Sub HeadToHead_Coll_Screen (RDD, Z$, A$, LG$, LG2$)
 
 	Cls
 	Locate 2, 35
-	Color PA%(2), PA%(1): Print A$
+	Color statsPA%(2), statsPA%(1): Print A$
 	Color 3, 0
 
     Locate 4
@@ -925,7 +925,7 @@ End Sub
 '...explanation...
 Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
 
-    Shared D1$, D2$, D12$, D22$
+    Shared div1$, div2$, div1_2$, div2_2$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -987,8 +987,8 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
     reportFile$ = reportFile$ + ".RPT"
     Open reportFile$ For Output As #2
 
-    DV$(1) = D1$
-    DV$(2) = D2$
+    DV$(1) = div1$
+    DV$(2) = div2$
 
     Print #2, Tab(48); Z$
     Print #2,
@@ -1073,8 +1073,8 @@ Sub CreateReportColl (LG$, LG2$, DV$(), DV2$())
 
     If X2 = 1 Then
 
-        DV2$(1) = D12$
-        DV2$(2) = D22$
+        DV2$(1) = div1_2$
+        DV2$(2) = div2_2$
         RDD = 0
         Print #2, Tab(48); Z$
         Print #2,
@@ -1364,7 +1364,7 @@ Sub ChooseConference_Coll (targetFile$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1389,7 +1389,7 @@ End Sub
 '...explanation...
 Sub GetDiskID_HD2HDCOL (A$)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Do
         Color 15, 0
@@ -1481,12 +1481,12 @@ Sub GetDiskID_HD2HDCOL (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color PA%(2), PA%(1): Print A$
+                Color statsPA%(2), statsPA%(1): Print A$
 
                 Color 15, 4
 
                 Do
-                    Locate , 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1506,7 +1506,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1537,7 +1537,7 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
         Get #1, T1
 
-        For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
 
         Close 1
 

@@ -59,15 +59,16 @@ End Sub
 '...explanation...
 Sub GetParameters ()
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared AR$(), A$(), DI$(), DIN$(), DRI$(), DS$(), DSN$(), DSR$()
-    Shared LC$(), LCN$(), LCR$(), LF$(), LFN$(), LFR$()
-    Shared LI$(), LIN$(), LIR$(), LK$(), LKN$(), LKR$()
-    Shared LPN$(), LPR$(), LP$(), LRN$(), LRR$(), LR$()
-    Shared PKN$(), PK$(), PKR$()
-    Shared GI%(), GIN%(), GIR%(), GS%(), GSN%(), GSR%(), PA%()
+    Shared AR$(), statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$(), DSR$()
+    Shared LC$(), LCN$(), LCR$(), statsLF$(), LFN$(), LFR$()
+    Shared statsLI$(), LIN$(), LIR$(), statsLK$(), LKN$(), LKR$()
+    Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), LR$()
+    Shared PKN$(), statsPK$(), PKR$()
+    Shared statsA$(), statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+
+    Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), statsPA%()
 
     Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
     Shared LC!(), LCN!(), LCR!(), LIN!(), LIR!()
@@ -187,12 +188,12 @@ Sub GetParameters ()
                 BO% = 0
             Else
                 Locate 2, 3
-				Color PA%(2), PA%(1): Print A$
+				Color statsPA%(2), statsPA%(1): Print A$
                 
 				Color 15, 4
 				
 				Do
-					Locate , 33: Print "ANY CHANGE (YN)";
+					Locate 3, 33: Print "ANY CHANGE (YN)";
 					I$ = GetKeyPress$
 				Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -283,16 +284,16 @@ Sub GetParameters ()
 
 					Open PC$ + "\" + Z$ For Input As #1
 
-					Input #1, A$(PX)
+					Input #1, statsA$(PX)
 
-					For I = 0 To 9: Input #1, A1$(I): Next I
-					For I = 0 To 5: Input #1, A2$(I): Next I
-					For I = 0 To 3: Input #1, A3$(I): Next I
-					For I = 0 To 2: Input #1, A4$(I): Next I
-					For I = 0 To 2: Input #1, A5$(I): Next I
+					For I = 0 To 9: Input #1, statsA1$(I): Next I
+					For I = 0 To 5: Input #1, statsA2$(I): Next I
+					For I = 0 To 3: Input #1, statsA3$(I): Next I
+					For I = 0 To 2: Input #1, statsA4$(I): Next I
+					For I = 0 To 2: Input #1, statsA5$(I): Next I
 
-					Input #1, A6$(0)
-					For I = 0 To 1: Input #1, A7$(I): Next I
+					Input #1, statsA6$(0)
+					For I = 0 To 1: Input #1, statsA7$(I): Next I
 
 					For J = 0 To 13
 						For K = 0 To 17: Input #1, Z2!(J, K): Next K
@@ -300,15 +301,15 @@ Sub GetParameters ()
 
 					For L = 0 To 38: Input #1, Z!(L): Next L
 					For L = 0 To 38: Input #1, Z1!(L): Next L
-					For J = 0 To 9: Input #1, DI$(J): For J1 = 0 To 2: Input #1, GI%(J, J1): Next: Next
-					For J = 0 To 14: Input #1, DS$(J): For J1 = 0 To 1: Input #1, GS%(J, J1): Next: Next
+					For J = 0 To 9: Input #1, statsDI$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
+					For J = 0 To 14: Input #1, statsDS$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
 					For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
 					For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
-					For I = 0 To 3: Input #1, LP!(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
-					For I = 0 To 2: Input #1, LK!(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
-					For I = 0 To 2: Input #1, PK!(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
-					For I = 0 To 1: Input #1, LF!(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
-					For I = 0 To 9: Input #1, LI!(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+					For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+					For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+					For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
+					For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+					For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
 					Close 1
 
@@ -345,14 +346,14 @@ End Sub
 '...explanation...
 Sub AlignStats (PR$, Z$)
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared DI$(), DIN$(), DRI$(), DS$(), DSN$(), DSR$()
+    Shared statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$(), DSR$()
     Shared LCN$(), LCR$(), LFN$(), LFR$()
-    Shared LK$(), LKN$(), LKR$(), LPN$(), LPR$(), LP$()
-    Shared LRN$(), LRR$(), LR$(), PKN$(), PK$(), PKR$()
-    Shared GI%(), GIN%(), GIR%(), GS%(), GSN%(), GSR%()
+    Shared statsLK$(), LKN$(), LKR$(), LPN$(), LPR$(), statsLP$()
+    Shared LRN$(), LRR$(), LR$(), PKN$(), statsPK$(), PKR$()
+    Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%()
 
     Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
     Shared LCN!(), LCR!(), LFR!(), LFN!()
@@ -377,7 +378,7 @@ Sub AlignStats (PR$, Z$)
     Color 7: Print " ROAD"
     For I = 0 To 9:
         Locate I + 4: Color 12: Print I; " ";
-        Color 15: Print A1$(I);
+        Color 15: Print statsA1$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR1$(I)
     Next
@@ -385,7 +386,7 @@ Sub AlignStats (PR$, Z$)
     For I = 0 To 5:
         Locate I + 4, 40
         Color 12: Print I; " ";
-        Color 15: Print A2$(I);
+        Color 15: Print statsA2$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR2$(I):
     Next
@@ -397,7 +398,7 @@ Sub AlignStats (PR$, Z$)
 
     For I = 0 To 2
         Locate I + 12, 40: Color 12: Print I; " ";
-        Color 15: Print A4$(I);
+        Color 15: Print statsA4$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR4$(I)
     Next
@@ -409,7 +410,7 @@ Sub AlignStats (PR$, Z$)
 
     For I = 0 To 3:
         Locate I + 16: Color 12: Print I; " ";
-        Color 15: Print A3$(I);
+        Color 15: Print statsA3$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR3$(I)
     Next
@@ -421,7 +422,7 @@ Sub AlignStats (PR$, Z$)
 
     For I = 0 To 2:
         Locate I + 17, 40: Color 12: Print I; " ";
-        Color 15: Print A5$(I);
+        Color 15: Print statsA5$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR5$(I)
     Next
@@ -442,13 +443,13 @@ Sub AlignStats (PR$, Z$)
     Color 7: Print " ROAD"
 
     Locate 4: Color 12: Print "0 ";
-    Color 15: Print A6$(0);
+    Color 15: Print statsA6$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AR6$(0)
 
     For I = 0 To 1:
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print A7$(I);
+        Color 15: Print statsA7$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR7$(I):
     Next
@@ -462,14 +463,14 @@ Sub AlignStats (PR$, Z$)
 
     For I = 0 To 9:
         Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print DI$(I);
+        Print " ";: Color 15: Print statsDI$(I);
         Color 12: Print Tab(20); Using "##"; I;
         Print " ";: Color 7: Print DRI$(I)
     Next
 
     For I = 0 To 14:
         Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print DS$(I);
+        Print " ";: Color 15: Print statsDS$(I);
         Color 12: Print Tab(63); Using "##"; I;
         Print " ";: Color 7: Print DSR$(I)
     Next
@@ -487,7 +488,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 9
 
-            If A1$(N) = AR1$(J) Then
+            If statsA1$(N) = AR1$(J) Then
 
                 AN1$(N) = AR1$(J)
                 LRN!(N) = LRR!(J)
@@ -517,7 +518,7 @@ Sub AlignStats (PR$, Z$)
 
         For J = 0 To 3
 
-            If A3$(N) = AR3$(J) Then
+            If statsA3$(N) = AR3$(J) Then
                 AN3$(N) = AR3$(J)
 
                 For K = 0 To 2
@@ -535,7 +536,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 5
 
-            If A2$(N) = AR2$(J) Then
+            If statsA2$(N) = AR2$(J) Then
 
                 AN2$(N) = AR2$(J)
                 LCN!(N + 10) = LCR!(J + 10)
@@ -558,7 +559,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 3
 
-            If A3$(N) = AR3$(J) Then
+            If statsA3$(N) = AR3$(J) Then
 
                 AN3$(N) = AR3$(J)
                 LPN!(N) = LPR!(J)
@@ -582,7 +583,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 2
 
-            If A4$(N) = AR4$(J) Then
+            If statsA4$(N) = AR4$(J) Then
                 AN4$(N) = AR4$(J)
                 LKN!(N) = LKR!(J)
                 LKN$(N, 0) = LKR$(J, 0)
@@ -602,7 +603,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 2
 
-            If A5$(N) = AR5$(J) Then
+            If statsA5$(N) = AR5$(J) Then
 
                 AN5$(N) = AR5$(J)
                 PKN!(N) = PKR!(J)
@@ -621,7 +622,7 @@ Sub AlignStats (PR$, Z$)
 
     Loop Until N = 3
 
-    If A6$(0) = AR6$(0) Then
+    If statsA6$(0) = AR6$(0) Then
         AN6$(0) = AR6$(0)
     End If
 
@@ -630,7 +631,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 1
 
-            If A7$(N) = AR7$(J) Then
+            If statsA7$(N) = AR7$(J) Then
 
                 AN7$(N) = AR7$(J)
                 LFN!(N) = LFR!(J)
@@ -660,7 +661,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 9
 
-            If DI$(N) = DRI$(J) Then
+            If statsDI$(N) = DRI$(J) Then
 
                 DIN$(N) = DRI$(J)
                 For J1 = 0 To 2
@@ -680,7 +681,7 @@ Sub AlignStats (PR$, Z$)
     Do
         For J = 0 To 14
 
-            If DS$(N) = DSR$(J) Then
+            If statsDS$(N) = DSR$(J) Then
 
                 DSN$(N) = DSR$(J)
                 For J1 = 0 To 1
@@ -699,32 +700,32 @@ Sub AlignStats (PR$, Z$)
     SEQ = 0
 
     For I = 0 To 9
-        If AN1$(I) <> A1$(I) Then
+        If AN1$(I) <> statsA1$(I) Then
             SEQ = SEQ + 1
         End If
     Next
 
     For I = 0 To 5
-        If AN2$(I) <> A2$(I) Then SEQ = SEQ + 1
+        If AN2$(I) <> statsA2$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 3
-        If AN3$(I) <> A3$(I) Then SEQ = SEQ + 1
+        If AN3$(I) <> statsA3$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 2
-        If AN4$(I) <> A4$(I) Then SEQ = SEQ + 1
+        If AN4$(I) <> statsA4$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 2
-        If AN5$(I) <> A5$(I) Then SEQ = SEQ + 1
+        If AN5$(I) <> statsA5$(I) Then SEQ = SEQ + 1
     Next
 
-    If AN6$(I) <> A6$(I) Then
+    If AN6$(I) <> statsA6$(I) Then
         SEQ = SEQ + 1
     End If
     For I = 0 To 1
-        If AN7$(I) <> A7$(I) Then SEQ = SEQ + 1
+        If AN7$(I) <> statsA7$(I) Then SEQ = SEQ + 1
     Next
 
     If SEQ = 0 Then
@@ -749,9 +750,9 @@ End Sub
 '...explanation...
 Sub ReviewAndSaveAlignment (PR$, Z$)
 
-    Shared A1$(), A2$(), A3$(), A4$(), A5$(), A6$(), A7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
-    Shared AR$(), DI$(), DIN$(), DRI$(), DS$(), DSN$()
+    Shared AR$(), statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$()
     Shared LCN$(), LCR$(), LFN$(), LFR$()
     Shared LIN$(), LKN$(), LPN$(), LRN$(), PKN$()
     Shared GIN%(), GIR%(), GSN%()
@@ -777,13 +778,13 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
 
     For I = 0 To 9:
         Locate I + 4: Color 12: Print I; " ";
-        Color 15: Print A1$(I);
+        Color 15: Print statsA1$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN1$(I):
     Next
     For I = 0 To 5:
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print A2$(I);
+        Color 15: Print statsA2$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN2$(I)
     Next
@@ -792,7 +793,7 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
     Color 7: Print " ROAD"
     For I = 0 To 2:
         Locate I + 12, 40: Color 12: Print I; " ";
-        Color 15: Print A4$(I);
+        Color 15: Print statsA4$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN4$(I)
     Next
@@ -803,7 +804,7 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
 
     For I = 0 To 3:
         Locate I + 16: Color 12: Print I; " ";
-        Color 15: Print A3$(I);
+        Color 15: Print statsA3$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN3$(I)
     Next
@@ -814,7 +815,7 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
 
     For I = 0 To 2:
         Locate I + 17, 40: Color 12: Print I; " ";
-        Color 15: Print A5$(I);
+        Color 15: Print statsA5$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN5$(I)
     Next
@@ -839,13 +840,13 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
     Color 7: Print " ROAD"
 
     Locate 4: Color 12: Print "0 ";
-    Color 15: Print A6$(0);
+    Color 15: Print statsA6$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AN6$(0)
 
     For I = 0 To 1
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print A7$(I);
+        Color 15: Print statsA7$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN7$(I)
     Next
@@ -859,13 +860,13 @@ Sub ReviewAndSaveAlignment (PR$, Z$)
 
     For I = 0 To 9:
         Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print DI$(I);
+        Print " ";: Color 15: Print statsDI$(I);
         Color 12: Print Tab(20); Using "##"; I;
         Print " ";: Color 7: Print DIN$(I):
     Next
     For I = 0 To 14:
         Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print DS$(I);
+        Print " ";: Color 15: Print statsDS$(I);
         Color 12: Print Tab(63); Using "##"; I;
         Print " ";: Color 7: Print DSN$(I):
     Next
@@ -968,7 +969,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = numberTeams
@@ -995,7 +996,7 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
         Get #1, teamIdx
-        For I1 = 0 To 4: PA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
         Close 1
 
     Else

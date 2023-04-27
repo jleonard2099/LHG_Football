@@ -2,8 +2,11 @@
 *.7z
 *.exe
 *.ini
-*.odt
 *.zip
 bin
+doc/*.odt
 src/DEFAULT
 src/DEV.BAS
+src/GAME82
+src/EVENTS.BOX
+src/TICKER

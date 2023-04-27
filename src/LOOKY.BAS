@@ -5,16 +5,16 @@ Sub LOOKY ()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared Z!(), Z1!(), Z2!()
 
-    Shared A$()
+    Shared statsA$()
     Shared lookyDI$(), lookyDS$()
-    Shared LC$(), LI$(), LK$(), LP$(), LR$()
+    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared PK$()
+    Shared statsPK$()
 
-    Shared P%()
+    Shared lookyP%()
 
     'This is read in from the file but not used???
-    Dim LF$(1)
+    Dim statsLF$(1)
 
     _Title "3-in-1 Football - View Stats"
 
@@ -94,13 +94,13 @@ Sub LOOKY ()
 
             D% = 0
             PX = 0
-            P%(0) = 0
-            P%(1) = 0
+            lookyP%(0) = 0
+            lookyP%(1) = 0
             L% = 0
             W% = 0
             X% = 0
 
-            Call LoadTeamStats(statFile$, numberGames%)
+            Call LoadTeamStats(statFile$, numberGames%, teamPower, SS)
 
             If Not _FileExists(diskPaths$(1) + statFile$) Then
                 Locate 10, 8
@@ -112,7 +112,7 @@ Sub LOOKY ()
                 'Load player stats
                 Open diskPaths$(1) + statFile$ For Input As #1
 
-                Input #1, A$(PX)
+                Input #1, statsA$(PX)
 
                 For I = 0 To 9: Input #1, lookyA1$(PX, I): Next I
                 For I = 0 To 5: Input #1, lookyA2$(PX, I): Next I
@@ -133,11 +133,11 @@ Sub LOOKY ()
                 For J = 0 To 14: Input #1, lookyDS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
                 For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
                 For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
-                For I = 0 To 3: Input #1, LP!(I): Input #1, LP$(I, 0): Input #1, LP$(I, 1): Next
-                For I = 0 To 2: Input #1, LK!(I): Input #1, LK$(I, 0): Input #1, LK$(I, 1): Next
-                For I = 0 To 2: Input #1, PK!(I): Input #1, PK$(I, 0): Input #1, PK$(I, 1): Next
-                For I = 0 To 1: Input #1, LF!(I): Input #1, LF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
-                For I = 0 To 9: Input #1, LI!(I): Input #1, LI$(I, 0): Input #1, LI$(I, 1): Next
+                For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+                For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+                For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
+                For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+                For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
                 Close #1
 
@@ -190,8 +190,8 @@ Sub LOOKY ()
                     Loop Until UCase$(I$) = "S" Or UCase$(I$) = "P"
 
                     Select Case UCase$(I$)
-                        Case "S": X = 0: Call StatsToScreen(X, numberGames%, statFormat)
-                        Case "P": X = 1: Call StatsToPrinter(X, numberGames%, statFormat)
+                        Case "S": X = 0: Call StatsToScreen(X, numberGames%, statFormat, teamPower, SS)
+                        Case "P": X = 1: Call StatsToPrinter(X, numberGames%, statFormat, teamPower, SS)
                     End Select
 
                     Cls
@@ -217,14 +217,13 @@ End Sub
 '       LoadTeamStats Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadTeamStats (statFile$, numberGames%)
+Sub LoadTeamStats (statFile$, numberGames%, teamPower, SS)
 
-    Shared GL, PW, SS
     Shared CRD!()
-    Shared O%(), T%(), P%()
-    Shared H$(), O$(), SITE$()
+    Shared statsO%(), statsT%(), lookyP%()
+    Shared statsH$(), compO$(), gameSITE$()
 
-    Dim AP%(1, 120)
+    Dim compAP%(1, 120)
 
     If Not _FileExists(diskPaths$(1) + statFile$) Then
         Cls
@@ -235,18 +234,18 @@ Sub LoadTeamStats (statFile$, numberGames%)
         Input #2, X$
         numberGames% = Val(X$)
         'Opponent Score
-        For I = 1 To 120: Input #2, O%(I): Next I
+        For I = 1 To 120: Input #2, statsO%(I): Next I
         'Opponent
-        For I = 1 To 120: Input #2, O$(I): Next I
+        For I = 1 To 120: Input #2, compO$(I): Next I
         'Team Score
-        For I = 1 To 120: Input #2, T%(I): Next I
+        For I = 1 To 120: Input #2, statsT%(I): Next I
         'Home / Away
-        For I = 1 To 120: Input #2, H$(I): Next I
+        For I = 1 To 120: Input #2, statsH$(I): Next I
 
         For I = 0 To 1
             For I1 = 1 To 120
                 ' ???
-                Input #2, AP%(I, I1)
+                Input #2, compAP%(I, I1)
             Next
         Next
 
@@ -254,7 +253,7 @@ Sub LoadTeamStats (statFile$, numberGames%)
         For I = 1 To 120: Input #2, CRD!(I): Next I
 
         'Stadium
-        For I = 1 To 120: Input #2, SITE$(I): Next I
+        For I = 1 To 120: Input #2, gameSITE$(I): Next I
 
         Close #2
 
@@ -262,29 +261,29 @@ Sub LoadTeamStats (statFile$, numberGames%)
         SS = 0
 
         For I = 1 To numberGames%
-            SS = AP%(1, I) + SS
+            SS = compAP%(1, I) + SS
         Next
 
         SS = SS / numberGames%
 
         'INDIVIDUAL GAME POWER RATINGS
-        PW = 0
+        teamPower = 0
 
         For I = 1 To numberGames%
-            RAT = O%(I) - T%(I) + AP%(1, I)
-            If Left$(H$(I), 1) = "H" Then RAT = RAT - 3
-            If Left$(H$(I), 1) = "A" Then RAT = RAT + 3
-            PW = PW + RAT
+            RAT = statsO%(I) - statsT%(I) + compAP%(1, I)
+            If Left$(statsH$(I), 1) = "H" Then RAT = RAT - 3
+            If Left$(statsH$(I), 1) = "A" Then RAT = RAT + 3
+            teamPower = teamPower + RAT
         Next
 
         GL = 0
 
         If numberGames% <= 4 Then
             GL = 5 - numberGames%
-            PW = PW + GL * AP%(0, 1)
+            teamPower = teamPower + GL * compAP%(0, 1)
         End If
 
-        PW = PW / (numberGames% + GL)
+        teamPower = teamPower / (numberGames% + GL)
 
     End If
 
@@ -296,7 +295,7 @@ End Sub
 '...explanation...
 Sub GetDisk_LOOKY (numberTeams, yearNumber$)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Do
 
@@ -374,12 +373,12 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
             Else
                 A$ = RTrim$(Q$(1))
                 Locate 2, 33
-                Color PA%(2), PA%(1): Print A$
+                Color statsPA%(2), statsPA%(1): Print A$
 
                 Color 15, 4
 
                 Do
-                    Locate , 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -399,7 +398,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
 
-    Shared PA%()
+    Shared statsPA%()
 
     Selection% = 1
     Count% = numberTeams
@@ -439,7 +438,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
             Get #1, T1
 
             For I1 = 0 To 4
-                PA%(I1) = CVI(Q$(I1 + 11))
+                statsPA%(I1) = CVI(Q$(I1 + 11))
             Next I1
 
             Close 1
@@ -456,25 +455,25 @@ End Sub
 '      StatsToScreen Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen (X, numberGames%, statFormat)
+Sub StatsToScreen (X, numberGames%, statFormat, teamPower, SS)
 
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared PK!(), W6!(), Z!(), Z1!(), Z2!()
 
-    Shared O%(), T%(), P%()
+    Shared statsO%(), statsT%(), lookyP%()
 
-    Shared A$(), lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared lookyDI$(), lookyDS$(), H$()
-    Shared LC$(), LI$(), LK$(), LP$(), LR$()
-    Shared O$(), PK$(), SITE$()
+    Shared statsA$(), lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
+    Shared lookyDI$(), lookyDS$(), statsH$()
+    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared compO$(), statsPK$(), gameSITE$()
 
     If X = 0 Then Cls
 
     ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
     Cls
-    Color 12: Print "GAME-BY-GAME REPORT FOR "; A$(0)
+    Color 12: Print "GAME-BY-GAME REPORT FOR "; statsA$(0)
     Color 14
     Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD"
 
@@ -483,34 +482,34 @@ Sub StatsToScreen (X, numberGames%, statFormat)
 
         If I / 2 = Int(I / 2) Then Color 15
 
-        Print O$(I);
-        Locate , 19: Print Using "###"; O%(I);: Print "-";: Print Using "###   "; T%(I);
+        Print compO$(I);
+        Locate , 19: Print Using "###"; statsO%(I);: Print "-";: Print Using "###   "; statsT%(I);
 
-        If O%(I) > T%(I) Then W% = W% + 1: Print "W";
-        If O%(I) < T%(I) Then L% = L% + 1: Print "L";
-        If O%(I) = T%(I) Then X% = X% + 1: Print "T";
+        If statsO%(I) > statsT%(I) Then W% = W% + 1: Print "W";
+        If statsO%(I) < statsT%(I) Then L% = L% + 1: Print "L";
+        If statsO%(I) = statsT%(I) Then X% = X% + 1: Print "T";
 
         Locate , 31: Print Using "####,###   "; CRD!(I);
-        Print H$(I); "  "; Left$(SITE$(I), 24);
+        Print statsH$(I); "  "; Left$(gameSITE$(I), 24);
         Locate , 69
         Print "(";: Print Using "##"; W%;: Print "-";: Print Using "##"; L%;: Print "-";: Print Using "##"; X%;: Print ")"
 
-        P%(0) = P%(0) + O%(I): P%(1) = P%(1) + T%(I)
+        lookyP%(0) = lookyP%(0) + statsO%(I): lookyP%(1) = lookyP%(1) + statsT%(I)
 
         If I = 20 Or I = 40 Or I = 60 Or I = 80 Or I = 100 Or I = 120 Then
             I$ = GetKeyPress$
             ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
             Cls
-            Color 12: Print "GAME-BY-GAME REPORT FOR "; A$(0)
+            Color 12: Print "GAME-BY-GAME REPORT FOR "; statsA$(0)
             Color 14
             Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD"
         End If
     Next I
 
-    If statFormat = 0 Then Locate 24, 1: Print Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; PW; SS;
+    If statFormat = 0 Then Locate 24, 1: Print Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; teamPower; SS;
 
-    P%(0) = 0
-    P%(1) = 0
+    lookyP%(0) = 0
+    lookyP%(1) = 0
     W% = 0
     L% = 0
     X% = 0
@@ -524,18 +523,18 @@ Sub StatsToScreen (X, numberGames%, statFormat)
 
     Locate 2
     Color 12
-    Print A$(0); " STATISTICS REPORT"
+    Print statsA$(0); " STATISTICS REPORT"
     Print
 
     Color 14: Print "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
 
-    Color 15: Print A$(0);
+    Color 15: Print statsA$(0);
     Locate , 30: Print Using " ###  ###  ###  ###   ###"; Z!(32); Z!(33); Z!(34); Z!(35); Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)
     Print "OPPONENTS";
     Locate , 30: Print Using " ###  ###  ###  ###   ###"; Z1!(32); Z1!(33); Z1!(34); Z1!(35); Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)
     Print
     Color 14: Print "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
-    Color 15: Print A$(0);
+    Color 15: Print statsA$(0);
     Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z!(32) / numberGames%; Z!(33) / numberGames%; Z!(34) / numberGames%; Z!(35) / numberGames%; (Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)) / numberGames%
     Print "OPPONENTS";
     Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z1!(32) / numberGames%; Z1!(33) / numberGames%; Z1!(34) / numberGames%; Z1!(35) / numberGames%; (Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)) / numberGames%
@@ -548,9 +547,9 @@ Sub StatsToScreen (X, numberGames%, statFormat)
     HA& = 0: AA& = 0: NA& = 0: TA& = 0
 
     For I = 1 To numberGames%
-        If Left$(H$(I), 1) = "H" Then HD& = HD& + 1: HT& = HT& + CRD!(I)
-        If Left$(H$(I), 1) = "A" Then AD& = AD& + 1: CT& = CT& + CRD!(I)
-        If Left$(H$(I), 1) = "X" Then ND& = ND& + 1: NT& = NT& + CRD!(I)
+        If Left$(statsH$(I), 1) = "H" Then HD& = HD& + 1: HT& = HT& + CRD!(I)
+        If Left$(statsH$(I), 1) = "A" Then AD& = AD& + 1: CT& = CT& + CRD!(I)
+        If Left$(statsH$(I), 1) = "X" Then ND& = ND& + 1: NT& = NT& + CRD!(I)
         TD& = TD& + 1
         TT& = TT& + CRD!(I)
     Next
@@ -574,7 +573,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
     Call TITLE_STATS
 
     Locate 2
-    Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); A$(0); Tab(61); "OPPONENT TOTALS"
+    Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); statsA$(0); Tab(61); "OPPONENT TOTALS"
 
     Color 7
     Print "FIRST DOWNS"; Tab(45); Using "####"; K!(0, 0);: Print Tab(65); Using "####"; K!(1, 0)
@@ -665,7 +664,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
     End If
 
     Call TITLE_STATS
-    Locate 2: Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); A$(0); Tab(61); "OPPONENT TOTALS"
+    Locate 2: Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); statsA$(0); Tab(61); "OPPONENT TOTALS"
 
     Color 7
 
@@ -790,7 +789,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
 
     Color 14
     Print
-    Print A$(0); Tab(18);
+    Print statsA$(0); Tab(18);
 
     If statFormat = 0 Then
         Print Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / numberGames%; Z!(15)
@@ -850,7 +849,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
 
     Print
     Color 14
-    Print A$(0); Tab(18);
+    Print statsA$(0); Tab(18);
 
     Print Using "####  ####   "; K!(0, 4); K!(0, 6);
     If K!(0, 4) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 6) / K!(0, 4);
@@ -895,7 +894,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
             RT! = QBRating!(I, I1, statFormat)
             Print Using "###.#"; RT!
 
-            'PRINT TAB(57); USING "###"; LP!(I1); : PRINT LP$(I1,0)
+            'PRINT TAB(57); USING "###"; LP!(I1); : PRINT statsLP$(I1,0)
         End If
 
     Next I1
@@ -904,7 +903,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
 
     Color 14
     'Team Totals
-    Print A$(0); Tab(18);
+    Print statsA$(0); Tab(18);
 
     'Att / Comp
     Print Using "####  ### "; K!(0, 3); K!(0, 4);
@@ -961,7 +960,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            Print lookyA3$(I, I1); Tab(22); Using "###"; LP!(I1);: Print LP$(I1, 0); Tab(32); LP$(I1, 1)
+            Print lookyA3$(I, I1); Tab(22); Using "###"; LP!(I1);: Print statsLP$(I1, 0); Tab(32); statsLP$(I1, 1)
         End If
     Next
 
@@ -985,13 +984,13 @@ Sub StatsToScreen (X, numberGames%, statFormat)
             Print Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
             If K2!(I, I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
             Print Using "      ###.#    ##    "; K2!(I, I1, 15) / numberGames%; K2!(I, I1, 16);
-            Print Using "###"; LK!(I1);: Print LK$(I1, 0); Tab(64); LK$(I1, 1)
+            Print Using "###"; LK!(I1);: Print statsLK$(I1, 0); Tab(64); statsLK$(I1, 1)
         End If
     Next I1
 
     Print
     Color 14
-    Print A$(0); Tab(18);
+    Print statsA$(0); Tab(18);
     If Z!(22) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z!(22); Z!(23); Z!(23) / Z!(22); Z!(23) / numberGames%; Z!(18)
 
     Print "OPPONENT TOTALS"; Tab(18);
@@ -1012,13 +1011,13 @@ Sub StatsToScreen (X, numberGames%, statFormat)
             Print Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
             If K2!(I, I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
             Print Using "      ###.#    ##    "; K2!(I, I1, 15) / numberGames%; K2!(I, I1, 16);
-            Print Using "###"; PK!(I1 - 3);: Print PK$(I1 - 3, 0); Tab(64); PK$(I1 - 3, 1)
+            Print Using "###"; PK!(I1 - 3);: Print statsPK$(I1 - 3, 0); Tab(64); statsPK$(I1 - 3, 1)
         End If
     Next I1
 
     Print
     Color 14
-    Print A$(0); Tab(18);
+    Print statsA$(0); Tab(18);
     If Z!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z!(24); Z!(25); Z!(25) / Z!(24); Z!(25) / numberGames%; Z!(19)
 
     Print "OPPONENT TOTALS"; Tab(18);
@@ -1049,7 +1048,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
     Color 12
     Print "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
     Color 15
-    Print A$(0); Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
+    Print statsA$(0); Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
     If K!(0, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 8) / K!(0, 7);
     Print Using "    ###       ####        ##.#     ##.#"; Z1!(24); Z1!(25); Z1!(25) / Z1!(24); (K!(0, 8) - Z1!(25)) / K!(0, 7)
 
@@ -1129,7 +1128,7 @@ Sub StatsToScreen (X, numberGames%, statFormat)
             Print Using "      ###.#    ##    "; GI!(I, I1, 1) / numberGames%; GI!(I, I1, 2);
 
             'Long Ret / Against
-            Print Using "###"; LI!(I1);: Print LI$(I1, 0); Tab(64); LI$(I1, 1)
+            Print Using "###"; LI!(I1);: Print statsLI$(I1, 0); Tab(64); statsLI$(I1, 1)
 
         End If
 
@@ -1161,49 +1160,49 @@ End Sub
 '      StatsToPrinter Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToPrinter (X, numberGames%, statFormat)
+Sub StatsToPrinter (X, numberGames%, statFormat, teamPower, SS)
 
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared PK!(), W6!(), Z!(), Z1!(), Z2!()
 
-    Shared O%(), T%(), P%()
+    Shared statsO%(), statsT%(), lookyP%()
 
-    Shared A$(), lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared lookyDI$(), lookyDS$(), H$()
-    Shared LC$(), LI$(), LK$(), LP$(), LR$()
-    Shared O$(), PK$(), SITE$()
+    Shared statsA$(), lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
+    Shared lookyDI$(), lookyDS$(), statsH$()
+    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared compO$(), statsPK$(), gameSITE$()
 
     Color 0, 15
 
     Open "REPORT" For Output As #2
-    Print #2, "GAME-BY-GAME REPORT FOR "; A$(0)
+    Print #2, "GAME-BY-GAME REPORT FOR "; statsA$(0)
     Print #2,
     Print #2, "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD"
 
     For I = 1 To numberGames%
 
-        Print #2, O$(I); Tab(19); Using "###"; O%(I);
-        Print #2, "-";: Print #2, Using "###   "; T%(I);
+        Print #2, compO$(I); Tab(19); Using "###"; statsO%(I);
+        Print #2, "-";: Print #2, Using "###   "; statsT%(I);
 
-        If O%(I) > T%(I) Then W% = W% + 1: Print #2, "W";
-        If O%(I) < T%(I) Then L% = L% + 1: Print #2, "L";
-        If O%(I) = T%(I) Then X% = X% + 1: Print #2, "T";
+        If statsO%(I) > statsT%(I) Then W% = W% + 1: Print #2, "W";
+        If statsO%(I) < statsT%(I) Then L% = L% + 1: Print #2, "L";
+        If statsO%(I) = statsT%(I) Then X% = X% + 1: Print #2, "T";
 
         Print #2, Tab(31);: Print #2, Using "####,###   "; CRD!(I);
-        Print #2, H$(I); "  "; Left$(SITE$(I), 24);
+        Print #2, statsH$(I); "  "; Left$(gameSITE$(I), 24);
         Print #2, Tab(69);
         Print #2, "(";: Print #2, Using "##"; W%;: Print #2, "-";: Print #2, Using "##"; L%;: Print #2, "-";: Print #2, Using "##"; X%;: Print #2, ")"
-        P%(0) = P%(0) + O%(I)
-        P%(1) = P%(1) + T%(I)
+        lookyP%(0) = lookyP%(0) + statsO%(I)
+        lookyP%(1) = lookyP%(1) + statsT%(I)
     Next I
 
     Print #2,
-    If statFormat = 0 Then Print #2, Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; PW; SS
+    If statFormat = 0 Then Print #2, Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; teamPower; SS
 
-    P%(0) = 0
-    P%(1) = 0
+    lookyP%(0) = 0
+    lookyP%(1) = 0
     W% = 0
     L% = 0
     X% = 0
@@ -1211,13 +1210,13 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     Print #2,
     Print #2,
     Print #2, "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
-    Print #2, A$(0); Tab(30); Using " ###  ###  ###  ###   ###"; Z!(32); Z!(33); Z!(34); Z!(35); Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)
+    Print #2, statsA$(0); Tab(30); Using " ###  ###  ###  ###   ###"; Z!(32); Z!(33); Z!(34); Z!(35); Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)
     Print #2, "OPPONENTS"; Tab(30); Using " ###  ###  ###  ###   ###"; Z1!(32); Z1!(33); Z1!(34); Z1!(35); Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)
     Print #2,
 
     '-- Would numberGames% ever be 0?
     Print #2, "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
-    Print #2, A$(0); Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z!(32) / numberGames%; Z!(33) / numberGames%; Z!(34) / numberGames%; Z!(35) / numberGames%; (Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)) / numberGames%
+    Print #2, statsA$(0); Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z!(32) / numberGames%; Z!(33) / numberGames%; Z!(34) / numberGames%; Z!(35) / numberGames%; (Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)) / numberGames%
     Print #2, "OPPONENTS"; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z1!(32) / numberGames%; Z1!(33) / numberGames%; Z1!(34) / numberGames%; Z1!(35) / numberGames%; (Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)) / numberGames%
     Print #2,
 
@@ -1226,9 +1225,9 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     HA = 0: AA = 0: NA = 0: TA = 0
 
     For I = 1 To numberGames%
-        If Left$(H$(I), 1) = "H" Then HD = HD + 1: HT = HT + CRD!(I)
-        If Left$(H$(I), 1) = "A" Then AD = AD + 1: CT = CT + CRD!(I)
-        If Left$(H$(I), 1) = "X" Then ND = ND + 1: NT = NT + CRD!(I)
+        If Left$(statsH$(I), 1) = "H" Then HD = HD + 1: HT = HT + CRD!(I)
+        If Left$(statsH$(I), 1) = "A" Then AD = AD + 1: CT = CT + CRD!(I)
+        If Left$(statsH$(I), 1) = "X" Then ND = ND + 1: NT = NT + CRD!(I)
         TD = TD + 1: TT = TT + CRD!(I)
     Next
 
@@ -1244,7 +1243,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     Print #2, Using "TOTAL           ##    #####,###   ###,###"; TD; TT; TA
     Print #2, Chr$(12)
 
-    Print #2, "TEAM STATISTICS CATEGORY"; Tab(41); A$(0); Tab(61); "OPPONENT TOTALS"
+    Print #2, "TEAM STATISTICS CATEGORY"; Tab(41); statsA$(0); Tab(61); "OPPONENT TOTALS"
 
     Print #2, "FIRST DOWNS"; Tab(45); Using "####"; K!(0, 0);
     Print #2, Tab(65); Using "####"; K!(1, 0)
@@ -1469,7 +1468,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
         End If
     Next I1
 
-    Print #2, A$(0); Tab(18);
+    Print #2, statsA$(0); Tab(18);
     If statFormat = 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / numberGames%; Z!(15)
     If statFormat <> 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1) - W6!(0, 0); K!(0, 2) + W6!(0, 1); (K!(0, 2) + W6!(0, 1)) / (K!(0, 1) - W6!(0, 0)); (K!(0, 2) + W6!(0, 1)) / numberGames%; Z!(15)
 
@@ -1500,7 +1499,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
         End If
     Next I1
 
-    Print #2, A$(0); Tab(18);
+    Print #2, statsA$(0); Tab(18);
     Print #2, Using "####  ####   "; K!(0, 4); K!(0, 6);
 
     If K!(0, 4) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K!(0, 6) / K!(0, 4);
@@ -1526,7 +1525,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
         End If
     Next I1
 
-    Print #2, A$(0); Tab(18);
+    Print #2, statsA$(0); Tab(18);
     Print #2, Using "####  ### "; K!(0, 3); K!(0, 4);
 
     If K!(0, 3) = 0 Then Print #2, "   --"; Else Print #2, Using "###.#"; K!(0, 4) / K!(0, 3) * 100;
@@ -1561,7 +1560,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     For I1 = 0 To 3
         If K2!(I, I1, 9) <> 0 Then
             Print #2, lookyA3$(I, I1); Tab(22); Using "###"; LP!(I1);
-            Print #2, LP$(I1, 0); Tab(32); LP$(I1, 1)
+            Print #2, statsLP$(I1, 0); Tab(32); statsLP$(I1, 1)
         End If
     Next
 
@@ -1576,11 +1575,11 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
             Print #2, Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
             If K2!(I, I1, 14) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
             Print #2, Using "      ###.#    ##    "; K2!(I, I1, 15) / numberGames%; K2!(I, I1, 16);
-            Print #2, Using "###"; LK!(I1);: Print #2, LK$(I1, 0); Tab(64); LK$(I1, 1)
+            Print #2, Using "###"; LK!(I1);: Print #2, statsLK$(I1, 0); Tab(64); statsLK$(I1, 1)
         End If
     Next I1
 
-    Print #2, A$(0); Tab(18);
+    Print #2, statsA$(0); Tab(18);
 
     If Z!(22) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z!(22); Z!(23); Z!(23) / Z!(22); Z!(23) / numberGames%; Z!(18)
 
@@ -1601,11 +1600,11 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
             Print #2, Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
             If K2!(I, I1, 14) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
             Print #2, Using "      ###.#    ##    "; K2!(I, I1, 15) / numberGames%; K2!(I, I1, 16);
-            Print #2, Using "###"; PK!(I1 - 3);: Print #2, PK$(I1 - 3, 0); Tab(64); PK$(I1 - 3, 1)
+            Print #2, Using "###"; PK!(I1 - 3);: Print #2, statsPK$(I1 - 3, 0); Tab(64); statsPK$(I1 - 3, 1)
         End If
     Next I1
 
-    Print #2, A$(0); Tab(18);
+    Print #2, statsA$(0); Tab(18);
 
     If Z!(24) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z!(24); Z!(25); Z!(25) / Z!(24); Z!(25) / numberGames%; Z!(19)
 
@@ -1624,7 +1623,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
     Print #2,
     Print #2,
     Print #2, "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
-    Print #2, A$(0); Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); Z1!(24); Z1!(25); Z1!(25) / Z1!(24); (K!(0, 8) - Z1!(25)) / K!(0, 7)
+    Print #2, statsA$(0); Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); Z1!(24); Z1!(25); Z1!(25) / Z1!(24); (K!(0, 8) - Z1!(25)) / K!(0, 7)
     Print #2, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); Z!(24); Z!(25); Z!(25) / Z!(24); (K!(1, 8) - Z!(25)) / K!(1, 7)
     Print #2,
     Print #2,
@@ -1673,7 +1672,7 @@ Sub StatsToPrinter (X, numberGames%, statFormat)
         If GI!(I, I1, 0) <> 0 Then
             Print #2, lookyDI$(I, I1); Tab(18);
             Print #2, Using "####  ####   ##.#      ###.#    ##    "; GI!(I, I1, 0); GI!(I, I1, 1); GI!(I, I1, 1) / GI!(I, I1, 0); GI!(I, I1, 1) / numberGames%; GI!(I, I1, 2);
-            Print #2, Using "###"; LI!(I1);: Print #2, LI$(I1, 0); Tab(64); LI$(I1, 1)
+            Print #2, Using "###"; LI!(I1);: Print #2, statsLI$(I1, 0); Tab(64); statsLI$(I1, 1)
         End If
     Next I1
 

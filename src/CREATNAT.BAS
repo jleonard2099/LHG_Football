@@ -1,7 +1,7 @@
 Sub CREATNAT ()
 
     Shared Z1$(), Z2$()
-    Shared Z1%()
+    Shared statsZ1%()
 
     _Title "3-in-1 Football - Create Organization"
 
@@ -42,7 +42,7 @@ Sub CREATNAT ()
 			For X = 1 To 40
 				Z1$(X) = "XXX"
 				Z2$(X) = "XXX"
-				Z1%(X) = -1
+				statsZ1%(X) = -1
 			Next
 
             Select Case Selection%
@@ -241,7 +241,7 @@ Sub AddConference (targetFile$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -329,7 +329,7 @@ Sub ReviewConf_Natl (targetFile$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate , 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
