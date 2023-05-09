@@ -278,10 +278,17 @@ $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
 _AllowFullScreen
 
+opSys$ = _OS$
+y% = Len(s$)
+osSpec$ = Left$(_OS$, InStr(2, _OS$, "[") - 1)
+
 If Not _FileExists("DEV.BAS") Then
     Open "DEV.BAS" For Output As #1
     For I = 0 To 2
-        Print #1, _CWD$ + "\"
+        Select Case osSpec$
+            Case "[WINDOWS]": Print #1, _CWD$ + "\"
+            Case "[MAC]","[LINUX]": Print #1, _CWD$ + "/"
+        End Select
     Next
     Close 1
 End If
@@ -386,15 +393,23 @@ Sub ConfigureDrives ()
         diskPaths$(I) = Left$(diskPaths$(I), Len(diskPaths$(I)) - 1)
     Next
 
-    'Colr = OneColor%(FG, BG) 'pack FG and BG into a single byte
     Cls
 
     Locate , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS"
     Print
     Locate , 31: Print "PATHNAME EXAMPLES:"
     Print
-    Locate , 31: Print "A:"
-    Locate , 31: Print "C:\FULL\TEAMS"
+	Select Case osSpec$
+		Case "[WINDOWS]": 
+			Locate , 31: Print "A:"
+			Locate , 31: Print "C:\FOOT\TEAMS"	
+		Case "[LINUX]": 
+			Locate , 31: Print "/mnt/floppy"
+			Locate , 31: Print "/usr/bin/foot/teams"
+		Case "[MAC]": 			
+			Locate , 31: Print "/Volumes/floppy"
+			Locate , 31: Print "/Applications/Foot/teams"
+	End Select
 
     Locate 7, 1: QPrint "Path for Teams ", 14, 1, -1
     Locate , 16: QPrint PadRight$(diskPaths$(0), 30), FG, BG, -1
@@ -441,7 +456,10 @@ Sub ConfigureDrives ()
     Open "DEV.BAS" For Output As #1
 
     For R = 0 To 2:
-        diskPaths$(R) = diskPaths$(R) + "\"
+        Select Case osSpec$
+            Case "[WINDOWS]": diskPaths$(R) = diskPaths$(R) + "\"
+            Case "[MAC]","[LINUX]": diskPaths$(R) = diskPaths$(R) + "/"
+		End Select
         Print #1, diskPaths$(R)
     Next R
 
