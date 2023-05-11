@@ -16,11 +16,11 @@ DefInt A-Z
 '$INCLUDE: 'KeyInput.bi'
 '$INCLUDE: 'QPProEqu.bi'
 '$INCLUDE: 'PadRight.bi'
+'$INCLUDE: 'Variables.bi'
 
 ' For Utils
 '$INCLUDE: 'MainRoutines.bi'
 '$INCLUDE: 'TITLE.bi'
-'$INCLUDE: 'Variables.bi'
 
 ' For Game
 '$INCLUDE: 'GameRoutines.bi'
@@ -278,16 +278,14 @@ $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
 _AllowFullScreen
 
-opSys$ = _OS$
-y% = Len(s$)
-osSpec$ = Left$(_OS$, InStr(2, _OS$, "[") - 1)
+opSysType$ = Left$(_OS$, InStr(2, _OS$, "[") - 1)
 
 If Not _FileExists("DEV.BAS") Then
     Open "DEV.BAS" For Output As #1
     For I = 0 To 2
-        Select Case osSpec$
+        Select Case opSysType$
             Case "[WINDOWS]": Print #1, _CWD$ + "\"
-            Case "[MAC]","[LINUX]": Print #1, _CWD$ + "/"
+            Case "[MAC]", "[LINUX]": Print #1, _CWD$ + "/"
         End Select
     Next
     Close 1
@@ -385,6 +383,8 @@ End Sub
 '...explanation...
 Sub ConfigureDrives ()
 
+    Shared opSysType$
+
     Color 15, 1
     FG = 0
     BG = 7
@@ -399,17 +399,17 @@ Sub ConfigureDrives ()
     Print
     Locate , 31: Print "PATHNAME EXAMPLES:"
     Print
-	Select Case osSpec$
-		Case "[WINDOWS]": 
-			Locate , 31: Print "A:"
-			Locate , 31: Print "C:\FOOT\TEAMS"	
-		Case "[LINUX]": 
-			Locate , 31: Print "/mnt/floppy"
-			Locate , 31: Print "/usr/bin/foot/teams"
-		Case "[MAC]": 			
-			Locate , 31: Print "/Volumes/floppy"
-			Locate , 31: Print "/Applications/Foot/teams"
-	End Select
+    Select Case opSysType$
+        Case "[WINDOWS]":
+            Locate , 31: Print "A:"
+            Locate , 31: Print "C:\FOOT\TEAMS"
+        Case "[LINUX]":
+            Locate , 31: Print "/mnt/floppy"
+            Locate , 31: Print "/usr/bin/foot/teams"
+        Case "[MAC]":
+            Locate , 31: Print "/Volumes/floppy"
+            Locate , 31: Print "/Applications/Foot/teams"
+    End Select
 
     Locate 7, 1: QPrint "Path for Teams ", 14, 1, -1
     Locate , 16: QPrint PadRight$(diskPaths$(0), 30), FG, BG, -1
@@ -456,10 +456,10 @@ Sub ConfigureDrives ()
     Open "DEV.BAS" For Output As #1
 
     For R = 0 To 2:
-        Select Case osSpec$
+        Select Case opSysType$
             Case "[WINDOWS]": diskPaths$(R) = diskPaths$(R) + "\"
-            Case "[MAC]","[LINUX]": diskPaths$(R) = diskPaths$(R) + "/"
-		End Select
+            Case "[MAC]", "[LINUX]": diskPaths$(R) = diskPaths$(R) + "/"
+        End Select
         Print #1, diskPaths$(R)
     Next R
 
@@ -722,3 +722,4 @@ End Sub
 ' For Game
 '$INCLUDE: 'FOOTBALL.BAS'
 '$INCLUDE: 'GameRoutines.bm'
+

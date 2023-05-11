@@ -2,28 +2,14 @@ Sub MERGE ()
 
     _Title "3-in-1 Football - Merge Stats"
 
-    ReDim menuChoices$(1 To 4)
-
-    TMR = 6420
-    NB = -1
-    NC = -1
-    ND = -1
-    NE = -1
-    NF = -1
-    NG = -1
-    NH = -1
-    NI = -1
-    NJ = 0
-    NK = 0
-    D = 0
-    JX = 0
-    VV = 0
+    ReDim menuChoices$(1 To 3)
 
     Do
 
+        Color , 0
         Cls
 
-        Call TITLE_UTILS
+        Call TITLE_MERGE
 
         menuChoices$(1) = "MERGE STATISTICAL FILES           "
         menuChoices$(2) = "ALIGN STATISTICAL FILES           "
@@ -91,34 +77,11 @@ Sub MergeStats ()
 
     Do
 
-        Color 12, 0
-        Cls
-        Locate 2, 5: Print "ENTER COMPLETE PATH FOR TEAM STATS TO MERGE"
-        Color 15
-        Locate 4, 5: Print "EXAMPLE - A:"
-        Locate , 5: Print "          C:\HAFFNER"
-        Locate , 5: Print "          C:\HAFFNER\1980"
-        Locate , 5: Print "          D:\FOOTBALL"
+        Call GetMergePaths (pathCurrentStats$, pathRoadStats$, I$)
 
-        For J = 10 To 13: Locate J
-            Print Space$(60)
-        Next
+        If UCase$(I$) = "N" And I$ <> Chr$(27) Then
 
-        Do
-            Color 10
-            Locate 10, 5: Line Input "ROAD STATS:     "; pathRoadStats$
-            Locate , 5
-            Locate , 5: Line Input "CURRENT STATS:  "; pathCurrentStats$
-            Color 14
-
-            Locate 13, 5: Print "ANY CHANGE (Y/N)"
-            I$ = GetKeyPress$
-            
-        Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
-
-        If I$ <> Chr$(27) Then
-        
-            Call GetDiskID_MERGE
+            Call GetDiskID_MERGE(A$)
 
             B$ = A$
 
@@ -154,16 +117,11 @@ Sub MergeStats ()
 
             If UCase$(J$) = "N" Then
 
-                If Not _FileExists(pathRoadStats$ + "\" + statFile$) Then
-                    Cls
-                    Color 7
-                    Locate 2, 10: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
-                    Print
-                    Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
-                Else
+                If _FileExists(pathRoadStats$ + "\" + statFile$) Then
 
                     Open pathRoadStats$ + "\" + statFile$ For Input As #1
                     Input #1, AR$(PX)
+
                     For I = 0 To 9: Input #1, AR1$(I): Next I
                     For I = 0 To 5: Input #1, AR2$(I): Next I
                     For I = 0 To 3: Input #1, AR3$(I): Next I
@@ -197,6 +155,7 @@ Sub MergeStats ()
 
                     For I = 0 To 9: Input #1, LIR!(I): Input #1, LIR$(I, 0)
                     Input #1, LIR$(I, 1): Next
+
                     Close #1
 
                     Open pathRoadStats$ + "\" + statFile$ + "S" For Input As #4
@@ -211,17 +170,11 @@ Sub MergeStats ()
                     For I = 1 To 120: Input #4, SITER$(I): Next I
                     Close #4
 
-                    If Not _FileExists(pathCurrentStats$ + "\" + statFile$) Then
-                        Cls
-                        Color 7
-                        Locate 2, 10: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
-                        Print
-                        Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
-                    Else
+                    If _FileExists(pathCurrentStats$ + "\" + statFile$) Then
 
-                        'Open road stat file and read to arrays
                         Open pathCurrentStats$ + "\" + statFile$ For Input As #1
                         Input #1, statsA$(PX)
+
                         For I = 0 To 9: Input #1, statsA1$(I): Next I
                         For I = 0 To 5: Input #1, statsA2$(I): Next I
                         For I = 0 To 3: Input #1, statsA3$(I): Next I
@@ -250,7 +203,6 @@ Sub MergeStats ()
 
                         Close 1
 
-                        'Open current stat file and read to arrays
                         Open pathCurrentStats$ + "\" + statFile$ + "S" For Input As #5
                         Input #5, Y%
                         For I = 1 To 120: Input #5, statsO%(I): Next I
@@ -266,51 +218,62 @@ Sub MergeStats ()
                         SEQ = 0
 
                         For K = 0 To 9
-                            If AR1$(K) <> statsA1$(K) Then
+                            If UCase$(AR1$(K)) <> UCase$(statsA1$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 5
-                            If AR2$(K) <> statsA2$(K) Then
+                            If UCase$(AR2$(K)) <> UCase$(statsA2$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 3
-                            If AR3$(K) <> statsA3$(K) Then
+                            If UCase$(AR3$(K)) <> UCase$(statsA3$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If AR4$(K) <> statsA4$(K) Then
+                            If UCase$(AR4$(K)) <> UCase$(statsA4$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If AR5$(K) <> statsA5$(K) Then
+                            If UCase$(AR5$(K)) <> UCase$(statsA5$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
-                        If AR6$(0) <> statsA6$(0) Then
+                        If UCase$(AR6$(0)) <> UCase$(statsA6$(0)) Then
                             SEQ = SEQ + 1
                         End If
 
+                        '-- This makes more sense to me
+                        '-- But the original did not hae the For/Next
+                        '-- Instead it just operated on (0)
                         For I = 0 To 1
-                            If AR7$(0) <> statsA7$(0) Then
+                            If UCase$(AR7$(I)) <> UCase$(statsA7$(I)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         If SEQ = 0 Then
-                            Call DoTheMerge (pathCurrentStats$, statFile$, ORD$(), ORD%())
+
+                            Call DoTheMerge(pathCurrentStats$, statFile$, ORD$(), ORD%())
+
+							For J = 13 To 23
+								Locate J
+								Print Space$(65)
+							Next
+
                         Else
+
                             Cls
                             Color 14
-                            Locate 5, 27: Print "PLAYERS NOT IN SEQUENCE !!"; DUMMY$
+                            Locate 5, 27: Print "PLAYERS NOT IN SEQUENCE !!"
                             Color 15
                             Locate 7, 20: Print "STATS WILL BE DISTORTED UNLESS THE ROAD"
                             Locate , 19: Print "FILE LISTS THE PLAYERS IN THE SAME SEQUENCE"
@@ -320,17 +283,58 @@ Sub MergeStats ()
                             Locate , 31: Print "ENTER STATS MANUALLY."
                             Color 13
                             Locate 15, 29: Line Input "HIT ENTER TO GO TO MENU"; DUMMY$
+
+                        End If 'Done checking sequence
+
+                    Else
+					
+                        Cls
+                        Color 7
+                        Locate 2, 10: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
+                        Print
+                        Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
+
+                        Do
+                            Locate , 10
+                            Print "TRY AGAIN (YN) "
+                            I$ = GetKeyPress$
+                        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                        If UCase$(I$) = "Y" Then
+                            Print
+                            Print "HIT ENTER TO RE-ENTER INFORMATION"
+                            I$ = GetKeyPress$
                         End If
+					
+					End If 'Done check if home file exists
 
-                    End If 'Done checking for current file
+				Else
 
-                End If 'Done checking for extra file
+                    Cls
+                    Locate 2, 10
+                    Color 7: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
+                    Print
+                    Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
 
-            End If 'Done checking for changes
+                    Do
+                        Locate , 10
+                        Print "TRY AGAIN (YN) "
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    If UCase$(I$) = "Y" Then
+                        Print
+                        Print "HIT ENTER TO RE-ENTER INFORMATION"
+                        I$ = GetKeyPress$
+                    End If
+                
+				End If 'Done checking if road file exists
+
+            End If 'Done checking if ready to proceed
 
         End If 'Done checking for ESC
-        
-    Loop Until DUMMY$ <> "" Or UCase$(J$) = "N" Or UCase$(I$) = "N"Or I$ = Chr$(27)
+
+    Loop Until DUMMY$ <> "" Or UCase$(J$) = "N" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
 End Sub
 
@@ -508,11 +512,87 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, ORD$(), ORD%())
 
 End Sub
 
+
+'----------------------------------------
+'       GetMergePaths Subroutine
+'----------------------------------------
+'...explanation...
+Sub GetMergePaths (pathCurrentStats$, pathRoadStats$, promptResponse$)
+
+    Shared opSysType$
+
+    Do
+
+        Color 12, 0
+        Cls
+
+        Locate 2, 5: Print "ENTER COMPLETE PATH FOR TEAM STATS TO MERGE/ALIGN"
+        Color 15
+        Select Case opSysType$
+            Case "[WINDOWS]":
+                Locate 4, 5: Print "EXAMPLE - A:"
+                Locate , 5: Print "          C:\HAFFNER"
+                Locate , 5: Print "          C:\HAFFNER\1960"
+                Locate , 5: Print "          D:\FOOTBALL"
+            Case "[LINUX]":
+                Locate 4, 5: Print "EXAMPLE - /mnt/floppy"
+                Locate , 5: Print "           /usr/bin/haffner"
+                Locate , 5: Print "           /usr/bin/haffner/1960"
+                Locate , 5: Print "           /home/haffner/football"
+            Case "[MAC]":
+                Locate 4, 5: Print "EXAMPLE - /Volumes/floppy"
+                Locate , 5: Print "           /Applications/haffner"
+                Locate , 5: Print "           /Applications/haffner/1960"
+                Locate , 5: Print "           /Users/haffner/football"
+        End Select
+
+        For J = 10 To 13
+            Locate J
+            Print Space$(70)
+        Next
+
+        Color 10
+        Locate 10, 5
+        Line Input "ROAD STATS:     "; pathRoadStats$
+        Locate , 5
+        Locate , 5
+        Line Input "CURRENT STATS:  "; pathCurrentStats$
+
+        Color 14
+        Locate 13, 5: Print "ANY CHANGE (Y/N)"
+        promptResponse$ = GetKeyPress$
+
+    Loop Until UCase$(promptResponse$) = "N" Or promptResponse$ = Chr$(27)
+
+    'Adjust path terminator for OS type
+    Select Case opSysType$
+        Case "[WINDOWS]":
+            If Not (Right$(pathCurrentStats$, 1) = "\") Then
+                pathCurrentStats$ = pathCurrentStats$ + "\"
+            End If
+
+            If Not (Right$(pathRoadStats$, 1) = "\") Then
+                pathRoadStats$ = pathRoadStats$ + "\"
+            End If
+
+        Case "[MAC]", "[LINUX]":
+            If Not (Right$(pathCurrentStats$, 1) = "/") Then
+                pathCurrentStats$ = pathCurrentStats$ + "/"
+            End If
+
+            If Not (Right$(pathRoadStats$, 1) = "/") Then
+                pathRoadStats$ = pathRoadStats$ + "/"
+            End If
+    End Select
+
+End Sub
+
+
 '----------------------------------------
 '       GetDiskID_MERGE  Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetDiskID_MERGE ()
+Sub GetDiskID_MERGE (A$)
 
     Shared statsPA%()
 
@@ -549,23 +629,23 @@ Sub GetDiskID_MERGE ()
         If I$ <> Chr$(27) Then
 
             If I$ = Chr$(13) Then
-                Call SelectTeam_MERGE(numberTeams, YN$)
+                Call SelectTeam_MERGE(yearNumber$, numberTeams)
             Else
                 Locate 7, 27: Print I$
                 Locate 7, 28: Line Input NY$
                 NY$ = I$ + NY$
                 Color 15, 0
                 If NY$ = "" Then
-                    Call SelectTeam_MERGE(numberTeams, NY$)
+                    Call SelectTeam_MERGE(yearNumber$, numberTeams)
                 Else
-                    YN$ = NY$
+                    yearNumber$ = NY$
                     Erase teamNames$
-
                     numberTeams = 0
 
-                    Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+                    Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
                     Y = LOF(1)
                     Field #1, 15 As Q$(0), 640 As X$
+
                     For I1 = 1 To Y / 934
                         Get #1, I1
                         For I2 = 1 To 15
@@ -580,7 +660,7 @@ Sub GetDiskID_MERGE ()
                     Next I1
                     Close 1
 
-                    Call SelectTeam_MERGE(numberTeams, YN$)
+                    Call SelectTeam_MERGE(yearNumber$, numberTeams)
                 End If
             End If
 
@@ -591,7 +671,7 @@ Sub GetDiskID_MERGE ()
             Else
                 Locate 2, 33
                 Color statsPA%(2), statsPA%(1): Print A$
-                
+
                 Color 15, 4
 
                 Do
@@ -612,10 +692,10 @@ Sub GetDiskID_MERGE ()
 End Sub
 
 '----------------------------------------
-'       SelectTeam_MERGE  Subroutine
+'       SelectTeam_MERGE Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_MERGE (numberTeams, YN$)
+Sub SelectTeam_MERGE (yearNumber$, numberTeams)
 
     Shared statsPA%()
 
@@ -642,15 +722,30 @@ Sub SelectTeam_MERGE (numberTeams, YN$)
     If ExitCode% <> 27 Then
 
         T1 = teamIndex%(Selection%)
+        Locate 2, 33: Color 31: Print "LOADING..."
 
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
-        Get #1, T1
+        If Not _FileExists(diskPaths$(0) + "FOOT." + yearNumber$) Then
+            BO% = 1
+            Locate 10, 8
+            Call CSMsgBox("NO TEAM FILES WERE FOUND MATCHING THIS ID.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            I$ = GetKeyPress$
+            Call CSMsgBox("", 0, Pass)
+        Else
 
-        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+            Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
 
-        Close 1
+            Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
+            Get #1, T1
+
+            For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+
+            Close 1
+
+        End If
+
+    Else
+        BO% = 1
     End If
 
 End Sub

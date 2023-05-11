@@ -1,6 +1,8 @@
 '----------------------------------------
 ' Used across more than one source file
 '----------------------------------------
+Dim opSysType$
+
 Dim Shared A$, AA$, S$
 Dim Shared ATT&
 
@@ -60,6 +62,19 @@ Dim LP!(3), LPN!(3), LPR!(3), LR!(9), LRN!(0 To 9), LRR!(0 To 9)
 Dim PK!(2), PKN!(2), PKR!(2)
 Dim Z!(38), Z1!(38)
 Dim Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
+
+
+'----------------------------------------
+' Used across ALIGN routines
+'----------------------------------------
+Dim alignA$(15), alignAR$(15)
+Dim AR(15, 14)
+Dim W0R(15), WR1(15)
+Dim ZR(15), ZR1(15)
+
+Dim AN$(15)
+Dim AN(15, 14)
+Dim W0N(15), WN1(15)
 
 
 '----------------------------------------

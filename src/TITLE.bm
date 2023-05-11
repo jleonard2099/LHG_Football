@@ -93,7 +93,7 @@ Sub TITLE_LEADERS
     Print Tab(80);
     Locate , 26
 
-    Color 0
+    Color 14
     Print "3 IN 1 FOOTBALL LEADERS"
 
     Locate 24, 1
@@ -119,7 +119,7 @@ Sub TITLE_MERGE ()
 	Print Tab(80);
 	Locate , 26
 
-	Color 0
+	Color 14
 	Print "3 IN 1 FOOTBALL: MERGE"
 
 	Locate 24, 1

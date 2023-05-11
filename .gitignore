@@ -10,3 +10,4 @@ src/DEV.BAS
 src/GAME82
 src/EVENTS.BOX
 src/TICKER
+bin/TICKER
