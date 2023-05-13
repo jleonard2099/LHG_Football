@@ -30,7 +30,6 @@ Sub MERGE ()
         _MouseHide
 
         Color , 0
-        RN = Selection%
 
         If ExitCode% <> 27 Then
             Select Case Selection%
@@ -45,7 +44,7 @@ Sub MERGE ()
 End Sub
 
 '----------------------------------------
-'       MergeStats Subroutine
+'          MergeStats Subroutine
 '----------------------------------------
 '...explanation...
 Sub MergeStats ()
@@ -104,6 +103,7 @@ Sub MergeStats ()
 
             statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
 
+			Color , 0
             Cls
 
             Locate 10, 15: Print "ROAD STATS ARE ON DRIVE "; pathRoadStats$
@@ -380,7 +380,6 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, ORD$(), ORD%())
         Next
     Next
 
-    319
     Color 12
     Locate 18, 20: Print "MERGING STAT FILE AND SCHEDULE RESULTS . . . ."
 
