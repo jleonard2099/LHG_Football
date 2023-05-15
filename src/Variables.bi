@@ -34,7 +34,7 @@ Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 ' Used across multiple routines
 '----------------------------------------
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
-Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
+'Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
 Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
 Dim LC$(15, 1), LCN$(15, 1), LCR$(15, 1), LFN$(1), LFR$(1)
 Dim statsLF$(1), statsLI$(9, 1), statsLK$(2, 1), statsLP$(3, 1)
@@ -42,7 +42,7 @@ Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
 Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
 Dim PKN$(2, 1), PKR$(2, 1)
 Dim statsA$(1), statsAA$(1)
-Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
+'Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
 Dim statsDI$(9), statsDS$(15)
 Dim statsPK$(2, 1)
 
@@ -67,8 +67,13 @@ Dim Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 '----------------------------------------
 ' Used across ALIGN routines
 '----------------------------------------
+Dim Ycurr%, Yroad%
+
 Dim alignA$(15), alignAR$(15)
+Dim ORD$(120)
+
 Dim AR(15, 14)
+Dim ORD%(120)
 Dim W0R(15), WR1(15)
 Dim ZR(15), ZR1(15)
 

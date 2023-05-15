@@ -1,5 +1,7 @@
 Sub LOOKY ()
 
+    _Title "3-in-1 Football - View Stats"
+
     Shared AF!(), AM!(), GI!(), GS!()
     Shared K!(), K2!(), PK!(), W6!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
@@ -16,19 +18,12 @@ Sub LOOKY ()
     'This is read in from the file but not used???
     Dim statsLF$(1)
 
-    _Title "3-in-1 Football - View Stats"
-
     Do
 
         Color , 0
         Cls
-        Call TITLE_STATS
-        Print
-        Print
-        Print
-        Print
 
-        J = 6
+        JJ = 6
 
         Locate 8, 8: Color 15, 1
 
@@ -36,13 +31,13 @@ Sub LOOKY ()
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
         'Print box sides
-        For II = 1 To J
+        For II = 1 To JJ
             Locate 8 + II, 8
             Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
         'Print box bottom
-        Locate 9 + J, 8
+        Locate 9 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
         Locate 7, 32
@@ -52,6 +47,7 @@ Sub LOOKY ()
         Locate , 30: Color 15: Print "C";: Color 7: Print "OLLEGE FORMAT"
         Locate , 30: Color 15: Print "P";: Color 7: Print "RO FORMAT"
         Locate , 30: Color 15: Print "E";: Color 7: Print "XIT TO MAIN MENU"
+
         I$ = GetKeyPress$
 
         Select Case UCase$(I$)
@@ -84,13 +80,11 @@ Sub LOOKY ()
                 End If
             Next XX
 
-            Color 15, 0
-
-            Cls
-
-            Call TITLE_STATS
-
             statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+
+            Color 15, 0
+            Cls
+            Call TITLE_STATS
 
             D% = 0
             PX = 0
@@ -230,15 +224,20 @@ Sub LoadTeamStats (statFile$, numberGames%, teamPower, SS)
         Print "ERROR::: UNABLE TO LOCATE COMPILED STATS FILE"
         I$ = GetKeyPress$
     Else
+
         Open diskPaths$(1) + statFile$ + "S" For Input As #2
         Input #2, X$
         numberGames% = Val(X$)
+
         'Opponent Score
         For I = 1 To 120: Input #2, statsO%(I): Next I
+
         'Opponent
         For I = 1 To 120: Input #2, compO$(I): Next I
+
         'Team Score
         For I = 1 To 120: Input #2, statsT%(I): Next I
+
         'Home / Away
         For I = 1 To 120: Input #2, statsH$(I): Next I
 
@@ -301,9 +300,8 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
 
         Color 15, 0
         Cls
-        JJ = 6
-        SN = 1
 
+        JJ = 6
         Locate 6, 8: Color 15, 4
 
         'Print box top
@@ -320,6 +318,7 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
         Locate 7, 32
+
         Locate , 12: Print "ENTER DISK ID: ": Print
         Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
         Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
@@ -328,9 +327,8 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
 
         I$ = GetKeyPress$
 
-        If I$ = Chr$(27) Then
-            Z$ = "END"
-        Else
+        If I$ <> Chr$(27) Then
+
             If I$ = Chr$(13) Then
                 Call SelectTeam_LOOKY(numberTeams, yearNumber$)
             Else
@@ -338,12 +336,14 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                 Locate 7, 28: Line Input NY$
                 NY$ = I$ + NY$
                 Color 15, 0
+
                 If NY$ = "" Then
                     Call SelectTeam_LOOKY(numberTeams, NY$)
                 Else
                     yearNumber$ = NY$
                     Erase teamNames$
                     numberTeams = 0
+
                     Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
                     Y = LOF(1)
                     Field #1, 15 As Q$(0), 640 As X$
@@ -382,11 +382,13 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
+				'Read in stats here???
+				
             End If
 
         End If
 
-    Loop Until UCase$(I$) = "N"
+    Loop Until UCase$(Z$) = "END" Or I$ = Chr$(27)
 
     Color 15, 0
 
