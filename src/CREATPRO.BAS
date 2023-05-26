@@ -254,13 +254,10 @@ Sub ViewProLeague (LG$, div1$, div2$, div3$)
                     Locate 7, 27: Input NY$
 
                     If NY$ = "" And YN$ <> "" Then
-
                         Call SelectTeam_CREATPRO(YN$, NTMS, teamNbr)
-
                     Else
-                        YN$ = NY$
+                        YN$ = RTrim$(NY$)
                         Erase teamNames$
-
                         NTMS = 0
 
                         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
@@ -283,14 +280,11 @@ Sub ViewProLeague (LG$, div1$, div2$, div3$)
 
                         Close 1
 
-                        TS% = Int((NTMS - 1) / 80)
-
                         Call SelectTeam_CREATPRO(YN$, NTMS, teamNbr)
 
                     End If
 
-                    A$ = Q$(1)
-                    A$ = RTrim$(A$)
+                    A$ = RTrim$(Q$(1))
 
                     If BO% = 1 Then
                         BO% = 0
@@ -356,8 +350,9 @@ Sub SelectTeam_CREATPRO (YN$, NTMS, teamNbr)
     If ExitCode% <> 27 Then
 
         teamNbr = teamIndex%(Selection%)
+        teamYear$ = RTrim$(YN$)
 
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -391,8 +386,8 @@ Sub ReviewLeague ()
         'Display list of files...
 
         Spec$ = diskPaths$(2) + "*.LIB"
-        null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-        Count% = DirCount%
+		Count% = FCount%(Spec$)
+
         If Count% = 0 Then
 
             Locate 10, 8

@@ -171,12 +171,16 @@ Sub HeadToHead_Pro_League (X2)
 		Locate 7, 32
 
         Do
-            Locate 10, 15
+            Locate 10
 			Color 7, 1
 
-            Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "F";: Color 7: Print "ILE"
+
             J$ = GetKeyPress$
 
             Color 14, 0
@@ -1325,8 +1329,8 @@ Sub ChooseLeague (targetFile$)
     Do
 
         Spec$ = diskPaths$(2) + "*.LIB"
-        null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-        Count% = DirCount%
+		Count% = FCount%(Spec$)
+
         If Count% = 0 Then
             Locate 10, 8
             Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
@@ -1452,9 +1456,8 @@ Sub GetDiskID_HD2HDPRO (A$)
                 If NY$ = "" Then
                     Call SelectTeam_HD2HDPRO(numberTeams, YN$)
                 Else
-                    YN$ = NY$
+                    YN$ = RTrim$(NY$)
                     Erase teamNames$
-
                     numberTeams = 0
 
                     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
@@ -1542,9 +1545,12 @@ Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
     If ExitCode% <> 27 Then
 
         T1 = teamIndex%(Selection%)
+        teamYear$ = RTrim$(YN$)
 
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
         Get #1, T1
 
         For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1

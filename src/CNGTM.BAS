@@ -92,27 +92,32 @@ Sub GetTeam_CNGTM (YN$, teamNbr)
         If NY$ = "" Then
             Call SelectTeam_CNGTM(NTMS, YN$)
         Else
-            YN$ = NY$
+            YN$ = RTrim$(NY$)
             Erase teamNames$
-
             NTMS = 0
+            
             Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
             Y = LOF(1)
+
             Field #1, 15 As Q$(0), 640 As X$
 
             For I1 = 1 To Y / 934
+
                 Get #1, I1
+
                 For I2 = 1 To 15
                     If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam% = 1: Exit For
                 Next I2
+
                 If nullTeam% <> 1 Then
                     NTMS = NTMS + 1
                     teamNames$(NTMS) = Q$(0): teamIndex%(NTMS) = I1
                 End If
+
             Next I1
 
             Close 1
-            'TS% = Int((NTMS - 1) / 80)
 
             Call SelectTeam_CNGTM(NTMS, YN$)
 
@@ -125,12 +130,12 @@ Sub GetTeam_CNGTM (YN$, teamNbr)
             BO% = 0
         Else
             Locate 2, 33
-			Color statsPA%(2), statsPA%(1): Print A$
+            Color statsPA%(2), statsPA%(1): Print A$
             
-			Color 15, 4
+            Color 15, 4
 
             Do
-				Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -171,8 +176,9 @@ Sub SelectTeam_CNGTM (NTMS, YN$)
     If ExitCode% = 27 Then BO% = 1: Exit Sub
 
     teamNbr = teamIndex%(Selection%)
-
-    Call ReadTeam_CNGTM(YN$, teamNbr)
+    teamYear$ = RTRim$(YN$)
+    
+    Call ReadTeam_CNGTM(teamYear$, teamNbr)
 
 End Sub
 
@@ -194,23 +200,41 @@ Sub ReadTeam_CNGTM (YN$, B8%)
     Dim C2(15), C3(15)
 
     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
     Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
     Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
     Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
     Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
     Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
     Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
     Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
     Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
     Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
     Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
     Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
     Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
     Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
     Get #1, B8%
@@ -253,14 +277,14 @@ Sub ReadTeam_CNGTM (YN$, B8%)
         careerB2%(I) = CVI(Q$(I * 3 + 115))
     Next I
 
-    statsA6$(0) = Q$(122)
+    statsA6$(0) = RTrim$(Q$(122))
     careerB3%(0) = CVI(Q$(123))
-    statsA7$(0) = Q$(124)
+    statsA7$(0) = RTrim$(Q$(124))
     careerB4%(0) = CVI(Q$(125))
     careerB5%(0) = CVI(Q$(126))
     careerB7%(0) = CVI(Q$(127))
     careerB8%(0) = CVI(Q$(128))
-    statsA7$(1) = Q$(129)
+    statsA7$(1) = RTrim$(Q$(129))
     careerB4%(1) = CVI(Q$(130))
     careerB5%(1) = CVI(Q$(131))
     careerB7%(1) = CVI(Q$(132))
@@ -374,7 +398,7 @@ Sub PrintRoster ()
     Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
     Shared statsPA%(), careerQX%()
 
-	Color 0, 15
+    Color 0, 15
 
     ' *** PRINT TEAM ROSTER ***
     LPrint "TEAM ROSTER FOR "; A$; " "; AA$; " TEAM NUMBER ="; B8%: LPrint
@@ -547,6 +571,7 @@ Sub ChangeTeam (YN$, teamNbr)
                     Locate 12: Print "11. DEF YDS/COMP ADJ ";
                     If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
                     If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
+
                     Locate 13: Print "12. TM PENALTY ADJ "; statsPA%(0)
                     Locate 14: Print "13. OFF RUN/PASS % "; careerB6%(7)
                     Locate 15: Print "14. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
@@ -684,6 +709,7 @@ Sub ChangeTeam (YN$, teamNbr)
 
                         B9 = B9 - 1
                         I1 = B9
+
                         Cls
 
                         U$ = "RUNNING BACK RATINGS"
@@ -693,6 +719,7 @@ Sub ChangeTeam (YN$, teamNbr)
                         Print "1. NAME "; statsA1$(I1)
                         Print "2. RUSHING AVG ";: Print Using "##.#"; careerA1%(I1) * .3
                         Print "3. RECEIVING AVG ";: Print Using "##"; careerA3%(I1) * 3
+
                         C1 = 1
 
                         Do
@@ -792,6 +819,7 @@ Sub ChangeTeam (YN$, teamNbr)
                         I1 = B9
 
                         Cls
+
                         U$ = "QUARTERBACK RATINGS"
                         Locate 1, 40 - Len(U$) / 2: Color 14: Print U$
                         Color 15: Locate 2
@@ -1133,7 +1161,7 @@ Sub ChangeTeam (YN$, teamNbr)
 End Sub
 
 '----------------------------------------
-'           SaveChangedTeam Subroutine
+'       SaveChangedTeam Subroutine
 '----------------------------------------
 '...explanation...
 Sub SaveChangedTeam ()
@@ -1262,25 +1290,46 @@ Sub SaveChangedTeam ()
         If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
     Next
 
-    Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+    teamYear$ = RTrim$(YN$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
     Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
     Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
     Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
     Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
     Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
     Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
     Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
     Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
     Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
     Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
     Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
     Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
     Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
     Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+
     LSet Q$(1) = A$
     LSet Q$(2) = AA$
 
@@ -1321,14 +1370,14 @@ Sub SaveChangedTeam ()
         LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
     Next I
 
-    LSet Q$(122) = statsA6$(0)
+    LSet Q$(122) = RTrim$(statsA6$(0))
     LSet Q$(123) = MKI$(careerB3%(0))
-    LSet Q$(124) = statsA7$(0)
+    LSet Q$(124) = RTrim$(statsA7$(0))
     LSet Q$(125) = MKI$(careerB4%(0))
     LSet Q$(126) = MKI$(careerB5%(0))
     LSet Q$(127) = MKI$(careerB7%(0))
     LSet Q$(128) = MKI$(careerB8%(0))
-    LSet Q$(129) = statsA7$(1)
+    LSet Q$(129) = RTrim$(statsA7$(1))
     LSet Q$(130) = MKI$(careerB4%(1))
     LSet Q$(131) = MKI$(careerB5%(1))
     LSet Q$(132) = MKI$(careerB7%(1))
@@ -1349,8 +1398,10 @@ Sub SaveChangedTeam ()
 
     Close #1
 
-    Open diskPaths$(0) + "STADIUMS." + YN$ For Random As #2 Len = 50
+    Open diskPaths$(0) + "STADIUMS." + teamYear$ For Random As #2 Len = 50
+
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
+
     LSet Q$(1) = A$
     LSet Q$(2) = S$
     LSet Q$(3) = MKL$(ATT&)
@@ -1421,117 +1472,117 @@ Sub ViewRoster ()
     Shared statsPA%()
     Shared careerQX%()
 
-	Do
-		Cls
-		Color 11: Print "TEAM ROSTER FOR ";: Color statsPA%(2), statsPA%(1): Print A$;
-		Color 11, 0: Print "   TEAM NUMBER =";
-		Color 14: Print B8%
-		Print
-		Color 15: Print Using "DEF RUSH ADJ   = ###"; careerB6%(0);
-		Print Tab(35); Using "SACKED %         = ##"; careerB6%(5)
-		Print Using "DEF COMP % ADJ = ###"; careerB6%(1);
-		Print Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
-		Print Using "DEF INT % ADJ  = ###"; careerB6%(2);
-		Print Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
-		Print Using "OFF FUMBLE  %  = ###"; careerB6%(3);
-		Print Tab(35); "DEF YDS/COMP ADJ = ";
+    Do
+        Cls
+        Color 11: Print "TEAM ROSTER FOR ";: Color statsPA%(2), statsPA%(1): Print A$;
+        Color 11, 0: Print "   TEAM NUMBER =";
+        Color 14: Print B8%
+        Print
+        Color 15: Print Using "DEF RUSH ADJ   = ###"; careerB6%(0);
+        Print Tab(35); Using "SACKED %         = ##"; careerB6%(5)
+        Print Using "DEF COMP % ADJ = ###"; careerB6%(1);
+        Print Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
+        Print Using "DEF INT % ADJ  = ###"; careerB6%(2);
+        Print Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
+        Print Using "OFF FUMBLE  %  = ###"; careerB6%(3);
+        Print Tab(35); "DEF YDS/COMP ADJ = ";
 
-		If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
-		If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
+        If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
+        If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-		Print Using "DEF FUMBLE  %  = ###"; careerB6%(4);
-		Print Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
-		Print Using "STAD TYPE      = ###"; statsPA%(3)
-		Print Using "BACKGRND COLOR = ###"; statsPA%(1);
-		Print Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
-		Print
-		Color 12: Print "RUNNING BACKS-"
-		Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+        Print Using "DEF FUMBLE  %  = ###"; careerB6%(4);
+        Print Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
+        Print Using "STAD TYPE      = ###"; statsPA%(3)
+        Print Using "BACKGRND COLOR = ###"; statsPA%(1);
+        Print Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
+        Print
+        Color 12: Print "RUNNING BACKS-"
+        Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
-		For I = 0 To 9:
-			If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
-				Color 3: Print statsA1$(I);
-				Color 15
-				Locate , 23: Print Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
-			End If
-		Next
+        For I = 0 To 9:
+            If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
+                Color 3: Print statsA1$(I);
+                Color 15
+                Locate , 23: Print Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
+            End If
+        Next
 
-		Locate 23
-		Color 15: Print "HIT ANY KEY TO CONTINUE";
-		I$ = GetKeyPress$
+        Locate 23
+        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        I$ = GetKeyPress$
 
-		Cls
-		Color 12: Print "WIDE RECEIVERS-"
-		Color 14: Print "NAME-              REC AVG     CX%"
+        Cls
+        Color 12: Print "WIDE RECEIVERS-"
+        Color 14: Print "NAME-              REC AVG     CX%"
 
-		For I = 0 To 5:
-			If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
-				Color 3: Print statsA2$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
-			End If
-		Next
+        For I = 0 To 5:
+            If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
+                Color 3: Print statsA2$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
+            End If
+        Next
 
-		Print
-		Color 12: Print "QUARTERBACKS-                     YDS/CMP"
-		Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
-		For I = 0 To 3:
-			If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
-				Color 3: Print statsA3$(I);
-				Color 15: Locate , 21: Print Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
-			End If
-		Next
+        Print
+        Color 12: Print "QUARTERBACKS-                     YDS/CMP"
+        Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
+        For I = 0 To 3:
+            If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
+                Color 3: Print statsA3$(I);
+                Color 15: Locate , 21: Print Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
+            End If
+        Next
 
-		Print
-		Color 12: Print "KICKOFF RETURNMEN-"
-		Color 14: Print "NAME-              RET AVG     CX%"
+        Print
+        Color 12: Print "KICKOFF RETURNMEN-"
+        Color 14: Print "NAME-              RET AVG     CX%"
 
-		For I = 0 To 2:
-			If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
-				Color 3: Print statsA4$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; careerB%(I) * 3; careerA9%(I)
-			End If
-		Next
+        For I = 0 To 2:
+            If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
+                Color 3: Print statsA4$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; careerB%(I) * 3; careerA9%(I)
+            End If
+        Next
 
-		Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
+        Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
 
-		I$ = GetKeyPress$
-		Cls
-		Color 12: Print "PUNT RETURNMEN-"
-		Color 14: Print "NAME-              RET AVG     CX%"
+        I$ = GetKeyPress$
+        Cls
+        Color 12: Print "PUNT RETURNMEN-"
+        Color 14: Print "NAME-              RET AVG     CX%"
 
-		For I = 0 To 2:
-			If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
-				Color 3: Print statsA5$(I);
-				Color 15: Locate , 23: Print Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
-			End If
-		Next
+        For I = 0 To 2:
+            If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
+                Color 3: Print statsA5$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
+            End If
+        Next
 
-		Print
-		Color 12: Print "PLACE KICKERS-"
-		Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
+        Print
+        Color 12: Print "PLACE KICKERS-"
+        Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
 
-		For I = 0 To 1:
-			If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
-				Color 3: Print statsA7$(I);
-				Color 15: Locate , 21: Print Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
-			End If
-		Next
+        For I = 0 To 1:
+            If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
+                Color 3: Print statsA7$(I);
+                Color 15: Locate , 21: Print Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
+            End If
+        Next
 
-		Print
-		Color 12: Print "PUNTER-"
-		Color 14: Print "NAME-              AVG"
-		Color 3: Print statsA6$(0);
-		Color 15
-		Locate , 21: Print Using "##"; careerB3%(0) * 2 + 28
+        Print
+        Color 12: Print "PUNTER-"
+        Color 14: Print "NAME-              AVG"
+        Color 3: Print statsA6$(0);
+        Color 15
+        Locate , 21: Print Using "##"; careerB3%(0) * 2 + 28
 
-		Do
-			Locate 21
-			Color 15
-			Print "VIEW AGAIN (Y/N)"
-			I$ = GetKeyPress$
-		Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Do
+            Locate 21
+            Color 15
+            Print "VIEW AGAIN (Y/N)"
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-	Loop Until UCase$(I$) = "N"
+    Loop Until UCase$(I$) = "N"
 
 
 

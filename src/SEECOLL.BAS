@@ -370,13 +370,17 @@ Sub StatOptions_Coll (FF$)
         Locate 7, 32
 
         Do
-			Locate 10, 15
+			Locate 10
 			Color 7, 1
 
-			Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-			Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-			Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
-            I$ = GetKeyPress$
+			Locate , 30: Print "STATS TO ";
+			Color 15: Print "S";: Color 7: Print "CREEN"
+			Locate , 30: Print "STATS TO ";
+			Color 15: Print "P";: Color 7: Print "RINTER"
+			Locate , 30: Print "STATS TO ";
+			Color 15: Print "F";: Color 7: Print "ILE"
+            
+			I$ = GetKeyPress$
 			
 			Color 14, 0
 			

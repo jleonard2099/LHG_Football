@@ -648,7 +648,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                     If NY$ = "" Then
                         Call GetTeam_Schedule(numberTeams, NY$, T1)
                     Else
-                        YN$ = NY$
+                        YN$ = RTrim$(NY$)
                         Erase teamNames$
                         Call SelectTeam_Schedule(YN$, numberTeams)
                         Call GetTeam_Schedule(numberTeams, YN$, T1)
@@ -850,8 +850,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
             If scheduleAction% = 3 Then
 
                 Spec$ = diskPaths$(2) + "*.LIB"
-                null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-                Count% = DirCount%
+				Count% = FCount%(Spec$)
 
                 If Count% = 0 Then
                     Locate 10, 8
@@ -987,7 +986,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                         NY$ = YN$
                         Call GetTeam_Schedule(numberTeams, NY$, T1)
                     Else
-                        YN$ = NY$
+                        YN$ = RTrim$(NY$)
                         Erase teamNames$
                         numberTeams = 0
                         Call SelectTeam_Schedule(YN$, numberTeams)
@@ -1029,7 +1028,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                     I1 = Val(C$)
                                 Loop Until I1 = 0 Or I1 = 1
 
-                                Input "ENTER DISPLAY VARIABLE FOR THESE GAMES "; displayPause!
+                                Input "ENTER DISPLAY PAUSE FOR THESE GAMES "; displayPause!
                             End If
 
                             'HAVE T1 AND YN$
@@ -1314,8 +1313,8 @@ Sub BoxscoreMaintenance ()
                     Call EditParameters
                 Case 2:
                     Spec$ = diskPaths$(1) + "*.SPC"
-                    null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-                    Count% = DirCount%
+					Count% = FCount%(Spec$)
+
                     If Count% = 0 Then
                         Locate 10, 8
                         Call CSMsgBox("NO SPECIAL EVENTS BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU", 26, Pass)
@@ -1611,12 +1610,11 @@ End Sub
 '...explanation...
 Sub LoadSchedule (targetFile$)
 
-    Spec$ = diskPaths$(0) + "*.SCD"
 
     Do
         'Display list of files...
-        null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-        Count% = DirCount%
+		Spec$ = diskPaths$(0) + "*.SCD"
+		Count% = FCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -1650,23 +1648,28 @@ End Sub
 Sub SelectTeam_Schedule (yearNumber$, numberTeams)
 
     numberTeams = 0
+    teamYear$ = RTrim$(yearNumber$)
 
-    Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
     Y = LOF(1)
 
     Field #1, 15 As Q$(0), 640 As X$
 
     For I1 = 1 To Y / 934
+
         Get #1, I1
+
         For I2 = 1 To 15
             If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
         Next I2
+
         If nullTeam <> 1 Then
             numberTeams = numberTeams + 1
             teamNames$(numberTeams) = Q$(0)
             teamIndex%(numberTeams) = I1
         End If
+
     Next I1
 
     Close 1
@@ -1720,7 +1723,9 @@ Sub ReadTeam_Schedule (yearNumber$, teamIdx)
     Shared statsPA%(), careerQX%()
     Shared careerA6%(), careerA7%(), careerA8%()
 
-    Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+    teamYear$ = RTrim$(yearNumber$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -1782,8 +1787,9 @@ Sub CheckTeam_Schedule (yearNumber$, teamIdx)
 
     Shared statsA3$()
 
-    'This should probably be for Input not Random ?!?!
-    Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+    teamYear$ = RTrim$(yearNumber$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
     Field #1, 15 As Q$(1)
 
@@ -1928,7 +1934,6 @@ End Sub
 '----------------------------------------
 ' Allows user to choose QB
 ' Returns QB name as string
-
 Function QBName$ (targetGame%, I5)
 
     Shared careerA6%(), careerA7%(), careerA8%()
@@ -1995,4 +2000,3 @@ Function QBName$ (targetGame%, I5)
     QBName$ = statsA3$(I2)
 
 End Function
-

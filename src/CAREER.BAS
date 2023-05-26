@@ -866,12 +866,14 @@ Sub GetTeam_CAREER (A$)
                 If NY$ = "" Then
                     Call SelectTeam_CAREER(YN$, numberTeams, T1)
                 Else
-                    YN$ = NY$
+                    YN$ = RTrim$(NY$)
                     Erase teamNames$
-
                     numberTeams = 0
+                    
                     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
                     Y = LOF(1)
+
                     Field #1, 15 As Q$(0), 640 As X$
 
                     For I1 = 1 To Y / 934
@@ -954,9 +956,12 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
         BO% = 1
     Else
         teamIdx% = teamIndex%(Selection%)
+        teamYear$ = RTrim$(yearNumber$)
 
-        Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
         Get #1, teamIdx%
 
         'Positions 1 and 2 will hold team colors
@@ -998,6 +1003,7 @@ Sub PerformFinalUpdate (careerFile$)
     Dim PP(15, 20), FF(15, 20), II(15, 20), YY(15, 20)
 
     If _FileExists(diskPaths$(2) + Left$(careerFile$, JX) + ".CLD") Then
+
         D = 0
 
         For J = 0 To 8
@@ -1007,19 +1013,31 @@ Sub PerformFinalUpdate (careerFile$)
         Next J
 
         Open diskPaths$(2) + Left$(careerFile$, JX) + ".CLD" For Input As #1
+
         For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
+
         Input #1, RBR$(0), RBR$(1)
+
         For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
+
         Input #1, WRR$
+
         For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR%(I): Next
+
         Input #1, QBR$
+
         For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR%(I): Next
+
         Input #1, KRR$
+
         For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR%(I): Next
+
         Input #1, PRR$
+
         For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR%(I): Next
         For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR%(I): Next
         For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
+
         Close #1
 
     End If

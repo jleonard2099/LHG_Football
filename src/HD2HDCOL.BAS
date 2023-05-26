@@ -167,12 +167,16 @@ Sub HeadToHead_Coll_Conf (X2)
         Locate 7, 32
 
         Do
-            Locate 10, 15
+            Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";: Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";
+			Color 15: Print "F";: Color 7: Print "ILE"
+
             J$ = GetKeyPress$
 
             Color 14, 0
@@ -1317,8 +1321,7 @@ Sub ChooseConference_Coll (targetFile$)
     Do
 
         Spec$ = diskPaths$(2) + "*.LIB"
-        null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-        Count% = DirCount%
+		Count% = FCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -1444,9 +1447,8 @@ Sub GetDiskID_HD2HDCOL (A$)
                     Call SelectTeam_HD2HDCOL(numberTeams, NY$)
                 Else
 
-                    YN$ = NY$
+                    YN$ = RTrim$(NY$)
                     Erase teamNames$
-
                     numberTeams = 0
 
                     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
@@ -1456,15 +1458,19 @@ Sub GetDiskID_HD2HDCOL (A$)
                     Field #1, 15 As Q$(0), 640 As X$
 
                     For I1 = 1 To Y / 934
+
                         Get #1, I1
+
                         For I2 = 1 To 15
                             If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
                         Next I2
+
                         If nullTeam <> 1 Then
                             numberTeams = numberTeams + 1
                             teamNames$(numberTeams) = Q$(0)
                             teamIndex%(numberTeams) = I1
                         End If
+
                     Next I1
 
                     Close 1
@@ -1532,9 +1538,12 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
     If ExitCode% <> 27 Then
 
         T1 = teamIndex%(Selection%)
+        teamYear$ = RTrim$(YN$)
 
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
         Get #1, T1
 
         For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1

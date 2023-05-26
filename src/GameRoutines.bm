@@ -1,70 +1,382 @@
-'------------------------------
-'      POSTGAME Subroutine
-'------------------------------
-' ...explanation...
-Sub POSTGAME
+'----------------------------------------
+'           InitVar Subroutine
+'----------------------------------------
+' Initializes variables for the game
+' Does not process any that will be read
+' in from file or assigned elsewhere
+Sub InitVar ()
 
     Shared scheduleFile$
 
-    Cls
-
-    I = 1
-    JJ = 1
-
-    Call QBBOX
-
-    U$ = "SAVE STATISTICS (YN)"
-    Locate , (80 - Len(U$)) / 2
-    Print U$
-    Color 15, 0
-
-    gameOver% = 0
-
-    If AP <> 1 Then
-
-        Do
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        If UCase$(I$) = "N" Then gameOver% = 1
-
+    '-- Does this really belong here???
+    If G9 <> 0 Then
+        For I = 1 To 10
+            If Left$(D$(I), 3) = "5-2" Then D$(I) = "3-4" + Right$(D$(I), Len(D$(I)) - 3)
+            If Left$(D2$(I), 3) = "5-2" Then D2$(I) = "3-4" + Right$(D2$(I), Len(D2$(I)) - 3)
+        Next
     End If
 
-    If gameOver% <> 1 Then
+    For J1 = 1 To 15:
+        D2$(J1) = D$(J1)
+    Next
 
-        PX = 0
+    For J1 = 12 To 15:
+        D2$(J1) = D2$(J1 - 7)
+    Next
 
-        Cls
+    D2$(5) = D2$(9)
+    D2$(6) = D2$(10)
 
-        If AP = 1 Then
+    For J1 = 12 To 15:
+        D2$(J1 - 5) = D2$(J1)
+    Next
+    '-- Does this really belong here???
 
-            Call TICK
 
-            If AP%(1) < AP%(0) + AP%(2) Then
-                Kill "GAME82"
-                endOfGames% = 1
-            Else
+    DR$(0) = "RIGHT"
+    DR$(1) = "LEFT"
+    D$(11) = "GOAL LINE"
 
-                Open "GAME82" For Output As #2
-                Print #2, scheduleFile$
-                For I = 0 To 2: Print #2, AP%(I): Next
-                Close 2
+    For I = 0 To 6: WX%(I) = 0: Next
 
-            End If
+    ST$ = "1:00P"
 
-            Cls
+    G$(1) = "FLEA FLICKER"
+    G$(2) = "REVERSE"
+    G$(3) = "HB PASS"
 
-        End If
+    PS$(0) = "RUN"
+    PS$(1) = "PASS"
+    PS$(3) = "FIELD GOAL ATTEMPT"
+    PS$(2) = "PUNT"
+    PS$(4) = "SCOUTING REPORT"
+    PS$(5) = "CHANGE/SELECT QB"
+    PS$(6) = "SHOW GAME STATS"
+    PS$(7) = "QB KNEEL DOWN"
+    PS$(8) = "TEN MINUTE TICKER "
+    PS$(9) = "CHANGE/SELECT KICKER"
 
-        Call SAVESTATS
+    DN$(0) = "FIRST"
+    DN$(1) = DN$(0)
+    DN$(2) = "SECOND"
+    DN$(3) = "THIRD"
+    DN$(4) = "FOURTH"
 
-        If AP <> 1 Then
-            'What is D% ???
-            If D% = 3 Then gameOver% = 1
-            Cls
-        End If
+    U5$(0) = "HUMAN OPPONENT           "
+    U5$(1) = "COMPUTER IS VISITING TEAM"
+    U5$(2) = "COMPUTER IS HOME TEAM    "
+    U5$(3) = "COMPUTER VS COMPUTER     "
 
-    End If
+    strG9$(0) = "PLAY USING COLLEGE RULES"
+    strG9$(1) = "PLAY USING NFL RULES    "
+    strG9$(2) = "PLAY USING USFL RULES   "
+    strG9$(3) = "PLAY USING AFL RULES    "
+    strG9$(4) = "PLAY USING WFL RULES    "
+    strG9$(5) = "PLAY USING WLAF RULES   "
+
+    SD$(0) = "NO OVERTIME          "
+    SD$(1) = "ONE 15-MINUTE QUARTER"
+    SD$(2) = "SUDDEN DEATH TO WIN  "
+    SD$(3) = "NCAA DIVISION I-AA   "
+
+    Y8$(0) = "1978-1993"
+    Y8$(1) = "PRE-1974 "
+    Y8$(2) = "1974-1977"
+    Y8$(3) = "POST-1993"
+
+    Y9$(0) = "PRE-1968 "
+    Y9$(1) = "1968-1980"
+    Y9$(2) = "1981-1983"
+    Y9$(3) = "1984-1991"
+    Y9$(4) = "1991     "
+    Y9$(5) = "POST-1991"
+
+    LO$(1) = "HOME FIELD  "
+    LO$(2) = "NEUTRAL SITE"
+
+    A$ = ""
+    A1$ = ""
+    A2$ = ""
+    A3$ = ""
+    A4$ = ""
+    A5$ = ""
+    A6$ = ""
+    A7$ = ""
+    AA$ = ""
+    div2$ = ""
+    DI$ = ""
+    DN$ = ""
+    DR$ = ""
+    DS$ = ""
+    DV$ = ""
+    F$ = ""
+    G$ = ""
+    strG9$ = ""
+    I$ = ""
+    LO$ = ""
+    NM$ = ""
+    NN$ = ""
+    PS$ = ""
+    Q$ = ""
+    RP$ = ""
+    RV$ = ""
+    NY$ = ""
+    scheduleFile$ = ""
+    SD$ = ""
+    SITE$ = ""
+    ST$ = ""
+    SX$ = ""
+    U$ = ""
+    U5$ = ""
+    X$ = ""
+    Y8$ = ""
+    Y9$ = ""
+    YN$ = ""
+
+    A = 0
+    A2 = 0
+    A3 = 0
+    A4 = 0
+    A5 = 0
+    A6 = 0
+    A7 = 0
+    A8 = 0
+    A9 = 0
+    AP = 0
+    B = 0
+    B1 = 0
+    B2 = 0
+    B3 = 0
+    B4 = 0
+    B5 = 0
+    B7 = 0
+    B8 = 0
+    BW = 0
+    CP = 0
+    CT = 0
+    D = 0
+    D1 = 0
+    D2 = 0
+    D3 = 0
+    DDI = 0
+    DDS = 0
+    DI = 0
+    DR = 0
+    DS = 0
+    DT = 0
+    E = 0
+    EY = 0
+    F2 = 0
+    F8 = 0
+    F9 = 0
+    G = 0
+    I1 = 0
+    I2 = 0
+    I3 = 0
+    I4 = 0
+    I5 = 0
+    I6 = 0
+    I7 = 0
+    I8 = 0
+    I9 = 0
+    I = 0
+    J = 0
+    J6 = 0
+    JJ = 0
+    K3 = 0
+    N = 0
+    NT = 0
+    O = 0
+    OT = 0
+    P1 = 0
+    P2 = 0
+    PN = 0
+    PQ = 0
+    PR = 0
+    PW = 0
+    Q = 0
+    QB = 0
+    R1 = 0
+    RP = 0
+    RY = 0
+    S = 0
+    S2 = 0
+    S3 = 0
+    S6 = 0
+    SY = 0
+    T = 0
+    T1 = 0
+    TE = 0
+    TMT = 0
+    TP = 0
+    W5 = 0
+    WE = 0
+    WS = 0
+    X = 0
+    X1 = 0
+    X2 = 0
+    XD = 0
+    XE = 0
+    Y = 0
+    Y1 = 0
+    YC = 0
+    YF = 0
+    YL = 0
+    YT = 0
+    Z1 = 0
+
+    intB8% = 0
+    BO% = 0
+    C% = 0
+    EG% = 0
+    F% = 0
+    GL% = 0
+    HB% = 0
+    HT% = 0
+    intI% = 0
+    intDI% = 0
+    intDS% = 0
+    PA% = 0
+    PC% = 0
+    PS% = 0
+    Q6% = 0
+    Q7% = 0
+    QBN% = 0
+    QX% = 0
+    RF% = 0
+    S1% = 0
+    ST% = 0
+    SX% = 0
+    TS% = 0
+    W% = 0
+    WX% = 0
+    intY8% = 0
+    intYL% = 0
+
+    statSpecial = 0
+    actualAttendance& = 0
+    endGame% = 0
+
+    Erase A$, A1$, A2$, A3$, A4$, A5$, A6$, A7$
+    Erase AA$, B$, DI$, DS$, diskPaths$
+    Erase H$, HO$, strIR$, strKR$
+    Erase strLC$, LF$, LI$, LK$, LP$, strLR$
+    Erase NN$, PK$, strPR$, Q$, strQB$
+    Erase strRB$, SITE$, SX$
+    Erase teamNames$, strWR$, Y$, YN$, YR%
+
+    Erase A, A1, A2, A3, A4, A5, A6, A7, A8, A9
+    Erase AF, AM, B, B1, B2, B3, B4, B5, B6, B7, B8
+    Erase C, CRD, DDI, DDS, DI, DS, FA, FL, FM
+    Erase GI, GS, IR
+    Erase K, K1, K2, K3, KR
+    Erase LC, LF, LI, LK, LP, LR, OT, PK, PR
+    Erase QB, RB, S, SI, SK, T, T1, TP
+    Erase W6, WR, XD, YC, Z, Z1, Z2
+
+    Erase AP%, intB8%, intDI%, intDS%
+    Erase intG9%, HB%
+    Erase O%, PA%, PC%, intPR%
+    Erase Q6%, Q7%, QX%, R9%, RQ%, RV%
+    Erase ST%, SX%, TE%, TF%, TeamScore%
+
+    Erase teamIndex%, V4%
+
+End Sub
+
+
+'------------------------------
+'    FRAMEOPTION Subroutine
+'------------------------------
+' Draws a box using team colors
+' Box starts at row 8 and is
+'   approx. 60 char's wide
+' Leaves cursor at first printable
+' row / column.
+Sub TEAMBOX (boxHeight, teamIdx)
+
+    Locate 6, 8
+    Color PA%(teamIdx, 2), PA%(teamIdx, 1)
+
+    'Print box top
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+    'Print box sides
+    For II = 1 To boxHeight
+        Locate 6 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 7 + boxHeight, 8
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+    Locate 7, 11
+
+End Sub
+
+
+'------------------------------
+'    FRAMEOPTION Subroutine
+'------------------------------
+' Draws a box using team colors
+' Box starts at row 8 and is
+'   approx. 60 char's wide
+' Leaves cursor at first printable
+' row / column.
+Sub FRAMEOPTION (boxHeight, teamIdx)
+
+    PCopy 0, 1
+    Screen , , 1, 1
+
+    Locate 8, 8
+    Color PA%(teamIdx, 2), PA%(teamIdx, 1)
+
+    'Print box top
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+    'Print box sides
+    For II = 1 To boxHeight
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 9 + boxHeight, 8
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+    Locate 10, 15
+
+End Sub
+
+
+'------------------------------
+'      OPTIONBOX Subroutine
+'------------------------------
+' This displays the generic
+' grey box for game selections
+Sub OPTIONBOX (J)
+
+    PCopy 0, 1
+    Screen , , 1, 1
+
+    Locate 8, 8
+    Color 0, 7
+
+    'Print box top
+    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+    'Print box sides
+    For II = 1 To J
+        Locate 8 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    'Print box bottom
+    Locate 9 + J, 8
+    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+    Locate 10, 15
 
 End Sub
 
@@ -179,39 +491,6 @@ End Sub
 
 
 '------------------------------
-'      GAME_BOXDRAW Subroutine
-'------------------------------
-' ...explanation...
-Sub GAME_BOXDRAW (J)
-
-    PCopy 0, 1
-
-    Screen , , 1, 1
-
-    SN = 1
-
-    Locate 8, 8
-    Color 0, 7
-
-    'Print box top
-    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-    'Print box sides
-    For II = 1 To J
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    'Print box bottom
-    Locate 9 + J, 8
-    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-    Locate 10, 15
-
-End Sub
-
-
-'------------------------------
 '      KICKER Subroutine
 '------------------------------
 ' ...explanation...
@@ -220,8 +499,7 @@ Sub KICKER ()
     Color , 1
     Cls
 
-    J = 10
-    Call GAME_BOXDRAW(J)
+    Call OPTIONBOX(10)
 
     Locate , 31: Print "SELECT KICKER": Print
     Locate , 18
@@ -248,39 +526,6 @@ Sub KICKER ()
     Loop Until choice = 0 Or choice = 1
 
     Q7%(I3) = choice
-
-End Sub
-
-
-'------------------------------
-'     TICKUPDATE Subroutine
-'------------------------------
-' ...explanation...
-Sub TICKUPDATE ()
-
-    If AP = 1 And AP%(2) <= 32 Then
-
-        If Q = 1 And T <= 600 And SX%(AP%(2) + 1, 0, 1) = -1 Then SX%(AP%(2) + 1, 0, 1) = S(0, 0): SX%(AP%(2) + 1, 1, 1) = S(1, 0)
-        If Q = 1 And T <= 300 And SX%(AP%(2) + 1, 0, 2) = -1 Then SX%(AP%(2) + 1, 0, 2) = S(0, 0): SX%(AP%(2) + 1, 1, 2) = S(1, 0)
-
-        If Q = 2 And T <= 600 And SX%(AP%(2) + 1, 0, 4) = -1 Then SX%(AP%(2) + 1, 0, 4) = S(0, 0): SX%(AP%(2) + 1, 1, 4) = S(1, 0)
-        If Q = 2 And T <= 300 And SX%(AP%(2) + 1, 0, 5) = -1 Then SX%(AP%(2) + 1, 0, 5) = S(0, 0): SX%(AP%(2) + 1, 1, 5) = S(1, 0)
-
-        If Q > 2 And SX%(AP%(2) + 1, 0, 3) = -1 Then SX%(AP%(2) + 1, 0, 3) = S(0, 1): SX%(AP%(2) + 1, 1, 3) = S(1, 1)
-        If Q > 2 And SX%(AP%(2) + 1, 0, 6) = -1 Then For I2 = 6 To 8: SX%(AP%(2) + 1, 0, I2) = S(0, 2) + S(0, 1): SX%(AP%(2) + 1, 1, I2) = S(1, 2) + S(1, 1): Next
-
-        If Q = 3 And T <= 600 And SX%(AP%(2) + 1, 0, 9) = -1 Then SX%(AP%(2) + 1, 0, 9) = S(0, 0): SX%(AP%(2) + 1, 1, 9) = S(1, 0)
-        If Q = 3 And T <= 300 And SX%(AP%(2) + 1, 0, 10) = -1 Then SX%(AP%(2) + 1, 0, 10) = S(0, 0): SX%(AP%(2) + 1, 1, 10) = S(1, 0)
-
-        If Q > 3 And SX%(AP%(2) + 1, 0, 11) = -1 Then SX%(AP%(2) + 1, 0, 11) = S(0, 3) + S(0, 2) + S(0, 1): SX%(AP%(2) + 1, 1, 11) = S(1, 3) + S(1, 2) + S(1, 1)
-
-        If Q = 4 And T <= 600 And SX%(AP%(2) + 1, 0, 12) = -1 Then SX%(AP%(2) + 1, 0, 12) = S(0, 0): SX%(AP%(2) + 1, 1, 12) = S(1, 0)
-        If Q = 4 And T <= 300 And SX%(AP%(2) + 1, 0, 13) = -1 Then SX%(AP%(2) + 1, 0, 13) = S(0, 0): SX%(AP%(2) + 1, 1, 13) = S(1, 0)
-
-        SX%(AP%(2) + 1, 0, 14) = S(0, 0)
-        SX%(AP%(2) + 1, 1, 14) = S(1, 0)
-
-    End If
 
 End Sub
 
@@ -381,8 +626,6 @@ Sub SETSCREEN ()
 
     Screen , , 0, 0
 
-    SN = 0
-
     Color 0, 0, 0
 
     Cls
@@ -473,7 +716,7 @@ Sub DisplayField ()
     I = Int(TI / 60)
     J = TI - I * 60
 
-    Call TICKUPDATE
+    Call TICKERUPDATE
 
     Locate 3, 44: Print Using " TIME: ##.##     QUARTER: # "; I + J / 100, Q;
     Locate 3, 53: Print ":";: Locate , 72: Print Tab(80); " ";
@@ -715,7 +958,7 @@ Sub GOALLINE ()
         'where the rushing average from
         'OTHERS was negative, therefore
         'leading to a negative index
-        If I2 < 0 Then I2 = 1
+        If I2 <= 0 Then I2 = 1
 
         If I6 <= GL%(I2, 1) Then G = G + GL%(I2, 2)
     Else
@@ -734,26 +977,27 @@ End Sub
 '------------------------------
 ' Looks for presence of a space
 ' in the team name.
-' That position is assigned to
-' the variable I2? Or I3?
-' Why are there 2?
 Sub FINDSPACE ()
 
-    I2 = 0
+    I2 = 1
+    I3 = 2
 
-    9611 '
-    I2 = I2 + 1
-    I3 = I2 + 1
+    Do
 
-    If I3 = 13 Then I3 = 12
+        mid1$ = Mid$(X$, I2, I2)
+        mid2$ = Mid$(X$, I3, I3)
 
-    If I2 <> 13 Then
-        If Asc(Mid$(X$, I2, I2)) <> 32 Or Asc(Mid$(X$, I3, I3)) <> 32 Then
-            GoTo 9611
+        If Asc(mid1$) <> 32 Or Asc(mid2$) <> 32 Then
+
+            I2 = I2 + 1
+            I3 = I2 + 1
+
+            If I3 = 13 Then I3 = 12
+
         End If
-    End If
 
-    9615 '
+        'Loop Until I2 = 13 Or Asc(mid1$) = 32 Or Asc(mid2$) = 32
+    Loop Until I2 = 13 Or I2 = Len(X$) Or Asc(mid1$) = 32 Or Asc(mid2$) = 32
 
 End Sub
 
@@ -766,27 +1010,52 @@ Sub NAMEEDIT ()
 
     For I = 0 To 1
 
-        9601 ' If Right$(A$(I), 1) = " " Then A$(I) = Left$(A$(I), Len(A$(I)) - 1): GoTo 9601
-        A$(I) = _Trim$(A$(I))
+        A$(I) = RTrim$(A$(I))
+        AA$(I) = RTrim$(AA$(I))
 
-        9602 ' And Right$(AA$(I), 1) = " " Then AA$(I) = Left$(AA$(I), Len(AA$(I)) - 1): GoTo 9602
-        AA$(I) = _Trim$(AA$(I))
+        For I1 = 0 To 9:
+            'X$ = A1$(I, I1): Call FINDSPACE: A1$(I, I1) = Left$(X$, I2 - 1)
+            A1$(I, I1) = RTrim$(A1$(I, I1))
+        Next I1
 
-        For I1 = 0 To 9: X$ = A1$(I, I1): Call FINDSPACE: A1$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 5: X$ = A2$(I, I1): Call FINDSPACE: A2$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 3: X$ = A3$(I, I1): Call FINDSPACE: A3$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 2: X$ = A4$(I, I1): Call FINDSPACE: A4$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 2: X$ = A5$(I, I1): Call FINDSPACE: A5$(I, I1) = Left$(X$, I2 - 1): Next I1
+        For I1 = 0 To 5:
+            'X$ = A2$(I, I1): Call FINDSPACE: A2$(I, I1) = Left$(X$, I2 - 1)
+            A2$(I, I1) = RTrim$(A2$(I, I1))
+        Next I1
 
-        X$ = A6$(I, 0)
+        For I1 = 0 To 3:
+            'X$ = A3$(I, I1): Call FINDSPACE: A3$(I, I1) = Left$(X$, I2 - 1)
+            A3$(I, I1) = RTrim$(A3$(I, I1))
+        Next I1
 
-        Call FINDSPACE
+        For I1 = 0 To 2:
+            'X$ = A4$(I, I1): Call FINDSPACE: A4$(I, I1) = Left$(X$, I2 - 1)
+            A4$(I, I1) = RTrim$(A4$(I, I1))
+        Next I1
 
-        A6$(I, 0) = Left$(X$, I2 - 1)
+        For I1 = 0 To 2:
+            'X$ = A5$(I, I1): Call FINDSPACE: A5$(I, I1) = Left$(X$, I2 - 1)
+            A5$(I, I1) = RTrim$(A5$(I, I1))
+        Next I1
 
-        For I1 = 0 To 1: X$ = A7$(I, I1): Call FINDSPACE: A7$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 14: X$ = DS$(I, I1): Call FINDSPACE: DS$(I, I1) = Left$(X$, I2 - 1): Next I1
-        For I1 = 0 To 9: X$ = DI$(I, I1): Call FINDSPACE: DI$(I, I1) = Left$(X$, I2 - 1): Next I1
+        A6$(I, 0) = RTrim$(A6$(I, 0))
+        'X$ = A6$(I, 0): Call FINDSPACE: A6$(I, 0) = Left$(X$, I2 - 1)
+
+        For I1 = 0 To 1:
+            'X$ = A7$(I, I1): Call FINDSPACE: A7$(I, I1) = Left$(X$, I2 - 1)
+            A7$(I, I1) = RTrim$(A7$(I, I1))
+
+        Next I1
+
+        For I1 = 0 To 14:
+            'X$ = DS$(I, I1): Call FINDSPACE: DS$(I, I1) = Left$(X$, I2 - 1)
+            DS$(I, I1) = RTrim$(DS$(I, I1))
+        Next I1
+
+        For I1 = 0 To 9
+            'X$ = DI$(I, I1): Call FINDSPACE: DI$(I, I1) = Left$(X$, I2 - 1)
+            DI$(I, I1) = RTrim$(DI$(I, I1))
+        Next I1
 
     Next I
 
@@ -799,8 +1068,7 @@ End Sub
 ' ...explanation...
 Sub SCOUTREPT ()
 
-    J = 13
-    Call GAME_BOXDRAW(J)
+    Call OPTIONBOX(13)
     Locate 8, 30: Print "SCOUTING REPORT"
 
     Locate 10, 30
@@ -861,17 +1129,19 @@ End Sub
 ' ...explanation...
 Sub GETTEAM (I)
 
-    If Not _FileExists(diskPaths$(0) + "FOOT." + YN$) Then
+    teamYear$ = RTrim$(YN$)
+
+    If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
 
         Cls
         Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
-        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; YN$
+        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; teamYear$
         Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
         Call GETTEAM(I)
 
     Else
 
-        Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
+        Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
 
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -912,10 +1182,10 @@ Sub GETTEAM (I)
         Get #1, intB8%
 
         intB8%(I) = intB8%
-        NN$(I) = YN$
+        NN$(I) = teamYear$
 
-        A$(I) = Q$(1)
-        AA$(I) = Q$(2)
+        A$(I) = RTrim$(Q$(1))
+        AA$(I) = RTrim$(Q$(2))
 
         For I1 = 0 To 7
             B6(I, I1) = CVI(Q$(I1 + 3))
@@ -926,7 +1196,7 @@ Sub GETTEAM (I)
         Next I1
 
         For I1 = 0 To 9
-            A1$(I, I1) = Q$(I1 * 5 + 16)
+            A1$(I, I1) = RTrim$(Q$(I1 * 5 + 16))
             A(I, I1) = CVI(Q$(I1 * 5 + 17))
             A1(I, I1) = CVI(Q$(I1 * 5 + 18))
             A2(I, I1) = CVI(Q$(I1 * 5 + 19))
@@ -934,13 +1204,13 @@ Sub GETTEAM (I)
         Next I1
 
         For I1 = 0 To 5
-            A2$(I, I1) = Q$(I1 * 3 + 66)
+            A2$(I, I1) = RTrim$(Q$(I1 * 3 + 66))
             A4(I, I1) = CVI(Q$(I1 * 3 + 67))
             A5(I, I1) = CVI(Q$(I1 * 3 + 68))
         Next I1
 
         For I1 = 0 To 3
-            A3$(I, I1) = Q$(I1 * 5 + 84)
+            A3$(I, I1) = RTrim$(Q$(I1 * 5 + 84))
             A6(I, I1) = CVI(Q$(I1 * 5 + 85))
             A7(I, I1) = CVI(Q$(I1 * 5 + 86))
             A8(I, I1) = CVI(Q$(I1 * 5 + 87))
@@ -948,20 +1218,20 @@ Sub GETTEAM (I)
         Next I1
 
         For I1 = 0 To 2
-            A4$(I, I1) = Q$(I1 * 3 + 104)
+            A4$(I, I1) = RTrim$(Q$(I1 * 3 + 104))
             A9(I, I1) = CVI(Q$(I1 * 3 + 105))
             B(I, I1) = CVI(Q$(I1 * 3 + 106))
         Next I1
 
         For I1 = 0 To 2
-            A5$(I, I1) = Q$(I1 * 3 + 113)
+            A5$(I, I1) = RTrim$(Q$(I1 * 3 + 113))
             B1(I, I1) = CVI(Q$(I1 * 3 + 114))
             B2(I, I1) = CVI(Q$(I1 * 3 + 115))
         Next I1
 
-        A6$(I, 0) = Q$(122)
+        A6$(I, 0) = RTrim$(Q$(122))
         B3(I, 0) = CVI(Q$(123))
-        A7$(I, 0) = Q$(124)
+        A7$(I, 0) = RTrim$(Q$(124))
         B4(I, 0) = CVI(Q$(125))
         B5(I, 0) = CVI(Q$(126))
         B7(I, 0) = CVI(Q$(127))
@@ -986,6 +1256,7 @@ Sub GETTEAM (I)
         Close #1
 
         If Left$(AA$(I), 1) = " " Or AA$(I) = "" Then AA$(I) = A$(I)
+
         PC%(I, 0) = A(I, 0)
 
         For I1 = 9 To 1 Step -1
@@ -1018,9 +1289,7 @@ End Sub
 ' ...explanation...
 Sub TICKER ()
 
-    If AP <> 1 Or J6(0) <> 2 Then
-
-        Screen , , 1, 1
+    If Not (AP = 1 And J6(0) = 2) Then
 
         Color 14, 0
         Cls
@@ -1028,11 +1297,12 @@ Sub TICKER ()
         RN = Int(Rnd(1) * 100) + 1
 
         If HT% = 1 Then
+
             If G9 = 0 Then
                 If RN <= 50 Then
                     Locate , 23: Print "PRUDENTIAL AT THE HALF SCOREBOARD"
                 Else
-                    Locate , 28: Print "RED MAN HALF TIME REPORT"
+                    Locate , 28: Print "RED MAN HALFTIME REPORT"
                 End If
             Else
                 If RN <= 50 Then
@@ -1041,26 +1311,25 @@ Sub TICKER ()
                     Locate , 29: Print "HONDA HALFTIME REPORT"
                 End If
             End If
-        End If
 
-        If endOfGames% = 1 Then
-            If G9 = 0 Then
-                Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
+        Else
+
+            If endGame% = 1 Then
+
+                If G9 = 0 Then
+                    Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
+                Else
+                    Select Case RN
+                        Case 1 To 33: Locate , 27: Print "USA TODAY FINAL SCOREBOARD"
+                        Case 34 To 67: Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
+                        Case 67 To 100: Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
+                    End Select
+                End If
             Else
-                Select Case RN
-                    Case 1 To 33
-                        Locate , 27: Print "USA TODAY FINAL SCOREBOARD"
-
-                    Case 34 To 67
-                        Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
-
-                    Case 68 To 100
-                        Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
-                End Select
+                If HT% = 0 Then Locate , 30: Print "LANCE HAFFNER GAMES SCOREBOARD"
             End If
-        End If
 
-        If HT% = 0 Then Locate , 30: Print "LANCE HAFFNER GAMES SCOREBOARD"
+        End If
 
         Color 15
 
@@ -1092,14 +1361,13 @@ Sub TICKER ()
             If Left$(SX$(1, 0), 3) <> "XXX" Then
                 Locate 2, 1
                 X = 1
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(1, 0), 13);
                 Locate , 15
                 Print Using "## "; SX%(1, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(1, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(1, 1, TS%)
             End If
@@ -1107,13 +1375,12 @@ Sub TICKER ()
             If Left$(SX$(2, 0), 3) <> "XXX" Then
                 Locate 5, 1
                 X = 2
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(2, 0), 13);
                 Locate , 15: Print Using "## "; SX%(2, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(2, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(2, 1, TS%)
             End If
@@ -1121,13 +1388,12 @@ Sub TICKER ()
             If Left$(SX$(3, 0), 3) <> "XXX" Then
                 Locate 8, 1
                 X = 3
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(3, 0), 13);
                 Locate , 15: Print Using "## "; SX%(3, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(3, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(3, 1, TS%)
             End If
@@ -1135,13 +1401,12 @@ Sub TICKER ()
             If Left$(SX$(4, 0), 3) <> "XXX" Then
                 Locate 11, 1
                 X = 4
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(4, 0), 13);
                 Locate , 15: Print Using "## "; SX%(4, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(4, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(4, 1, TS%)
             End If
@@ -1149,13 +1414,12 @@ Sub TICKER ()
             If Left$(SX$(5, 0), 3) <> "XXX" Then
                 Locate 14, 1
                 X = 5
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(5, 0), 13);
                 Locate , 15: Print Using "## "; SX%(5, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(5, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(5, 1, TS%)
             End If
@@ -1163,13 +1427,12 @@ Sub TICKER ()
             If Left$(SX$(6, 0), 3) <> "XXX" Then
                 Locate 17, 1
                 X = 6
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(6, 0), 13);
                 Locate , 15: Print Using "## "; SX%(6, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(6, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(6, 1, TS%)
             End If
@@ -1177,13 +1440,12 @@ Sub TICKER ()
             If Left$(SX$(7, 0), 3) <> "XXX" Then
                 Locate 20, 1
                 X = 7
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(7, 0), 13);
                 Locate , 15: Print Using "## "; SX%(7, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(7, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(7, 1, TS%)
             End If
@@ -1191,13 +1453,12 @@ Sub TICKER ()
             If Left$(SX$(8, 0), 3) <> "XXX" Then
                 Locate 23, 1
                 X = 8
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(8, 0), 13);
                 Locate , 15: Print Using "## "; SX%(8, 0, TS%);
                 Print R$(TS%)
+
                 Print Left$(SX$(8, 1), 13);
                 Locate , 15: Print Using "## #"; SX%(8, 1, TS%);
             End If
@@ -1205,336 +1466,336 @@ Sub TICKER ()
             If Left$(SX$(9, 0), 3) <> "XXX" Then
                 Locate 2, 21
                 X = 9
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(9, 0), 13);
                 Locate , 35: Print Using "## "; SX%(9, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(9, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(9, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(9, 1, TS%)
             End If
 
             If Left$(SX$(10, 0), 3) <> "XXX" Then
                 Locate 5, 21
                 X = 10
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(10, 0), 13);
                 Locate , 35: Print Using "## "; SX%(10, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(10, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(10, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(10, 1, TS%)
             End If
 
             If Left$(SX$(11, 0), 3) <> "XXX" Then
                 Locate 8, 21
                 X = 11
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(11, 0), 13);
                 Locate , 35: Print Using "## "; SX%(11, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(11, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(11, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(11, 1, TS%)
             End If
 
             If Left$(SX$(12, 0), 3) <> "XXX" Then
                 Locate 11, 21
                 X = 12
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(12, 0), 13);
                 Locate , 35: Print Using "## "; SX%(12, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(12, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(12, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(12, 1, TS%)
             End If
 
             If Left$(SX$(13, 0), 3) <> "XXX" Then
                 Locate 14, 21
                 X = 13
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(13, 0), 13);
                 Locate , 35: Print Using "## "; SX%(13, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(13, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(13, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(13, 1, TS%)
             End If
 
             If Left$(SX$(14, 0), 3) <> "XXX" Then
                 Locate 17, 21
                 X = 14
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(14, 0), 13);
                 Locate , 35: Print Using "## "; SX%(14, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(14, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(14, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(14, 1, TS%)
             End If
 
             If Left$(SX$(15, 0), 3) <> "XXX" Then
                 Locate 20, 21
                 X = 15
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(15, 0), 13);
                 Locate , 35: Print Using "## "; SX%(15, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(15, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(15, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(15, 1, TS%)
             End If
 
             If Left$(SX$(16, 0), 3) <> "XXX" Then
                 Locate 23, 21
                 X = 16
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(16, 0), 13);
                 Locate , 35: Print Using "## "; SX%(16, 0, TS%);
                 Print R$(TS%)
-                Locate , 21: Print Left$(SX$(16, 1), 13);
+                Locate , 21
+
+                Print Left$(SX$(16, 1), 13);
                 Locate , 35: Print Using "## #"; SX%(16, 1, TS%);
             End If
 
             If Left$(SX$(17, 0), 3) <> "XXX" Then
                 Locate 2, 41
                 X = 17
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(17, 0), 13);
                 Locate , 55: Print Using "## "; SX%(17, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(17, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(17, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(17, 1, TS%)
             End If
 
             If Left$(SX$(18, 0), 3) <> "XXX" Then
                 Locate 5, 41
                 X = 18
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(18, 0), 13);
                 Locate , 55: Print Using "## "; SX%(18, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(18, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(18, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(18, 1, TS%)
             End If
 
             If Left$(SX$(19, 0), 3) <> "XXX" Then
                 Locate 8, 41
                 X = 19
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(19, 0), 13);
                 Locate , 55: Print Using "## "; SX%(19, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(19, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(19, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(19, 1, TS%)
             End If
 
             If Left$(SX$(20, 0), 3) <> "XXX" Then
                 Locate 11, 41
                 X = 20
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(20, 0), 13);
                 Locate , 55: Print Using "## "; SX%(20, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(20, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(20, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(20, 1, TS%)
             End If
 
             If Left$(SX$(21, 0), 3) <> "XXX" Then
                 Locate 14, 41
                 X = 21
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(21, 0), 13);
                 Locate , 55: Print Using "## "; SX%(21, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(21, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(21, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(21, 1, TS%)
             End If
 
             If Left$(SX$(22, 0), 3) <> "XXX" Then
                 Locate 17, 41
                 X = 22
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(22, 0), 13);
                 Locate , 55: Print Using "## "; SX%(22, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(22, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(22, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(22, 1, TS%)
             End If
 
             If Left$(SX$(23, 0), 3) <> "XXX" Then
                 Locate 20, 41
                 X = 23
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(23, 0), 13);
                 Locate , 55: Print Using "## "; SX%(23, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(23, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(23, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(23, 1, TS%)
             End If
 
             If Left$(SX$(24, 0), 3) <> "XXX" Then
                 Locate 23, 41
                 X = 24
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(24, 0), 13);
                 Locate , 55: Print Using "## "; SX%(24, 0, TS%);
                 Print R$(TS%)
-                Locate , 41: Print Left$(SX$(24, 1), 13);
+                Locate , 41
+
+                Print Left$(SX$(24, 1), 13);
                 Locate , 55: Print Using "## #"; SX%(24, 1, TS%);
             End If
 
             If Left$(SX$(25, 0), 3) <> "XXX" Then
                 Locate 2, 61
                 X = 25
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(25, 0), 13);
                 Locate , 75: Print Using "## "; SX%(25, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(25, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(25, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(25, 1, TS%)
             End If
 
             If Left$(SX$(26, 0), 3) <> "XXX" Then
                 Locate 5, 61
                 X = 26
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(26, 0), 13);
                 Locate , 75: Print Using "## "; SX%(26, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(26, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(26, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(26, 1, TS%)
             End If
 
             If Left$(SX$(27, 0), 3) <> "XXX" Then
                 Locate 8, 61
                 X = 27
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(27, 0), 13);
                 Locate , 75: Print Using "## "; SX%(27, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(27, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(27, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(27, 1, TS%)
             End If
 
             If Left$(SX$(28, 0), 3) <> "XXX" Then
                 Locate 11, 61
                 X = 28
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(28, 0), 13);
                 Locate , 75: Print Using "## "; SX%(28, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(28, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(28, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(28, 1, TS%)
             End If
 
             If Left$(SX$(29, 0), 3) <> "XXX" Then
                 Locate 14, 61
                 X = 29
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(29, 0), 13);
                 Locate , 75: Print Using "## "; SX%(29, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(29, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(29, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(29, 1, TS%)
             End If
 
             If Left$(SX$(30, 0), 3) <> "XXX" Then
                 Locate 17, 61
                 X = 30
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(30, 0), 13);
                 Locate , 75: Print Using "## "; SX%(30, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(30, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(30, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(30, 1, TS%)
             End If
 
             If Left$(SX$(31, 0), 3) <> "XXX" Then
                 Locate 20, 61
                 X = 31
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(31, 0), 13);
                 Locate , 75: Print Using "## "; SX%(31, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(31, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(31, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(31, 1, TS%)
             End If
 
             If Left$(SX$(32, 0), 3) <> "XXX" Then
                 Locate 23, 61
                 X = 32
-                TS% = TE + (ST% - ST%(X)) * 3
-                If TS% < 0 Then TS% = 0
-                If TS% > 14 Then TS% = 14
-                If endOfGames% = 1 Then TS% = 14
+                Call TickerTime
+
                 Print Left$(SX$(32, 0), 13);
                 Locate , 75: Print Using "## "; SX%(32, 0, TS%);
                 Print R$(TS%)
-                Locate , 61: Print Left$(SX$(32, 1), 13);
+                Locate , 61
+
+                Print Left$(SX$(32, 1), 13);
                 Locate , 75: Print Using "## #"; SX%(32, 1, TS%);
             End If
 
@@ -1550,354 +1811,460 @@ End Sub
 
 
 '------------------------------
+'     TickerTime Subroutine
+'------------------------------
+'...explanation
+Sub TickerTime ()
+
+    TS% = TE + (ST% - ST%(X)) * 3
+    If TS% < 0 Then TS% = 0
+    If TS% > 14 Then TS% = 14
+    If endGame% = 1 Then TS% = 14
+
+End Sub
+
+
+'------------------------------
+'     TICKERUPDATE Subroutine
+'------------------------------
+' ...explanation...
+Sub TICKERUPDATE ()
+
+    If AP = 1 And AP%(2) <= 32 Then
+
+        If Q = 1 And T <= 600 And SX%(AP%(2) + 1, 0, 1) = -1 Then SX%(AP%(2) + 1, 0, 1) = S(0, 0): SX%(AP%(2) + 1, 1, 1) = S(1, 0)
+        If Q = 1 And T <= 300 And SX%(AP%(2) + 1, 0, 2) = -1 Then SX%(AP%(2) + 1, 0, 2) = S(0, 0): SX%(AP%(2) + 1, 1, 2) = S(1, 0)
+
+        If Q = 2 And T <= 600 And SX%(AP%(2) + 1, 0, 4) = -1 Then SX%(AP%(2) + 1, 0, 4) = S(0, 0): SX%(AP%(2) + 1, 1, 4) = S(1, 0)
+        If Q = 2 And T <= 300 And SX%(AP%(2) + 1, 0, 5) = -1 Then SX%(AP%(2) + 1, 0, 5) = S(0, 0): SX%(AP%(2) + 1, 1, 5) = S(1, 0)
+
+        If Q > 2 And SX%(AP%(2) + 1, 0, 3) = -1 Then SX%(AP%(2) + 1, 0, 3) = S(0, 1): SX%(AP%(2) + 1, 1, 3) = S(1, 1)
+        If Q > 2 And SX%(AP%(2) + 1, 0, 6) = -1 Then For I2 = 6 To 8: SX%(AP%(2) + 1, 0, I2) = S(0, 2) + S(0, 1): SX%(AP%(2) + 1, 1, I2) = S(1, 2) + S(1, 1): Next
+
+        If Q = 3 And T <= 600 And SX%(AP%(2) + 1, 0, 9) = -1 Then SX%(AP%(2) + 1, 0, 9) = S(0, 0): SX%(AP%(2) + 1, 1, 9) = S(1, 0)
+        If Q = 3 And T <= 300 And SX%(AP%(2) + 1, 0, 10) = -1 Then SX%(AP%(2) + 1, 0, 10) = S(0, 0): SX%(AP%(2) + 1, 1, 10) = S(1, 0)
+
+        If Q > 3 And SX%(AP%(2) + 1, 0, 11) = -1 Then SX%(AP%(2) + 1, 0, 11) = S(0, 3) + S(0, 2) + S(0, 1): SX%(AP%(2) + 1, 1, 11) = S(1, 3) + S(1, 2) + S(1, 1)
+
+        If Q = 4 And T <= 600 And SX%(AP%(2) + 1, 0, 12) = -1 Then SX%(AP%(2) + 1, 0, 12) = S(0, 0): SX%(AP%(2) + 1, 1, 12) = S(1, 0)
+        If Q = 4 And T <= 300 And SX%(AP%(2) + 1, 0, 13) = -1 Then SX%(AP%(2) + 1, 0, 13) = S(0, 0): SX%(AP%(2) + 1, 1, 13) = S(1, 0)
+
+        SX%(AP%(2) + 1, 0, 14) = S(0, 0)
+        SX%(AP%(2) + 1, 1, 14) = S(1, 0)
+
+    End If
+
+End Sub
+
+
+'------------------------------
 '     SAVESTATS Subroutine
 '------------------------------
 ' ...explanation...
 Sub SAVESTATS ()
 
+    Shared scheduleFile$
+
     Cls
-    PN = Q
 
-    For I = 0 To 1
-        B$(I) = A$(I)
-        Y$(I) = B$(I)
-    Next
+    If AP <> 1 Then
 
-    For Q = 0 To 1
+        Do
+            Call TEAMBOX(1, 1)
+            U$ = "SAVE STATISTICS (YN)"
+            Locate , (80 - Len(U$)) / 2
+            Print U$
+            Color 15, 0
 
-        C% = 0
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+    End If
+
+    If UCase$(I$) = "Y" Or AP = 1 Then
+
+        PX = 0
+
         Cls
-        Print "COMPILE STATS FOR ";
-        Color PA%(Q, 2), PA%(Q, 1): Print B$(Q);: Color 15, 0
-        Print " (Y/N) ";
 
-        If AP <> 1 Then
+        ' Update schedule, ticker, etc.
+        If AP = 1 Then
 
-            Do
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+            Call TickerSchedule
 
-            If I$ = "N" Then C% = 1
-
-            'If UCase$(Left$(diskPaths$(1), 1)) = "C" Then 8093
-            'Cls
-
-        End If
-
-        8093 '
-        If C% = 1 Then _Continue
-
-        'Determine stat file name
-        For XX = 4 To 11:
-            If Mid$(B$(Q), XX, 1) = " " Or Mid$(B$(Q), XX, 1) = "." Then Mid$(B$(Q), XX, 1) = "_"
-        Next XX
-
-        For XX = 12 To 14:
-            If Mid$(B$(Q), XX, 2) = "ST" Then Mid$(B$(Q), 9, 1) = "_": Mid$(B$(Q), 10, 2) = "ST"
-        Next XX
-
-        QQ = 8
-
-        For XX = 11 To 4 Step -1:
-            If Mid$(B$(Q), XX, 1) = "_" Then
-                QQ = XX - 4
+            If AP%(1) < AP%(0) + AP%(2) Then
+                Kill "GAME82"
+                endGame% = 1
             Else
-                Exit For
+                Open "GAME82" For Output As #2
+                Print #2, scheduleFile$
+                For I = 0 To 2: Print #2, AP%(I): Next
+                Close 2
             End If
-        Next XX
-
-        8138 '
-        F$ = Mid$(B$(Q), 4, QQ)
-        R$ = F$ + "." + Left$(B$(Q), 2)
-
-        'Read existing stats from the file
-        If _FileExists(diskPaths$(1) + R$) Then
-
-            Open diskPaths$(1) + R$ For Input As #2
-
-            Input #2, B$(Q)
-
-            For I = 0 To 9: Input #2, A1$(Q, I): Next
-            For I = 0 To 5: Input #2, A2$(Q, I): Next
-            For I = 0 To 3: Input #2, A3$(Q, I): Next
-            For I = 0 To 2: Input #2, A4$(Q, I): Next
-            For I = 0 To 2: Input #2, A5$(Q, I): Next
-
-            Input #2, A6$(Q, 0)
-
-            For I = 0 To 1: Input #2, A7$(Q, I): Next
-            For J = 0 To 13: For K = 0 To 17: Input #2, Z2(J, K): Next: Next
-            For L = 0 To 38: Input #2, Z(L): Next
-            For L = 0 To 38: Input #2, Z1(L): Next
-
-            For J = 0 To 9
-                Input #2, DI$(Q, J)
-                For J1 = 0 To 2
-                    Input #2, GI(Q, J, J1)
-                Next
-            Next
-
-            For J = 0 To 14
-                Input #2, DS$(Q, J)
-                For J1 = 0 To 1
-                    Input #2, GS(Q, J, J1)
-                Next
-            Next
-
-            For I = 0 To 9: Input #2, LR(Q, I): Input #2, strLR$(Q, I, 0): Input #2, strLR$(Q, I, 1): Next
-            For I = 0 To 15: Input #2, LC(Q, I): Input #2, strLC$(Q, I, 0): Input #2, strLC$(Q, I, 1): Next
-            For I = 0 To 3: Input #2, LP(Q, I): Input #2, LP$(Q, I, 0): Input #2, LP$(Q, I, 1): Next
-            For I = 0 To 2: Input #2, LK(Q, I): Input #2, LK$(Q, I, 0): Input #2, LK$(Q, I, 1): Next
-            For I = 0 To 2: Input #2, PK(Q, I): Input #2, PK$(Q, I, 0): Input #2, PK$(Q, I, 1): Next
-            For I = 0 To 1: Input #2, LF(Q, I): Input #2, LF$(Q, I): For I1 = 0 To 4: Input #2, AM(Q, I, I1): Input #2, AF(Q, I, I1): Next: Next
-            For I = 0 To 9: Input #2, LI(Q, I): Input #2, LI$(Q, I, 0): Input #2, LI$(Q, I, 1): Next
-
-            Close #2
 
         End If
 
-        8056 '
-        For I = 0 To 9
-            If RB(Q, I) > LR(Q, I) Then LR(Q, I) = RB(Q, I): strLR$(Q, I, 0) = strRB$(Q, I): strLR$(Q, I, 1) = A$(1 - Q)
-            If IR(Q, I) > LI(Q, I) Then LI(Q, I) = IR(Q, I): LI$(Q, I, 0) = strIR$(Q, I): LI$(Q, I, 1) = A$(1 - Q)
-        Next
+        Cls
 
-        For I = 0 To 15
-            If WR(Q, I) > LC(Q, I) Then LC(Q, I) = WR(Q, I): strLC$(Q, I, 0) = strWR$(Q, I): strLC$(Q, I, 1) = A$(1 - Q)
-        Next
-
-        For I = 0 To 3
-            If QB(Q, I) > LP(Q, I) Then LP(Q, I) = QB(Q, I): LP$(Q, I, 0) = strQB$(Q, I): LP$(Q, I, 1) = A$(1 - Q)
-        Next
-
-        For I = 0 To 2
-            If KR(Q, I) > LK(Q, I) Then LK(Q, I) = KR(Q, I): LK$(Q, I, 0) = strKR$(Q, I): LK$(Q, I, 1) = A$(1 - Q)
-            If PR(Q, I) > PK(Q, I) Then PK(Q, I) = PR(Q, I): PK$(Q, I, 0) = strPR$(Q, I): PK$(Q, I, 1) = A$(1 - Q)
-        Next
-
-        If K(Q, 26) > Z(28) Then Z(28) = K(Q, 26)
+        PN = Q
 
         For I = 0 To 1
-            If FL(Q, I) > LF(Q, I) Then
-                LF(Q, I) = FL(Q, I)
-                LF$(Q, 1) = A$(1 - Q)
+            B$(I) = A$(I)
+            Y$(I) = B$(I)
+        Next
+
+        For Q = 0 To 1
+
+            skipCompile% = 0
+
+            Color 15, 0
+            Cls
+
+            Call FRAMEOPTION(1, Q)
+
+            U$ = "COMPILE STATS FOR " + B$(Q) + " (YN)"
+            Locate , (80 - Len(U$)) / 2
+            Print U$
+            Color 15, 0
+
+            Print "COMPILE STATS FOR ";
+
+            If AP <> 1 Then
+
+                Do
+                    I$ = GetKeyPress$
+                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                If I$ = "N" Then skipCompile% = 1
+
             End If
-            For I1 = 0 To 4
-                AM(Q, I, I1) = AM(Q, I, I1) + FM(Q, I, I1)
-                AF(Q, I, I1) = AF(Q, I, I1) + FA(Q, I, I1)
-            Next
-        Next
 
-        For J = 0 To 13
-            For K = 0 To 17: Z2(J, K) = Z2(J, K) + Int(K2(Q, J, K) + .5): Next
-        Next
+            If skipCompile% <> 1 Then
 
-        Z(32) = Z(32) + S(Q, 1)
-        Z(33) = Z(33) + S(Q, 2)
-        Z(34) = Z(34) + S(Q, 3)
-        Z(35) = Z(35) + S(Q, 4)
+                Call COMPILESTATFILES
 
-        For K = 5 To PN
-            Z(36) = Z(36) + S(Q, K)
-        Next
+            End If
 
-        Z1(32) = Z1(32) + S(1 - Q, 1)
-        Z1(33) = Z1(33) + S(1 - Q, 2)
-        Z1(34) = Z1(34) + S(1 - Q, 3)
-        Z1(35) = Z1(35) + S(1 - Q, 4)
+        Next Q
 
-        For K = 5 To PN
-            Z1(36) = Z1(36) + S(1 - Q, K)
-        Next
+    End If
 
-        For J = 0 To 3
-            Z(17) = Z(17) + K2(Q, J, 13)
-            Z1(17) = Z1(17) + K2(1 - Q, J, 13)
-        Next
+End Sub
 
-        For J = 0 To 13
-            Z(15) = Z(15) + K2(Q, J, 2)
-            Z1(15) = Z1(15) + K2(1 - Q, J, 2)
-        Next
 
-        For J = 0 To 2
-            Z(18) = Z(18) + K2(Q, J, 16)
-            Z1(18) = Z1(18) + K2(1 - Q, J, 16)
-            Z(22) = Z(22) + K2(Q, J, 14)
-            Z1(22) = Z1(22) + K2(1 - Q, J, 14)
-            Z(23) = Z(23) + K2(Q, J, 15)
-            Z1(23) = Z1(23) + K2(1 - Q, J, 15)
-            Z(19) = Z(19) + K2(Q, J + 3, 16)
-            Z1(18) = Z1(19) + K2(1 - Q, J + 3, 16)
-            Z(24) = Z(24) + K2(Q, J + 3, 14)
-            Z1(24) = Z1(24) + K2(1 - Q, J + 3, 14)
-            Z(25) = Z(25) + K2(Q, J + 3, 15)
-            Z1(25) = Z1(25) + K2(1 - Q, J + 3, 15)
-        Next
+'------------------------------
+' COMPILESTATFILES Subroutine
+'------------------------------
+' ...explanation...
+Sub COMPILESTATFILES ()
 
-        For J = 0 To 9
-            Z(20) = Z(20) + SI(Q, J, 2)
-            Z1(20) = Z1(20) + SI(1 - Q, J, 2)
-            Z(26) = Z(26) + SI(Q, J, 0)
-            Z1(26) = Z1(26) + SI(1 - Q, J, 0)
-            Z(27) = Z(27) + SI(Q, J, 1)
-            Z1(27) = Z1(27) + SI(1 - Q, J, 1)
-        Next
+    'Determine stat file name
+    For XX = 4 To 11:
+        If Mid$(B$(Q), XX, 1) = " " Or Mid$(B$(Q), XX, 1) = "." Then Mid$(B$(Q), XX, 1) = "_"
+    Next XX
 
-        Z(21) = Z(21) + K(Q, 19)
-        Z1(21) = Z1(21) + K(1 - Q, 19)
-        Z(37) = Z(37) + K(Q, 35)
-        Z1(37) = Z1(37) + K(1 - Q, 35)
-        Z(38) = Z(38) + K(Q, 36)
-        Z1(38) = Z1(38) + K(1 - Q, 36)
-        Z(30) = Z(30) + K(Q, 28)
-        Z1(30) = Z1(30) + K(1 - Q, 28)
-        Z(29) = Z(29) + K(Q, 27)
-        Z1(29) = Z1(29) + K(1 - Q, 27)
-        Z(31) = Z(31) + K(Q, 29)
-        Z1(31) = Z1(31) + K(1 - Q, 29)
+    For XX = 12 To 14:
+        If Mid$(B$(Q), XX, 2) = "ST" Then Mid$(B$(Q), 9, 1) = "_": Mid$(B$(Q), 10, 2) = "ST"
+    Next XX
 
-        For L = 0 To 12: Z(L) = Z(L) + K(Q, L): Next
-        For L = 0 To 12: Z1(L) = Z1(L) + K(1 - Q, L): Next
+    QQ = 8
 
-        Z(13) = Z(13) + W6(Q, 0)
-        Z(14) = Z(14) + W6(Q, 1)
-        Z1(13) = Z1(13) + W6(1 - Q, 0)
-        Z1(14) = Z1(14) + W6(1 - Q, 1)
-
-        For J = 0 To 9
-            For J1 = 0 To 2
-                GI(Q, J, J1) = GI(Q, J, J1) + SI(Q, J, J1)
-            Next
-        Next
-
-        For J = 0 To 14
-            For J1 = 0 To 1
-                GS(Q, J, J1) = GS(Q, J, J1) + SK(Q, J, J1)
-            Next
-        Next
-
-        Print ">>>>>"
-        Print " THE STATS ARE BEING SAVED UNDER"
-        Print "THE FOLLOWING NAME::: ";
-        Color PA%(Q, 2), PA%(Q, 1): Print R$
-        Color 15, 0
-
-        Open diskPaths$(1) + R$ For Output As #1
-        Print #1, Y$(Q)
-        For I = 0 To 9: Print #1, A1$(Q, I): Next
-        For I = 0 To 5: Print #1, A2$(Q, I): Next
-        For I = 0 To 3: Print #1, A3$(Q, I): Next
-        For I = 0 To 2: Print #1, A4$(Q, I): Next
-        For I = 0 To 2: Print #1, A5$(Q, I): Next
-        Print #1, A6$(Q, 0)
-
-        For I = 0 To 1: Print #1, A7$(Q, I): Next
-
-        For J = 0 To 13
-            For K = 0 To 17:
-                Print #1, Z2(J, K)
-            Next
-        Next
-
-        For L = 0 To 38: Print #1, Z(L): Next
-        For L = 0 To 38: Print #1, Z1(L): Next
-
-        For J = 0 To 9
-            Print #1, DI$(Q, J)
-            For J1 = 0 To 2
-                Print #1, GI(Q, J, J1)
-            Next
-        Next
-
-        For J = 0 To 14
-            Print #1, DS$(Q, J)
-            For J1 = 0 To 1
-                Print #1, GS(Q, J, J1)
-            Next
-        Next
-
-        For I = 0 To 9: Print #1, LR(Q, I): Print #1, strLR$(Q, I, 0): Print #1, strLR$(Q, I, 1): Next
-        For I = 0 To 15: Print #1, LC(Q, I): Print #1, strLC$(Q, I, 0): Print #1, strLC$(Q, I, 1): Next
-        For I = 0 To 3: Print #1, LP(Q, I): Print #1, LP$(Q, I, 0): Print #1, LP$(Q, I, 1): Next
-        For I = 0 To 2: Print #1, LK(Q, I): Print #1, LK$(Q, I, 0): Print #1, LK$(Q, I, 1): Next
-        For I = 0 To 2: Print #1, PK(Q, I): Print #1, PK$(Q, I, 0): Print #1, PK$(Q, I, 1): Next
-        For I = 0 To 1: Print #1, LF(Q, I): Print #1, LF$(Q, I): For I1 = 0 To 4: Print #1, AM(Q, I, I1): Print #1, AF(Q, I, I1): Next: Next
-        For I = 0 To 9: Print #1, LI(Q, I): Print #1, LI$(Q, I, 0): Print #1, LI$(Q, I, 1): Next
-
-        Close #1
-
-        Print "<<<<<"
-        Print
-        Print
-
-        numberGames = 0
-        R$ = R$ + "S"
-
-        'Read stats in from file
-        If _FileExists(diskPaths$(1) + R$) Then
-            Open diskPaths$(1) + R$ For Input As #1
-            Input #1, numberGames
-            For I = 1 To 120: Input #1, O%(I): Next
-            For I = 1 To 120: Input #1, HO$(I): Next
-            For I = 1 To 120: Input #1, TeamScore%(I): Next
-            For I = 1 To 120: Input #1, H$(I): Next
-            For I = 1 To 120: Input #1, intPR%(0, I): Next
-            For I = 1 To 120: Input #1, intPR%(1, I): Next
-            For I = 1 To 120: Input #1, CRD(I): Next
-            For I = 1 To 120: Input #1, SITE$(I): Next
-            Close #1
+    For XX = 11 To 4 Step -1:
+        If Mid$(B$(Q), XX, 1) = "_" Then
+            QQ = XX - 4
+        Else
+            Exit For
         End If
+    Next XX
 
-        8103 '
-        If numberGames < 120 Then numberGames = numberGames + 1
-        If H% = Q Then H$(numberGames) = "H"
-        If H% <> Q Then H$(numberGames) = "A"
-        If H% = 2 Then H$(numberGames) = "X"
-        If H% = Q And PN > 4 Then H$(numberGames) = "H-" + Str$(PN - 4) + " OT"
-        If H% <> Q And PN > 4 Then H$(numberGames) = "A-" + Str$(PN - 4) + " OT"
-        If H% = 2 And PN > 4 Then H$(numberGames) = "X-" + Str$(PN - 4) + " OT"
+    F$ = Mid$(B$(Q), 4, QQ)
+    R$ = F$ + "." + Left$(B$(Q), 2)
 
-        O%(numberGames) = S(Q, 0)
-        HO$(numberGames) = A$(1 - Q)
-        TeamScore%(numberGames) = S(1 - Q, 0)
-        CRD(numberGames) = actualAttendance&
-        SITE$(numberGames) = SITE$
-        intPR%(0, numberGames) = PA%(Q, 4)
-        intPR%(1, numberGames) = PA%(1 - Q, 4)
+    'Read existing stats from the file
+    If _FileExists(diskPaths$(1) + R$) Then
 
-        'Write stats to new file
-        Open diskPaths$(1) + R$ For Output As #1
-        Print #1, numberGames%
-        For I = 1 To 120: Print #1, O%(I): Next
-        For I = 1 To 120: Print #1, HO$(I): Next
-        For I = 1 To 120: Print #1, TeamScore%(I): Next
-        For I = 1 To 120: Print #1, H$(I): Next
-        For I = 1 To 120: Print #1, intPR%(0, I): Next
-        For I = 1 To 120: Print #1, intPR%(1, I): Next
-        For I = 1 To 120: Print #1, CRD(I): Next
-        For I = 1 To 120: Print #1, SITE$(I): Next
-        Close #1
+        Open diskPaths$(1) + R$ For Input As #2
 
-        For I = 1 To 120
-            intPR%(0, I) = 0
-            intPR%(1, I) = 0
-            O%(I) = 0
-            TeamScore%(I) = 0
-            HO$(I) = ""
-            H$(I) = ""
-        Next
+        Input #2, B$(Q)
 
-        For J = 0 To 10:
-            For K = 0 To 17
-                Z2(J, K) = 0
+        For I = 0 To 9: Input #2, A1$(Q, I): Next
+        For I = 0 To 5: Input #2, A2$(Q, I): Next
+        For I = 0 To 3: Input #2, A3$(Q, I): Next
+        For I = 0 To 2: Input #2, A4$(Q, I): Next
+        For I = 0 To 2: Input #2, A5$(Q, I): Next
+
+        Input #2, A6$(Q, 0)
+
+        For I = 0 To 1: Input #2, A7$(Q, I): Next
+        For J = 0 To 13: For K = 0 To 17: Input #2, Z2(J, K): Next: Next
+        For L = 0 To 38: Input #2, Z(L): Next
+        For L = 0 To 38: Input #2, Z1(L): Next
+
+        For J = 0 To 9
+            Input #2, DI$(Q, J)
+            For J1 = 0 To 2
+                Input #2, GI(Q, J, J1)
             Next
         Next
 
-        For L = 0 To 38: Z(L) = 0: Next
-        For L = 0 To 38: Z1(L) = 0: Next
+        For J = 0 To 14
+            Input #2, DS$(Q, J)
+            For J1 = 0 To 1
+                Input #2, GS(Q, J, J1)
+            Next
+        Next
 
-    Next Q
+        For I = 0 To 9: Input #2, LR(Q, I): Input #2, strLR$(Q, I, 0): Input #2, strLR$(Q, I, 1): Next
+        For I = 0 To 15: Input #2, LC(Q, I): Input #2, strLC$(Q, I, 0): Input #2, strLC$(Q, I, 1): Next
+        For I = 0 To 3: Input #2, LP(Q, I): Input #2, LP$(Q, I, 0): Input #2, LP$(Q, I, 1): Next
+        For I = 0 To 2: Input #2, LK(Q, I): Input #2, LK$(Q, I, 0): Input #2, LK$(Q, I, 1): Next
+        For I = 0 To 2: Input #2, PK(Q, I): Input #2, PK$(Q, I, 0): Input #2, PK$(Q, I, 1): Next
+        For I = 0 To 1: Input #2, LF(Q, I): Input #2, LF$(Q, I): For I1 = 0 To 4: Input #2, AM(Q, I, I1): Input #2, AF(Q, I, I1): Next: Next
+        For I = 0 To 9: Input #2, LI(Q, I): Input #2, LI$(Q, I, 0): Input #2, LI$(Q, I, 1): Next
+
+        Close #2
+
+    End If
+
+    For I = 0 To 9
+        If RB(Q, I) > LR(Q, I) Then LR(Q, I) = RB(Q, I): strLR$(Q, I, 0) = strRB$(Q, I): strLR$(Q, I, 1) = A$(1 - Q)
+        If IR(Q, I) > LI(Q, I) Then LI(Q, I) = IR(Q, I): LI$(Q, I, 0) = strIR$(Q, I): LI$(Q, I, 1) = A$(1 - Q)
+    Next
+
+    For I = 0 To 15
+        If WR(Q, I) > LC(Q, I) Then LC(Q, I) = WR(Q, I): strLC$(Q, I, 0) = strWR$(Q, I): strLC$(Q, I, 1) = A$(1 - Q)
+    Next
+
+    For I = 0 To 3
+        If QB(Q, I) > LP(Q, I) Then LP(Q, I) = QB(Q, I): LP$(Q, I, 0) = strQB$(Q, I): LP$(Q, I, 1) = A$(1 - Q)
+    Next
+
+    For I = 0 To 2
+        If KR(Q, I) > LK(Q, I) Then LK(Q, I) = KR(Q, I): LK$(Q, I, 0) = strKR$(Q, I): LK$(Q, I, 1) = A$(1 - Q)
+        If PR(Q, I) > PK(Q, I) Then PK(Q, I) = PR(Q, I): PK$(Q, I, 0) = strPR$(Q, I): PK$(Q, I, 1) = A$(1 - Q)
+    Next
+
+    If K(Q, 26) > Z(28) Then Z(28) = K(Q, 26)
+
+    For I = 0 To 1
+        If FL(Q, I) > LF(Q, I) Then
+            LF(Q, I) = FL(Q, I)
+            LF$(Q, 1) = A$(1 - Q)
+        End If
+        For I1 = 0 To 4
+            AM(Q, I, I1) = AM(Q, I, I1) + FM(Q, I, I1)
+            AF(Q, I, I1) = AF(Q, I, I1) + FA(Q, I, I1)
+        Next
+    Next
+
+    For J = 0 To 13
+        For K = 0 To 17: Z2(J, K) = Z2(J, K) + Int(K2(Q, J, K) + .5): Next
+    Next
+
+    Z(32) = Z(32) + S(Q, 1)
+    Z(33) = Z(33) + S(Q, 2)
+    Z(34) = Z(34) + S(Q, 3)
+    Z(35) = Z(35) + S(Q, 4)
+
+    For K = 5 To PN
+        Z(36) = Z(36) + S(Q, K)
+    Next
+
+    Z1(32) = Z1(32) + S(1 - Q, 1)
+    Z1(33) = Z1(33) + S(1 - Q, 2)
+    Z1(34) = Z1(34) + S(1 - Q, 3)
+    Z1(35) = Z1(35) + S(1 - Q, 4)
+
+    For K = 5 To PN
+        Z1(36) = Z1(36) + S(1 - Q, K)
+    Next
+
+    For J = 0 To 3
+        Z(17) = Z(17) + K2(Q, J, 13)
+        Z1(17) = Z1(17) + K2(1 - Q, J, 13)
+    Next
+
+    For J = 0 To 13
+        Z(15) = Z(15) + K2(Q, J, 2)
+        Z1(15) = Z1(15) + K2(1 - Q, J, 2)
+    Next
+
+    For J = 0 To 2
+        Z(18) = Z(18) + K2(Q, J, 16)
+        Z1(18) = Z1(18) + K2(1 - Q, J, 16)
+        Z(22) = Z(22) + K2(Q, J, 14)
+        Z1(22) = Z1(22) + K2(1 - Q, J, 14)
+        Z(23) = Z(23) + K2(Q, J, 15)
+        Z1(23) = Z1(23) + K2(1 - Q, J, 15)
+        Z(19) = Z(19) + K2(Q, J + 3, 16)
+        Z1(18) = Z1(19) + K2(1 - Q, J + 3, 16)
+        Z(24) = Z(24) + K2(Q, J + 3, 14)
+        Z1(24) = Z1(24) + K2(1 - Q, J + 3, 14)
+        Z(25) = Z(25) + K2(Q, J + 3, 15)
+        Z1(25) = Z1(25) + K2(1 - Q, J + 3, 15)
+    Next
+
+    For J = 0 To 9
+        Z(20) = Z(20) + SI(Q, J, 2)
+        Z1(20) = Z1(20) + SI(1 - Q, J, 2)
+        Z(26) = Z(26) + SI(Q, J, 0)
+        Z1(26) = Z1(26) + SI(1 - Q, J, 0)
+        Z(27) = Z(27) + SI(Q, J, 1)
+        Z1(27) = Z1(27) + SI(1 - Q, J, 1)
+    Next
+
+    Z(21) = Z(21) + K(Q, 19)
+    Z1(21) = Z1(21) + K(1 - Q, 19)
+    Z(37) = Z(37) + K(Q, 35)
+    Z1(37) = Z1(37) + K(1 - Q, 35)
+    Z(38) = Z(38) + K(Q, 36)
+    Z1(38) = Z1(38) + K(1 - Q, 36)
+    Z(30) = Z(30) + K(Q, 28)
+    Z1(30) = Z1(30) + K(1 - Q, 28)
+    Z(29) = Z(29) + K(Q, 27)
+    Z1(29) = Z1(29) + K(1 - Q, 27)
+    Z(31) = Z(31) + K(Q, 29)
+    Z1(31) = Z1(31) + K(1 - Q, 29)
+
+    For L = 0 To 12: Z(L) = Z(L) + K(Q, L): Next
+    For L = 0 To 12: Z1(L) = Z1(L) + K(1 - Q, L): Next
+
+    Z(13) = Z(13) + W6(Q, 0)
+    Z(14) = Z(14) + W6(Q, 1)
+    Z1(13) = Z1(13) + W6(1 - Q, 0)
+    Z1(14) = Z1(14) + W6(1 - Q, 1)
+
+    For J = 0 To 9
+        For J1 = 0 To 2
+            GI(Q, J, J1) = GI(Q, J, J1) + SI(Q, J, J1)
+        Next
+    Next
+
+    For J = 0 To 14
+        For J1 = 0 To 1
+            GS(Q, J, J1) = GS(Q, J, J1) + SK(Q, J, J1)
+        Next
+    Next
+
+    Print ">>>>>"
+    Print " THE STATS ARE BEING SAVED UNDER"
+    Print "THE FOLLOWING NAME::: ";
+    Color PA%(Q, 2), PA%(Q, 1): Print R$
+    Color 15, 0
+
+    Open diskPaths$(1) + R$ For Output As #1
+    Print #1, Y$(Q)
+    For I = 0 To 9: Print #1, A1$(Q, I): Next
+    For I = 0 To 5: Print #1, A2$(Q, I): Next
+    For I = 0 To 3: Print #1, A3$(Q, I): Next
+    For I = 0 To 2: Print #1, A4$(Q, I): Next
+    For I = 0 To 2: Print #1, A5$(Q, I): Next
+    Print #1, A6$(Q, 0)
+
+    For I = 0 To 1: Print #1, A7$(Q, I): Next
+
+    For J = 0 To 13
+        For K = 0 To 17:
+            Print #1, Z2(J, K)
+        Next
+    Next
+
+    For L = 0 To 38: Print #1, Z(L): Next
+    For L = 0 To 38: Print #1, Z1(L): Next
+
+    For J = 0 To 9
+        Print #1, DI$(Q, J)
+        For J1 = 0 To 2
+            Print #1, GI(Q, J, J1)
+        Next
+    Next
+
+    For J = 0 To 14
+        Print #1, DS$(Q, J)
+        For J1 = 0 To 1
+            Print #1, GS(Q, J, J1)
+        Next
+    Next
+
+    For I = 0 To 9: Print #1, LR(Q, I): Print #1, strLR$(Q, I, 0): Print #1, strLR$(Q, I, 1): Next
+    For I = 0 To 15: Print #1, LC(Q, I): Print #1, strLC$(Q, I, 0): Print #1, strLC$(Q, I, 1): Next
+    For I = 0 To 3: Print #1, LP(Q, I): Print #1, LP$(Q, I, 0): Print #1, LP$(Q, I, 1): Next
+    For I = 0 To 2: Print #1, LK(Q, I): Print #1, LK$(Q, I, 0): Print #1, LK$(Q, I, 1): Next
+    For I = 0 To 2: Print #1, PK(Q, I): Print #1, PK$(Q, I, 0): Print #1, PK$(Q, I, 1): Next
+    For I = 0 To 1: Print #1, LF(Q, I): Print #1, LF$(Q, I): For I1 = 0 To 4: Print #1, AM(Q, I, I1): Print #1, AF(Q, I, I1): Next: Next
+    For I = 0 To 9: Print #1, LI(Q, I): Print #1, LI$(Q, I, 0): Print #1, LI$(Q, I, 1): Next
+
+    Close #1
+
+    Print "<<<<<"
+    Print
+    Print
+
+    numberGames = 0
+    R$ = R$ + "S"
+
+    'Read stats in from file
+    If _FileExists(diskPaths$(1) + R$) Then
+        Open diskPaths$(1) + R$ For Input As #1
+        Input #1, numberGames
+        For I = 1 To 120: Input #1, O%(I): Next
+        For I = 1 To 120: Input #1, HO$(I): Next
+        For I = 1 To 120: Input #1, TeamScore%(I): Next
+        For I = 1 To 120: Input #1, H$(I): Next
+        For I = 1 To 120: Input #1, intPR%(0, I): Next
+        For I = 1 To 120: Input #1, intPR%(1, I): Next
+        For I = 1 To 120: Input #1, CRD(I): Next
+        For I = 1 To 120: Input #1, SITE$(I): Next
+        Close #1
+    End If
+
+    8103 '
+    If numberGames < 120 Then numberGames = numberGames + 1
+    If H% = Q Then H$(numberGames) = "H"
+    If H% <> Q Then H$(numberGames) = "A"
+    If H% = 2 Then H$(numberGames) = "X"
+    If H% = Q And PN > 4 Then H$(numberGames) = "H-" + Str$(PN - 4) + " OT"
+    If H% <> Q And PN > 4 Then H$(numberGames) = "A-" + Str$(PN - 4) + " OT"
+    If H% = 2 And PN > 4 Then H$(numberGames) = "X-" + Str$(PN - 4) + " OT"
+
+    O%(numberGames) = S(Q, 0)
+    HO$(numberGames) = A$(1 - Q)
+    TeamScore%(numberGames) = S(1 - Q, 0)
+    CRD(numberGames) = actualAttendance&
+    SITE$(numberGames) = SITE$
+    intPR%(0, numberGames) = PA%(Q, 4)
+    intPR%(1, numberGames) = PA%(1 - Q, 4)
+
+    'Write stats to new file
+    Open diskPaths$(1) + R$ For Output As #1
+    Print #1, numberGames%
+    For I = 1 To 120: Print #1, O%(I): Next
+    For I = 1 To 120: Print #1, HO$(I): Next
+    For I = 1 To 120: Print #1, TeamScore%(I): Next
+    For I = 1 To 120: Print #1, H$(I): Next
+    For I = 1 To 120: Print #1, intPR%(0, I): Next
+    For I = 1 To 120: Print #1, intPR%(1, I): Next
+    For I = 1 To 120: Print #1, CRD(I): Next
+    For I = 1 To 120: Print #1, SITE$(I): Next
+    Close #1
+
+    For I = 1 To 120
+        intPR%(0, I) = 0
+        intPR%(1, I) = 0
+        O%(I) = 0
+        TeamScore%(I) = 0
+        HO$(I) = ""
+        H$(I) = ""
+    Next
+
+    For J = 0 To 10:
+        For K = 0 To 17
+            Z2(J, K) = 0
+        Next
+    Next
+
+    For L = 0 To 38: Z(L) = 0: Next
+    For L = 0 To 38: Z1(L) = 0: Next
 
 End Sub
 
@@ -1927,13 +2294,13 @@ End Sub
 
 
 '------------------------------
-'  GetKey_PBPDelay Subroutine
+'  GetKeyWhenNoDelay Subroutine
 '------------------------------
 ' ...explanation...
-Sub GetKey_PBPDelay ()
+Sub GetKeyWhenNoDelay ()
 
     'If we're not in autoplay
-    If AP <> 1 Or J6(0) <> 2 Then
+    If Not (AP = 1 And J6(0) = 2) Then
         I$ = GetKeyPress$
     End If
 
@@ -1941,27 +2308,16 @@ End Sub
 
 
 '------------------------------
-'      DECIDE Subroutine
+'      FRAMESTATS Subroutine
 '------------------------------
 ' ...explanation...
-Sub DECIDE ()
+Sub FRAMESTATS (J)
 
-    If X = 0 And AP <> 1 Or AP = 1 And J6(0) <> 2 Then Call GetKey_PBPDelay
-
-End Sub
-
-
-'------------------------------
-'      DRAWABOX Subroutine
-'------------------------------
-' ...explanation...
-Sub DRAWABOX ()
-
-    SN = 1
     Locate 1, 1
     Color 0, 7
 
     Print Chr$(214); String$(77, 196); Chr$(183);
+
     For II = 1 To J
         Locate 1 + II, 1
         Print Chr$(186); String$(77, 32); Chr$(186);
@@ -2023,821 +2379,6 @@ Sub ONSIDE ()
         End If
     End If
 
-End Sub
-
-
-'------------------------------
-'      PRINTBOX Subroutine
-'------------------------------
-' ...explanation...
-Sub PRINTBOX ()
-
-    Open diskPaths$(1) + NM$ For Output As #1
-
-    If H% = 2 Then
-        Print #1, "SITE: NEUTRAL  ATTENDANCE: "; actualAttendance&
-    Else
-        Print #1, "SITE: "; SITE$;: Print #1, Using "  ATTENDANCE: ####,###"; actualAttendance&
-    End If
-
-    Print #1,
-
-    For I = 0 To 1
-
-        Print #1, A$(I); Tab(20);
-        Print #1, Using "## ## ## ## "; S(I, 1), S(I, 2), S(I, 3), S(I, 4);
-
-        If Q > 4 Then
-            For I1 = 5 To Q
-                Print #1, Using "## "; S(I, I1);
-            Next
-        End If
-
-        Print #1, "- ";
-        Print #1, Using "###"; S(I, 0)
-
-    Next I
-
-    Print #1,
-
-    If X2 <> 0 Then
-
-        For I = 1 To X2
-
-            Print #1, A$(K1(I, 1)); "-";
-            TI = T(I)
-            TI = TI + TI * (TI < 0)
-            IR% = Int(TI / 60)
-            J = TI - IR% * 60
-
-            Print #1, Tab(17);
-            Print #1, Using "##"; IR%;: Print #1, ":";
-
-            If J >= 10 Then Print #1, Using "## "; J; Else Print #1, Using "0#"; J;
-
-            Print #1, Tab(23);
-
-            If C(I) = 1 Then Print #1, "OF 1ST -";
-            If C(I) = 2 Then Print #1, "OF 2ND -";
-            If C(I) = 3 Then Print #1, "OF 3RD -";
-            If C(I) = 4 Then Print #1, "OF 4TH -";
-            If C(I) > 4 Then Print #1, "OF OT "; C(I) - 4; " -";
-
-            If K1(I, 0) <> 7 Then Print #1, Int(K1(I, 5) + .5);
-
-            skipPAT% = 0
-
-            Select Case K1(I, 0)
-
-                Case 1
-                    Print #1, "RUN BY "; A1$(K1(I, 1), K1(I, 2))
-
-                Case 2
-                    Print #1, "PASS BY "; A3$(K1(I, 1), K1(I, 2));: Print #1, " TO ";
-                    If K1(I, 3) > 9 Then Print #1, A2$(K1(I, 1), K1(I, 3) - 10)
-                    If K1(I, 3) <= 9 Then Print #1, A1$(K1(I, 1), K1(I, 3))
-
-                Case 3
-                    Print #1, "K.O. RETURN BY "; A4$(K1(I, 1), K1(I, 2))
-
-                Case 4
-                    Print #1, "PUNT RETURN BY "; A5$(K1(I, 1), K1(I, 2))
-
-                Case 5
-                    Print #1, "INTERCEPTION RETURN BY "; DI$(K1(I, 1), K1(I, 2))
-
-                Case 6
-                    Print #1, "BLOCKED KICK RECOVERED IN END ZONE"
-
-                Case 7
-                    Print #1, "SAFETY": skipPAT% = 1
-
-                Case 8
-                    Print #1, "FG BY "; A7$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-
-                Case 9
-                    Print #1, "RUN BY "; A3$(K1(I, 1), K1(I, 2))
-
-                Case 10
-                    Print #1, "FUMBLE RETURN "
-
-                Case 11
-                    Print #1, "FAKE PUNT", K1(I, 2)
-
-                Case 12
-                    Print #1, "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-
-            End Select
-
-            9717 '
-            If skipPAT% <> 1 Then
-                Print #1, Tab(17);
-                If K1(I, 4) = 10 Then Print #1, " (KICK FAILED)"
-                If K1(I, 4) = 20 Then Print #1, " (RUN FAILED)"
-                If K1(I, 4) = 30 Then Print #1, " (PASS FAILED)"
-                If K1(I, 4) = 11 Then Print #1, " (KICK BY "; A7$(K1(I, 1), K1(I, 6));: Print #1, ")"
-                If K1(I, 4) = 21 Then Print #1, " (RUN GOOD)"
-                If K1(I, 4) = 31 Then Print #1, " (PASS GOOD)"
-            End If
-
-        Next I
-
-    End If
-
-    Print #1,
-    Print #1, Tab(32); "TEAM STATISTICS"
-    Print #1, Tab(15); A$(0); Tab(50); A$(1)
-    Print #1, Tab(20); K(0, 0); Tab(34); "FIRST DOWNS"; Tab(55); K(1, 0)
-    Print #1, Tab(18);
-
-    If G9 = 0 Then
-        Print #1, K(0, 1); "-"; Int(K(0, 2) + .5); Tab(34); "RUSHING YDS"; Tab(53); K(1, 1); "-"; Int(K(1, 2) + .5)
-    Else
-        Print #1, K(0, 1) - W6(0, 0); "-"; Int(K(0, 2) + W6(0, 1) + .5); Tab(34); "RUSHING YDS"; Tab(53); K(1, 1) - W6(1, 0); "-"; Int(K(1, 2) + W6(1, 1) + .5)
-    End If
-
-    Print #1, Tab(20); Int(K(0, 6) + .5); Tab(34); "PASSING YDS"; Tab(55); Int(K(1, 6) + .5)
-    Print #1, Tab(20); Int(K(0, 6) + .5) + Int(K(0, 2) + .5); Tab(35); "TOTAL YDS"; Tab(55); Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
-    Print #1, Tab(16); K(0, 4); "-"; K(0, 3); "-"; K(0, 5); Tab(37); "PASSES"; Tab(51); K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
-
-    If K(0, 7) <> 0 And K(1, 7) <> 0 Then
-        Print #1, Tab(15); K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10; Tab(38); "PUNTS"; Tab(50); K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
-    End If
-
-    Print #1, Tab(18); K(0, 9); "-"; K(0, 10); Tab(36); "FUM/LOST"; Tab(53); K(1, 9); "-"; K(1, 10)
-    Print #1, Tab(18); K(0, 11); "-"; Int(K(0, 12) + .5); Tab(35); "PENALTIES"; Tab(53); K(1, 11); "-"; Int(K(1, 12) + .5)
-    Print #1, Tab(18); W6(0, 0); "-"; Int(W6(0, 1) + .5); Tab(37); "SACKED"; Tab(53); W6(1, 0); "-"; Int(W6(1, 1) + .5)
-    Print #1, Tab(18): Print #1, Using "##"; Int(TP(0) / 60);: Print #1, ":";
-    Print #1, Using "##"; TP(0) - Int(TP(0) / 60) * 60;
-    Print #1, Tab(31); "TIME OF POSSESSION";
-    Print #1, Tab(53);
-    Print #1, Using "##"; Int(TP(1) / 60);
-    Print #1, ":";
-    Print #1, Using "##"; TP(1) - Int(TP(1) / 60) * 60
-    Print #1, Tab(16); TE%(0) - TF%(0); "-"; TE%(0); Tab(32); "THIRD DOWN EFF"; Tab(51); TE%(1) - TF%(1); "-"; TE%(1)
-    Print #1,
-    Print #1, Tab(17); "RUSHING STATISTICS"
-
-    Call ADDBACKS
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "TC   YDS   AVG   LG   TD"
-        For I1 = 0 To 13
-            If K2(I, I1, 0) <> 0 Then
-                If I1 <= 9 Then Print #1, A1$(I, I1);
-                If I1 > 9 Then Print #1, A3$(I, I1 - 10);
-                Print #1, Tab(18); Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
-                If I1 <= 9 Then Print #1, Using "###   ##"; RB(I, I1), K2(I, I1, 2)
-                If I1 > 9 Then Print #1, Using "      ##"; K2(I, I1, 2)
-            End If
-        Next I1
-        Print #1,
-    Next I
-
-    Print #1, Tab(17); "RECEIVING"
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "TC    YDS    AVG   LG    TD"
-
-        For I1 = 0 To 5
-            If K2(I, I1, 6) <> 0 Then
-                Print #1, A2$(I, I1); Tab(19);
-                Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
-            End If
-        Next I1
-
-        For I1 = 0 To 9
-            If K2(I, I1, 3) <> 0 Then
-                Print #1, A1$(I, I1); Tab(19);
-                Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
-            End If
-        Next I1
-
-        Print #1,
-
-    Next I
-
-    Print #1, Tab(17); "PASSING"
-
-    For I = 0 To 1
-
-        Print #1, A$(I); Tab(19); "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
-
-        For I1 = 0 To 3
-
-            If K2(I, I1, 9) <> 0 Then
-                Print #1, A3$(I, I1); Tab(19);
-                Print #1, Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
-
-                If K2(I, I1, 10) <> 0 Then
-                    Print #1, Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
-                Else
-                    Print #1, Using "      ##"; K2(I, I1, 13);
-                End If
-
-                Print #1, Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, QB(I, I1)
-            End If
-        Next I1
-        Print #1,
-    Next I
-
-    Print #1, Tab(17); "KICKOFF RETURNS"
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "KR   YDS   AVG   LG  TD"
-        For I1 = 0 To 2
-            If K2(I, I1, 14) <> 0 Then
-                Print #1, A4$(I, I1); Tab(19);
-                Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
-            End If
-        Next I1
-        Print #1,
-    Next I
-
-    Print #1,
-    Print #1, Tab(17); "PUNT RETURNS"
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "PR   YDS   AVG   LG  TD"
-        For I1 = 3 To 5
-            If K2(I, I1, 14) <> 0 Then
-                Print #1, A5$(I, I1 - 3); Tab(19);
-                Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
-            End If
-        Next I1
-        Print #1,
-    Next I
-
-    Print #1, Tab(17); "PUNTING"
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "PNT   AVG  LG  TB  BLK  20"
-        If K(I, 7) <> 0 Then
-            Print #1, A6$(I, 0); Tab(19);
-            Print #1, Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
-        End If
-        Print #1,
-    Next I
-
-    Print #1, Tab(17); "KICKING"
-
-    For I = 0 To 1
-        Print #1, A$(I); Tab(19); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
-
-        If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
-
-            Print #1, A7$(I, 0); Tab(19);
-
-            If K2(I, 6, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
-
-            If K2(I, 4, 17) = 0 Then
-                Print #1,
-            Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
-                Print #1, "- ";: Print #1, Using "#"; FA(I, 0, 4)
-            End If
-
-        End If
-
-        9739 '
-        If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
-            Print #1, A7$(I, 1); Tab(19);
-
-            If K2(I, 10, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
-
-            If K2(I, 8, 17) = 0 Then
-                Print #1,
-            Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
-                Print #1, "- ";: Print #1, Using "#"; FA(I, 1, 4)
-            End If
-        End If
-
-        Print #1,
-    Next I
-
-    Print #1,
-    Print #1, "INTERCEPTIONS"
-
-    For I = 0 To 1: Print #1, A$(I); Tab(16);
-        Print #1, "IR   YDS   AVG   LG  TD"
-        For I1 = 0 To 9
-            If SI(I, I1, 0) <> 0 Then
-                Print #1, DI$(I, I1); Tab(16);
-                Print #1, Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
-            End If
-        Next I1
-        Print #1,
-    Next I
-
-    Print #1, "SACKS"
-
-    For I = 0 To 1:
-        Print #1, A$(I); Tab(19);
-        Print #1, "NO.   YDS LOST"
-        For I1 = 0 To 14
-            If SK(I, I1, 0) <> 0 Then
-                Print #1, DS$(I, I1); Tab(19);
-                Print #1, Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
-            End If
-        Next I1
-        Locate , 1: Print #1,
-    Next I
-
-    Print #1, Chr$(12)
-
-    Close #1
-
-End Sub
-
-
-'------------------------------
-'     BOX2SCREEN Subroutine
-'------------------------------
-' ...explanation...
-Sub BOX2SCREEN ()
-
-    If H% = 2 Then
-        Print "SITE: NEUTRAL  ATTENDANCE: "; actualAttendance&
-    Else
-        Print "SITE: "; SITE$;: Print Using "  ATTENDANCE: ####,###"; actualAttendance&
-    End If
-
-    Print
-
-    For I = 0 To 1:
-        Print A$(I);
-        Locate , 20
-        Print Using "## ## ## ## "; S(I, 1), S(I, 2), S(I, 3), S(I, 4);
-        If Q > 4 Then
-            For I1 = 5 To Q
-                Print Using "## "; S(I, I1);
-            Next
-        End If
-        Print "- ";
-        Print Using "###"; S(I, 0)
-    Next I
-
-    Print
-
-    If X2 <> 0 Then
-
-        For I = 1 To X2
-            Print A$(K1(I, 1)); "-";
-            TI = T(I): TI = TI + TI * (TI < 0): IR% = Int(TI / 60)
-            J = TI - IR% * 60
-            Locate , 17
-            Print Using "##.##"; IR% + J / 100;
-            Locate , 19: Print ":";
-            Locate , 23
-            If C(I) = 1 Then Print "OF 1ST -";
-            If C(I) = 2 Then Print "OF 2ND -";
-            If C(I) = 3 Then Print "OF 3RD -";
-            If C(I) = 4 Then Print "OF 4TH -";
-            If C(I) = 5 Then Print "OF OVERTIME -";
-            If K1(I, 0) <> 7 Then Print Int(K1(I, 5) + .5);
-
-            skipPAT% = 0
-
-            Select Case K1(I, 0)
-
-                Case 1
-                    Print "RUN BY "; A1$(K1(I, 1), K1(I, 2))
-
-                Case 2
-                    Print "PASS BY "; A3$(K1(I, 1), K1(I, 2)); " TO ";: If K1(I, 3) > 9 Then Print A2$(K1(I, 1), K1(I, 3) - 10)
-                    If K1(I, 3) <= 9 Then Print A1$(K1(I, 1), K1(I, 3))
-
-                Case 3
-                    Print "K.O. RETURN BY "; A4$(K1(I, 1), K1(I, 2))
-
-                Case 4
-                    Print "PUNT RETURN BY "; A5$(K1(I, 1), K1(I, 2))
-
-                Case 5
-                    Print "INTERCEPTION RETURN BY "; DI$(K1(I, 1), K1(I, 2))
-
-                Case 6
-                    Print "BLOCKED KICK RECOVERED IN END ZONE"
-
-                Case 7
-                    Print "SAFETY": skipPAT% = 1
-
-                Case 8
-                    Print "FG BY "; A7$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-
-                Case 9
-                    Print "RUN BY "; A3$(K1(I, 1), K1(I, 2))
-
-                Case 10
-                    Print "FUMBLE RETURN "
-
-                Case 11
-                    Print "FAKE PUNT ", K1(I, 2)
-
-                Case 12
-                    Print "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
-
-            End Select
-
-            If skipPAT% <> 1 Then
-                8517 Locate , 17
-                If K1(I, 4) = 10 Then Print " (KICK FAILED)"
-                If K1(I, 4) = 20 Then Print " (RUN FAILED)"
-                If K1(I, 4) = 30 Then Print " (PASS FAILED)"
-                If K1(I, 4) = 11 Then Print " (KICK BY "; A7$(K1(I, 1), K1(I, 6));: Print ")"
-                If K1(I, 4) = 21 Then Print " (RUN GOOD)"
-                If K1(I, 4) = 31 Then Print " (PASS GOOD)"
-            End If
-
-            8525 '
-            If I = 10 And K1(11, 0) <> 0 And X = 0 Then Call GetKey_PBPDelay: Cls
-            If I = 20 And K1(21, 0) <> 0 And X = 0 Then Call GetKey_PBPDelay: Cls
-            If I = 30 And K1(31, 0) <> 0 And X = 0 Then Call GetKey_PBPDelay: Cls
-            If I = 40 And K1(41, 0) <> 0 And X = 0 Then Call GetKey_PBPDelay: Cls
-
-        Next I
-
-    End If
-
-    8526 '
-
-End Sub
-
-
-'------------------------------
-'       Subroutine
-'------------------------------
-' ...explanation...
-Sub STATS2SCREEN ()
-
-    J = 14
-    Call GAME_BOXDRAW(J)
-    Locate , 32
-    Print "TEAM STATISTICS"
-
-    Locate , 15
-    Color PA%(0, 2), PA%(0, 1): Print A$(0);
-
-    Color 0, 7
-    Locate , 50
-    Color PA%(1, 2), PA%(1, 1): Print A$(1)
-
-    Color 0, 7
-    Locate , 20: Print K(0, 0);
-    Locate , 34: Print "FIRST DOWNS";
-    Locate , 55: Print K(1, 0)
-
-    If G9 = 0 Then
-        Locate , 18: Print K(0, 1); "-"; Int(K(0, 2) + .5);
-        Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print K(1, 1); "-"; Int(K(1, 2) + .5)
-    Else
-        Locate , 18: Print K(0, 1) - W6(0, 0); "-"; Int(K(0, 2) + W6(0, 1) + .5);
-        Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print K(1, 1) - W6(1, 0); "-"; Int(K(1, 2) + W6(1, 1) + .5)
-    End If
-
-    Locate , 20: Print Int(K(0, 6) + .5);
-    Locate , 34: Print "PASSING YDS";
-    Locate , 55: Print Int(K(1, 6) + .5)
-
-    Locate , 35: Print "TOTAL YDS";
-    Locate , 20: Print Int(K(0, 6) + .5) + Int(K(0, 2) + .5);
-    Locate , 55: Print Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
-
-    Locate , 37: Print "PASSES";
-    Locate , 16: Print K(0, 4); "-"; K(0, 3); "-"; K(0, 5);
-    Locate , 51: Print K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
-
-    If K(0, 7) <> 0 And K(1, 7) <> 0 Then
-        Locate , 38: Print "PUNTS";
-        Locate , 15: Print K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10;
-        Locate , 50: Print K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
-    End If
-
-    Locate , 36: Print "FUM/LOST";
-    Locate , 18: Print K(0, 9); "-"; K(0, 10);
-    Locate , 53: Print K(1, 9); "-"; K(1, 10)
-
-    Locate , 35: Print "PENALTIES";
-    Locate , 18: Print K(0, 11); "-"; Int(K(0, 12) + .5);
-    Locate , 53: Print K(1, 11); "-"; Int(K(1, 12) + .5)
-
-    Locate , 37: Print "SACKED";
-    Locate , 18: Print W6(0, 0); "-"; Int(W6(0, 1) + .5);
-    Locate , 53: Print W6(1, 0); "-"; Int(W6(1, 1) + .5)
-
-    Locate , 18: Print Using "##"; Int(TP(0) / 60);: Print ":";: Print Using "##"; TP(0) - Int(TP(0) / 60) * 60;
-    Locate , 31: Print "TIME OF POSSESSION";
-    Locate , 53: Print Using "##"; Int(TP(1) / 60);: Print ":";: Print Using "##"; TP(1) - Int(TP(1) / 60) * 60
-
-    Locate , 32: Print "THIRD DOWN EFF";
-    Locate , 16: Print TE%(0) - TF%(0); "-"; TE%(0);
-    Locate , 51: Print TE%(1) - TF%(1); "-"; TE%(1)
-
-    Call DECIDE
-    PCopy 0, 1
-
-    'This is what turned the whole screen gray even if the box wasn't on the whole screen
-    'Color 0, 7
-    'Cls
-
-    'This makes rushing stats look like Receiving stats
-    ' I presume Lance didn't do this originally because
-    ' rushing stats tend to take up the whole screen
-    ' However without a box around it doesn't look very
-    ' consistent with the other screens
-    J = 22
-    Call DRAWABOX
-    Locate , 32: Print "RUSHING STATISTICS"
-    Call ADDBACKS
-
-    For I = 0 To 1
-
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
-        Locate , 26
-        Print "TC   YDS   AVG   LG   TD"
-
-        For I1 = 0 To 13
-            If K2(I, I1, 0) <> 0 Then
-                Locate , 10
-                If I1 <= 9 Then Print A1$(I, I1);
-                If I1 > 9 Then Print A3$(I, I1 - 10);
-
-                Locate , 25: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
-                If I1 <= 9 Then Print Using "###   ##"; RB(I, I1), K2(I, I1, 2)
-                If I1 > 9 Then Print Using "      ##"; K2(I, I1, 2)
-            End If
-        Next I1
-
-        Print
-
-    Next I
-
-    Call DECIDE
-    PCopy 0, 1
-
-    J = 22
-    Call DRAWABOX
-    Locate , 32: Print "RECEIVING STATISTICS"
-
-    For I = 0 To 1
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
-        Locate , 28: Print "TC    YDS    AVG   LG    TD"
-
-        For I1 = 0 To 5
-            If K2(I, I1, 6) <> 0 Then
-                Locate , 10
-                Print A2$(I, I1);
-                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
-            End If
-        Next I1
-
-        For I1 = 0 To 9
-            If K2(I, I1, 3) <> 0 Then
-                Locate , 10
-                Print A1$(I, I1);
-                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
-            End If
-        Next I1
-
-        Print
-
-    Next I
-
-    Call DECIDE
-    PCopy 0, 1
-
-    J = 22
-    Call DRAWABOX
-    Locate , 32: Print "PASSING STATISTICS"
-
-    For I = 0 To 1
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
-        Locate , 26: Print "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
-
-        For I1 = 0 To 3
-
-            If K2(I, I1, 9) <> 0 Then
-
-                Locate , 10
-                Print A3$(I, I1);
-                Locate , 26: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
-
-                If K2(I, I1, 10) <> 0 Then
-                    Print Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
-                Else
-                    Print Using "      ##"; K2(I, I1, 13);
-                End If
-
-                Print Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, QB(I, I1)
-
-            End If
-
-        Next I1
-
-        Print
-
-    Next I
-
-    Call DECIDE
-
-    J = 22
-    Call DRAWABOX
-
-    Locate , 25: Print "KICKOFF RETURN STATISTICS"
-
-    For I = 0 To 1
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);
-        Color 0, 7
-        Locate , 26: Print "KR   YDS   AVG   LG  TD"
-
-        For I1 = 0 To 2
-
-            If K2(I, I1, 14) <> 0 Then
-                Locate , 10
-                Print A4$(I, I1);
-                Locate , 26
-                Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
-
-            End If
-
-        Next I1
-
-        Print
-    Next I
-
-    Print
-    Locate , 25: Print "PUNT RETURN STATISTICS"
-
-    For I = 0 To 1
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);
-        Color 0, 7
-        Locate , 26: Print "PR   YDS   AVG   LG  TD"
-
-        For I1 = 3 To 5
-            If K2(I, I1, 14) <> 0 Then
-                Locate , 10
-                Print A5$(I, I1 - 3);
-                Locate , 26
-                Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
-            End If
-        Next I1
-
-        Print
-    Next I
-
-    Call DECIDE
-    Screen , , 0, 0
-
-    J = 22
-    Call DRAWABOX
-    Locate , 29: Print "PUNTING STATISTICS"
-    Print
-
-    For I = 0 To 1
-        Locate , 10
-        Color PA%(I, 2), PA%(I, 1)
-        Print A$(I);: Color 0, 7
-        Locate , 26: Print "PNT   AVG  LG  TB  BLK  20"
-
-        If K(I, 7) <> 0 Then
-            Locate , 10
-            Print A6$(I, 0);
-            Locate , 26
-            Print Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
-        End If
-
-        Print
-    Next I
-
-    Print
-    Locate , 29: Print "KICKING STATISTICS": Print
-
-    For I = 0 To 1
-
-        Locate , 2
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
-        Locate , 18: Print "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
-
-        If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
-            Locate , 2
-            Print A7$(I, 0);
-            Locate , 18
-
-            If K2(I, 6, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
-
-            If K2(I, 4, 17) = 0 Then
-                Print
-            Else
-                Locate , 32
-                Print Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
-                Print "- ";: Print Using "#"; FA(I, 0, 4)
-            End If
-
-        End If
-
-        8593 '
-        If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
-            Locate , 2
-            Print A7$(I, 1);
-            Locate , 18
-
-            If K2(I, 10, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
-
-            If K2(I, 8, 17) = 0 Then
-                Print
-            Else
-
-                Locate , 32
-                Print Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
-                Print "- ";: Print Using "#"; FA(I, 1, 4)
-
-            End If
-
-        End If
-
-        8594 Print
-    Next I
-
-    Call DECIDE
-
-    Screen , , 0, 0
-
-    J = 22
-    Call DRAWABOX
-
-    Locate , 35: Print "INTERCEPTIONS"
-    Print
-
-    For I = 0 To 1:
-        Locate , 19
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);
-        Color 0, 7
-        Locate , 35
-        Print "IR   YDS   AVG   LG  TD"
-
-        For I1 = 0 To 9
-            If SI(I, I1, 0) <> 0 Then
-                Locate , 19: Print DI$(I, I1);
-                Locate , 35: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
-            End If
-        Next I1
-
-        Locate , 1: Print
-
-    Next I
-
-    Call DECIDE
-    Screen , , 0, 0
-
-    J = 22
-    Call DRAWABOX
-    Locate , 39: Print "SACKS"
-    Print
-
-    For I = 0 To 1
-        Locate , 19
-        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
-
-        Locate , 35
-        Print "NO.   YDS LOST"
-
-        For I1 = 0 To 14
-            If SK(I, I1, 0) <> 0 Then
-                Locate , 19: Print DS$(I, I1);
-                Locate , 35: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
-            End If
-        Next I1
-
-        Locate , 1
-        Print
-
-    Next I
-
-    Call DECIDE
 End Sub
 
 
@@ -3852,74 +3393,6 @@ End Sub
 
 
 '------------------------------
-'       DBOX Subroutine
-'------------------------------
-' ...explanation...
-'The only difference between this
-'and PBOX is which variable is used
-'for the index of the PA% array
-' (ie, P or D)
-Sub DBOX ()
-
-    PCopy 0, 1
-
-    Screen , , 1, 1
-
-    SN = 1
-
-    Locate 8, 8: Color PA%(D, 2), PA%(D, 1)
-
-    'Print box top
-    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-    'Print box sides
-    For II = 1 To JJ
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    'Print box bottom
-    Locate 9 + JJ, 8
-    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-    Locate 10, 15
-
-End Sub
-
-
-'------------------------------
-'       PBOX Subroutine
-'------------------------------
-' ...explanation...
-Sub PBOX ()
-
-    PCopy 0, 1
-
-    Screen , , 1, 1
-
-    SN = 1
-
-    Locate 8, 8: Color PA%(P1, 2), PA%(P1, 1)
-
-    'Print box top
-    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-    'Print box sides
-    For II = 1 To JJ
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    'Print box bottom
-    Locate 9 + JJ, 8
-    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-    Locate 10, 15
-
-End Sub
-
-
-'------------------------------
 '   MOVEBALL Subroutine
 '------------------------------
 ' ...explanation...
@@ -4052,7 +3525,7 @@ Sub SCOREBOARD ()
         TI = TI + TI * (TI < 0)
         I = Int(TI / 60)
 
-        Call TICKUPDATE
+        Call TICKERUPDATE
 
         J = TI - I * 60
         Locate 3, 44: Print Using " TIME: ##.##     QUARTER: # "; I + J / 100, Q;
@@ -4103,9 +3576,7 @@ Sub DEFMENU ()
         3056 '
         Do
 
-            J = 10
-            Call DBOX
-
+            Call FRAMEOPTION(10, D)
             Print "SELECT DEFENSIVE LINE PLAY "; A$(D)
 
             For D2 = 1 To 5:
@@ -4141,9 +3612,7 @@ Sub DEFMENU ()
                     D2 = D2 - 2
             End Select
 
-            J = 10
-
-            Call DBOX
+            Call FRAMEOPTION(10, D)
             Print "SELECT PASS COVERAGE "; A$(D)
 
             For D3 = 1 To 5
@@ -4286,9 +3755,7 @@ Sub SETWEATHER ()
 
         Call SETSCREEN
 
-        J = 9
-
-        Call GAME_BOXDRAW(J)
+        Call OPTIONBOX(9)
 
         Print "WEATHER OPTIONS "
         Locate 12, 14
@@ -4323,8 +3790,9 @@ Sub SETWEATHER ()
             If I = 7 Then WX%(4) = -6: WX%(5) = 2: WX%(6) = -20
         End If
 
-        J = 9
-        Call GAME_BOXDRAW(J): Print "WIND OPTIONS "
+        Call OPTIONBOX(9)
+
+        Print "WIND OPTIONS "
         Locate 12, 14
         Locate , 14: Print "0 - NONE"
         Locate , 14: Print "1 - LIGHT TO MODERATE"
@@ -4836,41 +4304,15 @@ End Sub
 
 
 '------------------------------
-'       QBBOX Subroutine
-'------------------------------
-' ...explanation...
-Sub QBBOX ()
-
-    Locate 6, 8: Color PA%(I, 2), PA%(I, 1)
-
-    Print Chr$(201); String$(61, 205); Chr$(187)
-
-    For II = 1 To JJ
-        Locate 6 + II, 8
-        Print Chr$(186); String$(61, 32); Chr$(186)
-    Next
-
-    Locate 7 + JJ, 8
-    Print Chr$(200); String$(61, 205); Chr$(188)
-    Locate 7
-
-End Sub
-
-
-'------------------------------
 '   CHANGEQB Subroutine
 '------------------------------
 ' ...explanation...
 Sub CHANGEQB ()
 
-    8300 '
     Color 15, 0
     Cls
 
-    JJ = 12
-    I = I3
-
-    Call QBBOX
+    Call TEAMBOX(12, I3)
 
     RQ%(I3) = 0
 
@@ -4940,9 +4382,8 @@ Sub CHANGEQB ()
 
     If G9 <> 0 And choice <= 3 And RQ%(I3) <> 1 Then
 
-        JJ = 12
-        I = I3
-        Call QBBOX
+        Call TEAMBOX(12, I3)
+
         Locate 8, 15: Print "ENTER "; A3$(I3, choice); " MOBILITY RATING (1-9)"
         Print
         Locate , 16: Print "THIS IS HOW OFTEN HE RUNS OUT OF THE POCKET"
@@ -4984,8 +4425,12 @@ Sub FINDTEAMS (I)
 
     NT = 0
 
-    Open diskPaths$(0) + "FOOT." + YN$ As #1 Len = 934
+    teamYear$ = RTrim$(YN$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
+
     fileLength& = LOF(1)
+
     Field #1, 15 As Q$(0), 640 As X$
 
     For I1 = 1 To fileLength& / 934
@@ -5001,10 +4446,11 @@ Sub FINDTEAMS (I)
 
         'Count # of teams
         NT = NT + 1
-        teamNames$(NT) = Q$(0)
+        teamNames$(NT) = RTrim$(Q$(0))
         teamIndex%(NT) = I1
 
     Next I1
+
     Close 1
 
     Call SELECTTEAM(I)
@@ -5025,8 +4471,7 @@ Sub KICKOFF ()
         I9 = 2
 
     Else
-        J = 9
-        Call GAME_BOXDRAW(J)
+        Call OPTIONBOX(9)
         Print A$(W%); " DO YOU ELECT TO:"
         Locate 12, 14
         Locate , 14: Print "1 - KICK OFF"
@@ -5048,13 +4493,9 @@ Sub KICKOFF ()
         Call SCOREBOARD
 
         If J6(0) = 1 And D = CT Or J6(0) = 2 Then
-
             I1 = 1
-
         Else
-
-            J = 7
-            Call GAME_BOXDRAW(J)
+            Call OPTIONBOX(7)
 
             Print A$(1 - W%); " DO YOU ELECT TO:"
             Locate 12, 14
@@ -5088,8 +4529,7 @@ Sub KICKOFF ()
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
             I1 = 2
         Else
-            J = 7
-            Call GAME_BOXDRAW(J)
+            Call OPTIONBOX(7)
             Print A$(1 - W%); " DO YOU ELECT TO:"
             Locate 12, 14
             Locate , 14: Print "1 - KICK OFF"
@@ -5125,13 +4565,9 @@ Sub COLKICKOFF ()
         Call SCOREBOARD
 
         If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
-
             I9 = 2
-
         Else
-
-            J = 9
-            Call GAME_BOXDRAW(J)
+            Call OPTIONBOX(9)
             Print A$(P1); " DO YOU ELECT TO:"
             Locate 12, 14
             Locate , 14: Print "1 - KICK OFF"
@@ -5156,8 +4592,7 @@ Sub COLKICKOFF ()
                 If J6(0) = 1 And D = CT Or J6(0) = 2 Then
                     I1 = 1
                 Else
-                    J = 7
-                    Call GAME_BOXDRAW(J)
+                    Call OPTIONBOX(7)
                     Print A$(D); " DO YOU ELECT TO:"
                     Locate 12, 14
                     Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
@@ -5185,8 +4620,7 @@ Sub COLKICKOFF ()
                 If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
                     I1 = 2
                 Else
-                    J = 7
-                    Call GAME_BOXDRAW(J)
+                    Call OPTIONBOX(7)
                     Print A$(P1); " DO YOU ELECT TO:"
 
                     Locate 12, 14
@@ -5957,12 +5391,12 @@ End Sub
 '------------------------------
 '      TWOMIN Subroutine
 '------------------------------
-' ...explanation...
+'-- this should have I1 as a param
+'-- go away form using as a global
+
 Sub TWOMIN ()
 
-    J = 7
-    Call GAME_BOXDRAW(J)
-
+    Call OPTIONBOX(7)
     Locate 9, 14: Print "1 - HUDDLE"
     Locate , 14: Print "2 - TIME OUT "; A$(P1); " "; T1(P1)
     Locate , 14: Print "3 - TIME OUT "; A$(D); " "; T1(D):
@@ -6017,8 +5451,7 @@ Sub TWOMIN ()
 
     Loop Until Not (I1 < 1 Or I1 > 5 Or (I1 = 2 Or I1 = 4 Or I1 = 5) And J6(0) = 1 And P1 = CT Or I1 = 3 And J6(0) = 1 And D = CT)
 
-    3913 '
-    Color 0, 5 * (1 - BW): Screen , , 0, 0
+    Color 0, 5 * (1 - BW)
 
 End Sub
 
@@ -6054,8 +5487,7 @@ End Sub
 ' ...explanation...
 Sub RUNMENU ()
 
-    JJ = 12
-    Call PBOX
+    Call FRAMEOPTION(12, P1)
 
     Print "SELECT RUNNING PLAY "; A$(P1)
     Locate 12
@@ -6077,8 +5509,7 @@ End Sub
 ' ...explanation...
 Sub PASSMENU ()
 
-    JJ = 11
-    Call PBOX
+    Call FRAMEOPTION(11, P1)
 
     Print "SELECT PASS PLAY "; A$(P1)
     Locate 12
@@ -6518,10 +5949,10 @@ End Sub
 
 
 '------------------------------
-'      TICK Subroutine
+'   TickerSchedule Subroutine
 '------------------------------
 ' ...explanation...
-Sub TICK ()
+Sub TickerSchedule ()
 
     Shared scheduleFile$
 
@@ -6719,121 +6150,131 @@ End Sub
 '      EVENTS Subroutine
 '------------------------------
 ' ...explanation...
-Sub EVENTS (SPECIAL%, Count%)
+Sub EVENTS (specialCount, specialStat)
 
     Dim E%(13)
 
-    Open "EVENTS.BOX" For Input As #1
-    For X = 1 To 13
-        Input #1, E%(X)
-    Next
-    Close 1
+    If _FileExists("EVENTS.BOX") Then
 
-    searchedSpecial% = 0
+        Open "EVENTS.BOX" For Input As #1
+        For X = 1 To 13
+            Input #1, E%(X)
+        Next
+        Close 1
 
-    If Q > E%(1) Then
-        Call FindSpecial
-    Else
+        checkSpecial% = 0
 
-        If S(1, 0) > E%(2) Or S(0, 0) > E%(2) Or S(1, 0) < E%(3) Or S(0, 0) < E%(3) Then
-            Call FindSpecial
+        If Q > E%(1) Then
+            checkSpecial% = 1
         Else
 
-            For I = 0 To 1
-                For I1 = 0 To 9
+            If S(1, 0) > E%(2) Or S(0, 0) > E%(2) Or S(1, 0) < E%(3) Or S(0, 0) < E%(3) Then
+                checkSpecial% = 1
+            Else
 
-                    If K2(I, I1, 1) > E%(4) Then
-                        Call FindSpecial
-                        searchedSpecial% = 1
-                    Else
-                        If K2(I, I1, 2) > E%(5) Then
-                            Call FindSpecial
-                            searchedSpecial% = 1
+                For I = 0 To 1
+
+                    For I1 = 0 To 9
+
+                        '--Combine into multiple Or
+                        If K2(I, I1, 1) > E%(4) Then
+                            checkSpecial% = 1
                         Else
-                            If K2(I, I1, 4) > E%(6) Then
-                                Call FindSpecial
-                                searchedSpecial% = 1
+                            If K2(I, I1, 2) > E%(5) Then
+                                checkSpecial% = 1
                             Else
-                                If K2(I, I1, 5) > E%(7) Then
-                                    Call FindSpecial
-                                    searchedSpecial% = 1
+                                If K2(I, I1, 4) > E%(6) Then
+                                    checkSpecial% = 1
+                                Else
+                                    If K2(I, I1, 5) > E%(7) Then
+                                        checkSpecial% = 1
+                                    End If
                                 End If
                             End If
                         End If
-                    End If
+
+                        If checkSpecial% = 1 Then Exit For
+
+                    Next
 
                 Next
-            Next
 
-            If searchedSpecial% <> 1 Then
-                For I = 0 To 1
-                    For I1 = 0 To 5
-                        If K2(I, I1, 7) > E%(6) Then
-                            Call FindSpecial
-                            searchedSpecial% = 1
+                If checkSpecial% <> 1 Then
+
+                    For I = 0 To 1
+
+                        For I1 = 0 To 5
+
+                            If K2(I, I1, 7) > E%(6) Then
+                                checkSpecial% = 1
+                            Else
+                                If K2(I, I1, 8) > E%(7) Then
+                                    checkSpecial% = 1
+                                End If
+                            End If
+
+                            If checkSpecial% = 1 Then Exit For
+
+                        Next
+
+                    Next
+
+                End If
+
+                If checkSpecial% <> 1 Then
+
+                    For I = 0 To 1
+                        For I1 = 0 To 3
+                            If K2(I, I1, 12) > E%(8) Then
+                                checkSpecial% = 1
+                            Else
+                                If K2(I, I1, 13) > E%(9) Then
+                                    checkSpecial% = 1
+                                End If
+                            End If
+                        Next
+                    Next
+
+                End If
+
+                If checkSpecial% <> 1 Then
+
+                    For I = 0 To 1
+                        If K2(I, 3, 17) > E%(10) Then
+                            checkSpecial% = 1
                         Else
-                            If K2(I, I1, 8) > E%(7) Then
-                                Call FindSpecial
-                                searchedSpecial% = 1
+                            If K2(I, 7, 17) > E%(10) Then
+                                checkSpecial% = 1
                             End If
                         End If
                     Next
-                Next
-            End If
 
-            If searchedSpecial% <> 1 Then
-
-                For I = 0 To 1
-                    For I1 = 0 To 3
-                        If K2(I, I1, 12) > E%(8) Then
-                            Call FindSpecial
-                            searchedSpecial% = 1
-                        Else
-                            If K2(I, I1, 13) > E%(9) Then
-                                Call FindSpecial
-                                searchedSpecial% = 1
-                            End If
-                        End If
-                    Next
-                Next
-
-            End If
-
-            If searchedSpecial% <> 1 Then
-
-                For I = 0 To 1
-                    If K2(I, 3, 17) > E%(10) Then
-                        Call FindSpecial
-                        searchedSpecial% = 1
-                    Else
-                        If K2(I, 7, 17) > E%(10) Then
-                            Call FindSpecial
-                            searchedSpecial% = 1
-                        End If
-                    End If
-                Next
+                End If
 
             End If
 
         End If
 
+    End If 'Done checking EVENTS.BOX file
+
+    If checkSpecial% = 1 Then
+        Call FoundSpecial(specialCount, specialStat)
     End If
 
 End Sub
 
 
 '------------------------------
-'    FindSpecial Subroutine
+'    FoundSpecial Subroutine
 '------------------------------
 ' ...explanation...
-Sub FindSpecial ()
+Sub FoundSpecial (specialCount, specialStat)
 
     'Beep
     Spec$ = diskPaths$(1) + "*.SPC"
-    null$ = READDIR$(Spec$) 'use a file spec ONCE to find the last file name listed
-    Count% = DirCount%
-    Count% = Count% + 1
-    SPECIAL% = 1
+    specialCount = FCount%(Spec$)
+    specialCount = specialCount + 1
+    specialStat = 1
 
 End Sub
 
@@ -6869,7 +6310,7 @@ Sub SELECTTEAM (I)
 
 
     _MouseShow "DEFAULT"
-    20 MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If EXITCODE% = 27 Then
@@ -6898,6 +6339,7 @@ Sub KICKSET ()
     Call PBP ': Call PBP_Logger(11634)
 
     RN = Int(Rnd(1) * 100) + 1
+
     If RN <= 50 Then
         U$ = A$(P1) + " IS LINING UP FOR THE KICKOFF"
     Else
@@ -6908,6 +6350,7 @@ Sub KICKSET ()
 
     U$ = "AND THE KICK IS ON ITS WAY"
     Call PBP ': Call PBP_Logger(11646)
+
     Swap P1, D
 
     RN = Int(Rnd(1) * 100) + 1
@@ -7317,53 +6760,6 @@ End Sub
 
 
 '------------------------------
-' AddPossessionTime Subroutine
-'------------------------------
-' ...explanation...
-Sub BOXOPTIONS (userChoice)
-
-    Select Case userChoice
-
-        Case 0
-            'Call DECIDE
-            'Color , 1
-            'Cls
-
-            'VIEW STATS
-            Call STATS2SCREEN
-
-        Case 1
-
-            NM$ = "TEMPBOX"
-            Call PRINTBOX
-
-            Open diskPaths$(1) + NM$ For Input As #2
-
-            Do
-                Line Input #2, X$
-                LPrint X$
-            Loop While Left$(X$, 1) <> Chr$(12)
-
-            Close #2
-
-        Case 2
-
-            If AP = 1 Then
-                NM$ = "BOX" + Mid$(Str$(AP%(0) + AP%(2)), 2, Len(Str$(AP%(0) + AP%(2))))
-            Else
-                Cls
-                Input "ENTER FILENAME TO SAVE GAME SUMMARY UNDER "; NM$
-                NM$ = NM$ + ".SPC"
-            End If
-
-            Call PRINTBOX
-
-    End Select
-
-End Sub
-
-
-'------------------------------
 '     FumblePBP Subroutine
 '------------------------------
 ' ...explanation...
@@ -7426,8 +6822,6 @@ Sub GoForTwo ()
 End Sub
 
 
-
-
 '------------------------------
 '   PBP_Logger Subroutine
 '------------------------------
@@ -7441,10 +6835,1045 @@ End Sub
 
 
 '------------------------------
+'      POSTGAME Subroutine
+'------------------------------
+' ...explanation...
+Sub POSTGAME ()
+
+    Shared scheduleFile$
+
+    Call EVENTS(statSpecial, Count%)
+    endGame% = 1
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Color 14: Print "(0) ";
+        Color 15: Print "STATS TO SCREEN"
+        Print
+
+        Color 14: Print "(1) ";
+        Color 15: Print "STATS TO PRINTER"
+        Print
+
+        Color 14: Print "(2) ";
+        Color 15: Print "STATS TO TEXT FILE"
+
+        If AP = 1 And J6(0) = 2 Then
+            X = 2
+        Else
+
+            Do
+                J$ = GetKeyPress$
+                X = Val(J$)
+            Loop Until X >= 0 And X <= 2
+
+        End If
+
+        Call BOXOPTIONS(X)
+
+        'Reset option for next call
+        If X <> 0 Then X = 0
+
+        Color 15, 0
+        Cls
+
+        If Not (AP = 1 And J6(0) = 2) Then
+            'Using Home Team's color for the box
+            Call TEAMBOX(1, 1)
+
+            Do
+                U$ = "DISPLAY STATS AGAIN (YN)"
+                Locate 7, (80 - Len(U$)) / 2
+                Print U$
+                Color 15, 0
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" Or (AP = 1 And J6(0) = 2)
+
+    Call TICKER
+    Call SAVESTATS
+
+    'If we had special events
+    If statSpecial = 1 Then
+        'Copy the BOX file as a "Special" file (.SPC)
+        srcFile$ = diskPaths$(1) + NM$
+        dstFile$ = diskPaths$(1) + "BOX" + Mid$(Str$(Count), 2, Len(Str$(Count%))) + ".SPC"
+        Call FCopy(srcFile$, dstFile$, null$, ErrCode%)
+    End If
+
+    statSpecial = 0
+
+End Sub
+
+
+'------------------------------
+'    BOXOPTIONS Subroutine
+'------------------------------
+' PARAMETER outputChoice
+'   represents menu choice
+
+' Handle boxscore option chosen
+' 0 = Display on screen
+' 1 = Send to printer
+' 2 = Save to file
+
+' The option to send to printer
+' first creates a temporary file,
+' then loops through it to print
+Sub BOXOPTIONS (outputChoice)
+
+    Shared scheduleFile$
+
+    Select Case outputChoice
+
+        Case 0
+            Call BOX2SCREEN
+
+        Case 1, 2
+            If outputChoice = 1 Then
+                'Printer = temporary file
+                NM$ = "TEMPBOX"
+            Else
+                'File = prompt | auto-create
+                If AP% <> 1 Then
+                    Cls
+                    Print "ENTER 8-CHARACTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";: Input NM$
+                    NM$ = NM$ + ".SPC"
+                Else
+                    ' Determine game #
+                    Open "GAME82" For Input As #1
+                    Input #1, scheduleFile$
+                    For I = 0 To 2
+                        Input #1, AP%(I)
+                    Next
+                    Close 1
+
+                    ' NM$ = "BOXSCORE." + MID$(STR$(AP%(0) + AP%(2)), 2, LEN(STR$(AP%(0) + AP%(2))))
+                    NM$ = "BOX" + Mid$(Str$(AP%(0) + AP%(2)), 2, Len(Str$(AP%(0) + AP%(2))))
+                End If
+
+            End If
+
+            'Includes a special option to send to printer when done
+            Call BOX2FILE(outputChoice, NM$)
+
+    End Select
+
+End Sub
+
+
+'------------------------------
+'     BOX2FILE Subroutine
+'------------------------------
+' PARAMETER printChoice
+'   represents choice to print
+'   the file over just saving it
+
+' Sends boxscore to file
+'   When menu choice is to
+'   send to printer, the file
+'   is also looped through to
+'   print, line-by-line
+Sub BOX2FILE (printChoice, NM$)
+
+    Open diskPaths$(1) + NM$ For Output As #1
+
+    If H% = 2 Then
+        Print #1, "SITE: NEUTRAL"
+    Else
+        Print #1, "SITE: "; SITE$
+    End If
+
+    Print #1, Using "ATTENDANCE: ###,###"; actualAttendance&
+    Print #1,
+
+    Print #1, Tab(20); "Q1 Q2 Q3 Q4 ";
+    If Q > 4 Then
+        For I1 = 5 To Q
+            Print #1, "OT ";
+        Next
+    End If
+
+    Print #1, "- GAME"
+
+    'Score summary
+    For I = 0 To 1
+
+        Print #1, A$(I); Tab(20);
+        Print #1, Using "## ## ## ## "; S(I, 1), S(I, 2), S(I, 3), S(I, 4);
+
+        If Q > 4 Then
+            For I1 = 5 To Q
+                Print #1, Using "## "; S(I, I1);
+            Next
+        End If
+
+        Print #1, "- ";
+        Print #1, Using "###"; S(I, 0)
+
+    Next I
+
+    Print #1,
+
+    If X2 <> 0 Then
+
+        For I = 1 To X2
+
+            Print #1, A$(K1(I, 1)); "-";
+            TI = T(I)
+            TI = TI + TI * (TI < 0)
+            IR% = Int(TI / 60)
+            J = TI - IR% * 60
+
+            Print #1, Tab(17);
+            Print #1, Using "##"; IR%;: Print #1, ":";
+
+            If J >= 10 Then Print #1, Using "## "; J; Else Print #1, Using "0#"; J;
+
+            Print #1, Tab(23);
+
+            If C(I) = 1 Then Print #1, "OF 1ST -";
+            If C(I) = 2 Then Print #1, "OF 2ND -";
+            If C(I) = 3 Then Print #1, "OF 3RD -";
+            If C(I) = 4 Then Print #1, "OF 4TH -";
+            If C(I) > 4 Then Print #1, "OF OT "; C(I) - 4; " -";
+
+            If K1(I, 0) <> 7 Then Print #1, Int(K1(I, 5) + .5);
+
+            skipPAT% = 0
+
+            Select Case K1(I, 0)
+
+                Case 1
+                    Print #1, "RUN BY "; A1$(K1(I, 1), K1(I, 2))
+
+                Case 2
+                    Print #1, "PASS BY "; A3$(K1(I, 1), K1(I, 2));: Print #1, " TO ";
+                    If K1(I, 3) > 9 Then Print #1, A2$(K1(I, 1), K1(I, 3) - 10)
+                    If K1(I, 3) <= 9 Then Print #1, A1$(K1(I, 1), K1(I, 3))
+
+                Case 3
+                    Print #1, "K.O. RETURN BY "; A4$(K1(I, 1), K1(I, 2))
+
+                Case 4
+                    Print #1, "PUNT RETURN BY "; A5$(K1(I, 1), K1(I, 2))
+
+                Case 5
+                    Print #1, "INTERCEPTION RETURN BY "; DI$(K1(I, 1), K1(I, 2))
+
+                Case 6
+                    Print #1, "BLOCKED KICK RECOVERED IN END ZONE"
+
+                Case 7
+                    Print #1, "SAFETY": skipPAT% = 1
+
+                Case 8
+                    Print #1, "FG BY "; A7$(K1(I, 1), K1(I, 2)): skipPAT% = 1
+
+                Case 9
+                    Print #1, "RUN BY "; A3$(K1(I, 1), K1(I, 2))
+
+                Case 10
+                    Print #1, "FUMBLE RETURN "
+
+                Case 11
+                    Print #1, "FAKE PUNT", K1(I, 2)
+
+                Case 12
+                    Print #1, "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
+
+            End Select
+
+            9717 '
+            If skipPAT% <> 1 Then
+                Print #1, Tab(17);
+                If K1(I, 4) = 10 Then Print #1, " (KICK FAILED)"
+                If K1(I, 4) = 20 Then Print #1, " (RUN FAILED)"
+                If K1(I, 4) = 30 Then Print #1, " (PASS FAILED)"
+                If K1(I, 4) = 11 Then Print #1, " (KICK BY "; A7$(K1(I, 1), K1(I, 6));: Print #1, ")"
+                If K1(I, 4) = 21 Then Print #1, " (RUN GOOD)"
+                If K1(I, 4) = 31 Then Print #1, " (PASS GOOD)"
+            End If
+
+        Next I
+
+    End If
+
+    Print #1,
+    Print #1,
+
+    Print #1, Tab(27); "TEAM STATISTICS"
+    hSpace1 = (15 - Len(A$(0))) / 2
+    hSpace2 = (15 - Len(A$(1))) / 2
+    Print #1, Tab(10 + hSpace1); A$(0); Tab(45 + hSpace2); A$(1)
+
+    Print #1, Tab(17); K(0, 0); Tab(29); "FIRST DOWNS"; Tab(51); K(1, 0)
+
+    Print #1, Tab(14);
+    If G9 = 0 Then
+        Print #1, K(0, 1); "-"; Int(K(0, 2) + .5); Tab(29); "RUSHING YDS"; Tab(48); K(1, 1); "-"; Int(K(1, 2) + .5)
+    Else
+        Print #1, K(0, 1) - W6(0, 0); "-"; Int(K(0, 2) + W6(0, 1) + .5); Tab(29); "RUSHING YDS"; Tab(48); K(1, 1) - W6(1, 0); "-"; Int(K(1, 2) + W6(1, 1) + .5)
+    End If
+
+    Print #1, Tab(16); Int(K(0, 6) + .5); Tab(29); "PASSING YDS"; Tab(51); Int(K(1, 6) + .5)
+
+    Print #1, Tab(16); Int(K(0, 6) + .5) + Int(K(0, 2) + .5); Tab(30); "TOTAL YDS"; Tab(51); Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
+
+    Print #1, Tab(13); K(0, 4); "-"; K(0, 3); "-"; K(0, 5); Tab(31); "PASSES"; Tab(47); K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
+
+    If K(0, 7) <> 0 And K(1, 7) <> 0 Then
+        Print #1, Tab(15); K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10; Tab(32); "PUNTS"; Tab(49); K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
+    End If
+
+    Print #1, Tab(15); K(0, 9); "-"; K(0, 10); Tab(31); "FUM/LOST"; Tab(50); K(1, 9); "-"; K(1, 10)
+
+    Print #1, Tab(15); K(0, 11); "-"; Int(K(0, 12) + .5); Tab(31); "PENALTIES"; Tab(50); K(1, 11); "-"; Int(K(1, 12) + .5)
+
+    Print #1, Tab(15); W6(0, 0); "-"; Int(W6(0, 1) + .5); Tab(32); "SACKED"; Tab(50); W6(1, 0); "-"; Int(W6(1, 1) + .5)
+
+    Print #1, Tab(16);
+    Print #1, Using "##"; Int(TP(0) / 60);
+    Print #1, ":";
+    Print #1, Using "##"; TP(0) - Int(TP(0) / 60) * 60;
+    Print #1, Tab(26); "TIME OF POSSESSION";
+    Print #1, Tab(51);
+    Print #1, Using "##"; Int(TP(1) / 60);
+    Print #1, ":";
+    Print #1, Using "##"; TP(1) - Int(TP(1) / 60) * 60
+
+    Print #1, Tab(15); TE%(0) - TF%(0); "-"; TE%(0); Tab(27); "THIRD DOWN EFF"; Tab(49); TE%(1) - TF%(1); "-"; TE%(1)
+    Print #1,
+    Print #1,
+
+    Print #1, Tab(17); "RUSHING STATISTICS"
+    Call ADDBACKS
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "TC   YDS   AVG   LG   TD"
+        For I1 = 0 To 13
+            If K2(I, I1, 0) <> 0 Then
+                If I1 <= 9 Then Print #1, A1$(I, I1);
+                If I1 > 9 Then Print #1, A3$(I, I1 - 10);
+                Print #1, Tab(18); Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
+                If I1 <= 9 Then Print #1, Using "###   ##"; RB(I, I1), K2(I, I1, 2)
+                If I1 > 9 Then Print #1, Using "      ##"; K2(I, I1, 2)
+            End If
+        Next I1
+        Print #1,
+    Next I
+
+    Print #1, Tab(17); "RECEIVING"
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "TC    YDS    AVG   LG    TD"
+
+        For I1 = 0 To 5
+            If K2(I, I1, 6) <> 0 Then
+                Print #1, A2$(I, I1); Tab(19);
+                Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
+            End If
+        Next I1
+
+        For I1 = 0 To 9
+            If K2(I, I1, 3) <> 0 Then
+                Print #1, A1$(I, I1); Tab(19);
+                Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
+            End If
+        Next I1
+
+        Print #1,
+
+    Next I
+
+    Print #1, Tab(17); "PASSING"
+
+    For I = 0 To 1
+
+        Print #1, A$(I); Tab(19); "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
+
+        For I1 = 0 To 3
+
+            If K2(I, I1, 9) <> 0 Then
+                Print #1, A3$(I, I1); Tab(19);
+                Print #1, Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
+
+                If K2(I, I1, 10) <> 0 Then
+                    Print #1, Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
+                Else
+                    Print #1, Using "      ##"; K2(I, I1, 13);
+                End If
+
+                Print #1, Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, QB(I, I1)
+            End If
+        Next I1
+        Print #1,
+    Next I
+
+    Print #1, Tab(17); "KICKOFF RETURNS"
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "KR   YDS   AVG   LG  TD"
+        For I1 = 0 To 2
+            If K2(I, I1, 14) <> 0 Then
+                Print #1, A4$(I, I1); Tab(19);
+                Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
+            End If
+        Next I1
+        Print #1,
+    Next I
+
+    Print #1,
+    Print #1, Tab(17); "PUNT RETURNS"
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "PR   YDS   AVG   LG  TD"
+        For I1 = 3 To 5
+            If K2(I, I1, 14) <> 0 Then
+                Print #1, A5$(I, I1 - 3); Tab(19);
+                Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
+            End If
+        Next I1
+        Print #1,
+    Next I
+
+    Print #1, Tab(17); "PUNTING"
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "PNT   AVG  LG  TB  BLK  20"
+        If K(I, 7) <> 0 Then
+            Print #1, A6$(I, 0); Tab(19);
+            Print #1, Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
+        End If
+        Print #1,
+    Next I
+
+    Print #1, Tab(17); "KICKING"
+
+    For I = 0 To 1
+        Print #1, A$(I); Tab(19); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
+
+        If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
+
+            Print #1, A7$(I, 0); Tab(19);
+
+            If K2(I, 6, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
+
+            If K2(I, 4, 17) = 0 Then
+                Print #1,
+            Else
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
+                Print #1, "- ";: Print #1, Using "#"; FA(I, 0, 4)
+            End If
+
+        End If
+
+        9739 '
+        If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
+            Print #1, A7$(I, 1); Tab(19);
+
+            If K2(I, 10, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
+
+            If K2(I, 8, 17) = 0 Then
+                Print #1,
+            Else
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
+                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
+                Print #1, "- ";: Print #1, Using "#"; FA(I, 1, 4)
+            End If
+        End If
+
+        Print #1,
+    Next I
+
+    Print #1,
+    Print #1, "INTERCEPTIONS"
+
+    For I = 0 To 1: 
+
+        Print #1, A$(I); Tab(16);
+        Print #1, "IR   YDS   AVG   LG  TD"
+        
+        For I1 = 0 To 9
+            If SI(I, I1, 0) <> 0 Then
+                Print #1, DI$(I, I1); Tab(16);
+                Print #1, Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
+            End If
+        Next I1
+        
+        Print #1,
+   
+   Next I
+
+    Print #1, "SACKS"
+
+    For I = 0 To 1:
+        Print #1, A$(I); Tab(19);
+        Print #1, "NO.   YDS LOST"
+        For I1 = 0 To 14
+            If SK(I, I1, 0) <> 0 Then
+                Print #1, DS$(I, I1); Tab(19);
+                Print #1, Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
+            End If
+        Next I1
+        Locate , 1: Print #1,
+    Next I
+
+    If printChoice = 1 Then Print #1, Chr$(12)
+
+    Close #1
+
+    If printChoice = 1 Then
+
+        Open diskPaths$(1) + NM$ For Input As #2
+
+        Do
+            Line Input #2, X$
+            LPrint X$
+        Loop While Left$(X$, 1) <> Chr$(12)
+
+        Close #2
+
+        Kill "TEMPBOX"
+
+    End If
+
+
+End Sub
+
+
+'------------------------------
+'    BOX2SCREEN Subroutine
+'------------------------------
+' Displays boxscore on screen
+Sub BOX2SCREEN ()
+
+    Cls
+
+    Color 14
+    If H% = 2 Then
+        Print "SITE: ";
+        Color 15
+        Print "NEUTRAL"
+    Else
+        Print "SITE: ";
+        Color 15
+        Print SITE$
+    End If
+
+    Color 14
+    Print "ATTENDANCE: ";
+    Color 15
+    Print Using "###,###"; actualAttendance&
+    Print
+
+    Call ScoreSummary
+
+    If Not (AP = 1 And J6(0) = 2) Then
+        I$ = GetKeyPress$
+    End If
+
+    Call STATS2SCREEN
+
+End Sub
+
+
+'------------------------------
+'   ScoreSummary Subroutine
+'------------------------------
+' Prints score by period for each team
+Sub ScoreSummary
+
+    Locate 4, 20
+    Color 14
+    Print "Q1 Q2 Q3 Q4 ";
+    If Q > 4 Then
+        For I1 = 5 To Q
+            Print "OT ";
+        Next
+    End If
+
+    Print "- GAME"
+
+    For I = 0 To 1:
+
+        Color PA%(I, 2), PA%(I, 1)
+        Print A$(I);
+        Color 15, 0
+        Locate , 20
+        Print Using "## ## ## ## "; S(I, 1), S(I, 2), S(I, 3), S(I, 4);
+
+        If Q > 4 Then
+            For I1 = 5 To Q
+                Print Using "## "; S(I, I1);
+            Next
+        End If
+
+        Print "- ";
+
+        Print Using "###"; S(I, 0)
+
+    Next I
+
+    Print
+    Color 15, 0
+
+    If X2 <> 0 Then
+
+        For I = 1 To X2
+
+            Print A$(K1(I, 1)); "-";
+
+            TI = T(I)
+            TI = TI + TI * (TI < 0)
+            IR% = Int(TI / 60)
+            J = TI - IR% * 60
+
+            Locate , 17
+            Print Using "##.##"; IR% + J / 100;
+            Locate , 19: Print ":";
+
+            Locate , 23
+
+            If C(I) = 1 Then Print "OF 1ST -";
+            If C(I) = 2 Then Print "OF 2ND -";
+            If C(I) = 3 Then Print "OF 3RD -";
+            If C(I) = 4 Then Print "OF 4TH -";
+            If C(I) = 5 Then Print "OF OVERTIME -";
+
+            If K1(I, 0) <> 7 Then Print Int(K1(I, 5) + .5);
+
+            skipPAT% = 0
+
+            Select Case K1(I, 0)
+
+                Case 1
+                    Print "RUN BY "; A1$(K1(I, 1), K1(I, 2))
+
+                Case 2
+                    Print "PASS BY "; A3$(K1(I, 1), K1(I, 2)); " TO ";: If K1(I, 3) > 9 Then Print A2$(K1(I, 1), K1(I, 3) - 10)
+                    If K1(I, 3) <= 9 Then Print A1$(K1(I, 1), K1(I, 3))
+
+                Case 3
+                    Print "K.O. RETURN BY "; A4$(K1(I, 1), K1(I, 2))
+
+                Case 4
+                    Print "PUNT RETURN BY "; A5$(K1(I, 1), K1(I, 2))
+
+                Case 5
+                    Print "INTERCEPTION RETURN BY "; DI$(K1(I, 1), K1(I, 2))
+
+                Case 6
+                    Print "BLOCKED KICK RECOVERED IN END ZONE"
+
+                Case 7
+                    Print "SAFETY": skipPAT% = 1
+
+                Case 8
+                    Print "FG BY "; A7$(K1(I, 1), K1(I, 2)): skipPAT% = 1
+
+                Case 9
+                    Print "RUN BY "; A3$(K1(I, 1), K1(I, 2))
+
+                Case 10
+                    Print "FUMBLE RETURN "
+
+                Case 11
+                    Print "FAKE PUNT ", K1(I, 2)
+
+                Case 12
+                    Print "2-PT DEFENSE RETURN BY "; DI$(K1(I, 1), K1(I, 2)): skipPAT% = 1
+
+            End Select
+
+            If skipPAT% <> 1 Then
+                8517 Locate , 17
+                If K1(I, 4) = 10 Then Print " (KICK FAILED)"
+                If K1(I, 4) = 20 Then Print " (RUN FAILED)"
+                If K1(I, 4) = 30 Then Print " (PASS FAILED)"
+                If K1(I, 4) = 11 Then Print " (KICK BY "; A7$(K1(I, 1), K1(I, 6));: Print ")"
+                If K1(I, 4) = 21 Then Print " (RUN GOOD)"
+                If K1(I, 4) = 31 Then Print " (PASS GOOD)"
+            End If
+
+            8525 '
+            If I = 10 And K1(11, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
+            If I = 20 And K1(21, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
+            If I = 30 And K1(31, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
+            If I = 40 And K1(41, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
+
+        Next I
+
+    End If
+
+End Sub
+
+
+'------------------------------
+'   STATS2SCREEN Subroutine
+'------------------------------
+' ...explanation...
+Sub STATS2SCREEN ()
+
+    Color , 1
+    Cls
+
+    Call OPTIONBOX(14)
+
+    Locate , 32
+
+    Print "TEAM STATISTICS"
+
+    Locate , 15
+    Color PA%(0, 2), PA%(0, 1): Print A$(0);
+
+    Color 0, 7
+    Locate , 50
+    Color PA%(1, 2), PA%(1, 1): Print A$(1)
+
+    Color 0, 7
+    Locate , 20: Print K(0, 0);
+    Locate , 34: Print "FIRST DOWNS";
+    Locate , 55: Print K(1, 0)
+
+    If G9 = 0 Then
+        Locate , 18: Print K(0, 1); "-"; Int(K(0, 2) + .5);
+        Locate , 34: Print "RUSHING YDS";
+        Locate , 53: Print K(1, 1); "-"; Int(K(1, 2) + .5)
+    Else
+        Locate , 18: Print K(0, 1) - W6(0, 0); "-"; Int(K(0, 2) + W6(0, 1) + .5);
+        Locate , 34: Print "RUSHING YDS";
+        Locate , 53: Print K(1, 1) - W6(1, 0); "-"; Int(K(1, 2) + W6(1, 1) + .5)
+    End If
+
+    Locate , 20: Print Int(K(0, 6) + .5);
+    Locate , 34: Print "PASSING YDS";
+    Locate , 55: Print Int(K(1, 6) + .5)
+
+    Locate , 35: Print "TOTAL YDS";
+    Locate , 20: Print Int(K(0, 6) + .5) + Int(K(0, 2) + .5);
+    Locate , 55: Print Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
+
+    Locate , 37: Print "PASSES";
+    Locate , 16: Print K(0, 4); "-"; K(0, 3); "-"; K(0, 5);
+    Locate , 51: Print K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
+
+    If K(0, 7) <> 0 And K(1, 7) <> 0 Then
+        Locate , 38: Print "PUNTS";
+        Locate , 15: Print K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10;
+        Locate , 50: Print K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
+    End If
+
+    Locate , 36: Print "FUM/LOST";
+    Locate , 18: Print K(0, 9); "-"; K(0, 10);
+    Locate , 53: Print K(1, 9); "-"; K(1, 10)
+
+    Locate , 35: Print "PENALTIES";
+    Locate , 18: Print K(0, 11); "-"; Int(K(0, 12) + .5);
+    Locate , 53: Print K(1, 11); "-"; Int(K(1, 12) + .5)
+
+    Locate , 37: Print "SACKED";
+    Locate , 18: Print W6(0, 0); "-"; Int(W6(0, 1) + .5);
+    Locate , 53: Print W6(1, 0); "-"; Int(W6(1, 1) + .5)
+
+    Locate , 18: Print Using "##"; Int(TP(0) / 60);: Print ":";: Print Using "##"; TP(0) - Int(TP(0) / 60) * 60;
+    Locate , 31: Print "TIME OF POSSESSION";
+    Locate , 53: Print Using "##"; Int(TP(1) / 60);: Print ":";: Print Using "##"; TP(1) - Int(TP(1) / 60) * 60
+
+    Locate , 32: Print "THIRD DOWN EFF";
+    Locate , 16: Print TE%(0) - TF%(0); "-"; TE%(0);
+    Locate , 51: Print TE%(1) - TF%(1); "-"; TE%(1)
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 32: Print "RUSHING STATISTICS"
+    Call ADDBACKS
+
+    For I = 0 To 1
+
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
+        Locate , 26
+        Print "TC   YDS   AVG   LG   TD"
+
+        For I1 = 0 To 13
+            If K2(I, I1, 0) <> 0 Then
+                Locate , 10
+                If I1 <= 9 Then Print A1$(I, I1);
+                If I1 > 9 Then Print A3$(I, I1 - 10);
+
+                Locate , 25: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
+                If I1 <= 9 Then Print Using "###   ##"; RB(I, I1), K2(I, I1, 2)
+                If I1 > 9 Then Print Using "      ##"; K2(I, I1, 2)
+            End If
+        Next I1
+
+        Print
+
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 32: Print "RECEIVING STATISTICS"
+
+    For I = 0 To 1
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
+        Locate , 28: Print "TC    YDS    AVG   LG    TD"
+
+        For I1 = 0 To 5
+            If K2(I, I1, 6) <> 0 Then
+                Locate , 10
+                Print A2$(I, I1);
+                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
+            End If
+        Next I1
+
+        For I1 = 0 To 9
+            If K2(I, I1, 3) <> 0 Then
+                Locate , 10
+                Print A1$(I, I1);
+                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
+            End If
+        Next I1
+
+        Print
+
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 32: Print "PASSING STATISTICS"
+
+    For I = 0 To 1
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
+        Locate , 26: Print "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
+
+        For I1 = 0 To 3
+
+            If K2(I, I1, 9) <> 0 Then
+
+                Locate , 10
+                Print A3$(I, I1);
+                Locate , 26: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
+
+                If K2(I, I1, 10) <> 0 Then
+                    Print Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
+                Else
+                    Print Using "      ##"; K2(I, I1, 13);
+                End If
+
+                Print Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, QB(I, I1)
+
+            End If
+
+        Next I1
+
+        Print
+
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 25: Print "KICKOFF RETURN STATISTICS"
+
+    For I = 0 To 1
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);
+        Color 0, 7
+        Locate , 26: Print "KR   YDS   AVG   LG  TD"
+
+        For I1 = 0 To 2
+
+            If K2(I, I1, 14) <> 0 Then
+                Locate , 10
+                Print A4$(I, I1);
+                Locate , 26
+                Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
+
+            End If
+
+        Next I1
+
+        Print
+    Next I
+
+    Print
+    Locate , 25: Print "PUNT RETURN STATISTICS"
+
+    For I = 0 To 1
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);
+        Color 0, 7
+        Locate , 26: Print "PR   YDS   AVG   LG  TD"
+
+        For I1 = 3 To 5
+            If K2(I, I1, 14) <> 0 Then
+                Locate , 10
+                Print A5$(I, I1 - 3);
+                Locate , 26
+                Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
+            End If
+        Next I1
+
+        Print
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 29: Print "PUNTING STATISTICS"
+    Print
+
+    For I = 0 To 1
+        Locate , 10
+        Color PA%(I, 2), PA%(I, 1)
+        Print A$(I);: Color 0, 7
+        Locate , 26: Print "PNT   AVG  LG  TB  BLK  20"
+
+        If K(I, 7) <> 0 Then
+            Locate , 10
+            Print A6$(I, 0);
+            Locate , 26
+            Print Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
+        End If
+
+        Print
+    Next I
+
+    Print
+    Locate , 29: Print "KICKING STATISTICS": Print
+
+    For I = 0 To 1
+
+        Locate , 2
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
+        Locate , 18: Print "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
+
+        If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
+            Locate , 2
+            Print A7$(I, 0);
+            Locate , 18
+
+            If K2(I, 6, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
+
+            If K2(I, 4, 17) = 0 Then
+                Print
+            Else
+                Locate , 32
+                Print Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
+                Print "- ";: Print Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
+                Print "- ";: Print Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
+                Print "- ";: Print Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
+                Print "- ";: Print Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
+                Print "- ";: Print Using "#"; FA(I, 0, 4)
+            End If
+
+        End If
+
+        8593 '
+        If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
+            Locate , 2
+            Print A7$(I, 1);
+            Locate , 18
+
+            If K2(I, 10, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
+
+            If K2(I, 8, 17) = 0 Then
+                Print
+            Else
+
+                Locate , 32
+                Print Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
+                Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
+                Print "- ";: Print Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
+                Print "- ";: Print Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
+                Print "- ";: Print Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
+                Print "- ";: Print Using "#"; FA(I, 1, 4)
+
+            End If
+
+        End If
+
+        8594 Print
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 35: Print "INTERCEPTIONS"
+    Print
+
+    For I = 0 To 1:
+        Locate , 19
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);
+        Color 0, 7
+        Locate , 35
+        Print "IR   YDS   AVG   LG  TD"
+
+        For I1 = 0 To 9
+            If SI(I, I1, 0) <> 0 Then
+                Locate , 19: Print DI$(I, I1);
+                Locate , 35: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
+            End If
+        Next I1
+
+        Locate , 1: Print
+
+    Next I
+
+    Call GetKeyWhenNoDelay
+    Call FRAMESTATS(22)
+
+    Locate , 39: Print "SACKS"
+    Print
+
+    For I = 0 To 1
+        Locate , 19
+        Color PA%(I, 2), PA%(I, 1): Print A$(I);: Color 0, 7
+
+        Locate , 35
+        Print "NO.   YDS LOST"
+
+        For I1 = 0 To 14
+            If SK(I, I1, 0) <> 0 Then
+                Locate , 19: Print DS$(I, I1);
+                Locate , 35: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
+            End If
+        Next I1
+
+        Locate , 1
+        Print
+
+    Next I
+
+    Call GetKeyWhenNoDelay
+
+End Sub
+
+
+'------------------------------
 '   PointsAfterTD Subroutine
 '------------------------------
 ' ...explanation...
-
 
 
 '------------------------------
@@ -7477,4 +7906,3 @@ Function GetTeamYear% (teamName$)
     End If
 
 End Function
-

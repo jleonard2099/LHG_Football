@@ -34,7 +34,7 @@ Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 ' Used across multiple routines
 '----------------------------------------
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
-'Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
+Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
 Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
 Dim LC$(15, 1), LCN$(15, 1), LCR$(15, 1), LFN$(1), LFR$(1)
 Dim statsLF$(1), statsLI$(9, 1), statsLK$(2, 1), statsLP$(3, 1)
@@ -42,7 +42,7 @@ Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
 Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
 Dim PKN$(2, 1), PKR$(2, 1)
 Dim statsA$(1), statsAA$(1)
-'Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
+Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
 Dim statsDI$(9), statsDS$(15)
 Dim statsPK$(2, 1)
 
@@ -287,7 +287,7 @@ Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A
 Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14)
 Dim Shared G$(3), strG9$(5), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
 Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LO$(2), LP$(1, 3, 1), strLR$(1, 9, 1)
-Dim Shared O$(50), NN$(1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
+'Dim Shared O$(50), NN$(0 to 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
 Dim Shared R$(14), strRB$(1, 17), RP$(30), SD$(3), SITE$(120), SX$(1 To 33, 0 To 1)
 Dim Shared U5$(3), strWR$(1, 20), Y$(1), Y8$(3), Y9$(5), YN$(1), YR%(1)
 
@@ -321,5 +321,4 @@ Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, HT%, intI%, intDI%, intDS%
 Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, ST%, SX%, TS%
 Dim Shared W%, WX%, intY8%, intYL%
 
-Dim Shared actualAttendance&
-
+Dim Shared actualAttendance&, averageAttendance&

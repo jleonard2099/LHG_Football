@@ -1,23 +1,21 @@
 Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GRIDIRON!"
-    '$ExeIcon:'./lhg_3in1fb.ico'
+    ''$ExeIcon:'./lhg_3in1fb.ico'
     '_Icon
     '_AllowFullScreen
 
-    'Open "pbplog" For Output As #7
+    Shared scheduleFile$
 
+    'Open "pbplog" For Output As #7
     Color 7, 0
     Cls
 
     Randomize Timer
 
-    _Blink Off
-
     '----------------------------------------
     '        INITIALIZE ALL VARIABLES
     '----------------------------------------
-
     Call InitVar
 
     '----------------------------------------
@@ -141,8 +139,21 @@ Sub FOOTBALL ()
         If G9 = 4 Then
             intY8% = 0
         End If
-
+        
         H% = NG%(2)
+
+        For I = 0 To 1
+
+            intB8% = NG%(I)
+            YN$ = YN$(I)
+
+            Call GETTEAM(I)
+
+            A$(I) = _Trim$(A$(I))
+            AA$(I) = _Trim$(AA$(I))
+            X = 0
+
+        Next I
 
     Else
 
@@ -292,27 +303,9 @@ Sub FOOTBALL ()
 
             Cls
             Color 3
-            JJ = 6
-            SN = 1
 
-            'TICKER PROMPT
-            Locate 8, 8
-            Color 14, 1
+            Call TEAMBOX(7, 1)
 
-            'Print box top
-            Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-            'Print box sides
-            For II = 1 To JJ
-                Locate 8 + II, 8
-                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-            Next
-
-            'Print box bottom
-            Locate 9 + JJ, 8
-            Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-            Locate 10, 11
             Print "IF YOU ARE USING THE 10 MINUTE TICKER OPTION FOR THIS GAME,"
             Locate , 11: Print "ENTER STARTING TIME FOR GAME IN THIS FORMAT"
             Locate , 11: Print "(EXAMPLES: 1:00P, 11:30A). OTHERWISE, JUST HIT ENTER"
@@ -342,7 +335,6 @@ Sub FOOTBALL ()
 
     End If
 
-
     For I = 0 To 1:
         YR%(I) = GetTeamYear%(Left$(A$(I), 2))
     Next I
@@ -350,11 +342,51 @@ Sub FOOTBALL ()
     intY8% = 0
     R5% = 0
 
+    'Determine attendance
+    If H% = 2 Then
+
+        'Neutral stadium and attendance
+        SITE$ = "NEUTRAL FIELD"
+        actualAttendance& = Int(Rnd(1) * 10000) + 1 + 5000
+
+    Else
+
+        If Not _FileExists(diskPaths$(0) + "STADIUMS." + NN$(H%)) Then
+            'Generic stadium and attendance
+            SITE$ = "MEMORIAL STADIUM"
+            actualAttendance& = Int(Rnd(1) * 5000) + 10000
+
+        Else
+
+            Open diskPaths$(0) + "STADIUMS." + NN$(H%) For Random As #2 Len = 50
+
+            Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
+
+            Get #2, intB8%(H%)
+
+            SITE$ = RTrim$(Q$(1))
+            averageAttendance& = CVL(Q$(3))
+            Z$ = Q$(4)
+
+            Close #2
+
+            'Determine attendance randomly
+            If Z$ <> "x" Then
+                'Generic stadium and attendance
+                SITE$ = "MEMORIAL STADIUM"
+                actualAttendance& = Int(Rnd(1) * 5000) + 10000
+            Else
+                actualAttendance& = Int(Rnd(1) * 10000) + 1 - 5000 + averageAttendance&
+                If actualAttendance& < 0 Then actualAttendance& = Int(Rnd(1) * 500) + 200
+            End If
+
+        End If
+
+    End If
 
     '----------------------------------------
     '    AUTO-DETERMINE OTHER OPTIONS
     '----------------------------------------
-
     If Y8 = 1 And G9 <> 0 Then intY8% = -10
     If G9 = 4 Then intY8% = 0
     If Y9 = 0 And G9 = 0 Then R5% = 1
@@ -366,23 +398,6 @@ Sub FOOTBALL ()
         Case 2: J6(0) = 1: CT = 1
         Case 3: J6(0) = 2
     End Select
-
-    If AP = 1 Then
-
-        For I = 0 To 1
-
-            intB8% = NG%(I)
-            YN$ = YN$(I)
-
-            Call GETTEAM(I)
-
-            A$(I) = _Trim$(A$(I))
-            AA$(I) = _Trim$(AA$(I))
-            X = 0
-
-        Next I
-
-    End If
 
     If G9 <> 0 Then
         B6(0, 7) = B6(0, 7) + 2
@@ -440,9 +455,7 @@ Sub FOOTBALL ()
 
     Next I3
 
-
     Call SETWEATHER
-
 
     '----------------------------------------
     '           START OF GAME
@@ -967,8 +980,6 @@ Sub FOOTBALL ()
     'College Overtime
     If NG%(14) = 3 And Q > 4 Then 3364
 
-    'GoTo 700
-
     700 '
     Call MARKER1
 
@@ -1011,8 +1022,7 @@ Sub FOOTBALL ()
 
                 Do
                     3118 '
-                    JJ = 10
-                    Call PBOX
+                    Call FRAMEOPTION(10, P1)
                     Print "SELECT OFFENSE "; A$(P1)
 
                     For P2 = 0 To 4:
@@ -1037,8 +1047,7 @@ Sub FOOTBALL ()
 
                         If UCase$(I$) = "G" Then
                             3160 '
-                            JJ = 8
-                            Call PBOX
+                            Call FRAMEOPTION(8, P1)
                             Print "SELECT GADGET PLAY "; A$(P1)
 
                             For G2 = 1 To 3:
@@ -1127,8 +1136,8 @@ Sub FOOTBALL ()
                                 Case 3
                                     3190 '*** HB PASS ***
                                     HB% = 1
-                                    JJ = 11
-                                    Call PBOX
+
+                                    Call FRAMEOPTION(11, P1)
                                     Print "SELECT PASSER":
                                     For KK = 0 To 4
                                         Locate 12 + KK, 14
@@ -1269,8 +1278,7 @@ Sub FOOTBALL ()
 
                 3128 '
                 KJ = 1
-                JJ = 11
-                Call PBOX
+                Call FRAMEOPTION(11, P1)
 
                 Print "SELECT BALL CARRIER":
 
@@ -2135,8 +2143,7 @@ Sub FOOTBALL ()
                 I1 = 0
             Else
 
-                JJ = 9
-                Call PBOX
+                Call FRAMEOPTION(9, P1)
                 Print "PUNTING OPTIONS "; A$(P1)
                 Locate 12, 14
                 Locate , 14: Print "0 - PUNT NORMAL"
@@ -2279,8 +2286,7 @@ Sub FOOTBALL ()
 
             Else
 
-                J = 9
-                Call DBOX
+                Call FRAMEOPTION(9, D)
                 Print "THE PUNTING TEAM FOR "; A$(P1); " IS ON THE FIELD"
                 Locate 12, 14
                 Locate , 14: Print "0 - SET UP PUNT RETURN"
@@ -2693,8 +2699,7 @@ Sub FOOTBALL ()
                 If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
                     I1 = 0
                 Else
-                    JJ = 6
-                    Call PBOX
+                    Call FRAMEOPTION(6, P1)
                     Print "FIELD GOAL OPTIONS "; A$(P1)
                     Locate 12, 14
                     Locate , 14: Print "0 - ATTEMPT FIELD GOAL"
@@ -2718,8 +2723,7 @@ Sub FOOTBALL ()
                 If J6(0) = 1 And D = CT Or J6(0) = 2 Then
                     choice = 1
                 Else
-                    J = 9
-                    Call DBOX
+                    Call FRAMEOPTION(9, D)
 
                     Print "THE FIELD GOAL UNIT FOR "; A$(P1); " IS ON THE FIELD"
                     Locate 12, 14
@@ -2914,24 +2918,20 @@ Sub FOOTBALL ()
 
         Case 21
             Call SCOUTREPT
-
             GoTo 700
 
         Case 22
             I3 = P1
-
             Call CHANGEQB
 
             GoTo 700
 
         Case 23
-            GK = 1
-
             Call BOXOPTIONS(0)
+            Call TICKER
 
         Case 24
             I3 = P1
-
             Call KICKER
 
             GoTo 700
@@ -3552,20 +3552,25 @@ Sub FOOTBALL ()
 
     3360 '
     T = 0
-    Q = Q + 1
     WX%(0) = 1 - WX%(0)
     T = 900
 
-    If Q = 3 Or Q >= 5 Then U3 = 0
+    Q = Q + 1
+    If Q = 3 Or Q >= 5 Then
+        'If end of half
+        U3 = 0
+    End If
 
     endGame% = 0
 
     'Q - 1 = previous quarter
     'We've already incremented it
+
     Select Case Q - 1
 
         Case 1, 3
-            '3362
+            'Q = 2 / 4
+            'End of 1st / 3rd Quarter
             Call SCOREBOARD
             U$ = "END OF QUARTER"
             Call PBP
@@ -3573,7 +3578,8 @@ Sub FOOTBALL ()
             GoTo 700
 
         Case 2
-            '3363
+            'Q = 2 / 4
+            'Half Time
             Call SCOREBOARD
             U$ = "HALF TIME"
             Call PBP
@@ -3581,65 +3587,66 @@ Sub FOOTBALL ()
             W% = 1 - W%
 
             Call HALFSTART
-
-            X = 0
             HT% = 1
 
-            '8530
-            Call DECIDE
-            Color , 1
-            Cls
-            Call BOXOPTIONS(X)
+            Call GetKeyWhenNoDelay
 
-            If GK = 1 Then GK = 0: Cls: GoTo 700
+            Do
+                Color 15, 0
+                Call BOXOPTIONS(0)
 
-            If X <> 0 Then X = 0
+                'Reset option for next call
+                If X <> 0 Then X = 0
 
-            '8628
-            Cls
+                Color 15, 0
+                Cls
 
-            I = 1
-            JJ = 1
+                Call TEAMBOX(1, 1)
 
-            Call QBBOX
+                If Not (AP = 1 And J6(0) = 2) Then
+                    Do
+                        U$ = "DISPLAY STATS AGAIN (YN)"
+                        Locate 7, (80 - Len(U$)) / 2
+                        Print U$
+                        Color 15, 0
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
+                End If
 
-            If AP <> 1 Or J6(0) <> 2 Then
-
-                Do
-                    U$ = "DISPLAY STATISTICS AGAIN (YN)"
-                    Locate 7, (80 - Len(U$)) / 2
-                    Print U$
-                    Color 15, 0
-                    I$ = GetKeyPress$
-                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-            End If
+            Loop Until UCase$(I$) = "N" Or (AP = 1 And J6(0) = 2)
 
             GoTo 850
 
         Case Else
-            'Quarter 4 + Overtime
+            'End of 4th Quarter / Overtime
 
-            '-- Start of a routine
+            '--- start analysis here
             3364 '
             Call SCOREBOARD
 
             'Check if we're configured for overtime
             If NG%(14) = 0 Or (S(0, 0) <> S(1, 0) And NG%(14) <> 3) Or (S(0, 0) <> S(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
 
+                'Nope!
+                'Leave Q at 4
                 If OT <> 1 Then
                     Q = Q - 1
                 End If
 
-                Print " END OF GAME"
+                U$ = "END OF GAME"
+                Call PBP
+                Call GetKeyWhenNoDelay
 
                 endGame% = 1
 
             End If
 
+            '--- should this be outside the SELECT
+
             'Check if game is over
             If endGame% <> 1 Then
+
                 'Game not over
                 Call SCOREBOARD
                 Call MARKER1
@@ -3706,7 +3713,6 @@ Sub FOOTBALL ()
 
                 End Select
 
-
                 3366 '
                 'We're going into overtime
                 If UCase$(I$) = "Y" Then
@@ -3751,159 +3757,26 @@ Sub FOOTBALL ()
 
                 End If
 
+                'Since Q increases at end of quarter,
+                'we need to decrease
                 Q = Q - 1
 
                 U$ = "END OF GAME"
-
                 Call PBP
-
-                'Call DECIDE
-
+                Call GetKeyWhenNoDelay
             End If
 
-            '-- end of a routine
+            '8540
+            Call TICKERUPDATE
 
-            '--- Loop begins here
-            8500 '
-            '--------------------
-            ' POST GAME REPORT
-            '--------------------
-            Do
-
-                If H% = 2 Then
-                    'Neutral stadium and attendance
-                    SITE$ = "NEUTRAL FIELD"
-                    actualAttendance& = Int(Rnd(1) * 10000) + 1 + 5000
-                Else
-
-                    If Not _FileExists(diskPaths$(0) + "STADIUMS." + NN$(H%)) Then
-                        'Generic stadium and attendance
-                        actualAttendance& = Int(Rnd(1) * 5000) + 10000
-                        SITE$ = "MEMORIAL STADIUM"
-
-                    Else
-
-                        Open diskPaths$(0) + "STADIUMS." + NN$(H%) For Random As #2 Len = 50
-
-                        Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
-
-                        Get #2, intB8%(H%)
-
-                        SITE$ = RTrim$(Q$(1))
-
-                        AVGactualAttendance& = CVL(Q$(3))
-
-                        Z$ = Q$(4)
-
-                        Close #2
-
-                        'Determine attendance randomly
-                        If Z$ <> "x" Then
-                            actualAttendance& = Int(Rnd(1) * 5000) + 10000: SITE$ = "MEMORIAL STADIUM"
-                        Else
-                            actualAttendance& = Int(Rnd(1) * 10000) + 1 - 5000 + AVGATT
-                            If actualAttendance& < 0 Then actualAttendance& = Int(Rnd(1) * 500) + 200
-                        End If
-
-                    End If
-
-                End If
-
-                Call TICKUPDATE
-
-                Color 15, 0: Cls
-                Color 14: Print "(0) ";
-                Color 15: Print "BOXSCORE TO SCREEN "
-                Print
-                Color 14: Print "(1) ";
-                Color 15: Print "BOXSCORE TO PRINTER"
-                Print
-                Color 14: Print "(2) ";
-                Color 15: Print "BOXSCORE TO TEXTFILE"
-
-                If AP = 1 And J6(0) = 2 Then
-                    X = 2
-                Else
-
-                    Do
-                        J$ = GetKeyPress$
-                        X = Val(J$)
-                    Loop Until X >= 0 And X <= 2
-
-                End If
-
-                If X = 0 Then Cls: Call BOX2SCREEN
-
-                If X = 0 Then Call DECIDE: Color , 1: Cls
-
-                Call BOXOPTIONS(X)
-
-                If X = 0 And GK = 1 Then GK = 0: Cls: GoTo 700
-
-                ' Prompt for displaying stats, AGAIN
-                8628 '
-                If X <> 0 Then X = 0
-
-                Cls
-
-                I = 1
-                JJ = 1
-
-                Call QBBOX
-
-                If AP <> 1 Or J6(0) <> 2 Then
-
-                    Do
-                        U$ = "DISPLAY STATISTICS AGAIN (YN)"
-                        Locate 7, (80 - Len(U$)) / 2
-                        Print U$
-                        Color 15, 0
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                Else
-
-                    I$ = "N"
-
-                End If
-
-            Loop Until UCase$(I$) = "N"
-
-            'This is where 8530 should return
-            'Because it's explicitly a half-time call
-
+            '-- When would this NOT happen???
             If Q <> 3 Then
-
-                Call EVENTS(SPECIAL%, Count%)
-
-                'If we had special events
-                If SPECIAL% = 1 Then
-                    'Copy the BOX file as a "Special" file (.SPC)
-                    srcFile$ = diskPaths$(1) + NM$
-                    dstFile$ = diskPaths$(1) + "BOX" + Mid$(Str$(Count), 2, Len(Str$(Count%))) + ".SPC"
-                    Call FCopy(srcFile$, dstFile$, null$, ErrCode%)
-                End If
-
-                SPECIAL% = 0
-
-                If AP = 1 Then
-
-                    Call POSTGAME
-
-                    If Not (endOfGames% = 1 Or gameOver% = 1) Then
-                        Call FOOTBALL
-                    End If
-
-                    Exit Sub
-
-                Else
-                    endOfGames% = 1
-
-                End If
-
+                endGame% = 1
+                Call EndOfGame
+                Exit Sub
+            Else
+                GoTo 850
             End If
-
-            GoTo 850
 
     End Select
 
@@ -4066,7 +3939,9 @@ Sub FOOTBALL ()
             3907 '
             If O < 4 Then
 
-                If T <= 0 Then Call ADDTIME: GoTo 3360
+                If T <= 0 Then
+                    Call ADDTIME: GoTo 3360
+                End If
 
                 Call TWOMIN
 
@@ -4628,305 +4503,50 @@ Sub FOOTBALL ()
 
     Else
 
-        If endOfGames% = 1 Then
-            'Close #7
-            'Close #5
-            Call POSTGAME
-            'Exit Sub
+        If endGame% = 1 Then
+            Call EndOfGame
+            Exit Sub
         Else
             GoTo 700
         End If
 
     End If
 
-
 End Sub
 
 
-'================================================================================
+'------------------------------
+'   EndOfGame Subroutine
+'------------------------------
+' ...explanation...
+Sub EndOfGame
+    'Close #7
+    'Close #5
 
+    Call POSTGAME
 
-'----------------------------------------
-'           InitVar Subroutine
-'----------------------------------------
-' Initializes variables for the game
-' Does not process any that will be read
-' in from file or assigned elsewhere
-Sub InitVar ()
+    If AP <> 1 Then
 
-    '-- Does this really belong here???
-    If G9 <> 0 Then
-        For I = 1 To 10
-            If Left$(D$(I), 3) = "5-2" Then D$(I) = "3-4" + Right$(D$(I), Len(D$(I)) - 3)
-            If Left$(D2$(I), 3) = "5-2" Then D2$(I) = "3-4" + Right$(D2$(I), Len(D2$(I)) - 3)
-        Next
+        Cls
+
+        'Using Home Team's color for the box
+        Call TEAMBOX(1, 1)
+
+        Do
+            U$ = "PLAY ANOTHER GAME (YN)"
+            Locate 7, (80 - Len(U$)) / 2
+            Print U$
+
+            Color 15, 0
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
     End If
 
-    For J1 = 1 To 15:
-        D2$(J1) = D$(J1)
-    Next
-
-    For J1 = 12 To 15:
-        D2$(J1) = D2$(J1 - 7)
-    Next
-
-    D2$(5) = D2$(9)
-    D2$(6) = D2$(10)
-
-    For J1 = 12 To 15:
-        D2$(J1 - 5) = D2$(J1)
-    Next
-    '-- Does this really belong here???
-
-
-    DR$(0) = "RIGHT"
-    DR$(1) = "LEFT"
-    D$(11) = "GOAL LINE"
-
-    For I = 0 To 6: WX%(I) = 0: Next
-
-    ST$ = "1:00P"
-
-    G$(1) = "FLEA FLICKER"
-    G$(2) = "REVERSE"
-    G$(3) = "HB PASS"
-
-    PS$(0) = "RUN"
-    PS$(1) = "PASS"
-    PS$(3) = "FIELD GOAL ATTEMPT"
-    PS$(2) = "PUNT"
-    PS$(4) = "SCOUTING REPORT"
-    PS$(5) = "CHANGE/SELECT QB"
-    PS$(6) = "SHOW GAME STATS"
-    PS$(7) = "QB KNEEL DOWN"
-    PS$(8) = "TEN MINUTE TICKER "
-    PS$(9) = "CHANGE/SELECT KICKER"
-
-    DN$(0) = "FIRST"
-    DN$(1) = DN$(0)
-    DN$(2) = "SECOND"
-    DN$(3) = "THIRD"
-    DN$(4) = "FOURTH"
-
-    U5$(0) = "HUMAN OPPONENT           "
-    U5$(1) = "COMPUTER IS VISITING TEAM"
-    U5$(2) = "COMPUTER IS HOME TEAM    "
-    U5$(3) = "COMPUTER VS COMPUTER     "
-
-    strG9$(0) = "PLAY USING COLLEGE RULES"
-    strG9$(1) = "PLAY USING NFL RULES    "
-    strG9$(2) = "PLAY USING USFL RULES   "
-    strG9$(3) = "PLAY USING AFL RULES    "
-    strG9$(4) = "PLAY USING WFL RULES    "
-    strG9$(5) = "PLAY USING WLAF RULES   "
-
-    SD$(0) = "NO OVERTIME          "
-    SD$(1) = "ONE 15-MINUTE QUARTER"
-    SD$(2) = "SUDDEN DEATH TO WIN  "
-    SD$(3) = "NCAA DIVISION I-AA   "
-
-    Y8$(0) = "1978-1993"
-    Y8$(1) = "PRE-1974 "
-    Y8$(2) = "1974-1977"
-    Y8$(3) = "POST-1993"
-
-    Y9$(0) = "PRE-1968 "
-    Y9$(1) = "1968-1980"
-    Y9$(2) = "1981-1983"
-    Y9$(3) = "1984-1991"
-    Y9$(4) = "1991     "
-    Y9$(5) = "POST-1991"
-
-    LO$(1) = "HOME FIELD  "
-    LO$(2) = "NEUTRAL SITE"
-
-    A$ = ""
-    A1$ = ""
-    A2$ = ""
-    A3$ = ""
-    A4$ = ""
-    A5$ = ""
-    A6$ = ""
-    A7$ = ""
-    AA$ = ""
-    div2$ = ""
-    DI$ = ""
-    DN$ = ""
-    DR$ = ""
-    DS$ = ""
-    DV$ = ""
-    F$ = ""
-    G$ = ""
-    strG9$ = ""
-    I$ = ""
-    LO$ = ""
-    NM$ = ""
-    NN$ = ""
-    PS$ = ""
-    Q$ = ""
-    RP$ = ""
-    RV$ = ""
-    NY$ = ""
-    scheduleFile$ = ""
-    SD$ = ""
-    SITE$ = ""
-    ST$ = ""
-    SX$ = ""
-    U$ = ""
-    U5$ = ""
-    X$ = ""
-    Y8$ = ""
-    Y9$ = ""
-    YN$ = ""
-
-    A = 0
-    A2 = 0
-    A3 = 0
-    A4 = 0
-    A5 = 0
-    A6 = 0
-    A7 = 0
-    A8 = 0
-    A9 = 0
-    AP = 0
-    B = 0
-    B1 = 0
-    B2 = 0
-    B3 = 0
-    B4 = 0
-    B5 = 0
-    B7 = 0
-    B8 = 0
-    BW = 0
-    CP = 0
-    CT = 0
-    D = 0
-    D1 = 0
-    D2 = 0
-    D3 = 0
-    DDI = 0
-    DDS = 0
-    DI = 0
-    DR = 0
-    DS = 0
-    DT = 0
-    E = 0
-    EY = 0
-    F2 = 0
-    F8 = 0
-    F9 = 0
-    G = 0
-    I1 = 0
-    I2 = 0
-    I3 = 0
-    I4 = 0
-    I5 = 0
-    I6 = 0
-    I7 = 0
-    I8 = 0
-    I9 = 0
-    I = 0
-    J = 0
-    J6 = 0
-    JJ = 0
-    K3 = 0
-    N = 0
-    NT = 0
-    O = 0
-    OT = 0
-    P1 = 0
-    P2 = 0
-    PN = 0
-    PQ = 0
-    PR = 0
-    PW = 0
-    Q = 0
-    QB = 0
-    R1 = 0
-    RP = 0
-    RY = 0
-    S = 0
-    S2 = 0
-    S3 = 0
-    S6 = 0
-    SN = 0
-    SY = 0
-    T = 0
-    T1 = 0
-    TE = 0
-    TMT = 0
-    TP = 0
-    W5 = 0
-    WE = 0
-    WS = 0
-    X = 0
-    X1 = 0
-    X2 = 0
-    XD = 0
-    XE = 0
-    Y = 0
-    Y1 = 0
-    YC = 0
-    YF = 0
-    YL = 0
-    YT = 0
-    Z1 = 0
-
-    intB8% = 0
-    BO% = 0
-    C% = 0
-    EG% = 0
-    F% = 0
-    GL% = 0
-    HB% = 0
-    HT% = 0
-    intI% = 0
-    intDI% = 0
-    intDS% = 0
-    PA% = 0
-    PC% = 0
-    PS% = 0
-    Q6% = 0
-    Q7% = 0
-    QBN% = 0
-    QX% = 0
-    RF% = 0
-    S1% = 0
-    ST% = 0
-    SX% = 0
-    TS% = 0
-    W% = 0
-    WX% = 0
-    intY8% = 0
-    intYL% = 0
-
-    actualAttendance& = 0
-    endOfGames% = 0
-
-    Erase A$, A1$, A2$, A3$, A4$, A5$, A6$, A7$
-    Erase AA$, B$, DI$, DS$, diskPaths$
-    Erase H$, HO$, strIR$, strKR$
-    Erase strLC$, LF$, LI$, LK$, LP$, strLR$
-    Erase NN$, PK$, strPR$, Q$, strQB$
-    Erase strRB$, SITE$, SX$
-    Erase teamNames$, strWR$, Y$, YN$, YR%
-
-    Erase A, A1, A2, A3, A4, A5, A6, A7, A8, A9
-    Erase AF, AM, B, B1, B2, B3, B4, B5, B6, B7, B8
-    Erase C, CRD, DDI, DDS, DI, DS, FA, FL, FM
-    Erase GI, GS, IR
-    Erase K, K1, K2, K3, KR
-    Erase LC, LF, LI, LK, LP, LR, OT, PK, PR
-    Erase QB, RB, S, SI, SK, T, T1, TP
-    Erase W6, WR, XD, YC, Z, Z1, Z2
-
-    Erase AP%, intB8%, intDI%, intDS%
-    Erase intG9%, HB%
-    Erase O%, PA%, PC%, intPR%
-    Erase Q6%, Q7%, QX%, R9%, RQ%, RV%
-    Erase ST%, SX%, TE%, TF%, TeamScore%
-
-    Erase teamIndex%, V4%
+    If UCase$(I$) = "Y" Or AP = 1 Then
+        Cls
+        Print "PLEASE WAIT ..."
+        Call FOOTBALL
+    End If
 
 End Sub
-

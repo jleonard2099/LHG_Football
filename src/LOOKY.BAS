@@ -172,12 +172,15 @@ Sub LOOKY ()
                     Locate 7, 32
 
                     Do
-                        Locate 10, 15
+                        Locate 10
                         Color 7, 1
 
-                        Locate , 30: Print "STATS TO ";: Color 15: Print "S";: Color 7: Print "CREEN"
-                        Locate , 30: Print "STATS TO ";: Color 15: Print "P";: Color 7: Print "RINTER"
-                        I$ = GetKeyPress$
+                        Locate , 30: Print "STATS TO ";
+						Color 15: Print "S";: Color 7: Print "CREEN"
+                        Locate , 30: Print "STATS TO ";
+						Color 15: Print "P";: Color 7: Print "RINTER"
+                        
+						I$ = GetKeyPress$
 
                         Color 14, 0
 
@@ -189,7 +192,7 @@ Sub LOOKY ()
                     End Select
 
                     Cls
-                    Print "DISPLAY STATISTICS AGAIN (YN)";
+                    Print "DISPLAY STATS AGAIN (YN)";
 
                     Do
                         I$ = GetKeyPress$
@@ -201,9 +204,9 @@ Sub LOOKY ()
 
             End If 'Done checking for file existence
 
-        End If 'Done checking for statFile$ / "END"
+        End If 'Done checking for statFile$ = "END"
 
-    Loop Until statFile$ = "END"
+    Loop Until UCase$(I$) = "N" Or statFile$ = "END"
 
 End Sub
 
@@ -340,7 +343,7 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                 If NY$ = "" Then
                     Call SelectTeam_LOOKY(numberTeams, NY$)
                 Else
-                    yearNumber$ = NY$
+                    yearNumber$ = RTrim$(NY$)
                     Erase teamNames$
                     numberTeams = 0
 
@@ -382,13 +385,13 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-				'Read in stats here???
-				
+                'Read in stats here???
+
             End If
 
         End If
 
-    Loop Until UCase$(Z$) = "END" Or I$ = Chr$(27)
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
 
     Color 15, 0
 
@@ -424,8 +427,9 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
 
     If ExitCode% <> 27 Then
         T1 = teamIndex%(Selection%)
+        teamYear$ = RTrim$(yearNumber$)
 
-        If Not _FileExists(diskPaths$(0) + "FOOT." + yearNumber$) Then
+        If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
             BO% = 1
             Locate 10, 8
             Call CSMsgBox("NO TEAM FILES WERE FOUND MATCHING THIS ID.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
@@ -433,7 +437,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
             Call CSMsgBox("", 0, Pass)
 
         Else
-            Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+            Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
             Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 

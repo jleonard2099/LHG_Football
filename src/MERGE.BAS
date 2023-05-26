@@ -696,19 +696,24 @@ Sub GetDiskID_MERGE (A$)
                 If NY$ = "" Then
                     Call SelectTeam_MERGE(yearNumber$, numberTeams)
                 Else
-                    yearNumber$ = NY$
+                    yearNumber$ = RTrim$(NY$)
                     Erase teamNames$
                     numberTeams = 0
 
                     Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+
                     Y = LOF(1)
+
                     Field #1, 15 As Q$(0), 640 As X$
 
                     For I1 = 1 To Y / 934
+
                         Get #1, I1
+
                         For I2 = 1 To 15
                             If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
                         Next I2
+
                         If nullTeam <> 1 Then
                             numberTeams = numberTeams + 1
                             teamNames$(numberTeams) = Q$(0)
@@ -716,9 +721,11 @@ Sub GetDiskID_MERGE (A$)
                         End If
 
                     Next I1
+
                     Close 1
 
                     Call SelectTeam_MERGE(yearNumber$, numberTeams)
+
                 End If
             End If
 
@@ -780,9 +787,12 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
     If ExitCode% <> 27 Then
 
         T1 = teamIndex%(Selection%)
-        Locate 2, 33: Color 31: Print "LOADING..."
+        teamYear$ = RTrim$(yearNumber$)
+        
+        Locate 2, 33: Color 31
+        Print "LOADING..."
 
-        If Not _FileExists(diskPaths$(0) + "FOOT." + yearNumber$) Then
+        If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
             BO% = 1
             Locate 10, 8
             Call CSMsgBox("NO TEAM FILES WERE FOUND MATCHING THIS ID.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
@@ -790,7 +800,7 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
             Call CSMsgBox("", 0, Pass)
         Else
 
-            Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
+            Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
             Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -807,4 +817,3 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
     End If
 
 End Sub
-

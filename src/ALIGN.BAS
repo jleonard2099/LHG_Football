@@ -838,13 +838,14 @@ Sub GetDiskID_ALIGN (A$)
                 If NY$ = "" Then
                     Call SelectTeam_ALIGN(NY$, numberTeams, teamIdx)
                 Else
-                    YN$ = NY$
+                    YN$ = RTrim$(NY$)
                     Erase teamNames$
-
                     numberTeams = 0
 
                     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
                     Y = LOF(1)
+
                     Field #1, 15 As Q$(0), 640 As X$
 
                     For I1 = 1 To Y / 934
@@ -925,10 +926,16 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
     If ExitCode% <> 27 Then
 
         teamIdx = teamIndex%(Selection%)
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+        teamYear$ = RTrim$(YN$)
+        
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+        
         Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+        
         Get #1, teamIdx
+        
         For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        
         Close 1
 
     Else
