@@ -5956,11 +5956,6 @@ Sub TickerSchedule ()
 
     Shared scheduleFile$
 
-    Open "GAME82" For Input As #2
-    Input #2, scheduleFile$
-    For I = 0 To 2: Input #2, AP%(I): Next
-    Close 2
-
     If AP%(2) <= 32 Then
 
         For X = 0 To 1: SX$(AP%(2) + 1, X) = A$(X): Next
@@ -6946,14 +6941,6 @@ Sub BOXOPTIONS (outputChoice)
                     Print "ENTER 8-CHARACTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";: Input NM$
                     NM$ = NM$ + ".SPC"
                 Else
-                    ' Determine game #
-                    Open "GAME82" For Input As #1
-                    Input #1, scheduleFile$
-                    For I = 0 To 2
-                        Input #1, AP%(I)
-                    Next
-                    Close 1
-
                     ' NM$ = "BOXSCORE." + MID$(STR$(AP%(0) + AP%(2)), 2, LEN(STR$(AP%(0) + AP%(2))))
                     NM$ = "BOX" + Mid$(Str$(AP%(0) + AP%(2)), 2, Len(Str$(AP%(0) + AP%(2))))
                 End If
