@@ -348,10 +348,10 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$)
                     numberTeams = 0
 
                     Open diskPaths$(0) + "FOOT." + yearNumber$ For Random As #1 Len = 934
-                    Y = LOF(1)
+                    fileLength& = LOF(1)
                     Field #1, 15 As Q$(0), 640 As X$
 
-                    For I1 = 1 To Y / 934
+                    For I1 = 1 to fileLength& / 934
                         Get #1, I1
                         For I2 = 1 To 15
                             If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For

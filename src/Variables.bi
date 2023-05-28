@@ -3,31 +3,27 @@
 '----------------------------------------
 Dim opSysType$
 
-Dim Shared A$, AA$, S$
-Dim Shared ATT&
+Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 
-'Used only with career files
-Dim Shared TN$
+Dim yearNumber$(MAX_GAMES, 1)
+Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
+
 Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
 Dim Shared confLosses, confTies, confWins
 Dim Shared fullLosses, fullTies, fullWins
 
-Dim Shared DT$, TM$
+Dim Shared fileLength&, teamAttendance&
 
+Dim Shared A$, AA$, S$
 
-'File size - does this really need shared?
-Dim Shared Y As Long
+'Used only with career files
+Dim Shared DT$
+Dim Shared TM$, TN$
 
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
-
-Dim Shared DirCount%
-
-Dim yearNumber$(MAX_GAMES, 1)
-Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
-Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
 
 
 '----------------------------------------

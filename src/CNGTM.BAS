@@ -98,11 +98,11 @@ Sub GetTeam_CNGTM (YN$, teamNbr)
             
             Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 
-            Y = LOF(1)
+            fileLength& = LOF(1)
 
             Field #1, 15 As Q$(0), 640 As X$
 
-            For I1 = 1 To Y / 934
+            For I1 = 1 to fileLength& / 934
 
                 Get #1, I1
 
@@ -309,15 +309,15 @@ Sub ReadTeam_CNGTM (YN$, B8%)
         Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
         Get #2, B8%
         S$ = RTrim$(QQ$(1))
-        ATT& = CVL(QQ$(3))
+        teamAttendance& = CVL(QQ$(3))
         Z$ = QQ$(4)
         Close #2
 
-        If Z$ <> "x" Then S$ = "": ATT& = 0
+        If Z$ <> "x" Then S$ = "": teamAttendance& = 0
 
     Else
         S$ = ""
-        ATT& = 0
+        teamAttendance& = 0
     End If
 
     For I = 0 To 15: C2(I) = 0: C3(I) = 0: Next
@@ -580,7 +580,7 @@ Sub ChangeTeam (YN$, teamNbr)
                     Locate 18: Print "17. TM TEXT COLOR (0-15) "; statsPA%(2)
                     Locate 19: Print "18. DISK ID "; YN$
                     Locate 20: Print "19. STADIUM NAME "; S$
-                    Locate 21: Print "20. AVERAGE ATTENDANCE "; ATT&
+                    Locate 21: Print "20. AVERAGE ATTENDANCE "; teamAttendance&
                     Locate 22: Color statsPA%(2), statsPA%(1): Print "SAMPLE TEAM COLOR"
                     Color 15, 0
 
@@ -671,7 +671,7 @@ Sub ChangeTeam (YN$, teamNbr)
                             If C1 = 1 Then 1170
 
                         Case 20
-                            Locate 21: Input "20. AVERAGE ATTENDANCE "; ATT&
+                            Locate 21: Input "20. AVERAGE ATTENDANCE "; teamAttendance&
                     End Select
 
                 Loop Until B9 = 0
@@ -1404,13 +1404,13 @@ Sub SaveChangedTeam ()
 
     LSet Q$(1) = A$
     LSet Q$(2) = S$
-    LSet Q$(3) = MKL$(ATT&)
+    LSet Q$(3) = MKL$(teamAttendance&)
     LSet Q$(4) = "x"
     Put #2, B8%
     Close 2
 
     S$ = ""
-    ATT& = 0
+    teamAttendance& = 0
 
     For I = 0 To 9
         careerA0%(I) = 0

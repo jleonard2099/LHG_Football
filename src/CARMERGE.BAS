@@ -1638,11 +1638,11 @@ Sub GetTeam_CARMERGE ()
 
                     Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
 
-                    Y = LOF(1)
+                    fileLength& = LOF(1)
 
                     Field #1, 15 As Q$(0), 640 As X$
 
-                    For I1 = 1 To Y / 934
+                    For I1 = 1 to fileLength& / 934
                         Get #1, I1
 
                         For I2 = 1 To 15

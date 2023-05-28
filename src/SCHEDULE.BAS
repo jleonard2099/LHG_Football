@@ -920,7 +920,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                     Print "FOUND A MATCH"
 
                                     Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #1 Len = 52
-                                    Y = LOF(1)
+                                    fileLength& = LOF(1)
 
                                     targetGame% = Y / 52
 
@@ -1049,7 +1049,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                         Locate 1, 1: Print numberGames% + 1; " MATCHES"
 
                                         Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #1 Len = 52
-                                        Y = LOF(1)
+                                        fileLength& = LOF(1)
 
                                         numberGames% = Y / 52
 
@@ -1169,7 +1169,7 @@ Sub LoadScheduleInfo (targetFile$)
     Shared scheduleYN$()
 
 	Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = 52
-	Y = LOF(1)
+	fileLength& = LOF(1)
 
 	scheduleAP%(0) = Y / 52
 	BS% = Int((scheduleAP%(0) - 1) / 20)
@@ -1652,11 +1652,11 @@ Sub SelectTeam_Schedule (yearNumber$, numberTeams)
 
     Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
-    Y = LOF(1)
+    fileLength& = LOF(1)
 
     Field #1, 15 As Q$(0), 640 As X$
 
-    For I1 = 1 To Y / 934
+    For I1 = 1 to fileLength& / 934
 
         Get #1, I1
 

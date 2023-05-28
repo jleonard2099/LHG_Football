@@ -776,7 +776,7 @@ Sub SaveTeam (teamNumber, YN$)
     9500 '
     If teamNumber = 0 Then
         Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-        Y = LOF(1)
+        fileLength& = LOF(1)
         Close 1
         teamNumber = Y / 934
         teamNumber = teamNumber + 1
