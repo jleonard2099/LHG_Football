@@ -306,7 +306,7 @@ Sub DoTheDraft (YN$, NU)
 
         Close 1
 
-        NU = Y / 934
+        NU = fileLength& / 934
         NU = NU + 1
 
     End If

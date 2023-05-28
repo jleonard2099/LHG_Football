@@ -922,7 +922,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                     Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #1 Len = 52
                                     fileLength& = LOF(1)
 
-                                    targetGame% = Y / 52
+                                    targetGame% = fileLength& / 52
 
                                     For X = 0 To 20
                                         Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
@@ -1051,7 +1051,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                         Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #1 Len = 52
                                         fileLength& = LOF(1)
 
-                                        numberGames% = Y / 52
+                                        numberGames% = fileLength& / 52
 
                                         For X = 0 To 20
                                             Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
@@ -1171,7 +1171,7 @@ Sub LoadScheduleInfo (targetFile$)
 	Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = 52
 	fileLength& = LOF(1)
 
-	scheduleAP%(0) = Y / 52
+	scheduleAP%(0) = fileLength& / 52
 	BS% = Int((scheduleAP%(0) - 1) / 20)
 
 	For X = 0 To 20

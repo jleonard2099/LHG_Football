@@ -4295,7 +4295,7 @@ Sub CLIPPING ()
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
     Call PBP ': Call PBP_Logger(9573)
 
-    If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
+    If Y < 20 Then Y = fileLength& / 2: K(P1, 12) = K(P1, 12) + fileLength& / 2
 
     K(P1, 11) = K(P1, 11) + 1
     If Y >= 20 Then Y = Y - 10: K(P1, 12) = K(P1, 12) + 10
