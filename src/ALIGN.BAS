@@ -9,7 +9,7 @@ Sub ALIGN ()
     Shared statsLI$(), LIN$(), LIR$(), statsLK$(), LKN$(), LKR$()
     Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), LR$()
     Shared PKN$(), statsPK$(), PKR$()
-    Shared statsA$(), statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
 
     Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), statsPA%()
 
@@ -103,7 +103,7 @@ Sub ALIGN ()
 
                     Open pathCurrentStats$ + statFile$ For Input As #1
 
-                    Input #1, statsA$(PX)
+                    Input #1, statsA$
 
                     For I = 0 To 9: Input #1, statsA1$(I): Next I
                     For I = 0 To 5: Input #1, statsA2$(I): Next I
@@ -877,9 +877,8 @@ Sub GetDiskID_ALIGN (A$)
                 Locate 2, 33
                 Color statsPA%(2), statsPA%(1): Print A$
 
-                Color 15, 4
-
                 Do
+                    Color 15, 4
                     Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"

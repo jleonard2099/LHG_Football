@@ -5,9 +5,10 @@ Sub FOOTBALL ()
     '_Icon
     '_AllowFullScreen
 
-    Shared scheduleFile$
-
     'Open "pbplog" For Output As #7
+    Shared scheduleFile$
+    Shared tickerStart
+
     Color 7, 0
     Cls
 
@@ -120,40 +121,7 @@ Sub FOOTBALL ()
 
     If AP = 1 Then
 
-        'Assign settings from schedule / etc.
-        pbpDelay! = NG%(4) / 10
-        J6(0) = NG%(10)
-        G9 = NG%(3)
-        Y9 = NG%(7)
-        Y8 = NG%(11)
-
-        'If college rules, pre-1974
-        If Y8 = 1 And G9 <> 0 Then
-            'is this an adjustment for
-            'kicking distance based on
-            'placement of the goal posts???
-            intY8% = -10
-        End If
-
-        'If WFL rules
-        If G9 = 4 Then
-            intY8% = 0
-        End If
-        
-        H% = NG%(2)
-
-        For I = 0 To 1
-
-            intB8% = NG%(I)
-            YN$ = YN$(I)
-
-            Call GETTEAM(I)
-
-            A$(I) = _Trim$(A$(I))
-            AA$(I) = _Trim$(AA$(I))
-            X = 0
-
-        Next I
+        Call AUTOSETUP
 
     Else
 
@@ -167,7 +135,7 @@ Sub FOOTBALL ()
             Print Tab(29); "SELECT OPENING OPTIONS"
             Print
             Locate 3, 2
-            Color 14: Print "(1) ";: Color 15: Print U5$(J6(0))
+            Color 14: Print "(1) ";: Color 15: Print MO$(J6(0))
             Locate 4, 2
             Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM: ";: Color PA%(0, 2), PA%(0, 1): Print A$(0)
             Color , 0
@@ -177,7 +145,7 @@ Sub FOOTBALL ()
             Locate 6, 2
             Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; strG9$(G9)
             Locate 7, 2
-            Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; LO$(H%)
+            Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; location$(H%)
             Locate 8, 2
             Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; pbpDelay!
             Locate 9, 2
@@ -301,29 +269,36 @@ Sub FOOTBALL ()
 
         If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
 
+            'TICKER PROMPT
             Cls
             Color 3
 
-            Call TEAMBOX(7, 1)
+            Call TEAMBOX (7, 1)
+
+            Locate 7, 11
 
             Print "IF YOU ARE USING THE 10 MINUTE TICKER OPTION FOR THIS GAME,"
             Locate , 11: Print "ENTER STARTING TIME FOR GAME IN THIS FORMAT"
             Locate , 11: Print "(EXAMPLES: 1:00P, 11:30A). OTHERWISE, JUST HIT ENTER"
             Print
-            Locate , 11: Input "START TIME: "; ST$
+            Locate , 11: Input "START TIME: "; startTime$
 
-            L = Len(ST$)
+            L = Len(startTime$)
+ 
+           If L < 4 Then 
+                startTime$ = "1:00P"
+            Else
+                10:00P
+                If L = 5 Then HR = Val(Left$(startTime$, 1)): MIN = Val(Mid$(startTime$, 3, 2))
+                If L = 6 Then HR = Val(Left$(startTime$, 2)): MIN = Val(Mid$(startTime$, 4, 2))
+            End If
 
-            If L = 5 Then HR = Val(Left$(ST$, 1)): MIN = Val(Mid$(ST$, 3, 2))
-            If L = 6 Then HR = Val(Left$(ST$, 2)): MIN = Val(Mid$(ST$, 4, 2))
+            tickerMeridian$ = Right$(tickerStart, 1)
 
-            T$ = Right$(ST$, 1)
-
-            If UCase$(T$) = "P" And Left$(ST$, 2) <> "12" Then HR = HR + 12
+            If UCase$(tickerMeridian$) = "P" And Left$(startTime$, 2) <> "12" Then HR = HR + 12
 
             TM = HR * 60 + MIN
-
-            ST% = Int(TM / 30 - 18)
+            tickerStart = Int(TM / 30) - 18
 
         Else
 
@@ -478,7 +453,8 @@ Sub FOOTBALL ()
     X = 0
     U3 = 0
 
-    If T <= 0 Then Call ADDTIME: GoTo 3360
+    Call CheckZeroTime
+    If gameClock! = 0 Then GoTo 3360
 
     For I = 0 To 2
         If A9(D, I) = 100 Then KN = I: Exit For
@@ -521,7 +497,7 @@ Sub FOOTBALL ()
     If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
         I$ = "0"
 
-        If T <= 180 And Q = 4 And S(P1, 0) - S(D, 0) < 0 Then I$ = "2"
+        If gameClock! <= 180 And Q = 4 And S(P1, 0) - S(D, 0) < 0 Then I$ = "2"
 
     Else
 
@@ -712,9 +688,8 @@ Sub FOOTBALL ()
                     If I >= 960 - PA%(P1, 0) Then Call CLIPPING
 
                     463 '
-                    Call ADDTIME
-
-                    If T <= 0 Then Call ADDTIME: GoTo 3360
+                    Call CheckZeroTime
+                    If gameClock! = 0 Then GoTo 3360
 
                 End If
 
@@ -734,9 +709,8 @@ Sub FOOTBALL ()
                 Call CLIPPING
             End If
 
-            Call ADDTIME
-
-            If T <= 0 Then Call ADDTIME: GoTo 3360
+            Call CheckZeroTime
+            If gameClock! = 0 Then GoTo 3360
 
         Case 2
             3950 'NORMAL KICK
@@ -744,7 +718,8 @@ Sub FOOTBALL ()
             D1 = 1
             Y1 = 10
 
-            If T <= 0 Then Call ADDTIME: GoTo 3360
+            Call CheckZeroTime
+            If gameClock! = 0 Then GoTo 3360
 
     End Select
 
@@ -788,7 +763,7 @@ Sub FOOTBALL ()
             I5 = S(P1, 0) - S(D, 0)
 
             If G9 = 1 And Y8 = 3 Then
-                If Q = 4 And (I5 = -9 And T < 600 Or I5 = -2 And T < 120 Or I5 = -5 And T < 420) Then I$ = "2"
+                If Q = 4 And (I5 = -9 And gameClock! < 600 Or I5 = -2 And gameClock! < 120 Or I5 = -5 And gameClock! < 420) Then I$ = "2"
             End If
 
             'Even after rewriting this is still seems absurd
@@ -801,7 +776,7 @@ Sub FOOTBALL ()
                     'Is this logic accurate?
                     'Or just an artifact of how things
                     'were written before???
-                    'If Q = 4 And T > 240 Or Q < 4 Then 3702
+                    'If Q = 4 And gameClock! > 240 Or Q < 4 Then 3702
                 End If
             End If
 
@@ -992,7 +967,8 @@ Sub FOOTBALL ()
 
     If U3 = 9 Then U3 = 0: GoTo 340
 
-    If T <= 0 Then Call ADDTIME: GoTo 3360
+    Call CheckZeroTime
+    If gameClock! = 0 Then GoTo 3360
 
     Do
 
@@ -1256,7 +1232,7 @@ Sub FOOTBALL ()
                 End If
                 If XX = 7 Then P2 = 9: R1 = 1: GoTo 3403
 
-                If (Q = 3 Or Q = 1) And P2 = 16 Or T > 120 And P2 = 16 Then
+                If (Q = 3 Or Q = 1) And P2 = 16 Or gameClock! > 120 And P2 = 16 Then
                     U$ = "CAN ONLY USE LAST 2 MIN. OF EACH HALF"
                     Call PBP
                     validPlay% = 0
@@ -2208,8 +2184,8 @@ Sub FOOTBALL ()
 
                         If 100 - Y > K(P1, 26) Then K(P1, 26) = 100 - Y
 
-                        T = T - 5
-                        TP(P1) = TP(P1) + 5
+                        gameClock! = gameClock! - 5
+                        timePoss(P1) = timePoss(P1) + 5
                         K(P1, 27) = K(P1, 27) + 1
 
                         Call Touchback
@@ -2251,7 +2227,8 @@ Sub FOOTBALL ()
                     D1 = 1
                     Y1 = 10
 
-                    If T <= 0 Then Call ADDTIME: GoTo 3360
+                    Call CheckZeroTime
+                    If gameClock! = 0 Then GoTo 3360
 
                     Call DELAY
 
@@ -2556,8 +2533,8 @@ Sub FOOTBALL ()
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then
 
                     K(P1, 8) = K(P1, 8) + 100 - Y
-                    T = T - 5
-                    TP(P1) = TP(P1) + 5
+                    gameClock! = gameClock! - 5
+                    timePoss(P1) = timePoss(P1) + 5
                     K(P1, 27) = K(P1, 27) + 1
 
                     Call Touchback
@@ -2604,7 +2581,8 @@ Sub FOOTBALL ()
                         D1 = 1
                         Y1 = 10
 
-                        If T <= 0 Then Call ADDTIME: GoTo 3360
+                        Call CheckZeroTime
+                        If gameClock! = 0 Then GoTo 3360
 
                         Call DELAY
 
@@ -2662,7 +2640,8 @@ Sub FOOTBALL ()
                         Call AddPossessionTime(8 + hangtime, 13 + hangtime)
                         Call DELAY
 
-                        If T <= 0 Then Call ADDTIME: GoTo 3360
+                        Call CheckZeroTime
+                        If gameClock! = 0 Then GoTo 3360
 
                     End If
 
@@ -3003,7 +2982,7 @@ Sub FOOTBALL ()
 
         GoSub 3900
 
-        If T <= 0 Then T = 1
+        If gameClock! <= 0 Then gameClock! = 1
 
         GoTo 700
 
@@ -3146,7 +3125,7 @@ Sub FOOTBALL ()
 
         GoSub 3900
 
-        If T <= 0 Then T = 1
+        If gameClock! <= 0 Then gameClock! = 1
 
         GoTo 700
 
@@ -3197,7 +3176,7 @@ Sub FOOTBALL ()
                     K(D, 12) = K(D, 12) + 15
                 End If
 
-                If T <= 0 Then T = 1
+                If gameClock! <= 0 Then gameClock! = 1
 
             Case 7 To 9
                 U$ = U$ + "DEF INCIDENTAL FACEMASK - 5 YARDS"
@@ -3215,7 +3194,7 @@ Sub FOOTBALL ()
                     K(D, 12) = K(D, 12) + 5
                 End If
 
-                If T <= 0 Then T = 1
+                If gameClock! <= 0 Then gameClock! = 1
 
             Case 10
                 U$ = U$ + "DEF FLAGRANT FACEMASK - 15 YARDS 1ST DOWN!"
@@ -3233,7 +3212,7 @@ Sub FOOTBALL ()
                     K(D, 12) = K(D, 12) + 15
                 End If
 
-                If T <= 0 Then T = 1
+                If gameClock! <= 0 Then gameClock! = 1
 
         End Select
 
@@ -3407,7 +3386,7 @@ Sub FOOTBALL ()
 
             GoSub 3900
 
-            If T <= 0 Then T = 1
+            If gameClock! <= 0 Then gameClock! = 1
 
         Else
 
@@ -3471,7 +3450,7 @@ Sub FOOTBALL ()
         IH = 0
     Else
 
-        If T <= 0 Then T = 1
+        If gameClock! <= 0 Then gameClock! = 1
 
         GoSub 3900
 
@@ -3493,7 +3472,7 @@ Sub FOOTBALL ()
 
     GoSub 3900
 
-    If T <= 0 Then T = 1
+    If gameClock! <= 0 Then gameClock! = 1
 
     'End If
 
@@ -3535,7 +3514,7 @@ Sub FOOTBALL ()
 
         GoSub 3900
 
-        If T <= 0 Then T = 1
+        If gameClock! <= 0 Then gameClock! = 1
 
     Else
 
@@ -3551,11 +3530,12 @@ Sub FOOTBALL ()
     '--------------------
 
     3360 '
-    T = 0
+    gameClock! = 0
     WX%(0) = 1 - WX%(0)
-    T = 900
+    gameClock! = 900
 
     Q = Q + 1
+
     If Q = 3 Or Q >= 5 Then
         'If end of half
         U3 = 0
@@ -3587,9 +3567,8 @@ Sub FOOTBALL ()
             W% = 1 - W%
 
             Call HALFSTART
-            HT% = 1
-
             Call GetKeyWhenNoDelay
+            halfTime = 1
 
             Do
                 Color 15, 0
@@ -3918,14 +3897,14 @@ Sub FOOTBALL ()
         If G9 <> 0 Then
 
             3930 '
-            If T > 120.01 And Q <> 1 And Q <> 3 And Not (T > 159.99 And O = 0) And Not (T > 147 And O = 1) And Not (T > 142 And O = 2) And Not (T > 137 And O = 3) And Not (T > 126 And O = 4) And Not (T > 128 And O = 5) And Not (T > 130 And O = 6) And Not (T > 132 And O = 7) Then
+            If gameClock! > 120.01 And Q <> 1 And Q <> 3 And Not (gameClock! > 159.99 And O = 0) And Not (gameClock! > 147 And O = 1) And Not (gameClock! > 142 And O = 2) And Not (gameClock! > 137 And O = 3) And Not (gameClock! > 126 And O = 4) And Not (gameClock! > 128 And O = 5) And Not (gameClock! > 130 And O = 6) And Not (gameClock! > 132 And O = 7) Then
 
                 U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
                 Call PBP
 
-                If T <= 126.01 And T >= 120.99 Then T = T - 6: TP(P1) = TP(P1) + 6
+                If gameClock! <= 126.01 And gameClock! >= 120.99 Then gameClock! = gameClock! - 6: timePoss(P1) = timePoss(P1) + 6
 
-                If T > 125.99 Then TP(P1) = TP(P1) + (T - 120): T = 120
+                If gameClock! > 125.99 Then timePoss(P1) = timePoss(P1) + (gameClock! - 120): gameClock! = 120
 
             End If
 
@@ -3934,15 +3913,13 @@ Sub FOOTBALL ()
         'Call PBP_Logger(4682)
 
         3901 '
-        If (T <= 120 And Q = 2) Or (T <= 120 And Q >= 4) Then
+        If (gameClock! <= 120 And Q = 2) Or (gameClock! <= 120 And Q >= 4) Then
 
             3907 '
             If O < 4 Then
 
-                If T <= 0 Then
-                    Call ADDTIME: GoTo 3360
-                End If
-
+                Call CheckZeroTime
+                If gameClock! = 0 Then GoTo 3360
                 Call TWOMIN
 
                 Select Case I1
@@ -3963,8 +3940,8 @@ Sub FOOTBALL ()
                             O = 9
 
                             Call AddPossessionTime(7, 10)
-
-                            If T <= 0 Then Call ADDTIME: GoTo 3360
+                            Call CheckZeroTime
+                            If gameClock! = 0 Then GoTo 3360
 
                             Return 'aka Exit Sub
 
@@ -3983,8 +3960,8 @@ Sub FOOTBALL ()
                             O = 9
 
                             Call AddPossessionTime(7, 10)
-
-                            If T <= 0 Then Call ADDTIME: GoTo 3360
+                            Call CheckZeroTime
+                            If gameClock! = 0 Then GoTo 3360
 
                             Return 'aka Exit Sub
 
@@ -4007,13 +3984,13 @@ Sub FOOTBALL ()
 
                         K(P1, 3) = K(P1, 3) + 1
                         K2(P1, Q6%(P1), 9) = K2(P1, Q6%(P1), 9) + 1
-                        D1 = D1 + 1
 
+                        D1 = D1 + 1
                         If D1 = 3 Then TE%(P1) = TE%(P1) + 1
 
                         Call AddPossessionTime(7, 10)
-
-                        If T <= 0 Then Call ADDTIME: GoTo 3360
+                        Call CheckZeroTime
+                        If gameClock! = 0 Then GoTo 3360
 
                         Return 'aka Exit Sub
 
@@ -4029,19 +4006,18 @@ Sub FOOTBALL ()
 
         If O = 0 Then Call AddPossessionTime(33, 38)
 
-        If O = 0 And G9 <> 0 And T > 40 Then T = T - 4: TP(P1) = TP(P1) + 4
-        If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 90 And Val(Left$(A$(1), 2)) >= 90 Then T = T - 3: TP(P1) = TP(P1) + 3
+        If O = 0 And G9 <> 0 And gameClock! > 40 Then gameClock! = gameClock! - 4: timePoss(P1) = timePoss(P1) + 4
+        If O = 0 And G9 <> 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) >= 90 And Val(Left$(A$(1), 2)) >= 90 Then gameClock! = gameClock! - 3: timePoss(P1) = timePoss(P1) + 3
+        If O = 0 And G9 = 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) = 56 And Val(Left$(A$(1), 2)) = 56 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
+        If O = 0 And G9 = 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) = 57 And Val(Left$(A$(1), 2)) = 57 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
+        If O = 0 And G9 <> 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) >= 93 And Val(Left$(A$(1), 2)) >= 93 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
 
-        If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 56 And Val(Left$(A$(1), 2)) = 56 Then T = T + 3: TP(P1) = TP(P1) - 3
-        If O = 0 And G9 = 0 And T > 43 And Val(Left$(A$(0), 2)) = 57 And Val(Left$(A$(1), 2)) = 57 Then T = T + 3: TP(P1) = TP(P1) - 3
+        If O >= 1 And O <= 3 Then timeElapsed! = 27 - (O * 5) + (Int(Rnd(1) * 5) + 1): gameClock! = gameClock! - timeElapsed!: timePoss(P1) = timePoss(P1) + timeElapsed!
 
-        If O = 0 And G9 <> 0 And T > 43 And Val(Left$(A$(0), 2)) >= 93 And Val(Left$(A$(1), 2)) >= 93 Then T = T + 3: TP(P1) = TP(P1) - 3
+        If O >= 4 Then timeElapsed! = (2 * O) - 5 + (Int(Rnd(1) * 3) + 1): gameClock! = gameClock! - timeElapsed!: timePoss(P1) = timePoss(P1) + timeElapsed!
 
-        If O >= 1 And O <= 3 Then TP = 27 - (O * 5) + (Int(Rnd(1) * 5) + 1): T = T - TP: TP(P1) = TP(P1) + TP
-
-        If O >= 4 Then TP = (2 * O) - 5 + (Int(Rnd(1) * 3) + 1): T = T - TP: TP(P1) = TP(P1) + TP
-
-        If T <= 0 Then Call ADDTIME: GoTo 3360
+        Call CheckZeroTime
+        If gameClock! = 0 Then GoTo 3360
 
     End If
 
@@ -4173,7 +4149,8 @@ Sub FOOTBALL ()
 
                     Call DELAY
 
-                    If T <= 0 Then Call ADDTIME: GoTo 3360
+                    Call CheckZeroTime
+                    If gameClock! = 0 Then GoTo 3360
 
                     GoTo 700
 
@@ -4247,8 +4224,9 @@ Sub FOOTBALL ()
             If Y9 = 0 And G9 = 0 Then Y = 40
 
             Call SCOREBOARD
-
-            If T <= 0 Then Call ADDTIME: U3 = 9: GoTo 3360
+            Call CheckZeroTime
+            If gameClock! = 0 Then U3 = 9: GoTo 3360
+            
             If Q > 4 Then 3364
 
             GoTo 340
@@ -4270,8 +4248,9 @@ Sub FOOTBALL ()
         End If
 
         Call AddPossessionTime(4, 7)
+        Call CheckZeroTime
+        If gameClock! = 0 Then GoTo 3360
 
-        If T <= 0 Then Call ADDTIME: GoTo 3360
         'College overtime
         If Q > 4 And NG%(14) = 3 Then 3364
 
@@ -4337,7 +4316,7 @@ Sub FOOTBALL ()
 
         Call DELAY
 
-        If T <= 0 Then Call ADDTIME: GoTo 3360
+        If gameClock! = 0 Then GoTo 3360
 
     End If
 
@@ -4485,9 +4464,9 @@ Sub FOOTBALL ()
     'to go to label 330
     Call TICKER
 
-    If HT% = 1 Then
+    If halfTime = 1 Then
 
-        HT% = 0
+        halfTime = 0
 
         'PAH
 

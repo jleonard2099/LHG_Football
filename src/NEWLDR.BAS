@@ -1908,7 +1908,6 @@ Sub BUILDSTATS (CT%)
 
     Dim statsDI$(1, 10), statsDS$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
 
-    Shared statsA$()
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
@@ -1922,9 +1921,9 @@ Sub BUILDSTATS (CT%)
     Color 15, 0
     Cls
 
+
     'PX is always a 0 value ?!?!
-
-
+    PX = 0
 
     For ZX = 1 To 30
 
@@ -1938,7 +1937,7 @@ Sub BUILDSTATS (CT%)
 
                 Open diskPaths$(1) + teamStatFile$ For Input As #1
 
-                Input #1, statsA$(PX)
+                Input #1, statsA$
 
                 For I = 0 To 9: Input #1, lookyA1$(PX, I): Next I
                 For I = 0 To 5: Input #1, lookyA2$(PX, I): Next I
@@ -1991,18 +1990,18 @@ Sub BUILDSTATS (CT%)
 
                 For I = 0 To 14
                     lookyTT!(totStats, I) = Z!(I)
-                    lookyTT$(totStats, I) = statsA$(PX)
+                    lookyTT$(totStats, I) = statsA$
                 Next
 
                 For I = 15 To 29
                     lookyTT!(totStats, I) = Z1!(I - 15)
-                    lookyTT$(totStats, I) = statsA$(PX)
+                    lookyTT$(totStats, I) = statsA$
                 Next
 
                 For I = 0 To 9
                     JA = JA + 1
                     A1L$(JA) = lookyA1$(PX, I)
-                    A1T$(JA) = statsA$(PX)
+                    A1T$(JA) = statsA$
                     LRL$(JA) = LR$(I, 0)
                     LCL$(JA) = LC$(I, 0)
                     'I added the line below based on patterns in this routine
@@ -2019,7 +2018,7 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 5
                     JB = JB + 1
                     A2L$(JB) = lookyA2$(PX, I)
-                    A2T$(JB) = statsA$(PX)
+                    A2T$(JB) = statsA$
                     LCL$(JB) = LC$(I + 10, 0)
                     GMB!(JB) = Y%
 
@@ -2031,7 +2030,7 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 3
                     JC = JC + 1
                     QBL$(JC) = lookyA3$(PX, I)
-                    A3T$(JC) = statsA$(PX)
+                    A3T$(JC) = statsA$
                     LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = Y%
 
@@ -2048,7 +2047,7 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 2
                     JD = JD + 1
                     A4L$(JD) = lookyA4$(PX, I)
-                    A4T$(JD) = statsA$(PX)
+                    A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
                     For I1 = 14 To 16: A4L!(JD, I1 - 14) = Z2!(I, I1): Next I1
@@ -2058,7 +2057,7 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 2
                     JE = JE + 1
                     A5L$(JE) = lookyA5$(PX, I)
-                    A5T$(JE) = statsA$(PX)
+                    A5T$(JE) = statsA$
                     PKL$(JE) = statsPK$(I, 0)
 
                     For I1 = 14 To 16: A5L!(JE, I1 - 14) = Z2!(I + 3, I1): Next I1
@@ -2068,19 +2067,19 @@ Sub BUILDSTATS (CT%)
 
                 JF = JF + 1
                 A6L$(JF) = lookyA6$(PX, 0)
-                A6T$(JF) = statsA$(PX)
+                A6T$(JF) = statsA$
                 A6L!(JF, 0) = Z!(7)
                 A6L!(JF, 1) = Z!(8)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 0)
-                A7T$(JG) = statsA$(PX)
+                A7T$(JG) = statsA$
 
                 For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 3, 17): Next
 
                 A7L!(JJG, 4) = LF!(0)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 1)
-                A7T$(JG) = statsA$(PX)
+                A7T$(JG) = statsA$
 
                 For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 7, 17): Next
 
@@ -2089,14 +2088,14 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 9
                     JH = JH + 1
                     A8L$(JH) = statsDI$(PX, I)
-                    A8T$(JH) = statsA$(PX)
+                    A8T$(JH) = statsA$
                     A8L!(JH) = GI!(PX, I, 0)
                 Next
 
                 For I = 0 To 14
                     JI = JI + 1
                     A9L$(JI) = statsDS$(PX, I)
-                    A9T$(JI) = statsA$(PX)
+                    A9T$(JI) = statsA$
                     A9L!(JI) = GS!(PX, I, 0)
                 Next
 

@@ -8,6 +8,7 @@ Const MAX_CONFERENCES = 40
 Const TEAMS_PER_DIV = 15
 Const DIVS_PER_CONFERENCE = 2
 Const TEAMS_PER_CONFERENCE = 30
+Const TEAM_SIZE_BYTES = 934
 
 'Const NUM_STATRECORDS = 162
 
@@ -18,8 +19,6 @@ DefInt A-Z
 '$INCLUDE: 'QPProEqu.bi'
 '$INCLUDE: 'PadRight.bi'
 '$INCLUDE: 'Variables.bi'
-
-Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
 
 ' For Utils
 '$INCLUDE: 'MainRoutines.bi'
@@ -271,6 +270,58 @@ Data OVER THE TOP,COUNTER
 Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
 Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
 Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
+
+' Game options
+modeAbbrev$(0) = "HH"
+modeAbbrev$(1) = "CV"
+modeAbbrev$(2) = "CH"
+modeAbbrev$(3) = "CC"
+
+MO$(0) = "HUMAN OPPONENT      "
+MO$(1) = "COMPUTER IS TEAM 1  "
+MO$(2) = "COMPUTER IS TEAM 2  "
+MO$(3) = "COMPUTER VS COMPUTER"
+
+strG9$(0) = "PLAY USING COLLEGE RULES"
+strG9$(1) = "PLAY USING NFL RULES    "
+strG9$(2) = "PLAY USING USFL RULES   "
+strG9$(3) = "PLAY USING AFL RULES    "
+strG9$(4) = "PLAY USING WFL RULES    "
+strG9$(5) = "PLAY USING WLAF RULES   "
+
+SD$(0) = "NO OVERTIME          "
+SD$(1) = "ONE 15-MINUTE QUARTER"
+SD$(2) = "SUDDEN DEATH TO WIN  "
+SD$(3) = "NCAA DIVISION I-AA   "
+
+yesNo$(0) = "Y"
+yesNo$(1) = "N"
+
+Y8$(0) = "1978-1993"
+Y8$(1) = "PRE-1974 "
+Y8$(2) = "1974-1977"
+Y8$(3) = "POST-1993"
+
+Y9$(0) = "PRE-1968 "
+Y9$(1) = "1968-1980"
+Y9$(2) = "1981-1983"
+Y9$(3) = "1984-1991"
+Y9$(4) = "1991     "
+Y9$(5) = "POST-1991"
+
+location$(1) = "HOME FIELD  "
+location$(2) = "NEUTRAL SITE"
+
+WN$(0) = "NONE             "
+WN$(1) = "LIGHT TO MODERATE"
+WN$(2) = "STRONG AND GUSTY "
+WN$(3) = "COMPUTER SELECT  "
+
+WT$(0) = "GOOD                          "
+WT$(1) = "BAD (RAIN/SNOW)               "
+WT$(2) = "TERRIBLE (BLIZZARD/HEAVY RAIN)"
+WT$(3) = "COMPUTER SELECT               "
+
 
 
 '----------------------------------------

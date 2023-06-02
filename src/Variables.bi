@@ -3,7 +3,7 @@
 '----------------------------------------
 Dim opSysType$
 
-Dim homeScore%(MAX_GAMES), visitingScore%(MAX_GAMES)
+Dim homeScores(MAX_GAMES), visitorScores(MAX_GAMES)
 
 Dim yearNumber$(MAX_GAMES, 1)
 Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
@@ -25,6 +25,12 @@ Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
+' Game Options
+Dim modeAbbrev$(3), yesNo$(1)
+Dim Shared location$(2), MO$(3)
+Dim Shared strG9$(5), SD$(3)
+Dim Shared Y8$(3), Y9$(5)
+Dim WN$(3), WT$(3)
 
 '----------------------------------------
 ' Used across multiple routines
@@ -37,7 +43,7 @@ Dim statsLF$(1), statsLI$(9, 1), statsLK$(2, 1), statsLP$(3, 1)
 Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
 Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
 Dim PKN$(2, 1), PKR$(2, 1)
-Dim statsA$(1), statsAA$(1)
+Dim statsAA$(1)
 Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
 Dim statsDI$(9), statsDS$(15)
 Dim statsPK$(2, 1)
@@ -228,14 +234,10 @@ Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
 Dim scheduleQB_V$(20), scheduleQB_H$(20)
 Dim scheduleYN$(MAX_GAMES, 1)
 
-Dim MO$(3) ', Z1$(40), Z2$(40)
-
-Dim E%(13)
-
-
 '----------------------------------------
 ' Used across TRADE.BAS routines
 '----------------------------------------
+Dim statsA$(1)
 Dim tradeA1$(2, 9), tradeA2$(2, 6), tradeA3$(2, 4), tradeA4$(2, 3)
 Dim tradeA5$(2, 3), tradeA6$(2, 3), tradeA7$(1, 1)
 Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
@@ -275,27 +277,23 @@ Dim seePR$(1200), seeT$(60)
 '----------------------------------------
 Dim scheduleFile$
 
-Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
-Dim Shared F$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
-Dim Shared SD$, SITE$, ST$, SX$, U$, U5$, X$, Y8$, Y9$, YN$
-
-Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2), A7$(1, 1)
-Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14)
-Dim Shared G$(3), strG9$(5), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
-Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LO$(2), LP$(1, 3, 1), strLR$(1, 9, 1)
-'Dim Shared O$(50), NN$(0 to 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
-Dim Shared R$(14), strRB$(1, 17), RP$(30), SD$(3), SITE$(120), SX$(1 To 33, 0 To 1)
-Dim Shared U5$(3), strWR$(1, 20), Y$(1), Y8$(3), Y9$(5), YN$(1), YR%(1)
+Dim tickerStart
 
 Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP
 Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
 Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT, E, EY
-Dim Shared F2, F8, F9, G, G9, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
+Dim Shared F2, F8, F9, G, G9, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
 Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW, Q, QB, R1, RP, RY
-Dim Shared S, S2, S3, S6, SN, SY, T, T1, TE, TMT, TP, W5, WE, WS
+Dim Shared S, S2, S3, S6, SN, SY, T1, TMT, W5, WE, WS
 Dim Shared X, X1, X2, XD, XE, Y, Y1, Y9, YC, YF, YL, YT, Z1
 
-Dim Shared pbpDelay!
+Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, intI%, intDI%, intDS%
+Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, SX%
+Dim Shared W%, WX%, intY8%, intYL%
+
+Dim Shared gameClock!, pbpDelay!, timeElapsed!
+
+Dim Shared actualAttendance&, averageAttendance&
 
 Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9), A9(1, 2)
 Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
@@ -303,7 +301,7 @@ Dim Shared C(50), CRD(120), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA
 Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9)
 Dim Shared J6(1), K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
 Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
-Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1), TP(1)
+Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1), timePoss(1)
 Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1), Z(38), Z1(38), Z2(13, 17)
 
 Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(0 To 8, 0 To 10), intDI%(1), intDS%(1)
@@ -313,8 +311,14 @@ Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim Shared TE%(1), TF%(1), TeamScore%(120), V4%(1, 3), WX%(6)
 
-Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, HT%, intI%, intDI%, intDS%
-Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, ST%, SX%, TS%
-Dim Shared W%, WX%, intY8%, intYL%
+Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
+Dim Shared F$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
+Dim Shared SD$, SITE$, SX$, U$, U5$, X$, Y8$, Y9$, YN$
 
-Dim Shared actualAttendance&, averageAttendance&
+Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2), A7$(1, 1)
+Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14)
+Dim Shared G$(3), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
+Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1), strLR$(1, 9, 1)
+Dim Shared O$(50), NN$(0 to 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
+Dim Shared R$(14), strRB$(1, 17), RP$(30), SITE$(120), SX$(1 To 33, 0 To 1)
+Dim Shared strWR$(1, 20), Y$(1), YN$(1), YR%(1)

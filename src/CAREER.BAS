@@ -161,6 +161,7 @@ Sub CreateMergeInitial ()
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
         If UCase$(I$) = "N" Then
+
             VV = 1
             Locate , 5: Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
 
@@ -850,9 +851,7 @@ Sub GetTeam_CAREER (A$)
 
         I$ = GetKeyPress$
 
-        If I$ = Chr$(27) Then
-            Z$ = "END"
-        Else
+        If I$ <> Chr$(27) Then
 
             If I$ = Chr$(13) Then
                 Call SelectTeam_CAREER(YN$, numberTeams, T1)
@@ -907,9 +906,8 @@ Sub GetTeam_CAREER (A$)
                 Locate 2, 33
                 Color statsPA%(2), statsPA%(1): Print A$
 
-                Color 15, 4
-
                 Do
+                    Color 15, 4
 					Locate 3, 33: Print "ANY CHANGE (YN)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
@@ -920,7 +918,7 @@ Sub GetTeam_CAREER (A$)
 
         End If 'Done checking for ESC
 
-    Loop Until UCase$(I$) = "N" Or Z$ = "END"
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
 
 End Sub
 

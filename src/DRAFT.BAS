@@ -514,9 +514,8 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
             Locate 2, 33
             Color QA%(2), QA%(1): Print N$
 
-            Color 15, 4
-
             Do
+                Color 15, 4
 				Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
