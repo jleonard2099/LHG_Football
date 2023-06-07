@@ -1,11 +1,9 @@
 Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GRIDIRON!"
-    ''$ExeIcon:'./lhg_3in1fb.ico'
-    '_Icon
-    '_AllowFullScreen
 
     'Open "pbplog" For Output As #7
+
     Shared scheduleFile$
     Shared tickerStart
 
@@ -288,12 +286,11 @@ Sub FOOTBALL ()
            If L < 4 Then 
                 startTime$ = "1:00P"
             Else
-                10:00P
                 If L = 5 Then HR = Val(Left$(startTime$, 1)): MIN = Val(Mid$(startTime$, 3, 2))
                 If L = 6 Then HR = Val(Left$(startTime$, 2)): MIN = Val(Mid$(startTime$, 4, 2))
             End If
 
-            tickerMeridian$ = Right$(tickerStart, 1)
+            tickerMeridian$ = Right$(startTime$, 1)
 
             If UCase$(tickerMeridian$) = "P" And Left$(startTime$, 2) <> "12" Then HR = HR + 12
 
@@ -696,7 +693,7 @@ Sub FOOTBALL ()
             End If
 
         Case 1
-            3970 'SQUIB KICK
+            'SQUIB KICK
             Call SQUIB
             Call FUMBLE
 
@@ -713,7 +710,7 @@ Sub FOOTBALL ()
             If gameClock! = 0 Then GoTo 3360
 
         Case 2
-            3950 'NORMAL KICK
+            'NORMAL KICK
             Call ONSIDE
             D1 = 1
             Y1 = 10
@@ -786,7 +783,7 @@ Sub FOOTBALL ()
 
     End If
 
-    3702 '
+    '3702
     If G9 = 1 Then
 
         If Y8 <> 3 Then
@@ -1047,7 +1044,7 @@ Sub FOOTBALL ()
                             Select Case G2
 
                                 Case 1
-                                    3170 '*** FLEA FLICKER ***
+                                    ' *** FLEA FLICKER ***
                                     Call FLEA
 
                                     If RN <= S% Then R1 = 1: W5 = 1: G = (Int(Rnd(1) * 6) + 10): GoTo 3541
@@ -1064,7 +1061,7 @@ Sub FOOTBALL ()
                                     GoTo 3535
 
                                 Case 2
-                                    3180 '*** REVERSE PLAY ***
+                                    ' *** REVERSE PLAY ***
                                     RV% = 1
 
                                     GoSub 3128
@@ -1110,7 +1107,7 @@ Sub FOOTBALL ()
                                     End If
 
                                 Case 3
-                                    3190 '*** HB PASS ***
+                                    ' *** HB PASS ***
                                     HB% = 1
 
                                     Call FRAMEOPTION(11, P1)
@@ -1209,9 +1206,6 @@ Sub FOOTBALL ()
                             P2 = XX + 17
 
                     End Select
-
-                    3124 '
-                    'If P2 = 19 And Y >= 70 Then 3118
 
                 Loop Until P2 <> 19 Or Y < 70
 
@@ -2276,136 +2270,136 @@ Sub FOOTBALL ()
                     I$ = GetKeyPress$
                     choice = Val(I$)
                 Loop Until choice >= 0 And choice <= 2
+
                 Screen , , 0, 0
 
             End If
 
             'PUNTSNAP
-            If I1 = 2 Or I1 = 3 Then
+            Select Case I1
 
-                ' *** FAKE PUNT - RUN/PASS ***
-                If choice = 2 Then
-                    U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT (YN)"
-                    Call PBP
+                Case 2, 3
 
-                    Do
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    If UCase$(I$) <> "Y" Then GoTo PSNAP
-
-                End If
-
-                If I1 = 3 Then
-                    3875 '
-                    ' *** FAKE W/PASS ***
-                    G = 0
-                    U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
-                    Call PBP
-
-                    RN = Int(Rnd(1) * 100) + 1
-
-                    If choice = 0 Then
-
-                        Select Case RN
-                            Case 1 To 36:
-                                G = Int(Rnd(1) * 27)
-
-                            Case 37 To 90:
-                                U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP:
-                                O = 4: GoTo 3309
-
-                            Case 91 To 100:
-                                U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP
-                                GoTo 3876
-                        End Select
-
-                    End If
-
-                    If choice = 1 Then
-
-                        Select Case RN
-                            Case 1 To 26:
-                                G = Int(Rnd(1) * 20)
-
-                            Case 27 To 80:
-                                U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP
-                                O = 4
-                                GoTo 3309
-
-                            Case 81 To 90:
-                                U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP
-                                GoTo 3876
-
-                            Case 91 To 100: G = 100 - Y
-                        End Select
-
-                    End If
-
+                    ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
+                        U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT (YN)"
+                        Call PBP
 
-                        Select Case RN
-                            Case 1 To 10:
-                                G = Int(Rnd(1) * 7) + 6
-
-                            Case 11 To 80:
-                                U$ = "THE PASS FALLS INCOMPLETE"
-                                Call PBP
-                                O = 4: GoTo 3309
-                            Case 81 To 100:
-                                U$ = "THE PASS IS INTERCEPTED!"
-                                Call PBP
-                                GoTo 3876
-                        End Select
+                        Do
+                            I$ = GetKeyPress$
+                        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
                     End If
 
-                    3878 '
-                    U$ = "PASS IS COMPLETE FOR"
+                    If UCase$(I$) = "Y" Then
 
-                    If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
-                        U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
-                        Call PBP
-                    Else
-                        U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
-                        Call PBP
-                    End If
+                        If I1 = 3 Then
+                            ' *** FAKE W/PASS ***
+                            G = 0
+                            U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
+                            Call PBP
 
-                    If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
-                    If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then 3200
+                            RN = Int(Rnd(1) * 100) + 1
 
-                    F% = 2
-                    Call FUMBLE
+                            If choice = 0 Then
 
-                Else
+                                Select Case RN
+                                    Case 1 To 36:
+                                        G = Int(Rnd(1) * 27)
 
-                    Call FAKEYARDS(choice)
+                                    Case 37 To 90:
+                                        U$ = "THE PASS FALLS INCOMPLETE"
+                                        Call PBP:
+                                        O = 4
+                                        GoTo 3309
 
-                    If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then 3200
-                    If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
+                                    Case 91 To 100:
+                                        U$ = "THE PASS IS INTERCEPTED!"
+                                        Call PBP
+                                        GoTo 3876
+                                End Select
 
-                    F% = 2
+                            End If
 
-                    Call FUMBLE
+                            If choice = 1 Then
 
-                End If
+                                Select Case RN
+                                    Case 1 To 26:
+                                        G = Int(Rnd(1) * 20)
 
-                GoTo 3309
+                                    Case 27 To 80:
+                                        U$ = "THE PASS FALLS INCOMPLETE"
+                                        Call PBP
+                                        O = 4
+                                        GoTo 3309
 
-            End If
+                                    Case 81 To 90:
+                                        U$ = "THE PASS IS INTERCEPTED!"
+                                        Call PBP
+                                        GoTo 3876
 
+                                    Case 91 To 100: G = 100 - Y
+                                End Select
 
-            If I1 = 4 Then
+                            End If
 
-                Call TAKESAFETY
-                GoTo 3251
+                            If choice = 2 Then
 
-            End If
+                                Select Case RN
+                                    Case 1 To 10:
+                                        G = Int(Rnd(1) * 7) + 6
 
+                                    Case 11 To 80:
+                                        U$ = "THE PASS FALLS INCOMPLETE"
+                                        Call PBP
+                                        O = 4: GoTo 3309
+                                    Case 81 To 100:
+                                        U$ = "THE PASS IS INTERCEPTED!"
+                                        Call PBP
+                                        GoTo 3876
+                                End Select
+
+                            End If
+
+                            3878 '
+                            U$ = "PASS IS COMPLETE FOR"
+
+                            If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
+                                U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
+                                Call PBP
+                            Else
+                                U$ = U$ + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
+                                Call PBP
+                            End If
+
+                            If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
+                            If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then 3200
+
+                            F% = 2
+                            Call FUMBLE
+
+                        Else
+
+                            Call FAKEYARDS(choice)
+
+                            If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then 3200
+                            If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
+
+                            F% = 2
+
+                            Call FUMBLE
+
+                        End If
+
+                        GoTo 3309
+
+                    End If  'Done processing fake punt
+
+                Case 4
+                    Call TAKESAFETY
+                    GoTo 3251
+
+            End Select
 
             PSNAP:
             U$ = A6$(P1, 0) + " WAITS FOR THE SNAP"
@@ -2414,13 +2408,11 @@ Sub FOOTBALL ()
             I5 = Int(Rnd(1) * 300) + 1
 
             If I5 = 12 Then
+
                 U$ = "THERE'S A BAD SNAP FROM CENTER!!"
                 Call PBP
 
                 G = (Int(Rnd(1) * 14) + 12) * -1
-                '3890 '
-                ' *** BAD SNAP FROM CENTER ***
-
                 Call AddPossessionTime(4, 7)
 
                 K(P1, 10) = K(P1, 10) + 1
@@ -2674,7 +2666,7 @@ Sub FOOTBALL ()
                 GoTo 700
             Else
 
-                4800 ' *** FIELD GOAL DECISION ***
+                ' *** FIELD GOAL DECISION ***
                 If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
                     I1 = 0
                 Else
@@ -2722,7 +2714,7 @@ Sub FOOTBALL ()
 
                 If I1 = 2 Or I1 = 1 Then
 
-                    4860 ' *** FAKE PUNT - RUN/PASS ***
+                    ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
                         U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL (YN)"
                         Call PBP
@@ -2738,7 +2730,7 @@ Sub FOOTBALL ()
                     4862 '
                     If I1 = 2 Then
 
-                        4875 ' *** FAKE W/PASS ***
+                        ' *** FAKE W/PASS ***
                         U$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS"
                         Call PBP
                         G = 0
@@ -2919,14 +2911,13 @@ Sub FOOTBALL ()
 
     '----------
 
-    3535 'PASS NOT COMPLETE
+    3535 ' PASS NOT COMPLETE
     'Incomplete / Interference Penalty
     X = 2
     I = Int(Rnd(1) * 1000) + 1
 
     If I <= 50 + PA%(D, 0) And P2 <> 13 And E = 0 Then
 
-        3750 '
         U$ = "DEFENSIVE PASS INTERFERENCE"
         If P2 = 9 Or P2 = 10 Or P2 = 13 Then G = Int(Rnd(1) * 10) + 1
         If P2 = 12 Or P2 = 15 Then G = Int(Rnd(1) * 20) + 21
@@ -2949,6 +2940,7 @@ Sub FOOTBALL ()
                 Y1 = 1
             Else
                 K(D, 12) = K(D, 12) + 100 - Y - 2
+
                 U$ = U$ + " IN THE END ZONE"
                 Call PBP
 
@@ -2969,6 +2961,7 @@ Sub FOOTBALL ()
 
             U$ = U$ + " YARD LINE"
             Call PBP
+
             Y = Y + G
             Y1 = 10
 
@@ -2989,13 +2982,10 @@ Sub FOOTBALL ()
     Else
 
         Call INCOMPLETE
-
         If E = 1 Then Call GoForTwo
-
         O = 4
 
     End If
-
 
     GoTo 3309
 
@@ -3541,7 +3531,7 @@ Sub FOOTBALL ()
         U3 = 0
     End If
 
-    endGame% = 0
+    endGame = 0
 
     'Q - 1 = previous quarter
     'We've already incremented it
@@ -3617,14 +3607,14 @@ Sub FOOTBALL ()
                 Call PBP
                 Call GetKeyWhenNoDelay
 
-                endGame% = 1
+                endGame = 1
 
             End If
 
             '--- should this be outside the SELECT
 
             'Check if game is over
-            If endGame% <> 1 Then
+            If endGame <> 1 Then
 
                 'Game not over
                 Call SCOREBOARD
@@ -3750,7 +3740,7 @@ Sub FOOTBALL ()
 
             '-- When would this NOT happen???
             If Q <> 3 Then
-                endGame% = 1
+                endGame = 1
                 Call EndOfGame
                 Exit Sub
             Else
@@ -4482,7 +4472,7 @@ Sub FOOTBALL ()
 
     Else
 
-        If endGame% = 1 Then
+        If endGame = 1 Then
             Call EndOfGame
             Exit Sub
         Else
@@ -4522,7 +4512,7 @@ Sub EndOfGame
 
     End If
 
-    If UCase$(I$) = "Y" Or AP = 1 Then
+    If UCase$(I$) = "Y" Or (AP = 1 and endAllGames <> 1) Then
         Cls
         Print "PLEASE WAIT ..."
         Call FOOTBALL

@@ -92,11 +92,16 @@ Sub InitVar ()
     DS = 0
     DT = 0
     E = 0
+    endAllGames = 0
+    endGame = 0
     EY = 0
     F2 = 0
     F8 = 0
     F9 = 0
     G = 0
+    gameClock! = 0
+    halfTime = 0
+    I = 0
     I1 = 0
     I2 = 0
     I3 = 0
@@ -106,7 +111,6 @@ Sub InitVar ()
     I7 = 0
     I8 = 0
     I9 = 0
-    I = 0
     J = 0
     J6 = 0
     JJ = 0
@@ -130,11 +134,11 @@ Sub InitVar ()
     S2 = 0
     S3 = 0
     S6 = 0
+    specialStat = 0
     SY = 0
-    gameClock! = 0
     T1 = 0
-    TMT = 0
     timeElapsed! = 0
+    TMT = 0
     W5 = 0
     WE = 0
     WS = 0
@@ -151,17 +155,18 @@ Sub InitVar ()
     YT = 0
     Z1 = 0
 
-    intB8% = 0
     BO% = 0
     C% = 0
     EG% = 0
     F% = 0
     GL% = 0
     HB% = 0
-    halfTime = 0
-    intI% = 0
+    intB8% = 0
     intDI% = 0
     intDS% = 0
+    intI% = 0
+    intY8% = 0
+    intYL% = 0
     PA% = 0
     PC% = 0
     PS% = 0
@@ -174,12 +179,8 @@ Sub InitVar ()
     SX% = 0
     W% = 0
     WX% = 0
-    intY8% = 0
-    intYL% = 0
 
-    specialStat = 0
     actualAttendance& = 0
-    endGame% = 0
 
     A$ = ""
     A1$ = ""
@@ -190,27 +191,27 @@ Sub InitVar ()
     A6$ = ""
     A7$ = ""
     AA$ = ""
-    div2$ = ""
     DI$ = ""
+    div2$ = ""
     DN$ = ""
     DR$ = ""
     DS$ = ""
     DV$ = ""
     F$ = ""
     G$ = ""
-    strG9$ = ""
     I$ = ""
     LO$ = ""
     NM$ = ""
     NN$ = ""
+    NY$ = ""
     PS$ = ""
     Q$ = ""
     RP$ = ""
     RV$ = ""
-    NY$ = ""
     scheduleFile$ = ""
     SD$ = ""
     SITE$ = ""
+    strG9$ = ""
     SX$ = ""
     U$ = ""
     U5$ = ""
@@ -233,7 +234,7 @@ Sub InitVar ()
     Erase GI, GS, IR
     Erase K, K1, K2, K3, KR
     Erase LC, LF, LI, LK, LP, LR, OT, PK, PR
-    Erase QB, RB, S, SI, SK, T, T1, TP
+    Erase QB, RB, S, SI, SK, T, T1, timePoss
     Erase W6, WR, XD, YC, Z, Z1, Z2
 
     Erase AP%, intB8%, intDI%, intDS%
@@ -1322,7 +1323,7 @@ Sub TICKER ()
 
         Else
 
-            If endGame% = 1 Then
+            If endGame = 1 Then
 
                 If G9 = 0 Then
                     Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
@@ -1888,12 +1889,19 @@ Sub SAVESTATS ()
 
             If AP%(1) < AP%(0) + AP%(2) Then
                 Kill "GAME82"
-                endGame% = 1
+                endAllGames = 1
             Else
+
                 Open "GAME82" For Output As #2
+
                 Print #2, scheduleFile$
-                For I = 0 To 2: Print #2, AP%(I): Next
+
+                For I = 0 To 2: 
+                    Print #2, AP%(I)
+                Next
+
                 Close 2
+
             End If
 
         End If
@@ -2944,14 +2952,12 @@ Sub DEFENSE ()
 
             Case 1
                 If Y1 > 10 Then
-                    '8860 '
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 2
                     Select Case R0
                         Case 1 To 5
                             D2 = 9
-                            '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
                                 Case 1 To 45: D3 = 7
@@ -2996,7 +3002,6 @@ Sub DEFENSE ()
 
             Case 2
                 If Y1 > 8 Then
-                    '8860 '
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 2
@@ -3004,7 +3009,6 @@ Sub DEFENSE ()
                     Select Case R0
                         Case 1 To 5
                             D2 = 9
-                            '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
                                 Case 1 To 45: D3 = 7
@@ -3049,7 +3053,6 @@ Sub DEFENSE ()
 
             Case 3
                 If Y1 >= 3 Then
-                    '8860 '
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 2
@@ -3057,7 +3060,6 @@ Sub DEFENSE ()
                     Select Case R0
                         Case 1 To 5
                             D2 = 9
-                            '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
                                 Case 1 To 45: D3 = 7
@@ -3101,7 +3103,6 @@ Sub DEFENSE ()
             Case 4
                 If Y >= 68 Then
                     If (Q = 4 And S(D, 0) - S(P1, 0) > 10) Or (Q >= 3 And S(D, 0) - S(P1, 0) > 21) Then
-                        '8860 '
                         R0 = Int(Rnd(1) * 100) + 1
                         D2 = 1
                         D3 = 2
@@ -3109,7 +3110,6 @@ Sub DEFENSE ()
                         Select Case R0
                             Case 1 To 5
                                 D2 = 9
-                                '8960 '
                                 RN = Int(Rnd(1) * 100) + 1
                                 Select Case RN
                                     Case 1 To 45: D3 = 7
@@ -3139,7 +3139,6 @@ Sub DEFENSE ()
                 End If
 
                 If Y1 >= 3 Then
-                    '8860 '
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 2
@@ -3192,7 +3191,6 @@ Sub DEFENSE ()
                 R0 = Int(Rnd(1) * 100) + 1
 
                 If R0 <= B6(P1, 7) Then
-                    '8867
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 1
@@ -3204,7 +3202,6 @@ Sub DEFENSE ()
                     End If
 
                 Else
-                    '8860 '
                     R0 = Int(Rnd(1) * 100) + 1
                     D2 = 1
                     D3 = 2
@@ -3212,7 +3209,6 @@ Sub DEFENSE ()
                     Select Case R0
                         Case 1 To 5
                             D2 = 9
-                            '8960 '
                             RN = Int(Rnd(1) * 100) + 1
                             Select Case RN
                                 Case 1 To 45: D3 = 7
@@ -4162,7 +4158,6 @@ Sub OFFMENU ()
         '-----
 
         8885 '
-
         '2nd / 4th Quarter
         '4th Down, Any Time, Outside Opponent's 35, Score Tied = Punt
         If Q = 2 And D1 = 4 And Y < 65 + intY8% Or Q >= 4 And Y < 65 + intY8% And S(P1, 0) = S(D, 0) And D1 = 4 Then P2 = 19: GoTo 8800
@@ -4405,7 +4400,6 @@ Sub CHANGEQB ()
         Next I4
     End If
 
-    8325 '
 End Sub
 
 
@@ -4550,8 +4544,6 @@ End Sub
 '------------------------------
 ' ...explanation...
 Sub COLKICKOFF ()
-
-    1200 'COLL KO
 
     If Q > 2 Then
         Call KICKOFF
@@ -4880,7 +4872,6 @@ Sub FUMBLE ()
 
     End If
 
-    3627 '
     F8 = F8 - WX%(5)
     F% = 0
 
@@ -5043,7 +5034,6 @@ End Sub
 ' ...explanation...
 Sub HANDOFF ()
 
-    4110 '
     If D2 = 11 Then
         U$ = D$(D2)
     Else
@@ -5172,7 +5162,6 @@ Sub PASSBALL ()
 
     Select Case I
         Case 1, 6
-            3516 '
             U$ = U$ + " IN THE OPEN"
             Call PBP ': Call PBP_Logger(10489)
 
@@ -5367,8 +5356,6 @@ Sub COMPILER ()
                 X = 0
 
             Case 4
-                7022 '
-
                 If W5 = 0 Or W5 = 1 And G9 = 0 Then K2(P1, Q6%(P1) + 10, 0) = K2(P1, Q6%(P1) + 10, 0) + 1
                 If W5 = 0 And G + Y < 99.95 Or W5 = 1 And G9 = 0 And G + Y < 99.95 Then K2(P1, Q6%(P1) + 10, 1) = K2(P1, Q6%(P1) + 10, 1) + G
                 If W5 = 0 And G + Y >= 99.95 Or W5 = 1 And G9 = 0 And G + Y >= 99.95 Then K2(P1, Q6%(P1) + 10, 1) = K2(P1, Q6%(P1) + 10, 1) + 100 - Y: K2(P1, Q6%(P1) + 10, 2) = K2(P1, Q6%(P1) + 10, 2) + 1
@@ -5399,7 +5386,7 @@ Sub TWOMIN ()
     Locate , 14: Print "5 - THROW AWAY PASS"
 
     Do
-        3910 '
+
         If J6(0) <> 0 Then
 
             I5 = S(P1, 0) - S(D, 0)
@@ -6501,7 +6488,6 @@ Sub PCPBP ()
 
     Call QBTHROW
 
-    4150 '
     If FF% = 0 Then
 
         Select Case P2
@@ -6545,7 +6531,6 @@ Sub PCPBP ()
 
     End If
 
-    4165 '
     PC = CP
 
     If CP > G Then CP = G: IT = 1
@@ -6829,7 +6814,7 @@ Sub POSTGAME ()
     Shared scheduleFile$
 
     Call EVENTS(specialStat, Count%)
-    endGame% = 1
+    endGame = 1
 
     Do
 
@@ -6883,7 +6868,6 @@ Sub POSTGAME ()
     Loop Until UCase$(I$) = "N" Or (AP = 1 And J6(0) = 2)
 
     Call TICKER
-    Call SAVESTATS
 
     'If we had special events
     If specialStat = 1 Then
@@ -6896,6 +6880,8 @@ Sub POSTGAME ()
         Call BOX2FILE(2, NM$)
 
     End If
+
+    Call SAVESTATS
 
     endGame = 0
     specialStat = 0
@@ -7073,7 +7059,6 @@ Sub BOX2FILE (printChoice, NM$)
 
             End Select
 
-            9717 '
             If skipPAT% <> 1 Then
                 Print #1, Tab(17);
                 If K1(I, 4) = 10 Then Print #1, " (KICK FAILED)"
@@ -7261,7 +7246,6 @@ Sub BOX2FILE (printChoice, NM$)
 
         End If
 
-        9739 '
         If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
             Print #1, A7$(I, 1); Tab(19);
 
@@ -7334,6 +7318,25 @@ Sub BOX2FILE (printChoice, NM$)
 
     End If
 
+
+End Sub
+
+
+'------------------------------
+'      BOX2SPC Subroutine
+'------------------------------
+' Adds special event information
+' to a boxscore file
+Sub BOX2SPC (NM$)
+
+    Open diskPaths$(1) + NM$ For Append As #2
+
+    Print #2,
+
+    'Output any special events
+    Print #2, 
+
+    Close #2
 
 End Sub
 
@@ -7505,7 +7508,7 @@ Sub ScoreSummary
             End Select
 
             If skipPAT% <> 1 Then
-                8517 Locate , 17
+                Locate , 17
                 If K1(I, 4) = 10 Then Print " (KICK FAILED)"
                 If K1(I, 4) = 20 Then Print " (RUN FAILED)"
                 If K1(I, 4) = 30 Then Print " (PASS FAILED)"
@@ -7514,7 +7517,6 @@ Sub ScoreSummary
                 If K1(I, 4) = 31 Then Print " (PASS GOOD)"
             End If
 
-            8525 '
             If I = 10 And K1(11, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
             If I = 20 And K1(21, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
             If I = 30 And K1(31, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
@@ -7794,8 +7796,8 @@ Sub STATS2SCREEN ()
 
         End If
 
-        8593 '
         If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
+
             Locate , 2
             Print A7$(I, 1);
             Locate , 18
@@ -7925,8 +7927,20 @@ Function TickerTime% (timeInterval, X)
 
     If tickerIdx < 0 Then tickerIdx = 0
     If tickerIdx > 14 Then tickerIdx = 14
-    If endGame% = 1 Then tickerIdx = 14
+    If endGame = 1 Then tickerIdx = 14
 
     TickerTime% = tickerIdx
+
+End Sub
+
+
+'------------------------------
+'        pbplog Function
+'------------------------------
+'...explanation
+Sub pbplog (lineNumber)
+
+    Print #7, "Called from line "; lineNumber
+    Print #7,
 
 End Sub

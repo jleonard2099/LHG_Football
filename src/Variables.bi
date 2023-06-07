@@ -281,11 +281,13 @@ Dim tickerStart
 
 Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP
 Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
-Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT, E, EY
-Dim Shared F2, F8, F9, G, G9, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
-Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW, Q, QB, R1, RP, RY
-Dim Shared S, S2, S3, S6, SN, SY, T1, TMT, W5, WE, WS
-Dim Shared X, X1, X2, XD, XE, Y, Y1, Y9, YC, YF, YL, YT, Z1
+Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT
+Dim Shared E, EY, endGame, endAllGames, F2, F8, F9
+Dim Shared G, G9, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
+Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW
+Dim Shared Q, QB, R1, RP, RY, S, S2, S3, S6, SN, SY
+Dim Shared T1, TMT, W5, WE, WS, X, X1, X2, XD, XE
+Dim Shared Y, Y1, Y9, YC, YF, YL, YT, Z1
 
 Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, intI%, intDI%, intDS%
 Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, SX%

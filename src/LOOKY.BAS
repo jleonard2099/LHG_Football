@@ -4,7 +4,7 @@ Sub LOOKY ()
 
     Do
 
-        Color , 0
+        Color 15, 0
         Cls
 
         JJ = 6
@@ -174,7 +174,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     'Load player stats
     Open diskPaths$(1) + statFile$ For Input As #1
-    
+
     'We are passed teamName$ as a variable from the disk routine
     'However the format of the files for football is such that
     'it's also contained here.
@@ -342,19 +342,18 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
+    Color , 0
     Cls
 
-    Call TITLE_HEADER
-
-    Color , 0
-    Locate 1, 1: Print Tab(80);
+    Locate 1, 1
+    Color 14, 1
+    Print Tab(80);
 
     header$ = "GAME-BY-GAME REPORT FOR " + teamName$
     Ycoord = Len(header$)
     Ycoord = Int((80 - Ycoord) / 2)
     Locate , Ycoord
 
-    Color 14
     Print "GAME-BY-GAME REPORT FOR ";
     Color statsPA%(2), statsPA%(1)
     Print teamName$
