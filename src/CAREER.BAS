@@ -2,8 +2,6 @@ Sub CAREER ()
 
     _Title "3-in-1 Football - Career Files Menu"
 
-    DefInt A-Z
-
     ReDim menuChoices$(1 To 8)
 
     TMR = 6420

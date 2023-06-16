@@ -1,10 +1,6 @@
 Sub COMPCOLL ()
 
-
-    Shared BRC$()
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared H1$()
-    Shared TRC$()
+    _Title "3-in-1 Football - Update Conference Stats"
 
     Shared statsT%()
 
@@ -13,9 +9,11 @@ Sub COMPCOLL ()
     Shared PTSA!(), PTSF!()
     Shared TRC!(), TT!()
 
-    Shared div1$, div2$
+    Shared BRC$()
+    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared H1$(), TRC$()
 
-    _Title "3-in-1 Football - Update Conference Stats"
+    Shared div1$, div2$
 
     finalUpdate$ = "N"
 

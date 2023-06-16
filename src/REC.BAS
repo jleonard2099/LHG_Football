@@ -1,105 +1,99 @@
-Sub REC (recordOption%)
+Sub RecordsMenu (menuChoice)
 
-    _Title "3-in-1 Football - Manage Records"
+    _Title "3-in-1 Football - Analyze Records"
 
-    Shared BRC$(), TRC$()
-    Shared BRC!(), TRC!()
+    ReDim menuChoices$(1 To 4)
 
-    Select Case recordOption%
+    Select Case menuChoice
+
         Case 1
             recordsFile$ = "RECORDS.PFB"
+
         Case 2, 3
             recordsFile$ = "RECORDS.CFB"
+
     End Select
 
-    Erase BRC!
-    Erase BRC$
-    Erase TRC!
-    Erase TRC$
+    If Not _FileExists(diskPaths$(1) + recordsFile$) Then
 
-    Do
+        Call CSMsgBox("UNABLE TO LOCATE RECORDS PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
 
-        If Not _FileExists(diskPaths$(1) + recordsFile$) Then
-            Locate 10, 8
-            Call CSMsgBox("ERROR::: UNABLE TO LOCATE RECORDS", 23, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-        Else
+    Else
 
-            Open diskPaths$(1) + recordsFile$ For Input As #1
+        Open diskPaths$(1) + recordsFile$ For Input As #1
 
-            For I = 0 To 50
-                Input #1, BRC!(I)
-                Input #1, BRC$(I, 0)
-                Input #1, BRC$(I, 1)
-                Input #1, BRC$(I, 2)
-            Next
+        For I = 0 To 50
+            Input #1, BRC!(I)
+            Input #1, BRC$(I, 0)
+            Input #1, BRC$(I, 1)
+            Input #1, BRC$(I, 2)
+        Next
 
-            For I = 0 To 50
-                Input #1, TRC!(I)
-                Input #1, TRC$(I)
-            Next
+        For I = 0 To 50
+            Input #1, TRC!(I)
+            Input #1, TRC$(I)
+        Next
 
-            Close 1
+        Close 1
 
-            Do
+        Do
 
-                Color 0, 0
+            Cls
 
-                Cls
+            Call TITLE
 
-                J = 6
+            menuChoices$(1) = "VIEW SEASON RECORDS  "
+            menuChoices$(2) = "PRINT SEASON RECORDS "
+            menuChoices$(3) = "DELETE SEASON RECORDS"
+            menuChoices$(4) = "RETURN TO GAME MENU  "
+            Selection% = 1
+            Count% = 4
+            Start% = 1
+            ExitCode% = 4
+            FileFGColr% = 15: FileBGColr% = 1
+            HiLiteFGColr% = 0: HiLiteBGColr% = 7
+            Spacing% = 1
+            Row% = 8
+            menuWidth% = Len(menuChoices$(1))
+            Column% = (80 - menuWidth% - 2) / 2
+            Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColr%, FileBGColr%)
 
-                Locate 8, 8: Color 15, 1
+            _MouseShow "DEFAULT"
+            MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
+            _MouseHide
 
-                'Print box top
-                Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+            Color , 0
 
-                'Print box sides
-                For II = 1 To J
-                    Locate 8 + II, 8
-                    Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-                Next
+            If ExitCode% <> 27 Then 
 
-                'Print box bottom
-                Locate 9 + J, 8
-                Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+                Select Case Selection%
 
-                Call TITLE_LEADERS
+                    Case 1: 
+                        Call ViewSeasonRecords
 
+                    Case 2: 
+                        Call PrintSeasonRecords
 
-                Locate 9, 30: Color 3, 1: Print "SEASON RECORDS MENU": Print
-                Locate , 15: Color 15: Print "V";: Color 7: Print "IEW RECORDS"
-                Locate , 15: Color 15: Print "P";: Color 7: Print "RINT RECORDS"
-                Locate , 15: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
+                    Case 3:
+                        If _FileExists(diskPaths$(1) + recordsFile$) Then Kill diskPaths$(1) + recordsFile$
 
-                I$ = GetKeyPress$
+                End Select
 
-                If I$ <> Chr$(27) Then
-                    Select Case UCase$(I$)
-                        Case "V"
-                            Call ViewRecords
+            End If
 
-                        Case "P"
-                            Call PrintRecords
-                    End Select
-                End If
+        Loop Until Selection% = 3 Or ExitCode% = 27
 
-            Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
-
-        End If
-
-        Cls
-
-    Loop Until Count% = 0 Or UCase$(I$) = "R" Or I$ = Chr$(27)
+    End If
 
 End Sub
 
 '----------------------------------------
-'       ViewRecords Subroutine
+'       ViewSeasonRecords Subroutine
 '----------------------------------------
 '...explanation...
-Sub ViewRecords ()
+Sub ViewSeasonRecords ()
 
     Shared BRC$()
     Shared TP$(), TP1$(), TRC$()
@@ -114,15 +108,16 @@ Sub ViewRecords ()
     Locate 1, 1
     Color 15, 4
     Print " " + Chr$(214); String$(73, 196); Chr$(183) + " ";
+
     For II = 1 To J:
         Color 15, 4
         Locate 1 + II, 1
         Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 4: Print String$(2, 177)
     Next
 
-    Color 15, 4: Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";: Color 7, 4: Print String$(2, 177)
-    Locate , 3
-    Print String$(77, 177)
+    Color 15, 4
+    Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";: Color 7, 4: Print String$(2, 177)
+    Locate , 3: Print String$(77, 177)
 
     Color 15
     Locate 2, 23: Print "******* INDIVIDUAL RECORDS *******"
@@ -152,7 +147,8 @@ Sub ViewRecords ()
     Locate , 4: Print TP$(16); Tab(28); BRC$(16, 0); Tab(42); BRC$(16, 1); Tab(61); Using "###.#"; BRC!(16)
     Locate , 4: Print TP$(17); Tab(28); BRC$(17, 0); Tab(42); BRC$(17, 1); Tab(62); Using " ###"; BRC!(17);: Print BRC$(17, 2)
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Color 15
+    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
@@ -184,7 +180,8 @@ Sub ViewRecords ()
 
     Locate , 4: Print TP$(34); Tab(28); BRC$(34, 0); Tab(42); BRC$(34, 1); Tab(62); Using "##.#"; BRC!(34)
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Color 15
+    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
@@ -215,7 +212,8 @@ Sub ViewRecords ()
 
     Locate , 4: Print TP$(45); Tab(28); BRC$(45, 0); Tab(42); BRC$(45, 1); Tab(62); Using " ###"; BRC!(45);: Print BRC$(45, 2)
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Color 15
+    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
@@ -225,6 +223,7 @@ Sub ViewRecords ()
     Next
 
     Color 0, 0
+
     Cls
 
     J = 20
@@ -308,6 +307,7 @@ Sub ViewRecords ()
 
     Color 15: Locate 2, 23: Print "******* DEFENSIVE TEAM RECORDS *******"
     Locate , 4: Print "CATEGORY                   TEAM                  RECORD            "
+
     Color 7
 
     Locate , 4: Print TP1$(25); Tab(28); TRC$(25); Tab(53); Using "###.#"; TRC!(25)
@@ -344,6 +344,7 @@ Sub ViewRecords ()
 
     Color 7
     Locate 4
+
     Locate , 4: Print TP1$(38); Tab(28); TRC$(38); Tab(53); Using "#####"; TRC!(38)
     Locate , 4: Print TP1$(39); Tab(28); TRC$(39); Tab(53); Using "###.#"; TRC!(39)
     Locate , 4: Print TP1$(40); Tab(28); TRC$(40); Tab(53); Using "#####"; TRC!(40)
@@ -365,18 +366,17 @@ Sub ViewRecords ()
 End Sub
 
 '----------------------------------------
-'       PrintRecords Subroutine
+'       PrintSeasonRecords Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintRecords ()
+Sub PrintSeasonRecords ()
 
     Shared BRC$()
     Shared TP$(), TP1$(), TRC$()
     Shared BRC!(), TRC!()
 
-	Color 0, 15
+    Color 0, 15
 
-    ' PRINT RECORDS
     LPrint Tab(23); "******* INDIVIDUAL RECORDS *******"
     LPrint
     LPrint "CATEGORY                   PLAYER           TEAM           RECORD"

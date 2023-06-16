@@ -4,9 +4,9 @@ Sub TRADE ()
 
     ReDim menuChoices$(1 To 2)
 
-    Do
+    Shared tradeS()
 
-        Cls
+    Do
 
         Call TITLE
 
@@ -23,16 +23,69 @@ Sub TRADE ()
         Column% = 25
 
         Call box0(7, 24, 10, 50, 2, 15, 1)
+
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
+
         If ExitCode% <> 27 Then
+
             Select Case Selection%
-                Case 1: Call StartTrade
-                Case 2: Cls
+
+                Case 1:
+                    tradeIdx = 0
+                    Call GetDiskID_TEAM(tradeIdx)
+
+                    Color 15, 0
+
+                    Call TITLE
+
+                    For XY = 2 To 23:
+                        Locate XY, 1: Print Tab(79);
+                    Next
+
+                    tradeS(0) = 0
+
+                    Do
+                        Locate 3: Print "DOES THIS TEAM HAVE SAVED STATS (YN)"
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    If UCase$(I$) = "N" Then
+                        tradeS(0) = 1
+                    Else
+                        Call LoadStatsForTrade(tradeIdx)
+                    End If
+
+                    tradeIdx = 1
+                    Call GetDiskID_TEAM(tradeIdx)
+
+                    Color 15, 0
+
+                    Call TITLE
+
+                    For XY = 2 To 23:
+                        Locate XY, 1: Print Tab(79);
+                    Next
+
+                    tradeS(1) = 0
+
+                    Do
+                        Locate 3: Print "DOES THIS TEAM HAVE SAVED STATS (YN)"
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Call LoadStatsForTrade(tradeIdx)
+
+                    Call StartTrade
+
+                Case 2:
+                    Cls
+
             End Select
+
         End If
 
     Loop Until Selection% = 2 Or ExitCode% = 27
@@ -45,56 +98,7 @@ End Sub
 '...explanation...
 Sub StartTrade ()
 
-    Shared NY$(), tradeYN$()
-    Shared S!()
-
-    Call TITLE
-
-    For XY = 2 To 23:
-        Locate XY, 1: Print Tab(79);
-    Next
-
-    Call GetDiskID_TEAM(0)
-
-    Color 15, 0
-
-    Call TITLE
-
-    For XY = 2 To 23:
-        Locate XY, 1: Print Tab(79);
-    Next
-
-    S!(0) = 0
-
-    Do
-        Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
-        I$ = GetKeyPress$
-    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-    If UCase$(I$) = "N" Then
-        S!(0) = 1
-    Else
-        Call LoadStatsForTrade(0)
-    End If
-
-    Call GetDiskID_TEAM(1)
-
-    Color 15, 0
-
-    Call TITLE
-
-    For XY = 2 To 23:
-        Locate XY, 1: Print Tab(79);
-    Next
-
-    S!(1) = 0
-
-    Do
-        Locate 3: Print "DOES THIS TEAM HAVE COMPILED STATS (YN)"
-        I$ = GetKeyPress$
-    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-    Call LoadStatsForTrade(1)
+    Shared tradeS()
 
     J = 1
 
@@ -127,6 +131,7 @@ Sub StartTrade ()
         I$ = GetKeyPress$
 
         Select Case UCase$(I$)
+
             Case "I":
                 Call PlayerStatsPrompt(W1)
                 Call TradeKickers(W1)
@@ -174,7 +179,7 @@ Sub StartTrade ()
 
     For J = 0 To 1
 
-        If S!(J) <> 1 Then
+        If tradeS(J) <> 1 Then
 
             Call TITLE
 
@@ -190,8 +195,6 @@ Sub StartTrade ()
 
 End Sub
 
-'--- No idea how this was to be used (if at all)
-'If S!(0) = 1 Or S!(1) = 1 Then 2221
 
 '----------------------------------------
 '           TradeRBs Subroutine
@@ -202,7 +205,7 @@ Sub TradeRBs (W1)
     Shared statsA$()
     Shared tradeA1$(), tradeLC$(), tradeLR$(), tradeRB$()
 
-    Shared S!(), tradeLC!(), tradeLR!(), tradeZ2!()
+    Shared tradeS(), tradeLC!(), tradeLR!(), tradeZ2!()
 
     Shared tradePA%()
     Shared tradeA0%(), tradeA1%(), tradeA2%(), tradeA3%()
@@ -215,10 +218,10 @@ Sub TradeRBs (W1)
 
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-    Color 7, 0
+    Color 15, 0
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 9:
         Locate I + 5, 1
@@ -232,7 +235,7 @@ Sub TradeRBs (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0: Print " PLAYER: ";: Input I$
+            Color 15, 0: Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 9
 
@@ -241,7 +244,7 @@ Sub TradeRBs (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0: Print " PLAYER: ";: Input I$
+            Color 15, 0: Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I >= 0 And I <= 9
 
@@ -263,10 +266,10 @@ Sub TradeRBs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA1$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA1$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -295,6 +298,8 @@ Sub TradeRBs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 5); tradeZ2!(1, I1, 5)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA1$(0, I), tradeA1$(1, I1)
@@ -310,7 +315,7 @@ Sub TradeRBs (W1)
     Swap tradeA3%(0, I), tradeA3%(1, I1)
     Swap tradeRB$(0, I), tradeRB$(1, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         For I2 = 0 To 5: tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0: Next I2
     Else
         For I2 = 0 To 5: Swap tradeZ2!(0, I, I2), tradeZ2!(1, I1, I2): Next
@@ -325,10 +330,10 @@ Sub TradeRBs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA1$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA1$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -357,6 +362,8 @@ Sub TradeRBs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 5); tradeZ2!(1, I1, 5)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -370,7 +377,7 @@ Sub TradeWRs (W1)
     Shared statsA$()
     Shared tradeA2$(), tradeLC$(), tradeWR$()
 
-    Shared S!(), tradeLC!(), tradeZ2!()
+    Shared tradeS(), tradeLC!(), tradeZ2!()
 
     Shared tradeA4%(), tradeA5%()
     Shared tradePA%()
@@ -383,10 +390,10 @@ Sub TradeWRs (W1)
 
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-    Color 7, 0
+    Color 15, 0
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 5:
         Locate I + 5, 1: Print I; " "; tradeA2$(0, I): Locate I + 5, 20: Print I; " "; tradeA2$(1, I)
@@ -397,7 +404,7 @@ Sub TradeWRs (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 5
@@ -407,7 +414,7 @@ Sub TradeWRs (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I1 >= 0 And I1 <= 5
@@ -430,10 +437,10 @@ Sub TradeWRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA2$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA2$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -450,6 +457,8 @@ Sub TradeWRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 8); tradeZ2!(1, I1, 8)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA2$(0, I), tradeA2$(1, I1)
@@ -460,7 +469,7 @@ Sub TradeWRs (W1)
     Swap tradeA5%(0, I), tradeA5%(1, I1)
     Swap tradeWR$(0, I), tradeWR$(1, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         For I2 = 6 To 8: tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0: Next I2
     Else
         For I2 = 6 To 8: Swap tradeZ2!(0, I, I2), tradeZ2!(1, I1, I2): Next
@@ -475,10 +484,10 @@ Sub TradeWRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA2$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA2$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -495,6 +504,8 @@ Sub TradeWRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 8); tradeZ2!(1, I1, 8)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -508,7 +519,7 @@ Sub TradeQBs (W1)
     Shared statsA$()
     Shared tradeA3$(), tradeLP$(), tradeQB$()
 
-    Shared S!(), tradeLP!(), tradeZ2!()
+    Shared tradeS(), tradeLP!(), tradeZ2!()
 
     Shared tradeA6%(), tradeA7%(), tradeA8%()
     Shared tradePA%(), tradeQX%()
@@ -522,12 +533,12 @@ Sub TradeQBs (W1)
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
 
-    Color 7, 0
+    Color 15, 0
 
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
 
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 3:
         Locate I + 5, 1
@@ -541,7 +552,7 @@ Sub TradeQBs (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 3
@@ -551,7 +562,7 @@ Sub TradeQBs (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I1 >= 0 And I1 <= 3
@@ -573,9 +584,9 @@ Sub TradeQBs (W1)
 
     Locate 3
     Locate , 7: Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA3$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49: Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA3$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -601,6 +612,8 @@ Sub TradeQBs (W1)
 
     If tradeZ2!(1, I1, 9) > 0 Then Print Using "##.#"; tradeZ2!(1, I1, 11) / tradeZ2!(1, I1, 9) * 100 Else Print " -.-"
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA3$(0, I), tradeA3$(1, I1)
@@ -613,7 +626,7 @@ Sub TradeQBs (W1)
     Swap tradeQX%(0, I), tradeQX%(1, I1)
     Swap tradeQB$(0, I), tradeQB$(1, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         For I2 = 9 To 13: tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0: Next I2
         For I2 = 0 To 2: tradeZ2!(0, I + 10, I2) = 0: tradeZ2!(1, I1 + 10, I2) = 0: Next
     Else
@@ -630,10 +643,10 @@ Sub TradeQBs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA3$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA3$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
     Print
@@ -659,6 +672,8 @@ Sub TradeQBs (W1)
 
     If tradeZ2!(1, I1, 9) > 0 Then Print Using "##.#"; tradeZ2!(1, I1, 11) / tradeZ2!(1, I1, 9) * 100 Else Print " -.-"
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -672,7 +687,7 @@ Sub TradeKRs (W1)
     Shared statsA$()
     Shared tradeA4$(), tradeKR$(), tradeLK$()
 
-    Shared S!(), tradeLK!(), tradeZ2!()
+    Shared tradeS(), tradeLK!(), tradeZ2!()
 
     Shared B%()
     Shared tradeA9%(), tradeB%(), tradePA%()
@@ -685,10 +700,10 @@ Sub TradeKRs (W1)
 
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-    Color 7, 0
+    Color 15, 0
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 2:
         Locate I + 5, 1
@@ -702,7 +717,7 @@ Sub TradeKRs (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 2
@@ -712,7 +727,7 @@ Sub TradeKRs (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I1 >= 0 And I1 <= 2
@@ -735,10 +750,10 @@ Sub TradeKRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA4$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA4$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -755,6 +770,8 @@ Sub TradeKRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 16); tradeZ2!(1, I1, 16)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA4$(0, I), tradeA4$(1, I1)
@@ -765,7 +782,7 @@ Sub TradeKRs (W1)
     Swap tradeB%(0, I), tradeB%(1, I1)
     Swap tradeKR$(0, I), tradeKR$(1, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         For I2 = 14 To 16: tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0: Next I2
     Else
         For I2 = 14 To 16: Swap tradeZ2!(0, I, I2), tradeZ2!(1, I1, I2): Next I2
@@ -780,10 +797,10 @@ Sub TradeKRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA4$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA4$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -800,6 +817,8 @@ Sub TradeKRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I, 16); tradeZ2!(1, I1, 16)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -813,7 +832,7 @@ Sub TradePRs (W1)
     Shared statsA$()
     Shared tradeA5$(), tradePK$(), tradePR$()
 
-    Shared S!(), tradePK!(), tradeZ2!()
+    Shared tradeS(), tradePK!(), tradeZ2!()
 
     Shared tradePA%()
     Shared tradeB1%(), tradeB2%()
@@ -826,10 +845,10 @@ Sub TradePRs (W1)
 
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-    Color 7, 0
+    Color 15, 0
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 2:
         Locate I + 5, 1
@@ -843,7 +862,7 @@ Sub TradePRs (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 2
@@ -853,7 +872,7 @@ Sub TradePRs (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I1 >= 0 And I1 <= 2
@@ -876,10 +895,10 @@ Sub TradePRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA5$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA5$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
     Print
@@ -895,6 +914,8 @@ Sub TradePRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I + 3, 16); tradeZ2!(1, I1 + 3, 16)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA5$(0, I), tradeA5$(1, I1)
@@ -905,7 +926,7 @@ Sub TradePRs (W1)
     Swap tradeB2%(0, I), tradeB2%(1, I1)
     Swap tradePR$(0, I), tradePR$(1, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         For I2 = 14 To 16: tradeZ2!(0, I + 3, I2) = 0: tradeZ2!(1, I1 + 3, I2) = 0: Next I2
     Else
         For I2 = 14 To 16: Swap tradeZ2!(0, I + 3, I2), tradeZ2!(1, I1 + 3, I2): Next I2
@@ -920,10 +941,10 @@ Sub TradePRs (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA5$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA5$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -939,6 +960,8 @@ Sub TradePRs (W1)
 
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradeZ2!(0, I + 3, 16); tradeZ2!(1, I1 + 3, 16)
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -952,7 +975,7 @@ Sub TradePunters (W1)
     Shared statsA$()
     Shared tradeA6$(), PU$()
 
-    Shared S!()
+    Shared tradeS()
     Shared tradeZ!()
 
     Shared tradePA%()
@@ -967,14 +990,14 @@ Sub TradePunters (W1)
 
         Locate 4, 1
         Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-        Color 7, 0
+        Color 15, 0
         Locate 4, 20
         Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-        Color 7, 0
+        Color 15, 0
         Print
         Print tradeA6$(0, 0);
         Locate , 20: Print " "; tradeA6$(1, 0)
-        
+
         Do
             Locate 22, 1: Print "ANY CHANGE (YN) ";
             I$ = GetKeyPress$
@@ -991,10 +1014,10 @@ Sub TradePunters (W1)
             Locate 3
             Locate , 7
             Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA6$(0, 0);
-            Color 7, 0
+            Color 15, 0
             Locate , 49
             Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA6$(1, 0)
-            Color 7, 0
+            Color 15, 0
             Print
             Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
             Print
@@ -1007,13 +1030,15 @@ Sub TradePunters (W1)
 
             If tradeZ!(1, 7) > 0 Then Print Using "##.#"; tradeZ!(1, 8) / tradeZ!(1, 7) Else Print " -.-"
 
+            Color 15
+            Locate 23, 1: Print "HIT ANY KEY TO TRADE";
             J$ = GetKeyPress$
 
             Swap tradeA6$(0, 0), tradeA6$(1, 0)
             Swap tradeB3%(0, 0), tradeB3%(1, 0)
             Swap PU$(0), PU$(1)
 
-            If S!(0) <> 1 And S!(1) <> 1 And W1 <> 0 Then
+            If tradeS(0) <> 1 And tradeS(1) <> 1 And W1 <> 0 Then
                 Swap tradeZ!(0, 7), tradeZ!(1, 7)
                 Swap tradeZ!(0, 8), tradeZ!(1, 8)
             End If
@@ -1027,10 +1052,10 @@ Sub TradePunters (W1)
             Locate 3
             Locate , 7
             Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA6$(0, 0);
-            Color 7, 0
+            Color 15, 0
             Locate , 49
             Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA6$(1, 0)
-            Color 7, 0
+            Color 15, 0
             Print
 
             Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -1044,11 +1069,13 @@ Sub TradePunters (W1)
 
             If tradeZ!(1, 7) > 0 Then Print Using "##.#"; tradeZ!(1, 8) / tradeZ!(1, 7) Else Print " -.-"
 
-            J$ = GetKeyPress$
-
         End If
 
     Loop Until UCase$(I$) = "N"
+
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    J$ = GetKeyPress$
 
 End Sub
 
@@ -1061,7 +1088,7 @@ Sub TradeKickers (W1)
     Shared statsA$()
     Shared tradeA7$(), tradeFG$()
 
-    Shared S!()
+    Shared tradeS()
     Shared tradeAF!(), tradeAM!(), tradeLF!()
     Shared tradeZ2!()
 
@@ -1076,10 +1103,10 @@ Sub TradeKickers (W1)
 
     Locate 4, 1
     Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0)
-    Color 7, 0
+    Color 15, 0
     Locate 4, 20
     Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1)
-    Color 7, 0
+    Color 15, 0
 
     For I = 0 To 1:
         Locate I + 5, 1
@@ -1093,7 +1120,7 @@ Sub TradeKickers (W1)
         Do
             Locate 17, 1
             Color tradePA%(0, 2), tradePA%(0, 1): Print statsA$(0);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 1
@@ -1103,13 +1130,13 @@ Sub TradeKickers (W1)
         Do
             Locate 19, 1
             Color tradePA%(1, 2), tradePA%(1, 1): Print statsA$(1);
-            Color 7, 0
+            Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I >= 0 And I <= 1
 
         Print tradeA7$(1, I1)
-        
+
         Do
             Locate 22, 1: Print "ANY CHANGE (YN) ";
             I$ = GetKeyPress$
@@ -1126,10 +1153,10 @@ Sub TradeKickers (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA7$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA7$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
     Print
@@ -1153,6 +1180,8 @@ Sub TradeKickers (W1)
 
     If tradeZ2!(1, 4 * I1 + 6, 17) > 0 Then Print Using "### "; tradeZ2!(1, 4 * I1 + 5, 17) / tradeZ2!(1, 4 * I1 + 6, 17) * 100 Else Print " -.-"
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap tradeA7$(0, I), tradeA7$(1, I1)
@@ -1169,7 +1198,7 @@ Sub TradeKickers (W1)
     Swap tradeB8%(0, I), tradeB8%(1, I1)
     Swap tradeFG$(J, I), tradeFG$(J, I1)
 
-    If S!(0) = 1 Or S!(1) = 1 Or W1 = 0 Then
+    If tradeS(0) = 1 Or tradeS(1) = 1 Or W1 = 0 Then
         tradeZ2!(0, 4 * I + 3, 17) = 0: tradeZ2!(1, 4 * I1 + 3, 17) = 0
         tradeZ2!(0, 4 * I + 4, 17) = 0: tradeZ2!(1, 4 * I1 + 4, 17) = 0
         tradeZ2!(0, 4 * I + 5, 17) = 0: tradeZ2!(1, 4 * I1 + 5, 17) = 0
@@ -1190,10 +1219,10 @@ Sub TradeKickers (W1)
     Locate 3
     Locate , 7
     Color tradePA%(0, 2), tradePA%(0, 1): Print tradeA7$(0, I);
-    Color 7, 0
+    Color 15, 0
     Locate , 49
     Color tradePA%(1, 2), tradePA%(1, 1): Print tradeA7$(1, I1)
-    Color 7, 0
+    Color 15, 0
     Print
 
     Locate , 5: Print "ACTUAL     REPLAY                         ACTUAL     REPLAY"
@@ -1218,6 +1247,8 @@ Sub TradeKickers (W1)
 
     If tradeZ2!(1, 4 * I1 + 6, 17) > 0 Then Print Using "### "; tradeZ2!(1, 4 * I1 + 5, 17) / tradeZ2!(1, 4 * I1 + 6, 17) * 100 Else Print " -.-"
 
+    Color 15
+    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -1561,7 +1592,7 @@ Sub SaveTradeStats (J)
 
     Print statsA$(J);
 
-    Color 7, 0: Print " STATS": Z = 0
+    Color 15, 0: Print " STATS": Z = 0
 
     Open diskPaths$(1) + tradeF$(J) For Output As #1
 
@@ -1600,7 +1631,7 @@ Sub SaveTradeStats (J)
 End Sub
 
 '----------------------------------------
-'       GetDiskID_TEAMA Subroutine
+'       GetDiskID_TEAM Subroutine
 '----------------------------------------
 '...explanation...
 Sub GetDiskID_TEAM (J)
@@ -1656,7 +1687,7 @@ Sub GetDiskID_TEAM (J)
 
             Field #1, 15 As Q$(0), 640 As X$
 
-            For I1 = 1 to fileLength& / 934
+            For I1 = 1 To fileLength& / 934
 
                 Get #1, I1
 
@@ -1714,7 +1745,7 @@ Sub LoadStatsForTrade (J)
     Shared tradePK$(), tradePR$()
     Shared tradeQB$(), tradeRB$(), tradeWR$()
 
-    Shared S!()
+    Shared tradeS()
     Shared tradeAF!(), tradeAM!()
     Shared tradeLC!(), tradeLF!(), tradeLI!(), tradeLK!(), tradeLP!(), tradeLR!()
     Shared tradePK!()
@@ -1745,7 +1776,7 @@ Sub LoadStatsForTrade (J)
     tradeF$(J) = Mid$(SA$(J), 4, QQ) + "." + YR$
 
     If Not _FileExists(diskPaths$(1) + tradeF$(J)) Then
-        S!(J) = 1
+        tradeS(J) = 1
     Else
         Open diskPaths$(1) + tradeF$(J) For Input As #1
         Input #1, TN$(J)
@@ -2001,3 +2032,4 @@ Sub ReadTeam (J)
     Next
 
 End Sub
+

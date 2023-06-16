@@ -1,12 +1,6 @@
 Sub COMPNATL ()
 
-    Dim NRT
-
-    Shared BRC$()
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared H1$()
-    Shared N2$(), N3$(), NT$()
-    Shared PT$(), TRC$(), TT$()
+    _Title "3-in-1 Football - Update Org Stats"
 
     Shared statsT%()
 
@@ -15,11 +9,17 @@ Sub COMPNATL ()
     Shared O1!(), O2!(), O3!(), OT!()
     Shared PT!(), PTSA!(), PTSF!(), TRC!(), TT!()
 
-    Dim CN$(40)
+    Shared BRC$()
+    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared H1$()
+    Shared N2$(), N3$(), NT$()
+    Shared PT$(), TRC$(), TT$()
 
     Shared div1$, div2$
 
-    _Title "3-in-1 Football - Update Org Stats"
+    Dim NRT
+
+    Dim CN$(40)
 
     finalUpdate$ = "N"
 

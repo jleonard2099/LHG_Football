@@ -1,17 +1,17 @@
 Sub COMPPRO ()
 
-    Shared BRC$()
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared H1$(), TRC$()
+    _Title "3-in-1 Football - Update League Stats"
 
     Shared BRC!()
     Shared O1!(), O2!(), O3!()
     Shared PTSF!(), PTSA!()
     Shared TRC!(), TT!(), Z2!()
 
-    Shared div1$, div2$, div3$
+    Shared BRC$()
+    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared H1$(), TRC$()
 
-    _Title "3-in-1 Football - Update League Stats"
+    Shared div1$, div2$, div3$
 
     Cls
 

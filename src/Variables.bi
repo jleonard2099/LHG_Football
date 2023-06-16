@@ -15,6 +15,8 @@ Dim Shared fullLosses, fullTies, fullWins
 
 Dim Shared fileLength&, teamAttendance&
 
+'A$ / AA$ may not be needed anymore
+'S$ could be converted as well to Dim / Shared
 Dim Shared A$, AA$, S$
 
 'Used only with career files
@@ -156,6 +158,9 @@ Dim compAP%(1, 120), APR%(1, 120)
 '---------------------------------------ts
 ' Used across DRAFT.BAS routines
 '----------------------------------------
+Dim ydsCompAdj
+Dim ATT&
+
 Dim C0%(9), C1%(9), C2%(15), C3%(9), C4%(5), C5%(5), C6%(3), C7%(3), C8%(3), C9%(2)
 Dim D%(2), D1%(2), D2%(2), draftD3%(2), D4%(1), D5%(1), D6%(7), D7%(1), D8%(1)
 Dim FI%(9), FS%(14)
@@ -243,14 +248,13 @@ Dim tradeA5$(2, 3), tradeA6$(2, 3), tradeA7$(1, 1)
 Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
 Dim NY$(1), PU$(1), SA$(1), TN$(1), tradeYN$(1)
 
-Dim S!(1), YC!(1)
-
 Dim tradeA0%(1, 9), tradeA1%(1, 9), tradeA2%(2, 15), tradeA3%(1, 9), tradeA4%(1, 5)
 Dim tradeA5%(1, 5), tradeA6%(1, 3), tradeA7%(1, 3), tradeA8%(1, 3), tradeA9%(1, 2)
 Dim tradeB%(1, 2), tradeB1%(1, 2), tradeB2%(1, 2), tradeB3%(1, 3), tradeB4%(1, 1)
 Dim tradeB5%(1, 1), tradeB6%(1, 7), tradeB7%(1, 1), tradeB8%(1, 1)
 Dim tradeDI%(1, 9), tradeDS%(1, 14), tradeGI%(1, 9, 2), tradeGS%(1, 14, 1)
 Dim tradePA%(1, 4), tradeQX%(1, 3), tradeYC%(1)
+Dim tradeS(1)
 
 Dim tradeT!(1)
 Dim tradeLC$(1, 15, 1), tradeLF$(1, 1), tradeLI$(1, 9, 1)
@@ -262,6 +266,7 @@ Dim tradeLC!(2, 15), tradeLF!(1, 1), tradeLI!(1, 9)
 Dim tradeLK!(1, 2), tradeLP!(1, 3), tradeLR!(1, 9)
 Dim tradePK!(1, 2)
 Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
+Dim YC!(1)
 
 
 '----------------------------------------

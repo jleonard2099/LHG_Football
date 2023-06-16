@@ -231,16 +231,12 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, teamPower, SS)
 
     Shared statsPA%()
 
-    Color 15, 0
-    Cls
-    Call TITLE_STATS
-
     Do
 
         DM% = 0
 
+        Color 15, 0
         Cls
-
         Call TITLE_STATS
 
         J = 4
@@ -350,15 +346,15 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print Tab(80);
 
     header$ = "GAME-BY-GAME REPORT FOR " + teamName$
-    Ycoord = Len(header$)
-    Ycoord = Int((80 - Ycoord) / 2)
-    Locate , Ycoord
+    Xcoord = Len(header$)
+    Xcoord = Int((80 - Xcoord) / 2)
+    Locate , Xcoord
 
     Print "GAME-BY-GAME REPORT FOR ";
     Color statsPA%(2), statsPA%(1)
     Print teamName$
 
-    Color 14
+    Color 14, 1
     Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD   "
     Color 15, 0
 
@@ -388,7 +384,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Cls
             Color , 0
             Locate 1, 1: Print Tab(80);
-            Locate , Ycoord
+            Locate , Xcoord
 
             Color 14
             Print "GAME-BY-GAME REPORT FOR ";

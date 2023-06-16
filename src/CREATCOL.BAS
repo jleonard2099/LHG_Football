@@ -446,14 +446,14 @@ Sub ReviewConf_Coll ()
                     Close 2
                 End If
 
+                Call ViewConference_Coll(LG$, div1$, div2$)
+
             End If 'Done checking for ESC
 
-        End If 'Done checking for counts
+        End If 'Done checking for file count
 
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
-
-    Call ViewConference_Coll(LG$, div1$, div2$)
 
 
 End Sub

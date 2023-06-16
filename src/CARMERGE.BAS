@@ -2,8 +2,6 @@ Sub CARMERGE ()
 
     _Title "3-in-1 Football - Update Career Files"
 
-    DefInt A-Z
-
     ReDim menuChoices$(1 To 3)
 
     TMR = 12840

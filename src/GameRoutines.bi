@@ -1,6 +1,3 @@
-DefInt A-Z
-
-Declare Function FNP(X)
 
 Declare Sub ADDBACKS ()
 Declare Sub ADDTIME ()
@@ -57,3 +54,5 @@ Declare Sub STUFFED ()
 Declare Sub TICKER ()
 Declare Sub TICKUPDATE ()
 Declare Sub YARDLINE ()
+
+Declare Function FNP(X)

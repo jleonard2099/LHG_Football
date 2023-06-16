@@ -478,13 +478,13 @@ Sub ReviewLeague ()
 
                 End If
 
+                Call ViewProLeague(LG$, div1$, div2$, div3$)
+
             End If 'Done checking for ESC
 
         End If 'Done checking for file count
 
         '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
-
-    Call ViewProLeague(LG$, div1$, div2$, div3$)
 
 End Sub

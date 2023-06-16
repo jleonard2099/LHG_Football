@@ -6,9 +6,8 @@ Sub DRAFT ()
 
     Do
 
-        Cls
-
         Call TITLE
+
         menuChoices$(1) = "DRAFT A NEW TEAM         "
         menuChoices$(2) = "DRAFT TO AN EXISTING TEAM"
         menuChoices$(3) = "EXIT TO MAIN MENU        "
@@ -32,8 +31,8 @@ Sub DRAFT ()
         If ExitCode% <> 27 Then
 
             Select Case Selection%
-                Case 1:
 
+                Case 1:
                     Call TITLE
 
                     For XY = 2 To 23:
@@ -42,20 +41,21 @@ Sub DRAFT ()
 
                     Locate 1, 1: Color 15, 0
 
-                    Call DraftChoices(N$, CC$, T2, 0)
-
-                    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE"
-                    I$ = GetKeyPress$
+                    Call NewTeamParameters(YN$, N$, CC$, teamIdx)
+                    Call DraftChoices(YN$, N$)
+                    Call DoTheDraft(1, doneDraft, YN$, N$, CC$, teamIdx)
 
                 Case 2:
-                    Call GetTeam_DRAFT(YN$, N$, CC$, T2)
-                    Call DraftNewTeam(YN$, N$, CC$, T2)
-                    Call DraftExistingTeam(YN$, T2)
-                    Call DraftChoices(N$, CC$, T2, 1)
+                    Call GetTeam_DRAFT(YN$, N$, CC$, teamIdx)
+                    Call DraftExistingTeam(YN$, teamIdx)
 
-                Case 3: Cls
+                    Call ExistingTeamParameters(YN$, N$, CC$, teamIdx)
+                    Call DraftChoices(YN$, N$)
+                    Call DoTheDraft(0, doneDraft, YN$, N$, CC$, teamIdx)
 
             End Select
+
+            If doneDraft = 1 Then Selection% = 3
 
         End If
 
@@ -65,10 +65,58 @@ End Sub
 
 
 '----------------------------------------
-'       Something Subroutine
+'      NewTeamParameters Subroutine
 '----------------------------------------
 '...explanation...
-Sub DraftNewTeam (YN$, N$, CC$, T2)
+Sub NewTeamParameters (YN$, teamName$, teamNick$, teamIdx)
+
+    Shared careerB6%()
+    Shared statsPA%()
+
+    Shared ydsCompAdj
+    Shared ATT&
+
+    400 Locate 3: Input " 1. ENTER DISK ID FOR THIS TEAM "; YN$: If C1 = 1 Then 420
+    401 Locate 4: Input " 2. TEAM # (0 FOR PROGRAM TO ASSIGN) "; teamIdx: If C1 = 1 Then 420
+    402 Locate 5: Input " 3. TEAM NAME "; teamName$: If C1 = 1 Then 420
+    403 Locate 6: Input " 4. TEAM NICKNAME "; teamNick$: If C1 = 1 Then 420
+    404 Locate 7: Input " 5. DEF RUSH ADJ "; careerB6%(0): If C1 = 1 Then 420
+    405 Locate 8: Input " 6. DEF COMP % ADJ "; careerB6%(1): If C1 = 1 Then 420
+    406 Locate 9: Input " 7. DEF INT % ADJ "; careerB6%(2): If C1 = 1 Then 420
+    407 Locate 10: Input " 8. FUM % "; careerB6%(3): If C1 = 1 Then 420
+    408 Locate 11: Input " 9. DEF FUM % "; careerB6%(4): If C1 = 1 Then 420
+    409 Locate 12: Input "10. OFF SACKED % "; careerB6%(5): If C1 = 1 Then 420
+    410 Locate 13: Input "11. DEF SACK ADJ "; careerB6%(6): If C1 = 1 Then 420
+    411 Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj: If C1 = 1 Then 420
+    412 Locate 15: Input "13. TM PENALTY ADJ "; statsPA%(0): If C1 = 1 Then 420
+    413 Locate 16: Input "14. OFF RUN/PASS % "; careerB6%(7): If C1 = 1 Then 420
+    414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3): If C1 = 1 Then 420
+    415 Locate 18: Input "16. POWER RATING "; statsPA%(4): If C1 = 1 Then 420
+    416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1): If C1 = 1 Then 420
+    417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; statsPA%(2): If C1 = 1 Then 420
+    418 Locate 21: Input "19. STADIUM NAME "; S$: If C1 = 1 Then 420
+    419 Locate 22: Input "20. AVERAGE ATTENDANCE "; ATT&: If C1 = 1 Then 420
+
+    420
+    Locate 3, 40
+    Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
+    Color 15, 0
+
+    C1 = 1
+
+    Locate 23: Input "# TO CHANGE (0 TO CONTINUE ) "; B9
+    On B9 GOTO 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419
+
+End Sub
+
+
+'----------------------------------------
+'       DraftExistingTeam Subroutine
+'----------------------------------------
+'...explanation...
+Sub DraftExistingTeam (YN$, teamIdx)
+
+    '-- S$ and Z$ aren't needed later ?!?!
 
     Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
     Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
@@ -82,8 +130,7 @@ Sub DraftNewTeam (YN$, N$, CC$, T2)
     Shared statsDI$(), statsDS$()
     Shared FI$(), FS$()
 
-    A$ = N$
-    AA$ = CC$
+    Shared ATT&
 
     For I = 0 To 7: careerB6%(I) = D6%(I): Next I
 
@@ -124,6 +171,8 @@ Sub DraftNewTeam (YN$, N$, CC$, T2)
     Next I
 
     statsA6$(0) = C6$(0)
+    test$ = statsA6$(0)
+
     careerB3%(0) = draftD3%(0)
     statsA7$(0) = C7$(0)
     careerB4%(0) = D4%(0)
@@ -148,18 +197,22 @@ Sub DraftNewTeam (YN$, N$, CC$, T2)
 
     If Not _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
         S$ = ""
-        ATT = 0
+        ATT& = 0
     Else
 
         Open diskPaths$(0) + "STADIUMS." + YN$ For Random As #2 Len = 50
+
         Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
-        Get #2, T2
+
+        Get #2, teamIdx
+
         S$ = RTrim$(Q$(1))
-        ATT = CVL(Q$(3))
+        ATT& = CVL(Q$(3))
         Z$ = Q$(4)
+
         Close #2
 
-        If Z$ <> "x" Then S$ = "": ATT = 0
+        If Z$ <> "x" Then S$ = "": ATT& = 0
 
     End If
 
@@ -170,7 +223,7 @@ End Sub
 '       DoTheDraft Subroutine
 '----------------------------------------
 '...explanation...
-Sub DoTheDraft (YN$, NU)
+Sub DoTheDraft (draftNew, doneDrafting, YN$, N$, CC$, teamIdx)
 
     Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
     Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
@@ -181,7 +234,10 @@ Sub DoTheDraft (YN$, NU)
 
     Shared careerDI%(), careerDS%()
 
-    9600 '
+    Shared ydsCompAdj
+
+    Shared ATT&
+
     S0 = 0
     S1 = 0
     S2 = 0
@@ -205,11 +261,13 @@ Sub DoTheDraft (YN$, NU)
 
     S5 = 100 / S2
 
-    For I = 0 To 9: If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
+    For I = 0 To 9:
+        If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
         If careerA2%(I) > 100 Then careerA2%(I) = 100
     Next I
 
-    For I = 0 To 5: If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
+    For I = 0 To 5:
+        If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
         If careerA4%(I) > 100 Then careerA4%(I) = 100
     Next I
 
@@ -237,11 +295,13 @@ Sub DoTheDraft (YN$, NU)
     G2 = 100 / G0
     G5 = 100 / G3
 
-    For I = 0 To 2: If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
+    For I = 0 To 2:
+        If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
         If careerA9%(I) > 100 Then careerA9%(I) = 100
     Next
 
-    For I = 0 To 2: If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
+    For I = 0 To 2:
+        If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
         If careerB1%(I) > 100 Then careerB1%(I) = 100
     Next
 
@@ -255,13 +315,16 @@ Sub DoTheDraft (YN$, NU)
         G3 = G3 + careerB8%(I)
     Next
 
-    G2 = 100 / G0: G5 = 100 / G3
+    G2 = 100 / G0
+    G5 = 100 / G3
 
-    For I = 0 To 1: If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
+    For I = 0 To 1:
+        If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
         If careerB5%(I) > 100 Then careerB5%(I) = 100
     Next
 
-    For I = 0 To 1: If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
+    For I = 0 To 1:
+        If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
         If careerB8%(I) > 100 Then careerB8%(I) = 100
     Next
 
@@ -294,25 +357,72 @@ Sub DoTheDraft (YN$, NU)
         If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
     Next
 
-    X = Int((Q / .3) + .5)
+    X = Int((ydsCompAdj / .3) + .5)
     If X < 0 Then X = 100 + X
-    YC% = X
+    ydsCompAdj = X
 
-    If NU = 0 Then
+    Call SaveTeamDraft(draftNew, YN$, N$, CC$, teamIdx)
 
-        Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+    Cls
 
-        fileLength& = LOF(1)
+    JJ = 1
 
-        Close 1
+    Locate 6, 8: Color 15, 1
 
-        NU = fileLength& / 934
-        NU = NU + 1
+    Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 
+    For II = 1 To JJ: Locate 6 + II, 8
+        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+    Next
+
+    Locate 7 + JJ, 8
+    Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+
+    Locate 7
+
+    U$ = "DRAFT ANOTHER TEAM (YN)"
+
+    Do
+        Locate 7, (80 - Len(U$)) / 2
+        Print U$
+        I$ = GetKeyPress$
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+    If UCase$(I$) = "N" Then
+        doneDrafting = 1
     End If
 
-    teamYear$ = RTrim$(YN$)
-    
+End Sub
+
+
+'----------------------------------------
+'       SaveTeamDraft Subroutine
+'----------------------------------------
+'...explanation...
+Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, CC$, teamIdx)
+
+    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
+    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared statsPA%(), careerQX%()
+
+    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared statsDI$(), statsDS$()
+
+    Shared careerDI%(), careerDS%()
+
+    Shared ydsCompAdj
+    Shared ATT&
+
+    teamYear$ = RTrim$(yearNumber$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
+    fileLength& = LOF(1)
+
+    Close 1
+
+    If draftNew = 1 Then teamIdx = (fileLength& / 934) + 1
+
     Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
 
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
@@ -351,10 +461,10 @@ Sub DoTheDraft (YN$, NU)
 
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    LSet Q$(1) = A$
-    LSet Q$(2) = AA$
+    LSet Q$(1) = teamName$
+    LSet Q$(2) = CC$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next 
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next
     For I = 0 To 4: LSet Q$(I + 11) = MKI$(statsPA%(I)): Next I
 
     For I = 0 To 9
@@ -391,7 +501,9 @@ Sub DoTheDraft (YN$, NU)
         LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
     Next I
 
+    test$ = statsA6$(0)
     LSet Q$(122) = statsA6$(0)
+
     LSet Q$(123) = MKI$(careerB3%(0))
     LSet Q$(124) = statsA7$(0)
     LSet Q$(125) = MKI$(careerB4%(0))
@@ -403,7 +515,7 @@ Sub DoTheDraft (YN$, NU)
     LSet Q$(131) = MKI$(careerB5%(1))
     LSet Q$(132) = MKI$(careerB7%(1))
     LSet Q$(133) = MKI$(careerB8%(1))
-    LSet Q$(134) = MKI$(YC%)
+    LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14
         LSet Q$(I * 2 + 135) = statsDS$(I)
@@ -415,7 +527,7 @@ Sub DoTheDraft (YN$, NU)
         LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
     Next I
 
-    Put #1, NU
+    Put #1, teamIdx
 
     Close #1
 
@@ -423,12 +535,12 @@ Sub DoTheDraft (YN$, NU)
 
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
-    LSet Q$(1) = A$
+    LSet Q$(1) = teamName$
     LSet Q$(2) = S$
-    LSet Q$(3) = MKL$(ATT)
+    LSet Q$(3) = MKL$(ATT&)
     LSet Q$(4) = "x"
 
-    Put #2, NU
+    Put #2, teamIdx
 
     Close 2
 
@@ -439,7 +551,7 @@ End Sub
 '       GetTeam_DRAFT Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
+Sub GetTeam_DRAFT (YN$, N$, CC$, teamIdx)
 
     Shared QA%()
 
@@ -465,7 +577,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
         'Print box bottom
         Locate 7 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-		
+
         Locate 7, 32
         Locate , 12: Print "ENTER DISK ID: ": Print
         Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
@@ -475,7 +587,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
         Locate 7, 27: Input NY$
 
         If NY$ = "" Then
-            Call SelectTeam_DRAFT(NY$, numberTeams, T2, N$, CC$)
+            Call SelectTeam_DRAFT(NY$, numberTeams, teamIdx, N$, CC$)
         Else
             YN$ = RTrim$(NY$)
             Erase teamNames$
@@ -487,7 +599,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
 
             Field #1, 15 As Q$(0), 640 As X$
 
-            For I1 = 1 to fileLength& / 934
+            For I1 = 1 To fileLength& / 934
                 Get #1, I1
 
                 For I2 = 1 To 15
@@ -504,7 +616,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
 
             Close 1
 
-            Call SelectTeam_DRAFT(YN$, numberTeams, T2, N$, CC$)
+            Call SelectTeam_DRAFT(YN$, numberTeams, teamIdx, N$, CC$)
 
         End If
 
@@ -516,7 +628,7 @@ Sub GetTeam_DRAFT (YN$, N$, CC$, T2)
 
             Do
                 Color 15, 4
-				Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE (YN)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -533,7 +645,7 @@ End Sub
 '       SelectTeam_DRAFT Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_DRAFT (YY$, numberTeams, T2, N$, CC$)
+Sub SelectTeam_DRAFT (YY$, numberTeams, teamIdx, N$, CC$)
 
     Selection% = 1
     Count% = numberTeams
@@ -557,7 +669,7 @@ Sub SelectTeam_DRAFT (YY$, numberTeams, T2, N$, CC$)
 
     If ExitCode% <> 27 Then
 
-        T2 = teamIndex%(Selection%)
+        teamIdx = teamIndex%(Selection%)
         teamYear$ = RTrim$(YY$)
 
         Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
@@ -598,7 +710,7 @@ Sub SelectTeam_DRAFT (YY$, numberTeams, T2, N$, CC$)
 
         Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-        Get #1, T2
+        Get #1, teamIdx
 
         N$ = RTrim$(Q$(1))
         CC$ = RTrim$(Q$(2))
@@ -756,13 +868,16 @@ Sub ReadTeam_DRAFT ()
 End Sub
 
 '----------------------------------------
-'     DraftExistingTeam Subroutine
+'    ExistingTeamParameters Subroutine
 '----------------------------------------
 '...explanation...
-Sub DraftExistingTeam (YN$, NU)
+Sub ExistingTeamParameters (YN$, teamName$, teamNick$, teamIdx)
 
     Shared careerB6%()
     Shared statsPA%()
+
+    Shared ydsCompAdj
+    Shared ATT&
 
     Call TITLE
 
@@ -772,9 +887,9 @@ Sub DraftExistingTeam (YN$, NU)
 
     Locate 1, 1: Color 15, 0
     Locate 3: Print " 1. ENTER DISK ID FOR THIS TEAM "; YN$
-    Locate 4: Print " 2. TEAM # "; NU
-    Locate 5: Print " 3. TEAM NAME "; A$
-    Locate 6: Print " 4. TEAM NICKNAME "; AA$
+    Locate 4: Print " 2. TEAM # "; teamIdx
+    Locate 5: Print " 3. TEAM NAME "; teamName$
+    Locate 6: Print " 4. TEAM NICKNAME "; teamNick$
     Locate 7: Print " 5. DEF RUSH ADJ "; careerB6%(0)
     Locate 8: Print " 6. DEF COMP % ADJ "; careerB6%(1)
     Locate 9: Print " 7. DEF INT % ADJ "; careerB6%(2)
@@ -782,7 +897,7 @@ Sub DraftExistingTeam (YN$, NU)
     Locate 11: Print " 9. DEF FUM % "; careerB6%(4)
     Locate 12: Print "10. OFF SACKED % "; careerB6%(5)
     Locate 13: Print "11. DEF SACK ADJ "; careerB6%(6)
-    Locate 14: Print "12. DEF YD/COMP ADJ "; Q
+    Locate 14: Print "12. DEF YD/COMP ADJ "; ydsCompAdj
     Locate 15: Print "13. TM PENALTY ADJ "; statsPA%(0)
     Locate 16: Print "14. OFF RUN/PASS % "; careerB6%(7)
     Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
@@ -790,7 +905,7 @@ Sub DraftExistingTeam (YN$, NU)
     Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
     Locate 20: Print "18. TM TEXT COLOR (0-15) "; statsPA%(2)
     Locate 21: Print "19. STADIUM NAME "; S$
-    Locate 22: Print "20. AVERAGE ATTENDANCE "; ATT
+    Locate 22: Print "20. AVERAGE ATTENDANCE "; ATT&
 
 End Sub
 
@@ -799,7 +914,7 @@ End Sub
 '       DraftChoices Subroutine
 '----------------------------------------
 '...explanation...
-Sub DraftChoices (N$, CC$, T2, existingTeam)
+Sub DraftChoices (YN$, teamName$)
 
     Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
     Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
@@ -810,40 +925,6 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
     Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
 
-    If existingTeam = 0 Then
-        400 Locate 3: Input " 1. ENTER DISK ID FOR THIS TEAM "; YN$: If C1 = 1 Then 420
-        401 Locate 4: Input " 2. TEAM # (0 FOR PROGRAM TO ASSIGN) "; NU: If C1 = 1 Then 420
-        402 Locate 5: Input " 3. TEAM NAME "; A$: If C1 = 1 Then 420
-        403 Locate 6: Input " 4. TEAM NICKNAME "; AA$: If C1 = 1 Then 420
-        404 Locate 7: Input " 5. DEF RUSH ADJ "; careerB6%(0): If C1 = 1 Then 420
-        405 Locate 8: Input " 6. DEF COMP % ADJ "; careerB6%(1): If C1 = 1 Then 420
-        406 Locate 9: Input " 7. DEF INT % ADJ "; careerB6%(2): If C1 = 1 Then 420
-        407 Locate 10: Input " 8. FUM % "; careerB6%(3): If C1 = 1 Then 420
-        408 Locate 11: Input " 9. DEF FUM % "; careerB6%(4): If C1 = 1 Then 420
-        409 Locate 12: Input "10. OFF SACKED % "; careerB6%(5): If C1 = 1 Then 420
-        410 Locate 13: Input "11. DEF SACK ADJ "; careerB6%(6): If C1 = 1 Then 420
-        411 Locate 14: Input "12. DEF YD/COMP ADJ "; Q: If C1 = 1 Then 420
-        412 Locate 15: Input "13. TM PENALTY ADJ "; statsPA%(0): If C1 = 1 Then 420
-        413 Locate 16: Input "14. OFF RUN/PASS % "; careerB6%(7): If C1 = 1 Then 420
-        414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3): If C1 = 1 Then 420
-        415 Locate 18: Input "16. POWER RATING "; statsPA%(4): If C1 = 1 Then 420
-        416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1): If C1 = 1 Then 420
-        417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; statsPA%(2): If C1 = 1 Then 420
-        418 Locate 21: Input "19. STADIUM NAME "; S$: If C1 = 1 Then 420
-        419 Locate 22: Input "20. AVERAGE ATTENDANCE "; ATT: If C1 = 1 Then 420
-    End If
-
-    420 Locate 3, 40
-    Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
-    Color 15, 0
-
-    C1 = 1
-
-    Locate 23: Input "# TO CHANGE (0 TO CONTINUE ) "; B9
-    On B9 GOTO 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419
-
-    '0 = continue
-    500 '
     Call TITLE
 
     Do
@@ -865,13 +946,9 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
         I$ = GetKeyPress$
 
         Select Case UCase$(I$)
-            Case "R", "W", "Q", "K", "P", "U", "I": Call GetTeam_DRAFT(YN$, N$, CC$, NU)
-        End Select
-
-        Select Case UCase$(I$)
 
             Case "R":
-                150 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
 
                 Do
                     Call TITLE
@@ -884,13 +961,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "RUNNING BACKS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RUN AVG CX% RC AVG CX%";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "RUN AVG CX% RC AVG CX%"
 
@@ -916,6 +993,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                         Loop Until P1 >= 0 And P1 <= 9
 
                         statsA1$(P) = C1$(P1)
+                        test$ = statsA1$(P)
                         careerA0%(P) = C0%(P1)
                         careerA1%(P) = C1%(P1)
                         careerA2%(P) = C2%(P1)
@@ -926,7 +1004,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 10
 
             Case "W":
-                250 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
 
                 Do
                     Call TITLE
@@ -939,13 +1017,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "WIDE RECEIVERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "REC AVG  CX% ";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "REC AVG  CX%"
 
@@ -979,8 +1057,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 6
 
             Case "Q":
-
-                350 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
 
                 Do
                     Call TITLE
@@ -993,12 +1070,12 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "QUARTERBACKS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0: Print Tab(17); " C%  I%   ARM  CX% ";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
 
                     Color 7, 0: Print Tab(57); " C%  I%   ARM  CX%"
 
@@ -1036,7 +1113,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 4
 
             Case "K":
-                450 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
+
                 Do
                     Call TITLE
 
@@ -1048,13 +1126,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "KICKOFF RETURNERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "RET AVG  CX%"
 
@@ -1091,7 +1169,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 3
 
             Case "P":
-                550 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
+
                 Do
                     Call TITLE
 
@@ -1103,13 +1182,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PUNT RETURNERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "RET AVG  CX%"
 
@@ -1144,7 +1223,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 3
 
             Case "U":
-                650 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
+
                 Do
                     Call TITLE
 
@@ -1156,13 +1236,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PUNTER"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "PUNT AVG";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "PUNT AVG"
 
@@ -1182,7 +1262,7 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Loop Until P >= 0 And P <= 1
 
                     If P <> 1 Then
-                        Locate 20, 1: Print "ANY KEY TO CONTINUE"
+                        Locate 20, 1: Print "HIT ANY KEY TO CONTINUE"
                         I$ = GetKeyPress$
 
                         statsA6$(0) = C6$(0)
@@ -1192,7 +1272,8 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                 Loop Until P = 1
 
             Case "I":
-                750 '
+                Call GetTeam_DRAFT(draftYear$, draftName$, draftNick$, draftIdx)
+
                 Do
                     Call TITLE
 
@@ -1204,13 +1285,13 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Color 15, 0: Print "PLACE KICKERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print A$;
+                    Color statsPA%(2), statsPA%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "FG%  CX   EP%  CX";
 
                     Print Tab(41);
 
-                    Color QA%(2), QA%(1): Print N$;
+                    Color QA%(2), QA%(1): Print draftName$;
                     Color 7, 0
                     Print Tab(57); "FG%  CX   EP%  CX"
 
@@ -1253,10 +1334,9 @@ Sub DraftChoices (N$, CC$, T2, existingTeam)
                     Locate XY, 1: Print Tab(79);
                 Next
 
-                Call DoTheDraft(YN$, T2)
-
         End Select
 
     Loop Until UCase$(I$) = "E"
 
 End Sub
+

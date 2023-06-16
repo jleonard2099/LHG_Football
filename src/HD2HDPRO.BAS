@@ -2,7 +2,6 @@ Sub HD2HDPRO ()
 
     _Title "3-in-1 Football - Head-to-Head League Stats"
 
-
     Color , 0
     Cls
 
@@ -28,23 +27,22 @@ Sub HD2HDPRO ()
     Locate 9 + JJ, 8
     Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-    Locate 10, 15
-
-    Color 3
-
-    Locate , 25: Print "SELECT OPTION:"
-    Locate , 25: Color 15: Print "O";: Color 7: Print "NE LEAGUE"
-    Locate , 25: Color 15: Print "T";: Color 7: Print "WO LEAGUES WITH INTERLEAGUE PLAY"
-    Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
-
     Do
 
+        Locate 10, 15
+        Color 3
+
+        Locate , 25: Print "SELECT OPTION:"
+        Locate , 25: Color 15: Print "O";: Color 7: Print "NE LEAGUE"
+        Locate , 25: Color 15: Print "T";: Color 7: Print "WO LEAGUES WITH INTERLEAGUE PLAY"
+        Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
+
         I$ = GetKeyPress$
+
         If UCase$(I$) = "O" Then X2 = 0
         If UCase$(I$) = "T" Then X2 = 1
-
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call HeadToHead_Pro_League(X2)
+            Call Hd2HdPro_League(X2)
         End If
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
@@ -52,10 +50,10 @@ Sub HD2HDPRO ()
 End Sub
 
 '----------------------------------------
-'     HeadToHead_Pro_League Subroutine
+'     Hd2HdPro_League Subroutine
 '----------------------------------------
 '...explanation...
-Sub HeadToHead_Pro_League (X2)
+Sub Hd2HdPro_League (X2)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -146,7 +144,7 @@ Sub HeadToHead_Pro_League (X2)
 
         End If
 
-		Color 7, 0
+        Color 7, 0
 
         Cls
 
@@ -168,18 +166,18 @@ Sub HeadToHead_Pro_League (X2)
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-		Locate 7, 32
+        Locate 7, 32
 
         Do
             Locate 10
-			Color 7, 1
+            Color 7, 1
 
             Locate , 30: Print "STATS TO ";
-			Color 15: Print "S";: Color 7: Print "CREEN"
+            Color 15: Print "S";: Color 7: Print "CREEN"
             Locate , 30: Print "STATS TO ";
-			Color 15: Print "P";: Color 7: Print "RINTER"
+            Color 15: Print "P";: Color 7: Print "RINTER"
             Locate , 30: Print "STATS TO ";
-			Color 15: Print "F";: Color 7: Print "ILE"
+            Color 15: Print "F";: Color 7: Print "ILE"
 
             J$ = GetKeyPress$
 
@@ -187,20 +185,28 @@ Sub HeadToHead_Pro_League (X2)
 
         Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
 
+        VPP = 0
         If UCase$(J$) = "P" Then X1 = 1
         If UCase$(J$) = "S" Then VPP = 1
+
         W$ = LG$ + ".LIB"
 
         Open diskPaths$(2) + W$ For Input As #1
+
         Input #1, X%
 
         If X% = 0 Then
             Input #1, LG$
             Input #1, div1$
             Input #1, div2$
-            For X = 1 To 15: Input #1, Z1$(X): Input #1, statsZ1%(X): Input #1, Z2$(X): Next
+            For X = 1 To 15:
+                Input #1, Z1$(X)
+                Input #1, statsZ1%(X)
+                Input #1, Z2$(X)
+            Next
+
             NT = 15
-            Close 1
+
         End If
 
         If X% = 1 Then
@@ -208,10 +214,18 @@ Sub HeadToHead_Pro_League (X2)
             Input #1, div1$
             Input #1, div2$
             Input #1, div3$
-            For X = 1 To 30: Input #1, Z1$(X): Input #1, statsZ1%(X): Input #1, Z2$(X): Next
+
+            For X = 1 To 30:
+                Input #1, Z1$(X)
+                Input #1, statsZ1%(X)
+                Input #1, Z2$(X)
+            Next
+
             NT = 30
-            Close 1
+
         End If
+
+        Close 1
 
         If X2 = 1 Then
 
@@ -224,9 +238,15 @@ Sub HeadToHead_Pro_League (X2)
                 Input #1, LG2$
                 Input #1, div1_2$
                 Input #1, div2_2$
-                For X = 1 To 15: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next
+
+                For X = 1 To 15:
+                    Input #1, Z12$(X)
+                    Input #1, Z12%(X)
+                    Input #1, Z22$(X)
+                Next
+
                 NT = 15
-                Close 1
+
             End If
 
             If X% = 1 Then
@@ -234,14 +254,24 @@ Sub HeadToHead_Pro_League (X2)
                 Input #1, div1_2$
                 Input #1, div2_2$
                 Input #1, div3_2$
-                For X = 1 To 30: Input #1, Z12$(X): Input #1, Z12%(X): Input #1, Z22$(X): Next
+
+                For X = 1 To 30:
+                    Input #1, Z12$(X)
+                    Input #1, Z12%(X)
+                    Input #1, Z22$(X)
+                Next
+
                 NT = 30
-                Close 1
+
             End If
+
         End If
+
+        Close 1
 
         Color 15
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
+
         'Initialization for 1st league
         For K = 1 To 30
             AW!(K) = 0
@@ -274,6 +304,7 @@ Sub HeadToHead_Pro_League (X2)
 
         'Calculations for 1st league
         For K = 1 To 30
+
             If Z1$(K) <> "XXX" Then
                 For I = 1 To YY%
                     If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AW!(K) = AW!(K) + 1
@@ -345,11 +376,11 @@ Sub HeadToHead_Pro_League (X2)
         'Generate output
         If VPP <> 1 Then
 
-            Call CreateReportPro(LG$, LG2$, DV$(), DV2$())
+            Call Hd2HdPro_Report(A$, LG$, LG2$, DV$(), DV2$())
 
         Else
 
-            Call HeadToHead_Pro_Screen(LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
+            Call Hd2HdPro_Screen(A$, LG$, LG2$, DV$(), DV2$())
 
         End If
 
@@ -390,14 +421,15 @@ Sub HeadToHead_Pro_League (X2)
         'Print box bottom
         Locate 9 + J, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
         Locate 10, 15
 
         Color 3: Locate , 25: Print "SELECT OPTION:"
         Color 7: Locate , 25: Print "VIEW ";
-        Color 15: Print "S";: Color 7: Print "AME TEAM AGAIN"
+        Color 15: Print "S";
+        Color 7: Print "AME TEAM AGAIN"
         Color 7: Locate , 25: Print "VIEW ";
-        Color 15: Print "A";: Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
+        Color 15: Print "A";
+        Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
         Locate , 25: Color 15: Print "R";
         Color 7: Print "ETURN TO MAIN MENU"
 
@@ -405,45 +437,62 @@ Sub HeadToHead_Pro_League (X2)
             I$ = GetKeyPress$
             Select Case UCase$(I$)
                 Case "A"
-                    RDD = 0
                     SL = 1
                     VPP = 0
                     newTeam = 1
 
                 Case "R"
-                    RDD = 0
                     SL = 0
                     VPP = 0
 
                 Case "S"
-                    RDD = 0
 
                     'Re-initialize for the next loop
                     For K = 1 To 3:
-                        THW!(K) = 0: THL!(K) = 0: TAW!(K) = 0: TAL!(K) = 0: THT!(K) = 0: TRT!(K) = 0: TG1!(K) = 0: TG2!(K) = 0: TG3!(K) = 0: TG4!(K) = 0
+                        THW!(K) = 0
+                        THL!(K) = 0
+                        TAW!(K) = 0
+                        TAL!(K) = 0
+                        THT!(K) = 0
+                        TRT!(K) = 0
+                        TG1!(K) = 0
+                        TG2!(K) = 0
+                        TG3!(K) = 0
+                        TG4!(K) = 0
                     Next
 
                     For K = 1 To 3:
-                        THW2!(K) = 0: THL2!(K) = 0: TAW2!(K) = 0: TAL2!(K) = 0: THT2!(K) = 0: TRT2!(K) = 0: TG12!(K) = 0: TG22!(K) = 0: TG32!(K) = 0: TG42!(K) = 0
+                        THW2!(K) = 0
+                        THL2!(K) = 0
+                        TAW2!(K) = 0
+                        TAL2!(K) = 0
+                        THT2!(K) = 0
+                        TRT2!(K) = 0
+                        TG12!(K) = 0
+                        TG22!(K) = 0
+                        TG32!(K) = 0
+                        TG42!(K) = 0
                     Next
 
                     newTeam = 0
 
             End Select
 
-        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R"
+        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R" Or I$ = Chr$(27)
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
 End Sub
 
 '----------------------------------------
-'     HeadToHead_Pro_Screen Subroutine
+'     Hd2HdPro_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
+Sub Hd2HdPro_Screen (A$, LG$, LG2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+
+    Shared statsPA%()
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -462,175 +511,179 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
     DV$(1) = div1$
     DV$(2) = div2$
     DV$(3) = div3$
+
     RDD = 0
 
     Do
-		Cls
+
+        Cls
+
         Locate 2, 35
-		Color statsPA%(2), statsPA%(1): Print A$
+        Color statsPA%(2), statsPA%(1): Print A$
         Color 3, 0
-        
-		Locate 4
-		Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+
+        Locate 4
+        Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
         Locate 5
-		Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+        Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
         RDD = RDD + 1
 
-        Select Case RDD
-
-            Case 1
-                DD = 1: EE = 10
-            Case 2
-                DD = 11: EE = 20
-            Case 3
-                DD = 21: EE = 30
-
-        End Select
+        DD = ((RDD - 1) * 10) + 1
+        EE = RDD * 10
 
         If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then RDD = 3
 
-        If RDD <> 3 Then
+        Color 11
+        Print LG$; " "; DV$(RDD);
 
-            Color 11: Print LG$; " "; DV$(RDD);
-            Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
+        Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
-            For K = DD To EE
+        For K = DD To EE
 
-                If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
-                    Color 15: Locate , 1: Print Left$(Z1$(K), 15);
-                    Color 7: Locate , 17: Print Using "##"; HW!(K);
-                    Locate , 20: Print Using "##"; HL!(K);
-                    Locate , 23: Print Using "##"; HT!(K);
-                    Locate , 27: Print Using "###"; G1!(K);
-                    Locate , 32: Print Using "###"; G2!(K);
-                    Color 3: Print Tab(35); Chr$(179);
-                    Color 7: Locate , 36: Print Using "##"; AW!(K);
-                    Locate , 39: Print Using "##"; AL!(K);
-                    Locate , 42: Print Using "##"; RT!(K);
-                    Locate , 47: Print Using "##"; G3!(K);
-                    Locate , 51: Print Using "##"; G4!(K);
-                    Color 3: Print Tab(53); Chr$(179);
-                    Color 7: Locate , 54: Print Using "##"; HW!(K) + AW!(K);
-                    Locate , 57: Print Using "##"; HL!(K) + AL!(K);
-                    Locate , 60: Print Using "##"; HT!(K) + RT!(K);
-                    Locate , 64: Print Using "###"; G1!(K) + G3!(K);
-                    Locate , 68: Print Using "###"; G2!(K) + G4!(K)
-                    Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
-                    THW!(RDD) = THW!(RDD) + HW!(K)
-                    THL!(RDD) = THL!(RDD) + HL!(K)
-                    TAW!(RDD) = TAW!(RDD) + AW!(K)
-                    TAL!(RDD) = TAL!(RDD) + AL!(K)
-                    TRT!(RDD) = TRT!(RDD) + RT!(K)
-                    THT!(RDD) = THT!(RDD) + HT!(K)
-                    TG1!(RDD) = TG1!(RDD) + G1!(K)
-                    TG2!(RDD) = TG2!(RDD) + G2!(K)
-                    TG3!(RDD) = TG3!(RDD) + G3!(K)
-                    TG4!(RDD) = TG4!(RDD) + G4!(K)
+            If Z1$(K) <> "XXX" And Z1$(K) <> A$ And Z1$(K) <> "" Then
 
-                End If
+                Color 15
+                Locate , 1: Print Left$(Z1$(K), 15);
 
-            Next K
+                Color 7
+                Locate , 17: Print Using "##"; HW!(K);
+                Locate , 20: Print Using "##"; HL!(K);
+                Locate , 23: Print Using "##"; HT!(K);
+                Locate , 27: Print Using "###"; G1!(K);
+                Locate , 32: Print Using "###"; G2!(K);
 
-            Print
+                Color 3: Print Tab(35); Chr$(179);
 
-            Color 11
-            Locate , 2: Print "TOTALS";
-            Locate , 17: Print Using "##"; THW!(RDD);
-            Locate , 20: Print Using "##"; THL!(RDD);
-            Locate , 23: Print Using "##"; THT!(RDD);
-            Locate , 27: Print Using "###"; TG1!(RDD);
-            Locate , 32: Print Using "###"; TG2!(RDD);
+                Color 7
+                Locate , 36: Print Using "##"; AW!(K);
+                Locate , 39: Print Using "##"; AL!(K);
+                Locate , 42: Print Using "##"; RT!(K);
+                Locate , 47: Print Using "##"; G3!(K);
+                Locate , 51: Print Using "##"; G4!(K);
 
-            Color 3: Print Tab(35); Chr$(179);
+                Color 3: Print Tab(53); Chr$(179);
 
-            Color 11
-            Locate , 36: Print Using "##"; TAW!(RDD);
-            Locate , 39: Print Using "##"; TAL!(RDD);
-            Locate , 42: Print Using "##"; TRT!(RDD);
-            Locate , 46: Print Using "###"; TG3!(RDD);
-            Locate , 50: Print Using "###"; TG4!(RDD);
+                Color 7
+                Locate , 54: Print Using "##"; HW!(K) + AW!(K);
+                Locate , 57: Print Using "##"; HL!(K) + AL!(K);
+                Locate , 60: Print Using "##"; HT!(K) + RT!(K);
+                Locate , 64: Print Using "###"; G1!(K) + G3!(K);
+                Locate , 68: Print Using "###"; G2!(K) + G4!(K)
 
-            Color 3: Print Tab(53); Chr$(179);
+                Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
-            Color 11
-            Locate , 54: Print Using "##"; THW!(RDD) + TAW!(RDD);
-            Locate , 57: Print Using "##"; THL!(RDD) + TAL!(RDD);
-            Locate , 60: Print Using "##"; THT!(RDD) + TRT!(RDD);
-            Locate , 64: Print Using "###"; TG1!(RDD) + TG3!(RDD);
-            Locate , 68: Print Using "###"; TG2!(RDD) + TG4!(RDD)
-            Print: Print: Print
-            Color 14
-            Print "HIT ANY KEY TO CONTINUE"
-            I$ = GetKeyPress$
+                THW!(RDD) = THW!(RDD) + HW!(K)
+                THL!(RDD) = THL!(RDD) + HL!(K)
+                TAW!(RDD) = TAW!(RDD) + AW!(K)
+                TAL!(RDD) = TAL!(RDD) + AL!(K)
+                TRT!(RDD) = TRT!(RDD) + RT!(K)
+                THT!(RDD) = THT!(RDD) + HT!(K)
+                TG1!(RDD) = TG1!(RDD) + G1!(K)
+                TG2!(RDD) = TG2!(RDD) + G2!(K)
+                TG3!(RDD) = TG3!(RDD) + G3!(K)
+                TG4!(RDD) = TG4!(RDD) + G4!(K)
 
-        End If
+            End If
+
+        Next K
+
+        Print
+
+        Color 11
+        Locate , 2: Print "TOTALS";
+        Locate , 17: Print Using "##"; THW!(RDD);
+        Locate , 20: Print Using "##"; THL!(RDD);
+        Locate , 23: Print Using "##"; THT!(RDD);
+        Locate , 27: Print Using "###"; TG1!(RDD);
+        Locate , 32: Print Using "###"; TG2!(RDD);
+
+        Color 3: Print Tab(35); Chr$(179);
+
+        Color 11
+        Locate , 36: Print Using "##"; TAW!(RDD);
+        Locate , 39: Print Using "##"; TAL!(RDD);
+        Locate , 42: Print Using "##"; TRT!(RDD);
+        Locate , 46: Print Using "###"; TG3!(RDD);
+        Locate , 50: Print Using "###"; TG4!(RDD);
+
+        Color 3: Print Tab(53); Chr$(179);
+
+        Color 11
+        Locate , 54: Print Using "##"; THW!(RDD) + TAW!(RDD);
+        Locate , 57: Print Using "##"; THL!(RDD) + TAL!(RDD);
+        Locate , 60: Print Using "##"; THT!(RDD) + TRT!(RDD);
+        Locate , 64: Print Using "###"; TG1!(RDD) + TG3!(RDD);
+        Locate , 68: Print Using "###"; TG2!(RDD) + TG4!(RDD)
+
+        Print
+        Print
+        Print
+        Color 14
+        Print "HIT ANY KEY TO CONTINUE"
+        I$ = GetKeyPress$
 
     Loop Until RDD = 3
 
-    397 '
+    'Second League
     If X2 = 1 Then
 
-        2190
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
         DV2$(3) = div3_2$
+
         RDD = 0
 
         Do
-			Cls
-			Locate 2, 35
-			Color statsPA%(2), statsPA%(1): Print A$
-			Color 3, 0
 
+            Cls
+            Locate 2, 35
+            Color statsPA%(2), statsPA%(1): Print A$
+
+            Color 3, 0
             Locate 4
-			Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+            Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
             Locate 5
-			Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+            Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
             RDD = RDD + 1
 
-            Select Case RDD
-
-                Case 1
-                    DD = 1: EE = 10
-
-                Case 2
-                    DD = 11: EE = 20
-
-                Case 3
-                    DD = 21: EE = 30
-
-            End Select
+            DD = ((RDD - 1) * 10) + 1
+            EE = RDD * 10
 
             If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
-            Color 11: Print LG2$; " "; DV2$(RDD);
+            Color 11
+            Print LG2$; " "; DV2$(RDD);
+
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
             For K = DD To EE
 
                 If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
 
-                    Color 15: Locate , 1: Print Left$(Z12$(K), 15);
-                    Color 7: Locate , 17: Print Using "##"; HW2!(K);
-
+                    Color 15
+                    Locate , 1: Print Left$(Z12$(K), 15);
+                    Color 7
+                    Locate , 17: Print Using "##"; HW2!(K);
                     Locate , 20: Print Using "##"; HL2!(K);
                     Locate , 23: Print Using "##"; HT2!(K);
                     Locate , 27: Print Using "###"; G12!(K);
                     Locate , 32: Print Using "###"; G22!(K);
 
                     Color 3: Print Tab(35); Chr$(179);
-                    Color 7: Locate , 36: Print Using "##"; AW2!(K);
 
+                    Color 7
+                    Locate , 36: Print Using "##"; AW2!(K);
                     Locate , 39: Print Using "##"; AL2!(K);
                     Locate , 42: Print Using "##"; RT2!(K);
                     Locate , 47: Print Using "##"; G32!(K);
                     Locate , 51: Print Using "##"; G42!(K);
 
                     Color 3: Print Tab(53); Chr$(179);
-                    Color 7: Locate , 54: Print Using "##"; HW2!(K) + AW2!(K);
 
+                    Color 7
+                    Locate , 54: Print Using "##"; HW2!(K) + AW2!(K);
                     Locate , 57: Print Using "##"; HL2!(K) + AL2!(K);
                     Locate , 60: Print Using "##"; HT2!(K) + RT2!(K);
                     Locate , 64: Print Using "###"; G12!(K) + G32!(K);
@@ -648,13 +701,14 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
                     TG22!(RDD) = TG22!(RDD) + G22!(K)
                     TG32!(RDD) = TG32!(RDD) + G32!(K)
                     TG42!(RDD) = TG42!(RDD) + G42!(K)
+
                 End If
+
             Next K
 
             Print
 
             Color 11
-
             Locate , 2: Print "TOTALS";
             Locate , 17: Print Using "##"; THW2!(RDD);
             Locate , 20: Print Using "##"; THL2!(RDD);
@@ -674,7 +728,6 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
             Color 3: Print Tab(53); Chr$(179);
 
             Color 11
-
             Locate , 54: Print Using "##"; THW2!(RDD) + TAW2!(RDD);
             Locate , 57: Print Using "##"; THL2!(RDD) + TAL2!(RDD);
             Locate , 60: Print Using "##"; THT2!(RDD) + TRT2!(RDD);
@@ -692,17 +745,20 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
 
     End If
 
-	Cls
-	Locate 1, 35
-	Color statsPA%(2), statsPA%(1): Print A$
-	Color 3, 0
+    Cls
 
-    Locate 3
-	Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+    Locate 2, 35
+    Color statsPA%(2), statsPA%(1): Print A$
+    Color 3, 0
+
     Locate 4
-	Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+    Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+    Locate 5
+    Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
-    Color 11: Print LG$;
+    Color 11
+    Print LG$;
+
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
     For W = 1 To 3
@@ -710,7 +766,7 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
         If DV$(W) <> "XXX" And DV$(W) <> "" Then
 
             Color 15
-            Locate , 2: Print DV$(W);
+            Locate , 1: Print DV$(W);
 
             Color 7
             Locate , 17: Print Using "##"; THW!(W);
@@ -774,7 +830,6 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
     Print
 
     Color 11
-
     Locate , 2: Print "TOTALS";
     Locate , 17: Print Using "##"; THWW;
     Locate , 20: Print Using "##"; THLL;
@@ -794,7 +849,6 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
     Color 3: Print Tab(53); Chr$(179);
 
     Color 11
-
     Locate , 54: Print Using "##"; THWW + TAWW;
     Locate , 57: Print Using "##"; THLL + TALL;
     Locate , 60: Print Using "##"; THTT + TRTT;
@@ -810,7 +864,9 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
 
             If DV2$(W) <> "XXX" And DV2$(W) <> "" Then
 
-                Color 15: Locate , 2: Print DV2$(W);
+                Color 15
+                Locate , 2: Print DV2$(W);
+
                 Color 7
                 Locate , 17: Print Using "##"; THW2!(W);
                 Locate , 20: Print Using "##"; THL2!(W);
@@ -897,13 +953,6 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
         Locate , 60: Print Using "##"; THTT2 + TRTT2;
         Locate , 64: Print Using "###"; TG112 + TG332;
         Locate , 68: Print Using "###"; TG222 + TG442
-        Print
-        Print
-        Print
-        Color 14
-        Print "HIT ANY KEY TO CONTINUE"
-
-        I$ = GetKeyPress$
 
     End If
 
@@ -912,16 +961,17 @@ Sub HeadToHead_Pro_Screen (LG$, LG2$, DV$(), DV2$(), RDD, Z$, A$)
     Print
     Color 14
     Print "HIT ANY KEY TO CONTINUE"
-
     I$ = GetKeyPress$
 
 End Sub
 
 '----------------------------------------
-'     CreateReportPro Subroutine
+'     Hd2HdPro_Report Subroutine
 '----------------------------------------
 '...explanation...
-Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
+Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
+
+    Shared div1$, div2$, div3$
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -937,6 +987,7 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
     Shared Z1$(), Z12$()
 
     Do
+
         If X1 = 1 Then
             reportFile$ = "REPORT"
         Else
@@ -986,7 +1037,10 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
     DV$(1) = div1$
     DV$(2) = div2$
     DV$(3) = div3$
-    Print #2, Tab(48); Z$
+
+    RDD = 0
+
+    Print #2, Tab(48); A$
     Print #2,
 
     Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
@@ -998,91 +1052,82 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
     Do
 
         RDD = RDD + 1
-        Select Case RDD
-            Case 1
-                DD = 1: EE = 10
 
-            Case 2
-                DD = 11: EE = 20
-
-            Case 3
-                DD = 21: EE = 30
-
-        End Select
+        DD = ((RDD - 1) * 10) + 1
+        EE = RDD * 10
 
         If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
-            If RDD <> 3 Then
+            Print #2, LG$; " "; DV$(RDD)
 
-                Print #2, LG$; " "; DV$(RDD)
+            For K = DD To EE
 
-                For K = DD To EE
-                    If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
-                        Print #2, Left$(Z1$(K), 15);
-                        Print #2, Tab(17); Using "##"; HW!(K);
-                        Print #2, Tab(20); Using "##"; HL!(K);
-                        Print #2, Tab(23); Using "##"; HT!(K);
-                        Print #2, Tab(27); Using "###"; G1!(K);
-                        Print #2, Tab(32); Using "###"; G2!(K);
-                        Print #2, Tab(38); Using "##"; AW!(K);
-                        Print #2, Tab(41); Using "##"; AL!(K);
-                        Print #2, Tab(44); Using "##"; RT!(K);
-                        Print #2, Tab(48); Using "###"; G3!(K);
-                        Print #2, Tab(52); Using "###"; G4!(K);
-                        Print #2, Tab(58); Using "##"; HW!(K) + AW!(K);
-                        Print #2, Tab(61); Using "##"; HL!(K) + AL!(K);
-                        Print #2, Tab(64); Using "##"; HT!(K) + RT!(K);
-                        Print #2, Tab(68); Using "###"; G1!(K) + G3!(K);
-                        Print #2, Tab(72); Using "###"; G2!(K) + G4!(K)
-                        THW!(RDD) = THW!(RDD) + HW!(K)
-                        THL!(RDD) = THL!(RDD) + HL!(K)
-                        TAW!(RDD) = TAW!(RDD) + AW!(K)
-                        TAL!(RDD) = TAL!(RDD) + AL!(K)
-                        TRT!(RDD) = TRT!(RDD) + RT!(K)
-                        THT!(RDD) = THT!(RDD) + HT!(K)
-                        TG1!(RDD) = TG1!(RDD) + G1!(K)
-                        TG2!(RDD) = TG2!(RDD) + G2!(K)
-                        TG3!(RDD) = TG3!(RDD) + G3!(K)
-                        TG4!(RDD) = TG4!(RDD) + G4!(K)
-                    End If
-                Next K
+                If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
+                    Print #2, Left$(Z1$(K), 15);
+                    Print #2, Tab(17); Using "##"; HW!(K);
+                    Print #2, Tab(20); Using "##"; HL!(K);
+                    Print #2, Tab(23); Using "##"; HT!(K);
+                    Print #2, Tab(27); Using "###"; G1!(K);
+                    Print #2, Tab(32); Using "###"; G2!(K);
+                    Print #2, Tab(38); Using "##"; AW!(K);
+                    Print #2, Tab(41); Using "##"; AL!(K);
+                    Print #2, Tab(44); Using "##"; RT!(K);
+                    Print #2, Tab(48); Using "###"; G3!(K);
+                    Print #2, Tab(52); Using "###"; G4!(K);
+                    Print #2, Tab(58); Using "##"; HW!(K) + AW!(K);
+                    Print #2, Tab(61); Using "##"; HL!(K) + AL!(K);
+                    Print #2, Tab(64); Using "##"; HT!(K) + RT!(K);
+                    Print #2, Tab(68); Using "###"; G1!(K) + G3!(K);
+                    Print #2, Tab(72); Using "###"; G2!(K) + G4!(K)
+                    THW!(RDD) = THW!(RDD) + HW!(K)
+                    THL!(RDD) = THL!(RDD) + HL!(K)
+                    TAW!(RDD) = TAW!(RDD) + AW!(K)
+                    TAL!(RDD) = TAL!(RDD) + AL!(K)
+                    TRT!(RDD) = TRT!(RDD) + RT!(K)
+                    THT!(RDD) = THT!(RDD) + HT!(K)
+                    TG1!(RDD) = TG1!(RDD) + G1!(K)
+                    TG2!(RDD) = TG2!(RDD) + G2!(K)
+                    TG3!(RDD) = TG3!(RDD) + G3!(K)
+                    TG4!(RDD) = TG4!(RDD) + G4!(K)
+                End If
 
-                Print #2,
-                Print #2, "TOTALS";
-                Print #2, Tab(17); Using "##"; THW!(RDD);
-                Print #2, Tab(20); Using "##"; THL!(RDD);
-                Print #2, Tab(23); Using "##"; THT!(RDD);
-                Print #2, Tab(27); Using "###"; TG1!(RDD);
-                Print #2, Tab(32); Using "###"; TG2!(RDD);
-                Print #2, Tab(38); Using "##"; TAW!(RDD);
-                Print #2, Tab(41); Using "##"; TAL!(RDD);
-                Print #2, Tab(44); Using "##"; TRT!(RDD);
-                Print #2, Tab(48); Using "###"; TG3!(RDD);
-                Print #2, Tab(52); Using "###"; TG4!(RDD);
-                Print #2, Tab(58); Using "##"; THW!(RDD) + TAW!(RDD);
-                Print #2, Tab(61); Using "##"; THL!(RDD) + TAL!(RDD);
-                Print #2, Tab(64); Using "##"; THT!(RDD) + TRT!(RDD);
-                Print #2, Tab(68); Using "###"; TG1!(RDD) + TG3!(RDD);
-                Print #2, Tab(72); Using "###"; TG2!(RDD) + TG4!(RDD)
-                Print #2,
-                Print #2,
-            End If
+            Next K
+
+            Print #2,
+            Print #2, "TOTALS";
+            Print #2, Tab(17); Using "##"; THW!(RDD);
+            Print #2, Tab(20); Using "##"; THL!(RDD);
+            Print #2, Tab(23); Using "##"; THT!(RDD);
+            Print #2, Tab(27); Using "###"; TG1!(RDD);
+            Print #2, Tab(32); Using "###"; TG2!(RDD);
+            Print #2, Tab(38); Using "##"; TAW!(RDD);
+            Print #2, Tab(41); Using "##"; TAL!(RDD);
+            Print #2, Tab(44); Using "##"; TRT!(RDD);
+            Print #2, Tab(48); Using "###"; TG3!(RDD);
+            Print #2, Tab(52); Using "###"; TG4!(RDD);
+            Print #2, Tab(58); Using "##"; THW!(RDD) + TAW!(RDD);
+            Print #2, Tab(61); Using "##"; THL!(RDD) + TAL!(RDD);
+            Print #2, Tab(64); Using "##"; THT!(RDD) + TRT!(RDD);
+            Print #2, Tab(68); Using "###"; TG1!(RDD) + TG3!(RDD);
+            Print #2, Tab(72); Using "###"; TG2!(RDD) + TG4!(RDD)
+            Print #2,
+            Print #2,
 
         End If
 
-    Loop Until RDD <> 3
+    Loop Until RDD = 3
 
     If X2 = 1 Then
 
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
         DV2$(3) = div3_2$
-
         RDD = 0
 
         Do
 
-            Print #2, Tab(48); Z$: Print #2,
+            Print #2, Tab(48); A$
+            Print #2,
 
             Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
             Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
@@ -1092,87 +1137,74 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
 
             RDD = RDD + 1
 
-            Select Case RDD
-
-                Case 1
-                    DD = 1: EE = 10
-
-                Case 2
-                    DD = 11: EE = 20
-
-                Case 3
-                    DD = 21: EE = 30
-
-            End Select
+            DD = ((RDD - 1) * 10) + 1
+            EE = RDD * 10
 
             If DV2$(RDD) <> "XXX" And DV2$(RDD) <> "" Then RDD = 3
 
-            If RDD <> 3 Then
+            Print #2, LG2$; " "; DV2$(RDD)
 
-                Print #2, LG2$; " "; DV2$(RDD)
+            For K = DD To EE
 
-                For K = DD To EE
+                If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
 
-                    If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
+                    Print #2, Left$(Z12$(K), 15);
+                    Print #2, Tab(17); Using "##"; HW2!(K);
+                    Print #2, Tab(20); Using "##"; HL2!(K);
+                    Print #2, Tab(23); Using "##"; HT2!(K);
+                    Print #2, Tab(27); Using "###"; G12!(K);
+                    Print #2, Tab(32); Using "###"; G22!(K);
+                    Print #2, Tab(38); Using "##"; AW2!(K);
+                    Print #2, Tab(41); Using "##"; AL2!(K);
+                    Print #2, Tab(44); Using "##"; RT2!(K);
+                    Print #2, Tab(48); Using "###"; G32!(K);
+                    Print #2, Tab(52); Using "###"; G42!(K);
+                    Print #2, Tab(58); Using "##"; HW2!(K) + AW2!(K);
+                    Print #2, Tab(61); Using "##"; HL2!(K) + AL2!(K);
+                    Print #2, Tab(64); Using "##"; HT2!(K) + RT2!(K);
+                    Print #2, Tab(68); Using "###"; G12!(K) + G32!(K);
+                    Print #2, Tab(72); Using "###"; G22!(K) + G42!(K)
 
-                        Print #2, Left$(Z12$(K), 15);
-                        Print #2, Tab(17); Using "##"; HW2!(K);
-                        Print #2, Tab(20); Using "##"; HL2!(K);
-                        Print #2, Tab(23); Using "##"; HT2!(K);
-                        Print #2, Tab(27); Using "###"; G12!(K);
-                        Print #2, Tab(32); Using "###"; G22!(K);
-                        Print #2, Tab(38); Using "##"; AW2!(K);
-                        Print #2, Tab(41); Using "##"; AL2!(K);
-                        Print #2, Tab(44); Using "##"; RT2!(K);
-                        Print #2, Tab(48); Using "###"; G32!(K);
-                        Print #2, Tab(52); Using "###"; G42!(K);
-                        Print #2, Tab(58); Using "##"; HW2!(K) + AW2!(K);
-                        Print #2, Tab(61); Using "##"; HL2!(K) + AL2!(K);
-                        Print #2, Tab(64); Using "##"; HT2!(K) + RT2!(K);
-                        Print #2, Tab(68); Using "###"; G12!(K) + G32!(K);
-                        Print #2, Tab(72); Using "###"; G22!(K) + G42!(K)
+                    THW2!(RDD) = THW2!(RDD) + HW2!(K)
+                    THL2!(RDD) = THL2!(RDD) + HL2!(K)
+                    TAW2!(RDD) = TAW2!(RDD) + AW2!(K)
+                    TAL2!(RDD) = TAL2!(RDD) + AL2!(K)
+                    TRT2!(RDD) = TRT2!(RDD) + RT2!(K)
+                    THT2!(RDD) = THT2!(RDD) + HT2!(K)
+                    TG12!(RDD) = TG12!(RDD) + G12!(K)
+                    TG22!(RDD) = TG22!(RDD) + G22!(K)
+                    TG32!(RDD) = TG32!(RDD) + G32!(K)
+                    TG42!(RDD) = TG42!(RDD) + G42!(K)
 
-                        THW2!(RDD) = THW2!(RDD) + HW2!(K)
-                        THL2!(RDD) = THL2!(RDD) + HL2!(K)
-                        TAW2!(RDD) = TAW2!(RDD) + AW2!(K)
-                        TAL2!(RDD) = TAL2!(RDD) + AL2!(K)
-                        TRT2!(RDD) = TRT2!(RDD) + RT2!(K)
-                        THT2!(RDD) = THT2!(RDD) + HT2!(K)
-                        TG12!(RDD) = TG12!(RDD) + G12!(K)
-                        TG22!(RDD) = TG22!(RDD) + G22!(K)
-                        TG32!(RDD) = TG32!(RDD) + G32!(K)
-                        TG42!(RDD) = TG42!(RDD) + G42!(K)
+                End If
 
-                    End If
+            Next K
 
-                Next K
-
-                Print #2,
-                Print #2, "TOTALS";
-                Print #2, Tab(17); Using "##"; THW2!(RDD);
-                Print #2, Tab(20); Using "##"; THL2!(RDD);
-                Print #2, Tab(23); Using "##"; THT2!(RDD);
-                Print #2, Tab(27); Using "###"; TG12!(RDD);
-                Print #2, Tab(32); Using "###"; TG22!(RDD);
-                Print #2, Tab(38); Using "##"; TAW2!(RDD);
-                Print #2, Tab(41); Using "##"; TAL2!(RDD);
-                Print #2, Tab(44); Using "##"; TRT2!(RDD);
-                Print #2, Tab(48); Using "###"; TG32!(RDD);
-                Print #2, Tab(52); Using "###"; TG42!(RDD);
-                Print #2, Tab(58); Using "##"; THW2!(RDD) + TAW2!(RDD);
-                Print #2, Tab(61); Using "##"; THL2!(RDD) + TAL2!(RDD);
-                Print #2, Tab(64); Using "##"; THT2!(RDD) + TRT2!(RDD);
-                Print #2, Tab(68); Using "###"; TG12!(RDD) + TG32!(RDD);
-                Print #2, Tab(72); Using "###"; TG22!(RDD) + TG42!(RDD)
-                Print #2,: Print #2,
-
-            End If
+            Print #2,
+            Print #2, "TOTALS";
+            Print #2, Tab(17); Using "##"; THW2!(RDD);
+            Print #2, Tab(20); Using "##"; THL2!(RDD);
+            Print #2, Tab(23); Using "##"; THT2!(RDD);
+            Print #2, Tab(27); Using "###"; TG12!(RDD);
+            Print #2, Tab(32); Using "###"; TG22!(RDD);
+            Print #2, Tab(38); Using "##"; TAW2!(RDD);
+            Print #2, Tab(41); Using "##"; TAL2!(RDD);
+            Print #2, Tab(44); Using "##"; TRT2!(RDD);
+            Print #2, Tab(48); Using "###"; TG32!(RDD);
+            Print #2, Tab(52); Using "###"; TG42!(RDD);
+            Print #2, Tab(58); Using "##"; THW2!(RDD) + TAW2!(RDD);
+            Print #2, Tab(61); Using "##"; THL2!(RDD) + TAL2!(RDD);
+            Print #2, Tab(64); Using "##"; THT2!(RDD) + TRT2!(RDD);
+            Print #2, Tab(68); Using "###"; TG12!(RDD) + TG32!(RDD);
+            Print #2, Tab(72); Using "###"; TG22!(RDD) + TG42!(RDD)
+            Print #2,
+            Print #2,
 
         Loop Until RDD = 3
 
     End If
 
-    Print #2, Tab(48); Z$
+    Print #2, Tab(48); A$
     Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
     Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
     Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
@@ -1181,6 +1213,7 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
     Print #2, LG$
 
     For W = 1 To 3
+
         Print #2, DV$(W);
         Print #2, Tab(17); Using "##"; THW!(W);
         Print #2, Tab(20); Using "##"; THL!(W);
@@ -1197,6 +1230,7 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
         Print #2, Tab(64); Using "##"; THT!(W) + TRT!(W);
         Print #2, Tab(68); Using "###"; TG1!(W) + TG3!(W);
         Print #2, Tab(72); Using "###"; TG2!(W) + TG4!(W)
+
     Next W
 
     THWW = 0
@@ -1246,6 +1280,7 @@ Sub CreateReportPro (LG$, LG2$, DV$(), DV2$())
     Print #2, Tab(72); Using "###"; TG22 + TG44
 
     If X2 = 1 Then
+
         Print #2,
         Print #2, LG2$
 
@@ -1329,7 +1364,7 @@ Sub ChooseLeague (targetFile$)
     Do
 
         Spec$ = diskPaths$(2) + "*.LIB"
-		Count% = FCount%(Spec$)
+        Count% = FCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -1369,11 +1404,10 @@ Sub ChooseLeague (targetFile$)
                 MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
-                'Work out this logic better
                 If ExitCode% <> 27 Then
 
-                    targetFile$ = leagueFiles$(Selection%)
                     Color 15, 1
+                    targetFile$ = leagueFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
 
                     Do
@@ -1381,15 +1415,15 @@ Sub ChooseLeague (targetFile$)
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-
                     Color 15, 0
 
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-            targetFile$ = RTrim$(targetFile$)
-            targetFile$ = Left$(targetFile$, Len(targetFile$) - 4)
+            If ExitCode% <> 27 Then
+                targetFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
+            End If
 
         End If
 
@@ -1466,7 +1500,8 @@ Sub GetDiskID_HD2HDPRO (A$)
 
                     Field #1, 15 As Q$(0), 640 As X$
 
-                    For I1 = 1 to fileLength& / 934
+                    For I1 = 1 To fileLength& / 934
+
                         Get #1, I1
 
                         For I2 = 1 To 15
@@ -1558,7 +1593,7 @@ Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
 
     Else
         BO% = 1
-
     End If
 
 End Sub
+

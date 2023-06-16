@@ -1,3 +1,4 @@
+$Debug
 
 Const GAME_VERSION$ = "6.40"
 Const MAX_TEAMS = 1000
@@ -385,9 +386,10 @@ Resume Next ' moves program to code following the error.
 '----------------------------------------
 Sub Main_Menu (menuSelection%)
 
-    'Dim A$(1 To 15)
-
     Do
+
+        _Title "3-in-1 Football - Menu"
+
         Cls
 
         Call TITLE
@@ -724,20 +726,20 @@ Sub Leaders_Menu ()
                 Case 2: Call COMPPRO
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
-                Case 5: Call REC(1)
+                Case 5: Call RecordsMenu(1)
                 Case 6: Call NEWLDR
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
                 Case 9: Call COMPCOLL
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
-                Case 12: Call REC(2)
+                Case 12: Call RecordsMenu(2)
                 Case 13: Call NEWLDR
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
                 Case 16: Call COMPNATL
                 Case 17: Call SEENATL
-                Case 18: Call REC(3)
+                Case 18: Call RecordsMenu(3)
                 Case 19: Call BLANKORG
                 Case 20 Or 21: Cls
             End Select
