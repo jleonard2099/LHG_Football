@@ -1904,7 +1904,7 @@ Sub BUILDSTATS (CT%)
     Shared AM!(), AF!(), GI!(), GS!()
     Shared LC!(), LK!(), LF!(), LP!(), LR!()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared PK!(), lookyTT!(), Z!(), Z1!(), Z2!()
+    Shared PK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Dim statsDI$(1, 10), statsDS$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
 
@@ -1950,12 +1950,12 @@ Sub BUILDSTATS (CT%)
                 For I = 0 To 1: Input #1, lookyA7$(PX, I): Next I
 
                 For J = 0 To 13
-                    For K = 0 To 17: Input #1, Z2!(J, K): Next K
+                    For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
                 Next J
 
-                For L = 0 To 38: Input #1, Z!(L): Next L
+                For L = 0 To 38: Input #1, statsZ!(L): Next L
 
-                For L = 0 To 38: Input #1, Z1!(L): Next L
+                For L = 0 To 38: Input #1, statsZ1!(L): Next L
 
                 For J = 0 To 9: Input #1, statsDI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
 
@@ -1989,12 +1989,12 @@ Sub BUILDSTATS (CT%)
                 totStats = totStats + 1
 
                 For I = 0 To 14
-                    lookyTT!(totStats, I) = Z!(I)
+                    lookyTT!(totStats, I) = statsZ!(I)
                     lookyTT$(totStats, I) = statsA$
                 Next
 
                 For I = 15 To 29
-                    lookyTT!(totStats, I) = Z1!(I - 15)
+                    lookyTT!(totStats, I) = statsZ1!(I - 15)
                     lookyTT$(totStats, I) = statsA$
                 Next
 
@@ -2009,7 +2009,7 @@ Sub BUILDSTATS (CT%)
                     'but was never assigned a value!!!
                     GMA!(JA) = Y%
 
-                    For I1 = 0 To 5: A1L!(JA, I1) = Z2!(I, I1): Next I1
+                    For I1 = 0 To 5: A1L!(JA, I1) = statsZ2!(I, I1): Next I1
 
                     A1L!(JA, 6) = LR!(I)
                     A1L!(JA, 7) = LC!(I)
@@ -2022,7 +2022,7 @@ Sub BUILDSTATS (CT%)
                     LCL$(JB) = LC$(I + 10, 0)
                     GMB!(JB) = Y%
 
-                    For I1 = 6 To 8: A2L!(JB, I1 - 6) = Z2!(I, I1): Next I1
+                    For I1 = 6 To 8: A2L!(JB, I1 - 6) = statsZ2!(I, I1): Next I1
 
                     A2L!(JB, 3) = LC!(I + 10)
                 Next I
@@ -2034,7 +2034,7 @@ Sub BUILDSTATS (CT%)
                     LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = Y%
 
-                    For I1 = 9 To 13: A3L!(JC, I1 - 9) = Z2!(I, I1): Next I1
+                    For I1 = 9 To 13: A3L!(JC, I1 - 9) = statsZ2!(I, I1): Next I1
 
                     A3L!(JC, 5) = LP!(I)
 
@@ -2050,7 +2050,7 @@ Sub BUILDSTATS (CT%)
                     A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
-                    For I1 = 14 To 16: A4L!(JD, I1 - 14) = Z2!(I, I1): Next I1
+                    For I1 = 14 To 16: A4L!(JD, I1 - 14) = statsZ2!(I, I1): Next I1
                     A4L!(JD, 3) = LK!(I)
                 Next I
 
@@ -2060,7 +2060,7 @@ Sub BUILDSTATS (CT%)
                     A5T$(JE) = statsA$
                     PKL$(JE) = statsPK$(I, 0)
 
-                    For I1 = 14 To 16: A5L!(JE, I1 - 14) = Z2!(I + 3, I1): Next I1
+                    For I1 = 14 To 16: A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1): Next I1
 
                     A5L!(JE, 3) = PK!(I)
                 Next I
@@ -2068,20 +2068,20 @@ Sub BUILDSTATS (CT%)
                 JF = JF + 1
                 A6L$(JF) = lookyA6$(PX, 0)
                 A6T$(JF) = statsA$
-                A6L!(JF, 0) = Z!(7)
-                A6L!(JF, 1) = Z!(8)
+                A6L!(JF, 0) = statsZ!(7)
+                A6L!(JF, 1) = statsZ!(8)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 0)
                 A7T$(JG) = statsA$
 
-                For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 3, 17): Next
+                For I = 0 To 3: A7L!(JJG, I) = statsZ2!(I + 3, 17): Next
 
                 A7L!(JJG, 4) = LF!(0)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 1)
                 A7T$(JG) = statsA$
 
-                For I = 0 To 3: A7L!(JJG, I) = Z2!(I + 7, 17): Next
+                For I = 0 To 3: A7L!(JJG, I) = statsZ2!(I + 7, 17): Next
 
                 A7L!(JJG, 4) = LF!(1)
 

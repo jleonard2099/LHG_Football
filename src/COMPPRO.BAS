@@ -5,29 +5,13 @@ Sub COMPPRO ()
     Shared BRC!()
     Shared O1!(), O2!(), O3!()
     Shared PTSF!(), PTSA!()
-    Shared TRC!(), TT!(), Z2!()
+    Shared TRC!(), TT!(), compZ2!()
 
     Shared BRC$()
     Shared compZ1$(), compZ2$(), compZ3$()
     Shared H1$(), TRC$()
 
     Shared div1$, div2$, div3$
-
-    Cls
-
-    'Initialize certain record fields
-    'Presumably this is to help with
-    'later calculations?
-    TRC!(11) = 999
-    TRC!(22) = 999
-
-    For I = 25 To 27: TRC!(I) = 9999: Next
-    For I = 29 To 36: TRC!(I) = 9999: Next
-
-    TRC!(38) = 999
-    TRC!(39) = 999
-    TRC!(42) = 999
-    TRC!(43) = 999
 
     'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.PFB") Then
@@ -50,27 +34,30 @@ Sub COMPPRO ()
 
     End If
 
-
-    '-- this should be it's own routine now that I see it
+    Cls
 
     Do
         'Display list of files...
-
         Spec$ = diskPaths$(2) + "*.LIB"
         Count% = FCount%(Spec$)
 
         If Count% = 0 Then
+
             Locate 10, 8
             Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
+
         Else
 
             ReDim leagueFiles$(0 To Count%)
+
             For X = 1 To Count%
                 leagueFiles$(X) = Space$(12)
             Next
+
             leagueFiles$(0) = Spec$
+
             Call ReadFile(leagueFiles$())
 
             Do
@@ -110,27 +97,30 @@ Sub COMPPRO ()
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
                     Color 15, 0
-
+                Else
+                    BO% = 1
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
             If ExitCode% <> 27 Then
 
-                targetFile$ = RTrim$(targetFile$)
-                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-                Cls
-                Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-                Color 15, 0
-
-                Do
-                    I$ = GetKeyPress$
-                    finalUpdate$ = UCase$(I$)
-                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
-
                 'Initialize values first
-                C$ = ","
+                TRC!(11) = 999
+                TRC!(22) = 999
+
+                For I = 25 To 27:
+                    TRC!(I) = 9999
+                Next
+
+                For I = 29 To 36:
+                    TRC!(I) = 9999
+                Next
+
+                TRC!(38) = 999
+                TRC!(39) = 999
+                TRC!(42) = 999
+                TRC!(43) = 999
 
                 Erase compZ1$, compZ2$, compZ3$
 
@@ -146,6 +136,19 @@ Sub COMPPRO ()
                     TT!(10, I, 7) = -99
                 Next
 
+                C$ = ","
+
+                targetFile$ = RTrim$(targetFile$)
+                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+
+                Do
+                    Cls
+                    Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
+                    Color 15, 0
+                    I$ = GetKeyPress$
+                    finalUpdate$ = UCase$(I$)
+                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
+
                 Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
 
                 Input #2, FF$, div1$, div2$, div3$
@@ -157,7 +160,9 @@ Sub COMPPRO ()
                 Close 2
 
                 Open diskPaths$(2) + WE$ + ".LIB" For Input As #2
+
                 Input #2, LG%
+
                 Close 2
 
                 If LG% <> 1 Then
@@ -170,95 +175,66 @@ Sub COMPPRO ()
                     Erase Z2!
 
                     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
+
                     Input #2, FF$, div1$, div2$, div3$
 
                     For X = 1 To 30
                         Input #2, compZ1$(X)
                     Next X
+
                     Close 2
 
                     For XW = 1 To 30
 
                         If H1$(XW) <> Chr$(42) Then
 
-                            Call FindStatsPro(XW, numberGames%)
+                            haveStats = FindStatsPro%(XW, H1$(XW), numberGames%)
 
-                            L = Len(H1$(XW))
+                            If (haveStats) Then
 
-                            WT$ = ""
+                                L = Len(H1$(XW))
+                                WT$ = ""
 
-                            For X = 1 To L:
-                                A = Asc(Mid$(H1$(XW), X, 1))
-                                WT$ = WT$ + Chr$(A)
-                            Next X
+                                For X = 1 To L:
+                                    A = Asc(Mid$(H1$(XW), X, 1))
+                                    WT$ = WT$ + Chr$(A)
+                                Next X
 
-                            confGame = 0
+                                confGame = 0
 
-                            For EC = 1 To 30:
+                                For EC = 1 To 30:
 
-                                If compZ1$(EC) = WT$ Then
+                                    If compZ1$(EC) = WT$ Then
 
-                                    If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
-                                        confGame = 1
-                                        Exit For
-                                    Else
-                                        O1!(EC) = fullWins
-                                        O2!(EC) = fullLosses
-                                        O3!(EC) = fullTies
+                                        If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
+                                            confGame = 1
+                                        Else
+                                            O1!(EC) = fullWins
+                                            O2!(EC) = fullLosses
+                                            O3!(EC) = fullTies
+                                        End If
+
+                                        If (confGame) Then Exit For
+
                                     End If
+                                    'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
+                                Next EC
+
+                                If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                                    Call ReadStatsPro(H1$(XW), numberGames%, TM$)
+                                    Call StatsByCategoryPro(numberGames%, TM$, WT$, finalUpdate$)
+                                    Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
                                 End If
-                                'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
-                            Next EC
-
-                            If confGame <> 1 Then
-                                Call ReadStatsPro(XW, numberGames%, TM$)
-                                Call StatsByCategoryPro(TM$, numberGames%, WT$, finalUpdate$)
-                                Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
                             End If
 
                         End If
 
                     Next XW
 
-					'Sort leaders in league
-                    For Z = 1 To 3
-
-                        AA = (10 * (Z - 1)) + 1
-                        ZZ = 10 * Z
-
-                        For X = AA To ZZ - 1:
-
-                            For Y = X + 1 To ZZ:
-
-                                diffX = O1!(X) - O2!(X)
-                                diffY = O1!(Y) - O2!(Y)
-
-                                If diffX <= diffY Then
-
-									If diffX = diffY Then
-									'If diffX <> diffY Then
-										If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
-										'If O1!(X) > O1!(Y) Or O1!(X) <= O2!(X) Or O1!(X) < O1!(Y) Or O1!(X) >= O2!(X) Then
-                                            Swap compZ1$(X), compZ1$(Y)
-                                            Swap O1!(X), O1!(Y)
-                                            Swap O2!(X), O2!(Y)
-                                            Swap O3!(X), O3!(Y)
-                                            Swap PTSF!(X), PTSF!(Y)
-                                            Swap PTSA!(X), PTSA!(Y)
-                                        End If
-
-                                    End If
-
-                                End If
-                            Next Y
-
-                        Next X
-
-                    Next Z
-
-                    Call SortStatsPro(WE$)
+                    Call SortLeadersPro
+                    Call PostLeadersPro(WE$)
 
                 End If 'Done checking file type
 
@@ -272,10 +248,10 @@ Sub COMPPRO ()
 End Sub
 
 '----------------------------------------
-'       FindStatsPro Subroutine
+'         FindStatsPro Function
 '----------------------------------------
 '...explanation...
-Sub FindStatsPro (XW, numberGames%)
+Function FindStatsPro% (XW, statFile$, numberGames%)
 
     Shared compAP%()
     Shared statsH$(), H1$(), compO$()
@@ -289,57 +265,68 @@ Sub FindStatsPro (XW, numberGames%)
     fullLosses = 0
     fullTies = 0
 
-    If H1$(XW) <> Chr$(42) Then
+    statFile$ = Right$(statFile$, 2) + " " + Left$(statFile$, Len(statFile$) - 3)
 
-        H1$(XW) = Right$(H1$(XW), 2) + " " + Left$(H1$(XW), Len(H1$(XW)) - 3)
+    Call FILENAME(statFile$)
 
-        Call FILENAME(XW)
+    If _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
-        If _FileExists(diskPaths$(1) + H1$(XW) + "S") Then
+        '        Call READFILES(H1$(), XW, numberGames%)
+        Open diskPaths$(1) + statFile$ + "S" For Input As #2
 
-            Open diskPaths$(1) + H1$(XW) + "S" For Input As #2
+        Input #2, numberGames%
 
-            Input #2, numberGames%
+        For I = 1 To 120: Input #2, statsO%(I): Next I
 
-            For I = 1 To 120: Input #2, statsO%(I): Next I
+        For I = 1 To 120: Input #2, compO$(I): PTSF!(XW) = PTSF!(XW) + statsO%(I): Next I
 
-            For I = 1 To 120: Input #2, compO$(I): PTSF!(XW) = PTSF!(XW) + statsO%(I): Next I
+        For I = 1 To 120: Input #2, statsT%(I): PTSA!(XW) = PTSA!(XW) + statsT%(I): Next I
 
-            For I = 1 To 120: Input #2, statsT%(I): PTSA!(XW) = PTSA!(XW) + statsT%(I): Next I
+        For I = 1 To 120: Input #2, statsH$(I): Next I
 
-            For I = 1 To 120: Input #2, statsH$(I): Next I
-
-            For I = 0 To 1
-                For I1 = 1 To 120
-                    Input #2, compAP%(I, I1)
-                Next
+        For I = 0 To 1
+            For I1 = 1 To 120
+                Input #2, compAP%(I, I1)
             Next
+        Next
 
-            Close 2
+        Close 2
 
-            fullWins = 0
-            fullLosses = 0
-            fullTies = 0
+        fullWins = 0
+        fullLosses = 0
+        fullTies = 0
 
-            For I = 1 To numberGames%
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
-            Next
+        For I = 1 To numberGames%
+            If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
+            If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
+            If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
+        Next
 
-            Print "FINDING "; H1$(XW); " STATS"
+        Cls
 
-        End If 'Done checking for file
+        Color 15
+        Print "FINDING ";
+        Color 14
+        Print statFile$;
+        Color 15
+        Print " STATS            "
 
-    End If 'Done checking for '*'
+        FindStatsPro% = 1
 
-End Sub
+    Else
+
+        Print "NO STATS FOUND FOR "; statFile$
+        FindStatsPro% = 0
+
+    End If
+
+End Function
 
 '----------------------------------------
 '       ReadStatsPro Subroutine
 '----------------------------------------
 '...explanation...
-Sub ReadStatsPro (XW, numberGames%, TM$)
+Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     Shared puntNum
     Shared PU$
@@ -355,11 +342,11 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared OT!(), PK!(), PR!(), QB!(), RB!()
     Shared TD!(), TG!(), TP!()
-    Shared WR!(), YD!(), Z2!()
+    Shared WR!(), YD!(), compZ2!()
 
     Shared statsGI%(), statsGS%()
 
-    Open diskPaths$(1) + H1$(XW) For Input As #1
+    Open diskPaths$(1) + statFile$ For Input As #1
     Input #1, TM$
 
     'Positions
@@ -377,7 +364,7 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
 
     For J = 1 To 14
         For K = 1 To 18
-            Input #1, Z2!(J, K)
+            Input #1, compZ2!(J, K)
         Next K
     Next J
 
@@ -444,44 +431,44 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
 
     For I = 1 To 10:
         For J = 1 To 6:
-            RB!(I, J) = Z2!(I, J)
+            RB!(I, J) = compZ2!(I, J)
         Next
     Next
 
     For I = 1 To 6:
         For J = 1 To 3:
-            WR!(I, J) = Z2!(I, J + 6)
+            WR!(I, J) = compZ2!(I, J + 6)
         Next
     Next
 
     For I = 1 To 4:
         For J = 1 To 5:
-            QB!(I, J) = Z2!(I, J + 9)
+            QB!(I, J) = compZ2!(I, J + 9)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            KR!(I, J) = Z2!(I, J + 14)
+            KR!(I, J) = compZ2!(I, J + 14)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            PR!(I, J) = Z2!(I + 3, J + 14)
+            PR!(I, J) = compZ2!(I + 3, J + 14)
         Next
     Next
 
     TG!(8) = OT!(7)
     TG!(9) = OT!(8)
-    FM!(1) = Z2!(4, 18)
-    FA!(1) = Z2!(5, 18)
-    EM!(1) = Z2!(6, 18)
-    EA!(1) = Z2!(7, 18)
-    FM!(2) = Z2!(8, 18)
-    FA!(2) = Z2!(9, 18)
-    EM!(2) = Z2!(10, 18)
-    EA!(2) = Z2!(11, 18)
+    FM!(1) = compZ2!(4, 18)
+    FA!(1) = compZ2!(5, 18)
+    EM!(1) = compZ2!(6, 18)
+    EA!(1) = compZ2!(7, 18)
+    FM!(2) = compZ2!(8, 18)
+    FA!(2) = compZ2!(9, 18)
+    EM!(2) = compZ2!(10, 18)
+    EA!(2) = compZ2!(11, 18)
 
     For I = 1 To 10:
         RB!(I, 7) = RB!(I, 2) + RB!(I, 5)
@@ -584,11 +571,58 @@ Sub ReadStatsPro (XW, numberGames%, TM$)
 
 End Sub
 
+
 '----------------------------------------
-'       SortStatsPro Subroutine
+'        SortLeadersPro Subroutine
 '----------------------------------------
 '...explanation...
-Sub SortStatsPro (statsFile$)
+Sub SortLeadersPro
+
+    Shared O1!(), O2!(), O3!()
+    Shared PTSA!(), PTSF!()
+
+    Shared compZ1$()
+
+    'Sort leaders in league
+    For Z = 1 To 3
+
+        AA = (10 * (Z - 1)) + 1
+        ZZ = 10 * Z
+
+        For X = AA To ZZ - 1:
+
+            For Y = X + 1 To ZZ:
+
+                diffX = O1!(X) - O2!(X)
+                diffY = O1!(Y) - O2!(Y)
+
+                If diffX <= diffY Then
+                    If diffX <> diffY Then
+                        If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
+                            Swap compZ1$(X), compZ1$(Y)
+                            Swap O1!(X), O1!(Y)
+                            Swap O2!(X), O2!(Y)
+                            Swap O3!(X), O3!(Y)
+                            Swap PTSF!(X), PTSF!(Y)
+                            Swap PTSA!(X), PTSA!(Y)
+                        End If
+                    End If
+                End If
+                
+            Next Y
+
+        Next X
+
+    Next Z
+
+End Sub
+
+
+'----------------------------------------
+'        PostLeadersPro Subroutine
+'----------------------------------------
+'...explanation...
+Sub PostLeadersPro (leaderFile$)
 
     Shared BRC$()
     Shared compZ2$(), compZ3$()
@@ -602,9 +636,9 @@ Sub SortStatsPro (statsFile$)
 
     Cls
 
-    Open diskPaths$(2) + statsFile$ + ".LDR" For Output As #2
+    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #2
 
-    Print "POSTING "; statsFile$; " LEAGUE LEADERS"
+    Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
 
     For X = 1 To 30:
         Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
@@ -652,7 +686,7 @@ End Sub
 '     StatsByCategoryPro Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
+Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared DT!(), OT!(), TRC!(), TT!()
 
@@ -712,11 +746,15 @@ Sub StatsByCategoryPro (TM$, numberGames%, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(28) = TM$
 
     If (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
-
+        'Games
         TT!(CA, 20, 1) = numberGames%
+        'Plays
         TT!(CA, 20, 2) = DT!(1) + DT!(3) - DT!(13)
+        'Yds
         TT!(CA, 20, 3) = DT!(6) + DT!(2) + DT!(14)
+        'Avg Yds / Gm
         TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        'Yds / Gm
         TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
 

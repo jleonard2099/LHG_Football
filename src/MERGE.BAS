@@ -66,7 +66,7 @@ Sub MergeStats ()
     Shared LC!(), LCR!(), LF!(), LFR!()
     Shared LI!(), LIR!(), LK!(), LKR!(), LP!(), LPR!()
     Shared LR!(), LRR!(), PK!(), PKR!()
-    Shared Z!(), Z2!(), Z1!()
+    Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
     Shared compAP%(), APR%()
@@ -188,11 +188,11 @@ Sub MergeStats ()
                         For I = 0 To 1: Input #1, statsA7$(I): Next I
 
                         For J = 0 To 13
-                            For K = 0 To 17: Input #1, Z2!(J, K): Next K
+                            For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
                         Next J
 
-                        For L = 0 To 38: Input #1, Z!(L): Next L
-                        For L = 0 To 38: Input #1, Z1!(L): Next L
+                        For L = 0 To 38: Input #1, statsZ!(L): Next L
+                        For L = 0 To 38: Input #1, statsZ1!(L): Next L
                         For J = 0 To 9: Input #1, statsDI$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
                         For J = 0 To 14: Input #1, statsDS$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
                         For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
@@ -359,7 +359,7 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     Shared LC!(), LCR!(), LF!(), LFR!()
     Shared LI!(), LIR!(), LK!(), LKR!(), LP!(), LPR!()
     Shared LR!(), LRR!(), PK!(), PKR!()
-    Shared Z!(), Z2!(), Z1!()
+    Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
     Shared compAP%(), APR%()
@@ -386,21 +386,21 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     For I = 0 To 13
         For K = 0 To 17
-            Z2!(I, K) = Z2!(I, K) + ZR2!(I, K)
+            statsZ2!(I, K) = statsZ2!(I, K) + ZR2!(I, K)
         Next K
     Next I
 
     For I = 0 To 27:
-        Z!(I) = Z!(I) + ZR!(I)
-        Z1!(I) = Z1!(I) + ZR1!(I)
+        statsZ!(I) = statsZ!(I) + ZR!(I)
+        statsZ1!(I) = statsZ1!(I) + ZR1!(I)
     Next
 
     For I = 29 To 38:
-        Z!(I) = Z!(I) + ZR!(I)
-        Z1!(I) = Z1!(I) + ZR1!(I)
+        statsZ!(I) = statsZ!(I) + ZR!(I)
+        statsZ1!(I) = statsZ1!(I) + ZR1!(I)
     Next
 
-    If ZR!(28) > Z!(28) Then Z!(28) = ZR!(28)
+    If ZR!(28) > statsZ!(28) Then statsZ!(28) = ZR!(28)
 
     For I = 0 To 9:
         For I1 = 0 To 2
@@ -489,11 +489,11 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     For I = 0 To 1: Print #1, statsA7$(I): Next I
 
     For J = 0 To 13
-        For K = 0 To 17: Print #1, Z2!(J, K): Next K
+        For K = 0 To 17: Print #1, statsZ2!(J, K): Next K
     Next J
 
-    For L = 0 To 38: Print #1, Z!(L): Next L
-    For L = 0 To 38: Print #1, Z1!(L): Next L
+    For L = 0 To 38: Print #1, statsZ!(L): Next L
+    For L = 0 To 38: Print #1, statsZ1!(L): Next L
 
     For J = 0 To 9:
         Print #1, statsDI$(J)

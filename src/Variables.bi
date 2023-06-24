@@ -12,6 +12,7 @@ Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
 Dim Shared confLosses, confTies, confWins
 Dim Shared fullLosses, fullTies, fullWins
+Dim Shared PTSFC, PTSAC
 
 Dim Shared fileLength&, teamAttendance&
 
@@ -64,8 +65,8 @@ Dim LC!(16), LCN!(15), LCR!(15), LI!(0 To 9), LIN!(0 To 9), LIR!(0 To 9)
 Dim LF!(0 To 9), LFR!(1), LFN!(1), LK!(2), LKN!(2), LKR!(2)
 Dim LP!(3), LPN!(3), LPR!(3), LR!(9), LRN!(0 To 9), LRR!(0 To 9)
 Dim PK!(2), PKN!(2), PKR!(2)
-Dim Z!(38), Z1!(38)
-Dim Z2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
+Dim statsZ!(38), statsZ1!(38)
+Dim statsZ2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 
 
 '----------------------------------------
@@ -131,28 +132,25 @@ Dim FG
 Dim puntNum
 Dim PU$
 
-Dim H1$(30)
-Dim TR$(10, 20)
+Dim compAP%(1, 120), APR%(1, 120)
 
 Dim BRC$(50, 2), compZ1$(60), compZ2$(240), compZ3$(240)
-Dim KR$(3), compPK$(2)
-Dim N2$(240), N3$(240), NT$(10, 20)
+Dim compPK$(2), H1$(30)
+Dim KR$(3), N2$(240), N3$(240), NT$(10, 20)
 Dim PR$(3), compPS$(10), PT$(1200), QB$(4), RB$(10)
-Dim TB$(18), TRC$(50), TT$(10, 20), WR$(16)
+Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
+Dim WR$(16)
 
-Dim DT!(38), TT!(10, 20, 9)
 
-Dim BRC!(50), compZ1!(240, 2) ', DT!(38)
-Dim EA!(2), EM!(2), EP!(2)
+Dim BRC!(50), compZ1!(240, 2) compZ2!(1 To 14, 1 To 18)
+Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
 Dim QB!(11, 11), RB!(11, 11)
-Dim TD!(16), TG!(16), TP!(18), TRC!(50)
+Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
-
-Dim compAP%(1, 120), APR%(1, 120)
 
 
 '---------------------------------------ts
@@ -304,12 +302,12 @@ Dim Shared actualAttendance&, averageAttendance&
 
 Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9), A9(1, 2)
 Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
-Dim Shared C(50), CRD(120), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
+Dim Shared C(50), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
 Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9)
 Dim Shared J6(1), K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
 Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
-Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), T(50), T1(1), timePoss(1)
-Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1), Z(38), Z1(38), Z2(13, 17)
+Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), scoreTimes(50), T1(1), timePoss(1)
+Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1)
 
 Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(0 To 8, 0 To 10), intDI%(1), intDS%(1)
 Dim Shared intG9%(1), GL%(1 To 30, 1 To 2), HB%(1)
@@ -317,6 +315,10 @@ Dim Shared NG%(20), O%(120), PA%(2, 9), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim Shared TE%(1), TF%(1), TeamScore%(120), V4%(1, 3), WX%(6)
+
+Dim Shared Z(38), Z1(38), Z2(13, 17)
+
+Dim Shared CRD&(120)
 
 Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
 Dim Shared F$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
@@ -326,6 +328,7 @@ Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A
 Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14)
 Dim Shared G$(3), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
 Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1), strLR$(1, 9, 1)
-Dim Shared O$(50), NN$(0 to 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
+Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
 Dim Shared R$(14), strRB$(1, 17), RP$(30), SITE$(120), SX$(1 To 33, 0 To 1)
 Dim Shared strWR$(1, 20), Y$(1), YN$(1), YR%(1)
+

@@ -100,7 +100,6 @@ Sub ViewSeasonRecords ()
     Shared BRC!(), TRC!()
 
     Color 0, 0
-
     Cls
 
     J = 20
@@ -112,40 +111,54 @@ Sub ViewSeasonRecords ()
     For II = 1 To J:
         Color 15, 4
         Locate 1 + II, 1
-        Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 4: Print String$(2, 177)
+        Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";
+        Color 7, 4: Print String$(2, 177)
     Next
 
     Color 15, 4
-    Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";: Color 7, 4: Print String$(2, 177)
+    Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";
+    Color 7, 4: Print String$(2, 177)
     Locate , 3: Print String$(77, 177)
 
     Color 15
-    Locate 2, 23: Print "******* INDIVIDUAL RECORDS *******"
-    Locate , 4: Print "CATEGORY                PLAYER           TEAM            RECORD"
+    Locate 2, 23
+    Print "******* INDIVIDUAL RECORDS *******"
+    Locate , 4
+    Print "CATEGORY                PLAYER           TEAM            RECORD"
 
     Color 7
 
     For I = 0 To 2
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(3); Tab(28); BRC$(3, 0); Tab(42); BRC$(3, 1); Tab(62); Using "##.#"; BRC!(3)
-    Locate , 4: Print TP$(4); Tab(28); BRC$(4, 0); Tab(42); BRC$(4, 1); Tab(62); Using " ###"; BRC!(4);: Print BRC$(4, 2)
+    Locate , 4
+	Print TP$(3); Tab(28); BRC$(3, 0); Tab(42); BRC$(3, 1); Tab(62); Using "##.#"; BRC!(3)
+    Locate , 4
+	Print TP$(4); Tab(28); BRC$(4, 0); Tab(42); BRC$(4, 1); Tab(62); Using " ###"; BRC!(4);: Print BRC$(4, 2)
 
     For I = 5 To 7
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(8); Tab(28); BRC$(8, 0); Tab(42); BRC$(8, 1); Tab(62); Using "##.#"; BRC!(8)
-    Locate , 4: Print TP$(9); Tab(28); BRC$(9, 0); Tab(42); BRC$(9, 1); Tab(62); Using " ###"; BRC!(9);: Print BRC$(9, 2)
+    Locate , 4
+	Print TP$(8); Tab(28); BRC$(8, 0); Tab(42); BRC$(8, 1); Tab(62); Using "##.#"; BRC!(8)
+    Locate , 4
+	Print TP$(9); Tab(28); BRC$(9, 0); Tab(42); BRC$(9, 1); Tab(62); Using " ###"; BRC!(9);: Print BRC$(9, 2)
 
     For I = 10 To 14
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(15); Tab(28); BRC$(15, 0); Tab(42); BRC$(15, 1); Tab(62); Using "##.#"; BRC!(15)
-    Locate , 4: Print TP$(16); Tab(28); BRC$(16, 0); Tab(42); BRC$(16, 1); Tab(61); Using "###.#"; BRC!(16)
-    Locate , 4: Print TP$(17); Tab(28); BRC$(17, 0); Tab(42); BRC$(17, 1); Tab(62); Using " ###"; BRC!(17);: Print BRC$(17, 2)
+    Locate , 4
+	Print TP$(15); Tab(28); BRC$(15, 0); Tab(42); BRC$(15, 1); Tab(62); Using "##.#"; BRC!(15)
+    Locate , 4
+	Print TP$(16); Tab(28); BRC$(16, 0); Tab(42); BRC$(16, 1); Tab(61); Using "###.#"; BRC!(16)
+    Locate , 4
+	Print TP$(17); Tab(28); BRC$(17, 0); Tab(42); BRC$(17, 1); Tab(62); Using " ###"; BRC!(17);: Print BRC$(17, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -161,24 +174,32 @@ Sub ViewSeasonRecords ()
     Locate 4
 
     For I = 18 To 24
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(25); Tab(28); BRC$(25, 0); Tab(42); BRC$(25, 1); Tab(62); Using "##.#"; BRC!(25)
-    Locate , 4: Print TP$(26); Tab(28); BRC$(26, 0); Tab(42); BRC$(26, 1); Tab(62); Using " ###"; BRC!(26);: Print BRC$(26, 2)
+    Locate , 4
+	Print TP$(25); Tab(28); BRC$(25, 0); Tab(42); BRC$(25, 1); Tab(62); Using "##.#"; BRC!(25)
+    Locate , 4
+	Print TP$(26); Tab(28); BRC$(26, 0); Tab(42); BRC$(26, 1); Tab(62); Using " ###"; BRC!(26);: Print BRC$(26, 2)
 
     For I = 27 To 29
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(30); Tab(28); BRC$(30, 0); Tab(42); BRC$(30, 1); Tab(62); Using "##.#"; BRC!(30)
-    Locate , 4: Print TP$(31); Tab(28); BRC$(31, 0); Tab(42); BRC$(31, 1); Tab(62); Using " ###"; BRC!(31);: Print BRC$(31, 2)
+    Locate , 4
+	Print TP$(30); Tab(28); BRC$(30, 0); Tab(42); BRC$(30, 1); Tab(62); Using "##.#"; BRC!(30)
+    Locate , 4
+	Print TP$(31); Tab(28); BRC$(31, 0); Tab(42); BRC$(31, 1); Tab(62); Using " ###"; BRC!(31);: Print BRC$(31, 2)
 
     For I = 32 To 33
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(34); Tab(28); BRC$(34, 0); Tab(42); BRC$(34, 1); Tab(62); Using "##.#"; BRC!(34)
+    Locate , 4
+	Print TP$(34); Tab(28); BRC$(34, 0); Tab(42); BRC$(34, 1); Tab(62); Using "##.#"; BRC!(34)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -194,23 +215,30 @@ Sub ViewSeasonRecords ()
     Locate 4
 
     For I = 35 To 36
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(37); Tab(28); BRC$(37, 0); Tab(42); BRC$(37, 1); Tab(61); Using "###.#"; BRC!(37)
-    Locate , 4: Print TP$(38); Tab(28); BRC$(38, 0); Tab(42); BRC$(38, 1); Tab(62); Using " ###"; BRC!(38);: Print BRC$(38, 2)
+    Locate , 4
+	Print TP$(37); Tab(28); BRC$(37, 0); Tab(42); BRC$(37, 1); Tab(61); Using "###.#"; BRC!(37)
+    Locate , 4
+	Print TP$(38); Tab(28); BRC$(38, 0); Tab(42); BRC$(38, 1); Tab(62); Using " ###"; BRC!(38);: Print BRC$(38, 2)
 
     For I = 39 To 40
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(41); Tab(28); BRC$(41, 0); Tab(42); BRC$(41, 1); Tab(61); Using "###.#"; BRC!(41)
+    Locate , 4
+	Print TP$(41); Tab(28); BRC$(41, 0); Tab(42); BRC$(41, 1); Tab(61); Using "###.#"; BRC!(41)
 
     For I = 42 To 44
-        Locate , 4: Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Locate , 4
+		Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
     Next
 
-    Locate , 4: Print TP$(45); Tab(28); BRC$(45, 0); Tab(42); BRC$(45, 1); Tab(62); Using " ###"; BRC!(45);: Print BRC$(45, 2)
+    Locate , 4
+	Print TP$(45); Tab(28); BRC$(45, 0); Tab(42); BRC$(45, 1); Tab(62); Using " ###"; BRC!(45);: Print BRC$(45, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -223,51 +251,72 @@ Sub ViewSeasonRecords ()
     Next
 
     Color 0, 0
-
     Cls
 
     J = 20
 
-    Locate 1, 1: Color 15, 1
-    Print " " + Chr$(214); String$(73, 196); Chr$(183) + " ";
-    For II = 1 To J:
-        Color 15, 1: Locate 1 + II, 1: Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";: Color 7, 1: Print String$(2, 177)
+    Locate 1, 1
+
+    Color 15, 4
+    Print " " + Chr$(214); String$(73, 196); "· ";
+
+    For II = 1 To J
+        Color 15, 4
+        Locate 1 + II, 1
+        Print " " + Chr$(186); String$(73, 32); Chr$(186) + " ";
+        Color 7, 4: Print String$(2, 177)
     Next
 
-    Color 15, 1
-    Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";: Color 7, 1: Print String$(2, 177)
+    Color 15, 4
+    Locate 2 + J, 1: Print " " + Chr$(211); String$(73, 196); Chr$(189) + " ";
+    Color 7, 4: Print String$(2, 177)
     Locate , 3: Print String$(77, 177)
 
-    Color 15: Locate 2, 23: Print "******* OFFENSIVE TEAM RECORDS *******"
-    Locate , 4: Print "CATEGORY                   TEAM                  RECORD            "
+    Color 15
+    Locate 2, 21
+    Print "******* OFFENSIVE TEAM RECORDS *******"
+    Locate , 4
+    Print "CATEGORY                   TEAM                  RECORD            "
+
     Color 7
-    Locate , 4: Print TP1$(0); Tab(28); TRC$(0); Tab(53); Using "###.#"; TRC!(0)
-    Locate , 4: Print TP1$(1); Tab(28); TRC$(1); Tab(53); Using "#####"; TRC!(1)
+
+    Locate , 4
+	Print TP1$(0); Tab(28); TRC$(0); Tab(53); Using "###.#"; TRC!(0)
+    Locate , 4
+	Print TP1$(1); Tab(28); TRC$(1); Tab(53); Using "#####"; TRC!(1)
 
     For I = 2 To 3
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next I
 
-    Locate , 4: Print TP1$(4); Tab(28); TRC$(4); Tab(53); Using "#####"; TRC!(4)
+    Locate , 4
+	Print TP1$(4); Tab(28); TRC$(4); Tab(53); Using "#####"; TRC!(4)
 
     For I = 5 To 6
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next I
 
-    Locate , 4: Print TP1$(7); Tab(28); TRC$(7); Tab(53); Using "#####"; TRC!(7)
+    Locate , 4
+	Print TP1$(7); Tab(28); TRC$(7); Tab(53); Using "#####"; TRC!(7)
 
     For I = 8 To 9
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next I
 
     For I = 10 To 11
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
     Next I
 
-    Locate , 4: Print TP1$(12); Tab(28); TRC$(12); Tab(53); Using "#####"; TRC!(12)
+    Locate , 4
+	Print TP1$(12); Tab(28); TRC$(12); Tab(53); Using "#####"; TRC!(12)
 
     For I = 13 To 14
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next I
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -283,18 +332,24 @@ Sub ViewSeasonRecords ()
     Locate 4
 
     For I = 15 To 17
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next I
 
-    Locate , 4: Print TP1$(18); Tab(28); TRC$(18); Tab(53); Using "#####"; TRC!(18)
-    Locate , 4: Print TP1$(19); Tab(28); TRC$(19); Tab(53); Using "###.#"; TRC!(19)
+    Locate , 4
+	Print TP1$(18); Tab(28); TRC$(18); Tab(53); Using "#####"; TRC!(18)
+    Locate , 4
+	Print TP1$(19); Tab(28); TRC$(19); Tab(53); Using "###.#"; TRC!(19)
 
     For I = 20 To 22
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "#####"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "#####"; TRC!(I)
     Next I
 
-    Locate , 4: Print TP1$(23); Tab(28); TRC$(23); Tab(53); Using "###.#"; TRC!(23)
-    Locate , 4: Print TP1$(24); Tab(28); TRC$(24); Tab(53); Using "###.#"; TRC!(24)
+    Locate , 4
+	Print TP1$(23); Tab(28); TRC$(23); Tab(53); Using "###.#"; TRC!(23)
+    Locate , 4
+	Print TP1$(24); Tab(28); TRC$(24); Tab(53); Using "###.#"; TRC!(24)
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
@@ -305,32 +360,43 @@ Sub ViewSeasonRecords ()
         Print Space$(72)
     Next
 
-    Color 15: Locate 2, 23: Print "******* DEFENSIVE TEAM RECORDS *******"
-    Locate , 4: Print "CATEGORY                   TEAM                  RECORD            "
+    Color 15
+    Locate 2, 21
+    Print "******* DEFENSIVE TEAM RECORDS *******"
+    Locate , 4
+    Print "CATEGORY                   TEAM                  RECORD            "
 
     Color 7
 
-    Locate , 4: Print TP1$(25); Tab(28); TRC$(25); Tab(53); Using "###.#"; TRC!(25)
-    Locate , 4: Print TP1$(26); Tab(28); TRC$(26); Tab(53); Using "#####"; TRC!(26)
+    Locate , 4
+	Print TP1$(25); Tab(28); TRC$(25); Tab(53); Using "###.#"; TRC!(25)
+    Locate , 4
+	Print TP1$(26); Tab(28); TRC$(26); Tab(53); Using "#####"; TRC!(26)
 
     For I = 27 To 29
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next
 
-    Locate , 4: Print TP1$(30); Tab(28); TRC$(30); Tab(53); Using "#####"; TRC!(30)
+    Locate , 4
+	Print TP1$(30); Tab(28); TRC$(30); Tab(53); Using "#####"; TRC!(30)
 
     For I = 31 To 32
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next
 
-    Locate , 4: Print TP1$(33); Tab(28); TRC$(33); Tab(53); Using "#####"; TRC!(33)
+    Locate , 4
+	Print TP1$(33); Tab(28); TRC$(33); Tab(53); Using "#####"; TRC!(33)
 
     For I = 34 To 35
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next
 
     For I = 36 To 37
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
     Next
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -345,13 +411,18 @@ Sub ViewSeasonRecords ()
     Color 7
     Locate 4
 
-    Locate , 4: Print TP1$(38); Tab(28); TRC$(38); Tab(53); Using "#####"; TRC!(38)
-    Locate , 4: Print TP1$(39); Tab(28); TRC$(39); Tab(53); Using "###.#"; TRC!(39)
-    Locate , 4: Print TP1$(40); Tab(28); TRC$(40); Tab(53); Using "#####"; TRC!(40)
-    Locate , 4: Print TP1$(41); Tab(28); TRC$(41); Tab(53); Using "###.#"; TRC!(41)
+    Locate , 4
+	Print TP1$(38); Tab(28); TRC$(38); Tab(53); Using "#####"; TRC!(38)
+    Locate , 4
+	Print TP1$(39); Tab(28); TRC$(39); Tab(53); Using "###.#"; TRC!(39)
+    Locate , 4
+	Print TP1$(40); Tab(28); TRC$(40); Tab(53); Using "#####"; TRC!(40)
+    Locate , 4
+	Print TP1$(41); Tab(28); TRC$(41); Tab(53); Using "###.#"; TRC!(41)
 
     For I = 42 To 43
-        Locate , 4: Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Locate , 4
+		Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
     Next
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"

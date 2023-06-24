@@ -2611,7 +2611,7 @@ Sub FOOTBALL ()
                             U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
                             Call PBP
 
-                            If Y < 20 Then Y = fileLength& / 2: K(P1, 12) = K(P1, 12) + fileLength& / 2
+                            If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
                             K(P1, 11) = K(P1, 11) + 1
 
@@ -3141,9 +3141,9 @@ Sub FOOTBALL ()
                 K(P1, 11) = K(P1, 11) + 1
 
                 If Y < 30 Then
-                    Y1 = Y1 + fileLength& / 2
-                    Y = Y - fileLength& / 2
-                    K(P1, 12) = K(P1, 12) + fileLength& / 2
+                    Y1 = Y1 + Y / 2
+                    Y = Y - Y / 2
+                    K(P1, 12) = K(P1, 12) + Y / 2
                 Else
                     Y1 = Y1 + 15
                     Y = Y - 15
@@ -3402,9 +3402,9 @@ Sub FOOTBALL ()
     'OFF PEN
 
     3326 If Y < P * 2 Then
-        Y1 = Y1 + fileLength& / 2
-        Y = Y - fileLength& / 2
-        K(P1, 12) = K(P1, 12) + fileLength& / 2
+        Y1 = Y1 + Y / 2
+        Y = Y - Y / 2
+        K(P1, 12) = K(P1, 12) + Y / 2
     Else
         Y1 = Y1 + P
         Y = Y - P
@@ -3865,7 +3865,7 @@ Sub FOOTBALL ()
         U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
         Call PBP
 
-        If Y < 20 Then Y = fileLength& / 2: K(P1, 12) = K(P1, 12) + fileLength& / 2
+        If Y < 20 Then Y = Y / 2: K(P1, 12) = K(P1, 12) + Y / 2
 
         K(P1, 11) = K(P1, 11) + 1
 

@@ -90,7 +90,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared CRD!()
     Shared K!(), K2!(), PK!(), W6!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
-    Shared Z!(), Z1!(), Z2!()
+    Shared statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsO%(), statsT%(), lookyP%()
     Shared lookyP%(), statsPA%()
@@ -192,11 +192,11 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     For I = 0 To 1: Input #1, lookyA7$(PX, I): Next I
     For J = 0 To 13
-        For K = 0 To 17: Input #1, Z2!(J, K): Next K
+        For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
     Next J
 
-    For L = 0 To 38: Input #1, Z!(L): Next L
-    For L = 0 To 38: Input #1, Z1!(L): Next L
+    For L = 0 To 38: Input #1, statsZ!(L): Next L
+    For L = 0 To 38: Input #1, statsZ1!(L): Next L
     For J = 0 To 9: Input #1, lookyDI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
     For J = 0 To 14: Input #1, lookyDS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
     For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
@@ -210,16 +210,16 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Close #1
 
     For J = 0 To 13
-        For K = 0 To 17: K2!(PX, J, K) = Z2!(J, K): Next K
+        For K = 0 To 17: K2!(PX, J, K) = statsZ2!(J, K): Next K
     Next J
 
-    For M = 0 To 12: K!(0, M) = Z!(M): Next M
-    For M = 0 To 12: K!(1, M) = Z1!(M): Next M
+    For M = 0 To 12: K!(0, M) = statsZ!(M): Next M
+    For M = 0 To 12: K!(1, M) = statsZ1!(M): Next M
 
-    W6!(0, 0) = Z!(13)
-    W6!(0, 1) = Z!(14)
-    W6!(1, 0) = Z1!(13)
-    W6!(1, 1) = Z1!(14)
+    W6!(0, 0) = statsZ!(13)
+    W6!(0, 1) = statsZ!(14)
+    W6!(1, 0) = statsZ1!(13)
+    W6!(1, 1) = statsZ1!(14)
 
 End Sub
 
@@ -329,7 +329,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
-    Shared PK!(), W6!(), Z!(), Z1!(), Z2!()
+    Shared PK!(), W6!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsO%(), statsPA%(), statsT%(), lookyP%()
 
@@ -424,18 +424,18 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
     Color 15
     Print teamName$;
-    Locate , 30: Print Using " ###  ###  ###  ###   ###"; Z!(32); Z!(33); Z!(34); Z!(35); Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)
+    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsZ!(32); statsZ!(33); statsZ!(34); statsZ!(35); statsZ!(32) + statsZ!(33) + statsZ!(34) + statsZ!(35) + statsZ!(36)
     Print "OPPONENTS";
-    Locate , 30: Print Using " ###  ###  ###  ###   ###"; Z1!(32); Z1!(33); Z1!(34); Z1!(35); Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)
+    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsZ1!(32); statsZ1!(33); statsZ1!(34); statsZ1!(35); statsZ1!(32) + statsZ1!(33) + statsZ1!(34) + statsZ1!(35) + statsZ!(36)
     Print
 
     Color 14
     Print "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
     Color 15
     Print teamName$;
-    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z!(32) / totalGames%; Z!(33) / totalGames%; Z!(34) / totalGames%; Z!(35) / totalGames%; (Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)) / totalGames%
+    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsZ!(32) / totalGames%; statsZ!(33) / totalGames%; statsZ!(34) / totalGames%; statsZ!(35) / totalGames%; (statsZ!(32) + statsZ!(33) + statsZ!(34) + statsZ!(35) + statsZ!(36)) / totalGames%
     Print "OPPONENTS";
-    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z1!(32) / totalGames%; Z1!(33) / totalGames%; Z1!(34) / totalGames%; Z1!(35) / totalGames%; (Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)) / totalGames%
+    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsZ1!(32) / totalGames%; statsZ1!(33) / totalGames%; statsZ1!(34) / totalGames%; statsZ1!(35) / totalGames%; (statsZ1!(32) + statsZ1!(33) + statsZ1!(34) + statsZ1!(35) + statsZ!(36)) / totalGames%
     Print
 
     'H = Home; A = Away; N = Neutral; T = Total
@@ -572,39 +572,39 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 7
 
     Print "KICKOFF RETURNS / KICKOFF RETURN YARDS"; Tab(41);
-    Print Using "###"; Z!(22);: Print "/";: Print Using "####"; Z!(23);
-    Print Tab(61); Using "###"; Z1!(22);: Print "/";: Print Using "####"; Z1!(23)
+    Print Using "###"; statsZ!(22);: Print "/";: Print Using "####"; statsZ!(23);
+    Print Tab(61); Using "###"; statsZ1!(22);: Print "/";: Print Using "####"; statsZ1!(23)
 
     Print "AVERAGE YARDAGE PER KICKOFF RETURN"; Tab(45);
-    If Z!(22) <> 0 Then Print Using "##.#"; Z!(23) / Z!(22);
-    If Z1!(22) <> 0 Then Print Tab(65); Using "##.#"; Z1!(23) / Z1!(22)
-    If Z1!(22) = 0 Then Print
+    If statsZ!(22) <> 0 Then Print Using "##.#"; statsZ!(23) / statsZ!(22);
+    If statsZ1!(22) <> 0 Then Print Tab(65); Using "##.#"; statsZ1!(23) / statsZ1!(22)
+    If statsZ1!(22) = 0 Then Print
 
     Print "KICKOFF RETURNS PER GAME"; Tab(45);
-    Print Using "##.#"; Z!(22) / totalGames%;: Print Tab(65); Using "##.#"; Z1!(22) / totalGames%
+    Print Using "##.#"; statsZ!(22) / totalGames%;: Print Tab(65); Using "##.#"; statsZ1!(22) / totalGames%
 
     Print "PUNT RETURNS / PUNT RETURN YARDS"; Tab(41);
-    Print Using "###"; Z!(24);: Print "/";: Print Using "####"; Z!(25);
-    Print Tab(61); Using "###"; Z1!(24);: Print "/";: Print Using "####"; Z1!(25)
+    Print Using "###"; statsZ!(24);: Print "/";: Print Using "####"; statsZ!(25);
+    Print Tab(61); Using "###"; statsZ1!(24);: Print "/";: Print Using "####"; statsZ1!(25)
 
     Print "AVERAGE YARDAGE PER PUNT RETURN"; Tab(45);
-    If Z!(24) <> 0 Then Print Using "##.#"; Z!(25) / Z!(24);
-    If Z1!(24) <> 0 Then Print Tab(65); Using "##.#"; Z1!(25) / Z1!(24)
-    If Z1!(24) = 0 Then Print
+    If statsZ!(24) <> 0 Then Print Using "##.#"; statsZ!(25) / statsZ!(24);
+    If statsZ1!(24) <> 0 Then Print Tab(65); Using "##.#"; statsZ1!(25) / statsZ1!(24)
+    If statsZ1!(24) = 0 Then Print
 
     Print "PUNT RETURNS PER GAME"; Tab(45);
-    Print Using "##.#"; Z!(24) / totalGames%;: Print Tab(65); Using "##.#"; Z1!(24) / totalGames%
+    Print Using "##.#"; statsZ!(24) / totalGames%;: Print Tab(65); Using "##.#"; statsZ1!(24) / totalGames%
 
     Print "INTERCEPTION RETURNS / RETURN YARDS"; Tab(41);
-    Print Using "###"; Z!(26);: Print "/";: Print Using "####"; Z!(27);
-    Print Tab(61); Using "###"; Z1!(26);: Print "/";: Print Using "####"; Z1!(27)
+    Print Using "###"; statsZ!(26);: Print "/";: Print Using "####"; statsZ!(27);
+    Print Tab(61); Using "###"; statsZ1!(26);: Print "/";: Print Using "####"; statsZ1!(27)
 
     Print "AVERAGE YARDAGE PER RETURN"; Tab(45);
-    If Z!(26) <> 0 Then Print Using "##.#"; Z!(27) / Z!(26);
-    If Z1!(26) <> 0 Then Print Tab(65); Using "##.#"; Z1!(27) / Z1!(26)
-    If Z1!(26) = 0 Then Print
+    If statsZ!(26) <> 0 Then Print Using "##.#"; statsZ!(27) / statsZ!(26);
+    If statsZ1!(26) <> 0 Then Print Tab(65); Using "##.#"; statsZ1!(27) / statsZ1!(26)
+    If statsZ1!(26) = 0 Then Print
 
-    Print "INTERCEPTION RETURNS PER GAME"; Tab(45);: Print Using "##.#"; Z!(26) / totalGames%;: Print Tab(65); Using "##.#"; Z1!(26) / totalGames%
+    Print "INTERCEPTION RETURNS PER GAME"; Tab(45);: Print Using "##.#"; statsZ!(26) / totalGames%;: Print Tab(65); Using "##.#"; statsZ1!(26) / totalGames%
     Print
 
     Print "PUNTS / TOTAL PUNT YARDAGE"; Tab(41);
@@ -636,7 +636,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print Using "##.#"; K!(0, 11) / totalGames%;: Print "/";: Print Using "##.#"; K!(0, 12) / totalGames%;
     Print Tab(60); Using "##.#"; K!(1, 11) / totalGames%;: Print "/";: Print Using "##.#"; K!(1, 12) / totalGames%
 
-    Print "SAFETIES"; Tab(45);: Print Using "####"; Z!(21);: Print Tab(65); Using "####"; Z1!(21)
+    Print "SAFETIES"; Tab(45);: Print Using "####"; statsZ!(21);: Print Tab(65); Using "####"; statsZ1!(21)
 
     Print "TIMES SACKED / YARDS LOST"; Tab(41);
     Print Using "###"; W6!(0, 0);: Print "/";: Print Using "####"; W6!(0, 1);
@@ -693,16 +693,16 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print teamName$; Tab(18);
 
     If statFormat = 0 Then
-        Print Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / totalGames%; Z!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / totalGames%; statsZ!(15)
     Else
-        Print Using "####  ####   ##.#      ###.#    ##"; K!(0, 1) - W6!(0, 0); K!(0, 2) + W6!(0, 1); (K!(0, 2) + W6!(0, 1)) / (K!(0, 1) - W6!(0, 0)); (K!(0, 2) + W6!(0, 1)) / totalGames%; Z!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; K!(0, 1) - W6!(0, 0); K!(0, 2) + W6!(0, 1); (K!(0, 2) + W6!(0, 1)) / (K!(0, 1) - W6!(0, 0)); (K!(0, 2) + W6!(0, 1)) / totalGames%; statsZ!(15)
     End If
 
     Print "OPPONENT TOTALS"; Tab(18);
     If statFormat = 0 Then
-        Print Using "####  ####   ##.#      ###.#    ##"; K!(1, 1); K!(1, 2); K!(1, 2) / K!(1, 1); K!(1, 2) / totalGames%; Z1!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; K!(1, 1); K!(1, 2); K!(1, 2) / K!(1, 1); K!(1, 2) / totalGames%; statsZ1!(15)
     Else
-        Print Using "####  ####   ##.#      ###.#    ##"; K!(1, 1) - W6!(1, 0); K!(1, 2) + W6!(1, 1); (K!(1, 2) + W6!(1, 1)) / (K!(1, 1) - W6!(1, 0)); (K!(1, 2) + W6!(1, 1)) / totalGames%; Z1!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; K!(1, 1) - W6!(1, 0); K!(1, 2) + W6!(1, 1); (K!(1, 2) + W6!(1, 1)) / (K!(1, 1) - W6!(1, 0)); (K!(1, 2) + W6!(1, 1)) / totalGames%; statsZ1!(15)
     End If
 
     I$ = GetKeyPress$
@@ -752,12 +752,12 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Print Using "####  ####   "; K!(0, 4); K!(0, 6);
     If K!(0, 4) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 6) / K!(0, 4);
-    Print Using "      ###.#    ##"; K!(0, 6) / totalGames%; Z!(17)
+    Print Using "      ###.#    ##"; K!(0, 6) / totalGames%; statsZ!(17)
 
     Print "OPPONENT TOTALS"; Tab(18);
     Print Using "####  ####   "; K!(1, 4); K!(1, 6);
     If K!(1, 4) = 0 Then Print "  --"; Else Print Using "##.#"; K!(1, 6) / K!(1, 4);
-    Print Using "      ###.#    ##"; K!(1, 6) / totalGames%; Z1!(17)
+    Print Using "      ###.#    ##"; K!(1, 6) / totalGames%; statsZ1!(17)
 
     I$ = GetKeyPress$
     Cls
@@ -818,7 +818,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     If K!(0, 4) = 0 Then Print "   --"; Else Print Using " ##.#"; K!(0, 6) / K!(0, 4);
 
     'Yds / Gm, TD, INT
-    Print Using " ###.# ### ### ###.#     "; K!(0, 6) / totalGames%; Z!(17); K!(0, 5);
+    Print Using " ###.# ### ### ###.#     "; K!(0, 6) / totalGames%; statsZ!(17); K!(0, 5);
 
     'INT %
     If K!(0, 3) = 0 Then Print "   --" Else Print Using "  #.#"; K!(0, 5) / K!(0, 3) * 100
@@ -841,7 +841,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     If K!(1, 4) = 0 Then Print "   --"; Else Print Using " ##.#"; K!(1, 6) / K!(1, 4);
 
     'Yds / Gm, TD, INT
-    Print Using " ###.# ### ### ###.#     "; K!(1, 6) / totalGames%; Z1!(17); K!(1, 5);
+    Print Using " ###.# ### ### ###.#     "; K!(1, 6) / totalGames%; statsZ1!(17); K!(1, 5);
 
     'INT %
     If K!(1, 3) = 0 Then Print "   --" Else Print Using "  #.#"; K!(1, 5) / K!(1, 3) * 100
@@ -888,10 +888,10 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
     Color 14
     Print teamName$; Tab(18);
-    If Z!(22) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z!(22); Z!(23); Z!(23) / Z!(22); Z!(23) / totalGames%; Z!(18)
+    If statsZ!(22) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; statsZ!(22); statsZ!(23); statsZ!(23) / statsZ!(22); statsZ!(23) / totalGames%; statsZ!(18)
 
     Print "OPPONENT TOTALS"; Tab(18);
-    If Z1!(22) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z1!(22); Z1!(23); Z1!(23) / Z1!(22); Z1!(23) / totalGames%; Z1!(18)
+    If statsZ1!(22) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; statsZ1!(22); statsZ1!(23); statsZ1!(23) / statsZ1!(22); statsZ1!(23) / totalGames%; statsZ1!(18)
     Print
     Print
     Print
@@ -915,10 +915,10 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
     Color 14
     Print teamName$; Tab(18);
-    If Z!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z!(24); Z!(25); Z!(25) / Z!(24); Z!(25) / totalGames%; Z!(19)
+    If statsZ!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; statsZ!(24); statsZ!(25); statsZ!(25) / statsZ!(24); statsZ!(25) / totalGames%; statsZ!(19)
 
     Print "OPPONENT TOTALS"; Tab(18);
-    If Z1!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; Z1!(24); Z1!(25); Z1!(25) / Z1!(24); Z1!(25) / totalGames%; Z1!(19)
+    If statsZ1!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; statsZ1!(24); statsZ1!(25); statsZ1!(25) / statsZ1!(24); statsZ1!(25) / totalGames%; statsZ1!(19)
 
     I$ = GetKeyPress$
     Cls
@@ -932,11 +932,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 15
     Print lookyA6$(I, 0); Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
     If K!(0, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 8) / K!(0, 7);
-    Print Using "    ##.#      ##     ##      ##"; K!(0, 7) / totalGames%; Z!(31); Z!(30); Z!(28)
+    Print Using "    ##.#      ##     ##      ##"; K!(0, 7) / totalGames%; statsZ!(31); statsZ!(30); statsZ!(28)
 
     Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; K!(1, 7); K!(1, 8);
     If K!(1, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(1, 8) / K!(1, 7);
-    Print Using "    ##.#      ##     ##"; K!(1, 7) / totalGames%; Z1!(31); Z1!(30)
+    Print Using "    ##.#      ##     ##"; K!(1, 7) / totalGames%; statsZ1!(31); statsZ1!(30)
 
     Print
     Print
@@ -946,11 +946,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 15
     Print teamName$; Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
     If K!(0, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 8) / K!(0, 7);
-    Print Using "    ###       ####        ##.#     ##.#"; Z1!(24); Z1!(25); Z1!(25) / Z1!(24); (K!(0, 8) - Z1!(25)) / K!(0, 7)
+    Print Using "    ###       ####        ##.#     ##.#"; statsZ1!(24); statsZ1!(25); statsZ1!(25) / statsZ1!(24); (K!(0, 8) - statsZ1!(25)) / K!(0, 7)
 
     Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; K!(1, 7); K!(1, 8);
     If K!(1, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(1, 8) / K!(1, 7);
-    Print Using "    ###       ####        ##.#     ##.#"; Z!(24); Z!(25); Z!(25) / Z!(24); (K!(1, 8) - Z!(25)) / K!(1, 7)
+    Print Using "    ###       ####        ##.#     ##.#"; statsZ!(24); statsZ!(25); statsZ!(25) / statsZ!(24); (K!(1, 8) - statsZ!(25)) / K!(1, 7)
 
     Print
     Print
@@ -1058,7 +1058,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
-    Shared PK!(), W6!(), Z!(), Z1!(), Z2!()
+    Shared PK!(), W6!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsO%(), statsT%(), lookyP%()
 
@@ -1103,14 +1103,14 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #2,
     Print #2,
     Print #2, "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
-    Print #2, teamName$; Tab(30); Using " ###  ###  ###  ###   ###"; Z!(32); Z!(33); Z!(34); Z!(35); Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)
-    Print #2, "OPPONENTS"; Tab(30); Using " ###  ###  ###  ###   ###"; Z1!(32); Z1!(33); Z1!(34); Z1!(35); Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)
+    Print #2, teamName$; Tab(30); Using " ###  ###  ###  ###   ###"; statsZ!(32); statsZ!(33); statsZ!(34); statsZ!(35); statsZ!(32) + statsZ!(33) + statsZ!(34) + statsZ!(35) + statsZ!(36)
+    Print #2, "OPPONENTS"; Tab(30); Using " ###  ###  ###  ###   ###"; statsZ1!(32); statsZ1!(33); statsZ1!(34); statsZ1!(35); statsZ1!(32) + statsZ1!(33) + statsZ1!(34) + statsZ1!(35) + statsZ!(36)
     Print #2,
 
     '-- Would totalGames% ever be 0?
     Print #2, "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
-    Print #2, teamName$; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z!(32) / totalGames%; Z!(33) / totalGames%; Z!(34) / totalGames%; Z!(35) / totalGames%; (Z!(32) + Z!(33) + Z!(34) + Z!(35) + Z!(36)) / totalGames%
-    Print #2, "OPPONENTS"; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; Z1!(32) / totalGames%; Z1!(33) / totalGames%; Z1!(34) / totalGames%; Z1!(35) / totalGames%; (Z1!(32) + Z1!(33) + Z1!(34) + Z1!(35) + Z!(36)) / totalGames%
+    Print #2, teamName$; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsZ!(32) / totalGames%; statsZ!(33) / totalGames%; statsZ!(34) / totalGames%; statsZ!(35) / totalGames%; (statsZ!(32) + statsZ!(33) + statsZ!(34) + statsZ!(35) + statsZ!(36)) / totalGames%
+    Print #2, "OPPONENTS"; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsZ1!(32) / totalGames%; statsZ1!(33) / totalGames%; statsZ1!(34) / totalGames%; statsZ1!(35) / totalGames%; (statsZ1!(32) + statsZ1!(33) + statsZ1!(34) + statsZ1!(35) + statsZ!(36)) / totalGames%
     Print #2,
 
     HD = 0: AD = 0: ND = 0: TD = 0
@@ -1230,52 +1230,52 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Print #2,
     Print #2, "KICKOFF RETURNS / KICKOFF RETURN YARDS"; Tab(41);
-    Print #2, Using "###"; Z!(22);: Print #2, "/";: Print #2, Using "####"; Z!(23);
-    Print #2, Tab(61); Using "###"; Z1!(22);: Print #2, "/";: Print #2, Using "####"; Z1!(23)
+    Print #2, Using "###"; statsZ!(22);: Print #2, "/";: Print #2, Using "####"; statsZ!(23);
+    Print #2, Tab(61); Using "###"; statsZ1!(22);: Print #2, "/";: Print #2, Using "####"; statsZ1!(23)
 
     Print #2, "AVERAGE YARDAGE PER KICKOFF RETURN"; Tab(45);
-    If Z!(22) <> 0 Then Print #2, Using "##.#"; Z!(23) / Z!(22);
-    If Z1!(22) <> 0 Then
-        Print #2, Tab(65); Using "##.#"; Z1!(23) / Z1!(22)
+    If statsZ!(22) <> 0 Then Print #2, Using "##.#"; statsZ!(23) / statsZ!(22);
+    If statsZ1!(22) <> 0 Then
+        Print #2, Tab(65); Using "##.#"; statsZ1!(23) / statsZ1!(22)
     Else
         Print #2,
     End If
 
     Print #2, "KICKOFF RETURNS PER GAME"; Tab(45);
-    Print #2, Using "##.#"; Z!(22) / totalGames%;
-    Print #2, Tab(65); Using "##.#"; Z1!(22) / totalGames%
+    Print #2, Using "##.#"; statsZ!(22) / totalGames%;
+    Print #2, Tab(65); Using "##.#"; statsZ1!(22) / totalGames%
 
     Print #2, "PUNT RETURNS / PUNT RETURN YARDS"; Tab(41);
-    Print #2, Using "###"; Z!(24);: Print #2, "/";: Print #2, Using "####"; Z!(25);
-    Print #2, Tab(61); Using "###"; Z1!(24);: Print #2, "/";: Print #2, Using "####"; Z1!(25)
+    Print #2, Using "###"; statsZ!(24);: Print #2, "/";: Print #2, Using "####"; statsZ!(25);
+    Print #2, Tab(61); Using "###"; statsZ1!(24);: Print #2, "/";: Print #2, Using "####"; statsZ1!(25)
 
     Print #2, "AVERAGE YARDAGE PER PUNT RETURN"; Tab(45);
-    If Z!(24) <> 0 Then Print #2, Using "##.#"; Z!(25) / Z!(24);
-    If Z1!(24) <> 0 Then
-        Print #2, Tab(65); Using "##.#"; Z1!(25) / Z1!(24)
+    If statsZ!(24) <> 0 Then Print #2, Using "##.#"; statsZ!(25) / statsZ!(24);
+    If statsZ1!(24) <> 0 Then
+        Print #2, Tab(65); Using "##.#"; statsZ1!(25) / statsZ1!(24)
     Else
         Print #2,
     End If
 
     Print #2, "PUNT RETURNS PER GAME"; Tab(45);
-    Print #2, Using "##.#"; Z!(24) / totalGames%;
-    Print #2, Tab(65); Using "##.#"; Z1!(24) / totalGames%
+    Print #2, Using "##.#"; statsZ!(24) / totalGames%;
+    Print #2, Tab(65); Using "##.#"; statsZ1!(24) / totalGames%
 
     Print #2, "INTERCEPTION RETURNS / RETURN YARDS"; Tab(41);
-    Print #2, Using "###"; Z!(26);: Print #2, "/";: Print #2, Using "####"; Z!(27);
-    Print #2, Tab(61); Using "###"; Z1!(26);: Print #2, "/";: Print #2, Using "####"; Z1!(27)
+    Print #2, Using "###"; statsZ!(26);: Print #2, "/";: Print #2, Using "####"; statsZ!(27);
+    Print #2, Tab(61); Using "###"; statsZ1!(26);: Print #2, "/";: Print #2, Using "####"; statsZ1!(27)
 
     Print #2, "AVERAGE YARDAGE PER RETURN"; Tab(45);
-    If Z!(26) <> 0 Then Print #2, Using "##.#"; Z!(27) / Z!(26);
-    If Z1!(26) <> 0 Then
-        Print #2, Tab(65); Using "##.#"; Z1!(27) / Z1!(26)
+    If statsZ!(26) <> 0 Then Print #2, Using "##.#"; statsZ!(27) / statsZ!(26);
+    If statsZ1!(26) <> 0 Then
+        Print #2, Tab(65); Using "##.#"; statsZ1!(27) / statsZ1!(26)
     Else
         Print #2,
     End If
 
     Print #2, "INTERCEPTION RETURNS PER GAME"; Tab(45);
-    Print #2, Using "##.#"; Z!(26) / totalGames%;
-    Print #2, Tab(65); Using "##.#"; Z1!(26) / totalGames%
+    Print #2, Using "##.#"; statsZ!(26) / totalGames%;
+    Print #2, Tab(65); Using "##.#"; statsZ1!(26) / totalGames%
 
     Print #2,
 
@@ -1317,8 +1317,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #2, Tab(60); Using "##.#"; K!(1, 11) / totalGames%;: Print #2, "/";: Print #2, Using "##.#"; K!(1, 12) / totalGames%
 
     Print #2, "SAFETIES"; Tab(45);
-    Print #2, Using "####"; Z!(21);
-    Print #2, Tab(65); Using "####"; Z1!(21)
+    Print #2, Using "####"; statsZ!(21);
+    Print #2, Tab(65); Using "####"; statsZ1!(21)
 
     Print #2, "TIMES SACKED / YARDS LOST"; Tab(41);
     Print #2, Using "###"; W6!(0, 0);: Print #2, "/";: Print #2, Using "####"; W6!(0, 1);
@@ -1362,12 +1362,12 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Next I1
 
     Print #2, teamName$; Tab(18);
-    If statFormat = 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / totalGames%; Z!(15)
-    If statFormat <> 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1) - W6!(0, 0); K!(0, 2) + W6!(0, 1); (K!(0, 2) + W6!(0, 1)) / (K!(0, 1) - W6!(0, 0)); (K!(0, 2) + W6!(0, 1)) / totalGames%; Z!(15)
+    If statFormat = 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1); K!(0, 2); K!(0, 2) / K!(0, 1); K!(0, 2) / totalGames%; statsZ!(15)
+    If statFormat <> 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(0, 1) - W6!(0, 0); K!(0, 2) + W6!(0, 1); (K!(0, 2) + W6!(0, 1)) / (K!(0, 1) - W6!(0, 0)); (K!(0, 2) + W6!(0, 1)) / totalGames%; statsZ!(15)
 
     Print #2, "OPPONENT TOTALS"; Tab(18);
-    If statFormat = 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(1, 1); K!(1, 2); K!(1, 2) / K!(1, 1); K!(1, 2) / totalGames%; Z1!(15)
-    If statFormat <> 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(1, 1) - W6!(1, 0); K!(1, 2) + W6!(1, 1); (K!(1, 2) + W6!(1, 1)) / (K!(1, 1) - W6!(1, 0)); (K!(1, 2) + W6!(1, 1)) / totalGames%; Z1!(15)
+    If statFormat = 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(1, 1); K!(1, 2); K!(1, 2) / K!(1, 1); K!(1, 2) / totalGames%; statsZ1!(15)
+    If statFormat <> 0 Then Print #2, Using "####  ####   ##.#      ###.#    ##"; K!(1, 1) - W6!(1, 0); K!(1, 2) + W6!(1, 1); (K!(1, 2) + W6!(1, 1)) / (K!(1, 1) - W6!(1, 0)); (K!(1, 2) + W6!(1, 1)) / totalGames%; statsZ1!(15)
 
     Print #2,
     Print #2, "RECEIVING         REC   YDS  YDS/REC  YDS/GAME   TD  LONG REC  AGAINST"
@@ -1397,13 +1397,13 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     If K!(0, 4) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K!(0, 6) / K!(0, 4);
 
-    Print #2, Using "      ###.#    ##"; K!(0, 6) / totalGames%; Z!(17)
+    Print #2, Using "      ###.#    ##"; K!(0, 6) / totalGames%; statsZ!(17)
     Print #2, "OPPONENT TOTALS"; Tab(18);
     Print #2, Using "####  ####   "; K!(1, 4); K!(1, 6);
 
     If K!(1, 4) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K!(1, 6) / K!(1, 4);
 
-    Print #2, Using "      ###.#    ##"; K!(1, 6) / totalGames%; Z1!(17)
+    Print #2, Using "      ###.#    ##"; K!(1, 6) / totalGames%; statsZ1!(17)
 
     Print #2,
     Print #2, "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
@@ -1428,7 +1428,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     If K!(0, 3) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K!(0, 6) / K!(0, 3);
     If K!(0, 4) = 0 Then Print #2, "   --"; Else Print #2, Using " ##.#"; K!(0, 6) / K!(0, 4);
 
-    Print #2, Using " ###.# ### ### "; K!(0, 6) / totalGames%; Z!(17); K!(0, 5);
+    Print #2, Using " ###.# ### ### "; K!(0, 6) / totalGames%; statsZ!(17); K!(0, 5);
 
     If K!(0, 3) = 0 Then Print #2, "   --"; Else Print #2, Using "###.#     "; K!(0, 5) / K!(0, 3) * 100
 
@@ -1442,7 +1442,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     If K!(1, 3) = 0 Then Print #2, "  --"; Else Print #2, Using "##.#"; K!(1, 6) / K!(1, 3);
     If K!(1, 4) = 0 Then Print #2, "  --"; Else Print #2, Using " ##.#"; K!(1, 6) / K!(1, 4);
 
-    Print #2, Using " ###.# ### ### "; K!(1, 6) / totalGames%; Z1!(17); K!(1, 5);
+    Print #2, Using " ###.# ### ### "; K!(1, 6) / totalGames%; statsZ1!(17); K!(1, 5);
 
     If K!(1, 3) = 0 Then Print #2, "   --" Else Print #2, Using "###.#     "; K!(1, 5) / K!(1, 3) * 100
 
@@ -1474,11 +1474,11 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Print #2, teamName$; Tab(18);
 
-    If Z!(22) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z!(22); Z!(23); Z!(23) / Z!(22); Z!(23) / totalGames%; Z!(18)
+    If statsZ!(22) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; statsZ!(22); statsZ!(23); statsZ!(23) / statsZ!(22); statsZ!(23) / totalGames%; statsZ!(18)
 
     Print #2, "OPPONENT TOTALS"; Tab(18);
 
-    If Z1!(22) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z1!(22); Z1!(23); Z1!(23) / Z1!(22); Z1!(23) / totalGames%; Z1!(18)
+    If statsZ1!(22) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; statsZ1!(22); statsZ1!(23); statsZ1!(23) / statsZ1!(22); statsZ1!(23) / totalGames%; statsZ1!(18)
 
     Print #2,
     Print #2,
@@ -1499,25 +1499,25 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Print #2, teamName$; Tab(18);
 
-    If Z!(24) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z!(24); Z!(25); Z!(25) / Z!(24); Z!(25) / totalGames%; Z!(19)
+    If statsZ!(24) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; statsZ!(24); statsZ!(25); statsZ!(25) / statsZ!(24); statsZ!(25) / totalGames%; statsZ!(19)
 
     Print #2, "OPPONENT TOTALS"; Tab(18);
 
-    If Z1!(24) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; Z1!(24); Z1!(25); Z1!(25) / Z1!(24); Z1!(25) / totalGames%; Z1!(19)
+    If statsZ1!(24) = 0 Then Print #2, "   0     0   --.-        -.-     0" Else Print #2, Using "####  ####   ##.#      ###.#    ##"; statsZ1!(24); statsZ1!(25); statsZ1!(25) / statsZ1!(24); statsZ1!(25) / totalGames%; statsZ1!(19)
 
     Print #2,
 
     I = 0
 
     Print #2, "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
-    Print #2, lookyA6$(I, 0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); K!(0, 7) / totalGames%; Z!(31); Z!(30); Z!(28)
-    Print #2, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); K!(1, 7) / totalGames%; Z1!(31); Z1!(30)
+    Print #2, lookyA6$(I, 0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); K!(0, 7) / totalGames%; statsZ!(31); statsZ!(30); statsZ!(28)
+    Print #2, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); K!(1, 7) / totalGames%; statsZ1!(31); statsZ1!(30)
     Print #2,
     Print #2,
     Print #2,
     Print #2, "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
-    Print #2, teamName$; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); Z1!(24); Z1!(25); Z1!(25) / Z1!(24); (K!(0, 8) - Z1!(25)) / K!(0, 7)
-    Print #2, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); Z!(24); Z!(25); Z!(25) / Z!(24); (K!(1, 8) - Z!(25)) / K!(1, 7)
+    Print #2, teamName$; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); statsZ1!(24); statsZ1!(25); statsZ1!(25) / statsZ1!(24); (K!(0, 8) - statsZ1!(25)) / K!(0, 7)
+    Print #2, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); statsZ!(24); statsZ!(25); statsZ!(25) / statsZ!(24); (K!(1, 8) - statsZ!(25)) / K!(1, 7)
     Print #2,
     Print #2,
     Print #2,

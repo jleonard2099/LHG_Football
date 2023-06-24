@@ -4,7 +4,6 @@ Sub SEENATL ()
 
     Do
         'Display list of files...
-
         Spec$ = diskPaths$(2) + "*.CON"
         Count% = FCount%(Spec$)
 
@@ -69,13 +68,13 @@ Sub SEENATL ()
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-            If ExitCode% <> 27 Then
+            If UCase$(I$) = "N" Then
 
                 targetFile$ = RTrim$(targetFile$)
                 WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-                WE$ = Left$(WE$, 8)
+                targetFile$ = Left$(WE$, 8)
 
-                Call LoadLeaderFiles_Natl(FF$, div1$, div2$, WE$, NRT)
+                Call LoadLeaderFiles_Natl(FF$, div1$, div2$, NRT, targetFile$)
                 Call StatOptions_Natl(FF$, div1$, div2$, NRT)
 
             End If
@@ -91,7 +90,7 @@ End Sub
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, WE$, NRT)
+Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, NRT, targetFile$)
 
     Shared L!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
@@ -104,7 +103,13 @@ Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, WE$, NRT)
     Cls
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + WE$ + ".NLD" For Input As #2
+    Open diskPaths$(2) + targetFile$ + ".CON" For Input As #2
+
+    Input #2, FF$
+
+    Close 2
+
+    Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2
 
     For X = 1 To 60
         Input #2, seeT$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
@@ -130,12 +135,14 @@ Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, WE$, NRT)
 
     Close 2
 
-    Open diskPaths$(2) + WE$ + ".POL" For Input As #2
+    Open diskPaths$(2) + targetFile$ + ".POL" For Input As #2
+
     Input #2, NRT
 
     For X = 1 To NRT
         Input #2, seePR$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
     Next
+
     Close 2
 
 End Sub
@@ -147,8 +154,8 @@ End Sub
 Sub StatOptions_Natl (FF$, div1$, div2$, NRT)
 
     Do
-        Cls
 
+        Cls
         Call TITLE_STATS
 
         J = 5
@@ -174,69 +181,125 @@ Sub StatOptions_Natl (FF$, div1$, div2$, NRT)
             Locate 10
             Color 7, 1
 
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "S";: Color 7: Print "CREEN"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "P";: Color 7: Print "RINTER"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "F";: Color 7: Print "ILE"
-			
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "F";: Color 7: Print "ILE"
+
             I$ = GetKeyPress$
 
             Color 14, 0
 
         Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
-        Select Case UCase$(I$)
+        If I$ <> Chr$(27) Then
 
-            Case "F":
-                X1 = 1
-                Call StatFilePrompt_Natl(SF$)
-                Call StatsToFile_Natl(SF$, FF$, div1$, div2$, X1, NRT)
+            Select Case UCase$(I$)
 
-            Case "P":
-                Call StatsToFile_Natl(SF$, FF$, div1$, div2$, X1, NRT)
+                Case "F":
+                    Call ReportFilePrompt_Natl(SF$)
+                    Call SavePrintNatLeaders(SF$, FF$, div1$, div2$, NRT, 1)
 
-            Case "S":
-                Call StatsToScreen_Natl(FF$, div1$, div2$, NRT)
-        End Select
+                Case "P":
+                    Call SavePrintNatLeaders(SF$, FF$, div1$, div2$, NRT, 0)
 
-        Cls
+                Case "S":
+                    Call LeaderStatsNat_Screen(FF$, div1$, div2$, NRT)
 
-        JJ = 4
+            End Select
 
-        Locate 6, 8: Color 15, 1
-
-        Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-
-        For II = 1 To JJ: Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        Locate 7 + JJ, 8
-
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
-
-
-        Do
-            Color 15, 1
-            Locate 8
-            U$ = "VIEW NATIONAL STATS AGAIN (YN)"
-            Locate , (80 - Len(U$)) / 2
-            Print U$
             Color 15, 0
-            A$ = GetKeyPress$
-        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+            Cls
 
-    Loop Until UCase$(A$) = "N"
+            JJ = 4
+
+            Locate 6, 8
+            Color 15, 1
+
+            Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
+
+            For II = 1 To JJ:
+                Locate 6 + II, 8
+                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Next
+
+            Locate 7 + JJ, 8
+
+            Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+
+
+            Do
+                Color 15, 1
+                Locate 8
+                U$ = "VIEW NATIONAL STATS AGAIN (YN)"
+                Locate , (80 - Len(U$)) / 2
+                Print U$
+                Color 15, 0
+                A$ = GetKeyPress$
+            Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+
+        End If
+
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
 
 End Sub
 
+
 '----------------------------------------
-'     StatsToScreen_Natl Subroutine
+'     ReportFilePrompt_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
+Sub ReportFilePrompt_Natl (reportFile$)
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        JJ = 7
+        Locate 6, 8: Color 15, 1
+
+        'Print box top
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+        'Print box sides
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Next
+
+        'Print box bottom
+        Locate 7 + JJ, 8
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+        Locate 7, 32
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
+        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
+
+        If reportFile$ <> "" Then
+
+            Do
+                Locate 13, 12: Print "ANY CHANGE (YN) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
+
+End Sub
+
+
+'----------------------------------------
+'     LeaderStatsNat_Screen Subroutine
+'----------------------------------------
+'...explanation...
+Sub LeaderStatsNat_Screen (FF$, div1$, div2$, NRT)
 
     Shared LD!(), LZ!(), PT!()
     Shared T!(), TT!()
@@ -244,12 +307,15 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
     Shared seePR$(), TR$()
     Shared compZ2$(), compZ3$()
 
-    Color 14, 0
-
+    Color 15, 0
     Cls
-    Color 12: Print FF$ + " OVERALL RANKINGS"
+
+    Color 12
+    Print FF$ + " OVERALL RANKINGS"
+
     Locate , 1
-    Color 14: Print "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
+    Color 14
+    Print "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
     Color 15
 
     For P = 1 To NRT
@@ -260,23 +326,34 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
 
         If P <> 0 And (P Mod 20 = 0) Then
 
-            Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+            Color 12
+            'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+            Color 15
             QK$ = GetKeyPress$
 
             Cls
-            Color 12: Print FF$ + " OVERALL RANKINGS"
+
+            Color 12
+            Print FF$ + " OVERALL RANKINGS"
+
             Locate , 1
-            Color 14: Print "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
+            Color 14
+            Print "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
             Color 15
 
         End If
 
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "RUSHING LEADERS (MIN 10 ATT/G)"
     Color 12
@@ -308,8 +385,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
     Color 14
@@ -365,8 +446,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -423,8 +508,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -481,8 +570,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -539,8 +632,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -597,8 +694,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -630,8 +731,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -663,8 +768,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -696,8 +805,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -714,8 +827,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -732,8 +849,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -751,8 +872,12 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -770,79 +895,28 @@ Sub StatsToScreen_Natl (FF$, div1$, div2$, NRT)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
 End Sub
 
-'----------------------------------------
-'     StatFilePrompt_Natl Subroutine
-'----------------------------------------
-'...explanation...
-Sub StatFilePrompt_Natl (statFile$)
-
-    Do
-        Color 15, 0
-
-        Cls
-
-        JJ = 7
-        Locate 6, 8: Color 15, 1
-
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input statFile$
-
-        If statFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE (YN) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And statFile$ <> ""
-
-End Sub
 
 '----------------------------------------
-'     StatsToFile_Natl Subroutine
+'     SavePrintNatLeaders Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
+Sub SavePrintNatLeaders (reportFile$, FF$, div1$, div2$, NRT, destination)
 
     Shared LZ!(), PT!()
     Shared T!(), TT!()
 
     Shared seePR$(), TR$()
-    Shared compZ2$(), compZ3$()
-
     Color 0, 15
-
     Cls
-
-    If X1 <> 1 Then
-        Open "REPORT" For Output As #2
-    Else
-        Open statFile$ + ".RPT" For Output As #2
-    End If
 
     Print #2, FF$ + " OVERALL RANKINGS"
     Print #2, "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
@@ -851,6 +925,14 @@ Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
         Print #2, Using "###  "; P;
         Print #2, seePR$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; PT!(P, 1); PT!(P, 2); PT!(P, 3); PT!(P, 4); PT!(P, 5)
     Next
+    Shared compZ2$(), compZ3$()
+
+    If destination <> 1 Then
+        Open "REPORT" For Output As #2
+    Else
+        Open reportFile$ + ".RPT" For Output As #2
+    End If
+
 
     Print #2, Chr$(12)
     Print #2, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
@@ -922,6 +1004,7 @@ Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
             Print #2, Tab(68);
             Print #2, Using "####"; LD!(P + 10)
         End If
+
     Next
 
     Print #2,
@@ -1244,7 +1327,7 @@ Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
 
     Close 2
 
-    If X1 <> 1 Then
+    If destination <> 1 Then
 
         Open "REPORT" For Input As #2
 
@@ -1260,3 +1343,4 @@ Sub StatsToFile_Natl (statFile$, FF$, div1$, div2$, X1, NRT)
     End If
 
 End Sub
+

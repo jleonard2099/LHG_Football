@@ -1,9 +1,9 @@
 Sub CREATNAT ()
 
+    _Title "3-in-1 Football - Create Organization"
+
     Shared Z1$(), Z2$()
     Shared statsZ1%()
-
-    _Title "3-in-1 Football - Create Organization"
 
     ReDim menuChoices$(1 To 3)
 

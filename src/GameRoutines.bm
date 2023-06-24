@@ -230,12 +230,12 @@ Sub InitVar ()
 
     Erase A, A1, A2, A3, A4, A5, A6, A7, A8, A9
     Erase AF, AM, B, B1, B2, B3, B4, B5, B6, B7, B8
-    Erase C, CRD, DDI, DDS, DI, DS, FA, FL, FM
+    Erase C, CRD&, DDI, DDS, DI, DS, FA, FL, FM
     Erase GI, GS, IR
     Erase K, K1, K2, K3, KR
     Erase LC, LF, LI, LK, LP, LR, OT, PK, PR
     Erase QB, RB, S, SI, SK, T, T1, timePoss
-    Erase W6, WR, XD, YC, Z, Z1, Z2
+    Erase W6, WR, XD, YC, Z!, Z1!, Z2!
 
     Erase AP%, intB8%, intDI%, intDS%
     Erase intG9%, HB%
@@ -352,7 +352,7 @@ Sub FRAMEOPTION (boxHeight, teamIdx)
     Locate 9 + boxHeight, 8
     Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-    Locate 10, 15
+    Locate 9, 12
 
 End Sub
 
@@ -1929,8 +1929,6 @@ Sub SAVESTATS ()
             Print U$
             Color 15, 0
 
-            Print "COMPILE STATS FOR ";
-
             If AP <> 1 Then
 
                 Do
@@ -1997,10 +1995,23 @@ Sub COMPILESTATFILES (teamIdx)
 
         Input #2, A6$(teamIdx, 0)
 
-        For I = 0 To 1: Input #2, A7$(teamIdx, I): Next
-        For J = 0 To 13: For K = 0 To 17: Input #2, Z2(J, K): Next: Next
-        For L = 0 To 38: Input #2, Z(L): Next
-        For L = 0 To 38: Input #2, Z1(L): Next
+        For I = 0 To 1: 
+            Input #2, A7$(teamIdx, I)
+        Next
+        
+        For J = 0 To 13: 
+            For K = 0 To 17: 
+                Input #2, Z2(J, K)
+            Next
+        Next
+
+        For L = 0 To 38: 
+            Input #2, Z(L)
+        Next
+        
+        For L = 0 To 38: 
+            Input #2, Z1(L)
+        Next
 
         For J = 0 To 9
             Input #2, DI$(teamIdx, J)
@@ -2049,18 +2060,23 @@ Sub COMPILESTATFILES (teamIdx)
     If K(teamIdx, 26) > Z(28) Then Z(28) = K(teamIdx, 26)
 
     For I = 0 To 1
+
         If FL(teamIdx, I) > LF(teamIdx, I) Then
             LF(teamIdx, I) = FL(teamIdx, I)
             LF$(teamIdx, 1) = A$(1 - teamIdx)
         End If
+
         For I1 = 0 To 4
             AM(teamIdx, I, I1) = AM(teamIdx, I, I1) + FM(teamIdx, I, I1)
             AF(teamIdx, I, I1) = AF(teamIdx, I, I1) + FA(teamIdx, I, I1)
         Next
+
     Next
 
     For J = 0 To 13
-        For K = 0 To 17: Z2(J, K) = Z2(J, K) + Int(K2(teamIdx, J, K) + .5): Next
+        For K = 0 To 17: 
+            Z2(J, K) = Z2(J, K) + Int(K2(teamIdx, J, K) + .5)
+        Next
     Next
 
     Z(32) = Z(32) + S(teamIdx, 1)
@@ -2156,14 +2172,18 @@ Sub COMPILESTATFILES (teamIdx)
 
     Open diskPaths$(1) + R$ For Output As #1
     Print #1, Y$(teamIdx)
+
     For I = 0 To 9: Print #1, A1$(teamIdx, I): Next
     For I = 0 To 5: Print #1, A2$(teamIdx, I): Next
     For I = 0 To 3: Print #1, A3$(teamIdx, I): Next
     For I = 0 To 2: Print #1, A4$(teamIdx, I): Next
     For I = 0 To 2: Print #1, A5$(teamIdx, I): Next
+
     Print #1, A6$(teamIdx, 0)
 
-    For I = 0 To 1: Print #1, A7$(teamIdx, I): Next
+    For I = 0 To 1: 
+        Print #1, A7$(teamIdx, I)
+    Next
 
     For J = 0 To 13
         For K = 0 To 17:
@@ -2171,8 +2191,13 @@ Sub COMPILESTATFILES (teamIdx)
         Next
     Next
 
-    For L = 0 To 38: Print #1, Z(L): Next
-    For L = 0 To 38: Print #1, Z1(L): Next
+    For L = 0 To 38: 
+        Print #1, Z(L)
+    Next
+    
+    For L = 0 To 38: 
+        Print #1, Z1(L)
+    Next
 
     For J = 0 To 9
         Print #1, DI$(teamIdx, J)
@@ -2188,13 +2213,49 @@ Sub COMPILESTATFILES (teamIdx)
         Next
     Next
 
-    For I = 0 To 9: Print #1, LR(teamIdx, I): Print #1, strLR$(teamIdx, I, 0): Print #1, strLR$(teamIdx, I, 1): Next
-    For I = 0 To 15: Print #1, LC(teamIdx, I): Print #1, strLC$(teamIdx, I, 0): Print #1, strLC$(teamIdx, I, 1): Next
-    For I = 0 To 3: Print #1, LP(teamIdx, I): Print #1, LP$(teamIdx, I, 0): Print #1, LP$(teamIdx, I, 1): Next
-    For I = 0 To 2: Print #1, LK(teamIdx, I): Print #1, LK$(teamIdx, I, 0): Print #1, LK$(teamIdx, I, 1): Next
-    For I = 0 To 2: Print #1, PK(teamIdx, I): Print #1, PK$(teamIdx, I, 0): Print #1, PK$(teamIdx, I, 1): Next
-    For I = 0 To 1: Print #1, LF(teamIdx, I): Print #1, LF$(teamIdx, I): For I1 = 0 To 4: Print #1, AM(teamIdx, I, I1): Print #1, AF(teamIdx, I, I1): Next: Next
-    For I = 0 To 9: Print #1, LI(teamIdx, I): Print #1, LI$(teamIdx, I, 0): Print #1, LI$(teamIdx, I, 1): Next
+    For I = 0 To 9: 
+        Print #1, LR(teamIdx, I)
+        Print #1, strLR$(teamIdx, I, 0)
+        Print #1, strLR$(teamIdx, I, 1)
+    Next
+    
+    For I = 0 To 15: 
+        Print #1, LC(teamIdx, I)
+        Print #1, strLC$(teamIdx, I, 0)
+        Print #1, strLC$(teamIdx, I, 1)
+    Next
+    
+    For I = 0 To 3: 
+        Print #1, LP(teamIdx, I)
+        Print #1, LP$(teamIdx, I, 0)
+        Print #1, LP$(teamIdx, I, 1)
+    Next
+    
+    For I = 0 To 2: 
+        Print #1, LK(teamIdx, I)
+        Print #1, LK$(teamIdx, I, 0)
+        Print #1, LK$(teamIdx, I, 1)
+    Next
+    
+    For I = 0 To 2: 
+        Print #1, PK(teamIdx, I)
+        Print #1, PK$(teamIdx, I, 0)
+        Print #1, PK$(teamIdx, I, 1)
+    Next
+    
+    For I = 0 To 1: 
+        Print #1, LF(teamIdx, I): Print #1, LF$(teamIdx, I)
+        For I1 = 0 To 4: 
+            Print #1, AM(teamIdx, I, I1)
+            Print #1, AF(teamIdx, I, I1)
+        Next
+    Next
+    
+    For I = 0 To 9: 
+        Print #1, LI(teamIdx, I)
+        Print #1, LI$(teamIdx, I, 0)
+        Print #1, LI$(teamIdx, I, 1)
+    Next
 
     Close #1
 
@@ -2215,7 +2276,7 @@ Sub COMPILESTATFILES (teamIdx)
         For I = 1 To 120: Input #1, H$(I): Next
         For I = 1 To 120: Input #1, intPR%(0, I): Next
         For I = 1 To 120: Input #1, intPR%(1, I): Next
-        For I = 1 To 120: Input #1, CRD(I): Next
+        For I = 1 To 120: Input #1, CRD&(I): Next
         For I = 1 To 120: Input #1, SITE$(I): Next
         Close #1
     End If
@@ -2232,7 +2293,7 @@ Sub COMPILESTATFILES (teamIdx)
     O%(numberGames) = S(teamIdx, 0)
     HO$(numberGames) = A$(1 - teamIdx)
     TeamScore%(numberGames) = S(1 - teamIdx, 0)
-    CRD(numberGames) = actualAttendance&
+    CRD&(numberGames) = actualAttendance&
     SITE$(numberGames) = SITE$
     intPR%(0, numberGames) = PA%(teamIdx, 4)
     intPR%(1, numberGames) = PA%(1 - teamIdx, 4)
@@ -2246,7 +2307,7 @@ Sub COMPILESTATFILES (teamIdx)
     For I = 1 To 120: Print #1, H$(I): Next
     For I = 1 To 120: Print #1, intPR%(0, I): Next
     For I = 1 To 120: Print #1, intPR%(1, I): Next
-    For I = 1 To 120: Print #1, CRD(I): Next
+    For I = 1 To 120: Print #1, CRD&(I): Next
     For I = 1 To 120: Print #1, SITE$(I): Next
     Close #1
 
@@ -4285,10 +4346,17 @@ Sub CLIPPING ()
     U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
     Call PBP ': Call PBP_Logger(9573)
 
-    If Y < 20 Then Y = fileLength& / 2: K(P1, 12) = K(P1, 12) + fileLength& / 2
+    If Y < 20 Then
+        Y = Y / 2
+        K(P1, 12) = K(P1, 12) + Y / 2
+    End If
 
     K(P1, 11) = K(P1, 11) + 1
-    If Y >= 20 Then Y = Y - 10: K(P1, 12) = K(P1, 12) + 10
+
+    If Y >= 20 Then
+        Y = Y - 10
+        K(P1, 12) = K(P1, 12) + 10
+    End If
 
 End Sub
 
@@ -5230,7 +5298,7 @@ End Sub
 Sub SCORE ()
 
     X2 = X2 + 1
-    T(X2) = gameClock!
+    scoreTimes(X2) = gameClock!
     C(X2) = Q
 
     If X1 <> 7 Then
@@ -6995,15 +7063,24 @@ Sub BOX2FILE (printChoice, NM$)
         For I = 1 To X2
 
             Print #1, A$(K1(I, 1)); "-";
-            TI = gameClock!(I)
+
+            TI = scoreTimes(I)
             TI = TI + TI * (TI < 0)
             IR% = Int(TI / 60)
             J = TI - IR% * 60
 
             Print #1, Tab(17);
-            Print #1, Using "##"; IR%;: Print #1, ":";
 
-            If J >= 10 Then Print #1, Using "## "; J; Else Print #1, Using "0#"; J;
+            'Minutes
+            Print #1, Using "##"; IR%;
+            Print #1, ":";
+
+            'Seconds
+            If J >= 10 Then
+                Print #1, Using "## "; J;
+            Else
+                Print #1, Using "0#"; J;
+            End If
 
             Print #1, Tab(23);
 
@@ -7445,7 +7522,7 @@ Sub ScoreSummary
 
             Print A$(K1(I, 1)); "-";
 
-            TI = T(I)
+            TI = scoreTimes(I)
             TI = TI + TI * (TI < 0)
             IR% = Int(TI / 60)
             J = TI - IR% * 60

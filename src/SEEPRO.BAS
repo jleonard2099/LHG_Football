@@ -2,16 +2,8 @@ Sub SEEPRO ()
 
     _Title "3-in-1 Football - View League Stats"
 
-    Shared L!(), LD!(), LZ!()
-    Shared PTSA!(), PTSF!()
-    Shared T!(), TT!(), W!()
-
-    Shared seeP$(), TM$(), TR$()
-    Shared compZ2$(), compZ3$()
-
     Do
         'Display list of files...
-
         Spec$ = diskPaths$(2) + "*.LDR"
         Count% = FCount%(Spec$)
 
@@ -72,12 +64,13 @@ Sub SEEPRO ()
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-            If ExitCode% <> 27 Then
+            If UCase$(I$) = "N" Then
+
                 targetFile$ = RTrim$(targetFile$)
                 WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-                WE$ = Left$(WE$, 8)
+                targetFile$ = Left$(WE$, 8)
 
-                Call LoadLeaderFiles_Pro(FF$, WE$)
+                Call LoadLeaderFiles_Pro(FF$, targetFile$)
                 Call StatOptions_Pro(FF$)
 
             End If
@@ -321,13 +314,14 @@ End Sub
 Sub StatOptions_Pro (leagueName$)
 
     Do
-        Cls
 
+        Cls
         Call TITLE_STATS
 
         J = 5
 
         Locate 8, 8: Color 15, 1
+
         'Print box top
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
@@ -360,58 +354,111 @@ Sub StatOptions_Pro (leagueName$)
 
         Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
-        Select Case UCase$(I$)
+        If I$ <> Chr$(27) Then
 
-            Case "F":
-                X1 = 1
-                Call StatFilePrompt_Pro(SF$)
-                Call StatsToFile_Pro(X1, SF$, leagueName$)
+            Select Case UCase$(I$)
 
-            Case "P":
-                Call StatsToFile_Pro(X1, SF$, leagueName$)
+                Case "F":
+                    Call ReportFilePrompt_Pro(SF$)
+                    Call SavePrintProLeaders(1, SF$, leagueName$)
 
-            Case "S":
-                Call StatsToScreen_Pro(leagueName$)
-        End Select
+                Case "P":
+                    Call SavePrintProLeaders(0, SF$, leagueName$)
+
+                Case "S":
+                    Call LeaderStatsPro_Screen(leagueName$)
+
+            End Select
+
+            Color 15, 0
+            Cls
+
+            JJ = 4
+
+            Locate 6, 8
+            Color 15, 1
+
+            Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
+
+            For II = 1 To JJ:
+                Locate 6 + II, 8
+                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Next
+
+            Locate 7 + JJ, 8
+
+            Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+
+            Do
+                Color 15, 1
+                Locate 8
+                U$ = "VIEW LEAGUE STATS AGAIN (YN)"
+                Locate , (80 - Len(U$)) / 2
+                Print U$
+                Color 15, 0
+                A$ = GetKeyPress$
+            Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+
+        End If
+
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
+
+End Sub
+
+
+'----------------------------------------
+'     ReportFilePrompt_Pro Subroutine
+'----------------------------------------
+'...explanation...
+Sub ReportFilePrompt_Pro (reportFile$)
+
+    Do
 
         Color 15, 0
         Cls
 
-        JJ = 4
+        JJ = 7
 
-		Locate 6, 8
+        Locate 6, 8: Color 15, 1
+        'Print box top
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
-		Color 15, 1
-
-        Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-
-        For II = 1 To JJ:
+        'Print box sides
+        For II = 1 To JJ
             Locate 6 + II, 8
             Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
         Next
 
+        'Print box bottom
         Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Do
-			Color 15, 1
-			Locate 8
-			U$ = "VIEW LEAGUE STATS AGAIN (YN)"
-			Locate , (80 - Len(U$)) / 2
-			Print U$
-			Color 15, 0
-            A$ = GetKeyPress$
-        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+        Locate 7, 32
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
+        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
 
-    Loop Until UCase$(A$) = "N"
+        If reportFile$ <> "" Then
+
+            Do
+				Locate 13, 12: Print "ANY CHANGE (YN) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
 
 End Sub
 
+
 '----------------------------------------
-'     StatsToScreen_Pro Subroutine
+'     LeaderStatsPro_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Pro (leagueName$)
+Sub LeaderStatsPro_Screen (leagueName$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
@@ -423,10 +470,10 @@ Sub StatsToScreen_Pro (leagueName$)
     Shared div1$, div2$, div3$
 
 	Color 15, 0
-
     Cls
 
-    Color 12: Print div1$; " DIVISION"
+    Color 12
+    Print div1$; " DIVISION"
 
     Color 14
     Print "              W   L   T   PCT  PF  PA"
@@ -456,12 +503,14 @@ Sub StatsToScreen_Pro (leagueName$)
 
             Print Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+    
     Next
 
     RT = 0
 
+    Locate 1, 41
     Color 12
-    Locate 1, 41: Print div2$ + " DIVISION"
+    Print div2$ + " DIVISION"
     Color 14
 
     Locate 2, 41
@@ -497,10 +546,13 @@ Sub StatsToScreen_Pro (leagueName$)
     RT = 0
 
     Locate 13, 20
-    Color 12: Print div3$ + " DIVISION"
 
+    Color 12
+    Print div3$ + " DIVISION"
+
+    Locate 14, 20
     Color 14
-    Locate 14, 20: Print "              W   L   T   PCT  PF  PA"
+    Print "              W   L   T   PCT  PF  PA"
     Color 15
 
     For P = 21 To 30:
@@ -526,17 +578,26 @@ Sub StatsToScreen_Pro (leagueName$)
             End If
 
             Print Tab(50); Using "### ###"; PTSF!(P); PTSA!(P)
+
         End If
+
     Next
 
     RT = 0
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
-    Color 14: Print "RUSHING LEADERS (MIN 10 ATT/G)"
-    Color 12: Print "                            AVG  ATT"
+
+    Color 14
+    Print "RUSHING LEADERS (MIN 10 ATT/G)"
+    Color 12
+    Print "                            AVG  ATT"
     Color 15
 
     For P = 1 To 20
@@ -551,7 +612,9 @@ Sub StatsToScreen_Pro (leagueName$)
     Color 14
     Print "RECEIVING LEADERS (MIN 4 REC/G)"
     Locate 2, 41
-    Color 12: Print "                            AVG  REC"
+
+    Color 12
+    Print "                            AVG  REC"
     Color 15
 
     For P = 21 To 40
@@ -563,10 +626,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "RUSHING YARDS TOTAL"
     Color 15
@@ -620,11 +688,17 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
-    Color 14: Print "ALL PURPOSE YARDAGE"
+    
+    Color 14
+    Print "ALL PURPOSE YARDAGE"
     Color 15
 
     For P = 101 To 110
@@ -636,7 +710,8 @@ Sub StatsToScreen_Pro (leagueName$)
     Next
 
     Locate 1, 41
-    Color 14: Print "SCORING NON-KICKERS"
+    Color 14
+    Print "SCORING NON-KICKERS"
     Color 15
 
     For P = 111 To 120
@@ -674,10 +749,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+    
     Color 14
     Print "COMPLETION PERCENTAGE"
     Color 15
@@ -731,10 +811,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+    
     Color 14
     Print "KO RETURN AVERAGE                 #"
     Color 15
@@ -788,10 +873,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "FIELD GOAL %                     FGA"
     Color 15
@@ -845,10 +935,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+    
     Color 14
     Print "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"
     Color 15
@@ -879,10 +974,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+    
     Color 14
     Print "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"
     Color 15
@@ -913,10 +1013,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "SCORING OFF    G  POINTS    AVG"
     Color 15
@@ -947,10 +1052,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+    
     Color 14
     Print "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     Color 15
@@ -965,10 +1075,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     Color 15
@@ -983,10 +1098,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "PUNTING        NO     AVG"
     Color 15
@@ -1000,10 +1120,15 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
     Print "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
@@ -1018,62 +1143,21 @@ Sub StatsToScreen_Pro (leagueName$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
 End Sub
 
-'----------------------------------------
-'     StatFilePrompt_Pro Subroutine
-'----------------------------------------
-'...explanation...
-Sub StatFilePrompt_Pro (statFile$)
-
-    Do
-        Color 15, 0
-        Cls
-
-        JJ = 7
-
-        Locate 6, 8: Color 15, 1
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input statFile$
-
-        If statFile$ <> "" Then
-
-            Do
-				Locate 13, 12: Print "ANY CHANGE (YN) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And statFile$ <> ""
-
-End Sub
 
 '----------------------------------------
-'       StatsToFile_Pro Subroutine
+'       SavePrintProLeaders Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Pro (X1, statFile$, leagueName$)
+Sub SavePrintProLeaders (destination, reportFile$, leagueName$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
@@ -1084,15 +1168,14 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
     Shared div1$, div2$, div3$
 
-	Color 0, 15
-
-    Cls
-
-    If X1 <> 1 Then
+    If destination <> 1 Then
         Open "REPORT" For Output As #2
     Else
-        Open statFile$ + ".RPT" For Output As #2
+        Open reportFile$ + ".RPT" For Output As #2
     End If
+
+	Color 0, 15
+    Cls
 
     Print #2, leagueName$ + " OVERALL RECORD"
     Print #2, div1$; " DIVISION"
@@ -1117,8 +1200,9 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
                 End If
             End If
 
-            3256 Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2,
@@ -1126,6 +1210,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 11 To 20
+
         If seeP$(P) <> "" Then
             Print #2, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
 
@@ -1145,6 +1230,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
             Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2,
@@ -1152,6 +1238,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 21 To 30
+
         If seeP$(P) <> "" Then
 
             Print #2, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
@@ -1172,6 +1259,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
             Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2, Chr$(12)
@@ -1565,7 +1653,7 @@ Sub StatsToFile_Pro (X1, statFile$, leagueName$)
 
     Close 2
 
-    If X1 <> 1 Then
+    If destination <> 1 Then
 
         Open "REPORT" For Input As #2
 

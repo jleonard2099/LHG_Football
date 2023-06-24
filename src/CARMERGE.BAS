@@ -101,18 +101,22 @@ Sub MergeCareerStats ()
 
                 Spec$ = diskPaths$(1) + "*.CAR"
                 Count% = FCount%(Spec$)
+
                 If Count% = 0 Then
                     Locate , 10
                     Call CSMsgBox("NO CAREER FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
                     I$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
-                    Cls
                 Else
+
                     ReDim careerFiles$(0 To Count%)
+
                     For X = 1 To Count%
                         careerFiles$(X) = Space$(12)
                     Next
+
                     careerFiles$(0) = Spec$
+
                     Call ReadFile(careerFiles$())
 
                     Do
@@ -254,7 +258,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Shared AF!(), AM!()
     Shared careerGIS!(), careerGSS!(), LI!()
     Shared careerFGS!(), careerPUS!()
-    Shared Z!(), Z1!(), Z2!()
+    Shared statsZ!(), statsZ1!(), statsZ2!()
 
     Dim LC$(60, 1), statsLF$(1), statsLI$(9, 1), statsLK$(15, 1), statsLP$(20, 1), LR$(50, 1)
     Dim careerPK$(15, 1)
@@ -337,11 +341,11 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For I = 0 To 1: Input #1, careerA7$(I): Next I
         For J = 0 To 13
-            For K = 0 To 17: Input #1, Z2!(J, K): Next K
+            For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
         Next J
 
-        For L = 0 To 38: Input #1, Z!(L): Next L
-        For L = 0 To 38: Input #1, Z1!(L): Next L
+        For L = 0 To 38: Input #1, statsZ!(L): Next L
+        For L = 0 To 38: Input #1, statsZ1!(L): Next L
         For J = 0 To 9: Input #1, careerDI$(J): For J1 = 0 To 2: Input #1, careerGI%(J, J1): Next: Next
         For J = 0 To 14: Input #1, careerDS$(J): For J1 = 0 To 1: Input #1, careerGS%(J, J1): Next: Next
         For I = 0 To 9: Input #1, careerLR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
@@ -411,7 +415,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     If CHK = 0 Then N = N + 1
 
                     For K = 0 To 5
-                        RBBS!(N, J, K) = Z2!(I, K)
+                        RBBS!(N, J, K) = statsZ2!(I, K)
                     Next K
 
                     RBBS!(N, J, 6) = careerLR!(I): careerRBS$(N, J, 0) = LR$(I, 0)
@@ -435,7 +439,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         A1C$(NB) = careerA1$(I)
                         N = 1
 
-                        For K = 0 To 5: RBBS!(N, NB, K) = Z2!(I, K): Next
+                        For K = 0 To 5: RBBS!(N, NB, K) = statsZ2!(I, K): Next
 
                         RBBS!(N, NB, 6) = careerLR!(I)
                         careerRBS$(N, NB, 0) = LR$(I, 0)
@@ -477,7 +481,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     If CHK = 0 Then N = N + 1
 
                     For K = 6 To 8
-                        WRRS!(N, J, K - 6) = Z2!(I, K)
+                        WRRS!(N, J, K - 6) = statsZ2!(I, K)
                     Next K
 
                     WRRS!(N, J, 3) = careerLC!(I + 10)
@@ -498,7 +502,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         A2C$(NC) = careerA2$(I)
                         N = 1
 
-                        For K = 6 To 8: WRRS!(N, NC, K - 6) = Z2!(I, K): Next
+                        For K = 6 To 8: WRRS!(N, NC, K - 6) = statsZ2!(I, K): Next
 
                         WRRS!(N, NC, 3) = careerLC!(I + 10)
                         careerWRS$(N, NC, 0) = LC$(I + 10, 0)
@@ -538,7 +542,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     If CHK = 0 Then N = N + 1
 
                     For K = 9 To 13
-                        QBBS!(N, J, K - 9) = Z2!(I, K)
+                        QBBS!(N, J, K - 9) = statsZ2!(I, K)
                     Next K
 
                     QBBS!(N, J, 5) = careerLP!(I)
@@ -558,7 +562,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             ND = ND + 1
                             A3C$(ND) = careerA3$(I)
                             N = 1
-                            For K = 9 To 13: QBBS!(N, ND, K - 9) = Z2!(I, K): Next
+                            For K = 9 To 13: QBBS!(N, ND, K - 9) = statsZ2!(I, K): Next
                             QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = statsLP$(I, 0)
                             QBBS!(N, ND, 6) = 1: QBBS!(N, ND, 7) = Y
                         End If
@@ -597,7 +601,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     If CHK = 0 Then N = N + 1
 
                     For K = 14 To 16
-                        KRS!(N, J, K - 14) = Z2!(I, K)
+                        KRS!(N, J, K - 14) = statsZ2!(I, K)
                     Next K
 
                     KRS!(N, J, 3) = careerLK!(I)
@@ -619,7 +623,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             A4C$(NE) = careerA4$(I)
                             N = 1
 
-                            For K = 14 To 16: KRS!(N, NE, K - 14) = Z2!(I, K): Next
+                            For K = 14 To 16: KRS!(N, NE, K - 14) = statsZ2!(I, K): Next
 
                             KRS!(N, NE, 3) = careerLK!(I)
                             KRRS$(N, NE, 0) = statsLK$(I, 0)
@@ -662,7 +666,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     If CHK = 0 Then N = N + 1
 
                     For K = 14 To 16
-                        PRS!(N, J, K - 14) = Z2!(I + 3, K)
+                        PRS!(N, J, K - 14) = statsZ2!(I + 3, K)
                     Next K
 
                     PRS!(N, J, 3) = careerPK!(I)
@@ -681,7 +685,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             A5C$(NF) = careerA5$(I)
                             N = 1
 
-                            For K = 14 To 16: PRS!(N, NF, K - 14) = Z2!(I + 3, K): Next
+                            For K = 14 To 16: PRS!(N, NF, K - 14) = statsZ2!(I + 3, K): Next
 
                             PRS!(N, NF, 3) = careerPK!(I)
                             PRRS$(N, NF, 0) = careerPK$(I, 0)
@@ -719,7 +723,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         N = careerPUS!(1, J, 2) + careerPUS!(2, J, 2) + careerPUS!(3, J, 2) + careerPUS!(4, J, 2) + careerPUS!(5, J, 2) + careerPUS!(6, J, 2) + careerPUS!(7, J, 2) + careerPUS!(8, J, 2) + careerPUS!(9, J, 2) + careerPUS!(10, J, 2) + careerPUS!(11, J, 2) + careerPUS!(12, J, 2) + careerPUS!(13, J, 2) + careerPUS!(14, J, 2) + careerPUS!(15, J, 2) + 1
                     End If
 
-                    careerPUS!(N, J, 0) = Z!(7): careerPUS!(N, J, 1) = Z!(8)
+                    careerPUS!(N, J, 0) = statsZ!(7): careerPUS!(N, J, 1) = statsZ!(8)
                     careerPUS!(N, J, 2) = 1: careerPUS!(N, J, 3) = Y
 
                     Exit For
@@ -734,8 +738,8 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             NG = NG + 1
                             A6C$(NG) = careerA6$(I)
                             N = 1
-                            careerPUS!(N, NG, 0) = Z!(7)
-                            careerPUS!(N, NG, 1) = Z!(8)
+                            careerPUS!(N, NG, 0) = statsZ!(7)
+                            careerPUS!(N, NG, 1) = statsZ!(8)
                             careerPUS!(N, NG, 2) = 1
                             careerPUS!(N, NG, 3) = Y
                         End If
@@ -773,7 +777,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                     If I = 0 Then
                         For K = 3 To 6
-                            careerFGS!(N, J, K - 3) = Z2!(K, 17)
+                            careerFGS!(N, J, K - 3) = statsZ2!(K, 17)
                         Next K
 
                         careerFGS!(N, J, 4) = careerLF!(I)
@@ -785,7 +789,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         If I = 1 Then
 
                             For K = 7 To 10
-                                careerFGS!(N, J, K - 7) = Z2!(K, 17)
+                                careerFGS!(N, J, K - 7) = statsZ2!(K, 17)
                             Next K
 
                             careerFGS!(N, J, 4) = careerLF!(I)
@@ -813,7 +817,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                             If I = 0 Then
                                 For K = 3 To 6:
-									careerFGS!(N, NH, K - 3) = Z2!(K, 17)
+									careerFGS!(N, NH, K - 3) = statsZ2!(K, 17)
 								Next K
                                 careerFGS!(N, NH, 4) = careerLF!(I)
                                 careerFGS!(N, NH, 15) = 1: careerFGS!(N, NH, 16) = Y
@@ -826,7 +830,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             If I = 1 Then
 
                                 For K = 7 To 10:
-                                    careerFGS!(N, NH, K - 7) = Z2!(K, 17)
+                                    careerFGS!(N, NH, K - 7) = statsZ2!(K, 17)
                                 Next K
 
                                 careerFGS!(N, NH, 4) = careerLF!(I)

@@ -29,34 +29,32 @@ End Sub
 '     FILENAME Subroutine
 '------------------------------
 ' ...explanation...
-Sub FILENAME (XW)
-
-    Shared H1$()
+Sub FILENAME (teamName$)
 
     FOR XX = 4 TO 11: 
-        IF MID$(H1$(XW), XX, 1) = " " OR MID$(H1$(XW), XX, 1) = "." THEN MID$(H1$(XW), XX, 1) = "_"
+        IF MID$(teamName$, XX, 1) = " " OR MID$(teamName$, XX, 1) = "." THEN MID$(teamName$, XX, 1) = "_"
     NEXT XX
 
     FOR XX = 12 TO 14: 
-        IF MID$(H1$(XW), XX, 2) = "ST" THEN MID$(H1$(XW), 9, 1) = "_": MID$(H1$(XW), 10, 2) = "ST"
+        IF MID$(teamName$, XX, 2) = "ST" THEN MID$(teamName$, 9, 1) = "_": MID$(teamName$, 10, 2) = "ST"
     NEXT XX
 
     QQ = 8
     FOR XX = 11 TO 4 STEP -1: 
-        IF MID$(H1$(XW), XX, 1) = "_" THEN 
+        IF MID$(teamName$, XX, 1) = "_" THEN 
             QQ = XX - 4
         Else
             Exit For
         End If
     NEXT XX
 
-    G$ = H1$(XW)
-    H1$(XW) = RIGHT$(H1$(XW), LEN(H1$(XW)) - 3)
+    G$ = teamName$
+    teamName$ = RIGHT$(teamName$, LEN(teamName$) - 3)
     YR$ = LEFT$(G$, 2)
 
-    IF LEN(H1$(XW)) > 8 THEN H1$(XW) = LEFT$(H1$(XW), 8)
+    IF LEN(teamName$) > 8 THEN teamName$ = LEFT$(teamName$, 8)
 
-    H1$(XW) = H1$(XW) + "." + YR$
+    teamName$ = teamName$ + "." + YR$
 
 END SUB
 

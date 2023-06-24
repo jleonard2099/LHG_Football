@@ -1,11 +1,11 @@
 Sub SEECOLL ()
 
-    Shared div1$, div2$
-
     _Title "3-in-1 Football - View Conference Stats"
 
-    Do
+    Shared div1$, div2$
 
+    Do
+        'Display list of files...
         Spec$ = diskPaths$(2) + "*.LDR"
         Count% = FCount%(Spec$)
 
@@ -17,10 +17,13 @@ Sub SEECOLL ()
         Else
 
             ReDim conferenceLeaderFiles$(0 To Count%)
+
             For X = 1 To Count%
                 conferenceLeaderFiles$(X) = Space$(12)
             Next
+
             conferenceLeaderFiles$(0) = Spec$
+
             Call ReadFile(conferenceLeaderFiles$())
 
             Do
@@ -55,20 +58,24 @@ Sub SEECOLL ()
                     targetFile$ = conferenceLeaderFiles$(Selection%)
                     Locate 2, 33: Print targetFile$
 
-					Do
-						Locate 3, 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                    Do
+                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-					Color 15, 0
+                    Color 15, 0
 
                 End If
 
             Loop Until UCase$(I$) = "N" Or ExitCode% = 27
 
-            If ExitCode% <> 27 Then
+            If UCase$(I$) = "N" Then
 
-                Call LoadLeaderFiles_Coll(targetFile$, FF$)
+                targetFile$ = RTrim$(targetFile$)
+                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
+                targetFile$ = Left$(WE$, 8)
+
+                Call LoadLeaderFiles_Coll(FF$, targetFile$)
                 Call StatOptions_Coll(FF$)
 
             End If
@@ -80,11 +87,12 @@ Sub SEECOLL ()
 
 End Sub
 
+
 '----------------------------------------
 '    LoadLeaderFiles_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Coll (targetFile$, FF$)
+Sub LoadLeaderFiles_Coll (FF$, targetFile$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -95,13 +103,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
 
     Shared div1$, div2$
 
-    3911 '
-    targetFile$ = RTrim$(targetFile$)
-    WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-    WE$ = Left$(WE$, 8)
-
-    Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
+    Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
     Input #2, FF$, div1$, div2$
     Close 2
 
@@ -111,7 +113,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, FF$)
     Cls
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + WE$ + ".LDR" For Input As #2
+    Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To 60
         Input #2, seeT$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
@@ -343,17 +345,15 @@ End Sub
 '...explanation...
 Sub StatOptions_Coll (FF$)
 
-    Shared div1$, div2$
-
     Do
 
         Cls
-
         Call TITLE_STATS
 
         J = 5
 
         Locate 8, 8: Color 15, 1
+
         'Print box top
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
@@ -370,71 +370,127 @@ Sub StatOptions_Coll (FF$)
         Locate 7, 32
 
         Do
-			Locate 10
-			Color 7, 1
+            Locate 10
+            Color 7, 1
 
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "S";: Color 7: Print "CREEN"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "P";: Color 7: Print "RINTER"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "F";: Color 7: Print "ILE"
-            
-			I$ = GetKeyPress$
-			
-			Color 14, 0
-			
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "F";: Color 7: Print "ILE"
+
+            I$ = GetKeyPress$
+
+            Color 14, 0
+
         Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
-        Select Case UCase$(I$)
+        If I$ <> Chr$(27) Then
 
-            Case "F":
-                X1 = 1
-                Call StatFilePrompt_Coll(SF$)
-                Call StatsToFile_Coll(X1, SF$, FF$)
+            Select Case UCase$(I$)
 
-            Case "P":
-                Call StatsToFile_Coll(X1, SF$, FF$)
+                Case "F":
+                    Call ReportFilePrompt_Coll(SF$)
+                    Call SavePrintCollLeaders(SF$, FF$, 1)
 
-            Case "S":
-                Call StatsToScreen_Coll(FF$)
-        End Select
+                Case "P":
+                    Call SavePrintCollLeaders(SF$, FF$, 0)
 
-        Cls
+                Case "S":
+                    Call LeaderStatsColl_Screen(FF$)
 
-        JJ = 4
-        Locate 6, 8
-		Color 15, 1
+            End Select
 
-        Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
+            Color 15, 0
+            Cls
 
-        For II = 1 To JJ: 
-			Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
+            JJ = 4
 
-        Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+            Locate 6, 8
+            Color 15, 1
 
-        Do
-			Color 15, 1
-			Locate 8
-			U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
-			Locate , (80 - Len(U$)) / 2
-			Print U$
-			Color 15, 0
-            A$ = GetKeyPress$
-        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+            Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
 
-    Loop Until UCase$(A$) = "N"
+            For II = 1 To JJ:
+                Locate 6 + II, 8
+                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+            Next
+
+            Locate 7 + JJ, 8
+
+            Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+
+            Do
+                Color 15, 1
+                Locate 8
+                U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
+                Locate , (80 - Len(U$)) / 2
+                Print U$
+                Color 15, 0
+                A$ = GetKeyPress$
+            Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+
+        End If
+
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
 
 End Sub
 
+
 '----------------------------------------
-'     StatsToScreen_Coll Subroutine
+'     ReportFilePrompt_Coll Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToScreen_Coll (FF$)
+Sub ReportFilePrompt_Coll (reportFile$)
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        JJ = 7
+
+        Locate 6, 8: Color 15, 1
+        'Print box top
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+        'Print box sides
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Next
+
+        'Print box bottom
+        Locate 7 + JJ, 8
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+        Locate 7, 32
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
+        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
+
+        If reportFile$ <> "" Then
+
+            Do
+                Locate 13, 12: Print "ANY CHANGE (YN) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
+
+End Sub
+
+
+'----------------------------------------
+'     LeaderStatsColl_Screen Subroutine
+'----------------------------------------
+'...explanation...
+Sub LeaderStatsColl_Screen (FF$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -445,16 +501,14 @@ Sub StatsToScreen_Coll (FF$)
 
     Shared div1$, div2$
 
-
+    Color 15, 0
     Cls
-    Color 12
 
+    Color 12
     Print FF$ + " OVERALL RECORD"
 
     If div1$ <> "" Then Print div1$; " DIVISION"
-
     Locate 2, 41
-
     If div2$ <> "" Then Print div2$; " DIVISION"
 
     Locate , 1
@@ -530,10 +584,15 @@ Sub StatsToScreen_Coll (FF$)
 
     End If
 
-    Locate 23: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 12
     Print FF$ + " CONFERENCE RECORD"
 
@@ -611,8 +670,12 @@ Sub StatsToScreen_Coll (FF$)
         RT = 0
     End If
 
-    Locate 23: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
 
@@ -648,10 +711,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "RUSHING YARDS TOTAL"
     Color 15
@@ -705,10 +773,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "ALL PURPOSE YARDAGE"
     Color 15
@@ -762,10 +835,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "COMPLETION PERCENTAGE"
     Color 15
@@ -819,10 +897,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "KO RETURN AVERAGE                 #"
     Color 15
@@ -876,10 +959,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "FIELD GOAL %                     FGA"
     Color 15
@@ -933,10 +1021,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"
     Color 15
@@ -967,8 +1060,12 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
     Color 14
@@ -1001,10 +1098,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "SCORING OFF    G  POINTS    AVG"
     Color 15
@@ -1035,10 +1137,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     Color 15
@@ -1053,10 +1160,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     Color 15
@@ -1071,10 +1183,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "PUNTING        NO     AVG"
     Color 15
@@ -1088,10 +1205,15 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
     Cls
+
     Color 14
     Print "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
     Print "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
@@ -1107,62 +1229,21 @@ Sub StatsToScreen_Coll (FF$)
         End If
     Next
 
-    Locate 24: Print "HIT ANY KEY TO CONTINUE!!";
+    '-----
+    Color 12
+    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    Color 15
     QK$ = GetKeyPress$
+    '-----
 
 End Sub
 
-'----------------------------------------
-'     StatFilePrompt_Coll Subroutine
-'----------------------------------------
-'...explanation...
-Sub StatFilePrompt_Coll (statFile$)
-
-    Do
-        Color 15, 0
-        Cls
-
-        JJ = 7
-
-        Locate 6, 8: Color 15, 1
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input statFile$
-
-        If statFile$ <> "" Then
-
-            Do
-				Locate 13, 12: Print "ANY CHANGE (YN) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And statFile$ <> ""
-
-End Sub
 
 '----------------------------------------
-'     StatFilePrompt_Coll Subroutine
+'     SavePrintCollLeaders Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatsToFile_Coll (X1, statFile$, FF$)
+Sub SavePrintCollLeaders (reportFile$, FF$, destination)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -1173,15 +1254,14 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
 
     Shared div1$, div2$
 
-	Color 0, 15
-
-    Cls
-
-    If X1 <> 1 Then
+    If destination <> 1 Then
         Open "REPORT" For Output As #2
     Else
-        Open statFile$ + ".RPT" For Output As #2
+        Open reportFile$ + ".RPT" For Output As #2
     End If
+
+    Color 0, 15
+    Cls
 
     Print #2, FF$ + " OVERALL RECORD"
 
@@ -1190,15 +1270,25 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 1 To 15
+
         If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3256
-            If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3256
-            If W!(P) = 0 Then Print #2, "  .000";: GoTo 3256
-            Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
-
-            3256 Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            If W!(P) + L!(P) + T!(P) = 0 Then
+                Print #2, "  .---";
+            Else
+                If L!(P) + T!(P) = 0 Then
+                    Print #2, " 1.000";
+                Else
+                    If W!(P) = 0 Then
+                        Print #2, "  .000";
+                    Else
+                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                    End If
+                End If
+            End If
+            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2,
@@ -1206,15 +1296,25 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 16 To 30
+
         If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3258
-            If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3258
-            If W!(P) = 0 Then Print #2, "  .000";: GoTo 3258
-            Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
-
-            3258 Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            If W!(P) + L!(P) + T!(P) = 0 Then
+                Print #2, "  .---";
+            Else
+                If L!(P) + T!(P) = 0 Then
+                    Print #2, " 1.000";
+                Else
+                    If W!(P) = 0 Then
+                        Print #2, "  .000";
+                    Else
+                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                    End If
+                End If
+            End If
+            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2,
@@ -1225,15 +1325,25 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 31 To 45
+
         If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3260
-            If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3260
-            If W!(P) = 0 Then Print #2, "  .000";: GoTo 3260
-            Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
-
-            3260 Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            If W!(P) + L!(P) + T!(P) = 0 Then
+                Print #2, "  .---";
+            Else
+                If L!(P) + T!(P) = 0 Then
+                    Print #2, " 1.000";
+                Else
+                    If W!(P) = 0 Then
+                        Print #2, "  .000";
+                    Else
+                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                    End If
+                End If
+            End If
+            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2,
@@ -1241,15 +1351,25 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "              W   L   T   PCT  PF  PA"
 
     For P = 46 To 60
+
         If seeP$(P) <> "" Then
             Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then Print #2, "  .---";: GoTo 3262
-            If L!(P) + T!(P) = 0 Then Print #2, " 1.000";: GoTo 3262
-            If W!(P) = 0 Then Print #2, "  .000";: GoTo 3262
-            Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
-
-            3262 Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            If W!(P) + L!(P) + T!(P) = 0 Then
+                Print #2, "  .---";
+            Else
+                If L!(P) + T!(P) = 0 Then
+                    Print #2, " 1.000";
+                Else
+                    If W!(P) = 0 Then
+                        Print #2, "  .000";
+                    Else
+                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                    End If
+                End If
+            End If
+            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
+
     Next
 
     Print #2, Chr$(12)
@@ -1326,6 +1446,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "ALL PURPOSE YARDAGE"; Tab(41); "SCORING NON-KICKERS"
 
     For P = 101 To 110
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1349,6 +1470,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
     For P = 61 To 70
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1372,6 +1494,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
 
     For P = 121 To 130
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1395,6 +1518,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "PASSING YARDAGE"; Tab(41); "PASSING TOUCHDOWNS"
 
     For P = 141 To 150
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1418,6 +1542,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "KO RETURN AVERAGE                 #"; Tab(41); "PUNT RETURN AVERAGE               #"
 
     For P = 161 To 170
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1441,6 +1566,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "PUNTING AVERAGE"; Tab(41); "SCORING (KICKERS)"
 
     For P = 181 To 190
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1464,6 +1590,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "FIELD GOAL %                     FGA"; Tab(41); "EXTRA POINT %                   EPA"
 
     For P = 201 To 210
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1487,6 +1614,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     Print #2, "INTERCEPTIONS"; Tab(41); "SACKS"
 
     For P = 221 To 230
+
         If compZ2$(P) = "*" Then
             Print #2, Tab(41);
         Else
@@ -1634,7 +1762,7 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
 
     Close 2
 
-    If X1 <> 1 Then
+    If destination <> 1 Then
 
         Open "REPORT" For Input As #2
 
@@ -1650,3 +1778,4 @@ Sub StatsToFile_Coll (X1, statFile$, FF$)
     End If
 
 End Sub
+

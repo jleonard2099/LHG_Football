@@ -67,7 +67,7 @@ Data PASS ATTEMPTS,PASS COMPLETIONS,INTERCEPTIONS,PASSING YARDS,TOUCHDOWN PASSES
 Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF Return
 Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT Return
 Data PUNTS,PUNTING YARDS,AVERAGE PER PUNT
-Data F.G.'s MADE,F.G. ATTEMPES,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST FIELD GOAL
+Data F.G.'s MADE,F.G. ATTEMPES,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST s
 Data INTERCEPTIONS,SACKS
 Data NON-KICKERS,KICKERS,ALL PLAYERS
 Data FIRST DOWNS,RUSH ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,PASSING YARDS,TOTAL YARDS,PASS COMPLETION PCT.,FUMBLES,FUMBLES LOST,INTERCEPTIONS THROWN,TURNOVER RATIO,PENALTIES,PENALTY YARDAGE,SACKS ALLOWED,SACK YARDAGE
@@ -370,14 +370,14 @@ System
 Errhandler:
 Open "errlog" For Append As #9
 Print #9, "Error #"; Err; "on program file line"; _ErrorLine
-If _FileExists("GAME82") Then
-    Print #9, "Schedule game # "; Using "###"; AP%(0) + AP%(2)
-    Print #9, A$(0) + " vs. " + A$(1)
-End If
-Print #9, "I2 - "; I2
-Print #9, "I3 - "; I3
-Print #9, "X$ - "; X$
-Print #9,
+'If _FileExists("GAME82") Then
+'    Print #9, "Schedule game # "; Using "###"; AP%(0) + AP%(2)
+'    Print #9, A$(0) + " vs. " + A$(1)
+'End If
+Print #9, "H1$(XW) - "; testTeam$
+'Print #9, "I3 - "; I3
+'Print #9, "X$ - "; X$
+'Print #9,
 Close #9
 Resume Next ' moves program to code following the error.
 

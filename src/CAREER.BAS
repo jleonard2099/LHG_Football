@@ -80,7 +80,7 @@ Sub CreateMergeInitial ()
     Shared careerDI$(), careerDS$()
     Shared careerQBS$(), careerRBS$()
 
-    Shared Z!(), Z1!(), Z2!()
+    Shared statsZ!(), statsZ1!(), statsZ2!()
 
     Dim careerAF!(9, 4), careerAM!(9, 4)
     Dim careerLR!(50), careerLC!(60), careerLP!(20), careerLK!(15)
@@ -193,10 +193,10 @@ Sub CreateMergeInitial ()
                 Input #1, careerA6$(0)
                 For I = 0 To 1: Input #1, careerA7$(I): Next I
                 For J = 0 To 13
-                    For K = 0 To 17: Input #1, Z2!(J, K): Next K
+                    For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
                 Next J
-                For L = 0 To 38: Input #1, Z!(L): Next L
-                For L = 0 To 38: Input #1, Z1!(L): Next L
+                For L = 0 To 38: Input #1, statsZ!(L): Next L
+                For L = 0 To 38: Input #1, statsZ1!(L): Next L
                 For J = 0 To 9: Input #1, careerDI$(J): For J1 = 0 To 2: Input #1, careerGI%(J, J1): Next: Next
                 For J = 0 To 14: Input #1, careerDS$(J): For J1 = 0 To 1: Input #1, careerGS%(J, J1): Next: Next
                 For I = 0 To 9: Input #1, careerLR!(I): Input #1, careerLR$(I, 0): Input #1, careerLR$(I, 1): Next
@@ -259,7 +259,7 @@ Sub CreateMergeInitial ()
                     End If
 
                     For J = 0 To 5
-                        RBBS!(N, I, J) = Z2!(I, J)
+                        RBBS!(N, I, J) = statsZ2!(I, J)
                     Next J
 
                     RBBS!(N, I, 6) = careerLR!(I): careerRBS$(N, I, 0) = careerLR$(I, 0)
@@ -279,7 +279,7 @@ Sub CreateMergeInitial ()
                     End If
 
                     For J = 6 To 8
-                        WRRS!(N, I, J - 6) = Z2!(I, J)
+                        WRRS!(N, I, J - 6) = statsZ2!(I, J)
                     Next J
 
                     WRRS!(N, I, 3) = careerLC!(I + 10)
@@ -300,7 +300,7 @@ Sub CreateMergeInitial ()
                     End If
 
                     For J = 9 To 13:
-                        QBBS!(N, I, J - 9) = Z2!(I, J)
+                        QBBS!(N, I, J - 9) = statsZ2!(I, J)
                     Next J
 
                     QBBS!(N, I, 5) = careerLP!(I)
@@ -322,7 +322,7 @@ Sub CreateMergeInitial ()
                     End If
 
                     For J = 14 To 16:
-                        careerKRS!(N, I, J - 14) = Z2!(I, J)
+                        careerKRS!(N, I, J - 14) = statsZ2!(I, J)
                     Next J
 
                     careerKRS!(N, I, 3) = careerLK!(I): KRRS$(N, I, 0) = careerLK$(I, 0)
@@ -341,7 +341,7 @@ Sub CreateMergeInitial ()
                     End If
 
                     For J = 14 To 16:
-                        careerPRS!(N, I, J - 14) = Z2!(I + 3, J)
+                        careerPRS!(N, I, J - 14) = statsZ2!(I + 3, J)
                     Next J
 
                     careerPRS!(N, I, 3) = careerPK!(I)
@@ -361,8 +361,8 @@ Sub CreateMergeInitial ()
                         careerA6$(I) = ""
                     End If
 
-                    careerPUS!(N, I, 0) = Z!(7)
-                    careerPUS!(N, I, 1) = Z!(8)
+                    careerPUS!(N, I, 0) = statsZ!(7)
+                    careerPUS!(N, I, 1) = statsZ!(8)
                     careerPUS!(N, I, 2) = 1
                     careerPUS!(N, I, 3) = statYear
                 Next I
@@ -380,7 +380,7 @@ Sub CreateMergeInitial ()
                     If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
 
                         For J = 3 To 6
-                            careerFGS!(N, I, J - 3) = Z2!(J, 17)
+                            careerFGS!(N, I, J - 3) = statsZ2!(J, 17)
                         Next J
 
                         careerFGS!(N, I, 4) = LF!(I)
@@ -394,7 +394,7 @@ Sub CreateMergeInitial ()
                     If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
 
                         For J = 7 To 10:
-                            careerFGS!(N, I, J - 7) = Z2!(J, 17)
+                            careerFGS!(N, I, J - 7) = statsZ2!(J, 17)
                         Next J
 
                         careerFGS!(N, I, 4) = LF!(I)
