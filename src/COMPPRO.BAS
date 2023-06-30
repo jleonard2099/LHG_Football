@@ -172,7 +172,7 @@ Sub COMPPRO ()
                     Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
                     I$ = GetKeyPress$
                 Else
-                    Erase Z2!
+                    Erase compZ2!
 
                     Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
 

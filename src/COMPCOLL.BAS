@@ -469,7 +469,7 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
     Shared KR!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared OT!(), PK!(), PR!(), QB!(), RB!()
-    Shared TG!(), TP!(), WR!(), YD!(), Z2!()
+    Shared TG!(), TP!(), WR!(), YD!(), compZ2!()
 
     Shared BRC$(), statsDI$(), statsDS$(), H1$()
     Shared KR$()
@@ -495,7 +495,7 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
 
     For J = 1 To 14
         For K = 1 To 18
-            Input #1, Z2!(J, K)
+            Input #1, compZ2!(J, K)
         Next K
     Next J
 
@@ -554,44 +554,44 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
 
     For I = 1 To 10:
         For J = 1 To 6:
-            RB!(I, J) = Z2!(I, J)
+            RB!(I, J) = compZ2!(I, J)
         Next
     Next
 
     For I = 1 To 6
         For J = 1 To 3
-            WR!(I, J) = Z2!(I, J + 6)
+            WR!(I, J) = compZ2!(I, J + 6)
         Next
     Next
 
     For I = 1 To 4
         For J = 1 To 5
-            QB!(I, J) = Z2!(I, J + 9)
+            QB!(I, J) = compZ2!(I, J + 9)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            KR!(I, J) = Z2!(I, J + 14)
+            KR!(I, J) = compZ2!(I, J + 14)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            PR!(I, J) = Z2!(I + 3, J + 14)
+            PR!(I, J) = compZ2!(I + 3, J + 14)
         Next
     Next
 
     TG!(8) = OT!(7)
     TG!(9) = OT!(8)
-    FM!(1) = Z2!(4, 18)
-    FA!(1) = Z2!(5, 18)
-    EM!(1) = Z2!(6, 18)
-    EA!(1) = Z2!(7, 18)
-    FM!(2) = Z2!(8, 18)
-    FA!(2) = Z2!(9, 18)
-    EM!(2) = Z2!(10, 18)
-    EA!(2) = Z2!(11, 18)
+    FM!(1) = compZ2!(4, 18)
+    FA!(1) = compZ2!(5, 18)
+    EM!(1) = compZ2!(6, 18)
+    EA!(1) = compZ2!(7, 18)
+    FM!(2) = compZ2!(8, 18)
+    FA!(2) = compZ2!(9, 18)
+    EM!(2) = compZ2!(10, 18)
+    EA!(2) = compZ2!(11, 18)
 
     For I = 1 To 10:
         RB!(I, 7) = RB!(I, 2) + RB!(I, 5)

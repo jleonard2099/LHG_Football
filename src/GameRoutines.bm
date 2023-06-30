@@ -234,8 +234,8 @@ Sub InitVar ()
     Erase GI, GS, IR
     Erase K, K1, K2, K3, KR
     Erase LC, LF, LI, LK, LP, LR, OT, PK, PR
-    Erase QB, RB, S, SI, SK, T, T1, timePoss
-    Erase W6, WR, XD, YC, Z!, Z1!, Z2!
+    Erase QB, RB, S, SI, SK, T1, timePoss ', T
+    Erase W6, WR, XD, YC, Z, Z1, Z2
 
     Erase AP%, intB8%, intDI%, intDS%
     Erase intG9%, HB%

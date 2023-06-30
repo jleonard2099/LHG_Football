@@ -1,8 +1,6 @@
-Sub CARMERGE ()
+Sub MergeCareerFiles ()
 
     _Title "3-in-1 Football - Update Career Files"
-
-    ReDim menuChoices$(1 To 3)
 
     TMR = 12840
     NB = -1
@@ -20,81 +18,42 @@ Sub CARMERGE ()
     VV = 0
 
     Do
-
+        Color 14, 0
         Cls
 
-        Call TITLE_UTILS
-        menuChoices$(1) = "MERGE / UPDATE CAREER FILES       "
-        menuChoices$(2) = "EXIT TO MAIN MENU                 "
-        Selection% = 1
-        Count% = 2
-        Start% = 1
-        ExitCode% = 2
-        FileFGColr% = 15: FileBGColr% = 1
-        HiLiteFGColr% = 0: HiLiteBGColr% = 7
-        Spacing% = 1
-        Row% = 8
-        Column% = 25
+        Locate 5, 27
+        Print "- - - C A U T I O N - - -"
+        
+        Color 15
+        Locate 8, 1
 
-        Call box0(7, 24, 10, 59, 2, 15, 1)
-        _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
-        _MouseHide
+        Print "THIS OPTION SHOULD ONLY BE USED WHEN ADDING YEARS TO AN EXISTING STAT"
+        Print "FILE. IF YOU ARE CREATING A NEW CAREER FILE, USE THE CREATE OPTION."
+        Print
+        Print "IF YOU ARE ADDING AN ADDITIONAL CAREER YEAR, MAKE SURE THAT ANY UNUSED PLAYER"
+        Print "SLOTS (XXX, END, ETC.) ARE AT THE END OF THE SEASON STAT LIST BEFORE YOU MERGE."
+        Print
+        Print "ALSO MAKE SURE THAT THE PLAYERS NAMES IN THE FILE YOU ARE ADDING, MATCH"
+        Print "THE EXACT SPELLING OF THE NAME OF THE SAME PLAYER IN THE CAREER FILE FOR THE"
+        Print "PLAYERS THAT HAD PLAYED IN PREVIOUS YEARS.  EXAMPLE - IF DARREN NELSON IS"
+        Print "LISTED AS 'NELSON' IN THE CAREER FILE AND THE SEASON STATS HAD HIM AS"
+        Print "'D.NELSON', HE SHOULD BE CHANGED TO 'NELSON' IN THE SEASON FILE BEFORE"
+        Print "MERGING, OR YOU COULD CHANGE HIM TO 'D.NELSON' IN THE CAREER FILE"
+        Print
+        Print
+        
+        Color 12: Locate , 25
+        Print "DO YOU WISH TO CONTINUE? (Y/N)"
 
-        Color , 0
-
-        If ExitCode% <> 27 Then
-
-            Select Case Selection%
-                Case 1: Call MergeCareerStats
-                Case 2: Cls
-            End Select
-
-        End If
-
-    Loop Until Selection% = 2 Or ExitCode% = 27
-
-End Sub
-
-'----------------------------------------
-'       MergeCareerStats Subroutine
-'----------------------------------------
-'...explanation...
-Sub MergeCareerStats ()
-
-    Color 14, 0
-    Cls
-    Locate 5, 27: Print "- - - C A U T I O N - - -"
-    Color 15: Locate 8, 8
-    Print "THIS OPTION SHOULD ONLY BE USED WHEN ADDING YEARS TO AN EXISTING STAT"
-    Print "FILE.  IF YOU ARE CREATING A NEW CAREER FILE, USE OPTION #1.  IF YOU ARE ADDING"
-    Print "AN ADDITIONAL CAREER YEAR, MAKE SURE THAT ANY UNUSED PLAYER SLOTS (XXX, END,"
-    Print "ETC.) ARE AT THE END OF THE SEASON STAT LIST BEFORE YOU MERGE."
-    Locate , 8
-    Print "ALSO MAKE SURE THAT THE PLAYERS NAMES IN THE FILE YOU ARE ADDING, MATCH"
-    Print "THE EXACT SPELLING OF THE NAME OF THE SAME PLAYER IN THE CAREER FILE FOR THE"
-    Print "PLAYERS THAT HAD PLAYED IN PREVIOUS YEARS.  EXAMPLE - IF DARREN NELSON IS"
-    Print "LISTED AS 'NELSON' IN THE CAREER FILE AND THE SEASON STATS HAD HIM AS"
-    Print "'D.NELSON', HE SHOULD BE CHANGED TO 'NELSON' IN THE SEASON FILE BEFORE"
-    Print "MERGING, OR YOU COULD CHANGE HIM TO 'D.NELSON' IN THE CAREER FILE"
-    Print
-    Print
-    Color 12: Locate , 25
-    Print "DO YOU WISH TO CONTINUE? (Y/N)"
-
-    Do
         I$ = GetKeyPress$
+
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
     If UCase$(I$) = "Y" Then
 
         Do
-            1150 '
-            Cls
 
-            For J = 15 To 18:
-                Locate J: Print String$(68, " ")
-            Next
+            Cls
 
             Do
                 'Display list of files...
@@ -209,6 +168,7 @@ Sub MergeCareerStats ()
         Loop Until UCase$(I$) = "N"
 
         VV = 0
+
         Locate , 5: Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
 
         Do

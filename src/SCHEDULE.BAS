@@ -176,7 +176,7 @@ Sub NewSchedule (scheduleFile$)
 
         Cls
         Locate 23, 1: Color , 1: Print Tab(80);
-        
+
         Locate 23, 1
         Color 13: Print "HF";: Color 14: Print "-HOME FIELD ADV  ";
         Color 13: Print "MA";: Color 14: Print "-MODE OF PLAY  ";
@@ -294,7 +294,7 @@ Sub NewSchedule (scheduleFile$)
                     End If
                 Next
 
-                For X = 0 To 1: 
+                For X = 0 To 1:
                     scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
                 Next
 
@@ -434,7 +434,7 @@ Sub NewSchedule (scheduleFile$)
 
                 Call FOOTBALL
 
-                Call LoadScheduleInfo (scheduleFile$)
+                Call LoadScheduleInfo(scheduleFile$)
 
             Case "R":
                 ' *** RESET GAMES ***
@@ -773,7 +773,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Shared scheduleNG%(), statsPA%()
     Shared scheduleYN$()
 
-    Shared statsZ1%()    
+    Shared statsZ1%()
     Shared Z1$(), Z2$()
 
     If scheduleAction% = 6 Then
@@ -945,12 +945,12 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                     Color 15, 0
                     Cls
-                    
+
                     JJ = 7
-                    
+
                     Locate 6, 8
                     Color 15, 4
-                    
+
                     'Print box top
                     Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
 
@@ -974,6 +974,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                     Locate 8, 27: Input NY$
 
                     If NY$ = "" Then
+                        YN$ = RTrim$(NY$)
                         Call GetTeam_Schedule(numberTeams, NY$, T1)
                     Else
                         YN$ = RTrim$(NY$)
@@ -1087,7 +1088,7 @@ End Sub
 '...explanation...
 Sub EditParameters ()
 
-    Dim E%()
+    Dim E%
 
     'Read in existing parameters if there are any
     If _FileExists("EVENTS.BOX") Then
@@ -1206,7 +1207,7 @@ Sub BoxscoreMaintenance ()
                         For X = 1 To Count%
                             boxFiles$(X) = Space$(12)
                         Next
-                        
+
                         boxFiles$(0) = Spec$
                         Call ReadFile(boxFiles$())
 
@@ -1310,11 +1311,11 @@ Sub SaveScheduleFile (saveFile$)
 
     For I = 1 To scheduleAP%(0)
 
-        For X = 0 To 20: 
+        For X = 0 To 20:
             LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
         Next
 
-        For X = 0 To 1: 
+        For X = 0 To 1:
             LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
         Next
 
@@ -1406,7 +1407,7 @@ Sub ChangeGlobalSettings ()
     statsA3$(4) = "RANDOM"
 
     DT$ = "10-01-91"
-    TM$ = "07:30P"        
+    TM$ = "07:30P"
     windOpt = 3
     weatherOpt = 3
 
@@ -1536,7 +1537,7 @@ Sub SelectTeam_Schedule (yearNumber$, numberTeams)
 
         Field #1, 15 As Q$(0), 640 As X$
 
-        For I1 = 1 to fileLength& / 934
+        For I1 = 1 To fileLength& / 934
 
             Get #1, I1
 
@@ -1547,7 +1548,7 @@ Sub SelectTeam_Schedule (yearNumber$, numberTeams)
 
             If nullTeam <> 1 Then
                 numberTeams = numberTeams + 1
-                teamNames$(numberTeams) = Q$(0)
+                teamNames$(numberTeams) = RTrim$(Q$(0))
                 teamIndex%(numberTeams) = I1
             End If
 
@@ -1690,7 +1691,7 @@ Sub CheckTeam_Schedule (teamIdx, yearNumber$)
 End Sub
 
 '----------------------------------------
-'       DeleteSchedules Subroutine       
+'       DeleteSchedules Subroutine
 '----------------------------------------
 '...explanation...
 Sub DeleteSchedules (fileChoice%, fileSpec$)
@@ -1799,8 +1800,8 @@ Sub SelectScheduleFile (targetFile$, scheduleFiles$(), FileCount%, ExitCode%)
         fileNoExt$ = Left$(targetFile$, Len(targetFile$) - 4)
         targetFile$ = fileNoExt$
         Color 15, 0
-        
-        Call LoadScheduleInfo (targetFile$)
+
+        Call LoadScheduleInfo(targetFile$)
 
     End If
 
@@ -1834,11 +1835,11 @@ Sub LoadScheduleInfo (targetFile$)
     For I = 1 To scheduleAP%(0)
         Get #1, I
 
-        For X = 0 To 20: 
+        For X = 0 To 20:
             scheduleNG%(I, X) = CVI(Q$(X + 1))
         Next
 
-        For X = 0 To 1: 
+        For X = 0 To 1:
             scheduleYN$(I, X) = RTrim$(Q$(22 + X))
         Next
 
@@ -1927,3 +1928,4 @@ Sub EditBoxscore (boxName$)
     End If
 
 End Sub
+

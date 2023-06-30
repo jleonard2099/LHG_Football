@@ -142,7 +142,7 @@ Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 Dim WR$(16)
 
 
-Dim BRC!(50), compZ1!(240, 2) compZ2!(1 To 14, 1 To 18)
+Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
 Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
@@ -153,7 +153,7 @@ Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 
 
-'---------------------------------------ts
+'----------------------------------------
 ' Used across DRAFT.BAS routines
 '----------------------------------------
 Dim ydsCompAdj
@@ -331,4 +331,5 @@ Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1)
 Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
 Dim Shared R$(14), strRB$(1, 17), RP$(30), SITE$(120), SX$(1 To 33, 0 To 1)
 Dim Shared strWR$(1, 20), Y$(1), YN$(1), YR%(1)
+
 

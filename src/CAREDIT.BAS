@@ -1,5 +1,7 @@
 Sub CAREDIT ()
 
+    _Title "3-in-1 Football - Edit Career Files"
+
     Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
     Shared careerDI$(), careerDS$(), careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerRC$(), careerWRS$()
@@ -8,20 +10,17 @@ Sub CAREDIT ()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
-    _Title "3-in-1 Football - Edit Career Files"
-
     Color 0, 0
     Cls
     TMR = 6420
 
     Do
         'Display list of files...
-
         Spec$ = diskPaths$(1) + "*.CAR"
         Count% = FCount%(Spec$)
 
         If Count% = 0 Then
-            Cls
+            Locate 10, 8
             Call CSMsgBox("NO CAREER FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
@@ -37,7 +36,8 @@ Sub CAREDIT ()
             Call ReadFile(careerFiles$())
 
             Do
-                1310 Cls
+			
+                Cls
                 Color , 1
                 Cls
                 Locate , 28
@@ -73,7 +73,6 @@ Sub CAREDIT ()
 						I$ = GetKeyPress$
 					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-
 					Color 15, 0
 
 				End If
@@ -82,62 +81,239 @@ Sub CAREDIT ()
 
 			If ExitCode% <> 27 Then
 
-				targetFile$ = RTrim$(targetFile$)
-				Z$ = Left$(targetFile$, Len(targetFile$) - 4)
-
 				Color 15, 0
 				Cls
 				Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
+				targetFile$ = RTrim$(targetFile$)
+				Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+
 				Open diskPaths$(1) + Z$ + ".CAR" For Input As #2
+
 				Input #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-				For I = 0 To 49: Input #2, careerA1$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 39: Input #2, careerA2$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 19: Input #2, careerA3$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 14: Input #2, careerA4$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 14: Input #2, careerA5$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 9: Input #2, careerA6$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 9: Input #2, careerA7$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 54: Input #2, careerDI$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For I = 0 To 54: Input #2, careerDS$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-				For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Input #2, careerRBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 49: Input #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Input #2, careerWRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 39: Input #2, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Input #2, careerQBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 19: Input #2, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerKRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 14: Input #2, careerKRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #2, careerPRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 14: Input #2, careerPRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Input #2, careerPUS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Input #2, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-				For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #2, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+
+				For I = 0 To 49: 
+					Input #2, careerA1$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 39: 
+					Input #2, careerA2$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 19: 
+					Input #2, careerA3$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 14: 
+					Input #2, careerA4$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 14: 
+					Input #2, careerA5$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 9: 
+					Input #2, careerA6$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 9: 
+					Input #2, careerA7$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 54: 
+					Input #2, careerDI$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For I = 0 To 54: 
+					Input #2, careerDS$(I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+				Next
+				
+				For N = 1 To 15
+					For J = 0 To 49
+						For K = 0 To 9: 
+							Input #2, careerRBS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 49: 
+						Input #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 39: 
+						For K = 0 To 5: 
+							Input #2, careerWRS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 39: 
+						Input #2, careerWRS$(N, J, 0)
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 19: 
+						For K = 0 To 7: 
+							Input #2, careerQBS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 19: 
+						Input #2, careerQBS$(N, J, 0)
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 14: 
+						For K = 0 To 5: 
+							Input #2, careerKRS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 14: 
+						Input #2, careerKRS$(N, J, 0)
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 14: 
+						For K = 0 To 5: 
+							Input #2, careerPRS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 14: 
+						Input #2, careerPRS$(N, J, 0)
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+	
+				For N = 1 To 15: 
+					For J = 0 To 9: 
+						For K = 0 To 3: 
+							Input #2, careerPUS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 9: 
+						For K = 0 To 16: 
+							Input #2, careerFGS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 54: 
+						For K = 0 To 2: 
+							Input #2, careerGIS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+				
+				For N = 1 To 15: 
+					For J = 0 To 54: 
+						For K = 0 To 2: 
+							Input #2, careerGSS!(N, J, K)
+						Next K
+						Locate 21, 38: Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
+					Next J
+				Next N
+
 				Close 2
 
 				Do
 
 					Cls
 					Color 7: Print "EDIT ";
-					Color 12: Print "R";: Color 7: Print "UNNING BACKS, ";
-					Color 12: Print "W";: Color 7: Print "IDE RECEIVERS, ";
-					Color 12: Print "Q";: Color 7: Print "UARTERBACKS, KI";
-					Color 12:PRINT "C";:COLOR 7:PRINT "K RETURNERS, P";:_
-					COLOR 12:PRINT "U";:COLOR 7:PRINT "NT RETURNERS, ";
-					Color 12: Print "P";: Color 7: Print "UNTERS, ";
-					Color 12: Print "K";: Color 7: Print "ICKERS, ";
-					Color 12: Print "I";: Color 7: Print "NTERCEPTIONS, DE";
-					Color 12:PRINT "F";:COLOR 7:PRINT "ENSIVE SACKS, UP";:_
-					COLOR 12:PRINT"D";:COLOR 7:PRINT "ATE CAREER FILE"
+					Color 12: Print "R";
+					Color 7: Print "UNNING BACKS, ";
+					Color 12: Print "W";
+					Color 7: Print "IDE RECEIVERS, ";
+					Color 12: Print "Q";
+					Color 7: Print "UARTERBACKS, KI";
+					Color 12:PRINT "C";
+					COLOR 7:PRINT "K RETURNERS, P";:_
+					COLOR 12:PRINT "U";
+					COLOR 7:PRINT "NT RETURNERS, ";
+					Color 12: Print "P";
+					Color 7: Print "UNTERS, ";
+					Color 12: Print "K";
+					Color 7: Print "ICKERS, ";
+					Color 12: Print "I";
+					Color 7: Print "NTERCEPTIONS, DE";
+					Color 12:PRINT "F";
+					COLOR 7:PRINT "ENSIVE SACKS, UP";:_
+					COLOR 12:PRINT"D";
+					COLOR 7:PRINT "ATE CAREER FILE"
 					Color 7: Print "OR ";
-					Color 12: Print "E";: Color 7: Print "XIT WITHOUT UPDATING"
+					Color 12: Print "E";
+					Color 7: Print "XIT WITHOUT UPDATING"
 
-					I$ = GetKeyPress$
+					J$ = GetKeyPress$
 
-					Select Case UCase$(I$)
+					Select Case UCase$(J$)
+
 						Case "R"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 16:
@@ -214,7 +390,9 @@ Sub CAREDIT ()
 							End If
 
 						Case "W"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 19:
@@ -280,7 +458,9 @@ Sub CAREDIT ()
 							End If
 
 						Case "Q"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 9:
@@ -306,6 +486,7 @@ Sub CAREDIT ()
 									Call PrintCareerStatsQB(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 										Locate 5, 15: Print "CHANGING QUARTERBACK FILE . . . . . PLEASE WAIT"
 
@@ -333,6 +514,7 @@ Sub CAREDIT ()
 							End If
 
 							If exitFlag% <> 1 Then
+
 								careerA3$(19) = ""
 
 								For J = 1 To 15:
@@ -345,7 +527,9 @@ Sub CAREDIT ()
 							End If
 
 						Case "C"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA4$(I), 12): Next
@@ -362,6 +546,7 @@ Sub CAREDIT ()
 									Call PrintCareerStatsKR(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 										Locate 5, 15: Print "CHANGING KICK RETURNER FILE . . . . . PLEASE WAIT"
 
@@ -385,6 +570,7 @@ Sub CAREDIT ()
 								End If
 
 								If exitFlag% <> 1 Then
+
 									careerA4$(14) = ""
 
 									For J = 1 To 15:
@@ -398,12 +584,22 @@ Sub CAREDIT ()
 							End If
 
 						Case "U"
+
 							Cls
+
 							Color 12: Print Z$
 
-							For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA5$(I), 12): Next
+							For I = 0 To 14: 
+								Locate I + 2: Color 11
+								Print Using "##"; I;
+								Print " ";
+								Color 7: Print Left$(careerA5$(I), 12)
+							Next
 
-							2441 Locate 22: Color 15: Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9: If B9 < 0 Or B9 > 15 Then 2441
+							Do
+								Locate 22: Color 15
+								Input "ENTER NUMBER OF PLAYER TO DELETE (15 TO EXIT)"; B9
+							Loop Until B9 <=0 And B9 <= 15
 
 							If B9 <> 15 Then
 
@@ -412,10 +608,13 @@ Sub CAREDIT ()
 									Call PrintCareerStatsPR(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 
 										Locate 5, 15: Print "CHANGING PUNT RETURNER FILE . . . . . PLEASE WAIT"
+
 										For I = B9 To 13: careerA5$(I) = careerA5$(I + 1): Next
+
 										UPP = (14 - B9) * 15
 										I = B9
 
@@ -433,6 +632,7 @@ Sub CAREDIT ()
 								End If
 
 								If exitFlag% <> 1 Then
+
 									careerA5$(14) = ""
 
 									For J = 1 To 15:
@@ -447,7 +647,9 @@ Sub CAREDIT ()
 							End If
 
 						Case "P"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 9:
@@ -468,6 +670,7 @@ Sub CAREDIT ()
 									Call PrintCareerStatsP(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 
 										Locate 5, 15: Print "CHANGING PUNTER FILE . . . . . PLEASE WAIT"
@@ -483,8 +686,7 @@ Sub CAREDIT ()
 													careerPUS!(J, I, I1) = careerPUS!(J, I + 1, I1)
 												Next
 
-												UPP = UPP - 1:
-
+												UPP = UPP - 1
 												Locate 7, 36: Color 12: Print Using "####"; UPP
 											Next
 
@@ -495,6 +697,7 @@ Sub CAREDIT ()
 								End If
 
 								If exitFlag% <> 1 Then
+
 									careerA6$(9) = ""
 
 									For J = 1 To 15:
@@ -508,7 +711,9 @@ Sub CAREDIT ()
 							End If
 
 						Case "K"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 9:
@@ -522,15 +727,21 @@ Sub CAREDIT ()
 							Loop Until B9 >= 0 Or B9 <= 10
 
 							If B9 <> 10 Then
+
 								If B9 <> 9 Then
+
 									Call PrintCareerStatsK(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 										Locate 5, 15: Print "CHANGING FIELD GOAL KICKER FILE . . . . . PLEASE WAIT"
+
 										For I = B9 To 8: careerA7$(I) = careerA7$(I + 1): Next
+
 										UPP = (9 - B9) * 15
 										I = B9
+
 										For J = 1 To 15:
 											For I = B9 To 8:
 												For I1 = 0 To 16:
@@ -547,17 +758,21 @@ Sub CAREDIT ()
 								End If
 
 								If exitFlag% <> 1 Then
+
 									For J = 1 To 15:
 										For I1 = 0 To 16:
 											careerFGS!(J, 9, I1) = 0
 										Next
 									Next
+
 								End If
 
 							End If
 
 						Case "I"
+
 							Cls
+
 							Color 12: Print Z$
 
 							For I = 0 To 17:
@@ -616,6 +831,7 @@ Sub CAREDIT ()
 								If exitFlag% <> 1 Then
 
 									careerDI$(54) = ""
+
 									For J = 1 To 15:
 										For I1 = 0 To 2:
 											careerGIS!(J, 54, I1) = 0
@@ -627,12 +843,31 @@ Sub CAREDIT ()
 							End If
 
 						Case "F"
+
 							Cls
+
 							Color 12: Print Z$
 
-							For I = 0 To 17: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
-							For I = 18 To 35: Locate I - 16, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
-							For I = 36 To 54: Locate I - 34, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerDS$(I), 12): Next
+							For I = 0 To 17: 
+								Locate I + 2: Color 11
+								Print Using "##"; I;
+								Print " ";
+								Color 7: Print Left$(careerDS$(I), 12)
+							Next
+
+							For I = 18 To 35: 
+								Locate I - 16, 20: Color 11
+								Print Using "##"; I;
+								Print " ";
+								Color 7: Print Left$(careerDS$(I), 12)
+							Next
+
+							For I = 36 To 54: 
+								Locate I - 34, 40: Color 11
+								Print Using "##"; I;
+								Print " ";
+								Color 7: Print Left$(careerDS$(I), 12)
+							Next
 
 							Do
 								Locate 22: Color 15
@@ -646,21 +881,28 @@ Sub CAREDIT ()
 									Call PrintCareerStatsSACK(exitFlag%, B9)
 
 									If exitFlag% <> 1 Then
+
 										Cls
 										Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
 										For I = B9 To 8: careerDS$(I) = careerDS$(I + 1): Next
+
 										UPP = (54 - B9) * 15
 										I = B9
 
 										For J = 1 To 15:
+
 											For I = B9 To 53:
+
 												For I1 = 0 To 2:
 													careerGSS!(J, I, I1) = careerGSS!(J, I + 1, I1)
 												Next
+
 												UPP = UPP - 1
 												Locate 7, 36: Color 12: Print Using "####"; UPP
+
 											Next
+
 										Next
 
 									End If
@@ -668,8 +910,13 @@ Sub CAREDIT ()
 								End If
 
 								If exitFlag% <> 1 Then
+
 									careerDS$(54) = ""
-									For J = 1 To 15: For I1 = 0 To 2: careerGSS!(J, 54, I1) = 0: Next: Next
+
+									For J = 1 To 15: 
+										For I1 = 0 To 2: careerGSS!(J, 54, I1) = 0: Next
+									Next
+
 								End If
 
 							End If
@@ -677,13 +924,12 @@ Sub CAREDIT ()
 						Case "D"
 							Call UpdateCareerFile(Z$)
 
-						Case "E"
-							Exit Sub
-							'Go back to CAREER
+						Case "E","X"
+							'
 
 					End Select
 
-				Loop Until UCase$(I$) = "E"
+				Loop Until UCase$(J$) = "E" Or UCase$(J$) = "X"
 			
 			End If 'Done checking for ESC
 			
@@ -720,74 +966,57 @@ Sub UpdateCareerFile (saveFile$)
 
     For I = 0 To 49
         Write #2, careerA1$(I)
-        Locate 21, 38
-        Color 5
+        Locate 21, 38: Color 5
         TMR = TMR - 1
         Print Using "####"; TMR
     Next
 
     For I = 0 To 39
         Write #2, careerA2$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 19
         Write #2, careerA3$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 14
         Write #2, careerA4$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 14
         Write #2, careerA5$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 9
         Write #2, careerA6$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 9
         Write #2, careerA7$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54
         Write #2, careerDI$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54
         Write #2, careerDS$(I)
-        Locate 21, 38
-        Color 5
-        TMR = TMR - 1
-        Print Using "####"; TMR
+        Locate 21, 38: Color 5
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     '---
@@ -800,10 +1029,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerRBS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
 
         Next J
 
@@ -814,10 +1041,8 @@ Sub UpdateCareerFile (saveFile$)
     For N = 1 To 15
         For J = 0 To 49
             Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -832,10 +1057,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerWRS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -846,10 +1069,8 @@ Sub UpdateCareerFile (saveFile$)
 
         For J = 0 To 39
             Write #2, careerWRS$(N, J, 0)
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -864,10 +1085,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerQBS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -878,10 +1097,8 @@ Sub UpdateCareerFile (saveFile$)
 
         For J = 0 To 19
             Write #2, careerQBS$(N, J, 0)
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -896,10 +1113,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerKRS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -909,10 +1124,8 @@ Sub UpdateCareerFile (saveFile$)
     For N = 1 To 15
         For J = 0 To 14
             Write #2, careerKRS$(N, J, 0)
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -927,10 +1140,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerPRS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
 
         Next J
 
@@ -942,10 +1153,8 @@ Sub UpdateCareerFile (saveFile$)
 
         For J = 0 To 14
             Write #2, careerPRS$(N, J, 0)
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -959,10 +1168,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerPUS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
 
         Next J
 
@@ -978,10 +1185,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerFGS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
 
         Next J
 
@@ -996,10 +1201,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerGIS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
         Next J
 
     Next N
@@ -1013,10 +1216,8 @@ Sub UpdateCareerFile (saveFile$)
                 Write #2, careerGSS!(N, J, K)
             Next K
 
-            Locate 21, 38
-            Color 5
-            TMR = TMR - 1
-            Print Using "####"; TMR
+            Locate 21, 38: Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
 
         Next J
 
@@ -1036,13 +1237,18 @@ Sub PrintCareerStatsRB (exitFlag%, B9)
     Shared careerRBS!(), careerRC!()
 
     Cls
+
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA1$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA1$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA1$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA1$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1134,11 +1340,11 @@ Sub PrintCareerStatsRB (exitFlag%, B9)
 			LPrint Chr$(12)
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1155,12 +1361,15 @@ Sub PrintCareerStatsWR (exitFlag%, B9)
 
     Cls
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA2$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA2$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA2$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA2$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1168,7 +1377,9 @@ Sub PrintCareerStatsWR (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
+
             LPrint Z$
             LPrint "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
             VV = 0
@@ -1218,11 +1429,11 @@ Sub PrintCareerStatsWR (exitFlag%, B9)
             TT9 = 0
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1241,13 +1452,18 @@ Sub PrintCareerStatsQB (exitFlag%, B9)
     'Shared careerFF!(), careerII(), careerPP(), careerRC!(), careerTT!(), careerYY()
 
     Cls
+
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA3$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA3$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA3$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA3$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1255,7 +1471,9 @@ Sub PrintCareerStatsQB (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
+
             LPrint Z$
             LPrint "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG.PASS"
             VV = 0
@@ -1455,11 +1673,11 @@ Sub PrintCareerStatsQB (exitFlag%, B9)
             TT14 = 0
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1475,13 +1693,18 @@ Sub PrintCareerStatsKR (exitFlag%, B9)
     Shared careerKRS!(), careerRC!()
 
     Cls
+
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA4$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA4$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA4$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA4$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1489,6 +1712,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             LPrint "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
@@ -1541,11 +1765,11 @@ Sub PrintCareerStatsKR (exitFlag%, B9)
             TT17 = 0
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1561,13 +1785,18 @@ Sub PrintCareerStatsPR (exitFlag%, B9)
     Shared careerPRS!(), careerRC!()
 
     Cls
+
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA5$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA5$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA5$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA5$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1575,6 +1804,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             LPrint "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
@@ -1621,11 +1851,11 @@ Sub PrintCareerStatsPR (exitFlag%, B9)
             TT20 = 0
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1641,13 +1871,17 @@ Sub PrintCareerStatsP (exitFlag%, B9)
     Shared careerPUS!(), careerRC!()
 
     Cls
+
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA6$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA6$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA6$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA6$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1655,6 +1889,7 @@ Sub PrintCareerStatsP (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             LPrint "PUNTERS           YEAR     ATT.     YARDS      AVG."
@@ -1687,11 +1922,11 @@ Sub PrintCareerStatsP (exitFlag%, B9)
             TT22 = 0
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1707,13 +1942,18 @@ Sub PrintCareerStatsK (exitFlag%, B9)
     Shared careerFGS!(), careerRC!(), careerTT!()
 
     Cls
+	
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerA7$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerA7$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerA7$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerA7$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1721,6 +1961,7 @@ Sub PrintCareerStatsK (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             Locate 2: LPrint "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
@@ -1811,11 +2052,11 @@ Sub PrintCareerStatsK (exitFlag%, B9)
             For J = 23 To 45: careerTT!(J) = 0: Next
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1832,12 +2073,16 @@ Sub PrintCareerStatsINT (exitFlag%, B9)
 
     Cls
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careercareerDI$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careercareerDI$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerDI$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerDI$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1845,6 +2090,7 @@ Sub PrintCareerStatsINT (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             LPrint "INTERCEPTORS        YEAR     INTERCEPTIONS"
@@ -1870,11 +2116,11 @@ Sub PrintCareerStatsINT (exitFlag%, B9)
             LPrint Tab(33); "####"; careerTT!(32)
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 
@@ -1891,12 +2137,16 @@ Sub PrintCareerStatsSACK (exitFlag%, B9)
 
     Cls
     Locate 5, 20: Color 15
-    Print "PRINT CAREER STATS OF ";: Color 12: Print careerDS$(B9);: Color 15: Print " BEFORE "
+    Print "PRINT CAREER STATS OF ";
+	Color 12: Print careerDS$(B9);
+	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
+
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
-    Locate , 20: Print "OF ";: Color 12: Print careerDS$(B9);
+    Locate , 20: Print "OF ";
+	Color 12: Print careerDS$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1904,6 +2154,7 @@ Sub PrintCareerStatsSACK (exitFlag%, B9)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or UCase$(I$) = "E"
 
     Select Case UCase$(I$)
+
         Case "Y"
             LPrint Z$
             LPrint "SACKERS             YEAR     INTERCEPTIONS"
@@ -1929,11 +2180,11 @@ Sub PrintCareerStatsSACK (exitFlag%, B9)
             LPrint Tab(33); "####"; careerTT!(33)
 
         Case "N"
-            Exit Sub
+            'Exit Sub
 
         Case "E"
             exitFlag% = 1
-            Exit Sub
+            'Exit Sub
 
     End Select
 

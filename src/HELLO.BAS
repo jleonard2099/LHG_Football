@@ -21,6 +21,7 @@ DefInt A-Z
 '$INCLUDE: 'PadRight.bi'
 '$INCLUDE: 'Variables.bi'
 
+
 ' For Utils
 '$INCLUDE: 'MainRoutines.bi'
 '$INCLUDE: 'TITLE.bi'
@@ -662,7 +663,6 @@ Sub Leaders_Menu ()
 
         Call TITLE
         ReDim menuChoices$(1 To 21)
-        'Erase menuChoices$
         menuChoices$(1) = "CREATE/ EDIT           "
         menuChoices$(2) = "UPDATE STATS/ STANDINGS"
         menuChoices$(3) = "VIEW/ PRINT REPORTS    "
@@ -670,6 +670,7 @@ Sub Leaders_Menu ()
         menuChoices$(5) = "LEAGUE RECORDS         "
         menuChoices$(6) = "EXPANDED LEADERS       "
         menuChoices$(7) = "DELETE LEAGUE STATS    "
+
         menuChoices$(8) = "CREATE/ EDIT           "
         menuChoices$(9) = "UPDATE STATS/ STANDINGS"
         menuChoices$(10) = "VIEW/ PRINT REPORTS    "
@@ -677,6 +678,7 @@ Sub Leaders_Menu ()
         menuChoices$(12) = "CONFERENCE RECORDS     "
         menuChoices$(13) = "EXPANDED LEADERS       "
         menuChoices$(14) = "DELETE CONFERENCE STATS"
+
         menuChoices$(15) = "CREATE/ EDIT           "
         menuChoices$(16) = "UPDATE POLL/ STATS     "
         menuChoices$(17) = "VIEW/ PRINT REPORTS    "

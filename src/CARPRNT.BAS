@@ -9,7 +9,7 @@ Sub CARPRNT ()
     Shared careerRC$()
 
     Shared careerFF!()
-
+    
     Shared careerGIS!(), careerGSS!()
     Shared careerFGS!(), careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
@@ -101,7 +101,9 @@ Sub CARPRNT ()
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
                 Open diskPaths$(1) + Z$ + ".CAR" For Input As #1
+
                 Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
                 For I = 0 To 49: Input #1, careerA1$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
                 For I = 0 To 39: Input #1, careerA2$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
                 For I = 0 To 19: Input #1, careerA3$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
@@ -117,29 +119,37 @@ Sub CARPRNT ()
                         For K = 0 To 9:
                             Input #1, careerRBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 49:
                         Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 39:
+
                         For K = 0 To 5:
                             Input #1, careerWRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 39:
-                        Input #1, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Input #1, careerWRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -148,13 +158,16 @@ Sub CARPRNT ()
                         For K = 0 To 7:
                             Input #1, careerQBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 19:
-                        Input #1, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Input #1, careerQBS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -163,13 +176,16 @@ Sub CARPRNT ()
                         For K = 0 To 5:
                             Input #1, careerKRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR:
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR:
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 14:
-                        Input #1, careerKRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Input #1, careerKRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -178,13 +194,16 @@ Sub CARPRNT ()
                         For K = 0 To 5:
                             Input #1, careerPRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
                 For N = 1 To 15:
                     For J = 0 To 14:
-                        Input #1, careerPRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Input #1, careerPRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -193,7 +212,8 @@ Sub CARPRNT ()
                         For K = 0 To 3:
                             Input #1, careerPUS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -202,7 +222,8 @@ Sub CARPRNT ()
                         For K = 0 To 16:
                             Input #1, careerFGS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -211,7 +232,8 @@ Sub CARPRNT ()
                         For K = 0 To 2:
                             Input #1, careerGIS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -220,7 +242,8 @@ Sub CARPRNT ()
                         For K = 0 To 2:
                             Input #1, careerGSS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -256,8 +279,10 @@ Sub CARPRNT ()
                             If careerRBS!(V, I, 3) > 0 Then Print #2, Tab(59); Using "##.#"; careerRBS!(V, I, 4) / careerRBS!(V, I, 3);
 
                             Print #2, Tab(65); Using "##"; careerRBS!(V, I, 5);
-                            Print #2, Tab(71); Using "##"; careerRBS!(V, I, 6);: Print #2, careerRBS$(V, I, 0);
-                            Print #2, Tab(77); Using "##"; careerRBS!(V, I, 9);: Print #2, careerRBS$(V, I, 1)
+                            Print #2, Tab(71); Using "##"; careerRBS!(V, I, 6);
+                            Print #2, careerRBS$(V, I, 0);
+                            Print #2, Tab(77); Using "##"; careerRBS!(V, I, 9);
+                            Print #2, careerRBS$(V, I, 1)
                         Next V
 
                         careerRC!(0) = 0
@@ -658,41 +683,59 @@ Sub CARPRNT ()
                 Print #2, "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
 
                 For I = 0 To 14
-                    If careerA5$(I) = "" Or careerA5$(I) = "XXX" Then 1328
-                    VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
-                    1306 Print #2, Left$(careerA5$(I), 13);
-                    For V = 1 To VV
-                        Print #2, Tab(22); careerPRS!(V, I, 5);
-                        Print #2, Tab(32); Using "###"; careerPRS!(V, I, 0);
-                        Print #2, Tab(42); Using "####"; careerPRS!(V, I, 1);
-                        If careerPRS!(V, I, 0) = 0 Or careerPRS!(V, I, 1) = 0 Then Print #2, Tab(52); " 00";
-                        If careerPRS!(V, I, 0) > 0 Then Print #2, Tab(52); Using "##.#"; careerPRS!(V, I, 1) / careerPRS!(V, I, 0);
-                        Print #2, Tab(62); Using "##"; careerPRS!(V, I, 2);
-                        Print #2, Tab(70); Using "###"; careerPRS!(V, I, 3);: Print #2, careerPRS$(V, I, 0)
-                    Next V
-                    careerRC!(0) = 0: careerRC$(0) = ""
-                    For V = 1 To VV
-                        TT18 = TT18 + careerPRS!(V, I, 0)
-                        TT19 = TT19 + careerPRS!(V, I, 1)
-                        TT20 = TT20 + careerPRS!(V, I, 2)
-                        If careerPRS!(V, I, 3) > careerRC!(0) Then 1317 Else GoTo 1319
+                    If careerA5$(I) <> "" And careerA5$(I) <> "XXX" Then
 
-                        1317 careerRC!(0) = careerPRS!(V, I, 3): careerRC$(0) = careerPRS$(V, I, 0)
+                        VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
-                    1319 Next V
-                    Print #2, "TOTALS";
-                    Print #2, Tab(25); Using "##"; VV;
-                    Print #2, Tab(32); Using "###"; TT18;
-                    Print #2, Tab(41); Using "#####"; TT19;
-                    If TT18 = 0 Or TT19 = 0 Then Print #2, Tab(52); " 00";
-                    If TT18 > 0 Then Print #2, Tab(52); Using "##.#"; TT19 / TT18;
-                    Print #2, Tab(61); Using "###"; TT20;
-                    Print #2, Tab(70); Using "###"; careerRC!(0);: Print #2, careerRC$(0)
-                    TT18 = 0: TT19 = 0: TT20 = 0
-                    Print #2,
+                        Print #2, Left$(careerA5$(I), 13);
 
-                1328 Next I
+                        For V = 1 To VV
+
+                            Print #2, Tab(22); careerPRS!(V, I, 5);
+                            Print #2, Tab(32); Using "###"; careerPRS!(V, I, 0);
+                            Print #2, Tab(42); Using "####"; careerPRS!(V, I, 1);
+
+                            If careerPRS!(V, I, 0) = 0 Or careerPRS!(V, I, 1) = 0 Then Print #2, Tab(52); " 00";
+                            If careerPRS!(V, I, 0) > 0 Then Print #2, Tab(52); Using "##.#"; careerPRS!(V, I, 1) / careerPRS!(V, I, 0);
+
+                            Print #2, Tab(62); Using "##"; careerPRS!(V, I, 2);
+                            Print #2, Tab(70); Using "###"; careerPRS!(V, I, 3);: Print #2, careerPRS$(V, I, 0)
+
+                        Next V
+
+                        careerRC!(0) = 0
+                        careerRC$(0) = ""
+
+                        For V = 1 To VV
+                            TT18 = TT18 + careerPRS!(V, I, 0)
+                            TT19 = TT19 + careerPRS!(V, I, 1)
+                            TT20 = TT20 + careerPRS!(V, I, 2)
+                            If careerPRS!(V, I, 3) > careerRC!(0) Then
+                                careerRC!(0) = careerPRS!(V, I, 3)
+                                careerRC$(0) = careerPRS$(V, I, 0)
+                            End If
+
+                        Next V
+
+                        Print #2, "TOTALS";
+                        Print #2, Tab(25); Using "##"; VV;
+                        Print #2, Tab(32); Using "###"; TT18;
+                        Print #2, Tab(41); Using "#####"; TT19;
+
+                        If TT18 = 0 Or TT19 = 0 Then Print #2, Tab(52); " 00";
+                        If TT18 > 0 Then Print #2, Tab(52); Using "##.#"; TT19 / TT18;
+
+                        Print #2, Tab(61); Using "###"; TT20;
+                        Print #2, Tab(70); Using "###"; careerRC!(0);: Print #2, careerRC$(0)
+
+                        TT18 = 0: TT19 = 0: TT20 = 0
+
+                        Print #2,
+
+                    End If
+
+                Next I
 
                 Print #2,
                 Print #2, Z$
@@ -727,7 +770,9 @@ Sub CARPRNT ()
                         If TT21 = 0 Or TT22 = 0 Then Print #2, Tab(47); " 00"
                         If TT21 > 0 Then Print #2, Tab(47); Using "##.#"; TT22 / TT21
 
-                        TT21 = 0: TT22 = 0
+                        TT21 = 0
+                        TT22 = 0
+
                         Print #2,
 
                     End If
@@ -741,6 +786,7 @@ Sub CARPRNT ()
                 For I = 0 To 9
 
                     If careerA7$(I) <> "" And careerA7$(I) <> "XXX" Then
+
                         VV = careerFGS!(1, I, 15) + careerFGS!(2, I, 15) + careerFGS!(3, I, 15) + careerFGS!(4, I, 15) + careerFGS!(5, I, 15) + careerFGS!(6, I, 15) + careerFGS!(7, I, 15) + careerFGS!(8, I, 15) + careerFGS!(9, I, 15) + careerFGS!(10, I, 15) + careerFGS!(11, I, 15) + careerFGS!(12, I, 15) + careerFGS!(13, I, 15) + careerFGS!(14, I, 15) + careerFGS!(15, I, 15)
 
                         Print #2, Left$(careerA7$(I), 13);

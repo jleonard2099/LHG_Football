@@ -16,38 +16,35 @@ Sub CARVIEW ()
     Shared carviewA1$(), carviewA2$(), carviewA3$(), carviewA4$(), carviewA5$(), carviewA6$(), carviewA7$()
     Shared carviewDI$(), carviewDS$()
 
-    '-- If this routine works when tested,
-    '-- it shouldn't need to track RT anymore
-
     TMR = 6420
 
     Do
         'Display list of files...
         Color 0, 0
-
         Cls
 
         Spec$ = diskPaths$(1) + "*.CAR"
         Count% = FCount%(Spec$)
 
         If Count% = 0 Then
-            Cls
+            Locate 10, 8
             Call CSMsgBox("NO CAREER FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
         Else
-
             ReDim careerFiles$(0 To Count%)
+
             For X = 1 To Count%
                 careerFiles$(X) = Space$(12)
             Next
+
             careerFiles$(0) = Spec$
             Call ReadFile(careerFiles$())
 
             Do
-                Cls
                 Color , 1
                 Cls
+
                 Locate , 28
                 Color 14
                 Print "SELECT FILE TO VIEW": Color 15
@@ -93,39 +90,206 @@ Sub CARVIEW ()
 
 				Color 15, 0
 				Cls
+
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
                 Open diskPaths$(1) + Z$ + ".CAR" For Input As #1
+
                 Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-                For I = 0 To 49: Input #1, carviewA1$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 39: Input #1, carviewA2$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 19: Input #1, carviewA3$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 14: Input #1, carviewA4$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 14: Input #1, carviewA5$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 9: Input #1, carviewA6$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 9: Input #1, carviewA7$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 54: Input #1, carviewDI$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For I = 0 To 54: Input #1, carviewDS$(PX, I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next
-                For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Input #1, careerRBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 49: Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Input #1, careerWRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 39: Input #1, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Input #1, careerQBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 19: Input #1, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #1, careerKRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 14: Input #1, careerKRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Input #1, careerPRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 14: Input #1, careerPRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Input #1, careerPUS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Input #1, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #1, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
-                For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #1, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR: Next J: Next N
+
+                For I = 0 To 49: 
+                    Input #1, carviewA1$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 39
+					Input #1, carviewA2$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 19
+					Input #1, carviewA3$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 14
+					Input #1, carviewA4$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 14
+					Input #1, carviewA5$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 9
+					Input #1, carviewA6$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 9
+					Input #1, carviewA7$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 54
+					Input #1, carviewDI$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 54
+					Input #1, carviewDS$(PX, I)
+					Locate 21, 38: Color 5
+					TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For N = 1 To 15: 
+                    For J = 0 To 49: 
+                        For K = 0 To 9
+                            Input #1, careerRBS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 49
+                        Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 39: 
+                        For K = 0 To 5
+                            Input #1, careerWRS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 39
+                        Input #1, careerWRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 19: 
+                        For K = 0 To 7
+                            Input #1, careerQBS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 19
+                        Input #1, careerQBS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14: 
+                        For K = 0 To 5
+                            Input #1, careerKRS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14
+                        Input #1, careerKRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14: 
+                        For K = 0 To 5
+                            Input #1, careerPRS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14
+                        Input #1, careerPRS$(N, J, 0)
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 9: 
+                        For K = 0 To 3
+                            Input #1, careerPUS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 9: 
+                        For K = 0 To 16
+                            Input #1, careerFGS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 54: 
+                        For K = 0 To 2
+                            Input #1, careerGIS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 54: 
+                        For K = 0 To 2
+                            Input #1, careerGSS!(N, J, K)
+                        Next K
+                        Locate 21, 38: Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
                 Close #1
 
+                '----------
 				
                 Do
+
 					Erase careerTT!
 
+                    Color 15, 0
                     Cls
 
                     Color 7: Print "VIEW ";
@@ -152,7 +316,6 @@ Sub CARVIEW ()
                     Print "STER IN SEQUENCE, OR ";
                     Color 12: Print "E";: Color 7
                     Print "XIT TO MAIN MENU."
-
 
                     escPressed% = 0
 
@@ -330,8 +493,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
             Case 1
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2: Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -340,26 +505,34 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewA1$(PX, I) <> "" And carviewA1$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA1$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewA1$(PX, I), 13);
 
                         VV = careerRBS!(1, I, 7) + careerRBS!(2, I, 7) + careerRBS!(3, I, 7) + careerRBS!(4, I, 7) + careerRBS!(5, I, 7) + careerRBS!(6, I, 7) + careerRBS!(7, I, 7) + careerRBS!(7, I, 7) + careerRBS!(9, I, 7) + careerRBS!(10, I, 7) + careerRBS!(11, I, 7) + careerRBS!(12, I, 7) + careerRBS!(13, I, 7) + careerRBS!(14, I, 7) + careerRBS!(15, I, 7)
 
                         For V = 1 To VV
-                            Color 7: Print Tab(15); careerRBS!(V, I, 8);
+
+                            Color 7
+                            Print Tab(15); careerRBS!(V, I, 8);
                             Print Tab(23); Using "###"; careerRBS!(V, I, 0);
                             Print Tab(29); Using "####"; careerRBS!(V, I, 1);
+
                             If careerRBS!(V, I, 1) = 0 Or careerRBS!(V, I, 0) = 0 Then Print Tab(34); " 0.0";
                             If careerRBS!(V, I, 0) > 0 Then Print Tab(34); Using "##.#"; careerRBS!(V, I, 1) / careerRBS!(V, I, 0);
+
                             Print Tab(39); Using "###"; careerRBS!(V, I, 2);
                             Print Tab(45); Using "###"; careerRBS!(V, I, 3);
                             Print Tab(51); Using "####"; careerRBS!(V, I, 4);
+
                             If careerRBS!(V, I, 4) = 0 Or careerRBS!(V, I, 3) = 0 Then Print Tab(57); " 0.0";
                             If careerRBS!(V, I, 3) > 0 Then Print Tab(57); Using "##.#"; careerRBS!(V, I, 4) / careerRBS!(V, I, 3);
+
                             Print Tab(63); Using "##"; careerRBS!(V, I, 5);
                             Print Tab(67); Using "##"; careerRBS!(V, I, 6);
                             Print Tab(69); careerRBS$(V, I, 0);
                             Print Tab(77); Using "##"; careerRBS!(V, I, 9);
                             Print Tab(79); careerRBS$(V, I, 1)
+
                         Next V
 
                         VV = careerRBS!(1, B9, 7) + careerRBS!(2, B9, 7) + careerRBS!(3, B9, 7) + careerRBS!(4, B9, 7) + careerRBS!(5, B9, 7) + careerRBS!(6, B9, 7) + careerRBS!(7, B9, 7) + careerRBS!(7, B9, 7) + careerRBS!(9, B9, 7) + careerRBS!(10, B9, 7) + careerRBS!(11, B9, 7) + careerRBS!(12, B9, 7) + careerRBS!(13, B9, 7) + careerRBS!(14, B9, 7) + careerRBS!(15, B9, 7)
@@ -397,13 +570,17 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                         Print Tab(18); Using "##"; VV;
                         Print Tab(22); Using "####"; careerTT!(1);
                         Print Tab(28); Using "#####"; careerTT!(2);
+
                         If careerTT!(1) = 0 Or careerTT!(2) = 0 Then Print Tab(34); " 0.0";
                         If careerTT!(1) > 0 Then Print Tab(34); Using "##.#"; careerTT!(2) / careerTT!(1);
+
                         Print Tab(39); Using "###"; careerTT!(3);
                         Print Tab(44); Using "####"; careerTT!(4);
                         Print Tab(50); Using "#####"; careerTT!(5);
+
                         If careerTT!(4) = 0 Or careerTT!(5) = 0 Then Print Tab(57); " 0.0";
                         If careerTT!(4) > 0 Then Print Tab(57); Using "##.#"; careerTT!(5) / careerTT!(4);
+
                         Print Tab(62); Using "###"; careerTT!(6);
                         Print Tab(67); Using "##"; careerRC!(1);
                         Print Tab(69); careerRC$(1);
@@ -427,10 +604,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                                 Print String$(90, " ")
                             Next
                         Else
-                            escPressed% = 1: Exit For
+                            escPressed% = 1
                         End If
 
                     End If
+
+                    If escPressed% = 1 Then Exit For
 
                 Next I
 
@@ -438,8 +617,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2: Print "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -448,7 +629,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewA2$(PX, I) <> "" And carviewA2$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA2$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewA2$(PX, I), 13);
                         VV = careerWRS!(1, I, 4) + careerWRS!(2, I, 4) + careerWRS!(3, I, 4) + careerWRS!(4, I, 4) + careerWRS!(5, I, 4) + careerWRS!(6, I, 4) + careerWRS!(7, I, 4) + careerWRS!(8, I, 4) + careerWRS!(9, I, 4) + careerWRS!(10, I, 4) + careerWRS!(11, I, 4) + careerWRS!(12, I, 4) + careerWRS!(13, I, 4) + careerWRS!(14, I, 4) + careerWRS!(15, I, 4)
 
                         For V = 1 To VV
@@ -464,7 +646,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(56); careerWRS$(V, I, 0)
                         Next V
 
-                        630 '
                         VV = careerWRS!(1, I, 4) + careerWRS!(2, I, 4) + careerWRS!(3, I, 4) + careerWRS!(4, I, 4) + careerWRS!(5, I, 4) + careerWRS!(6, I, 4) + careerWRS!(7, I, 4) + careerWRS!(8, I, 4) + careerWRS!(9, I, 4) + careerWRS!(10, I, 4) + careerWRS!(11, I, 4) + careerWRS!(12, I, 4) + careerWRS!(13, I, 4) + careerWRS!(14, I, 4) + careerWRS!(15, I, 4)
 
                         For V = 1 To VV
@@ -522,19 +703,23 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 3
-                334 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"; ""
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2: Print "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"; ""
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
                 For I = start% To 19
+
                     If carviewA3$(PX, I) <> "" And carviewA3$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA3$(PX, I), 12);
+                        Color 15
+                        Locate 3: Print Left$(carviewA3$(PX, I), 12);
 
                         VV = careerQBS!(1, I, 6) + careerQBS!(2, I, 6) + careerQBS!(3, I, 6) + careerQBS!(4, I, 6) + careerQBS!(5, I, 6) + careerQBS!(6, I, 6) + careerQBS!(7, I, 6) + careerQBS!(8, I, 6) + careerQBS!(9, I, 6) + careerQBS!(10, I, 6) + careerQBS!(11, I, 6) + careerQBS!(12, I, 6) + careerQBS!(13, I, 6) + careerQBS!(14, I, 6) + careerQBS!(15, I, 6)
 
@@ -552,7 +737,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             If careerQBS!(V, I, 1) = 0 Then Print Tab(53); " 0.0";
                             If careerQBS!(V, I, 1) > 0 Then Print Tab(53); Using "##.#"; careerQBS!(V, I, 3) / careerQBS!(V, I, 1);
 
-                            8999 '
                             If careerQBS!(V, I, 0) > 0 Then careerQBS!(V, I, 11) = Int(careerQBS!(V, I, 1) / careerQBS!(V, I, 0) * 1000) / 10
 
                             If careerQBS!(V, I, 0) = 0 Then
@@ -591,7 +775,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                                 End If
                             End If
 
-                            9014 '
                             careerQBS!(V, I, 10) = careerQBS!(V, I, 10) - 3
 
                             If careerQBS!(V, I, 10) < 0 Then
@@ -624,7 +807,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(72); careerQBS$(V, I, 0)
                         Next V
 
-                        660 '
                         VV = careerQBS!(1, I, 6) + careerQBS!(2, I, 6) + careerQBS!(3, I, 6) + careerQBS!(4, I, 6) + careerQBS!(5, I, 6) + careerQBS!(6, I, 6) + careerQBS!(7, I, 6) + careerQBS!(8, I, 6) + careerQBS!(9, I, 6) + careerQBS!(10, I, 6) + careerQBS!(11, I, 6) + careerQBS!(12, I, 6) + careerQBS!(13, I, 6) + careerQBS!(14, I, 6) + careerQBS!(15, I, 6)
 
                         For V = 1 To VV
@@ -635,7 +817,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             careerTT!(14) = careerTT!(14) + careerQBS!(V, I, 3)
                         Next V
 
-                        careerRC!(3) = careerQBS!(1, I, 5): careerRC$(3) = careerQBS$(1, I, 0)
+                        careerRC!(3) = careerQBS!(1, I, 5)
+                        careerRC$(3) = careerQBS$(1, I, 0)
 
                         For V = 2 To VV
                             If careerQBS!(V, I, 5) >= careerRC!(3) Then
@@ -657,7 +840,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                         If careerTT!(11) = 0 Then Print Tab(53); " 0.0";
                         If careerTT!(10) > 0 Then Print Tab(53); Using "##.#"; careerTT!(14) / careerTT!(10);
 
-                        9099 '
                         If careerTT!(11) > 0 Then careerTT!(30) = Int(careerTT!(10) / careerTT!(11) * 1000) / 10
                         If careerTT!(11) = 0 Then
                             careerTT!(30) = 0: careerTT!(27) = 0: careerTT!(29) = 0: careerTT!(28) = 0
@@ -668,6 +850,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                         End If
 
                         PPT! = careerTT!(30) - 30
+
                         If PPT! < 0 Then
                             PPT! = 0
                         Else
@@ -753,8 +936,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
@@ -762,7 +949,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewA4$(PX, I) <> "" And carviewA4$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA4$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewA4$(PX, I), 13);
 
                         VV = careerKRS!(1, I, 4) + careerKRS!(2, I, 4) + careerKRS!(3, I, 4) + careerKRS!(4, I, 4) + careerKRS!(5, I, 4) + careerKRS!(6, I, 4) + careerKRS!(7, I, 4) + careerKRS!(8, I, 4) + careerKRS!(9, I, 4) + careerKRS!(10, I, 4) + careerKRS!(11, I, 4) + careerKRS!(12, I, 4) + careerKRS!(13, I, 4) + careerKRS!(14, I, 4) + careerKRS!(15, I, 4)
 
@@ -780,7 +968,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(72); careerKRS$(V, I, 0)
                         Next V
 
-                        690 '
                         VV = careerKRS!(1, I, 4) + careerKRS!(2, I, 4) + careerKRS!(3, I, 4) + careerKRS!(4, I, 4) + careerKRS!(5, I, 4) + careerKRS!(6, I, 4) + careerKRS!(7, I, 4) + careerKRS!(8, I, 4) + careerKRS!(9, I, 4) + careerKRS!(10, I, 4) + careerKRS!(11, I, 4) + careerKRS!(12, I, 4) + careerKRS!(13, I, 4) + careerKRS!(14, I, 4) + careerKRS!(15, I, 4)
 
                         For V = 1 To VV
@@ -793,17 +980,22 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                         For V = 2 To VV
                             If careerKRS!(V, I, 3) >= careerRC!(4) Then
-                                careerRC!(4) = careerKRS!(V, I, 3): careerRC$(4) = careerKRS$(V, I, 0)
+                                careerRC!(4) = careerKRS!(V, I, 3)
+                                careerRC$(4) = careerKRS$(V, I, 0)
                             End If
                         Next
 
                         Print
-                        Color 3: Print: Print "TOTALS";
+                        Color 3
+                        Print
+                        Print "TOTALS";
                         Print Tab(25); Using "##"; VV;
                         Print Tab(32); Using "###"; careerTT!(15);
                         Print Tab(41); Using "#####"; careerTT!(16);
+
                         If careerTT!(15) = 0 Or careerTT!(16) = 0 Then Print Tab(52); " 00";
                         If careerTT!(15) > 0 Then Print Tab(52); Using "##.#"; careerTT!(16) / careerTT!(15);
+
                         Print Tab(61); Using "###"; careerTT!(17);
                         Print Tab(70); Using "##"; careerRC!(4);
                         Print Tab(72); careerRC$(4)
@@ -833,11 +1025,15 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 5
-                424 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
+
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
@@ -845,7 +1041,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewA5$(PX, I) <> "" And carviewA5$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA5$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewA5$(PX, I), 13);
 
                         VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
@@ -863,7 +1060,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(72); careerPRS$(V, I, 0)
                         Next V
 
-                        720 '
                         VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
                         For V = 1 To VV
@@ -872,15 +1068,20 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             careerTT!(20) = careerTT!(20) + careerPRS!(V, I, 2)
                         Next V
 
-                        careerRC!(5) = careerPRS!(1, I, 3): careerRC$(5) = careerPRS$(1, I, 0)
+                        careerRC!(5) = careerPRS!(1, I, 3)
+                        careerRC$(5) = careerPRS$(1, I, 0)
 
                         For V = 2 To VV
                             If careerPRS!(V, I, 3) >= careerRC!(5) Then
-                                careerRC!(5) = careerPRS!(V, I, 3): careerRC$(5) = careerPRS$(V, I, 0)
+                                careerRC!(5) = careerPRS!(V, I, 3)
+                                careerRC$(5) = careerPRS$(V, I, 0)
                             End If
                         Next
 
-                        Print: Color 3: Print: Print "TOTALS";
+                        Print
+                        Color 3
+                        Print
+                        Print "TOTALS";
                         Print Tab(25); Using "##"; VV;
                         Print Tab(32); Using "###"; careerTT!(18);
                         Print Tab(41); Using "#####"; careerTT!(19);
@@ -917,11 +1118,15 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 6
-                464 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "PUNTERS           YEAR     ATT.     YARDS      AVG."
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "PUNTERS           YEAR     ATT.     YARDS      AVG."
+
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
@@ -937,11 +1142,11 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Color 7: Print Tab(18); careerPUS!(V, I, 3);
                             Print Tab(28); Using "###"; careerPUS!(V, I, 0);
                             Print Tab(38); Using "####"; careerPUS!(V, I, 1);
+
                             If careerPUS!(V, I, 0) = 0 Or careerPUS!(V, I, 1) = 0 Then Print Tab(47); "00.0";
                             If careerPUS!(V, I, 0) > 0 Then Print Tab(47); Using "##.#"; careerPUS!(V, I, 1) / careerPUS!(V, I, 0);
                         Next V
 
-                        750 '
                         VV = careerPUS!(1, I, 2) + careerPUS!(2, I, 2) + careerPUS!(3, I, 2) + careerPUS!(4, I, 2) + careerPUS!(5, I, 2) + careerPUS!(6, I, 2) + careerPUS!(7, I, 2) + careerPUS!(8, I, 2) + careerPUS!(9, I, 2) + careerPUS!(10, I, 2) + careerPUS!(11, I, 2) + careerPUS!(12, I, 2) + careerPUS!(13, I, 2) + careerPUS!(14, I, 2) + careerPUS!(15, I, 2)
 
                         For V = 1 To VV
@@ -950,10 +1155,13 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                         Next V
 
                         Print
-                        Color 3: Print: Print "TOTALS";
+                        Color 3
+                        Print
+                        Print "TOTALS";
                         Print Tab(21); Using "##"; VV;
                         Print Tab(27); Using "####"; careerTT!(21);
                         Print Tab(37); Using "#####"; careerTT!(22);
+
                         If careerTT!(21) = 0 Or careerTT!(22) = 0 Then Print Tab(47); " 00"
                         If careerTT!(21) > 0 Then Print Tab(47); Using "##.#"; careerTT!(22) / careerTT!(21)
 
@@ -982,11 +1190,15 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 7
-                504 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
+
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
@@ -994,7 +1206,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewA7$(PX, I) <> "" And carviewA7$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA7$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewA7$(PX, I), 13);
 
                         VV = careerFGS!(1, I, 15) + careerFGS!(2, I, 15) + careerFGS!(3, I, 15) + careerFGS!(4, I, 15) + careerFGS!(5, I, 15) + careerFGS!(6, I, 15) + careerFGS!(7, I, 15) + careerFGS!(8, I, 15) + careerFGS!(9, I, 15) + careerFGS!(10, I, 15) + careerFGS!(11, I, 15) + careerFGS!(12, I, 15) + careerFGS!(13, I, 15) + careerFGS!(14, I, 15) + careerFGS!(15, I, 15)
 
@@ -1026,7 +1239,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(76); Using "##"; careerFGS!(V, I, 14)
                         Next V
 
-                        780 '
                         VV = careerFGS!(1, I, 15) + careerFGS!(2, I, 15) + careerFGS!(3, I, 15) + careerFGS!(4, I, 15) + careerFGS!(5, I, 15) + careerFGS!(6, I, 15) + careerFGS!(7, I, 15) + careerFGS!(8, I, 15) + careerFGS!(9, I, 15) + careerFGS!(10, I, 15) + careerFGS!(11, I, 15) + careerFGS!(12, I, 15) + careerFGS!(13, I, 15) + careerFGS!(14, I, 15) + careerFGS!(15, I, 15)
 
                         For V = 1 To VV
@@ -1055,7 +1267,9 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                         Next
 
                         Print
-                        Color 3: Print: Print "TOTALS";
+                        Color 3
+                        Print
+                        Print "TOTALS";
                         Print Tab(16); VV;
                         Print Tab(19); Using "###"; careerTT!(35);
                         Print Tab(23); Using "###"; careerTT!(34);
@@ -1107,11 +1321,15 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 8
-                1001 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "INTERCEPTORS        YEAR     INTERCEPTIONS"
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "INTERCEPTORS        YEAR     INTERCEPTIONS"
+
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
 
@@ -1119,7 +1337,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewDI$(PX, I) <> "" And carviewDI$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewDI$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewDI$(PX, I), 13);
 
                         VV = careerGIS!(1, I, 1) + careerGIS!(2, I, 1) + careerGIS!(3, I, 1) + careerGIS!(4, I, 1) + careerGIS!(5, I, 1) + careerGIS!(6, I, 1) + careerGIS!(7, I, 1) + careerGIS!(8, I, 1) + careerGIS!(9, I, 1) + careerGIS!(10, I, 1) + careerGIS!(11, I, 1) + careerGIS!(12, I, 1) + careerGIS!(13, I, 1) + careerGIS!(14, I, 1) + careerGIS!(15, I, 1)
 
@@ -1167,11 +1386,14 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Next I
 
             Case 9
-                1031 '
+
                 Cls
 
-                Color 11: Locate 1: Print Z$
-                Color 12: Locate 2: Print "DEFENSIVE SACKS     YEAR        SACKS"
+                Color 11
+                Locate 1: Print Z$
+                Color 12
+                Locate 2
+                Print "DEFENSIVE SACKS     YEAR        SACKS"
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -1180,7 +1402,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                     If carviewDS$(PX, I) <> "" And carviewDS$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewDS$(PX, I), 13);
+                        Color 15
+                        Locate 3: Print Left$(carviewDS$(PX, I), 13);
 
                         VV = careerGSS!(1, I, 1) + careerGSS!(2, I, 1) + careerGSS!(3, I, 1) + careerGSS!(4, I, 1) + careerGSS!(5, I, 1) + careerGSS!(6, I, 1) + careerGSS!(7, I, 1) + careerGSS!(8, I, 1) + careerGSS!(9, I, 1) + careerGSS!(10, I, 1) + careerGSS!(11, I, 1) + careerGSS!(12, I, 1) + careerGSS!(13, I, 1) + careerGSS!(14, I, 1) + careerGSS!(15, I, 1)
 
@@ -1189,7 +1412,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                             Print Tab(34); Using "###"; careerGSS!(V, I, 0);
                         Next V
 
-                        1920 '
                         VV = careerGSS!(1, I, 1) + careerGSS!(2, I, 1) + careerGSS!(3, I, 1) + careerGSS!(4, I, 1) + careerGSS!(5, I, 1) + careerGSS!(6, I, 1) + careerGSS!(7, I, 1) + careerGSS!(8, I, 1) + careerGSS!(9, I, 1) + careerGSS!(10, I, 1) + careerGSS!(11, I, 1) + careerGSS!(12, I, 1) + careerGSS!(13, I, 1) + careerGSS!(14, I, 1) + careerGSS!(15, I, 1)
 
                         For V = 1 To VV
@@ -1199,7 +1421,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
 
                         Print
                         Color 3
-
                         Print
                         Print "TOTALS";
                         Print Tab(23); Using "##"; VV;
