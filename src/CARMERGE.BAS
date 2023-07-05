@@ -2,7 +2,6 @@ Sub MergeCareerFiles ()
 
     _Title "3-in-1 Football - Update Career Files"
 
-    TMR = 12840
     NB = -1
     NC = -1
     ND = -1
@@ -243,15 +242,22 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     For I = 0 To 54: Input #1, DIC$(I): Next
     For I = 0 To 54: Input #1, DSC$(I): Next
 
+    TMR = 12840
+
     For N = 1 To 15:
+
         For J = 0 To 49:
+
             For K = 0 To 9
                 Input #1, RBBS!(N, J, K)
             Next K
+
             Locate 21, 38: Color 5
             TMR = TMR - 1
             Print Using "#####"; TMR
+
         Next J
+
     Next N
 
     For N = 1 To 15: For J = 0 To 49: Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
@@ -267,6 +273,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Input #1, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
     For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #1, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
     For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Input #1, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
+
     Close #1
 
     For J = 20 To 22
@@ -659,7 +666,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
             Next J
 
-        1566 Next I
+        Next I
 
         '-----
 
@@ -856,11 +863,12 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
             Next J
 
-        1676 Next I
+        Next I
 
         '-----
 
-        1700 For I = 0 To 14
+        1700 '
+		For I = 0 To 14
             RR = 0
             CHK = 0
 
@@ -912,41 +920,155 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
         '-----
 
         If finalUpdate = 1 Then Call ProcessLeaders (careerFile$)
-        'If finalUpdate = 0 Then 1805
 
         For J = 20 To 22
             Locate J
             Print Space$(80)
         Next
 
-        Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #1
-        Write #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-        For I = 0 To 49: Write #1, A1C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 39: Write #1, A2C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 19: Write #1, A3C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 14: Write #1, A4C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 14: Write #1, A5C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 9: Write #1, A6C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 9: Write #1, A7C$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 54: Write #1, DIC$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For I = 0 To 54: Write #1, DSC$(I): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next
-        For N = 1 To 15: For J = 0 To 49: For K = 0 To 9: Write #1, RBBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 49: Write #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 39: For K = 0 To 5: Write #1, WRRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 39: Write #1, careerWRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 19: For K = 0 To 7: Write #1, QBBS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 19: Write #1, careerQBS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Write #1, KRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 14: Write #1, KRRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 14: For K = 0 To 5: Write #1, PRS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 14: Write #1, PRRS$(N, J, 0): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 9: For K = 0 To 3: Write #1, careerPUS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 9: For K = 0 To 16: Write #1, careerFGS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Write #1, careerGIS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        For N = 1 To 15: For J = 0 To 54: For K = 0 To 2: Write #1, careerGSS!(N, J, K): Next K: Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "#####"; TMR: Next J: Next N
-        Close #1
+		TMR = 12840
 
-        'Call CARMERGE
+        Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #1
+
+        Write #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
+        For I = 0 To 49: Write #1, A1C$(I): Next
+        For I = 0 To 39: Write #1, A2C$(I): Next
+        For I = 0 To 19: Write #1, A3C$(I): Next
+        For I = 0 To 14: Write #1, A4C$(I): Next
+        For I = 0 To 14: Write #1, A5C$(I): Next
+        For I = 0 To 9: Write #1, A6C$(I): Next
+        For I = 0 To 9: Write #1, A7C$(I): Next
+        For I = 0 To 54: Write #1, DIC$(I): Next
+        For I = 0 To 54: Write #1, DSC$(I): Next
+
+        For N = 1 To 15
+			For J = 0 To 49
+				For K = 0 To 9: Write #1, RBBS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 49: 
+				Write #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 39
+				For K = 0 To 5: Write #1, WRRS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 39: 
+				Write #1, careerWRS$(N, J, 0)
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 19
+				For K = 0 To 7: Write #1, QBBS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 19: 
+				Write #1, careerQBS$(N, J, 0)
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 14
+				For K = 0 To 5: Write #1, KRS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 14: 
+				Write #1, KRRS$(N, J, 0)
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 14
+				For K = 0 To 5: Write #1, PRS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 14: 
+				Write #1, PRRS$(N, J, 0)
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 9
+				For K = 0 To 3: Write #1, careerPUS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 9
+				For K = 0 To 16: Write #1, careerFGS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 54
+				For K = 0 To 2: Write #1, careerGIS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+        
+		For N = 1 To 15
+			For J = 0 To 54
+				For K = 0 To 2: Write #1, careerGSS!(N, J, K): Next K
+				Locate 21, 38
+				Color 5
+				TMR = TMR - 1: Print Using "#####"; TMR
+			Next J
+		Next N
+
+        Close #1
 
     End If
 

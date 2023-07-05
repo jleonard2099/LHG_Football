@@ -4,21 +4,6 @@ Sub CAREER ()
 
     ReDim menuChoices$(1 To 8)
 
-    TMR = 6420
-    NB = -1
-    NC = -1
-    ND = -1
-    NE = -1
-    NF = -1
-    NG = -1
-    NH = -1
-    NI = -1
-    NJ = 0
-    NK = 0
-    D = 0
-    finalUpdate% = 0
-    VV = 0
-
     Do
 
         Color 15, 0
@@ -109,6 +94,20 @@ Sub CreateCareerFile ()
     Shared statsLF$(), statsLI$(), careerWRS$()
 
     Dim careerGS%(55, 1), careerGI%(55, 2)
+
+    NB = -1
+    NC = -1
+    ND = -1
+    NE = -1
+    NF = -1
+    NG = -1
+    NH = -1
+    NI = -1
+    NJ = 0
+    NK = 0
+    D = 0
+    VV = 0
+    finalUpdate% = 0
 
     Cls
     Color 14
@@ -218,15 +217,31 @@ Sub CreateCareerFile ()
 
                 Input #1, A$
 
-                For I = 0 To 9: Input #1, careerA1$(I): Next I
-                For I = 0 To 5: Input #1, careerA2$(I): Next I
-                For I = 0 To 3: Input #1, careerA3$(I): Next I
-                For I = 0 To 2: Input #1, careerA4$(I): Next I
-                For I = 0 To 2: Input #1, careerA5$(I): Next I
+                For I = 0 To 9: 
+					Input #1, careerA1$(I)
+				Next I
+                
+				For I = 0 To 5: 
+					Input #1, careerA2$(I)
+				Next I
+                
+				For I = 0 To 3: 
+					Input #1, careerA3$(I)
+				Next I
+                
+				For I = 0 To 2: 
+					Input #1, careerA4$(I)
+				Next I
+                
+				For I = 0 To 2: 
+					Input #1, careerA5$(I)
+				Next I
 
                 Input #1, careerA6$(0)
 
-                For I = 0 To 1: Input #1, careerA7$(I): Next I
+                For I = 0 To 1: 
+					Input #1, careerA7$(I)
+				Next I
 
                 For J = 0 To 13
                     For K = 0 To 17: 
@@ -234,9 +249,13 @@ Sub CreateCareerFile ()
                     Next K
                 Next J
 
-                For L = 0 To 38: Input #1, statsZ!(L): Next L
+                For L = 0 To 38: 
+					Input #1, statsZ!(L)
+				Next L
 
-                For L = 0 To 38: Input #1, statsZ1!(L): Next L
+                For L = 0 To 38: 
+					Input #1, statsZ1!(L)
+				Next L
 
                 For J = 0 To 9: 
                     Input #1, careerDI$(J)
@@ -533,61 +552,72 @@ Sub CreateCareerFile ()
 
                 If finalUpdate% = 1 Then Call UpdateCareerLeaders(statFile$)
 
+				TMR = 6420
+
                 Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #2
 
                 Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
                 For I = 0 To 49:
                     Write #2, careerA1$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 39: 
                     Write #2, careerA2$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 19: 
                     Write #2, careerA3$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
                     Write #2, careerA4$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
                     Write #2, careerA5$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
                     Write #2, careerA6$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
                     Write #2, careerA7$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
                     Write #2, careerDI$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
                     Write #2, careerDS$(I)
-                    Locate 21, 38: Color 5
+                    Locate 21, 38
+					Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
@@ -596,14 +626,18 @@ Sub CreateCareerFile ()
                         For K = 0 To 9: 
                             Write #2, RBBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
                 For N = 1 To 15: 
                     For J = 0 To 49: 
-                        Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1): Locate 21, 38: Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                        Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+						Locate 21, 38
+						Color 5
+						TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
 
@@ -620,7 +654,8 @@ Sub CreateCareerFile ()
                 For N = 1 To 15: 
                     For J = 0 To 39: 
                         Write #2, careerWRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -630,7 +665,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 7: 
                             Write #2, QBBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -638,7 +674,8 @@ Sub CreateCareerFile ()
                 For N = 1 To 15: 
                     For J = 0 To 19: 
                         Write #2, careerQBS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -648,7 +685,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 5: 
                             Write #2, careerKRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+					Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -656,7 +694,8 @@ Sub CreateCareerFile ()
                 For N = 1 To 15: 
                     For J = 0 To 14: 
                         Write #2, KRRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -666,7 +705,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 5: 
                             Write #2, careerPRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -674,7 +714,8 @@ Sub CreateCareerFile ()
                 For N = 1 To 15: 
                     For J = 0 To 14: 
                         Write #2, PRRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -684,7 +725,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 3: 
                             Write #2, careerPUS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -694,7 +736,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 16: 
                             Write #2, careerFGS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -704,7 +747,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 2: 
                             Write #2, careerGIS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -714,7 +758,8 @@ Sub CreateCareerFile ()
                         For K = 0 To 2: 
                             Write #2, careerGSS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N

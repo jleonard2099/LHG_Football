@@ -16,8 +16,6 @@ Sub CARVIEW ()
     Shared carviewA1$(), carviewA2$(), carviewA3$(), carviewA4$(), carviewA5$(), carviewA6$(), carviewA7$()
     Shared carviewDI$(), carviewDS$()
 
-    TMR = 6420
-
     Do
         'Display list of files...
         Color 0, 0
@@ -85,6 +83,8 @@ Sub CARVIEW ()
 
             If ExitCode% <> 27 Then
 
+				TMR = 6420
+
                 targetFile$ = RTrim$(targetFile$)
                 Z$ = Left$(targetFile$, Len(targetFile$) - 4)
 
@@ -99,55 +99,64 @@ Sub CARVIEW ()
 
                 For I = 0 To 49: 
                     Input #1, carviewA1$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 39
 					Input #1, carviewA2$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 19
 					Input #1, carviewA3$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14
 					Input #1, carviewA4$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14
 					Input #1, carviewA5$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9
 					Input #1, carviewA6$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9
 					Input #1, carviewA7$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54
 					Input #1, carviewDI$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54
 					Input #1, carviewDS$(PX, I)
-					Locate 21, 38: Color 5
+					Locate 21, 38
+					Color 5
 					TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
@@ -156,7 +165,8 @@ Sub CARVIEW ()
                         For K = 0 To 9
                             Input #1, careerRBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -164,7 +174,8 @@ Sub CARVIEW ()
                 For N = 1 To 15: 
                     For J = 0 To 49
                         Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -174,7 +185,8 @@ Sub CARVIEW ()
                         For K = 0 To 5
                             Input #1, careerWRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -182,7 +194,8 @@ Sub CARVIEW ()
                 For N = 1 To 15: 
                     For J = 0 To 39
                         Input #1, careerWRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -192,7 +205,8 @@ Sub CARVIEW ()
                         For K = 0 To 7
                             Input #1, careerQBS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -200,7 +214,8 @@ Sub CARVIEW ()
                 For N = 1 To 15: 
                     For J = 0 To 19
                         Input #1, careerQBS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -210,7 +225,8 @@ Sub CARVIEW ()
                         For K = 0 To 5
                             Input #1, careerKRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -218,7 +234,8 @@ Sub CARVIEW ()
                 For N = 1 To 15: 
                     For J = 0 To 14
                         Input #1, careerKRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -228,7 +245,8 @@ Sub CARVIEW ()
                         For K = 0 To 5
                             Input #1, careerPRS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -236,7 +254,8 @@ Sub CARVIEW ()
                 For N = 1 To 15: 
                     For J = 0 To 14
                         Input #1, careerPRS$(N, J, 0)
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -246,7 +265,8 @@ Sub CARVIEW ()
                         For K = 0 To 3
                             Input #1, careerPUS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -256,7 +276,8 @@ Sub CARVIEW ()
                         For K = 0 To 16
                             Input #1, careerFGS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -266,7 +287,8 @@ Sub CARVIEW ()
                         For K = 0 To 2
                             Input #1, careerGIS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N
@@ -276,7 +298,8 @@ Sub CARVIEW ()
                         For K = 0 To 2
                             Input #1, careerGSS!(N, J, K)
                         Next K
-                        Locate 21, 38: Color 5
+                        Locate 21, 38
+						Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
                     Next J
                 Next N

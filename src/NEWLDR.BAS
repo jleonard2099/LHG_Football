@@ -1,20 +1,17 @@
 Sub NEWLDR ()
 
-    Shared TYY$()
-
     _Title "3-in-1 Football - View Stat Leaders"
 
     ReDim menuChoices$(1 To 4)
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
-
     Do
 
         Cls
+        Color 15, 0
 
         Call TITLE
 
-        menuChoices$(1) = "VIEW EXPANDED PRO LEAGUE FILES  "
+        menuChoices$(1) = "VIEW EXPANDED PRO LEAGUE        "
         menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE"
         menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU    "
         Selection% = 1
@@ -28,6 +25,7 @@ Sub NEWLDR ()
         Column% = 25
 
         Call box0(7, 24, 11, 57, 2, 15, 1)
+
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Count%, Row%, Column%
         _MouseHide
@@ -35,11 +33,14 @@ Sub NEWLDR ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case Selection%
+
                 Case 1, 2:
-                    Call ViewExpanded(Selection%)
-                Case 3: Cls
+                    Call ViewExpandedLeaders(Selection%)
+
             End Select
+
         End If
 
     Loop Until Selection% = 3 Or ExitCode% = 27
@@ -47,20 +48,20 @@ Sub NEWLDR ()
 End Sub
 
 '------------------------------
-'    ViewExpanded Subroutine
+' ViewExpandedLeaders Subroutine
 '------------------------------
 ' ...explanation...
-Sub ViewExpanded (statType%)
+Sub ViewExpandedLeaders (statType%)
 
     Dim printOrView%, PPP, sortType%
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared expCategories$(), lookyTT$()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared QBL$(), TMM$(), TPP$(), Z1$()
+    Shared QBL$(), TMM$(), TPP$(), TYY$(), Z1$()
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
@@ -68,10 +69,7 @@ Sub ViewExpanded (statType%)
 
     Shared Y%()
 
-    Dim CT%
-
     CT% = statType%
-
     printOrView% = 0
 
     Call ChooseConference_Expanded(targetFile$, menuExit%)
@@ -94,7 +92,7 @@ Sub ViewExpanded (statType%)
         JH = 0
         JI = 0
         JJ = 0
-        totStats = 0
+        tStats = 0
 
         LGF$ = ""
         div1$ = ""
@@ -126,15 +124,13 @@ Sub ViewExpanded (statType%)
 
         Cls
 
-        Call BUILDSTATS(CT%)
+        Call UpdateExpandedLeaders(statType%, tStats)
 
-        Call SAVELEADER(LG$)
+        Call SAVELEADER(LG$, tStats)
 
-        170 '
         Do
 
             Color 0, 0
-
             Cls
 
             J = 15
@@ -177,30 +173,17 @@ Sub ViewExpanded (statType%)
             Locate , 20: Color 14: Print "(K) ";: Color 1: Print "VIEW TEAM TOTALS"
             Locate , 20: Color 14: Print "(L) ";: Color 1: Print "RETURN TO MAIN MENU"
 
-            I$ = GetKeyPress$
+            key$ = GetKeyPress$
 
-            If I$ <> Chr$(27) Then
+            If key$ <> Chr$(27) Then
 
-                If UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
+                Select Case UCase$(key$)
 
-                    Color , 0
-
-                    Cls
-
-                    Print
-                    Print
-                    Print
-                    Print
-
-                End If
-
-                Select Case UCase$(I$)
                     Case "A":
                         J = 8
                         ZZ = 1
 
                         Locate 2, 22
-
                         Color 0, 4
 
                         Call CATEGORY_BOX(J)
@@ -219,6 +202,8 @@ Sub ViewExpanded (statType%)
                             Input "SELECT NUMBER TO VIEW"; B9
 
                         Loop Until B9 <= 5
+
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
                     Case "B":
                         J = 8
@@ -245,8 +230,9 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 5
 
+                        Call SortOptions(statType%, printOrView%, sortType%)
+
                     Case "C":
-                        200 '
                         J = 12
                         ZZ = 1
 
@@ -268,6 +254,8 @@ Sub ViewExpanded (statType%)
                             Input "SELECT NUMBER TO VIEW"; B9
 
                         Loop Until B9 <= 8
+
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
                     Case "D":
                         J = 8
@@ -293,8 +281,9 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 4
 
-                    Case "E":
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
+                    Case "E":
                         J = 8
                         ZZ = 1
 
@@ -317,6 +306,8 @@ Sub ViewExpanded (statType%)
                             Input "SELECT NUMBER TO VIEW"; B9
 
                         Loop Until B9 <= 4
+
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
                     Case "F":
                         J = 6
@@ -342,6 +333,8 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 2
 
+                        Call SortOptions(statType%, printOrView%, sortType%)
+
                     Case "G":
                         J = 10
                         ZZ = 1
@@ -365,6 +358,8 @@ Sub ViewExpanded (statType%)
                             Input "SELECT NUMBER TO VIEW"; B9
 
                         Loop Until B9 <= 6
+
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
                     Case "H":
                         J = 6
@@ -390,10 +385,10 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 1
 
-                    Case "I":
-                        Color 0, 0
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
-                        Cls
+                    Case "I":
+                        Call SortOptions(statType%, printOrView%, sortType%)
 
                     Case "J":
                         J = 6
@@ -419,15 +414,24 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 2
 
+                        Call SortOptions(statType%, printOrView%, sortType%)
+
                     Case "K":
                         J = 17
                         ZZ = 1
 
                         Locate 2, 2
-
                         Color 0, 14
 
-                        Call CATEGORY_BOX(J)
+                        Print " " + Chr$(214); String$(66, 196); Chr$(183) + " ";
+
+                        For II = 1 To J:
+                            Locate 2 + II, 2: Print " " + Chr$(186); String$(66, 32); Chr$(186) + " ";
+                        Next
+
+                        Locate 3 + J, 2
+                        Print " " + Chr$(211); String$(66, 196); Chr$(189) + " ";
+                        Locate 10, 15
 
                         Do
                             For I = 44 To 58:
@@ -453,130 +457,45 @@ Sub ViewExpanded (statType%)
 
                         Loop Until B9 <= 28
 
+                        Call SortOptions(statType%, printOrView%, sortType%)
+
                 End Select
 
-                ' This is how we should do it
-                If UCase$(I$) <> "I" And UCase$(I$) <> "L" And UCase$(I$) <> "K" Then
+                If UCase$(key$) <> "I" And UCase$(key$) <> "L" And UCase$(key$) <> "K" Then
                     stpl = 0
                     PPP = 0
                 End If
 
-                If UCase$(I$) <> "L" Then
-                    Print
-                    Print
-                    Print
-                    Print
+                If UCase$(key$) <> "L" Then
 
-                    J = 6
-
-                    Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
-
-                    For II = 1 To J:
-                        Locate 8 + II, 8
-                        Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";
-                    Next
-
-                    Locate 9 + J, 8
-                    Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
-                    Locate 10, 15
-
-                    Color 3: Locate , 30: Print "SELECT OPTION:"
-                    Locate , 30: Color 15: Print "H";: Color 7: Print "IGHEST TO LOWEST"
-                    Locate , 30: Color 15: Print "L";: Color 7: Print "OWEST TO HIGHEST"
-                    Locate , 30: Color 15: Print "R";: Color 7: Print "E-SELECT CATEGORY"
-
-                    Do
-                        J$ = GetKeyPress$
-
-                        If UCase$(J$) = "H" Or UCase$(J$) = "L" Then
-
-                            Print
-                            Print
-                            Print
-                            Print
-                            Print
-
-                            J = 4
-
-                            Locate 9, 15
-                            Color 15, 0
-
-                            Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
-
-                            For II = 1 To J
-                                Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-                            Next
-
-                            Locate 10 + J, 15
-                            Print " " + Chr$(211); String$(40, 196); Chr$(189) + " "
-                            Locate 10, 10
-
-                            Color 12
-
-                            Locate , 30: Print "SELECT OPTION:"
-                            Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
-                            Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
-                            Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
-
-                            Do
-                                K$ = GetKeyPress$
-
-                                Select Case UCase$(K$)
-                                    Case "P":
-                                        printOrView% = 2
-
-                                    Case "V":
-                                        printOrView% = 1
-
-                                    Case "R", Chr$(27):
-                                        If ZZ = 1 Then
-                                            GoTo 170
-                                            'this is part of View Expanded
-                                        End If
-                                End Select
-
-                            Loop Until UCase$(K$) = "P" Or UCase$(K$) = "V" Or UCase$(K$) = "R" Or K$ = Chr$(27)
-
-                        End If
-
-                        Select Case UCase$(J$)
-                            Case "H":
-                                sortType% = 1
-
-                            Case "L"
-                                sortType% = 2
-
-                            Case "R", Chr$(27)
-                                If ZZ = 1 Then
-                                    GoTo 170
-                                    'this is part of View Expanded
-                                End If
-
-                        End Select
-
-                    Loop Until UCase$(J$) = "H" Or UCase$(J$) = "L" Or UCase$(J$) = "R" Or J$ = Chr$(27)
-
-                    Select Case UCase$(I$)
+                    Select Case UCase$(key$)
 
                         Case "A":
 
                             Select Case B9
+
                                 Case 0:
                                     X = 0: XX = 0
+
                                 Case 1
                                     X = 1: XX = 1
+
                                 Case 2
                                     X = 0: X1 = 1: XX = 2
+
                                 Case 3
                                     X = 2: XX = 3
+
                                 Case 4
                                     X = 6: XX = 4
+
                             End Select
 
                             Cls
                             PPP = 0
 
                             Select Case B9
+
                                 Case 0, 1, 3
 
                                     For I = 1 To JA
@@ -594,6 +513,7 @@ Sub ViewExpanded (statType%)
                                     TVN = 1
 
                                 Case 2
+
                                     For I = 1 To JA
                                         If A1L!(I, X) > Y%(1) * 10 Then
                                             PPP = PPP + 1
@@ -609,6 +529,7 @@ Sub ViewExpanded (statType%)
                                     TVN = 2
 
                                 Case 4
+
                                     Cls
                                     PPP = 0
                                     For I = 1 To JA
@@ -628,17 +549,8 @@ Sub ViewExpanded (statType%)
 
                             End Select
 
-                            QW = PPP
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
-
                         Case "B":
+
                             Select Case B9
                                 Case 0: X = 3: X1 = 0: XX = 5
                                 Case 1: X = 4: X1 = 1: XX = 6
@@ -652,6 +564,7 @@ Sub ViewExpanded (statType%)
                             PPP = 0
 
                             Select Case B9
+
                                 Case 0, 1, 3:
                                     For I = 1 To JA
                                         If A1L!(I, X) <> 0 Then
@@ -674,7 +587,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 2:
@@ -702,7 +614,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 2
 
                                 Case 3:
@@ -732,12 +643,12 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 3
 
                             End Select
 
                         Case "C":
+
                             Select Case B9
                                 Case 0: X = 0: XX = 10
                                 Case 1: X = 1: XX = 11
@@ -767,13 +678,17 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 5:
+
                                     For I = 1 To JC
+
                                         If A3L!(I, X) >= Y%(1) * 15 Then
-                                            PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
+
+                                            PPP = PPP + 1
+                                            Locate 1, 5: Print "CHANGING PLAYER "; PPP
+
                                             If A3L!(I, X1) <> 0 Then
                                                 TPP$(PPP) = QBL$(I)
                                                 TMM$(PPP) = A3T$(I)
@@ -788,13 +703,14 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 2
 
                                 Case 6:
                                     For I = 1 To JC
                                         If A3L!(I, X2) >= Y%(1) * 15 Then
-                                            PPP = PPP + 1: Locate 1, 5: Print "CHANGING PLAYER "; PPP
+                                            PPP = PPP + 1
+                                            Locate 1, 5: Print "CHANGING PLAYER "; PPP
+
                                             If A3L!(I, X1) <> 0 Then
                                                 TPP$(PPP) = QBL$(I)
                                                 TMM$(PPP) = A3T$(I)
@@ -808,7 +724,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 4
 
                                 Case 7:
@@ -823,7 +738,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 4
 
                                 Case 8:
@@ -842,7 +756,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 3
 
                             End Select
@@ -872,7 +785,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 2:
@@ -893,7 +805,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 2
 
                                 Case 4:
@@ -908,7 +819,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 3
 
                             End Select
@@ -935,11 +845,9 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 2:
-                                    620 '
                                     For I = 1 To JE
                                         If A5L!(I, X) <> 0 Then
                                             PPP = PPP + 1
@@ -957,7 +865,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 2
 
                                 Case 4:
@@ -999,7 +906,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 2:
@@ -1020,7 +926,6 @@ Sub ViewExpanded (statType%)
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 2
 
                             End Select
@@ -1041,31 +946,36 @@ Sub ViewExpanded (statType%)
                             PPP = 0
 
                             Select Case B9
+
                                 Case 0, 1, 3, 4, 6
+
                                     For I = 1 To JG
-                                        If A7L!(JI, X) <> 0 Then
+
+                                        If A7L!(I, X) <> 0 Then
                                             PPP = PPP + 1
                                             Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                             TPP$(PPP) = A7L$(I)
                                             TMM$(PPP) = A7T$(I)
-                                            TYP!(PPP) = A7L!(JI, X)
+                                            TYP!(PPP) = A7L!(I, X)
                                         End If
+
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 1
 
                                 Case 2, 5
+
                                     For I = 1 To JG
-                                        If A7L!(JI, X) <> 0 Then
+
+                                        If A7L!(I, X) <> 0 Then
                                             PPP = PPP + 1
                                             Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
-                                            If A7L!(JI, X1) <> 0 Then
+                                            If A7L!(I, X1) <> 0 Then
                                                 TPP$(PPP) = A7L$(I)
                                                 TMM$(PPP) = A7T$(I)
-                                                TYP!(PPP) = (A7L!(JI, X) / A7L!(JI, X1)) * 100
+                                                TYP!(PPP) = (A7L!(I, X) / A7L!(I, X1)) * 100
                                             Else
                                                 TPP$(PPP) = A7L$(I)
                                                 TMM$(PPP) = A7T$(I)
@@ -1073,23 +983,13 @@ Sub ViewExpanded (statType%)
                                             End If
 
                                         End If
+
                                     Next I
 
                                     Call SortPlayer(stpl, PPP, sortType%)
-
                                     TVN = 4
 
                             End Select
-
-                            QW = PPP
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
 
                         Case "H":
                             If B9 = 0 Then X = 0: XX = 39
@@ -1128,15 +1028,6 @@ Sub ViewExpanded (statType%)
                             Call SortPlayer(stpl, PPP, sortType%)
 
                             TVN = 1
-                            QW = PPP
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
 
                         Case "I":
                             Cls
@@ -1171,26 +1062,28 @@ Sub ViewExpanded (statType%)
                             Call SortPlayer(stpl, PPP, sortType%)
 
                             TVN = 1
-                            QW = PPP
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
 
                         Case "J":
                             Select Case B9
                                 Case 0
-                                    X = 2: X1 = 5: XX = 41: KC = 1
+                                    X = 2
+                                    X1 = 5
+                                    XX = 41
+                                    KC = 1
 
                                 Case 1
-                                    XF = 0: XF1 = 2: XX = 42: KC = 2
+                                    XF = 0
+                                    XF1 = 2
+                                    XX = 42
+                                    KC = 2
 
                                 Case 2
-                                    X = 2: X1 = 5: XF = 0: XF1 = 2: XX = 43: KC = 3
+                                    X = 2
+                                    X1 = 5
+                                    XF = 0
+                                    XF1 = 2
+                                    XX = 43
+                                    KC = 3
 
                             End Select
 
@@ -1222,12 +1115,12 @@ Sub ViewExpanded (statType%)
 
                             If KC <> 1 Then
                                 For I = 1 To JG
-                                    If A7L!(JI, XF) + A7L!(JI, XF1) <> 0 Then
+                                    If A7L!(I, XF) + A7L!(I, XF1) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = A7L$(I)
                                         TMM$(PPP) = A7T$(I)
-                                        TYP!(PPP) = (A7L!(JI, XF) * 3) + A7L!(JI, XF1)
+                                        TYP!(PPP) = (A7L!(I, XF) * 3) + A7L!(I, XF1)
                                     End If
                                 Next I
                             End If
@@ -1235,15 +1128,6 @@ Sub ViewExpanded (statType%)
                             Call SortPlayer(stpl, PPP, sortType%)
 
                             TVN = 1
-                            QW = PPP
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
 
                         Case "K":
                             Select Case B9
@@ -1280,80 +1164,189 @@ Sub ViewExpanded (statType%)
 
                             Select Case B9
                                 Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X)
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = lookyTT!(I, X)
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 1
 
                                 Case 1, 16
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 1
 
                                 Case 2, 5, 17, 20
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 1
 
                                 Case 3, 18
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 2
 
                                 Case 6, 21
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 2
 
                                 Case 10
-                                    For I = 1 To totStats
-                                        TMM$(I) = lookyTT$(I, X): TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
+                                    For I = 1 To tStats
+                                        TMM$(I) = lookyTT$(I, X)
+                                        TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
                                     Next I
 
-                                    Call SortTeam(totStats, stpl, sortType%)
-
+                                    Call SortTeam(tStats, stpl, sortType%)
                                     TVN = 1
 
                             End Select
 
-                            QW = totStats
-
-                            If printOrView% = 1 Then 
-								Call ExpandedStatsToScreen(XX, QW, TVN)
-							Else
-								'printOrView% = 2 
-								Call GetListLength(printOrView%, LG, QW)
-								Call PlayerToPrinter(XX, LG, TVN)
-							End If
-
                     End Select
+
+                    If UCase$(key$) <> "K" Then
+                        QW = PPP
+
+                        If printOrView% = 1 Then
+                            Call DisplayLeaders(XX, QW, TVN)
+                        Else
+                            'printOrView% = 2
+                            Call GetListLength(printOrView%, LG, QW)
+                            Call PrintLeaders(XX, LG, TVN)
+                        End If
+                    Else
+
+                        QW = tStats
+
+                        If printOrView% = 1 Then
+                            Call DisplayLeaders(XX, QW, TVN)
+                        Else
+                            'printOrView% = 2
+                            Call GetListLength(printOrView%, LG, QW)
+                            Call PrintLeaders(XX, LG, TVN)
+                        End If
+
+                    End If
 
                 End If
 
             End If
 
-        Loop Until UCase$(I$) = "L" Or I$ = Chr$(27)
+        Loop Until UCase$(key$) = "L" Or key$ = Chr$(27)
 
     End If
+
+End Sub
+
+'----------------------------------------
+'       SortOptions Subroutine
+'----------------------------------------
+'...explanation...
+Sub SortOptions (statType%, printOrView%, sortType%)
+
+    Do
+
+        J = 6
+
+        Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
+
+        For II = 1 To J:
+            Locate 8 + II, 8
+            Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";
+        Next
+
+        Locate 9 + J, 8
+        Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
+        Locate 10, 15
+
+        Color 3: Locate , 30: Print "SELECT OPTION:"
+        Locate , 30: Color 15: Print "H";: Color 7: Print "IGHEST TO LOWEST"
+        Locate , 30: Color 15: Print "L";: Color 7: Print "OWEST TO HIGHEST"
+        Locate , 30: Color 15: Print "R";: Color 7: Print "E-SELECT CATEGORY"
+
+        I$ = GetKeyPress$
+
+        Select Case UCase$(I$)
+
+            Case "H":
+                Call PrintViewReselect(I2$)
+
+                Select Case UCase$(I2$)
+                    Case "P": printOrView% = 2
+                    Case "V": printOrView% = 1
+                    Case "R":
+                End Select
+
+                sortType% = 1
+
+            Case "L":
+                Call PrintViewReselect(I2$)
+
+                Select Case UCase$(I2$)
+                    Case "P": printOrView% = 2
+                    Case "V": printOrView% = 1
+                    Case "R":
+                End Select
+
+                sortType% = 2
+
+            Case "R", Chr$(27):
+                If ZZ = 1 Then Call ViewExpandedLeaders(statType%)
+
+        End Select
+
+    Loop Until UCase$(I$) = "H" Or UCase$(I$) = "L" Or UCase$(I$) = "R"
+
+End Sub
+
+
+'----------------------------------------
+'       PrintViewReselect Subroutine
+'----------------------------------------
+'...explanation...
+Sub PrintViewReselect (userOpt$)
+
+	J = 4
+
+    Locate 9, 15
+    Color 15, 0
+
+    Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
+
+    For II = 1 To J
+        Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
+    Next
+
+    Locate 10 + J, 15
+    Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
+    Locate 10, 10
+
+    Color 12
+    Locate , 30: Print "SELECT OPTION:"
+    Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
+    Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
+    Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
+
+    Do
+        userOpt$ = GetKeyPress$
+    Loop Until UCase$(userOpt$) = "P" Or UCase$(userOpt$) = "V" Or UCase$(userOpt$) = "R"
 
 End Sub
 
@@ -1442,10 +1435,11 @@ Sub TeamStatsToPrinter ()
         Next W
 
         Locate 22, 17
-        Color 0, 15: Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-
+        Color 0, 15
+		Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
         Color 4, 0: Print Chr$(220)
         Locate , 18: Print String$(50, 223)
+
         I$ = GetKeyPress$
 
         If I$ <> Chr$(27) Then
@@ -1478,54 +1472,18 @@ Sub TeamStatsToPrinter ()
 End Sub
 
 '----------------------------------------
-'       CategoryToPrinter Subroutine
+'    DisplayLeaders Subroutine
 '----------------------------------------
 '...explanation...
-Sub CategoryToPrinter ()
-
-    Shared expCategories$(), TMM$(), TYY$()
-    Shared TYP!()
-
-    LPrint "     TEAM                     "; expCategories$(XX)
-
-    LPrint Using "###"; W;: LPrint " ";: LPrint TMM$(W);
-
-    For W = 1 To LG
-
-        Select Case TVN
-
-            Case 1
-                LPrint Tab(35); Using "#####"; TYP!(W)
-
-            Case 2
-                LPrint Tab(35); Using "###.##"; TYP!(W)
-
-            Case 3
-                LPrint Tab(35); Using "###.#"; TYP!(W);: LPrint Tab(63); TYY$(W)
-
-            Case 4
-                LPrint Tab(35); Using "###.#"; TYP!(W)
-
-        End Select
-
-    Next W
-
-    LPrint Chr$(12)
-
-End Sub
-
-'----------------------------------------
-'    ExpandedStatsToScreen Subroutine
-'----------------------------------------
-'...explanation...
-Sub ExpandedStatsToScreen (XX, QW, TVN)
+Sub DisplayLeaders (XX, QW, TVN)
 
     Shared expCategories$(), TMM$(), TPP$(), TYY$()
     Shared TYP!()
 
     Do
-        '10000
+
         Cls
+
         J = 18
 
         Locate 1, 5: Color 15, 1
@@ -1563,11 +1521,12 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
             If W <> 1 And (W Mod 16 = 1) Then
 
                 RR = 1
-                Locate 22, 17: Color 0, 15
-                Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-                Color 1, 0: Print Chr$(220)
 
-                Locate , 18: Print String$(50, 223)
+				Locate 22, 17
+				Color 0, 15
+				Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
+				Color 1, 0: Print Chr$(220)
+				Locate , 18: Print String$(50, 223)
 
                 I$ = GetKeyPress$
 
@@ -1615,12 +1574,11 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
 
         If I$ <> Chr$(27) Then
 
-            Locate 22, 17
-            Color 0, 15
-            Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-
-            Color 1, 0: Print Chr$(220)
-            Locate , 18: Print String$(50, 223)
+			Locate 22, 17
+			Color 0, 15
+			Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
+			Color 1, 0: Print Chr$(220)
+			Locate , 18: Print String$(50, 223)
 
             I$ = GetKeyPress$
 
@@ -1657,15 +1615,15 @@ Sub ExpandedStatsToScreen (XX, QW, TVN)
 End Sub
 
 '----------------------------------------
-'    PlayerToPrinter Subroutine
+'    PrintLeaders Subroutine
 '----------------------------------------
 '...explanation...
-Sub PlayerToPrinter (XX, LG, TVN)
+Sub PrintLeaders (XX, LG, TVN)
 
     Shared expCategories$(), TMM$(), TPP$(), TYY$()
     Shared TYP!()
 
-	Color 0, 15
+    Color 0, 15
 
     LPrint "     PLAYER                  TEAM                     "; expCategories$(XX)
 
@@ -1674,18 +1632,24 @@ Sub PlayerToPrinter (XX, LG, TVN)
         If (W <> 0 And W Mod 50 = 0) Then
             LPrint Chr$(12)
             LPrint "     PLAYER                  TEAM                     "; expCategories$(XX)
-
         End If
 
-        LPrint Using "###"; W;: LPrint " ";: LPrint TPP$(W);: LPrint Tab(25); TMM$(W);
+        LPrint Using "###"; W;
+		LPrint " ";
+		LPrint TPP$(W);
+		LPrint Tab(25); TMM$(W);
 
         Select Case TVN
             Case 1
                 LPrint Tab(58); Using "#####"; TYP!(W)
+
             Case 2
                 LPrint Tab(58); Using "###.##"; TYP!(W)
+
             Case 3
-                LPrint Tab(58); Using "###.#"; TYP!(W);: LPrint Tab(63); TYY$(W)
+                LPrint Tab(58); Using "###.#"; TYP!(W);
+				LPrint Tab(63); TYY$(W)
+
             Case 4
                 LPrint Tab(58); Using "###.#"; TYP!(W)
 
@@ -1744,10 +1708,8 @@ End Sub
 '...explanation...
 Sub SortTeam (sortMax, stpl, sortType%)
 
-    Shared TMM$()
     Shared TYP!()
-
-    Cls
+    Shared TMM$()
 
     For I = 2 To sortMax
 
@@ -1756,12 +1718,19 @@ Sub SortTeam (sortMax, stpl, sortType%)
         Locate 5, 5: Print "sorting team "; stpl
 
         For J = sortMax To I Step -1
+
             If sortType% = 1 Then
-                If TYP!(J - 1) < TYP!(J) Then Swap TMM$(J - 1), TMM$(J): Swap TYP!(J - 1), TYP!(J)
+                If TYP!(J - 1) < TYP!(J) Then
+                    Swap TMM$(J - 1), TMM$(J)
+                    Swap TYP!(J - 1), TYP!(J)
+                End If
             End If
 
             If sortType% = 2 Then
-                If TYP!(J - 1) > TYP!(J) Then Swap TMM$(J - 1), TMM$(J): Swap TYP!(J - 1), TYP!(J)
+                If TYP!(J - 1) > TYP!(J) Then
+                    Swap TMM$(J - 1), TMM$(J)
+                    Swap TYP!(J - 1), TYP!(J)
+                End If
             End If
 
         Next J
@@ -1780,9 +1749,12 @@ Sub GetListLength (printOrView%, listLength, maxItems)
     Cls
 
     If printOrView% <> 1 Then
-		'If printing...
+        'If printing...
 
         Do
+            Color , 0
+            Cls
+
             Print
             Print
             Print
@@ -1793,6 +1765,7 @@ Sub GetListLength (printOrView%, listLength, maxItems)
             Locate 10, 20
             Color 4, 15
             Print " " + Chr$(214); String$(30, 196); Chr$(183) + " ";
+
             For II = 1 To J:
                 Locate 10 + II, 20: Print " " + Chr$(186); String$(30, 32); Chr$(186) + " ";
             Next
@@ -1801,7 +1774,8 @@ Sub GetListLength (printOrView%, listLength, maxItems)
             Print " " + Chr$(211); String$(30, 196); Chr$(189) + " "
             Locate 11
 
-            Locate , 25: Color 1: Print "MAXIMUM = "; maxItems
+            Color 1
+            Locate , 25: Print "MAXIMUM = "; maxItems
             Locate , 25: Input "ENTER LENGTH OF LIST"; listLength
 
         Loop Until listLength <= maxItems
@@ -1820,7 +1794,7 @@ Sub ChooseConference_Expanded (targetFile$, ExitCode%)
     Do
 
         Spec$ = diskPaths$(2) + "*.TMS"
-		Count% = FCount%(Spec$)
+        Count% = FCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -1889,14 +1863,14 @@ Sub ChooseConference_Expanded (targetFile$, ExitCode%)
 End Sub
 
 '------------------------------
-'    BUILDSTATS Subroutine
+'    UpdateExpandedLeaders Subroutine
 '------------------------------
 ' ...explanation...
-Sub BUILDSTATS (CT%)
+Sub UpdateExpandedLeaders (CT%, tStats)
 
     Dim PX
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
@@ -1921,8 +1895,6 @@ Sub BUILDSTATS (CT%)
     Color 15, 0
     Cls
 
-
-    'PX is always a 0 value ?!?!
     PX = 0
 
     For ZX = 1 To 30
@@ -1986,16 +1958,16 @@ Sub BUILDSTATS (CT%)
                 Input #1, Y%
                 Close #1
 
-                totStats = totStats + 1
+                tStats = tStats + 1
 
                 For I = 0 To 14
-                    lookyTT!(totStats, I) = statsZ!(I)
-                    lookyTT$(totStats, I) = statsA$
+                    lookyTT!(tStats, I) = statsZ!(I)
+                    lookyTT$(tStats, I) = statsA$
                 Next
 
                 For I = 15 To 29
-                    lookyTT!(totStats, I) = statsZ1!(I - 15)
-                    lookyTT$(totStats, I) = statsA$
+                    lookyTT!(tStats, I) = statsZ1!(I - 15)
+                    lookyTT$(tStats, I) = statsA$
                 Next
 
                 For I = 0 To 9
@@ -2208,13 +2180,14 @@ Sub QBRatings (CT%)
 
 End Sub
 
-'------------------------------
-'    SAVELEADER Subroutine
-'------------------------------
-' ...explanation...
-Sub SAVELEADER (leaderFile$)
+'----------------------------------------
+'        SAVELEADER Subroutine
+'----------------------------------------
+' Compiles leader files for the expanded
+' standings modules (.LDS)
+Sub SAVELEADER (leaderFile$, tStats)
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ, totStats
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
@@ -2234,65 +2207,76 @@ Sub SAVELEADER (leaderFile$)
     Print "SAVING LEADER FILES . . . . PLEASE WAIT"
 
     Open diskPaths$(2) + leaderFile$ + ".LDS" For Output As #1
-    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totStats, JJ
+
+    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, tStats, JJ
 
     For I = 1 To 30:
         For I1 = 0 To 29:
             Write #1, lookyTT!(I, I1), lookyTT$(I, I1)
         Next
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 1 To 300:
         Write #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA!(I)
         For I1 = 0 To 7: Write #1, A1L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 180:
         Write #1, A2L$(I), A2T$(I), LCL$(I), GMB!(I)
         For I1 = 0 To 3: Write #1, A2L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 120:
         Write #1, QBL$(I), A3T$(I), LPL$(I), A3R!(I, 0), GMC!(I)
         For I1 = 0 To 6: Write #1, A3L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 90:
         Write #1, A4L$(I), A4T$(I), LKL$(I)
         For I1 = 0 To 3: Write #1, A4L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 90:
         Write #1, A5L$(I), A5T$(I), PKL$(I)
         For I1 = 0 To 3: Write #1, A5L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 30:
         Write #1, A6L$(I), A6T$(I)
         For I1 = 0 To 1: Write #1, A6L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 60:
         Write #1, A7L$(I), A7T$(I)
         For I1 = 0 To 4: Write #1, A7L!(I, I1): Next I1
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 300:
         Write #1, A8L$(I), A8T$(I), A8L!(I)
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 450:
         Write #1, A9L$(I), A9T$(I), A9L!(I)
-        Color 14: Locate 16, 45: TMR = TMR - 1: Print Using "####"; TMR
+        Color 14: Locate 16, 45
+        TMR = TMR - 1: Print Using "####"; TMR
     Next I
 
     For I = 1 To 30: Write #1, Y%(I): Next

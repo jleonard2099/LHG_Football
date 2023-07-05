@@ -23,11 +23,7 @@ Sub SCHEDULE ()
         Cls
 
         Call TITLE_SCHEDULER
-        Locate 16: Print: Color 2
-        Print "GENERATING A STANDARD SEASON SCHEDULE IS TO BE USED IN CONJUNCTION"
-        Print "WITH THE STANDINGS AND LEAGUE LEADERS OPTIONS. YOU MUST ALREADY HAVE"
-        Print "CREATED AN APPROPRIATE LEAGUE FOR THIS OPTION TO PROPERLY FUNCTION."
-        'Erase menuChoices$
+
         menuChoices$(1) = "ENTER A NEW SCHEDULE                             "
         menuChoices$(2) = "RETRIEVE/EDIT/PLAY AN EXISTING SCHEDULE          "
         menuChoices$(3) = "EXTRACT ONE TEAM'S SCHEDULE FROM LEAGUE SCHEDULE "
