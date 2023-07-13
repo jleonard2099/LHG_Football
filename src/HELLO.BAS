@@ -374,10 +374,6 @@ Print #9, "Error #"; Err; "on program file line"; _ErrorLine
 '    Print #9, "Schedule game # "; Using "###"; AP%(0) + AP%(2)
 '    Print #9, A$(0) + " vs. " + A$(1)
 'End If
-Print #9, "H1$(XW) - "; testTeam$
-'Print #9, "I3 - "; I3
-'Print #9, "X$ - "; X$
-'Print #9,
 Close #9
 Resume Next ' moves program to code following the error.
 
@@ -575,25 +571,32 @@ Sub TeamMgt_Menu ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case menuSelection%
+
                 Case 1:
-                    Call TINPUT
+                    Call InputTeam
+
                 Case 2:
-                    Call GetTeam_CNGTM(YN$, tmNbr)
-                    Call ChangeTeam(YN$, tmNbr)
+                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
+                    Call EditTeam(A$, AA$, YN$, S$, T, YC!)
+
                 Case 3:
-                    Call GetTeam_CNGTM(YN$, tmNbr)
-                    Call PrintRoster
+                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
+                    Call PrintRoster(A$, AA$, T)
+
                 Case 4:
-                    Call GetTeam_CNGTM(YN$, tmNbr)
-                    Call ViewRoster
+                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
+                    Call ViewRoster(A$, AA$, T)
+
                 Case 5:
                     Call DRAFT
+
                 Case 6:
                     Call TRADE
-                Case 7:
-                    Cls
+
             End Select
+
         End If
 
     Loop Until menuSelection% = 7 Or ExitCode% = 27
@@ -725,14 +728,14 @@ Sub Leaders_Menu ()
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
                 Case 5: Call RecordsMenu(1)
-                Case 6: Call NEWLDR
+                Case 6: Call ViewExpandedLeaders(1)
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
                 Case 9: Call COMPCOLL
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
                 Case 12: Call RecordsMenu(2)
-                Case 13: Call NEWLDR
+                Case 13: Call ViewExpandedLeaders(2)
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
                 Case 16: Call COMPNATL
@@ -787,6 +790,7 @@ End Sub
 '$INCLUDE: 'SEECOLL.BAS'
 '$INCLUDE: 'SEENATL.BAS'
 '$INCLUDE: 'SEEPRO.BAS'
+'$INCLUDE: 'SINPUT.BAS'
 '$INCLUDE: 'TINPUT.BAS'
 '$INCLUDE: 'TRADE.BAS'
 

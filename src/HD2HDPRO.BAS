@@ -132,11 +132,11 @@ Sub Hd2HdPro_League (X2)
             'Check if same league
             If SL <> 1 Then
 
-                Call ChooseLeague(targetFile$)
+                Call ChooseLeague_HD2HD(targetFile$)
                 LG$ = targetFile$
 
                 If X2 <> 0 Then
-                    Call ChooseLeague(targetFile$)
+                    Call ChooseLeague_HD2HD(targetFile$)
                     LG2$ = targetFile$
                 End If
 
@@ -1356,10 +1356,10 @@ Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
 End Sub
 
 '----------------------------------------
-'       ChooseLeague Subroutine
+'       ChooseLeague_HD2HD Subroutine
 '----------------------------------------
 '...explanation...
-Sub ChooseLeague (targetFile$)
+Sub ChooseLeague_HD2HD (targetFile$)
 
     Do
 

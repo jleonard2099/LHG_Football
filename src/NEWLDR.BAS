@@ -2,6 +2,12 @@ Sub NEWLDR ()
 
     _Title "3-in-1 Football - View Stat Leaders"
 
+    '-- This menu is currently redundant
+    '-- However the routine is left here 
+    '-- in the event we add EXPANDED STANDINGS 
+    '-- as a menu option and need a similar
+    '-- logic to the games that use them
+
     ReDim menuChoices$(1 To 4)
 
     Do
