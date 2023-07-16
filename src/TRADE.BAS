@@ -1711,7 +1711,7 @@ Sub GetDiskID_TEAM (J)
 
         statsA$(J) = RTrim$(Q$(1))
         statsAA$(J) = Q$(2)
-        Call ReadTeam(J)
+        Call ReadTeam_TRADE(J)
 
         If BO% <> 1 Then
 
@@ -1888,10 +1888,10 @@ Sub SelectTeam_TRADE (J, yearNumber$, numberTeams)
 End Sub
 
 '----------------------------------------
-'           ReadTeam Subroutine
+'        ReadTeam_TRADE Subroutine
 '----------------------------------------
 '...explanation...
-Sub ReadTeam (J)
+Sub ReadTeam_TRADE (J)
 
     Dim C2!(15)
 

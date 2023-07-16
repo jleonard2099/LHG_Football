@@ -93,7 +93,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsO%(), statsT%(), lookyP%()
-    Shared lookyP%(), statsPA%()
+    Shared lookyP%(), teamRatings%()
 
     Shared statsH$(), compO$(), gameSITE$()
     Shared lookyDI$(), lookyDS$()
@@ -229,7 +229,7 @@ End Sub
 '----------------------------------------
 Sub ViewStatSummary (statFile$, teamName$, totalGames%, teamPower, SS)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -288,7 +288,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, teamPower, SS)
         Cls
         JJ = 1
         Locate 6, 8
-        Color statsPA%(2), statsPA%(1)
+        Color teamRatings%(2), teamRatings%(1)
 
         'Print box top
         Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
@@ -331,7 +331,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared PK!(), W6!(), statsZ!(), statsZ1!(), statsZ2!()
 
-    Shared statsO%(), statsPA%(), statsT%(), lookyP%()
+    Shared statsO%(), teamRatings%(), statsT%(), lookyP%()
 
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
     Shared lookyDI$(), lookyDS$(), statsH$()
@@ -351,7 +351,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Locate , Xcoord
 
     Print "GAME-BY-GAME REPORT FOR ";
-    Color statsPA%(2), statsPA%(1)
+    Color teamRatings%(2), teamRatings%(1)
     Print teamName$
 
     Color 14, 1
@@ -388,7 +388,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
             Color 14
             Print "GAME-BY-GAME REPORT FOR ";
-            Color statsPA%(2), statsPA%(1)
+            Color teamRatings%(2), teamRatings%(1)
             Print teamName$
 
             Color 14
@@ -1769,7 +1769,7 @@ End Sub
 '...explanation...
 Sub GetDisk_LOOKY (numberTeams, yearNumber$, A$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -1857,7 +1857,7 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$, A$)
             Else
                 A$ = RTrim$(Q$(1))
                 Locate 2, 33
-                Color statsPA%(2), statsPA%(1): Print A$
+                Color teamRatings%(2), teamRatings%(1): Print A$
 
                 Do
                     Color 15, 4
@@ -1883,7 +1883,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1924,7 +1924,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
             Get #1, T1
 
             For I1 = 0 To 4
-                statsPA%(I1) = CVI(Q$(I1 + 11))
+                teamRatings%(I1) = CVI(Q$(I1 + 11))
             Next I1
 
             Close 1

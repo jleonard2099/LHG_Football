@@ -156,9 +156,9 @@ Sub NewSchedule (scheduleFile$)
     Shared scheduleYN$()
 
     Shared modeAbbrev$()
-    Shared statsA3$()
+    Shared qbName$()
 
-    statsA3$(4) = "RANDOM"
+    qbName$(4) = "RANDOM"
 
     modeAbbrev$(0) = "HH"
     modeAbbrev$(1) = "C1"
@@ -216,14 +216,14 @@ Sub NewSchedule (scheduleFile$)
                 Call CheckTeam_Schedule(T1, YN$)
                 N$ = RTrim$(Q$(1))
                 scheduleV$(X) = N$
-                scheduleQB_V$(X) = statsA3$(scheduleNG%(X + NS% * 20, 5))
+                scheduleQB_V$(X) = qbName$(scheduleNG%(X + NS% * 20, 5))
 
                 T1 = scheduleNG%(X + NS% * 20, 1)
                 YN$ = scheduleYN$(X + NS% * 20, 1)
                 Call CheckTeam_Schedule(T1, YN$)
                 N$ = RTrim$(Q$(1))
                 scheduleH$(X) = N$
-                scheduleQB_H$(X) = statsA3$(scheduleNG%(X + NS% * 20, 8))
+                scheduleQB_H$(X) = qbName$(scheduleNG%(X + NS% * 20, 8))
 
                 'Game number
                 Print Using "####  "; X + NS% * 20;
@@ -530,13 +530,13 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
     Shared N$
 
-    Shared scheduleNG%(), statsPA%()
+    Shared scheduleNG%(), teamRatings%()
 
     Shared scheduleH$(), scheduleV$()
     Shared scheduleQB_V$(), scheduleQB_H$()
     Shared scheduleYN$()
 
-    Shared statsA3$(), modeAbbrev$()
+    Shared qbName$(), modeAbbrev$()
     Shared yesNo$()
     Shared WN$(), WT$()
 
@@ -545,7 +545,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
     scheduleYN$(0, 0) = ""
     scheduleYN$(0, 1) = ""
 
-    statsA3$(4) = "RANDOM"
+    qbName$(4) = "RANDOM"
 
     Do
 
@@ -648,7 +648,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                             BO% = 0
                         Else
                             Locate 2, 33
-                            Color statsPA%(2), statsPA%(1): Print N$
+                            Color teamRatings%(2), teamRatings%(1): Print N$
 
                             Do
                                 Color 15, 4
@@ -661,7 +661,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                                 Color 15, 0
                                 scheduleNG%(gameIndex%, I5 - 2) = T1
                                 scheduleYN$(gameIndex%, I5 - 2) = YN$
-                                QB$ = QBName$(gameIndex%, I5)
+                                QB$ = GetQBName$(gameIndex%, I5)
 
                                 If I5 = 2 Then
                                     visitor$ = N$
@@ -766,7 +766,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Shared homeScores(), visitorScores()
 
     Shared scheduleAP%()
-    Shared scheduleNG%(), statsPA%()
+    Shared scheduleNG%(), teamRatings%()
     Shared scheduleYN$()
 
     Shared statsZ1%()
@@ -988,7 +988,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                         BO% = 0
                     Else
                         Locate 2, 33
-                        Color statsPA%(2), statsPA%(1): Print N$
+                        Color teamRatings%(2), teamRatings%(1): Print N$
 
                         Do
                             Color 15, 4
@@ -1003,7 +1003,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                             'Change mode of play
                             If scheduleAction% = 5 Then
                                 Cls
-                                Color statsPA%(2), statsPA%(1): Print N$;
+                                Color teamRatings%(2), teamRatings%(1): Print N$;
                                 Color 15, 0: Print " IS TO BE:"
                                 Print
                                 Print "(0) MANUALLY CONTROLLED": Print
@@ -1390,7 +1390,7 @@ Sub ChangeGlobalSettings ()
     Shared scheduleAP%(), scheduleNG%()
 
     Shared modeAbbrev$(), yesNo$()
-    Shared statsA3$(), scheduleYN$()
+    Shared qbName$(), scheduleYN$()
 
     Shared WN$(), WT$()
 
@@ -1400,7 +1400,7 @@ Sub ChangeGlobalSettings ()
     scheduleYN$(0, 1) = ""
 
     'QB selections
-    statsA3$(4) = "RANDOM"
+    qbName$(4) = "RANDOM"
 
     DT$ = "10-01-91"
     TM$ = "07:30P"
@@ -1597,10 +1597,10 @@ End Sub
 '...explanation...
 Sub ReadTeam_Schedule (yearNumber$, teamIdx)
 
-    Shared statsA3$()
+    Shared qbName$()
 
-    Shared statsPA%(), careerQX%()
-    Shared careerA6%(), careerA7%(), careerA8%()
+    Shared teamRatings%(), armRating()
+    Shared passAtt(), compPct(), qbIntPct()
 
     teamYear$ = RTrim$(yearNumber$)
 
@@ -1644,14 +1644,14 @@ Sub ReadTeam_Schedule (yearNumber$, teamIdx)
 
     Get #1, teamIdx
 
-    For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+    For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
     For I1 = 0 To 3
-        statsA3$(I1) = Q$(I1 * 5 + 84)
-        careerA6%(I1) = CVI(Q$(I1 * 5 + 85))
-        careerA7%(I1) = CVI(Q$(I1 * 5 + 86))
-        careerA8%(I1) = CVI(Q$(I1 * 5 + 87))
-        careerQX%(I1) = CVI(Q$(I1 * 5 + 88))
+        qbName$(I1) = Q$(I1 * 5 + 84)
+        passAtt(I1) = CVI(Q$(I1 * 5 + 85))
+        compPct(I1) = CVI(Q$(I1 * 5 + 86))
+        qbIntPct(I1) = CVI(Q$(I1 * 5 + 87))
+        armRating(I1) = CVI(Q$(I1 * 5 + 88))
     Next I1
 
     Close 1
@@ -1664,7 +1664,7 @@ End Sub
 '...explanation...
 Sub CheckTeam_Schedule (teamIdx, yearNumber$)
 
-    Shared statsA3$()
+    Shared qbName$()
 
     teamYear$ = RTrim$(yearNumber$)
 
@@ -1679,7 +1679,7 @@ Sub CheckTeam_Schedule (teamIdx, yearNumber$)
     Get #1, teamIdx
 
     For I1 = 0 To 3
-        statsA3$(I1) = Q$(I1 * 5 + 84)
+        qbName$(I1) = Q$(I1 * 5 + 84)
     Next I1
 
     Close 1
@@ -1924,4 +1924,83 @@ Sub EditBoxscore (boxName$)
     End If
 
 End Sub
+
+
+'----------------------------------------
+'       QBName Function
+'----------------------------------------
+' Allows user to choose QB
+' Returns QB name as string
+Function GetQBName$ (targetGame%, I5)
+
+    Shared armRating()
+    Shared passAtt(), compPct(), qbIntPct()
+
+    Shared scheduleNG%()
+
+    Shared qbName$()
+
+
+    Do
+
+        Cls
+        Print "SELECT QUARTERBACK"
+        Print " # QB NAME    % OF  COMP  INT"
+        Print "              ATTS  PCT   PCT"
+
+        For I1 = 0 To 3:
+
+            If qbName$(I1) <> "XXX" And qbName$(I1) <> "END" And qbName$(I1) <> "" Then
+
+                Print I1; "-"; qbName$(I1);
+                Locate , 14
+
+                If I1 = 0 Then
+                    Print passAtt(I1);
+                Else
+                    'I1 > 0
+                    'Only print extra QB's if they
+                    'don't have 100% contribution
+                    If passAtt(I1 - 1) < 100 Then
+                        Print Int(passAtt(I1)) - passAtt(I1 - 1);
+                    End If
+                End If
+
+                Locate , 20: Print compPct(I1);
+                Locate , 26: Print qbIntPct(I1)
+
+            End If
+
+            Locate , 1
+
+        Next I1
+
+        Print " 4 -COMPUTER SELECT QUARTERBACK"
+
+        Print
+        Locate , 1: Print "SELECT (0-4) ";
+        I$ = GetKeyPress$
+        I2 = Val(I$)
+
+    Loop Until I2 >= 0 And I2 <= 4
+
+    Q6% = I2
+
+    If scheduleNG%(targetGame%, 3) <> 0 And I2 <= 3 Then
+
+        Do
+            Print "ENTER "; qbName$(I2); " MOBILITY RATING (1-9)"
+            I$ = GetKeyPress$
+            R9% = Val(I$)
+        Loop Until R9% >= 1 And R9% <= 9
+
+    End If
+
+    scheduleNG%(targetGame%, (I5 - 2) * 3 + 5) = Q6%
+    scheduleNG%(targetGame%, (I5 - 2) * 3 + 6) = R9%
+    qbName$(4) = "RANDOM"
+
+    GetQBName$ = qbName$(I2)
+
+End Function
 

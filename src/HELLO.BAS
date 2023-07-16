@@ -9,13 +9,12 @@ Const MAX_CONFERENCES = 40
 Const TEAMS_PER_DIV = 15
 Const DIVS_PER_CONFERENCE = 2
 Const TEAMS_PER_CONFERENCE = 30
-Const TEAM_SIZE_BYTES = 934
 
 'Const NUM_STATRECORDS = 162
 
 DefInt A-Z
 
-'INCLUDE: 'FileTeamSelection.bi'
+'$INCLUDE: 'FileTeamSelection.bi'
 '$INCLUDE: 'KeyInput.bi'
 '$INCLUDE: 'QPProEqu.bi'
 '$INCLUDE: 'PadRight.bi'
@@ -509,8 +508,8 @@ Sub ConfigureDrives ()
     diskPaths$(2) = _Trim$(diskPaths$(2))
 
     Done:
-    Locate 23, 1
     Color 14, 1
+    Locate 23, 1
     Print "Is this okay? (Yes/No) ";
     X$ = ""
     Call YesNoB(X$, XCode, FG, BG)
@@ -578,16 +577,16 @@ Sub TeamMgt_Menu ()
                     Call InputTeam
 
                 Case 2:
-                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
-                    Call EditTeam(A$, AA$, YN$, S$, T, YC!)
+                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
+                    Call EditTeam(A$, mascot$, YN$, S$, T, YC!)
 
                 Case 3:
-                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
-                    Call PrintRoster(A$, AA$, T)
+                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
+                    Call PrintRoster(A$, mascot$, T)
 
                 Case 4:
-                    Call GetTeam_CNGTM(A$, AA$, YN$, S$, T, YC!)
-                    Call ViewRoster(A$, AA$, T)
+                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
+                    Call ViewRoster(A$, mascot$, T)
 
                 Case 5:
                     Call DRAFT
@@ -755,13 +754,12 @@ Sub Leaders_Menu ()
 End Sub
 
 
-'INCLUDE: 'FileTeamSelection.bm'
+'$INCLUDE: 'FileTeamSelection.bm'
 '$INCLUDE: 'KeyInput.bm'
 '$INCLUDE: 'QPProEqu.bm'
 '$INCLUDE: 'PadRight.bm'
 
 ' For Utils
-'$INCLUDE: 'MainRoutines.bm'
 '$INCLUDE: 'TITLE.bm'
 '$INCLUDE: 'ALIGN.BAS'
 '$INCLUDE: 'BLANKCOL.BAS'

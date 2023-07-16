@@ -1057,7 +1057,7 @@ Sub ViewPrintCareerRecords ()
                                 Color 7: Print Tab(32); Using "####"; QBBC!(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR%(2)
 
                                 Color 15
-                                Locate 22: Print "HIT ANY KEY TO CONTINUE"
+                                Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
                                 I$ = GetKeyPress$
 
                                 Cls
@@ -1100,7 +1100,7 @@ Sub ViewPrintCareerRecords ()
                                 Color 7: Print Tab(32); Using "####"; PUUC!(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR%(1)
 
                                 Color 15
-                                Locate 22: Print "HIT ANY KEY TO CONTINUE"
+                                Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
                                 I$ = GetKeyPress$
 
                                 Cls
@@ -1150,7 +1150,7 @@ End Sub
 '...explanation...
 Sub GetTeam_CAREER (A$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -1236,7 +1236,7 @@ Sub GetTeam_CAREER (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color statsPA%(2), statsPA%(1): Print A$
+                Color teamRatings%(2), teamRatings%(1): Print A$
 
                 Do
                     Color 15, 4
@@ -1260,7 +1260,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1292,9 +1292,8 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
 
         Get #1, teamIdx%
 
-        'Positions 1 and 2 will hold team colors
         For I1 = 0 To 2
-            statsPA%(I1) = CVI(Q$(I1 + 11))
+            teamRatings%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
         Close 1

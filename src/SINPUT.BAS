@@ -890,7 +890,7 @@ End Sub
 '...explanation...
 Sub GetTeam_SINPUT (A$, YN$, teamNbr)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -962,7 +962,7 @@ Sub GetTeam_SINPUT (A$, YN$, teamNbr)
             BO% = 0
         Else
             Locate 2, 33
-            Color statsPA%(2), statsPA%(1): Print A$
+            Color teamRatings%(2), teamRatings%(1): Print A$
 
             Do
                 Color 15, 4
@@ -983,7 +983,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_SINPUT (YN$, NTMS, teamNbr)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = NTMS
@@ -1017,7 +1017,7 @@ Sub SelectTeam_SINPUT (YN$, NTMS, teamNbr)
         Get #1, teamNbr
 
         For I1 = 0 To 4
-            statsPA%(I1) = CVI(Q$(I1 + 11))
+            teamRatings%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
         Close 1

@@ -1,10 +1,10 @@
-`'------------------------------
+'------------------------------
 '   ChooseTeam Subroutine
 '------------------------------
 '...explanation...
 Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
-    Shared T%()
+    Shared teamRatings%()
     Shared teamNames$()
 
     Do
@@ -72,7 +72,7 @@ Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                     Else
 
-                        Open diskPaths$(0) + TEAM_FILE_NAME$ + "." yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
+                        Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
 
                         fileLength& = LOF(1)
 
@@ -99,13 +99,17 @@ Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                             Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$)
 
-                            Locate 2, 33
-                            Color T%(0), T%(1): Print teamName$
+                            Do
 
-                            Color 15, 4
-                            Locate , 33: Print "ANY CHANGE? (YN)";
+                                Locate 2, 33
+                                Color teamRatings%(2), teamRatings%(1): Print teamName$
 
-                            I$ = GetKeyPress$
+                                Color 15, 4
+                                Locate 3, 33: Print "ANY CHANGE? (YN)";
+
+                                I$ = GetKeyPress$
+
+                            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
                         End If
 
@@ -163,6 +167,7 @@ Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$)
             Print "LOADING.."
 
             Call ReadTeam(yearNumber$, teamName$, selectedIdx)
+            'Call ReadExtraData(yearNumber$, teamName$, selectedIdx)
 
         End If
 
@@ -177,40 +182,206 @@ End Sub
 '...explanation...
 Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 
-    Shared L%(), T%()
-    'Shared varB%()
+    Shared ydsCompAdj
+
+    Shared mascot$
+
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Open diskPaths$(0) +  TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
-    '--- This will vary from game / module
-    Field #1, 15 As Q$(0), 2 As Q$(1), 2 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 2 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 602 As X$
-    For I = 0 To 13
-        Field #1, 53 + I * 43 As X$, 15 As Q$(I * 15 + 20), 2 As Q$(I * 15 + 21), 2 As Q$(I * 15 + 22), 2 As Q$(I * 15 + 23), 2 As Q$(I * 15 + 24), 2 As Q$(I * 15 + 25), 2 As Q$(I * 15 + 26), 2 As Q$(I * 15 + 27), 2 As Q$(I * 15 + 28), 2 As Q$(I * 15 + 29), 2 As Q$(I * 15 + 30), 2 As Q$(I * 15 + 31), 2 As Q$(I * 15 + 32), 2 As Q$(I * 15 + 33), 2 As Q$(I * 15 + 34), 655 - 53 - 43 - I * 43 As X$
-    Next
+    Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
-    '--- Done defining structure
+    Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
+    Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
+    Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
+    Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
+    Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
+    Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
+    Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
+    Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
+    Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
+    Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
+    Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
+    Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
     Get #1, teamIdx
 
-    targetTeam$ = _Trim$(Q$(0))
+    targetTeam$ = Q$(1)
+    mascot$ = Q$(2)
 
-    '--- This will vary from game / module
-    SP = CVI(Q$(1))
-    DA = CVI(Q$(2))
-    V1% = CVI(Q$(3))
-    V2% = CVI(Q$(4))
+    For I = 0 To 7: 
+        leagueRatings%(I) = CVI(Q$(I + 3))
+    Next I
 
-    For I = 0 To 4:
-        L%(I) = CVI(Q$(I + 5))
-    Next
+    For I = 0 To 4: 
+        teamRatings%(I) = CVI(Q$(I + 11))
+    Next I
 
-    For I = 0 To 9:
-        T%(I) = CVI(Q$(I + 10))
-    Next
-    '--- Done reading data
+    'Running Backs
+    For I = 0 To 9
+        'Name
+        rbName$(I) = Q$(I * 5 + 16)
+        'Rush Att
+        rushAtt(I) = CVI(Q$(I * 5 + 17))
+        'Rush Avg
+        rushAvg(I) = CVI(Q$(I * 5 + 18))
+        'Receptions
+        rbRecepts(I) = CVI(Q$(I * 5 + 19))
+        'Rec Avg
+        rbRecAvg(I) = CVI(Q$(I * 5 + 20))
+    Next I
+
+    'Wide Receivers
+    For I = 0 To 5
+        'Name
+        wrName$(I) = Q$(I * 3 + 66)
+        'Receptions
+        wrRecept(I) = CVI(Q$(I * 3 + 67))
+        'Rec Avg
+        wrRecAvg(I) = CVI(Q$(I * 3 + 68))
+    Next I
+
+    'Quarterbacks
+    For I = 0 To 3
+        'Name
+        qbName$(I) = Q$(I * 5 + 84)
+        'Attempts
+        passAtt(I) = CVI(Q$(I * 5 + 85))
+        'Completion %
+        compPct(I) = CVI(Q$(I * 5 + 86))
+        'Interception %
+        qbIntPct(I) = CVI(Q$(I * 5 + 87))
+        'Arm Rating | Yds/Comp Adj
+        armRating(I) = CVI(Q$(I * 5 + 88))
+    Next I
+
+    'Kickoff Returners
+    For I = 0 To 2
+        'Name
+        krName$(I) = Q$(I * 3 + 104)
+        'Returns
+        krRet(I) = CVI(Q$(I * 3 + 105))
+        'Return Avg
+        krRetAvg(I) = CVI(Q$(I * 3 + 106))
+    Next I
+
+    'Punt Returners
+    For I = 0 To 2
+        'Name
+        prName$(I) = RTrim$(Q$(I * 3 + 113))
+        'Returns
+        prRet(I) = CVI(Q$(I * 3 + 114))
+        'Return Avg
+        prRetAvg(I) = CVI(Q$(I * 3 + 115))
+    Next I
+
+    'Punter Name
+    punterName$(0) = RTrim$(Q$(122))
+    'Punt Average
+    puntAvg(0) = CVI(Q$(123))
+
+    'Place Kickers
+    For I = 0 To 1
+        'Name
+        pkName$(I) = RTrim$(Q$(I * 5 + 124))
+        'FGA
+        pkFGA(I) = CVI(Q$(I * 5 + 125))
+        'FG%
+        pkFGPct(I) = CVI(Q$(I * 5 + 126))
+        'PAT
+        pkPAT(I) = CVI(Q$(I * 5 + 127))
+        'PAT %
+        pkPATPct(I) = CVI(Q$(I * 5 + 128))
+
+    Next I
+
+    ydsCompAdj = CVI(Q$(134))
+
+    'Sacks
+    For I = 0 To 14
+        'Name
+        sackName$(I) = Q$(I * 2 + 135)
+        '# Sacks
+        numSacks(I) = CVI(Q$(I * 2 + 136))
+    Next I
+
+    'Interceptions
+    For I = 0 To 9
+        'Name
+        intName$(I) = Q$(I * 2 + 165)
+        '# Ints
+        numInts(I) = CVI(Q$(I * 2 + 166))
+    Next I
 
     'Close team file
     Close 1
+
+End Sub
+
+
+'------------------------------
+'   ReadExtraData Subroutine
+'------------------------------
+'...explanation...
+Sub ReadExtraData (teamYear$, targetTeam$, teamIdx)
+
+    Shared teamAttendance&
+
+    Shared stadium$, Z$
+    
+    If _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
+
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$ For Random As #2 Len = DATA_SIZE_BYTES
+
+        Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
+
+        Get #2, teamIdx
+
+        stadium$ = RTrim$(QQ$(1))
+        teamAttendance& = CVL(QQ$(3))
+        Z$ = QQ$(4)
+
+        Close #2
+
+        If Z$ <> "x" Then 
+            stadium$ = ""
+            teamAttendance& = 0
+        End If
+
+    End If
 
 End Sub
 
@@ -224,13 +395,14 @@ Function nameStatFile$ (teamName$)
     For XX = 4 To 11
         If Mid$(teamName$, XX, 1) = " " Or Mid$(teamName$, XX, 1) = "." Then Mid$(teamName$, XX, 1) = "_"
     Next XX
+
     For XX = 12 To 14
         If Mid$(teamName$, XX, 2) = "ST" Then Mid$(teamName$, 9, 1) = "_": Mid$(teamName$, 10, 2) = "ST"
     Next XX
 
+    'Length of 'converted' name for file
+    '-- update this if we want to support long files
     QQ = 8
-    'QQ - Length of teamName$ ???
-    '-- if we want to support long files
 
     For XX = 11 To 4 Step -1
         If Mid$(teamName$, XX, 1) = "_" Then
@@ -275,7 +447,7 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
             Call ReadFile(foundFiles$())
 
             Do
-                1310 Cls
+
                 Color , 1
                 Cls
                 Locate , 28
@@ -305,10 +477,10 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
                     targetFile$ = foundFiles$(Selection%)
 
                     Do
-						Locate 2, 33
-						Print targetFile$
+                        Locate 2, 33
+                        Print targetFile$
                         Locate , 33
-						Print "ANY CHANGE (YN)";
+                        Print "ANY CHANGE (YN)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -320,7 +492,7 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
 
         End If 'Done checking file count
 
-	'...Until we press ESC
+    '...Until we press ESC
     Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
 
     If ExitCode% <> 27 Then

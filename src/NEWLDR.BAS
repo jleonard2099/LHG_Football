@@ -1886,7 +1886,7 @@ Sub UpdateExpandedLeaders (CT%, tStats)
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared PK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
-    Dim statsDI$(1, 10), statsDS$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
+    Dim intName$(1, 10), sackName$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
@@ -1935,9 +1935,9 @@ Sub UpdateExpandedLeaders (CT%, tStats)
 
                 For L = 0 To 38: Input #1, statsZ1!(L): Next L
 
-                For J = 0 To 9: Input #1, statsDI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
+                For J = 0 To 9: Input #1, intName$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
 
-                For J = 0 To 14: Input #1, statsDS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
+                For J = 0 To 14: Input #1, sackName$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
 
                 For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
 
@@ -2065,14 +2065,14 @@ Sub UpdateExpandedLeaders (CT%, tStats)
 
                 For I = 0 To 9
                     JH = JH + 1
-                    A8L$(JH) = statsDI$(PX, I)
+                    A8L$(JH) = intName$(PX, I)
                     A8T$(JH) = statsA$
                     A8L!(JH) = GI!(PX, I, 0)
                 Next
 
                 For I = 0 To 14
                     JI = JI + 1
-                    A9L$(JI) = statsDS$(PX, I)
+                    A9L$(JI) = sackName$(PX, I)
                     A9T$(JI) = statsA$
                     A9L!(JI) = GS!(PX, I, 0)
                 Next

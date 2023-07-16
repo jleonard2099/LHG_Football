@@ -51,9 +51,9 @@ Sub MergeStats ()
 
     Shared Ycurr%, Yroad%
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared statsDI$(), DRI$(), statsDS$(), DSR$()
+    Shared intName$(), DRI$(), sackName$(), DSR$()
     Shared statsH$(), HR$()
     Shared LC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
@@ -177,15 +177,15 @@ Sub MergeStats ()
                         Open pathCurrentStats$ + statFile$ For Input As #1
                         Input #1, B$
 
-                        For I = 0 To 9: Input #1, statsA1$(I): Next I
-                        For I = 0 To 5: Input #1, statsA2$(I): Next I
-                        For I = 0 To 3: Input #1, statsA3$(I): Next I
-                        For I = 0 To 2: Input #1, statsA4$(I): Next I
-                        For I = 0 To 2: Input #1, statsA5$(I): Next I
+                        For I = 0 To 9: Input #1, rbName$(I): Next I
+                        For I = 0 To 5: Input #1, wrName$(I): Next I
+                        For I = 0 To 3: Input #1, qbName$(I): Next I
+                        For I = 0 To 2: Input #1, krName$(I): Next I
+                        For I = 0 To 2: Input #1, prName$(I): Next I
 
-                        Input #1, statsA6$(0)
+                        Input #1, punterName$(0)
 
-                        For I = 0 To 1: Input #1, statsA7$(I): Next I
+                        For I = 0 To 1: Input #1, pkName$(I): Next I
 
                         For J = 0 To 13
                             For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
@@ -193,8 +193,8 @@ Sub MergeStats ()
 
                         For L = 0 To 38: Input #1, statsZ!(L): Next L
                         For L = 0 To 38: Input #1, statsZ1!(L): Next L
-                        For J = 0 To 9: Input #1, statsDI$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
-                        For J = 0 To 14: Input #1, statsDS$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
+                        For J = 0 To 9: Input #1, intName$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
+                        For J = 0 To 14: Input #1, sackName$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
                         For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
                         For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
                         For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
@@ -220,40 +220,40 @@ Sub MergeStats ()
                         SEQ = 0
 
                         For K = 0 To 9
-                            If UCase$(AR1$(K)) <> UCase$(statsA1$(K)) Then
+                            If UCase$(AR1$(K)) <> UCase$(rbName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 5
-                            If UCase$(AR2$(K)) <> UCase$(statsA2$(K)) Then
+                            If UCase$(AR2$(K)) <> UCase$(wrName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 3
-                            If UCase$(AR3$(K)) <> UCase$(statsA3$(K)) Then
+                            If UCase$(AR3$(K)) <> UCase$(qbName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If UCase$(AR4$(K)) <> UCase$(statsA4$(K)) Then
+                            If UCase$(AR4$(K)) <> UCase$(krName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If UCase$(AR5$(K)) <> UCase$(statsA5$(K)) Then
+                            If UCase$(AR5$(K)) <> UCase$(prName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
-                        If UCase$(AR6$(0)) <> UCase$(statsA6$(0)) Then
+                        If UCase$(AR6$(0)) <> UCase$(punterName$(0)) Then
                             SEQ = SEQ + 1
                         End If
 
-                        If UCase$(AR7$(0)) <> UCase$(statsA7$(0)) Then
+                        If UCase$(AR7$(0)) <> UCase$(pkName$(0)) Then
                             SEQ = SEQ + 1
                         End If
 
@@ -343,9 +343,9 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     Shared Ycurr%, Yroad%
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared statsDI$(), DRI$(), statsDS$(), DSR$()
+    Shared intName$(), DRI$(), sackName$(), DSR$()
     Shared statsH$(), HR$()
     Shared LC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
@@ -478,15 +478,15 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     Open pathCurrentStats$ + statFile$ For Output As #1
     Print #1, B$
-    For I = 0 To 9: Print #1, statsA1$(I): Next I
-    For I = 0 To 5: Print #1, statsA2$(I): Next I
-    For I = 0 To 3: Print #1, statsA3$(I): Next I
-    For I = 0 To 2: Print #1, statsA4$(I): Next I
-    For I = 0 To 2: Print #1, statsA5$(I): Next I
+    For I = 0 To 9: Print #1, rbName$(I): Next I
+    For I = 0 To 5: Print #1, wrName$(I): Next I
+    For I = 0 To 3: Print #1, qbName$(I): Next I
+    For I = 0 To 2: Print #1, krName$(I): Next I
+    For I = 0 To 2: Print #1, prName$(I): Next I
 
-    Print #1, statsA6$(0)
+    Print #1, punterName$(0)
 
-    For I = 0 To 1: Print #1, statsA7$(I): Next I
+    For I = 0 To 1: Print #1, pkName$(I): Next I
 
     For J = 0 To 13
         For K = 0 To 17: Print #1, statsZ2!(J, K): Next K
@@ -496,12 +496,12 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     For L = 0 To 38: Print #1, statsZ1!(L): Next L
 
     For J = 0 To 9:
-        Print #1, statsDI$(J)
+        Print #1, intName$(J)
         For J1 = 0 To 2: Print #1, statsGI%(J, J1): Next
     Next
 
     For J = 0 To 14:
-        Print #1, statsDS$(J)
+        Print #1, sackName$(J)
         For J1 = 0 To 1: Print #1, statsGS%(J, J1): Next
     Next
 
@@ -652,7 +652,7 @@ End Sub
 '...explanation...
 Sub GetDiskID_MERGE (A$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -735,7 +735,7 @@ Sub GetDiskID_MERGE (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color statsPA%(2), statsPA%(1): Print A$
+                Color teamRatings%(2), teamRatings%(1): Print A$
 
                 Do
                     Color 15, 4
@@ -761,7 +761,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_MERGE (yearNumber$, numberTeams)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -805,7 +805,7 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
 
             Get #1, T1
 
-            For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+            For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
             Close 1
 

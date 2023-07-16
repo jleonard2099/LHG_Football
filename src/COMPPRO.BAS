@@ -265,10 +265,6 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
     fullLosses = 0
     fullTies = 0
 
-    statFile$ = Right$(statFile$, 2) + " " + Left$(statFile$, Len(statFile$) - 3)
-
-    Call FILENAME(statFile$)
-
     If _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
         '        Call READFILES(H1$(), XW, numberGames%)
@@ -331,7 +327,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     Shared puntNum
     Shared PU$
 
-    Shared statsDI$(), statsDS$(), H1$(), KR$()
+    Shared intName$(), sackName$(), H1$(), KR$()
     Shared LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared PKR$(), RB$(), QB$(), PR$(), compPK$()
     Shared TB$(), WR$()
@@ -371,14 +367,14 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     For L = 0 To 38: Input #1, OT!(L): Next L
     For L = 0 To 38: Input #1, DT!(L): Next L
 
-    For J = 0 To 9: Input #1, statsDI$(J)
+    For J = 0 To 9: Input #1, intName$(J)
         For J1 = 0 To 2
             Input #1, statsGI%(J, J1)
         Next
     Next
 
     For J = 0 To 14:
-        Input #1, statsDS$(J)
+        Input #1, sackName$(J)
         For J1 = 0 To 1:
             Input #1, statsGS%(J, J1)
         Next
@@ -608,7 +604,7 @@ Sub SortLeadersPro
                         End If
                     End If
                 End If
-                
+
             Next Y
 
         Next X
@@ -1057,7 +1053,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared BRC$()
     Shared compZ2$(), compZ3$()
-    Shared statsDI$(), statsDS$(), KR$()
+    Shared intName$(), sackName$(), KR$()
     Shared LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared PKR$(), RB$(), QB$(), PR$(), compPK$(), compPS$()
     Shared TB$(), WR$()
@@ -1932,23 +1928,23 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
     For X = 0 To 9
 
-        If Left$(statsDI$(X), 1) <> " " And statsDI$(X) <> "" And statsDI$(X) <> "END" Then
+        If Left$(intName$(X), 1) <> " " And intName$(X) <> "" And intName$(X) <> "END" Then
 
-            If statsGI%(X, 0) > BRC!(42) Then BRC!(42) = statsGI%(X, 0): BRC$(42, 0) = statsDI$(X): BRC$(42, 1) = TM$
-            If statsGI%(X, 1) > BRC!(43) Then BRC!(43) = statsGI%(X, 1): BRC$(43, 0) = statsDI$(X): BRC$(43, 1) = TM$
-            If statsGI%(X, 2) > BRC!(44) Then BRC!(44) = statsGI%(X, 2): BRC$(44, 0) = statsDI$(X): BRC$(44, 1) = TM$
+            If statsGI%(X, 0) > BRC!(42) Then BRC!(42) = statsGI%(X, 0): BRC$(42, 0) = intName$(X): BRC$(42, 1) = TM$
+            If statsGI%(X, 1) > BRC!(43) Then BRC!(43) = statsGI%(X, 1): BRC$(43, 0) = intName$(X): BRC$(43, 1) = TM$
+            If statsGI%(X, 2) > BRC!(44) Then BRC!(44) = statsGI%(X, 2): BRC$(44, 0) = intName$(X): BRC$(44, 1) = TM$
 
             If X > 0 Then
                 If LI!(X - 1) > BRC!(45) Then
                     BRC!(45) = LI!(X - 1)
-                    BRC$(45, 0) = statsDI$(X)
+                    BRC$(45, 0) = intName$(X)
                     BRC$(45, 1) = TM$
                     BRC$(45, 2) = statsLI$(X - 1, 0)
                 End If
             End If
 
             For Z = 221 To 230
-                If compZ2$(Z) = statsDI$(X) And compZ3$(Z) = WT$ Then
+                If compZ2$(Z) = intName$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = statsGI%(X, 0)
                     GoTo 3422
                 End If
@@ -1957,7 +1953,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             If statsGI%(X, 0) > compZ1!(230, 1) Then
 
                 compZ1!(230, 1) = statsGI%(X, 0)
-                compZ2$(230) = statsDI$(X)
+                compZ2$(230) = intName$(X)
                 compZ3$(230) = WT$
 
                 3422 '
@@ -1984,16 +1980,16 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
     For X = 0 To 14
 
-        If Left$(statsDS$(X), 1) <> " " And statsDS$(X) <> "" And statsDS$(X) <> "END" Then
+        If Left$(sackName$(X), 1) <> " " And sackName$(X) <> "" And sackName$(X) <> "END" Then
 
             If statsGS%(X, 0) > BRC!(46) Then
                 BRC!(46) = statsGS%(X, 0)
-                BRC$(46, 0) = statsDS$(X)
+                BRC$(46, 0) = sackName$(X)
                 BRC$(46, 1) = TM$
             End If
 
             For Z = 231 To 240
-                If compZ2$(Z) = statsDS$(X) And compZ3$(Z) = WT$ Then
+                If compZ2$(Z) = sackName$(X) And compZ3$(Z) = WT$ Then
                     compZ1!(Z, 1) = statsGS%(X, 0)
                     GoTo 3434
                 End If
@@ -2002,7 +1998,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
             If statsGS%(X, 0) > compZ1!(240, 1) Then
 
                 compZ1!(240, 1) = statsGS%(X, 0)
-                compZ2$(240) = statsDS$(X)
+                compZ2$(240) = sackName$(X)
                 compZ3$(240) = WT$
 
                 3434 '
@@ -2100,3 +2096,4 @@ Sub QBCalculations (I)
     QB!(I, 7) = Int(QB!(I, 7) * 10) / 10
 
 End Sub
+

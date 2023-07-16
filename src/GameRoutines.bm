@@ -190,7 +190,6 @@ Sub InitVar ()
     A5$ = ""
     A6$ = ""
     A7$ = ""
-    AA$ = ""
     DI$ = ""
     div2$ = ""
     DN$ = ""
@@ -4510,7 +4509,7 @@ Sub FINDTEAMS (I)
 
     Close 1
 
-    Call SELECTTEAM(I)
+    Call SelectTeam_GAME(I)
 
 End Sub
 
@@ -6325,10 +6324,10 @@ End Sub
 
 
 '------------------------------
-'      SELECTTEAM Subroutine
+'  SelectTeam_GAME Subroutine
 '------------------------------
 ' ...explanation...
-Sub SELECTTEAM (I)
+Sub SelectTeam_GAME (I)
 
     SELECTION% = 1
     Count% = NT
@@ -6730,7 +6729,7 @@ Sub GetDiskID (I)
 
         If NY$ = "" Then
 
-            Call SELECTTEAM(I)
+            Call SelectTeam_GAME(I)
 
         Else
 

@@ -69,6 +69,7 @@ Sub BLANKCOL ()
                     Color 15, 0
 
                     If UCase$(I1$) = "N" Then
+                    
                         WE$ = Left$(targetFile$, Len(targetFile$) - 4)
                         leagueFile$ = Left$(WE$, 8)
 

@@ -37,18 +37,18 @@ Sub CNGTM ()
 
         If ExitCode% <> 27 Then
 
-            Call GetTeam_CNGTM(A$, AA$, YN$, S$, teamNbr, YC!)
+            Call GetTeam_CNGTM(A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
             Select Case RN
 
                 Case 1
-                    Call EditTeam(A$, AA$, YN$, S$, teamNbr, YC!)
+                    Call EditTeam(A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
                 Case 2
-                    Call PrintRoster(A$, AA$, teamNbr)
+                    Call PrintRoster(A$, mascot$, teamNbr)
 
                 Case 3
-                    Call ViewRoster(A$, AA$, teamNbr)
+                    Call ViewRoster(A$, mascot$, teamNbr)
 
             End Select
 
@@ -63,50 +63,53 @@ End Sub
 '       ViewRoster Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintRoster (A$, AA$, B8%)
+Sub PrintRoster (A$, mascot$, B8%)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
 
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
-    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared statsPA%(), careerQX%()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Color 0, 15
 
     ' *** PRINT TEAM ROSTER ***
-    LPrint "TEAM ROSTER FOR "; A$; " "; AA$; " TEAM NUMBER ="; B8%
+    LPrint "TEAM ROSTER FOR "; A$; " "; mascot$; " TEAM NUMBER ="; B8%
     LPrint
-    LPrint Using "DEF RUSH ADJ   = ###"; careerB6%(0);
-    LPrint Tab(35); Using "SACKED %         = ##"; careerB6%(5)
-    LPrint Using "DEF COMP % ADJ = ###"; careerB6%(1);
-    LPrint Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
-    LPrint Using "DEF INT % ADJ  = ###"; careerB6%(2);
-    LPrint Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
-    LPrint Using "OFF FUMBLE  %  = ###"; careerB6%(3);
+    LPrint Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
+    LPrint Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
+    LPrint Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
+    LPrint Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
+    LPrint Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
+    LPrint Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
+    LPrint Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
     LPrint Tab(35); "DEF YDS/COMP ADJ = ";
 
     If YC! < 50 Then LPrint Using "+#.#"; YC! / 100 * 30
     If YC! > 50 Then LPrint Using "+#.#"; (100 - YC!) / 100 * -30
 
-    LPrint Using "DEF FUMBLE  %  = ###"; careerB6%(4);
-    LPrint Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
-    LPrint Using "STAD TYPE      = ###"; statsPA%(3);
-    LPrint Tab(35); Using "GEOGRAPH REGION  = ##"; statsPA%(4)
-    LPrint Using "BACKGRND COLOR = ###"; statsPA%(1);
-    LPrint Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
+    LPrint Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
+    LPrint Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
+    LPrint Using "STAD TYPE      = ###"; teamRatings%(3);
+    LPrint Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings%(4)
+    LPrint Using "BACKGRND COLOR = ###"; teamRatings%(1);
+    LPrint Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
     LPrint
     LPrint "RUNNING BACKS-"
     LPrint "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
     For I = 0 To 9:
 
-        If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
-            LPrint statsA1$(I); Tab(23);
-            LPrint Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
+        If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
+            LPrint rbName$(I); Tab(23);
+            LPrint Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
         End If
 
     Next
@@ -117,9 +120,9 @@ Sub PrintRoster (A$, AA$, B8%)
 
     For I = 0 To 5:
 
-        If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
-            LPrint statsA2$(I); Tab(23);
-            LPrint Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
+        If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
+            LPrint wrName$(I); Tab(23);
+            LPrint Using "##       ###"; wrRecAvg(I) * 3; wrRecept(I)
         End If
 
     Next
@@ -130,9 +133,9 @@ Sub PrintRoster (A$, AA$, B8%)
 
     For I = 0 To 3:
 
-        If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
-            LPrint statsA3$(I); Tab(21);
-            LPrint Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
+        If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
+            LPrint qbName$(I); Tab(21);
+            LPrint Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
         End If
 
     Next
@@ -143,9 +146,9 @@ Sub PrintRoster (A$, AA$, B8%)
 
     For I = 0 To 2:
 
-        If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
-            LPrint statsA4$(I); Tab(23);
-            LPrint Using "##       ###"; careerB%(I) * 3; careerA9%(I)
+        If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
+            LPrint krName$(I); Tab(23);
+            LPrint Using "##       ###"; krRetAvg(I) * 3; krRet(I)
         End If
 
     Next
@@ -156,9 +159,9 @@ Sub PrintRoster (A$, AA$, B8%)
 
     For I = 0 To 2:
 
-        If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
-            LPrint statsA5$(I); Tab(23);
-            LPrint Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
+        If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
+            LPrint prName$(I); Tab(23);
+            LPrint Using "##       ###"; prRetAvg(I) * 3; prRet(I)
         End If
 
     Next
@@ -169,9 +172,9 @@ Sub PrintRoster (A$, AA$, B8%)
 
     For I = 0 To 1:
 
-        If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
-            LPrint statsA7$(I); Tab(21);
-            LPrint Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
+        If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
+            LPrint pkName$(I); Tab(21);
+            LPrint Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
         End If
 
     Next
@@ -179,8 +182,8 @@ Sub PrintRoster (A$, AA$, B8%)
     LPrint
     LPrint "PUNTER-"
     LPrint "NAME-              AVG"
-    LPrint statsA6$(0); Tab(21);
-    LPrint Using "##"; careerB3%(0) * 2 + 28
+    LPrint punterName$(0); Tab(21);
+    LPrint Using "##"; puntAvg(0) * 2 + 28
 
     LPrint Chr$(12)
 
@@ -196,17 +199,17 @@ End Sub
 'a user is prompted to press keys to CONTINUE
 'This improvement over the original makes it
 'faster and easier to proceed through screens
-Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
+Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$()
+    Shared prName$(), punterName$(), pkName$()
 
-    Shared statsDI$(), statsDS$()
-    Shared careerA1%(), careerA3%(), careerA5%(), careerA7%(), careerA8%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared careerDI%(), careerDS%()
-    Shared statsPA%(), careerQX%()
+    Shared intName$(), sackName$()
+    Shared rushAvg(), rbRecAvg(), wrRecAvg(), compPct(), qbIntPct()
+    Shared krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
+    Shared pkFGPct(), leagueRatings%(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks()
+    Shared teamRatings%(), armRating()
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
@@ -256,7 +259,7 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
         Select Case choice
 
             Case 1
-                Call ChangeTeamRatings(A$, AA$, YN$, S$, teamNbr, YC!)
+                Call ChangeTeamRatings(A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
             Case 2
 
@@ -273,8 +276,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 9:
                         Print Using "## "; I + 1;
-                        Print " "; statsA1$(I); Tab(20);
-                        Print Using "##.#       ## ##"; careerA1%(I) * .3; careerA3%(I) * 3
+                        Print " "; rbName$(I); Tab(20);
+                        Print Using "##.#       ## ##"; rushAvg(I) * .3; rbRecAvg(I) * 3
                     Next
 
                     Do
@@ -293,9 +296,9 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsA1$(I1)
-                        Print "2. RUSHING AVG ";: Print Using "##.#"; careerA1%(I1) * .3
-                        Print "3. RECEIVING AVG ";: Print Using "##"; careerA3%(I1) * 3
+                        Print "1. NAME "; rbName$(I1)
+                        Print "2. RUSHING AVG ";: Print Using "##.#"; rushAvg(I1) * .3
+                        Print "3. RECEIVING AVG ";: Print Using "##"; rbRecAvg(I1) * 3
 
                         Do
 
@@ -307,15 +310,15 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                             Select Case C9
 
                                 Case 1
-                                    Locate 3: Input "1. NAME "; statsA1$(I1)
+                                    Locate 3: Input "1. NAME "; rbName$(I1)
 
                                 Case 2
                                     Locate 4: Input "2. RUSHING AVG "; A1!(I1)
-                                    careerA1%(I1) = Int(A1!(I1) / .3 + .5)
+                                    rushAvg(I1) = Int(A1!(I1) / .3 + .5)
 
                                 Case 3
                                     Locate 5: Input "3. RECEIVING AVG "; A3!(I1)
-                                    careerA3%(I1) = Int(A3!(I1) / 3 + .5)
+                                    rbRecAvg(I1) = Int(A3!(I1) / 3 + .5)
 
                             End Select
 
@@ -340,8 +343,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 5:
                         Print Using "## "; I + 1;
-                        Print " "; statsA2$(I); Tab(20);
-                        Print Using "   ##"; careerA5%(I) * 3
+                        Print " "; wrName$(I); Tab(20);
+                        Print Using "   ##"; wrRecAvg(I) * 3
                     Next
 
                     Do
@@ -359,8 +362,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsA2$(I1)
-                        Print "2. RECEIVING AVG ";: Print Using "##"; careerA5%(I1) * 3
+                        Print "1. NAME "; wrName$(I1)
+                        Print "2. RECEIVING AVG ";: Print Using "##"; wrRecAvg(I1) * 3
 
                         Do
 
@@ -372,10 +375,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                             Select Case C9
 
                                 Case 1
-                                    Locate 3: Input "1. NAME "; statsA2$(I1)
+                                    Locate 3: Input "1. NAME "; wrName$(I1)
 
                                 Case 2
-                                    Locate 4: Input "2. RECEIVING AVG "; A5!(I1): careerA5%(I1) = Int(A5!(I1) / 3 + .5)
+                                    Locate 4: Input "2. RECEIVING AVG "; A5!(I1): wrRecAvg(I1) = Int(A5!(I1) / 3 + .5)
 
                             End Select
 
@@ -399,8 +402,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 3:
                         Print Using "## "; I + 1;
-                        Print " "; statsA3$(I); Tab(20);
-                        Print Using " ##      ##       +##"; careerA7%(I); careerA8%(I); careerQX%(I)
+                        Print " "; qbName$(I); Tab(20);
+                        Print Using " ##      ##       +##"; compPct(I); qbIntPct(I); armRating(I)
                     Next
 
                     Do
@@ -419,10 +422,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsA3$(I1)
-                        Print "2. COMPLETION % "; careerA7%(I1)
-                        Print "3. INTERCEPTION % "; careerA8%(I1)
-                        Print "4. YDS/COMP ADJ "; careerQX%(I1)
+                        Print "1. NAME "; qbName$(I1)
+                        Print "2. COMPLETION % "; compPct(I1)
+                        Print "3. INTERCEPTION % "; qbIntPct(I1)
+                        Print "4. YDS/COMP ADJ "; armRating(I1)
 
                         Do
 
@@ -434,16 +437,16 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                             Select Case C9
 
                                 Case 1
-                                    Locate 3: Input "1. NAME "; statsA3$(I1)
+                                    Locate 3: Input "1. NAME "; qbName$(I1)
 
                                 Case 2
-                                    Locate 4: Input "2. COMPLETION % "; careerA7%(I1)
+                                    Locate 4: Input "2. COMPLETION % "; compPct(I1)
 
                                 Case 3
-                                    Locate 5: Input "3. INTERCEPTION % "; careerA8%(I1)
+                                    Locate 5: Input "3. INTERCEPTION % "; qbIntPct(I1)
 
                                 Case 4
-                                    Locate 6: Input "4. YDS/COMP ADJ "; careerQX%(I1)
+                                    Locate 6: Input "4. YDS/COMP ADJ "; armRating(I1)
 
                             End Select
 
@@ -468,8 +471,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 2:
                         Print Using "## "; I + 1;
-                        Print " "; statsA4$(I); Tab(20);
-                        Print Using "  ##"; careerB%(I) * 3
+                        Print " "; krName$(I); Tab(20);
+                        Print Using "  ##"; krRetAvg(I) * 3
                     Next
 
                     Do
@@ -488,8 +491,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Color 15
                         Print
-                        Print "1. NAME "; statsA4$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; careerB%(I1) * 3
+                        Print "1. NAME "; krName$(I1)
+                        Print "2. RETURN AVG ";: Print Using "##"; krRetAvg(I1) * 3
 
                         Do
                             Locate 6
@@ -499,11 +502,11 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Select Case C9
 
                             Case 1
-                                Locate 3: Input "1. NAME "; statsA4$(I1)
+                                Locate 3: Input "1. NAME "; krName$(I1)
 
                             Case 2
                                 Locate 4: Input "2. RETURN AVG "; B!(I1)
-                                careerB%(I1) = Int(B!(I1) / 3 + .5)
+                                krRetAvg(I1) = Int(B!(I1) / 3 + .5)
                         End Select
 
                     End If
@@ -524,8 +527,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 2:
                         Print Using "## "; I + 1;
-                        Print " "; statsA5$(I); Tab(20);
-                        Print Using "  ##"; careerB2%(I) * 3
+                        Print " "; prName$(I); Tab(20);
+                        Print Using "  ##"; prRetAvg(I) * 3
                     Next
 
                     Do
@@ -543,8 +546,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Color 15
                         Print
-                        Print "1. NAME "; statsA5$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; careerB2%(I1) * 3
+                        Print "1. NAME "; prName$(I1)
+                        Print "2. RETURN AVG ";: Print Using "##"; prRetAvg(I1) * 3
 
                         Do
                             Locate 6
@@ -554,10 +557,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Select Case C9
 
                             Case 1
-                                Locate 3: Input "1. NAME "; statsA5$(I1)
+                                Locate 3: Input "1. NAME "; prName$(I1)
 
                             Case 2
-                                Locate 4: Input "2. RETURN AVG "; B2!(I1): careerB2%(I1) = Int(B2!(I1) / 3 + .5)
+                                Locate 4: Input "2. RETURN AVG "; B2!(I1): prRetAvg(I1) = Int(B2!(I1) / 3 + .5)
 
                         End Select
 
@@ -579,8 +582,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 0:
                         Print Using "## "; I + 1;
-                        Print " "; statsA6$(I); Tab(20);
-                        Print Using "##"; careerB3%(I) * 2 + 28
+                        Print " "; punterName$(I); Tab(20);
+                        Print Using "##"; puntAvg(I) * 2 + 28
                     Next
 
                     Do
@@ -598,8 +601,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsA6$(I1)
-                        Print "2. PUNTING AVG ";: Print Using "##"; careerB3%(I1) * 2 + 28
+                        Print "1. NAME "; punterName$(I1)
+                        Print "2. PUNTING AVG ";: Print Using "##"; puntAvg(I1) * 2 + 28
 
                         Do
                             Locate 6
@@ -609,10 +612,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Select Case C9
 
                             Case 1
-                                Locate 3: Input "1. NAME "; statsA6$(I1)
+                                Locate 3: Input "1. NAME "; punterName$(I1)
 
                             Case 2
-                                Locate 4: Input "2. PUNTING AVG "; B3!(I1): careerB3%(I1) = Int(((B3!(I1) - 28) / 2) + .5)
+                                Locate 4: Input "2. PUNTING AVG "; B3!(I1): puntAvg(I1) = Int(((B3!(I1) - 28) / 2) + .5)
 
                         End Select
 
@@ -634,8 +637,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 1:
                         Print Using "## "; I + 1;
-                        Print " "; statsA7$(I); Tab(20);
-                        Print Using "###    ###"; careerB4%(I) * 5 + 25; careerB7%(I)
+                        Print " "; pkName$(I); Tab(20);
+                        Print Using "###    ###"; pkFGA(I) * 5 + 25; pkPAT(I)
                     Next
 
                     Do
@@ -653,9 +656,9 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsA7$(I1)
-                        Print "2. FIELD GOAL % ";: Print careerB4%(I1) * 5 + 25
-                        Print "3. EXTRA POINT % ";: Print careerB7%(I1)
+                        Print "1. NAME "; pkName$(I1)
+                        Print "2. FIELD GOAL % ";: Print pkFGA(I1) * 5 + 25
+                        Print "3. EXTRA POINT % ";: Print pkPAT(I1)
 
                         Do
                             Locate 7
@@ -664,14 +667,14 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                         Select Case C9
                             Case 1
-                                Locate 3: Input "1. NAME "; statsA7$(I1)
+                                Locate 3: Input "1. NAME "; pkName$(I1)
 
                             Case 2
                                 Locate 4: Input "2. FIELD GOAL % "; B4!(I1)
-                                careerB4%(I1) = Int((B4!(I1) / 5) + .5) - 5
+                                pkFGA(I1) = Int((B4!(I1) / 5) + .5) - 5
 
                             Case 3
-                                Locate 5: Input "3. EXTRA POINT % "; careerB7%(I1)
+                                Locate 5: Input "3. EXTRA POINT % "; pkPAT(I1)
 
                         End Select
 
@@ -695,7 +698,7 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                 For I = 0 To 14:
                     Print Using "## "; I + 1;
-                    Print " "; statsDS$(I); Tab(20); careerDS%(I)
+                    Print " "; sackName$(I); Tab(20); numSacks(I)
                 Next
 
                 Do
@@ -713,8 +716,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 15
-                    Print "1. NAME "; statsDS$(I1)
-                    Print "2. SACKS "; careerDS%(I1)
+                    Print "1. NAME "; sackName$(I1)
+                    Print "2. SACKS "; numSacks(I1)
 
                     Do
                         Locate 6
@@ -724,10 +727,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                     Select Case C9
 
                         Case 1
-                            Locate 3: Input "1. NAME "; statsDS$(I1)
+                            Locate 3: Input "1. NAME "; sackName$(I1)
 
                         Case 2
-                            Locate 4: Input "2. SACKS "; careerDS%(I1)
+                            Locate 4: Input "2. SACKS "; numSacks(I1)
 
                     End Select
 
@@ -750,7 +753,7 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
                     For I = 0 To 9:
                         Print Using "## "; I + 1;
-                        Print " "; statsDI$(I); Tab(27); careerDI%(I)
+                        Print " "; intName$(I); Tab(27); numInts(I)
                     Next
 
                     Do
@@ -768,8 +771,8 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; statsDI$(I1)
-                        Print "2. INTERCEPTIONS "; careerDI%(I1)
+                        Print "1. NAME "; intName$(I1)
+                        Print "2. INTERCEPTIONS "; numInts(I1)
 
                         Do
                             Locate 6
@@ -779,10 +782,10 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
                         Select Case C9
 
                             Case 1
-                                Locate 3: Input "1. NAME "; statsDI$(I1)
+                                Locate 3: Input "1. NAME "; intName$(I1)
 
                             Case 2
-                                Locate 4: Input "2. INTERCEPTIONS "; careerDI%(I1)
+                                Locate 4: Input "2. INTERCEPTIONS "; numInts(I1)
 
                         End Select
 
@@ -801,7 +804,7 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
         End Select
 
     Loop Until choice = 11 Or UCase$(prompt$) = "S"
-    
+
     If (choice = 11 And UCase$(I$) = "Y") Or UCase$(prompt$) = "S" Then
 
         Call CheckContributions
@@ -820,45 +823,45 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
         S3 = 0
 
         For I = 0 To 9:
-            S0 = S0 + careerA0%(I)
-            S2 = S2 + careerA2%(I)
+            S0 = S0 + rushAtt(I)
+            S2 = S2 + rbRecepts(I)
         Next
 
         S4 = 100 / S0
 
         For I = 0 To 9:
-            If careerA0%(I) <> 0 Then careerA0%(I) = Int(S4 * careerA0%(I) + .5) + S1: S1 = careerA0%(I)
-            If careerA0%(I) > 100 Then careerA0%(I) = 100
+            If rushAtt(I) <> 0 Then rushAtt(I) = Int(S4 * rushAtt(I) + .5) + S1: S1 = rushAtt(I)
+            If rushAtt(I) > 100 Then rushAtt(I) = 100
         Next I
 
         For I = 0 To 5:
-            S2 = S2 + careerA4%(I)
+            S2 = S2 + wrRecept(I)
         Next
 
         S5 = 100 / S2
 
         For I = 0 To 9:
-            If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
-            If careerA2%(I) > 100 Then careerA2%(I) = 100
+            If rbRecepts(I) <> 0 Then rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3: S3 = rbRecepts(I)
+            If rbRecepts(I) > 100 Then rbRecepts(I) = 100
         Next I
 
         For I = 0 To 5:
-            If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
-            If careerA4%(I) > 100 Then careerA4%(I) = 100
+            If wrRecept(I) <> 0 Then wrRecept(I) = Int(S5 * wrRecept(I) + .5) + S3: S3 = wrRecept(I)
+            If wrRecept(I) > 100 Then wrRecept(I) = 100
         Next I
 
         S6 = 0
         S7 = 0
 
         For I = 0 To 3:
-            S6 = S6 + careerA6%(I)
+            S6 = S6 + passAtt(I)
         Next
 
         S8 = 100 / S6
 
         For I = 0 To 3:
-            If careerA6%(I) <> 0 Then careerA6%(I) = Int(S8 * careerA6%(I) + .5) + S7: S7 = careerA6%(I)
-            If careerA6%(I) > 100 Then careerA6%(I) = 100
+            If passAtt(I) <> 0 Then passAtt(I) = Int(S8 * passAtt(I) + .5) + S7: S7 = passAtt(I)
+            If passAtt(I) > 100 Then passAtt(I) = 100
         Next
 
         G0 = 0
@@ -867,21 +870,21 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
         G4 = 0
 
         For I = 0 To 2:
-            G0 = G0 + careerA9%(I)
-            G3 = G3 + careerB1%(I)
+            G0 = G0 + krRet(I)
+            G3 = G3 + prRet(I)
         Next
 
         G2 = 100 / G0
         G5 = 100 / G3
 
         For I = 0 To 2:
-            If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
-            If careerA9%(I) > 100 Then careerA9%(I) = 100
+            If krRet(I) <> 0 Then krRet(I) = Int(G2 * krRet(I) + .5) + G1: G1 = krRet(I)
+            If krRet(I) > 100 Then krRet(I) = 100
         Next
 
         For I = 0 To 2:
-            If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
-            If careerB1%(I) > 100 Then careerB1%(I) = 100
+            If prRet(I) <> 0 Then prRet(I) = Int(G5 * prRet(I) + .5) + G4: G4 = prRet(I)
+            If prRet(I) > 100 Then prRet(I) = 100
         Next
 
         G0 = 0
@@ -890,52 +893,52 @@ Sub EditTeam (A$, AA$, YN$, S$, teamNbr, YC!)
         G4 = 0
 
         For I = 0 To 1:
-            G0 = G0 + careerB5%(I)
-            G3 = G3 + careerB8%(I)
+            G0 = G0 + pkFGPct(I)
+            G3 = G3 + pkPATPct(I)
         Next
 
         G2 = 100 / G0
         G5 = 100 / G3
 
         For I = 0 To 1:
-            If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
-            If careerB5%(I) > 100 Then careerB5%(I) = 100
+            If pkFGPct(I) <> 0 Then pkFGPct(I) = Int(G2 * pkFGPct(I) + .5) + G1: G1 = pkFGPct(I)
+            If pkFGPct(I) > 100 Then pkFGPct(I) = 100
         Next
 
         For I = 0 To 1:
-            If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
-            If careerB8%(I) > 100 Then careerB8%(I) = 100
+            If pkPATPct(I) <> 0 Then pkPATPct(I) = Int(G5 * pkPATPct(I) + .5) + G4: G4 = pkPATPct(I)
+            If pkPATPct(I) > 100 Then pkPATPct(I) = 100
         Next
 
         For I = 9 To 0 Step -1:
-            If careerA0%(I) <> 0 Then careerA0%(I) = 100: Exit For
+            If rushAtt(I) <> 0 Then rushAtt(I) = 100: Exit For
         Next
 
         For I = 5 To 0 Step -1:
-            If careerA4%(I) <> 0 Then careerA4%(I) = 100: Exit For
+            If wrRecept(I) <> 0 Then wrRecept(I) = 100: Exit For
         Next
 
         For I = 3 To 0 Step -1:
-            If careerA6%(I) <> 0 Then careerA6%(I) = 100: Exit For
+            If passAtt(I) <> 0 Then passAtt(I) = 100: Exit For
         Next
 
         For I = 2 To 0 Step -1:
-            If careerA9%(I) <> 0 Then careerA9%(I) = 100: Exit For
+            If krRet(I) <> 0 Then krRet(I) = 100: Exit For
         Next
 
         For I = 2 To 0 Step -1:
-            If careerB1%(I) <> 0 Then careerB1%(I) = 100: Exit For
+            If prRet(I) <> 0 Then prRet(I) = 100: Exit For
         Next
 
         For I = 1 To 0 Step -1:
-            If careerB5%(I) <> 0 Then careerB5%(I) = 100: Exit For
+            If pkFGPct(I) <> 0 Then pkFGPct(I) = 100: Exit For
         Next
 
         For I = 1 To 0 Step -1:
-            If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
+            If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
         Next
 
-        Call SaveChangedTeam(A$, AA$, YN$, S$, teamNbr, YC!)
+        Call SaveChangedTeam(A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
 
     End If
 
@@ -947,17 +950,17 @@ End Sub
 '       ChangeTeamRatings Subroutine
 '----------------------------------------
 '...explanation...
-Sub ChangeTeamRatings (A$, AA$, YN$, S$, teamNbr, YC!)
+Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$()
+    Shared prName$(), punterName$(), pkName$()
 
-    Shared statsDI$(), statsDS$()
-    Shared careerA1%(), careerA3%(), careerA5%(), careerA7%(), careerA8%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared careerDI%(), careerDS%()
-    Shared statsPA%(), careerQX%()
+    Shared intName$(), sackName$()
+    Shared rushAvg(), rbRecAvg(), wrRecAvg(), compPct(), qbIntPct()
+    Shared krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
+    Shared pkFGPct(), leagueRatings%(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks()
+    Shared teamRatings%(), armRating()
 
     Cls
 
@@ -968,33 +971,33 @@ Sub ChangeTeamRatings (A$, AA$, YN$, S$, teamNbr, YC!)
 
     Color 15
     Locate 2: Print " 1. TEAM NUMBER "; teamNbr
-    Locate 3: Print " 2. TEAM NAME "; A$
-    Locate 4: Print " 3. NICKNAME "; AA$
-    Locate 5: Print " 4. DEF RUSHING ADJ "; careerB6%(0)
-    Locate 6: Print " 5. DEF COMPLETION % ADJ "; careerB6%(1)
-    Locate 7: Print " 6. DEF INTERCEPTION % ADJ "; careerB6%(2)
-    Locate 8: Print " 7. OFF FUMBLE % "; careerB6%(3)
-    Locate 9: Print " 8. DEF FUMBLE % "; careerB6%(4)
-    Locate 10: Print " 9. OFF SACK ADJ % "; careerB6%(5)
-    Locate 11: Print "10. DEF SACK ADJ % "; careerB6%(6)
-    Locate 12: Print "11. DEF YDS/COMP ADJ ";
+    Locate 3: Print " 2. DISK ID "; YN$
+    Locate 4: Print " 3. TEAM NAME "; A$
+    Locate 5: Print " 4. TEAM NICKNAME "; mascot$
+    Locate 6: Print " 5. DEF RUSHING ADJ "; leagueRatings%(0)
+    Locate 7: Print " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
+    Locate 8: Print " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
+    Locate 9: Print " 8. OFF FUMBLE % "; leagueRatings%(3)
+    Locate 10: Print " 9. DEF FUMBLE % "; leagueRatings%(4)
+    Locate 11: Print "10. OFF SACK ADJ % "; leagueRatings%(5)
+    Locate 12: Print "11. DEF SACK ADJ % "; leagueRatings%(6)
+    Locate 13: Print "12. DEF YDS/COMP ADJ ";
     If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
     If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-    Locate 13: Print "12. TM PENALTY ADJ "; statsPA%(0)
-    Locate 14: Print "13. OFF RUN/PASS % "; careerB6%(7)
-    Locate 15: Print "14. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
-    Locate 16: Print "15. POWER INDEX "; statsPA%(4)
-    Locate 17: Print "16. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
-    Locate 18: Print "17. TM TEXT COLOR (0-15) "; statsPA%(2)
-    Locate 19: Print "18. DISK ID "; YN$
-    Locate 20: Print "19. STADIUM NAME "; S$
+    Locate 14: Print "13. TM PENALTY ADJ "; teamRatings%(0)
+    Locate 15: Print "14. OFF RUN/PASS % "; leagueRatings%(7)
+    Locate 16: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+    Locate 17: Print "16. POWER INDEX "; teamRatings%(4)
+    Locate 18: Print "17. TEXT COLOR (0-15) "; teamRatings%(2)
+    Locate 19: Print "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+    Locate 20: Print "19. STADIUM NAME "; stadium$
     Locate 21: Print "20. AVERAGE ATTENDANCE "; teamAttendance&
 
-    If statsPA%(1) >= 0 And statsPA%(2) >= 0 Then
+    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
         Locate 22, 1
         Print "TEAM APPEARANCE: ";
-        Color statsPA%(2), statsPA%(1): Print A$ + " " + AA$
+        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
     End If
 
     Color 15, 0
@@ -1014,70 +1017,75 @@ Sub ChangeTeamRatings (A$, AA$, YN$, S$, teamNbr, YC!)
                     Locate 2: Input " 1. TEAM NUMBER "; B8%
 
                 Case 2
-                    Locate 3: Input " 2. TEAM NAME "; A$
+                    Locate 3: Input " 2. DISK ID "; YN$
 
                 Case 3
-                    Locate 4: Input " 3. NICKNAME "; AA$
+                    Locate 4: Input " 3. TEAM NAME "; A$
 
                 Case 4
-                    Locate 5: Input " 4. DEF RUSHING ADJ "; careerB6%(0)
+                    Locate 5: Input " 4. TEAM NICKNAME "; mascot$
 
                 Case 5
-                    Locate 6: Input " 5. DEF COMPLETION % ADJ "; careerB6%(1)
+                    Locate 6: Input " 5. DEF RUSHING ADJ "; leagueRatings%(0)
 
                 Case 6
-                    Locate 7: Input " 6. DEF INTERCEPTION % ADJ "; careerB6%(2)
+                    Locate 7: Input " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
 
                 Case 7
-                    Locate 8: Input " 7. OFF FUMBLE % "; careerB6%(3)
+                    Locate 8: Input " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
 
                 Case 8
-                    Locate 9: Input " 8. DEF FUMBLE % "; careerB6%(4)
+                    Locate 9: Input " 8. OFF FUMBLE % "; leagueRatings%(3)
 
                 Case 9
-                    Locate 10: Input " 9. OFF SACK ADJ % "; careerB6%(5)
+                    Locate 10: Input " 9. DEF FUMBLE % "; leagueRatings%(4)
 
                 Case 10
-                    Locate 11: Input "10. DEF SACK ADJ % "; careerB6%(6)
+                    Locate 11: Input "10. OFF SACK ADJ % "; leagueRatings%(5)
 
                 Case 11
-                    Locate 12: Input "11. DEF YDS/COMP ADJ "; YC!
-                    If YC! <= 0 Then YC! = 100 + (YC! * 10 / 3)
+                    Locate 12: Input "11. DEF SACK ADJ % "; leagueRatings%(6)
 
                 Case 12
-                    Locate 13: Input "12. TM PENALTY ADJ "; statsPA%(0)
+                    Locate 13: Input "12. DEF YDS/COMP ADJ "; YC!
+                    If YC! <= 0 Then YC! = 100 + (YC! * 10 / 3)
 
                 Case 13
-                    Locate 14: Input "13. OFF RUN/PASS % "; careerB6%(7)
+                    Locate 14: Input "13. TM PENALTY ADJ "; teamRatings%(0)
 
                 Case 14
-                    Locate 15: Input "14. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
+                    Locate 15: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
 
                 Case 15
-                    Locate 16: Input "15. POWER INDEX "; statsPA%(4)
+                    Locate 16: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
 
                 Case 16
-                    Locate 17: Input "16. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
-                    If statsPA%(1) >= 0 And statsPA%(2) >= 0 Then
-                        Locate 22, 1
-                        Color statsPA%(2), statsPA%(1): Print "SAMPLE TEAM COLOR"
-                    End If
+                    Locate 17: Input "16. POWER INDEX "; teamRatings%(4)
 
                 Case 17
-                    Locate 18: Input "17. TM TEXT COLOR (0-15) "; statsPA%(2)
-                    If statsPA%(1) >= 0 And statsPA%(2) >= 0 Then
+                    Locate 18: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
+                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
-                        Color statsPA%(2), statsPA%(1): Print "SAMPLE TEAM COLOR"
+                        Print "TEAM APPEARANCE: ";
+                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
                     End If
+                    Color 15, 0
 
                 Case 18
-                    Locate 19: Input "18. DISK ID "; YN$
+                    Locate 19: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                        Locate 22, 1
+                        Print "TEAM APPEARANCE: ";
+                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
+                    End If
+                    Color 15, 0
 
                 Case 19
-                    Locate 20: Input "19. STADIUM NAME "; S$
+                    Locate 20: Input "19. STADIUM NAME "; stadium$
 
                 Case 20
                     Locate 21: Input "20. AVERAGE ATTENDANCE "; teamAttendance&
+
             End Select
 
         End If
@@ -1093,19 +1101,20 @@ End Sub
 '       SaveChangedTeam Subroutine
 '----------------------------------------
 '...explanation...
-Sub SaveChangedTeam (A$, AA$, YN$, S$, teamNbr, YC!)
+Sub SaveChangedTeam (A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
 
-    Shared statsDI$(), statsDS$()
-
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
-    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
-
-    Shared careerDI%(), careerDS%(), statsPA%(), careerQX%()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     teamYear$ = RTrim$(YN$)
 
@@ -1148,72 +1157,72 @@ Sub SaveChangedTeam (A$, AA$, YN$, S$, teamNbr, YC!)
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
     LSet Q$(1) = A$
-    LSet Q$(2) = AA$
+    LSet Q$(2) = mascot$
 
     For I = 0 To 7:
-        LSet Q$(I + 3) = MKI$(careerB6%(I))
+        LSet Q$(I + 3) = MKI$(leagueRatings%(I))
     Next I
 
     For I = 0 To 4:
-        LSet Q$(I + 11) = MKI$(statsPA%(I))
+        LSet Q$(I + 11) = MKI$(teamRatings%(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 5 + 16) = statsA1$(I)
-        LSet Q$(I * 5 + 17) = MKI$(careerA0%(I))
-        LSet Q$(I * 5 + 18) = MKI$(careerA1%(I))
-        LSet Q$(I * 5 + 19) = MKI$(careerA2%(I))
-        LSet Q$(I * 5 + 20) = MKI$(careerA3%(I))
+        LSet Q$(I * 5 + 16) = rbName$(I)
+        LSet Q$(I * 5 + 17) = MKI$(rushAtt(I))
+        LSet Q$(I * 5 + 18) = MKI$(rushAvg(I))
+        LSet Q$(I * 5 + 19) = MKI$(rbRecepts(I))
+        LSet Q$(I * 5 + 20) = MKI$(rbRecAvg(I))
     Next I
 
     For I = 0 To 5
-        LSet Q$(I * 3 + 66) = statsA2$(I)
-        LSet Q$(I * 3 + 67) = MKI$(careerA4%(I))
-        LSet Q$(I * 3 + 68) = MKI$(careerA5%(I))
+        LSet Q$(I * 3 + 66) = wrName$(I)
+        LSet Q$(I * 3 + 67) = MKI$(wrRecept(I))
+        LSet Q$(I * 3 + 68) = MKI$(wrRecAvg(I))
     Next I
 
     For I = 0 To 3
-        LSet Q$(I * 5 + 84) = statsA3$(I)
-        LSet Q$(I * 5 + 85) = MKI$(careerA6%(I))
-        LSet Q$(I * 5 + 86) = MKI$(careerA7%(I))
-        LSet Q$(I * 5 + 87) = MKI$(careerA8%(I))
-        LSet Q$(I * 5 + 88) = MKI$(careerQX%(I))
+        LSet Q$(I * 5 + 84) = qbName$(I)
+        LSet Q$(I * 5 + 85) = MKI$(passAtt(I))
+        LSet Q$(I * 5 + 86) = MKI$(compPct(I))
+        LSet Q$(I * 5 + 87) = MKI$(qbIntPct(I))
+        LSet Q$(I * 5 + 88) = MKI$(armRating(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 104) = statsA4$(I)
-        LSet Q$(I * 3 + 105) = MKI$(careerA9%(I))
-        LSet Q$(I * 3 + 106) = MKI$(careerB%(I))
+        LSet Q$(I * 3 + 104) = krName$(I)
+        LSet Q$(I * 3 + 105) = MKI$(krRet(I))
+        LSet Q$(I * 3 + 106) = MKI$(krRetAvg(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 113) = statsA5$(I)
-        LSet Q$(I * 3 + 114) = MKI$(careerB1%(I))
-        LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
+        LSet Q$(I * 3 + 113) = prName$(I)
+        LSet Q$(I * 3 + 114) = MKI$(prRet(I))
+        LSet Q$(I * 3 + 115) = MKI$(prRetAvg(I))
     Next I
 
-    LSet Q$(122) = RTrim$(statsA6$(0))
-    LSet Q$(123) = MKI$(careerB3%(0))
-    LSet Q$(124) = RTrim$(statsA7$(0))
-    LSet Q$(125) = MKI$(careerB4%(0))
-    LSet Q$(126) = MKI$(careerB5%(0))
-    LSet Q$(127) = MKI$(careerB7%(0))
-    LSet Q$(128) = MKI$(careerB8%(0))
-    LSet Q$(129) = RTrim$(statsA7$(1))
-    LSet Q$(130) = MKI$(careerB4%(1))
-    LSet Q$(131) = MKI$(careerB5%(1))
-    LSet Q$(132) = MKI$(careerB7%(1))
-    LSet Q$(133) = MKI$(careerB8%(1))
+    LSet Q$(122) = RTrim$(punterName$(0))
+    LSet Q$(123) = MKI$(puntAvg(0))
+    LSet Q$(124) = RTrim$(pkName$(0))
+    LSet Q$(125) = MKI$(pkFGA(0))
+    LSet Q$(126) = MKI$(pkFGPct(0))
+    LSet Q$(127) = MKI$(pkPAT(0))
+    LSet Q$(128) = MKI$(pkPATPct(0))
+    LSet Q$(129) = RTrim$(pkName$(1))
+    LSet Q$(130) = MKI$(pkFGA(1))
+    LSet Q$(131) = MKI$(pkFGPct(1))
+    LSet Q$(132) = MKI$(pkPAT(1))
+    LSet Q$(133) = MKI$(pkPATPct(1))
     LSet Q$(134) = MKI$(YC%)
 
     For I = 0 To 14
-        LSet Q$(I * 2 + 135) = statsDS$(I)
-        LSet Q$(I * 2 + 136) = MKI$(careerDS%(I))
+        LSet Q$(I * 2 + 135) = sackName$(I)
+        LSet Q$(I * 2 + 136) = MKI$(numSacks(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 2 + 165) = statsDI$(I)
-        LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
+        LSet Q$(I * 2 + 165) = intName$(I)
+        LSet Q$(I * 2 + 166) = MKI$(numInts(I))
     Next I
 
     Put #1, teamNbr
@@ -1225,7 +1234,7 @@ Sub SaveChangedTeam (A$, AA$, YN$, S$, teamNbr, YC!)
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
     LSet Q$(1) = A$
-    LSet Q$(2) = S$
+    LSet Q$(2) = stadium$
     LSet Q$(3) = MKL$(teamAttendance&)
     LSet Q$(4) = "x"
 
@@ -1233,49 +1242,49 @@ Sub SaveChangedTeam (A$, AA$, YN$, S$, teamNbr, YC!)
 
     Close 2
 
-    S$ = ""
+    stadium$ = ""
     teamAttendance& = 0
 
     For I = 0 To 9
-        careerA0%(I) = 0
-        careerA1%(I) = 0
-        careerA2%(I) = 0
-        careerA3%(I) = 0
-        statsA1$(I) = ""
+        rushAtt(I) = 0
+        rushAvg(I) = 0
+        rbRecepts(I) = 0
+        rbRecAvg(I) = 0
+        rbName$(I) = ""
     Next
 
     For I = 0 To 5
-        careerA4%(I) = 0
-        careerA5%(I) = 0
-        statsA2$(I) = ""
+        wrRecept(I) = 0
+        wrRecAvg(I) = 0
+        wrName$(I) = ""
     Next
 
     For I = 0 To 3
-        careerA6%(I) = 0
-        careerA7%(I) = 0
-        careerA8%(I) = 0
-        careerQX%(I) = 0
-        statsA3$(I) = ""
+        passAtt(I) = 0
+        compPct(I) = 0
+        qbIntPct(I) = 0
+        armRating(I) = 0
+        qbName$(I) = ""
     Next
 
     For I = 0 To 2
-        careerA9%(I) = 0
-        careerB%(I) = 0
-        careerB1%(I) = 0
-        careerB2%(I) = 0
-        statsA4$(I) = ""
-        statsA5$(I) = ""
+        krRet(I) = 0
+        krRetAvg(I) = 0
+        prRet(I) = 0
+        prRetAvg(I) = 0
+        krName$(I) = ""
+        prName$(I) = ""
     Next
 
-    statsA6$(0) = ""
+    punterName$(0) = ""
 
     For I = 0 To 1
-        careerB3%(I) = 0
-        careerB4%(I) = 0
-        careerB5%(I) = 0
-        careerB7%(I) = 0
-        careerB8%(I) = 0
-        statsA7$(I) = ""
+        puntAvg(I) = 0
+        pkFGA(I) = 0
+        pkFGPct(I) = 0
+        pkPAT(I) = 0
+        pkPATPct(I) = 0
+        pkName$(I) = ""
     Next
 
 End Sub
@@ -1284,55 +1293,58 @@ End Sub
 '       ViewRoster Subroutine
 '----------------------------------------
 '...explanation...
-Sub ViewRoster (A$, AA$, B8%)
+Sub ViewRoster (A$, mascot$, B8%)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
-    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
 
-    Shared statsPA%()
-    Shared careerQX%()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Do
         Cls
         Color 11
         Print "TEAM ROSTER FOR ";
-        Color statsPA%(2), statsPA%(1): Print A$;
+        Color teamRatings%(2), teamRatings%(1): Print A$;
 
         Color 11, 0: Print "   TEAM NUMBER =";
         Color 14: Print B8%
 
         Print
 
-        Color 15: Print Using "DEF RUSH ADJ   = ###"; careerB6%(0);
-        Print Tab(35); Using "SACKED %         = ##"; careerB6%(5)
-        Print Using "DEF COMP % ADJ = ###"; careerB6%(1);
-        Print Tab(35); Using "DEF SACK ADJ     = ##"; careerB6%(6)
-        Print Using "DEF INT % ADJ  = ###"; careerB6%(2);
-        Print Tab(35); Using "RUN/PASS %       = ##"; careerB6%(7)
-        Print Using "OFF FUMBLE  %  = ###"; careerB6%(3);
+        Color 15: Print Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
+        Print Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
+        Print Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
+        Print Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
+        Print Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
+        Print Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
+        Print Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
         Print Tab(35); "DEF YDS/COMP ADJ = ";
 
         If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
         If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-        Print Using "DEF FUMBLE  %  = ###"; careerB6%(4);
-        Print Tab(35); Using "PENALTY ADJ      = ##"; statsPA%(0)
-        Print Using "STAD TYPE      = ###"; statsPA%(3)
-        Print Using "BACKGRND COLOR = ###"; statsPA%(1);
-        Print Tab(35); Using "FOREGRND COLOR   = ##"; statsPA%(2)
+        Print Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
+        Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
+        Print Using "STAD TYPE      = ###"; teamRatings%(3)
+        Print Using "BACKGRND COLOR = ###"; teamRatings%(1);
+        Print Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
         Print
         Color 12: Print "RUNNING BACKS-"
         Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
         For I = 0 To 9:
-            If Left$(statsA1$(I), 1) <> " " And Left$(statsA1$(I), 3) <> "END" Then
-                Color 3: Print statsA1$(I);
+            If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
+                Color 3: Print rbName$(I);
                 Color 15
-                Locate , 23: Print Using "##.#     ###    ##     ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
+                Locate , 23: Print Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
             End If
         Next
 
@@ -1345,9 +1357,9 @@ Sub ViewRoster (A$, AA$, B8%)
         Color 14: Print "NAME-              REC AVG     CX%"
 
         For I = 0 To 5:
-            If Left$(statsA2$(I), 1) <> " " And Left$(statsA2$(I), 3) <> "END" Then
-                Color 3: Print statsA2$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; careerA5%(I) * 3; careerA4%(I)
+            If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
+                Color 3: Print wrName$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; wrRecAvg(I) * 3; wrRecept(I)
             End If
         Next
 
@@ -1355,9 +1367,9 @@ Sub ViewRoster (A$, AA$, B8%)
         Color 12: Print "QUARTERBACKS-                     YDS/CMP"
         Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
         For I = 0 To 3:
-            If Left$(statsA3$(I), 1) <> " " And Left$(statsA3$(I), 3) <> "END" Then
-                Color 3: Print statsA3$(I);
-                Color 15: Locate , 21: Print Using "###     ##     ###      ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
+            If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
+                Color 3: Print qbName$(I);
+                Color 15: Locate , 21: Print Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
             End If
         Next
 
@@ -1366,9 +1378,9 @@ Sub ViewRoster (A$, AA$, B8%)
         Color 14: Print "NAME-              RET AVG     CX%"
 
         For I = 0 To 2:
-            If Left$(statsA4$(I), 1) <> " " And Left$(statsA4$(I), 3) <> "END" Then
-                Color 3: Print statsA4$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; careerB%(I) * 3; careerA9%(I)
+            If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
+                Color 3: Print krName$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; krRetAvg(I) * 3; krRet(I)
             End If
         Next
 
@@ -1380,9 +1392,9 @@ Sub ViewRoster (A$, AA$, B8%)
         Color 14: Print "NAME-              RET AVG     CX%"
 
         For I = 0 To 2:
-            If Left$(statsA5$(I), 1) <> " " And Left$(statsA5$(I), 3) <> "END" Then
-                Color 3: Print statsA5$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; careerB2%(I) * 3; careerB1%(I)
+            If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
+                Color 3: Print prName$(I);
+                Color 15: Locate , 23: Print Using "##       ###"; prRetAvg(I) * 3; prRet(I)
             End If
         Next
 
@@ -1391,18 +1403,18 @@ Sub ViewRoster (A$, AA$, B8%)
         Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
 
         For I = 0 To 1:
-            If Left$(statsA7$(I), 1) <> " " And Left$(statsA7$(I), 3) <> "END" Then
-                Color 3: Print statsA7$(I);
-                Color 15: Locate , 21: Print Using "###   ###   ###  ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
+            If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
+                Color 3: Print pkName$(I);
+                Color 15: Locate , 21: Print Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
             End If
         Next
 
         Print
         Color 12: Print "PUNTER-"
         Color 14: Print "NAME-              AVG"
-        Color 3: Print statsA6$(0);
+        Color 3: Print punterName$(0);
         Color 15
-        Locate , 21: Print Using "##"; careerB3%(0) * 2 + 28
+        Locate , 21: Print Using "##"; puntAvg(0) * 2 + 28
 
         Do
             Locate 21
@@ -1423,11 +1435,16 @@ End Sub
 '...explanation...
 Sub CheckContributions
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
-    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB1%(), careerB5%(), careerB8%()
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Cls
     U$ = "CONTRIBUTION RATINGS"
@@ -1460,9 +1477,9 @@ Sub CheckContributions
 
         For I = 0 To 9:
             Print Using "## "; I + 1;
-            Print " "; statsA1$(I); Tab(20);
-            Print Using "     ###"; careerA0%(I)
-            BC% = BC% + careerA0%(I)
+            Print " "; rbName$(I); Tab(20);
+            Print Using "     ###"; rushAtt(I)
+            BC% = BC% + rushAtt(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1479,7 +1496,7 @@ Sub CheckContributions
 
             If I1 <> 10 Then
                 Locate I1 + 4, 24: Print "   "
-                Locate I1 + 4, 24: Input careerA0%(I1)
+                Locate I1 + 4, 24: Input rushAtt(I1)
             Else
                 If BC% <> 100 Then
                     Locate 19: Print "TOTAL IS NOT 100%!"
@@ -1513,14 +1530,14 @@ Sub CheckContributions
 
         For I = 0 To 9:
             Print Using "## "; I + 1;
-            Print " "; statsA1$(I); Tab(20);: Print Using "      ##"; careerA2%(I)
-            BC% = BC% + careerA2%(I)
+            Print " "; rbName$(I); Tab(20);: Print Using "      ##"; rbRecepts(I)
+            BC% = BC% + rbRecepts(I)
         Next
 
         For I = 0 To 5
             Print Using "## "; I + 11;
-            Print " "; statsA2$(I); Tab(20);: Print Using "      ##"; careerA4%(I)
-            BC% = BC% + careerA4%(I)
+            Print " "; wrName$(I); Tab(20);: Print Using "      ##"; wrRecept(I)
+            BC% = BC% + wrRecept(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1541,9 +1558,9 @@ Sub CheckContributions
                 Locate I1 + 4, 24
 
                 If I1 <= 9 Then
-                    Input careerA2%(I1)
+                    Input rbRecepts(I1)
                 Else
-                    Input careerA4%(I1 - 10)
+                    Input wrRecept(I1 - 10)
                 End If
 
             Else
@@ -1579,9 +1596,9 @@ Sub CheckContributions
 
         For I = 0 To 3:
             Print Using "## "; I + 1;
-            Print " "; statsA3$(I); Tab(20);
-            Print Using "     ###"; careerA6%(I)
-            BC% = BC% + careerA6%(I)
+            Print " "; qbName$(I); Tab(20);
+            Print Using "     ###"; passAtt(I)
+            BC% = BC% + passAtt(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1599,7 +1616,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input careerA6%(I1)
+                Input passAtt(I1)
             Else
                 If BC% <> 100 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
@@ -1632,9 +1649,9 @@ Sub CheckContributions
 
         For I = 0 To 2
             Print Using "## "; I + 1;
-            Print " "; statsA4$(I); Tab(20);
-            Print Using "     ###"; careerA9%(I)
-            BC% = BC% + careerA9%(I)
+            Print " "; krName$(I); Tab(20);
+            Print Using "     ###"; krRet(I)
+            BC% = BC% + krRet(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1654,7 +1671,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input careerA9%(I1)
+                Input krRet(I1)
 
             Else
 
@@ -1690,9 +1707,9 @@ Sub CheckContributions
 
         For I = 0 To 2:
             Print Using "## "; I + 1;
-            Print " "; statsA5$(I); Tab(20);
-            Print Using "     ###"; careerB1%(I)
-            BC% = BC% + careerB1%(I)
+            Print " "; prName$(I); Tab(20);
+            Print Using "     ###"; prRet(I)
+            BC% = BC% + prRet(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1711,7 +1728,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input careerB1%(I1)
+                Input prRet(I1)
 
             Else
 
@@ -1746,9 +1763,9 @@ Sub CheckContributions
 
         For I = 0 To 1:
             Print Using "## "; I + 1;
-            Print " "; statsA7$(I); Tab(20);
-            Print Using "     ###"; careerB5%(I)
-            BC% = BC% + careerB5%(I)
+            Print " "; pkName$(I); Tab(20);
+            Print Using "     ###"; pkFGPct(I)
+            BC% = BC% + pkFGPct(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1767,7 +1784,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input careerB5%(I1)
+                Input pkFGPct(I1)
 
             Else
 
@@ -1802,8 +1819,8 @@ Sub CheckContributions
 
         For I = 0 To 1
             Print Using "## "; I + 1;
-            Print " "; statsA7$(I); Tab(20);
-            Print Using "     ###"; careerB8%(I): BC% = BC% + careerB8%(I)
+            Print " "; pkName$(I); Tab(20);
+            Print Using "     ###"; pkPATPct(I): BC% = BC% + pkPATPct(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1822,7 +1839,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input careerB8%(I1)
+                Input pkPATPct(I1)
 
             Else
 
@@ -1846,9 +1863,9 @@ End Sub
 '      GetTeam_CNGTM Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetTeam_CNGTM (A$, AA$, YN$, S$, teamNbr, YC!)
+Sub GetTeam_CNGTM (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
         Color 15, 0
@@ -1912,13 +1929,13 @@ Sub GetTeam_CNGTM (A$, AA$, YN$, S$, teamNbr, YC!)
         End If
 
         A$ = Q$(1)
-        AA$ = Q$(2)
+        mascot$ = Q$(2)
 
         If BO% = 1 Then
             BO% = 0
         Else
             Locate 2, 33
-            Color statsPA%(2), statsPA%(1): Print A$
+            Color teamRatings%(2), teamRatings%(1): Print A$
 
             Do
                 Color 15, 4
@@ -1974,16 +1991,20 @@ End Sub
 '      ReadTeam_CNGTM Subroutine
 '----------------------------------------
 '...explanation...
-Sub ReadTeam_CNGTM (YN$, B8%, YC!)
+Sub ReadTeam_CNGTM (YN$, teamIdx, YC!)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$()
-    Shared statsA5$(), statsA6$(), statsA7$()
-    Shared statsDI$(), statsDS$()
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%()
-    Shared careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%()
-    Shared careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared careerDI%(), careerDS%(), statsPA%(), careerQX%()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Dim C2(15), C3(15)
 
@@ -2025,68 +2046,68 @@ Sub ReadTeam_CNGTM (YN$, B8%, YC!)
 
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    Get #1, B8%
+    Get #1, teamIdx
 
-    For I = 0 To 7: careerB6%(I) = CVI(Q$(I + 3)): Next I
+    For I = 0 To 7: leagueRatings%(I) = CVI(Q$(I + 3)): Next I
 
-    For I = 0 To 4: statsPA%(I) = CVI(Q$(I + 11)): Next I
+    For I = 0 To 4: teamRatings%(I) = CVI(Q$(I + 11)): Next I
 
     For I = 0 To 9
-        statsA1$(I) = Q$(I * 5 + 16)
-        careerA0%(I) = CVI(Q$(I * 5 + 17))
-        careerA1%(I) = CVI(Q$(I * 5 + 18))
-        careerA2%(I) = CVI(Q$(I * 5 + 19))
-        careerA3%(I) = CVI(Q$(I * 5 + 20))
+        rbName$(I) = Q$(I * 5 + 16)
+        rushAtt(I) = CVI(Q$(I * 5 + 17))
+        rushAvg(I) = CVI(Q$(I * 5 + 18))
+        rbRecepts(I) = CVI(Q$(I * 5 + 19))
+        rbRecAvg(I) = CVI(Q$(I * 5 + 20))
     Next I
 
     For I = 0 To 5
-        statsA2$(I) = Q$(I * 3 + 66)
-        careerA4%(I) = CVI(Q$(I * 3 + 67))
-        careerA5%(I) = CVI(Q$(I * 3 + 68))
+        wrName$(I) = Q$(I * 3 + 66)
+        wrRecept(I) = CVI(Q$(I * 3 + 67))
+        wrRecAvg(I) = CVI(Q$(I * 3 + 68))
     Next I
 
     For I = 0 To 3
-        statsA3$(I) = Q$(I * 5 + 84)
-        careerA6%(I) = CVI(Q$(I * 5 + 85))
-        careerA7%(I) = CVI(Q$(I * 5 + 86))
-        careerA8%(I) = CVI(Q$(I * 5 + 87))
-        careerQX%(I) = CVI(Q$(I * 5 + 88))
+        qbName$(I) = Q$(I * 5 + 84)
+        passAtt(I) = CVI(Q$(I * 5 + 85))
+        compPct(I) = CVI(Q$(I * 5 + 86))
+        qbIntPct(I) = CVI(Q$(I * 5 + 87))
+        armRating(I) = CVI(Q$(I * 5 + 88))
     Next I
 
     For I = 0 To 2
-        statsA4$(I) = Q$(I * 3 + 104)
-        careerA9%(I) = CVI(Q$(I * 3 + 105))
-        careerB%(I) = CVI(Q$(I * 3 + 106))
+        krName$(I) = Q$(I * 3 + 104)
+        krRet(I) = CVI(Q$(I * 3 + 105))
+        krRetAvg(I) = CVI(Q$(I * 3 + 106))
     Next I
 
     For I = 0 To 2
-        statsA5$(I) = Q$(I * 3 + 113)
-        careerB1%(I) = CVI(Q$(I * 3 + 114))
-        careerB2%(I) = CVI(Q$(I * 3 + 115))
+        prName$(I) = Q$(I * 3 + 113)
+        prRet(I) = CVI(Q$(I * 3 + 114))
+        prRetAvg(I) = CVI(Q$(I * 3 + 115))
     Next I
 
-    statsA6$(0) = RTrim$(Q$(122))
-    careerB3%(0) = CVI(Q$(123))
-    statsA7$(0) = RTrim$(Q$(124))
-    careerB4%(0) = CVI(Q$(125))
-    careerB5%(0) = CVI(Q$(126))
-    careerB7%(0) = CVI(Q$(127))
-    careerB8%(0) = CVI(Q$(128))
-    statsA7$(1) = RTrim$(Q$(129))
-    careerB4%(1) = CVI(Q$(130))
-    careerB5%(1) = CVI(Q$(131))
-    careerB7%(1) = CVI(Q$(132))
-    careerB8%(1) = CVI(Q$(133))
+    punterName$(0) = RTrim$(Q$(122))
+    puntAvg(0) = CVI(Q$(123))
+    pkName$(0) = RTrim$(Q$(124))
+    pkFGA(0) = CVI(Q$(125))
+    pkFGPct(0) = CVI(Q$(126))
+    pkPAT(0) = CVI(Q$(127))
+    pkPATPct(0) = CVI(Q$(128))
+    pkName$(1) = RTrim$(Q$(129))
+    pkFGA(1) = CVI(Q$(130))
+    pkFGPct(1) = CVI(Q$(131))
+    pkPAT(1) = CVI(Q$(132))
+    pkPATPct(1) = CVI(Q$(133))
     YC! = CVI(Q$(134))
 
     For I = 0 To 14
-        statsDS$(I) = Q$(I * 2 + 135)
-        careerDS%(I) = CVI(Q$(I * 2 + 136))
+        sackName$(I) = Q$(I * 2 + 135)
+        numSacks(I) = CVI(Q$(I * 2 + 136))
     Next I
 
     For I = 0 To 9
-        statsDI$(I) = Q$(I * 2 + 165)
-        careerDI%(I) = CVI(Q$(I * 2 + 166))
+        intName$(I) = Q$(I * 2 + 165)
+        numInts(I) = CVI(Q$(I * 2 + 166))
     Next I
 
     Close #1
@@ -2097,92 +2118,93 @@ Sub ReadTeam_CNGTM (YN$, B8%, YC!)
 
         Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
 
-        Get #2, B8%
+        Get #2, teamIdx
 
-        S$ = RTrim$(QQ$(1))
+        stadium$ = RTrim$(QQ$(1))
         teamAttendance& = CVL(QQ$(3))
         Z$ = QQ$(4)
 
         Close #2
 
-        If Z$ <> "x" Then S$ = "": teamAttendance& = 0
+        If Z$ <> "x" Then stadium$ = "": teamAttendance& = 0
 
     Else
 
-        S$ = ""
+        stadium$ = ""
         teamAttendance& = 0
 
     End If
 
     For I = 0 To 15:
-        C2(I) = 0: C3(I) = 0
+        C2(I) = 0
+        C3(I) = 0
     Next
 
     U = 0
 
     For I = 1 To 9
-        If careerA0%(I) = 0 Then
+        If rushAtt(I) = 0 Then
             U = U + 1
         Else
-            C3(I) = careerA0%(I) - careerA0%(I - 1 - U)
+            C3(I) = rushAtt(I) - rushAtt(I - 1 - U)
             U = 0
         End If
     Next
 
     For I = 1 To 9:
-        careerA0%(I) = C3(I)
+        rushAtt(I) = C3(I)
     Next
 
     For I = 0 To 5:
-        careerA2%(I + 10) = careerA4%(I)
+        rbRecepts(I + 10) = wrRecept(I)
     Next
 
     U = 0
 
     For I = 1 To 15
-        If careerA2%(I) = 0 Then
+        If rbRecepts(I) = 0 Then
             U = U + 1
         Else
-            C2(I) = careerA2%(I) - careerA2%(I - 1 - U)
+            C2(I) = rbRecepts(I) - rbRecepts(I - 1 - U)
             U = 0
         End If
     Next
 
     For I = 1 To 15:
-        careerA2%(I) = C2(I)
+        rbRecepts(I) = C2(I)
     Next
 
     For I = 0 To 5:
-        careerA4%(I) = careerA2%(I + 10)
+        wrRecept(I) = rbRecepts(I + 10)
     Next
 
     For I = 3 To 1 Step -1
-        If careerA6%(I) <> 0 Then
-            careerA6%(I) = careerA6%(I) - careerA6%(I - 1)
+        If passAtt(I) <> 0 Then
+            passAtt(I) = passAtt(I) - passAtt(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If careerA9%(I) <> 0 Then
-            careerA9%(I) = careerA9%(I) - careerA9%(I - 1)
+        If krRet(I) <> 0 Then
+            krRet(I) = krRet(I) - krRet(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If careerB1%(I) <> 0 Then
-            careerB1%(I) = careerB1%(I) - careerB1%(I - 1)
+        If prRet(I) <> 0 Then
+            prRet(I) = prRet(I) - prRet(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If careerB5%(I) <> 0 Then
-            careerB5%(I) = careerB5%(I) - careerB5%(I - 1)
+        If pkFGPct(I) <> 0 Then
+            pkFGPct(I) = pkFGPct(I) - pkFGPct(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If careerB8%(I) <> 0 Then
-            careerB8%(I) = careerB8%(I) - careerB8%(I - 1)
+        If pkPATPct(I) <> 0 Then
+            pkPATPct(I) = pkPATPct(I) - pkPATPct(I - 1)
         End If
     Next
 

@@ -1671,7 +1671,7 @@ End Sub
 '...explanation...
 Sub GetTeam_CARMERGE ()
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -1752,7 +1752,7 @@ Sub GetTeam_CARMERGE ()
                 If BO% = 1 Then
                     BO% = 0
                 Else
-                    Locate 2, 33: Color statsPA%(2), statsPA%(1)
+                    Locate 2, 33: Color teamRatings%(2), teamRatings%(1)
                     Print A$
 
                     Do
@@ -1779,7 +1779,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1814,7 +1814,7 @@ Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
 
         Get #1, teamIdx%
 
-        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
         Close 1
 

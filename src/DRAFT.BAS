@@ -70,8 +70,8 @@ End Sub
 '...explanation...
 Sub NewTeamParameters (YN$, teamName$, teamNick$, teamIdx)
 
-    Shared careerB6%()
-    Shared statsPA%()
+    Shared leagueRatings%()
+    Shared teamRatings%()
 
     Shared ydsCompAdj
     Shared ATT&
@@ -80,26 +80,26 @@ Sub NewTeamParameters (YN$, teamName$, teamNick$, teamIdx)
     401 Locate 4: Input " 2. TEAM # (0 FOR PROGRAM TO ASSIGN) "; teamIdx: If C1 = 1 Then 420
     402 Locate 5: Input " 3. TEAM NAME "; teamName$: If C1 = 1 Then 420
     403 Locate 6: Input " 4. TEAM NICKNAME "; teamNick$: If C1 = 1 Then 420
-    404 Locate 7: Input " 5. DEF RUSH ADJ "; careerB6%(0): If C1 = 1 Then 420
-    405 Locate 8: Input " 6. DEF COMP % ADJ "; careerB6%(1): If C1 = 1 Then 420
-    406 Locate 9: Input " 7. DEF INT % ADJ "; careerB6%(2): If C1 = 1 Then 420
-    407 Locate 10: Input " 8. FUM % "; careerB6%(3): If C1 = 1 Then 420
-    408 Locate 11: Input " 9. DEF FUM % "; careerB6%(4): If C1 = 1 Then 420
-    409 Locate 12: Input "10. OFF SACKED % "; careerB6%(5): If C1 = 1 Then 420
-    410 Locate 13: Input "11. DEF SACK ADJ "; careerB6%(6): If C1 = 1 Then 420
+    404 Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0): If C1 = 1 Then 420
+    405 Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings%(1): If C1 = 1 Then 420
+    406 Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings%(2): If C1 = 1 Then 420
+    407 Locate 10: Input " 8. FUM % "; leagueRatings%(3): If C1 = 1 Then 420
+    408 Locate 11: Input " 9. DEF FUM % "; leagueRatings%(4): If C1 = 1 Then 420
+    409 Locate 12: Input "10. OFF SACKED % "; leagueRatings%(5): If C1 = 1 Then 420
+    410 Locate 13: Input "11. DEF SACK ADJ "; leagueRatings%(6): If C1 = 1 Then 420
     411 Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj: If C1 = 1 Then 420
-    412 Locate 15: Input "13. TM PENALTY ADJ "; statsPA%(0): If C1 = 1 Then 420
-    413 Locate 16: Input "14. OFF RUN/PASS % "; careerB6%(7): If C1 = 1 Then 420
-    414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3): If C1 = 1 Then 420
-    415 Locate 18: Input "16. POWER RATING "; statsPA%(4): If C1 = 1 Then 420
-    416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1): If C1 = 1 Then 420
-    417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; statsPA%(2): If C1 = 1 Then 420
+    412 Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0): If C1 = 1 Then 420
+    413 Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7): If C1 = 1 Then 420
+    414 Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3): If C1 = 1 Then 420
+    415 Locate 18: Input "16. POWER RATING "; teamRatings%(4): If C1 = 1 Then 420
+    416 Locate 19: Input "17. TM BACKGROUND COLOR (0-7) "; teamRatings%(1): If C1 = 1 Then 420
+    417 Locate 20: Input "18. TM TEXT COLOR (0-15) "; teamRatings%(2): If C1 = 1 Then 420
     418 Locate 21: Input "19. STADIUM NAME "; S$: If C1 = 1 Then 420
     419 Locate 22: Input "20. AVERAGE ATTENDANCE "; ATT&: If C1 = 1 Then 420
 
     420
     Locate 3, 40
-    Color statsPA%(2), statsPA%(1): Print "SAMPLE TEXT COLOR"
+    Color teamRatings%(2), teamRatings%(1): Print "SAMPLE TEXT COLOR"
     Color 15, 0
 
     C1 = 1
@@ -116,87 +116,95 @@ End Sub
 '...explanation...
 Sub DraftExistingTeam (YN$, teamIdx)
 
-    '-- S$ and Z$ aren't needed later ?!?!
+    Shared stadium$
 
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
+
     Shared C0%(), C1%(), C2%(), C3%(), C4%(), C5%(), C6%(), C7%(), C8%(), C9%()
     Shared D%(), D1%(), D2%(), draftD3%(), D4%(), D5%(), D6%(), D7%(), D8%()
-    Shared careerDI%(), careerDS%(), FI%(), FS%()
-    Shared statsPA%(), draftSX%(), QA%(), careerQX%()
+    Shared draftSX%(), FI%(), FS%(), QA%()
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
-    Shared statsDI$(), statsDS$()
     Shared FI$(), FS$()
 
     Shared ATT&
 
-    For I = 0 To 7: careerB6%(I) = D6%(I): Next I
+    For I = 0 To 7: leagueRatings%(I) = D6%(I): Next I
 
-    For I = 0 To 4: statsPA%(I) = QA%(I): Next I
+    For I = 0 To 4: teamRatings%(I) = QA%(I): Next I
 
     For I = 0 To 9
-        statsA1$(I) = C1$(I)
-        careerA0%(I) = C0%(I)
-        careerA1%(I) = C1%(I)
-        careerA2%(I) = C2%(I)
-        careerA3%(I) = C3%(I)
+        rbName$(I) = C1$(I)
+        rushAtt(I) = C0%(I)
+        rushAvg(I) = C1%(I)
+        rbRecepts(I) = C2%(I)
+        rbRecAvg(I) = C3%(I)
     Next I
 
     For I = 0 To 5
-        statsA2$(I) = C2$(I)
-        careerA4%(I) = C4%(I)
-        careerA5%(I) = C5%(I)
+        wrName$(I) = C2$(I)
+        wrRecept(I) = C4%(I)
+        wrRecAvg(I) = C5%(I)
     Next I
 
     For I = 0 To 3
-        statsA3$(I) = C3$(I)
-        careerA6%(I) = C6%(I)
-        careerA7%(I) = C7%(I)
-        careerA8%(I) = C8%(I)
-        careerQX%(I) = draftSX%(I)
+        qbName$(I) = C3$(I)
+        passAtt(I) = C6%(I)
+        compPct(I) = C7%(I)
+        qbIntPct(I) = C8%(I)
+        armRating(I) = draftSX%(I)
     Next I
 
     For I = 0 To 2
-        statsA4$(I) = C4$(I)
-        careerA9%(I) = C9%(I)
-        careerB%(I) = D%(I)
+        krName$(I) = C4$(I)
+        krRet(I) = C9%(I)
+        krRetAvg(I) = D%(I)
     Next I
 
     For I = 0 To 2
-        statsA5$(I) = C5$(I)
-        careerB1%(I) = D1%(I)
-        careerB2%(I) = D2%(I)
+        prName$(I) = C5$(I)
+        prRet(I) = D1%(I)
+        prRetAvg(I) = D2%(I)
     Next I
 
-    statsA6$(0) = C6$(0)
-    test$ = statsA6$(0)
+    punterName$(0) = C6$(0)
+    test$ = punterName$(0)
 
-    careerB3%(0) = draftD3%(0)
-    statsA7$(0) = C7$(0)
-    careerB4%(0) = D4%(0)
-    careerB5%(0) = D5%(0)
-    careerB7%(0) = D7%(0)
-    careerB8%(0) = D8%(0)
-    statsA7$(1) = C7$(1)
-    careerB4%(1) = D4%(1)
-    careerB5%(1) = D5%(1)
-    careerB7%(1) = D7%(1)
-    careerB8%(1) = D8%(1)
+    puntAvg(0) = draftD3%(0)
+    pkName$(0) = C7$(0)
+    pkFGA(0) = D4%(0)
+    pkFGPct(0) = D5%(0)
+    pkPAT(0) = D7%(0)
+    pkPATPct(0) = D8%(0)
+    pkName$(1) = C7$(1)
+    pkFGA(1) = D4%(1)
+    pkFGPct(1) = D5%(1)
+    pkPAT(1) = D7%(1)
+    pkPATPct(1) = D8%(1)
 
     For I = 0 To 14
-        statsDS$(I) = FS$(I)
-        careerDS%(I) = FS%(I)
+        sackName$(I) = FS$(I)
+        numSacks(I) = FS%(I)
     Next I
 
     For I = 0 To 9
-        statsDI$(I) = FI$(I)
-        careerDI%(I) = FI%(I)
+        intName$(I) = FI$(I)
+        numInts(I) = FI%(I)
     Next I
 
     If Not _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
-        S$ = ""
+        stadium$ = ""
         ATT& = 0
     Else
 
@@ -206,13 +214,13 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
         Get #2, teamIdx
 
-        S$ = RTrim$(Q$(1))
+        stadium$ = RTrim$(Q$(1))
         ATT& = CVL(Q$(3))
         Z$ = Q$(4)
 
         Close #2
 
-        If Z$ <> "x" Then S$ = "": ATT& = 0
+        If Z$ <> "x" Then stadium$ = "": ATT& = 0
 
     End If
 
@@ -225,14 +233,18 @@ End Sub
 '...explanation...
 Sub DoTheDraft (draftNew, doneDrafting, YN$, N$, CC$, teamIdx)
 
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared statsPA%(), careerQX%()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
-    Shared statsDI$(), statsDS$()
-
-    Shared careerDI%(), careerDS%()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Shared ydsCompAdj
 
@@ -244,45 +256,45 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, N$, CC$, teamIdx)
     S3 = 0
 
     For I = 0 To 9:
-        S0 = S0 + careerA0%(I)
-        S2 = S2 + careerA2%(I)
+        S0 = S0 + rushAtt(I)
+        S2 = S2 + rbRecepts(I)
     Next
 
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If careerA0%(I) <> 0 Then careerA0%(I) = Int(S4 * careerA0%(I) + .5) + S1: S1 = careerA0%(I)
-        If careerA0%(I) > 100 Then careerA0%(I) = 100
+        If rushAtt(I) <> 0 Then rushAtt(I) = Int(S4 * rushAtt(I) + .5) + S1: S1 = rushAtt(I)
+        If rushAtt(I) > 100 Then rushAtt(I) = 100
     Next I
 
     For I = 0 To 5:
-        S2 = S2 + careerA4%(I)
+        S2 = S2 + wrRecept(I)
     Next
 
     S5 = 100 / S2
 
     For I = 0 To 9:
-        If careerA2%(I) <> 0 Then careerA2%(I) = Int(S5 * careerA2%(I) + .5) + S3: S3 = careerA2%(I)
-        If careerA2%(I) > 100 Then careerA2%(I) = 100
+        If rbRecepts(I) <> 0 Then rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3: S3 = rbRecepts(I)
+        If rbRecepts(I) > 100 Then rbRecepts(I) = 100
     Next I
 
     For I = 0 To 5:
-        If careerA4%(I) <> 0 Then careerA4%(I) = Int(S5 * careerA4%(I) + .5) + S3: S3 = careerA4%(I)
-        If careerA4%(I) > 100 Then careerA4%(I) = 100
+        If wrRecept(I) <> 0 Then wrRecept(I) = Int(S5 * wrRecept(I) + .5) + S3: S3 = wrRecept(I)
+        If wrRecept(I) > 100 Then wrRecept(I) = 100
     Next I
 
     S6 = 0
     S7 = 0
 
     For I = 0 To 3:
-        S6 = S6 + careerA6%(I)
+        S6 = S6 + passAtt(I)
     Next
 
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If careerA6%(I) <> 0 Then careerA6%(I) = Int(S8 * careerA6%(I) + .5) + S7: S7 = careerA6%(I)
-        If careerA6%(I) > 100 Then careerA6%(I) = 100
+        If passAtt(I) <> 0 Then passAtt(I) = Int(S8 * passAtt(I) + .5) + S7: S7 = passAtt(I)
+        If passAtt(I) > 100 Then passAtt(I) = 100
     Next
 
     G0 = 0
@@ -290,19 +302,19 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, N$, CC$, teamIdx)
     G3 = 0
     G4 = 0
 
-    For I = 0 To 2: G0 = G0 + careerA9%(I): G3 = G3 + careerB1%(I): Next
+    For I = 0 To 2: G0 = G0 + krRet(I): G3 = G3 + prRet(I): Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 2:
-        If careerA9%(I) <> 0 Then careerA9%(I) = Int(G2 * careerA9%(I) + .5) + G1: G1 = careerA9%(I)
-        If careerA9%(I) > 100 Then careerA9%(I) = 100
+        If krRet(I) <> 0 Then krRet(I) = Int(G2 * krRet(I) + .5) + G1: G1 = krRet(I)
+        If krRet(I) > 100 Then krRet(I) = 100
     Next
 
     For I = 0 To 2:
-        If careerB1%(I) <> 0 Then careerB1%(I) = Int(G5 * careerB1%(I) + .5) + G4: G4 = careerB1%(I)
-        If careerB1%(I) > 100 Then careerB1%(I) = 100
+        If prRet(I) <> 0 Then prRet(I) = Int(G5 * prRet(I) + .5) + G4: G4 = prRet(I)
+        If prRet(I) > 100 Then prRet(I) = 100
     Next
 
     G0 = 0
@@ -311,50 +323,50 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, N$, CC$, teamIdx)
     G4 = 0
 
     For I = 0 To 1:
-        G0 = G0 + careerB5%(I)
-        G3 = G3 + careerB8%(I)
+        G0 = G0 + pkFGPct(I)
+        G3 = G3 + pkPATPct(I)
     Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 1:
-        If careerB5%(I) <> 0 Then careerB5%(I) = Int(G2 * careerB5%(I) + .5) + G1: G1 = careerB5%(I)
-        If careerB5%(I) > 100 Then careerB5%(I) = 100
+        If pkFGPct(I) <> 0 Then pkFGPct(I) = Int(G2 * pkFGPct(I) + .5) + G1: G1 = pkFGPct(I)
+        If pkFGPct(I) > 100 Then pkFGPct(I) = 100
     Next
 
     For I = 0 To 1:
-        If careerB8%(I) <> 0 Then careerB8%(I) = Int(G5 * careerB8%(I) + .5) + G4: G4 = careerB8%(I)
-        If careerB8%(I) > 100 Then careerB8%(I) = 100
+        If pkPATPct(I) <> 0 Then pkPATPct(I) = Int(G5 * pkPATPct(I) + .5) + G4: G4 = pkPATPct(I)
+        If pkPATPct(I) > 100 Then pkPATPct(I) = 100
     Next
 
     For I = 9 To 0 Step -1:
-        If careerA0%(I) <> 0 Then careerA0%(I) = 100: Exit For
+        If rushAtt(I) <> 0 Then rushAtt(I) = 100: Exit For
     Next
 
     For I = 5 To 0 Step -1:
-        If careerA4%(I) <> 0 Then careerA4%(I) = 100: Exit For
+        If wrRecept(I) <> 0 Then wrRecept(I) = 100: Exit For
     Next
 
     For I = 3 To 0 Step -1:
-        If careerA6%(I) <> 0 Then careerA6%(I) = 100: Exit For
+        If passAtt(I) <> 0 Then passAtt(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
-        If careerA9%(I) <> 0 Then careerA9%(I) = 100: Exit For
+        If krRet(I) <> 0 Then krRet(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
 
-        If careerB1%(I) <> 0 Then careerB1%(I) = 100: Exit For
+        If prRet(I) <> 0 Then prRet(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If careerB5%(I) <> 0 Then careerB5%(I) = 100: Exit For
+        If pkFGPct(I) <> 0 Then pkFGPct(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If careerB8%(I) <> 0 Then careerB8%(I) = 100: Exit For
+        If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
     Next
 
     X = Int((ydsCompAdj / .3) + .5)
@@ -401,17 +413,25 @@ End Sub
 '...explanation...
 Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, CC$, teamIdx)
 
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
-    Shared statsPA%(), careerQX%()
-
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
-    Shared statsDI$(), statsDS$()
-
-    Shared careerDI%(), careerDS%()
+    Shared ATT&
 
     Shared ydsCompAdj
-    Shared ATT&
+
+    Shared stadium$
+
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
+
 
     teamYear$ = RTrim$(yearNumber$)
 
@@ -464,67 +484,67 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, CC$, teamIdx)
     LSet Q$(1) = teamName$
     LSet Q$(2) = CC$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(careerB6%(I)): Next
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(statsPA%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings%(I)): Next
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings%(I)): Next I
 
     For I = 0 To 9
-        LSet Q$(I * 5 + 16) = statsA1$(I)
-        LSet Q$(I * 5 + 17) = MKI$(careerA0%(I))
-        LSet Q$(I * 5 + 18) = MKI$(careerA1%(I))
-        LSet Q$(I * 5 + 19) = MKI$(careerA2%(I))
-        LSet Q$(I * 5 + 20) = MKI$(careerA3%(I))
+        LSet Q$(I * 5 + 16) = rbName$(I)
+        LSet Q$(I * 5 + 17) = MKI$(rushAtt(I))
+        LSet Q$(I * 5 + 18) = MKI$(rushAvg(I))
+        LSet Q$(I * 5 + 19) = MKI$(rbRecepts(I))
+        LSet Q$(I * 5 + 20) = MKI$(rbRecAvg(I))
     Next I
 
     For I = 0 To 5
-        LSet Q$(I * 3 + 66) = statsA2$(I)
-        LSet Q$(I * 3 + 67) = MKI$(careerA4%(I))
-        LSet Q$(I * 3 + 68) = MKI$(careerA5%(I))
+        LSet Q$(I * 3 + 66) = wrName$(I)
+        LSet Q$(I * 3 + 67) = MKI$(wrRecept(I))
+        LSet Q$(I * 3 + 68) = MKI$(wrRecAvg(I))
     Next I
 
     For I = 0 To 3
-        LSet Q$(I * 5 + 84) = statsA3$(I)
-        LSet Q$(I * 5 + 85) = MKI$(careerA6%(I))
-        LSet Q$(I * 5 + 86) = MKI$(careerA7%(I))
-        LSet Q$(I * 5 + 87) = MKI$(careerA8%(I))
-        LSet Q$(I * 5 + 88) = MKI$(careerQX%(I))
+        LSet Q$(I * 5 + 84) = qbName$(I)
+        LSet Q$(I * 5 + 85) = MKI$(passAtt(I))
+        LSet Q$(I * 5 + 86) = MKI$(compPct(I))
+        LSet Q$(I * 5 + 87) = MKI$(qbIntPct(I))
+        LSet Q$(I * 5 + 88) = MKI$(armRating(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 104) = statsA4$(I)
-        LSet Q$(I * 3 + 105) = MKI$(careerA9%(I))
-        LSet Q$(I * 3 + 106) = MKI$(careerB%(I))
+        LSet Q$(I * 3 + 104) = krName$(I)
+        LSet Q$(I * 3 + 105) = MKI$(krRet(I))
+        LSet Q$(I * 3 + 106) = MKI$(krRetAvg(I))
     Next I
 
     For I = 0 To 2
-        LSet Q$(I * 3 + 113) = statsA5$(I)
-        LSet Q$(I * 3 + 114) = MKI$(careerB1%(I))
-        LSet Q$(I * 3 + 115) = MKI$(careerB2%(I))
+        LSet Q$(I * 3 + 113) = prName$(I)
+        LSet Q$(I * 3 + 114) = MKI$(prRet(I))
+        LSet Q$(I * 3 + 115) = MKI$(prRetAvg(I))
     Next I
 
-    test$ = statsA6$(0)
-    LSet Q$(122) = statsA6$(0)
+    test$ = punterName$(0)
+    LSet Q$(122) = punterName$(0)
 
-    LSet Q$(123) = MKI$(careerB3%(0))
-    LSet Q$(124) = statsA7$(0)
-    LSet Q$(125) = MKI$(careerB4%(0))
-    LSet Q$(126) = MKI$(careerB5%(0))
-    LSet Q$(127) = MKI$(careerB7%(0))
-    LSet Q$(128) = MKI$(careerB8%(0))
-    LSet Q$(129) = statsA7$(1)
-    LSet Q$(130) = MKI$(careerB4%(1))
-    LSet Q$(131) = MKI$(careerB5%(1))
-    LSet Q$(132) = MKI$(careerB7%(1))
-    LSet Q$(133) = MKI$(careerB8%(1))
+    LSet Q$(123) = MKI$(puntAvg(0))
+    LSet Q$(124) = pkName$(0)
+    LSet Q$(125) = MKI$(pkFGA(0))
+    LSet Q$(126) = MKI$(pkFGPct(0))
+    LSet Q$(127) = MKI$(pkPAT(0))
+    LSet Q$(128) = MKI$(pkPATPct(0))
+    LSet Q$(129) = pkName$(1)
+    LSet Q$(130) = MKI$(pkFGA(1))
+    LSet Q$(131) = MKI$(pkFGPct(1))
+    LSet Q$(132) = MKI$(pkPAT(1))
+    LSet Q$(133) = MKI$(pkPATPct(1))
     LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14
-        LSet Q$(I * 2 + 135) = statsDS$(I)
-        LSet Q$(I * 2 + 136) = MKI$(careerDS%(I))
+        LSet Q$(I * 2 + 135) = sackName$(I)
+        LSet Q$(I * 2 + 136) = MKI$(numSacks(I))
     Next I
 
     For I = 0 To 9
-        LSet Q$(I * 2 + 165) = statsDI$(I)
-        LSet Q$(I * 2 + 166) = MKI$(careerDI%(I))
+        LSet Q$(I * 2 + 165) = intName$(I)
+        LSet Q$(I * 2 + 166) = MKI$(numInts(I))
     Next I
 
     Put #1, teamIdx
@@ -536,7 +556,7 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, CC$, teamIdx)
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
     LSet Q$(1) = teamName$
-    LSet Q$(2) = S$
+    LSet Q$(2) = stadium$
     LSet Q$(3) = MKL$(ATT&)
     LSet Q$(4) = "x"
 
@@ -873,11 +893,12 @@ End Sub
 '...explanation...
 Sub ExistingTeamParameters (YN$, teamName$, teamNick$, teamIdx)
 
-    Shared careerB6%()
-    Shared statsPA%()
+    Shared leagueRatings%()
+    Shared teamRatings%()
 
     Shared ydsCompAdj
     Shared ATT&
+    Shared stadium$
 
     Call TITLE
 
@@ -890,21 +911,21 @@ Sub ExistingTeamParameters (YN$, teamName$, teamNick$, teamIdx)
     Locate 4: Print " 2. TEAM # "; teamIdx
     Locate 5: Print " 3. TEAM NAME "; teamName$
     Locate 6: Print " 4. TEAM NICKNAME "; teamNick$
-    Locate 7: Print " 5. DEF RUSH ADJ "; careerB6%(0)
-    Locate 8: Print " 6. DEF COMP % ADJ "; careerB6%(1)
-    Locate 9: Print " 7. DEF INT % ADJ "; careerB6%(2)
-    Locate 10: Print " 8. FUM % "; careerB6%(3)
-    Locate 11: Print " 9. DEF FUM % "; careerB6%(4)
-    Locate 12: Print "10. OFF SACKED % "; careerB6%(5)
-    Locate 13: Print "11. DEF SACK ADJ "; careerB6%(6)
+    Locate 7: Print " 5. DEF RUSH ADJ "; leagueRatings%(0)
+    Locate 8: Print " 6. DEF COMP % ADJ "; leagueRatings%(1)
+    Locate 9: Print " 7. DEF INT % ADJ "; leagueRatings%(2)
+    Locate 10: Print " 8. FUM % "; leagueRatings%(3)
+    Locate 11: Print " 9. DEF FUM % "; leagueRatings%(4)
+    Locate 12: Print "10. OFF SACKED % "; leagueRatings%(5)
+    Locate 13: Print "11. DEF SACK ADJ "; leagueRatings%(6)
     Locate 14: Print "12. DEF YD/COMP ADJ "; ydsCompAdj
-    Locate 15: Print "13. TM PENALTY ADJ "; statsPA%(0)
-    Locate 16: Print "14. OFF RUN/PASS % "; careerB6%(7)
-    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; statsPA%(3)
-    Locate 18: Print "16. POWER RATING "; statsPA%(4)
-    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; statsPA%(1)
-    Locate 20: Print "18. TM TEXT COLOR (0-15) "; statsPA%(2)
-    Locate 21: Print "19. STADIUM NAME "; S$
+    Locate 15: Print "13. TM PENALTY ADJ "; teamRatings%(0)
+    Locate 16: Print "14. OFF RUN/PASS % "; leagueRatings%(7)
+    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+    Locate 18: Print "16. POWER RATING "; teamRatings%(4)
+    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; teamRatings%(1)
+    Locate 20: Print "18. TM TEXT COLOR (0-15) "; teamRatings%(2)
+    Locate 21: Print "19. STADIUM NAME "; stadium$
     Locate 22: Print "20. AVERAGE ATTENDANCE "; ATT&
 
 End Sub
@@ -916,13 +937,23 @@ End Sub
 '...explanation...
 Sub DraftChoices (YN$, teamName$)
 
-    Shared careerA0%(), careerA1%(), careerA2%(), careerA3%(), careerA4%(), careerA5%(), careerA6%(), careerA7%(), careerA8%(), careerA9%()
-    Shared careerB%(), careerB1%(), careerB2%(), careerB3%(), careerB4%(), careerB5%(), careerB6%(), careerB7%(), careerB8%()
+    Shared leagueRatings%(), teamRatings%()
+    
+    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared wrRecept(), wrRecAvg()
+    Shared passAtt(), compPct(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
+    Shared punterName$(), pkName$(), intName$(), sackName$()
+
     Shared C0%(), C1%(), C2%(), C3%(), C4%(), C5%(), C6%(), C7%(), C8%(), C9%()
     Shared D%(), D1%(), D2%(), draftD3%(), D4%(), D5%(), D7%(), D8%()
-    Shared statsPA%(), draftSX%(), QA%(), careerQX%()
+    Shared draftSX%(), QA%()
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
     Shared C1$(), C2$(), C3$(), C4$(), C5$(), C6$(), C7$()
 
     Call TITLE
@@ -961,7 +992,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "RUNNING BACKS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RUN AVG CX% RC AVG CX%";
 
@@ -974,8 +1005,8 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0
 
                     For I = 0 To 9: Locate I + 4, 1
-                        Print I; " "; statsA1$(I); Tab(19);
-                        Print Using "##.#  ###   ##  ###"; careerA1%(I) * .3; careerA0%(I); careerA3%(I) * 3; careerA2%(I)
+                        Print I; " "; rbName$(I); Tab(19);
+                        Print Using "##.#  ###   ##  ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
                         Locate I + 4, 41
                         Print I; " "; C1$(I); Tab(59);
                         Print Using "##.#  ###   ##  ###"; C1%(I) * .3; C0%(I); C3%(I) * 3; C2%(I)
@@ -992,12 +1023,12 @@ Sub DraftChoices (YN$, teamName$)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 9
 
-                        statsA1$(P) = C1$(P1)
-                        test$ = statsA1$(P)
-                        careerA0%(P) = C0%(P1)
-                        careerA1%(P) = C1%(P1)
-                        careerA2%(P) = C2%(P1)
-                        careerA3%(P) = C3%(P1)
+                        rbName$(P) = C1$(P1)
+                        test$ = rbName$(P)
+                        rushAtt(P) = C0%(P1)
+                        rushAvg(P) = C1%(P1)
+                        rbRecepts(P) = C2%(P1)
+                        rbRecAvg(P) = C3%(P1)
 
                     End If
 
@@ -1017,7 +1048,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "WIDE RECEIVERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "REC AVG  CX% ";
 
@@ -1030,8 +1061,8 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0
 
                     For I = 0 To 5:
-                        Locate I + 4, 1: Print I; " "; statsA2$(I);
-                        Print Tab(17); Using "  ##    ###"; careerA5%(I) * 3; careerA4%(I)
+                        Locate I + 4, 1: Print I; " "; wrName$(I);
+                        Print Tab(17); Using "  ##    ###"; wrRecAvg(I) * 3; wrRecept(I)
                         Locate I + 4, 41
                         Print I; " "; C2$(I);
                         Print Tab(57); Using "  ##    ###"; C5%(I) * 3; C4%(I)
@@ -1048,9 +1079,9 @@ Sub DraftChoices (YN$, teamName$)
                             Locate 16, 45: Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 5
 
-                        statsA2$(P) = C2$(P1)
-                        careerA4%(P) = C4%(P1)
-                        careerA5%(P) = C5%(P1)
+                        wrName$(P) = C2$(P1)
+                        wrRecept(P) = C4%(P1)
+                        wrRecAvg(P) = C5%(P1)
 
                     End If
 
@@ -1070,7 +1101,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "QUARTERBACKS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0: Print Tab(17); " C%  I%   ARM  CX% ";
 
                     Print Tab(41);
@@ -1082,8 +1113,8 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0
 
                     For I = 0 To 3: Locate I + 4, 1
-                        Print I; " "; statsA3$(I);
-                        Print Tab(17); Using "###  ##  ###  ###"; careerA7%(I); careerA8%(I); careerQX%(I); careerA6%(I)
+                        Print I; " "; qbName$(I);
+                        Print Tab(17); Using "###  ##  ###  ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
                         Locate I + 4, 41
                         Print I; " "; C3$(I);
                         Print Tab(57); Using "###  ##  ###  ###"; C7%(I); C8%(I); draftSX%(I); C6%(I)
@@ -1102,11 +1133,11 @@ Sub DraftChoices (YN$, teamName$)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 3
 
-                        statsA3$(P) = C3$(P1)
-                        careerA6%(P) = C6%(P1)
-                        careerA7%(P) = C7%(P1)
-                        careerA8%(P) = C8%(P1)
-                        careerQX%(P) = draftSX%(P1)
+                        qbName$(P) = C3$(P1)
+                        passAtt(P) = C6%(P1)
+                        compPct(P) = C7%(P1)
+                        qbIntPct(P) = C8%(P1)
+                        armRating(P) = draftSX%(P1)
 
                     End If
 
@@ -1126,7 +1157,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "KICKOFF RETURNERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
@@ -1139,8 +1170,8 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0
 
                     For I = 0 To 2: Locate I + 4, 1
-                        Print I; " "; statsA4$(I);
-                        Print Tab(17); Using "  ##     ###"; careerB%(I) * 3; careerA9%(I)
+                        Print I; " "; krName$(I);
+                        Print Tab(17); Using "  ##     ###"; krRetAvg(I) * 3; krRet(I)
                         Locate I + 4, 41
                         Print I; " "; C4$(I);
                         Print Tab(57); Using "  ##     ###"; D%(I) * 3; C9%(I)
@@ -1160,9 +1191,9 @@ Sub DraftChoices (YN$, teamName$)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 2
 
-                        statsA4$(P) = C4$(P1)
-                        careerA9%(P) = C9%(P1)
-                        careerB%(P) = D%(P1)
+                        krName$(P) = C4$(P1)
+                        krRet(P) = C9%(P1)
+                        krRetAvg(P) = D%(P1)
 
                     End If
 
@@ -1182,7 +1213,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "PUNT RETURNERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "RET AVG  CX%";
 
@@ -1196,8 +1227,8 @@ Sub DraftChoices (YN$, teamName$)
 
                     For I = 0 To 2
                         Locate I + 4, 1
-                        Print I; " "; statsA5$(I);
-                        Print Tab(17); Using "  ##    ###"; careerB2%(I) * 3; careerB1%(I)
+                        Print I; " "; prName$(I);
+                        Print Tab(17); Using "  ##    ###"; prRetAvg(I) * 3; prRet(I)
                         Locate I + 4, 41
                         Print I; " "; C5$(I);
                         Print Tab(57); Using "  ##    ###"; D2%(I) * 3; D1%(I)
@@ -1214,9 +1245,9 @@ Sub DraftChoices (YN$, teamName$)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 2
 
-                        statsA5$(P) = C5$(P1)
-                        careerB1%(P) = D1%(P1)
-                        careerB2%(P) = D2%(P1)
+                        prName$(P) = C5$(P1)
+                        prRet(P) = D1%(P1)
+                        prRetAvg(P) = D2%(P1)
 
                     End If
 
@@ -1236,7 +1267,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "PUNTER"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "PUNT AVG";
 
@@ -1249,8 +1280,8 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0
 
                     Locate 4, 1
-                    Print 0; " "; statsA6$(0);
-                    Print Tab(17); Using "   ##"; careerB3%(0) * 2 + 28
+                    Print 0; " "; punterName$(0);
+                    Print Tab(17); Using "   ##"; puntAvg(0) * 2 + 28
 
                     Locate 4, 41
                     Print 0; " "; C6$(0);
@@ -1265,8 +1296,8 @@ Sub DraftChoices (YN$, teamName$)
                         Locate 20, 1: Print "HIT ANY KEY TO CONTINUE"
                         I$ = GetKeyPress$
 
-                        statsA6$(0) = C6$(0)
-                        careerB3%(0) = draftD3%(0)
+                        punterName$(0) = C6$(0)
+                        puntAvg(0) = draftD3%(0)
                     End If
 
                 Loop Until P = 1
@@ -1285,7 +1316,7 @@ Sub DraftChoices (YN$, teamName$)
                     Color 15, 0: Print "PLACE KICKERS"
                     Locate 3, 1
 
-                    Color statsPA%(2), statsPA%(1): Print teamName$;
+                    Color teamRatings%(2), teamRatings%(1): Print teamName$;
                     Color 7, 0
                     Print Tab(17); "FG%  CX   EP%  CX";
 
@@ -1299,8 +1330,8 @@ Sub DraftChoices (YN$, teamName$)
 
                     For I = 0 To 1:
                         Locate I + 4, 1
-                        Print I; " "; statsA7$(I);
-                        Print Tab(17); Using "### ###   ### ###"; careerB4%(I) * 5 + 25; careerB5%(I); careerB7%(I); careerB8%(I)
+                        Print I; " "; pkName$(I);
+                        Print Tab(17); Using "### ###   ### ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
                         Locate I + 4, 41
                         Print I; " "; C7$(I);
                         Print Tab(57); Using "### ###   ### ###"; D4%(I) * 5 + 25; D5%(I); D7%(I); D8%(I)
@@ -1317,11 +1348,11 @@ Sub DraftChoices (YN$, teamName$)
                             Print "PLAYER # TO DRAFT ";: Input P1
                         Loop Until P1 >= 0 And P1 <= 1
 
-                        statsA7$(P) = C7$(P1)
-                        careerB4%(P) = D4%(P1)
-                        careerB5%(P) = D5%(P1)
-                        careerB7%(P) = D7%(P1)
-                        careerB8%(P) = D8%(P1)
+                        pkName$(P) = C7$(P1)
+                        pkFGA(P) = D4%(P1)
+                        pkFGPct(P) = D5%(P1)
+                        pkPAT(P) = D7%(P1)
+                        pkPATPct(P) = D8%(P1)
 
                     End If
 

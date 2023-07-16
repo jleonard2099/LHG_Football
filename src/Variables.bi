@@ -3,41 +3,61 @@
 '----------------------------------------
 Dim opSysType$
 
-Dim homeScores(MAX_GAMES), visitorScores(MAX_GAMES)
-
-Dim yearNumber$(MAX_GAMES, 1)
-Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
-
-Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-
-Dim Shared confLosses, confTies, confWins
-Dim Shared fullLosses, fullTies, fullWins
-Dim Shared PTSFC, PTSAC
-
-Dim Shared fileLength&, teamAttendance&
-
-'A$ / AA$ may not be needed anymore
-'S$ could be converted as well to Dim / Shared
-Dim Shared A$, AA$, S$
-
-'Used only with career files
-Dim Shared DT$
-Dim Shared TM$, TN$
-
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
+
+' *** Reading Team Data ***
+' -------------------------
+Dim Shared A$
+
+Dim ydsCompAdj 'YC! is used elsewhere
+Dim mascot$, stadium$
+
+'-- transition away from this
+Dim Shared fileLength&
+
+'-- combine these
+Dim ATT&, teamAttendance&
+
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
-' Game Options
+Dim leagueRatings%(7), teamRatings%(5)
+
+Dim rushAtt(9), rushAvg(9), rbRecepts(15), rbRecAvg(9)
+Dim wrRecept(5), wrRecAvg(5)
+Dim passAtt(0 To 3), compPct(3), qbIntPct(3)
+Dim krRet(2), krRetAvg(2), prRet(2), prRetAvg(2), puntAvg(1)
+Dim pkFGA(1), pkFGPct(1), pkPAT(1), pkPATPct(1)
+Dim numInts(9), numSacks(14), armRating(3)
+
+Dim rbName$(9), wrName$(5), qbName$(4), krName$(2), prName$(2)
+Dim punterName$(3), pkName$(1), intName$(9), sackName$(15)
+
+
+' *** Schedule Data ***
+' -------------------------
+Dim homeScores(MAX_GAMES), visitorScores(MAX_GAMES)
+Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
+Dim yearNumber$(MAX_GAMES, 1)
+
+' *** Game Options ***
+' -------------------------
+Dim Shared DT$, TM$, TN$
+
 Dim modeAbbrev$(3), yesNo$(1)
 Dim Shared location$(2), MO$(3)
 Dim Shared strG9$(5), SD$(3)
 Dim Shared Y8$(3), Y9$(5)
 Dim WN$(3), WT$(3)
 
-'----------------------------------------
-' Used across multiple routines
-'----------------------------------------
+' *** Miscellaneous Use ***
+' -------------------------
+Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
+Dim Shared confLosses, confTies, confWins
+Dim Shared fullLosses, fullTies, fullWins
+Dim Shared PTSFC, PTSAC
+
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
 Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
 Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
@@ -46,18 +66,18 @@ Dim statsLF$(1), statsLI$(9, 1), statsLK$(2, 1), statsLP$(3, 1)
 Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
 Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
 Dim PKN$(2, 1), PKR$(2, 1)
+
+'-- this is the same dimensions as AA$() for the game
 Dim statsAA$(1)
-Dim statsA1$(9), statsA2$(5), statsA3$(4), statsA4$(2), statsA5$(2), statsA6$(3), statsA7$(1)
-Dim statsDI$(9), statsDS$(15)
+
 Dim statsPK$(2, 1)
 
 'TP$() = individual record categories
 'TP1$() = team record categories
 Dim TP$(46), TP1$(43)
 
-
 Dim statsGI%(9, 2), GIN%(9, 2), GIR%(9, 2), statsGS%(15, 1), GSN%(15, 1), GSR%(15, 1)
-Dim statsPA%(5), statsZ1%(40)
+Dim statsZ1%(40)
 
 Dim AF!(1, 4), AFN!(1, 4), AFR!(1, 4)
 Dim AMR!(1, 4), AM!(1, 4), AMN!(1, 4)
@@ -90,12 +110,6 @@ Dim W0N(15), WN1(15)
 '----------------------------------------
 ' Used across CAREER routines
 '----------------------------------------
-Dim careerA0%(9), careerA1%(9), careerA2%(15), careerA3%(9), careerA4%(5)
-Dim careerA5%(5), careerA6%(0 To 3), careerA7%(3), careerA8%(3), careerA9%(2)
-Dim careerB%(2), careerB1%(2), careerB2%(2), careerB3%(1), careerB4%(1)
-Dim careerB5%(1), careerB6%(7), careerB7%(1), careerB8%(1)
-Dim careerDI%(9), careerDS%(14), careerQX%(3)
-
 Dim careerA1$(50), careerA2$(40), careerA3$(20), careerA4$(15), careerA5$(15), careerA6$(10), careerA7$(10)
 Dim careerDI$(55), careerDS$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
 Dim careerQBS$(15, 20, 1), careerRBC$(9), careerRBS$(15, 50, 1), careerRC$(6), careerWRS$(15, 40, 1)
@@ -156,9 +170,6 @@ Dim WR!(16, 13), YD!(16)
 '----------------------------------------
 ' Used across DRAFT.BAS routines
 '----------------------------------------
-Dim ydsCompAdj
-Dim ATT&
-
 Dim C0%(9), C1%(9), C2%(15), C3%(9), C4%(5), C5%(5), C6%(3), C7%(3), C8%(3), C9%(2)
 Dim D%(2), D1%(2), D2%(2), draftD3%(2), D4%(1), D5%(1), D6%(7), D7%(1), D8%(1)
 Dim FI%(9), FS%(14)

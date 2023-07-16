@@ -495,7 +495,7 @@ Sub Hd2HdColl_Screen (A$, LG$, LG2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Shared AL!(), AL2!(), AW!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -521,7 +521,7 @@ Sub Hd2HdColl_Screen (A$, LG$, LG2$, DV$(), DV2$())
         Cls
 
         Locate 2, 35
-        Color statsPA%(2), statsPA%(1): Print A$
+        Color teamRatings%(2), teamRatings%(1): Print A$
         Color 3, 0
 
         Locate 4
@@ -645,7 +645,7 @@ Sub Hd2HdColl_Screen (A$, LG$, LG2$, DV$(), DV2$())
             Color 12
 
             Locate 2, 35
-            Color statsPA%(2), statsPA%(1): Print A$
+            Color teamRatings%(2), teamRatings%(1): Print A$
             Color 3, 0
 
             Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
@@ -743,7 +743,7 @@ Sub Hd2HdColl_Screen (A$, LG$, LG2$, DV$(), DV2$())
     Cls
 
     Locate 2, 35
-    Color statsPA%(2), statsPA%(1): Print A$
+    Color teamRatings%(2), teamRatings%(1): Print A$
     Color 3, 0
 
     Locate 4
@@ -1436,7 +1436,7 @@ End Sub
 '...explanation...
 Sub GetDiskID_HD2HDCOL (A$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -1529,7 +1529,7 @@ Sub GetDiskID_HD2HDCOL (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color statsPA%(2), statsPA%(1): Print A$
+                Color teamRatings%(2), teamRatings%(1): Print A$
 
                 Do
                     Color 15, 4
@@ -1553,7 +1553,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -1586,7 +1586,7 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
 
         Get #1, T1
 
-        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
         Close 1
 

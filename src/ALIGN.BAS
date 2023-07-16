@@ -4,14 +4,14 @@ Sub ALIGN ()
 
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared AR$(), statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$(), DSR$()
+    Shared AR$(), intName$(), DIN$(), DRI$(), sackName$(), DSN$(), DSR$()
     Shared LC$(), LCN$(), LCR$(), statsLF$(), LFN$(), LFR$()
     Shared statsLI$(), LIN$(), LIR$(), statsLK$(), LKN$(), LKR$()
     Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), LR$()
     Shared PKN$(), statsPK$(), PKR$()
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
 
-    Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), statsPA%()
+    Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), teamRatings%()
 
     Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
     Shared LC!(), LCN!(), LCR!(), LIN!(), LIR!()
@@ -105,14 +105,14 @@ Sub ALIGN ()
 
                     Input #1, statsA$
 
-                    For I = 0 To 9: Input #1, statsA1$(I): Next I
-                    For I = 0 To 5: Input #1, statsA2$(I): Next I
-                    For I = 0 To 3: Input #1, statsA3$(I): Next I
-                    For I = 0 To 2: Input #1, statsA4$(I): Next I
-                    For I = 0 To 2: Input #1, statsA5$(I): Next I
+                    For I = 0 To 9: Input #1, rbName$(I): Next I
+                    For I = 0 To 5: Input #1, wrName$(I): Next I
+                    For I = 0 To 3: Input #1, qbName$(I): Next I
+                    For I = 0 To 2: Input #1, krName$(I): Next I
+                    For I = 0 To 2: Input #1, prName$(I): Next I
 
-                    Input #1, statsA6$(0)
-                    For I = 0 To 1: Input #1, statsA7$(I): Next I
+                    Input #1, punterName$(0)
+                    For I = 0 To 1: Input #1, pkName$(I): Next I
 
                     For J = 0 To 13
                         For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
@@ -120,8 +120,8 @@ Sub ALIGN ()
 
                     For L = 0 To 38: Input #1, statsZ!(L): Next L
                     For L = 0 To 38: Input #1, statsZ1!(L): Next L
-                    For J = 0 To 9: Input #1, statsDI$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
-                    For J = 0 To 14: Input #1, statsDS$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
+                    For J = 0 To 9: Input #1, intName$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
+                    For J = 0 To 14: Input #1, sackName$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
                     For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
                     For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
                     For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
@@ -168,10 +168,10 @@ End Sub
 '...explanation...
 Sub AlignStats (pathRoadStats$, statFile$)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$(), DSR$()
+    Shared intName$(), DIN$(), DRI$(), sackName$(), DSN$(), DSR$()
     Shared LCN$(), LCR$(), LFN$(), LFR$()
     Shared statsLK$(), LKN$(), LKR$(), LPN$(), LPR$(), statsLP$()
     Shared LRN$(), LRR$(), LR$(), PKN$(), statsPK$(), PKR$()
@@ -197,7 +197,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
     For I = 0 To 9:
         Locate I + 4: Color 12: Print I; " ";
-        Color 15: Print statsA1$(I);
+        Color 15: Print rbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR1$(I)
     Next
@@ -205,7 +205,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     For I = 0 To 5:
         Locate I + 4, 40
         Color 12: Print I; " ";
-        Color 15: Print statsA2$(I);
+        Color 15: Print wrName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR2$(I):
     Next
@@ -217,7 +217,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
     For I = 0 To 2
         Locate I + 12, 40: Color 12: Print I; " ";
-        Color 15: Print statsA4$(I);
+        Color 15: Print krName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR4$(I)
     Next
@@ -229,7 +229,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
     For I = 0 To 3:
         Locate I + 16: Color 12: Print I; " ";
-        Color 15: Print statsA3$(I);
+        Color 15: Print qbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR3$(I)
     Next
@@ -241,7 +241,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
     For I = 0 To 2:
         Locate I + 17, 40: Color 12: Print I; " ";
-        Color 15: Print statsA5$(I);
+        Color 15: Print prName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR5$(I)
     Next
@@ -262,13 +262,13 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     Locate 4: Color 12: Print "0 ";
-    Color 15: Print statsA6$(0);
+    Color 15: Print punterName$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AR6$(0)
 
     For I = 0 To 1:
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print statsA7$(I);
+        Color 15: Print pkName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR7$(I):
     Next
@@ -282,14 +282,14 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
     For I = 0 To 9:
         Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print statsDI$(I);
+        Print " ";: Color 15: Print intName$(I);
         Color 12: Print Tab(20); Using "##"; I;
         Print " ";: Color 7: Print DRI$(I)
     Next
 
     For I = 0 To 14:
         Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print statsDS$(I);
+        Print " ";: Color 15: Print sackName$(I);
         Color 12: Print Tab(63); Using "##"; I;
         Print " ";: Color 7: Print DSR$(I)
     Next
@@ -304,7 +304,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 9
 
-            If statsA1$(N) = AR1$(J) Then
+            If rbName$(N) = AR1$(J) Then
 
                 AN1$(N) = AR1$(J)
                 LRN!(N) = LRR!(J)
@@ -334,7 +334,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
         For J = 0 To 3
 
-            If statsA3$(N) = AR3$(J) Then
+            If qbName$(N) = AR3$(J) Then
                 AN3$(N) = AR3$(J)
 
                 For K = 0 To 2
@@ -352,7 +352,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 5
 
-            If statsA2$(N) = AR2$(J) Then
+            If wrName$(N) = AR2$(J) Then
 
                 AN2$(N) = AR2$(J)
                 LCN!(N + 10) = LCR!(J + 10)
@@ -375,7 +375,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 3
 
-            If statsA3$(N) = AR3$(J) Then
+            If qbName$(N) = AR3$(J) Then
 
                 AN3$(N) = AR3$(J)
                 LPN!(N) = LPR!(J)
@@ -399,7 +399,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 2
 
-            If statsA4$(N) = AR4$(J) Then
+            If krName$(N) = AR4$(J) Then
                 AN4$(N) = AR4$(J)
                 LKN!(N) = LKR!(J)
                 LKN$(N, 0) = LKR$(J, 0)
@@ -419,7 +419,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 2
 
-            If statsA5$(N) = AR5$(J) Then
+            If prName$(N) = AR5$(J) Then
 
                 AN5$(N) = AR5$(J)
                 PKN!(N) = PKR!(J)
@@ -438,7 +438,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
     Loop Until N = 3
 
-    If statsA6$(0) = AR6$(0) Then
+    If punterName$(0) = AR6$(0) Then
         AN6$(0) = AR6$(0)
     End If
 
@@ -447,7 +447,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 1
 
-            If statsA7$(N) = AR7$(J) Then
+            If pkName$(N) = AR7$(J) Then
 
                 AN7$(N) = AR7$(J)
                 LFN!(N) = LFR!(J)
@@ -479,7 +479,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 9
 
-            If statsDI$(N) = DRI$(J) Then
+            If intName$(N) = DRI$(J) Then
 
                 DIN$(N) = DRI$(J)
                 For J1 = 0 To 2
@@ -499,7 +499,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Do
         For J = 0 To 14
 
-            If statsDS$(N) = DSR$(J) Then
+            If sackName$(N) = DSR$(J) Then
 
                 DSN$(N) = DSR$(J)
                 For J1 = 0 To 1
@@ -518,32 +518,32 @@ Sub AlignStats (pathRoadStats$, statFile$)
     SEQ = 0
 
     For I = 0 To 9
-        If AN1$(I) <> statsA1$(I) Then
+        If AN1$(I) <> rbName$(I) Then
             SEQ = SEQ + 1
         End If
     Next
 
     For I = 0 To 5
-        If AN2$(I) <> statsA2$(I) Then SEQ = SEQ + 1
+        If AN2$(I) <> wrName$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 3
-        If AN3$(I) <> statsA3$(I) Then SEQ = SEQ + 1
+        If AN3$(I) <> qbName$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 2
-        If AN4$(I) <> statsA4$(I) Then SEQ = SEQ + 1
+        If AN4$(I) <> krName$(I) Then SEQ = SEQ + 1
     Next
 
     For I = 0 To 2
-        If AN5$(I) <> statsA5$(I) Then SEQ = SEQ + 1
+        If AN5$(I) <> prName$(I) Then SEQ = SEQ + 1
     Next
 
-    If AN6$(I) <> statsA6$(I) Then
+    If AN6$(I) <> punterName$(I) Then
         SEQ = SEQ + 1
     End If
     For I = 0 To 1
-        If AN7$(I) <> statsA7$(I) Then SEQ = SEQ + 1
+        If AN7$(I) <> pkName$(I) Then SEQ = SEQ + 1
     Next
 
     If SEQ = 0 Then
@@ -568,9 +568,9 @@ End Sub
 '...explanation...
 Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
-    Shared statsA1$(), statsA2$(), statsA3$(), statsA4$(), statsA5$(), statsA6$(), statsA7$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
-    Shared AR$(), statsDI$(), DIN$(), DRI$(), statsDS$(), DSN$()
+    Shared AR$(), intName$(), DIN$(), DRI$(), sackName$(), DSN$()
     Shared LCN$(), LCR$(), LFN$(), LFR$()
     Shared LIN$(), LKN$(), LPN$(), LRN$(), PKN$()
     Shared GIN%(), GIR%(), GSN%()
@@ -594,13 +594,13 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     For I = 0 To 9:
         Locate I + 4: Color 12: Print I; " ";
-        Color 15: Print statsA1$(I);
+        Color 15: Print rbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN1$(I):
     Next
     For I = 0 To 5:
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print statsA2$(I);
+        Color 15: Print wrName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN2$(I)
     Next
@@ -609,7 +609,7 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
     For I = 0 To 2:
         Locate I + 12, 40: Color 12: Print I; " ";
-        Color 15: Print statsA4$(I);
+        Color 15: Print krName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN4$(I)
     Next
@@ -620,7 +620,7 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     For I = 0 To 3:
         Locate I + 16: Color 12: Print I; " ";
-        Color 15: Print statsA3$(I);
+        Color 15: Print qbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN3$(I)
     Next
@@ -631,7 +631,7 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     For I = 0 To 2:
         Locate I + 17, 40: Color 12: Print I; " ";
-        Color 15: Print statsA5$(I);
+        Color 15: Print prName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN5$(I)
     Next
@@ -656,13 +656,13 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     Locate 4: Color 12: Print "0 ";
-    Color 15: Print statsA6$(0);
+    Color 15: Print punterName$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AN6$(0)
 
     For I = 0 To 1
         Locate I + 4, 40: Color 12: Print I; " ";
-        Color 15: Print statsA7$(I);
+        Color 15: Print pkName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN7$(I)
     Next
@@ -676,13 +676,13 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     For I = 0 To 9:
         Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print statsDI$(I);
+        Print " ";: Color 15: Print intName$(I);
         Color 12: Print Tab(20); Using "##"; I;
         Print " ";: Color 7: Print DIN$(I):
     Next
     For I = 0 To 14:
         Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print statsDS$(I);
+        Print " ";: Color 15: Print sackName$(I);
         Color 12: Print Tab(63); Using "##"; I;
         Print " ";: Color 7: Print DSN$(I):
     Next
@@ -792,7 +792,7 @@ End Sub
 '...explanation...
 Sub GetDiskID_ALIGN (A$)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Do
 
@@ -875,7 +875,7 @@ Sub GetDiskID_ALIGN (A$)
                 BO% = 0
             Else
                 Locate 2, 33
-                Color statsPA%(2), statsPA%(1): Print A$
+                Color teamRatings%(2), teamRatings%(1): Print A$
 
                 Do
                     Color 15, 4
@@ -901,7 +901,7 @@ End Sub
 '...explanation...
 Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
 
-    Shared statsPA%()
+    Shared teamRatings%()
 
     Selection% = 1
     Count% = numberTeams
@@ -933,7 +933,7 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
         
         Get #1, teamIdx
         
-        For I1 = 0 To 4: statsPA%(I1) = CVI(Q$(I1 + 11)): Next I1
+        For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
         
         Close 1
 
