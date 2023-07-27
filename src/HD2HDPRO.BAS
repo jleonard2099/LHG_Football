@@ -85,33 +85,13 @@ Sub Hd2HdPro_League (X2)
 
                 ER = 0
 
-                Call GetDiskID_HD2HDPRO(A$)
+                'Call GetDiskID_HD2HDPRO(A$)
+                Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+                statFile$ = nameStatFile$(team$)
 
-                B$ = A$
-
-                For XX = 4 To 11:
-                    If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-                Next XX
-
-                For XX = 12 To 14:
-                    If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-                Next XX
-
-                QQ = 8
-
-                For XX = 11 To 4 Step -1:
-                    If Mid$(B$, XX, 1) = "_" Then
-                        QQ = XX - 4
-                    Else
-                        Exit For
-                    End If
-                Next XX
-
-                Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
-
-                If Not _FileExists(diskPaths$(1) + Z$ + "S") Then
+                If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
                     Cls
-                    Color 14: Print "UNABLE TO LOCATE STAT FILE "; diskPaths$(1) + Z$
+                    Color 14: Print "UNABLE TO LOCATE STAT FILE "; diskPaths$(1) + statFile$
                     Print
                     Print
                     Print
@@ -119,21 +99,27 @@ Sub Hd2HdPro_League (X2)
                     J$ = GetKeyPress$
                 End If
 
-            Loop Until _FileExists(diskPaths$(1) + Z$ + "S")
+            Loop Until _FileExists(diskPaths$(1) + statFile$ + "S")
 
-            Open diskPaths$(1) + Z$ + "S" For Input As #2
+            Open diskPaths$(1) + statFile$ + "S" For Input As #2
+
             Input #2, YY%
+
             For I = 1 To 120: Input #2, statsO%(I): Next I
+
             For I = 1 To 120: Input #2, compO$(I): Next I
+
             For I = 1 To 120: Input #2, statsT%(I): Next I
+
             For I = 1 To 120: Input #2, statsH$(I): Next I
+
             Close #2
 
             'Check if same league
             If SL <> 1 Then
 
                 Call ChooseLeague_HD2HD(targetFile$)
-                LG$ = targetFile$
+                LG1$ = targetFile$
 
                 If X2 <> 0 Then
                     Call ChooseLeague_HD2HD(targetFile$)
@@ -189,14 +175,12 @@ Sub Hd2HdPro_League (X2)
         If UCase$(J$) = "P" Then X1 = 1
         If UCase$(J$) = "S" Then VPP = 1
 
-        W$ = LG$ + ".LIB"
-
-        Open diskPaths$(2) + W$ For Input As #1
+        Open diskPaths$(2) + LG1$ + ".LIB" For Input As #1
 
         Input #1, X%
 
         If X% = 0 Then
-            Input #1, LG$
+            Input #1, LG1$
             Input #1, div1$
             Input #1, div2$
             For X = 1 To 15:
@@ -210,7 +194,7 @@ Sub Hd2HdPro_League (X2)
         End If
 
         If X% = 1 Then
-            Input #1, LG$
+            Input #1, LG1$
             Input #1, div1$
             Input #1, div2$
             Input #1, div3$
@@ -229,9 +213,7 @@ Sub Hd2HdPro_League (X2)
 
         If X2 = 1 Then
 
-            Q2$ = LG2$ + ".LIB"
-
-            Open diskPaths$(2) + Q2$ For Input As #1
+            Open diskPaths$(2) + LG2$ + ".LIB" For Input As #1
             Input #1, X%
 
             If X% = 0 Then
@@ -375,13 +357,9 @@ Sub Hd2HdPro_League (X2)
 
         'Generate output
         If VPP <> 1 Then
-
-            Call Hd2HdPro_Report(A$, LG$, LG2$, DV$(), DV2$())
-
+            Call Hd2HdPro_Report(team$, LG1$, LG2$, DV$(), DV2$())
         Else
-
-            Call Hd2HdPro_Screen(A$, LG$, LG2$, DV$(), DV2$())
-
+            Call Hd2HdPro_Screen(team$, LG1$, LG2$, DV$(), DV2$())
         End If
 
         Close 2
@@ -488,7 +466,7 @@ End Sub
 '     Hd2HdPro_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub Hd2HdPro_Screen (A$, LG$, LG2$, DV$(), DV2$())
+Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -535,7 +513,7 @@ Sub Hd2HdPro_Screen (A$, LG$, LG2$, DV$(), DV2$())
         If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then RDD = 3
 
         Color 11
-        Print LG$; " "; DV$(RDD);
+        Print LG1$; " "; DV$(RDD);
 
         Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -757,7 +735,7 @@ Sub Hd2HdPro_Screen (A$, LG$, LG2$, DV$(), DV2$())
     Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
     Color 11
-    Print LG$;
+    Print LG1$;
 
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -766,7 +744,8 @@ Sub Hd2HdPro_Screen (A$, LG$, LG2$, DV$(), DV2$())
         If DV$(W) <> "XXX" And DV$(W) <> "" Then
 
             Color 15
-            Locate , 1: Print DV$(W);
+            'We have to limit this to 16 because we start stats on column 17
+            Locate , 1: Print Left$(DV$(W), 16);
 
             Color 7
             Locate , 17: Print Using "##"; THW!(W);
@@ -969,7 +948,7 @@ End Sub
 '     Hd2HdPro_Report Subroutine
 '----------------------------------------
 '...explanation...
-Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
+Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$
 
@@ -1014,8 +993,8 @@ Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
 
             Locate 7, 32
             Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-            Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-            Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE PROGRAM"
+            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES"
+            Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
             Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
             Locate 7, 37: Input reportFile$
 
@@ -1058,7 +1037,7 @@ Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
 
         If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
-            Print #2, LG$; " "; DV$(RDD)
+            Print #2, LG1$; " "; DV$(RDD)
 
             For K = DD To EE
 
@@ -1210,7 +1189,7 @@ Sub Hd2HdPro_Report (A$, LG$, LG2$, DV$(), DV2$())
     Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
     Print #2, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
     Print #2, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-    Print #2, LG$
+    Print #2, LG1$
 
     For W = 1 To 3
 

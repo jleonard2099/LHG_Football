@@ -1,5 +1,5 @@
 '----------------------------------------
-' Used across more than one source file
+' Used in more than one source file
 '----------------------------------------
 Dim opSysType$
 
@@ -9,14 +9,14 @@ Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 ' -------------------------
 Dim Shared A$
 
-Dim ydsCompAdj 'YC! is used elsewhere
-Dim mascot$, stadium$
-
 '-- transition away from this
 Dim Shared fileLength&
 
-'-- combine these
-Dim ATT&, teamAttendance&
+Dim teamAttendance&
+
+Dim ydsCompAdj 'YC! is used elsewhere
+
+Dim mascot$, stadium$, teamNick$
 
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
@@ -67,14 +67,7 @@ Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
 Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
 Dim PKN$(2, 1), PKR$(2, 1)
 
-'-- this is the same dimensions as AA$() for the game
-Dim statsAA$(1)
-
 Dim statsPK$(2, 1)
-
-'TP$() = individual record categories
-'TP1$() = team record categories
-Dim TP$(46), TP1$(43)
 
 Dim statsGI%(9, 2), GIN%(9, 2), GIR%(9, 2), statsGS%(15, 1), GSN%(15, 1), GSR%(15, 1)
 Dim statsZ1%(40)
@@ -90,7 +83,7 @@ Dim statsZ2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 
 
 '----------------------------------------
-' Used across ALIGN routines
+' Used in ALIGN / MERGE routines
 '----------------------------------------
 Dim Ycurr%, Yroad%
 
@@ -108,7 +101,7 @@ Dim W0N(15), WN1(15)
 
 
 '----------------------------------------
-' Used across CAREER routines
+' Used in CAREER routines
 '----------------------------------------
 Dim careerA1$(50), careerA2$(40), careerA3$(20), careerA4$(15), careerA5$(15), careerA6$(10), careerA7$(10)
 Dim careerDI$(55), careerDS$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
@@ -140,7 +133,7 @@ Dim careerRC!(6), careerTT!(50)
 
 
 '----------------------------------------
-' Used across COMPILER routines
+' Used in COMPILER routines
 '----------------------------------------
 Dim FG
 Dim puntNum
@@ -167,53 +160,69 @@ Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 
 
-'----------------------------------------
-' Used across DRAFT.BAS routines
-'----------------------------------------
-Dim C0%(9), C1%(9), C2%(15), C3%(9), C4%(5), C5%(5), C6%(3), C7%(3), C8%(3), C9%(2)
-Dim D%(2), D1%(2), D2%(2), draftD3%(2), D4%(1), D5%(1), D6%(7), D7%(1), D8%(1)
-Dim FI%(9), FS%(14)
-Dim draftSX%(3), QA%(4)
-
-Dim C1$(9), C2$(5), C3$(3), C4$(2), C5$(2), C6$(2), C7$(1)
-Dim FI$(9), FS$(14)
-
 
 '----------------------------------------
-' Used across NEWLDR.BAS,
-'   LOOKY.BAS routines
+' Used in DRAFT routines
 '----------------------------------------
-Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
-Dim TMR, totStats
+Dim FGA_DRAFT(1), FGPct_DRAFT(1)
+Dim PAT_DRAFT(1), PATPct_DRAFT(1)
 
-Dim statsO%(120), lookyP%(1)
-Dim statsT%(120), TR%(120), Y%(30)
+Dim krNumRet_DRAFT(2), krRetAvg_DRAFT(2)
+Dim leagRat_DRAFT(7), numInt_DRAFT(9), numSack_DRAFT(14)
+Dim prRet_DRAFT(2), prRetAvg_DRAFT(2), puntAvg_DRAFT(2)
+Dim qbArmRat_DRAFT(3), qbPA_DRAFT(3), qbPCPct_DRAFT(3), qbIntPct_DRAFT(3)
+Dim rbAtt_DRAFT(9), rbAvg_DRAFT(9), rbRec_DRAFT(15), rbRecAvg_DRAFT(9)
+Dim tmRat_DRAFT(4), wrRec_DRAFT(5), wrAvg_DRAFT(5)
 
-Dim GMA!(300), GMB!(180), GMC!(120)
-
-Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
-Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
-Dim A7L!(60, 5), A8L!(300), A9L!(450)
-Dim CRD!(120), CRDR!(120)
-Dim GI!(1, 9, 2), GS!(1, 14, 1)
-Dim K!(1, 12), K2!(1, 13, 17)
-Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
-
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
-Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
-Dim compO$(120), expCategories$(74), statsH$(120), HR$(120)
-Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
-Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
-Dim lookyDI$(1, 9), lookyDS$(1, 14), lookyTT$(31, 30)
-Dim QBL$(120), gameSITE$(120), SITER$(120)
-Dim TMM$(480), TPP$(480), TYY$(480)
-
-Dim Z1$(40), Z2$(40)
+Dim intNam_DRAFT$(9), krNam_DRAFT$(2)
+Dim prNam_DRAFT$(2), pntNam_DRAFT$(2), pkNam_DRAFT$(1)
+Dim qbNam_DRAFT$(3), rbNam_DRAFT$(9)
+Dim sackNam_DRAFT$(14), wrNam_DRAFT$(5)
 
 
 '----------------------------------------
-'   Used across Head-To-Head routines
+' Used in TRADE routines
+'----------------------------------------
+Dim haveStats(1)
+
+' ** Team File **
+Dim FGA_TRADE(1, 1), FGPct_TRADE(1, 1)
+Dim PAT_TRADE(1, 1), PATPct_TRADE(1, 1)
+
+Dim krNumRet_TRADE(1, 2), krRetAvg_TRADE(1, 2)
+Dim leagRat_TRADE(1, 7), numInt_TRADE(1, 9), numSack_TRADE(1, 14)
+Dim prRet_TRADE(1, 2), prRetAvg_TRADE(1, 2), puntAvg_TRADE(1, 3)
+Dim qbArmRat_TRADE(1, 3), qbPA_TRADE(1, 3), qbPCPct_TRADE(1, 3), qbIntPct_TRADE(1, 3)
+Dim rbAtt_TRADE(1, 9), rbAvg_TRADE(1, 9), rbRec_TRADE(2, 15), rbRecAvg_TRADE(1, 9)
+Dim tmRat_TRADE(1, 4), wrAvg_TRADE(1, 5), wrRec_TRADE(1, 5)
+Dim ydCmpAdj_TRADE!(1), ydsPerComp_TRADE(1)
+
+Dim krNam_TRADE$(2, 3), nicks_TRADE$(1)
+Dim prNam_TRADE$(2, 3), pntNam_TRADE$(2, 3), pkNam_TRADE$(1, 1), puntNam_TRADE$(1)
+Dim qbNam_TRADE$(2, 4), rbNam_TRADE$(2, 9)
+Dim teams_TRADE$(1), wrNam_TRADE$(2, 6)
+
+
+' ** Stats File **
+Dim tradeAF!(1, 1, 4), tradeAM!(1, 1, 4)
+Dim tradeLC!(2, 15), tradeLF!(1, 1), tradeLI!(1, 9)
+Dim tradeLK!(1, 2), tradeLP!(1, 3), tradeLR!(1, 9)
+Dim tradePK!(1, 2)
+Dim tradeT!(1)
+Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
+
+Dim tradeGI%(1, 9, 2), tradeGS%(1, 14, 1)
+
+Dim statNam_TRADE$(1)
+Dim tradeLC$(1, 15, 1), tradeLF$(1, 1), tradeLI$(1, 9, 1)
+Dim tradeLK$(1, 2, 1), tradeLP$(1, 3, 1), tradeLR$(1, 9, 1)
+Dim tradePK$(1, 2, 1), tradePR$(1, 2)
+Dim tradeQB$(1, 3), tradeRB$(1, 9), tradeWR$(1, 5)
+Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
+Dim tradeYN$(1)
+
+'----------------------------------------
+'   Used in Head-To-Head routines
 '----------------------------------------
 Dim div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -237,49 +246,47 @@ Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
 
 
 '----------------------------------------
-' Used across SCHEDULE.BAS routines
+' Used in RECORD routines
 '----------------------------------------
-Dim BS%, NS%
-Dim N$
-
-Dim scheduleAP%(1), scheduleL%(13), scheduleNG%(MAX_GAMES, 20)
-
-Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
-Dim scheduleQB_V$(20), scheduleQB_H$(20)
-Dim scheduleYN$(MAX_GAMES, 1)
-
-'----------------------------------------
-' Used across TRADE.BAS routines
-'----------------------------------------
-Dim statsA$(1)
-Dim tradeA1$(2, 9), tradeA2$(2, 6), tradeA3$(2, 4), tradeA4$(2, 3)
-Dim tradeA5$(2, 3), tradeA6$(2, 3), tradeA7$(1, 1)
-Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
-Dim NY$(1), PU$(1), SA$(1), TN$(1), tradeYN$(1)
-
-Dim tradeA0%(1, 9), tradeA1%(1, 9), tradeA2%(2, 15), tradeA3%(1, 9), tradeA4%(1, 5)
-Dim tradeA5%(1, 5), tradeA6%(1, 3), tradeA7%(1, 3), tradeA8%(1, 3), tradeA9%(1, 2)
-Dim tradeB%(1, 2), tradeB1%(1, 2), tradeB2%(1, 2), tradeB3%(1, 3), tradeB4%(1, 1)
-Dim tradeB5%(1, 1), tradeB6%(1, 7), tradeB7%(1, 1), tradeB8%(1, 1)
-Dim tradeDI%(1, 9), tradeDS%(1, 14), tradeGI%(1, 9, 2), tradeGS%(1, 14, 1)
-Dim tradePA%(1, 4), tradeQX%(1, 3), tradeYC%(1)
-Dim tradeS(1)
-
-Dim tradeT!(1)
-Dim tradeLC$(1, 15, 1), tradeLF$(1, 1), tradeLI$(1, 9, 1)
-Dim tradeLK$(1, 2, 1), tradeLP$(1, 3, 1), tradeLR$(1, 9, 1)
-Dim tradePK$(1, 2, 1), tradePR$(1, 2)
-Dim tradeQB$(1, 3), tradeRB$(1, 9), tradeWR$(1, 5)
-Dim tradeAF!(1, 1, 4), tradeAM!(1, 1, 4)
-Dim tradeLC!(2, 15), tradeLF!(1, 1), tradeLI!(1, 9)
-Dim tradeLK!(1, 2), tradeLP!(1, 3), tradeLR!(1, 9)
-Dim tradePK!(1, 2)
-Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
-Dim YC!(1)
+'	ind recs, team recs
+Dim TP$(46), TP1$(43)
 
 
 '----------------------------------------
-' Used across SEExxx.BAS routines
+' Used in STAT / INPUT
+'----------------------------------------
+Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
+Dim TMR, totStats
+
+Dim statsO%(120), lookyP%(1)
+Dim statsT%(120), TR%(120), Y%(30)
+
+Dim GMA!(300), GMB!(180), GMC!(120)
+
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
+Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
+Dim A7L!(60, 5), A8L!(300), A9L!(450)
+Dim CRD!(120), CRDR!(120)
+Dim GI!(1, 9, 2), GS!(1, 14, 1)
+Dim K!(1, 12), K2!(1, 13, 17)
+Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
+
+Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
+Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
+Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
+Dim compO$(120), expCategories$(74), statsH$(120), HR$(120)
+Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
+Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
+Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
+Dim QBL$(120), gameSITE$(120), SITER$(120)
+Dim TMM$(480), TPP$(480), TYY$(480)
+
+Dim Z1$(40), Z2$(40)
+
+
+
+'----------------------------------------
+' Used in SEExxx routines
 '----------------------------------------
 Dim L!(60), LD!(240), LZ!(240), T!(60), W!(60)
 Dim seeP$(60), TM$(60) ', TR$(10, 20)
@@ -287,7 +294,19 @@ Dim seePR$(1200), seeT$(60)
 
 
 '----------------------------------------
-' Used across Game Routines
+' Used in SCHEDULE routines
+'----------------------------------------
+Dim BS%, NS%
+
+Dim scheduleAP%(1), scheduleL%(13), scheduleNG%(MAX_GAMES, 20)
+
+Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
+Dim scheduleQB_V$(20), scheduleQB_H$(20)
+Dim scheduleYN$(MAX_GAMES, 1)
+
+
+'----------------------------------------
+' Used in Game Routines
 '----------------------------------------
 Dim scheduleFile$
 
@@ -315,7 +334,7 @@ Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), 
 Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
 Dim Shared C(50), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
 Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9)
-Dim Shared J6(1), K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
+Dim Shared K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
 Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
 Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), scoreTimes(50), T1(1), timePoss(1)
 Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1)

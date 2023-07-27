@@ -1,4 +1,4 @@
-Sub COMPNATL ()
+Sub CompileNatlOrg ()
 
     _Title "3-in-1 Football - Update Org Stats"
 

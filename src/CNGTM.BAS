@@ -37,20 +37,25 @@ Sub CNGTM ()
 
         If ExitCode% <> 27 Then
 
-            Call GetTeam_CNGTM(A$, mascot$, YN$, stadium$, teamNbr, YC!)
+            'Call GetTeam_CNGTM(A$, YN$, teamNbr, )
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
-            Select Case RN
+            If teamNbr <> 0 Then
 
-                Case 1
-                    Call EditTeam(A$, mascot$, YN$, stadium$, teamNbr, YC!)
+                Select Case RN
 
-                Case 2
-                    Call PrintRoster(A$, mascot$, teamNbr)
+                    Case 1
+                        Call EditTeam(team$, YN$, teamNbr)
 
-                Case 3
-                    Call ViewRoster(A$, mascot$, teamNbr)
+                    Case 2
+                        Call PrintRoster(team$, teamNbr)
 
-            End Select
+                    Case 3
+                        Call ViewRoster(team$, teamNbr)
+
+                End Select
+                
+            End If
 
         End If
 
@@ -63,7 +68,13 @@ End Sub
 '       ViewRoster Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintRoster (A$, mascot$, B8%)
+Sub PrintRoster (teamName$, teamIdx)
+
+    Shared mascot$, stadium$
+    
+    Shared YC!
+    
+    Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
     
@@ -81,7 +92,7 @@ Sub PrintRoster (A$, mascot$, B8%)
     Color 0, 15
 
     ' *** PRINT TEAM ROSTER ***
-    LPrint "TEAM ROSTER FOR "; A$; " "; mascot$; " TEAM NUMBER ="; B8%
+    LPrint "TEAM ROSTER FOR "; teamName; " "; mascot$; " TEAM NUMBER ="; teamIdx
     LPrint
     LPrint Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
     LPrint Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
@@ -199,7 +210,13 @@ End Sub
 'a user is prompted to press keys to CONTINUE
 'This improvement over the original makes it
 'faster and easier to proceed through screens
-Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
+Sub EditTeam (teamName$, YN$, teamNbr)
+
+    Shared mascot$, stadium$
+    
+    Shared YC!
+    
+    Shared teamAttendance&
 
     Shared rbName$(), wrName$(), qbName$(), krName$()
     Shared prName$(), punterName$(), pkName$()
@@ -216,6 +233,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
     Do
 
+        Color 15, 0
         Cls
 
         U$ = "CHANGE/EDIT AN EXISTING TEAM"
@@ -259,7 +277,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
         Select Case choice
 
             Case 1
-                Call ChangeTeamRatings(A$, mascot$, YN$, stadium$, teamNbr, YC!)
+                Call ChangeTeamRatings(teamName$, YN$, teamNbr)
 
             Case 2
 
@@ -271,7 +289,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "RUSH AVG  REC AVG"
+                    Print "    NAME"; Tab(20); "RUSH AVG  REC AVG"
                     Color 15
 
                     For I = 0 To 9:
@@ -338,7 +356,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "REC AVG"
+                    Print "    NAME"; Tab(20); "REC AVG"
                     Color 15
 
                     For I = 0 To 5:
@@ -397,7 +415,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "COMP%   INT%   YDS/COMP ADJ"
+                    Print "    NAME"; Tab(20); "COMP%   INT%   YDS/COMP ADJ"
                     Color 15
 
                     For I = 0 To 3:
@@ -466,7 +484,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "RET AVG"
+                    Print "    NAME"; Tab(20); "RET AVG"
                     Color 15
 
                     For I = 0 To 2:
@@ -522,7 +540,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "RET AVG"
+                    Print "    NAME"; Tab(20); "RET AVG"
                     Color 15
 
                     For I = 0 To 2:
@@ -578,7 +596,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 15
-                    Print "   NAME"; Tab(20); "AVG"
+                    Print "    NAME"; Tab(20); "AVG"
 
                     For I = 0 To 0:
                         Print Using "## "; I + 1;
@@ -632,7 +650,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "FG%   EP%"
+                    Print "    NAME"; Tab(20); "FG%   EP%"
                     Color 15
 
                     For I = 0 To 1:
@@ -690,7 +708,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                 Color 14: Print U$
                 Print
                 Color 12
-                Print "   NAME"; Tab(20); "SACKS"
+                Print "    NAME"; Tab(20); "SACKS"
                 Color 15
 
                 Locate 4
@@ -746,7 +764,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     Color 14: Print U$
                     Print
                     Color 12
-                    Print "   NAME"; Tab(20); "INTERCEPTIONS"
+                    Print "    NAME"; Tab(20); "INTERCEPTIONS"
                     Color 15
 
                     Locate 4
@@ -938,7 +956,7 @@ Sub EditTeam (A$, mascot$, YN$, stadium$, teamNbr, YC!)
             If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
         Next
 
-        Call SaveChangedTeam(A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
+        Call SaveChangedTeam(teamName$, YN$, teamNbr, YC%)
 
     End If
 
@@ -950,7 +968,13 @@ End Sub
 '       ChangeTeamRatings Subroutine
 '----------------------------------------
 '...explanation...
-Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
+Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
+
+    Shared mascot$, stadium$
+    
+    Shared YC!
+    
+    Shared teamAttendance&
 
     Shared rbName$(), wrName$(), qbName$(), krName$()
     Shared prName$(), punterName$(), pkName$()
@@ -972,7 +996,7 @@ Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
     Color 15
     Locate 2: Print " 1. TEAM NUMBER "; teamNbr
     Locate 3: Print " 2. DISK ID "; YN$
-    Locate 4: Print " 3. TEAM NAME "; A$
+    Locate 4: Print " 3. TEAM NAME "; teamName$
     Locate 5: Print " 4. TEAM NICKNAME "; mascot$
     Locate 6: Print " 5. DEF RUSHING ADJ "; leagueRatings%(0)
     Locate 7: Print " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
@@ -997,7 +1021,7 @@ Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
         Locate 22, 1
         Print "TEAM APPEARANCE: ";
-        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
+        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
     End If
 
     Color 15, 0
@@ -1014,13 +1038,13 @@ Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
             Select Case B9
 
                 Case 1
-                    Locate 2: Input " 1. TEAM NUMBER "; B8%
+                    Locate 2: Input " 1. TEAM NUMBER "; teamNbr
 
                 Case 2
                     Locate 3: Input " 2. DISK ID "; YN$
 
                 Case 3
-                    Locate 4: Input " 3. TEAM NAME "; A$
+                    Locate 4: Input " 3. TEAM NAME "; teamName$
 
                 Case 4
                     Locate 5: Input " 4. TEAM NICKNAME "; mascot$
@@ -1067,7 +1091,7 @@ Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
                     End If
                     Color 15, 0
 
@@ -1076,7 +1100,7 @@ Sub ChangeTeamRatings (A$, mascot$, YN$, stadium$, teamNbr, YC!)
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(A$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
                     End If
                     Color 15, 0
 
@@ -1101,7 +1125,13 @@ End Sub
 '       SaveChangedTeam Subroutine
 '----------------------------------------
 '...explanation...
-Sub SaveChangedTeam (A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
+Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
+
+    Shared mascot$, stadium$
+    
+    Shared YC!
+    
+    Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
     
@@ -1156,7 +1186,7 @@ Sub SaveChangedTeam (A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
 
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    LSet Q$(1) = A$
+    LSet Q$(1) = team$
     LSet Q$(2) = mascot$
 
     For I = 0 To 7:
@@ -1233,7 +1263,7 @@ Sub SaveChangedTeam (A$, mascot$, YN$, stadium$, teamNbr, YC%, teamAttendance&)
 
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
-    LSet Q$(1) = A$
+    LSet Q$(1) = team$
     LSet Q$(2) = stadium$
     LSet Q$(3) = MKL$(teamAttendance&)
     LSet Q$(4) = "x"
@@ -1293,7 +1323,13 @@ End Sub
 '       ViewRoster Subroutine
 '----------------------------------------
 '...explanation...
-Sub ViewRoster (A$, mascot$, B8%)
+Sub ViewRoster (team$, teamNbr)
+
+    Shared mascot$, stadium$
+    
+    Shared YC!
+    
+    Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
     
@@ -1312,10 +1348,10 @@ Sub ViewRoster (A$, mascot$, B8%)
         Cls
         Color 11
         Print "TEAM ROSTER FOR ";
-        Color teamRatings%(2), teamRatings%(1): Print A$;
+        Color teamRatings%(2), teamRatings%(1): Print team$;
 
         Color 11, 0: Print "   TEAM NUMBER =";
-        Color 14: Print B8%
+        Color 14: Print teamNbr
 
         Print
 

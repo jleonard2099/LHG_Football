@@ -1,4 +1,4 @@
-Sub COMPCOLL ()
+Sub CompileCollege ()
 
     _Title "3-in-1 Football - Update Conference Stats"
 

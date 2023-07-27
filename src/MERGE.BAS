@@ -82,35 +82,16 @@ Sub MergeStats ()
 
         If UCase$(I$) = "N" And I$ <> Chr$(27) Then
 
-            Call GetDiskID_MERGE(A$)
-
-            B$ = A$
-
-            For XX = 4 To 11:
-                If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-            Next XX
-
-            For XX = 12 To 14:
-                If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-            Next XX
-
-            QQ = 8
-            For XX = 11 To 4 Step -1:
-                If Mid$(B$, XX, 1) = "_" Then
-                    QQ = XX - 4
-                Else
-                    Exit For
-                End If
-            Next XX
-
-            statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+            'Call GetDiskID_MERGE(A$)
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+			statFile$ = nameStatFile$(team$)
 
             Color , 0
             Cls
 
             Locate 10, 15: Print "ROAD STATS ARE ON DRIVE "; pathRoadStats$
             Locate , 15: Print "MASTER STATS ARE ON DRIVE "; pathCurrentStats$
-            Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; A$
+            Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; team$
 
             Do
                 Locate 14, 15: Print "ANY CHANGE (YN)"
@@ -122,6 +103,7 @@ Sub MergeStats ()
                 If _FileExists(pathRoadStats$ + statFile$) Then
 
                     Open pathRoadStats$ + statFile$ For Input As #1
+
                     Input #1, B$
 
                     For I = 0 To 9: Input #1, AR1$(I): Next I
@@ -155,26 +137,38 @@ Sub MergeStats ()
                         Next
                     Next
 
-                    For I = 0 To 9: Input #1, LIR!(I): Input #1, LIR$(I, 0)
-                    Input #1, LIR$(I, 1): Next
+                    For I = 0 To 9: 
+                        Input #1, LIR!(I)
+                        Input #1, LIR$(I, 0)
+                        Input #1, LIR$(I, 1)
+                    Next
 
                     Close #1
 
                     Open pathRoadStats$ + statFile$ + "S" For Input As #4
+
                     Input #4, Yroad%
+
                     For I = 1 To 120: Input #4, ORD%(I): Next I
                     For I = 1 To 120: Input #4, ORD$(I): Next I
                     For I = 1 To 120: Input #4, TR%(I): Next I
                     For I = 1 To 120: Input #4, HR$(I): Next I
+
                     For I = 0 To 1
-                    For I1 = 1 To 120: Input #4, APR%(I, I1): Next: Next
+                        For I1 = 1 To 120: 
+                            Input #4, APR%(I, I1)
+                        Next
+                    Next
+
                     For I = 1 To 120: Input #4, CRDR!(I): Next I
                     For I = 1 To 120: Input #4, SITER$(I): Next I
+
                     Close #4
 
                     If _FileExists(pathCurrentStats$ + statFile$) Then
 
                         Open pathCurrentStats$ + statFile$ For Input As #1
+
                         Input #1, B$
 
                         For I = 0 To 9: Input #1, rbName$(I): Next I
@@ -206,15 +200,23 @@ Sub MergeStats ()
                         Close 1
 
                         Open pathCurrentStats$ + statFile$ + "S" For Input As #5
+
                         Input #5, Ycurr%
+
                         For I = 1 To 120: Input #5, statsO%(I): Next I
                         For I = 1 To 120: Input #5, compO$(I): Next I
                         For I = 1 To 120: Input #5, statsT%(I): Next I
                         For I = 1 To 120: Input #5, statsH$(I): Next I
+
                         For I = 0 To 1
-                        For I1 = 1 To 120: Input #5, compAP%(I, I1): Next: Next
+                            For I1 = 1 To 120: 
+                                Input #5, compAP%(I, I1)
+                            Next
+                        Next
+
                         For I = 1 To 120: Input #5, CRD!(I): Next I
                         For I = 1 To 120: Input #5, gameSITE$(I): Next I
+
                         Close #5
 
                         SEQ = 0

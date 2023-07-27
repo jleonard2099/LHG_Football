@@ -84,9 +84,9 @@ Sub SCHEDULE ()
 
                         Locate 7, 32
                         Locate , 12: Print "ENTER NAME FOR SCHEDULE: ": Print
-                        Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-                        Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
-                        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
+                        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES"
+                        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+                        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
                         Locate , 12: Print "SAMPLE NAMES ARE ARKANSAS, LSU-68, IU76, ETC."
                         Locate 7, 37: Input scheduleFile$
 
@@ -589,99 +589,39 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                 Case "D": I$ = "14"
             End Select
 
-            I5 = Val(I$)
+            setting = Val(I$)
 
-            Select Case I5
+            Select Case setting
+                
                 Case 1:
                     scheduleNG%(gameIndex%, 10) = scheduleNG%(gameIndex%, 10) + 1
                     If scheduleNG%(gameIndex%, 10) > 3 Then scheduleNG%(gameIndex%, 10) = 0
 
-                Case 2 To 3:
+                Case 2, 3:
 
-                    Do
+                    Call ChooseTeam (YN$, NTMS, teamNbr, team$)
+                    
+                    If teamNbr <> 0 Then
 
                         Color 15, 0
-                        Cls
+                        scheduleNG%(gameIndex%, setting - 2) = teamNbr
+                        scheduleYN$(gameIndex%, setting - 2) = YN$
 
-                        JJ = 7
-
-                        Locate 6, 8: Color 15, 4
-
-                        'Print box top
-                        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-                        'Print box sides
-                        For II = 1 To JJ
-                            Locate 6 + II, 8
-                            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-                        Next
-
-                        'Print box bottom
-                        Locate 7 + JJ, 8
-                        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-                        Locate 7, 32
-                        Locate , 12: Print "ENTER DISK ID: ": Print
-                        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-                        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-                        Locate , 12: Print
-                        Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
-                        Locate 7, 27: Input NY$
-
-                        If NY$ = "" And YN$ <> "" Then
-                            NY$ = YN$
-                            Call GetTeam_Schedule(numberTeams, NY$, T1)
-                        Else
-                            YN$ = RTrim$(NY$)
-                            Erase teamNames$
-                            numberTeams = 0
-
-                            Call SelectTeam_Schedule(YN$, numberTeams)
-                            Call GetTeam_Schedule(numberTeams, YN$, T1)
-
+                        If setting = 2 Then
+                            visitor$ = team$
+                            scheduleV$(gameIndex% - Int(gameIndex% / 20) * 20) = team$
+                            visitorQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_V$(gameIndex% - Int(gameIndex% / 20) * 20) = visitorQB$
                         End If
 
-                        Call CheckTeam_Schedule(T1, YN$)
-                        N$ = teamNames$(T1)
-
-                        If BO% = 1 Then
-                            BO% = 0
-                        Else
-                            Locate 2, 33
-                            Color teamRatings%(2), teamRatings%(1): Print N$
-
-                            Do
-                                Color 15, 4
-                                Locate 3, 33: Print "ANY CHANGE (YN)";
-                                I$ = GetKeyPress$
-                            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                            If UCase$(I$) = "N" Then
-
-                                Color 15, 0
-                                scheduleNG%(gameIndex%, I5 - 2) = T1
-                                scheduleYN$(gameIndex%, I5 - 2) = YN$
-                                QB$ = GetQBName$(gameIndex%, I5)
-
-                                If I5 = 2 Then
-                                    visitor$ = N$
-                                    scheduleV$(gameIndex% - Int(gameIndex% / 20) * 20) = N$
-                                    visitorQB$ = QB$
-                                    scheduleQB_V$(gameIndex% - Int(gameIndex% / 20) * 20) = QB$
-                                End If
-
-                                If I5 = 3 Then
-                                    home$ = N$
-                                    scheduleH$(gameIndex% - Int(gameIndex% / 20) * 20) = N$
-                                    homeQB$ = QB$
-                                    scheduleQB_H$(gameIndex% - Int(gameIndex% / 20) * 20) = QB$
-                                End If
-
-                            End If
-
+                        If setting = 3 Then
+                            home$ = team$
+                            scheduleH$(gameIndex% - Int(gameIndex% / 20) * 20) = team$
+                            homeQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_H$(gameIndex% - Int(gameIndex% / 20) * 20) = homeQB$
                         End If
 
-                    Loop Until UCase$(I$) = "N"
+                    End If
 
                 Case 4:
                     scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
@@ -725,7 +665,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
             End Select
 
-        Loop Until (I5 >= 0 And I5 <= 14)
+        Loop Until (setting >= 0 And setting <= 14)
 
         If visitor$ <> "" And home$ <> "" And TM$ <> "" And DT$ <> "" Then
 
@@ -744,7 +684,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
         End If
 
-    Loop Until I5 = 0
+    Loop Until setting = 0
 
 End Sub
 
@@ -803,8 +743,8 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
             Do
                 Locate 7, 32
                 Locate , 12: Print "ENTER NAME FOR SUB-SCHEDULE: ": Print
-                Locate , 12: Print "THE NAME IS 8 CHARACTERS LONG WITH NO PERIODS OR"
-                Locate , 12: Print "SPACES. DO NOT ADD A FILE EXTENSION, THE SCHEDULER"
+                Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES"
+                Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
                 Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
                 Locate , 12: Print "SAMPLE NAMES ARE ARKANSAS, LSU68, IU76, ARK90, ETC"
                 Locate 7, 37: Input subSchedFile$

@@ -42,35 +42,17 @@ Sub LOOKY ()
 
         If UCase$(I$) = "C" Or UCase$(I$) = "P" Then
 
-            Call GetDisk_LOOKY(numberTeams, YN$, A$)
-            B$ = A$
+            'Call GetDisk_LOOKY(numberTeams, YN$, A$)
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+            statFile$ = nameStatFile$(team$)
 
-            For XX = 4 To 11
-                If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-            Next XX
-
-            For XX = 12 To 14
-                If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-            Next XX
-
-            QQ = 8
-            For XX = 11 To 4 Step -1
-                If Mid$(B$, XX, 1) = "_" Then
-                    QQ = XX - 4
-                Else
-                    Exit For
-                End If
-            Next XX
-
-            Z$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
-
-            If Not _FileExists(diskPaths$(1) + Z$) Then
+            If Not _FileExists(diskPaths$(1) + statFile$) Then
                 Call CSMsgBox("UNABLE TO LOCATE COMPILED STATS FILE PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
                 I$ = GetKeyPress$
                 Call CSMsgBox("", 0, Pass)
             Else
-                Call LoadTeamStats(Z$, A$, totalGames%, teamPower, SS)
-                Call ViewStatSummary(Z$, A$, totalGames%, teamPower, SS)
+                Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
+                Call ViewStatSummary(statFile$, team$, totalGames%, teamPower, SS)
             End If
 
         End If
@@ -96,7 +78,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared lookyP%(), teamRatings%()
 
     Shared statsH$(), compO$(), gameSITE$()
-    Shared lookyDI$(), lookyDS$()
+    Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
     Shared statsPK$()
@@ -197,8 +179,8 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     For L = 0 To 38: Input #1, statsZ!(L): Next L
     For L = 0 To 38: Input #1, statsZ1!(L): Next L
-    For J = 0 To 9: Input #1, lookyDI$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
-    For J = 0 To 14: Input #1, lookyDS$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
+    For J = 0 To 9: Input #1, intNam_TRADE$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
+    For J = 0 To 14: Input #1, sackNam_TRADE$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
     For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
     For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
     For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
@@ -334,7 +316,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared statsO%(), teamRatings%(), statsT%(), lookyP%()
 
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared lookyDI$(), lookyDS$(), statsH$()
+    Shared intNam_TRADE$(), sackNam_TRADE$(), statsH$()
     Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
@@ -1011,7 +993,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
-            Print lookyDI$(I, I1); Tab(18);
+            Print intNam_TRADE$(I, I1); Tab(18);
 
             Print Using "####  ####   "; GI!(I, I1, 0); GI!(I, I1, 1);
 
@@ -1041,7 +1023,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            Print lookyDS$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
+            Print sackNam_TRADE$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
         End If
     Next
 
@@ -1063,7 +1045,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared statsO%(), statsT%(), lookyP%()
 
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared lookyDI$(), lookyDS$(), statsH$()
+    Shared intNam_TRADE$(), sackNam_TRADE$(), statsH$()
     Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
@@ -1563,7 +1545,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 9
         If GI!(I, I1, 0) <> 0 Then
-            Print #2, lookyDI$(I, I1); Tab(18);
+            Print #2, intNam_TRADE$(I, I1); Tab(18);
             Print #2, Using "####  ####   ##.#      ###.#    ##    "; GI!(I, I1, 0); GI!(I, I1, 1); GI!(I, I1, 1) / GI!(I, I1, 0); GI!(I, I1, 1) / totalGames%; GI!(I, I1, 2);
             Print #2, Using "###"; LI!(I1);: Print #2, statsLI$(I1, 0); Tab(64); statsLI$(I1, 1)
         End If
@@ -1574,7 +1556,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 14
         If GS!(I, I1, 0) <> 0 Then
-            Print #2, lookyDS$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
+            Print #2, sackNam_TRADE$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
         End If
     Next
 

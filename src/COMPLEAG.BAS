@@ -1,4 +1,4 @@
-Sub COMPPRO ()
+Sub CompileLeague ()
 
     _Title "3-in-1 Football - Update League Stats"
 

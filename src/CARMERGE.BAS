@@ -121,7 +121,7 @@ Sub MergeCareerFiles ()
 
 					If ExitCode% <> 27 Then
 						targetFile$ = RTrim$(targetFile$)
-						Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+						careerFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 					Else
 						Exit Sub
 					End If
@@ -129,39 +129,21 @@ Sub MergeCareerFiles ()
                 End If
 
                 '...Until we press ESC
-            Loop Until ExitCode% = 27 Or Count% = 0 Or Z$ <> ""
+            Loop Until ExitCode% = 27 Or Count% = 0 Or careerFile$ <> ""
 
-            '--- Get team stuff first
-            Call GetTeam_CARMERGE
-
-            B$ = A$
-
-            For XX = 4 To 11:
-                If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-            Next XX
-
-            For XX = 12 To 14:
-                If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-            Next XX
-
-            QQ = 8
-
-            For XX = 11 To 4 Step -1:
-                If Mid$(B$, XX, 1) = "_" Then
-                    QQ = XX - 4
-                Else
-                    Exit For
-                End If
-            Next XX
-
-            Z1$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
-
-            Cls
-            Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; Y
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+            statFile$ = nameStatFile$(team$)
 
             Do
+
+                Color 15, 0
+                Cls
+
+                Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; targetYear
 				Locate 9, 25: Print "ANY CHANGE (YN)"
+
                 I$ = GetKeyPress$
+
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         Loop Until UCase$(I$) = "N"
@@ -180,7 +162,7 @@ Sub MergeCareerFiles ()
         Color 15
 		Print "MERGING CAREER STATS . . . . PLEASE WAIT"
 
-        If Not _FileExists(diskPaths$(1) + Z$ + ".CAR") Then
+        If Not _FileExists(diskPaths$(1) + careerFile$ + ".CAR") Then
             Cls
             Color 7: Print "UNABLE TO LOCATE STAT FILE"
             Print
@@ -189,7 +171,7 @@ Sub MergeCareerFiles ()
             I$ = GetKeyPress$
         Else
 
-            Call AddCareerYear(JX, Z$, Z1$)
+            Call AddCareerYear(JX, careerFile$, statFile$)
 
         End If
 
@@ -368,7 +350,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA1$(I) = A1C$(J) Then
 
                     For W = 1 To 15:
-                        If RBBS!(W, J, 8) = Y Then
+                        If RBBS!(W, J, 8) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -387,7 +369,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                     RBBS!(N, J, 6) = careerLR!(I): careerRBS$(N, J, 0) = LR$(I, 0)
                     RBBS!(N, J, 9) = careerLC!(I): careerRBS$(N, J, 1) = LC$(I, 0)
-                    RBBS!(N, J, 7) = 1: RBBS!(N, J, 8) = Y
+                    RBBS!(N, J, 7) = 1: RBBS!(N, J, 8) = targetYear
 
                     Exit For
 
@@ -413,7 +395,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         RBBS!(N, NB, 9) = careerLC!(I)
                         careerRBS$(N, NB, 1) = LC$(I, 0)
                         RBBS!(N, NB, 7) = 1
-                        RBBS!(N, NB, 8) = Y
+                        RBBS!(N, NB, 8) = targetYear
                     End If
 
                 End If
@@ -434,7 +416,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA2$(I) = A2C$(J) Then
 
                     For W = 1 To 15
-                        If WRRS!(W, J, 5) = Y Then
+                        If WRRS!(W, J, 5) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -454,7 +436,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     WRRS!(N, J, 3) = careerLC!(I + 10)
                     careerWRS$(N, J, 0) = LC$(I + 10, 0)
                     WRRS!(N, J, 4) = 1
-                    WRRS!(N, J, 5) = Y
+                    WRRS!(N, J, 5) = targetYear
 
                     Exit For
 
@@ -474,7 +456,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         WRRS!(N, NC, 3) = careerLC!(I + 10)
                         careerWRS$(N, NC, 0) = LC$(I + 10, 0)
                         WRRS!(N, NC, 4) = 1
-                        WRRS!(N, NC, 5) = Y
+                        WRRS!(N, NC, 5) = targetYear
                     End If
 
                 End If
@@ -495,7 +477,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA3$(I) = A3C$(J) Then
 
                     For W = 1 To 15:
-                        If QBBS!(W, J, 7) = Y Then
+                        If QBBS!(W, J, 7) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -515,7 +497,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     QBBS!(N, J, 5) = careerLP!(I)
                     careerQBS$(N, J, 0) = statsLP$(I, 0)
                     QBBS!(N, J, 6) = 1
-                    QBBS!(N, J, 7) = Y
+                    QBBS!(N, J, 7) = targetYear
 
                     Exit For
 
@@ -531,7 +513,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             N = 1
                             For K = 9 To 13: QBBS!(N, ND, K - 9) = statsZ2!(I, K): Next
                             QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = statsLP$(I, 0)
-                            QBBS!(N, ND, 6) = 1: QBBS!(N, ND, 7) = Y
+                            QBBS!(N, ND, 6) = 1: QBBS!(N, ND, 7) = targetYear
                         End If
 
                     End If
@@ -554,7 +536,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA4$(I) = A4C$(J) Then
 
                     For W = 1 To 15:
-                        If KRS!(W, J, 5) = Y Then
+                        If KRS!(W, J, 5) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -574,7 +556,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     KRS!(N, J, 3) = careerLK!(I)
                     KRRS$(N, J, 0) = statsLK$(I, 0)
                     KRS!(N, J, 4) = 1
-                    KRS!(N, J, 5) = Y
+                    KRS!(N, J, 5) = targetYear
 
                     Exit For
 
@@ -595,7 +577,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             KRS!(N, NE, 3) = careerLK!(I)
                             KRRS$(N, NE, 0) = statsLK$(I, 0)
                             KRS!(N, NE, 4) = 1
-                            KRS!(N, NE, 5) = Y
+                            KRS!(N, NE, 5) = targetYear
 
                         End If
 
@@ -619,7 +601,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA5$(I) = A5C$(J) Then
 
                     For W = 1 To 15:
-                        If PRS!(W, J, 5) = Y Then
+                        If PRS!(W, J, 5) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -639,7 +621,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     PRS!(N, J, 3) = careerPK!(I)
                     PRRS$(N, J, 0) = careerPK$(I, 0)
                     PRS!(N, J, 4) = 1
-                    PRS!(N, J, 5) = Y
+                    PRS!(N, J, 5) = targetYear
 
                     Exit For
 
@@ -657,7 +639,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             PRS!(N, NF, 3) = careerPK!(I)
                             PRRS$(N, NF, 0) = careerPK$(I, 0)
                             PRS!(N, NF, 4) = 1
-                            PRS!(N, NF, 5) = Y
+                            PRS!(N, NF, 5) = targetYear
                         End If
 
                     End If
@@ -679,7 +661,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerA6$(I) = A6C$(J) Then
 
                     For W = 1 To 15:
-                        If careerPUS!(W, J, 3) = Y Then
+                        If careerPUS!(W, J, 3) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -691,7 +673,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     End If
 
                     careerPUS!(N, J, 0) = statsZ!(7): careerPUS!(N, J, 1) = statsZ!(8)
-                    careerPUS!(N, J, 2) = 1: careerPUS!(N, J, 3) = Y
+                    careerPUS!(N, J, 2) = 1: careerPUS!(N, J, 3) = targetYear
 
                     Exit For
 
@@ -708,7 +690,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             careerPUS!(N, NG, 0) = statsZ!(7)
                             careerPUS!(N, NG, 1) = statsZ!(8)
                             careerPUS!(N, NG, 2) = 1
-                            careerPUS!(N, NG, 3) = Y
+                            careerPUS!(N, NG, 3) = targetYear
                         End If
 
                     End If
@@ -731,7 +713,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If careerA7$(I) = A7C$(J) Then
                     For W = 1 To 15:
-                        If careerFGS!(W, J, 16) = Y Then
+                        If careerFGS!(W, J, 16) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -748,7 +730,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         Next K
 
                         careerFGS!(N, J, 4) = careerLF!(I)
-                        careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = Y
+                        careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = targetYear
                         For J1 = 0 To 4: careerFGS!(N, J, J1 + 5) = AM!(I, J1): Next
                         For J1 = 0 To 4: careerFGS!(N, J, J1 + 10) = AF!(I, J1): Next
                     Else
@@ -760,7 +742,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             Next K
 
                             careerFGS!(N, J, 4) = careerLF!(I)
-                            careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = Y
+                            careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = targetYear
 
                             For J1 = 0 To 4: careerFGS!(N, J, J1 + 5) = AM!(I, J1): Next
                             For J1 = 0 To 4: careerFGS!(N, J, J1 + 10) = AF!(I, J1): Next
@@ -787,7 +769,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 									careerFGS!(N, NH, K - 3) = statsZ2!(K, 17)
 								Next K
                                 careerFGS!(N, NH, 4) = careerLF!(I)
-                                careerFGS!(N, NH, 15) = 1: careerFGS!(N, NH, 16) = Y
+                                careerFGS!(N, NH, 15) = 1: careerFGS!(N, NH, 16) = targetYear
                                 For J1 = 0 To 4: careerFGS!(N, NH, J1 + 5) = AM!(I, J1): Next
                                 For J1 = 0 To 4: careerFGS!(N, NH, J1 + 10) = AF!(I, J1): Next
                                 skipLoop% = 1
@@ -801,7 +783,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                                 Next K
 
                                 careerFGS!(N, NH, 4) = careerLF!(I)
-                                careerFGS!(N, NH, 15) = 1: careerFGS!(N, J, 16) = Y
+                                careerFGS!(N, NH, 15) = 1: careerFGS!(N, J, 16) = targetYear
                                 For J1 = 0 To 4: careerFGS!(N, NH, J1 + 5) = AM!(I, J1): Next
                                 For J1 = 0 To 4: careerFGS!(N, NH, J1 + 10) = AF!(I, J1): Next
 
@@ -830,7 +812,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If careerDI$(I) = DIC$(J) Then
                     For W = 1 To 15:
-                        If careerGIS!(W, J, 2) = Y Then
+                        If careerGIS!(W, J, 2) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -842,7 +824,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     End If
 
                     careerGIS!(N, J, 0) = careerGI%(I, 0)
-                    careerGIS!(N, J, 1) = 1: careerGIS!(N, J, 2) = Y
+                    careerGIS!(N, J, 1) = 1: careerGIS!(N, J, 2) = targetYear
                     Exit For
                 Else
                     RR = RR + 1
@@ -855,7 +837,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             N = 1
                             careerGIS!(N, NJ, 0) = careerGI%(I, 0)
                             careerGIS!(N, NJ, 1) = 1
-                            careerGIS!(N, NJ, 2) = Y
+                            careerGIS!(N, NJ, 2) = targetYear
                         End If
 
                     End If
@@ -877,7 +859,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If careerDS$(I) = DSC$(J) Then
 
                     For W = 1 To 15:
-                        If careerGSS!(W, J, 2) = Y Then
+                        If careerGSS!(W, J, 2) = targetYear Then
                             CHK = CHK + 1
                         End If
                     Next W
@@ -890,7 +872,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                     careerGSS!(N, J, 0) = careerGS%(I, 0)
                     careerGSS!(N, J, 1) = 1
-                    careerGSS!(N, J, 2) = Y
+                    careerGSS!(N, J, 2) = targetYear
 
                     Exit For
                 Else
@@ -906,7 +888,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                             N = 1
                             careerGSS!(N, NK, 0) = careerGS%(I, 0)
                             careerGSS!(N, NK, 1) = 1
-                            careerGSS!(N, NK, 2) = Y
+                            careerGSS!(N, NK, 2) = targetYear
                         End If
 
                     End If

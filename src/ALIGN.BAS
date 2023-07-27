@@ -26,29 +26,9 @@ Sub ALIGN ()
 
         If UCase$(I$) = "N" And I$ <> Chr$(27) Then
 
-            Call GetDiskID_ALIGN(A$)
-
-            B$ = A$
-
-            For XX = 4 To 11
-                If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-            Next XX
-
-            For XX = 12 To 14
-                If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-            Next XX
-
-            QQ = 8
-
-            For XX = 11 To 4 Step -1
-                If Mid$(B$, XX, 1) = "_" Then
-                    QQ = XX - 4
-                Else
-                    Exit For
-                End If
-            Next XX
-
-            statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
+            'Call GetDiskID_ALIGN(A$)
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+            statFile$ = nameStatFile$(team$)
 
             Color 12, 0
             Cls
@@ -58,11 +38,16 @@ Sub ALIGN ()
 
                 Open pathRoadStats$ + statFile$ For Input As #1
                 Input #1, AR$(PX)
+                
 
                 For I = 0 To 9: Input #1, AR1$(I): Next I
+
                 For I = 0 To 5: Input #1, AR2$(I): Next I
+
                 For I = 0 To 3: Input #1, AR3$(I): Next I
+
                 For I = 0 To 2: Input #1, AR4$(I): Next I
+
                 For I = 0 To 2: Input #1, AR5$(I): Next I
 
                 Input #1, AR6$(0)
@@ -74,21 +59,33 @@ Sub ALIGN ()
                 Next J
 
                 For L = 0 To 38: Input #1, ZR!(L): Next L
+
                 For L = 0 To 38: Input #1, ZR1!(L): Next L
+
                 For J = 0 To 9: Input #1, DRI$(J): For J1 = 0 To 2: Input #1, GIR%(J, J1): Next: Next
+
                 For J = 0 To 14: Input #1, DSR$(J): For J1 = 0 To 1: Input #1, GSR%(J, J1): Next: Next
+
                 For I = 0 To 9: Input #1, LRR!(I): Input #1, LRR$(I, 0): Input #1, LRR$(I, 1): Next
+
                 For I = 0 To 15: Input #1, LCR!(I): Input #1, LCR$(I, 0): Input #1, LCR$(I, 1): Next
+
                 For I = 0 To 3: Input #1, LPR!(I): Input #1, LPR$(I, 0): Input #1, LPR$(I, 1): Next
+
                 For I = 0 To 2: Input #1, LKR!(I): Input #1, LKR$(I, 0): Input #1, LKR$(I, 1): Next
+
                 For I = 0 To 2: Input #1, PKR!(I): Input #1, PKR$(I, 0): Input #1, PKR$(I, 1): Next
+
                 For I = 0 To 1:
+
                     Input #1, LFR!(I)
                     Input #1, LFR$(I)
+
                     For I1 = 0 To 4
                         Input #1, AMR!(I, I1)
                         Input #1, AFR!(I, I1)
                     Next
+
                 Next
 
                 For I = 0 To 9:
@@ -132,12 +129,12 @@ Sub ALIGN ()
 
                     Close #1
 
-					Call AlignStats(pathRoadStats$, statFile$)
-					DUMMY$ = "OK"
+                    Call AlignStats(pathRoadStats$, statFile$)
+                    DUMMY$ = "OK"
 
                 Else
                     Cls
-					Locate 2, 10: Color 7
+                    Locate 2, 10: Color 7
                     Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
                     Print
                     Locate , 10
@@ -147,7 +144,7 @@ Sub ALIGN ()
 
             Else
                 Cls
-				Locate 2, 10: Color 7
+                Locate 2, 10: Color 7
                 Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
                 Print
                 Locate , 10
@@ -246,17 +243,21 @@ Sub AlignStats (pathRoadStats$, statFile$)
         Color 7: Print AR5$(I)
     Next
 
-    Color 15
+    Color 11
     Locate 23: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Locate 1, 32
+
     Color 12: Print "STAT ROSTERS"
+
     Print
+
     Color 15: Print "CURRENT  ";
     Color 14: Print "- PUNTERS -";
     Color 7: Print " ROAD";
+
     Color 15: Print Tab(45); "CURRENT  ";
     Color 14: Print "-  KICKERS  -";
     Color 7: Print " ROAD"
@@ -276,6 +277,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Locate 7: Color 15: Print "CURRENT  ";
     Color 14: Print "-INTERCEPTORS-";
     Color 7: Print " ROAD";
+
     Color 15: Print Tab(45); "CURRENT  ";
     Color 14: Print "-  SACKERS  -";
     Color 7: Print " ROAD"
@@ -295,9 +297,8 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Next
 
     Color 11
-	Locate 22: Line Input "HIT ENTER TO ALIGN"; DUMMY$
-    Color 11
-	Locate 22: Print "ALIGNING FILES . . .             "
+    Locate 22: Line Input "HIT ENTER TO ALIGN"; DUMMY$
+    Locate 22: Print "ALIGNING FILES . . .             "
 
     N = 0
 
@@ -550,12 +551,12 @@ Sub AlignStats (pathRoadStats$, statFile$)
         Call ReviewAndSaveAlignment(pathRoadStats$, statFile$)
     Else
 
-		Locate 20
-		Color 14
-		Print "WARNING !! - - ROAD STAT FILE CONTAINS PLAYERS NOT IN EXISTING STATS.  YOU MUST"
-		Print "CHANGE ROAD STAT FILE USING OPTION #6 ON GAME MENU BEFORE ATTEMPTING STAT MERGE."
-		Locate 23, 30
-		Color 13: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
+        Locate 20
+        Color 14
+        Print "WARNING !! - - ROAD STAT FILE CONTAINS PLAYERS NOT IN EXISTING STATS.  YOU MUST"
+        Print "CHANGE ROAD STAT FILE USING OPTION #6 ON GAME MENU BEFORE ATTEMPTING STAT MERGE."
+        Locate 23, 30
+        Color 13: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
 
     End If
 
@@ -580,10 +581,11 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Shared ZN2!(), ZR!(), ZR1!()
 
     Cls
+
     Locate 1, 34
     Color 12: Print "STAT ROSTERS"
     Print
-	
+    
     Color 15: Print "CURRENT  ";
     Color 14: Print "- RUSHERS -";
     Color 7: Print " ROAD";
@@ -636,8 +638,8 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
         Color 7: Print AN5$(I)
     Next
 
-    Color 15: Locate 23: Print "HIT ANY KEY TO CONTINUE"
-
+    Color 11
+    Locate 23: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
@@ -688,9 +690,9 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Next
 
     Color 11
-	Locate 22: Line Input "HIT ENTER TO ALIGN"; DUMMY$
+    Locate 22: Line Input "HIT ENTER TO ALIGN"; DUMMY$
     Color 11
-	Locate 22: Print "ALIGNING FILES . . .             "
+    Locate 22: Print "ALIGNING FILES . . .             "
 
     Open pathRoadStats$ + statFile$ For Output As #1
 

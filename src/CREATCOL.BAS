@@ -38,6 +38,9 @@ Sub CREATCOL ()
                 Z1$(X) = "XXX"
             Next
 
+            div1$ = ""
+            div2$ = ""
+
             Select Case Selection%
 
                 Case 1:
@@ -209,7 +212,8 @@ Sub ReviewEditConf (conference$, div1$, div2$)
 
                 If choice = 1 Then
                     'Add team
-                    Call GetTeam_CREATCOL(Z1$(B), Z2$(B), statsZ1%(B))
+                    'Call GetTeam_CREATCOL(Z1$(B), Z2$(B), statsZ1%(B))
+                    Call ChooseTeam(Z2$(B), NTMS, statsZ1%(B), Z1$(B))
                 Else
                     'Remove team
                     Z1$(B) = "XXX"
@@ -257,28 +261,9 @@ Sub SaveConferences (conference$, div1$, div2$)
         If Z1$(X) = "XXX" Then
             Z1$(X) = Chr$(42)
         Else
-
-            For XX = 4 To 11:
-                If Mid$(Z1$(X), XX, 1) = " " Or Mid$(Z1$(X), XX, 1) = "/" Or Mid$(Z1$(X), XX, 1) = "." Then Mid$(Z1$(X), XX, 1) = "_"
-            Next XX
-
-            For XX = 12 To 14:
-                If Mid$(Z1$(X), XX, 2) = "ST" Then Mid$(Z1$(X), 9, 1) = "_": Mid$(Z1$(X), 10, 2) = "ST"
-            Next XX
-
-            QQ = 8
-
-            For XX = 11 To 4 Step -1:
-                If Mid$(Z1$(X), XX, 1) = "_" Then
-                    QQ = XX - 4
-                Else
-                    Exit For
-                End If
-            Next XX
-
-            YR$ = Left$(Z1$(X), 2)
-            Z1$(X) = Mid$(Z1$(X), 4, QQ) + "." + YR$
-
+            teamName$ = Z1$(X)
+			statFile$ = nameStatFile$(teamName$)
+            Z1$(X) = statFile$
         End If
 
     Next X

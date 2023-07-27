@@ -92,13 +92,13 @@ Sub CARPRNT ()
 				TMR = 6420
 
                 targetFile$ = RTrim$(targetFile$)
-                Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+                careerFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 
 				Color 15, 0
 				Cls
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
-                Open diskPaths$(1) + Z$ + ".CAR" For Input As #1
+                Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #1
 
                 Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
@@ -317,7 +317,7 @@ Sub CARPRNT ()
 				Color 0, 15
 
                 Open "REPORT" For Output As #2
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
 
                 For I = 0 To 50
@@ -410,7 +410,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
 
                 For I = 0 To 40
@@ -472,7 +472,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG"
 
                 For I = 0 To 19
@@ -684,7 +684,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
 
                 For I = 0 To 14
@@ -744,7 +744,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
 
                 For I = 0 To 14
@@ -803,7 +803,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "PUNTERS           YEAR     ATT.     YARDS      AVG."
 
                 For I = 0 To 9
@@ -845,7 +845,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
 
                 For I = 0 To 9
@@ -943,7 +943,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "INTERCEPTORS        YEAR     INTERCEPTIONS"
 
                 For I = 0 To 54
@@ -973,7 +973,7 @@ Sub CARPRNT ()
                 Next I
 
                 Print #2,
-                Print #2, Z$
+                Print #2, careerFile$
                 Print #2, "SACKERS             YEAR          SACKS"
 
                 For I = 0 To 54

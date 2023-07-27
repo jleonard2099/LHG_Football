@@ -19,6 +19,8 @@ Sub InputTeam ()
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
     Shared punterName$(), pkName$(), intName$(), sackName$()
 
+    Shared ydsCompAdj
+
     Do
 
         Color 15, 0
@@ -26,7 +28,7 @@ Sub InputTeam ()
 
         Locate 1: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamNumber
         Locate 2: Input " 2. DISK ID  "; YN$
-        Locate 3: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; A$
+        Locate 3: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; team$
         Locate 4: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; mascot$
         Locate 5: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
         Locate 6: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
@@ -35,7 +37,7 @@ Sub InputTeam ()
         Locate 9: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
         Locate 10: Input " 10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
         Locate 11: Input "11. DEF SACK ADJ "; leagueRatings%(6)
-        Locate 12: Input "12. DEF YD/COMP ADJ "; Q
+        Locate 12: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
         Locate 13: Input "13. TM PENALTY ADJ "; teamRatings%(0)
         Locate 14: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
         Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
@@ -47,7 +49,7 @@ Sub InputTeam ()
             Locate 17, 37
             Print "TEAM APPEARANCE: ";
             Locate 18, 37
-            Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
             Color 15, 0
         End If
 
@@ -76,7 +78,7 @@ Sub InputTeam ()
                         Locate 2: Input " 2. DISK ID  "; YN$
 
                     Case 3
-                        Locate 3: Input " 3. TEAM NAME (IE. 94 ARKANSAS) "; A$
+                        Locate 3: Input " 3. TEAM NAME (IE. 94 ARKANSAS) "; team$
 
                     Case 4
                         Locate 4: Input " 4. TEAM NICKNAME (IE. PANTHERS) "; mascot$
@@ -103,7 +105,7 @@ Sub InputTeam ()
                         Locate 11: Input "11. DEF SACK ADJ "; leagueRatings%(6)
 
                     Case 12
-                        Locate 12: Input "12. DEF YD/COMP ADJ "; Q
+                        Locate 12: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
 
                     Case 13
                         Locate 13: Input "13. TM PENALTY ADJ "; teamRatings%(0)
@@ -123,7 +125,7 @@ Sub InputTeam ()
                             Locate 17, 37
                             Print "TEAM APPEARANCE: ";
                             Locate 18, 37
-                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                             Color 15, 0
                         End If
 
@@ -133,7 +135,7 @@ Sub InputTeam ()
                             Locate 17, 37
                             Print "TEAM APPEARANCE: ";
                             Locate 18, 37
-                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                             Color 15, 0
                         End If
 
@@ -733,16 +735,16 @@ Sub InputTeam ()
             If prRet(I) <> 0 Then prRet(I) = 100: Exit For
         Next I
 
-        X = Int((Q / .3) + .5)
+        X = Int((ydsCompAdj / .3) + .5)
         If X < 0 Then X = 100 + X
-        YC% = X
+        ydsCompAdj = X
 
         If D9 > 0 Then 
             leagueRatings%(0) = leagueRatings%(0) + D9
             leagueRatings%(1) = leagueRatings%(1) + D9
         End If
 
-        Call SaveTeam(A$, mascot$, YN$, teamNumber, YC%, teamAttendance&)
+        Call SaveTeam(team$, mascot$, YN$, teamNumber, teamAttendance&)
 
         Cls
 
@@ -775,7 +777,9 @@ End Sub
 '          SaveTeam Subroutine
 '----------------------------------------
 '...explanation...
-Sub SaveTeam (A$, mascot$, YN$, teamNumber, YC%, teamAttendance&)
+Sub SaveTeam (team$, mascot$, YN$, teamNumber, teamAttendance&)
+
+    Shared ydsCompAdj
 
     Shared mascot$, stadium$
 
@@ -840,11 +844,16 @@ Sub SaveTeam (A$, mascot$, YN$, teamNumber, YC%, teamAttendance&)
 
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    LSet Q$(1) = A$
+    LSet Q$(1) = team$
     LSet Q$(2) = mascot$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings%(I)): Next I
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings%(I)): Next I
+    For I = 0 To 7: 
+        LSet Q$(I + 3) = MKI$(leagueRatings%(I))
+    Next I
+    
+    For I = 0 To 4: 
+        LSet Q$(I + 11) = MKI$(teamRatings%(I))
+    Next I
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)
@@ -882,17 +891,19 @@ Sub SaveTeam (A$, mascot$, YN$, teamNumber, YC%, teamAttendance&)
 
     LSet Q$(122) = punterName$(0)
     LSet Q$(123) = MKI$(puntAvg(0))
+    
     LSet Q$(124) = pkName$(0)
     LSet Q$(125) = MKI$(pkFGA(0))
     LSet Q$(126) = MKI$(pkFGPct(0))
     LSet Q$(127) = MKI$(pkPAT(0))
     LSet Q$(128) = MKI$(pkPATPct(0))
+    
     LSet Q$(129) = pkName$(1)
     LSet Q$(130) = MKI$(pkFGA(1))
     LSet Q$(131) = MKI$(pkFGPct(1))
     LSet Q$(132) = MKI$(pkPAT(1))
     LSet Q$(133) = MKI$(pkPATPct(1))
-    LSet Q$(134) = MKI$(YC%)
+    LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14
         LSet Q$(I * 2 + 135) = sackName$(I)
@@ -912,7 +923,7 @@ Sub SaveTeam (A$, mascot$, YN$, teamNumber, YC%, teamAttendance&)
 
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
-    LSet Q$(1) = A$
+    LSet Q$(1) = team$
     LSet Q$(2) = stadium$
     LSet Q$(3) = MKL$(teamAttendance&)
     LSet Q$(4) = "x"

@@ -86,14 +86,14 @@ Sub CARVIEW ()
 				TMR = 6420
 
                 targetFile$ = RTrim$(targetFile$)
-                Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+                careerFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 
 				Color 15, 0
 				Cls
 
                 Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
-                Open diskPaths$(1) + Z$ + ".CAR" For Input As #1
+                Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #1
 
                 Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
@@ -348,7 +348,7 @@ Sub CARVIEW ()
 
                         Case "R"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
                             For I = 17 To 33: Locate I - 15, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
                             For I = 34 To 49: Locate I - 32, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
@@ -359,11 +359,11 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 1, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 1, escPressed%, careerFile$)
 
                         Case "W"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
                             For I = 20 To 39: Locate I - 18, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
                             Print
@@ -372,11 +372,11 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 2, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 2, escPressed%, careerFile$)
 
                         Case "Q"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
                             For I = 10 To 19: Locate I - 8, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
                             Print
@@ -384,11 +384,11 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 3, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 3, escPressed%, careerFile$)
 
                         Case "K"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
                             For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
                             Print
@@ -396,11 +396,11 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 4, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 4, escPressed%, careerFile$)
 
                         Case "U"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
                             For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
                             Print
@@ -408,33 +408,33 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 5, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 5, escPressed%, careerFile$)
 
                         Case "P"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA6$(PX, I), 12): Next
                             Print
                             Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 6, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 6, escPressed%, careerFile$)
 
                         Case "C"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA7$(PX, I), 12): Next
                             Print
                             Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 7, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 7, escPressed%, careerFile$)
 
                         Case "I"
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
                             For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
                             For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
@@ -443,12 +443,12 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 8, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
 
                         Case "D"
                             2920 '
                             Cls
-                            Color 12: Print Z$
+                            Color 12: Print careerFile$
                             For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
                             For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
                             For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
@@ -457,7 +457,7 @@ Sub CARVIEW ()
                             RT = 2
                             Cls
 
-                            Call CareerPrintCategory(RT, B9, 9, escPressed%)
+                            Call CareerPrintCategory(RT, B9, 9, escPressed%, careerFile$)
 
                         Case "O"
                             RT = 1
@@ -465,7 +465,7 @@ Sub CARVIEW ()
                             For I = 1 To 50: careerTT!(I) = 0: Next
 
                             For category% = 1 To 9:
-                                Call CareerPrintCategory(RT, B9, category%, escPressed%)
+                                Call CareerPrintCategory(RT, B9, category%, escPressed%, careerFile$)
                                 If escPressed% = 1 Then Exit For
                             Next
 
@@ -493,7 +493,7 @@ End Sub
 '    CareerPrintCategory Subroutine
 '----------------------------------------
 '...explanation...
-Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
+Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
     Shared careerRC$()
     Shared careerRC!()
@@ -517,7 +517,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
             Case 1
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2: Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
 
@@ -641,7 +641,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2: Print "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
 
@@ -730,7 +730,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2: Print "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"; ""
 
@@ -960,7 +960,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
@@ -1052,7 +1052,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
@@ -1145,7 +1145,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "PUNTERS           YEAR     ATT.     YARDS      AVG."
@@ -1217,7 +1217,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
@@ -1348,7 +1348,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "INTERCEPTORS        YEAR     INTERCEPTIONS"
@@ -1413,7 +1413,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%)
                 Cls
 
                 Color 11
-                Locate 1: Print Z$
+                Locate 1: Print careerFile$
                 Color 12
                 Locate 2
                 Print "DEFENSIVE SACKS     YEAR        SACKS"

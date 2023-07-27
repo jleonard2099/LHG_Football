@@ -445,6 +445,7 @@ Sub ConfigureDrives ()
     Shared opSysType$
 
     Color 15, 1
+
     FG = 0
     BG = 7
 
@@ -457,6 +458,7 @@ Sub ConfigureDrives ()
     Locate , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS"
     Print
     Locate , 31: Print "PATHNAME EXAMPLES:"
+
     Select Case opSysType$
         Case "[WINDOWS]":
             Locate , 31: Print "A:"
@@ -577,16 +579,16 @@ Sub TeamMgt_Menu ()
                     Call InputTeam
 
                 Case 2:
-                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
-                    Call EditTeam(A$, mascot$, YN$, S$, T, YC!)
+                    Call ChooseTeam(YN$, NTMS, teamNbr, A$)
+                    Call EditTeam(A$, YN$, teamNbr)
 
                 Case 3:
-                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
-                    Call PrintRoster(A$, mascot$, T)
+                    Call ChooseTeam(YN$, NTMS, teamNbr, A$)
+                    Call PrintRoster(A$, teamNbr)
 
                 Case 4:
-                    Call GetTeam_CNGTM(A$, mascot$, YN$, S$, T, YC!)
-                    Call ViewRoster(A$, mascot$, T)
+                    Call ChooseTeam(YN$, NTMS, teamNbr, A$)
+                    Call ViewRoster(A$, teamNbr)
 
                 Case 5:
                     Call DRAFT
@@ -723,21 +725,21 @@ Sub Leaders_Menu ()
         If ExitCode% <> 27 Then
             Select Case Selection%
                 Case 1: Call CREATPRO
-                Case 2: Call COMPPRO
+                Case 2: Call CompileLeague
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
                 Case 5: Call RecordsMenu(1)
                 Case 6: Call ViewExpandedLeaders(1)
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
-                Case 9: Call COMPCOLL
+                Case 9: Call CompileCollege
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
                 Case 12: Call RecordsMenu(2)
                 Case 13: Call ViewExpandedLeaders(2)
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
-                Case 16: Call COMPNATL
+                Case 16: Call CompileNatlOrg
                 Case 17: Call SEENATL
                 Case 18: Call RecordsMenu(3)
                 Case 19: Call BLANKORG
@@ -772,8 +774,8 @@ End Sub
 '$INCLUDE: 'CARVIEW.BAS'
 '$INCLUDE: 'CNGTM.BAS'
 '$INCLUDE: 'COMPCOLL.BAS'
+'$INCLUDE: 'COMPLEAG.BAS'
 '$INCLUDE: 'COMPNATL.BAS'
-'$INCLUDE: 'COMPPRO.BAS'
 '$INCLUDE: 'CREATCOL.BAS'
 '$INCLUDE: 'CREATNAT.BAS'
 '$INCLUDE: 'CREATPRO.BAS'

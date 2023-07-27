@@ -1,4 +1,4 @@
-Sub SINPUT ()
+Sub EditStats ()
 
     _Title "3-in-1 Football - Stats Input"
 
@@ -6,7 +6,7 @@ Sub SINPUT ()
     Shared AF!(), AM!(), K!(), K2!()
     Shared LC!(), LK!(), LR!(), PK!()
 
-    Shared lookyDI$(), lookyDS$()
+    Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$()
     Shared lookyA5$(), lookyA6$(), lookyA7$()
 
@@ -16,31 +16,11 @@ Sub SINPUT ()
     Dim sinputsinputLC$(0 to 15), sinputLK$(0 to 2), sinputLP$(0 to 3), sinputLR$(0 to 9)
     Dim sinputPK$(0 to 2)
 
-    Call GetTeam_SINPUT (T1$, YN$, D)
+    'Call GetTeam_EditStats (T1$, YN$, D)
+    Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+    statFile$ = nameStatFile$(team$)
 
-    statB$ = RTrim$(T1$)
-
-    For XX = 4 To 11
-        If Mid$(statB$, XX, 1) = " " Or Mid$(statB$, XX, 1) = "." Then Mid$(statB$, XX, 1) = "_"
-    Next XX
-
-    For XX = 12 To 14
-        If Mid$(statB$, XX, 2) = "ST" Then Mid$(statB$, 9, 1) = "_": Mid$(statB$, 10, 2) = "ST"
-    Next XX
-
-    QQ = 8
-
-    For XX = 11 To 4 Step -1
-        If Mid$(statB$, XX, 1) = "_" Then
-            QQ = XX - 4
-        Else
-            Exit For
-        End If
-    Next XX
-
-    Z$ = Mid$(statB$, 4, QQ) + "." + Left$(statB$, 2)
-
-    If Not _FileExists(diskPaths$(1) + Z$) Then
+    If Not _FileExists(diskPaths$(1) + statFile$) Then
 
         Locate 10, 8
         Call CSMsgBox("NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, PASS)
@@ -49,8 +29,7 @@ Sub SINPUT ()
 
     Else
 
-
-        OPEN D$(1)+Z$ FOR INPUT AS #1
+        OPEN diskPaths$(1) + statFile$ FOR INPUT AS #1
 
         INPUT #1,A$(PX)
 
@@ -97,12 +76,12 @@ Sub SINPUT ()
         NEXT L
         
         FOR J=0 TO 9:
-            INPUT #1,lookyDI$(PX,J)
+            INPUT #1,intNam_TRADE$(PX,J)
             INPUT #1,sinputGI%(PX,J)
         NEXT
         
         FOR J=0 TO 14:
-            INPUT #1,lookyDS$(PX,J)
+            INPUT #1,sackNam_TRADE$(PX,J)
             INPUT #1,sinputGS%(PX,J)
         NEXT
         
@@ -171,7 +150,7 @@ Sub SINPUT ()
             
         LOCATE 4,1
 
-        PRINT "1. STAT FILE NAME ";Z$
+        PRINT "1. STAT FILE NAME ";statFile$
         PRINT "2. TM 1ST DOWNS ";K!(0,0)
         PRINT "3. TM RUSH ATT ";K!(0,1)
         PRINT "4. TM RUSH YDS ";INT(K!(0,2))
@@ -198,7 +177,7 @@ Sub SINPUT ()
             Select Case B9
 
                 Case 1
-                    LOCATE 4,1:INPUT "1. STAT FILE NAME ";Z$
+                    LOCATE 4,1:INPUT "1. STAT FILE NAME ";statFile$
 
                 Case 2
                     LOCATE 5,1:INPUT "2. TM 1ST DOWNS ";K!(0,0)
@@ -248,7 +227,6 @@ Sub SINPUT ()
             End Select
             
         Loop Until B9 >= 0
-
 
 
         '---------------
@@ -376,7 +354,6 @@ Sub SINPUT ()
                         Locate 20, 1
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
                     Loop Until B9 >= 0 And B9 <= 7
-
 
                     Select Case B9
 
@@ -790,7 +767,7 @@ Sub SINPUT ()
         Z1!(13)=W6!(1,0)
         Z1!(14)=W6!(1,1)
 
-        OPEN D$(1)+Z$ FOR OUTPUT AS #1
+        OPEN diskPaths$(1) + statFile$ FOR OUTPUT AS #1
         
         PRINT #1,A$(PX)
         
@@ -835,12 +812,12 @@ Sub SINPUT ()
         NEXT L
         
         FOR J=0 TO 9:
-            PRINT #1,lookyDI$(PX,J)
+            PRINT #1,intNam_TRADE$(PX,J)
             PRINT #1,sinputGI%(PX,J)
         NEXT
         
         FOR J=0 TO 14:
-            PRINT #1,lookyDS$(PX,J)
+            PRINT #1,sackNam_TRADE$(PX,J)
             PRINT #1,sinputGS%(PX,J)
         NEXT
         
@@ -885,10 +862,10 @@ End Sub
 
 
 '----------------------------------------
-'     GetTeam_SINPUT Subroutine
+'     GetTeam_EditStats Subroutine
 '----------------------------------------
 '...explanation...
-Sub GetTeam_SINPUT (A$, YN$, teamNbr)
+Sub GetTeam_EditStats (A$, YN$, teamNbr)
 
     Shared teamRatings%()
 
@@ -924,7 +901,7 @@ Sub GetTeam_SINPUT (A$, YN$, teamNbr)
         Locate 7, 27: Input NY$
 
         If NY$ = "" And YN$ <> "" Then
-            Call SelectTeam_SINPUT(YN$, NTMS, teamNbr)
+            Call SelectTeam_EditStats(YN$, NTMS, teamNbr)
         Else
             YN$ = RTrim$(NY$)
             Erase teamNames$
@@ -952,7 +929,7 @@ Sub GetTeam_SINPUT (A$, YN$, teamNbr)
 
             Close 1
 
-            Call SelectTeam_SINPUT(YN$, NTMS, teamNbr)
+            Call SelectTeam_EditStats(YN$, NTMS, teamNbr)
 
         End If
 
@@ -978,10 +955,10 @@ End Sub
 
 
 '----------------------------------------
-'     SelectTeam_SINPUT Subroutine
+'     SelectTeam_EditStats Subroutine
 '----------------------------------------
 '...explanation...
-Sub SelectTeam_SINPUT (YN$, NTMS, teamNbr)
+Sub SelectTeam_EditStats (YN$, NTMS, teamNbr)
 
     Shared teamRatings%()
 

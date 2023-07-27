@@ -143,42 +143,20 @@ Sub CreateCareerFile ()
 
         Color 11
         Locate 15, 5
-        Input "ENTER NAME OF CAREER STAT FILE (MAX. - 8 CHARACTERS)"; careerFile$
+        Input "ENTER NAME OF CAREER STAT FILE "; careerFile$
 
-        Call GetTeam_CAREER(A$)
-        B$ = A$
-
-        For XX = 1 To Len(careerFile$)
-            If Mid$(careerFile$, XX, 1) = " " Then Mid$(careerFile$, XX, 1) = "_"
-        Next XX
-
-        For XX = 4 To 11:
-            If Mid$(B$, XX, 1) = " " Or Mid$(B$, XX, 1) = "." Then Mid$(B$, XX, 1) = "_"
-        Next XX
-
-        For XX = 12 To 14:
-            If Mid$(B$, XX, 2) = "ST" Then Mid$(B$, 9, 1) = "_": Mid$(B$, 10, 2) = "ST"
-        Next XX
-
-        QQ = 8
-
-        For XX = 11 To 4 Step -1:
-            If Mid$(B$, XX, 1) = "_" Then
-                QQ = XX - 4
-            Else
-                Exit For
-            End If
-        Next XX
-
-        statFile$ = Mid$(B$, 4, QQ) + "." + Left$(B$, 2)
-
-        Color 15, 0
+        'Call GetTeam_CAREER(A$)
+        Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+        statFile$ = nameStatFile$(team$)
 
         Do
-            Cls
-            Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
 
+            Color 15, 0
+            Cls
+
+            Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
             Locate 9, 25: Print "ANY CHANGE (YN)"
+
             J$ = GetKeyPress$
 
         Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N" Or J$ = Chr$(27)
@@ -439,7 +417,8 @@ Sub CreateCareerFile ()
                     Next J
 
                     careerKRS!(N, I, 3) = careerLK!(I): KRRS$(N, I, 0) = careerLK$(I, 0)
-                    careerKRS!(N, I, 4) = 1: careerKRS!(N, I, 5) = statYear
+                    careerKRS!(N, I, 4) = 1
+                    careerKRS!(N, I, 5) = statYear
 
                 Next I
 
@@ -861,9 +840,9 @@ Sub ViewPrintCareerRecords ()
             If ExitCode% <> 27 Then
 
                 targetFile$ = RTrim$(targetFile$)
-                ZZ$ = Left$(targetFile$, Len(targetFile$) - 4)
+                leaderFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 
-                Open diskPaths$(2) + ZZ$ + ".CLD" For Input As #1
+                Open diskPaths$(2) + leaderFile$ + ".CLD" For Input As #1
 
                 For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 
@@ -1144,164 +1123,6 @@ Sub ViewPrintCareerRecords ()
 
 End Sub
 
-'----------------------------------------
-'       GetTeam_CAREER Subroutine
-'----------------------------------------
-'...explanation...
-Sub GetTeam_CAREER (A$)
-
-    Shared teamRatings%()
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        JJ = 6
-        SN = 1
-
-        Locate 6, 8: Color 15, 4
-
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
-        Locate , 12: Print "ENTER DISK ID: ": Print
-        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-        Print
-        Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
-
-        I$ = GetKeyPress$
-
-        If I$ <> Chr$(27) Then
-
-            If I$ = Chr$(13) Then
-                Call SelectTeam_CAREER(YN$, numberTeams, T1)
-            Else
-                Locate 7, 27: Print I$
-                Locate 7, 28: Line Input NY$
-                NY$ = I$ + NY$
-                Color 15, 0
-
-                If NY$ = "" And YN$ <> "" Then
-                    Call SelectTeam_CAREER(YN$, numberTeams, T1)
-                Else
-                    YN$ = RTrim$(NY$)
-                    Erase teamNames$
-                    numberTeams = 0
-                    
-                    Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
-
-                    fileLength& = LOF(1)
-
-                    Field #1, 15 As Q$(0), 640 As X$
-
-                    For I1 = 1 to fileLength& / 934
-                        Get #1, I1
-
-                        For I2 = 1 To 15
-                            If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
-                        Next I2
-
-                        If nullTeam <> 1 Then
-                            numberTeams = numberTeams + 1
-                            teamNames$(numberTeams) = Q$(0)
-                            teamIndex%(numberTeams) = I1
-                        End If
-
-                    Next I1
-
-                    Close 1
-
-                    Call SelectTeam_CAREER(YN$, numberTeams, T1)
-
-                End If
-
-            End If
-
-            A$ = RTrim$(Q$(1))
-
-            If BO% = 1 Then
-                BO% = 0
-            Else
-                Locate 2, 33
-                Color teamRatings%(2), teamRatings%(1): Print A$
-
-                Do
-                    Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
-                    J$ = GetKeyPress$
-                Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
-
-            End If
-
-        End If 'Done checking for ESC
-
-    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27)
-
-    Color 15, 0
-
-End Sub
-
-'----------------------------------------
-'      SelectTeam_CAREER Subroutine
-'----------------------------------------
-'...explanation...
-Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
-
-    Shared teamRatings%()
-
-    Selection% = 1
-    Count% = numberTeams
-    Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
-    Rows% = 20
-    Columns% = 4
-    Spacing% = 6
-    Row% = 4
-    Column% = 1
-    Color , 4: Cls: Locate , 33: Color 14
-    Print "TEAM SELECTION": Color 15
-    Locate 25, 1: Color 14: Print "ESC";: Color 15
-    Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
-    Print "ENTER";: Color 15: Print "-SELECTS TEAM";
-
-    _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-    _MouseHide
-
-    If ExitCode% <> 27 Then
-        teamIdx% = teamIndex%(Selection%)
-        teamYear$ = RTrim$(yearNumber$)
-
-        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
-
-        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
-
-        Get #1, teamIdx%
-
-        For I1 = 0 To 2
-            teamRatings%(I1) = CVI(Q$(I1 + 11))
-        Next I1
-
-        Close 1
-    Else
-        BO% = 1
-    End If
-
-End Sub
 
 '----------------------------------------
 '      UpdateCareerLeaders Subroutine
@@ -1921,5 +1742,165 @@ Sub UpdateCareerLeaders (careerFile$)
     For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR%(I): Next
 
     Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       GetTeam_CAREER Subroutine
+'----------------------------------------
+'...explanation...
+Sub GetTeam_CAREER (A$)
+
+    Shared teamRatings%()
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        JJ = 6
+        SN = 1
+
+        Locate 6, 8: Color 15, 4
+
+        'Print box top
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+        'Print box sides
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Next
+
+        'Print box bottom
+        Locate 7 + JJ, 8
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+        Locate 7, 32
+        Locate , 12: Print "ENTER DISK ID: ": Print
+        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+        Print
+        Locate , 12: Print "ESC TO RETURN TO MAIN MENU"
+
+        I$ = GetKeyPress$
+
+        If I$ <> Chr$(27) Then
+
+            If I$ = Chr$(13) Then
+                Call SelectTeam_CAREER(YN$, numberTeams, T1)
+            Else
+                Locate 7, 27: Print I$
+                Locate 7, 28: Line Input NY$
+                NY$ = I$ + NY$
+                Color 15, 0
+
+                If NY$ = "" And YN$ <> "" Then
+                    Call SelectTeam_CAREER(YN$, numberTeams, T1)
+                Else
+                    YN$ = RTrim$(NY$)
+                    Erase teamNames$
+                    numberTeams = 0
+                    
+                    Open diskPaths$(0) + "FOOT." + YN$ For Random As #1 Len = 934
+
+                    fileLength& = LOF(1)
+
+                    Field #1, 15 As Q$(0), 640 As X$
+
+                    For I1 = 1 to fileLength& / 934
+                        Get #1, I1
+
+                        For I2 = 1 To 15
+                            If Asc(Mid$(Q$(0), I2, 1)) < 32 Or Asc(Mid$(Q$(0), I2, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then nullTeam = 1: Exit For
+                        Next I2
+
+                        If nullTeam <> 1 Then
+                            numberTeams = numberTeams + 1
+                            teamNames$(numberTeams) = Q$(0)
+                            teamIndex%(numberTeams) = I1
+                        End If
+
+                    Next I1
+
+                    Close 1
+
+                    Call SelectTeam_CAREER(YN$, numberTeams, T1)
+
+                End If
+
+            End If
+
+            A$ = RTrim$(Q$(1))
+
+            If BO% = 1 Then
+                BO% = 0
+            Else
+                Locate 2, 33
+                Color teamRatings%(2), teamRatings%(1): Print A$
+
+                Do
+                    Color 15, 4
+                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    J$ = GetKeyPress$
+                Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
+
+            End If
+
+        End If 'Done checking for ESC
+
+    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27)
+
+    Color 15, 0
+
+End Sub
+
+'----------------------------------------
+'      SelectTeam_CAREER Subroutine
+'----------------------------------------
+'...explanation...
+Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
+
+    Shared teamRatings%()
+
+    Selection% = 1
+    Count% = numberTeams
+    Start% = 1
+    FileFGColr% = 15: FileBGColr% = 4
+    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    Rows% = 20
+    Columns% = 4
+    Spacing% = 6
+    Row% = 4
+    Column% = 1
+    Color , 4: Cls: Locate , 33: Color 14
+    Print "TEAM SELECTION": Color 15
+    Locate 25, 1: Color 14: Print "ESC";: Color 15
+    Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
+    Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+
+    _MouseShow "DEFAULT"
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    _MouseHide
+
+    If ExitCode% <> 27 Then
+        teamIdx% = teamIndex%(Selection%)
+        teamYear$ = RTrim$(yearNumber$)
+
+        Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+
+        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
+        Get #1, teamIdx%
+
+        For I1 = 0 To 2
+            teamRatings%(I1) = CVI(Q$(I1 + 11))
+        Next I1
+
+        Close 1
+    Else
+        BO% = 1
+    End If
 
 End Sub

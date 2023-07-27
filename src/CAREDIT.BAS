@@ -87,9 +87,9 @@ Sub CAREDIT ()
 				Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
 
 				targetFile$ = RTrim$(targetFile$)
-				Z$ = Left$(targetFile$, Len(targetFile$) - 4)
+				careerFile$ = Left$(targetFile$, Len(targetFile$) - 4)
 
-				Open diskPaths$(1) + Z$ + ".CAR" For Input As #2
+				Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #2
 
 				Input #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
@@ -337,7 +337,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 16:
 								Locate I + 2
@@ -366,7 +366,7 @@ Sub CAREDIT ()
 
 								If B9 <> 50 Then
 
-									Call PrintCareerStatsRB(exitFlag%, B9)
+									Call PrintCareerStatsRB(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -416,7 +416,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 19:
 								Locate I + 2
@@ -439,7 +439,7 @@ Sub CAREDIT ()
 
 								If B9 <> 39 Then
 
-									Call PrintCareerStatsWR(exitFlag%, B9)
+									Call PrintCareerStatsWR(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -484,7 +484,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 9:
 								Locate I + 2
@@ -506,7 +506,7 @@ Sub CAREDIT ()
 							If B9 <> 20 Then
 
 								If B9 <> 19 Then
-									Call PrintCareerStatsQB(exitFlag%, B9)
+									Call PrintCareerStatsQB(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -553,7 +553,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA4$(I), 12): Next
 
@@ -566,7 +566,7 @@ Sub CAREDIT ()
 
 								If B9 <> 14 Then
 
-									Call PrintCareerStatsKR(exitFlag%, B9)
+									Call PrintCareerStatsKR(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -610,7 +610,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 14: 
 								Locate I + 2: Color 11
@@ -628,7 +628,7 @@ Sub CAREDIT ()
 
 								If B9 <> 14 Then
 
-									Call PrintCareerStatsPR(exitFlag%, B9)
+									Call PrintCareerStatsPR(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -673,7 +673,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 9:
 								Locate I + 2
@@ -690,7 +690,7 @@ Sub CAREDIT ()
 
 								If B9 <> 9 Then
 
-									Call PrintCareerStatsP(exitFlag%, B9)
+									Call PrintCareerStatsP(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -737,7 +737,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 9:
 								Locate I + 2: Color 11: Print Using "##"; I;: Print " ";
@@ -753,7 +753,7 @@ Sub CAREDIT ()
 
 								If B9 <> 9 Then
 
-									Call PrintCareerStatsK(exitFlag%, B9)
+									Call PrintCareerStatsK(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -796,7 +796,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 17:
 								Locate I + 2
@@ -825,7 +825,7 @@ Sub CAREDIT ()
 
 								If B9 <> 54 Then
 
-									Call PrintCareerStatsINT(exitFlag%, B9)
+									Call PrintCareerStatsINT(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 										Cls
@@ -869,7 +869,7 @@ Sub CAREDIT ()
 
 							Cls
 
-							Color 12: Print Z$
+							Color 12: Print careerFile$
 
 							For I = 0 To 17: 
 								Locate I + 2: Color 11
@@ -901,7 +901,7 @@ Sub CAREDIT ()
 
 								If B9 <> 54 Then
 
-									Call PrintCareerStatsSACK(exitFlag%, B9)
+									Call PrintCareerStatsSACK(exitFlag%, B9, careerFile$)
 
 									If exitFlag% <> 1 Then
 
@@ -945,7 +945,7 @@ Sub CAREDIT ()
 							End If
 
 						Case "D"
-							Call UpdateCareerFile(Z$)
+							Call UpdateCareerFile(careerFile$)
 
 						Case "E","X"
 							'
@@ -1277,7 +1277,7 @@ End Sub
 '   PrintCareerStatsRB Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsRB (exitFlag%, B9)
+Sub PrintCareerStatsRB (exitFlag%, B9, careerFile$)
 
     Shared careerA1$(), careerRBS$(), careerRC$()
     Shared careerRBS!(), careerRC!()
@@ -1306,7 +1306,7 @@ Sub PrintCareerStatsRB (exitFlag%, B9)
         Case "Y"
 			Color 0, 15
 
-            LPrint Z$
+            LPrint careerFile$
 
             LPrint "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
             VV = 0
@@ -1400,7 +1400,7 @@ End Sub
 '   PrintCareerStatsWR Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsWR (exitFlag%, B9)
+Sub PrintCareerStatsWR (exitFlag%, B9, careerFile$)
 
     Shared careerA2$(), careerWRS$(), careerRC$()
     Shared careerWRS!(), careerRC!()
@@ -1426,7 +1426,7 @@ Sub PrintCareerStatsWR (exitFlag%, B9)
 
         Case "Y"
 
-            LPrint Z$
+            LPrint careerFile$
             LPrint "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
             VV = 0
 
@@ -1489,7 +1489,7 @@ End Sub
 '   PrintCareerStatsQB Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsQB (exitFlag%, B9)
+Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
 
     Shared careerA3$(), careerQBS$(), careerRC$()
     Shared careerQBS!(), careerRC!()
@@ -1520,7 +1520,7 @@ Sub PrintCareerStatsQB (exitFlag%, B9)
 
         Case "Y"
 
-            LPrint Z$
+            LPrint careerFile$
             LPrint "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG.PASS"
             VV = 0
 
@@ -1733,7 +1733,7 @@ End Sub
 '   PrintCareerStatsKR Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsKR (exitFlag%, B9)
+Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
     Shared careerA4$(), careerKRS$(), careerRC$()
     Shared careerKRS!(), careerRC!()
@@ -1760,7 +1760,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             LPrint "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
             VV = 0
 
@@ -1825,7 +1825,7 @@ End Sub
 '   PrintCareerStatsPR Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsPR (exitFlag%, B9)
+Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
 
     Shared careerA5$(), careerPRS$(), careerRC$()
     Shared careerPRS!(), careerRC!()
@@ -1852,7 +1852,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             LPrint "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
             VV = 0
 
@@ -1911,7 +1911,7 @@ End Sub
 '   PrintCareerStatsP Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsP (exitFlag%, B9)
+Sub PrintCareerStatsP (exitFlag%, B9, careerFile$)
 
     Shared careerA6$(), careerRC$()
     Shared careerPUS!(), careerRC!()
@@ -1919,6 +1919,7 @@ Sub PrintCareerStatsP (exitFlag%, B9)
     Cls
 
     Locate 5, 20: Color 15
+
     Print "PRINT CAREER STATS OF ";
 	Color 12: Print careerA6$(B9);
 	Color 15: Print " BEFORE "
@@ -1937,7 +1938,7 @@ Sub PrintCareerStatsP (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             LPrint "PUNTERS           YEAR     ATT.     YARDS      AVG."
             VV = 0
 
@@ -1982,7 +1983,7 @@ End Sub
 '   PrintCareerStatsK Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsK (exitFlag%, B9)
+Sub PrintCareerStatsK (exitFlag%, B9, careerFile$)
 
     Shared careerA7$(), careerRC$()
     Shared careerFGS!(), careerRC!(), careerTT!()
@@ -2009,7 +2010,7 @@ Sub PrintCareerStatsK (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             Locate 2: LPrint "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
             VV = 0
 
@@ -2112,7 +2113,7 @@ End Sub
 '   PrintCareerStatsINT Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsINT (exitFlag%, B9)
+Sub PrintCareerStatsINT (exitFlag%, B9, careerFile$)
 
     Shared careerDI$()
     Shared careerGIS!(), careerTT!()
@@ -2138,7 +2139,7 @@ Sub PrintCareerStatsINT (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             LPrint "INTERCEPTORS        YEAR     INTERCEPTIONS"
             VV = 0
 
@@ -2176,7 +2177,7 @@ End Sub
 '   PrintCareerStatsSACK Subroutine
 '----------------------------------------
 '...explanation...
-Sub PrintCareerStatsSACK (exitFlag%, B9)
+Sub PrintCareerStatsSACK (exitFlag%, B9, careerFile$)
 
     Shared careerDS$()
     Shared careerGSS!(), careerTT!()
@@ -2202,7 +2203,7 @@ Sub PrintCareerStatsSACK (exitFlag%, B9)
     Select Case UCase$(I$)
 
         Case "Y"
-            LPrint Z$
+            LPrint careerFile$
             LPrint "SACKERS             YEAR     INTERCEPTIONS"
             VV = 0
 

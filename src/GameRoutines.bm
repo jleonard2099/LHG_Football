@@ -112,7 +112,6 @@ Sub InitVar ()
     I8 = 0
     I9 = 0
     J = 0
-    J6 = 0
     JJ = 0
     K3 = 0
     N = 0
@@ -253,40 +252,40 @@ End Sub
 ' ...explanation...
 Sub AUTOSETUP
 
-        'Assign settings from schedule / etc.
-        H% = NG%(2)
-        G9 = NG%(3)
-        pbpDelay! = NG%(4) / 10
-        Y9 = NG%(7)
-        J6(0) = NG%(10)
-        Y8 = NG%(11)
-        tickerStart = NG%(12)
+    'Assign settings from schedule / etc.
+    H% = NG%(2)
+    G9 = NG%(3)
+    pbpDelay! = NG%(4) / 10
+    Y9 = NG%(7)
+    J6 = NG%(10)
+    Y8 = NG%(11)
+    tickerStart = NG%(12)
 
-        For I = 0 To 1
+    For I = 0 To 1
 
-            intB8% = NG%(I)
-            YN$ = YN$(I)
+        intB8% = NG%(I)
+        'YN$ = YN$(I)
 
-            Call GETTEAM(I)
+        Call ReadGameTeam (YN$(I), A$(I), teamNbr, I)
 
-            A$(I) = _Trim$(A$(I))
-            AA$(I) = _Trim$(AA$(I))
-            X = 0
+        A$(I) = _Trim$(A$(I))
+        AA$(I) = _Trim$(AA$(I))
+        X = 0
 
-        Next I
+    Next I
 
-        'If college rules, pre-1974
-        If Y8 = 1 And G9 <> 0 Then
-            'is this an adjustment for
-            'kicking distance based on
-            'placement of the goal posts???
-            intY8% = -10
-        End If
+    'If college rules, pre-1974
+    If Y8 = 1 And G9 <> 0 Then
+        'is this an adjustment for
+        'kicking distance based on
+        'placement of the goal posts???
+        intY8% = -10
+    End If
 
-        'If WFL rules
-        If G9 = 4 Then
-            intY8% = 0
-        End If
+    'If WFL rules
+    If G9 = 4 Then
+        intY8% = 0
+    End If
 
 End Sub
 
@@ -1132,172 +1131,12 @@ End Sub
 
 
 '------------------------------
-'     GETTEAM Subroutine
-'------------------------------
-' ...explanation...
-Sub GETTEAM (I)
-
-    teamYear$ = RTrim$(YN$)
-
-    If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
-
-        Cls
-        Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
-        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; teamYear$
-        Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
-        Call GETTEAM(I)
-
-    Else
-
-        Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
-
-        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
-
-        Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
-
-        Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
-
-        Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
-
-        Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
-
-        Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
-
-        Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
-
-        Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
-
-        Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
-
-        Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
-
-        Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
-
-        Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-
-        Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
-
-        Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
-
-        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
-
-        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
-
-        Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
-
-        Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
-
-        Get #1, intB8%
-
-        intB8%(I) = intB8%
-        NN$(I) = teamYear$
-
-        A$(I) = RTrim$(Q$(1))
-        AA$(I) = RTrim$(Q$(2))
-
-        For I1 = 0 To 7
-            B6(I, I1) = CVI(Q$(I1 + 3))
-        Next I1
-
-        For I1 = 0 To 4
-            PA%(I, I1) = CVI(Q$(I1 + 11))
-        Next I1
-
-        For I1 = 0 To 9
-            A1$(I, I1) = RTrim$(Q$(I1 * 5 + 16))
-            A(I, I1) = CVI(Q$(I1 * 5 + 17))
-            A1(I, I1) = CVI(Q$(I1 * 5 + 18))
-            A2(I, I1) = CVI(Q$(I1 * 5 + 19))
-            A3(I, I1) = CVI(Q$(I1 * 5 + 20))
-        Next I1
-
-        For I1 = 0 To 5
-            A2$(I, I1) = RTrim$(Q$(I1 * 3 + 66))
-            A4(I, I1) = CVI(Q$(I1 * 3 + 67))
-            A5(I, I1) = CVI(Q$(I1 * 3 + 68))
-        Next I1
-
-        For I1 = 0 To 3
-            A3$(I, I1) = RTrim$(Q$(I1 * 5 + 84))
-            A6(I, I1) = CVI(Q$(I1 * 5 + 85))
-            A7(I, I1) = CVI(Q$(I1 * 5 + 86))
-            A8(I, I1) = CVI(Q$(I1 * 5 + 87))
-            QX%(I, I1) = CVI(Q$(I1 * 5 + 88))
-        Next I1
-
-        For I1 = 0 To 2
-            A4$(I, I1) = RTrim$(Q$(I1 * 3 + 104))
-            A9(I, I1) = CVI(Q$(I1 * 3 + 105))
-            B(I, I1) = CVI(Q$(I1 * 3 + 106))
-        Next I1
-
-        For I1 = 0 To 2
-            A5$(I, I1) = RTrim$(Q$(I1 * 3 + 113))
-            B1(I, I1) = CVI(Q$(I1 * 3 + 114))
-            B2(I, I1) = CVI(Q$(I1 * 3 + 115))
-        Next I1
-
-        A6$(I, 0) = RTrim$(Q$(122))
-        B3(I, 0) = CVI(Q$(123))
-        A7$(I, 0) = RTrim$(Q$(124))
-        B4(I, 0) = CVI(Q$(125))
-        B5(I, 0) = CVI(Q$(126))
-        B7(I, 0) = CVI(Q$(127))
-        B8(I, 0) = CVI(Q$(128))
-        A7$(I, 1) = Q$(129)
-        B4(I, 1) = CVI(Q$(130))
-        B5(I, 1) = CVI(Q$(131))
-        B7(I, 1) = CVI(Q$(132))
-        B8(I, 1) = CVI(Q$(133))
-        YC(I) = CVI(Q$(134))
-
-        For I1 = 0 To 14
-            DS$(I, I1) = Q$(I1 * 2 + 135)
-            DS(I, I1) = CVI(Q$(I1 * 2 + 136))
-        Next I1
-
-        For I1 = 0 To 9
-            DI$(I, I1) = Q$(I1 * 2 + 165)
-            DI(I, I1) = CVI(Q$(I1 * 2 + 166))
-        Next I1
-
-        Close #1
-
-        If Left$(AA$(I), 1) = " " Or AA$(I) = "" Then AA$(I) = A$(I)
-
-        PC%(I, 0) = A(I, 0)
-
-        For I1 = 9 To 1 Step -1
-            If A(I, I1) <> 0 Then
-                PC%(I, I1) = A(I, I1) - A(I, I1 - 1)
-            End If
-        Next
-
-        DDS(I) = 0
-        DDI(I) = 0
-
-        For I1 = 0 To 14
-            DDS(I) = DDS(I) + DS(I, I1)
-            If DS(I, 0) > 0 Then intDS%(I) = 1
-        Next I1
-
-        For I1 = 0 To 9
-            DDI(I) = DDI(I) + DI(I, I1)
-            If DI(I, 0) > 0 Then intDI%(I) = 1
-        Next I1
-
-    End If
-
-End Sub
-
-
-'------------------------------
 '      TICKER Subroutine
 '------------------------------
 ' ...explanation...
 Sub TICKER ()
 
-    If Not (AP = 1 And J6(0) = 2) Then
+    If Not (AP = 1 And J6 = 2) Then
 
         Color 14, 0
         Cls
@@ -1895,7 +1734,7 @@ Sub SAVESTATS ()
 
                 Print #2, scheduleFile$
 
-                For I = 0 To 2: 
+                For I = 0 To 2:
                     Print #2, AP%(I)
                 Next
 
@@ -1940,7 +1779,7 @@ Sub SAVESTATS ()
 
             If skipCompile% <> 1 Then
 
-                Call COMPILESTATFILES (idx)
+                Call COMPILESTATFILES(idx)
 
             End If
 
@@ -1958,31 +1797,12 @@ End Sub
 Sub COMPILESTATFILES (teamIdx)
 
     'Determine stat file name
-    For XX = 4 To 11:
-        If Mid$(B$(teamIdx), XX, 1) = " " Or Mid$(B$(teamIdx), XX, 1) = "." Then Mid$(B$(teamIdx), XX, 1) = "_"
-    Next XX
-
-    For XX = 12 To 14:
-        If Mid$(B$(teamIdx), XX, 2) = "ST" Then Mid$(B$(teamIdx), 9, 1) = "_": Mid$(B$(teamIdx), 10, 2) = "ST"
-    Next XX
-
-    QQ = 8
-
-    For XX = 11 To 4 Step -1:
-        If Mid$(B$(teamIdx), XX, 1) = "_" Then
-            QQ = XX - 4
-        Else
-            Exit For
-        End If
-    Next XX
-
-    F$ = Mid$(B$(teamIdx), 4, QQ)
-    R$ = F$ + "." + Left$(B$(teamIdx), 2)
+    statFile$ = nameStatFile$(B$(teamIdx))
 
     'Read existing stats from the file
-    If _FileExists(diskPaths$(1) + R$) Then
+    If _FileExists(diskPaths$(1) + statFile$) Then
 
-        Open diskPaths$(1) + R$ For Input As #2
+        Open diskPaths$(1) + statFile$ For Input As #2
 
         Input #2, B$(teamIdx)
 
@@ -1994,21 +1814,21 @@ Sub COMPILESTATFILES (teamIdx)
 
         Input #2, A6$(teamIdx, 0)
 
-        For I = 0 To 1: 
+        For I = 0 To 1:
             Input #2, A7$(teamIdx, I)
         Next
-        
-        For J = 0 To 13: 
-            For K = 0 To 17: 
+
+        For J = 0 To 13:
+            For K = 0 To 17:
                 Input #2, Z2(J, K)
             Next
         Next
 
-        For L = 0 To 38: 
+        For L = 0 To 38:
             Input #2, Z(L)
         Next
-        
-        For L = 0 To 38: 
+
+        For L = 0 To 38:
             Input #2, Z1(L)
         Next
 
@@ -2073,7 +1893,7 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For J = 0 To 13
-        For K = 0 To 17: 
+        For K = 0 To 17:
             Z2(J, K) = Z2(J, K) + Int(K2(teamIdx, J, K) + .5)
         Next
     Next
@@ -2166,10 +1986,10 @@ Sub COMPILESTATFILES (teamIdx)
     Print ">>>>>"
     Print " THE STATS ARE BEING SAVED UNDER"
     Print "THE FOLLOWING NAME::: ";
-    Color PA%(teamIdx, 2), PA%(teamIdx, 1): Print R$
+    Color PA%(teamIdx, 2), PA%(teamIdx, 1): Print statFile$
     Color 15, 0
 
-    Open diskPaths$(1) + R$ For Output As #1
+    Open diskPaths$(1) + statFile$ For Output As #1
     Print #1, Y$(teamIdx)
 
     For I = 0 To 9: Print #1, A1$(teamIdx, I): Next
@@ -2180,7 +2000,7 @@ Sub COMPILESTATFILES (teamIdx)
 
     Print #1, A6$(teamIdx, 0)
 
-    For I = 0 To 1: 
+    For I = 0 To 1:
         Print #1, A7$(teamIdx, I)
     Next
 
@@ -2190,11 +2010,11 @@ Sub COMPILESTATFILES (teamIdx)
         Next
     Next
 
-    For L = 0 To 38: 
+    For L = 0 To 38:
         Print #1, Z(L)
     Next
-    
-    For L = 0 To 38: 
+
+    For L = 0 To 38:
         Print #1, Z1(L)
     Next
 
@@ -2212,45 +2032,46 @@ Sub COMPILESTATFILES (teamIdx)
         Next
     Next
 
-    For I = 0 To 9: 
+    For I = 0 To 9:
         Print #1, LR(teamIdx, I)
         Print #1, strLR$(teamIdx, I, 0)
         Print #1, strLR$(teamIdx, I, 1)
     Next
-    
-    For I = 0 To 15: 
+
+    For I = 0 To 15:
         Print #1, LC(teamIdx, I)
         Print #1, strLC$(teamIdx, I, 0)
         Print #1, strLC$(teamIdx, I, 1)
     Next
-    
-    For I = 0 To 3: 
+
+    For I = 0 To 3:
         Print #1, LP(teamIdx, I)
         Print #1, LP$(teamIdx, I, 0)
         Print #1, LP$(teamIdx, I, 1)
     Next
-    
-    For I = 0 To 2: 
+
+    For I = 0 To 2:
         Print #1, LK(teamIdx, I)
         Print #1, LK$(teamIdx, I, 0)
         Print #1, LK$(teamIdx, I, 1)
     Next
-    
-    For I = 0 To 2: 
+
+    For I = 0 To 2:
         Print #1, PK(teamIdx, I)
         Print #1, PK$(teamIdx, I, 0)
         Print #1, PK$(teamIdx, I, 1)
     Next
-    
-    For I = 0 To 1: 
-        Print #1, LF(teamIdx, I): Print #1, LF$(teamIdx, I)
-        For I1 = 0 To 4: 
+
+    For I = 0 To 1:
+        Print #1, LF(teamIdx, I)
+        Print #1, LF$(teamIdx, I)
+        For I1 = 0 To 4:
             Print #1, AM(teamIdx, I, I1)
             Print #1, AF(teamIdx, I, I1)
         Next
     Next
-    
-    For I = 0 To 9: 
+
+    For I = 0 To 9:
         Print #1, LI(teamIdx, I)
         Print #1, LI$(teamIdx, I, 0)
         Print #1, LI$(teamIdx, I, 1)
@@ -2263,12 +2084,14 @@ Sub COMPILESTATFILES (teamIdx)
     Print
 
     numberGames = 0
-    R$ = R$ + "S"
 
     'Read stats in from file
-    If _FileExists(diskPaths$(1) + R$) Then
-        Open diskPaths$(1) + R$ For Input As #1
+    If _FileExists(diskPaths$(1) + statFile$ + "S") Then
+
+        Open diskPaths$(1) + statFile$ + "S" For Input As #1
+
         Input #1, numberGames
+
         For I = 1 To 120: Input #1, O%(I): Next
         For I = 1 To 120: Input #1, HO$(I): Next
         For I = 1 To 120: Input #1, TeamScore%(I): Next
@@ -2277,7 +2100,9 @@ Sub COMPILESTATFILES (teamIdx)
         For I = 1 To 120: Input #1, intPR%(1, I): Next
         For I = 1 To 120: Input #1, CRD&(I): Next
         For I = 1 To 120: Input #1, SITE$(I): Next
+
         Close #1
+
     End If
 
     8103 '
@@ -2298,8 +2123,10 @@ Sub COMPILESTATFILES (teamIdx)
     intPR%(1, numberGames) = PA%(1 - teamIdx, 4)
 
     'Write stats to new file
-    Open diskPaths$(1) + R$ For Output As #1
+    Open diskPaths$(1) + statFile$ + "S" For Output As #1
+
     Print #1, numberGames%
+
     For I = 1 To 120: Print #1, O%(I): Next
     For I = 1 To 120: Print #1, HO$(I): Next
     For I = 1 To 120: Print #1, TeamScore%(I): Next
@@ -2308,6 +2135,7 @@ Sub COMPILESTATFILES (teamIdx)
     For I = 1 To 120: Print #1, intPR%(1, I): Next
     For I = 1 To 120: Print #1, CRD&(I): Next
     For I = 1 To 120: Print #1, SITE$(I): Next
+
     Close #1
 
     For I = 1 To 120
@@ -2362,7 +2190,7 @@ End Sub
 Sub GetKeyWhenNoDelay ()
 
     'If we're not in autoplay
-    If Not (AP = 1 And J6(0) = 2) Then
+    If Not (AP = 1 And J6 = 2) Then
         I$ = GetKeyPress$
     End If
 
@@ -3617,7 +3445,7 @@ Sub DEFMENU ()
 
     goodSelection% = 1
 
-    If J6(0) = 1 And D = CT Or J6(0) = 2 Then
+    If J6 = 1 And D = CT Or J6 = 2 Then
 
         Call DEFENSE
         Call DEFGOALLINE
@@ -4471,50 +4299,6 @@ End Sub
 
 
 '------------------------------
-'   FINDTEAMS Subroutine
-'------------------------------
-'Get list of teams from file
-' ...explanation...
-Sub FINDTEAMS (I)
-
-    Dim fileLength&
-
-    NT = 0
-
-    teamYear$ = RTrim$(YN$)
-
-    Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
-
-    fileLength& = LOF(1)
-
-    Field #1, 15 As Q$(0), 640 As X$
-
-    For I1 = 1 To fileLength& / 934
-        'Get Team Name
-        Get #1, I1
-
-        'Check for last team
-        For J = 1 To 15
-            If Asc(Mid$(Q$(0), J, 1)) < 32 Or Asc(Mid$(Q$(0), J, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then
-                _Continue
-            End If
-        Next J
-
-        'Count # of teams
-        NT = NT + 1
-        teamNames$(NT) = RTrim$(Q$(0))
-        teamIndex%(NT) = I1
-
-    Next I1
-
-    Close 1
-
-    Call SelectTeam_GAME(I)
-
-End Sub
-
-
-'------------------------------
 '     KICKOFF Subroutine
 '------------------------------
 ' ...explanation...
@@ -4522,7 +4306,7 @@ Sub KICKOFF ()
 
     Call SCOREBOARD
 
-    If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
+    If J6 = 1 And P1 = CT Or J6 = 2 Then
 
         I9 = 2
 
@@ -4548,7 +4332,7 @@ Sub KICKOFF ()
 
         Call SCOREBOARD
 
-        If J6(0) = 1 And D = CT Or J6(0) = 2 Then
+        If J6 = 1 And D = CT Or J6 = 2 Then
             I1 = 1
         Else
             Call OPTIONBOX(7)
@@ -4582,7 +4366,7 @@ Sub KICKOFF ()
 
         Call SCOREBOARD
 
-        If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
+        If J6 = 1 And P1 = CT Or J6 = 2 Then
             I1 = 2
         Else
             Call OPTIONBOX(7)
@@ -4618,7 +4402,7 @@ Sub COLKICKOFF ()
 
         Call SCOREBOARD
 
-        If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
+        If J6 = 1 And P1 = CT Or J6 = 2 Then
             I9 = 2
         Else
             Call OPTIONBOX(9)
@@ -4643,7 +4427,7 @@ Sub COLKICKOFF ()
             Case 1, 2
                 Call SCOREBOARD
 
-                If J6(0) = 1 And D = CT Or J6(0) = 2 Then
+                If J6 = 1 And D = CT Or J6 = 2 Then
                     I1 = 1
                 Else
                     Call OPTIONBOX(7)
@@ -4671,7 +4455,7 @@ Sub COLKICKOFF ()
 
                 Call SCOREBOARD
 
-                If J6(0) = 1 And P1 = CT Or J6(0) = 2 Then
+                If J6 = 1 And P1 = CT Or J6 = 2 Then
                     I1 = 2
                 Else
                     Call OPTIONBOX(7)
@@ -4727,10 +4511,10 @@ End Sub
 '------------------------------
 '      DELAY Subroutine
 '------------------------------
-'??? What was J6(0) ???
+'??? What was J6 ???
 ' ...explanation...
 Sub DELAY ()
-    'If J6(0) <> 2 Then 8412
+    'If J6 <> 2 Then 8412
     'For DL = 1 To pbpDelay!
     'Next
     _Delay pbpDelay!
@@ -5454,14 +5238,14 @@ Sub TWOMIN ()
 
     Do
 
-        If J6(0) <> 0 Then
+        If J6 <> 0 Then
 
             I5 = S(P1, 0) - S(D, 0)
 
             'Is it possible for more than one of these to be TRUE at the same time?
             'If not, consider setting a flag value to then be checked outside the if
             'That would only give us one Exit Do
-            If (J6(0) = 1 And D = CT Or J6(0) = 2) Then
+            If (J6 = 1 And D = CT Or J6 = 2) Then
 
                 If I5 > 0 And I5 <= 14 And T1(D) > 0 And Q = 4 Then I1 = 3: Exit Do
 
@@ -5479,9 +5263,9 @@ Sub TWOMIN ()
 
             End If
 
-            If J6(0) = 2 Then I1 = 1: Exit Do
+            If J6 = 2 Then I1 = 1: Exit Do
 
-            If Q = 2 And Y > 15 And (J6(0) = 1 And P1 = CT Or J6(0) = 2) And I5 <= 0 Then
+            If Q = 2 And Y > 15 And (J6 = 1 And P1 = CT Or J6 = 2) And I5 <= 0 Then
                 If T1(P1) > 0 Then
                     I1 = 2
                 Else
@@ -5490,15 +5274,15 @@ Sub TWOMIN ()
                 Exit Do
             End If
 
-            If Q = 2 And Y > 40 And I5 > 0 And B6(P1, 7) < 65 And (J6(0) = 1 And P1 = CT Or J6(0) = 2) And T1(P1) > 0 Then I1 = 2: Exit Do
-            If Q = 2 And Y > 40 And I5 >= 0 And B6(P1, 7) < 65 And (J6(0) = 2 Or J6(0) = 1 And P1 = CT) Then I1 = 4: Exit Do
+            If Q = 2 And Y > 40 And I5 > 0 And B6(P1, 7) < 65 And (J6 = 1 And P1 = CT Or J6 = 2) And T1(P1) > 0 Then I1 = 2: Exit Do
+            If Q = 2 And Y > 40 And I5 >= 0 And B6(P1, 7) < 65 And (J6 = 2 Or J6 = 1 And P1 = CT) Then I1 = 4: Exit Do
 
         End If
 
         I$ = GetKeyPress$
         I1 = Val(I$)
 
-    Loop Until Not (I1 < 1 Or I1 > 5 Or (I1 = 2 Or I1 = 4 Or I1 = 5) And J6(0) = 1 And P1 = CT Or I1 = 3 And J6(0) = 1 And D = CT)
+    Loop Until Not (I1 < 1 Or I1 > 5 Or (I1 = 2 Or I1 = 4 Or I1 = 5) And J6 = 1 And P1 = CT Or I1 = 3 And J6 = 1 And D = CT)
 
     Color 0, 5 * (1 - BW)
 
@@ -6324,56 +6108,6 @@ End Sub
 
 
 '------------------------------
-'  SelectTeam_GAME Subroutine
-'------------------------------
-' ...explanation...
-Sub SelectTeam_GAME (I)
-
-    SELECTION% = 1
-    Count% = NT
-    Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
-    Rows% = 20
-    Columns% = 4
-    Spacing% = 6
-    Row% = 4
-    Column% = 1
-    Color , 4
-
-    Cls
-
-    Locate , 33
-    Color 14: Print "TEAM SELECTION"
-    Color 15
-    Locate 25, 1
-    Color 14: Print "ESC";
-    Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-    Color 14: Print "ENTER";
-    Color 15: Print "-SELECTS TEAM";
-
-
-    _MouseShow "DEFAULT"
-    MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-    _MouseHide
-
-    If EXITCODE% = 27 Then
-        BO% = 1
-    Else
-
-        intB8% = teamIndex%(SELECTION%)
-
-        Locate 2, 33
-        Color 31: Print "LOADING..."
-
-        Call GETTEAM(I)
-
-    End If
-
-End Sub
-
-
-'------------------------------
 '      KICKSET Subroutine
 '------------------------------
 ' ...explanation...
@@ -6687,82 +6421,6 @@ End Sub
 
 
 '------------------------------
-'      GetDiskID Subroutine
-'------------------------------
-' ...explanation...
-Sub GetDiskID (I)
-
-    Do
-        Color 15, 0
-
-        Cls
-
-        JJ = 9
-        SN = 1
-
-        Locate 6, 8: Color 15, 4
-
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        Locate 7 + JJ, 8
-
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER DISK ID: ": Print
-        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-        Print
-        Locate , 12: Print "MAKE SURE NUM LOCK KEY IS OFF TO USE ARROW KEYS"
-        Locate , 12: Print "AND PG UP/PG DN KEYS"
-        Print
-        Locate , 12: Print "(JUST HIT ENTER TO USE PREVIOUS ID, IF SAME)"
-
-        Locate 7, 27: Input NY$
-        Color 15, 0
-
-        If NY$ = "" Then
-
-            Call SelectTeam_GAME(I)
-
-        Else
-
-            YN$ = NY$
-
-            Erase teamNames$
-
-            Call FINDTEAMS(I)
-
-        End If
-
-        If BO% = 1 Then
-            BO% = 0
-        Else
-            Locate 2, 33
-            Color PA%(I, 2), PA%(I, 1): Print A$(I)
-
-            Do
-                Color 15, 4
-                Locate 3, 33: Print "ANY CHANGE (YN)";
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N"
-
-    Color 15, 0
-
-End Sub
-
-
-'------------------------------
 '     Touchback Subroutine
 '------------------------------
 ' ...explanation...
@@ -6899,7 +6557,7 @@ Sub POSTGAME ()
         Color 14: Print "(2) ";
         Color 15: Print "STATS TO TEXT FILE"
 
-        If AP = 1 And J6(0) = 2 Then
+        If AP = 1 And J6 = 2 Then
             X = 2
         Else
 
@@ -6918,7 +6576,7 @@ Sub POSTGAME ()
         Color 15, 0
         Cls
 
-        If Not (AP = 1 And J6(0) = 2) Then
+        If Not (AP = 1 And J6 = 2) Then
 
             Do
                 'Using Home Team's color for the box
@@ -6932,7 +6590,7 @@ Sub POSTGAME ()
 
         End If
 
-    Loop Until UCase$(I$) = "N" Or (AP = 1 And J6(0) = 2)
+    Loop Until UCase$(I$) = "N" Or (AP = 1 And J6 = 2)
 
     Call TICKER
 
@@ -7410,7 +7068,7 @@ Sub BOX2SPC (NM$)
     Print #2,
 
     'Output any special events
-    Print #2, 
+    Print #2,
 
     Close #2
 
@@ -7444,7 +7102,7 @@ Sub BOX2SCREEN ()
 
     Call ScoreSummary
 
-    If Not (AP = 1 And J6(0) = 2) Then
+    If Not (AP = 1 And J6 = 2) Then
         I$ = GetKeyPress$
     End If
 
@@ -8007,7 +7665,7 @@ Function TickerTime% (timeInterval, X)
 
     TickerTime% = tickerIdx
 
-End Sub
+End Function
 
 
 '------------------------------
@@ -8020,3 +7678,334 @@ Sub pbplog (lineNumber)
     Print #7,
 
 End Sub
+
+
+'------------------------------
+'      GetDiskID Subroutine
+'------------------------------
+' ...explanation...
+Sub GetDiskID (I)
+
+    Do
+        Color 15, 0
+
+        Cls
+
+        JJ = 9
+        SN = 1
+
+        Locate 6, 8: Color 15, 4
+
+        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
+
+        For II = 1 To JJ
+            Locate 6 + II, 8
+            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
+        Next
+
+        Locate 7 + JJ, 8
+
+        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER DISK ID: ": Print
+        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+        Print
+        Locate , 12: Print "MAKE SURE NUM LOCK KEY IS OFF TO USE ARROW KEYS"
+        Locate , 12: Print "AND PG UP/PG DN KEYS"
+        Print
+        Locate , 12: Print "(JUST HIT ENTER TO USE PREVIOUS ID, IF SAME)"
+
+        Locate 7, 27: Input NY$
+        Color 15, 0
+
+        If NY$ = "" Then
+
+            Call SelectTeam_GAME(I)
+
+        Else
+
+            YN$ = NY$
+
+            Erase teamNames$
+
+            Call FINDTEAMS(I)
+
+        End If
+
+        If BO% = 1 Then
+            BO% = 0
+        Else
+            Locate 2, 33
+            Color PA%(I, 2), PA%(I, 1): Print A$(I)
+
+            Do
+                Color 15, 4
+                Locate 3, 33: Print "ANY CHANGE (YN)";
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N"
+
+    Color 15, 0
+
+End Sub
+
+
+'------------------------------
+'   FINDTEAMS Subroutine
+'------------------------------
+'Get list of teams from file
+' ...explanation...
+Sub FINDTEAMS (I)
+
+    Dim fileLength&
+
+    NT = 0
+
+    teamYear$ = RTrim$(YN$)
+
+    Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
+
+    fileLength& = LOF(1)
+
+    Field #1, 15 As Q$(0), 640 As X$
+
+    For I1 = 1 To fileLength& / 934
+        'Get Team Name
+        Get #1, I1
+
+        'Check for last team
+        For J = 1 To 15
+            If Asc(Mid$(Q$(0), J, 1)) < 32 Or Asc(Mid$(Q$(0), J, 1)) > 123 Or UCase$(Left$(Q$(0), 3)) = "NOT" Or UCase$(Left$(Q$(0), 3)) = "UN" Then
+                _Continue
+            End If
+        Next J
+
+        'Count # of teams
+        NT = NT + 1
+        teamNames$(NT) = RTrim$(Q$(0))
+        teamIndex%(NT) = I1
+
+    Next I1
+
+    Close 1
+
+    Call SelectTeam_GAME(I)
+
+End Sub
+
+
+'------------------------------
+'  SelectTeam_GAME Subroutine
+'------------------------------
+' ...explanation...
+Sub SelectTeam_GAME (I)
+
+    SELECTION% = 1
+    Count% = NT
+    Start% = 1
+    FileFGColr% = 15: FileBGColr% = 4
+    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    Rows% = 20
+    Columns% = 4
+    Spacing% = 6
+    Row% = 4
+    Column% = 1
+    Color , 4
+
+    Cls
+
+    Locate , 33
+    Color 14: Print "TEAM SELECTION"
+    Color 15
+    Locate 25, 1
+    Color 14: Print "ESC";
+    Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+    Color 14: Print "ENTER";
+    Color 15: Print "-SELECTS TEAM";
+
+
+    _MouseShow "DEFAULT"
+    MAMenu teamNames$(), SELECTION%, Start%, Count%, EXITCODE%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    _MouseHide
+
+    If EXITCODE% = 27 Then
+        BO% = 1
+    Else
+
+        intB8% = teamIndex%(SELECTION%)
+
+        Locate 2, 33
+        Color 31: Print "LOADING..."
+
+        Call GETTEAM(I)
+
+    End If
+
+End Sub
+
+
+'------------------------------
+'     GETTEAM Subroutine
+'------------------------------
+' ...explanation...
+Sub GETTEAM (I)
+
+    teamYear$ = RTrim$(YN$)
+
+    If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
+
+        Cls
+        Print "ERROR::: TEAM FILE NOT FOUND...BE SURE CORRECT ID AND TEAM NUMBERS ARE USED"
+        Locate 4, 1: Input "SEASON DISK ID (USUALLY LAST TWO DIGITS OF YEAR) "; teamYear$
+        Locate 6, 1: Input "ENTER ID NUMBER FOR TEAM  "; intB8%
+        Call GETTEAM(I)
+
+    Else
+
+        Open diskPaths$(0) + "FOOT." + teamYear$ As #1 Len = 934
+
+        Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
+        Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
+        Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
+        Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
+        Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
+        Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
+        Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
+        Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
+        Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
+        Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
+        Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
+        Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
+        Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
+        Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
+        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
+        Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
+        Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
+        Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+
+        Get #1, intB8%
+
+        intB8%(I) = intB8%
+        NN$(I) = teamYear$
+
+        A$(I) = RTrim$(Q$(1))
+        AA$(I) = RTrim$(Q$(2))
+
+        For I1 = 0 To 7
+            B6(I, I1) = CVI(Q$(I1 + 3))
+        Next I1
+
+        For I1 = 0 To 4
+            PA%(I, I1) = CVI(Q$(I1 + 11))
+        Next I1
+
+        For I1 = 0 To 9
+            A1$(I, I1) = RTrim$(Q$(I1 * 5 + 16))
+            A(I, I1) = CVI(Q$(I1 * 5 + 17))
+            A1(I, I1) = CVI(Q$(I1 * 5 + 18))
+            A2(I, I1) = CVI(Q$(I1 * 5 + 19))
+            A3(I, I1) = CVI(Q$(I1 * 5 + 20))
+        Next I1
+
+        For I1 = 0 To 5
+            A2$(I, I1) = RTrim$(Q$(I1 * 3 + 66))
+            A4(I, I1) = CVI(Q$(I1 * 3 + 67))
+            A5(I, I1) = CVI(Q$(I1 * 3 + 68))
+        Next I1
+
+        For I1 = 0 To 3
+            A3$(I, I1) = RTrim$(Q$(I1 * 5 + 84))
+            A6(I, I1) = CVI(Q$(I1 * 5 + 85))
+            A7(I, I1) = CVI(Q$(I1 * 5 + 86))
+            A8(I, I1) = CVI(Q$(I1 * 5 + 87))
+            QX%(I, I1) = CVI(Q$(I1 * 5 + 88))
+        Next I1
+
+        For I1 = 0 To 2
+            A4$(I, I1) = RTrim$(Q$(I1 * 3 + 104))
+            A9(I, I1) = CVI(Q$(I1 * 3 + 105))
+            B(I, I1) = CVI(Q$(I1 * 3 + 106))
+        Next I1
+
+        For I1 = 0 To 2
+            A5$(I, I1) = RTrim$(Q$(I1 * 3 + 113))
+            B1(I, I1) = CVI(Q$(I1 * 3 + 114))
+            B2(I, I1) = CVI(Q$(I1 * 3 + 115))
+        Next I1
+
+        A6$(I, 0) = RTrim$(Q$(122))
+        B3(I, 0) = CVI(Q$(123))
+        A7$(I, 0) = RTrim$(Q$(124))
+        B4(I, 0) = CVI(Q$(125))
+        B5(I, 0) = CVI(Q$(126))
+        B7(I, 0) = CVI(Q$(127))
+        B8(I, 0) = CVI(Q$(128))
+        A7$(I, 1) = Q$(129)
+        B4(I, 1) = CVI(Q$(130))
+        B5(I, 1) = CVI(Q$(131))
+        B7(I, 1) = CVI(Q$(132))
+        B8(I, 1) = CVI(Q$(133))
+        YC(I) = CVI(Q$(134))
+
+        For I1 = 0 To 14
+            DS$(I, I1) = Q$(I1 * 2 + 135)
+            DS(I, I1) = CVI(Q$(I1 * 2 + 136))
+        Next I1
+
+        For I1 = 0 To 9
+            DI$(I, I1) = Q$(I1 * 2 + 165)
+            DI(I, I1) = CVI(Q$(I1 * 2 + 166))
+        Next I1
+
+        Close #1
+
+        If Left$(AA$(I), 1) = " " Or AA$(I) = "" Then AA$(I) = A$(I)
+
+        PC%(I, 0) = A(I, 0)
+
+        For I1 = 9 To 1 Step -1
+            If A(I, I1) <> 0 Then
+                PC%(I, I1) = A(I, I1) - A(I, I1 - 1)
+            End If
+        Next
+
+        DDS(I) = 0
+        DDI(I) = 0
+
+        For I1 = 0 To 14
+            DDS(I) = DDS(I) + DS(I, I1)
+            If DS(I, 0) > 0 Then intDS%(I) = 1
+        Next I1
+
+        For I1 = 0 To 9
+            DDI(I) = DDI(I) + DI(I, I1)
+            If DI(I, 0) > 0 Then intDI%(I) = 1
+        Next I1
+
+    End If
+
+End Sub
+

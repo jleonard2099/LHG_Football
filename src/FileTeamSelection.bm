@@ -2,10 +2,13 @@
 '   ChooseTeam Subroutine
 '------------------------------
 '...explanation...
-Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
+Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
     Shared teamRatings%()
-    Shared teamNames$()
+
+    'Shared teamNames$()
+
+    Shared previousYear$
 
     Do
 
@@ -40,20 +43,15 @@ Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
         If I$ <> Chr$(27) Then
 
-            If I$ = Chr$(13) Then
-                'Use previous info
-                'Will have an issue if the file doesn't exist
-                NY$ = yearNumber$
-                Call SelectTeam(numberTeams, NY$, chosenIdx, teamName$)
-            Else
+            If I$ <> Chr$(13) Then
+
                 Locate 7, 27: Print I$
                 Locate 7, 28: Line Input NY$
                 NY$ = I$ + NY$
                 Color 15, 0
 
-                If NY$ = "" And YN$ <> "" Then
-                    Call SelectTeam(numberTeams, NY$, chosenIdx, teamName$)
-                Else
+                If Not (NY$ = "" And yearNumber$ <> "") Then
+
                     yearNumber$ = RTrim$(NY$)
                     Erase teamNames$
                     numberTeams = 0
@@ -68,8 +66,6 @@ Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
                         I$ = GetKeyPress$
                         Call CSMsgBox("", 0, Pass)
 
-                        BO% = 1
-
                     Else
 
                         Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
@@ -80,48 +76,56 @@ Sub ChooseTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                         numberTeams = fileLength& / TEAM_SIZE_BYTES
 
-                        For teamIdx = 1 To fileLength&
+                        For teamIdx = 1 To numberTeams
                             Get #1, teamIdx
                             'numberTeams = numberTeams + 1
-                            teamNames$(numberTeams) = Q$(0)
-                            teamIndex%(numberTeams) = teamIdx
+                            teamNames$(teamIdx) = Q$(0)
+                            teamIndex%(teamIdx) = teamIdx
                         Next teamIdx
 
                         Close 1
 
-                        If BO% = 1 Then
-
-                            BO% = 0
-
-                        Else
-                            'Locate 2, 33
-                            'Color 31: Print "LOADING..."
-
-                            Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$)
-
-                            Do
-
-                                Locate 2, 33
-                                Color teamRatings%(2), teamRatings%(1): Print teamName$
-
-                                Color 15, 4
-                                Locate 3, 33: Print "ANY CHANGE? (YN)";
-
-                                I$ = GetKeyPress$
-
-                            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                        End If
-
+                        previousYear$ = yearNumber$
+                        
                     End If 'Done checking if file exists
 
                 End If 'Done checking for blank year number
 
+            Else
+
+                yearNumber$ = previousYear$
+
             End If 'Done checking for ENTER key
+
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
+
+            Do
+
+                Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$, ExitCode%)
+
+                If ExitCode% <> 27 And numberTeams <> 0 Then
+
+                    Do
+                        Locate 2, 33
+                        Color teamRatings%(2), teamRatings%(1): Print teamName$
+
+                        Color 15, 4
+                        Locate 3, 33: Print "ANY CHANGE? (YN)";
+
+                        J$ = GetKeyPress$
+
+                    Loop Until J$ = Chr$(27) Or UCase$(J$) = "Y" Or UCase$(J$) = "N"
+
+                End If
+
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N"
 
         End If 'Done checking for ESC
 
-    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
+    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
+
+    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
 
 End Sub
 
@@ -130,9 +134,9 @@ End Sub
 '   SelectTeam Subroutine
 '------------------------------
 '...explanation...
-Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$)
+Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 
-    Shared teamNames$()
+    'Shared teamNames$()
 
     If numberTeams > 0 Then
 
@@ -163,8 +167,8 @@ Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$)
 
             selectedIdx = teamIndex%(SELECTION%)
 
-            Locate 2, 33: Color 3
-            Print "LOADING.."
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
 
             Call ReadTeam(yearNumber$, teamName$, selectedIdx)
             'Call ReadExtraData(yearNumber$, teamName$, selectedIdx)
@@ -184,7 +188,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 
     Shared ydsCompAdj
 
-    Shared mascot$
+    Shared mascot$, teamNick$
 
     Shared leagueRatings%(), teamRatings%()
     
@@ -196,8 +200,10 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
     Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
     Shared numInts(), numSacks(), armRating()
 
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
-    Shared punterName$(), pkName$(), intName$(), sackName$()
+    Shared intName$(), krName$()
+    Shared pkName$(), prName$(), punterName$()
+    Shared qbName$(), rbName$()
+    Shared sackName$(), wrName$()
 
     Open diskPaths$(0) +  TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
@@ -239,8 +245,8 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 
     Get #1, teamIdx
 
-    targetTeam$ = Q$(1)
-    mascot$ = Q$(2)
+    targetTeam$ = RTrim$(Q$(1))
+    mascot$ = RTrim$(Q$(2))
 
     For I = 0 To 7: 
         leagueRatings%(I) = CVI(Q$(I + 3))
@@ -362,9 +368,9 @@ Sub ReadExtraData (teamYear$, targetTeam$, teamIdx)
 
     Shared stadium$, Z$
     
-    If _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
+    If _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
 
-        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$ For Random As #2 Len = DATA_SIZE_BYTES
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #2 Len = DATA_SIZE_BYTES
 
         Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
 
@@ -387,17 +393,28 @@ End Sub
 
 
 '------------------------------
-'   nameStatFile Function
+'   nameStatFile$ Function
 '------------------------------
 '...explanation...
 Function nameStatFile$ (teamName$)
 
+    teamPrefix$ = teamName$
+    
     For XX = 4 To 11
-        If Mid$(teamName$, XX, 1) = " " Or Mid$(teamName$, XX, 1) = "." Then Mid$(teamName$, XX, 1) = "_"
+
+        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then 
+            Mid$(teamPrefix$, XX, 1) = "_"
+        End If
+
     Next XX
 
     For XX = 12 To 14
-        If Mid$(teamName$, XX, 2) = "ST" Then Mid$(teamName$, 9, 1) = "_": Mid$(teamName$, 10, 2) = "ST"
+
+        If Mid$(teamPrefix$, XX, 2) = "ST" Then 
+            Mid$(teamPrefix$, 9, 1) = "_"
+            Mid$(teamPrefix$, 10, 2) = "ST"
+        End If
+
     Next XX
 
     'Length of 'converted' name for file
@@ -405,14 +422,14 @@ Function nameStatFile$ (teamName$)
     QQ = 8
 
     For XX = 11 To 4 Step -1
-        If Mid$(teamName$, XX, 1) = "_" Then
+        If Mid$(teamPrefix$, XX, 1) = "_" Then
             QQ = XX - 4
         Else
             Exit For
         End If
     Next XX
 
-    nameStatFile$ = Mid$(teamName$, 4, QQ) + "." + Left$(teamName$, 2)
+    nameStatFile$ = Mid$(teamPrefix$, 4, QQ) + "." + Left$(teamPrefix$, 2)
 
 End Function
 
