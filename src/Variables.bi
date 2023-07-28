@@ -4,35 +4,13 @@
 Dim opSysType$
 
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
-
-' *** Reading Team Data ***
-' -------------------------
-Dim Shared A$
-
-'-- transition away from this
-Dim Shared fileLength&
-
-Dim teamAttendance&
-
-Dim ydsCompAdj 'YC! is used elsewhere
-
-Dim mascot$, stadium$, teamNick$
-
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
-Dim leagueRatings%(7), teamRatings%(5)
-
-Dim rushAtt(9), rushAvg(9), rbRecepts(15), rbRecAvg(9)
-Dim wrRecept(5), wrRecAvg(5)
-Dim passAtt(0 To 3), compPct(3), qbIntPct(3)
-Dim krRet(2), krRetAvg(2), prRet(2), prRetAvg(2), puntAvg(1)
-Dim pkFGA(1), pkFGPct(1), pkPAT(1), pkPATPct(1)
-Dim numInts(9), numSacks(14), armRating(3)
-
-Dim rbName$(9), wrName$(5), qbName$(4), krName$(2), prName$(2)
-Dim punterName$(3), pkName$(1), intName$(9), sackName$(15)
-
+' *** Reading Stat Data ***
+' -------------------------
+Dim ORD$(120)
+Dim ORD%(120)
 
 ' *** Schedule Data ***
 ' -------------------------
@@ -88,10 +66,8 @@ Dim statsZ2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 Dim Ycurr%, Yroad%
 
 Dim alignA$(15), alignAR$(15)
-Dim ORD$(120)
 
 Dim AR(15, 14)
-Dim ORD%(120)
 Dim W0R(15), WR1(15)
 Dim ZR(15), ZR1(15)
 

@@ -48,7 +48,7 @@ Sub DRAFT ()
 
                 Case 2:
 
-                    Call ChooseTeam_DRAFT(YN$, NTMS, teamNbr, team$)
+                    Call ChooseDraftTeam(YN$, NTMS, teamNbr, team$)
 
                     If teamNbr <> 0 Then
                         Call DraftExistingTeam(YN$, teamNbr)
@@ -303,12 +303,12 @@ Sub DraftExistingTeam (YN$, teamIdx)
         numInts(I) = numInt_DRAFT(I)
     Next I
 
-    If Not _FileExists(diskPaths$(0) + "STADIUMS." + YN$) Then
+    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$) Then
         stadium$ = ""
         teamAttendance& = 0
     Else
 
-        Open diskPaths$(0) + "STADIUMS." + YN$ For Random As #2 Len = 50
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$ For Random As #2 Len = DATA_SIZE_BYTES
 
         Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
@@ -542,15 +542,15 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     teamYear$ = RTrim$(yearNumber$)
 
-    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
     fileLength& = LOF(1)
 
     Close 1
 
-    If draftNew = 1 Then teamIdx = (fileLength& / 934) + 1
+    If draftNew = 1 Then teamIdx = (fileLength& / TEAM_SIZE_BYTES) + 1
 
-    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -658,7 +658,7 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     Close #1
 
-    Open diskPaths$(0) + "STADIUMS." + teamYear$ For Random As #2 Len = 50
+    Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #2 Len = DATA_SIZE_BYTES
 
     Field #2, 15 As Q$(1), 30 As Q$(2), 4 As Q$(3), 1 As Q$(4)
 
@@ -768,7 +768,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "R":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -828,7 +828,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "W":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -885,7 +885,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "Q":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -945,7 +945,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "K":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -1005,7 +1005,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "P":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -1064,7 +1064,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "U":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -1118,7 +1118,7 @@ Sub DraftChoices (YN$, teamName$)
 
             Case "I":
 
-                Call ChooseTeam_DRAFT(draftYear$, NTMS, draftIdx, draftTeam$)
+                Call ChooseDraftTeam(draftYear$, NTMS, draftIdx, draftTeam$)
 
                 If draftIdx <> 0 Then
 
@@ -1192,10 +1192,10 @@ End Sub
 
 
 '----------------------------------------
-'       ChooseTeam_DRAFT Subroutine
+'       ChooseDratTeam Subroutine
 '----------------------------------------
 '...explanation...
-Sub ChooseTeam_DRAFT (yearNumber$, numberTeams, teamIdx, teamName$)
+Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
     Shared tmRat_DRAFT()
 
@@ -1394,7 +1394,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
     Shared intNam_DRAFT$(), sackNam_DRAFT$()
 
-    Open diskPaths$(0) + "FOOT." + teamYear$ For Random As #1 Len = 934
+    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
