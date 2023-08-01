@@ -97,10 +97,10 @@ Sub FOOTBALL ()
         Close 2
 
         'Read in schedule options
-        Open diskPaths$(0) + scheduleFile$ As #1 Len = 52
+        Open diskPaths$(0) + scheduleFile$ As #1 Len = SCHEDULE_SIZE_BYTES
 
         For X = 0 To 20
-            Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
+            Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
         Next
 
         Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)

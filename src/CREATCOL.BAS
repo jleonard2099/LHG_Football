@@ -44,12 +44,12 @@ Sub CREATCOL ()
             Select Case Selection%
 
                 Case 1:
-                    Call DefineConference(LG$, div1$, div2$)
-                    Call ReviewEditConf(LG$, div1$, div2$)
+                    Call DefineConference(conference$, div1$, div2$)
+                    Call ReviewEditConf(conference$, div1$, div2$)
 
                 Case 2:
-                    Call ChooseConference(LG$)
-                    Call ReviewEditConf(LG$, div1$, div2$)
+                    conference$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+                    Call ReviewEditConf(conference$, div1$, div2$)
 
             End Select
 
@@ -91,7 +91,7 @@ Sub DefineConference (conference$, div1$, div2$)
             Locate 7, 32
 
             Locate , 12: Print "ENTER NAME FOR CONFERENCE: ": Print
-            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES."
+            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
             Locate , 12: Print "SAMPLE NAMES ARE SEC, SWC, 94-ACC"
             Locate 7, 37: Input conference$
 
@@ -281,92 +281,3 @@ Sub SaveConferences (conference$, div1$, div2$)
     Close 2
 
 End Sub
-
-'----------------------------------------
-'       ChooseConference Subroutine
-'----------------------------------------
-'...explanation...
-Sub ChooseConference (conference$)
-
-    wrongFormat% = 0
-
-    Do
-        'Display list of files...
-        Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
-
-        If Count% = 0 Then
-
-            Locate 10, 8
-            Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-
-        Else
-
-            ReDim conferenceFiles$(0 To Count)
-
-            For X = 1 To Count
-                conferenceFiles$(X) = Space$(12)
-            Next
-
-            conferenceFiles$(0) = Spec$
-            Call ReadFile(conferenceFiles$())
-
-            Do
-                Cls
-                Color , 1
-
-                Cls
-                Locate , 28
-
-                Color 14
-                Print "SELECT CONFERENCE TO SCHEDULE": Color 15
-                Selection% = 1
-                Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS CONFERENCE";
-
-                _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = conferenceFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-                targetFile$ = RTrim$(targetFile$)
-                conference$ = Left$(targetFile$, Len(targetFile$) - 4)
-            End If 'Done checking for ESC
-
-        End If 'Done checking for file count
-
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
-
-End Sub
-
-

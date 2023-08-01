@@ -78,7 +78,7 @@ Sub ViewExpandedLeaders (statType%)
     CT% = statType%
     printOrView% = 0
 
-    Call ChooseConference_Expanded(targetFile$, menuExit%)
+    confStatFile$ = ChooseFile$ (diskPaths$(2) + "*.TMS", "CONFERENCE STATS", ExitCode%)
 
     If menuExit% <> 27 Then
 
@@ -107,9 +107,7 @@ Sub ViewExpandedLeaders (statType%)
 
         Erase TMM$, TPP$
 
-        LG$ = targetFile$
-
-        Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
+        Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #2
 
         If statType% = 1 Then
             Input #2, LGF$
@@ -132,7 +130,7 @@ Sub ViewExpandedLeaders (statType%)
 
         Call UpdateExpandedLeaders(statType%, tStats)
 
-        Call SAVELEADER(LG$, tStats)
+        Call SAVELEADER(confStatFile$, tStats)
 
         Do
 
@@ -1790,83 +1788,6 @@ Sub GetListLength (printOrView%, listLength, maxItems)
 
 End Sub
 
-'------------------------------
-'  ChooseConference_Expanded
-'   Subroutine
-'------------------------------
-' ...explanation...
-Sub ChooseConference_Expanded (targetFile$, ExitCode%)
-
-    Do
-
-        Spec$ = diskPaths$(2) + "*.TMS"
-        Count% = FCount%(Spec$)
-
-        If Count% = 0 Then
-            Locate 10, 8
-            Call CSMsgBox("NO CONFERENCE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-        Else
-            ReDim conferenceFiles$(0 To Count%)
-            For X = 1 To Count%
-                conferenceFiles$(X) = Space$(12)
-            Next
-            conferenceFiles$(0) = Spec$
-            Call ReadFile(conferenceFiles$())
-
-            Do
-
-                Cls
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT CONFERENCE": Color 15
-                Selection% = 1
-                Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS CONFERENCE";
-
-                _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = conferenceFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-                targetFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
-            End If
-
-        End If
-
-    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
-
-End Sub
 
 '------------------------------
 '    UpdateExpandedLeaders Subroutine
@@ -2006,6 +1927,7 @@ Sub UpdateExpandedLeaders (CT%, tStats)
                 Next I
 
                 For I = 0 To 3
+
                     JC = JC + 1
                     QBL$(JC) = lookyA3$(PX, I)
                     A3T$(JC) = statsA$
@@ -2023,16 +1945,20 @@ Sub UpdateExpandedLeaders (CT%, tStats)
                 Next I
 
                 For I = 0 To 2
+
                     JD = JD + 1
                     A4L$(JD) = lookyA4$(PX, I)
                     A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
                     For I1 = 14 To 16: A4L!(JD, I1 - 14) = statsZ2!(I, I1): Next I1
+
                     A4L!(JD, 3) = LK!(I)
+
                 Next I
 
                 For I = 0 To 2
+
                     JE = JE + 1
                     A5L$(JE) = lookyA5$(PX, I)
                     A5T$(JE) = statsA$
@@ -2041,6 +1967,7 @@ Sub UpdateExpandedLeaders (CT%, tStats)
                     For I1 = 14 To 16: A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1): Next I1
 
                     A5L!(JE, 3) = PK!(I)
+
                 Next I
 
                 JF = JF + 1

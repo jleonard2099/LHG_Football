@@ -1,6 +1,6 @@
 Sub CARVIEW ()
 
-    _Title "3-in-1 Football - View Career Files"
+    _Title "3-in-1 Football - View Careers"
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -16,476 +16,463 @@ Sub CARVIEW ()
     Shared carviewA1$(), carviewA2$(), carviewA3$(), carviewA4$(), carviewA5$(), carviewA6$(), carviewA7$()
     Shared carviewDI$(), carviewDS$()
 
-    Do
-        'Display list of files...
-        Color 0, 0
+    careerFile$ = ChooseFile$ (diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+
+    If ExitCode% <> 27 And ExitCode% <> 0 Then
+
+        Color 15, 0
         Cls
 
-        Spec$ = diskPaths$(1) + "*.CAR"
-        Count% = FCount%(Spec$)
+        TMR = 6420
 
-        If Count% = 0 Then
-            Locate 10, 8
-            Call CSMsgBox("NO CAREER FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+        Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
+
+        Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #1
+
+        Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
+        For I = 0 To 49: 
+            Input #1, carviewA1$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 39
+            Input #1, carviewA2$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 19
+            Input #1, carviewA3$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 14
+            Input #1, carviewA4$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 14
+            Input #1, carviewA5$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 9
+            Input #1, carviewA6$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 9
+            Input #1, carviewA7$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 54
+            Input #1, carviewDI$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For I = 0 To 54
+            Input #1, carviewDS$(PX, I)
+            Locate 21, 38
+            Color 5
+            TMR = TMR - 1: Print Using "####"; TMR
+        Next
+
+        For N = 1 To 15: 
+
+            For J = 0 To 49: 
+
+                For K = 0 To 9
+                    Input #1, careerRBS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 49
+                Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 39: 
+
+                For K = 0 To 5
+                    Input #1, careerWRS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 39
+                Input #1, careerWRS$(N, J, 0)
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 19: 
+
+                For K = 0 To 7
+                    Input #1, careerQBS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 19
+                Input #1, careerQBS$(N, J, 0)
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 14: 
+
+                For K = 0 To 5
+                    Input #1, careerKRS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 14
+                Input #1, careerKRS$(N, J, 0)
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 14: 
+
+                For K = 0 To 5
+                    Input #1, careerPRS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 14
+                Input #1, careerPRS$(N, J, 0)
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 9: 
+
+                For K = 0 To 3
+                    Input #1, careerPUS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 9: 
+
+                For K = 0 To 16
+                    Input #1, careerFGS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 54: 
+
+                For K = 0 To 2
+                    Input #1, careerGIS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        For N = 1 To 15: 
+
+            For J = 0 To 54: 
+
+                For K = 0 To 2
+                    Input #1, careerGSS!(N, J, K)
+                Next K
+
+                Locate 21, 38
+                Color 5
+
+                TMR = TMR - 1: Print Using "####"; TMR
+
+            Next J
+
+        Next N
+
+        Close #1
+
+        '----------
+        
+        Do
+
+            Erase careerTT!
+
+            Color 15, 0
+            Cls
+
+            Color 7: Print "VIEW ";
+            Color 12: Print "R";: Color 7
+            Print "UNNING BACKS, ";
+            Color 12: Print "W";: Color 7
+            Print "IDE RECEIVERS, ";
+            Color 12: Print "Q";: Color 7
+            Print "UARTERBACKS, ";
+            Color 12: Print "K";: Color 7
+            Print "ICK RETURNERS, P";
+            Color 12: Print "U";: Color 7
+            Print "NT"
+            Print "RETURNERS, ";
+            Color 12: Print "P";: Color 7
+            Print "UNTERS, KI";
+            Color 12: Print "C";: Color 7
+            Print "KERS, ";
+            Color 12: Print "I";: Color 7
+            Print "NTERCEPTIONS, ";
+            Color 12: Print "D";: Color 7
+            Print "EFENSIVE SACKS,": Color 7
+            Print "R";: Color 12: Print "O";: Color 7
+            Print "STER IN SEQUENCE, OR ";
+            Color 12: Print "E";: Color 7
+            Print "XIT TO MAIN MENU."
+
+            escPressed% = 0
+
             I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-        Else
-            ReDim careerFiles$(0 To Count%)
 
-            For X = 1 To Count%
-                careerFiles$(X) = Space$(12)
-            Next
+            Select Case UCase$(I$)
 
-            careerFiles$(0) = Spec$
-            Call ReadFile(careerFiles$())
+                Case "R"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
+                    For I = 17 To 33: Locate I - 15, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
+                    For I = 34 To 49: Locate I - 32, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
 
-            Do
-                Color , 1
-                Cls
-
-                Locate , 28
-                Color 14
-                Print "SELECT FILE TO VIEW": Color 15
-                Selection% = 1
-                START% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS FILE";
-
-                _MouseShow "DEFAULT"
-                MAMenu careerFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = careerFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-					Do
-						Locate 3, 33: Print "ANY CHANGE (YN)";
-						I$ = GetKeyPress$
-					Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-					Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-
-				TMR = 6420
-
-                targetFile$ = RTrim$(targetFile$)
-                careerFile$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-				Color 15, 0
-				Cls
-
-                Locate 12, 10: Print "LOADING CAREER FILE . . . . PLEASE WAIT"
-
-                Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #1
-
-                Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-
-                For I = 0 To 49: 
-                    Input #1, carviewA1$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 39
-					Input #1, carviewA2$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 19
-					Input #1, carviewA3$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 14
-					Input #1, carviewA4$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 14
-					Input #1, carviewA5$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 9
-					Input #1, carviewA6$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 9
-					Input #1, carviewA7$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 54
-					Input #1, carviewDI$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For I = 0 To 54
-					Input #1, carviewDS$(PX, I)
-					Locate 21, 38
-					Color 5
-					TMR = TMR - 1: Print Using "####"; TMR
-                Next
-
-                For N = 1 To 15: 
-                    For J = 0 To 49: 
-                        For K = 0 To 9
-                            Input #1, careerRBS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 49
-                        Input #1, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 39: 
-                        For K = 0 To 5
-                            Input #1, careerWRS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 39
-                        Input #1, careerWRS$(N, J, 0)
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 19: 
-                        For K = 0 To 7
-                            Input #1, careerQBS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 19
-                        Input #1, careerQBS$(N, J, 0)
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 14: 
-                        For K = 0 To 5
-                            Input #1, careerKRS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 14
-                        Input #1, careerKRS$(N, J, 0)
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 14: 
-                        For K = 0 To 5
-                            Input #1, careerPRS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 14
-                        Input #1, careerPRS$(N, J, 0)
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 9: 
-                        For K = 0 To 3
-                            Input #1, careerPUS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 9: 
-                        For K = 0 To 16
-                            Input #1, careerFGS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 54: 
-                        For K = 0 To 2
-                            Input #1, careerGIS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                For N = 1 To 15: 
-                    For J = 0 To 54: 
-                        For K = 0 To 2
-                            Input #1, careerGSS!(N, J, K)
-                        Next K
-                        Locate 21, 38
-						Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next J
-                Next N
-
-                Close #1
-
-                '----------
-				
-                Do
-
-					Erase careerTT!
-
-                    Color 15, 0
+                    Print
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
                     Cls
 
-                    Color 7: Print "VIEW ";
-                    Color 12: Print "R";: Color 7
-                    Print "UNNING BACKS, ";
-                    Color 12: Print "W";: Color 7
-                    Print "IDE RECEIVERS, ";
-                    Color 12: Print "Q";: Color 7
-                    Print "UARTERBACKS, ";
-                    Color 12: Print "K";: Color 7
-                    Print "ICK RETURNERS, P";
-                    Color 12: Print "U";: Color 7
-                    Print "NT"
-                    Print "RETURNERS, ";
-                    Color 12: Print "P";: Color 7
-                    Print "UNTERS, KI";
-                    Color 12: Print "C";: Color 7
-                    Print "KERS, ";
-                    Color 12: Print "I";: Color 7
-                    Print "NTERCEPTIONS, ";
-                    Color 12: Print "D";: Color 7
-                    Print "EFENSIVE SACKS,": Color 7
-                    Print "R";: Color 12: Print "O";: Color 7
-                    Print "STER IN SEQUENCE, OR ";
-                    Color 12: Print "E";: Color 7
-                    Print "XIT TO MAIN MENU."
+                    Call CareerPrintCategory(RT, B9, 1, escPressed%, careerFile$)
 
-                    escPressed% = 0
+                Case "W"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
+                    For I = 20 To 39: Locate I - 18, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
+                    Print
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                    I$ = GetKeyPress$
+                    Call CareerPrintCategory(RT, B9, 2, escPressed%, careerFile$)
 
-                    Select Case UCase$(I$)
+                Case "Q"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
+                    For I = 10 To 19: Locate I - 8, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                        Case "R"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
-                            For I = 17 To 33: Locate I - 15, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
-                            For I = 34 To 49: Locate I - 32, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
+                    Call CareerPrintCategory(RT, B9, 3, escPressed%, careerFile$)
 
-                            Print
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "K"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
+                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 1, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 4, escPressed%, careerFile$)
 
-                        Case "W"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
-                            For I = 20 To 39: Locate I - 18, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
-                            Print
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "U"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
+                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 2, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 5, escPressed%, careerFile$)
 
-                        Case "Q"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
-                            For I = 10 To 19: Locate I - 8, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "P"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA6$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 3, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 6, escPressed%, careerFile$)
 
-                        Case "K"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
-                            For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "C"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA7$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 4, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 7, escPressed%, careerFile$)
 
-                        Case "U"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
-                            For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "I"
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
+                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
+                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 5, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
 
-                        Case "P"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA6$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "D"
+                    2920 '
+                    Cls
+                    Color 12: Print careerFile$
+                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
+                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
+                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
+                    Print
+                    Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
+                    RT = 2
+                    Cls
 
-                            Call CareerPrintCategory(RT, B9, 6, escPressed%, careerFile$)
+                    Call CareerPrintCategory(RT, B9, 9, escPressed%, careerFile$)
 
-                        Case "C"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA7$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                Case "O"
+                    RT = 1
+                    Cls
+                    For I = 1 To 50: careerTT!(I) = 0: Next
 
-                            Call CareerPrintCategory(RT, B9, 7, escPressed%, careerFile$)
+                    For category% = 1 To 9:
+                        Call CareerPrintCategory(RT, B9, category%, escPressed%, careerFile$)
+                        If escPressed% = 1 Then Exit For
+                    Next
 
-                        Case "I"
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
-                            For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
-                            For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+                    'If escPressed% = 1 Then I$ = "E"
 
-                            Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
+                Case "E"
+                    '
 
-                        Case "D"
-                            2920 '
-                            Cls
-                            Color 12: Print careerFile$
-                            For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
-                            For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
-                            For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
-                            Print
-                            Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
-                            RT = 2
-                            Cls
+            End Select
 
-                            Call CareerPrintCategory(RT, B9, 9, escPressed%, careerFile$)
+        Loop Until UCase$(I$) = "E" Or escPressed% = 1
 
-                        Case "O"
-                            RT = 1
-                            Cls
-                            For I = 1 To 50: careerTT!(I) = 0: Next
+    End If ' Done checking for ESC
 
-                            For category% = 1 To 9:
-                                Call CareerPrintCategory(RT, B9, category%, escPressed%, careerFile$)
-                                If escPressed% = 1 Then Exit For
-                            Next
-
-                            'If escPressed% = 1 Then I$ = "E"
-
-                        Case "E"
-                            '
-
-                    End Select
-
-                Loop Until UCase$(I$) = "E" Or escPressed% = 1
-
-            End If ' Done checking for ESC
-
-        End If 'Done checking for file count
-
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0 Or escPressed% = 1
-
-    Color 0, 0
+    Color 15, 0
 
 End Sub
 

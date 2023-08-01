@@ -1,0 +1,8 @@
+Declare Sub ChooseConference (conference$)
+Declare Sub ChooseNatOrg (organization$)
+Declare Sub ChooseLeague (league$)
+Declare Sub ChooseConference_Coll (targetFile$)
+Declare Sub ChooseLeague_HD2HD (targetFile$)
+Declare Sub ChooseConference_Expanded (conferenceFile$, ExitCode%)
+Declare Sub LoadSchedule (targetFile$)
+Declare Sub SelectScheduleFile (targetFile$, scheduleFiles$(), FileCount%, ExitCode%)

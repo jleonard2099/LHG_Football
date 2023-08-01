@@ -118,12 +118,10 @@ Sub Hd2HdPro_League (X2)
             'Check if same league
             If SL <> 1 Then
 
-                Call ChooseLeague_HD2HD(targetFile$)
-                LG1$ = targetFile$
+                leag1$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
                 If X2 <> 0 Then
-                    Call ChooseLeague_HD2HD(targetFile$)
-                    LG2$ = targetFile$
+                    leag2$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
                 End If
 
             End If
@@ -175,12 +173,12 @@ Sub Hd2HdPro_League (X2)
         If UCase$(J$) = "P" Then X1 = 1
         If UCase$(J$) = "S" Then VPP = 1
 
-        Open diskPaths$(2) + LG1$ + ".LIB" For Input As #1
+        Open diskPaths$(2) + leag1$ + ".LIB" For Input As #1
 
         Input #1, X%
 
         If X% = 0 Then
-            Input #1, LG1$
+            Input #1, leag1$
             Input #1, div1$
             Input #1, div2$
             For X = 1 To 15:
@@ -194,7 +192,7 @@ Sub Hd2HdPro_League (X2)
         End If
 
         If X% = 1 Then
-            Input #1, LG1$
+            Input #1, leag1$
             Input #1, div1$
             Input #1, div2$
             Input #1, div3$
@@ -213,11 +211,11 @@ Sub Hd2HdPro_League (X2)
 
         If X2 = 1 Then
 
-            Open diskPaths$(2) + LG2$ + ".LIB" For Input As #1
+            Open diskPaths$(2) + leag2$ + ".LIB" For Input As #1
             Input #1, X%
 
             If X% = 0 Then
-                Input #1, LG2$
+                Input #1, leag2$
                 Input #1, div1_2$
                 Input #1, div2_2$
 
@@ -232,7 +230,7 @@ Sub Hd2HdPro_League (X2)
             End If
 
             If X% = 1 Then
-                Input #1, LG2$
+                Input #1, leag2$
                 Input #1, div1_2$
                 Input #1, div2_2$
                 Input #1, div3_2$
@@ -357,9 +355,9 @@ Sub Hd2HdPro_League (X2)
 
         'Generate output
         If VPP <> 1 Then
-            Call Hd2HdPro_Report(team$, LG1$, LG2$, DV$(), DV2$())
+            Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$())
         Else
-            Call Hd2HdPro_Screen(team$, LG1$, LG2$, DV$(), DV2$())
+            Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$())
         End If
 
         Close 2
@@ -466,7 +464,7 @@ End Sub
 '     Hd2HdPro_Screen Subroutine
 '----------------------------------------
 '...explanation...
-Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
+Sub Hd2HdPro_Screen (A$, leag1$, leag2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -513,7 +511,7 @@ Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
         If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then RDD = 3
 
         Color 11
-        Print LG1$; " "; DV$(RDD);
+        Print leag1$; " "; DV$(RDD);
 
         Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -632,7 +630,7 @@ Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
             If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
             Color 11
-            Print LG2$; " "; DV2$(RDD);
+            Print leag2$; " "; DV2$(RDD);
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -735,7 +733,7 @@ Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
     Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
     Color 11
-    Print LG1$;
+    Print leag1$;
 
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -837,7 +835,7 @@ Sub Hd2HdPro_Screen (A$, LG1$, LG2$, DV$(), DV2$())
     If X2 = 1 Then
 
         Print
-        Print LG2$
+        Print leag2$
 
         For W = 1 To 3
 
@@ -948,7 +946,7 @@ End Sub
 '     Hd2HdPro_Report Subroutine
 '----------------------------------------
 '...explanation...
-Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
+Sub Hd2HdPro_Report (A$, leag1$, leag2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$
 
@@ -993,7 +991,7 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
 
             Locate 7, 32
             Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES"
+            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
             Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
             Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
             Locate 7, 37: Input reportFile$
@@ -1037,7 +1035,7 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
 
         If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
-            Print #2, LG1$; " "; DV$(RDD)
+            Print #2, leag1$; " "; DV$(RDD)
 
             For K = DD To EE
 
@@ -1121,7 +1119,7 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
 
             If DV2$(RDD) <> "XXX" And DV2$(RDD) <> "" Then RDD = 3
 
-            Print #2, LG2$; " "; DV2$(RDD)
+            Print #2, leag2$; " "; DV2$(RDD)
 
             For K = DD To EE
 
@@ -1189,7 +1187,7 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
     Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
     Print #2, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
     Print #2, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-    Print #2, LG1$
+    Print #2, leag1$
 
     For W = 1 To 3
 
@@ -1261,7 +1259,7 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
     If X2 = 1 Then
 
         Print #2,
-        Print #2, LG2$
+        Print #2, leag2$
 
         For W = 1 To 3
             Print #2, DV2$(W);
@@ -1331,81 +1329,5 @@ Sub Hd2HdPro_Report (A$, LG1$, LG2$, DV$(), DV2$())
     End If
 
     Close 2
-
-End Sub
-
-'----------------------------------------
-'       ChooseLeague_HD2HD Subroutine
-'----------------------------------------
-'...explanation...
-Sub ChooseLeague_HD2HD (targetFile$)
-
-    Do
-
-        Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
-
-        If Count% = 0 Then
-            Locate 10, 8
-            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-        Else
-            ReDim leagueFiles$(0 To Count%)
-            For X = 1 To Count%
-                leagueFiles$(X) = Space$(12)
-            Next
-            leagueFiles$(0) = Spec$
-            Call ReadFile(leagueFiles$())
-
-            Do
-
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT LEAGUE": Color 15
-                Selection% = 1
-                Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS LEAGUE";
-
-                _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = leagueFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-                targetFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
-            End If
-
-        End If
-
-    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
 
 End Sub

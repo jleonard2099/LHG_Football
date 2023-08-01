@@ -34,216 +34,141 @@ Sub CompileLeague ()
 
     End If
 
-    Cls
+    leagueFile$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
-    Do
-        'Display list of files...
-        Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
+    If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        If Count% = 0 Then
+        'Initialize values first
+        TRC!(11) = 999
+        TRC!(22) = 999
 
-            Locate 10, 8
-            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+        For I = 25 To 27:
+            TRC!(I) = 9999
+        Next
+
+        For I = 29 To 36:
+            TRC!(I) = 9999
+        Next
+
+        TRC!(38) = 999
+        TRC!(39) = 999
+        TRC!(42) = 999
+        TRC!(43) = 999
+
+        Erase compZ1$, compZ2$, compZ3$
+
+        For X = 1 To 240
+            compZ2$(X) = "*"
+        Next
+
+        For I = 1 To 20
+            TT!(2, I, 5) = 9999
+            TT!(4, I, 5) = 9999
+            TT!(6, I, 3) = 9999
+            TT!(8, I, 8) = 9999
+            TT!(10, I, 7) = -99
+        Next
+
+        C$ = ","
+
+        Do
+            Color 15, 0
+            Cls
+            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
             I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
+            finalUpdate$ = UCase$(I$)
+        Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
+        Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
+
+        Input #2, FF$, div1$, div2$, div3$
+
+        For XW = 1 To 30
+            Input #2, H1$(XW)
+        Next XW
+
+        Close 2
+
+        Open diskPaths$(2) + leagueFile$ + ".LIB" For Input As #2
+
+        Input #2, LG%
+
+        Close 2
+
+        If LG% <> 1 Then
+            Cls
+            Print "ERROR:: THIS IS A COLLEGE CONFERENCE"
+            Print "        RETURNING TO MAIN MENU"
+            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+            I$ = GetKeyPress$
         Else
+            Erase compZ2!
 
-            ReDim leagueFiles$(0 To Count%)
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-            For X = 1 To Count%
-                leagueFiles$(X) = Space$(12)
-            Next
+            Input #2, FF$, div1$, div2$, div3$
 
-            leagueFiles$(0) = Spec$
+            For X = 1 To 30
+                Input #2, compZ1$(X)
+            Next X
 
-            Call ReadFile(leagueFiles$())
+            Close 2
 
-            Do
-                Cls
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT LEAGUE TO UPDATE": Color 15
-                Selection% = 1
-                START% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS LEAGUE";
+            For XW = 1 To 30
 
-                _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
+                If H1$(XW) <> Chr$(42) Then
 
-                If ExitCode% <> 27 Then
+                    haveStats = FindStatsPro%(XW, H1$(XW), numberGames%)
 
-                    Color 15, 1
-                    targetFile$ = leagueFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
+                    If (haveStats) Then
 
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+                        L = Len(H1$(XW))
+                        WT$ = ""
 
-                    Color 15, 0
-                Else
-                    BO% = 1
-                End If
+                        For X = 1 To L:
+                            A = Asc(Mid$(H1$(XW), X, 1))
+                            WT$ = WT$ + Chr$(A)
+                        Next X
 
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
+                        confGame = 0
 
-            If ExitCode% <> 27 Then
+                        For EC = 1 To 30:
 
-                'Initialize values first
-                TRC!(11) = 999
-                TRC!(22) = 999
+                            If compZ1$(EC) = WT$ Then
 
-                For I = 25 To 27:
-                    TRC!(I) = 9999
-                Next
-
-                For I = 29 To 36:
-                    TRC!(I) = 9999
-                Next
-
-                TRC!(38) = 999
-                TRC!(39) = 999
-                TRC!(42) = 999
-                TRC!(43) = 999
-
-                Erase compZ1$, compZ2$, compZ3$
-
-                For X = 1 To 240
-                    compZ2$(X) = "*"
-                Next
-
-                For I = 1 To 20
-                    TT!(2, I, 5) = 9999
-                    TT!(4, I, 5) = 9999
-                    TT!(6, I, 3) = 9999
-                    TT!(8, I, 8) = 9999
-                    TT!(10, I, 7) = -99
-                Next
-
-                C$ = ","
-
-                targetFile$ = RTrim$(targetFile$)
-                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-                Do
-                    Cls
-                    Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
-                    finalUpdate$ = UCase$(I$)
-                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
-
-                Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-
-                Input #2, FF$, div1$, div2$, div3$
-
-                For XW = 1 To 30
-                    Input #2, H1$(XW)
-                Next XW
-
-                Close 2
-
-                Open diskPaths$(2) + WE$ + ".LIB" For Input As #2
-
-                Input #2, LG%
-
-                Close 2
-
-                If LG% <> 1 Then
-                    Cls
-                    Print "ERROR:: THIS IS A COLLEGE CONFERENCE"
-                    Print "        RETURNING TO MAIN MENU"
-                    Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
-                    I$ = GetKeyPress$
-                Else
-                    Erase compZ2!
-
-                    Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-
-                    Input #2, FF$, div1$, div2$, div3$
-
-                    For X = 1 To 30
-                        Input #2, compZ1$(X)
-                    Next X
-
-                    Close 2
-
-                    For XW = 1 To 30
-
-                        If H1$(XW) <> Chr$(42) Then
-
-                            haveStats = FindStatsPro%(XW, H1$(XW), numberGames%)
-
-                            If (haveStats) Then
-
-                                L = Len(H1$(XW))
-                                WT$ = ""
-
-                                For X = 1 To L:
-                                    A = Asc(Mid$(H1$(XW), X, 1))
-                                    WT$ = WT$ + Chr$(A)
-                                Next X
-
-                                confGame = 0
-
-                                For EC = 1 To 30:
-
-                                    If compZ1$(EC) = WT$ Then
-
-                                        If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
-                                            confGame = 1
-                                        Else
-                                            O1!(EC) = fullWins
-                                            O2!(EC) = fullLosses
-                                            O3!(EC) = fullTies
-                                        End If
-
-                                        If (confGame) Then Exit For
-
-                                    End If
-                                    'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
-
-                                Next EC
-
-                                If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
-                                    Call ReadStatsPro(H1$(XW), numberGames%, TM$)
-                                    Call StatsByCategoryPro(numberGames%, TM$, WT$, finalUpdate$)
-                                    Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
+                                If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
+                                    confGame = 1
+                                Else
+                                    O1!(EC) = fullWins
+                                    O2!(EC) = fullLosses
+                                    O3!(EC) = fullTies
                                 End If
 
-                            End If
+                                If (confGame) Then Exit For
 
+                            End If
+                            'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
+
+                        Next EC
+
+                        If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                            Call ReadStatsPro(H1$(XW), numberGames%, TM$)
+                            Call StatsByCategoryPro(numberGames%, TM$, WT$, finalUpdate$)
+                            Call CheckStatsPro(numberGames%, TM$, WT$, finalUpdate$)
                         End If
 
-                    Next XW
+                    End If
 
-                    Call SortLeadersPro
-                    Call PostLeadersPro(WE$)
+                End If
 
-                End If 'Done checking file type
+            Next XW
 
-            End If 'Done checking for ESC
+            Call SortLeadersPro
+            Call PostLeadersPro(leagueFile$)
 
-        End If 'Done checking file count
+        End If 'Done checking file type
 
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0
+    End If
 
 End Sub
 

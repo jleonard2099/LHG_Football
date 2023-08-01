@@ -84,278 +84,203 @@ Sub CompileNatlOrg ()
 
     End If
 
-    Cls
+    organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
-    Do
-        'Display list of files...
-        Spec$ = diskPaths$(2) + "*.CON"
-        Count% = FCount%(Spec$)
+    If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        If Count% = 0 Then
-
-            Locate 10, 8
-            Call CSMsgBox("NO ORGANIZATION FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+        Do
+            Color 15, 0
+            Cls
+            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
             I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
+            finalUpdate$ = UCase$(I$)
+        Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Else
+        Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #2
 
-            ReDim organizationFiles$(0 To Count%)
+        Input #2, X$
 
-            For X = 1 To Count%
-                organizationFiles$(X) = Space$(12)
-            Next
+        For I = 1 To 40
+            Input #2, CN$(I)
+        Next
 
-            organizationFiles$(0) = Spec$
+        Close 2
 
-            Call ReadFile(organizationFiles$())
+        For NC = 1 To 40
 
-            Do
+            If CN$(NC) <> "XXX" Then
+
+                For X = 1 To 60
+                    compZ1$(X) = "*"
+                Next
+
+                For X = 1 To 240
+                    compZ2$(X) = "*"
+                    compZ3$(X) = "*"
+                Next X
+
+                For I = 1 To 10
+                    For I1 = 1 To 20
+                        TT$(I, I1) = "*"
+                    Next
+                Next
+
+                For I = 1 To 20
+                    TT!(2, I, 5) = 9999
+                    TT!(4, I, 5) = 9999
+                    TT!(6, I, 3) = 9999
+                    TT!(8, I, 8) = 9999
+                    TT!(10, I, 7) = -99
+                Next
+
                 Cls
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT ORGANIZATION TO UPDATE": Color 15
-                Selection% = 1
-                START% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS ORGANIZATION";
 
-                _MouseShow "DEFAULT"
-                MAMenu organizationFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
+                test$ = CN$(NC)
+                Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
 
-                If ExitCode% <> 27 Then
+                Input #2, FF$
+                Input #2, div1$
+                Input #2, div2$
 
-                    Color 15, 1
-                    targetFile$ = organizationFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-                Else
-                    BO% = 1
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-
-                targetFile$ = RTrim$(targetFile$)
-                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-                Do
-                    Cls
-                    Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
-                    Color 15, 0
-                    I$ = GetKeyPress$
-                    finalUpdate$ = UCase$(I$)
-                Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
-
-                Open diskPaths$(2) + WE$ + ".CON" For Input As #2
-
-                Input #2, X$
-
-                For I = 1 To 40
-                    Input #2, CN$(I)
+                For XW = 1 To 30
+                    Input #2, H1$(XW)
                 Next
 
                 Close 2
 
-                For NC = 1 To 40
+                Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
+                Input #2, LG%
+                Close 2
 
-                    If CN$(NC) <> "XXX" Then
+                If LG% <> 0 Then
+                    Cls
+                    Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
+                    Print "        RETURNING TO MAIN MENU"
+                    Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+                    I$ = GetKeyPress$
+                    Exit Sub
+                Else
 
-                        For X = 1 To 60
-                            compZ1$(X) = "*"
-                        Next
+                    Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
 
-                        For X = 1 To 240
-                            compZ2$(X) = "*"
-                            compZ3$(X) = "*"
-                        Next X
+                    Input #2, FF$
+                    Input #2, div1$
+                    Input #2, div2$
 
-                        For I = 1 To 10
-                            For I1 = 1 To 20
-                                TT$(I, I1) = "*"
-                            Next
-                        Next
+                    For X = 1 To 30
+                        Input #2, compZ1$(X)
+                    Next X
 
-                        For I = 1 To 20
-                            TT!(2, I, 5) = 9999
-                            TT!(4, I, 5) = 9999
-                            TT!(6, I, 3) = 9999
-                            TT!(8, I, 8) = 9999
-                            TT!(10, I, 7) = -99
-                        Next
+                    Close 2
 
-                        Cls
+                    haveStats = 1
 
-                        test$ = CN$(NC)
-                        Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+                    For XW = 1 To 30
 
-                        Input #2, FF$
-                        Input #2, div1$
-                        Input #2, div2$
+                        If H1$(XW) <> Chr$(42) Then
+                            test$ = H1$(XW)
+                            haveStats = FindStatsNat%(XW, H1$(XW), numberGames%, NRT)
 
-                        For XW = 1 To 30
-                            Input #2, H1$(XW)
-                        Next
+                            If (haveStats) Then
 
-                        Close 2
+                                L = Len(H1$(XW))
+                                WT$ = ""
 
-                        Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
-                        Input #2, LG%
-                        Close 2
+                                For X = 1 To L
+                                    A = Asc(Mid$(H1$(XW), X, 1))
+                                    WT$ = WT$ + Chr$(A)
+                                Next X
 
-                        If LG% <> 0 Then
-                            Cls
-                            Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
-                            Print "        RETURNING TO MAIN MENU"
-                            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
-                            I$ = GetKeyPress$
-                            Exit Sub
-                        Else
+                                confGame = 0
 
-                            Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+                                For X = 1 To 30
 
-                            Input #2, FF$
-                            Input #2, div1$
-                            Input #2, div2$
+                                    If compZ1$(X) = WT$ Then
 
-                            For X = 1 To 30
-                                Input #2, compZ1$(X)
-                            Next X
-
-                            Close 2
-
-                            haveStats = 1
-
-                            For XW = 1 To 30
-
-                                If H1$(XW) <> Chr$(42) Then
-                                    test$ = H1$(XW)
-                                    haveStats = FindStatsNat%(XW, H1$(XW), numberGames%, NRT)
-
-                                    If (haveStats) Then
-
-                                        L = Len(H1$(XW))
-                                        WT$ = ""
-
-                                        For X = 1 To L
-                                            A = Asc(Mid$(H1$(XW), X, 1))
-                                            WT$ = WT$ + Chr$(A)
-                                        Next X
-
-                                        confGame = 0
-
-                                        For X = 1 To 30
-
-                                            If compZ1$(X) = WT$ Then
-
-                                                If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
-                                                    confGame = 1
-                                                Else
-                                                    O1!(X) = fullWins
-                                                    O2!(X) = fullLosses
-                                                    O3!(X) = fullTies
-                                                    O1!(X + 30) = confWins
-                                                    O2!(X + 30) = confLosses
-                                                    O3!(X + 30) = confTies
-                                                    PTSF!(X + 30) = PTSFC
-                                                    PTSA!(X + 30) = PTSAC
-                                                    compZ1$(X + 30) = compZ1$(X)
-                                                End If
-
-                                                If (confGame) Then Exit For
-
-                                            End If
-
-                                        Next X
-                                        'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
-
-                                        If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
-                                            Call ReadStatsNat(H1$(XW), numberGames%, TM$)
-                                            Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
-                                            Call CheckStatsNatl(numberGames%, TM$, WT$, finalUpdate$)
+                                        If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
+                                            confGame = 1
+                                        Else
+                                            O1!(X) = fullWins
+                                            O2!(X) = fullLosses
+                                            O3!(X) = fullTies
+                                            O1!(X + 30) = confWins
+                                            O2!(X + 30) = confLosses
+                                            O3!(X + 30) = confTies
+                                            PTSF!(X + 30) = PTSFC
+                                            PTSA!(X + 30) = PTSAC
+                                            compZ1$(X + 30) = compZ1$(X)
                                         End If
+
+                                        If (confGame) Then Exit For
 
                                     End If
 
+                                Next X
+                                'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
+
+                                If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                                    Call ReadStatsNat(H1$(XW), numberGames%, TM$)
+                                    Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
+                                    Call CheckStatsNatl(numberGames%, TM$, WT$, finalUpdate$)
                                 End If
 
-                            Next XW
+                            End If
 
-                        End If 'Done checking for valid conference
-
-                        Call SortLeadersConf
-                        Call POSTLEADERS(CN$(NC))
-                        Call SortLeadersNat
-
-                    End If
-
-                Next NC
-
-                'All conferences are done; post org leaders
-                Call POSTNATIONAL(WE$)
-
-                For Z = 1 To NRT - 1
-                    For Z1 = Z + 1 To NRT
-                        If PT!(Z, 1) < PT!(Z1, 1) Then
-                            Swap PT$(Z1), PT$(Z)
-                            For MN = 1 To 5
-                                Swap PT!(Z1, MN), PT!(Z, MN)
-                            Next MN
                         End If
-                    Next Z1
-                Next Z
 
-                Open diskPaths$(2) + WE$ + ".POL" For Output As #2
-                Print "POSTING "; WE$; " POLL"
-                Write #2, NRT
+                    Next XW
 
-                For X = 1 To 1200
-                    Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
-                Next
+                End If 'Done checking for valid conference
 
-                Close 2
+                Call SortLeadersConf
+                Call POSTLEADERS(CN$(NC))
+                Call SortLeadersNat
 
-                Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
+            End If
 
-                For I = 0 To 50:
-                    Print #1, BRC!(I)
-                    Print #1, BRC$(I, 0)
-                    Print #1, BRC$(I, 1)
-                    Print #1, BRC$(I, 2)
-                Next
+        Next NC
 
-                For I = 0 To 50:
-                    Print #1, TRC!(I)
-                    Print #1, TRC$(I)
-                Next
+        'All conferences are done; post org leaders
+        Call POSTNATIONAL(organizationFile$)
 
-                Close 1
+        For Z = 1 To NRT - 1
+            For Z1 = Z + 1 To NRT
+                If PT!(Z, 1) < PT!(Z1, 1) Then
+                    Swap PT$(Z1), PT$(Z)
+                    For MN = 1 To 5
+                        Swap PT!(Z1, MN), PT!(Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
 
-            End If 'Done checking ESC
+        Open diskPaths$(2) + organizationFile$ + ".POL" For Output As #2
+        Print "POSTING "; organizationFile$; " POLL"
+        Write #2, NRT
 
-        End If 'Done checking file count
+        For X = 1 To 1200
+            Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
+        Next
 
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0
+        Close 2
+
+        Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
+
+        For I = 0 To 50:
+            Print #1, BRC!(I)
+            Print #1, BRC$(I, 0)
+            Print #1, BRC$(I, 1)
+            Print #1, BRC$(I, 2)
+        Next
+
+        For I = 0 To 50:
+            Print #1, TRC!(I)
+            Print #1, TRC$(I)
+        Next
+
+        Close 1
+
+    End If 'Done checking ESC
 
 End Sub
 
@@ -2937,7 +2862,7 @@ End Sub
 '   POSTNATIONAL Subroutine
 '------------------------------
 ' ...explanation...
-Sub POSTNATIONAL (WE$)
+Sub POSTNATIONAL (leaderFile$)
 
     Shared compZ1$(), N2$(), N3$(), NT$()
 
@@ -2947,9 +2872,9 @@ Sub POSTNATIONAL (WE$)
 
     Cls
 
-    Open diskPaths$(2) + WE$ + ".NLD" For Output As #2
+    Open diskPaths$(2) + leaderFile$ + ".NLD" For Output As #2
 
-    Print "POSTING "; WE$; " LEADERS"
+    Print "POSTING "; leaderFile$; " LEADERS"
 
     For X = 1 To 60:
         Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)

@@ -2,95 +2,25 @@ Sub SEENATL ()
 
     _Title "3-in-1 Football - View Org Stats"
 
-    Do
-        'Display list of files...
-        Spec$ = diskPaths$(2) + "*.CON"
-        Count% = FCount%(Spec$)
+    organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
-        If Count% = 0 Then
+    If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-            Locate 10, 8
-            Call CSMsgBox("NO ORGANIZATION FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
+        Call LoadLeaderFiles_Natl(FF$, NRT, organizationFile$)
+        Call StatOptions_Natl(FF$, NRT)
 
-        Else
-
-            ReDim organizationFiles$(0 To Count%)
-
-            For X = 1 To Count%
-                organizationFiles$(X) = Space$(12)
-            Next
-
-            organizationFiles$(0) = Spec$
-
-            Call ReadFile(organizationFiles$())
-
-            Do
-                Cls
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT ORGANIZATION TO VIEW": Color 15
-                Selection% = 1
-                START% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS ORGANIZATION";
-
-                _MouseShow "DEFAULT"
-                MAMenu organizationFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = organizationFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If UCase$(I$) = "N" Then
-
-                targetFile$ = RTrim$(targetFile$)
-                WE$ = Left$(targetFile$, Len(targetFile$) - 4)
-                targetFile$ = Left$(WE$, 8)
-
-                Call LoadLeaderFiles_Natl(FF$, div1$, div2$, NRT, targetFile$)
-                Call StatOptions_Natl(FF$, div1$, div2$, NRT)
-
-            End If
-
-        End If
-
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0
+    End If
 
 End Sub
+
 
 '----------------------------------------
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, NRT, targetFile$)
+Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
+
+    Shared div1$, div2$
 
     Shared L!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
@@ -101,6 +31,7 @@ Sub LoadLeaderFiles_Natl (FF$, div1$, div2$, NRT, targetFile$)
     Shared TR$()
 
     Cls
+
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
     Open diskPaths$(2) + targetFile$ + ".CON" For Input As #2
@@ -151,7 +82,9 @@ End Sub
 '      StatOptions_Natl Subroutine
 '----------------------------------------
 '...explanation...
-Sub StatOptions_Natl (FF$, div1$, div2$, NRT)
+Sub StatOptions_Natl (FF$, NRT)
+
+    Shared div1$, div2$
 
     Do
 
@@ -276,7 +209,7 @@ Sub ReportFilePrompt_Natl (reportFile$)
 
         Locate 7, 32
         Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES"
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
         Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
         Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
         Locate 7, 37: Input reportFile$

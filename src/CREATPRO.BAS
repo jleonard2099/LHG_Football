@@ -45,12 +45,12 @@ Sub CREATPRO ()
             Select Case Selection%
 
                 Case 1:
-                    Call DefineLeaguePro(LG$, div1$, div2$, div3$)
-                    Call ReviewEditLeague(LG$, div1$, div2$, div3$)
+                    Call DefineLeaguePro(league$, div1$, div2$, div3$)
+                    Call ReviewEditLeague(league$, div1$, div2$, div3$)
 
                 Case 2:
-                    Call ChooseLeague(LG$)
-                    Call ReviewEditLeague(LG$, div1$, div2$, div3$)
+                    league$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+                    Call ReviewEditLeague(league$, div1$, div2$, div3$)
 
             End Select
 
@@ -65,7 +65,7 @@ End Sub
 '       DefineLeaguePro Subroutine
 '----------------------------------------
 '...explanation...
-Sub DefineLeaguePro (LG$, div1$, div2$, div3$)
+Sub DefineLeaguePro (leagueName$, div1$, div2$, div3$)
 
     Shared Z1$()
 
@@ -96,11 +96,11 @@ Sub DefineLeaguePro (LG$, div1$, div2$, div3$)
             Locate 7, 32
 
             Locate , 12: Print "ENTER NAME FOR LEAGUE: ": Print
-            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPACES."
+            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
             Locate , 12: Print "SAMPLE NAMES ARE SEC, SWC, 94-ACC"
-            Locate 7, 37: Input LG$
+            Locate 7, 37: Input leagueName$
 
-            If LG$ <> "" Then
+            If leagueName$ <> "" Then
 
                 Do
                     Locate 13, 12: Print "ANY CHANGE (YN) "
@@ -120,93 +120,6 @@ Sub DefineLeaguePro (LG$, div1$, div2$, div3$)
     Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
     Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
     Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
-
-End Sub
-
-
-'----------------------------------------
-'       ChooseLeague Subroutine
-'----------------------------------------
-'...explanation...
-Sub ChooseLeague (league$)
-
-    wrongFormat% = 0
-
-    Do
-        'Display list of files...
-        Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
-
-        If Count% = 0 Then
-
-            Locate 10, 8
-            Call CSMsgBox("NO LEAGUE FILES WERE FOUND PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-
-        Else
-
-            ReDim leagueFiles$(0 To Count%)
-
-            For X = 1 To Count%
-                leagueFiles$(X) = Space$(12)
-            Next
-
-            leagueFiles$(0) = Spec$
-            Call ReadFile(leagueFiles$())
-
-            Do
-                Cls
-                Color , 1
-                Cls
-                Locate , 28
-                Color 14
-                Print "SELECT LEAGUE TO SCHEDULE": Color 15
-                Selection% = 1
-                Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
-                Rows% = 20
-                Columns% = 4
-                Spacing% = 6
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";: Color 15
-                Print "-SELECTS LEAGUE";
-
-                _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-                    Color 15, 1
-                    targetFile$ = leagueFiles$(Selection%)
-                    Locate 2, 33: Print targetFile$
-
-                    Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-            If ExitCode% <> 27 Then
-
-                targetFile$ = RTrim$(targetFile$)
-                league$ = Left$(targetFile$, Len(targetFile$) - 4)
-
-            End If 'Done checking for ESC
-
-        End If 'Done checking for file count
-
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0 Or wrongFormat% = 0
 
 End Sub
 
@@ -330,17 +243,17 @@ End Sub
 '        SaveLeague Subroutine
 '----------------------------------------
 '...explanation...
-Sub SaveLeague (LG$, div1$, div2$, div3$)
+Sub SaveLeague (leagueName$, div1$, div2$, div3$)
 
     Shared statsZ1%()
 
     Shared Z1$(), Z2$()
 
-    Open diskPaths$(2) + LG$ + ".LIB" For Output As #2
+    Open diskPaths$(2) + leagueName$ + ".LIB" For Output As #2
 
     Print #2, 1
 
-    Print #2, LG$
+    Print #2, leagueName$
     Print #2, div1$
     Print #2, div2$
     Print #2, div3$
@@ -365,9 +278,9 @@ Sub SaveLeague (LG$, div1$, div2$, div3$)
 
     Next X
 
-    Open diskPaths$(2) + LG$ + ".TMS" For Output As #2
+    Open diskPaths$(2) + leagueName$ + ".TMS" For Output As #2
 
-    Write #2, LG$
+    Write #2, leagueName$
     Write #2, div1$
     Write #2, div2$
     Write #2, div3$
