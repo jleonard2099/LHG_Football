@@ -1,7 +1,8 @@
 '----------------------------------------
-'       InputTeam Subroutine
+'          InputTeam Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the user with the
+'steps for entering a new team.
 Sub InputTeam ()
 
     Dim A1!(9), B3!(1)
@@ -763,7 +764,7 @@ Sub InputTeam ()
         Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
         Locate 7
 
-        U$ = "INPUT ANOTHER TEAM (YN)"
+        U$ = "INPUT ANOTHER TEAM? (Y/N)"
         Locate , (80 - Len(U$)) / 2
         Print U$
         Color 15, 0
@@ -776,7 +777,9 @@ End Sub
 '----------------------------------------
 '          SaveTeam Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine saves the modifed team
+'data (from corresponding arrays) to an
+'appropriate spot in the select team file
 Sub SaveTeam (team$, mascot$, YN$, teamNumber, teamAttendance&)
 
     Shared ydsCompAdj

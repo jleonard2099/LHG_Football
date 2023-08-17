@@ -91,7 +91,7 @@ Sub GetDiskID_ALIGN (A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -261,7 +261,7 @@ Sub GetDiskID_HD2HDCOL (A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -428,7 +428,7 @@ Sub GetDiskID_HD2HDPRO (A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -590,7 +590,7 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$, A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -640,6 +640,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
 
         If Not _FileExists(diskPaths$(0) + "FOOT." + teamYear$) Then
             BO% = 1
+
             Locate 10, 8
             Call CSMsgBox("NO TEAM FILES WERE FOUND MATCHING THIS ID.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
             I$ = GetKeyPress$
@@ -760,7 +761,7 @@ Sub GetDiskID_MERGE (A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -935,7 +936,7 @@ Sub GetTeam_CAREER (A$)
 
                 Do
                     Color 15, 4
-                    Locate 3, 33: Print "ANY CHANGE (YN)";
+                    Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                     J$ = GetKeyPress$
                 Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
 
@@ -1091,7 +1092,7 @@ Sub GetTeam_CARMERGE ()
 
                     Do
                         Color 15, 4
-						Locate 3, 33: Print "ANY CHANGE (YN)";
+						Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1237,7 +1238,7 @@ Sub GetTeam_CNGTM (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
             Do
                 Color 15, 4
-                Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1591,7 +1592,7 @@ Sub GetTeam_CREATCOL (A$, YN$, teamNbr)
 
             Do
                 Color 15, 4
-                Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1737,7 +1738,7 @@ Sub GetTeam_CREATPRO (A$, YN$, teamNbr)
 
             Do
                 Color 15, 4
-                Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1985,7 +1986,7 @@ Sub GetTeam_EditStats (A$, YN$, teamNbr)
 
             Do
                 Color 15, 4
-                Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

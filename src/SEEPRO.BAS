@@ -1,3 +1,10 @@
+'----------------------------------------
+'            SEEPRO Subroutine
+'----------------------------------------
+'This subroutine lets the user choose a 
+'league stat file to view, then calls
+'other routines to both load the Stats
+'and then provide options for display
 Sub SEEPRO ()
 
     _Title "3-in-1 Football - View League Stats"
@@ -16,8 +23,9 @@ End Sub
 '----------------------------------------
 '       LoadLeaderFiles_Pro Subroutine
 '----------------------------------------
-'...explanation...
-Sub LoadLeaderFiles_Pro (leagueName$, WE$)
+'This subroutine loads the conference stats
+'from the file into several arrays
+Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
@@ -28,8 +36,8 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
 
     Shared div1$, div2$, div3$
 
-    Open diskPaths$(2) + WE$ + ".TMS" For Input As #2
-    Input #2, leagueName$, div1$, div2$, div3$
+    Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
+    Input #2, league$, div1$, div2$, div3$
     Close 2
 
     div1$ = PadRight$(div1$, 8)
@@ -40,7 +48,7 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
 
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + WE$ + ".LDR" For Input As #2
+    Open diskPaths$(2) + leagueFile$ + ".LDR" For Input As #2
 
     For X = 1 To 30
         Input #2, TM$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
@@ -69,6 +77,7 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
     D1 = W!(1) - L!(1)
 
     For P = 1 To 10:
+
         If TM$(P) = "*" Or TM$(P) = "" Then
             seeP$(P) = ""
         Else
@@ -110,15 +119,11 @@ Sub LoadLeaderFiles_Pro (leagueName$, WE$)
             seeP$(P) = PadRight$(seeP$(P), 30)
             A = PTSF!(P)
 
-            A$ = Right$("     " + Str$(A), 3)
-
-            seeP$(P) = seeP$(P) + A$
+            seeP$(P) = seeP$(P) + Right$("     " + Str$(A), 3)
             A = PTSA!(P)
 
-            A$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + Right$("     " + Str$(A), 4)
 
-            seeP$(P) = seeP$(P) + A$
-            'seeP$(P) = seeP$(P)
         End If
 
     Next P
@@ -241,8 +246,10 @@ End Sub
 '----------------------------------------
 '       StatOptions_Pro Subroutine
 '----------------------------------------
-'...explanation...
-Sub StatOptions_Pro (leagueName$)
+'This subroutine gives the user various
+'options for viewing the previously loaded
+'stats, and then calls routines for each
+Sub StatOptions_Pro (league$)
 
     Do
 
@@ -291,13 +298,13 @@ Sub StatOptions_Pro (leagueName$)
 
                 Case "F":
                     Call ReportFilePrompt_Pro(SF$)
-                    Call SavePrintProLeaders(1, SF$, leagueName$)
+                    Call SavePrintProLeaders(1, SF$, league$)
 
                 Case "P":
-                    Call SavePrintProLeaders(0, SF$, leagueName$)
+                    Call SavePrintProLeaders(0, SF$, league$)
 
                 Case "S":
-                    Call LeaderStatsPro_Screen(leagueName$)
+                    Call LeaderStatsPro_Screen(league$)
 
             End Select
 
@@ -323,7 +330,7 @@ Sub StatOptions_Pro (leagueName$)
             Do
                 Color 15, 1
                 Locate 8
-                U$ = "VIEW LEAGUE STATS AGAIN (YN)"
+                U$ = "VIEW LEAGUE STATS AGAIN? (Y/N)"
                 Locate , (80 - Len(U$)) / 2
                 Print U$
                 Color 15, 0
@@ -340,7 +347,8 @@ End Sub
 '----------------------------------------
 '     ReportFilePrompt_Pro Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine prompts the user for
+'the name of the report file to be saved
 Sub ReportFilePrompt_Pro (reportFile$)
 
     Do
@@ -374,7 +382,7 @@ Sub ReportFilePrompt_Pro (reportFile$)
         If reportFile$ <> "" Then
 
             Do
-				Locate 13, 12: Print "ANY CHANGE (YN) "
+				Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -388,8 +396,10 @@ End Sub
 '----------------------------------------
 '     LeaderStatsPro_Screen Subroutine
 '----------------------------------------
-'...explanation...
-Sub LeaderStatsPro_Screen (leagueName$)
+'This subroutine formats the previously
+'loaded stats and outputs them to the end
+'user display.
+Sub LeaderStatsPro_Screen (league$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
@@ -1087,8 +1097,11 @@ End Sub
 '----------------------------------------
 '       SavePrintProLeaders Subroutine
 '----------------------------------------
-'...explanation...
-Sub SavePrintProLeaders (destination, reportFile$, leagueName$)
+'This subroutine formats the previously
+'loaded stats and outputs them to a file
+'that is then looped through to send to
+'the default printer
+Sub SavePrintProLeaders (destination, reportFile$, league$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
@@ -1108,7 +1121,7 @@ Sub SavePrintProLeaders (destination, reportFile$, leagueName$)
 	Color 0, 15
     Cls
 
-    Print #2, leagueName$ + " OVERALL RECORD"
+    Print #2, league$ + " OVERALL RECORD"
     Print #2, div1$; " DIVISION"
     Print #2, "              W   L   T   PCT  PF  PA"
 

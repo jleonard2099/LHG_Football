@@ -1,3 +1,9 @@
+'----------------------------------------
+'          CREATCOL Subroutine
+'----------------------------------------
+'This subroutine provides a menu for the
+'user to choose options related to the
+'creation and editing of conferences
 Sub CREATCOL ()
 
     _Title "3-in-1 Football - Manage Conferences"
@@ -45,11 +51,11 @@ Sub CREATCOL ()
 
                 Case 1:
                     Call DefineConference(conference$, div1$, div2$)
-                    Call ReviewEditConf(conference$, div1$, div2$)
+                    Call ReviewEditConference(conference$, div1$, div2$)
 
                 Case 2:
                     conference$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
-                    Call ReviewEditConf(conference$, div1$, div2$)
+                    Call ReviewEditConference(conference$, div1$, div2$)
 
             End Select
 
@@ -62,7 +68,9 @@ End Sub
 '----------------------------------------
 '      DefineConference Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the user with the
+'input of paramters related to the conf-
+'erence's general naming and setup
 Sub DefineConference (conference$, div1$, div2$)
 
     Do
@@ -98,7 +106,7 @@ Sub DefineConference (conference$, div1$, div2$)
             If conference$ <> "" Then
 
                 Do
-                    Locate 13, 12: Print "ANY CHANGE (YN) "
+                    Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -119,10 +127,12 @@ End Sub
 
 
 '----------------------------------------
-'     ReviewEditConf Subroutine
+'     ReviewEditConference Subroutine
 '----------------------------------------
-'...explanation...
-Sub ReviewEditConf (conference$, div1$, div2$)
+'This subroutine provides an interface to
+'the user allowing them to choose / clear
+'teams from the conference
+Sub ReviewEditConference (conference$, div1$, div2$)
 
     Shared statsZ1%()
 
@@ -231,9 +241,11 @@ End Sub
 
 
 '----------------------------------------
-'     SaveConferences Subroutine
+'       SaveConferences Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine writes the conference's
+'team memberships and definition to 
+'each of the corresponding files (.LIB, .TMS)
 Sub SaveConferences (conference$, div1$, div2$)
 
     Shared statsZ1%()

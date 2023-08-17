@@ -1,3 +1,11 @@
+'INCLUDE: 'QBFunctions.bm'
+
+'----------------------------------------
+'            LOOKY Subroutine
+'----------------------------------------
+'This subroutine guides the user through
+'choosing a team file and then calls other
+'routines to load and view the stats
 Sub LOOKY ()
 
     _Title "3-in-1 Football - View Stats"
@@ -47,12 +55,20 @@ Sub LOOKY ()
             statFile$ = nameStatFile$(team$)
 
             If Not _FileExists(diskPaths$(1) + statFile$) Then
-                Call CSMsgBox("UNABLE TO LOCATE COMPILED STATS FILE PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+
+                MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                BoxWidth = 24
+                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                Call CSMsgBox(MsgText$, BoxWidth, Pass)
                 I$ = GetKeyPress$
                 Call CSMsgBox("", 0, Pass)
+
             Else
+
                 Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
-                Call ViewStatSummary(statFile$, team$, totalGames%, teamPower, SS)
+                Call ViewStatSummary(statFile$, team$, totalGames%, statFormat, teamPower, SS)
+
             End If
 
         End If
@@ -65,7 +81,8 @@ End Sub
 '----------------------------------------
 '       LoadTeamStats Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine loads the selected team's 
+'stats into arrays
 Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     Shared AF!(), AM!(), GI!(), GS!()
@@ -209,7 +226,11 @@ End Sub
 '----------------------------------------
 '       ViewStatSummary Subroutine
 '----------------------------------------
-Sub ViewStatSummary (statFile$, teamName$, totalGames%, teamPower, SS)
+'This subroutine formats and outputs the 
+'selected team's record to the display,
+'then provides routines for output of
+'the other stat categories
+Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared teamRatings%()
 
@@ -287,7 +308,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, teamPower, SS)
 
         Do
             Locate 7
-            U$ = "DISPLAY STATS AGAIN (YN)"
+            U$ = "DISPLAY STATS AGAIN? (Y/N)"
             Locate , (80 - Len(U$)) / 2
             Print U$
             I$ = GetKeyPress$
@@ -305,7 +326,8 @@ End Sub
 '----------------------------------------
 '      StatsToScreen Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats and outputs the 
+'selected team's stats to the display
 Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
@@ -427,11 +449,14 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     HA& = 0: AA& = 0: NA& = 0: TA& = 0
 
     For I = 1 To totalGames%
+
         If Left$(statsH$(I), 1) = "H" Then HD& = HD& + 1: HT& = HT& + CRD!(I)
         If Left$(statsH$(I), 1) = "A" Then AD& = AD& + 1: CT& = CT& + CRD!(I)
         If Left$(statsH$(I), 1) = "X" Then ND& = ND& + 1: NT& = NT& + CRD!(I)
+
         TD& = TD& + 1
         TT& = TT& + CRD!(I)
+
     Next
 
     If HD& <> 0 Then HA& = HT& / HD&
@@ -632,11 +657,15 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Locate 3, 1
     Color 12
     Print "RUSHING           ATT   YDS  YDS/ATT  YDS/GAME   TD  LONG RUN  AGAINST"
+
     I = 0
 
     If D% <> 1 Then
+
         For I1 = 0 To 9
+
             For I2 = 0 To 3
+
                 If lookyA1$(I, I1) = lookyA3$(I, I2) Then
                     K2!(I, I1, 0) = K2!(I, I1, 0) + K2!(I, I2 + 10, 0)
                     K2!(I, I1, 1) = K2!(I, I1, 1) + K2!(I, I2 + 10, 1)
@@ -645,8 +674,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
                     K2!(I, I2 + 10, 1) = 0
                     K2!(I, I2 + 10, 2) = 0
                 End If
+
             Next I2
+
         Next I1
+
     Else
         'This should be implied???
         D% = 1
@@ -655,17 +687,22 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     For I1 = 0 To 13
 
         If K2!(I, I1, 0) <> 0 Then
+
             DM% = DM% + 1
             Color 7
+
             If DM% / 2 = Int(DM% / 2) Then Color 15
             If I1 <= 9 Then Print lookyA1$(I, I1);
             If I1 > 9 Then Print lookyA3$(I, I1 - 10);
+
             Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; K2!(I, I1, 0); K2!(I, I1, 1); K2!(I, I1, 1) / K2!(I, I1, 0); K2!(I, I1, 1) / totalGames%; K2!(I, I1, 2);
+
             If I1 > 9 Then
                 Print
             Else
                 Print Using "###"; LR!(I1);: Print LR$(I1, 0); Tab(64); LR$(I1, 1)
             End If
+
         End If
 
     Next I1
@@ -701,14 +738,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     For I1 = 0 To 5
 
         If K2!(I, I1, 6) <> 0 Then
+
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
+
             Print lookyA2$(I, I1); Tab(18);
             Print Using "####  ####   "; K2!(I, I1, 6); K2!(I, I1, 7);
+
             If K2!(I, I1, 6) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 7) / K2!(I, I1, 6);
+
             Print Using "      ###.#    ##    "; K2!(I, I1, 7) / totalGames%; K2!(I, I1, 8);
             Print Using "###"; LC!(I1 + 10);: Print LC$(I1 + 10, 0); Tab(64); LC$(I1 + 10, 1)
+
         End If
 
     Next I1
@@ -716,14 +758,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     For I1 = 0 To 9
 
         If K2!(I, I1, 3) <> 0 Then
+
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
+
             Print lookyA1$(I, I1); Tab(18);
             Print Using "####  ####   "; K2!(I, I1, 3); K2!(I, I1, 4);
+
             If K2!(I, I1, 3) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 4) / K2!(I, I1, 3);
+
             Print Using "      ###.#    ##    "; K2!(I, I1, 4) / totalGames%; K2!(I, I1, 5);
             Print Using "###"; LC!(I1);: Print LC$(I1, 0); Tab(64); LC$(I1, 1)
+
         End If
 
     Next I1
@@ -753,6 +800,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     For I1 = 0 To 3
 
         If K2!(I, I1, 9) <> 0 Then
+
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
@@ -769,11 +817,10 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             'TD / INT / INT %
             Print Using " ###.# ### ### ###.#     "; K2!(I, I1, 12) / totalGames%; K2!(I, I1, 13); K2!(I, I1, 11); K2!(I, I1, 11) / K2!(I, I1, 9) * 100;
 
-            'Eff Rating
+            'QB Rating
             RT! = QBRating!(I, I1, statFormat)
             Print Using "###.#"; RT!
 
-            'PRINT TAB(57); USING "###"; LP!(I1); : PRINT statsLP$(I1,0)
         End If
 
     Next I1
@@ -852,6 +899,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Locate 3, 1
     Color 12
     Print "KICKOFF RETURNS   RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
     I = 0
 
     For I1 = 0 To 2
@@ -879,19 +927,27 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
     Color 12
     Print "PUNT RETURNS      RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
     I = 0
 
     For I1 = 3 To 5
+
         If K2!(I, I1, 14) <> 0 Then
+
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
+
             Print lookyA5$(I, I1 - 3); Tab(18);
             Print Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
+
             If K2!(I, I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
+
             Print Using "      ###.#    ##    "; K2!(I, I1, 15) / totalGames%; K2!(I, I1, 16);
             Print Using "###"; PK!(I1 - 3);: Print statsPK$(I1 - 3, 0); Tab(64); statsPK$(I1 - 3, 1)
+
         End If
+
     Next I1
 
     Print
@@ -1032,9 +1088,10 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 End Sub
 
 '----------------------------------------
-'      StatsToPrinter Subroutine
+'       StatsToPrinter Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats and outputs the 
+'selected team's stats to the default printer
 Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared AF!(), AM!(), CRD!(), GI!(), GS!()
@@ -1391,13 +1448,21 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #2, "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
 
     For I1 = 0 To 3
+
         If K2!(I, I1, 9) <> 0 Then
+
             Print #2, lookyA3$(I, I1); Tab(18); Using "####  ### ###.# #### ##.#"; K2!(I, I1, 9); K2!(I, I1, 10); K2!(I, I1, 10) / K2!(I, I1, 9) * 100; K2!(I, I1, 12); K2!(I, I1, 12) / K2!(I, I1, 9);
+
             If K2!(I, I1, 10) = 0 Then Print #2, "   --"; Else Print #2, Using " ##.#"; K2!(I, I1, 12) / K2!(I, I1, 10);
+
             Print #2, Using " ###.# ### ### ###.#     "; K2!(I, I1, 12) / totalGames%; K2!(I, I1, 13); K2!(I, I1, 11); K2!(I, I1, 11) / K2!(I, I1, 9) * 100;
+
             RT! = QBRating!(I, I1, statFormat)
+
             Print #2, Using "###.#"; RT!
+
         End If
+
     Next I1
 
     Print #2, teamName$; Tab(18);
@@ -1577,100 +1642,14 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
 End Sub
 
-'----------------------------------------
-'       QBRating Function
-'----------------------------------------
-'...explanation...
-Function QBRating! (I, I1, teamType)
-
-    Dim II!(3), PP!(3), QB!(3, 10)
-    Dim TT!(3), YY!(3)
-
-    'This is the important one!
-    Shared K2!()
-
-    Select Case teamType
-
-        Case 0:
-            ' *** COLLEGE QB RATING ***
-            QB!(I1, 7) = Int(K2!(I, I1, 12) / K2!(I, I1, 9)) * 8.399999 + K2!(I, I1, 10) / K2!(I, I1, 9) * 100 + Int(K2!(I, I1, 13) / K2!(I, I1, 9) * 1000) / 10 * 3.3 - Int(K2!(I, I1, 11) / K2!(I, I1, 9) * 1000) / 10 * 2
-            QB!(I1, 7) = Int(QB!(I1, 7) * 10) / 10
-
-        Case 1: '
-            ' *** NFL QB RATING ***
-            QB!(I1, 8) = Int(K2!(I, I1, 13) / K2!(I, I1, 9) * 1000) / 10
-            QB!(I1, 6) = K2!(I, I1, 10) / K2!(I, I1, 9) * 100
-            QB!(I1, 10) = Int(K2!(I, I1, 12) / K2!(I, I1, 9) * 100) / 100
-            QB!(I1, 9) = Int(K2!(I, I1, 11) / K2!(I, I1, 9) * 1000) / 10
-
-            PP!(I) = QB!(I1, 6) - 30
-
-            If PP!(I) < 0 Then
-                PP!(I) = 0
-            Else
-                If PP!(I) > 77.5 Then
-                    PP!(I) = 2.375
-                Else
-                    PP!(I) = PP!(I) * .05
-                End If
-            End If
-
-            If QB!(I1, 8) > 11.9 Then
-                TT!(I) = 2.375
-            Else
-                TT!(I) = QB!(I1, 8) * .2
-            End If
-
-            If QB!(I1, 9) = 0 Then
-                II!(I) = 2.375
-            Else
-                If QB!(I1, 9) > 9.5 Then
-                    II!(I) = 0
-                Else
-                    II!(I) = 2.375 - (.25 * QB!(I1, 9))
-                End If
-            End If
-
-            QB!(I1, 10) = QB!(I1, 10) - 3
-
-            If QB!(I1, 10) < 0 Then
-                YY!(I) = 0
-            Else
-                If QB!(I1, 10) > 12.5 Then
-                    YY!(I) = 2.375
-                Else
-                    D = Int(QB!(I1, 10) * 100) / 2
-                    If D = QB!(I1, 10) / 2 Then
-                        YY!(I) = QB!(I1, 10) / 2 * .3 + QB!(I1, 10) / 2 * .2
-                    Else
-                        YY!(I) = QB!(I1, 10) / 2 * .3 + QB!(I1, 10) / 2 * .2 + .003
-                    End If
-                End If
-            End If
-
-            QB!(I1, 7) = PP!(I) + TT!(I) + II!(I) + YY!(I)
-
-            If QB!(I1, 7) >= 9.5 Then
-                QB!(I1, 7) = 158.3
-            Else
-                QB!(I1, 7) = QB!(I1, 7) * 50 / 3
-            End If
-
-            QB!(I1, 7) = Int(QB!(I1, 7) * 10) / 10
-
-    End Select
-
-    QBRating! = QB!(I1, 7)
-
-End Function
-
 
 '----------------------------------------
 '       ResetStatPrompt Subroutine
 '----------------------------------------
-' Prompts user with choice to reset stats
-' If they chose so, and confirm, then
-' it will proceed to delete the files.
+'This subroutine prompts the user with 
+'a choice to reset stats. If they chose, 
+'and confirm, it will then proceed to 
+'delete the files.
 Sub ResetStatPrompt (statFile$)
 
     Cls
@@ -1694,7 +1673,7 @@ Sub ResetStatPrompt (statFile$)
     Locate 7
 
     Do
-        U$ = "RESET COMPILED STATS TO 0 (YN)"
+        U$ = "RESET COMPILED STATS TO 0? (Y/N)"
         Locate , (80 - Len(U$)) / 2
         Print U$
         I$ = GetKeyPress$
@@ -1724,7 +1703,7 @@ Sub ResetStatPrompt (statFile$)
         Locate 7
 
         Do
-            U$ = "ARE YOU SURE (YN)"
+            U$ = "ARE YOU SURE? (Y/N)"
             Locate , (80 - Len(U$)) / 2
             Print U$
             I$ = GetKeyPress$

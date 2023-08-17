@@ -1,3 +1,12 @@
+'----------------------------------------
+'             ALIGN Subroutine
+'----------------------------------------
+'This routine presents a menu / interface
+'that assists the user with aligning 
+'player names in separate stat files. 
+'(ie, Road Vs. Local) This should be done 
+'before merging stats, since player name 
+'entry may not be consistent.
 Sub ALIGN ()
 
     _Title "3-in-1 Football - Align Stats"
@@ -26,7 +35,6 @@ Sub ALIGN ()
 
         If UCase$(I$) = "N" And I$ <> Chr$(27) Then
 
-            'Call GetDiskID_ALIGN(A$)
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
             statFile$ = nameStatFile$(team$)
 
@@ -37,8 +45,8 @@ Sub ALIGN ()
             If _FileExists(pathRoadStats$ + statFile$) Then
 
                 Open pathRoadStats$ + statFile$ For Input As #1
-                Input #1, AR$(PX)
                 
+                Input #1, AR$(PX)
 
                 For I = 0 To 9: Input #1, AR1$(I): Next I
 
@@ -103,12 +111,17 @@ Sub ALIGN ()
                     Input #1, statsA$
 
                     For I = 0 To 9: Input #1, rbName$(I): Next I
+
                     For I = 0 To 5: Input #1, wrName$(I): Next I
+
                     For I = 0 To 3: Input #1, qbName$(I): Next I
+
                     For I = 0 To 2: Input #1, krName$(I): Next I
+
                     For I = 0 To 2: Input #1, prName$(I): Next I
 
                     Input #1, punterName$(0)
+
                     For I = 0 To 1: Input #1, pkName$(I): Next I
 
                     For J = 0 To 13
@@ -116,15 +129,25 @@ Sub ALIGN ()
                     Next J
 
                     For L = 0 To 38: Input #1, statsZ!(L): Next L
+
                     For L = 0 To 38: Input #1, statsZ1!(L): Next L
+
                     For J = 0 To 9: Input #1, intName$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
+
                     For J = 0 To 14: Input #1, sackName$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
+
                     For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+
                     For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+
                     For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+
                     For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+
                     For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
+
                     For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+
                     For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
                     Close #1
@@ -133,7 +156,9 @@ Sub ALIGN ()
                     DUMMY$ = "OK"
 
                 Else
+
                     Cls
+
                     Locate 2, 10: Color 7
                     Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
                     Print
@@ -143,7 +168,9 @@ Sub ALIGN ()
                 End If 'Done checking if current file exists
 
             Else
+
                 Cls
+
                 Locate 2, 10: Color 7
                 Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
                 Print
@@ -160,9 +187,13 @@ End Sub
 
 
 '----------------------------------------
-'       AlignStats Subroutine
+'         AlignStats Subroutine
 '----------------------------------------
-'...explanation...
+'This routine presents the user with a 
+'summary of the statistics in each file.
+'It then performs the alignment before 
+'presenting the user a chance to review 
+'the results.
 Sub AlignStats (pathRoadStats$, statFile$)
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
@@ -192,8 +223,10 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 15: Print Tab(45); "CURRENT  ";
     Color 14: Print "- RECEIVERS -";
     Color 7: Print " ROAD"
+
     For I = 0 To 9:
-        Locate I + 4: Color 12: Print I; " ";
+        Locate I + 4
+        Color 12: Print I; " ";
         Color 15: Print rbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR1$(I)
@@ -213,7 +246,8 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 2
-        Locate I + 12, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 12, 40: Print I; " ";
         Color 15: Print krName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR4$(I)
@@ -225,7 +259,8 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 3:
-        Locate I + 16: Color 12: Print I; " ";
+        Color 12
+        Locate I + 16: Print I; " ";
         Color 15: Print qbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AR3$(I)
@@ -237,7 +272,8 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 2:
-        Locate I + 17, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 17, 40: Print I; " ";
         Color 15: Print prName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR5$(I)
@@ -248,8 +284,8 @@ Sub AlignStats (pathRoadStats$, statFile$)
     I$ = GetKeyPress$
 
     Cls
-    Locate 1, 32
 
+    Locate 1, 32
     Color 12: Print "STAT ROSTERS"
 
     Print
@@ -262,19 +298,22 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 14: Print "-  KICKERS  -";
     Color 7: Print " ROAD"
 
-    Locate 4: Color 12: Print "0 ";
+    Color 12
+    Locate 4: Print "0 ";
     Color 15: Print punterName$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AR6$(0)
 
     For I = 0 To 1:
-        Locate I + 4, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 4, 40: Print I; " ";
         Color 15: Print pkName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AR7$(I):
     Next
 
-    Locate 7: Color 15: Print "CURRENT  ";
+    Color 15
+    Locate 7: Print "CURRENT  ";
     Color 14: Print "-INTERCEPTORS-";
     Color 7: Print " ROAD";
 
@@ -283,17 +322,23 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 9:
-        Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print intName$(I);
+        Color 12
+        Locate I + 8: Print Using "##"; I;
+        Print " ";
+        Color 15: Print intName$(I);
         Color 12: Print Tab(20); Using "##"; I;
-        Print " ";: Color 7: Print DRI$(I)
+        Print " ";
+        Color 7: Print DRI$(I)
     Next
 
     For I = 0 To 14:
-        Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print sackName$(I);
+        Color 12
+        Locate I + 8, 40: Print Using "##"; I;
+        Print " ";
+        Color 15: Print sackName$(I);
         Color 12: Print Tab(63); Using "##"; I;
-        Print " ";: Color 7: Print DSR$(I)
+        Print " ";
+        Color 7: Print DSR$(I)
     Next
 
     Color 11
@@ -398,9 +443,11 @@ Sub AlignStats (pathRoadStats$, statFile$)
     N = 0
 
     Do
+
         For J = 0 To 2
 
             If krName$(N) = AR4$(J) Then
+
                 AN4$(N) = AR4$(J)
                 LKN!(N) = LKR!(J)
                 LKN$(N, 0) = LKR$(J, 0)
@@ -409,15 +456,19 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 For K = 14 To 16
                     ZN2!(N, K) = ZR2!(J, K)
                 Next K
+
             End If
+
         Next J
 
         N = N + 1
+
     Loop Until N = 3
 
     N = 0
 
     Do
+
         For J = 0 To 2
 
             If prName$(N) = AR5$(J) Then
@@ -446,6 +497,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     N = 0
 
     Do
+
         For J = 0 To 1
 
             If pkName$(N) = AR7$(J) Then
@@ -478,6 +530,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     N = 0
 
     Do
+
         For J = 0 To 9
 
             If intName$(N) = DRI$(J) Then
@@ -498,6 +551,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     N = 0
 
     Do
+
         For J = 0 To 14
 
             If sackName$(N) = DSR$(J) Then
@@ -508,6 +562,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 Next
 
             End If
+
         Next J
 
         N = N + 1
@@ -550,13 +605,13 @@ Sub AlignStats (pathRoadStats$, statFile$)
     If SEQ = 0 Then
         Call ReviewAndSaveAlignment(pathRoadStats$, statFile$)
     Else
-
-        Locate 20
         Color 14
+        Locate 20
         Print "WARNING !! - - ROAD STAT FILE CONTAINS PLAYERS NOT IN EXISTING STATS.  YOU MUST"
         Print "CHANGE ROAD STAT FILE USING OPTION #6 ON GAME MENU BEFORE ATTEMPTING STAT MERGE."
+        Color 13
         Locate 23, 30
-        Color 13: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
+        Line Input "HIT ENTER TO CONTINUE"; DUMMY$
 
     End If
 
@@ -566,7 +621,9 @@ End Sub
 '----------------------------------------
 '    ReviewAndSaveAlignment Subroutine
 '----------------------------------------
-'...explanation...
+'This routine displays the results of the 
+'player name alignment, then gives the end
+'user a chance to actually save the results 
 Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
@@ -582,8 +639,9 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     Cls
 
+    Color 12
     Locate 1, 34
-    Color 12: Print "STAT ROSTERS"
+    Print "STAT ROSTERS"
     Print
     
     Color 15: Print "CURRENT  ";
@@ -595,44 +653,56 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 9:
-        Locate I + 4: Color 12: Print I; " ";
+        Color 12
+        Locate I + 4: Print I; " ";
         Color 15: Print rbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN1$(I):
     Next
+
     For I = 0 To 5:
-        Locate I + 4, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 4, 40: Print I; " ";
         Color 15: Print wrName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN2$(I)
     Next
-    Locate 11, 40: Color 15: Print Tab(45); "CURRENT  ";
+
+    Color 15
+    Locate 11, 40: Print Tab(45); "CURRENT  ";
     Color 14: Print "- KICK RET. -";
     Color 7: Print " ROAD"
+
     For I = 0 To 2:
-        Locate I + 12, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 12, 40: Print I; " ";
         Color 15: Print krName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN4$(I)
     Next
 
-    Locate 15: Color 15: Print "CURRENT  ";
+    Color 15
+    Locate 15: Print "CURRENT  ";
     Color 14: Print "-   QB'S  -";
     Color 7: Print " ROAD"
 
     For I = 0 To 3:
-        Locate I + 16: Color 12: Print I; " ";
+        Color 12
+        Locate I + 16: Print I; " ";
         Color 15: Print qbName$(I);
         Color 12: Print Tab(20); I; " ";
         Color 7: Print AN3$(I)
     Next
 
-    Locate 16, 40: Color 15: Print Tab(45); "CURRENT  ";
+
+    Color 15
+    Locate 16, 40: Print Tab(45); "CURRENT  ";
     Color 14: Print "- PUNT RET. -";
     Color 7: Print " ROAD"
 
     For I = 0 To 2:
-        Locate I + 17, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 17, 40: Print I; " ";
         Color 15: Print prName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN5$(I)
@@ -643,6 +713,7 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     I$ = GetKeyPress$
 
     Cls
+
     Locate 1, 32
 
     Color 12: Print "STAT ROSTERS"
@@ -657,19 +728,22 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Color 14: Print "-  KICKERS  -";
     Color 7: Print " ROAD"
 
-    Locate 4: Color 12: Print "0 ";
+    Color 12
+    Locate 4: Print "0 ";
     Color 15: Print punterName$(0);
     Color 12: Print Tab(20); "0 ";
     Color 7: Print AN6$(0)
 
     For I = 0 To 1
-        Locate I + 4, 40: Color 12: Print I; " ";
+        Color 12
+        Locate I + 4, 40: Print I; " ";
         Color 15: Print pkName$(I);
         Color 12: Print Tab(63); I; " ";
         Color 7: Print AN7$(I)
     Next
 
-    Locate 7: Color 15: Print "CURRENT  ";
+    Color 15
+    Locate 7: Print "CURRENT  ";
     Color 14: Print "-INTERCEPTORS-";
     Color 7: Print " ROAD";
     Color 15: Print Tab(45); "CURRENT  ";
@@ -677,21 +751,27 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Color 7: Print " ROAD"
 
     For I = 0 To 9:
-        Locate I + 8: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print intName$(I);
+        Color 12
+        Locate I + 8: Print Using "##"; I;
+        Print " ";
+        Color 15: Print intName$(I);
         Color 12: Print Tab(20); Using "##"; I;
-        Print " ";: Color 7: Print DIN$(I):
+        Print " ";
+        Color 7: Print DIN$(I):
     Next
+
     For I = 0 To 14:
-        Locate I + 8, 40: Color 12: Print Using "##"; I;
-        Print " ";: Color 15: Print sackName$(I);
+        Color 12
+        Locate I + 8, 40: Print Using "##"; I;
+        Print " ";
+        Color 15: Print sackName$(I);
         Color 12: Print Tab(63); Using "##"; I;
-        Print " ";: Color 7: Print DSN$(I):
+        Print " ";
+        Color 7: Print DSN$(I):
     Next
 
     Color 11
     Locate 22: Line Input "HIT ENTER TO ALIGN"; DUMMY$
-    Color 11
     Locate 22: Print "ALIGNING FILES . . .             "
 
     Open pathRoadStats$ + statFile$ For Output As #1
@@ -699,9 +779,13 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Write #1, AR$(0)
 
     For I = 0 To 9: Write #1, AN1$(I): Next I
+
     For I = 0 To 5: Write #1, AN2$(I): Next I
+
     For I = 0 To 3: Write #1, AN3$(I): Next I
+
     For I = 0 To 2: Write #1, AN4$(I): Next I
+
     For I = 0 To 2: Write #1, AN5$(I): Next I
 
     Write #1, AN6$(0)
@@ -715,20 +799,29 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Next J
 
     For L = 0 To 38: Write #1, ZR!(L): Next L
+
     For L = 0 To 38: Write #1, ZR1!(L): Next L
 
     For J = 0 To 9:
+
         Write #1, DIN$(J)
+
         For J1 = 0 To 2:
             Write #1, GIN%(J, J1)
         Next
+
     Next
+
     For J = 0 To 14
+
         Write #1, DSN$(J)
+
         For J1 = 0 To 1
             Write #1, GSN%(J, J1)
         Next
+
     Next
+
     For I = 0 To 9:
         Write #1, LRN!(I)
         Write #1, LRN$(I, 0)
@@ -760,12 +853,15 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Next
 
     For I = 0 To 1:
+
         Write #1, LFN!(I)
         Write #1, LFN$(I)
+
         For I1 = 0 To 4:
             Write #1, AMN!(I, I1)
             Write #1, AFN!(I, I1)
         Next
+
     Next
 
     For I = 0 To 9:
@@ -779,9 +875,9 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Cls
 
     Locate 8, 20: Print "RE-ALIGNMENT COMPLETED"
-    Print
+    Color 12
     Locate 12, 20
-    Color 12: Line Input "HIT ENTER TO CONTINUE"; DUMMY$
+    Line Input "HIT ENTER TO CONTINUE"; DUMMY$
 
     Cls
 

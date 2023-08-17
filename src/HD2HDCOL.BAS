@@ -1,3 +1,9 @@
+'----------------------------------------
+'          HD2HDCOL Subroutine
+'----------------------------------------
+'This subroutine presents the user a menu
+'of options for viewing Head-to-Head team
+'comparisons.
 Sub HD2HDCOL ()
 
     _Title "3-in-1 Football - Head-to-Head Conference Stats"
@@ -52,7 +58,10 @@ End Sub
 '----------------------------------------
 '     Hd2HdColl_Conf Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the user with the
+'selection of a team for comparison, then
+'loads the associated stats, calculates
+'the comparisons and presents output options
 Sub Hd2HdColl_Conf (X2)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
@@ -75,7 +84,6 @@ Sub Hd2HdColl_Conf (X2)
     Shared DV$(), DV2$(), statsH$(), compO$()
     Shared Z1$(), Z12$(), Z2$(), Z22$()
 
-
     newTeam = 1
 
     Do
@@ -88,10 +96,15 @@ Sub Hd2HdColl_Conf (X2)
                 statFile$ = nameStatFile$(team$)
 
                 If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
-                    Locate 10, 8
-                    Call CSMsgBox("NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-                    I$ = GetKeyPress$
+
+                    MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                    BoxWidth = 24
+                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                    K$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
+
                 End If
 
             Loop Until _FileExists(diskPaths$(1) + statFile$ + "S")
@@ -367,7 +380,8 @@ Sub Hd2HdColl_Conf (X2)
         Close 2
 
         If X1 = 1 Then
-
+            'If the option to send to printer was chosen,
+            'print the pre-generated report
             Open "REPORT" For Input As #2
 
             Do While Not EOF(2)
@@ -474,7 +488,8 @@ End Sub
 '----------------------------------------
 '      Hd2HdColl_Screen Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine outputs the calculated 
+'comparison values to the end user display
 Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
@@ -941,10 +956,12 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
 
 End Sub
 
+
 '----------------------------------------
 '     Hd2HdColl_Report Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine outputs the calculated 
+'comparison values to a report file
 Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
@@ -997,7 +1014,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             If reportFile$ <> "" Then
                 Do
-                    Locate 13, 12: Print "ANY CHANGE (YN) "
+                    Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
             End If

@@ -1,3 +1,13 @@
+'INCLUDE: 'QBFunctions.bm'
+
+'----------------------------------------
+'        CompileLeague SubRoutine
+'----------------------------------------
+'This subroutine reads in existing records,
+'looks for stats matching each team in the
+'league, and then relies on subroutines to
+'read stats and compare to any existing
+'leaders and records
 Sub CompileLeague ()
 
     _Title "3-in-1 Football - Update League Stats"
@@ -74,7 +84,7 @@ Sub CompileLeague ()
         Do
             Color 15, 0
             Cls
-            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
+            Print "IS THIS THE FINAL UPDATE FOR THE SEASON? (Y/N)";
             I$ = GetKeyPress$
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
@@ -96,12 +106,18 @@ Sub CompileLeague ()
         Close 2
 
         If LG% <> 1 Then
-            Cls
-            Print "ERROR:: THIS IS A COLLEGE CONFERENCE"
-            Print "        RETURNING TO MAIN MENU"
-            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+
+            MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
+            BoxWidth = 20
+            BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
+            Call CSMsgBox("", 0, Pass)
+            Exit Sub
+
         Else
+
             Erase compZ2!
 
             Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
@@ -192,26 +208,12 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
 
     If _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
-        '        Call READFILES(H1$(), XW, numberGames%)
-        Open diskPaths$(1) + statFile$ + "S" For Input As #2
+        Print "NO STATS FOUND FOR "; statFile$
+        FindStatsPro% = 0
 
-        Input #2, numberGames%
+    Else
 
-        For I = 1 To 120: Input #2, statsO%(I): Next I
-
-        For I = 1 To 120: Input #2, compO$(I): PTSF!(XW) = PTSF!(XW) + statsO%(I): Next I
-
-        For I = 1 To 120: Input #2, statsT%(I): PTSA!(XW) = PTSA!(XW) + statsT%(I): Next I
-
-        For I = 1 To 120: Input #2, statsH$(I): Next I
-
-        For I = 0 To 1
-            For I1 = 1 To 120
-                Input #2, compAP%(I, I1)
-            Next
-        Next
-
-        Close 2
+        Call ReadScheduleStats(statFile$, XW, numberGames%)
 
         fullWins = 0
         fullLosses = 0
@@ -234,19 +236,16 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
 
         FindStatsPro% = 1
 
-    Else
-
-        Print "NO STATS FOUND FOR "; statFile$
-        FindStatsPro% = 0
-
     End If
 
 End Function
 
+
 '----------------------------------------
 '       ReadStatsPro Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine reads stats in for a 
+'single team in the league
 Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     Shared puntNum
@@ -456,8 +455,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     For I = 1 To 4:
         QB!(I, 6) = 0
-        If QB!(I, 1) > 0 Then QB!(I, 6) = Int(QB!(I, 2) / QB!(I, 1) * 1000) / 10
-        Call QBCalculations(I)
+        Call QBRatingPro(I)
     Next
 
     For I = 1 To 3:
@@ -494,483 +492,10 @@ End Sub
 
 
 '----------------------------------------
-'        SortLeadersPro Subroutine
-'----------------------------------------
-'...explanation...
-Sub SortLeadersPro
-
-    Shared O1!(), O2!(), O3!()
-    Shared PTSA!(), PTSF!()
-
-    Shared compZ1$()
-
-    'Sort leaders in league
-    For Z = 1 To 3
-
-        AA = (10 * (Z - 1)) + 1
-        ZZ = 10 * Z
-
-        For X = AA To ZZ - 1:
-
-            For Y = X + 1 To ZZ:
-
-                diffX = O1!(X) - O2!(X)
-                diffY = O1!(Y) - O2!(Y)
-
-                If diffX <= diffY Then
-                    If diffX <> diffY Then
-                        If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
-                            Swap compZ1$(X), compZ1$(Y)
-                            Swap O1!(X), O1!(Y)
-                            Swap O2!(X), O2!(Y)
-                            Swap O3!(X), O3!(Y)
-                            Swap PTSF!(X), PTSF!(Y)
-                            Swap PTSA!(X), PTSA!(Y)
-                        End If
-                    End If
-                End If
-
-            Next Y
-
-        Next X
-
-    Next Z
-
-End Sub
-
-
-'----------------------------------------
-'        PostLeadersPro Subroutine
-'----------------------------------------
-'...explanation...
-Sub PostLeadersPro (leaderFile$)
-
-    Shared BRC$()
-    Shared compZ2$(), compZ3$()
-    Shared TRC$(), TT$()
-    Shared compZ1$()
-
-    Shared BRC!(), compZ1!()
-    Shared O1!(), O2!(), O3!()
-    Shared PTSF!(), PTSA!()
-    Shared TRC!(), TT!()
-
-    Cls
-
-    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #2
-
-    Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
-
-    For X = 1 To 30:
-        Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
-    Next
-
-    For X = 1 To 240
-        Write #2, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
-    Next X
-
-    For I = 1 To 10
-        For I1 = 1 To 20
-            For I2 = 1 To 9
-                Write #2, TT!(I, I1, I2)
-            Next
-        Next
-    Next
-
-    For I = 1 To 10
-        For I1 = 1 To 20
-            Write #2, TT$(I, I1)
-        Next
-    Next
-
-    Close 2
-
-    Open diskPaths$(1) + "RECORDS.PFB" For Output As #1
-
-    For I = 0 To 50:
-        Print #1, BRC!(I)
-        Print #1, BRC$(I, 0)
-        Print #1, BRC$(I, 1)
-        Print #1, BRC$(I, 2)
-    Next
-
-    For I = 0 To 50:
-        Print #1, TRC!(I)
-        Print #1, TRC$(I)
-    Next
-
-    Close 1
-
-End Sub
-
-'----------------------------------------
-'     StatsByCategoryPro Subroutine
-'----------------------------------------
-'...explanation...
-Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
-
-    Shared DT!(), OT!(), TRC!(), TT!()
-
-    Shared TRC$(), TT$()
-
-    Shared statsO%(), statsT%()
-
-    Cls
-
-    'TEAM CATEGORIES
-    'CATEGORY 1 - TOTAL OFFENSE
-    CA = 1
-
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TRC!(0) Then
-        TRC!(0) = (OT!(6) + OT!(2) + OT!(14)) / numberGames%
-        TRC$(0) = TM$
-    End If
-
-    If OT!(6) + OT!(2) + OT!(14) > TRC!(1) Then
-        TRC!(1) = OT!(6) + OT!(2) + OT!(14)
-        TRC$(1) = TM$
-    End If
-
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13)) > TRC!(2) Then
-        TRC!(2) = (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13))
-        TRC$(2) = TM$
-    End If
-
-    If (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1) + OT!(3) - OT!(13)
-        TT!(CA, 20, 3) = OT!(6) + OT!(2) + OT!(14)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 2 - TOTAL DEFENSE
-    CA = 2
-
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(25) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) + DT!(14) < TRC!(26) Then TRC!(26) = DT!(6) + DT!(2) + DT!(14): TRC$(26) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)): TRC$(27) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(28) = TM$
-
-    If (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
-        'Games
-        TT!(CA, 20, 1) = numberGames%
-        'Plays
-        TT!(CA, 20, 2) = DT!(1) + DT!(3) - DT!(13)
-        'Yds
-        TT!(CA, 20, 3) = DT!(6) + DT!(2) + DT!(14)
-        'Avg Yds / Gm
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        'Yds / Gm
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 3 - RUSHING OFFENSE
-    CA = 3
-
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / numberGames% > TRC!(3) Then TRC!(3) = (OT!(2) + OT!(14)) / numberGames%: TRC$(3) = TM$
-    If OT!(2) + OT!(14) > TRC!(4) Then TRC!(4) = OT!(2) + OT!(14): TRC$(4) = TM$
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > TRC!(5) Then TRC!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)): TRC$(5) = TM$
-
-    If (OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1) - OT!(13)
-        TT!(CA, 20, 3) = OT!(2) + OT!(14)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 4 - RUSHING DEFENSE
-    CA = 4
-
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames% < TRC!(29) Then TRC!(29) = (DT!(2) + DT!(14)) / numberGames%: TRC$(29) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(2) + DT!(14) < TRC!(30) Then TRC!(30) = DT!(2) + DT!(14): TRC$(30) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < TRC!(31) Then TRC!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)): TRC$(31) = TM$
-
-    If (DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(1) - DT!(13)
-        TT!(CA, 20, 3) = DT!(2) + DT!(14)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 5 - SCORING OFFENSE
-    CA = 5
-    PTS = 0
-    OPTS = 0
-
-    For I = 1 To numberGames%
-        PTS = PTS + statsO%(I)
-        OPTS = OPTS + statsT%(I)
-    Next
-
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
-    If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
-
-    If PTS / numberGames% > TT!(CA, 20, 3) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 6 - SCORING DEFENSE
-    CA = 6
-
-    PTS = 0
-
-    For I = 1 To numberGames%
-        PTS = PTS + statsT%(I)
-    Next
-
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
-    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
-
-    If PTS / numberGames% < TT!(CA, 20, 3) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 7 - PASSING OFFENSE
-    CA = 7
-
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
-    If OT!(6) > TRC!(7) Then TRC!(7) = OT!(6): TRC$(7) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > TRC!(8) Then TRC!(8) = OT!(6) / OT!(3): TRC$(8) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > TRC!(9) Then TRC!(9) = OT!(6) / OT!(4): TRC$(9) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > TRC!(10) Then TRC!(10) = OT!(4) / OT!(3): TRC$(10) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
-
-    If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(3)
-        TT!(CA, 20, 3) = OT!(4)
-        TT!(CA, 20, 4) = OT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = OT!(6)
-        TT!(CA, 20, 7) = OT!(6) / OT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 8 - PASSING DEFENSE
-    CA = 8
-
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) < TRC!(33) Then TRC!(33) = DT!(6): TRC$(33) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < TRC!(34) Then TRC!(34) = DT!(6) / DT!(3): TRC$(34) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < TRC!(35) Then TRC!(35) = DT!(6) / DT!(4): TRC$(35) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
-
-    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(3)
-        TT!(CA, 20, 3) = DT!(4)
-        TT!(CA, 20, 4) = DT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = DT!(6)
-        TT!(CA, 20, 7) = DT!(6) / DT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 9 - PUNTING
-    CA = 9
-
-    If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
-
-    If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
-
-        TT!(CA, 20, 1) = OT!(7)
-        TT!(CA, 20, 2) = OT!(8) / OT!(7)
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 10 - TURNOVER MARGIN
-    CA = 10
-
-    FG = OT!(9) - OT!(10) + DT!(10)
-    IG = DT!(5)
-    FL = OT!(10) + DT!(9) - DT!(10)
-    IL = OT!(5)
-    TM! = (FG + IG - FL - IL) / numberGames%
-
-    If TM > TT!(CA, 20, 7) Then
-        TT!(CA, 20, 1) = FG
-        TT!(CA, 20, 2) = IG
-        TT!(CA, 20, 3) = FG + IG
-        TT!(CA, 20, 4) = FL
-        TT!(CA, 20, 5) = IL
-        TT!(CA, 20, 6) = FL + IL
-        TT!(CA, 20, 7) = TM!
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'PUNT RETURNS
-    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
-
-    'KO Return
-    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > TRC!(17) Then TRC!(17) = OT!(23) / OT!(22): TRC$(17) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < TRC!(43) Then TRC!(43) = DT!(23) / DT!(22): TRC$(43) = TM$
-
-    'FIRST DOWNS
-    If OT!(0) > TRC!(18) Then TRC!(18) = OT!(0): TRC$(18) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames% > TRC!(19) Then TRC!(19) = OT!(0) / numberGames%: TRC$(19) = TM$
-
-    'FUMBLES
-    If OT!(9) > TRC!(20) Then TRC!(20) = OT!(9): TRC$(20) = TM$
-    If OT!(10) > TRC!(21) Then TRC!(21) = OT!(10): TRC$(21) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(10) < TRC!(22) Then TRC!(22) = OT!(10): TRC$(22) = TM$
-
-    'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames% > TRC!(23) Then TRC!(23) = OT!(11) / numberGames%: TRC$(23) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames% > TRC!(24) Then TRC!(24) = OT!(12) / numberGames%: TRC$(24) = TM$
-
-End Sub
-
-'----------------------------------------
 '       CheckStatsPro Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine compares pre-loaded stats
+'to existing leaders and updates as needed
 Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared puntNum
@@ -1946,79 +1471,483 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
 End Sub
 
+
 '----------------------------------------
-'       QBCalculations Subroutine
+'     StatsByCategoryPro Subroutine
 '----------------------------------------
-'...explanation...
-Sub QBCalculations (I)
+'This subroutine compares all pre-loaded 
+'stats to each of the record categories to 
+'see if any should be updated
+Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
 
-    Dim PP!(4), QT!(4), II!(4), YY!(4)
-    Shared QB!()
+    Shared DT!(), OT!(), TRC!(), TT!()
 
-    If QB!(I, 1) = 0 Then
-        QB!(I, 6) = 0
-        QB!(I, 8) = 0
-        QB!(I, 9) = 0
-        QB!(I, 10) = 0
-    Else
-        QB!(I, 8) = Int(QB!(I, 5) / QB!(I, 1) * 1000) / 10
-        QB!(I, 9) = Int(QB!(I, 3) / QB!(I, 1) * 1000) / 10
-        QB!(I, 10) = Int(QB!(I, 4) / QB!(I, 1) * 100) / 100
+    Shared TRC$(), TT$()
+
+    Shared statsO%(), statsT%()
+
+    Cls
+
+    'TEAM CATEGORIES
+    'CATEGORY 1 - TOTAL OFFENSE
+    CA = 1
+
+    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TRC!(0) Then
+        TRC!(0) = (OT!(6) + OT!(2) + OT!(14)) / numberGames%
+        TRC$(0) = TM$
     End If
 
-    PP!(I) = QB!(I, 6) - 30
-    If PP!(I) < 0 Then
-        PP!(I) = 0
-    Else
-        If PP!(I) > 77.5 Then
-            PP!(I) = 2.375
-        Else
-            PP!(I) = PP!(I) * .05
-        End If
+    If OT!(6) + OT!(2) + OT!(14) > TRC!(1) Then
+        TRC!(1) = OT!(6) + OT!(2) + OT!(14)
+        TRC$(1) = TM$
     End If
 
-    If QB!(I, 8) > 11.9 Then
-        QT!(I) = 2.375
-    Else
-        QT!(I) = QB!(I, 8) * .2
+    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13)) > TRC!(2) Then
+        TRC!(2) = (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13))
+        TRC$(2) = TM$
     End If
 
-    If QB!(I, 9) = 0 Then
-        II!(I) = 2.375
-    Else
-        If QB!(I, 9) > 9.5 Then
-            II!(I) = 0
-        Else
-            II!(I) = 2.375 - (.25 * QB!(I, 9))
-        End If
+    If (OT!(6) + OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(1) + OT!(3) - OT!(13)
+        TT!(CA, 20, 3) = OT!(6) + OT!(2) + OT!(14)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
     End If
 
-    QB!(I, 10) = QB!(I, 10) - 3
+    'CATEGORY 2 - TOTAL DEFENSE
+    CA = 2
 
-    If QB!(I, 10) < 0 Then
-        YY!(I) = 0
-    Else
-        If QB!(I, 10) > 12.5 Then
-            YY!(I) = 2.375
-        Else
-            D = Int(QB!(I, 10) * 100) / 2
-            If D = QB!(I, 10) / 2 Then
-                YY!(I) = QB!(I, 10) / 2 * .3 + QB!(I, 10) / 2 * .2
-            Else
-                YY!(I) = QB!(I, 10) / 2 * .3 + QB!(I, 10) / 2 * .2 + .003
-            End If
-        End If
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(25) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) + DT!(14) < TRC!(26) Then TRC!(26) = DT!(6) + DT!(2) + DT!(14): TRC$(26) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)): TRC$(27) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames%: TRC$(28) = TM$
+
+    If (DT!(6) + DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
+        'Games
+        TT!(CA, 20, 1) = numberGames%
+        'Plays
+        TT!(CA, 20, 2) = DT!(1) + DT!(3) - DT!(13)
+        'Yds
+        TT!(CA, 20, 3) = DT!(6) + DT!(2) + DT!(14)
+        'Avg Yds / Gm
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        'Yds / Gm
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
     End If
 
-    QB!(I, 7) = PP!(I) + QT!(I) + II!(I) + YY!(I)
+    'CATEGORY 3 - RUSHING OFFENSE
+    CA = 3
 
-    If QB!(I, 7) >= 9.5 Then
-        QB!(I, 7) = 158.3
-    Else
-        QB!(I, 7) = QB!(I, 7) * 50 / 3
+    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / numberGames% > TRC!(3) Then TRC!(3) = (OT!(2) + OT!(14)) / numberGames%: TRC$(3) = TM$
+    If OT!(2) + OT!(14) > TRC!(4) Then TRC!(4) = OT!(2) + OT!(14): TRC$(4) = TM$
+    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > TRC!(5) Then TRC!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)): TRC$(5) = TM$
+
+    If (OT!(2) + OT!(14)) / numberGames% > TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(1) - OT!(13)
+        TT!(CA, 20, 3) = OT!(2) + OT!(14)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
     End If
 
-    QB!(I, 7) = Int(QB!(I, 7) * 10) / 10
+    'CATEGORY 4 - RUSHING DEFENSE
+    CA = 4
+
+    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames% < TRC!(29) Then TRC!(29) = (DT!(2) + DT!(14)) / numberGames%: TRC$(29) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(2) + DT!(14) < TRC!(30) Then TRC!(30) = DT!(2) + DT!(14): TRC$(30) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < TRC!(31) Then TRC!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)): TRC$(31) = TM$
+
+    If (DT!(2) + DT!(14)) / numberGames% < TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(1) - DT!(13)
+        TT!(CA, 20, 3) = DT!(2) + DT!(14)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 5 - SCORING OFFENSE
+    CA = 5
+    PTS = 0
+    OPTS = 0
+
+    For I = 1 To numberGames%
+        PTS = PTS + statsO%(I)
+        OPTS = OPTS + statsT%(I)
+    Next
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
+    If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
+
+    If PTS / numberGames% > TT!(CA, 20, 3) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = PTS
+        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 6 - SCORING DEFENSE
+    CA = 6
+
+    PTS = 0
+
+    For I = 1 To numberGames%
+        PTS = PTS + statsT%(I)
+    Next
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
+    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
+
+    If PTS / numberGames% < TT!(CA, 20, 3) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = PTS
+        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 7 - PASSING OFFENSE
+    CA = 7
+
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
+    If OT!(6) > TRC!(7) Then TRC!(7) = OT!(6): TRC$(7) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > TRC!(8) Then TRC!(8) = OT!(6) / OT!(3): TRC$(8) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > TRC!(9) Then TRC!(9) = OT!(6) / OT!(4): TRC$(9) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > TRC!(10) Then TRC!(10) = OT!(4) / OT!(3): TRC$(10) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
+
+    If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(3)
+        TT!(CA, 20, 3) = OT!(4)
+        TT!(CA, 20, 4) = OT!(5)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 6) = OT!(6)
+        TT!(CA, 20, 7) = OT!(6) / OT!(3)
+        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 8 - PASSING DEFENSE
+    CA = 8
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) < TRC!(33) Then TRC!(33) = DT!(6): TRC$(33) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < TRC!(34) Then TRC!(34) = DT!(6) / DT!(3): TRC$(34) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < TRC!(35) Then TRC!(35) = DT!(6) / DT!(4): TRC$(35) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
+
+    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(3)
+        TT!(CA, 20, 3) = DT!(4)
+        TT!(CA, 20, 4) = DT!(5)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 6) = DT!(6)
+        TT!(CA, 20, 7) = DT!(6) / DT!(3)
+        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 9 - PUNTING
+    CA = 9
+
+    If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
+
+    If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
+
+        TT!(CA, 20, 1) = OT!(7)
+        TT!(CA, 20, 2) = OT!(8) / OT!(7)
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 10 - TURNOVER MARGIN
+    CA = 10
+
+    FG = OT!(9) - OT!(10) + DT!(10)
+    IG = DT!(5)
+    FL = OT!(10) + DT!(9) - DT!(10)
+    IL = OT!(5)
+    TM! = (FG + IG - FL - IL) / numberGames%
+
+    If TM > TT!(CA, 20, 7) Then
+        TT!(CA, 20, 1) = FG
+        TT!(CA, 20, 2) = IG
+        TT!(CA, 20, 3) = FG + IG
+        TT!(CA, 20, 4) = FL
+        TT!(CA, 20, 5) = IL
+        TT!(CA, 20, 6) = FL + IL
+        TT!(CA, 20, 7) = TM!
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'PUNT RETURNS
+    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
+
+    'KO Return
+    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > TRC!(17) Then TRC!(17) = OT!(23) / OT!(22): TRC$(17) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < TRC!(43) Then TRC!(43) = DT!(23) / DT!(22): TRC$(43) = TM$
+
+    'FIRST DOWNS
+    If OT!(0) > TRC!(18) Then TRC!(18) = OT!(0): TRC$(18) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames% > TRC!(19) Then TRC!(19) = OT!(0) / numberGames%: TRC$(19) = TM$
+
+    'FUMBLES
+    If OT!(9) > TRC!(20) Then TRC!(20) = OT!(9): TRC$(20) = TM$
+    If OT!(10) > TRC!(21) Then TRC!(21) = OT!(10): TRC$(21) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(10) < TRC!(22) Then TRC!(22) = OT!(10): TRC$(22) = TM$
+
+    'PENALTIES
+    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames% > TRC!(23) Then TRC!(23) = OT!(11) / numberGames%: TRC$(23) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames% > TRC!(24) Then TRC!(24) = OT!(12) / numberGames%: TRC$(24) = TM$
 
 End Sub
 
+
+'----------------------------------------
+'        SortLeadersPro Subroutine
+'----------------------------------------
+'This subroutine sorts the leaders in the
+'target league
+Sub SortLeadersPro
+
+    Shared O1!(), O2!(), O3!()
+    Shared PTSA!(), PTSF!()
+
+    Shared compZ1$()
+
+    'Sort leaders in league
+    For Z = 1 To 3
+
+        AA = (10 * (Z - 1)) + 1
+        ZZ = 10 * Z
+
+        For X = AA To ZZ - 1:
+
+            For Y = X + 1 To ZZ:
+
+                diffX = O1!(X) - O2!(X)
+                diffY = O1!(Y) - O2!(Y)
+
+                If diffX <= diffY Then
+                    If diffX <> diffY Then
+                        If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
+                            Swap compZ1$(X), compZ1$(Y)
+                            Swap O1!(X), O1!(Y)
+                            Swap O2!(X), O2!(Y)
+                            Swap O3!(X), O3!(Y)
+                            Swap PTSF!(X), PTSF!(Y)
+                            Swap PTSA!(X), PTSA!(Y)
+                        End If
+                    End If
+                End If
+
+            Next Y
+
+        Next X
+
+    Next Z
+
+End Sub
+
+
+'----------------------------------------
+'        PostLeadersPro Subroutine
+'----------------------------------------
+'This subroutine opens the existing leader
+'and record files for the league, and 
+'writes the updated stats to the file
+Sub PostLeadersPro (leaderFile$)
+
+    Shared BRC$()
+    Shared compZ2$(), compZ3$()
+    Shared TRC$(), TT$()
+    Shared compZ1$()
+
+    Shared BRC!(), compZ1!()
+    Shared O1!(), O2!(), O3!()
+    Shared PTSF!(), PTSA!()
+    Shared TRC!(), TT!()
+
+    Cls
+
+    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #2
+
+    Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
+
+    For X = 1 To 30:
+        Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+    Next
+
+    For X = 1 To 240
+        Write #2, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
+    Next X
+
+    For I = 1 To 10
+        For I1 = 1 To 20
+            For I2 = 1 To 9
+                Write #2, TT!(I, I1, I2)
+            Next
+        Next
+    Next
+
+    For I = 1 To 10
+        For I1 = 1 To 20
+            Write #2, TT$(I, I1)
+        Next
+    Next
+
+    Close 2
+
+    Open diskPaths$(1) + "RECORDS.PFB" For Output As #1
+
+    For I = 0 To 50:
+        Print #1, BRC!(I)
+        Print #1, BRC$(I, 0)
+        Print #1, BRC$(I, 1)
+        Print #1, BRC$(I, 2)
+    Next
+
+    For I = 0 To 50:
+        Print #1, TRC!(I)
+        Print #1, TRC$(I)
+    Next
+
+    Close 1
+
+End Sub

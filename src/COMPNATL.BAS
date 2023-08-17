@@ -1,3 +1,11 @@
+'----------------------------------------
+'        CompileNatlOrg SubRoutine
+'----------------------------------------
+'This subroutine reads in existing records,
+'looks for stats matching each team in the
+'organization, and then relies on subroutines
+'to read stats and compare to any existing
+'leaders and records
 Sub CompileNatlOrg ()
 
     _Title "3-in-1 Football - Update Org Stats"
@@ -91,7 +99,7 @@ Sub CompileNatlOrg ()
         Do
             Color 15, 0
             Cls
-            Print "IS THIS THE FINAL UPDATE FOR THE SEASON (YN)";
+            Print "IS THIS THE FINAL UPDATE FOR THE SEASON? (Y/N)";
             I$ = GetKeyPress$
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
@@ -153,12 +161,16 @@ Sub CompileNatlOrg ()
                 Close 2
 
                 If LG% <> 0 Then
-                    Cls
-                    Print "ERROR:: THIS IS NOT A COLLEGE CONFERENCE"
-                    Print "        RETURNING TO MAIN MENU"
-                    Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+
+                    MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
+                    BoxWidth = 20
+                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
                     I$ = GetKeyPress$
+                    Call CSMsgBox("", 0, Pass)
                     Exit Sub
+
                 Else
 
                     Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
@@ -284,155 +296,12 @@ Sub CompileNatlOrg ()
 
 End Sub
 
-'----------------------------------------
-'         FindStatsNat Function
-'----------------------------------------
-'...explanation...
-Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
-
-    Shared compO$(), H1$(), statsH$()
-
-    Shared compAP%()
-    Shared statsO%(), statsT%()
-
-    Shared PT!(), PT$()
-    Shared PTSA!(), PTSF!()
-
-    fullWins = 0
-    fullLosses = 0
-    fullTies = 0
-
-    If _FileExists(diskPaths$(1) + statFile$ + "S") Then
-
-        Call READFILES(statFile$, numberGames%)
-
-        fullWins = 0
-        fullLosses = 0
-        fullTies = 0
-        confWins = 0
-        confTies = 0
-        confLosses = 0
-
-        PTSFC = 0
-        PTSAC = 0
-
-        'RATINGS
-        For I = 1 To numberGames%
-
-            teamName$ = compo$(I)
-
-            FOR P = 4 TO 11: 
-                IF MID$(teamName$, P, 1) = " " OR MID$(teamName$, P, 1) = "." THEN MID$(teamName$, P, 1) = "_"
-            NEXT P
-
-            FOR P = 12 TO 14: 
-                IF MID$(teamName$, P, 2) = "ST" THEN MID$(teamName$, 9, 1) = "_": MID$(teamName$, 10, 2) = "ST"
-            NEXT P
-
-            QQ = 8
-
-            FOR P = 11 TO 4 STEP -1: 
-                IF MID$(teamName$, P, 1) = "_" THEN 
-                    QQ = P - 4
-                Else
-                    Exit For
-                End If
-
-            NEXT P
-
-            teamName$ = MID$(teamName$, 4, QQ) + "." + LEFT$(teamName$, 2)
-
-            compo$(I) = teamName$
-
-            confGame = 0
-
-            For EC = 1 To 30
-
-                If compO$(I) = H1$(EC) Then
-                    confGame = 1
-                    Exit For
-                End If
-
-            Next EC
-
-            If confGame <> 1 Then
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
-            Else
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
-            End If
-
-            PTSFC = PTSFC + statsO%(I)
-            PTSAC = PTSAC + statsT%(I)
-            EC = 0
-
-        Next I
-
-        'STRENGTH OF SCHEDULE
-        teamPower = 0
-        SS = 0
-
-        For I = 1 To numberGames%
-            SS = compAP%(1, I) + SS
-        Next
-
-        SS = SS / numberGames%
-
-        'INDIVIDUAL GAME POWER RATINGS
-        GL = 0
-        teamPower = 0
-
-        For I = 1 To numberGames%
-            RAT = statsO%(I) - statsT%(I) + compAP%(1, I)
-            If Left$(statsH$(I), 1) = "H" Then RAT = RAT - 3
-            If Left$(statsH$(I), 1) = "A" Then RAT = RAT + 3
-            teamPower = teamPower + RAT
-        Next
-
-        If numberGames% <= 4 Then
-            GL = 5 - numberGames%
-            teamPower = teamPower + GL * compAP%(0, 1)
-        End If
-
-        teamPower = teamPower / (numberGames% + GL)
-
-        NRT = NRT + 1
-        PT$(NRT) = statFile$
-        PT!(NRT, 1) = teamPower
-        PT!(NRT, 2) = fullWins
-        PT!(NRT, 3) = fullLosses
-        PT!(NRT, 4) = fullTies
-        PT!(NRT, 5) = SS
-
-        Cls
-
-        Locate 4, 5
-
-        Color 15
-        Print "FINDING ";
-        Color 14
-        Print statFile$;
-        Color 15
-        Print " STATS            "
-
-        FindStatsNat% = 1
-
-    Else
-
-        Print "NO STATS FOUND FOR "; statFile$
-        FindStatsNat% = 0
-
-    End If
-
-End Function
 
 '----------------------------------------
 '       ReadStatsNat Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine reads stats in for a 
+'single team in the organization
 Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
     Shared puntNum
@@ -458,9 +327,13 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
     Input #1, TM$
 
     For I = 1 To 10: Input #1, RB$(I): Next
+
     For I = 1 To 6: Input #1, WR$(I): Next
+
     For I = 1 To 4: Input #1, QB$(I): Next
+
     For I = 1 To 3: Input #1, KR$(I): Next
+
     For I = 1 To 3: Input #1, PR$(I): Next I
 
     Input #1, PU$
@@ -474,6 +347,7 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
     Next J
 
     For L = 0 To 38: Input #1, OT!(L): Next L
+
     For L = 0 To 38: Input #1, DT!(L): Next L
 
     For J = 0 To 9: Input #1, intName$(J)
@@ -483,20 +357,31 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
     Next
 
     For J = 0 To 14: Input #1, sackName$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
+
     For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+
     For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+
     For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+
     For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+
     For I = 0 To 2: Input #1, PK!(I): Input #1, PKR$(I, 0): Input #1, PKR$(I, 1): Next
+
     For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+
     For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
     Close 1
 
     For I = 1 To 10: For J = 1 To 6: RB!(I, J) = compZ2!(I, J): Next: Next
+
     For I = 1 To 6: For J = 1 To 3: WR!(I, J) = compZ2!(I, J + 6): Next: Next
+
     For I = 1 To 4: For J = 1 To 5: QB!(I, J) = compZ2!(I, J + 9): Next: Next
+
     For I = 1 To 3: For J = 1 To 3: KR!(I, J) = compZ2!(I, J + 14): Next: Next
+
     For I = 1 To 3: For J = 1 To 3: PR!(I, J) = compZ2!(I + 3, J + 14): Next: Next
 
     TG!(8) = OT!(7)
@@ -555,8 +440,7 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
     For I = 1 To 4
         QB!(I, 6) = 0
-        If QB!(I, 1) > 0 Then QB!(I, 6) = Int(QB!(I, 2) / QB!(I, 1) * 1000) / 10
-        Call QBEfficiency(I)
+        Call QBRatingColl(I)
     Next
 
     For I = 1 To 3:
@@ -596,1246 +480,12 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
 End Sub
 
-'----------------------------------------
-'     StatsByCategoryNatl Subroutine
-'----------------------------------------
-'...explanation...
-
-Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
-
-    Shared DT!(), OT!(), TRC!(), TT!()
-
-    Shared TRC$(), TT$()
-
-    Shared statsO%(), statsT%()
-
-    Cls
-
-    'TEAM CATEGORIES
-    'CATEGORY 1 - TOTAL OFFENSE
-    CA = 1
-
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / numberGames% > TRC!(0) Then TRC!(0) = (OT!(6) + OT!(2)) / numberGames%: TRC$(0) = TM$
-    If OT!(6) + OT!(2) > TRC!(1) Then TRC!(1) = OT!(6) + OT!(2): TRC$(1) = TM$
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)) > TRC!(2) Then TRC!(2) = (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)): TRC$(2) = TM$
-
-    If (OT!(6) + OT!(2)) / numberGames% > TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1) + OT!(3)
-        TT!(CA, 20, 3) = OT!(6) + OT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-    End If
-
-    'CATEGORY 2 - TOTAL DEFENSE
-    CA = 2
-
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2)) / numberGames%: TRC$(25) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) < TRC!(26) Then TRC!(26) = DT!(6) + DT!(2): TRC$(26) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)): TRC$(27) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2)) / numberGames%: TRC$(28) = TM$
-
-    If (DT!(6) + DT!(2)) / numberGames% < TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(1) + DT!(3)
-        TT!(CA, 20, 3) = DT!(6) + DT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-    End If
-
-    'CATEGORY 3 - RUSHING OFFENSE
-    CA = 3
-
-    If UCase$(finalUpdate$) = "Y" And OT!(2) / numberGames% > TRC!(3) Then TRC!(3) = OT!(2) / numberGames%: TRC$(3) = TM$
-    If OT!(2) > TRC!(4) Then TRC!(4) = OT!(2): TRC$(4) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(2) / OT!(1) > TRC!(5) Then TRC!(5) = OT!(2) / OT!(1): TRC$(5) = TM$
-
-    test! = OT!(2) / numberGames%
-    test2! = TT!(CA, 20, 5)
-
-    If OT!(2) / numberGames% > TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1)
-        TT!(CA, 20, 3) = OT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 4 - RUSHING DEFENSE
-    CA = 4
-
-    If UCase$(finalUpdate$) = "Y" And DT!(2) / numberGames% < TRC!(29) Then TRC!(29) = DT!(2) / numberGames%: TRC$(29) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(2) < TRC!(30) Then TRC!(30) = DT!(2): TRC$(30) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(2) / DT!(1) < TRC!(31) Then TRC!(31) = DT!(2) / DT!(1): TRC$(31) = TM$
-
-    If DT!(2) / numberGames% < TT!(CA, 20, 5) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(1)
-        TT!(CA, 20, 3) = DT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-    End If
-
-    'CATEGORY 5 - SCORING OFFENSE
-    CA = 5
-
-    PTS = 0
-    OPTS = 0
-
-    For I = 1 To numberGames%
-        PTS = PTS + statsO%(I)
-        OPTS = OPTS + statsT%(I)
-    Next
-
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
-    If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
-    If PTS / numberGames% > TT!(CA, 20, 3) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 6 - SCORING DEFENSE
-    CA = 6
-
-    PTS = 0
-
-    For I = 1 To numberGames%
-        PTS = PTS + statsT%(I)
-    Next
-
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
-
-    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
-
-    If PTS / numberGames% < TT!(CA, 20, 3) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-
-        Next Z
-
-    End If
-
-    'CATEGORY 7 - PASSING OFFENSE
-    CA = 7
-
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
-    If OT!(6) > TRC!(7) Then TRC!(7) = OT!(6): TRC$(7) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > TRC!(8) Then TRC!(8) = OT!(6) / OT!(3): TRC$(8) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > TRC!(9) Then TRC!(9) = OT!(6) / OT!(4): TRC$(9) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > TRC!(10) Then TRC!(10) = OT!(4) / OT!(3): TRC$(10) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
-
-    If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(3)
-        TT!(CA, 20, 3) = OT!(4)
-        TT!(CA, 20, 4) = OT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = OT!(6)
-        TT!(CA, 20, 7) = OT!(6) / OT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 8 - PASSING DEFENSE
-    CA = 8
-
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) < TRC!(33) Then TRC!(33) = DT!(6): TRC$(33) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < TRC!(34) Then TRC!(34) = DT!(6) / DT!(3): TRC$(34) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < TRC!(35) Then TRC!(35) = DT!(6) / DT!(4): TRC$(35) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
-
-    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
-
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(3)
-        TT!(CA, 20, 3) = DT!(4)
-        TT!(CA, 20, 4) = DT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = DT!(6)
-        TT!(CA, 20, 7) = DT!(6) / DT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 9 - PUNTING
-    CA = 9
-
-    If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
-
-    If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
-
-        TT!(CA, 20, 1) = OT!(7)
-        TT!(CA, 20, 2) = OT!(8) / OT!(7)
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'CATEGORY 10 - TURNOVER MARGIN
-    CA = 10
-
-    FG = OT!(9) - OT!(10) + DT!(10)
-    IG = DT!(5)
-    FL = OT!(10) + DT!(9) - DT!(10)
-    IL = OT!(5)
-    TM = (FG + IG - FL - IL) / numberGames%
-
-    If TM > TT!(CA, 20, 7) Then
-
-        TT!(CA, 20, 1) = FG
-        TT!(CA, 20, 2) = IG
-        TT!(CA, 20, 3) = FG + IG
-        TT!(CA, 20, 4) = FL
-        TT!(CA, 20, 5) = IL
-        TT!(CA, 20, 6) = FL + IL
-        TT!(CA, 20, 7) = TM
-        TT$(CA, 20) = WT$
-
-        For Z = 1 To 19
-            For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
-                    For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
-                    Next MN
-                End If
-            Next Z1
-        Next Z
-
-    End If
-
-    'PUNT RETURNS
-    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
-
-    'KO Return
-    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > TRC!(17) Then TRC!(17) = OT!(23) / OT!(22): TRC$(17) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < TRC!(43) Then TRC!(43) = DT!(23) / DT!(22): TRC$(43) = TM$
-
-    'FIRST DOWNS
-    If OT!(0) > TRC!(18) Then TRC!(18) = OT!(0): TRC$(18) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames% > TRC!(19) Then TRC!(19) = OT!(0) / numberGames%: TRC$(19) = TM$
-
-    'FUMBLES
-    If OT!(9) > TRC!(20) Then TRC!(20) = OT!(9): TRC$(20) = TM$
-    If OT!(10) > TRC!(21) Then TRC!(21) = OT!(10): TRC$(21) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(10) < TRC!(22) Then TRC!(22) = OT!(10): TRC$(22) = TM$
-
-    'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames% > TRC!(23) Then TRC!(23) = OT!(11) / numberGames%: TRC$(23) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames% > TRC!(24) Then TRC!(24) = OT!(12) / numberGames%: TRC$(24) = TM$
-
-End Sub
-
-
-'----------------------------------------
-'       SortLeadersNat Subroutine
-'----------------------------------------
-'...explanation...
-Sub SortLeadersNat ()
-
-    Shared compZ1!()
-    Shared N1!(), NT!(), TT!()
-
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared N2$(), N3$(), NT$(), TT$()
-
-    ' RUSHING AVERAGE
-    For X = 1 To 20
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-
-            If compZ1!(X, 1) >= N1!(20, 1) Then
-
-                N1!(20, 1) = compZ1!(X, 1)
-                N1!(20, 2) = compZ1!(X, 2)
-                N2$(20) = compZ2$(X)
-                N3$(20) = compZ3$(X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' RECEIVING AVERAGE
-    For X = 21 To 40
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-
-            If compZ1!(X, 1) >= N1!(40, 1) Then
-
-                N1!(40, 1) = compZ1!(X, 1)
-                N1!(40, 2) = compZ1!(X, 2)
-                N2$(40) = compZ2$(X)
-                N3$(40) = compZ3$(X)
-
-                For Z = 21 To 39
-                    For Z1 = Z + 1 To 40
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' RUSHING YARDAGE
-    For X = 41 To 50
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(50, 1) Then
-                N1!(50, 1) = compZ1!(X, 1): N1!(50, 2) = compZ1!(X, 2)
-                N2$(50) = compZ2$(X): N3$(50) = compZ3$(X)
-
-                For Z = 41 To 49
-                    For Z1 = Z + 1 To 50
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' RECEIVING YARDAGE
-    For X = 51 To 60
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(60, 1) Then
-                N1!(60, 1) = compZ1!(X, 1)
-                N1!(60, 2) = compZ1!(X, 2)
-                N2$(60) = compZ2$(X)
-                N3$(60) = compZ3$(X)
-
-                For Z = 51 To 59
-                    For Z1 = Z + 1 To 60
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-        End If
-
-    Next X
-
-    ' RUSHING TD'S
-    For X = 61 To 70
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(70, 1) Then
-                N1!(70, 1) = compZ1!(X, 1): N1!(70, 2) = compZ1!(X, 2)
-                N2$(70) = compZ2$(X): N3$(70) = compZ3$(X)
-                For Z = 61 To 69
-                    For Z1 = Z + 1 To 70
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' RECEIVING TD'S
-    For X = 71 To 80
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(80, 1) Then
-                N1!(80, 1) = compZ1!(X, 1)
-                N1!(80, 2) = compZ1!(X, 2)
-                N2$(80) = compZ2$(X)
-                N3$(80) = compZ3$(X)
-
-                For Z = 71 To 79
-                    For Z1 = Z + 1 To 80
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' RUSHING ATT
-    For X = 81 To 90
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(90, 1) Then
-                N1!(90, 1) = compZ1!(X, 1): N1!(90, 2) = compZ1!(X, 2)
-                N2$(90) = compZ2$(X): N3$(90) = compZ3$(X)
-                For Z = 81 To 89
-                    For Z1 = Z + 1 To 90
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' TOTAL RECEPTIONS
-    For X = 91 To 100
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(100, 1) Then
-                N1!(100, 1) = compZ1!(X, 1): N1!(100, 2) = compZ1!(X, 2)
-                N2$(100) = compZ2$(X): N3$(100) = compZ3$(X)
-                For Z = 91 To 99
-                    For Z1 = Z + 1 To 100
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' TOTAL OFFENSE
-    For X = 101 To 110
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(110, 1) Then
-                N1!(110, 1) = compZ1!(X, 1)
-                N1!(110, 2) = compZ1!(X, 2)
-                N2$(110) = compZ2$(X)
-                N3$(110) = compZ3$(X)
-                For Z = 101 To 109
-                    For Z1 = Z + 1 To 110
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-    Next X
-
-    ' SCORING NON-KICKERS
-    For X = 111 To 120
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(120, 1) Then
-                N1!(120, 1) = compZ1!(X, 1)
-                N1!(120, 2) = compZ1!(X, 2)
-                N2$(120) = compZ2$(X)
-                N3$(120) = compZ3$(X)
-                For Z = 111 To 119
-                    For Z1 = Z + 1 To 120
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' COMPLETION PERCENTAGE
-    For X = 121 To 130
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(130, 1) Then
-                N1!(130, 1) = compZ1!(X, 1)
-                N1!(130, 2) = compZ1!(X, 2)
-                N2$(130) = compZ2$(X)
-                N3$(130) = compZ3$(X)
-                For Z = 121 To 129
-                    For Z1 = Z + 1 To 130
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' QB RATING
-    For X = 131 To 140
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(140, 1) Then
-                N1!(140, 1) = compZ1!(X, 1)
-                N1!(140, 2) = compZ1!(X, 2)
-                N2$(140) = compZ2$(X)
-                N3$(140) = compZ3$(X)
-                For Z = 131 To 139
-                    For Z1 = Z + 1 To 140
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' PASSING YARDAGE
-    For X = 141 To 150
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(150, 1) Then
-                N1!(150, 1) = compZ1!(X, 1)
-                N1!(150, 2) = compZ1!(X, 2)
-                N2$(150) = compZ2$(X)
-                N3$(150) = compZ3$(X)
-
-                For Z = 141 To 149
-                    For Z1 = Z + 1 To 150
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' PASSING TD'S
-    For X = 151 To 160
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(160, 1) Then
-                N1!(160, 1) = compZ1!(X, 1)
-                N1!(160, 2) = compZ1!(X, 2)
-                N2$(160) = compZ2$(X)
-                N3$(160) = compZ3$(X)
-
-                For Z = 151 To 159
-                    For Z1 = Z + 1 To 160
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' KO RETURNS
-    For X = 161 To 170
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(170, 1) Then
-                N1!(170, 1) = compZ1!(X, 1)
-                N1!(170, 2) = compZ1!(X, 2)
-                N2$(170) = compZ2$(X)
-                N3$(170) = compZ3$(X)
-                For Z = 161 To 169
-                    For Z1 = Z + 1 To 170
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' PR RETURNS
-    For X = 171 To 180
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(180, 1) Then
-                N1!(180, 1) = compZ1!(X, 1)
-                N1!(180, 2) = compZ1!(X, 2)
-                N2$(180) = compZ2$(X)
-                N3$(180) = compZ3$(X)
-                For Z = 171 To 179
-                    For Z1 = Z + 1 To 180
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' PUNTING
-    For X = 181 To 190
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(190, 1) Then
-                N1!(190, 1) = compZ1!(X, 1)
-                N1!(190, 2) = compZ1!(X, 2)
-                N2$(190) = compZ2$(X)
-                N3$(190) = compZ3$(X)
-                For Z = 181 To 189
-                    For Z1 = Z + 1 To 190
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' SCORING (KICKERS)
-    For X = 191 To 200
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(200, 1) Then
-                N1!(200, 1) = compZ1!(X, 1)
-                N1!(200, 2) = compZ1!(X, 2)
-                N2$(200) = compZ2$(X)
-                N3$(200) = compZ3$(X)
-                For Z = 191 To 199
-                    For Z1 = Z + 1 To 200
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' FG%
-    For X = 201 To 210
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(210, 1) Then
-                N1!(210, 1) = compZ1!(X, 1)
-                N1!(210, 2) = compZ1!(X, 2)
-                N2$(210) = compZ2$(X)
-                N3$(210) = compZ3$(X)
-                For Z = 201 To 209
-                    For Z1 = Z + 1 To 210
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' EP%
-    For X = 211 To 220
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-            If compZ1!(X, 1) >= N1!(220, 1) Then
-                N1!(220, 1) = compZ1!(X, 1)
-                N1!(220, 2) = compZ1!(X, 2)
-                N2$(220) = compZ2$(X)
-                N3$(220) = compZ3$(X)
-                For Z = 211 To 219
-                    For Z1 = Z + 1 To 220
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' INT'S
-    For X = 221 To 230
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-
-            If compZ1!(X, 1) >= N1!(230, 1) Then
-                N1!(230, 1) = compZ1!(X, 1)
-                N1!(230, 2) = compZ1!(X, 2)
-                N2$(230) = compZ2$(X)
-                N3$(230) = compZ3$(X)
-
-                For Z = 221 To 229
-                    For Z1 = Z + 1 To 230
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' SACKS
-    For X = 231 To 240
-
-        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
-
-            If compZ1!(X, 1) >= N1!(240, 1) Then
-
-                N1!(240, 1) = compZ1!(X, 1)
-                N1!(240, 2) = compZ1!(X, 2)
-                N2$(240) = compZ2$(X)
-                N3$(240) = compZ3$(X)
-
-                For Z = 231 To 239
-                    For Z1 = Z + 1 To 240
-                        If N1!(Z, 1) < N1!(Z1, 1) Then
-                            Swap N2$(Z1), N2$(Z)
-                            Swap N3$(Z1), N3$(Z)
-                            For MN = 1 To 2
-                                Swap N1!(Z1, MN), N1!(Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' TEAM OFFENSE
-    CA = 1
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 5) < NT!(CA, Z1, 5) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' TEAM DEFENSE
-    CA = 2
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' RUSHING OFFENSE
-    CA = 3
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-
-                        If NT!(CA, Z, 5) < NT!(CA, Z1, 5) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' RUSHING DEFENSE
-    CA = 4
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' SCORING OFFENSE
-    CA = 5
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 3) >= NT!(CA, 20, 3) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 3) < NT!(CA, Z1, 3) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-        End If
-
-    Next X
-
-    ' SCORING DEFENSE
-    CA = 6
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 3) <= NT!(CA, 20, 3) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 3) > NT!(CA, Z1, 3) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' PASSING OFFENSE
-    CA = 7
-
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-
-            If TT!(CA, X, 8) >= NT!(CA, 20, 8) Then
-
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-
-                NT$(CA, 20) = TT$(CA, X)
-
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 8) < NT!(CA, Z1, 8) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-
-            End If
-
-        End If
-
-    Next X
-
-    ' PASSING DEFENSE
-    CA = 8
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 8) <= NT!(CA, 20, 8) Then
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-                NT$(CA, 20) = TT$(CA, X)
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 8) > NT!(CA, Z1, 8) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' PUNTING
-    CA = 9
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 2) >= NT!(CA, 20, 2) Then
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-                NT$(CA, 20) = TT$(CA, X)
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 2) < NT!(CA, Z1, 2) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-    ' TURNOVER MARGIN
-    CA = 10
-    For X = 1 To 20
-
-        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 7) >= NT!(CA, 20, 7) Then
-                For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
-                Next
-                NT$(CA, 20) = TT$(CA, X)
-                For Z = 1 To 19
-                    For Z1 = Z + 1 To 20
-                        If NT!(CA, Z, 7) < NT!(CA, Z1, 7) Then
-                            Swap NT$(CA, Z1), NT$(CA, Z)
-                            For MN = 1 To 9
-                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
-                            Next MN
-                        End If
-                    Next Z1
-                Next Z
-            End If
-        End If
-
-    Next X
-
-End Sub
 
 '----------------------------------------
 '       CheckStatsNatl Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine compares pre-loaded stats
+'to existing leaders and updates as needed
 Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared FG, puntNum
@@ -2814,10 +1464,1398 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 End Sub
 
 
-'------------------------------
-'    POSTLEADERS Subroutine
-'------------------------------
-' ...explanation...
+'----------------------------------------
+'     StatsByCategoryNatl Subroutine
+'----------------------------------------
+'This subroutine compares all pre-loaded 
+'stats to each of the record categories to 
+'see if any should be updated
+Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
+
+    Shared DT!(), OT!(), TRC!(), TT!()
+
+    Shared TRC$(), TT$()
+
+    Shared statsO%(), statsT%()
+
+    Cls
+
+    'TEAM CATEGORIES
+    'CATEGORY 1 - TOTAL OFFENSE
+    CA = 1
+
+    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / numberGames% > TRC!(0) Then TRC!(0) = (OT!(6) + OT!(2)) / numberGames%: TRC$(0) = TM$
+    If OT!(6) + OT!(2) > TRC!(1) Then TRC!(1) = OT!(6) + OT!(2): TRC$(1) = TM$
+    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)) > TRC!(2) Then TRC!(2) = (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)): TRC$(2) = TM$
+
+    If (OT!(6) + OT!(2)) / numberGames% > TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(1) + OT!(3)
+        TT!(CA, 20, 3) = OT!(6) + OT!(2)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+    End If
+
+    'CATEGORY 2 - TOTAL DEFENSE
+    CA = 2
+
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% < TRC!(25) Then TRC!(25) = (DT!(6) + DT!(2)) / numberGames%: TRC$(25) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) < TRC!(26) Then TRC!(26) = DT!(6) + DT!(2): TRC$(26) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)): TRC$(27) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2)) / numberGames%: TRC$(28) = TM$
+
+    If (DT!(6) + DT!(2)) / numberGames% < TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(1) + DT!(3)
+        TT!(CA, 20, 3) = DT!(6) + DT!(2)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+    End If
+
+    'CATEGORY 3 - RUSHING OFFENSE
+    CA = 3
+
+    If UCase$(finalUpdate$) = "Y" And OT!(2) / numberGames% > TRC!(3) Then TRC!(3) = OT!(2) / numberGames%: TRC$(3) = TM$
+    If OT!(2) > TRC!(4) Then TRC!(4) = OT!(2): TRC$(4) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(2) / OT!(1) > TRC!(5) Then TRC!(5) = OT!(2) / OT!(1): TRC$(5) = TM$
+
+    test! = OT!(2) / numberGames%
+    test2! = TT!(CA, 20, 5)
+
+    If OT!(2) / numberGames% > TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(1)
+        TT!(CA, 20, 3) = OT!(2)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 4 - RUSHING DEFENSE
+    CA = 4
+
+    If UCase$(finalUpdate$) = "Y" And DT!(2) / numberGames% < TRC!(29) Then TRC!(29) = DT!(2) / numberGames%: TRC$(29) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(2) < TRC!(30) Then TRC!(30) = DT!(2): TRC$(30) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(2) / DT!(1) < TRC!(31) Then TRC!(31) = DT!(2) / DT!(1): TRC$(31) = TM$
+
+    If DT!(2) / numberGames% < TT!(CA, 20, 5) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(1)
+        TT!(CA, 20, 3) = DT!(2)
+        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+    End If
+
+    'CATEGORY 5 - SCORING OFFENSE
+    CA = 5
+
+    PTS = 0
+    OPTS = 0
+
+    For I = 1 To numberGames%
+        PTS = PTS + statsO%(I)
+        OPTS = OPTS + statsT%(I)
+    Next
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
+    If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
+    If PTS / numberGames% > TT!(CA, 20, 3) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = PTS
+        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 6 - SCORING DEFENSE
+    CA = 6
+
+    PTS = 0
+
+    For I = 1 To numberGames%
+        PTS = PTS + statsT%(I)
+    Next
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS < TRC!(38) Then TRC!(38) = PTS: TRC$(38) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(41) Then TRC!(41) = PTS / numberGames%: TRC$(41) = TM$
+
+    If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
+
+    If PTS / numberGames% < TT!(CA, 20, 3) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = PTS
+        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+
+        Next Z
+
+    End If
+
+    'CATEGORY 7 - PASSING OFFENSE
+    CA = 7
+
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > TRC!(6) Then TRC!(6) = OT!(6) / numberGames%: TRC$(6) = TM$
+    If OT!(6) > TRC!(7) Then TRC!(7) = OT!(6): TRC$(7) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > TRC!(8) Then TRC!(8) = OT!(6) / OT!(3): TRC$(8) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > TRC!(9) Then TRC!(9) = OT!(6) / OT!(4): TRC$(9) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > TRC!(10) Then TRC!(10) = OT!(4) / OT!(3): TRC$(10) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
+
+    If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = OT!(3)
+        TT!(CA, 20, 3) = OT!(4)
+        TT!(CA, 20, 4) = OT!(5)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 6) = OT!(6)
+        TT!(CA, 20, 7) = OT!(6) / OT!(3)
+        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 8 - PASSING DEFENSE
+    CA = 8
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < TRC!(32) Then TRC!(32) = DT!(6) / numberGames%: TRC$(32) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) < TRC!(33) Then TRC!(33) = DT!(6): TRC$(33) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < TRC!(34) Then TRC!(34) = DT!(6) / DT!(3): TRC$(34) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < TRC!(35) Then TRC!(35) = DT!(6) / DT!(4): TRC$(35) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
+
+    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
+
+        TT!(CA, 20, 1) = numberGames%
+        TT!(CA, 20, 2) = DT!(3)
+        TT!(CA, 20, 3) = DT!(4)
+        TT!(CA, 20, 4) = DT!(5)
+        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
+        TT!(CA, 20, 6) = DT!(6)
+        TT!(CA, 20, 7) = DT!(6) / DT!(3)
+        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 9 - PUNTING
+    CA = 9
+
+    If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
+
+    If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
+
+        TT!(CA, 20, 1) = OT!(7)
+        TT!(CA, 20, 2) = OT!(8) / OT!(7)
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'CATEGORY 10 - TURNOVER MARGIN
+    CA = 10
+
+    FG = OT!(9) - OT!(10) + DT!(10)
+    IG = DT!(5)
+    FL = OT!(10) + DT!(9) - DT!(10)
+    IL = OT!(5)
+    TM = (FG + IG - FL - IL) / numberGames%
+
+    If TM > TT!(CA, 20, 7) Then
+
+        TT!(CA, 20, 1) = FG
+        TT!(CA, 20, 2) = IG
+        TT!(CA, 20, 3) = FG + IG
+        TT!(CA, 20, 4) = FL
+        TT!(CA, 20, 5) = IL
+        TT!(CA, 20, 6) = FL + IL
+        TT!(CA, 20, 7) = TM
+        TT$(CA, 20) = WT$
+
+        For Z = 1 To 19
+            For Z1 = Z + 1 To 20
+                If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
+                    Swap TT$(CA, Z1), TT$(CA, Z)
+                    For MN = 1 To 9
+                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                    Next MN
+                End If
+            Next Z1
+        Next Z
+
+    End If
+
+    'PUNT RETURNS
+    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > TRC!(16) Then TRC!(16) = OT!(25) / OT!(24): TRC$(16) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < TRC!(42) Then TRC!(42) = DT!(25) / DT!(24): TRC$(42) = TM$
+
+    'KO Return
+    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > TRC!(17) Then TRC!(17) = OT!(23) / OT!(22): TRC$(17) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < TRC!(43) Then TRC!(43) = DT!(23) / DT!(22): TRC$(43) = TM$
+
+    'FIRST DOWNS
+    If OT!(0) > TRC!(18) Then TRC!(18) = OT!(0): TRC$(18) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames% > TRC!(19) Then TRC!(19) = OT!(0) / numberGames%: TRC$(19) = TM$
+
+    'FUMBLES
+    If OT!(9) > TRC!(20) Then TRC!(20) = OT!(9): TRC$(20) = TM$
+    If OT!(10) > TRC!(21) Then TRC!(21) = OT!(10): TRC$(21) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(10) < TRC!(22) Then TRC!(22) = OT!(10): TRC$(22) = TM$
+
+    'PENALTIES
+    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames% > TRC!(23) Then TRC!(23) = OT!(11) / numberGames%: TRC$(23) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames% > TRC!(24) Then TRC!(24) = OT!(12) / numberGames%: TRC$(24) = TM$
+
+End Sub
+
+
+'----------------------------------------
+'         FindStatsNat Function
+'----------------------------------------
+'...explanation...
+Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
+
+    Shared compO$(), H1$(), statsH$()
+
+    Shared compAP%()
+    Shared statsO%(), statsT%()
+
+    Shared PT!(), PT$()
+    Shared PTSA!(), PTSF!()
+
+    fullWins = 0
+    fullLosses = 0
+    fullTies = 0
+
+    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
+
+        Print "NO STATS FOUND FOR "; statFile$
+        FindStatsNat% = 0
+
+    Else
+
+        Call ReadScheduleStats(statFile$, XW, numberGames%)
+
+        fullWins = 0
+        fullLosses = 0
+        fullTies = 0
+        confWins = 0
+        confTies = 0
+        confLosses = 0
+
+        PTSFC = 0
+        PTSAC = 0
+
+        'RATINGS
+        For I = 1 To numberGames%
+
+            teamName$ = compo$(I)
+
+            FOR P = 4 TO 11: 
+                IF MID$(teamName$, P, 1) = " " OR MID$(teamName$, P, 1) = "." THEN MID$(teamName$, P, 1) = "_"
+            NEXT P
+
+            FOR P = 12 TO 14: 
+                IF MID$(teamName$, P, 2) = "ST" THEN MID$(teamName$, 9, 1) = "_": MID$(teamName$, 10, 2) = "ST"
+            NEXT P
+
+            QQ = 8
+
+            FOR P = 11 TO 4 STEP -1: 
+                IF MID$(teamName$, P, 1) = "_" THEN 
+                    QQ = P - 4
+                Else
+                    Exit For
+                End If
+
+            NEXT P
+
+            teamName$ = MID$(teamName$, 4, QQ) + "." + LEFT$(teamName$, 2)
+
+            compo$(I) = teamName$
+
+            confGame = 0
+
+            For EC = 1 To 30
+
+                If compO$(I) = H1$(EC) Then
+                    confGame = 1
+                    Exit For
+                End If
+
+            Next EC
+
+            If confGame <> 1 Then
+                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
+                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
+                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
+            Else
+                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+            End If
+
+            PTSFC = PTSFC + statsO%(I)
+            PTSAC = PTSAC + statsT%(I)
+            EC = 0
+
+        Next I
+
+        'STRENGTH OF SCHEDULE
+        teamPower = 0
+        SS = 0
+
+        For I = 1 To numberGames%
+            SS = compAP%(1, I) + SS
+        Next
+
+        SS = SS / numberGames%
+
+        'INDIVIDUAL GAME POWER RATINGS
+        GL = 0
+        teamPower = 0
+
+        For I = 1 To numberGames%
+            RAT = statsO%(I) - statsT%(I) + compAP%(1, I)
+            If Left$(statsH$(I), 1) = "H" Then RAT = RAT - 3
+            If Left$(statsH$(I), 1) = "A" Then RAT = RAT + 3
+            teamPower = teamPower + RAT
+        Next
+
+        If numberGames% <= 4 Then
+            GL = 5 - numberGames%
+            teamPower = teamPower + GL * compAP%(0, 1)
+        End If
+
+        teamPower = teamPower / (numberGames% + GL)
+
+        NRT = NRT + 1
+        PT$(NRT) = statFile$
+        PT!(NRT, 1) = teamPower
+        PT!(NRT, 2) = fullWins
+        PT!(NRT, 3) = fullLosses
+        PT!(NRT, 4) = fullTies
+        PT!(NRT, 5) = SS
+
+        Cls
+
+        Locate 4, 5
+
+        Color 15
+        Print "FINDING ";
+        Color 14
+        Print statFile$;
+        Color 15
+        Print " STATS            "
+
+        FindStatsNat% = 1
+
+    End If
+
+End Function
+
+
+'----------------------------------------
+'       SortLeadersNat Subroutine
+'----------------------------------------
+'This subroutine sorts the leaders in the
+'target organization
+Sub SortLeadersNat ()
+
+    Shared compZ1!()
+    Shared N1!(), NT!(), TT!()
+
+    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared N2$(), N3$(), NT$(), TT$()
+
+    ' RUSHING AVERAGE
+    For X = 1 To 20
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
+            If compZ1!(X, 1) >= N1!(20, 1) Then
+
+                N1!(20, 1) = compZ1!(X, 1)
+                N1!(20, 2) = compZ1!(X, 2)
+                N2$(20) = compZ2$(X)
+                N3$(20) = compZ3$(X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' RECEIVING AVERAGE
+    For X = 21 To 40
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
+            If compZ1!(X, 1) >= N1!(40, 1) Then
+
+                N1!(40, 1) = compZ1!(X, 1)
+                N1!(40, 2) = compZ1!(X, 2)
+                N2$(40) = compZ2$(X)
+                N3$(40) = compZ3$(X)
+
+                For Z = 21 To 39
+                    For Z1 = Z + 1 To 40
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' RUSHING YARDAGE
+    For X = 41 To 50
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(50, 1) Then
+                N1!(50, 1) = compZ1!(X, 1): N1!(50, 2) = compZ1!(X, 2)
+                N2$(50) = compZ2$(X): N3$(50) = compZ3$(X)
+
+                For Z = 41 To 49
+                    For Z1 = Z + 1 To 50
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' RECEIVING YARDAGE
+    For X = 51 To 60
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(60, 1) Then
+                N1!(60, 1) = compZ1!(X, 1)
+                N1!(60, 2) = compZ1!(X, 2)
+                N2$(60) = compZ2$(X)
+                N3$(60) = compZ3$(X)
+
+                For Z = 51 To 59
+                    For Z1 = Z + 1 To 60
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+        End If
+
+    Next X
+
+    ' RUSHING TD'S
+    For X = 61 To 70
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(70, 1) Then
+                N1!(70, 1) = compZ1!(X, 1): N1!(70, 2) = compZ1!(X, 2)
+                N2$(70) = compZ2$(X): N3$(70) = compZ3$(X)
+                For Z = 61 To 69
+                    For Z1 = Z + 1 To 70
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' RECEIVING TD'S
+    For X = 71 To 80
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(80, 1) Then
+                N1!(80, 1) = compZ1!(X, 1)
+                N1!(80, 2) = compZ1!(X, 2)
+                N2$(80) = compZ2$(X)
+                N3$(80) = compZ3$(X)
+
+                For Z = 71 To 79
+                    For Z1 = Z + 1 To 80
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' RUSHING ATT
+    For X = 81 To 90
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(90, 1) Then
+                N1!(90, 1) = compZ1!(X, 1): N1!(90, 2) = compZ1!(X, 2)
+                N2$(90) = compZ2$(X): N3$(90) = compZ3$(X)
+                For Z = 81 To 89
+                    For Z1 = Z + 1 To 90
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' TOTAL RECEPTIONS
+    For X = 91 To 100
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(100, 1) Then
+                N1!(100, 1) = compZ1!(X, 1): N1!(100, 2) = compZ1!(X, 2)
+                N2$(100) = compZ2$(X): N3$(100) = compZ3$(X)
+                For Z = 91 To 99
+                    For Z1 = Z + 1 To 100
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' TOTAL OFFENSE
+    For X = 101 To 110
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(110, 1) Then
+                N1!(110, 1) = compZ1!(X, 1)
+                N1!(110, 2) = compZ1!(X, 2)
+                N2$(110) = compZ2$(X)
+                N3$(110) = compZ3$(X)
+                For Z = 101 To 109
+                    For Z1 = Z + 1 To 110
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+    Next X
+
+    ' SCORING NON-KICKERS
+    For X = 111 To 120
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(120, 1) Then
+                N1!(120, 1) = compZ1!(X, 1)
+                N1!(120, 2) = compZ1!(X, 2)
+                N2$(120) = compZ2$(X)
+                N3$(120) = compZ3$(X)
+                For Z = 111 To 119
+                    For Z1 = Z + 1 To 120
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' COMPLETION PERCENTAGE
+    For X = 121 To 130
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(130, 1) Then
+                N1!(130, 1) = compZ1!(X, 1)
+                N1!(130, 2) = compZ1!(X, 2)
+                N2$(130) = compZ2$(X)
+                N3$(130) = compZ3$(X)
+                For Z = 121 To 129
+                    For Z1 = Z + 1 To 130
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' QB RATING
+    For X = 131 To 140
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(140, 1) Then
+                N1!(140, 1) = compZ1!(X, 1)
+                N1!(140, 2) = compZ1!(X, 2)
+                N2$(140) = compZ2$(X)
+                N3$(140) = compZ3$(X)
+                For Z = 131 To 139
+                    For Z1 = Z + 1 To 140
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' PASSING YARDAGE
+    For X = 141 To 150
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(150, 1) Then
+                N1!(150, 1) = compZ1!(X, 1)
+                N1!(150, 2) = compZ1!(X, 2)
+                N2$(150) = compZ2$(X)
+                N3$(150) = compZ3$(X)
+
+                For Z = 141 To 149
+                    For Z1 = Z + 1 To 150
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' PASSING TD'S
+    For X = 151 To 160
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(160, 1) Then
+                N1!(160, 1) = compZ1!(X, 1)
+                N1!(160, 2) = compZ1!(X, 2)
+                N2$(160) = compZ2$(X)
+                N3$(160) = compZ3$(X)
+
+                For Z = 151 To 159
+                    For Z1 = Z + 1 To 160
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' KO RETURNS
+    For X = 161 To 170
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(170, 1) Then
+                N1!(170, 1) = compZ1!(X, 1)
+                N1!(170, 2) = compZ1!(X, 2)
+                N2$(170) = compZ2$(X)
+                N3$(170) = compZ3$(X)
+                For Z = 161 To 169
+                    For Z1 = Z + 1 To 170
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' PR RETURNS
+    For X = 171 To 180
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(180, 1) Then
+                N1!(180, 1) = compZ1!(X, 1)
+                N1!(180, 2) = compZ1!(X, 2)
+                N2$(180) = compZ2$(X)
+                N3$(180) = compZ3$(X)
+                For Z = 171 To 179
+                    For Z1 = Z + 1 To 180
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' PUNTING
+    For X = 181 To 190
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(190, 1) Then
+                N1!(190, 1) = compZ1!(X, 1)
+                N1!(190, 2) = compZ1!(X, 2)
+                N2$(190) = compZ2$(X)
+                N3$(190) = compZ3$(X)
+                For Z = 181 To 189
+                    For Z1 = Z + 1 To 190
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' SCORING (KICKERS)
+    For X = 191 To 200
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(200, 1) Then
+                N1!(200, 1) = compZ1!(X, 1)
+                N1!(200, 2) = compZ1!(X, 2)
+                N2$(200) = compZ2$(X)
+                N3$(200) = compZ3$(X)
+                For Z = 191 To 199
+                    For Z1 = Z + 1 To 200
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' FG%
+    For X = 201 To 210
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(210, 1) Then
+                N1!(210, 1) = compZ1!(X, 1)
+                N1!(210, 2) = compZ1!(X, 2)
+                N2$(210) = compZ2$(X)
+                N3$(210) = compZ3$(X)
+                For Z = 201 To 209
+                    For Z1 = Z + 1 To 210
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' EP%
+    For X = 211 To 220
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+            If compZ1!(X, 1) >= N1!(220, 1) Then
+                N1!(220, 1) = compZ1!(X, 1)
+                N1!(220, 2) = compZ1!(X, 2)
+                N2$(220) = compZ2$(X)
+                N3$(220) = compZ3$(X)
+                For Z = 211 To 219
+                    For Z1 = Z + 1 To 220
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' INT'S
+    For X = 221 To 230
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
+            If compZ1!(X, 1) >= N1!(230, 1) Then
+                N1!(230, 1) = compZ1!(X, 1)
+                N1!(230, 2) = compZ1!(X, 2)
+                N2$(230) = compZ2$(X)
+                N3$(230) = compZ3$(X)
+
+                For Z = 221 To 229
+                    For Z1 = Z + 1 To 230
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' SACKS
+    For X = 231 To 240
+
+        If compZ2$(X) <> "*" And compZ2$(X) <> "" Then
+
+            If compZ1!(X, 1) >= N1!(240, 1) Then
+
+                N1!(240, 1) = compZ1!(X, 1)
+                N1!(240, 2) = compZ1!(X, 2)
+                N2$(240) = compZ2$(X)
+                N3$(240) = compZ3$(X)
+
+                For Z = 231 To 239
+                    For Z1 = Z + 1 To 240
+                        If N1!(Z, 1) < N1!(Z1, 1) Then
+                            Swap N2$(Z1), N2$(Z)
+                            Swap N3$(Z1), N3$(Z)
+                            For MN = 1 To 2
+                                Swap N1!(Z1, MN), N1!(Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' TEAM OFFENSE
+    CA = 1
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 5) < NT!(CA, Z1, 5) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' TEAM DEFENSE
+    CA = 2
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' RUSHING OFFENSE
+    CA = 3
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+
+                        If NT!(CA, Z, 5) < NT!(CA, Z1, 5) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' RUSHING DEFENSE
+    CA = 4
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 5) > NT!(CA, Z1, 5) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' SCORING OFFENSE
+    CA = 5
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 3) >= NT!(CA, 20, 3) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 3) < NT!(CA, Z1, 3) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' SCORING DEFENSE
+    CA = 6
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 3) <= NT!(CA, 20, 3) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 3) > NT!(CA, Z1, 3) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' PASSING OFFENSE
+    CA = 7
+
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+
+            If TT!(CA, X, 8) >= NT!(CA, 20, 8) Then
+
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+
+                NT$(CA, 20) = TT$(CA, X)
+
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 8) < NT!(CA, Z1, 8) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+
+            End If
+
+        End If
+
+    Next X
+
+    ' PASSING DEFENSE
+    CA = 8
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+            If TT!(CA, X, 8) <= NT!(CA, 20, 8) Then
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+                NT$(CA, 20) = TT$(CA, X)
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 8) > NT!(CA, Z1, 8) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' PUNTING
+    CA = 9
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+            If TT!(CA, X, 2) >= NT!(CA, 20, 2) Then
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+                NT$(CA, 20) = TT$(CA, X)
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 2) < NT!(CA, Z1, 2) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+    ' TURNOVER MARGIN
+    CA = 10
+    For X = 1 To 20
+
+        If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
+            If TT!(CA, X, 7) >= NT!(CA, 20, 7) Then
+                For I = 1 To 8
+                    NT!(CA, 20, I) = TT!(CA, X, I)
+                Next
+                NT$(CA, 20) = TT$(CA, X)
+                For Z = 1 To 19
+                    For Z1 = Z + 1 To 20
+                        If NT!(CA, Z, 7) < NT!(CA, Z1, 7) Then
+                            Swap NT$(CA, Z1), NT$(CA, Z)
+                            For MN = 1 To 9
+                                Swap NT!(CA, Z1, MN), NT!(CA, Z, MN)
+                            Next MN
+                        End If
+                    Next Z1
+                Next Z
+            End If
+        End If
+
+    Next X
+
+End Sub
+
+
+'----------------------------------------
+'         POSTLEADERS Subroutine
+'----------------------------------------
+'This subroutine opens the existing leader
+'and record files for the conference,
+'and writes the updated stats to the file
 Sub POSTLEADERS (confName$)
 
     Shared compZ1$(), compZ2$(), compZ3$()
@@ -2858,10 +2896,12 @@ Sub POSTLEADERS (confName$)
 
 End Sub
 
-'------------------------------
-'   POSTNATIONAL Subroutine
-'------------------------------
-' ...explanation...
+'----------------------------------------
+'        POSTNATIONAL Subroutine
+'----------------------------------------
+'This subroutine opens the existing leader
+'and record files for the organization,
+'and writes the updated stats to the file
 Sub POSTNATIONAL (leaderFile$)
 
     Shared compZ1$(), N2$(), N3$(), NT$()
@@ -2902,11 +2942,13 @@ Sub POSTNATIONAL (leaderFile$)
 
 End Sub
 
-'------------------------------
-'   READFILES Subroutine
-'------------------------------
-' ...explanation...
-Sub READFILES (statFile$, numberGames%)
+
+'----------------------------------------
+'      ReadScheduleStats Subroutine
+'----------------------------------------
+'This subroutine reads in all data from the
+'team's schedule stats file.
+Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
     Shared compO$(), statsH$()
 
@@ -2920,14 +2962,16 @@ Sub READFILES (statFile$, numberGames%)
 
     For I = 1 To 120:
         Input #2, statsO%(I)
+        PTSF!(XW) = PTSF!(XW) + statsO%(I)
     Next I
 
     For I = 1 To 120:
-        Input #2, compO$(I): PTSF!(XW) = PTSF!(XW) + statsO%(I)
+        Input #2, compO$(I)
     Next I
 
     For I = 1 To 120:
-        Input #2, statsT%(I): PTSA!(XW) = PTSA!(XW) + statsT%(I)
+        Input #2, statsT%(I)
+        PTSA!(XW) = PTSA!(XW) + statsT%(I)
     Next I
 
     For I = 1 To 120:
@@ -2943,4 +2987,3 @@ Sub READFILES (statFile$, numberGames%)
     Close 2
 
 End Sub
-

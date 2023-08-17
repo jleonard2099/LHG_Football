@@ -9,7 +9,7 @@ Sub ChooseConference (conference$)
     Do
         'Display list of files...
         Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
 
@@ -63,7 +63,7 @@ Sub ChooseConference (conference$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -97,7 +97,7 @@ Sub ChooseNatOrg (organization$)
     Do
         'Display list of files...
         Spec$ = diskPaths$(2) + "*.CON"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -149,7 +149,7 @@ Sub ChooseNatOrg (organization$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -183,7 +183,7 @@ Sub ChooseLeague (league$)
     Do
         'Display list of files...
         Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
 
@@ -234,7 +234,7 @@ Sub ChooseLeague (league$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -268,7 +268,7 @@ Sub ChooseConference_Coll (targetFile$)
     Do
 
         Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -316,7 +316,7 @@ Sub ChooseConference_Coll (targetFile$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -346,7 +346,7 @@ Sub ChooseLeague_HD2HD (targetFile$)
     Do
 
         Spec$ = diskPaths$(2) + "*.LIB"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -393,7 +393,7 @@ Sub ChooseLeague_HD2HD (targetFile$)
                     Locate 2, 33: Print targetFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -414,17 +414,17 @@ Sub ChooseLeague_HD2HD (targetFile$)
 End Sub
 
 
-'------------------------------
+'----------------------------------------
 '  ChooseConference_Expanded
 '   Subroutine
-'------------------------------
+'----------------------------------------
 ' ...explanation...
 Sub ChooseConference_Expanded (conferenceFile$, ExitCode%)
 
     Do
 
         Spec$ = diskPaths$(2) + "*.TMS"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -472,7 +472,7 @@ Sub ChooseConference_Expanded (conferenceFile$, ExitCode%)
                     Locate 2, 33: Print conferenceFile$
 
                     Do
-                        Locate 3, 33: Print "ANY CHANGE (YN)";
+                        Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -502,7 +502,7 @@ Sub LoadSchedule (targetFile$)
     Do
         'Display list of files...
         Spec$ = diskPaths$(0) + "*.SCD"
-        Count% = FCount%(Spec$)
+        Count% = FileCount%(Spec$)
 
         If Count% = 0 Then
             Locate 10, 8
@@ -531,7 +531,7 @@ End Sub
 '     SelectScheduleFile SubRoutine
 '----------------------------------------
 '...explanation...
-Sub SelectScheduleFile (targetFile$, scheduleFiles$(), FileCount%, ExitCode%)
+Sub SelectScheduleFile (targetFile$, scheduleFiles$(), Count%, ExitCode%)
 
     Do
         Cls
@@ -558,7 +558,7 @@ Sub SelectScheduleFile (targetFile$, scheduleFiles$(), FileCount%, ExitCode%)
         Print "-SELECTS SCHEDULE";
 
         _MouseShow "DEFAULT"
-        MAMenu scheduleFiles$(), Selection%, Start%, FileCount%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu scheduleFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% <> 27 Then
@@ -567,7 +567,7 @@ Sub SelectScheduleFile (targetFile$, scheduleFiles$(), FileCount%, ExitCode%)
             Locate 2, 33: Print targetFile$
 
             Do
-                Locate 3, 33: Print "ANY CHANGE (YN)";
+                Locate 3, 33: Print "ANY CHANGE? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

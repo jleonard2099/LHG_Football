@@ -1,3 +1,10 @@
+'----------------------------------------
+'           CARPRNT Subroutine
+'----------------------------------------
+'This routine reads career stats from the 
+'.CAR file, formats them into an output 
+'file, then processes each line of the 
+'file, sending it to the default printer.
 Sub CARPRNT ()
 
     _Title "3-in-1 Football - Print Career Files"

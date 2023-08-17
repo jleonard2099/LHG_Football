@@ -1,3 +1,9 @@
+'----------------------------------------
+'          CAREER Subroutine
+'----------------------------------------
+'This routine gives the user a menu from 
+'which they can choose several options
+'for managing career files
 Sub CAREER ()
 
     _Title "3-in-1 Football - Career Stats"
@@ -67,10 +73,15 @@ Sub CAREER ()
 
 End Sub
 
+
 '----------------------------------------
-'      CreateCareerFile Subroutine
+'       CreateCareerFile Subroutine
 '----------------------------------------
-'...explanation...
+'This routine assists the user with the
+'creation of a team's first career file.
+'This naturally means it will guide them 
+'through also adding the first year's
+'stats to the file.
 Sub CreateCareerFile ()
 
     Cls
@@ -106,9 +117,687 @@ End Sub
 
 
 '----------------------------------------
-'   ViewPrintCareerRecords Subroutine
+'        MergeFirstYear Subroutine
 '----------------------------------------
-'...explanation...
+'This routine actually prompts the user for 
+'parameters to be used for merging the first
+'year's worth of stats to the career file
+Sub MergeFirstYear
+
+    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
+    Shared careerDI$(), careerDS$()
+    Shared careerQBS$(), careerRBS$()
+
+    Shared statsZ!(), statsZ1!(), statsZ2!()
+
+    Dim careerAF!(9, 4), careerAM!(9, 4)
+    Dim careerLR!(50), careerLC!(60), careerLP!(20), careerLK!(15)
+    Dim careerPK!(15)
+    Shared careerFGS!(), careerGIS!(), careerGSS!()
+    Shared careerKRS!(), careerPRS!(), careerPUS!()
+    Shared LF!(), LI!()
+    Shared QBBS!(), RBBS!(), WRRS!()
+
+    Shared KRRS$(), PRRS$()
+    Dim careerLC$(60, 1), careerLK$(15, 1)
+    Dim careerLP$(20, 1), careerLR$(50, 1)
+    Dim careerPK$(15, 1)
+    Shared statsLF$(), statsLI$(), careerWRS$()
+
+    Dim careerGS%(55, 1), careerGI%(55, 2)
+
+    NB = -1
+    NC = -1
+    ND = -1
+    NE = -1
+    NF = -1
+    NG = -1
+    NH = -1
+    NI = -1
+    NJ = 0
+    NK = 0
+    D = 0
+    VV = 0
+    finalUpdate% = 0
+
+    Do
+
+        Cls
+
+        For J = 15 To 18
+            Locate J
+            Print Space$(68)
+        Next
+
+        Color 11
+        Locate 15, 5
+        Input "ENTER NAME OF CAREER STAT FILE "; careerFile$
+
+        Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+        statFile$ = nameStatFile$(team$)
+
+        Do
+
+            Color 15, 0
+            Cls
+
+            Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
+            Locate 9, 25: Print "ANY CHANGE? (Y/N)"
+
+            J$ = GetKeyPress$
+
+        Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N" Or J$ = Chr$(27)
+
+        If UCase$(J$) = "N" Then
+
+            VV = 1
+
+            Do
+                Locate , 5
+                Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
+                K$ = GetKeyPress$
+            Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
+
+            If UCase$(K$) = "Y" Then finalUpdate% = 1 Else finalUpdate% = 0
+
+            If Not _FileExists(diskPaths$(1) + statFile$) Then
+
+                MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                BoxWidth = 24
+                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                I$ = GetKeyPress$
+                Call CSMsgBox("", 0, Pass)
+
+            Else
+
+                Locate 20, 5
+                Color 15
+                Print "MERGING CAREER STATS AND UPDATING CAREER LEADER FILE . . . . PLEASE WAIT"
+
+                Open diskPaths$(1) + statFile$ + "S" For Input As #1
+
+                Input #1, GAMES
+
+                Close 1
+
+                Open diskPaths$(1) + statFile$ For Input As #1
+
+                Input #1, A$
+
+                For I = 0 To 9: 
+                    Input #1, careerA1$(I)
+                Next I
+                
+                For I = 0 To 5: 
+                    Input #1, careerA2$(I)
+                Next I
+                
+                For I = 0 To 3: 
+                    Input #1, careerA3$(I)
+                Next I
+                
+                For I = 0 To 2: 
+                    Input #1, careerA4$(I)
+                Next I
+                
+                For I = 0 To 2: 
+                    Input #1, careerA5$(I)
+                Next I
+
+                Input #1, careerA6$(0)
+
+                For I = 0 To 1: 
+                    Input #1, careerA7$(I)
+                Next I
+
+                For J = 0 To 13
+                    For K = 0 To 17: 
+                        Input #1, statsZ2!(J, K)
+                    Next K
+                Next J
+
+                For L = 0 To 38: 
+                    Input #1, statsZ!(L)
+                Next L
+
+                For L = 0 To 38: 
+                    Input #1, statsZ1!(L)
+                Next L
+
+                For J = 0 To 9: 
+                    Input #1, careerDI$(J)
+                    For J1 = 0 To 2: 
+                        Input #1, careerGI%(J, J1)
+                    Next
+                Next
+
+                For J = 0 To 14: 
+                    Input #1, careerDS$(J)
+                    For J1 = 0 To 1: 
+                        Input #1, careerGS%(J, J1)
+                    Next
+                Next
+
+                For I = 0 To 9: 
+                    Input #1, careerLR!(I)
+                    Input #1, careerLR$(I, 0)
+                    Input #1, careerLR$(I, 1)
+                Next
+
+                For I = 0 To 15: 
+                    Input #1, careerLC!(I)
+                    Input #1, careerLC$(I, 0)
+                    Input #1, careerLC$(I, 1)
+                Next
+
+                For I = 0 To 3: 
+                    Input #1, careerLP!(I)
+                    Input #1, careerLP$(I, 0)
+                    Input #1, careerLP$(I, 1)
+                Next
+
+                For I = 0 To 2: 
+                    Input #1, careerLK!(I)
+                    Input #1, careerLK$(I, 0)
+                    Input #1, careerLK$(I, 1)
+                Next
+
+                For I = 0 To 2: 
+                    Input #1, careerPK!(I)
+                    Input #1, careerPK$(I, 0)
+                    Input #1, careerPK$(I, 1)
+                Next
+
+                For I = 0 To 1: 
+                    Input #1, LF!(I)
+                    Input #1, statsLF$(I)
+                    For I1 = 0 To 4: 
+                        Input #1, careerAM!(I, I1)
+                        Input #1, careerAF!(I, I1)
+                    Next
+                Next
+
+                For I = 0 To 9: 
+                    Input #1, LI!(I)
+                    Input #1, statsLI$(I, 0)
+                    Input #1, statsLI$(I, 1)
+                Next
+
+                Close #1
+
+                For I = 0 To 9
+                    T% = Len(careerA1$(I))
+                    If T% = 0 Then careerA1$(I) = "XXX"
+                Next
+
+                For I = 0 To 5
+                    T% = Len(careerA2$(I))
+                    If T% = 0 Then careerA2$(I) = "XXX"
+                Next
+
+                For I = 0 To 3
+                    T% = Len(careerA3$(I))
+                    If T% = 0 Then careerA3$(I) = "XXX"
+                Next
+
+                For I = 0 To 2
+                    T% = Len(careerA4$(I))
+                    If T% = 0 Then careerA4$(I) = "XXX"
+                Next
+
+                For I = 0 To 2
+                    T% = Len(careerA5$(I))
+                    If T% = 0 Then careerA5$(I) = "XXX"
+                Next
+
+                For I = 0 To 1
+                    T% = Len(careerA7$(I))
+                    If T% = 0 Then careerA7$(I) = "XXX"
+                Next
+
+                For I = 0 To 9
+                    T% = Len(careerDI$(I))
+                    If T% = 0 Then careerDI$(I) = "XXX"
+                Next
+
+                For I = 0 To 14
+                    T% = Len(careerDS$(I))
+                    If T% = 0 Then careerDS$(I) = "XXX"
+                Next
+
+                For I = 0 To 49
+
+                    N = 1
+
+                    If careerA1$(I) <> "END" And careerA1$(I) <> "XXX" And careerA1$(I) <> "" Then
+                        NB = NB + 1
+                    Else
+                        careerA1$(I) = ""
+                    End If
+
+                    For J = 0 To 5
+                        RBBS!(N, I, J) = statsZ2!(I, J)
+                    Next J
+
+                    RBBS!(N, I, 6) = careerLR!(I)
+                    careerRBS$(N, I, 0) = careerLR$(I, 0)
+                    RBBS!(N, I, 9) = careerLC!(I)
+                    careerRBS$(N, I, 1) = careerLC$(I, 0)
+                    RBBS!(N, I, 7) = 1
+                    RBBS!(N, I, 8) = statYear
+
+                Next I
+
+                For I = 0 To 39
+
+                    N = 1
+
+                    If careerA2$(I) <> "END" And careerA2$(I) <> "XXX" And careerA2$(I) <> "" Then
+                        NC = NC + 1
+                    Else
+                        careerA2$(I) = ""
+                    End If
+
+                    For J = 6 To 8
+                        WRRS!(N, I, J - 6) = statsZ2!(I, J)
+                    Next J
+
+                    WRRS!(N, I, 3) = careerLC!(I + 10)
+                    careerWRS$(N, I, 0) = careerLC$(I + 10, 0)
+                    WRRS!(N, I, 4) = 1
+                    WRRS!(N, I, 5) = statYear
+
+                Next I
+
+                For I = 0 To 19
+
+                    N = 1
+
+                    If careerA3$(I) <> "END" And careerA3$(I) <> "XXX" And careerA3$(I) <> "" Then
+                        ND = ND + 1
+                    Else
+                        careerA3$(I) = ""
+                    End If
+
+                    For J = 9 To 13:
+                        QBBS!(N, I, J - 9) = statsZ2!(I, J)
+                    Next J
+
+                    QBBS!(N, I, 5) = careerLP!(I)
+                    careerQBS$(N, I, 0) = careerLP$(I, 0)
+                    QBBS!(N, I, 6) = 1
+                    QBBS!(N, I, 7) = statYear
+
+                Next I
+
+                For I = 0 To 14
+
+                    N = 1
+
+                    If careerA4$(I) <> "END" And careerA4$(I) <> "XXX" And careerA4$(I) <> "" Then
+
+                        NE = NE + 1
+                    Else
+                        careerA4$(I) = ""
+                    End If
+
+                    For J = 14 To 16:
+                        careerKRS!(N, I, J - 14) = statsZ2!(I, J)
+                    Next J
+
+                    careerKRS!(N, I, 3) = careerLK!(I): KRRS$(N, I, 0) = careerLK$(I, 0)
+                    careerKRS!(N, I, 4) = 1
+                    careerKRS!(N, I, 5) = statYear
+
+                Next I
+
+                For I = 0 To 14
+
+                    N = 1
+
+                    If careerA5$(I) <> "END" And careerA5$(I) <> "XXX" And careerA5$(I) <> "" Then
+                        NF = NF + 1
+                    Else
+                        careerA5$(I) = ""
+                    End If
+
+                    For J = 14 To 16:
+                        careerPRS!(N, I, J - 14) = statsZ2!(I + 3, J)
+                    Next J
+
+                    careerPRS!(N, I, 3) = careerPK!(I)
+                    PRRS$(N, I, 0) = careerPK$(I, 0)
+                    careerPRS!(N, I, 4) = 1
+                    careerPRS!(N, I, 5) = statYear
+
+                Next I
+
+                For I = 0 To 9
+
+                    N = 1
+
+                    If careerA6$(I) <> "END" And careerA6$(I) <> "XXX" And careerA6$(I) <> "" Then
+                        NG = NG + 1
+                    Else
+                        careerA6$(I) = ""
+                    End If
+
+                    careerPUS!(N, I, 0) = statsZ!(7)
+                    careerPUS!(N, I, 1) = statsZ!(8)
+                    careerPUS!(N, I, 2) = 1
+                    careerPUS!(N, I, 3) = statYear
+                Next I
+
+                For I = 0 To 9
+
+                    N = 1
+
+                    If careerA7$(I) <> "END" And careerA7$(I) <> "XXX" And careerA7$(I) <> "" Then
+                        NH = NH + 1
+                    Else
+                        careerA7$(I) = ""
+                    End If
+
+                    If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
+
+                        For J = 3 To 6
+                            careerFGS!(N, I, J - 3) = statsZ2!(J, 17)
+                        Next J
+
+                        careerFGS!(N, I, 4) = LF!(I)
+                        careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
+
+                        For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next
+                        For I1 = 0 To 4: careerFGS!(N, I, I1 + 10) = careerAF!(I, I1): Next
+
+                    End If
+
+                    If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
+
+                        For J = 7 To 10:
+                            careerFGS!(N, I, J - 7) = statsZ2!(J, 17)
+                        Next J
+
+                        careerFGS!(N, I, 4) = LF!(I)
+                        careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
+
+                        For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next
+                        For I1 = 0 To 4: careerFGS!(N, I, I1 + 10) = careerAF!(I, I1): Next
+
+                    End If
+
+                Next I
+
+                For I = 0 To 54
+
+                    N = 1
+
+                    If careerDI$(I) <> "END" And careerDI$(I) <> "XXX" And careerDI$(I) <> "" Then
+                        NJ = NJ + 1
+                    Else
+                        careerDI$(I) = ""
+                    End If
+
+                    careerGIS!(N, I, 0) = careerGI%(I, 0)
+                    careerGIS!(N, I, 1) = 1
+                    careerGIS!(N, I, 2) = statYear
+                Next I
+
+                For I = 0 To 54
+                    N = 1
+
+                    If careerDS$(I) <> "END" And careerDS$(I) <> "XXX" And careerDS$(I) <> "" Then
+                        NK = NK + 1
+                    Else
+                        careerDS$(I) = ""
+                    End If
+
+                    careerGSS!(N, I, 0) = careerGS%(I, 0)
+                    careerGSS!(N, I, 1) = 1
+                    careerGSS!(N, I, 2) = statYear
+
+                Next I
+
+                If finalUpdate% = 1 Then Call UpdateCareerLeaders(statFile$)
+
+                TMR = 6420
+
+                Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #2
+
+                Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
+                For I = 0 To 49:
+                    Write #2, careerA1$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 39: 
+                    Write #2, careerA2$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 19: 
+                    Write #2, careerA3$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 14: 
+                    Write #2, careerA4$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 14: 
+                    Write #2, careerA5$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 9: 
+                    Write #2, careerA6$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 9: 
+                    Write #2, careerA7$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 54: 
+                    Write #2, careerDI$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For I = 0 To 54: 
+                    Write #2, careerDS$(I)
+                    Locate 21, 38
+                    Color 5
+                    TMR = TMR - 1: Print Using "####"; TMR
+                Next
+
+                For N = 1 To 15: 
+                    For J = 0 To 49: 
+                        For K = 0 To 9: 
+                            Write #2, RBBS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 49: 
+                        Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 39
+                        For K = 0 To 5: 
+                            Write #2, WRRS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5: TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 39: 
+                        Write #2, careerWRS$(N, J, 0)
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 19: 
+                        For K = 0 To 7: 
+                            Write #2, QBBS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 19: 
+                        Write #2, careerQBS$(N, J, 0)
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14: 
+                        For K = 0 To 5: 
+                            Write #2, careerKRS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                    Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14: 
+                        Write #2, KRRS$(N, J, 0)
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14
+                        For K = 0 To 5: 
+                            Write #2, careerPRS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 14: 
+                        Write #2, PRRS$(N, J, 0)
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 9: 
+                        For K = 0 To 3: 
+                            Write #2, careerPUS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 9: 
+                        For K = 0 To 16: 
+                            Write #2, careerFGS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+                    For J = 0 To 54: 
+                        For K = 0 To 2: 
+                            Write #2, careerGIS!(N, J, K)
+                        Next K
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+                    Next J
+                Next N
+
+                For N = 1 To 15: 
+
+                    For J = 0 To 54: 
+
+                        For K = 0 To 2: 
+                            Write #2, careerGSS!(N, J, K)
+                        Next K
+
+                        Locate 21, 38
+                        Color 5
+                        TMR = TMR - 1: Print Using "####"; TMR
+
+                    Next J
+
+                Next N
+
+                Close #2
+
+            End If 'Done checking for stat file
+
+        End If 'Done checking for changes
+
+    Loop Until UCase$(I$) = "N" Or UCase$(J$) = "N"
+
+End Sub
+
+
+'----------------------------------------
+'    ViewPrintCareerRecords Subroutine
+'----------------------------------------
+'This routine loads in leader records from
+'the .CLD file (which were compiled from  
+'the career file). It then gives the user
+'an option to View or Print results, AND
+'formats the results for them as directed.
 Sub ViewPrintCareerRecords ()
 
     Shared careerRBC$()
@@ -391,7 +1080,7 @@ Sub ViewPrintCareerRecords ()
                         Color 15
 
                         Do
-                            Locate 22: Print "VIEW AGAIN (Y/N)"
+                            Locate 22: Print "VIEW AGAIN? (Y/N)"
                             I$ = GetKeyPress$
                         Loop Until UCase$(I$) = "N"
 
@@ -407,683 +1096,12 @@ End Sub
 
 
 '----------------------------------------
-'      MergeFirstYear Subroutine
-'----------------------------------------
-'...explanation...
-Sub MergeFirstYear
-
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
-    Shared careerQBS$(), careerRBS$()
-
-    Shared statsZ!(), statsZ1!(), statsZ2!()
-
-    Dim careerAF!(9, 4), careerAM!(9, 4)
-    Dim careerLR!(50), careerLC!(60), careerLP!(20), careerLK!(15)
-    Dim careerPK!(15)
-    Shared careerFGS!(), careerGIS!(), careerGSS!()
-    Shared careerKRS!(), careerPRS!(), careerPUS!()
-    Shared LF!(), LI!()
-    Shared QBBS!(), RBBS!(), WRRS!()
-
-    Shared KRRS$(), PRRS$()
-    Dim careerLC$(60, 1), careerLK$(15, 1)
-    Dim careerLP$(20, 1), careerLR$(50, 1)
-    Dim careerPK$(15, 1)
-    Shared statsLF$(), statsLI$(), careerWRS$()
-
-    Dim careerGS%(55, 1), careerGI%(55, 2)
-
-    NB = -1
-    NC = -1
-    ND = -1
-    NE = -1
-    NF = -1
-    NG = -1
-    NH = -1
-    NI = -1
-    NJ = 0
-    NK = 0
-    D = 0
-    VV = 0
-    finalUpdate% = 0
-
-    Do
-
-        Cls
-
-        For J = 15 To 18
-            Locate J
-            Print Space$(68)
-        Next
-
-        Color 11
-        Locate 15, 5
-        Input "ENTER NAME OF CAREER STAT FILE "; careerFile$
-
-        Call ChooseTeam(YN$, NTMS, teamNbr, team$)
-
-        If teamNbr <> 0 Then
-
-            statFile$ = nameStatFile$(team$)
-
-            Do
-
-                Color 15, 0
-                Cls
-
-                Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
-                Locate 9, 25: Print "ANY CHANGE (YN)"
-
-                J$ = GetKeyPress$
-
-            Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N" Or J$ = Chr$(27)
-
-            If UCase$(J$) = "N" Then
-
-                VV = 1
-
-                Do
-                    Locate , 5
-                    Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
-                    K$ = GetKeyPress$
-                Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
-
-                If UCase$(K$) = "Y" Then finalUpdate% = 1 Else finalUpdate% = 0
-
-                If Not _FileExists(diskPaths$(1) + statFile$) Then
-
-                    Locate 10, 18
-                    Call CSMsgBox("NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-                    I$ = GetKeyPress$
-                    Call CSMsgBox("", 0, Pass)
-
-                Else
-
-                    Locate 20, 5
-                    Color 15
-                    Print "MERGING CAREER STATS AND UPDATING CAREER LEADER FILE . . . . PLEASE WAIT"
-
-                    Open diskPaths$(1) + statFile$ + "S" For Input As #1
-
-                    Input #1, GAMES
-
-                    Close 1
-
-                    Open diskPaths$(1) + statFile$ For Input As #1
-
-                    Input #1, A$
-
-                    For I = 0 To 9: 
-                        Input #1, careerA1$(I)
-                    Next I
-                    
-                    For I = 0 To 5: 
-                        Input #1, careerA2$(I)
-                    Next I
-                    
-                    For I = 0 To 3: 
-                        Input #1, careerA3$(I)
-                    Next I
-                    
-                    For I = 0 To 2: 
-                        Input #1, careerA4$(I)
-                    Next I
-                    
-                    For I = 0 To 2: 
-                        Input #1, careerA5$(I)
-                    Next I
-
-                    Input #1, careerA6$(0)
-
-                    For I = 0 To 1: 
-                        Input #1, careerA7$(I)
-                    Next I
-
-                    For J = 0 To 13
-                        For K = 0 To 17: 
-                            Input #1, statsZ2!(J, K)
-                        Next K
-                    Next J
-
-                    For L = 0 To 38: 
-                        Input #1, statsZ!(L)
-                    Next L
-
-                    For L = 0 To 38: 
-                        Input #1, statsZ1!(L)
-                    Next L
-
-                    For J = 0 To 9: 
-                        Input #1, careerDI$(J)
-                        For J1 = 0 To 2: 
-                            Input #1, careerGI%(J, J1)
-                        Next
-                    Next
-
-                    For J = 0 To 14: 
-                        Input #1, careerDS$(J)
-                        For J1 = 0 To 1: 
-                            Input #1, careerGS%(J, J1)
-                        Next
-                    Next
-
-                    For I = 0 To 9: 
-                        Input #1, careerLR!(I)
-                        Input #1, careerLR$(I, 0)
-                        Input #1, careerLR$(I, 1)
-                    Next
-
-                    For I = 0 To 15: 
-                        Input #1, careerLC!(I)
-                        Input #1, careerLC$(I, 0)
-                        Input #1, careerLC$(I, 1)
-                    Next
-
-                    For I = 0 To 3: 
-                        Input #1, careerLP!(I)
-                        Input #1, careerLP$(I, 0)
-                        Input #1, careerLP$(I, 1)
-                    Next
-
-                    For I = 0 To 2: 
-                        Input #1, careerLK!(I)
-                        Input #1, careerLK$(I, 0)
-                        Input #1, careerLK$(I, 1)
-                    Next
-
-                    For I = 0 To 2: 
-                        Input #1, careerPK!(I)
-                        Input #1, careerPK$(I, 0)
-                        Input #1, careerPK$(I, 1)
-                    Next
-
-                    For I = 0 To 1: 
-                        Input #1, LF!(I)
-                        Input #1, statsLF$(I)
-                        For I1 = 0 To 4: 
-                            Input #1, careerAM!(I, I1)
-                            Input #1, careerAF!(I, I1)
-                        Next
-                    Next
-
-                    For I = 0 To 9: 
-                        Input #1, LI!(I)
-                        Input #1, statsLI$(I, 0)
-                        Input #1, statsLI$(I, 1)
-                    Next
-
-                    Close #1
-
-                    For I = 0 To 9
-                        T% = Len(careerA1$(I))
-                        If T% = 0 Then careerA1$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 5
-                        T% = Len(careerA2$(I))
-                        If T% = 0 Then careerA2$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 3
-                        T% = Len(careerA3$(I))
-                        If T% = 0 Then careerA3$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 2
-                        T% = Len(careerA4$(I))
-                        If T% = 0 Then careerA4$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 2
-                        T% = Len(careerA5$(I))
-                        If T% = 0 Then careerA5$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 1
-                        T% = Len(careerA7$(I))
-                        If T% = 0 Then careerA7$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 9
-                        T% = Len(careerDI$(I))
-                        If T% = 0 Then careerDI$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 14
-                        T% = Len(careerDS$(I))
-                        If T% = 0 Then careerDS$(I) = "XXX"
-                    Next
-
-                    For I = 0 To 49
-
-                        N = 1
-
-                        If careerA1$(I) <> "END" And careerA1$(I) <> "XXX" And careerA1$(I) <> "" Then
-                            NB = NB + 1
-                        Else
-                            careerA1$(I) = ""
-                        End If
-
-                        For J = 0 To 5
-                            RBBS!(N, I, J) = statsZ2!(I, J)
-                        Next J
-
-                        RBBS!(N, I, 6) = careerLR!(I)
-                        careerRBS$(N, I, 0) = careerLR$(I, 0)
-                        RBBS!(N, I, 9) = careerLC!(I)
-                        careerRBS$(N, I, 1) = careerLC$(I, 0)
-                        RBBS!(N, I, 7) = 1
-                        RBBS!(N, I, 8) = statYear
-
-                    Next I
-
-                    For I = 0 To 39
-
-                        N = 1
-
-                        If careerA2$(I) <> "END" And careerA2$(I) <> "XXX" And careerA2$(I) <> "" Then
-                            NC = NC + 1
-                        Else
-                            careerA2$(I) = ""
-                        End If
-
-                        For J = 6 To 8
-                            WRRS!(N, I, J - 6) = statsZ2!(I, J)
-                        Next J
-
-                        WRRS!(N, I, 3) = careerLC!(I + 10)
-                        careerWRS$(N, I, 0) = careerLC$(I + 10, 0)
-                        WRRS!(N, I, 4) = 1
-                        WRRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 19
-
-                        N = 1
-
-                        If careerA3$(I) <> "END" And careerA3$(I) <> "XXX" And careerA3$(I) <> "" Then
-                            ND = ND + 1
-                        Else
-                            careerA3$(I) = ""
-                        End If
-
-                        For J = 9 To 13:
-                            QBBS!(N, I, J - 9) = statsZ2!(I, J)
-                        Next J
-
-                        QBBS!(N, I, 5) = careerLP!(I)
-                        careerQBS$(N, I, 0) = careerLP$(I, 0)
-                        QBBS!(N, I, 6) = 1
-                        QBBS!(N, I, 7) = statYear
-
-                    Next I
-
-                    For I = 0 To 14
-
-                        N = 1
-
-                        If careerA4$(I) <> "END" And careerA4$(I) <> "XXX" And careerA4$(I) <> "" Then
-
-                            NE = NE + 1
-                        Else
-                            careerA4$(I) = ""
-                        End If
-
-                        For J = 14 To 16:
-                            careerKRS!(N, I, J - 14) = statsZ2!(I, J)
-                        Next J
-
-                        careerKRS!(N, I, 3) = careerLK!(I): KRRS$(N, I, 0) = careerLK$(I, 0)
-                        careerKRS!(N, I, 4) = 1
-                        careerKRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 14
-
-                        N = 1
-
-                        If careerA5$(I) <> "END" And careerA5$(I) <> "XXX" And careerA5$(I) <> "" Then
-                            NF = NF + 1
-                        Else
-                            careerA5$(I) = ""
-                        End If
-
-                        For J = 14 To 16:
-                            careerPRS!(N, I, J - 14) = statsZ2!(I + 3, J)
-                        Next J
-
-                        careerPRS!(N, I, 3) = careerPK!(I)
-                        PRRS$(N, I, 0) = careerPK$(I, 0)
-                        careerPRS!(N, I, 4) = 1
-                        careerPRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 9
-
-                        N = 1
-
-                        If careerA6$(I) <> "END" And careerA6$(I) <> "XXX" And careerA6$(I) <> "" Then
-                            NG = NG + 1
-                        Else
-                            careerA6$(I) = ""
-                        End If
-
-                        careerPUS!(N, I, 0) = statsZ!(7)
-                        careerPUS!(N, I, 1) = statsZ!(8)
-                        careerPUS!(N, I, 2) = 1
-                        careerPUS!(N, I, 3) = statYear
-                    Next I
-
-                    For I = 0 To 9
-
-                        N = 1
-
-                        If careerA7$(I) <> "END" And careerA7$(I) <> "XXX" And careerA7$(I) <> "" Then
-                            NH = NH + 1
-                        Else
-                            careerA7$(I) = ""
-                        End If
-
-                        If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
-
-                            For J = 3 To 6
-                                careerFGS!(N, I, J - 3) = statsZ2!(J, 17)
-                            Next J
-
-                            careerFGS!(N, I, 4) = LF!(I)
-                            careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
-
-                            For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next
-                            For I1 = 0 To 4: careerFGS!(N, I, I1 + 10) = careerAF!(I, I1): Next
-
-                        End If
-
-                        If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
-
-                            For J = 7 To 10:
-                                careerFGS!(N, I, J - 7) = statsZ2!(J, 17)
-                            Next J
-
-                            careerFGS!(N, I, 4) = LF!(I)
-                            careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
-
-                            For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next
-                            For I1 = 0 To 4: careerFGS!(N, I, I1 + 10) = careerAF!(I, I1): Next
-
-                        End If
-
-                    Next I
-
-                    For I = 0 To 54
-
-                        N = 1
-
-                        If careerDI$(I) <> "END" And careerDI$(I) <> "XXX" And careerDI$(I) <> "" Then
-                            NJ = NJ + 1
-                        Else
-                            careerDI$(I) = ""
-                        End If
-
-                        careerGIS!(N, I, 0) = careerGI%(I, 0)
-                        careerGIS!(N, I, 1) = 1
-                        careerGIS!(N, I, 2) = statYear
-                    Next I
-
-                    For I = 0 To 54
-                        N = 1
-
-                        If careerDS$(I) <> "END" And careerDS$(I) <> "XXX" And careerDS$(I) <> "" Then
-                            NK = NK + 1
-                        Else
-                            careerDS$(I) = ""
-                        End If
-
-                        careerGSS!(N, I, 0) = careerGS%(I, 0)
-                        careerGSS!(N, I, 1) = 1
-                        careerGSS!(N, I, 2) = statYear
-
-                    Next I
-
-                    If finalUpdate% = 1 Then Call UpdateCareerLeaders(statFile$)
-
-                    TMR = 6420
-
-                    Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #2
-
-                    Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-
-                    For I = 0 To 49:
-                        Write #2, careerA1$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 39: 
-                        Write #2, careerA2$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 19: 
-                        Write #2, careerA3$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 14: 
-                        Write #2, careerA4$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 14: 
-                        Write #2, careerA5$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 9: 
-                        Write #2, careerA6$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 9: 
-                        Write #2, careerA7$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 54: 
-                        Write #2, careerDI$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For I = 0 To 54: 
-                        Write #2, careerDS$(I)
-                        Locate 21, 38
-                        Color 5
-                        TMR = TMR - 1: Print Using "####"; TMR
-                    Next
-
-                    For N = 1 To 15: 
-                        For J = 0 To 49: 
-                            For K = 0 To 9: 
-                                Write #2, RBBS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 49: 
-                            Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 39
-                            For K = 0 To 5: 
-                                Write #2, WRRS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5: TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 39: 
-                            Write #2, careerWRS$(N, J, 0)
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 19: 
-                            For K = 0 To 7: 
-                                Write #2, QBBS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 19: 
-                            Write #2, careerQBS$(N, J, 0)
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 14: 
-                            For K = 0 To 5: 
-                                Write #2, careerKRS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                        Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 14: 
-                            Write #2, KRRS$(N, J, 0)
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 14
-                            For K = 0 To 5: 
-                                Write #2, careerPRS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 14: 
-                            Write #2, PRRS$(N, J, 0)
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 9: 
-                            For K = 0 To 3: 
-                                Write #2, careerPUS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 9: 
-                            For K = 0 To 16: 
-                                Write #2, careerFGS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-                        For J = 0 To 54: 
-                            For K = 0 To 2: 
-                                Write #2, careerGIS!(N, J, K)
-                            Next K
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-                        Next J
-                    Next N
-
-                    For N = 1 To 15: 
-
-                        For J = 0 To 54: 
-
-                            For K = 0 To 2: 
-                                Write #2, careerGSS!(N, J, K)
-                            Next K
-
-                            Locate 21, 38
-                            Color 5
-                            TMR = TMR - 1: Print Using "####"; TMR
-
-                        Next J
-
-                    Next N
-
-                    Close #2
-
-                End If 'Done checking for stat file
-
-            End If 'Done checking for changes
-
-        End If 'Done checking if team was chosen
-
-    Loop Until UCase$(I$) = "N" Or UCase$(J$) = "N"
-
-End Sub
-
-
-'----------------------------------------
 '      UpdateCareerLeaders Subroutine
 '----------------------------------------
-'...explanation...
+'This routine reads in any existing career 
+'leader files (.CLD), adds the new stats,
+'and then saves the changes back to the
+'career leader file (.CLD)
 Sub UpdateCareerLeaders (careerFile$)
 
     Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()

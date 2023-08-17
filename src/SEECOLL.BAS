@@ -1,3 +1,10 @@
+'----------------------------------------
+'           SEECOLL Subroutine
+'----------------------------------------
+'This subroutine lets the user choose a 
+'conference stat file to view, then calls
+'other routines to both load the Stats
+'and then provide options for display
 Sub SEECOLL ()
 
     _Title "3-in-1 Football - View Conference Stats"
@@ -17,7 +24,8 @@ End Sub
 '----------------------------------------
 '    LoadLeaderFiles_Coll Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine loads the conference stats
+'from the file into several arrays
 Sub LoadLeaderFiles_Coll (FF$, targetFile$)
 
     Shared L!(), LD!(), LZ!()
@@ -269,7 +277,9 @@ End Sub
 '----------------------------------------
 '       StatOptions_Coll Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine gives the user various
+'options for viewing the previously loaded
+'stats, and then calls routines for each
 Sub StatOptions_Coll (FF$)
 
     Do
@@ -351,7 +361,7 @@ Sub StatOptions_Coll (FF$)
             Do
                 Color 15, 1
                 Locate 8
-                U$ = "VIEW CONFERENCE STATS AGAIN (YN)"
+                U$ = "VIEW CONFERENCE STATS AGAIN? (Y/N)"
                 Locate , (80 - Len(U$)) / 2
                 Print U$
                 Color 15, 0
@@ -368,7 +378,8 @@ End Sub
 '----------------------------------------
 '     ReportFilePrompt_Coll Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine prompts the user for
+'the name of the report file to be saved
 Sub ReportFilePrompt_Coll (reportFile$)
 
     Do
@@ -402,7 +413,7 @@ Sub ReportFilePrompt_Coll (reportFile$)
         If reportFile$ <> "" Then
 
             Do
-                Locate 13, 12: Print "ANY CHANGE (YN) "
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -416,7 +427,9 @@ End Sub
 '----------------------------------------
 '     LeaderStatsColl_Screen Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats the previously
+'loaded stats and outputs them to the end
+'user display.
 Sub LeaderStatsColl_Screen (FF$)
 
     Shared L!(), LD!(), LZ!()
@@ -1169,7 +1182,10 @@ End Sub
 '----------------------------------------
 '     SavePrintCollLeaders Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats the previously
+'loaded stats and outputs them to a file
+'that is then looped through to send to
+'the default printer
 Sub SavePrintCollLeaders (reportFile$, FF$, destination)
 
     Shared L!(), LD!(), LZ!()

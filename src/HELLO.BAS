@@ -21,6 +21,10 @@ DefInt A-Z
 '$INCLUDE: 'PadRight.bi'
 '$INCLUDE: 'Variables.bi'
 
+Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
+
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
+
 ' For Utils
 '$INCLUDE: 'MainRoutines.bi'
 '$INCLUDE: 'TITLE.bi'
@@ -581,15 +585,21 @@ Sub TeamMgt_Menu ()
 
                 Case 2:
                     Call ChooseTeam(YN$, NTMS, teamNbr, A$)
-                    Call EditTeam(A$, YN$, teamNbr)
+                    If teamNbr <> 0 Then
+                        Call EditTeam(A$, YN$, teamNbr)
+                    End If
 
                 Case 3:
                     Call ChooseTeam(YN$, NTMS, teamNbr, A$)
-                    Call PrintRoster(A$, teamNbr)
+                    If teamNbr <> 0 Then
+                        Call PrintRoster(A$, teamNbr)
+                    End If
 
                 Case 4:
                     Call ChooseTeam(YN$, NTMS, teamNbr, A$)
-                    Call ViewRoster(A$, teamNbr)
+                    If teamNbr <> 0 Then
+                        Call ViewRoster(A$, teamNbr)
+                    End If
 
                 Case 5:
                     Call DRAFT
@@ -730,14 +740,14 @@ Sub Leaders_Menu ()
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
                 Case 5: Call RecordsMenu(1)
-                Case 6: Call ViewExpandedLeaders(1)
+                Case 6: Call ViewExpandedStats(1)
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
                 Case 9: Call CompileCollege
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
                 Case 12: Call RecordsMenu(2)
-                Case 13: Call ViewExpandedLeaders(2)
+                Case 13: Call ViewExpandedStats(0)
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
                 Case 16: Call CompileNatlOrg
@@ -794,6 +804,7 @@ End Sub
 '$INCLUDE: 'SINPUT.BAS'
 '$INCLUDE: 'TINPUT.BAS'
 '$INCLUDE: 'TRADE.BAS'
+'$INCLUDE: 'QBFunctions.bm'
 
 ' For Game
 '$INCLUDE: 'FOOTBALL.BAS'

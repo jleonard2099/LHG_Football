@@ -1,3 +1,8 @@
+'----------------------------------------
+'            MERGE Subroutine
+'----------------------------------------
+'This subroutine gives the user options
+'for aligning / merging stat files
 Sub MERGE ()
 
     _Title "3-in-1 Football - Merge Stats"
@@ -52,7 +57,12 @@ End Sub
 '----------------------------------------
 '          MergeStats Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine determines the parameters
+'for the road and existing stat files that
+'can be merged. It then reads in all stat
+'files, checks for player sequence, and then
+'calls a supporting routine to actually
+'perform the merge
 Sub MergeStats ()
 
     Shared Ycurr%, Yroad%
@@ -92,7 +102,7 @@ Sub MergeStats ()
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 			statFile$ = nameStatFile$(team$)
 
-            Color , 0
+            Color 15, 0
             Cls
 
             Locate 10, 15: Print "ROAD STATS ARE ON DRIVE "; pathRoadStats$
@@ -100,7 +110,7 @@ Sub MergeStats ()
             Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; team$
 
             Do
-                Locate 14, 15: Print "ANY CHANGE (YN)"
+                Locate 14, 15: Print "ANY CHANGE? (Y/N)"
                 J$ = GetKeyPress$
             Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
 
@@ -136,11 +146,14 @@ Sub MergeStats ()
                     For I = 0 To 2: Input #1, PKR!(I): Input #1, PKR$(I, 0): Input #1, PKR$(I, 1): Next
 
                     For I = 0 To 1:
+
                         Input #1, LFR!(I): Input #1, LFR$(I):
+
                         For I1 = 0 To 4
                             Input #1, AMR!(I, I1)
                             Input #1, AFR!(I, I1)
                         Next
+
                     Next
 
                     For I = 0 To 9: 
@@ -301,7 +314,7 @@ Sub MergeStats ()
 
                         Do
                             Locate , 10
-                            Print "TRY AGAIN (YN) "
+                            Print "TRY AGAIN? (Y/N) "
                             I$ = GetKeyPress$
                         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -323,7 +336,7 @@ Sub MergeStats ()
 
                     Do
                         Locate , 10
-                        Print "TRY AGAIN (YN) "
+                        Print "TRY AGAIN? (Y/N) "
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -343,10 +356,14 @@ Sub MergeStats ()
 
 End Sub
 
+
 '----------------------------------------
-'       DoTheMerge Subroutine
+'          DoTheMerge Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine literally adds the stat
+'values together from each file and then
+'overwrites the current file with the
+'newly aggregated results.
 Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     Shared Ycurr%, Yroad%
@@ -582,7 +599,9 @@ End Sub
 '----------------------------------------
 '       GetMergePaths Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the user with the
+'entry of the separate paths to be used 
+'for the merge / align process.
 Sub GetMergePaths (pathCurrentStats$, pathRoadStats$, promptResponse$)
 
     Shared opSysType$
@@ -625,7 +644,7 @@ Sub GetMergePaths (pathCurrentStats$, pathRoadStats$, promptResponse$)
         Line Input "CURRENT STATS:  "; pathCurrentStats$
 
         Color 14
-        Locate 13, 5: Print "ANY CHANGE (Y/N)"
+        Locate 13, 5: Print "ANY CHANGE? (Y/N)"
         promptResponse$ = GetKeyPress$
 
     Loop Until UCase$(promptResponse$) = "N" Or promptResponse$ = Chr$(27)

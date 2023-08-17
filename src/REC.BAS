@@ -1,3 +1,7 @@
+'----------------------------------------
+'
+'----------------------------------------
+'
 Sub RecordsMenu (menuChoice)
 
     _Title "3-in-1 Football - Analyze Records"
@@ -16,9 +20,13 @@ Sub RecordsMenu (menuChoice)
 
     If Not _FileExists(diskPaths$(1) + recordsFile$) Then
 
-        Call CSMsgBox("UNABLE TO LOCATE RECORDS PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
+		MsgText$ = "UNABLE TO LOCATE RECORDS PRESS ANY KEY TO RETURN TO MAIN MENU"
+		BoxWidth = 24
+		BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+		Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+		Call CSMsgBox(MsgText$, BoxWidth, Pass)
+		I$ = GetKeyPress$
+		Call CSMsgBox("", 0, Pass)
 
     Else
 

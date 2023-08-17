@@ -1,3 +1,11 @@
+'----------------------------------------
+'           FOOTBALL Subroutine
+'----------------------------------------
+'This subroutine serves as the main "source"
+'for the action in the game. It steps the
+'user through choosing game parameters and
+'teams, as well as determining weather and
+'other game time settings.
 Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GRIDIRON!"
@@ -20,28 +28,36 @@ Sub FOOTBALL ()
     '----------------------------------------
     '         DETERMINE GAME OPTIONS
     '----------------------------------------
-
     If Not _FileExists("DEV.BAS") Then
+
         Open "DEV.BAS" For Output As #1
+
         For I = 0 To 2
             Print #1, _CWD$ + "\"
         Next
+
         Close 1
+
     End If
 
     Open "DEV.BAS" For Input As #1
+
     For I = 0 To 2
         Input #1, diskPaths$(I)
     Next
+
     Close 1
 
-
     If Not _FileExists("DEFAULT") Then
+
         Open "DEFAULT" For Output As #1
+
         For I = 1 To 8:
             Print #1, 0
         Next
+
         Close 1
+
     End If
 
     Open "DEFAULT" For Input As #1
@@ -54,7 +70,6 @@ Sub FOOTBALL ()
     Input #1, Y9 '
     Input #1, NG%(14) 'Overtime setting
     Close 1
-
 
     If _FileExists("TICKER") Then
 
@@ -85,14 +100,15 @@ Sub FOOTBALL ()
         TMT = 0
     End If
 
-
     'Load game in-progress, if there is one
     If _FileExists("GAME82") Then
 
         Open "GAME82" For Input As #2
         Input #2, scheduleFile$
 
-        For I = 0 To 2: Input #2, AP%(I): Next
+        For I = 0 To 2: 
+            Input #2, AP%(I)
+        Next
 
         Close 2
 
@@ -107,8 +123,13 @@ Sub FOOTBALL ()
 
         Get #1, AP%(0) + AP%(2)
 
-        For X = 0 To 20: NG%(X) = CVI(Q$(X + 1)): Next
-        For X = 0 To 1: YN$(X) = Q$(22 + X): Next
+        For X = 0 To 20:
+            NG%(X) = CVI(Q$(X + 1))
+        Next
+
+        For X = 0 To 1:
+            YN$(X) = Q$(22 + X)
+        Next
 
         Close 1
 
@@ -208,7 +229,7 @@ Sub FOOTBALL ()
 
                     Case 2:
                         I = 0
-                        Call ChooseGameTeam (NN$(I), NTMS, teamNbr, A$(I), I)
+                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, A$(I), I)
                         intB8%(I) = teamNbr
                         'Call GetDiskID(I)
                         'Call GETTEAM(I)
@@ -216,7 +237,7 @@ Sub FOOTBALL ()
 
                     Case 3:
                         I = 1
-                        Call ChooseGameTeam (NN$(I), NTMS, teamNbr, A$(I), I)
+                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, A$(I), I)
                         intB8%(I) = teamNbr
                         'Call GetDiskID(I)
                         'Call GETTEAM(I)
@@ -271,7 +292,7 @@ Sub FOOTBALL ()
             Cls
             Color 3
 
-            Call TEAMBOX (7, 1)
+            Call TEAMBOX(7, 1)
 
             Locate 7, 11
 
@@ -282,8 +303,8 @@ Sub FOOTBALL ()
             Locate , 11: Input "START TIME: "; startTime$
 
             L = Len(startTime$)
- 
-           If L < 4 Then 
+
+            If L < 4 Then
                 startTime$ = "1:00P"
             Else
                 If L = 5 Then HR = Val(Left$(startTime$, 1)): MIN = Val(Mid$(startTime$, 3, 2))
@@ -367,14 +388,14 @@ Sub FOOTBALL ()
 
     Select Case J6
 
-        Case 1: 
+        Case 1:
             CT = 0
-        Case 2: 
+        Case 2:
             J6 = 1
             CT = 1
-        Case 3: 
+        Case 3:
             J6 = 2
-    
+
     End Select
 
     If G9 <> 0 Then
@@ -435,6 +456,36 @@ Sub FOOTBALL ()
 
     Call SETWEATHER
 
+    '----------
+    'Coin Toss 
+    '----------
+    W% = Int(Rnd(1) * 2)
+
+    Call SCOUT
+    Call HALFSTART
+
+    Q = 1
+    gameClock! = 900
+
+    For I = 0 To 1
+        For I1 = 0 To 4
+            S(I, I1) = 0
+        Next I1
+    Next I
+
+    Call SETSCREEN
+
+    Call d100(RN)
+
+    If RN <= 50 Then
+        U$ = A$(W%) + " WON THE COIN TOSS"
+    Else
+        U$ = AA$(W%) + " WON THE COIN TOSS"
+    End If
+
+    Call PBP
+
+
     '----------------------------------------
     '           START OF GAME
     '----------------------------------------
@@ -456,7 +507,7 @@ Sub FOOTBALL ()
     X = 0
     U3 = 0
 
-    Call CheckZeroTime
+    Call CheckGameClock
     If gameClock! = 0 Then GoTo 3360
 
     For I = 0 To 2
@@ -471,7 +522,7 @@ Sub FOOTBALL ()
         If I2 <= A9(D, I) Then I1 = I
     Next I
 
-    RN = Int(Rnd(1) * 100) + 1
+    Call d100 (RN)
 
     Select Case KN
 
@@ -534,7 +585,6 @@ Sub FOOTBALL ()
 
                 If N < .01 Then
 
-                    605 '
                     Y = -(N - 2 * N)
                     YT = 100 - Y
 
@@ -615,7 +665,6 @@ Sub FOOTBALL ()
             '----------------------------------------
             If skipReturnYds% <> 1 Then
 
-                450 '
                 RN = Int(Rnd(1) * 1000) + 1
 
                 Select Case B(P1, I1)
@@ -648,7 +697,6 @@ Sub FOOTBALL ()
 
                 End Select
 
-                452 '
                 SY = 100 - Y
                 EY = SY - G
 
@@ -690,8 +738,7 @@ Sub FOOTBALL ()
                     I = Int(Rnd(1) * 1000) + 1
                     If I >= 960 - PA%(P1, 0) Then Call CLIPPING
 
-                    463 '
-                    Call CheckZeroTime
+                    Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
 
                 End If
@@ -706,13 +753,13 @@ Sub FOOTBALL ()
             If F9 = 1 Then Call FumblePBP: GoTo 650
 
             Call AddPossessionTime(4, 7)
-            I = Int(Rnd(1) * 100) + 1
+            Call d100(I)
 
             If I >= 97 Then
                 Call CLIPPING
             End If
 
-            Call CheckZeroTime
+            Call CheckGameClock
             If gameClock! = 0 Then GoTo 3360
 
         Case 2
@@ -721,7 +768,7 @@ Sub FOOTBALL ()
             D1 = 1
             Y1 = 10
 
-            Call CheckZeroTime
+            Call CheckGameClock
             If gameClock! = 0 Then GoTo 3360
 
     End Select
@@ -818,16 +865,16 @@ Sub FOOTBALL ()
 
     K1(X2, 4) = K1(X2, 4) + 10
 
-    I = Int(Rnd(1) * 100) + 1
+    Call d100(RN1)
 
     'Was previously I2 not J
     For J = 1 To 0 Step -1:
-        If I <= B8(P1, J) Then I1 = J
+        If RN1 <= B8(P1, J) Then I1 = J
     Next J
 
     Q7%(P1) = I1
 
-    I = Int(Rnd(1) * 100) + 1
+    Call d100(RN1)
 
     K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) + 1
 
@@ -835,14 +882,12 @@ Sub FOOTBALL ()
 
     Call PBP
 
-    If I <= B7(P1, Q7%(P1)) Then
+    If RN1 <= B7(P1, Q7%(P1)) Then
 
         K2(P1, 5 + Q7%(P1) * 4, 17) = K2(P1, 5 + Q7%(P1) * 4, 17) + 1
 
         U$ = "THE KICK IS UP..."
-
         Call PBP
-
         Call MADEPAT
 
         S(P1, 0) = S(P1, 0) + 1
@@ -853,11 +898,11 @@ Sub FOOTBALL ()
         Call DisplayField
 
     Else
-        'I > B7(P1, Q7%(P1))
 
-        I = Int(Rnd(1) * 100) + 1
+        Call d100(RN2)
 
-        If I <= 9 Then
+        If RN2 <= 9 Then
+
             U$ = "KICK IS BLOCKED!!"
             Call PBP
 
@@ -880,7 +925,7 @@ Sub FOOTBALL ()
 
     650 '
 
-    I6 = Int(Rnd(1) * 100) + 1
+    Call d100(I6)
 
     K(P1, 9) = K(P1, 9) + 1
 
@@ -970,7 +1015,7 @@ Sub FOOTBALL ()
 
     If U3 = 9 Then U3 = 0: GoTo 340
 
-    Call CheckZeroTime
+    Call CheckGameClock
     If gameClock! = 0 Then GoTo 3360
 
     Do
@@ -979,12 +1024,11 @@ Sub FOOTBALL ()
 
         Call DEFMENU
 
-        'Call PBP_Logger(1351)
+        'Call pbplog(1351)
         'Offense Play Selection
         validPlay% = 1
         autoPlaySelect% = 0
 
-        3117 '
         Do
 
             If J6 = 1 And P1 = CT Or J6 = 2 Then
@@ -1025,7 +1069,7 @@ Sub FOOTBALL ()
                         End If
 
                         If UCase$(I$) = "G" Then
-                            3160 '
+
                             Call FRAMEOPTION(8, P1)
                             Print "SELECT GADGET PLAY "; A$(P1)
 
@@ -1055,10 +1099,10 @@ Sub FOOTBALL ()
 
                                     If RN <= S% Then R1 = 1: W5 = 1: G = (Int(Rnd(1) * 6) + 10): GoTo 3541
 
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     If RN <= intI% Then G = CP: FF% = 2: GoTo 3552
 
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     RV$ = A2$(P1, I3): I3 = I3 + 10
 
                                     If RN <= C% Then FF% = 2: GoTo 3586
@@ -1082,7 +1126,8 @@ Sub FOOTBALL ()
                                         GoTo 3416
                                     End If
 
-                                    3181 I2 = Int(Rnd(1) * 100) + 1
+                                    3181 '
+                                    Call d100(I2)
 
                                     'Check contribution % and
                                     'assign rusher index to I1
@@ -1134,7 +1179,7 @@ Sub FOOTBALL ()
 
                                     If (D3 = 1 Or D3 = 3) And HB%(P9) = 0 Then C% = 30
                                     intI% = 20
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     G = Int(Rnd(1) * 71) + 30
                                     CP = Int(Rnd(1) * 11) + 30
 
@@ -1146,7 +1191,7 @@ Sub FOOTBALL ()
                                     U$ = A1$(P1, I1) + " HAS THE BALL AND WANTS TO THROW!!!"
                                     Call PBP
 
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     I3 = Int(Rnd(1) * 3)
 
                                     U$ = "HE HAS " + A2$(P1, I3) + " OPEN DOWNFIELD"
@@ -1154,10 +1199,10 @@ Sub FOOTBALL ()
 
                                     If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then G = (Int(Rnd(1) * 4) + 4): GoTo 3541
 
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     If RN <= intI% Then G = CP: FF% = 1: HB% = 0: GoTo 3552
 
-                                    RN = Int(Rnd(1) * 100) + 1
+                                    Call d100(RN)
                                     RV$ = A2$(P1, I3)
                                     I3 = I3 + 10
 
@@ -1179,12 +1224,15 @@ Sub FOOTBALL ()
                     Screen , , 0, 0
 
                     Select Case XX
+
                         Case 0
-                            3140 '
+
                             Call RUNMENU
+
                             Do
                                 Locate 20, 14: Print "             SELECT PLAY ";: Input P2
                             Loop Until P2 >= 0 And P2 <= 15
+
                             If P2 = 0 Then Screen , , 0, 0: GoTo 3118
                             RP = P2
                             If P2 = 9 Or P2 = 10 Then P2 = 4
@@ -1242,7 +1290,7 @@ Sub FOOTBALL ()
 
         Loop Until validPlay% = 1
 
-        'Call PBP_Logger(1606)
+        'Call pbplog(1606)
 
         If autoPlaySelect% = 0 Then
 
@@ -1293,9 +1341,8 @@ Sub FOOTBALL ()
 
         End If
 
-        'Call PBP_Logger(1658)
+        'Call pbplog(1658)
 
-        703 '
         If J6 = 1 And P1 = CT And (P2 = 12 Or P2 = 15) And Y >= 85 Or J6 = 2 And (P2 = 12 Or P2 = 15) And Y >= 85 Then P2 = 11
 
         If T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16 Then
@@ -1310,11 +1357,11 @@ Sub FOOTBALL ()
 
         End If
 
-        'Call PBP_Logger(1675)
+        'Call pbplog(1675)
 
     Loop While (T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
 
-    'Call PBP_Logger(1680)
+    'Call pbplog(1680)
 
     Call SCOREBOARD
 
@@ -1327,10 +1374,8 @@ Sub FOOTBALL ()
     I = Int(Rnd(1) * 1000) + 1
     'I = Int(Rnd(1) * 100) + 1
 
-
     If I <= 36 And E <> 1 And P2 < 21 Then
 
-        800 '
         U$ = "*** PENALTY - "
         I = Int(Rnd(1) * 36) + 1
 
@@ -1369,12 +1414,10 @@ Sub FOOTBALL ()
 
     End If
 
-    709 '
     Select Case P2
 
         Case 1 To 8
 
-            3400 '
             ' ****  RUNNING PLAYS  ****
 
             Call QBLINE
@@ -1421,7 +1464,6 @@ Sub FOOTBALL ()
                     U$ = "HE GAINS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                     Call PBP
 
-                    3452 '
                     If E = 1 Then Call GoForTwo
 
                     'There was a RETURN in the original code
@@ -1463,29 +1505,41 @@ Sub FOOTBALL ()
                     GoTo 3546
                 End If
 
-                If P2 = 5 And Int(Rnd(1) * 100) + 1 = 49 Then
+                Call d100(RN0)
+
+                If P2 = 5 And RN0 = 49 Then
+
                     U$ = A3$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
                     Call PBP
-                    G = Int((Rnd(1) * 7) + 6) * -1: X = 4: X1 = 9: I1 = Q6%(P1): U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
+                    
+                    G = Int((Rnd(1) * 7) + 6) * -1
+                    X = 4
+                    X1 = 9
+                    I1 = Q6%(P1)
+                    U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
                     Call PBP
-                    If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
 
-                    If E = 1 Then Call GoForTwo
+                    If Int((G + Y) * 10 + .5) / 10 < .05 Then 
 
-                    'There was a RETURN in the original code
-                    'But it was always sent to with GOTO
-                    'So where was it returning from?
+                        F9 = 0
+                        GoTo 3250
 
-                    F9 = 1
+                    Else
 
-                    Call COMPILER
+                        If E = 1 Then Call GoForTwo
 
-                    Y = Y + G
-                    Y1 = Y1 - G
-                    D1 = D1 + 1
-                    If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+                        F9 = 1
 
-                    GoTo 650
+                        Call COMPILER
+
+                        Y = Y + G
+                        Y1 = Y1 - G
+                        D1 = D1 + 1
+                        If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+
+                        GoTo 650
+
+                    End If
 
                 End If
 
@@ -1497,14 +1551,6 @@ Sub FOOTBALL ()
 
                 Else
 
-                    '--- WEIRD PROBLEM -----
-                    'This sometimes throws a subscript error
-                    'D2 is getting a 0 value
-                    'But it should be 1 to 11?
-                    'P2 should be 1 - 8
-                    'For now I indexed D3% to start with 9
-                    'This will basically result in some 0's
-                    'being added to I2 below
                     I2 = I2 + D3%(P2, D2)
 
                     S6 = 0
@@ -1525,11 +1571,10 @@ Sub FOOTBALL ()
                     'I2 = 1 to 38
                     If I2 <= 38 Then
 
-                        3456 '
                         If (P2 <= 2 And D2 = 5 Or P2 <= 2 And D2 = 6 Or P2 >= 6 And D2 = 5 Or P2 >= 6 And D2 = 6) Or (P2 > 2 And P2 < 5 And D2 = 7 Or P2 > 2 And P2 < 5 And D2 = 8) Then
 
                             ' *** STUNTS ***
-                            I4 = Int(Rnd(1) * 100) + 1
+                            Call d100(I4)
 
                             Select Case I2
 
@@ -1574,23 +1619,15 @@ Sub FOOTBALL ()
 
                         End If
 
-                        I4 = Int(Rnd(1) * 100) + 1
+                        Call d100(I4)
 
                         If (P2 <= 2 And I4 <= 50 And D3 = 7) Or (P2 >= 6 And I4 <= 50 And D3 = 7) Or (P2 <= 2 And D3 = 9) Or (P2 >= 6 And D3 = 9) Then
                             Call BLITZ2
-                            'GoTo 3416
-                            'other statements should fail
-                            'so there's little benefit
-                            'to jumping straight ahead
                         End If
 
                         If P2 >= 3 And P2 <= 5 Then
                             If D3 = 8 And I4 <= 50 Or D3 = 10 Then
                                 Call BLITZ2
-                                'GoTo 3416
-                                'other statements should fail
-                                'so there's little benefit
-                                'to jumping straight ahead
                             End If
                         End If
 
@@ -1622,11 +1659,11 @@ Sub FOOTBALL ()
 
                             Else
 
-                                I4 = Int(Rnd(1) * 100) + 1
+                                Call d100(I4)
 
                                 If I4 > 92 Then
                                     ' *** BREAKAWAY ***
-                                    I5 = Int(Rnd(1) * 100) + 1
+                                    Call d100(I5)
                                     If I5 <= 50 Then
                                         G = Int(Rnd(1) * BY%(I2, 0)) + BY%(I2, 1)
                                     Else
@@ -1643,7 +1680,7 @@ Sub FOOTBALL ()
                                         If I4 <= RM%(I5, I6) Then G = I6 - 5: Exit For
                                     Next I6
 
-                                    I4 = Int(Rnd(1) * 100) + 1
+                                    Call d100(I4)
                                     If I4 <= RN%(0, I2) Then G = G + RN%(1, I2)
 
                                 End If
@@ -1654,7 +1691,6 @@ Sub FOOTBALL ()
 
                     Else
                         'I2 = 39 +
-                        3407 '
                         G = Int(Rnd(1) * 48) + 1
 
                         Select Case G
@@ -1702,7 +1738,6 @@ Sub FOOTBALL ()
 
                 End If
 
-                3417 '
                 If G < 0 Then
 
                     U$ = A1$(P1, I1) + " LOST"
@@ -1741,7 +1776,7 @@ Sub FOOTBALL ()
             Else
 
                 3401 '
-                I2 = Int(Rnd(1) * 100) + 1
+                Call d100(I2)
 
                 For I = 9 To 0 Step -1:
                     If I2 <= A(P1, I) Then I1 = I
@@ -1781,7 +1816,7 @@ Sub FOOTBALL ()
 
 
         Case 9 To 18
-            3500 '
+
             Call PASSBALL
 
             'SACKED
@@ -1790,12 +1825,12 @@ Sub FOOTBALL ()
                 R1 = 1
                 W5 = 1
 
-                ' 3538
                 ' *** SACKED ***
                 If P2 = 12 Or P2 = 15 Then G = (Int(Rnd(1) * 9) + 5)
                 If P2 = 10 Or P2 = 9 Or P2 = 13 Then G = (Int(Rnd(1) * 5) + 3)
                 If P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18 Then G = (Int(Rnd(1) * 7) + 4)
 
+                '-- Beginning of a routine???
                 3541 '
                 Call YARDAGE
                 Call SACK
@@ -1835,6 +1870,8 @@ Sub FOOTBALL ()
 
                 Call FUMBLE
 
+                '-- End of a routine???
+
                 GoTo 3309
 
             End If
@@ -1844,7 +1881,7 @@ Sub FOOTBALL ()
 
             'When would mobility ever be 0???
             If R9%(P1) > 0 Then
-                I = Int(Rnd(1) * 100) + 1
+                Call d100(I)
                 If I <= R9%(P1) Then GoTo 3545
             End If
 
@@ -1872,7 +1909,7 @@ Sub FOOTBALL ()
                 'QB Keeper
                 If P2 = 17 Or P2 = 18 Then
 
-                    'Call PBP_Logger(2252)
+                    'Call pbplog(2252)
                     'QB RUN
                     I6 = 0
 
@@ -1947,7 +1984,7 @@ Sub FOOTBALL ()
 
                 3532 '
                 'Pass Completion %
-                I = Int(Rnd(1) * 100) + 1
+                Call d100(I)
 
                 'INTERCEPTED
                 If I > (100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2)) Then 3552
@@ -1957,7 +1994,6 @@ Sub FOOTBALL ()
                 If I <= S2 + S3 + PQ + PW Then
                     'Pass completed
 
-                    3575 '
                     If I3 > 9 Then
                         I4 = A5(P1, I3 - 10)
                         RY = I4
@@ -1969,10 +2005,10 @@ Sub FOOTBALL ()
                     If WX%(4) = -3 Then I4 = I4 - 1
                     If WX%(4) = -6 Then I4 = I4 - 2
 
-                    'Call PBP_Logger(2141)
-
                     If I4 < 11 Then
+
                         Call BLITZ
+
                     Else
 
                         I4 = I4 + S1%(2, P2 - 8, D3)
@@ -2000,7 +2036,8 @@ Sub FOOTBALL ()
 
                     End If
 
-                    3586 ' ADDED AFTER REPLAYS OF 5-24-93
+                    3586 ' 
+                    'ADDED AFTER REPLAYS OF 5-24-93
                     If Int(Rnd(1) * 3) + 1 = 1 And G9 <> 0 Then G = G - 1
 
                     Call YARDAGE
@@ -2025,8 +2062,8 @@ Sub FOOTBALL ()
 
                     End If
 
-                    3617 '
                     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
+
                         U$ = "THAT CATCH BY "
                         Call WHICHRECEIVER
                         U$ = U$ + " GAINED" + Str$(Int(100 - Y)) + " YARDS"
@@ -2091,6 +2128,7 @@ Sub FOOTBALL ()
                     End If
 
                     GoTo 3309
+
                 Else
 
                     'Incomplete pass
@@ -2102,8 +2140,8 @@ Sub FOOTBALL ()
 
 
         Case 19
-            3800 '
-            I3 = Int(Rnd(1) * 100) + 1
+
+            Call d100(I3)
 
             'Was previously I2 not J
             For J = 2 To 0 Step -1
@@ -2144,8 +2182,8 @@ Sub FOOTBALL ()
                 Screen , , 0, 0
 
                 If I1 = 5 Then
-                    3802 '
-                    I = Int(Rnd(1) * 100) + 1
+
+                    Call d100(I)
                     X = 0
                     G = B3(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * B3(P1, 0)))) + 11
 
@@ -2155,7 +2193,7 @@ Sub FOOTBALL ()
                         G = G + Int(Rnd(1) * 7) - 3 + WX%(1)
                     End If
 
-                    RN = Int(Rnd(1) * 100) + 1
+                    Call d100(RN)
 
                     If RN <= 50 Then
                         U$ = A$(P1) + " IS QUICK KICKING!!"
@@ -2221,13 +2259,12 @@ Sub FOOTBALL ()
                         End If
                     End If
 
-                    3855 '
                     Call CHANGEPOSS
 
                     D1 = 1
                     Y1 = 10
 
-                    Call CheckZeroTime
+                    Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
 
                     Call DELAY
@@ -2238,7 +2275,6 @@ Sub FOOTBALL ()
 
             End If
 
-            3812 '
             X = 0
             G = B3(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * B3(P1, 0)))) + 3
 
@@ -2252,7 +2288,7 @@ Sub FOOTBALL ()
 
             Call YARDAGE
 
-            RN = Int(Rnd(1) * 100) + 1
+            Call d100(RN)
 
             If J6 = 1 And D = CT Or J6 = 2 Then
                 If RN <= 10 Then
@@ -2288,7 +2324,7 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
-                        U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT (YN)"
+                        U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT? (Y/N)"
                         Call PBP
 
                         Do
@@ -2305,7 +2341,7 @@ Sub FOOTBALL ()
                             U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
                             Call PBP
 
-                            RN = Int(Rnd(1) * 100) + 1
+                            Call d100(RN)
 
                             If choice = 0 Then
 
@@ -2367,7 +2403,6 @@ Sub FOOTBALL ()
 
                             End If
 
-                            3878 '
                             U$ = "PASS IS COMPLETE FOR"
 
                             If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
@@ -2399,7 +2434,7 @@ Sub FOOTBALL ()
 
                         GoTo 3309
 
-                    End If  'Done processing fake punt
+                    End If 'Done processing fake punt
 
                 Case 4
                     Call TAKESAFETY
@@ -2427,7 +2462,10 @@ Sub FOOTBALL ()
                 If Y + G < -9.999 Then S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2: GoTo 3251
 
                 If Y + G <= .001 And Y + G >= -9.999 Then
-                    If Int(Rnd(1) * 100) + 1 <= 50 Then
+                
+                    Call d100(RN0)
+
+                    If RN0 <= 50 Then
                         S(D, Q) = S(D, Q) + 2
                         S(D, 0) = S(D, 0) + 2
                         GoTo 3251
@@ -2436,6 +2474,7 @@ Sub FOOTBALL ()
                         Call CHANGEPOSS
                         GoTo 3200
                     End If
+
                 End If
 
                 Call CHANGEPOSS
@@ -2445,7 +2484,7 @@ Sub FOOTBALL ()
 
                 If Y1 >= 90 Then Y1 = 100 - Y
 
-                RN = Int(Rnd(1) * 100) + 1
+                Call d100(RN)
 
                 If RN <= 50 Then
                     U$ = A$(P1) + " TAKES OVER ON THE"
@@ -2465,14 +2504,14 @@ Sub FOOTBALL ()
 
             Else
 
-                I5 = Int(Rnd(1) * 100) + 1
+                Call d100(I5)
 
                 If choice = 1 Then U$ = "THERE'S A HEAVY RUSH!!!": Call PBP
 
                 If choice = 1 And I5 >= 72 And I5 <= 76 Then 3840
 
                 If choice = 1 And I5 >= 13 And I5 <= 17 Then
-                    3846 '
+
                     U$ = "THERE'S A FLAG ON THE PLAY!!"
 
                     Call PBP
@@ -2499,7 +2538,7 @@ Sub FOOTBALL ()
                 U$ = A6$(P1, 0) + " TAKES THE SNAP"
                 Call PBP
 
-                RN = Int(Rnd(1) * 100) + 1
+                Call d100(RN)
 
                 If I1 = 1 Then
 
@@ -2541,12 +2580,13 @@ Sub FOOTBALL ()
 
                     K(P1, 8) = K(P1, 8) + G
 
-                    I = Int(Rnd(1) * 100) + 1
+                    Call d100(I)
 
                     If G + Y > 80 Then K(P1, 29) = K(P1, 29) + 1
                     If G > K(P1, 26) Then K(P1, 26) = G
 
-                    If G + Y >= 90 And I >= 5 Or choice = 2 Or I > 60 Or I1 = 1 And Int(Rnd(1) * 100) + 1 <= 80 Then
+                    Call d100(RN0)
+                    If G + Y >= 90 And I >= 5 Or choice = 2 Or I > 60 Or I1 = 1 And RN0 <= 80 Then
 
                         Y = Y + G
                         YT = Y
@@ -2573,13 +2613,12 @@ Sub FOOTBALL ()
 
                         Call PBP
 
-                        13855 '
                         Call CHANGEPOSS
 
                         D1 = 1
                         Y1 = 10
 
-                        Call CheckZeroTime
+                        Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
 
                         Call DELAY
@@ -2632,13 +2671,11 @@ Sub FOOTBALL ()
                             If F9 = 1 Then Call FumblePBP: GoTo 650
                         End If
 
-
-                        3825 '
                         hangtime = Int(G / 10)
                         Call AddPossessionTime(8 + hangtime, 13 + hangtime)
                         Call DELAY
 
-                        Call CheckZeroTime
+                        Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
 
                     End If
@@ -2652,8 +2689,7 @@ Sub FOOTBALL ()
 
         Case 20
 
-            3600 '
-            I = Int(Rnd(1) * 100) + 1
+            Call d100(I)
 
             'Was previously I2 not J
             For J = 1 To 0 Step -1
@@ -2694,8 +2730,7 @@ Sub FOOTBALL ()
 
                 If I$ = Chr$(27) Then GoTo 3118
 
-                4812 '
-                RN = Int(Rnd(1) * 100) + 1
+                Call d100(RN)
 
                 If J6 = 1 And D = CT Or J6 = 2 Then
                     choice = 1
@@ -2722,7 +2757,7 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
-                        U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL (YN)"
+                        U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL? (Y/N)"
                         Call PBP
                     Else
                         Do
@@ -2733,14 +2768,13 @@ Sub FOOTBALL ()
 
                     End If
 
-                    4862 '
                     If I1 = 2 Then
 
                         ' *** FAKE W/PASS ***
                         U$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS"
                         Call PBP
                         G = 0
-                        RN = Int(Rnd(1) * 100) + 1
+                        Call d100(RN)
 
                         passIncomplete% = 0
                         passIntercepted% = 0
@@ -2784,7 +2818,6 @@ Sub FOOTBALL ()
 
                         If passIntercepted% = 1 Then
 
-                            4876 '
                             X = 0
                             K(P1, 3) = K(P1, 3) + 1
                             K(P1, 5) = K(P1, 5) + 1
@@ -3001,7 +3034,7 @@ Sub FOOTBALL ()
     3200 '
     Randomize Timer
 
-    RN = Int(Rnd(1) * 100) + 1
+    Call d100(RN)
 
     'So essentially we have a 50/50 chance
     'of seeing the team name or the mascot name
@@ -3135,7 +3168,6 @@ Sub FOOTBALL ()
 
     If I <= 6 + PA%(D, 0) Then
 
-        3342 '
         U$ = "PENALTY AFTER WHISTLE - "
         I = Int(Rnd(1) * 10) + 1
 
@@ -3306,7 +3338,6 @@ Sub FOOTBALL ()
 
     End Select
 
-    3314 '
     If (G9 <> 0 Or Y9 >= 4) Or (G9 = 0 And HL% = 1) Then
         If R1 = 2 Then P = P - Int(Rnd(1) * 8) + 1
         If R1 = 1 Then P = P + Int(Rnd(1) * 5) + 1
@@ -3334,11 +3365,9 @@ Sub FOOTBALL ()
                     Else
                         If G > 5 Or P < 0 And P1 <> CT And D1 = 3 And Y1 - G > 3 Or P < 0 And P1 <> CT And G < 0 Then
                             '3319
-                            'Not sure why this is designed as is
-                            'I can only imagine it was helpful to have
-                            'many statements going to 3319
-                            'because it wasn't written from if/then
-                            'logic to start with
+                            'Not sure why this is designed as is I can only imagine 
+                            'it was helpful to have many statements going to 3319
+                            'because it wasn't written from if/then logic to start with
                         End If
 
                     End If
@@ -3388,7 +3417,6 @@ Sub FOOTBALL ()
 
             If D1 > 4 Then 3339
 
-            3323 '
             GoSub 3900
 
         End If
@@ -3580,7 +3608,7 @@ Sub FOOTBALL ()
 
                 If Not (AP = 1 And J6 = 2) Then
                     Do
-                        U$ = "DISPLAY STATS AGAIN (YN)"
+                        U$ = "DISPLAY STATS AGAIN? (Y/N)"
                         Locate 7, (80 - Len(U$)) / 2
                         Print U$
                         Color 15, 0
@@ -3646,7 +3674,6 @@ Sub FOOTBALL ()
 
                     Case 3
                         'Not showing stats
-                        3367 '
 
                         'Sudden Death
                         'College Rules
@@ -3688,7 +3715,6 @@ Sub FOOTBALL ()
 
                 End Select
 
-                3366 '
                 'We're going into overtime
                 If UCase$(I$) = "Y" Then
 
@@ -3755,9 +3781,7 @@ Sub FOOTBALL ()
 
     End Select
 
-
     '----- NOODLE -----
-
 
     3552 '
 
@@ -3769,7 +3793,6 @@ Sub FOOTBALL ()
         U$ = "PASS IS INTERCEPTED"
     End If
 
-    3554 '
     X = 0
     SI(1 - P1, Z1, 0) = SI(1 - P1, Z1, 0) + 1
     K(P1, 3) = K(P1, 3) + 1
@@ -3796,7 +3819,6 @@ Sub FOOTBALL ()
         If P2 = 11 Or P2 = 14 Or P2 = 17 Or P2 = 16 Or P2 = 18 Then G = G + 10
     End If
 
-    3565 '
     Call YARDAGE
 
     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then
@@ -3883,6 +3905,7 @@ Sub FOOTBALL ()
 
     GoTo 700
 
+
     '----- NOODLE -----
 
     3900 '
@@ -3892,7 +3915,6 @@ Sub FOOTBALL ()
         'Pro Rules
         If G9 <> 0 Then
 
-            3930 '
             If gameClock! > 120.01 And Q <> 1 And Q <> 3 And Not (gameClock! > 159.99 And O = 0) And Not (gameClock! > 147 And O = 1) And Not (gameClock! > 142 And O = 2) And Not (gameClock! > 137 And O = 3) And Not (gameClock! > 126 And O = 4) And Not (gameClock! > 128 And O = 5) And Not (gameClock! > 130 And O = 6) And Not (gameClock! > 132 And O = 7) Then
 
                 U$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
@@ -3906,15 +3928,11 @@ Sub FOOTBALL ()
 
         End If
 
-        'Call PBP_Logger(4682)
-
-        3901 '
         If (gameClock! <= 120 And Q = 2) Or (gameClock! <= 120 And Q >= 4) Then
 
-            3907 '
             If O < 4 Then
 
-                Call CheckZeroTime
+                Call CheckGameClock
                 If gameClock! = 0 Then GoTo 3360
                 Call TWOMIN
 
@@ -3936,7 +3954,7 @@ Sub FOOTBALL ()
                             O = 9
 
                             Call AddPossessionTime(7, 10)
-                            Call CheckZeroTime
+                            Call CheckGameClock
                             If gameClock! = 0 Then GoTo 3360
 
                             Return 'aka Exit Sub
@@ -3956,7 +3974,7 @@ Sub FOOTBALL ()
                             O = 9
 
                             Call AddPossessionTime(7, 10)
-                            Call CheckZeroTime
+                            Call CheckGameClock
                             If gameClock! = 0 Then GoTo 3360
 
                             Return 'aka Exit Sub
@@ -3985,7 +4003,7 @@ Sub FOOTBALL ()
                         If D1 = 3 Then TE%(P1) = TE%(P1) + 1
 
                         Call AddPossessionTime(7, 10)
-                        Call CheckZeroTime
+                        Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
 
                         Return 'aka Exit Sub
@@ -3995,10 +4013,6 @@ Sub FOOTBALL ()
             End If
 
         End If
-
-        3902 '
-
-        'Call PBP_Logger(4774)
 
         If O = 0 Then Call AddPossessionTime(33, 38)
 
@@ -4012,12 +4026,13 @@ Sub FOOTBALL ()
 
         If O >= 4 Then timeElapsed! = (2 * O) - 5 + (Int(Rnd(1) * 3) + 1): gameClock! = gameClock! - timeElapsed!: timePoss(P1) = timePoss(P1) + timeElapsed!
 
-        Call CheckZeroTime
+        Call CheckGameClock
         If gameClock! = 0 Then GoTo 3360
 
     End If
 
     Return
+
 
     '----- NOODLE -----
 
@@ -4046,7 +4061,6 @@ Sub FOOTBALL ()
         Call PBP
         G = (Int(Rnd(1) * 9) + 6) * -1
 
-        3890 '
         ' *** BAD SNAP FROM CENTER ***
 
         Call AddPossessionTime(4, 7)
@@ -4057,7 +4071,10 @@ Sub FOOTBALL ()
         If Y + G < -9.999 Then S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2: GoTo 3251
 
         If Y + G <= .001 And Y + G >= -9.999 Then
-            If Int(Rnd(1) * 100) + 1 <= 50 Then
+
+            Call d100(RN0)
+
+            If RN0 <= 50 Then
                 S(D, Q) = S(D, Q) + 2
                 S(D, 0) = S(D, 0) + 2
                 GoTo 3251
@@ -4074,7 +4091,7 @@ Sub FOOTBALL ()
 
             If Y1 >= 90 Then Y1 = 100 - Y
 
-            RN = Int(Rnd(1) * 100) + 1
+            Call d100(RN)
 
             If RN <= 50 Then
                 U$ = A$(P1) + " TAKES OVER ON THE"
@@ -4098,11 +4115,10 @@ Sub FOOTBALL ()
 
     Else
 
-        I = Int(Rnd(1) * 100) + 1
+        Call d100(I)
 
         If (I >= 97 And Y >= 68 + intY8% And I2 <> 2) Or (I >= 92 And Y < 68 + intY8% And I2 <> 2) Then
 
-            3640 '
             K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
             U$ = "KICK IS BLOCKED!!!"
             Call PBP
@@ -4119,7 +4135,7 @@ Sub FOOTBALL ()
 
                 Call CHANGEPOSS
 
-                RN = Int(Rnd(1) * 100) + 1
+                Call d100(RN)
                 If RN <= 50 Then
                     U$ = A$(P1) + " RECOVERS IT IN THE END ZONE!!"
                 Else
@@ -4132,7 +4148,7 @@ Sub FOOTBALL ()
 
             Else
 
-                RN = Int(Rnd(1) * 100) + 1
+                Call d100(RN)
 
                 If RN <= 94 Then
                     Call CHANGEPOSS
@@ -4145,7 +4161,7 @@ Sub FOOTBALL ()
 
                     Call DELAY
 
-                    Call CheckZeroTime
+                    Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
 
                     GoTo 700
@@ -4160,7 +4176,7 @@ Sub FOOTBALL ()
 
                     Call MOVEBALL
 
-                    RN = Int(Rnd(1) * 100) + 1
+                    Call d100(RN)
                     If RN <= 50 Then
                         U$ = A$(P1) + " TAKES IT INTO THE END ZONE!!"
                     Else
@@ -4220,9 +4236,9 @@ Sub FOOTBALL ()
             If Y9 = 0 And G9 = 0 Then Y = 40
 
             Call SCOREBOARD
-            Call CheckZeroTime
+            Call CheckGameClock
             If gameClock! = 0 Then U3 = 9: GoTo 3360
-            
+
             If Q > 4 Then 3364
 
             GoTo 340
@@ -4244,7 +4260,7 @@ Sub FOOTBALL ()
         End If
 
         Call AddPossessionTime(4, 7)
-        Call CheckZeroTime
+        Call CheckGameClock
         If gameClock! = 0 Then GoTo 3360
 
         'College overtime
@@ -4283,7 +4299,7 @@ Sub FOOTBALL ()
         GoTo 3200
     End If
 
-    RN = Int(Rnd(1) * 100) + 1
+    Call d100(RN)
 
     If RN > 60 Then
 
@@ -4303,7 +4319,6 @@ Sub FOOTBALL ()
 
     Else
 
-        3842 '
         Call CHANGEPOSS: Y1 = 10
 
         If Y >= 90 Then Y1 = 100 - Y
@@ -4408,7 +4423,7 @@ Sub FOOTBALL ()
 
     Call YARDLINE
 
-    RN = Int(Rnd(1) * 100) + 1
+    Call d100(RN)
     If RN <= 18 Then
         G = 110
     Else
@@ -4485,43 +4500,6 @@ Sub FOOTBALL ()
             GoTo 700
         End If
 
-    End If
-
-End Sub
-
-
-'------------------------------
-'   EndOfGame Subroutine
-'------------------------------
-' ...explanation...
-Sub EndOfGame
-    'Close #7
-    'Close #5
-
-    Call POSTGAME
-
-    If AP <> 1 Then
-
-        Cls
-
-        'Using Home Team's color for the box
-        Call TEAMBOX(1, 1)
-
-        Do
-            U$ = "PLAY ANOTHER GAME (YN)"
-            Locate 7, (80 - Len(U$)) / 2
-            Print U$
-
-            Color 15, 0
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-    End If
-
-    If UCase$(I$) = "Y" Or (AP = 1 and endAllGames <> 1) Then
-        Cls
-        Print "PLEASE WAIT ..."
-        Call FOOTBALL
     End If
 
 End Sub

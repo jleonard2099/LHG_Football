@@ -1,3 +1,10 @@
+'----------------------------------------
+'           SEENATL Subroutine
+'----------------------------------------
+'This subroutine lets the user choose an
+'organization stat file to view, then calls
+'other routines to both load the Stats
+'and then provide options for display
 Sub SEENATL ()
 
     _Title "3-in-1 Football - View Org Stats"
@@ -17,7 +24,8 @@ End Sub
 '----------------------------------------
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine loads the organization 
+'stats from the file into several arrays
 Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
 
     Shared div1$, div2$
@@ -81,7 +89,9 @@ End Sub
 '----------------------------------------
 '      StatOptions_Natl Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine gives the user various
+'options for viewing the previously loaded
+'stats, and then calls routines for each
 Sub StatOptions_Natl (FF$, NRT)
 
     Shared div1$, div2$
@@ -166,7 +176,7 @@ Sub StatOptions_Natl (FF$, NRT)
             Do
                 Color 15, 1
                 Locate 8
-                U$ = "VIEW NATIONAL STATS AGAIN (YN)"
+                U$ = "VIEW NATIONAL STATS AGAIN? (Y/N)"
                 Locate , (80 - Len(U$)) / 2
                 Print U$
                 Color 15, 0
@@ -183,7 +193,8 @@ End Sub
 '----------------------------------------
 '     ReportFilePrompt_Natl Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine prompts the user for
+'the name of the report file to be saved
 Sub ReportFilePrompt_Natl (reportFile$)
 
     Do
@@ -217,7 +228,7 @@ Sub ReportFilePrompt_Natl (reportFile$)
         If reportFile$ <> "" Then
 
             Do
-                Locate 13, 12: Print "ANY CHANGE (YN) "
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -231,7 +242,9 @@ End Sub
 '----------------------------------------
 '     LeaderStatsNat_Screen Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats the previously
+'loaded stats and outputs them to the end
+'user display.
 Sub LeaderStatsNat_Screen (FF$, div1$, div2$, NRT)
 
     Shared LD!(), LZ!(), PT!()
@@ -841,7 +854,10 @@ End Sub
 '----------------------------------------
 '     SavePrintNatLeaders Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine formats the previously
+'loaded stats and outputs them to a file
+'that is then looped through to send to
+'the default printer
 Sub SavePrintNatLeaders (reportFile$, FF$, div1$, div2$, NRT, destination)
 
     Shared LZ!(), PT!()

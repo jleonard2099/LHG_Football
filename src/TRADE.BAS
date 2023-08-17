@@ -1,3 +1,13 @@
+'----------------------------------------
+'            TRADE Subroutine
+'----------------------------------------
+'This subroutine relies on several other
+'routines to proceed through the general 
+'steps for trading players.
+'First, 2 teams are chosen and their Stats
+'are loaded.
+'Then, the player choices are made and the
+'corresponding team files are updated.
 Sub TRADE ()
 
     _Title "3-in-1 Football - Trade Players"
@@ -29,9 +39,12 @@ End Sub
 
 
 '----------------------------------------
-'       LoadStatsForTrade Subroutine
+'      LoadStatsForTrade Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine prompts the user in reg-
+'ards to the trading of stats associated
+'with the players. If chosen to trade them,
+'the stats are loaded from the team stats.
 Sub LoadStatsForTrade (tradeIdx)
 
     Shared tradeF$(), tradeFG$(), tradeKR$()
@@ -59,7 +72,7 @@ Sub LoadStatsForTrade (tradeIdx)
     haveStats(tradeIdx) = 0
 
     Do
-        Locate 3: Print "DOES THIS TEAM HAVE SAVED STATS (YN)"
+        Locate 3: Print "DOES THIS TEAM HAVE SAVED STATS? (Y/N)"
         I$ = GetKeyPress$
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -108,8 +121,11 @@ Sub LoadStatsForTrade (tradeIdx)
         Else
 
             haveStats(tradeIdx) = 1
-            Locate 10, 8
-            Call CSMsgBox("NO COMPILED STATS FOR TEAM WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+            BoxWidth = 24
+            BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
 
@@ -123,7 +139,10 @@ End Sub
 '----------------------------------------
 '       ContinueTrade Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine actually presents the user
+'a menu for choosing players to trade. It
+'relies on separate routines to summarize
+'the trade and then save the changes.
 Sub ContinueTrade ()
 
     Shared haveStats()
@@ -225,7 +244,9 @@ End Sub
 '----------------------------------------
 '           TradeRBs Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team RBs, lets the user choose them for
+'trade, and then swaps the players.
 Sub TradeRBs (W1)
 
     Shared tradeLC!(), tradeLR!(), tradeZ2!()
@@ -279,7 +300,7 @@ Sub TradeRBs (W1)
         Print rbNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -402,7 +423,9 @@ End Sub
 '----------------------------------------
 '           TradeWRs Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team WRs, lets the user choose them for
+'trade, and then swaps the players.
 Sub TradeWRs (W1)
 
     Shared wrRec_TRADE(), wrAvg_TRADE()
@@ -456,7 +479,7 @@ Sub TradeWRs (W1)
         Print wrNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -549,7 +572,9 @@ End Sub
 '----------------------------------------
 '           TradeQBs Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team QBs, lets the user choose them for
+'trade, and then swaps the players.
 Sub TradeQBs (W1)
 
     Shared qbPA_TRADE(), qbPCPct_TRADE(), qbIntPct_TRADE()
@@ -606,7 +631,7 @@ Sub TradeQBs (W1)
         Print qbNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -717,7 +742,9 @@ End Sub
 '----------------------------------------
 '           TradeKRs Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team KRs, lets the user choose them for
+'trade, and then swaps the players.
 Sub TradeKRs (W1)
 
     Shared B%()
@@ -773,7 +800,7 @@ Sub TradeKRs (W1)
         Print krNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -861,10 +888,13 @@ Sub TradeKRs (W1)
 
 End Sub
 
+
 '----------------------------------------
 '           TradePRs Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team PRs, lets the user choose them for
+'trade, and then swaps the players.
 Sub TradePRs (W1)
 
     Shared tmRat_TRADE()
@@ -920,7 +950,7 @@ Sub TradePRs (W1)
         Print prNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE (YN) ";
+            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1006,10 +1036,13 @@ Sub TradePRs (W1)
 
 End Sub
 
+
 '----------------------------------------
 '       TradePunters Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team punters, lets the user choose them 
+'for trade, and then swaps the players.
 Sub TradePunters (W1)
 
     Shared tradeZ!()
@@ -1041,7 +1074,7 @@ Sub TradePunters (W1)
         Print " "; pntNam_TRADE$(1, 0)
 
         Do
-            Locate 22, 1: Print "ANY CHANGE (YN) ";
+            Locate 22, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1135,7 +1168,9 @@ End Sub
 '----------------------------------------
 '       TradeKickers Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine presents a summary of
+'team kickers, lets the user choose them 
+'for trade, and then swaps the players.
 Sub TradeKickers (W1)
 
     Shared tmRat_TRADE()
@@ -1192,7 +1227,7 @@ Sub TradeKickers (W1)
         Print pkNam_TRADE$(1, I1)
 
         Do
-            Locate 22, 1: Print "ANY CHANGE (YN) ";
+            Locate 22, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1310,10 +1345,13 @@ Sub TradeKickers (W1)
 
 End Sub
 
+
 '----------------------------------------
 '     PlayerStatsPrompt Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine simply prmopts the user
+'for a choice of whether or not they
+'should trade stats with the players.
 Sub PlayerStatsPrompt (W1)
 
     Do
@@ -1340,10 +1378,15 @@ Sub PlayerStatsPrompt (W1)
 
 End Sub
 
+
 '----------------------------------------
 '       DoTheTrade Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine checks each position type
+'to see if trades were done, then swaps the
+'actual team data for the trades before
+'relying on a routine to save all of the 
+'modified teams
 Sub DoTheTrade (tradeIdx)
 
     Shared teams_TRADE$(), nicks_TRADE$()
@@ -1633,10 +1676,12 @@ Sub DoTheTrade (tradeIdx)
 
 End Sub
 
+
 '----------------------------------------
 '       SaveTradeStats Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine saves the modified team
+'data from the trade to the team files.
 Sub SaveTradeStats (saveIdx)
 
     Shared teams_TRADE$(), nicks_TRADE$()
@@ -1712,10 +1757,12 @@ Sub SaveTradeStats (saveIdx)
 
 End Sub
 
+
 '----------------------------------------
 '       ChooseTradeTeam Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provides an interface for 
+'choosing the team to trade players from
 Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
     Shared tmRat_TRADE()
@@ -1778,11 +1825,14 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
                     If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
 
-                        Locate 10, 8
-
-                        Call CSMsgBox("NO TEAMS WERE FOUND MATCHING THAT ID... PRESS ANY KEY TO SELECT ANOTHER ID", 20, Pass)
+                        MsgText$ = "NO TEAM FILES WERE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO MAIN MENU"
+                        BoxWidth = 20
+                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
                         I$ = GetKeyPress$
                         Call CSMsgBox("", 0, Pass)
+                        Exit Sub
 
                     Else
 
@@ -1829,7 +1879,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
                         Color tmRat_TRADE(tradeIdx, 2), tmRat_TRADE(tradeIdx, 1): Print teamName$
 
                         Color 15, 4
-                        Locate 3, 33: Print "ANY CHANGE? (YN)";
+                        Locate 3, 32: Print "ANY CHANGE? (Y/N)";
 
                         J$ = GetKeyPress$
 
@@ -1851,7 +1901,8 @@ End Sub
 '----------------------------------------
 '       SelectTradeTeam Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provides an interface for 
+'selecting the team to trade players from
 Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%, tradeIdx)
 
     If numberTeams > 0 Then
@@ -1898,7 +1949,8 @@ End Sub
 '----------------------------------------
 '        ReadTradeTeam Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine reads team data into 
+'arrays for the selected team
 Sub ReadTradeTeam (teamYear$, targetTeam$, teamIdx, tradeIdx)
 
     'C2 has to do with RB Rec 

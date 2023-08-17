@@ -1,3 +1,9 @@
+'----------------------------------------
+'           CARMERGE Subroutine
+'----------------------------------------
+'This routine assists thet user with the
+'addition of career stats from any extra 
+'season years that have been compiled.
 Sub MergeCareerFiles ()
 
     _Title "3-in-1 Football - Update Career Files"
@@ -57,13 +63,20 @@ Sub MergeCareerFiles ()
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
             statFile$ = nameStatFile$(team$)
 
-            If _FileExists(diskPaths$(1) + statFile$) Then 
-                Call MergeAddYear(careerFile$, statFile$)
-            Else
-                Locate 10, 18
-                Call CSMsgBox("NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU", 26, Pass)
+            If Not _FileExists(diskPaths$(1) + statFile$) Then 
+
+                MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                BoxWidth = 24
+                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                Call CSMsgBox(MsgText$, BoxWidth, Pass)
                 I$ = GetKeyPress$
                 Call CSMsgBox("", 0, Pass)
+
+            Else
+
+                Call MergeAddYear(careerFile$, statFile$)
+
             End If
 
         End If
@@ -74,9 +87,11 @@ End Sub
 
 
 '----------------------------------------
-'           MergeAddYear Subroutine
+'         MergeAddYear Subroutine
 '----------------------------------------
-'... explain here ...
+'This routine actually prompts the user
+'for parameters for the team / year to
+'be updated.  
 Sub MergeAddYear (selectedFile$, statFile$)
 
     Color 15, 0
@@ -84,7 +99,7 @@ Sub MergeAddYear (selectedFile$, statFile$)
 
     Do
         Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; targetYear
-        Locate 9, 25: Print "ANY CHANGE (YN)"
+        Locate 9, 25: Print "ANY CHANGE? (Y/N)"
         J$ = GetKeyPress$
     Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
 
@@ -111,7 +126,10 @@ End Sub
 '----------------------------------------
 '       AddCareerYear Subroutine
 '----------------------------------------
-'...explanation...
+'This routine loads the existing career
+'stats, adds the team's stats to them,
+'then overwrites the career file with the
+'new values. 
 Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
@@ -167,7 +185,8 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 Input #1, RBBS!(N, J, K)
             Next K
 
-            Locate 21, 38: Color 5
+            Color 5
+            Locate 21, 38
             TMR = TMR - 1
             Print Using "#####"; TMR
 
@@ -305,7 +324,6 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
             'Technically this is an "Else" clause
             'from the above, but the Exit means
             'it won't ever get here anyway
-            1423 '
             RR = RR + 1
 
             If RR = 50 Then
@@ -776,7 +794,6 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     '-----
 
-    1700 '
     For I = 0 To 14
         RR = 0
         CHK = 0
@@ -987,7 +1004,14 @@ End Sub
 '----------------------------------------
 '       ProcessLeaders Subroutine
 '----------------------------------------
-'...explanation...
+'If the user has specified that this is
+'the final update for the season, this
+'routine is called to post stat leaders
+'for viewing. Despite the logic, it is 
+'not in any sense a final action, and 
+'can be performed throughout a sseason 
+'if you want to see leaders at different 
+'intervals.
 Sub ProcessLeaders (careerFile$)
 
     Shared FGC$(), KRC$(), PRC$(), QBC$()

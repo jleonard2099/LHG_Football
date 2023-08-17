@@ -1,3 +1,13 @@
+'----------------------------------------
+'           CARVIEW Subroutine
+'----------------------------------------
+'This routine loads in an existing career 
+'file (.CAR) and gives the user options
+'for viewing / printing the results.
+'Options are organized by each of the
+'position categories in football.
+'A separate routine is called to display
+'the chosen options to the user screen.
 Sub CARVIEW ()
 
     _Title "3-in-1 Football - View Careers"
@@ -438,7 +448,6 @@ Sub CARVIEW ()
                     Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
 
                 Case "D"
-                    2920 '
                     Cls
                     Color 12: Print careerFile$
                     For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
@@ -479,7 +488,9 @@ End Sub
 '----------------------------------------
 '    CareerPrintCategory Subroutine
 '----------------------------------------
-'...explanation...
+'Depending on the stat category chosen,
+'formats the corresponding career stats
+'and outputs them to the user display
 Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
     Shared careerRC$()
@@ -1357,7 +1368,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             Print Tab(34); Using "###"; careerGIS!(V, I, 0);
                         Next V
 
-                        1820 '
                         VV = careerGIS!(1, I, 1) + careerGIS!(2, I, 1) + careerGIS!(3, I, 1) + careerGIS!(4, I, 1) + careerGIS!(5, I, 1) + careerGIS!(6, I, 1) + careerGIS!(7, I, 1) + careerGIS!(8, I, 1) + careerGIS!(9, I, 1) + careerGIS!(10, I, 1) + careerGIS!(11, I, 1) + careerGIS!(12, I, 1) + careerGIS!(13, I, 1) + careerGIS!(14, I, 1) + careerGIS!(15, I, 1)
 
                         For V = 1 To VV
@@ -1469,7 +1479,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Do
 				Locate 5, 20
-				Print "VIEW AGAIN (Y/N)"
+				Print "VIEW AGAIN? (Y/N)"
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 

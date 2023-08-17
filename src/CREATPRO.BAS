@@ -1,3 +1,9 @@
+'----------------------------------------
+'          CREATPRO Subroutine
+'----------------------------------------
+'This subroutine provides a menu for the
+'user to choose options related to the
+'creation and editing of leagues
 Sub CREATPRO ()
 
     _Title "3-in-1 Football - Manage Leagues"
@@ -64,8 +70,10 @@ End Sub
 '----------------------------------------
 '       DefineLeaguePro Subroutine
 '----------------------------------------
-'...explanation...
-Sub DefineLeaguePro (leagueName$, div1$, div2$, div3$)
+'This subroutine assists the user with the
+'input of paramters related to the league's
+'general naming and setup
+Sub DefineLeaguePro (league$, div1$, div2$, div3$)
 
     Shared Z1$()
 
@@ -98,12 +106,12 @@ Sub DefineLeaguePro (leagueName$, div1$, div2$, div3$)
             Locate , 12: Print "ENTER NAME FOR LEAGUE: ": Print
             Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
             Locate , 12: Print "SAMPLE NAMES ARE SEC, SWC, 94-ACC"
-            Locate 7, 37: Input leagueName$
+            Locate 7, 37: Input league$
 
-            If leagueName$ <> "" Then
+            If league$ <> "" Then
 
                 Do
-                    Locate 13, 12: Print "ANY CHANGE (YN) "
+                    Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -127,7 +135,9 @@ End Sub
 '----------------------------------------
 '      ReviewEditLeague Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provides an interface to
+'the user allowing them to choose / clear
+'teams from the league definition.
 Sub ReviewEditLeague (league$, div1$, div2$, div3$)
 
     Shared statsZ1%()
@@ -242,18 +252,20 @@ End Sub
 '----------------------------------------
 '        SaveLeague Subroutine
 '----------------------------------------
-'...explanation...
-Sub SaveLeague (leagueName$, div1$, div2$, div3$)
+'This subroutine writes the league team
+'memberships and definition to each of
+'the corresponding files (.LIB, .TMS)
+Sub SaveLeague (league$, div1$, div2$, div3$)
 
     Shared statsZ1%()
 
     Shared Z1$(), Z2$()
 
-    Open diskPaths$(2) + leagueName$ + ".LIB" For Output As #2
+    Open diskPaths$(2) + league$ + ".LIB" For Output As #2
 
     Print #2, 1
 
-    Print #2, leagueName$
+    Print #2, league$
     Print #2, div1$
     Print #2, div2$
     Print #2, div3$
@@ -278,9 +290,9 @@ Sub SaveLeague (leagueName$, div1$, div2$, div3$)
 
     Next X
 
-    Open diskPaths$(2) + leagueName$ + ".TMS" For Output As #2
+    Open diskPaths$(2) + league$ + ".TMS" For Output As #2
 
-    Write #2, leagueName$
+    Write #2, league$
     Write #2, div1$
     Write #2, div2$
     Write #2, div3$
@@ -292,5 +304,3 @@ Sub SaveLeague (leagueName$, div1$, div2$, div3$)
     Close 2
 
 End Sub
-
-

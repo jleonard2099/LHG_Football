@@ -1,6 +1,12 @@
+'----------------------------------------
+'          BLANKPRO Subroutine
+'----------------------------------------
+'This routine assists the user in choosing
+'a league, and then proceeds to delete all 
+'stats files for all the associated teams
 Sub BLANKPRO ()
 
-    _Title "3-in-1 Football - Delete League Stats"
+    _Title "3-in-1 Football - Erase League Stats"
 
     Dim H1$(40)
 
@@ -8,17 +14,19 @@ Sub BLANKPRO ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Cls
-        Locate 10, 8
-        Call CSMsgBox("WARNING!!!::: THIS WILL ERASE ALL COMPILED STATS FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL STATS, HIT 'Y' FOR YES", 26, Pass)
+        MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL STATS, HIT 'Y' FOR YES"
+        BoxWidth = 27
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I2$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
 
         If UCase$(I2$) = "Y" Then
 
-            Open diskPaths$(2) + LH$ + ".TMS" For Input As #2
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-            Input #2, LG$, div1$, div2$, div3$
+            Input #2, league$, div1$, div2$, div3$
 
             For XW = 1 To 30
                 Input #2, H1$(XW)

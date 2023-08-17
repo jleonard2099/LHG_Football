@@ -1,3 +1,10 @@
+'----------------------------------------
+'           CAREDIT Subroutine
+'----------------------------------------
+'This routine allows the user to choose a
+'career file, then loads in the stats and 
+'gives the users options for editing and 
+'saving the file.
 Sub CAREDIT ()
 
     _Title "3-in-1 Football - Edit Career Files"
@@ -896,7 +903,8 @@ End Sub
 '----------------------------------------
 '      UpdateCareerFile Subroutine
 '----------------------------------------
-'...explanation...
+'This routine updates the existing career
+'file with the modified stats values.
 Sub UpdateCareerFile (saveFile$)
 
     Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
@@ -1206,7 +1214,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsRB Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's RB's
 Sub PrintCareerStatsRB (exitFlag%, B9, careerFile$)
 
     Shared careerA1$(), careerRBS$(), careerRC$()
@@ -1329,7 +1338,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsWR Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's WR's
 Sub PrintCareerStatsWR (exitFlag%, B9, careerFile$)
 
     Shared careerA2$(), careerWRS$(), careerRC$()
@@ -1418,7 +1428,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsQB Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's QB's
 Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
 
     Shared careerA3$(), careerQBS$(), careerRC$()
@@ -1662,7 +1673,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsKR Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's KR's
 Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
     Shared careerA4$(), careerKRS$(), careerRC$()
@@ -1754,7 +1766,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsPR Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's PR's
 Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
 
     Shared careerA5$(), careerPRS$(), careerRC$()
@@ -1840,7 +1853,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsP Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's Punter
 Sub PrintCareerStatsP (exitFlag%, B9, careerFile$)
 
     Shared careerA6$(), careerRC$()
@@ -1912,7 +1926,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsK Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's Kickers
 Sub PrintCareerStatsK (exitFlag%, B9, careerFile$)
 
     Shared careerA7$(), careerRC$()
@@ -2042,7 +2057,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsINT Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's INT's
 Sub PrintCareerStatsINT (exitFlag%, B9, careerFile$)
 
     Shared careerDI$()
@@ -2106,7 +2122,8 @@ End Sub
 '----------------------------------------
 '   PrintCareerStatsSACK Subroutine
 '----------------------------------------
-'...explanation...
+'This routine formats and prints career 
+'stats associated with the team's sacks
 Sub PrintCareerStatsSACK (exitFlag%, B9, careerFile$)
 
     Shared careerDS$()
