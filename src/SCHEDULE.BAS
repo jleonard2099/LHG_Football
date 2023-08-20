@@ -555,7 +555,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
     Shared qbName$(), modeAbbrev$()
     Shared yesNo$()
-    Shared WN$(), WT$()
+    Shared windSetting$(), weather$()
 
     Dim displayPause!
 
@@ -571,19 +571,19 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
         Color 2: Print Tab(29); "SELECT GAME OPTIONS"
         Print
 
-        Locate 2, 2: Color 14: Print "(1) ";: Color 15: Print MO$(scheduleNG%(gameIndex%, 10))
+        Locate 2, 2: Color 14: Print "(1) ";: Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
         Locate 3, 2: Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
         Locate 4, 2: Color 14: Print "(3) ";: Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
-        Locate 5, 2: Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; strG9$(scheduleNG%(gameIndex%, 3))
+        Locate 5, 2: Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
         Locate 6, 2: Color 14: Print "(5) ";: Color 15: Print "HOME FIELD ADVANTAGE: "; location$(scheduleNG%(gameIndex%, 2))
         Locate 7, 2: Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; scheduleNG%(gameIndex%, 4) / 10
-        Locate 8, 2: Color 14: Print "(7) ";: Color 15: Print "COLLEGE RULES "; Y9$(scheduleNG%(gameIndex%, 7))
-        Locate 9, 2: Color 14: Print "(8) ";: Color 15: Print "PRO RULES "; Y8$(scheduleNG%(gameIndex%, 11))
+        Locate 8, 2: Color 14: Print "(7) ";: Color 15: Print "COLLEGE RULES "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
+        Locate 9, 2: Color 14: Print "(8) ";: Color 15: Print "PRO RULES "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
         Locate 10, 2: Color 14: Print "(9) ";: Color 15: Print "GAME DATE (XX-XX-XX) "; DT$; "   "
         Locate 11, 2: Color 14: Print "(A) ";: Color 15: Print "GAME TIME (XX:XXP) "; TM$; "   "
-        Locate 12, 2: Color 14: Print "(B) ";: Color 15: Print "SUDDEN DEATH "; SD$(scheduleNG%(gameIndex%, 14))
-        Locate 13, 2: Color 14: Print "(C) ";: Color 15: Print "WIND "; WN$(scheduleNG%(gameIndex%, 19))
-        Locate 14, 2: Color 14: Print "(D) ";: Color 15: Print "WEATHER "; WT$(scheduleNG%(gameIndex%, 20))
+        Locate 12, 2: Color 14: Print "(B) ";: Color 15: Print "SUDDEN DEATH "; overtime$(scheduleNG%(gameIndex%, 14))
+        Locate 13, 2: Color 14: Print "(C) ";: Color 15: Print "WIND "; windSetting$(scheduleNG%(gameIndex%, 19))
+        Locate 14, 2: Color 14: Print "(D) ";: Color 15: Print "WEATHER "; weather$(scheduleNG%(gameIndex%, 20))
         Locate 15, 2: Color 14: Print "(0) ";: Color 15: Print "ACCEPT SETTINGS"
 
         Locate 16, 2: Print "NOTES: CLOCK IS STOPPED AFTER A 1ST DOWN IN COLLEGE BEGINNING IN 1968"
@@ -1234,7 +1234,7 @@ Sub ChangeGlobalSettings ()
     Shared modeAbbrev$(), yesNo$()
     Shared qbName$(), scheduleYN$()
 
-    Shared WN$(), WT$()
+    Shared windSetting$(), weather$()
 
     Dim displayPause!
 
@@ -1254,14 +1254,14 @@ Sub ChangeGlobalSettings ()
         Cls
         Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
 
-        Locate 3, 2: Color 14: Print "(1) ";: Color 15: Print "TYPE OF GAME: "; strG9$(G9%)
+        Locate 3, 2: Color 14: Print "(1) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(G9%)
         Locate 4, 2: Color 14: Print "(2) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#  "; displayPause!
         Locate 5, 2: Color 14: Print "(3) ";: Color 15: Print "RESERVED FOR FUTURE"
-        Locate 6, 2: Color 14: Print "(4) ";: Color 15: Print "COLLEGE RULES: "; Y9$(Y9%)
-        Locate 7, 2: Color 14: Print "(5) ";: Color 15: Print "PRO RULES: "; Y8$(Y8%)
-        Locate 8, 2: Color 14: Print "(6) ";: Color 15: Print "SUDDEN DEATH: "; SD$(SD%)
-        Locate 9, 2: Color 14: Print "(7) ";: Color 15: Print "WIND OPTION: "; WN$(windOpt)
-        Locate 10, 2: Color 14: Print "(8) ";: Color 15: Print "WEATHER OPTION: "; WT$(weatherOpt)
+        Locate 6, 2: Color 14: Print "(4) ";: Color 15: Print "COLLEGE RULES: "; ruleYrColl$(Y9%)
+        Locate 7, 2: Color 14: Print "(5) ";: Color 15: Print "PRO RULES: "; ruleYrPro$(Y8%)
+        Locate 8, 2: Color 14: Print "(6) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(SD%)
+        Locate 9, 2: Color 14: Print "(7) ";: Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
+        Locate 10, 2: Color 14: Print "(8) ";: Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
         Locate 10, 2: Color 14: Print "(9) ";: Color 15: Print "RESERVED FOR FUTURE"
         Locate 12, 2: Color 14: Print "(0) ";: Color 15: Print "ACCEPT GLOBAL SETTINGS"
 

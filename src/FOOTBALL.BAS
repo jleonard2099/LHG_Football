@@ -61,13 +61,13 @@ Sub FOOTBALL ()
     End If
 
     Open "DEFAULT" For Input As #1
-    Input #1, J6 '
-    Input #1, G9 '
-    Input #1, H%: ' Home Field Advantage
+    Input #1, playerOpt '
+    Input #1, ruleOptType '
+    Input #1, gameLoc: ' Home Field Advantage
     Input #1, pbpDelay! '
     Input #1, R5% '
-    Input #1, Y8 '
-    Input #1, Y9 '
+    Input #1, ruleOptPro '
+    Input #1, ruleOptColl '
     Input #1, NG%(14) 'Overtime setting
     Close 1
 
@@ -107,7 +107,7 @@ Sub FOOTBALL ()
         Input #2, scheduleFile$
 
         For I = 0 To 2: 
-            Input #2, AP%(I)
+            Input #2, schedGame(I)
         Next
 
         Close 2
@@ -121,7 +121,7 @@ Sub FOOTBALL ()
 
         Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
-        Get #1, AP%(0) + AP%(2)
+        Get #1, schedGame(0) + schedGame(2)
 
         For X = 0 To 20:
             NG%(X) = CVI(Q$(X + 1))
@@ -133,18 +133,18 @@ Sub FOOTBALL ()
 
         Close 1
 
-        AP = 1
+        autoPlay = 1
 
     End If
 
 
-    If AP = 1 Then
+    If autoPlay = 1 Then
 
         Call AUTOSETUP
 
     Else
 
-        intY8% = 0
+        goalPostAdj = 0
 
         Do
             Color 15, 0
@@ -154,27 +154,29 @@ Sub FOOTBALL ()
             Print Tab(29); "SELECT OPENING OPTIONS"
             Print
             Locate 3, 2
-            Color 14: Print "(1) ";: Color 15: Print MO$(J6)
+            Color 14: Print "(1) ";: Color 15: Print playMode$(playerOpt)
             Locate 4, 2
-            Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM: ";: Color PA%(0, 2), PA%(0, 1): Print A$(0)
+            Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM: ";
+            Color tmRat_GAME(0, 2), tmRat_GAME(0, 1): Print gameTeams$(0)
             Color , 0
             Locate 5, 2
-            Color 14: Print "(3) ";: Color 15: Print "HOME TEAM: ";: Color PA%(1, 2), PA%(1, 1): Print A$(1)
+            Color 14: Print "(3) ";: Color 15: Print "HOME TEAM: ";
+            Color tmRat_GAME(1, 2), tmRat_GAME(1, 1): Print gameTeams$(1)
             Color , 0
             Locate 6, 2
-            Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; strG9$(G9)
+            Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
             Locate 7, 2
-            Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; location$(H%)
+            Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; location$(gameLoc)
             Locate 8, 2
             Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; pbpDelay!
             Locate 9, 2
             Color 14: Print "(7) ";: Color 15: Print "START GAME"
             Locate 10, 2
-            Color 14: Print "(8) ";: Color 15: Print "COLLEGE RULES: "; Y9$(Y9)
+            Color 14: Print "(8) ";: Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
             Locate 11, 2
-            Color 14: Print "(9) ";: Color 15: Print "PRO RULES: "; Y8$(Y8)
+            Color 14: Print "(9) ";: Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
             Locate 12, 2
-            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; SD$(NG%(14))
+            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(NG%(14))
             Locate 13, 2
             Color 14: Print "(0) ";: Color 15: Print "SAVE SETTINGS"
 
@@ -213,43 +215,39 @@ Sub FOOTBALL ()
 
                     Case 0:
                         Open "DEFAULT" For Output As #1
-                        Print #1, J6 '
-                        Print #1, G9 '
-                        Print #1, H% ' Home Field advantage
+                        Print #1, playerOpt '
+                        Print #1, ruleOptType '
+                        Print #1, gameLoc ' Home Field advantage
                         Print #1, pbpDelay! '
                         Print #1, R5% '
-                        Print #1, Y8 '
-                        Print #1, Y9 '
+                        Print #1, ruleOptPro '
+                        Print #1, ruleOptColl '
                         Print #1, NG%(14) 'overtime setting
                         Close 1
 
                     Case 1
-                        J6 = J6 + 1
-                        If J6 > 3 Then J6 = 0
+                        playerOpt = playerOpt + 1
+                        If playerOpt > 3 Then playerOpt = 0
 
                     Case 2:
                         I = 0
-                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, A$(I), I)
-                        intB8%(I) = teamNbr
-                        'Call GetDiskID(I)
-                        'Call GETTEAM(I)
+                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, gameTeams$(I), I)
+                        teamIdx_GAME(I) = teamNbr
                         X = 0
 
                     Case 3:
                         I = 1
-                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, A$(I), I)
-                        intB8%(I) = teamNbr
-                        'Call GetDiskID(I)
-                        'Call GETTEAM(I)
+                        Call ChooseGameTeam(NN$(I), NTMS, teamNbr, gameTeams$(I), I)
+                        teamIdx_GAME(I) = teamNbr
                         X = 0
 
                     Case 4:
-                        G9 = G9 + 1
-                        If G9 = 6 Then G9 = 0
+                        ruleOptType = ruleOptType + 1
+                        If ruleOptType = 6 Then ruleOptType = 0
 
                     Case 5:
-                        H% = H% + 1
-                        If H% = 3 Then H% = 1
+                        gameLoc = gameLoc + 1
+                        If gameLoc = 3 Then gameLoc = 1
 
                     Case 6:
                         Do
@@ -261,12 +259,12 @@ Sub FOOTBALL ()
                         '
 
                     Case 8:
-                        Y9 = Y9 + 1
-                        If Y9 > 5 Then Y9 = 0
+                        ruleOptColl = ruleOptColl + 1
+                        If ruleOptColl > 5 Then ruleOptColl = 0
 
                     Case 9:
-                        Y8 = Y8 + 1
-                        If Y8 > 3 Then Y8 = 0
+                        ruleOptPro = ruleOptPro + 1
+                        If ruleOptPro > 3 Then ruleOptPro = 0
 
                     Case 10
                         NG%(14) = NG%(14) + 1
@@ -275,16 +273,16 @@ Sub FOOTBALL ()
                 End Select
 
                 If I >= 4 Then
-                    intY8% = 0
+                    goalPostAdj = 0
                     R5% = 0
-                    If Y8 = 1 And G9 <> 0 Then intY8% = -10
-                    If G9 = 4 Then intY8% = 0
-                    If Y9 = 0 And G9 = 0 Then R5% = 1
+                    If ruleOptPro = 1 And ruleOptType <> 0 Then goalPostAdj = -10
+                    If ruleOptType = 4 Then goalPostAdj = 0
+                    If ruleOptColl = 0 And ruleOptType = 0 Then R5% = 1
                 End If
 
             End If
 
-        Loop Until (I = 7 And A$(0) <> "" And A$(1) <> "") Or I$ = Chr$(27) Or UCase$(I$) = "Q"
+        Loop Until (I = 7 And gameTeams$(0) <> "" And gameTeams$(1) <> "") Or I$ = Chr$(27) Or UCase$(I$) = "Q"
 
         If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
 
@@ -329,14 +327,14 @@ Sub FOOTBALL ()
     End If
 
     For I = 0 To 1:
-        YR%(I) = GetTeamYear%(Left$(A$(I), 2))
+        YR%(I) = GetTeamYear%(Left$(gameTeams$(I), 2))
     Next I
 
-    intY8% = 0
+    goalPostAdj = 0
     R5% = 0
 
     'Determine attendance
-    If H% = 2 Then
+    If gameLoc = 2 Then
 
         'Neutral stadium and attendance
         SITE$ = "NEUTRAL FIELD"
@@ -344,18 +342,18 @@ Sub FOOTBALL ()
 
     Else
 
-        If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(H%)) Then
+        If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc)) Then
             'Generic stadium and attendance
             SITE$ = "MEMORIAL STADIUM"
             actualAttendance& = Int(Rnd(1) * 5000) + 10000
 
         Else
 
-            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(H%) For Random As #2 Len = DATA_SIZE_BYTES
+            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc) For Random As #2 Len = DATA_SIZE_BYTES
 
             Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
-            Get #2, intB8%(H%)
+            Get #2, teamIdx_GAME(gameLoc)
 
             SITE$ = RTrim$(Q$(1))
             averageAttendance& = CVL(Q$(3))
@@ -380,37 +378,37 @@ Sub FOOTBALL ()
     '----------------------------------------
     '    AUTO-DETERMINE OTHER OPTIONS
     '----------------------------------------
-    If Y8 = 1 And G9 <> 0 Then intY8% = -10
-    If G9 = 4 Then intY8% = 0
-    If Y9 = 0 And G9 = 0 Then R5% = 1
+    If ruleOptPro = 1 And ruleOptType <> 0 Then goalPostAdj = -10
+    If ruleOptType = 4 Then goalPostAdj = 0
+    If ruleOptColl = 0 And ruleOptType = 0 Then R5% = 1
 
     Color 15, 0
 
-    Select Case J6
+    Select Case playerOpt
 
         Case 1:
-            CT = 0
+            compTeam = 0
         Case 2:
-            J6 = 1
-            CT = 1
+            playerOpt = 1
+            compTeam = 1
         Case 3:
-            J6 = 2
+            playerOpt = 2
 
     End Select
 
-    If G9 <> 0 Then
-        B6(0, 7) = B6(0, 7) + 2
-        B6(1, 7) = B6(1, 7) + 2
+    If ruleOptType <> 0 Then
+        leagRat_GAME(0, 7) = leagRat_GAME(0, 7) + 2
+        leagRat_GAME(1, 7) = leagRat_GAME(1, 7) + 2
     End If
 
-    B6(0, 7) = B6(0, 7) + 4
-    B6(1, 7) = B6(1, 7) + 4
+    leagRat_GAME(0, 7) = leagRat_GAME(0, 7) + 4
+    leagRat_GAME(1, 7) = leagRat_GAME(1, 7) + 4
 
     Call NAMEEDIT
 
     For I3 = 0 To 1
 
-        If AP = 1 Then
+        If autoPlay = 1 Then
             'Auutoamtic determine QB
             Q7%(0) = 0
             Q7%(1) = 0
@@ -420,7 +418,7 @@ Sub FOOTBALL ()
             If Q6%(0) = 4 Then
                 RQ%(0) = 1
             Else
-                R9%(0) = NG%(6)
+                qbMobility(0) = NG%(6)
             End If
 
             Q6%(1) = NG%(8)
@@ -428,7 +426,7 @@ Sub FOOTBALL ()
             If Q6%(1) = 4 Then
                 RQ%(1) = 1
             Else
-                R9%(1) = NG%(9)
+                qbMobility(1) = NG%(9)
             End If
 
             For I = 0 To 3
@@ -438,7 +436,7 @@ Sub FOOTBALL ()
             If RQ%(I3) <> 1 Then
                 For I4 = 0 To 9:
                     For I5 = 0 To 3
-                        If A1$(I3, I4) = A3$(I3, I5) And I5 <> Q6%(I3) Then V4%(I3, I5) = I4
+                        If rbacks$(I3, I4) = qbacks$(I3, I5) And I5 <> Q6%(I3) Then V4%(I3, I5) = I4
                     Next I5
                 Next I4
             End If
@@ -447,7 +445,7 @@ Sub FOOTBALL ()
 
             'Manual prompt for QB
             '-- we could probably update the routine
-            '-- to handle AP = 1 by itself
+            '-- to handle autoPlay = 1 by itself
             Call CHANGEQB
 
         End If
@@ -469,7 +467,7 @@ Sub FOOTBALL ()
 
     For I = 0 To 1
         For I1 = 0 To 4
-            S(I, I1) = 0
+            score(I, I1) = 0
         Next I1
     Next I
 
@@ -478,9 +476,9 @@ Sub FOOTBALL ()
     Call d100(RN)
 
     If RN <= 50 Then
-        U$ = A$(W%) + " WON THE COIN TOSS"
+        U$ = gameTeams$(W%) + " WON THE COIN TOSS"
     Else
-        U$ = AA$(W%) + " WON THE COIN TOSS"
+        U$ = gameMascots$(W%) + " WON THE COIN TOSS"
     End If
 
     Call PBP
@@ -493,7 +491,7 @@ Sub FOOTBALL ()
     '-- Start of a "kickoff" routine
 
     330 '
-    If G9 <> 0 Then
+    If ruleOptType <> 0 Then
         Call KICKOFF
     Else
         Call COLKICKOFF
@@ -511,7 +509,7 @@ Sub FOOTBALL ()
     If gameClock! = 0 Then GoTo 3360
 
     For I = 0 To 2
-        If A9(D, I) = 100 Then KN = I: Exit For
+        If krNumRet(D, I) = 100 Then KN = I: Exit For
     Next
 
     ' We found a returner for the team
@@ -519,7 +517,7 @@ Sub FOOTBALL ()
     I2 = Int(100 * Rnd(1)) + 1
 
     For I = 2 To 0 Step -1
-        If I2 <= A9(D, I) Then I1 = I
+        If I2 <= krNumRet(D, I) Then I1 = I
     Next I
 
     Call d100 (RN)
@@ -527,7 +525,7 @@ Sub FOOTBALL ()
     Select Case KN
 
         Case 0
-            U$ = A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) IS DEEP TO RECEIVE THE KICK"
+            U$ = kickRet$(D, I1) + " (" + Str$(Int(krYdsPerRet(D, I1) * 3)) + " AVG) IS DEEP TO RECEIVE THE KICK"
             Call PBP
 
         Case 1
@@ -541,21 +539,21 @@ Sub FOOTBALL ()
     End Select
 
     If KN > 0 And RN <= 50 Then
-        U$ = A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) AND " + A4$(D, KN2) + " (" + Str$(Int(B(D, KN2) * 3)) + " AVG) ARE DEEP"
+        U$ = kickRet$(D, I1) + " (" + Str$(Int(krYdsPerRet(D, I1) * 3)) + " AVG) AND " + kickRet$(D, KN2) + " (" + Str$(Int(krYdsPerRet(D, KN2) * 3)) + " AVG) ARE DEEP"
     Else
-        U$ = A4$(D, KN2) + " (" + Str$(Int(B(D, KN2) * 3)) + " AVG) AND " + A4$(D, I1) + " (" + Str$(Int(B(D, I1) * 3)) + " AVG) ARE DEEP"
+        U$ = kickRet$(D, KN2) + " (" + Str$(Int(krYdsPerRet(D, KN2) * 3)) + " AVG) AND " + kickRet$(D, I1) + " (" + Str$(Int(krYdsPerRet(D, I1) * 3)) + " AVG) ARE DEEP"
     End If
 
     Call PBP
 
-    If J6 = 1 And P1 = CT Or J6 = 2 Then
+    If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
         I$ = "0"
 
-        If gameClock! <= 180 And Q = 4 And S(P1, 0) - S(D, 0) < 0 Then I$ = "2"
+        If gameClock! <= 180 And Q = 4 And score(P1, 0) - score(D, 0) < 0 Then I$ = "2"
 
     Else
 
-        U$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + A$(P1)
+        U$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + gameTeams$(P1)
         Call PBP
 
         Do
@@ -591,11 +589,11 @@ Sub FOOTBALL ()
                     Call MARKER
                     Call YARDLINE
 
-                    U$ = "KICK TAKEN BY " + A4$(P1, I1) + Str$(Int((N - 2 * N) + .5)) + " YDS DEEP IN THE END ZONE"
+                    U$ = "KICK TAKEN BY " + kickRet$(P1, I1) + Str$(Int((N - 2 * N) + .5)) + " YDS DEEP IN THE END ZONE"
 
                     Call PBP
 
-                    If J6 = 1 And P1 = CT Or J6 = 2 Then
+                    If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
 
                         I$ = "2"
                         If N < -2 Then I$ = "1"
@@ -638,7 +636,7 @@ Sub FOOTBALL ()
                 Call MARKER
                 Call YARDLINE
 
-                U$ = "KICK TAKEN BY " + A4$(P1, I1) + " AT THE" + Str$(Int(N + .5)) + " YD LINE "
+                U$ = "KICK TAKEN BY " + kickRet$(P1, I1) + " AT THE" + Str$(Int(N + .5)) + " YD LINE "
                 Call PBP
 
             End If
@@ -667,18 +665,18 @@ Sub FOOTBALL ()
 
                 RN = Int(Rnd(1) * 1000) + 1
 
-                Select Case B(P1, I1)
+                Select Case krYdsPerRet(P1, I1)
 
                     Case Is <= 8
                         Select Case RN
                             Case 1 To 5
                                 G = 110
                             Case 6 To 20
-                                G = Int((Rnd(1) * 21) + 45) + (B(P1, I1) - 7) * 3
+                                G = Int((Rnd(1) * 21) + 45) + (krYdsPerRet(P1, I1) - 7) * 3
                             Case 21 To 70
-                                G = Int((Rnd(1) * 21) + 25) + (B(P1, I1) - 7) * 3
+                                G = Int((Rnd(1) * 21) + 25) + (krYdsPerRet(P1, I1) - 7) * 3
                             Case Is >= 71
-                                G = Int((Rnd(1) * 10) + 15) + (B(P1, I1) - 7) * 3
+                                G = Int((Rnd(1) * 10) + 15) + (krYdsPerRet(P1, I1) - 7) * 3
                         End Select
 
                     Case 9
@@ -692,7 +690,7 @@ Sub FOOTBALL ()
                         If RN <= 80 Then
                             G = 110
                         Else
-                            G = Int((Rnd(1) * 19) + 15) + (B(P1, I1) - 10) * 3
+                            G = Int((Rnd(1) * 19) + 15) + (krYdsPerRet(P1, I1) - 10) * 3
                         End If
 
                 End Select
@@ -736,7 +734,7 @@ Sub FOOTBALL ()
                     Call AddPossessionTime(4, 7)
 
                     I = Int(Rnd(1) * 1000) + 1
-                    If I >= 960 - PA%(P1, 0) Then Call CLIPPING
+                    If I >= 960 - tmRat_GAME(P1, 0) Then Call CLIPPING
 
                     Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
@@ -796,7 +794,7 @@ Sub FOOTBALL ()
 
     PointsAfterTD:
 
-    If G9 = 4 Then
+    If ruleOptType = 4 Then
         'WFL = No PAT
         I$ = "2"
 
@@ -806,13 +804,13 @@ Sub FOOTBALL ()
 
         Call PBP
 
-        If J6 = 1 And P1 = CT Or J6 = 2 Then
+        If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
 
             I$ = "1"
 
-            I5 = S(P1, 0) - S(D, 0)
+            I5 = score(P1, 0) - score(D, 0)
 
-            If G9 = 1 And Y8 = 3 Then
+            If ruleOptType = 1 And ruleOptPro = 3 Then
                 If Q = 4 And (I5 = -9 And gameClock! < 600 Or I5 = -2 And gameClock! < 120 Or I5 = -5 And gameClock! < 420) Then I$ = "2"
             End If
 
@@ -837,9 +835,9 @@ Sub FOOTBALL ()
     End If
 
     '3702
-    If G9 = 1 Then
+    If ruleOptType = 1 Then
 
-        If Y8 <> 3 Then
+        If ruleOptPro <> 3 Then
 
             I$ = "1"
 
@@ -849,7 +847,7 @@ Sub FOOTBALL ()
                 Y = 97
                 E = 1
 
-                If G9 = 1 And Y8 = 3 Then Y = 98
+                If ruleOptType = 1 And ruleOptPro = 3 Then Y = 98
 
                 GoTo 700
 
@@ -869,7 +867,7 @@ Sub FOOTBALL ()
 
     'Was previously I2 not J
     For J = 1 To 0 Step -1:
-        If RN1 <= B8(P1, J) Then I1 = J
+        If RN1 <= kickerPATPct(P1, J) Then I1 = J
     Next J
 
     Q7%(P1) = I1
@@ -878,11 +876,11 @@ Sub FOOTBALL ()
 
     K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) + 1
 
-    U$ = A7$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
+    U$ = kicker$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
 
     Call PBP
 
-    If RN1 <= B7(P1, Q7%(P1)) Then
+    If RN1 <= kickerNumPAT(P1, Q7%(P1)) Then
 
         K2(P1, 5 + Q7%(P1) * 4, 17) = K2(P1, 5 + Q7%(P1) * 4, 17) + 1
 
@@ -890,8 +888,8 @@ Sub FOOTBALL ()
         Call PBP
         Call MADEPAT
 
-        S(P1, 0) = S(P1, 0) + 1
-        S(P1, Q) = S(P1, Q) + 1
+        score(P1, 0) = score(P1, 0) + 1
+        score(P1, Q) = score(P1, Q) + 1
         K1(X2, 6) = Q7%(P1)
         K1(X2, 4) = K1(X2, 4) + 1
 
@@ -906,7 +904,7 @@ Sub FOOTBALL ()
             U$ = "KICK IS BLOCKED!!"
             Call PBP
 
-            If G9 <> 1 Then
+            If ruleOptType <> 1 Then
                 GoTo 6605
             End If
 
@@ -933,7 +931,7 @@ Sub FOOTBALL ()
 
         Call PBPINT
 
-        U$ = U$ + A$(D) + " RECOVERS!!"
+        U$ = U$ + gameTeams$(D) + " RECOVERS!!"
         Call PBP
 
         D1 = 1
@@ -943,7 +941,7 @@ Sub FOOTBALL ()
         Call CHANGEPOSS
 
         '659
-        If G9 <> 0 Or Y9 >= 5 Then
+        If ruleOptType <> 0 Or ruleOptColl >= 5 Then
 
             I = Int(Rnd(1) * 3) + 1
 
@@ -986,7 +984,7 @@ Sub FOOTBALL ()
         If Y >= 90 Then Y1 = 100 - Y
     Else
         'I6 > 50 Then
-        U$ = A$(P1) + " RECOVERS!!"
+        U$ = gameTeams$(P1) + " RECOVERS!!"
         Call PBP
 
         I = 50
@@ -1031,7 +1029,7 @@ Sub FOOTBALL ()
 
         Do
 
-            If J6 = 1 And P1 = CT Or J6 = 2 Then
+            If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
 
                 Call OFFMENU
 
@@ -1046,7 +1044,7 @@ Sub FOOTBALL ()
                 Do
                     3118 '
                     Call FRAMEOPTION(10, P1)
-                    Print "SELECT OFFENSE "; A$(P1)
+                    Print "SELECT OFFENSE "; gameTeams$(P1)
 
                     For P2 = 0 To 4:
                         Locate 12 + P2, 14
@@ -1071,7 +1069,7 @@ Sub FOOTBALL ()
                         If UCase$(I$) = "G" Then
 
                             Call FRAMEOPTION(8, P1)
-                            Print "SELECT GADGET PLAY "; A$(P1)
+                            Print "SELECT GADGET PLAY "; gameTeams$(P1)
 
                             For G2 = 1 To 3:
                                 Locate 11 + G2, 14
@@ -1097,18 +1095,40 @@ Sub FOOTBALL ()
                                     ' *** FLEA FLICKER ***
                                     Call FLEA
 
-                                    If RN <= S% Then R1 = 1: W5 = 1: G = (Int(Rnd(1) * 6) + 10): GoTo 3541
+                                    If RN <= S% Then 
+                                        R1 = 1
+                                        W5 = 1
+                                        G = (Int(Rnd(1) * 6) + 10)
 
-                                    Call d100(RN)
-                                    If RN <= intI% Then G = CP: FF% = 2: GoTo 3552
+                                        'Sacked
+                                        GoTo 3541
 
-                                    Call d100(RN)
-                                    RV$ = A2$(P1, I3): I3 = I3 + 10
+                                    Else
 
-                                    If RN <= C% Then FF% = 2: GoTo 3586
-                                    G = 0
+                                        Call d100(RN)
 
-                                    GoTo 3535
+                                        If RN <= intChance Then 
+
+                                            G = CP
+                                            FF% = 2
+                                            GoTo 3552
+                                        
+                                        Else
+
+                                            Call d100(RN)
+                                            RV$ = wdRec$(P1, I3): I3 = I3 + 10
+
+                                            If RN <= C% Then 
+                                                FF% = 2
+                                                GoTo 3586
+                                            Else
+                                                G = 0
+                                                GoTo 3535
+                                            End If
+
+                                        End If
+
+                                    End If
 
                                 Case 2
                                     ' *** REVERSE PLAY ***
@@ -1119,42 +1139,60 @@ Sub FOOTBALL ()
                                     Call QBLINE
 
                                     If KJ = 1 Then
+
                                         KJ = 0
                                         R1 = 1
-                                        I2 = A1(P1, I1) + B6(D, 0)
+                                        I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0)
                                         Call REVGAIN
                                         GoTo 3416
-                                    End If
 
-                                    3181 '
-                                    Call d100(I2)
-
-                                    'Check contribution % and
-                                    'assign rusher index to I1
-                                    For I = 9 To 0 Step -1:
-                                        If I2 <= A(P1, I) Then I1 = I
-                                    Next I
-
-                                    R1 = 1
-
-                                    'If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) And RV% = 1 Then 8337
-                                    If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
-                                        If A2(P1, I1) > 0 Then 3403
-                                        For I5 = 0 To 9
-                                            If A1$(P1, I5) = A3$(P1, Q6%(P1)) Then I1 = I5: GoTo 3403
-                                        Next
-                                        If RV% = 1 Then 3181
-
-                                        GoTo 3401
-                                    End If
-
-                                    I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
-
-                                    If RV% = 1 Then
-                                        Call REVGAIN
-                                        GoTo 3416
                                     Else
-                                        GoTo 3403
+
+                                        3181 '
+                                        Call d100(I2)
+
+                                        'Check contribution % and
+                                        'assign rusher index to I1
+                                        For I = 9 To 0 Step -1:
+                                            If I2 <= rbRushAtt(P1, I) Then I1 = I
+                                        Next I
+
+                                        R1 = 1
+
+                                        If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
+
+                                            If rbNumRec(P1, I1) > 0 Then 
+                                                GoTo 3403
+                                            Else
+
+                                                For I5 = 0 To 9
+                                                    If rbacks$(P1, I5) = qbacks$(P1, Q6%(P1)) Then 
+                                                        I1 = I5
+                                                        GoTo 3403
+                                                    End If
+                                                Next
+
+                                                If RV% = 1 Then 
+                                                    GoTo 3181
+                                                Else
+                                                    GoTo 3401
+                                                End If
+
+                                            End If
+
+                                        Else
+
+                                            I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0) + WX%(4)
+
+                                            If RV% = 1 Then
+                                                Call REVGAIN
+                                                GoTo 3416
+                                            Else
+                                                GoTo 3403
+                                            End If
+
+                                        End If
+
                                     End If
 
                                 Case 3
@@ -1165,7 +1203,7 @@ Sub FOOTBALL ()
                                     Print "SELECT PASSER":
                                     For KK = 0 To 4
                                         Locate 12 + KK, 14
-                                        Print KK; "-"; A1$(P1, KK); Tab(41); KK + 5; "-"; A1$(P1, KK + 5)
+                                        Print KK; "-"; rbacks$(P1, KK); Tab(41); KK + 5; "-"; rbacks$(P1, KK + 5)
                                     Next KK
 
                                     Do
@@ -1178,32 +1216,43 @@ Sub FOOTBALL ()
                                     C% = 5
 
                                     If (D3 = 1 Or D3 = 3) And HB%(P9) = 0 Then C% = 30
-                                    intI% = 20
+
+                                    intChance = 20
                                     Call d100(RN)
+
                                     G = Int(Rnd(1) * 71) + 30
                                     CP = Int(Rnd(1) * 11) + 30
 
                                     HB%(P9) = 1
 
-                                    U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND HANDS OFF TO " + A1$(P1, I1)
+                                    U$ = qbacks$(P1, Q6%(P1)) + " TAKES THE SNAP AND HANDS OFF TO " + rbacks$(P1, I1)
                                     Call PBP
 
-                                    U$ = A1$(P1, I1) + " HAS THE BALL AND WANTS TO THROW!!!"
+                                    U$ = rbacks$(P1, I1) + " HAS THE BALL AND WANTS TO THROW!!!"
                                     Call PBP
 
                                     Call d100(RN)
                                     I3 = Int(Rnd(1) * 3)
 
-                                    U$ = "HE HAS " + A2$(P1, I3) + " OPEN DOWNFIELD"
+                                    U$ = "HE HAS " + wdRec$(P1, I3) + " OPEN DOWNFIELD"
                                     Call PBP
 
-                                    If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then G = (Int(Rnd(1) * 4) + 4): GoTo 3541
+                                    If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then 
+                                        G = (Int(Rnd(1) * 4) + 4)
+                                        'Sacked
+                                        GoTo 3541
+                                    End If
 
                                     Call d100(RN)
-                                    If RN <= intI% Then G = CP: FF% = 1: HB% = 0: GoTo 3552
+                                    If RN <= intChance Then 
+                                        G = CP
+                                        FF% = 1
+                                        HB% = 0
+                                        GoTo 3552
+                                    End If
 
                                     Call d100(RN)
-                                    RV$ = A2$(P1, I3)
+                                    RV$ = wdRec$(P1, I3)
                                     I3 = I3 + 10
 
                                     If RN <= C% Then FF% = 1: GoTo 3586
@@ -1266,10 +1315,10 @@ Sub FOOTBALL ()
                 If P2 = 26 Then P2 = 24
 
                 If XX = 8 Then
-                    U$ = A$(P1) + " IS LETTING THE PLAY CLOCK WIND DOWN"
+                    U$ = gameTeams$(P1) + " IS LETTING THE PLAY CLOCK WIND DOWN"
                     Call PBP
 
-                    U$ = "PENALTY - " + A$(P1) + " - DELAY OF GAME"
+                    U$ = "PENALTY - " + gameTeams$(P1) + " - DELAY OF GAME"
                     Call PBP
 
                     O = 8
@@ -1301,6 +1350,8 @@ Sub FOOTBALL ()
             If P2 >= 1 And P2 <= 8 Then
 
                 3128 '
+                ' !!! Beginning of a sub !!!
+                ' but where does it end???
                 KJ = 1
                 Call FRAMEOPTION(11, P1)
 
@@ -1308,16 +1359,16 @@ Sub FOOTBALL ()
 
                 For KK = 0 To 4
                     Locate 12 + KK, 14
-                    Print KK; "-"; A1$(P1, KK);
+                    Print KK; "-"; rbacks$(P1, KK);
                     If K(P1, 1) >= 20 And K2(P1, KK, 0) / K(P1, 1) > PC%(P1, KK) / 100 + .1 Then Print " ###" Else Print
-                    If A(P1, KK) = 100 Then GoTo CSELECT
+                    If rbRushAtt(P1, KK) = 100 Then GoTo CSELECT
                 Next
 
                 For KK = 0 To 4
                     Locate 12 + KK, 41
-                    Print KK + 5; "-"; A1$(P1, KK + 5);
+                    Print KK + 5; "-"; rbacks$(P1, KK + 5);
                     If K(P1, 1) >= 20 And K2(P1, KK + 5, 0) / K(P1, 1) > PC%(P1, KK + 5) / 100 + .1 Then Print " ###" Else Print
-                    If A(P1, KK + 5) = 100 Then GoTo CSELECT
+                    If rbRushAtt(P1, KK + 5) = 100 Then GoTo CSELECT
                 Next KK
 
                 CSELECT:
@@ -1343,23 +1394,23 @@ Sub FOOTBALL ()
 
         'Call pbplog(1658)
 
-        If J6 = 1 And P1 = CT And (P2 = 12 Or P2 = 15) And Y >= 85 Or J6 = 2 And (P2 = 12 Or P2 = 15) And Y >= 85 Then P2 = 11
+        If playerOpt = 1 And P1 = compTeam And (P2 = 12 Or P2 = 15) And Y >= 85 Or playerOpt = 2 And (P2 = 12 Or P2 = 15) And Y >= 85 Then P2 = 11
 
-        If T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16 Then
+        If timeouts(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16 Then
             U$ = "THERE'S SOME CONFUSION AT THE LINE OF SCRIMMAGE"
             Call PBP
 
-            U$ = A3$(P1, Q6%(P1)) + " HAS TO CALL TIME OUT TO AVOID DELAY OF GAME"
+            U$ = qbacks$(P1, Q6%(P1)) + " HAS TO CALL TIME OUT TO AVOID DELAY OF GAME"
             Call PBP
 
-            T1(P1) = T1(P1) - 1
+            timeouts(P1) = timeouts(P1) - 1
             QBN% = 0
 
         End If
 
         'Call pbplog(1675)
 
-    Loop While (T1(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
+    Loop While (timeouts(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
 
     'Call pbplog(1680)
 
@@ -1367,7 +1418,7 @@ Sub FOOTBALL ()
 
     Call MARKER1
 
-    If J6 = 1 And D = CT Then Call COMPCHEAT
+    If playerOpt = 1 And D = compTeam Then Call COMPCHEAT
 
     If QBN% = 1 Then QBN% = 0: GoTo 3403
 
@@ -1381,22 +1432,22 @@ Sub FOOTBALL ()
 
         Select Case I
 
-            Case 1 To 2 + PA%(P1, 0)
+            Case 1 To 2 + tmRat_GAME(P1, 0)
                 U$ = U$ + "OFFENSE... OFFSIDES 5 YARDS ***"
                 Call PBP
                 P = -5
 
-            Case 2 + PA%(P1, 0) To 20 + PA%(P1, 0)
+            Case 2 + tmRat_GAME(P1, 0) To 20 + tmRat_GAME(P1, 0)
                 U$ = U$ + "ILLEGAL PROCEDURE OFFENSE... 5 YARDS ***"
                 Call PBP
                 P = -5
 
-            Case 20 + PA%(P1, 0) To 27 + PA%(P1, 0)
+            Case 20 + tmRat_GAME(P1, 0) To 27 + tmRat_GAME(P1, 0)
                 U$ = U$ + "OFFENSE... DELAY OF GAME 5 YARDS ***"
                 Call PBP
                 P = -5
 
-            Case 27 + PA%(P1, 0) To 36 + PA%(P1, 0) + PA%(D, 0)
+            Case 27 + tmRat_GAME(P1, 0) To 36 + tmRat_GAME(P1, 0) + tmRat_GAME(D, 0)
                 U$ = U$ + "DEFENSE... ENCROACHMENT 5 YARDS ***"
                 Call PBP
                 P = 5
@@ -1426,12 +1477,12 @@ Sub FOOTBALL ()
 
                 KJ = 0
                 R1 = 1
-                I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
+                I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0) + WX%(4)
 
                 3403 '
-                'A1(P1, I1) is rushing average
+                'rbRushAvg(P1, I1) is rushing average
 
-                I2 = A1(P1, I1)
+                I2 = rbRushAvg(P1, I1)
                 RY = I2
 
                 'We essentially restore our value of I2 here
@@ -1440,7 +1491,7 @@ Sub FOOTBALL ()
                 'average, and therefore almost never becomes a
                 'positive integer
 
-                I2 = I2 + B6(D, 0) + WX%(4)
+                I2 = I2 + leagRat_GAME(D, 0) + WX%(4)
 
                 If K(P1, 1) >= 20 And K2(P1, I1, 0) / K(P1, 1) > PC%(P1, I1) / 100 + .1 Then I2 = Int(I2 * .4)
 
@@ -1448,7 +1499,7 @@ Sub FOOTBALL ()
 
                 If RN = 97 And Y <= 98.899 And Y >= 1.101 Then
 
-                    U$ = A3$(P1, Q6%(P1)) + " FUMBLES THE SNAP!"
+                    U$ = qbacks$(P1, Q6%(P1)) + " FUMBLES THE SNAP!"
                     Call PBP
 
                     G = Int((Rnd(1) * 20) - 10) / 10
@@ -1499,7 +1550,7 @@ Sub FOOTBALL ()
                 End If
 
                 If P2 = 9 Then
-                    U$ = A3$(P1, Q6%(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
+                    U$ = qbacks$(P1, Q6%(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
                     Call PBP
                     G = -1.0
                     GoTo 3546
@@ -1509,7 +1560,7 @@ Sub FOOTBALL ()
 
                 If P2 = 5 And RN0 = 49 Then
 
-                    U$ = A3$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
+                    U$ = qbacks$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
                     Call PBP
                     
                     G = Int((Rnd(1) * 7) + 6) * -1
@@ -1556,15 +1607,15 @@ Sub FOOTBALL ()
                     S6 = 0
 
                     If K(P1, 1) + K(P1, 3) <> 0 Then
-                        If (K(P1, 1) / (K(P1, 1) + K(P1, 3))) > (B6(P1, 7) / 100) And K3(P1, 0) - (B6(D, 0) * .3) > 4.5 And (B6(D, 0) * .3) > 4.5 And B6(P1, 7) < 50 Then
+                        If (K(P1, 1) / (K(P1, 1) + K(P1, 3))) > (leagRat_GAME(P1, 7) / 100) And K3(P1, 0) - (leagRat_GAME(D, 0) * .3) > 4.5 And (leagRat_GAME(D, 0) * .3) > 4.5 And leagRat_GAME(P1, 7) < 50 Then
                             S6 = Int(((K3(P1, 0) - 3.6) / .3) + .5) * -1
                         End If
                     End If
 
                     I2 = I2 + S6
 
-                    If P1 = H% Then I2 = I2 + 1
-                    If P1 <> H% And H% <> 2 Then I2 = I2 - 1
+                    If P1 = gameLoc Then I2 = I2 + 1
+                    If P1 <> gameLoc And gameLoc <> 2 Then I2 = I2 - 1
 
                     If I2 < 1 Then I2 = 1
 
@@ -1740,7 +1791,7 @@ Sub FOOTBALL ()
 
                 If G < 0 Then
 
-                    U$ = A1$(P1, I1) + " LOST"
+                    U$ = rbacks$(P1, I1) + " LOST"
                     Print
                     X = 1
                     X1 = 1
@@ -1779,7 +1830,7 @@ Sub FOOTBALL ()
                 Call d100(I2)
 
                 For I = 9 To 0 Step -1:
-                    If I2 <= A(P1, I) Then I1 = I
+                    If I2 <= rbRushAtt(P1, I) Then I1 = I
                 Next I
 
                 R1 = 1
@@ -1787,40 +1838,43 @@ Sub FOOTBALL ()
                 'If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) And RV% = 1 Then 8337
                 If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
 
-                    If A2(P1, I1) > 0 Then 3403
+                    If rbNumRec(P1, I1) > 0 Then 
+                        GoTo 3403
+                    Else
 
-                    For I5 = 0 To 9
-                        If A1$(P1, I5) = A3$(P1, Q6%(P1)) Then I1 = I5: GoTo 3403
-                    Next
+                        For I5 = 0 To 9
+                            If rbacks$(P1, I5) = qbacks$(P1, Q6%(P1)) Then I1 = I5: GoTo 3403
+                        Next
 
-                    If RV% = 1 Then 3181
+                        If RV% = 1 Then 
+                            GoTo 3181
+                        Else
+                            GoTo 3401
+                        End If
 
-                    GoTo 3401
-
-                End If
-
-                I2 = A1(P1, I1) + B6(D, 0) + WX%(4)
-
-                If RV% = 1 Then
-
-                    Call REVGAIN
-                    GoTo 3416
+                    End If
 
                 Else
 
-                    GoTo 3403
+                    I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0) + WX%(4)
+
+                    If RV% = 1 Then
+                        Call REVGAIN
+                        GoTo 3416
+                    Else
+                        GoTo 3403
+                    End If
 
                 End If
 
             End If 'Done checking KJ
-
 
         Case 9 To 18
 
             Call PASSBALL
 
             'SACKED
-            If I < S1%(3, P2 - 8, D3) + B6(P1, 5) + B6(D, 6) + 1 Then
+            If I < S1%(3, P2 - 8, D3) + leagRat_GAME(P1, 5) + leagRat_GAME(D, 6) + 1 Then
 
                 R1 = 1
                 W5 = 1
@@ -1830,7 +1884,6 @@ Sub FOOTBALL ()
                 If P2 = 10 Or P2 = 9 Or P2 = 13 Then G = (Int(Rnd(1) * 5) + 3)
                 If P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18 Then G = (Int(Rnd(1) * 7) + 4)
 
-                '-- Beginning of a routine???
                 3541 '
                 Call YARDAGE
                 Call SACK
@@ -1838,17 +1891,17 @@ Sub FOOTBALL ()
                 'Yardage for sack is negative
                 G = G * -1
 
-                If intDS%(1 - P1) <> 0 Then
+                If defSacks(1 - P1) <> 0 Then
 
                     M5 = 0
                     RN = Int(Rnd(1) * DDS(1 - P1)) + 1
 
                     For Z1 = 0 To 14
 
-                        M5 = M5 + DS(1 - P1, Z1)
+                        M5 = M5 + sacks(1 - P1, Z1)
 
                         If RN <= M5 Then
-                            U$ = U$ + " BY " + DS$(1 - P1, Z1)
+                            U$ = U$ + " BY " + defSacks$(1 - P1, Z1)
                             Exit For
                         End If
 
@@ -1864,13 +1917,12 @@ Sub FOOTBALL ()
 
                 If E = 1 Then Call GoForTwo
 
-                If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
-
-                F% = 1
-
-                Call FUMBLE
-
-                '-- End of a routine???
+                If Int((G + Y) * 10 + .5) / 10 < .05 Then 
+                    GoTo 3250
+                Else
+                    F% = 1
+                    Call FUMBLE
+                End If
 
                 GoTo 3309
 
@@ -1880,12 +1932,12 @@ Sub FOOTBALL ()
             rollout% = 0
 
             'When would mobility ever be 0???
-            If R9%(P1) > 0 Then
+            If qbMobility(P1) > 0 Then
                 Call d100(I)
-                If I <= R9%(P1) Then GoTo 3545
+                If I <= qbMobility(P1) Then GoTo 3545
             End If
 
-            If R9%(P1) > 0 Then GoTo 3532
+            If qbMobility(P1) > 0 Then GoTo 3532
 
             If (P2 = 9 Or P2 = 10 Or P2 = 13) And I <= 5 Then rollout% = 1
             If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17) And I <= 10 Then rollout% = 1
@@ -1894,13 +1946,15 @@ Sub FOOTBALL ()
 
             If rollout% = 1 Then
                 3545 '
-                If R9%(P1) > 0 Then
-                    R1 = Int((R9%(P1) * .67) + .5)
-                    R1 = (R1 * 2)
+                If qbMobility(P1) > 0 Then
+                    'Yardage gain = 0-12, based on mobility
+                    'R1 = 4/3 of rating, rounded up
+                    'Gain is from 0 to R1
+                    R1 = (Int((qbMobility(P1) * .67) + .5)) * 2
                     G = Int(Rnd(1) * R1)
-                End If
-
-                If R9%(P1) = 0 Then
+                Else
+                    'Mobility = 0
+                    'Yardage gain = 1-12
                     G = Int(Rnd(1) * 12) + 1
                 End If
 
@@ -1909,13 +1963,12 @@ Sub FOOTBALL ()
                 'QB Keeper
                 If P2 = 17 Or P2 = 18 Then
 
-                    'Call pbplog(2252)
                     'QB RUN
                     I6 = 0
 
                     For I4 = 0 To 9
-                        If A1$(P1, I4) = A3$(P1, Q6%(P1)) Then
-                            I6 = A1(P1, I4)
+                        If rbacks$(P1, I4) = qbacks$(P1, Q6%(P1)) Then
+                            I6 = rbRushAvg(P1, I4)
                             Exit For
                         End If
                     Next I4
@@ -1943,13 +1996,13 @@ Sub FOOTBALL ()
                     Call MOVEBALL
 
                     If P2 = 17 Then
-                        U$ = A3$(P1, I1) + " KEEPS IT ON THE ROLLOUT AND RUNS FOR"
+                        U$ = qbacks$(P1, I1) + " KEEPS IT ON THE ROLLOUT AND RUNS FOR"
                     Else
-                        U$ = A3$(P1, I1) + " KEEPS IT ON THE BOOTLEG AND RUNS FOR"
+                        U$ = qbacks$(P1, I1) + " KEEPS IT ON THE BOOTLEG AND RUNS FOR"
                     End If
 
                 Else
-                    U$ = A3$(P1, I1) + " IS CHASED FROM THE POCKET"
+                    U$ = qbacks$(P1, I1) + " IS CHASED FROM THE POCKET"
                     Call PBP
                     U$ = "HE IS FORCED TO RUN FOR"
                 End If
@@ -1987,7 +2040,7 @@ Sub FOOTBALL ()
                 Call d100(I)
 
                 'INTERCEPTED
-                If I > (100 - A8(P1, I1) - S1%(0, P2 - 8, D3) + B6(D, 2)) Then 3552
+                If I > (100 - qbPctInt(P1, I1) - S1%(0, P2 - 8, D3) + leagRat_GAME(D, 2)) Then 3552
 
                 Call ARMADJUST
 
@@ -1995,10 +2048,10 @@ Sub FOOTBALL ()
                     'Pass completed
 
                     If I3 > 9 Then
-                        I4 = A5(P1, I3 - 10)
+                        I4 = wrYdsPerC(P1, I3 - 10)
                         RY = I4
                     Else
-                        I4 = A3(P1, I3)
+                        I4 = rbYdsPerC(P1, I3)
                         RY = I4
                     End If
 
@@ -2013,8 +2066,8 @@ Sub FOOTBALL ()
 
                         I4 = I4 + S1%(2, P2 - 8, D3)
 
-                        If YC(D) / 100 > .5 Then I4 = I4 - (1 - YC(D) / 100) * 10
-                        If YC(D) / 100 < .5 Then I4 = I4 + YC(D) / 100 * 10
+                        If ydsPerComp(D) / 100 > .5 Then I4 = I4 - (1 - ydsPerComp(D) / 100) * 10
+                        If ydsPerComp(D) / 100 < .5 Then I4 = I4 + ydsPerComp(D) / 100 * 10
 
                         Call OVERUSE
 
@@ -2023,9 +2076,9 @@ Sub FOOTBALL ()
 
                         I = Int(Rnd(1) * 25) + 1
 
-                        If P2 <> 12 And P2 <> 15 And I = 25 Or (P2 = 12 Or P2 = 15) And I = 25 And G9 = 0 Or (P2 = 12 Or P2 = 15) And G9 <> 0 And I >= 24 Then
+                        If P2 <> 12 And P2 <> 15 And I = 25 Or (P2 = 12 Or P2 = 15) And I = 25 And ruleOptType = 0 Or (P2 = 12 Or P2 = 15) And ruleOptType <> 0 And I >= 24 Then
                             G = Int(Rnd(1) * I4 * 12) + 1 + (I4 * 6)
-                            If I = 25 And Int(Rnd(1) * 32) = 11 And S(P1, 0) > 13 And XD(D) > .6 Then G = 102
+                            If I = 25 And Int(Rnd(1) * 32) = 11 And score(P1, 0) > 13 And XD(D) > .6 Then G = 102
                         Else
                             If I <= 19 Then
                                 G = Int(Rnd(1) * 13) + 1 + ((I4 * 2.3) - 7.2)
@@ -2038,7 +2091,7 @@ Sub FOOTBALL ()
 
                     3586 ' 
                     'ADDED AFTER REPLAYS OF 5-24-93
-                    If Int(Rnd(1) * 3) + 1 = 1 And G9 <> 0 Then G = G - 1
+                    If Int(Rnd(1) * 3) + 1 = 1 And ruleOptType <> 0 Then G = G - 1
 
                     Call YARDAGE
 
@@ -2143,22 +2196,21 @@ Sub FOOTBALL ()
 
             Call d100(I3)
 
-            'Was previously I2 not J
             For J = 2 To 0 Step -1
-                If I3 <= B1(D, J) Then I1 = J
+                If I3 <= prNumRet(D, J) Then I1 = J
             Next J
 
             PR = I1
 
-            U$ = A5$(D, PR) + " (" + Str$(Int(B2(D, PR) * 3)) + " AVG) IS DEEP TO RECEIVE"
+            U$ = pret$(D, PR) + " (" + Str$(Int(prYdsPerRet(D, PR) * 3)) + " AVG) IS DEEP TO RECEIVE"
             Call PBP
 
-            If J6 = 1 And P1 = CT Or J6 = 2 Then
+            If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
                 I1 = 0
             Else
 
                 Call FRAMEOPTION(9, P1)
-                Print "PUNTING OPTIONS "; A$(P1)
+                Print "PUNTING OPTIONS "; gameTeams$(P1)
                 Locate 12, 14
                 Locate , 14: Print "0 - PUNT NORMAL"
                 Locate , 14: Print "1 - PUNT AWAY FROM THE RETURN MAN"
@@ -2185,7 +2237,7 @@ Sub FOOTBALL ()
 
                     Call d100(I)
                     X = 0
-                    G = B3(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * B3(P1, 0)))) + 11
+                    G = puntYdsPerP(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * puntYdsPerP(P1, 0)))) + 11
 
                     If WX%(0) = P1 Then
                         G = G - Int(Rnd(1) * 7) + 3 - WX%(1)
@@ -2196,9 +2248,9 @@ Sub FOOTBALL ()
                     Call d100(RN)
 
                     If RN <= 50 Then
-                        U$ = A$(P1) + " IS QUICK KICKING!!"
+                        U$ = gameTeams$(P1) + " IS QUICK KICKING!!"
                     Else
-                        U$ = AA$(P1) + " ARE QUICK KICKING!!"
+                        U$ = gameMascots$(P1) + " ARE QUICK KICKING!!"
                     End If
                     Call PBP
 
@@ -2211,7 +2263,7 @@ Sub FOOTBALL ()
 
                     Call YARDAGE
 
-                    U$ = "KICK BY " + A$(P1) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
+                    U$ = "KICK BY " + gameTeams$(P1) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                     Call PBP
 
                     K(P1, 7) = K(P1, 7) + 1
@@ -2276,9 +2328,9 @@ Sub FOOTBALL ()
             End If
 
             X = 0
-            G = B3(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * B3(P1, 0)))) + 3
+            G = puntYdsPerP(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * puntYdsPerP(P1, 0)))) + 3
 
-            If 100 - Y <= ((B3(P1, 0) * 2) + 28) Then G = G + 100 - Y - (31 + B3(P1, 0) * 2)
+            If 100 - Y <= ((puntYdsPerP(P1, 0) * 2) + 28) Then G = G + 100 - Y - (31 + puntYdsPerP(P1, 0) * 2)
 
             If WX%(0) = P1 Then
                 G = G - Int(Rnd(1) * 7) + 3 - WX%(1)
@@ -2290,7 +2342,7 @@ Sub FOOTBALL ()
 
             Call d100(RN)
 
-            If J6 = 1 And D = CT Or J6 = 2 Then
+            If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
                 If RN <= 10 Then
                     choice = 1
                 Else
@@ -2300,13 +2352,13 @@ Sub FOOTBALL ()
             Else
 
                 Call FRAMEOPTION(9, D)
-                Print "THE PUNTING TEAM FOR "; A$(P1); " IS ON THE FIELD"
+                Print "THE PUNTING TEAM FOR "; gameTeams$(P1); " IS ON THE FIELD"
                 Locate 12, 14
                 Locate , 14: Print "0 - SET UP PUNT RETURN"
                 Locate , 14: Print "1 - GO FOR THE BLOCK"
                 Locate , 14: Print "2 - CALL PUNT-SAFE"
                 Print
-                Locate , 14: Print "SELECT OPTION "; A$(D); " COACH"
+                Locate , 14: Print "SELECT OPTION "; gameTeams$(D); " COACH"
 
                 Do
                     I$ = GetKeyPress$
@@ -2324,7 +2376,7 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
-                        U$ = A$(D) + " IS IN PUNT SAFE SET...FAKE PUNT? (Y/N)"
+                        U$ = gameTeams$(D) + " IS IN PUNT SAFE SET...FAKE PUNT? (Y/N)"
                         Call PBP
 
                         Do
@@ -2338,7 +2390,7 @@ Sub FOOTBALL ()
                         If I1 = 3 Then
                             ' *** FAKE W/PASS ***
                             G = 0
-                            U$ = "IT'S A FAKE!!! " + A6$(P1, 0) + " IS LOOKING TO PASS"
+                            U$ = "IT'S A FAKE!!! " + punter$(P1, 0) + " IS LOOKING TO PASS"
                             Call PBP
 
                             Call d100(RN)
@@ -2443,7 +2495,7 @@ Sub FOOTBALL ()
             End Select
 
             PSNAP:
-            U$ = A6$(P1, 0) + " WAITS FOR THE SNAP"
+            U$ = punter$(P1, 0) + " WAITS FOR THE SNAP"
             Call PBP
 
             I5 = Int(Rnd(1) * 300) + 1
@@ -2459,15 +2511,15 @@ Sub FOOTBALL ()
                 K(P1, 10) = K(P1, 10) + 1
                 K(P1, 9) = K(P1, 9) + 1
 
-                If Y + G < -9.999 Then S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2: GoTo 3251
+                If Y + G < -9.999 Then score(D, Q) = score(D, Q) + 2: score(D, 0) = score(D, 0) + 2: GoTo 3251
 
                 If Y + G <= .001 And Y + G >= -9.999 Then
                 
                     Call d100(RN0)
 
                     If RN0 <= 50 Then
-                        S(D, Q) = S(D, Q) + 2
-                        S(D, 0) = S(D, 0) + 2
+                        score(D, Q) = score(D, Q) + 2
+                        score(D, 0) = score(D, 0) + 2
                         GoTo 3251
                     Else
                         X1 = 10
@@ -2487,9 +2539,9 @@ Sub FOOTBALL ()
                 Call d100(RN)
 
                 If RN <= 50 Then
-                    U$ = A$(P1) + " TAKES OVER ON THE"
+                    U$ = gameTeams$(P1) + " TAKES OVER ON THE"
                 Else
-                    U$ = AA$(P1) + " TAKE OVER ON THE"
+                    U$ = gameMascots$(P1) + " TAKE OVER ON THE"
                 End If
 
                 If Y > 50 Then
@@ -2535,7 +2587,7 @@ Sub FOOTBALL ()
                     GoTo 700
                 End If
 
-                U$ = A6$(P1, 0) + " TAKES THE SNAP"
+                U$ = punter$(P1, 0) + " TAKES THE SNAP"
                 Call PBP
 
                 Call d100(RN)
@@ -2562,7 +2614,7 @@ Sub FOOTBALL ()
 
                 Call PBP
 
-                U$ = "PUNT BY " + A6$(P1, 0) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
+                U$ = "PUNT BY " + punter$(P1, 0) + " TRAVELS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                 Call PBP
 
                 K(P1, 7) = K(P1, 7) + 1
@@ -2652,7 +2704,7 @@ Sub FOOTBALL ()
 
                         I = Int(Rnd(1) * 1000) + 1
 
-                        If I >= 960 - PA%(P1, 0) Then
+                        If I >= 960 - tmRat_GAME(P1, 0) Then
                             U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
                             Call PBP
 
@@ -2693,7 +2745,7 @@ Sub FOOTBALL ()
 
             'Was previously I2 not J
             For J = 1 To 0 Step -1
-                If I <= B5(P1, J) Then I1 = J
+                If I <= kickerFGPct(P1, J) Then I1 = J
             Next J
 
             Q7%(P1) = I1
@@ -2702,18 +2754,18 @@ Sub FOOTBALL ()
             '--- this should be changed, but not
             '--- without considering how the
             '--- distance impacts accuracy
-            If Y < 52 + intY8% Then
+            If Y < 52 + goalPostAdj Then
                 U$ = "NOT IN FIELD GOAL RANGE"
                 Call PBP
                 GoTo 700
             Else
 
                 ' *** FIELD GOAL DECISION ***
-                If J6 = 1 And P1 = CT Or J6 = 2 Then
+                If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
                     I1 = 0
                 Else
                     Call FRAMEOPTION(6, P1)
-                    Print "FIELD GOAL OPTIONS "; A$(P1)
+                    Print "FIELD GOAL OPTIONS "; gameTeams$(P1)
                     Locate 12, 14
                     Locate , 14: Print "0 - ATTEMPT FIELD GOAL"
                     Locate , 14: Print "1 - FAKE FIELD GOAL (RUN)"
@@ -2732,17 +2784,17 @@ Sub FOOTBALL ()
 
                 Call d100(RN)
 
-                If J6 = 1 And D = CT Or J6 = 2 Then
+                If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
                     choice = 1
                 Else
                     Call FRAMEOPTION(9, D)
 
-                    Print "THE FIELD GOAL UNIT FOR "; A$(P1); " IS ON THE FIELD"
+                    Print "THE FIELD GOAL UNIT FOR "; gameTeams$(P1); " IS ON THE FIELD"
                     Locate 12, 14
                     Locate , 14: Print "1 - GO FOR THE BLOCK"
                     Locate , 14: Print "2 - CALL FIELD GOAL-SAFE"
                     Print
-                    Locate , 14: Print "SELECT OPTION "; A$(D); " COACH"
+                    Locate , 14: Print "SELECT OPTION "; gameTeams$(D); " COACH"
 
                     Do
                         I$ = GetKeyPress$
@@ -2757,7 +2809,7 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
-                        U$ = A$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL? (Y/N)"
+                        U$ = gameTeams$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL? (Y/N)"
                         Call PBP
                     Else
                         Do
@@ -2942,7 +2994,7 @@ Sub FOOTBALL ()
 
         Case 24
             I3 = P1
-            Call KICKER
+            Call CHOOSEKICKER
 
             GoTo 700
 
@@ -2955,14 +3007,14 @@ Sub FOOTBALL ()
     X = 2
     I = Int(Rnd(1) * 1000) + 1
 
-    If I <= 50 + PA%(D, 0) And P2 <> 13 And E = 0 Then
+    If I <= 50 + tmRat_GAME(D, 0) And P2 <> 13 And E = 0 Then
 
         U$ = "DEFENSIVE PASS INTERFERENCE"
         If P2 = 9 Or P2 = 10 Or P2 = 13 Then G = Int(Rnd(1) * 10) + 1
         If P2 = 12 Or P2 = 15 Then G = Int(Rnd(1) * 20) + 21
         If P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18 Then G = Int(Rnd(1) * 10) + 11
 
-        If G9 = 0 And Y9 >= 3 And G > 15 Then G = 15
+        If ruleOptType = 0 And ruleOptColl >= 3 And G > 15 Then G = 15
 
         K(D, 11) = K(D, 11) + 1
 
@@ -2970,7 +3022,7 @@ Sub FOOTBALL ()
 
         If G + Y >= 99.99 Then
 
-            If G9 <> 0 Then
+            If ruleOptType <> 0 Then
                 K(D, 12) = K(D, 12) + 100 - Y - 1
                 U$ = U$ + " IN THE END ZONE"
                 Call PBP
@@ -3041,25 +3093,25 @@ Sub FOOTBALL ()
     'IE, TOUCHDOWN! 89 SAN FRANCISCO
     '    TOUCHDOWN! 49ERS
     If RN <= 50 Then
-        U$ = "T O U C H D O W N !!! " + A$(P1)
+        U$ = "T O U C H D O W N !!! " + gameTeams$(P1)
     Else
-        U$ = "T O U C H D O W N !!! " + AA$(P1)
+        U$ = "T O U C H D O W N !!! " + gameMascots$(P1)
     End If
 
     Call PBP
-    Call SCORE
+    Call SCOREUPD
     Call COMPILER
 
-    If G9 <> 4 Then
+    If ruleOptType <> 4 Then
         'Not WFL
         'Touchdowns worth 6
-        S(P1, Q) = S(P1, Q) + 6
-        S(P1, 0) = S(P1, 0) + 6
+        score(P1, Q) = score(P1, Q) + 6
+        score(P1, 0) = score(P1, 0) + 6
     Else
         'WFL
         'Touchdowns worth 7
-        S(P1, Q) = S(P1, Q) + 7
-        S(P1, 0) = S(P1, 0) + 7
+        score(P1, Q) = score(P1, Q) + 7
+        score(P1, 0) = score(P1, 0) + 7
     End If
 
     Call DisplayField
@@ -3070,7 +3122,7 @@ Sub FOOTBALL ()
     Call SCOREBOARD
 
     'Pro Overtime
-    If G9 <> 0 And Q > 4 Then 3364
+    If ruleOptType <> 0 And Q > 4 Then 3364
 
     GoSub PointsAfterTD
 
@@ -3089,13 +3141,13 @@ Sub FOOTBALL ()
 
     Call SCOREBOARD
 
-    If G9 <> 0 And intY8% < 0 Then Y = 40: YT = 60
-    If G9 = 1 And Y8 = 3 Or G9 = 4 Then Y = 30: YT = 70
-    If G9 = 0 And Y9 = 0 Then Y = 40: YT = 60
+    If ruleOptType <> 0 And goalPostAdj < 0 Then Y = 40: YT = 60
+    If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then Y = 30: YT = 70
+    If ruleOptType = 0 And ruleOptColl = 0 Then Y = 40: YT = 60
 
     Call SCOREBOARD
 
-    If R1 > 0 And R1 < 3 And 100 - Y > 10 And G9 <> 0 Then K(D, 0) = K(D, 0) + 1
+    If R1 > 0 And R1 < 3 And 100 - Y > 10 And ruleOptType <> 0 Then K(D, 0) = K(D, 0) + 1
 
     'Overtime
     If Q > 4 Then 3364
@@ -3105,8 +3157,8 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     3250 ' *** SAFETY ***
-    S(D, Q) = S(D, Q) + 2
-    S(D, 0) = S(D, 0) + 2
+    score(D, Q) = score(D, Q) + 2
+    score(D, 0) = score(D, 0) + 2
     K(D, 19) = K(D, 19) + 1
 
     Call COMPILER
@@ -3118,7 +3170,7 @@ Sub FOOTBALL ()
     O = 5
     X1 = 7
 
-    Call SCORE
+    Call SCOREUPD
     Call CHANGEPOSS
 
     I6 = 99
@@ -3148,7 +3200,7 @@ Sub FOOTBALL ()
         Y1 = 10
 
         If 100 - Y < 9.95 Then Y1 = 100 - Y
-        If O < 1 And G9 = 0 And R5% = 0 Then O = 1
+        If O < 1 And ruleOptType = 0 And R5% = 0 Then O = 1
 
         K(P1, 0) = K(P1, 0) + 1
 
@@ -3166,7 +3218,7 @@ Sub FOOTBALL ()
 
     I = Int(Rnd(1) * 1000) + 1
 
-    If I <= 6 + PA%(D, 0) Then
+    If I <= 6 + tmRat_GAME(D, 0) Then
 
         U$ = "PENALTY AFTER WHISTLE - "
         I = Int(Rnd(1) * 10) + 1
@@ -3264,12 +3316,12 @@ Sub FOOTBALL ()
         Case 1
 
             Select Case I4
-                Case 1 To 7 + PA%(P1, 0)
+                Case 1 To 7 + tmRat_GAME(P1, 0)
                     U$ = U$ + "OFFENSE... ILLEGAL MOTION 5 YARDS ***"
                     P = -5
 
-                Case 7 + PA%(P1, 0) To 25 + PA%(P1, 0)
-                    If (G9 <> 0 And Y8 = 1 Or G9 = 0 And Y9 < 3) Then
+                Case 7 + tmRat_GAME(P1, 0) To 25 + tmRat_GAME(P1, 0)
+                    If (ruleOptType <> 0 And ruleOptPro = 1 Or ruleOptType = 0 And ruleOptColl < 3) Then
                         U$ = U$ + "OFF... HOLDING 15 YARDS ***"
                         P = -15
                     Else
@@ -3279,7 +3331,7 @@ Sub FOOTBALL ()
 
                     HL% = 1
 
-                Case 25 + PA%(P1, 0) To 42 + PA%(P1, 0) + PA%(D, 0)
+                Case 25 + tmRat_GAME(P1, 0) To 42 + tmRat_GAME(P1, 0) + tmRat_GAME(D, 0)
                     U$ = U$ + "DEF... LINED IN NEUTRAL ZONE 5 YARDS ***"
                     P = 5
 
@@ -3299,8 +3351,8 @@ Sub FOOTBALL ()
         Case 2
             Select Case I4
 
-                Case 1 To 17 + PA%(P1, 0)
-                    If (G9 <> 0 And Y8 <> 0 And Y8 <> 3 Or G9 = 0 And Y9 < 3) Then
+                Case 1 To 17 + tmRat_GAME(P1, 0)
+                    If (ruleOptType <> 0 And ruleOptPro <> 0 And ruleOptPro <> 3 Or ruleOptType = 0 And ruleOptColl < 3) Then
                         U$ = U$ + "OFF... HOLDING 15 YARDS ***"
                         P = -15
                         HL% = 1
@@ -3310,15 +3362,15 @@ Sub FOOTBALL ()
                         HL% = 1
                     End If
 
-                Case 17 + PA%(P1, 0) To 22 + PA%(P1, 0)
+                Case 17 + tmRat_GAME(P1, 0) To 22 + tmRat_GAME(P1, 0)
                     U$ = U$ + "OFF... ILLEGAL MOTION 5 YARDS ***"
                     P = -5
 
-                Case 22 + PA%(P1, 0) To 27 + PA%(P1, 0) + PA%(D, 0)
+                Case 22 + tmRat_GAME(P1, 0) To 27 + tmRat_GAME(P1, 0) + tmRat_GAME(D, 0)
                     U$ = U$ + "DEF... LINED IN NEUTRAL ZONE 5 YARDS ***"
                     P = 5
 
-                Case 27 + PA%(P1, 0) + PA%(D, 0) To 42 + PA%(P1, 0) + PA%(D, 0)
+                Case 27 + tmRat_GAME(P1, 0) + tmRat_GAME(D, 0) To 42 + tmRat_GAME(P1, 0) + tmRat_GAME(D, 0)
                     U$ = U$ + "DEF... HOLDING 5 YARDS - 1ST DOWN! ***"
                     IH = 1
                     P = 5
@@ -3338,7 +3390,7 @@ Sub FOOTBALL ()
 
     End Select
 
-    If (G9 <> 0 Or Y9 >= 4) Or (G9 = 0 And HL% = 1) Then
+    If (ruleOptType <> 0 Or ruleOptColl >= 4) Or (ruleOptType = 0 And HL% = 1) Then
         If R1 = 2 Then P = P - Int(Rnd(1) * 8) + 1
         If R1 = 1 Then P = P + Int(Rnd(1) * 5) + 1
     End If
@@ -3348,22 +3400,22 @@ Sub FOOTBALL ()
     U$ = U$ + " 1-ACCEPT 2-DECLINE "
     Call PBP
 
-    If J6 <> 0 Then
+    If playerOpt <> 0 Then
 
         I$ = "2"
 
-        If J6 = 1 Then
+        If playerOpt = 1 Then
 
-            If (P > 0 And D = CT) Or (P < 0 And P1 = CT) Then I$ = GetKeyPress$
+            If (P > 0 And D = compTeam) Or (P < 0 And P1 = compTeam) Then I$ = GetKeyPress$
 
-            If Not (P < 0 And P1 <> CT And D1 > 3 And G < Y1) Then
+            If Not (P < 0 And P1 <> compTeam And D1 > 3 And G < Y1) Then
 
-                If P > 0 And D <> CT Then
+                If P > 0 And D <> compTeam Then
 
                     If IH = 1 And Y1 - G > 0 Then
                         I$ = "1"
                     Else
-                        If G > 5 Or P < 0 And P1 <> CT And D1 = 3 And Y1 - G > 3 Or P < 0 And P1 <> CT And G < 0 Then
+                        If G > 5 Or P < 0 And P1 <> compTeam And D1 = 3 And Y1 - G > 3 Or P < 0 And P1 <> compTeam And G < 0 Then
                             '3319
                             'Not sure why this is designed as is I can only imagine 
                             'it was helpful to have many statements going to 3319
@@ -3405,7 +3457,7 @@ Sub FOOTBALL ()
             Y1 = 10
 
             If 100 - Y < 9.95 Then Y1 = 100 - Y
-            If O < 1 And G9 = 0 And R5% = 0 Then O = 1
+            If O < 1 And ruleOptType = 0 And R5% = 0 Then O = 1
 
             K(P1, 0) = K(P1, 0) + 1
 
@@ -3425,7 +3477,7 @@ Sub FOOTBALL ()
 
     End If
 
-    3325 If G9 = 0 And Y9 = 0 Then O = 1
+    3325 If ruleOptType = 0 And ruleOptColl = 0 Then O = 1
     U$ = "PENALTY ACCEPTED"
     Call PBP
 
@@ -3490,7 +3542,7 @@ Sub FOOTBALL ()
     Y1 = 10
 
     If 100 - Y < 9.95 Then Y1 = 100 - Y
-    If O < 1 And G9 = 0 And R5% = 0 Then O = 1
+    If O < 1 And ruleOptType = 0 And R5% = 0 Then O = 1
 
     K(P1, 0) = K(P1, 0) + 1
 
@@ -3532,7 +3584,7 @@ Sub FOOTBALL ()
         Y1 = 10
 
         If 100 - Y < 9.95 Then Y1 = 100 - Y
-        If O < 1 And G9 = 0 And R5% = 0 Then O = 1
+        If O < 1 And ruleOptType = 0 And R5% = 0 Then O = 1
 
         K(P1, 0) = K(P1, 0) + 1
 
@@ -3606,7 +3658,7 @@ Sub FOOTBALL ()
 
                 Call TEAMBOX(1, 1)
 
-                If Not (AP = 1 And J6 = 2) Then
+                If Not (autoPlay = 1 And playerOpt = 2) Then
                     Do
                         U$ = "DISPLAY STATS AGAIN? (Y/N)"
                         Locate 7, (80 - Len(U$)) / 2
@@ -3617,7 +3669,7 @@ Sub FOOTBALL ()
 
                 End If
 
-            Loop Until UCase$(I$) = "N" Or (AP = 1 And J6 = 2)
+            Loop Until UCase$(I$) = "N" Or (autoPlay = 1 And playerOpt = 2)
 
             GoTo 850
 
@@ -3629,7 +3681,7 @@ Sub FOOTBALL ()
             Call SCOREBOARD
 
             'Check if we're configured for overtime
-            If NG%(14) = 0 Or (S(0, 0) <> S(1, 0) And NG%(14) <> 3) Or (S(0, 0) <> S(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
+            If NG%(14) = 0 Or (score(0, 0) <> score(1, 0) And NG%(14) <> 3) Or (score(0, 0) <> score(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
 
                 'Nope!
                 'Leave Q at 4
@@ -3702,13 +3754,13 @@ Sub FOOTBALL ()
                             P1 = 1
 
                             D = 0
-                            If S(P1, 0) > S(D, 0) Then 3364
+                            If score(P1, 0) > score(D, 0) Then 3364
 
                         ElseIf OT(1) = 1 Then
                             OT(0) = 1
                             P1 = 0
                             D = 1
-                            If S(P1, 0) > S(D, 0) Then 3364
+                            If score(P1, 0) > score(D, 0) Then 3364
                         End If
 
                         GoTo 700
@@ -3725,8 +3777,8 @@ Sub FOOTBALL ()
                         Call CHANGEPOSS
 
                         '1 timeout for each team
-                        T1(0) = T1(0) + 1
-                        T1(1) = T1(1) + 1
+                        timeouts(0) = timeouts(0) + 1
+                        timeouts(1) = timeouts(1) + 1
 
                         '1st and 10
                         D1 = 1
@@ -3737,7 +3789,7 @@ Sub FOOTBALL ()
                         Y = 40
 
                         '-- Pro Rules
-                        If G9 <> 0 Then Y = 35
+                        If ruleOptType <> 0 Then Y = 35
 
                         If P1 = 0 Then D = 1
                         If P1 = 1 Then D = 0
@@ -3748,8 +3800,8 @@ Sub FOOTBALL ()
 
                     Else
 
-                        T1(0) = T1(0) + 1
-                        T1(1) = T1(1) + 1
+                        timeouts(0) = timeouts(0) + 1
+                        timeouts(1) = timeouts(1) + 1
                         OT = 1
 
                         GoTo 700
@@ -3785,7 +3837,7 @@ Sub FOOTBALL ()
 
     3552 '
 
-    If intDI%(1 - P1) > 0 Then
+    If defInts(1 - P1) > 0 Then
         Call QBTHROW
         Call FINDINT
         U$ = "PASS IS INTERCEPTED BY " + X$
@@ -3861,7 +3913,10 @@ Sub FOOTBALL ()
         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
         SI(P1, Z1, 1) = SI(P1, Z1, 1) + 100 - Y
         SI(P1, Z1, 2) = SI(P1, Z1, 2) + 1
-        If 100 - Y > IR(P1, Z1) Then strIR$(P1, Z1) = "t": IR(P1, Z1) = 100 - Y
+        If 100 - Y > IR(P1, Z1) Then 
+            strIR$(P1, Z1) = "t"
+            IR(P1, Z1) = 100 - Y
+        End If
         Call PBP
         GoTo 3200
     End If
@@ -3875,8 +3930,13 @@ Sub FOOTBALL ()
 
     SI(P1, Z1, 1) = SI(P1, Z1, 1) + G
 
-    If G > IR(P1, Z1) Then strIR$(P1, Z1) = "": IR(P1, Z1) = G
+    If G > IR(P1, Z1) Then 
+        strIR$(P1, Z1) = ""
+        IR(P1, Z1) = G
+    End If
+
     If Y >= 90 Then Y1 = 100 - Y
+
     'College overtime
     If NG%(14) = 3 And Q > 4 Then 3364
 
@@ -3888,7 +3948,7 @@ Sub FOOTBALL ()
 
     I = Int(Rnd(1) * 1000) + 1
 
-    If I > 950 - PA%(P1, 0) Then
+    If I > 950 - tmRat_GAME(P1, 0) Then
 
         U$ = "*** PENALTY - 10 YD ILLEGAL BLOCK ON THE RETURN ***"
         Call PBP
@@ -3913,7 +3973,7 @@ Sub FOOTBALL ()
     If O <> 8 Then
 
         'Pro Rules
-        If G9 <> 0 Then
+        If ruleOptType <> 0 Then
 
             If gameClock! > 120.01 And Q <> 1 And Q <> 3 And Not (gameClock! > 159.99 And O = 0) And Not (gameClock! > 147 And O = 1) And Not (gameClock! > 142 And O = 2) And Not (gameClock! > 137 And O = 3) And Not (gameClock! > 126 And O = 4) And Not (gameClock! > 128 And O = 5) And Not (gameClock! > 130 And O = 6) And Not (gameClock! > 132 And O = 7) Then
 
@@ -3943,14 +4003,14 @@ Sub FOOTBALL ()
                         Call PBP
 
                     Case 2:
-                        If T1(P1) = 0 Then
+                        If timeouts(P1) = 0 Then
                             'If no timeouts
                             U$ = "HUDDLE"
                             Call PBP
                         Else
-                            U$ = "TIME OUT " + A$(P1) + " - THEY HAVE" + Str$(T1(P1) - 1) + " REMAINING"
+                            U$ = "TIME OUT " + gameTeams$(P1) + " - THEY HAVE" + Str$(timeouts(P1) - 1) + " REMAINING"
                             Call PBP
-                            T1(P1) = T1(P1) - 1
+                            timeouts(P1) = timeouts(P1) - 1
                             O = 9
 
                             Call AddPossessionTime(7, 10)
@@ -3963,14 +4023,14 @@ Sub FOOTBALL ()
 
                     Case 3
 
-                        If T1(D) = 0 Then
+                        If timeouts(D) = 0 Then
                             'If no timeouts
                             U$ = "HUDDLE"
                             Call PBP
                         Else
-                            U$ = "TIME OUT " + A$(D) + " - THEY HAVE" + Str$(T1(D) - 1) + " REMAINING"
+                            U$ = "TIME OUT " + gameTeams$(D) + " - THEY HAVE" + Str$(timeouts(D) - 1) + " REMAINING"
                             Call PBP
-                            T1(D) = T1(D) - 1
+                            timeouts(D) = timeouts(D) - 1
                             O = 9
 
                             Call AddPossessionTime(7, 10)
@@ -3989,7 +4049,7 @@ Sub FOOTBALL ()
                         End If
 
                     Case 5
-                        U$ = A3$(P1, Q6%(P1)) + " IS TRYING TO GET THE TEAM LINED UP"
+                        U$ = qbacks$(P1, Q6%(P1)) + " IS TRYING TO GET THE TEAM LINED UP"
                         Call PBP
 
                         O = 3
@@ -4016,11 +4076,11 @@ Sub FOOTBALL ()
 
         If O = 0 Then Call AddPossessionTime(33, 38)
 
-        If O = 0 And G9 <> 0 And gameClock! > 40 Then gameClock! = gameClock! - 4: timePoss(P1) = timePoss(P1) + 4
-        If O = 0 And G9 <> 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) >= 90 And Val(Left$(A$(1), 2)) >= 90 Then gameClock! = gameClock! - 3: timePoss(P1) = timePoss(P1) + 3
-        If O = 0 And G9 = 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) = 56 And Val(Left$(A$(1), 2)) = 56 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
-        If O = 0 And G9 = 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) = 57 And Val(Left$(A$(1), 2)) = 57 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
-        If O = 0 And G9 <> 0 And gameClock! > 43 And Val(Left$(A$(0), 2)) >= 93 And Val(Left$(A$(1), 2)) >= 93 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
+        If O = 0 And ruleOptType <> 0 And gameClock! > 40 Then gameClock! = gameClock! - 4: timePoss(P1) = timePoss(P1) + 4
+        If O = 0 And ruleOptType <> 0 And gameClock! > 43 And Val(Left$(gameTeams$(0), 2)) >= 90 And Val(Left$(gameTeams$(1), 2)) >= 90 Then gameClock! = gameClock! - 3: timePoss(P1) = timePoss(P1) + 3
+        If O = 0 And ruleOptType = 0 And gameClock! > 43 And Val(Left$(gameTeams$(0), 2)) = 56 And Val(Left$(gameTeams$(1), 2)) = 56 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
+        If O = 0 And ruleOptType = 0 And gameClock! > 43 And Val(Left$(gameTeams$(0), 2)) = 57 And Val(Left$(gameTeams$(1), 2)) = 57 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
+        If O = 0 And ruleOptType <> 0 And gameClock! > 43 And Val(Left$(gameTeams$(0), 2)) >= 93 And Val(Left$(gameTeams$(1), 2)) >= 93 Then gameClock! = gameClock! + 3: timePoss(P1) = timePoss(P1) - 3
 
         If O >= 1 And O <= 3 Then timeElapsed! = 27 - (O * 5) + (Int(Rnd(1) * 5) + 1): gameClock! = gameClock! - timeElapsed!: timePoss(P1) = timePoss(P1) + timeElapsed!
 
@@ -4038,16 +4098,16 @@ Sub FOOTBALL ()
 
     3602 'FIELD GOAL
 
-    If Y >= 97 + intY8% Then
-        F2 = B7(P1, Q7%(P1))
+    If Y >= 97 + goalPostAdj Then
+        F2 = kickerNumPAT(P1, Q7%(P1))
     Else
         Call FGDIST
     End If
 
-    U$ = A7$(P1, Q7%(P1)) + " TROTS ON TO TRY A FIELD GOAL"
+    U$ = kicker$(P1, Q7%(P1)) + " TROTS ON TO TRY A FIELD GOAL"
     Call PBP
 
-    U$ = "THIS WILL BE A" + Str$(Int(117 + intY8% - Y + .5)) + " YARD ATTEMPT"
+    U$ = "THIS WILL BE A" + Str$(Int(117 + goalPostAdj - Y + .5)) + " YARD ATTEMPT"
     Call PBP
 
     U$ = "HE WAITS FOR THE SNAP"
@@ -4068,15 +4128,15 @@ Sub FOOTBALL ()
         K(P1, 10) = K(P1, 10) + 1
         K(P1, 9) = K(P1, 9) + 1
 
-        If Y + G < -9.999 Then S(D, Q) = S(D, Q) + 2: S(D, 0) = S(D, 0) + 2: GoTo 3251
+        If Y + G < -9.999 Then score(D, Q) = score(D, Q) + 2: score(D, 0) = score(D, 0) + 2: GoTo 3251
 
         If Y + G <= .001 And Y + G >= -9.999 Then
 
             Call d100(RN0)
 
             If RN0 <= 50 Then
-                S(D, Q) = S(D, Q) + 2
-                S(D, 0) = S(D, 0) + 2
+                score(D, Q) = score(D, Q) + 2
+                score(D, 0) = score(D, 0) + 2
                 GoTo 3251
             Else
                 X1 = 10
@@ -4094,9 +4154,9 @@ Sub FOOTBALL ()
             Call d100(RN)
 
             If RN <= 50 Then
-                U$ = A$(P1) + " TAKES OVER ON THE"
+                U$ = gameTeams$(P1) + " TAKES OVER ON THE"
             Else
-                U$ = AA$(P1) + " TAKE OVER ON THE"
+                U$ = gameMascots$(P1) + " TAKE OVER ON THE"
             End If
 
             If Y > 50 Then
@@ -4117,7 +4177,7 @@ Sub FOOTBALL ()
 
         Call d100(I)
 
-        If (I >= 97 And Y >= 68 + intY8% And I2 <> 2) Or (I >= 92 And Y < 68 + intY8% And I2 <> 2) Then
+        If (I >= 97 And Y >= 68 + goalPostAdj And I2 <> 2) Or (I >= 92 And Y < 68 + goalPostAdj And I2 <> 2) Then
 
             K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
             U$ = "KICK IS BLOCKED!!!"
@@ -4137,9 +4197,9 @@ Sub FOOTBALL ()
 
                 Call d100(RN)
                 If RN <= 50 Then
-                    U$ = A$(P1) + " RECOVERS IT IN THE END ZONE!!"
+                    U$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
                 Else
-                    U$ = AA$(P1) + " RECOVER IT IN THE END ZONE!!"
+                    U$ = gameMascots$(P1) + " RECOVER IT IN THE END ZONE!!"
                 End If
 
                 Call PBP
@@ -4178,9 +4238,9 @@ Sub FOOTBALL ()
 
                     Call d100(RN)
                     If RN <= 50 Then
-                        U$ = A$(P1) + " TAKES IT INTO THE END ZONE!!"
+                        U$ = gameTeams$(P1) + " TAKES IT INTO THE END ZONE!!"
                     Else
-                        U$ = AA$(P1) + " TAKE IT INTO THE END ZONE!!"
+                        U$ = gameMascots$(P1) + " TAKE IT INTO THE END ZONE!!"
                     End If
 
                     Call PBP
@@ -4214,12 +4274,12 @@ Sub FOOTBALL ()
             X1 = 8
             I1 = Q7%(P1)
 
-            Call SCORE
+            Call SCOREUPD
 
             D1 = 1
             Y1 = 10
-            S(P1, 0) = S(P1, 0) + 3
-            S(P1, Q) = S(P1, Q) + 3
+            score(P1, 0) = score(P1, 0) + 3
+            score(P1, Q) = score(P1, Q) + 3
             Call FGMADE
 
             Call AddPossessionTime(4, 7)
@@ -4231,9 +4291,9 @@ Sub FOOTBALL ()
             Call CHANGEPOSS
             Call SCOREBOARD
 
-            If G9 <> 0 And intY8% < 0 Then Y = 40
-            If G9 = 1 And Y8 = 3 Or G9 = 4 Then Y = 30
-            If Y9 = 0 And G9 = 0 Then Y = 40
+            If ruleOptType <> 0 And goalPostAdj < 0 Then Y = 40
+            If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then Y = 30
+            If ruleOptColl = 0 And ruleOptType = 0 Then Y = 40
 
             Call SCOREBOARD
             Call CheckGameClock
@@ -4251,12 +4311,12 @@ Sub FOOTBALL ()
 
         Call CHANGEPOSS
 
-        If Y > 40 And Y <= 79.99 And Y8 = 3 And G9 = 1 Then
+        If Y > 40 And Y <= 79.99 And ruleOptPro = 3 And ruleOptType = 1 Then
             Y = Y - 7
             Y = 100 - Y
         Else
-            If Y > 79.99 Or intY8% < 0 Then Y = 20
-            If Y > 40 And Y <= 79.99 And intY8% = 0 Then Y = 100 - Y
+            If Y > 79.99 Or goalPostAdj < 0 Then Y = 20
+            If Y > 40 And Y <= 79.99 And goalPostAdj = 0 Then Y = 100 - Y
         End If
 
         Call AddPossessionTime(4, 7)
@@ -4292,7 +4352,7 @@ Sub FOOTBALL ()
     If Y >= 100 Then
         Call CHANGEPOSS
 
-        U$ = A$(P1) + " RECOVERS IT IN THE END ZONE!!"
+        U$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
         Call PBP
 
         X1 = 6
@@ -4310,7 +4370,7 @@ Sub FOOTBALL ()
 
         Call MOVEBALL
 
-        U$ = A$(P1) + " TAKES THE BALL INTO THE END ZONE!!"
+        U$ = gameTeams$(P1) + " TAKES THE BALL INTO THE END ZONE!!"
         Call PBP
 
         X1 = 6
@@ -4444,14 +4504,14 @@ Sub FOOTBALL ()
         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
         Call PBP
 
-        S(P1, Q) = S(P1, Q) + 2
-        S(P1, 0) = S(P1, 0) + 2
+        score(P1, Q) = score(P1, Q) + 2
+        score(P1, 0) = score(P1, 0) + 2
 
         U$ = "GOOD FOR 2 POINTS!!"
         Call PBP
 
         Call DisplayField
-        Call SCORE
+        Call SCOREUPD
 
     Else
 
@@ -4481,7 +4541,7 @@ Sub FOOTBALL ()
 
         'PAH
 
-        If AP <> 1 Then
+        If autoPlay <> 1 Then
             For I3 = 0 To 1: Call CHANGEQB: Next I3
         End If
 

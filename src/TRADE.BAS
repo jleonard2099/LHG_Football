@@ -2,7 +2,7 @@
 '            TRADE Subroutine
 '----------------------------------------
 'This subroutine relies on several other
-'routines to proceed through the general 
+'routines to proceed through the general
 'steps for trading players.
 'First, 2 teams are chosen and their Stats
 'are loaded.
@@ -747,7 +747,6 @@ End Sub
 'trade, and then swaps the players.
 Sub TradeKRs (W1)
 
-    Shared B%()
     Shared krNumRet_TRADE(), krRetAvg_TRADE(), tmRat_TRADE()
     Shared haveStats()
 

@@ -23,10 +23,10 @@ Dim yearNumber$(MAX_GAMES, 1)
 Dim Shared DT$, TM$, TN$
 
 Dim modeAbbrev$(3), yesNo$(1)
-Dim Shared location$(2), MO$(3)
-Dim Shared strG9$(5), SD$(3)
-Dim Shared Y8$(3), Y9$(5)
-Dim WN$(3), WT$(3)
+Dim Shared location$(2), playMode$(3)
+Dim Shared rulesType$(5), overtime$(3)
+Dim Shared ruleYrPro$(3), ruleYrColl$(5)
+Dim windSetting$(3), weather$(3)
 
 ' *** Miscellaneous Use ***
 ' -------------------------
@@ -80,10 +80,14 @@ Dim W0N(15), WN1(15)
 ' Used in CAREER routines
 '----------------------------------------
 Dim careerA1$(50), careerA2$(40), careerA3$(20), careerA4$(15), careerA5$(15), careerA6$(10), careerA7$(10)
+'Dim careerrbacks$(50), careerwdRec$(40), careerqbacks$(20), careerkickRet$(15), careerpret$(15), careerpunter$(10), careerkicker$(10)
 Dim careerDI$(55), careerDS$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
+'Dim careerdefInts$(55), careerdefSacks$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
 Dim careerQBS$(15, 20, 1), careerRBC$(9), careerRBS$(15, 50, 1), careerRC$(6), careerWRS$(15, 40, 1)
 
+'Dim carviewrbacks$(1, 50), carviewwdRec$(1, 40), carviewqbacks$(1, 20), carviewkickRet$(1, 15), carviewpret$(1, 15), carviewpunter$(1, 10), carviewkicker$(1, 10)
 Dim carviewA1$(1, 50), carviewA2$(1, 40), carviewA3$(1, 20), carviewA4$(1, 15), carviewA5$(1, 15), carviewA6$(1, 10), carviewA7$(1, 10)
+'Dim carviewdefInts$(1, 55), carviewdefSacks$(1, 55)
 Dim carviewDI$(1, 55), carviewDS$(1, 55)
 
 Dim A1C$(50), A2C$(40), A3C$(20), A4C$(15), A5C$(15), A6C$(10), A7C$(10)
@@ -253,6 +257,7 @@ Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim compO$(120), expCategories$(74), statsH$(120), HR$(120)
 Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
+'Dim lookyrbacks$(1, 10), lookywdRec$(1, 6), lookyqbacks$(1, 4), lookykickRet$(1, 3), lookypret$(1, 3), lookypunter$(1, 2), lookykicker$(1, 2)
 Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
 Dim QBL$(120), gameSITE$(120), SITER$(120)
 Dim TMM$(480), TPP$(480), TYY$(480)
@@ -288,37 +293,48 @@ Dim scheduleFile$
 
 Dim tickerStart
 
-Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, AP
-Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, CT
+Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, autoPlay
+Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, compTeam
 Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT
 Dim Shared E, EY, endGame, endAllGames, F2, F8, F9
-Dim Shared G, G9, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
-Dim Shared J, J6, JJ, K3, N, NT, O, OT, P1, P2, PN, PQ, PR, PW
-Dim Shared Q, QB, R1, RP, RY, S, S2, S3, S6, SN, SY
+Dim Shared G, gameLoc, goalPostAdj, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
+Dim Shared J, JJ, K3, N, NT, O, OT
+Dim Shared playerOpt, P1, P2, PN, PQ, PR, PW
+Dim Shared Q, QB, R1, RP, RY, ruleOpt
+Dim Shared S, S2, S3, S6, SN, SY
 Dim Shared T1, TMT, W5, WE, WS, X, X1, X2, XD, XE
-Dim Shared Y, Y1, Y9, YC, YF, YL, YT, Z1
+Dim Shared Y, Y1, ruleOptColl, YC, YF, YL, YT, Z1
 
-Dim Shared intB8%, BO%, C%, EG%, F%, GL%, H%, HB%, intI%, intDI%, intDS%
+Dim Shared BO%, C%, EG%, F%, GL%, HB%, intChance
 Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, SX%
-Dim Shared W%, WX%, intY8%, intYL%
+Dim Shared W%, WX%, yrdLine
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
 Dim Shared actualAttendance&, averageAttendance&
 
-Dim Shared A(1, 9), A1(1, 9), A2(1, 9), A3(1, 9), A4(1, 9), A5(1, 9), A6(1, 9), A7(1, 9), A8(1, 9), A9(1, 2)
-Dim Shared AF(1, 1, 4), AM(1, 1, 4), B(1, 2), B1(1, 2), B2(1, 2), B3(1, 2), B4(1, 1), B5(1, 1), B6(1, 7), B7(1, 1), B8(1, 1)
-Dim Shared C(50), DDI(1), DDS(1), DI(1, 9), DS(1, 14), F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
-Dim Shared GI(1, 9, 2), GS(1, 14, 1), IR(1, 9)
-Dim Shared K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6), KR(1, 2)
-Dim Shared LC(1, 20), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1), P(2), PK(1, 2), PR(1, 2)
-Dim Shared QB(1, 3), RB(1, 17), S(0 To 1, 0 To 10), SI(1, 9, 2), SK(1, 14, 1), scoreTimes(50), T1(1), timePoss(1)
-Dim Shared W6(1, 1), WR(1, 20), XD(1), YC(1)
+Dim Shared AF(1, 1, 4), AM(1, 1, 4)
+Dim Shared C(50), DDI(1), DDS(1), defInts(1), defSacks(1)
+Dim Shared F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
+Dim Shared GI(1, 9, 2), GS(1, 14, 1), hasRunFF(1), ints(1, 9), IR(1, 9)
+Dim Shared K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6)
+Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerNumPAT(1, 1), kickerPATPct(1, 1)
+Dim Shared KR(1, 2), krNumRet(1, 2), krYdsPerRet(1, 2)
+Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1)
+Dim Shared P(2), PK(1, 2), PR(1, 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
+Dim Shared QB(1, 3), qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
+Dim Shared RB(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
+Dim Shared sacks(1, 14), score(0 To 1, 0 To 10), scoreTimes(50), schedGame(2)
+Dim Shared SI(1, 9, 2), SK(1, 14, 1), teamIdx_GAME(2), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
+Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1), ydsPerComp(1)
 
-Dim Shared AP%(2), intB8%(2), BY%(38, 4), D3%(0 To 8, 0 To 10), intDI%(1), intDS%(1)
-Dim Shared intG9%(1), GL%(1 To 30, 1 To 2), HB%(1)
-Dim Shared NG%(20), O%(120), PA%(2, 9), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
-Dim Shared Q6%(1), Q7%(1), QR%(50, 2), QX%(1, 3), R9%(1), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
+Dim Shared BY%(38, 4), D3%(0 To 8, 0 To 10)
+Dim Shared GL%(1 To 30, 1 To 2), HB%(1)
+
+'intPR% has something to do with schedule stats
+Dim Shared NG%(20), O%(120), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
+
+Dim Shared Q6%(1), Q7%(1), QR%(50, 2), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim Shared TE%(1), TF%(1), TeamScore%(120), V4%(1, 3), WX%(6)
 
@@ -327,13 +343,22 @@ Dim Shared Z(38), Z1(38), Z2(13, 17)
 Dim Shared CRD&(120)
 
 Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
-Dim Shared F$, G$, strG9$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
-Dim Shared SD$, SITE$, SX$, U$, U5$, X$, Y8$, Y9$, YN$
+Dim Shared F$, G$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
+Dim Shared SD$, SITE$, SX$, U$, U5$, X$, ruleOptPro$, ruleOptColl$, YN$
 
-Dim Shared A$(0 To 1), A1$(1, 10), A2$(1, 5), A3$(1, 3), A4$(1, 2), A5$(1, 2), A6$(1, 2), A7$(1, 1)
-Dim Shared AA$(1), B$(1), D$(15), D1$(11), D2$(15), DI$(1, 9), DN$(4), DR$(1), DS$(1, 14)
-Dim Shared G$(3), H$(120), HO$(120), strIR$(1, 9), strKR$(1, 2)
-Dim Shared strLC$(1, 20, 1), LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1), strLR$(1, 9, 1)
-Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), strPR$(1, 2), PS$(9), strQB$(1, 3)
+Dim Shared B$(1), D$(15), D1$(11), D2$(15), defInts$(1, 9), DN$(4), DR$(1), defSacks$(1, 14)
+Dim Shared kicker$(1, 1), kickRet$(1, 2)
+Dim Shared gameMascots$(1), gameTeams$(0 To 1)
+Dim Shared G$(3), H$(120), HO$(120)
+Dim Shared LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1)
+Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
+Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3), rbacks$(1, 10)
 Dim Shared R$(14), strRB$(1, 17), RP$(30), SITE$(120), SX$(1 To 33, 0 To 1)
-Dim Shared strWR$(1, 20), Y$(1), YN$(1), YR%(1)
+
+'Trying to figure out how these below are used.
+'It seems obvious but they are used sparingly. 
+'They appear to simply be assigned a "t" value when a TD is implied.
+'They are included in the compiling of stats file
+Dim Shared strIR$(1, 9), strKR$(1, 2), strLC$(1, 20, 1), strLR$(1, 9, 1), strPR$(1, 2), strQB$(1, 3), strWR$(1, 20) 
+
+Dim Shared wdRec$(1, 5), Y$(1), YN$(1), YR%(1)
