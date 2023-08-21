@@ -235,7 +235,7 @@ Sub InitVar ()
     RV$ = ""
     scheduleFile$ = ""
     SD$ = ""
-    SITE$ = ""
+    gameStadium$ = ""
     SX$ = ""
     U$ = ""
     U5$ = ""
@@ -251,7 +251,7 @@ Sub InitVar ()
     Erase strLC$, LF$, LI$, LK$, LP$, strLR$
     Erase NN$, PK$, Q$
     Erase qbacks$, pret$, punter$, rbacks$
-    Erase strQB$, strPR$, strRB$, strWR$, SITE$, SX$
+    Erase strQB$, strPR$, strRB$, strWR$, gameStadium$, SX$
     Erase teamNames$, wdRec$, Y$, YN$
 
     Erase CRD&
@@ -262,19 +262,19 @@ Sub InitVar ()
     Erase K, K1, K2, K3, KR
     Erase kickerFGA, kickerFGPct, kickerNumPAT, kickerPATPct
     Erase krNumRet, krYdsPerRet
-    Erase leagRat_GAME, LC, LF, LI, LK, LP, LR, OT, PK, PR
-    Erase prNumRet, prYdsPerRet, puntYdsPerP
+    Erase leagRat_GAME, LC, LF, LI, LK, LP, LR, OT
+    Erase PK, PR, prNumRet, prYdsPerRet, puntYdsPerP
     Erase qbArmRat, qbCompPct, qbMobility, qbNumAtt, qbPctInt
-    Erase QB, RB, sacks, score, SI, SK, timeouts, timePoss
-    Erase rbRushAtt, rbRushAvg, rbNumRec, rbYdsPerC
-    Erase sacks, schedGame, teamIdx_GAME, tmRat_GAME, wrNumRec, wrYdsPerC
-    Erase W6, WR, XD, ydsPerComp, Z, Z1, Z2
+    Erase QB, RB, rbRushAtt, rbRushAvg, rbNumRec, rbYdsPerC
+    Erase sacks, score, schedGame, SI, SK
+    Erase teamIdx_GAME, timeouts, timePoss, tmRat_GAME
+    Erase W6, WR, wrNumRec, wrYdsPerC, XD, ydsPerComp, Z, Z1, Z2
 
     Erase defInts, defSacks
     Erase HB%
     Erase O%, PC%, intPR%
     Erase Q6%, Q7%, RQ%, RV%
-    Erase ST%, SX%, TE%, TF%, TeamScore%, YR%
+    Erase ST%, SX%, TE%, TF%, teamScore, YR%
 
     Erase teamIndex%, V4%
 
@@ -6437,7 +6437,7 @@ Sub BOX2FILE (printChoice, NM$)
     If gameLoc = 2 Then
         Print #1, "SITE: NEUTRAL"
     Else
-        Print #1, "SITE: "; SITE$
+        Print #1, "SITE: "; gameStadium$
     End If
 
     Print #1, Using "ATTENDANCE: ###,###"; actualAttendance&
@@ -6848,7 +6848,7 @@ Sub BOX2SCREEN ()
     Else
         Print "SITE: ";
         Color 15
-        Print SITE$
+        Print gameStadium$
     End If
 
     Color 14
@@ -7781,12 +7781,12 @@ Sub COMPILESTATFILES (teamIdx)
 
         For I = 1 To 120: Input #1, O%(I): Next
         For I = 1 To 120: Input #1, HO$(I): Next
-        For I = 1 To 120: Input #1, TeamScore%(I): Next
+        For I = 1 To 120: Input #1, teamScore(I): Next
         For I = 1 To 120: Input #1, H$(I): Next
         For I = 1 To 120: Input #1, intPR%(0, I): Next
         For I = 1 To 120: Input #1, intPR%(1, I): Next
         For I = 1 To 120: Input #1, CRD&(I): Next
-        For I = 1 To 120: Input #1, SITE$(I): Next
+        For I = 1 To 120: Input #1, gameStadium$(I): Next
 
         Close #1
 
@@ -7802,9 +7802,9 @@ Sub COMPILESTATFILES (teamIdx)
 
     O%(numberGames) = score(teamIdx, 0)
     HO$(numberGames) = gameTeams$(1 - teamIdx)
-    TeamScore%(numberGames) = score(1 - teamIdx, 0)
+    teamScore(numberGames) = score(1 - teamIdx, 0)
     CRD&(numberGames) = actualAttendance&
-    SITE$(numberGames) = SITE$
+    gameStadium$(numberGames) = gameStadium$
     intPR%(0, numberGames) = tmRat_GAME(teamIdx, 4)
     intPR%(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
 
@@ -7815,12 +7815,12 @@ Sub COMPILESTATFILES (teamIdx)
 
     For I = 1 To 120: Print #1, O%(I): Next
     For I = 1 To 120: Print #1, HO$(I): Next
-    For I = 1 To 120: Print #1, TeamScore%(I): Next
+    For I = 1 To 120: Print #1, teamScore(I): Next
     For I = 1 To 120: Print #1, H$(I): Next
     For I = 1 To 120: Print #1, intPR%(0, I): Next
     For I = 1 To 120: Print #1, intPR%(1, I): Next
     For I = 1 To 120: Print #1, CRD&(I): Next
-    For I = 1 To 120: Print #1, SITE$(I): Next
+    For I = 1 To 120: Print #1, gameStadium$(I): Next
 
     Close #1
 
@@ -7828,7 +7828,7 @@ Sub COMPILESTATFILES (teamIdx)
         intPR%(0, I) = 0
         intPR%(1, I) = 0
         O%(I) = 0
-        TeamScore%(I) = 0
+        teamScore(I) = 0
         HO$(I) = ""
         H$(I) = ""
     Next
@@ -8034,8 +8034,6 @@ End Sub
 'selecting a team from the list loaded by
 'the disk ID.
 Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%, gameIdx)
-
-    'Shared teamNames$()
 
     If numberTeams > 0 Then
 

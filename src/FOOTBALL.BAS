@@ -61,13 +61,13 @@ Sub FOOTBALL ()
     End If
 
     Open "DEFAULT" For Input As #1
-    Input #1, playerOpt '
-    Input #1, ruleOptType '
-    Input #1, gameLoc: ' Home Field Advantage
-    Input #1, pbpDelay! '
-    Input #1, R5% '
-    Input #1, ruleOptPro '
-    Input #1, ruleOptColl '
+    Input #1, playerOpt
+    Input #1, ruleOptType
+    Input #1, gameLoc ' Home Field Advantage
+    Input #1, pbpDelay!
+    Input #1, R5%
+    Input #1, ruleOptPro
+    Input #1, ruleOptColl
     Input #1, NG%(14) 'Overtime setting
     Close 1
 
@@ -337,14 +337,14 @@ Sub FOOTBALL ()
     If gameLoc = 2 Then
 
         'Neutral stadium and attendance
-        SITE$ = "NEUTRAL FIELD"
+        gameStadium$ = "NEUTRAL FIELD"
         actualAttendance& = Int(Rnd(1) * 10000) + 1 + 5000
 
     Else
 
         If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc)) Then
             'Generic stadium and attendance
-            SITE$ = "MEMORIAL STADIUM"
+            gameStadium$ = "MEMORIAL STADIUM"
             actualAttendance& = Int(Rnd(1) * 5000) + 10000
 
         Else
@@ -355,7 +355,7 @@ Sub FOOTBALL ()
 
             Get #2, teamIdx_GAME(gameLoc)
 
-            SITE$ = RTrim$(Q$(1))
+            gameStadium$ = RTrim$(Q$(1))
             averageAttendance& = CVL(Q$(3))
             Z$ = Q$(4)
 
@@ -364,7 +364,7 @@ Sub FOOTBALL ()
             'Determine attendance randomly
             If Z$ <> "x" Then
                 'Generic stadium and attendance
-                SITE$ = "MEMORIAL STADIUM"
+                gameStadium$ = "MEMORIAL STADIUM"
                 actualAttendance& = Int(Rnd(1) * 5000) + 10000
             Else
                 actualAttendance& = Int(Rnd(1) * 10000) + 1 - 5000 + averageAttendance&

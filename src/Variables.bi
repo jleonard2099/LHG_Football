@@ -259,7 +259,7 @@ Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
 'Dim lookyrbacks$(1, 10), lookywdRec$(1, 6), lookyqbacks$(1, 4), lookykickRet$(1, 3), lookypret$(1, 3), lookypunter$(1, 2), lookykicker$(1, 2)
 Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
-Dim QBL$(120), gameSITE$(120), SITER$(120)
+Dim QBL$(120), gamegameStadium$(120), SITER$(120)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
 Dim Z1$(40), Z2$(40)
@@ -336,7 +336,7 @@ Dim Shared NG%(20), O%(120), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
 
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared TE%(1), TF%(1), TeamScore%(120), V4%(1, 3), WX%(6)
+Dim Shared TE%(1), TF%(1), teamScore(120), V4%(1, 3), WX%(6)
 
 Dim Shared Z(38), Z1(38), Z2(13, 17)
 
@@ -344,7 +344,7 @@ Dim Shared CRD&(120)
 
 Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
 Dim Shared F$, G$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
-Dim Shared SD$, SITE$, SX$, U$, U5$, X$, ruleOptPro$, ruleOptColl$, YN$
+Dim Shared SD$, gameStadium$, SX$, U$, U5$, X$, ruleOptPro$, ruleOptColl$, YN$
 
 Dim Shared B$(1), D$(15), D1$(11), D2$(15), defInts$(1, 9), DN$(4), DR$(1), defSacks$(1, 14)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
@@ -353,7 +353,7 @@ Dim Shared G$(3), H$(120), HO$(120)
 Dim Shared LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1)
 Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3), rbacks$(1, 10)
-Dim Shared R$(14), strRB$(1, 17), RP$(30), SITE$(120), SX$(1 To 33, 0 To 1)
+Dim Shared R$(14), strRB$(1, 17), RP$(30), gameStadium$(120), SX$(1 To 33, 0 To 1)
 
 'Trying to figure out how these below are used.
 'It seems obvious but they are used sparingly. 
