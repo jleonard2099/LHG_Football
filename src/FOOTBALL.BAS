@@ -36,64 +36,64 @@ Sub FOOTBALL ()
             Print #1, _CWD$ + "\"
         Next
 
-        Close 1
+        Close #1
 
     End If
 
-    Open "DEV.BAS" For Input As #1
+    Open "DEV.BAS" For Input As #2
 
     For I = 0 To 2
-        Input #1, diskPaths$(I)
+        Input #2, diskPaths$(I)
     Next
 
-    Close 1
+    Close #2
 
     If Not _FileExists("DEFAULT") Then
 
-        Open "DEFAULT" For Output As #1
+        Open "DEFAULT" For Output As #3
 
         For I = 1 To 8:
-            Print #1, 0
+            Print #3, 0
         Next
 
-        Close 1
+        Close #3
 
     End If
 
-    Open "DEFAULT" For Input As #1
-    Input #1, playerOpt
-    Input #1, ruleOptType
-    Input #1, gameLoc ' Home Field Advantage
-    Input #1, pbpDelay!
-    Input #1, R5%
-    Input #1, ruleOptPro
-    Input #1, ruleOptColl
-    Input #1, NG%(14) 'Overtime setting
-    Close 1
+    Open "DEFAULT" For Input As #4
+    Input #4, playerOpt
+    Input #4, ruleOptType
+    Input #4, gameLoc ' Home Field Advantage
+    Input #4, pbpDelay!
+    Input #4, R5%
+    Input #4, ruleOptPro
+    Input #4, ruleOptColl
+    Input #4, NG%(14) 'Overtime setting
+    Close #4
 
     If _FileExists("TICKER") Then
 
-        Open "TICKER" For Input As #2
+        Open "TICKER" For Input As #5
 
         For I = 1 To 32:
             For I1 = 0 To 1:
                 For I2 = 1 To 14
-                    Input #2, SX%(I, I1, I2)
+                    Input #5, SX%(I, I1, I2)
                 Next
             Next
         Next
 
         For I = 1 To 32
             For I1 = 0 To 1
-                Input #2, SX$(I, I1)
+                Input #5, SX$(I, I1)
             Next
         Next
 
         For I = 1 To 32
-            Input #2, ST%(I)
+            Input #5, ST%(I)
         Next
 
-        Close 2
+        Close #5
 
         TMT = 1
     Else
@@ -103,25 +103,26 @@ Sub FOOTBALL ()
     'Load game in-progress, if there is one
     If _FileExists("GAME82") Then
 
-        Open "GAME82" For Input As #2
-        Input #2, scheduleFile$
+        Open "GAME82" For Input As #6
+
+        Input #6, scheduleFile$
 
         For I = 0 To 2: 
-            Input #2, schedGame(I)
+            Input #6, schedGame(I)
         Next
 
-        Close 2
+        Close #6
 
         'Read in schedule options
-        Open diskPaths$(0) + scheduleFile$ As #1 Len = SCHEDULE_SIZE_BYTES
+        Open diskPaths$(0) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
 
         For X = 0 To 20
-            Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+            Field #7, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
         Next
 
-        Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+        Field #7, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
-        Get #1, schedGame(0) + schedGame(2)
+        Get #7, schedGame(0) + schedGame(2)
 
         For X = 0 To 20:
             NG%(X) = CVI(Q$(X + 1))
@@ -131,7 +132,7 @@ Sub FOOTBALL ()
             YN$(X) = Q$(22 + X)
         Next
 
-        Close 1
+        Close #7
 
         autoPlay = 1
 
@@ -214,16 +215,16 @@ Sub FOOTBALL ()
                 Select Case I
 
                     Case 0:
-                        Open "DEFAULT" For Output As #1
-                        Print #1, playerOpt '
-                        Print #1, ruleOptType '
-                        Print #1, gameLoc ' Home Field advantage
-                        Print #1, pbpDelay! '
-                        Print #1, R5% '
-                        Print #1, ruleOptPro '
-                        Print #1, ruleOptColl '
-                        Print #1, NG%(14) 'overtime setting
-                        Close 1
+                        Open "DEFAULT" For Output As #8
+                        Print #8, playerOpt '
+                        Print #8, ruleOptType '
+                        Print #8, gameLoc ' Home Field advantage
+                        Print #8, pbpDelay! '
+                        Print #8, R5% '
+                        Print #8, ruleOptPro '
+                        Print #8, ruleOptColl '
+                        Print #8, NG%(14) 'overtime setting
+                        Close #8
 
                     Case 1
                         playerOpt = playerOpt + 1
@@ -349,17 +350,17 @@ Sub FOOTBALL ()
 
         Else
 
-            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc) For Random As #2 Len = DATA_SIZE_BYTES
+            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc) For Random As #9 Len = DATA_SIZE_BYTES
 
-            Field #2, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
+            Field #9, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
-            Get #2, teamIdx_GAME(gameLoc)
+            Get #9, teamIdx_GAME(gameLoc)
 
             gameStadium$ = RTrim$(Q$(1))
             averageAttendance& = CVL(Q$(3))
             Z$ = Q$(4)
 
-            Close #2
+            Close #9
 
             'Determine attendance randomly
             If Z$ <> "x" Then
@@ -1528,7 +1529,7 @@ Sub FOOTBALL ()
                     Y = Y + G
                     Y1 = Y1 - G
                     D1 = D1 + 1
-                    If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+                    If D1 = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
 
                     GoTo 650
 
@@ -1586,7 +1587,7 @@ Sub FOOTBALL ()
                         Y = Y + G
                         Y1 = Y1 - G
                         D1 = D1 + 1
-                        If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+                        If D1 = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
 
                         GoTo 650
 
@@ -3212,8 +3213,8 @@ Sub FOOTBALL ()
 
     End If
 
-    If D1 = 3 Then TE%(P1) = TE%(P1) + 1
-    If D1 = 4 Then TF%(P1) = TF%(P1) + 1
+    If D1 = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
+    If D1 = 4 Then thirdDownFail(P1) = thirdDownFail(P1) + 1
     If D1 > 4 Then 3339
 
     I = Int(Rnd(1) * 1000) + 1
@@ -3449,7 +3450,7 @@ Sub FOOTBALL ()
         Y1 = Y1 - G
         D1 = D1 + 1
 
-        If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+        If D1 = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
         If O < 4 Or O > 5 Then O = 1
 
         If Int((Y1) * 10 + .5) / 10 < .05 Then
@@ -4060,7 +4061,7 @@ Sub FOOTBALL ()
                         K2(P1, Q6%(P1), 9) = K2(P1, Q6%(P1), 9) + 1
 
                         D1 = D1 + 1
-                        If D1 = 3 Then TE%(P1) = TE%(P1) + 1
+                        If D1 = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
 
                         Call AddPossessionTime(7, 10)
                         Call CheckGameClock

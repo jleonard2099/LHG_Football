@@ -259,7 +259,7 @@ Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
 'Dim lookyrbacks$(1, 10), lookywdRec$(1, 6), lookyqbacks$(1, 4), lookykickRet$(1, 3), lookypret$(1, 3), lookypunter$(1, 2), lookykicker$(1, 2)
 Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
-Dim QBL$(120), gamegameStadium$(120), SITER$(120)
+Dim QBL$(120), gameSITE$(120), SITER$(120)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
 Dim Z1$(40), Z2$(40)
@@ -336,7 +336,7 @@ Dim Shared NG%(20), O%(120), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
 
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared TE%(1), TF%(1), teamScore(120), V4%(1, 3), WX%(6)
+Dim Shared teamScore(120), thirdDownAtt(1), thirdDownFail(1), V4%(1, 3), WX%(6)
 
 Dim Shared Z(38), Z1(38), Z2(13, 17)
 

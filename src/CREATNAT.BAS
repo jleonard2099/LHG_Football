@@ -52,8 +52,11 @@ Sub CREATNAT ()
                     Call ReviewEditNatOrg(organization$)
 
                 Case 2:
-                    organization$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
-                    Call ReviewEditNatOrg(organization$)
+                    organization$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
+
+                    If FileExit% <> 27 And FileExit% <> 0 Then
+                        Call ReviewEditNatOrg(organization$)
+                    End if
 
             End Select
 
@@ -76,21 +79,7 @@ Sub DefineNatOrg (organization$)
         Color 15, 0
         Cls
 
-        JJ = 7
-
-        Locate 6, 8: Color 15, 1
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+		Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Do
             Locate 7, 32
@@ -127,15 +116,15 @@ Sub ReviewEditNatOrg (organization$)
 
     If _FileExists(diskPaths$(2) + organization$ + ".CON") Then
 
-        Open diskPaths$(2) + organization$ + ".CON" For Input As #2
+        Open diskPaths$(2) + organization$ + ".CON" For Input As #1
 
-        Input #2, organization$
+        Input #1, organization$
 
         For X = 1 To 40
-            Input #2, Z1$(X)
+            Input #1, Z1$(X)
         Next
 
-        Close 2
+        Close #1
 
     End If
 
@@ -218,14 +207,14 @@ Sub SaveNatOrg (organization$)
 
     Shared Z1$()
 
-    Open diskPaths$(2) + organization$ + ".CON" For Output As #2
+    Open diskPaths$(2) + organization$ + ".CON" For Output As #1
 
-    Print #2, organization$
+    Print #1, organization$
 
     For X = 1 To 40
-        Print #2, Z1$(X)
+        Print #1, Z1$(X)
     Next
 
-    Close 2
+    Close #1
 
 End Sub

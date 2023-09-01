@@ -81,7 +81,7 @@ Sub ViewExpandedStats (statType)
 
     Shared TMM$(), TPP$(), Z1$()
 
-    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", ExitCode%)
+    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", menuExit%)
 
     If menuExit% <> 27 Then
 
@@ -110,24 +110,24 @@ Sub ViewExpandedStats (statType)
 
         Erase TMM$, TPP$
 
-        Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #2
+        Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #1
 
         If statType = 1 Then
             'Pro
-            Input #2, league$
-            Input #2, div1$
-            Input #2, div2$
-            Input #2, div3$
+            Input #1, league$
+            Input #1, div1$
+            Input #1, div2$
+            Input #1, div3$
         Else
             'College
-            Input #2, league$
-            Input #2, div1$
-            Input #2, div2$
+            Input #1, league$
+            Input #1, div1$
+            Input #1, div2$
         End If
 
-        For X = 1 To 30: Input #2, Z1$(X): Next
+        For X = 1 To 30: Input #1, Z1$(X): Next
 
-        Close 2
+        Close #1
 
         Cls
 
@@ -251,9 +251,9 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 Close #1
 
-                Open diskPaths$(1) + teamStatFile$ + "S" For Input As #1
-                Input #1, Y% 'number of games?!
-                Close #1
+                Open diskPaths$(1) + teamStatFile$ + "S" For Input As #2
+                Input #2, Y% 'number of games?!
+                Close #2
 
                 tStats = tStats + 1
 
@@ -1749,9 +1749,12 @@ Sub SortOptions (statType, printOrView%, sortType%)
         Locate 10, 15
 
         Color 3: Locate , 30: Print "SELECT OPTION:"
-        Locate , 30: Color 15: Print "H";: Color 7: Print "IGHEST TO LOWEST"
-        Locate , 30: Color 15: Print "L";: Color 7: Print "OWEST TO HIGHEST"
-        Locate , 30: Color 15: Print "R";: Color 7: Print "E-SELECT CATEGORY"
+        Locate , 30: Color 15: Print "H";
+        Color 7: Print "IGHEST TO LOWEST"
+        Locate , 30: Color 15: Print "L";
+        Color 7: Print "OWEST TO HIGHEST"
+        Locate , 30: Color 15: Print "R";
+        Color 7: Print "E-SELECT CATEGORY"
 
         I$ = GetKeyPress$
 

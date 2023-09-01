@@ -37,9 +37,9 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
 
     Shared div1$, div2$
 
-    Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #2
-    Input #2, FF$, div1$, div2$
-    Close 2
+    Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #1
+    Input #1, FF$, div1$, div2$
+    Close #1
 
     div1$ = PadRight(div1$, 8)
     div2$ = PadRight(div2$, 8)
@@ -72,7 +72,7 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
         Next
     Next
 
-    Close 2
+    Close #2
 
     D1 = W!(1) - L!(1)
 
@@ -287,27 +287,11 @@ Sub StatOptions_Coll (FF$)
         Cls
         Call TITLE_STATS
 
-        J = 5
-
-        Locate 8, 8: Color 15, 1
-
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To J
-            Locate 8 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 9 + J, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
+		Call MenuBox (8, 8, 61, 5, 15, 1)
 
         Do
-            Locate 10
+
+            Locate 10, 32
             Color 7, 1
 
             Locate , 30: Print "STATS TO ";
@@ -387,23 +371,10 @@ Sub ReportFilePrompt_Coll (reportFile$)
         Color 15, 0
         Cls
 
-        JJ = 7
-
-        Locate 6, 8: Color 15, 1
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+		Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
+
         Locate , 12: Print "ENTER NAME FOR FILE: ": Print
         Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
         Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
@@ -413,8 +384,10 @@ Sub ReportFilePrompt_Coll (reportFile$)
         If reportFile$ <> "" Then
 
             Do
+
                 Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                 I$ = GetKeyPress$
+
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         End If
@@ -1198,512 +1171,512 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     Shared div1$, div2$
 
     If destination <> 1 Then
-        Open "REPORT" For Output As #2
+        Open "REPORT" For Output As #1
     Else
-        Open reportFile$ + ".RPT" For Output As #2
+        Open reportFile$ + ".RPT" For Output As #1
     End If
 
     Color 0, 15
     Cls
 
-    Print #2, FF$ + " OVERALL RECORD"
+    Print #1, FF$ + " OVERALL RECORD"
 
-    If div1$ <> "" Then Print #2, div1$; " DIVISION"
+    If div1$ <> "" Then Print #1, div1$; " DIVISION"
 
-    Print #2, "              W   L   T   PCT  PF  PA"
+    Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 1 To 15
 
         If seeP$(P) <> "" Then
-            Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then
-                Print #2, "  .---";
+                Print #1, "  .---";
             Else
                 If L!(P) + T!(P) = 0 Then
-                    Print #2, " 1.000";
+                    Print #1, " 1.000";
                 Else
                     If W!(P) = 0 Then
-                        Print #2, "  .000";
+                        Print #1, "  .000";
                     Else
-                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
                     End If
                 End If
             End If
-            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
 
     Next
 
-    Print #2,
-    If div2$ <> "" Then Print #2, div2$; " DIVISION"
-    Print #2, "              W   L   T   PCT  PF  PA"
+    Print #1,
+    If div2$ <> "" Then Print #1, div2$; " DIVISION"
+    Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 16 To 30
 
         If seeP$(P) <> "" Then
-            Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then
-                Print #2, "  .---";
+                Print #1, "  .---";
             Else
                 If L!(P) + T!(P) = 0 Then
-                    Print #2, " 1.000";
+                    Print #1, " 1.000";
                 Else
                     If W!(P) = 0 Then
-                        Print #2, "  .000";
+                        Print #1, "  .000";
                     Else
-                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
                     End If
                 End If
             End If
-            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
 
     Next
 
-    Print #2,
-    Print #2, FF$ + " CONFERENCE RECORD"
+    Print #1,
+    Print #1, FF$ + " CONFERENCE RECORD"
 
-    If div1$ <> "" Then Print #2, div1$; " DIVISION"
+    If div1$ <> "" Then Print #1, div1$; " DIVISION"
 
-    Print #2, "              W   L   T   PCT  PF  PA"
+    Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 31 To 45
 
         If seeP$(P) <> "" Then
-            Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then
-                Print #2, "  .---";
+                Print #1, "  .---";
             Else
                 If L!(P) + T!(P) = 0 Then
-                    Print #2, " 1.000";
+                    Print #1, " 1.000";
                 Else
                     If W!(P) = 0 Then
-                        Print #2, "  .000";
+                        Print #1, "  .000";
                     Else
-                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
                     End If
                 End If
             End If
-            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
 
     Next
 
-    Print #2,
-    If div2$ <> "" Then Print #2, div2$; " DIVISION"
-    Print #2, "              W   L   T   PCT  PF  PA"
+    Print #1,
+    If div2$ <> "" Then Print #1, div2$; " DIVISION"
+    Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 46 To 60
 
         If seeP$(P) <> "" Then
-            Print #2, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
             If W!(P) + L!(P) + T!(P) = 0 Then
-                Print #2, "  .---";
+                Print #1, "  .---";
             Else
                 If L!(P) + T!(P) = 0 Then
-                    Print #2, " 1.000";
+                    Print #1, " 1.000";
                 Else
                     If W!(P) = 0 Then
-                        Print #2, "  .000";
+                        Print #1, "  .000";
                     Else
-                        Print #2, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
                     End If
                 End If
             End If
-            Print #2, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
 
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
-    Print #2, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
+    Print #1, Chr$(12)
+    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "##.# ####"; LD!(P); LZ!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "##.# ####"; LD!(P); LZ!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 20) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 20) + ", " + compZ3$(P + 20);
-            Print #2, Tab(68);
-            Print #2, Using "##.# ####"; LD!(P + 20); LZ!(P + 20)
+            Print #1, compZ2$(P + 20) + ", " + compZ3$(P + 20);
+            Print #1, Tab(68);
+            Print #1, Using "##.# ####"; LD!(P + 20); LZ!(P + 20)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "RUSHING YARDS TOTAL"; Tab(41); "RECEIVING YARDS TOTAL"
+    Print #1,
+    Print #1, "RUSHING YARDS TOTAL"; Tab(41); "RECEIVING YARDS TOTAL"
 
     For P = 41 To 50
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "####"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "####"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "####"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "####"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "RUSHING ATTEMPTS"; Tab(41); "TOTAL RECEPTIONS"
+    Print #1,
+    Print #1, "RUSHING ATTEMPTS"; Tab(41); "TOTAL RECEPTIONS"
 
     For P = 81 To 90
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "####"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "####"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "####"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "####"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "ALL PURPOSE YARDAGE"; Tab(41); "SCORING NON-KICKERS"
+    Print #1,
+    Print #1, "ALL PURPOSE YARDAGE"; Tab(41); "SCORING NON-KICKERS"
 
     For P = 101 To 110
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "####"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "####"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "####"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "####"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
+    Print #1, Chr$(12)
+    Print #1, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
     For P = 61 To 70
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "####"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "####"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "####"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "####"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
+    Print #1,
+    Print #1, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
 
     For P = 121 To 130
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "###.#"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "###.#"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "###.#"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "###.#"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "PASSING YARDAGE"; Tab(41); "PASSING TOUCHDOWNS"
+    Print #1,
+    Print #1, "PASSING YARDAGE"; Tab(41); "PASSING TOUCHDOWNS"
 
     For P = 141 To 150
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "####"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "####"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "####"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "####"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "KO RETURN AVERAGE                 #"; Tab(41); "PUNT RETURN AVERAGE               #"
+    Print #1,
+    Print #1, "KO RETURN AVERAGE                 #"; Tab(41); "PUNT RETURN AVERAGE               #"
 
     For P = 161 To 170
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "##.#  ##"; LD!(P); LZ!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "##.#  ##"; LD!(P); LZ!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "##.#  ##"; LD!(P + 10); LZ!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "##.#  ##"; LD!(P + 10); LZ!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "PUNTING AVERAGE"; Tab(41); "SCORING (KICKERS)"
+    Print #1,
+    Print #1, "PUNTING AVERAGE"; Tab(41); "SCORING (KICKERS)"
 
     For P = 181 To 190
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "##.#  ###"; LD!(P); LZ!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "##.#  ###"; LD!(P); LZ!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "###"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "###"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "FIELD GOAL %                     FGA"; Tab(41); "EXTRA POINT %                   EPA"
+    Print #1,
+    Print #1, "FIELD GOAL %                     FGA"; Tab(41); "EXTRA POINT %                   EPA"
 
     For P = 201 To 210
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "###.#  ###"; LD!(P); LZ!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "###.#  ###"; LD!(P); LZ!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "###.#  ##"; LD!(P + 10); LZ!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "###.#  ##"; LD!(P + 10); LZ!(P + 10)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "INTERCEPTIONS"; Tab(41); "SACKS"
+    Print #1,
+    Print #1, "INTERCEPTIONS"; Tab(41); "SACKS"
 
     For P = 221 To 230
 
         If compZ2$(P) = "*" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, compZ2$(P) + ", " + compZ3$(P);
-            Print #2, Tab(28);
-            Print #2, Using "##"; LD!(P);
-            Print #2, Tab(41);
+            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, Tab(28);
+            Print #1, Using "##"; LD!(P);
+            Print #1, Tab(41);
         End If
 
         If compZ2$(P + 10) = "*" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, compZ2$(P + 10) + ", " + compZ3$(P + 10);
-            Print #2, Tab(68);
-            Print #2, Using "##"; LD!(P + 10)
+            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, Tab(68);
+            Print #1, Using "##"; LD!(P + 10)
         End If
 
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
+    Print #1, Chr$(12)
+    Print #1, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 
     For P = 1 To 20
 
         CA = 1
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
-            Print #2, Tab(41);
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
+            Print #1, Tab(41);
         End If
 
         CA = 2
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, TR$(CA, P); Tab(56);
-            Print #2, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print #1, TR$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"; Tab(41); "RUSHING DEF     G PLAYS  YDS  AVG YDS/G"
+    Print #1,
+    Print #1, "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"; Tab(41); "RUSHING DEF     G PLAYS  YDS  AVG YDS/G"
 
     For P = 1 To 20
 
         CA = 3
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
-            Print #2, Tab(41);
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
+            Print #1, Tab(41);
         End If
 
         CA = 4
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, TR$(CA, P); Tab(56);
-            Print #2, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print #1, TR$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
         End If
 
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
+    Print #1, Chr$(12)
+    Print #1, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
 
     CA = 7
 
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
         End If
     Next
 
-    Print #2,
-    Print #2, "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
+    Print #1,
+    Print #1, "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     CA = 8
 
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
         End If
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
+    Print #1, Chr$(12)
+    Print #1, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
 
     For P = 1 To 20
 
         CA = 5
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2, Tab(41);
+            Print #1, Tab(41);
         Else
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3);
-            Print #2, Tab(41);
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3);
+            Print #1, Tab(41);
         End If
 
         CA = 6
 
         If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
-            Print #2,
+            Print #1,
         Else
-            Print #2, TR$(CA, P); Tab(56);
-            Print #2, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3)
+            Print #1, TR$(CA, P); Tab(56);
+            Print #1, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3)
         End If
 
     Next
 
-    Print #2,
-    Print #2, "PUNTING        NO     AVG"
+    Print #1,
+    Print #1, "PUNTING        NO     AVG"
 
     CA = 9
 
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #2, TR$(CA, P); Tab(15);
-            Print #2, Using "###    ##.#"; TT!(CA, P, 1); TT!(CA, P, 2)
+            Print #1, TR$(CA, P); Tab(15);
+            Print #1, Using "###    ##.#"; TT!(CA, P, 1); TT!(CA, P, 2)
         End If
     Next
 
-    Print #2, Chr$(12)
-    Print #2, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
-    Print #2, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
+    Print #1, Chr$(12)
+    Print #1, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
+    Print #1, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
 
     CA = 10
 
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #2, TR$(CA, P); Tab(18);
-            Print #2, Using "### ###  ###    ### ###  ###       ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5); TT!(CA, P, 6); TT!(CA, P, 7)
+            Print #1, TR$(CA, P); Tab(18);
+            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5); TT!(CA, P, 6); TT!(CA, P, 7)
         End If
     Next
 
-    Close 2
+    Close #1
 
     If destination <> 1 Then
 
@@ -1714,11 +1687,10 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
             LPrint X$
         Loop
 
-        Close 2
+        Close #2
 
         LPrint Chr$(12)
 
     End If
 
 End Sub
-

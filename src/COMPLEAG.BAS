@@ -40,7 +40,7 @@ Sub CompileLeague ()
             Input #1, TRC$(I)
         Next
 
-        Close 1
+        Close #1
 
     End If
 
@@ -97,13 +97,13 @@ Sub CompileLeague ()
             Input #2, H1$(XW)
         Next XW
 
-        Close 2
+        Close #2
 
-        Open diskPaths$(2) + leagueFile$ + ".LIB" For Input As #2
+        Open diskPaths$(2) + leagueFile$ + ".LIB" For Input As #3
 
-        Input #2, LG%
+        Input #3, LG%
 
-        Close 2
+        Close #3
 
         If LG% <> 1 Then
 
@@ -120,15 +120,15 @@ Sub CompileLeague ()
 
             Erase compZ2!
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #4
 
-            Input #2, FF$, div1$, div2$, div3$
+            Input #4, FF$, div1$, div2$, div3$
 
             For X = 1 To 30
-                Input #2, compZ1$(X)
+                Input #4, compZ1$(X)
             Next X
 
-            Close 2
+            Close #4
 
             For XW = 1 To 30
 
@@ -347,7 +347,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
         Input #1, statsLI$(I, 1)
     Next
 
-    Close 1
+    Close #1
 
     For I = 1 To 10:
         For J = 1 To 6:
@@ -1906,48 +1906,48 @@ Sub PostLeadersPro (leaderFile$)
 
     Cls
 
-    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #2
+    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #1
 
     Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
 
     For X = 1 To 30:
-        Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
-        Write #2, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
+        Write #1, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
     Next X
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Write #2, TT!(I, I1, I2)
+                Write #1, TT!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Write #2, TT$(I, I1)
+            Write #1, TT$(I, I1)
         Next
     Next
 
-    Close 2
+    Close #1
 
-    Open diskPaths$(1) + "RECORDS.PFB" For Output As #1
+    Open diskPaths$(1) + "RECORDS.PFB" For Output As #2
 
     For I = 0 To 50:
-        Print #1, BRC!(I)
-        Print #1, BRC$(I, 0)
-        Print #1, BRC$(I, 1)
-        Print #1, BRC$(I, 2)
+        Print #2, BRC!(I)
+        Print #2, BRC$(I, 0)
+        Print #2, BRC$(I, 1)
+        Print #2, BRC$(I, 2)
     Next
 
     For I = 0 To 50:
-        Print #1, TRC!(I)
-        Print #1, TRC$(I)
+        Print #2, TRC!(I)
+        Print #2, TRC$(I)
     Next
 
-    Close 1
+    Close #2
 
 End Sub

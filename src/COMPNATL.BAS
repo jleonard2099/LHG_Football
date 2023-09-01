@@ -88,7 +88,7 @@ Sub CompileNatlOrg ()
             Input #1, TRC$(I)
         Next
 
-        Close 1
+        Close #1
 
     End If
 
@@ -112,7 +112,7 @@ Sub CompileNatlOrg ()
             Input #2, CN$(I)
         Next
 
-        Close 2
+        Close #2
 
         For NC = 1 To 40
 
@@ -143,22 +143,21 @@ Sub CompileNatlOrg ()
 
                 Cls
 
-                test$ = CN$(NC)
-                Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+                Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #3
 
-                Input #2, FF$
-                Input #2, div1$
-                Input #2, div2$
+                Input #3, FF$
+                Input #3, div1$
+                Input #3, div2$
 
                 For XW = 1 To 30
-                    Input #2, H1$(XW)
+                    Input #3, H1$(XW)
                 Next
 
-                Close 2
+                Close #3
 
-                Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #2
-                Input #2, LG%
-                Close 2
+                Open diskPaths$(2) + CN$(NC) + ".LIB" For Input As #4
+                Input #4, LG%
+                Close #4
 
                 If LG% <> 0 Then
 
@@ -173,17 +172,17 @@ Sub CompileNatlOrg ()
 
                 Else
 
-                    Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #2
+                    Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #5
 
-                    Input #2, FF$
-                    Input #2, div1$
-                    Input #2, div2$
+                    Input #5, FF$
+                    Input #5, div1$
+                    Input #5, div2$
 
                     For X = 1 To 30
-                        Input #2, compZ1$(X)
+                        Input #5, compZ1$(X)
                     Next X
 
-                    Close 2
+                    Close #5
 
                     haveStats = 1
 
@@ -266,31 +265,33 @@ Sub CompileNatlOrg ()
             Next Z1
         Next Z
 
-        Open diskPaths$(2) + organizationFile$ + ".POL" For Output As #2
+        Open diskPaths$(2) + organizationFile$ + ".POL" For Output As #6
+
         Print "POSTING "; organizationFile$; " POLL"
-        Write #2, NRT
+
+        Write #6, NRT
 
         For X = 1 To 1200
-            Write #2, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
+            Write #6, PT$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
         Next
 
-        Close 2
+        Close #6
 
-        Open diskPaths$(1) + "RECORDS.CFB" For Output As #1
+        Open diskPaths$(1) + "RECORDS.CFB" For Output As #7
 
         For I = 0 To 50:
-            Print #1, BRC!(I)
-            Print #1, BRC$(I, 0)
-            Print #1, BRC$(I, 1)
-            Print #1, BRC$(I, 2)
+            Print #7, BRC!(I)
+            Print #7, BRC$(I, 0)
+            Print #7, BRC$(I, 1)
+            Print #7, BRC$(I, 2)
         Next
 
         For I = 0 To 50:
-            Print #1, TRC!(I)
-            Print #1, TRC$(I)
+            Print #7, TRC!(I)
+            Print #7, TRC$(I)
         Next
 
-        Close 1
+        Close #7
 
     End If 'Done checking ESC
 
@@ -372,7 +373,7 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
     For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
 
-    Close 1
+    Close #1
 
     For I = 1 To 10: For J = 1 To 6: RB!(I, J) = compZ2!(I, J): Next: Next
 
@@ -2866,33 +2867,33 @@ Sub POSTLEADERS (confName$)
 
     Cls
 
-    Open diskPaths$(2) + confName$ + ".LDR" For Output As #2
+    Open diskPaths$(2) + confName$ + ".LDR" For Output As #1
 
     Print "POSTING "; confName$; " CONFERENCE LEADERS"
 
     For X = 1 To 60:
-        Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
-        Write #2, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
+        Write #1, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
     Next X
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Write #2, TT!(I, I1, I2)
+                Write #1, TT!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Write #2, TT$(I, I1)
+            Write #1, TT$(I, I1)
         Next
     Next
 
-    Close 2
+    Close #1
 
 End Sub
 
@@ -2912,33 +2913,33 @@ Sub POSTNATIONAL (leaderFile$)
 
     Cls
 
-    Open diskPaths$(2) + leaderFile$ + ".NLD" For Output As #2
+    Open diskPaths$(2) + leaderFile$ + ".NLD" For Output As #1
 
     Print "POSTING "; leaderFile$; " LEADERS"
 
     For X = 1 To 60:
-        Write #2, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
-        Write #2, N2$(X), N3$(X), N1!(X, 1), N1!(X, 2)
+        Write #1, N2$(X), N3$(X), N1!(X, 1), N1!(X, 2)
     Next X
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Write #2, NT!(I, I1, I2)
+                Write #1, NT!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Write #2, NT$(I, I1)
+            Write #1, NT$(I, I1)
         Next
     Next
 
-    Close 2
+    Close #1
 
 End Sub
 
@@ -2956,34 +2957,34 @@ Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
     Shared PTSA!(), PTSF!()
 
-    Open diskPaths$(1) + statFile$ + "S" For Input As #2
+    Open diskPaths$(1) + statFile$ + "S" For Input As #1
 
-    Input #2, numberGames%
+    Input #1, numberGames%
 
     For I = 1 To 120:
-        Input #2, statsO%(I)
+        Input #1, statsO%(I)
         PTSF!(XW) = PTSF!(XW) + statsO%(I)
     Next I
 
     For I = 1 To 120:
-        Input #2, compO$(I)
+        Input #1, compO$(I)
     Next I
 
     For I = 1 To 120:
-        Input #2, statsT%(I)
+        Input #1, statsT%(I)
         PTSA!(XW) = PTSA!(XW) + statsT%(I)
     Next I
 
     For I = 1 To 120:
-        Input #2, statsH$(I)
+        Input #1, statsH$(I)
     Next I
 
     For I = 0 To 1
         For I1 = 1 To 120
-            Input #2, compAP%(I, I1)
+            Input #1, compAP%(I, I1)
         Next
     Next
 
-    Close 2
+    Close #1
 
 End Sub

@@ -220,112 +220,112 @@ Sub MergeFirstYear
 
                 Input #1, GAMES
 
-                Close 1
+                Close #1
 
-                Open diskPaths$(1) + statFile$ For Input As #1
+                Open diskPaths$(1) + statFile$ For Input As #2
 
-                Input #1, A$
+                Input #2, A$
 
                 For I = 0 To 9: 
-                    Input #1, careerA1$(I)
+                    Input #2, careerA1$(I)
                 Next I
                 
                 For I = 0 To 5: 
-                    Input #1, careerA2$(I)
+                    Input #2, careerA2$(I)
                 Next I
                 
                 For I = 0 To 3: 
-                    Input #1, careerA3$(I)
+                    Input #2, careerA3$(I)
                 Next I
                 
                 For I = 0 To 2: 
-                    Input #1, careerA4$(I)
+                    Input #2, careerA4$(I)
                 Next I
                 
                 For I = 0 To 2: 
-                    Input #1, careerA5$(I)
+                    Input #2, careerA5$(I)
                 Next I
 
-                Input #1, careerA6$(0)
+                Input #2, careerA6$(0)
 
                 For I = 0 To 1: 
-                    Input #1, careerA7$(I)
+                    Input #2, careerA7$(I)
                 Next I
 
                 For J = 0 To 13
                     For K = 0 To 17: 
-                        Input #1, statsZ2!(J, K)
+                        Input #2, statsZ2!(J, K)
                     Next K
                 Next J
 
                 For L = 0 To 38: 
-                    Input #1, statsZ!(L)
+                    Input #2, statsZ!(L)
                 Next L
 
                 For L = 0 To 38: 
-                    Input #1, statsZ1!(L)
+                    Input #2, statsZ1!(L)
                 Next L
 
                 For J = 0 To 9: 
-                    Input #1, careerDI$(J)
+                    Input #2, careerDI$(J)
                     For J1 = 0 To 2: 
-                        Input #1, careerGI%(J, J1)
+                        Input #2, careerGI%(J, J1)
                     Next
                 Next
 
                 For J = 0 To 14: 
-                    Input #1, careerDS$(J)
+                    Input #2, careerDS$(J)
                     For J1 = 0 To 1: 
-                        Input #1, careerGS%(J, J1)
+                        Input #2, careerGS%(J, J1)
                     Next
                 Next
 
                 For I = 0 To 9: 
-                    Input #1, careerLR!(I)
-                    Input #1, careerLR$(I, 0)
-                    Input #1, careerLR$(I, 1)
+                    Input #2, careerLR!(I)
+                    Input #2, careerLR$(I, 0)
+                    Input #2, careerLR$(I, 1)
                 Next
 
                 For I = 0 To 15: 
-                    Input #1, careerLC!(I)
-                    Input #1, careerLC$(I, 0)
-                    Input #1, careerLC$(I, 1)
+                    Input #2, careerLC!(I)
+                    Input #2, careerLC$(I, 0)
+                    Input #2, careerLC$(I, 1)
                 Next
 
                 For I = 0 To 3: 
-                    Input #1, careerLP!(I)
-                    Input #1, careerLP$(I, 0)
-                    Input #1, careerLP$(I, 1)
+                    Input #2, careerLP!(I)
+                    Input #2, careerLP$(I, 0)
+                    Input #2, careerLP$(I, 1)
                 Next
 
                 For I = 0 To 2: 
-                    Input #1, careerLK!(I)
-                    Input #1, careerLK$(I, 0)
-                    Input #1, careerLK$(I, 1)
+                    Input #2, careerLK!(I)
+                    Input #2, careerLK$(I, 0)
+                    Input #2, careerLK$(I, 1)
                 Next
 
                 For I = 0 To 2: 
-                    Input #1, careerPK!(I)
-                    Input #1, careerPK$(I, 0)
-                    Input #1, careerPK$(I, 1)
+                    Input #2, careerPK!(I)
+                    Input #2, careerPK$(I, 0)
+                    Input #2, careerPK$(I, 1)
                 Next
 
                 For I = 0 To 1: 
-                    Input #1, LF!(I)
-                    Input #1, statsLF$(I)
+                    Input #2, LF!(I)
+                    Input #2, statsLF$(I)
                     For I1 = 0 To 4: 
-                        Input #1, careerAM!(I, I1)
-                        Input #1, careerAF!(I, I1)
+                        Input #2, careerAM!(I, I1)
+                        Input #2, careerAF!(I, I1)
                     Next
                 Next
 
                 For I = 0 To 9: 
-                    Input #1, LI!(I)
-                    Input #1, statsLI$(I, 0)
-                    Input #1, statsLI$(I, 1)
+                    Input #2, LI!(I)
+                    Input #2, statsLI$(I, 0)
+                    Input #2, statsLI$(I, 1)
                 Next
 
-                Close #1
+                Close #2
 
                 For I = 0 To 9
                     T% = Len(careerA1$(I))
@@ -564,68 +564,68 @@ Sub MergeFirstYear
 
                 TMR = 6420
 
-                Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #2
+                Open diskPaths$(1) + careerFile$ + ".CAR" For Output As #3
 
-                Write #2, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+                Write #3, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
                 For I = 0 To 49:
-                    Write #2, careerA1$(I)
+                    Write #3, careerA1$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 39: 
-                    Write #2, careerA2$(I)
+                    Write #3, careerA2$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 19: 
-                    Write #2, careerA3$(I)
+                    Write #3, careerA3$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
-                    Write #2, careerA4$(I)
+                    Write #3, careerA4$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
-                    Write #2, careerA5$(I)
+                    Write #3, careerA5$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
-                    Write #2, careerA6$(I)
+                    Write #3, careerA6$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
-                    Write #2, careerA7$(I)
+                    Write #3, careerA7$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
-                    Write #2, careerDI$(I)
+                    Write #3, careerDI$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
-                    Write #2, careerDS$(I)
+                    Write #3, careerDS$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
@@ -634,7 +634,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 49: 
                         For K = 0 To 9: 
-                            Write #2, RBBS!(N, J, K)
+                            Write #3, RBBS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -644,7 +644,7 @@ Sub MergeFirstYear
 
                 For N = 1 To 15: 
                     For J = 0 To 49: 
-                        Write #2, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
+                        Write #3, careerRBS$(N, J, 0), careerRBS$(N, J, 1)
                         Locate 21, 38
                         Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
@@ -654,7 +654,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 39
                         For K = 0 To 5: 
-                            Write #2, WRRS!(N, J, K)
+                            Write #3, WRRS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5: TMR = TMR - 1: Print Using "####"; TMR
@@ -663,7 +663,7 @@ Sub MergeFirstYear
 
                 For N = 1 To 15: 
                     For J = 0 To 39: 
-                        Write #2, careerWRS$(N, J, 0)
+                        Write #3, careerWRS$(N, J, 0)
                         Locate 21, 38
                         Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
@@ -673,7 +673,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 19: 
                         For K = 0 To 7: 
-                            Write #2, QBBS!(N, J, K)
+                            Write #3, QBBS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -683,7 +683,7 @@ Sub MergeFirstYear
 
                 For N = 1 To 15: 
                     For J = 0 To 19: 
-                        Write #2, careerQBS$(N, J, 0)
+                        Write #3, careerQBS$(N, J, 0)
                         Locate 21, 38
                         Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
@@ -693,7 +693,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 14: 
                         For K = 0 To 5: 
-                            Write #2, careerKRS!(N, J, K)
+                            Write #3, careerKRS!(N, J, K)
                         Next K
                         Locate 21, 38
                     Color 5
@@ -703,7 +703,7 @@ Sub MergeFirstYear
 
                 For N = 1 To 15: 
                     For J = 0 To 14: 
-                        Write #2, KRRS$(N, J, 0)
+                        Write #3, KRRS$(N, J, 0)
                         Locate 21, 38
                         Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
@@ -713,7 +713,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 14
                         For K = 0 To 5: 
-                            Write #2, careerPRS!(N, J, K)
+                            Write #3, careerPRS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -723,7 +723,7 @@ Sub MergeFirstYear
 
                 For N = 1 To 15: 
                     For J = 0 To 14: 
-                        Write #2, PRRS$(N, J, 0)
+                        Write #3, PRRS$(N, J, 0)
                         Locate 21, 38
                         Color 5
                         TMR = TMR - 1: Print Using "####"; TMR
@@ -733,7 +733,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 9: 
                         For K = 0 To 3: 
-                            Write #2, careerPUS!(N, J, K)
+                            Write #3, careerPUS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -744,7 +744,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 9: 
                         For K = 0 To 16: 
-                            Write #2, careerFGS!(N, J, K)
+                            Write #3, careerFGS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -755,7 +755,7 @@ Sub MergeFirstYear
                 For N = 1 To 15: 
                     For J = 0 To 54: 
                         For K = 0 To 2: 
-                            Write #2, careerGIS!(N, J, K)
+                            Write #3, careerGIS!(N, J, K)
                         Next K
                         Locate 21, 38
                         Color 5
@@ -768,7 +768,7 @@ Sub MergeFirstYear
                     For J = 0 To 54: 
 
                         For K = 0 To 2: 
-                            Write #2, careerGSS!(N, J, K)
+                            Write #3, careerGSS!(N, J, K)
                         Next K
 
                         Locate 21, 38
@@ -779,7 +779,7 @@ Sub MergeFirstYear
 
                 Next N
 
-                Close #2
+                Close #3
 
             End If 'Done checking for stat file
 
@@ -1665,35 +1665,35 @@ Sub UpdateCareerLeaders (careerFile$)
 
     '-----
 
-    Open diskPaths$(2) + careerFile$ + ".CLD" For Output As #1
+    Open diskPaths$(2) + careerFile$ + ".CLD" For Output As #2
 
-    For I = 0 To 9: Write #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
+    For I = 0 To 9: Write #2, RBBC!(I), careerRBC$(I), RBYR%(I): Next
 
-    Write #1, RBR$(0), RBR$(1)
+    Write #2, RBR$(0), RBR$(1)
 
-    For I = 0 To 4: Write #1, WRRC!(I), WRC$(I), WRYR%(I): Next
+    For I = 0 To 4: Write #2, WRRC!(I), WRC$(I), WRYR%(I): Next
 
-    Write #1, WRR$
+    Write #2, WRR$
 
-    For I = 0 To 8: Write #1, QBBC!(I), QBC$(I), QBYR%(I): Next
+    For I = 0 To 8: Write #2, QBBC!(I), QBC$(I), QBYR%(I): Next
 
-    Write #1, QBR$
+    Write #2, QBR$
 
-    For I = 0 To 4: Write #1, KRRC!(I), KRC$(I), KRYR%(I): Next
+    For I = 0 To 4: Write #2, KRRC!(I), KRC$(I), KRYR%(I): Next
 
-    Write #1, KRR$
+    Write #2, KRR$
 
-    For I = 0 To 4: Write #1, PRRC!(I), PRC$(I), PRYR%(I): Next
+    For I = 0 To 4: Write #2, PRRC!(I), PRC$(I), PRYR%(I): Next
 
-    Write #1, PRR$
+    Write #2, PRR$
 
-    For I = 0 To 2: Write #1, PUUC!(I), PUC$(I), PUYR%(I): Next
+    For I = 0 To 2: Write #2, PUUC!(I), PUC$(I), PUYR%(I): Next
 
-    For I = 0 To 6: Write #1, FGGC!(I), FGC$(I), FGYR%(I): Next
+    For I = 0 To 6: Write #2, FGGC!(I), FGC$(I), FGYR%(I): Next
 
-    For I = 0 To 1: Write #1, DFFC!(I), DFC$(I), DFYR%(I): Next
+    For I = 0 To 1: Write #2, DFFC!(I), DFC$(I), DFYR%(I): Next
 
-    Close #1
+    Close #2
 
 End Sub
 

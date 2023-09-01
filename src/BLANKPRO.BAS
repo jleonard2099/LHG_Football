@@ -24,15 +24,15 @@ Sub BLANKPRO ()
 
         If UCase$(I2$) = "Y" Then
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
 
-            Input #2, league$, div1$, div2$, div3$
+            Input #1, league$, div1$, div2$, div3$
 
             For XW = 1 To 30
-                Input #2, H1$(XW)
+                Input #1, H1$(XW)
             Next
 
-            Close 2
+            Close #1
 
             For XW = 1 To 30
 

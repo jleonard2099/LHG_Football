@@ -74,7 +74,7 @@ Sub GetDiskID_ALIGN (A$)
                         End If
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_ALIGN(YN$, numberTeams, teamIdx)
                 End If
@@ -147,7 +147,7 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
         
         For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
         
-        Close 1
+        Close #1
 
     Else
 
@@ -243,7 +243,7 @@ Sub GetDiskID_HD2HDCOL (A$)
 
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_HD2HDCOL(numberTeams, YN$)
 
@@ -316,7 +316,7 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
 
         For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
-        Close 1
+        Close #1
 
     Else
         BO% = 1
@@ -410,7 +410,7 @@ Sub GetDiskID_HD2HDPRO (A$)
 
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_HD2HDPRO(numberTeams, YN$)
 
@@ -483,7 +483,7 @@ Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
 
         For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
-        Close 1
+        Close #1
 
     Else
         BO% = 1
@@ -571,7 +571,7 @@ Sub GetDisk_LOOKY (numberTeams, yearNumber$, A$)
                             End If
                         Next I1
 
-                        Close 1
+                        Close #1
 
                         Call SelectTeam_LOOKY(numberTeams, yearNumber$)
 
@@ -657,7 +657,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
                 teamRatings%(I1) = CVI(Q$(I1 + 11))
             Next I1
 
-            Close 1
+            Close #1
 
         End If
 
@@ -744,7 +744,7 @@ Sub GetDiskID_MERGE (A$)
 
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_MERGE(yearNumber$, numberTeams)
 
@@ -829,7 +829,7 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
 
             For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
-            Close 1
+            Close #1
 
         End If
 
@@ -918,7 +918,7 @@ Sub GetTeam_CAREER (A$)
 
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_CAREER(YN$, numberTeams, T1)
 
@@ -992,7 +992,7 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
             teamRatings%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
-        Close 1
+        Close #1
     Else
         BO% = 1
     End If
@@ -1076,7 +1076,7 @@ Sub GetTeam_CARMERGE ()
 
                     Next I1
 
-                    Close 1
+                    Close #1
 
                     Call SelectTeam_CARMERGE(numberTeams, YN$, T1)
 
@@ -1151,7 +1151,7 @@ Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
 
         For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
-        Close 1
+        Close #1
 
     End If
 
@@ -1221,7 +1221,7 @@ Sub GetTeam_CNGTM (A$, mascot$, YN$, stadium$, teamNbr, YC!)
 
             Next I1
 
-            Close 1
+            Close #1
 
             Call SelectTeam_CNGTM(NTMS, teamNbr, YN$, YC!)
 
@@ -1576,7 +1576,7 @@ Sub GetTeam_CREATCOL (A$, YN$, teamNbr)
 
             Next I1
 
-            Close 1
+            Close #1
 
             Call SelectTeam_CREATCOL(YN$, NTMS, teamNbr)
 
@@ -1646,7 +1646,7 @@ Sub SelectTeam_CREATCOL (YN$, NTMS, teamNbr)
             teamRatings%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
-        Close 1
+        Close #1
 
     Else
 
@@ -1721,7 +1721,7 @@ Sub GetTeam_CREATPRO (A$, YN$, teamNbr)
                 End If
             Next I1
 
-            Close 1
+            Close #1
 
             Call SelectTeam_CREATPRO(YN$, NTMS, teamNbr)
 
@@ -1790,7 +1790,7 @@ Sub SelectTeam_CREATPRO (YN$, NTMS, teamNbr)
 
         For I1 = 0 To 4: teamRatings%(I1) = CVI(Q$(I1 + 11)): Next I1
 
-        Close 1
+        Close #1
 
     Else
 
@@ -1899,7 +1899,7 @@ Sub ReadTeam_Schedule (yearNumber$, teamIdx)
         armRating(I1) = CVI(Q$(I1 * 5 + 88))
     Next I1
 
-    Close 1
+    Close #1
 
 End Sub
 
@@ -1970,7 +1970,7 @@ Sub GetTeam_EditStats (A$, YN$, teamNbr)
 
             Next I1
 
-            Close 1
+            Close #1
 
             Call SelectTeam_EditStats(YN$, NTMS, teamNbr)
 
@@ -2040,7 +2040,7 @@ Sub SelectTeam_EditStats (YN$, NTMS, teamNbr)
             teamRatings%(I1) = CVI(Q$(I1 + 11))
         Next I1
 
-        Close 1
+        Close #1
 
     Else
 
@@ -2090,7 +2090,7 @@ Sub SelectTeam_Schedule (yearNumber$, numberTeams)
 
         Next I1
 
-        Close 1
+        Close #1
 
     End If
 

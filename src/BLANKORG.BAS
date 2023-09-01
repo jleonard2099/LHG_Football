@@ -8,7 +8,7 @@ Sub BLANKORG ()
 
     _Title "3-in-1 Football - Erase National Stats"
 
-    Dim H1$(40), Z4$(40)
+    Dim teamName$(40), Z4$(40)
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
@@ -24,19 +24,19 @@ Sub BLANKORG ()
 
         If UCase$(I2$) = "Y" Then
 
-            Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #2
+            Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #1
 
-            Input #2, org$
+            Input #1, org$
 
             For X = 1 To 40
-                Input #2, Z4$(X)
+                Input #1, confName$(X)
             Next
 
-            Close 2
+            Close #1
 
             For X = 1 To 40
 
-                If Z4$(X) <> "XXX" Then
+                If confName$(X) <> "XXX" Then
                     Cls
                     Exit Sub
                     'Should go back to beginning?
@@ -44,21 +44,21 @@ Sub BLANKORG ()
 
             Next
 
-            Open diskPaths$(2) + Z4$(X) + ".TMS" For Input As #2
+            Open diskPaths$(2) + confName$(X) + ".TMS" For Input As #2
 
             Input #2, org$, div1$, div2$
 
             For XW = 1 To 30
-                Input #2, H1$(XW)
+                Input #2, teamName$(XW)
             Next
 
-            Close 2
+            Close #2
 
             For XW = 1 To 30
 
-                If H1$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(2) + H1$(XW)
-                    Print "DELETING "; H1$(XW); " STATS"
+                If teamName$(XW) <> Chr$(42) Then
+                    statFile$ = diskPaths$(2) + teamName$(XW)
+                    Print "DELETING "; teamName$(XW); " STATS"
                     If _FileExists(statFile$) Then Kill statFile$
                     If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
                 End If

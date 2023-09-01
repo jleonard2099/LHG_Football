@@ -274,7 +274,7 @@ Sub InitVar ()
     Erase HB%
     Erase O%, PC%, intPR%
     Erase Q6%, Q7%, RQ%, RV%
-    Erase ST%, SX%, TE%, TF%, teamScore, YR%
+    Erase ST%, SX%, thirdDownAtt, thirdDownFail, teamScore, YR%
 
     Erase teamIndex%, V4%
 
@@ -1098,27 +1098,27 @@ Sub TickerSchedule ()
 
         For X = 0 To 1: SX$(schedGame(2) + 1, X) = gameTeams$(X): Next
 
-        Open "TICKER" For Output As #2
+        Open "TICKER" For Output As #1
 
         For I = 1 To 32:
             For I1 = 0 To 1:
                 For I2 = 1 To 14
-                    Print #2, SX%(I, I1, I2)
+                    Print #1, SX%(I, I1, I2)
                 Next
             Next
         Next
 
         For I = 1 To 32:
             For I1 = 0 To 1:
-                Print #2, SX$(I, I1)
+                Print #1, SX$(I, I1)
             Next
         Next
 
         For I = 1 To 32:
-            Print #2, ST%(I)
+            Print #1, ST%(I)
         Next
 
-        Close 2
+        Close #1
 
     End If
 
@@ -1141,7 +1141,7 @@ Sub TickerSchedule ()
 
     Put #1, schedGame(0) + schedGame(2)
 
-    Close 1
+    Close #1
 
     schedGame(2) = schedGame(2) + 1
 
@@ -6148,23 +6148,25 @@ End Sub
 'a corresponding "special" box score
 Sub EVENTS (specialCount, specialStat)
 
-    Dim E%(13)
+    Dim eventSettings(13)
 
     If _FileExists("EVENTS.BOX") Then
 
         Open "EVENTS.BOX" For Input As #1
+
         For X = 1 To 13
-            Input #1, E%(X)
+            Input #1, eventSettings(X)
         Next
-        Close 1
+
+        Close #1
 
         checkSpecial% = 0
 
-        If Q > E%(1) Then
+        If Q > eventSettings(1) Then
             checkSpecial% = 1
         Else
 
-            If score(1, 0) > E%(2) Or score(0, 0) > E%(2) Or score(1, 0) < E%(3) Or score(0, 0) < E%(3) Then
+            If score(1, 0) > eventSettings(2) Or score(0, 0) > eventSettings(2) Or score(1, 0) < eventSettings(3) Or score(0, 0) < eventSettings(3) Then
                 checkSpecial% = 1
             Else
 
@@ -6173,16 +6175,16 @@ Sub EVENTS (specialCount, specialStat)
                     For I1 = 0 To 9
 
                         '--Combine into multiple Or
-                        If K2(I, I1, 1) > E%(4) Then
+                        If K2(I, I1, 1) > eventSettings(4) Then
                             checkSpecial% = 1
                         Else
-                            If K2(I, I1, 2) > E%(5) Then
+                            If K2(I, I1, 2) > eventSettings(5) Then
                                 checkSpecial% = 1
                             Else
-                                If K2(I, I1, 4) > E%(6) Then
+                                If K2(I, I1, 4) > eventSettings(6) Then
                                     checkSpecial% = 1
                                 Else
-                                    If K2(I, I1, 5) > E%(7) Then
+                                    If K2(I, I1, 5) > eventSettings(7) Then
                                         checkSpecial% = 1
                                     End If
                                 End If
@@ -6201,10 +6203,10 @@ Sub EVENTS (specialCount, specialStat)
 
                         For I1 = 0 To 5
 
-                            If K2(I, I1, 7) > E%(6) Then
+                            If K2(I, I1, 7) > eventSettings(6) Then
                                 checkSpecial% = 1
                             Else
-                                If K2(I, I1, 8) > E%(7) Then
+                                If K2(I, I1, 8) > eventSettings(7) Then
                                     checkSpecial% = 1
                                 End If
                             End If
@@ -6221,10 +6223,10 @@ Sub EVENTS (specialCount, specialStat)
 
                     For I = 0 To 1
                         For I1 = 0 To 3
-                            If K2(I, I1, 12) > E%(8) Then
+                            If K2(I, I1, 12) > eventSettings(8) Then
                                 checkSpecial% = 1
                             Else
-                                If K2(I, I1, 13) > E%(9) Then
+                                If K2(I, I1, 13) > eventSettings(9) Then
                                     checkSpecial% = 1
                                 End If
                             End If
@@ -6236,10 +6238,10 @@ Sub EVENTS (specialCount, specialStat)
                 If checkSpecial% <> 1 Then
 
                     For I = 0 To 1
-                        If K2(I, 3, 17) > E%(10) Then
+                        If K2(I, 3, 17) > eventSettings(10) Then
                             checkSpecial% = 1
                         Else
-                            If K2(I, 7, 17) > E%(10) Then
+                            If K2(I, 7, 17) > eventSettings(10) Then
                                 checkSpecial% = 1
                             End If
                         End If
@@ -6606,7 +6608,7 @@ Sub BOX2FILE (printChoice, NM$)
     Print #1, ":";
     Print #1, Using "##"; timePoss(1) - Int(timePoss(1) / 60) * 60
 
-    Print #1, Tab(15); TE%(0) - TF%(0); "-"; TE%(0); Tab(27); "THIRD DOWN EFF"; Tab(49); TE%(1) - TF%(1); "-"; TE%(1)
+    Print #1, Tab(15); thirdDownAtt(0) - thirdDownFail(0); "-"; thirdDownAtt(0); Tab(27); "THIRD DOWN EFF"; Tab(49); thirdDownAtt(1) - thirdDownFail(1); "-"; thirdDownAtt(1)
     Print #1,
     Print #1,
 
@@ -6819,14 +6821,14 @@ End Sub
 'information to a boxscore file
 Sub BOX2SPC (NM$)
 
-    Open diskPaths$(1) + NM$ For Append As #2
+    Open diskPaths$(1) + NM$ For Append As #1
 
-    Print #2,
+    Print #1,
 
     'Output any special events
-    Print #2,
+    Print #1,
 
-    Close #2
+    Close #1
 
 End Sub
 
@@ -7094,8 +7096,8 @@ Sub STATS2SCREEN ()
     Locate , 53: Print Using "##"; Int(timePoss(1) / 60);: Print ":";: Print Using "##"; timePoss(1) - Int(timePoss(1) / 60) * 60
 
     Locate , 32: Print "THIRD DOWN EFF";
-    Locate , 16: Print TE%(0) - TF%(0); "-"; TE%(0);
-    Locate , 51: Print TE%(1) - TF%(1); "-"; TE%(1)
+    Locate , 16: Print thirdDownAtt(0) - thirdDownFail(0); "-"; thirdDownAtt(0);
+    Locate , 51: Print thirdDownAtt(1) - thirdDownFail(1); "-"; thirdDownAtt(1)
 
     Call GetKeyWhenNoDelay
     Call FRAMESTATS(22)
@@ -7415,15 +7417,15 @@ Sub SAVESTATS ()
                 endAllGames = 1
             Else
 
-                Open "GAME82" For Output As #2
+                Open "GAME82" For Output As #1
 
-                Print #2, scheduleFile$
+                Print #1, scheduleFile$
 
                 For I = 0 To 2:
-                    Print #2, schedGame(I)
+                    Print #1, schedGame(I)
                 Next
 
-                Close 2
+                Close #1
 
             End If
 
@@ -7489,59 +7491,96 @@ Sub COMPILESTATFILES (teamIdx)
     'Read existing stats from the file
     If _FileExists(diskPaths$(1) + statFile$) Then
 
-        Open diskPaths$(1) + statFile$ For Input As #2
+        Open diskPaths$(1) + statFile$ For Input As #1
 
-        Input #2, B$(teamIdx)
+        Input #1, B$(teamIdx)
 
-        For I = 0 To 9: Input #2, rbacks$(teamIdx, I): Next
-        For I = 0 To 5: Input #2, wdRec$(teamIdx, I): Next
-        For I = 0 To 3: Input #2, qbacks$(teamIdx, I): Next
-        For I = 0 To 2: Input #2, kickRet$(teamIdx, I): Next
-        For I = 0 To 2: Input #2, pret$(teamIdx, I): Next
+        For I = 0 To 9: Input #1, rbacks$(teamIdx, I): Next
+        For I = 0 To 5: Input #1, wdRec$(teamIdx, I): Next
+        For I = 0 To 3: Input #1, qbacks$(teamIdx, I): Next
+        For I = 0 To 2: Input #1, kickRet$(teamIdx, I): Next
+        For I = 0 To 2: Input #1, pret$(teamIdx, I): Next
 
-        Input #2, punter$(teamIdx, 0)
+        Input #1, punter$(teamIdx, 0)
 
         For I = 0 To 1:
-            Input #2, kicker$(teamIdx, I)
+            Input #1, kicker$(teamIdx, I)
         Next
 
         For J = 0 To 13:
             For K = 0 To 17:
-                Input #2, Z2(J, K)
+                Input #1, Z2(J, K)
             Next
         Next
 
         For L = 0 To 38:
-            Input #2, Z(L)
+            Input #1, Z(L)
         Next
 
         For L = 0 To 38:
-            Input #2, Z1(L)
+            Input #1, Z1(L)
         Next
 
         For J = 0 To 9
-            Input #2, defInts$(teamIdx, J)
+            Input #1, defInts$(teamIdx, J)
             For J1 = 0 To 2
-                Input #2, GI(teamIdx, J, J1)
+                Input #1, GI(teamIdx, J, J1)
             Next
         Next
 
         For J = 0 To 14
-            Input #2, defSacks$(teamIdx, J)
+            Input #1, defSacks$(teamIdx, J)
             For J1 = 0 To 1
-                Input #2, GS(teamIdx, J, J1)
+                Input #1, GS(teamIdx, J, J1)
             Next
         Next
 
-        For I = 0 To 9: Input #2, LR(teamIdx, I): Input #2, strLR$(teamIdx, I, 0): Input #2, strLR$(teamIdx, I, 1): Next
-        For I = 0 To 15: Input #2, LC(teamIdx, I): Input #2, strLC$(teamIdx, I, 0): Input #2, strLC$(teamIdx, I, 1): Next
-        For I = 0 To 3: Input #2, LP(teamIdx, I): Input #2, LP$(teamIdx, I, 0): Input #2, LP$(teamIdx, I, 1): Next
-        For I = 0 To 2: Input #2, LK(teamIdx, I): Input #2, LK$(teamIdx, I, 0): Input #2, LK$(teamIdx, I, 1): Next
-        For I = 0 To 2: Input #2, PK(teamIdx, I): Input #2, PK$(teamIdx, I, 0): Input #2, PK$(teamIdx, I, 1): Next
-        For I = 0 To 1: Input #2, LF(teamIdx, I): Input #2, LF$(teamIdx, I): For I1 = 0 To 4: Input #2, AM(teamIdx, I, I1): Input #2, AF(teamIdx, I, I1): Next: Next
-        For I = 0 To 9: Input #2, LI(teamIdx, I): Input #2, LI$(teamIdx, I, 0): Input #2, LI$(teamIdx, I, 1): Next
+        For I = 0 To 9: 
+            Input #1, LR(teamIdx, I)
+            Input #1, strLR$(teamIdx, I, 0)
+            Input #1, strLR$(teamIdx, I, 1)
+        Next
 
-        Close #2
+        For I = 0 To 15: 
+            Input #1, LC(teamIdx, I)
+            Input #1, strLC$(teamIdx, I, 0)
+            Input #1, strLC$(teamIdx, I, 1)
+        Next
+
+        For I = 0 To 3: 
+            Input #1, LP(teamIdx, I)
+            Input #1, LP$(teamIdx, I, 0)
+            Input #1, LP$(teamIdx, I, 1)
+        Next
+
+        For I = 0 To 2: 
+            Input #1, LK(teamIdx, I)
+            Input #1, LK$(teamIdx, I, 0)
+            Input #1, LK$(teamIdx, I, 1)
+        Next
+
+        For I = 0 To 2: 
+            Input #1, PK(teamIdx, I)
+            Input #1, PK$(teamIdx, I, 0)
+            Input #1, PK$(teamIdx, I, 1)
+        Next
+
+        For I = 0 To 1: 
+            Input #1, LF(teamIdx, I)
+            Input #1, LF$(teamIdx, I)
+            For I1 = 0 To 4: 
+                Input #1, AM(teamIdx, I, I1)
+                Input #1, AF(teamIdx, I, I1)
+            Next
+        Next
+
+        For I = 0 To 9: 
+            Input #1, LI(teamIdx, I)
+            Input #1, LI$(teamIdx, I, 0)
+            Input #1, LI$(teamIdx, I, 1)
+        Next
+
+        Close #1
 
     End If
 
@@ -7676,95 +7715,96 @@ Sub COMPILESTATFILES (teamIdx)
     Color tmRat_GAME(teamIdx, 2), tmRat_GAME(teamIdx, 1): Print statFile$
     Color 15, 0
 
-    Open diskPaths$(1) + statFile$ For Output As #1
-    Print #1, Y$(teamIdx)
+    Open diskPaths$(1) + statFile$ For Output As #2
+    
+    Print #2, Y$(teamIdx)
 
-    For I = 0 To 9: Print #1, rbacks$(teamIdx, I): Next
-    For I = 0 To 5: Print #1, wdRec$(teamIdx, I): Next
-    For I = 0 To 3: Print #1, qbacks$(teamIdx, I): Next
-    For I = 0 To 2: Print #1, kickRet$(teamIdx, I): Next
-    For I = 0 To 2: Print #1, pret$(teamIdx, I): Next
+    For I = 0 To 9: Print #2, rbacks$(teamIdx, I): Next
+    For I = 0 To 5: Print #2, wdRec$(teamIdx, I): Next
+    For I = 0 To 3: Print #2, qbacks$(teamIdx, I): Next
+    For I = 0 To 2: Print #2, kickRet$(teamIdx, I): Next
+    For I = 0 To 2: Print #2, pret$(teamIdx, I): Next
 
-    Print #1, punter$(teamIdx, 0)
+    Print #2, punter$(teamIdx, 0)
 
     For I = 0 To 1:
-        Print #1, kicker$(teamIdx, I)
+        Print #2, kicker$(teamIdx, I)
     Next
 
     For J = 0 To 13
         For K = 0 To 17:
-            Print #1, Z2(J, K)
+            Print #2, Z2(J, K)
         Next
     Next
 
     For L = 0 To 38:
-        Print #1, Z(L)
+        Print #2, Z(L)
     Next
 
     For L = 0 To 38:
-        Print #1, Z1(L)
+        Print #2, Z1(L)
     Next
 
     For J = 0 To 9
-        Print #1, defInts$(teamIdx, J)
+        Print #2, defInts$(teamIdx, J)
         For J1 = 0 To 2
-            Print #1, GI(teamIdx, J, J1)
+            Print #2, GI(teamIdx, J, J1)
         Next
     Next
 
     For J = 0 To 14
-        Print #1, defSacks$(teamIdx, J)
+        Print #2, defSacks$(teamIdx, J)
         For J1 = 0 To 1
-            Print #1, GS(teamIdx, J, J1)
+            Print #2, GS(teamIdx, J, J1)
         Next
     Next
 
     For I = 0 To 9:
-        Print #1, LR(teamIdx, I)
-        Print #1, strLR$(teamIdx, I, 0)
-        Print #1, strLR$(teamIdx, I, 1)
+        Print #2, LR(teamIdx, I)
+        Print #2, strLR$(teamIdx, I, 0)
+        Print #2, strLR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 15:
-        Print #1, LC(teamIdx, I)
-        Print #1, strLC$(teamIdx, I, 0)
-        Print #1, strLC$(teamIdx, I, 1)
+        Print #2, LC(teamIdx, I)
+        Print #2, strLC$(teamIdx, I, 0)
+        Print #2, strLC$(teamIdx, I, 1)
     Next
 
     For I = 0 To 3:
-        Print #1, LP(teamIdx, I)
-        Print #1, LP$(teamIdx, I, 0)
-        Print #1, LP$(teamIdx, I, 1)
+        Print #2, LP(teamIdx, I)
+        Print #2, LP$(teamIdx, I, 0)
+        Print #2, LP$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #1, LK(teamIdx, I)
-        Print #1, LK$(teamIdx, I, 0)
-        Print #1, LK$(teamIdx, I, 1)
+        Print #2, LK(teamIdx, I)
+        Print #2, LK$(teamIdx, I, 0)
+        Print #2, LK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #1, PK(teamIdx, I)
-        Print #1, PK$(teamIdx, I, 0)
-        Print #1, PK$(teamIdx, I, 1)
+        Print #2, PK(teamIdx, I)
+        Print #2, PK$(teamIdx, I, 0)
+        Print #2, PK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
-        Print #1, LF(teamIdx, I)
-        Print #1, LF$(teamIdx, I)
+        Print #2, LF(teamIdx, I)
+        Print #2, LF$(teamIdx, I)
         For I1 = 0 To 4:
-            Print #1, AM(teamIdx, I, I1)
-            Print #1, AF(teamIdx, I, I1)
+            Print #2, AM(teamIdx, I, I1)
+            Print #2, AF(teamIdx, I, I1)
         Next
     Next
 
     For I = 0 To 9:
-        Print #1, LI(teamIdx, I)
-        Print #1, LI$(teamIdx, I, 0)
-        Print #1, LI$(teamIdx, I, 1)
+        Print #2, LI(teamIdx, I)
+        Print #2, LI$(teamIdx, I, 0)
+        Print #2, LI$(teamIdx, I, 1)
     Next
 
-    Close #1
+    Close #2
 
     Print "<<<<<"
     Print
@@ -7775,20 +7815,20 @@ Sub COMPILESTATFILES (teamIdx)
     'Read stats in from file
     If _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
-        Open diskPaths$(1) + statFile$ + "S" For Input As #1
+        Open diskPaths$(1) + statFile$ + "S" For Input As #3
 
-        Input #1, numberGames
+        Input #3, numberGames
 
-        For I = 1 To 120: Input #1, O%(I): Next
-        For I = 1 To 120: Input #1, HO$(I): Next
-        For I = 1 To 120: Input #1, teamScore(I): Next
-        For I = 1 To 120: Input #1, H$(I): Next
-        For I = 1 To 120: Input #1, intPR%(0, I): Next
-        For I = 1 To 120: Input #1, intPR%(1, I): Next
-        For I = 1 To 120: Input #1, CRD&(I): Next
-        For I = 1 To 120: Input #1, gameStadium$(I): Next
+        For I = 1 To 120: Input #3, O%(I): Next
+        For I = 1 To 120: Input #3, HO$(I): Next
+        For I = 1 To 120: Input #3, teamScore(I): Next
+        For I = 1 To 120: Input #3, H$(I): Next
+        For I = 1 To 120: Input #3, intPR%(0, I): Next
+        For I = 1 To 120: Input #3, intPR%(1, I): Next
+        For I = 1 To 120: Input #3, CRD&(I): Next
+        For I = 1 To 120: Input #3, gameStadium$(I): Next
 
-        Close #1
+        Close #3
 
     End If
 
@@ -7809,20 +7849,20 @@ Sub COMPILESTATFILES (teamIdx)
     intPR%(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
 
     'Write stats to new file
-    Open diskPaths$(1) + statFile$ + "S" For Output As #1
+    Open diskPaths$(1) + statFile$ + "S" For Output As #4
 
-    Print #1, numberGames%
+    Print #4, numberGames%
 
-    For I = 1 To 120: Print #1, O%(I): Next
-    For I = 1 To 120: Print #1, HO$(I): Next
-    For I = 1 To 120: Print #1, teamScore(I): Next
-    For I = 1 To 120: Print #1, H$(I): Next
-    For I = 1 To 120: Print #1, intPR%(0, I): Next
-    For I = 1 To 120: Print #1, intPR%(1, I): Next
-    For I = 1 To 120: Print #1, CRD&(I): Next
-    For I = 1 To 120: Print #1, gameStadium$(I): Next
+    For I = 1 To 120: Print #4, O%(I): Next
+    For I = 1 To 120: Print #4, HO$(I): Next
+    For I = 1 To 120: Print #4, teamScore(I): Next
+    For I = 1 To 120: Print #4, H$(I): Next
+    For I = 1 To 120: Print #4, intPR%(0, I): Next
+    For I = 1 To 120: Print #4, intPR%(1, I): Next
+    For I = 1 To 120: Print #4, CRD&(I): Next
+    For I = 1 To 120: Print #4, gameStadium$(I): Next
 
-    Close #1
+    Close #4
 
     For I = 1 To 120
         intPR%(0, I) = 0
@@ -7980,7 +8020,7 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
                             teamIndex%(teamIdx) = teamIdx
                         Next teamIdx
 
-                        Close 1
+                        Close #1
 
                         previousYear$ = yearNumber$
 

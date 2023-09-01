@@ -15,6 +15,7 @@ Const SCHEDULE_SIZE_BYTES = 52
 
 DefInt A-Z
 
+'$INCLUDE: 'BoxRoutines.bi'
 '$INCLUDE: 'FileTeamSelection.bi'
 '$INCLUDE: 'KeyInput.bi'
 '$INCLUDE: 'QPProEqu.bi'
@@ -340,21 +341,27 @@ _AllowFullScreen
 opSysType$ = Left$(_OS$, InStr(2, _OS$, "[") - 1)
 
 If Not _FileExists("DEV.BAS") Then
+
     Open "DEV.BAS" For Output As #1
+
     For I = 0 To 2
         Select Case opSysType$
             Case "[WINDOWS]": Print #1, _CWD$ + "\"
             Case "[MAC]", "[MACOSX]", "[LINUX]": Print #1, _CWD$ + "/"
         End Select
     Next
-    Close 1
+
+    Close #1
+
 End If
 
-Open "DEV.BAS" For Input As #1
+Open "DEV.BAS" For Input As #2
+
 For I = 0 To 2
-    Input #1, diskPaths$(I)
+    Input #2, diskPaths$(I)
 Next
-Close 1
+
+Close #2
 
 Selection% = 1
 
@@ -529,11 +536,14 @@ Sub ConfigureDrives ()
     Open "DEV.BAS" For Output As #1
 
     For R = 0 To 2:
+
         Select Case opSysType$
             Case "[WINDOWS]": diskPaths$(R) = diskPaths$(R) + "\"
             Case "[MAC]", "[MACOSX]", "[LINUX]": diskPaths$(R) = diskPaths$(R) + "/"
         End Select
+
         Print #1, diskPaths$(R)
+
     Next R
 
     Close #1
@@ -734,7 +744,9 @@ Sub Leaders_Menu ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case Selection%
+
                 Case 1: Call CREATPRO
                 Case 2: Call CompileLeague
                 Case 3: Call SEEPRO
@@ -754,19 +766,22 @@ Sub Leaders_Menu ()
                 Case 17: Call SEENATL
                 Case 18: Call RecordsMenu(3)
                 Case 19: Call BLANKORG
-                Case 20 Or 21: Cls
+
             End Select
+
         End If
 
         If Selection% = 21 Then
             End
             System
         End If
+
     Loop Until Selection% >= 20 Or ExitCode% = 27
 
 End Sub
 
 
+'$INCLUDE: 'BoxRoutines.bm'
 '$INCLUDE: 'FileTeamSelection.bm'
 '$INCLUDE: 'KeyInput.bm'
 '$INCLUDE: 'QPProEqu.bm'

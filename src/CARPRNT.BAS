@@ -255,6 +255,7 @@ Sub CARPRNT ()
         Color 0, 15
 
         Open "REPORT" For Output As #2
+
         Print #2, careerFile$
         Print #2, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
 
@@ -940,16 +941,16 @@ Sub CARPRNT ()
 
         Next I
 
-        Close 2
+        Close #2
 
-        Open "REPORT" For Input As #2
+        Open "REPORT" For Input As #3
 
         Do While Not EOF(2)
-            Line Input #2, X$
+            Line Input #3, X$
             LPrint X$
         Loop
 
-        Close 2
+        Close #3
 
         LPrint Chr$(12)
 

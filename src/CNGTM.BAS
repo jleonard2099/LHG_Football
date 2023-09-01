@@ -1856,7 +1856,7 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     Put #2, teamNbr
 
-    Close 2
+    Close #2
 
     stadium$ = ""
     teamAttendance& = 0

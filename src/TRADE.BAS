@@ -25,15 +25,20 @@ Sub TRADE ()
     tradeIdx = 0
     Call ChooseTradeTeam (NY$(tradeIdx), numberTeams, teamNbr, teams_TRADE$(tradeIdx), tradeIdx)    
     tradeT!(tradeIdx) = teamNbr
-    Call LoadStatsForTrade(tradeIdx)
 
-    tradeIdx = 1
-    Call ChooseTradeTeam (NY$(tradeIdx), numberTeams, teamNbr, teams_TRADE$(tradeIdx), tradeIdx)
-    tradeT!(tradeIdx) = teamNbr
-    Call LoadStatsForTrade(tradeIdx)
+    If teamNbr> 0 Then
 
-    'Teams / Stats are loaded
-    Call ContinueTrade
+        Call LoadStatsForTrade(tradeIdx)
+
+        tradeIdx = 1
+        Call ChooseTradeTeam (NY$(tradeIdx), numberTeams, teamNbr, teams_TRADE$(tradeIdx), tradeIdx)
+        tradeT!(tradeIdx) = teamNbr
+        Call LoadStatsForTrade(tradeIdx)
+
+        'Teams / Stats are loaded
+        Call ContinueTrade
+
+    End If
 
 End Sub
 
@@ -1773,20 +1778,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
         Color 15, 0
         Cls
 
-        JJ = 7
-
-        Locate 6, 8
-        Color 15, 4
-
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        For II = 1 To JJ
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        Locate 7 + JJ, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+        Call MenuBox (6, 8, 61, 7, 15, 4)
 
         Locate 7, 32
 
@@ -1850,7 +1842,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
                             teamIndex%(teamIdx) = teamIdx
                         Next teamIdx
 
-                        Close 1
+                        Close #1
 
                     End If 'Done checking if file exists
 

@@ -16,22 +16,7 @@ Sub HD2HDCOL ()
     Locate 4, 1
     Color 2, 0
 
-    JJ = 6
-    Locate 8, 8
-    Color 15, 1
-
-    'Print box top
-    Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-    'Print box sides
-    For II = 1 To JJ
-        Locate 8 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    'Print box bottom
-    Locate 9 + JJ, 8
-    Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+    Call MenuBox (8, 8, 61, 6, 15, 1)
 
     Do
 
@@ -39,9 +24,12 @@ Sub HD2HDCOL ()
         Color 3
 
         Locate , 25: Print "SELECT OPTION:"
-        Locate , 25: Color 15: Print "O";: Color 7: Print "NE CONFERENCE"
-        Locate , 25: Color 15: Print "T";: Color 7: Print "WO CONFERENCES WITH INTERCONFERENCE PLAY"
-        Locate , 25: Color 15: Print "R";: Color 7: Print "ETURN TO MAIN MENU"
+        Locate , 25: Color 15: Print "O";
+        Color 7: Print "NE CONFERENCE"
+        Locate , 25: Color 15: Print "T";
+        Color 7: Print "WO CONFERENCES WITH INTERCONFERENCE PLAY"
+        Locate , 25: Color 15: Print "R";
+        Color 7: Print "ETURN TO MAIN MENU"
 
         I$ = GetKeyPress$
 
@@ -109,19 +97,19 @@ Sub Hd2HdColl_Conf (X2)
 
             Loop Until _FileExists(diskPaths$(1) + statFile$ + "S")
 
-            Open diskPaths$(1) + statFile$ + "S" For Input As #2
+            Open diskPaths$(1) + statFile$ + "S" For Input As #1
 
-            Input #2, YY%
+            Input #1, YY%
 
-            For I = 1 To 120: Input #2, statsO%(I): Next I
+            For I = 1 To 120: Input #1, statsO%(I): Next I
 
-            For I = 1 To 120: Input #2, compO$(I): Next I
+            For I = 1 To 120: Input #1, compO$(I): Next I
 
-            For I = 1 To 120: Input #2, statsT%(I): Next I
+            For I = 1 To 120: Input #1, statsT%(I): Next I
 
-            For I = 1 To 120: Input #2, statsH$(I): Next I
+            For I = 1 To 120: Input #1, statsH$(I): Next I
 
-            Close #2
+            Close #1
 
             'Check if same league
             If sameLeague <> 1 Then
@@ -139,28 +127,10 @@ Sub Hd2HdColl_Conf (X2)
         Color 7, 0
         Cls
 
-        J = 5
-
-        Locate 8, 8
-        Color 15, 1
-
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To J
-            Locate 8 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 9 + J, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-
-        Locate 7, 32
+		Call MenuBox (8, 8, 61, 5, 15, 1)
 
         Do
-            Locate 10
+            Locate 10, 32
             Color 7, 1
 
             Locate , 30: Print "STATS TO ";
@@ -180,19 +150,20 @@ Sub Hd2HdColl_Conf (X2)
         If UCase$(J$) = "P" Then X1 = 1
         If UCase$(J$) = "S" Then VPP = 1
 
-        Open diskPaths$(2) + conf1$ + ".LIB" For Input As #1
+        Open diskPaths$(2) + conf1$ + ".LIB" For Input As #2
 
-        Input #1, X%
+        Input #2, X%
 
         If X% = 0 Then
-            Input #1, conf1$
-            Input #1, div1$
-            Input #1, div2$
+
+            Input #2, conf1$
+            Input #2, div1$
+            Input #2, div2$
 
             For X = 1 To 30: 
-                Input #1, Z1$(X)
-                Input #1, statsZ1%(X)
-                Input #1, Z2$(X)
+                Input #2, Z1$(X)
+                Input #2, statsZ1%(X)
+                Input #2, Z2$(X)
             Next
 
             NT = 30
@@ -200,52 +171,52 @@ Sub Hd2HdColl_Conf (X2)
         End If
 
         If X% = 1 Then
-            Input #1, conf1$
-            Input #1, div1$
-            Input #1, div2$
-            Input #1, div3$
+            Input #2, conf1$
+            Input #2, div1$
+            Input #2, div2$
+            Input #2, div3$
 
             For X = 1 To 30: 
-                Input #1, Z1$(X)
-                Input #1, statsZ1%(X)
-                Input #1, Z2$(X)
+                Input #2, Z1$(X)
+                Input #2, statsZ1%(X)
+                Input #2, Z2$(X)
             Next
 
             NT = 30
 
         End If
 
-        Close 1
+        Close #2
 
         If X2 = 1 Then
 
-            Open diskPaths$(2) + conf2$ + ".LIB" For Input As #1
+            Open diskPaths$(2) + conf2$ + ".LIB" For Input As #2
 
-            Input #1, X%
+            Input #2, X%
 
             If X% = 0 Then
-                Input #1, conf2$
-                Input #1, div1_2$
-                Input #1, div2_2$
+                Input #2, conf2$
+                Input #2, div1_2$
+                Input #2, div2_2$
 
                 For X = 1 To 30: 
-                    Input #1, Z12$(X)
-                    Input #1, Z12%(X)
-                    Input #1, Z22$(X)
+                    Input #2, Z12$(X)
+                    Input #2, Z12%(X)
+                    Input #2, Z22$(X)
                 Next
 
             End If
 
             If X% = 1 Then
-                Input #1, conf2$
-                Input #1, div1_2$
-                Input #1, div2_2$
-                Input #1, div3_2$
+                Input #2, conf2$
+                Input #2, div1_2$
+                Input #2, div2_2$
+                Input #2, div3_2$
 
                 For X = 1 To 30: 
-                    Input #1, Z12$(X)
-                    Input #1, Z12%(X)
-                    Input #1, Z22$(X)
+                    Input #2, Z12$(X)
+                    Input #2, Z12%(X)
+                    Input #2, Z22$(X)
                 Next
 
             End If
@@ -254,7 +225,7 @@ Sub Hd2HdColl_Conf (X2)
 
         End If
 
-        Close 1
+        Close #2
 
         Color 15
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
@@ -293,6 +264,7 @@ Sub Hd2HdColl_Conf (X2)
         For K = 1 To 30
 
             If Z1$(K) <> "XXX" Then
+
                 For I = 1 To YY%
                     If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AW!(K) = AW!(K) + 1
                     If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HW!(K) = HW!(K) + 1
@@ -305,7 +277,9 @@ Sub Hd2HdColl_Conf (X2)
                     If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G3!(K) = G3!(K) + statsO%(I)
                     If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G4!(K) = G4!(K) + statsT%(I)
                 Next I
+
             End If
+
         Next K
 
         'If we're doing a 2nd league..
@@ -368,28 +342,22 @@ Sub Hd2HdColl_Conf (X2)
 
         'Generate output
         If VPP <> 1 Then
-
             Call Hd2HdColl_Report(A$, conf1$, conf2$, DV$(), DV2$())
-
         Else
-
             Call Hd2HdColl_Screen(A$, conf1$, conf2$, DV$(), DV2$())
-
         End If
-
-        Close 2
 
         If X1 = 1 Then
             'If the option to send to printer was chosen,
             'print the pre-generated report
-            Open "REPORT" For Input As #2
+            Open "REPORT" For Input As #3
 
             Do While Not EOF(2)
-                Line Input #2, X$
+                Line Input #3, X$
                 LPrint X$
             Loop
 
-            Close 2
+            Close #3
 
             LPrint Chr$(12)
             X1 = 0
@@ -400,35 +368,21 @@ Sub Hd2HdColl_Conf (X2)
 
         Call TITLE_UTILS
 
-        J = 6
-
-        Locate 8, 8: Color 15, 1
-
-        'Print box top
-        Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-        'Print box sides
-        For II = 1 To J
-            Locate 8 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        'Print box bottom
-        Locate 9 + J, 8
-        Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
-        Locate 10, 15
-
-        Color 3: Locate , 25: Print "SELECT OPTION:"
-        Color 7: Locate , 25: Print "VIEW ";
-        Color 15: Print "S";
-        Color 7: Print "AME TEAM AGAIN"
-        Color 7: Locate , 25: Print "VIEW ";
-        Color 15: Print "A";
-        Color 7: Print "NOTHER TEAM IN THE SAME CONFERENCE"
-        Locate , 25: Color 15: Print "R";
-        Color 7: Print "ETURN TO MAIN MENU"
+		Call MenuBox (8, 8, 61, 6, 15, 1)
 
         Do
+
+            Locate 10, 15
+
+            Color 3: Locate , 25: Print "SELECT OPTION:"
+            Color 7: Locate , 25: Print "VIEW ";
+            Color 15: Print "S";
+            Color 7: Print "AME TEAM AGAIN"
+            Color 7: Locate , 25: Print "VIEW ";
+            Color 15: Print "A";
+            Color 7: Print "NOTHER TEAM IN THE SAME CONFERENCE"
+            Locate , 25: Color 15: Print "R";
+            Color 7: Print "ETURN TO MAIN MENU"
 
             I$ = GetKeyPress$
 
@@ -641,14 +595,16 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
             If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
             Cls
-            Color 12
 
             Locate 2, 35
             Color teamRatings%(2), teamRatings%(1): Print A$
+
             Color 3, 0
 
-            Locate 4: Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
-            Locate 5: Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
+            Locate 4
+            Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
+            Locate 5
+            Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
             Color 11
             Print conf2$; " "; DV2$(RDD);
@@ -760,6 +716,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
         If DV$(W) <> "XXX" And DV$(W) <> "" Then
 
             Color 15
+            'We have to limit this to 15 because we start stats on column 16
             Locate , 1: Print Left$(DV$(W), 15);
 
             Color 7
@@ -984,39 +941,29 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
         If X1 = 1 Then
             reportFile$ = "REPORT"
         Else
-            Color 15, 0
 
+            Color 15, 0
             Cls
 
-            JJ = 7
-            Locate 6, 8
-            Color 15, 1
-
-            'Print box top
-            Print " " + Chr$(214); String$(61, 196); Chr$(183) + " ";
-
-            'Print box sides
-            For II = 1 To JJ
-                Locate 6 + II, 8
-                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-            Next
-
-            'Print box bottom
-            Locate 7 + JJ, 8
-            Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
+            Call MenuBox (6, 8, 61, 7, 15, 1)
 
             Locate 7, 32
-            Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+
+            Locate , 12: Print "ENTER NAME FOR FILE: "
+            Print
             Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
             Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
             Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+
             Locate 7, 37: Input reportFile$
 
             If reportFile$ <> "" Then
+
                 Do
                     Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                     I$ = GetKeyPress$
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
             End If
 
         End If
@@ -1024,16 +971,18 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
     Loop Until UCase$(I$) = "N" And reportFile$ <> ""
 
     Color 15, 0
+    
     reportFile$ = reportFile$ + ".RPT"
 
-    Open reportFile$ For Output As #2
+    Open reportFile$ For Output As #1
+
     DV$(1) = div1$
     DV$(2) = div2$
 
     RDD = 0
 
-    Print #2, Tab(48); A$
-    Print #2,
+    Print #1, Tab(48); A$
+    Print #1,
 
     Do
 
@@ -1044,33 +993,33 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
         If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
-            Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-            Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-            Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-            Print #2, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-            Print #2, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+            Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+            Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+            Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+            Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+            Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
 
-            Print #2, conf1$; " "; DV$(RDD)
+            Print #1, conf1$; " "; DV$(RDD)
 
             For K = DD To EE
 
                 If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
-                    Print #2, Left$(Z1$(K), 15);
-                    Print #2, Tab(17); Using "##"; HW!(K);
-                    Print #2, Tab(20); Using "##"; HL!(K);
-                    Print #2, Tab(23); Using "##"; HT!(K);
-                    Print #2, Tab(27); Using "###"; G1!(K);
-                    Print #2, Tab(32); Using "###"; G2!(K);
-                    Print #2, Tab(38); Using "##"; AW!(K);
-                    Print #2, Tab(41); Using "##"; AL!(K);
-                    Print #2, Tab(44); Using "##"; RT!(K);
-                    Print #2, Tab(48); Using "###"; G3!(K);
-                    Print #2, Tab(52); Using "###"; G4!(K);
-                    Print #2, Tab(58); Using "##"; HW!(K) + AW!(K);
-                    Print #2, Tab(61); Using "##"; HL!(K) + AL!(K);
-                    Print #2, Tab(64); Using "##"; HT!(K) + RT!(K);
-                    Print #2, Tab(68); Using "###"; G1!(K) + G3!(K);
-                    Print #2, Tab(72); Using "###"; G2!(K) + G4!(K)
+                    Print #1, Left$(Z1$(K), 15);
+                    Print #1, Tab(17); Using "##"; HW!(K);
+                    Print #1, Tab(20); Using "##"; HL!(K);
+                    Print #1, Tab(23); Using "##"; HT!(K);
+                    Print #1, Tab(27); Using "###"; G1!(K);
+                    Print #1, Tab(32); Using "###"; G2!(K);
+                    Print #1, Tab(38); Using "##"; AW!(K);
+                    Print #1, Tab(41); Using "##"; AL!(K);
+                    Print #1, Tab(44); Using "##"; RT!(K);
+                    Print #1, Tab(48); Using "###"; G3!(K);
+                    Print #1, Tab(52); Using "###"; G4!(K);
+                    Print #1, Tab(58); Using "##"; HW!(K) + AW!(K);
+                    Print #1, Tab(61); Using "##"; HL!(K) + AL!(K);
+                    Print #1, Tab(64); Using "##"; HT!(K) + RT!(K);
+                    Print #1, Tab(68); Using "###"; G1!(K) + G3!(K);
+                    Print #1, Tab(72); Using "###"; G2!(K) + G4!(K)
                     THW!(RDD) = THW!(RDD) + HW!(K)
                     THL!(RDD) = THL!(RDD) + HL!(K)
                     TAW!(RDD) = TAW!(RDD) + AW!(K)
@@ -1085,25 +1034,25 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             Next K
 
-            Print #2,
-            Print #2, "TOTALS";
-            Print #2, Tab(17); Using "##"; THW!(RDD);
-            Print #2, Tab(20); Using "##"; THL!(RDD);
-            Print #2, Tab(23); Using "##"; THT!(RDD);
-            Print #2, Tab(27); Using "###"; TG1!(RDD);
-            Print #2, Tab(32); Using "###"; TG2!(RDD);
-            Print #2, Tab(38); Using "##"; TAW!(RDD);
-            Print #2, Tab(41); Using "##"; TAL!(RDD);
-            Print #2, Tab(44); Using "##"; TRT!(RDD);
-            Print #2, Tab(48); Using "###"; TG3!(RDD);
-            Print #2, Tab(52); Using "###"; TG4!(RDD);
-            Print #2, Tab(58); Using "##"; THW!(RDD) + TAW!(RDD);
-            Print #2, Tab(61); Using "##"; THL!(RDD) + TAL!(RDD);
-            Print #2, Tab(64); Using "##"; THT!(RDD) + TRT!(RDD);
-            Print #2, Tab(68); Using "###"; TG1!(RDD) + TG3!(RDD);
-            Print #2, Tab(72); Using "###"; TG2!(RDD) + TG4!(RDD)
-            Print #2,
-            Print #2,
+            Print #1,
+            Print #1, "TOTALS";
+            Print #1, Tab(17); Using "##"; THW!(RDD);
+            Print #1, Tab(20); Using "##"; THL!(RDD);
+            Print #1, Tab(23); Using "##"; THT!(RDD);
+            Print #1, Tab(27); Using "###"; TG1!(RDD);
+            Print #1, Tab(32); Using "###"; TG2!(RDD);
+            Print #1, Tab(38); Using "##"; TAW!(RDD);
+            Print #1, Tab(41); Using "##"; TAL!(RDD);
+            Print #1, Tab(44); Using "##"; TRT!(RDD);
+            Print #1, Tab(48); Using "###"; TG3!(RDD);
+            Print #1, Tab(52); Using "###"; TG4!(RDD);
+            Print #1, Tab(58); Using "##"; THW!(RDD) + TAW!(RDD);
+            Print #1, Tab(61); Using "##"; THL!(RDD) + TAL!(RDD);
+            Print #1, Tab(64); Using "##"; THT!(RDD) + TRT!(RDD);
+            Print #1, Tab(68); Using "###"; TG1!(RDD) + TG3!(RDD);
+            Print #1, Tab(72); Using "###"; TG2!(RDD) + TG4!(RDD)
+            Print #1,
+            Print #1,
 
         End If
 
@@ -1117,8 +1066,8 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
         Do
 
-            Print #2, Tab(48); A$
-            Print #2,
+            Print #1, Tab(48); A$
+            Print #1,
 
             RDD = RDD + 1
 
@@ -1127,33 +1076,33 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
-            Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-            Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-            Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-            Print #2, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-            Print #2, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-            Print #2, conf2$; " "; DV2$(RDD)
+            Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+            Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+            Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+            Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+            Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+            Print #1, conf2$; " "; DV2$(RDD)
 
             For K = DD To EE
 
                 If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
 
-                    Print #2, Left$(Z12$(K), 15);
-                    Print #2, Tab(17); Using "##"; HW2!(K);
-                    Print #2, Tab(20); Using "##"; HL2!(K);
-                    Print #2, Tab(23); Using "##"; HT2!(K);
-                    Print #2, Tab(27); Using "###"; G12!(K);
-                    Print #2, Tab(32); Using "###"; G22!(K);
-                    Print #2, Tab(38); Using "##"; AW2!(K);
-                    Print #2, Tab(41); Using "##"; AL2!(K);
-                    Print #2, Tab(44); Using "##"; RT2!(K);
-                    Print #2, Tab(48); Using "###"; G32!(K);
-                    Print #2, Tab(52); Using "###"; G42!(K);
-                    Print #2, Tab(58); Using "##"; HW2!(K) + AW2!(K);
-                    Print #2, Tab(61); Using "##"; HL2!(K) + AL2!(K);
-                    Print #2, Tab(64); Using "##"; HT2!(K) + RT2!(K);
-                    Print #2, Tab(68); Using "###"; G12!(K) + G32!(K);
-                    Print #2, Tab(72); Using "###"; G22!(K) + G42!(K)
+                    Print #1, Left$(Z12$(K), 15);
+                    Print #1, Tab(17); Using "##"; HW2!(K);
+                    Print #1, Tab(20); Using "##"; HL2!(K);
+                    Print #1, Tab(23); Using "##"; HT2!(K);
+                    Print #1, Tab(27); Using "###"; G12!(K);
+                    Print #1, Tab(32); Using "###"; G22!(K);
+                    Print #1, Tab(38); Using "##"; AW2!(K);
+                    Print #1, Tab(41); Using "##"; AL2!(K);
+                    Print #1, Tab(44); Using "##"; RT2!(K);
+                    Print #1, Tab(48); Using "###"; G32!(K);
+                    Print #1, Tab(52); Using "###"; G42!(K);
+                    Print #1, Tab(58); Using "##"; HW2!(K) + AW2!(K);
+                    Print #1, Tab(61); Using "##"; HL2!(K) + AL2!(K);
+                    Print #1, Tab(64); Using "##"; HT2!(K) + RT2!(K);
+                    Print #1, Tab(68); Using "###"; G12!(K) + G32!(K);
+                    Print #1, Tab(72); Using "###"; G22!(K) + G42!(K)
 
                     THW2!(RDD) = THW2!(RDD) + HW2!(K)
                     THL2!(RDD) = THL2!(RDD) + HL2!(K)
@@ -1170,58 +1119,58 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             Next K
 
-            Print #2,
-            Print #2, "TOTALS";
-            Print #2, Tab(17); Using "##"; THW2!(RDD);
-            Print #2, Tab(20); Using "##"; THL2!(RDD);
-            Print #2, Tab(23); Using "##"; THT2!(RDD);
-            Print #2, Tab(27); Using "###"; TG12!(RDD);
-            Print #2, Tab(32); Using "###"; TG22!(RDD);
-            Print #2, Tab(38); Using "##"; TAW2!(RDD);
-            Print #2, Tab(41); Using "##"; TAL2!(RDD);
-            Print #2, Tab(44); Using "##"; TRT2!(RDD);
-            Print #2, Tab(48); Using "###"; TG32!(RDD);
-            Print #2, Tab(52); Using "###"; TG42!(RDD);
-            Print #2, Tab(58); Using "##"; THW2!(RDD) + TAW2!(RDD);
-            Print #2, Tab(61); Using "##"; THL2!(RDD) + TAL2!(RDD);
-            Print #2, Tab(64); Using "##"; THT2!(RDD) + TRT2!(RDD);
-            Print #2, Tab(68); Using "###"; TG12!(RDD) + TG32!(RDD);
-            Print #2, Tab(72); Using "###"; TG22!(RDD) + TG42!(RDD)
-            Print #2,
-            Print #2,
+            Print #1,
+            Print #1, "TOTALS";
+            Print #1, Tab(17); Using "##"; THW2!(RDD);
+            Print #1, Tab(20); Using "##"; THL2!(RDD);
+            Print #1, Tab(23); Using "##"; THT2!(RDD);
+            Print #1, Tab(27); Using "###"; TG12!(RDD);
+            Print #1, Tab(32); Using "###"; TG22!(RDD);
+            Print #1, Tab(38); Using "##"; TAW2!(RDD);
+            Print #1, Tab(41); Using "##"; TAL2!(RDD);
+            Print #1, Tab(44); Using "##"; TRT2!(RDD);
+            Print #1, Tab(48); Using "###"; TG32!(RDD);
+            Print #1, Tab(52); Using "###"; TG42!(RDD);
+            Print #1, Tab(58); Using "##"; THW2!(RDD) + TAW2!(RDD);
+            Print #1, Tab(61); Using "##"; THL2!(RDD) + TAL2!(RDD);
+            Print #1, Tab(64); Using "##"; THT2!(RDD) + TRT2!(RDD);
+            Print #1, Tab(68); Using "###"; TG12!(RDD) + TG32!(RDD);
+            Print #1, Tab(72); Using "###"; TG22!(RDD) + TG42!(RDD)
+            Print #1,
+            Print #1,
 
         Loop Until RDD = 3
 
     End If
 
-    Print #2, Tab(48); A$
-    Print #2, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-    Print #2, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-    Print #2, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-    Print #2, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-    Print #2, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-    Print #2, conf1$
+    Print #1, Tab(48); A$
+    Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+    Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+    Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+    Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+    Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+    Print #1, conf1$
 
     For W = 1 To 2
 
         If W <> 2 And DV$(W) <> "" Then
 
-            Print #2, DV$(W);
-            Print #2, Tab(17); Using "##"; THW!(W);
-            Print #2, Tab(20); Using "##"; THL!(W);
-            Print #2, Tab(23); Using "##"; THT!(W);
-            Print #2, Tab(27); Using "###"; TG1!(W);
-            Print #2, Tab(32); Using "###"; TG2!(W);
-            Print #2, Tab(38); Using "##"; TAW!(W);
-            Print #2, Tab(41); Using "##"; TAL!(W);
-            Print #2, Tab(44); Using "##"; TRT!(W);
-            Print #2, Tab(48); Using "###"; TG3!(W);
-            Print #2, Tab(52); Using "###"; TG4!(W);
-            Print #2, Tab(58); Using "##"; THW!(W) + TAW!(W);
-            Print #2, Tab(61); Using "##"; THL!(W) + TAL!(W);
-            Print #2, Tab(64); Using "##"; THT!(W) + TRT!(W);
-            Print #2, Tab(68); Using "###"; TG1!(W) + TG3!(W);
-            Print #2, Tab(72); Using "###"; TG2!(W) + TG4!(W)
+            Print #1, DV$(W);
+            Print #1, Tab(17); Using "##"; THW!(W);
+            Print #1, Tab(20); Using "##"; THL!(W);
+            Print #1, Tab(23); Using "##"; THT!(W);
+            Print #1, Tab(27); Using "###"; TG1!(W);
+            Print #1, Tab(32); Using "###"; TG2!(W);
+            Print #1, Tab(38); Using "##"; TAW!(W);
+            Print #1, Tab(41); Using "##"; TAL!(W);
+            Print #1, Tab(44); Using "##"; TRT!(W);
+            Print #1, Tab(48); Using "###"; TG3!(W);
+            Print #1, Tab(52); Using "###"; TG4!(W);
+            Print #1, Tab(58); Using "##"; THW!(W) + TAW!(W);
+            Print #1, Tab(61); Using "##"; THL!(W) + TAL!(W);
+            Print #1, Tab(64); Using "##"; THT!(W) + TRT!(W);
+            Print #1, Tab(68); Using "###"; TG1!(W) + TG3!(W);
+            Print #1, Tab(72); Using "###"; TG2!(W) + TG4!(W)
 
         End If
 
@@ -1255,48 +1204,48 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
         TG44 = TG44 + TG4!(I)
     Next
 
-    Print #2,
-    Print #2, "TOTALS";
-    Print #2, Tab(17); Using "##"; THWW;
-    Print #2, Tab(20); Using "##"; THLL;
-    Print #2, Tab(23); Using "##"; THTT;
-    Print #2, Tab(27); Using "###"; TG11;
-    Print #2, Tab(32); Using "###"; TG22;
-    Print #2, Tab(38); Using "##"; TAWW;
-    Print #2, Tab(41); Using "##"; TALL;
-    Print #2, Tab(44); Using "##"; TRTT;
-    Print #2, Tab(48); Using "###"; TG33;
-    Print #2, Tab(52); Using "###"; TG44;
-    Print #2, Tab(58); Using "##"; THWW + TAWW;
-    Print #2, Tab(61); Using "##"; THLL + TALL;
-    Print #2, Tab(64); Using "##"; THTT + TRTT;
-    Print #2, Tab(68); Using "###"; TG11 + TG33;
-    Print #2, Tab(72); Using "###"; TG22 + TG44
+    Print #1,
+    Print #1, "TOTALS";
+    Print #1, Tab(17); Using "##"; THWW;
+    Print #1, Tab(20); Using "##"; THLL;
+    Print #1, Tab(23); Using "##"; THTT;
+    Print #1, Tab(27); Using "###"; TG11;
+    Print #1, Tab(32); Using "###"; TG22;
+    Print #1, Tab(38); Using "##"; TAWW;
+    Print #1, Tab(41); Using "##"; TALL;
+    Print #1, Tab(44); Using "##"; TRTT;
+    Print #1, Tab(48); Using "###"; TG33;
+    Print #1, Tab(52); Using "###"; TG44;
+    Print #1, Tab(58); Using "##"; THWW + TAWW;
+    Print #1, Tab(61); Using "##"; THLL + TALL;
+    Print #1, Tab(64); Using "##"; THTT + TRTT;
+    Print #1, Tab(68); Using "###"; TG11 + TG33;
+    Print #1, Tab(72); Using "###"; TG22 + TG44
 
     If X2 = 1 Then
 
-        Print #2,
-        Print #2, conf2$
+        Print #1,
+        Print #1, conf2$
 
         For W = 1 To 2
 
             If W = 2 Or DV2$(W) <> "" Then
-                Print #2, DV2$(W);
-                Print #2, Tab(17); Using "##"; THW2!(W);
-                Print #2, Tab(20); Using "##"; THL2!(W);
-                Print #2, Tab(23); Using "##"; THT2!(W);
-                Print #2, Tab(27); Using "###"; TG12!(W);
-                Print #2, Tab(32); Using "###"; TG22!(W);
-                Print #2, Tab(38); Using "##"; TAW2!(W);
-                Print #2, Tab(41); Using "##"; TAL2!(W);
-                Print #2, Tab(44); Using "##"; TRT2!(W);
-                Print #2, Tab(48); Using "###"; TG32!(W);
-                Print #2, Tab(52); Using "###"; TG42!(W);
-                Print #2, Tab(58); Using "##"; THW2!(W) + TAW2!(W);
-                Print #2, Tab(61); Using "##"; THL2!(W) + TAL2!(W);
-                Print #2, Tab(64); Using "##"; THT2!(W) + TRT2!(W);
-                Print #2, Tab(68); Using "###"; TG12!(W) + TG32!(W);
-                Print #2, Tab(72); Using "###"; TG22!(W) + TG42!(W)
+                Print #1, DV2$(W);
+                Print #1, Tab(17); Using "##"; THW2!(W);
+                Print #1, Tab(20); Using "##"; THL2!(W);
+                Print #1, Tab(23); Using "##"; THT2!(W);
+                Print #1, Tab(27); Using "###"; TG12!(W);
+                Print #1, Tab(32); Using "###"; TG22!(W);
+                Print #1, Tab(38); Using "##"; TAW2!(W);
+                Print #1, Tab(41); Using "##"; TAL2!(W);
+                Print #1, Tab(44); Using "##"; TRT2!(W);
+                Print #1, Tab(48); Using "###"; TG32!(W);
+                Print #1, Tab(52); Using "###"; TG42!(W);
+                Print #1, Tab(58); Using "##"; THW2!(W) + TAW2!(W);
+                Print #1, Tab(61); Using "##"; THL2!(W) + TAL2!(W);
+                Print #1, Tab(64); Using "##"; THT2!(W) + TRT2!(W);
+                Print #1, Tab(68); Using "###"; TG12!(W) + TG32!(W);
+                Print #1, Tab(72); Using "###"; TG22!(W) + TG42!(W)
 
             End If
 
@@ -1330,26 +1279,26 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
             TG442 = TG442 + TG42!(I)
         Next
 
-        Print #2,
-        Print #2, "TOTALS";
-        Print #2, Tab(17); Using "##"; THWW2;
-        Print #2, Tab(20); Using "##"; THLL2;
-        Print #2, Tab(23); Using "##"; THTT2;
-        Print #2, Tab(27); Using "###"; TG112;
-        Print #2, Tab(32); Using "###"; TG222;
-        Print #2, Tab(38); Using "##"; TAWW2;
-        Print #2, Tab(41); Using "##"; TALL2;
-        Print #2, Tab(44); Using "##"; TRTT2;
-        Print #2, Tab(48); Using "###"; TG332;
-        Print #2, Tab(52); Using "###"; TG442;
-        Print #2, Tab(58); Using "##"; THWW2 + TAWW2;
-        Print #2, Tab(61); Using "##"; THLL2 + TALL2;
-        Print #2, Tab(64); Using "##"; THTT2 + TRTT2;
-        Print #2, Tab(68); Using "###"; TG112 + TG332;
-        Print #2, Tab(72); Using "###"; TG222 + TG442
+        Print #1,
+        Print #1, "TOTALS";
+        Print #1, Tab(17); Using "##"; THWW2;
+        Print #1, Tab(20); Using "##"; THLL2;
+        Print #1, Tab(23); Using "##"; THTT2;
+        Print #1, Tab(27); Using "###"; TG112;
+        Print #1, Tab(32); Using "###"; TG222;
+        Print #1, Tab(38); Using "##"; TAWW2;
+        Print #1, Tab(41); Using "##"; TALL2;
+        Print #1, Tab(44); Using "##"; TRTT2;
+        Print #1, Tab(48); Using "###"; TG332;
+        Print #1, Tab(52); Using "###"; TG442;
+        Print #1, Tab(58); Using "##"; THWW2 + TAWW2;
+        Print #1, Tab(61); Using "##"; THLL2 + TALL2;
+        Print #1, Tab(64); Using "##"; THTT2 + TRTT2;
+        Print #1, Tab(68); Using "###"; TG112 + TG332;
+        Print #1, Tab(72); Using "###"; TG222 + TG442
 
     End If
 
-    Close 2
+    Close #1
 
 End Sub

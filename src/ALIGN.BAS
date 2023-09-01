@@ -106,51 +106,92 @@ Sub ALIGN ()
 
                 If _FileExists(pathCurrentStats$ + statFile$) Then
 
-                    Open pathCurrentStats$ + statFile$ For Input As #1
+                    Open pathCurrentStats$ + statFile$ For Input As #2
 
-                    Input #1, statsA$
+                    Input #2, statsA$
 
-                    For I = 0 To 9: Input #1, rbName$(I): Next I
+                    For I = 0 To 9: Input #2, rbName$(I): Next I
 
-                    For I = 0 To 5: Input #1, wrName$(I): Next I
+                    For I = 0 To 5: Input #2, wrName$(I): Next I
 
-                    For I = 0 To 3: Input #1, qbName$(I): Next I
+                    For I = 0 To 3: Input #2, qbName$(I): Next I
 
-                    For I = 0 To 2: Input #1, krName$(I): Next I
+                    For I = 0 To 2: Input #2, krName$(I): Next I
 
-                    For I = 0 To 2: Input #1, prName$(I): Next I
+                    For I = 0 To 2: Input #2, prName$(I): Next I
 
-                    Input #1, punterName$(0)
+                    Input #2, punterName$(0)
 
-                    For I = 0 To 1: Input #1, pkName$(I): Next I
+                    For I = 0 To 1: Input #2, pkName$(I): Next I
 
                     For J = 0 To 13
-                        For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
+                        For K = 0 To 17: Input #2, statsZ2!(J, K): Next K
                     Next J
 
-                    For L = 0 To 38: Input #1, statsZ!(L): Next L
+                    For L = 0 To 38: Input #2, statsZ!(L): Next L
 
-                    For L = 0 To 38: Input #1, statsZ1!(L): Next L
+                    For L = 0 To 38: Input #2, statsZ1!(L): Next L
 
-                    For J = 0 To 9: Input #1, intName$(J): For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next: Next
+                    For J = 0 To 9: 
+                        Input #2, intName$(J)
+                        For J1 = 0 To 2: 
+                            Input #2, statsGI%(J, J1)
+                        Next
+                    Next
 
-                    For J = 0 To 14: Input #1, sackName$(J): For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next: Next
+                    For J = 0 To 14: 
+                        Input #2, sackName$(J)
+                        For J1 = 0 To 1: 
+                            Input #2, statsGS%(J, J1)
+                        Next
+                    Next
 
-                    For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+                    For I = 0 To 9: 
+                        Input #2, LR!(I)
+                        Input #2, LR$(I, 0)
+                        Input #2, LR$(I, 1)
+                    Next
 
-                    For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+                    For I = 0 To 15: 
+                        Input #2, LC!(I)
+                        Input #2, LC$(I, 0)
+                        Input #2, LC$(I, 1)
+                    Next
 
-                    For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+                    For I = 0 To 3: 
+                        Input #2, LP!(I)
+                        Input #2, statsLP$(I, 0)
+                        Input #2, statsLP$(I, 1)
+                    Next
 
-                    For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+                    For I = 0 To 2: 
+                        Input #2, LK!(I)
+                        Input #2, statsLK$(I, 0)
+                        Input #2, statsLK$(I, 1)
+                    Next
 
-                    For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
+                    For I = 0 To 2: 
+                        Input #2, PK!(I)
+                        Input #2, statsPK$(I, 0)
+                        Input #2, statsPK$(I, 1)
+                    Next
 
-                    For I = 0 To 1: Input #1, LF!(I): Input #1, statsLF$(I): For I1 = 0 To 4: Input #1, AM!(I, I1): Input #1, AF!(I, I1): Next: Next
+                    For I = 0 To 1: 
+                        Input #2, LF!(I)
+                        Input #2, statsLF$(I)
+                        For I1 = 0 To 4: 
+                            Input #2, AM!(I, I1)
+                            Input #2, AF!(I, I1)
+                        Next
+                    Next
 
-                    For I = 0 To 9: Input #1, LI!(I): Input #1, statsLI$(I, 0): Input #1, statsLI$(I, 1): Next
+                    For I = 0 To 9: 
+                        Input #2, LI!(I)
+                        Input #2, statsLI$(I, 0)
+                        Input #2, statsLI$(I, 1)
+                    Next
 
-                    Close #1
+                    Close #2
 
                     Call AlignStats(pathRoadStats$, statFile$)
                     DUMMY$ = "OK"
