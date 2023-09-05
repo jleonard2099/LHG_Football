@@ -11,13 +11,14 @@ Sub CompileLeague ()
     _Title "3-in-1 Football - Update League Stats"
 
     Shared BRC!()
+    Shared compZ1!()
     Shared O1!(), O2!(), O3!()
     Shared PTSF!(), PTSA!()
     Shared TRC!(), TT!(), compZ2!()
 
     Shared BRC$()
     Shared compZ1$(), compZ2$(), compZ3$()
-    Shared H1$(), TRC$()
+    Shared H1$(), TRC$(), TT$()
 
     Shared div1$, div2$, div3$
 
@@ -63,7 +64,8 @@ Sub CompileLeague ()
         TRC!(42) = 999
         TRC!(43) = 999
 
-        Erase compZ1$, compZ2$, compZ3$
+        Erase compZ1$, compZ2$, compZ3$, TT$
+        Erase compZ1!, TT!
 
         For X = 1 To 240
             compZ2$(X) = "*"
@@ -77,6 +79,7 @@ Sub CompileLeague ()
             TT!(10, I, 7) = -99
         Next
 
+        finalUpdate$ = "N"
         C$ = ","
 
         Do
@@ -105,18 +108,17 @@ Sub CompileLeague ()
 
         If LG% <> 1 Then
 
-            MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
+            MsgText$ = "ERROR!! THIS IS NOT A PRO LEAGUE. PRESS ANY KEY TO RETURN TO MAIN MENU"
             BoxWidth = 20
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
             Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
-            Exit Sub
 
         Else
 
-            Erase compZ2!
+            'Erase compZ2!
 
             Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #4
 
@@ -189,7 +191,9 @@ End Sub
 '----------------------------------------
 '         FindStatsPro Function
 '----------------------------------------
-'...explanation...
+'Looks for schedule stats for a specified
+'team in the league and loads them if
+'found, notifying the user
 Function FindStatsPro% (XW, statFile$, numberGames%)
 
     Shared compAP%()
@@ -199,10 +203,6 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
     Shared statsO%(), statsT%()
 
     Shared PTSA!(), PTSF!()
-
-    fullWins = 0
-    fullLosses = 0
-    fullTies = 0
 
     If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
@@ -265,14 +265,29 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     Shared statsGI%(), statsGS%()
 
+    'Erase compPK$, intName$
+    'Erase LC$, LR$, PKR$, statsLI$, statsLF$, statsLK$, statsLP$
+    'Erase RB$, WR$, QB$, KR$, PR$
+
+    'Erase AF!, AM!, compZ2!, DT!, OT!
+    'Erase LC!, LF!, LI!, LK!, LP!, LR!, PK!
+    'Erase KR!, PR!, QB!, RB!, WR!
+
+    'Erase statsGI%, statsGS%
+
     Open diskPaths$(1) + statFile$ For Input As #1
+
     Input #1, TM$
 
     'Positions
     For I = 1 To 10: Input #1, RB$(I): Next
+
     For I = 1 To 6: Input #1, WR$(I): Next
+
     For I = 1 To 4: Input #1, QB$(I): Next
+
     For I = 1 To 3: Input #1, KR$(I): Next
+
     For I = 1 To 3: Input #1, PR$(I): Next I
 
     'Punter
@@ -281,6 +296,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     'Kickers
     For I = 1 To 2: Input #1, compPK$(I): Next
 
+    'Rushers / Receivers
     For J = 1 To 14
         For K = 1 To 18
             Input #1, compZ2!(J, K)
@@ -288,6 +304,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     Next J
 
     For L = 0 To 38: Input #1, OT!(L): Next L
+
     For L = 0 To 38: Input #1, DT!(L): Next L
 
     For J = 0 To 9: Input #1, intName$(J)
@@ -304,7 +321,9 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     Next
 
     For I = 0 To 9:
-        Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1)
+        Input #1, LR!(I)
+        Input #1, LR$(I, 0)
+        Input #1, LR$(I, 1)
     Next
 
     For I = 0 To 15:
@@ -771,6 +790,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                             For Z1 = 1 To 2:
                                 Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                             Next Z1
+
                         End If
 
                     Next Z
@@ -827,6 +847,7 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         End If
                     Next Z1
                 Next Z
+
             End If
 
             For Z = 71 To 80
@@ -992,7 +1013,6 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
                         compZ1!(Y, 2) = 0
                     End If
 
-                    4834 '
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then

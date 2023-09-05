@@ -129,13 +129,13 @@ Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 Dim WR$(16)
 
 
-Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
+'Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
 Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
-Dim QB!(11, 11), RB!(11, 11)
+'Dim QB!(11, 11), RB!(11, 11)
 Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 

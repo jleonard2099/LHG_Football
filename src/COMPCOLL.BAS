@@ -1,5 +1,3 @@
-'INCLUDE: 'QBFunctions.bm'
-
 '----------------------------------------
 '        CompileCollege SubRoutine
 '----------------------------------------
@@ -115,7 +113,6 @@ Sub CompileCollege ()
             Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
-            Exit Sub
 
         Else
 
@@ -131,69 +128,151 @@ Sub CompileCollege ()
 
             Close #4
 
-        End If
+            For XW = 1 To 30
 
-        For XW = 1 To 30
+                If H1$(XW) <> Chr$(42) Then
 
-            If H1$(XW) <> Chr$(42) Then
+                    haveStats = FindStatsColl%(XW, H1$(XW), numberGames%)
 
-                haveStats = FindStatsColl%(XW, H1$(XW), numberGames%)
+                    If (haveStats) Then
 
-                If (haveStats) Then
+                        L = Len(H1$(XW))
+                        WT$ = ""
 
-                    L = Len(H1$(XW))
-                    WT$ = ""
+                        For X = 1 To L:
+                            A = Asc(Mid$(H1$(XW), X, 1))
+                            WT$ = WT$ + Chr$(A)
+                        Next X
 
-                    For X = 1 To L:
-                        A = Asc(Mid$(H1$(XW), X, 1))
-                        WT$ = WT$ + Chr$(A)
-                    Next X
+                        confGame = 0
 
-                    confGame = 0
+                        For X = 1 To 30
 
-                    For X = 1 To 30
+                            If compZ1$(X) = WT$ Then
 
-                        If compZ1$(X) = WT$ Then
+                                If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
+                                    confGame = 1
+                                Else
+                                    O1!(X) = fullWins
+                                    O2!(X) = fullLosses
+                                    O3!(X) = fullTies
+                                    O1!(X + 30) = confWins
+                                    O2!(X + 30) = confLosses
+                                    O3!(X + 30) = confTies
+                                    PTSF!(X + 30) = PTSFC
+                                    PTSA!(X + 30) = PTSAC
+                                    compZ1$(X + 30) = compZ1$(X)
+                                End If
 
-                            If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
-                                confGame = 1
-                            Else
-                                O1!(X) = fullWins
-                                O2!(X) = fullLosses
-                                O3!(X) = fullTies
-                                O1!(X + 30) = confWins
-                                O2!(X + 30) = confLosses
-                                O3!(X + 30) = confTies
-                                PTSF!(X + 30) = PTSFC
-                                PTSA!(X + 30) = PTSAC
-                                compZ1$(X + 30) = compZ1$(X)
+                                If (confGame) Then Exit For
+
                             End If
 
-                            If (confGame) Then Exit For
+                        Next X
+                        'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
+                        If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                            Call ReadStatsColl(H1$(XW), numberGames%, TM$)
+                            Call StatsByCategoryColl(numberGames%, TM$, WT$, finalUpdate$)
+                            Call CheckStatsColl(numberGames%, TM$, WT$, finalUpdate$)
                         End If
 
-                    Next X
-                    'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
-
-                    If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
-                        Call ReadStatsColl(H1$(XW), numberGames%, TM$)
-                        Call StatsByCategoryColl(numberGames%, TM$, WT$, finalUpdate$)
-                        Call CheckStatsColl(numberGames%, TM$, WT$, finalUpdate$)
                     End If
 
                 End If
 
-            End If
+            Next XW
 
-        Next XW
+            Call SortLeadersConf
+            Call PostLeadersColl(conferenceFile$)
 
-        Call SortLeadersConf
-        Call PostLeadersColl(conferenceFile$)
+        End If
 
     End If
 
 End Sub
+
+
+'----------------------------------------
+'         FindStatsColl Function
+'----------------------------------------
+'Looks for schedule stats for a specified
+'team in the conference and loads them if
+'found, notifying the user
+Function FindStatsColl% (XW, statFile$, numberGames%)
+
+    Shared PTSA!(), PTSF!()
+
+    Shared compAP%(), statsO%(), statsT%()
+
+    Shared statsH$(), compO$(), H1$()
+
+    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
+
+        Locate , 1
+        Print "NO STATS FOUND FOR "; statFile$
+        FindStatsColl% = 0
+        
+    Else
+
+        Call ReadScheduleStats(statFile$, XW, numberGames%)
+
+        fullWins = 0
+        fullLosses = 0
+        fullTies = 0
+        confWins = 0
+        confTies = 0
+        confLosses = 0
+
+        PTSFC = 0
+        PTSAC = 0
+
+        For I = 1 To numberGames%
+
+            statName$ = nameStatFile$(compO$(I))
+            confGame = 0
+
+            For EC = 1 To 30
+
+                If statName$ = H1$(EC) Then
+                    confGame = 1
+                    Exit For
+                End If
+
+            Next EC
+
+            If confGame <> 1 Then
+                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
+                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
+                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
+            Else
+                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+                PTSFC = PTSFC + statsO%(I)
+                PTSAC = PTSAC + statsT%(I)
+            End If
+
+            EC = 0
+
+        Next I
+
+        Cls
+
+        Locate 4, 5
+
+        Color 15
+        Print "FINDING ";
+        Color 14
+        Print statFile$;
+        Color 15
+        Print " STATS            "
+
+        FindStatsColl% = 1
+
+    End If
+
+End Function
 
 
 '----------------------------------------
@@ -723,6 +802,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
                             For Z1 = 1 To 2
                                 Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
                             Next Z1
+
                         End If
 
                     Next Z
@@ -1888,103 +1968,3 @@ Sub PostLeadersColl (WE$)
     Close #2
 
 End Sub
-
-
-'----------------------------------------
-'         FindStatsColl Function
-'----------------------------------------
-'Looks for schedule stats for a specified
-'team in the conference and loads them if
-'found, notifying the user
-Function FindStatsColl% (XW, statFile$, numberGames%)
-
-    Shared PTSA!(), PTSF!()
-
-    Shared compAP%(), statsO%(), statsT%()
-
-    Shared statsH$(), compO$(), H1$()
-
-    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
-
-        Print "NO STATS FOUND FOR "; statFile$
-        FindStatsColl% = 0
-        
-    Else
-
-        Call ReadScheduleStats(statFile$, XW, numberGames%)
-
-        fullWins = 0
-        fullLosses = 0
-        fullTies = 0
-        confWins = 0
-        confTies = 0
-        confLosses = 0
-
-        PTSFC = 0
-        PTSAC = 0
-
-        For I = 1 To numberGames%
-
-            For P = 4 To 11:
-                If Mid$(compO$(I), P, 1) = " " Or Mid$(compO$(I), P, 1) = "." Then Mid$(compO$(I), P, 1) = "_"
-            Next P
-
-            For P = 12 To 14:
-                If Mid$(compO$(I), P, 2) = "ST" Then Mid$(compO$(I), 9, 1) = "_": Mid$(compO$(I), 10, 2) = "ST"
-            Next P
-
-            QQ = 8
-            For P = 11 To 4 Step -1:
-                If Mid$(compO$(I), P, 1) = "_" Then
-                    QQ = P - 4
-                Else
-                    Exit For
-                End If
-            Next P
-
-            F$ = Mid$(compO$(I), 4, QQ): R$ = F$ + "." + Left$(compO$(I), 2)
-            compO$(I) = R$
-
-            confGame = 0
-
-            For EC = 1 To 30
-
-                If compO$(I) = H1$(EC) Then
-                    confGame = 1
-                    Exit For
-                End If
-
-            Next EC
-
-            If confGame <> 1 Then
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
-            Else
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
-                PTSFC = PTSFC + statsO%(I)
-                PTSAC = PTSAC + statsT%(I)
-            End If
-
-            EC = 0
-
-        Next I
-
-        Cls
-
-        Locate 4, 5
-
-        Color 15
-        Print "FINDING ";
-        Color 14
-        Print statFile$;
-        Color 15
-        Print " STATS            "
-
-        FindStatsColl% = 1
-
-    End If
-
-End Function

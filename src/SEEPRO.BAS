@@ -13,15 +13,15 @@ Sub SEEPRO ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Call LoadLeaderFiles_Pro(FF$, leaderFile$)
-        Call StatOptions_Pro(FF$)
+        Call LoadLeaderFiles_Pro(league$, leaderFile$)
+        Call StatOptions_Pro(league$)
 
     End If
 
 End Sub
 
 '----------------------------------------
-'       LoadLeaderFiles_Pro Subroutine
+'     LoadLeaderFiles_Pro Subroutine
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
@@ -84,16 +84,13 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
             seeP$(P) = PadRight$(TM$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
+            A$ = Right$("     " + Str$(Int(W!(P))), 3)
             seeP$(P) = PadRight$(seeP$(P) + A$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
+            A$ = Right$("     " + Str$(Int(L!(P))), 3)
             seeP$(P) = PadRight$(seeP$(P) + A$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
+            A$ = Right$("     " + Str$(Int(T!(P))), 3)
             seeP$(P) = PadRight$(seeP$(P) + A$, 24)
 
             A = 0

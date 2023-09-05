@@ -22,6 +22,9 @@ DefInt A-Z
 '$INCLUDE: 'PadRight.bi'
 '$INCLUDE: 'Variables.bi'
 
+Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
+Dim QB!(11, 11), RB!(11, 11)
+
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 
 ' For Utils
