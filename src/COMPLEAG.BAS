@@ -1,5 +1,3 @@
-'INCLUDE: 'QBFunctions.bm'
-
 '----------------------------------------
 '        CompileLeague SubRoutine
 '----------------------------------------
@@ -44,7 +42,7 @@ Sub CompileLeague ()
 
     End If
 
-    leagueFile$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -206,8 +204,9 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
     fullLosses = 0
     fullTies = 0
 
-    If _FileExists(diskPaths$(1) + statFile$ + "S") Then
+    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
+        Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
         FindStatsPro% = 0
 
@@ -244,7 +243,7 @@ End Function
 '----------------------------------------
 '       ReadStatsPro Subroutine
 '----------------------------------------
-'This subroutine reads stats in for a 
+'This subroutine reads stats in for a
 'single team in the league
 Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
@@ -1475,8 +1474,8 @@ End Sub
 '----------------------------------------
 '     StatsByCategoryPro Subroutine
 '----------------------------------------
-'This subroutine compares all pre-loaded 
-'stats to each of the record categories to 
+'This subroutine compares all pre-loaded
+'stats to each of the record categories to
 'see if any should be updated
 Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
 
@@ -1890,7 +1889,7 @@ End Sub
 '        PostLeadersPro Subroutine
 '----------------------------------------
 'This subroutine opens the existing leader
-'and record files for the league, and 
+'and record files for the league, and
 'writes the updated stats to the file
 Sub PostLeadersPro (leaderFile$)
 
@@ -1951,3 +1950,4 @@ Sub PostLeadersPro (leaderFile$)
     Close #2
 
 End Sub
+

@@ -118,8 +118,8 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -131,7 +131,7 @@ Sub SelectTeam_ALIGN (YN$, numberTeams, teamIdx)
     Print "-SELECT NEW ID  PGDN  PGUP  ";: Color 14
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -286,8 +286,8 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -300,7 +300,7 @@ Sub SelectTeam_HD2HDCOL (numberTeams, YN$)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -453,8 +453,8 @@ Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -467,7 +467,7 @@ Sub SelectTeam_HD2HDPRO (numberTeams, YN$)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -617,8 +617,8 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -631,7 +631,7 @@ Sub SelectTeam_LOOKY (numberTeams, yearNumber$)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -788,8 +788,8 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -802,7 +802,7 @@ Sub SelectTeam_MERGE (yearNumber$, numberTeams)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -961,8 +961,8 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -975,7 +975,7 @@ Sub SelectTeam_CAREER (yearNumber$, numberTeams, teamIdx%)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -1119,8 +1119,8 @@ Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -1133,7 +1133,7 @@ Sub SelectTeam_CARMERGE (numberTeams, yearNumber$, teamIdx%)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% = 27 Then
@@ -1259,8 +1259,8 @@ Sub SelectTeam_CNGTM (NTMS, teamNbr, YN$, YC!)
     Selection% = 1
     Count% = NTMS
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -1273,7 +1273,7 @@ Sub SelectTeam_CNGTM (NTMS, teamNbr, YN$, YC!)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% = 27 Then BO% = 1: Exit Sub
@@ -1614,8 +1614,8 @@ Sub SelectTeam_CREATCOL (YN$, NTMS, teamNbr)
     Selection% = 1
     Count% = NTMS
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -1628,7 +1628,7 @@ Sub SelectTeam_CREATCOL (YN$, NTMS, teamNbr)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -1760,8 +1760,8 @@ Sub SelectTeam_CREATPRO (YN$, NTMS, teamNbr)
     Selection% = 1
     Count% = NTMS
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -1774,7 +1774,7 @@ Sub SelectTeam_CREATPRO (YN$, NTMS, teamNbr)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -1810,8 +1810,8 @@ Sub GetTeam_Schedule (numberTeams, yearNumber$, teamIdx)
     Selection% = 1
     Count% = numberTeams
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -1824,7 +1824,7 @@ Sub GetTeam_Schedule (numberTeams, yearNumber$, teamIdx)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then
@@ -2008,8 +2008,8 @@ Sub SelectTeam_EditStats (YN$, NTMS, teamNbr)
     Selection% = 1
     Count% = NTMS
     Start% = 1
-    FileFGColr% = 15: FileBGColr% = 4
-    HiLiteFGColr% = 0: HiLiteBGColr% = 7
+    FileFGColor% = 15: FileBGColor% = 4
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
     Rows% = 20
     Columns% = 4
     Spacing% = 6
@@ -2022,7 +2022,7 @@ Sub SelectTeam_EditStats (YN$, NTMS, teamNbr)
     Print "ENTER";: Color 15: Print "-SELECTS TEAM";
 
     _MouseShow "DEFAULT"
-    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+    MAMenu teamNames$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
     _MouseHide
 
     If ExitCode% <> 27 Then

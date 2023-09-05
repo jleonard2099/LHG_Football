@@ -40,8 +40,8 @@ Sub ChooseConference (conference$)
                 Print "SELECT CONFERENCE TO SCHEDULE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -53,7 +53,7 @@ Sub ChooseConference (conference$)
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -126,8 +126,8 @@ Sub ChooseNatOrg (organization$)
                 Print "SELECT CONFERENCE TO SCHEDULE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -139,7 +139,7 @@ Sub ChooseNatOrg (organization$)
                 Print "-SELECTS ORGANIZATION";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -212,8 +212,8 @@ Sub ChooseLeague (league$)
                 Print "SELECT LEAGUE TO SCHEDULE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -225,7 +225,7 @@ Sub ChooseLeague (league$)
                 Print "-SELECTS LEAGUE";
 
                 _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -293,8 +293,8 @@ Sub ChooseConference_Coll (targetFile$)
                 Print "SELECT CONFERENCE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -306,7 +306,7 @@ Sub ChooseConference_Coll (targetFile$)
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -370,8 +370,8 @@ Sub ChooseLeague_HD2HD (targetFile$)
                 Print "SELECT LEAGUE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -383,7 +383,7 @@ Sub ChooseLeague_HD2HD (targetFile$)
                 Print "-SELECTS LEAGUE";
 
                 _MouseShow "DEFAULT"
-                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu leagueFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -449,8 +449,8 @@ Sub ChooseConference_Expanded (conferenceFile$, ExitCode%)
                 Print "SELECT CONFERENCE": Color 15
                 Selection% = 1
                 Start% = 1
-                FileFGColr% = 15: FileBGColr% = 1
-                HiLiteFGColr% = 0: HiLiteBGColr% = 7
+                FileFGColor% = 15: FileBGColor% = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 4
                 Spacing% = 6
@@ -462,7 +462,7 @@ Sub ChooseConference_Expanded (conferenceFile$, ExitCode%)
                 Print "-SELECTS CONFERENCE";
 
                 _MouseShow "DEFAULT"
-                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu conferenceFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
@@ -543,8 +543,8 @@ Sub SelectScheduleFile (targetFile$, scheduleFiles$(), Count%, ExitCode%)
         Color 15
         Selection% = 1
         Start% = 1
-        FileFGColr% = 15: FileBGColr% = 1
-        HiLiteFGColr% = 0: HiLiteBGColr% = 7
+        FileFGColor% = 15: FileBGColor% = 1
+        HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Rows% = 20
         Columns% = 4
         Spacing% = 6
@@ -558,7 +558,7 @@ Sub SelectScheduleFile (targetFile$, scheduleFiles$(), Count%, ExitCode%)
         Print "-SELECTS SCHEDULE";
 
         _MouseShow "DEFAULT"
-        MAMenu scheduleFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColr%, FileBGColr%, HiLiteFGColr%, HiLiteBGColr%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu scheduleFiles$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% <> 27 Then

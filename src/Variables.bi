@@ -3,7 +3,7 @@
 '----------------------------------------
 Dim opSysType$
 
-Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
+'Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
@@ -235,7 +235,7 @@ Dim TP$(46), TP1$(43)
 '----------------------------------------
 ' Used in STAT / INPUT
 '----------------------------------------
-'Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
+Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 Dim TMR, totStats
 
 Dim statsO%(120), lookyP%(1)
@@ -243,7 +243,7 @@ Dim statsT%(120), TR%(120), Y%(30)
 
 Dim GMA!(300), GMB!(180), GMC!(120)
 
-'Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim CRD!(120), CRDR!(120)
