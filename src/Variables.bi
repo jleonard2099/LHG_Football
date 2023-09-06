@@ -3,7 +3,7 @@
 '----------------------------------------
 Dim opSysType$
 
-'Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
+Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
@@ -129,13 +129,13 @@ Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 Dim WR$(16)
 
 
-'Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
+Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
 Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
-'Dim QB!(11, 11), RB!(11, 11)
+Dim QB!(11, 11), RB!(11, 11)
 Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 
@@ -297,8 +297,9 @@ Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, autoPlay
 Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, compTeam
 Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT
 Dim Shared E, EY, endGame, endAllGames, F2, F8, F9
-Dim Shared G, gameLoc, goalPostAdj, halfTime, I1, I2, I3, I4, I5, I6, I7, I8, I9, I
-Dim Shared J, JJ, K3, N, NT, O, OT
+Dim Shared G, gameLoc, goalPostAdj, halfTime
+Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I
+Dim Shared J, JJ, K3, NT, O, OT
 Dim Shared playerOpt, P1, P2, PN, PQ, PR, PW
 Dim Shared Q, QB, R1, RP, RY, ruleOpt
 Dim Shared S, S2, S3, S6, SN, SY

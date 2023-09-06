@@ -820,7 +820,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                             Print "FOUND A MATCH"
 
                                             Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
-                                            fileLength& = LOF(1)
+                                            fileLength& = LOF(2)
                                             targetGame% = fileLength& / SCHEDULE_SIZE_BYTES
 
                                             For X = 0 To 20
@@ -899,7 +899,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                         Locate 1, 1: Print numberGames% + 1; " MATCHES"
 
                                         Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
-                                        fileLength& = LOF(1)
+                                        fileLength& = LOF(3)
 
                                         numberGames% = fileLength& / SCHEDULE_SIZE_BYTES
 
@@ -1377,6 +1377,7 @@ Sub LoadScheduleInfo (targetFile$)
     Shared scheduleYN$()
 
     Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
     fileLength& = LOF(1)
 
     scheduleAP%(0) = fileLength& / SCHEDULE_SIZE_BYTES
