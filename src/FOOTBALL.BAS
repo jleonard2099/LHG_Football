@@ -107,7 +107,7 @@ Sub FOOTBALL ()
 
         Input #6, scheduleFile$
 
-        For I = 0 To 2: 
+        For I = 0 To 2:
             Input #6, schedGame(I)
         Next
 
@@ -456,7 +456,7 @@ Sub FOOTBALL ()
     Call SETWEATHER
 
     '----------
-    'Coin Toss 
+    'Coin Toss
     '----------
     W% = Int(Rnd(1) * 2)
 
@@ -521,7 +521,7 @@ Sub FOOTBALL ()
         If I2 <= krNumRet(D, I) Then I1 = I
     Next I
 
-    Call d100 (RN)
+    Call d100(RN)
 
     Select Case KN
 
@@ -1096,7 +1096,7 @@ Sub FOOTBALL ()
                                     ' *** FLEA FLICKER ***
                                     Call FLEA
 
-                                    If RN <= S% Then 
+                                    If RN <= S% Then
                                         R1 = 1
                                         W5 = 1
                                         G = (Int(Rnd(1) * 6) + 10)
@@ -1108,18 +1108,18 @@ Sub FOOTBALL ()
 
                                         Call d100(RN)
 
-                                        If RN <= intChance Then 
+                                        If RN <= intChance Then
 
                                             G = CP
                                             FF% = 2
                                             GoTo 3552
-                                        
+
                                         Else
 
                                             Call d100(RN)
                                             RV$ = wdRec$(P1, I3): I3 = I3 + 10
 
-                                            If RN <= C% Then 
+                                            If RN <= C% Then
                                                 FF% = 2
                                                 GoTo 3586
                                             Else
@@ -1162,18 +1162,18 @@ Sub FOOTBALL ()
 
                                         If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
 
-                                            If rbNumRec(P1, I1) > 0 Then 
+                                            If rbNumRec(P1, I1) > 0 Then
                                                 GoTo 3403
                                             Else
 
                                                 For I5 = 0 To 9
-                                                    If rbacks$(P1, I5) = qbacks$(P1, Q6%(P1)) Then 
+                                                    If rbacks$(P1, I5) = qbacks$(P1, Q6%(P1)) Then
                                                         I1 = I5
                                                         GoTo 3403
                                                     End If
                                                 Next
 
-                                                If RV% = 1 Then 
+                                                If RV% = 1 Then
                                                     GoTo 3181
                                                 Else
                                                     GoTo 3401
@@ -1238,14 +1238,14 @@ Sub FOOTBALL ()
                                     U$ = "HE HAS " + wdRec$(P1, I3) + " OPEN DOWNFIELD"
                                     Call PBP
 
-                                    If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then 
+                                    If D3 = 10 Or D3 = 11 Or D3 = 8 And RN <= 35 Then
                                         G = (Int(Rnd(1) * 4) + 4)
                                         'Sacked
                                         GoTo 3541
                                     End If
 
                                     Call d100(RN)
-                                    If RN <= intChance Then 
+                                    If RN <= intChance Then
                                         G = CP
                                         FF% = 1
                                         HB% = 0
@@ -1563,7 +1563,7 @@ Sub FOOTBALL ()
 
                     U$ = qbacks$(P1, Q6%(P1)) + " MAKES A BAD PITCH ON THE OPTION!!"
                     Call PBP
-                    
+
                     G = Int((Rnd(1) * 7) + 6) * -1
                     X = 4
                     X1 = 9
@@ -1571,7 +1571,7 @@ Sub FOOTBALL ()
                     U$ = "HE LOSES" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
                     Call PBP
 
-                    If Int((G + Y) * 10 + .5) / 10 < .05 Then 
+                    If Int((G + Y) * 10 + .5) / 10 < .05 Then
 
                         F9 = 0
                         GoTo 3250
@@ -1839,7 +1839,7 @@ Sub FOOTBALL ()
                 'If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) And RV% = 1 Then 8337
                 If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
 
-                    If rbNumRec(P1, I1) > 0 Then 
+                    If rbNumRec(P1, I1) > 0 Then
                         GoTo 3403
                     Else
 
@@ -1847,7 +1847,7 @@ Sub FOOTBALL ()
                             If rbacks$(P1, I5) = qbacks$(P1, Q6%(P1)) Then I1 = I5: GoTo 3403
                         Next
 
-                        If RV% = 1 Then 
+                        If RV% = 1 Then
                             GoTo 3181
                         Else
                             GoTo 3401
@@ -1918,7 +1918,7 @@ Sub FOOTBALL ()
 
                 If E = 1 Then Call GoForTwo
 
-                If Int((G + Y) * 10 + .5) / 10 < .05 Then 
+                If Int((G + Y) * 10 + .5) / 10 < .05 Then
                     GoTo 3250
                 Else
                     F% = 1
@@ -2090,7 +2090,7 @@ Sub FOOTBALL ()
 
                     End If
 
-                    3586 ' 
+                    3586 '
                     'ADDED AFTER REPLAYS OF 5-24-93
                     If Int(Rnd(1) * 3) + 1 = 1 And ruleOptType <> 0 Then G = G - 1
 
@@ -2515,7 +2515,7 @@ Sub FOOTBALL ()
                 If Y + G < -9.999 Then score(D, Q) = score(D, Q) + 2: score(D, 0) = score(D, 0) + 2: GoTo 3251
 
                 If Y + G <= .001 And Y + G >= -9.999 Then
-                
+
                     Call d100(RN0)
 
                     If RN0 <= 50 Then
@@ -3418,7 +3418,7 @@ Sub FOOTBALL ()
                     Else
                         If G > 5 Or P < 0 And P1 <> compTeam And D1 = 3 And Y1 - G > 3 Or P < 0 And P1 <> compTeam And G < 0 Then
                             '3319
-                            'Not sure why this is designed as is I can only imagine 
+                            'Not sure why this is designed as is I can only imagine
                             'it was helpful to have many statements going to 3319
                             'because it wasn't written from if/then logic to start with
                         End If
@@ -3914,7 +3914,7 @@ Sub FOOTBALL ()
         U$ = U$ + Str$(Int(100 - Y)) + " YARDS"
         SI(P1, Z1, 1) = SI(P1, Z1, 1) + 100 - Y
         SI(P1, Z1, 2) = SI(P1, Z1, 2) + 1
-        If 100 - Y > IR(P1, Z1) Then 
+        If 100 - Y > IR(P1, Z1) Then
             strIR$(P1, Z1) = "t"
             IR(P1, Z1) = 100 - Y
         End If
@@ -3931,7 +3931,7 @@ Sub FOOTBALL ()
 
     SI(P1, Z1, 1) = SI(P1, Z1, 1) + G
 
-    If G > IR(P1, Z1) Then 
+    If G > IR(P1, Z1) Then
         strIR$(P1, Z1) = ""
         IR(P1, Z1) = G
     End If
@@ -4564,3 +4564,4 @@ Sub FOOTBALL ()
     End If
 
 End Sub
+

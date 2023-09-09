@@ -104,7 +104,7 @@ Sub InitVar ()
     B5 = 0
     B7 = 0
     B8 = 0
-    
+
     'this can be used to control certain colors
     'with the display of the field / PBP
     BW = 0
@@ -255,7 +255,7 @@ Sub InitVar ()
     Erase teamNames$, wdRec$, Y$, YN$
 
     Erase CRD&
-    
+
     Erase AF, AM
     Erase C, DDI, DDS, FA, FL, FM
     Erase GI, GS, ints, hasRunFF, IR
@@ -325,9 +325,9 @@ End Sub
 '----------------------------------------
 '           TEAMBOX Subroutine
 '----------------------------------------
-'This subroutine draws an ASCII box using 
-'team colors. The box starts at row 6 and 
-'is approx. 60 char's wide. When done, the 
+'This subroutine draws an ASCII box using
+'team colors. The box starts at row 6 and
+'is approx. 60 char's wide. When done, the
 'cursor is set at the first printable row
 'and column inside the box.
 Sub TEAMBOX (boxHeight, teamIdx)
@@ -356,9 +356,9 @@ End Sub
 '----------------------------------------
 '         FRAMEOPTION Subroutine
 '----------------------------------------
-'This subroutine draws an ASCII box using 
-'team colors. The box starts at row 8 and 
-'is approx. 60 char's wide. When done, the 
+'This subroutine draws an ASCII box using
+'team colors. The box starts at row 8 and
+'is approx. 60 char's wide. When done, the
 'cursor is set at the first printable row
 'and column inside the box.
 Sub FRAMEOPTION (boxHeight, teamIdx)
@@ -391,9 +391,9 @@ End Sub
 '          OPTIONBOX Subroutine
 '----------------------------------------
 'This subroutine draws an ASCII box in grey.
-'The box starts at row 8 and is approx. 60 
-'char's wide. When done, the cursor is set 
-'at the first printable row and column 
+'The box starts at row 8 and is approx. 60
+'char's wide. When done, the cursor is set
+'at the first printable row and column
 'inside the box.
 Sub OPTIONBOX (J)
 
@@ -426,8 +426,8 @@ End Sub
 '----------------------------------------
 'This subroutine draws an ASCII box in grey.
 'The box starts at row 8 and is approx. 77
-'char's wide. When done, the cursor is set 
-'at the first printable row and column 
+'char's wide. When done, the cursor is set
+'at the first printable row and column
 'inside the box.
 Sub FRAMESTATS (J)
 
@@ -501,7 +501,7 @@ End Sub
 '----------------------------------------
 '           TICKER Subroutine
 '----------------------------------------
-'This subroutine displays the score of all 
+'This subroutine displays the score of all
 'current games being tracked by the ticker.
 'For each game it will find the score that
 'matches the current game time / period.
@@ -1238,7 +1238,7 @@ End Sub
 '----------------------------------------
 'This subroutine resets the game parameters
 'for a new half: yard line, possession,
-'new set of downs, timeouts, etc. 
+'new set of downs, timeouts, etc.
 Sub HALFSTART ()
 
     'Team to Kick/Receive
@@ -1353,7 +1353,7 @@ Sub DISPWEATHER ()
     Color 15 * 1 - BW, 2 + 5 * BW
 
     Locate 7, 20
-    
+
     Print "WIND: ";
 
     If WX%(1) = 0 Then Print "NONE ";
@@ -1395,7 +1395,7 @@ End Sub
 '          SETSCREEN Subroutine
 '----------------------------------------
 'This subroutine essentially draws the
-'football field and scoreboard on a fresh 
+'football field and scoreboard on a fresh
 'graphic screen. It has been gutted to
 'create the DisplayField routine as one
 'that is separate.
@@ -1430,7 +1430,7 @@ End Sub
 '----------------------------------------
 '        DisplayField Subroutine
 '----------------------------------------
-'This subroutine draws the football field 
+'This subroutine draws the football field
 'and scoreboard.
 Sub DisplayField ()
 
@@ -1587,7 +1587,7 @@ Sub DisplayField ()
 
     'Print play-by-play box
     Locate 19, 1: Print Tab(79)
-    
+
     Color 14 - 7 * BW, 1 - BW
     Locate 20, 1: Print String$(80, 32);
     Locate 21, 1: Print Chr$(219); String$(78, 223); Chr$(219);
@@ -1780,8 +1780,8 @@ End Sub
 'variables I2 / I3 for other routines
 'to reference. The purpose is to help
 'trim extra space from the end of the
-'player / team strings. That makes this 
-'routine obsolete with the built-in 
+'player / team strings. That makes this
+'routine obsolete with the built-in
 'TRIM functions for strings.
 Sub FINDSPACE ()
 
@@ -2112,7 +2112,7 @@ Sub INCOMPLETE ()
         End Select
 
         'Handle an interception
-        If defInts(1 - P1) > 0 Then 
+        If defInts(1 - P1) > 0 Then
             Call FINDINT
             U$ = U$ + " BY " + X$
         End If
@@ -2343,7 +2343,7 @@ Sub BLITZ ()
             If I9 <= S2%(I7, I4, I) Then Exit For
         Next I
 
-        'This calculates shorter gains after 
+        'This calculates shorter gains after
         'an unsuccessful blitz attempt.
         ' Yardage ranges from -4 to 101
         ' 50% chance of gains under 30
@@ -2372,7 +2372,7 @@ End Sub
 '----------------------------------------
 '      BlitzYardageLong Subroutine
 '----------------------------------------
-'This subroutine calculates longer gains 
+'This subroutine calculates longer gains
 'from a play after an unsuccessful blitz
 'attempt.
 'Yardage ranges from 31 to 101
@@ -2500,7 +2500,7 @@ Sub COMPCHEAT ()
     Call d100(I3)
 
     If R0 = 2 Then
-        
+
         Select Case P2
 
             Case 1, 2, 6, 8
@@ -3017,7 +3017,7 @@ End Sub
 '           MARKER1 Subroutine
 '----------------------------------------
 'This subroutine also has something to do
-'with printing the yard marker. 
+'with printing the yard marker.
 Sub MARKER1 ()
 
     YT = 100 - Y
@@ -3040,7 +3040,7 @@ End Sub
 '          MOVEBALL Subroutine
 '----------------------------------------
 'This subroutine handles the play-by-play
-'text for after the ball has moved. With 
+'text for after the ball has moved. With
 'that also comes Play-by-Play for the
 'tackle / stop.
 Sub MOVEBALL ()
@@ -3151,7 +3151,7 @@ End Sub
 '         SCOREBOARD Subroutine
 '----------------------------------------
 'This subroutine updates the scoreboard
-'with the latest values for the clock, 
+'with the latest values for the clock,
 'and possession location.
 Sub SCOREBOARD ()
 
@@ -3483,8 +3483,8 @@ End Sub
 '----------------------------------------
 '            FGATT Subroutine
 '----------------------------------------
-'This subroutine tracks and increments FG 
-'attempts based on yardage increments for 
+'This subroutine tracks and increments FG
+'attempts based on yardage increments for
 'the current kicker.
 Sub FGATT ()
 
@@ -3515,8 +3515,8 @@ End Sub
 '----------------------------------------
 '            FGMADESubroutine
 '----------------------------------------
-'This subroutine tracks and increments FG 
-'made based on yardage increments for 
+'This subroutine tracks and increments FG
+'made based on yardage increments for
 'the current kicker.
 Sub FGMADE ()
 
@@ -4037,7 +4037,7 @@ Sub CHANGEQB ()
 
     End If
 
-    For I = 0 To 3: 
+    For I = 0 To 3:
         V4%(I3, I) = -1
     Next I
 
@@ -4298,7 +4298,7 @@ End Sub
 '           YARDAGE Subroutine
 '----------------------------------------
 'This subroutine I believe is used to
-'round yardage gained 
+'round yardage gained
 '-0.4 to 0.6
 Sub YARDAGE ()
 
@@ -4522,7 +4522,7 @@ Sub FLEA ()
     CP = Int(Rnd(1) * 16) + 35
 
     If hasRunFF(P1) > 0 Then
-    'or, if = 0
+        'or, if = 0
 
         C% = 3
 
@@ -4654,7 +4654,7 @@ End Sub
 '----------------------------------------
 '           HANDOFF Subroutine
 '----------------------------------------
-'This subroutine handles the Play-by-Play 
+'This subroutine handles the Play-by-Play
 'text for a run play.
 Sub HANDOFF ()
 
@@ -4809,7 +4809,7 @@ Sub PASSBALL ()
     End Select
 
     Call d100(I)
-    
+
 End Sub
 
 
@@ -5010,7 +5010,7 @@ End Sub
 Sub TWOMIN ()
 
     Call OPTIONBOX(7)
-    
+
     Locate 9, 14: Print "1 - HUDDLE"
     Locate , 14: Print "2 - TIME OUT "; gameTeams$(P1); " "; timeouts(P1)
     Locate , 14: Print "3 - TIME OUT "; gameTeams$(D); " "; timeouts(D):
@@ -5511,6 +5511,7 @@ Sub SQUIB ()
 
     N = 100 - (Y + Int(Rnd(1) * 16) + 29)
     X = 0
+
     N = N + (Int(Rnd(1) * 11) - 5) / 10
     Y = N
     YT = 100 - Y
@@ -6285,7 +6286,7 @@ End Sub
 '----------------------------------------
 'This subroutine processes everything that
 'is necessary after a game is complete.
-'It checks for special events, handles a 
+'It checks for special events, handles a
 'prompt for stats, and saving of stats.
 'Records in Football are only calculated
 'when stats are compiled.
@@ -6817,7 +6818,7 @@ End Sub
 '----------------------------------------
 '           BOX2SPC Subroutine
 '----------------------------------------
-'This subroutine adds any special event 
+'This subroutine adds any special event
 'information to a boxscore file
 Sub BOX2SPC (NM$)
 
@@ -7377,9 +7378,9 @@ End Sub
 '----------------------------------------
 'This subroutine prompts the user in ORDER
 'to determine which teams to save satts For
-'(autoplay will always save both teams). 
-'It also updates the GAME82 progress file, 
-'since at this point only can the game be 
+'(autoplay will always save both teams).
+'It also updates the GAME82 progress file,
+'since at this point only can the game be
 'considered fully complete.
 Sub SAVESTATS ()
 
@@ -7480,8 +7481,8 @@ End Sub
 '----------------------------------------
 '      COMPILESTATFILES Subroutine
 '----------------------------------------
-'This subroutine updates the various stat 
-'files for the corresponding team based on 
+'This subroutine updates the various stat
+'files for the corresponding team based on
 'the stats generated for a completed game.
 Sub COMPILESTATFILES (teamIdx)
 
@@ -7535,46 +7536,46 @@ Sub COMPILESTATFILES (teamIdx)
             Next
         Next
 
-        For I = 0 To 9: 
+        For I = 0 To 9:
             Input #1, LR(teamIdx, I)
             Input #1, strLR$(teamIdx, I, 0)
             Input #1, strLR$(teamIdx, I, 1)
         Next
 
-        For I = 0 To 15: 
+        For I = 0 To 15:
             Input #1, LC(teamIdx, I)
             Input #1, strLC$(teamIdx, I, 0)
             Input #1, strLC$(teamIdx, I, 1)
         Next
 
-        For I = 0 To 3: 
+        For I = 0 To 3:
             Input #1, LP(teamIdx, I)
             Input #1, LP$(teamIdx, I, 0)
             Input #1, LP$(teamIdx, I, 1)
         Next
 
-        For I = 0 To 2: 
+        For I = 0 To 2:
             Input #1, LK(teamIdx, I)
             Input #1, LK$(teamIdx, I, 0)
             Input #1, LK$(teamIdx, I, 1)
         Next
 
-        For I = 0 To 2: 
+        For I = 0 To 2:
             Input #1, PK(teamIdx, I)
             Input #1, PK$(teamIdx, I, 0)
             Input #1, PK$(teamIdx, I, 1)
         Next
 
-        For I = 0 To 1: 
+        For I = 0 To 1:
             Input #1, LF(teamIdx, I)
             Input #1, LF$(teamIdx, I)
-            For I1 = 0 To 4: 
+            For I1 = 0 To 4:
                 Input #1, AM(teamIdx, I, I1)
                 Input #1, AF(teamIdx, I, I1)
             Next
         Next
 
-        For I = 0 To 9: 
+        For I = 0 To 9:
             Input #1, LI(teamIdx, I)
             Input #1, LI$(teamIdx, I, 0)
             Input #1, LI$(teamIdx, I, 1)
@@ -7716,7 +7717,7 @@ Sub COMPILESTATFILES (teamIdx)
     Color 15, 0
 
     Open diskPaths$(1) + statFile$ For Output As #2
-    
+
     Print #2, Y$(teamIdx)
 
     For I = 0 To 9: Print #2, rbacks$(teamIdx, I): Next
@@ -7898,12 +7899,12 @@ End Function
 '----------------------------------------
 '      GetTeamYear Function
 '----------------------------------------
-'This subroutine determines the 4-digit 
+'This subroutine determines the 4-digit
 'team year from the team loaded by the
 'file. It uses the 2 digit year to make
 'assumptions. (00 to 24 are year 2000.)
 'This limit was chosen because all of
-'the earliest files with 1900 teams are 
+'the earliest files with 1900 teams are
 'for NFL / 1925.
 Function GetTeamYear% (teamName$)
 
@@ -7938,7 +7939,7 @@ End Sub
 '----------------------------------------
 '       ChooseGameTeam Subroutine
 '----------------------------------------
-'This subroutine provides interface for 
+'This subroutine provides interface for
 'choosing a team for the game
 Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
@@ -8317,3 +8318,4 @@ Sub EndOfGame
     End If
 
 End Sub
+

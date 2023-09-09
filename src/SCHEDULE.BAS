@@ -49,7 +49,7 @@ Sub SCHEDULE ()
         Row% = 8
         Column% = 16
 
-        Call box0(7, 15, 17, 64, 2, 15, 1)
+        Call box0(7, 15, 16, 64, 2, 15, 1)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -71,7 +71,7 @@ Sub SCHEDULE ()
                         Color 15, 0
                         Cls
 
-                        Call MenuBox (6, 8, 61, 8, 15, 1)
+                        Call MenuBox(6, 8, 61, 8, 15, 1)
 
                         Locate 7, 32
 
@@ -140,9 +140,9 @@ End Sub
 '----------------------------------------
 '       NewSchedule SubRoutine
 '----------------------------------------
-'This subroutine facilitates the user 
-'creation of a schedule. It provides all 
-'options required and displays the schedule 
+'This subroutine facilitates the user
+'creation of a schedule. It provides all
+'options required and displays the schedule
 'while editing
 Sub NewSchedule (scheduleFile$)
 
@@ -213,13 +213,13 @@ Sub NewSchedule (scheduleFile$)
 
                 T1 = scheduleNG%(X + NS% * 20, 0)
                 YN$ = scheduleYN$(X + NS% * 20, 0)
-                Call ReadTeam (YN$, N$, T1)
+                Call ReadTeam(YN$, N$, T1)
                 scheduleV$(X) = N$
                 scheduleQB_V$(X) = qbName$(scheduleNG%(X + NS% * 20, 5))
 
                 T1 = scheduleNG%(X + NS% * 20, 1)
                 YN$ = scheduleYN$(X + NS% * 20, 1)
-                Call ReadTeam (YN$, N$, T1)
+                Call ReadTeam(YN$, N$, T1)
                 scheduleH$(X) = N$
                 scheduleQB_H$(X) = qbName$(scheduleNG%(X + NS% * 20, 8))
 
@@ -356,7 +356,7 @@ Sub NewSchedule (scheduleFile$)
                 Color , 0
                 Cls
 
-                Call MenuBox (6, 8, 61, 8, 15, 4)
+                Call MenuBox(6, 8, 61, 8, 15, 4)
 
                 Do
 
@@ -376,7 +376,7 @@ Sub NewSchedule (scheduleFile$)
                 If EG% > scheduleAP%(0) Then EG% = scheduleAP%(0)
 
                 Open "GAME82" For Output As #1
-                
+
                 Print #1, scheduleFile$ + ".SCD"
                 Print #1, SG% 'Start Game
                 Print #1, EG% 'End Game
@@ -684,7 +684,7 @@ End Sub
 '       ExtractSchedule SubRoutine
 '----------------------------------------
 'This is the core subroutine to leverage
-'when mass changes are needing to be made 
+'when mass changes are needing to be made
 'to a schedule. It essentially reads in
 'the existing schedule parameters, prompts
 'the user for the appropriate changes, and
@@ -725,7 +725,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                 Color 15, 0
                 Cls
 
-                Call MenuBox (6, 8, 61, 8, 15, 1)
+                Call MenuBox(6, 8, 61, 8, 15, 1)
 
                 Do
 
@@ -1145,7 +1145,7 @@ End Sub
 '----------------------------------------
 '       SortSchedule SubRoutine
 '----------------------------------------
-'This subroutine is used to automatically 
+'This subroutine is used to automatically
 'sort all games in the schedule by their
 'date / time.
 Sub SortSchedule ()
@@ -1201,7 +1201,7 @@ End Sub
 '----------------------------------------
 '    ChangeGlobalSettings SubRoutine
 '----------------------------------------
-'This subroutine presents the end user a 
+'This subroutine presents the end user a
 'variety of game options that can be changed
 'or applied to all games in the schedule file.
 'These would be game-specific options, as
@@ -1233,16 +1233,26 @@ Sub ChangeGlobalSettings ()
         Cls
         Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
 
-        Locate 3, 2: Color 14: Print "(1) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(G9%)
-        Locate 4, 2: Color 14: Print "(2) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#  "; displayPause!
-        Locate 5, 2: Color 14: Print "(3) ";: Color 15: Print "RESERVED FOR FUTURE"
-        Locate 6, 2: Color 14: Print "(4) ";: Color 15: Print "COLLEGE RULES: "; ruleYrColl$(Y9%)
-        Locate 7, 2: Color 14: Print "(5) ";: Color 15: Print "PRO RULES: "; ruleYrPro$(Y8%)
-        Locate 8, 2: Color 14: Print "(6) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(SD%)
-        Locate 9, 2: Color 14: Print "(7) ";: Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
-        Locate 10, 2: Color 14: Print "(8) ";: Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
-        Locate 10, 2: Color 14: Print "(9) ";: Color 15: Print "RESERVED FOR FUTURE"
-        Locate 12, 2: Color 14: Print "(0) ";: Color 15: Print "ACCEPT GLOBAL SETTINGS"
+        Locate 3, 2: Color 14: Print "(1) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(G9%)
+        Locate 4, 2: Color 14: Print "(2) ";
+        Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#  "; displayPause!
+        Locate 5, 2: Color 14: Print "(3) ";
+        Color 15: Print "RESERVED FOR FUTURE"
+        Locate 6, 2: Color 14: Print "(4) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(Y9%)
+        Locate 7, 2: Color 14: Print "(5) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(Y8%)
+        Locate 8, 2: Color 14: Print "(6) ";
+        Color 15: Print "SUDDEN DEATH: "; overtime$(SD%)
+        Locate 9, 2: Color 14: Print "(7) ";
+        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
+        Locate 10, 2: Color 14: Print "(8) ";
+        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
+        Locate 11, 2: Color 14: Print "(9) ";
+        Color 15: Print "RESERVED FOR FUTURE"
+        Locate 12, 2: Color 14: Print "(0) ";
+        Color 15: Print "ACCEPT GLOBAL SETTINGS"
 
         Do
             I$ = GetKeyPress$
@@ -1439,7 +1449,7 @@ Sub EditBoxscore (boxName$)
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
-                
+
     Else
 
         Open boxName$ For Input As #1
@@ -1596,5 +1606,4 @@ Function GetQBName$ (targetGame%, I5)
     GetQBName$ = qbName$(I2)
 
 End Function
-
 
