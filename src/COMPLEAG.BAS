@@ -66,6 +66,7 @@ Sub CompileLeague ()
 
         Erase compZ1$, compZ2$, compZ3$, TT$
         Erase compZ1!, TT!
+        Erase PTSF!, PTSA!
 
         For X = 1 To 240
             compZ2$(X) = "*"
@@ -158,6 +159,7 @@ Sub CompileLeague ()
                                     O1!(EC) = fullWins
                                     O2!(EC) = fullLosses
                                     O3!(EC) = fullTies
+                                    'Why don't we do PTSF / PTSA ?!?!
                                 End If
 
                                 If (confGame) Then Exit For
@@ -201,8 +203,6 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
 
     Shared statsGI%(), statsGS%()
     Shared statsO%(), statsT%()
-
-    Shared PTSA!(), PTSF!()
 
     If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
@@ -1884,6 +1884,7 @@ Sub SortLeadersPro
                 diffY = O1!(Y) - O2!(Y)
 
                 If diffX <= diffY Then
+
                     If diffX <> diffY Then
                         If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
                             Swap compZ1$(X), compZ1$(Y)
@@ -1894,6 +1895,7 @@ Sub SortLeadersPro
                             Swap PTSA!(X), PTSA!(Y)
                         End If
                     End If
+
                 End If
 
             Next Y
