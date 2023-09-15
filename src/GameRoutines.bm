@@ -492,7 +492,7 @@ Sub PBP ()
     Call PLACEPBP
 
     If pbpDelay! > 0 Then
-        _Delay pbpDelay!
+        Call DELAY
     End If
 
 End Sub
@@ -3218,7 +3218,6 @@ End Sub
 'selecting their defensive choices.
 Sub DEFMENU ()
 
-    goodSelection% = 1
 
     If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
 
@@ -3226,6 +3225,8 @@ Sub DEFMENU ()
         Call DEFGOALLINE
 
     Else
+
+        goodSelection% = 1
 
         Do
 
@@ -8318,4 +8319,5 @@ Sub EndOfGame
     End If
 
 End Sub
+
 

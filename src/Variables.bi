@@ -79,8 +79,8 @@ Dim W0N(15), WN1(15)
 '----------------------------------------
 ' Used in CAREER routines
 '----------------------------------------
-Dim careerA1$(60), careerA2$(40), careerA3$(20), careerA4$(15), careerA5$(15), careerA6$(10), careerA7$(10)
-'Dim careerrbacks$(60), careerwdRec$(40), careerqbacks$(20), careerkickRet$(15), careerpret$(15), careerpunter$(10), careerkicker$(10)
+Dim careerA1$(50), careerA2$(40), careerA3$(20), careerA4$(15), careerA5$(15), careerA6$(10), careerA7$(10)
+'Dim careerrbacks$(50), careerwdRec$(40), careerqbacks$(20), careerkickRet$(15), careerpret$(15), careerpunter$(10), careerkicker$(10)
 Dim careerDI$(55), careerDS$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
 'Dim careerdefInts$(55), careerdefSacks$(55), careerKRS$(15, 15, 1), careerPRS$(15, 15, 1)
 Dim careerQBS$(15, 20, 1), careerRBC$(9), careerRBS$(15, 50, 1), careerRC$(6), careerWRS$(15, 40, 1)
@@ -90,7 +90,7 @@ Dim carviewA1$(1, 50), carviewA2$(1, 40), carviewA3$(1, 20), carviewA4$(1, 15), 
 'Dim carviewdefInts$(1, 55), carviewdefSacks$(1, 55)
 Dim carviewDI$(1, 55), carviewDS$(1, 55)
 
-Dim A1C$(60), A2C$(40), A3C$(20), A4C$(15), A5C$(15), A6C$(10), A7C$(10)
+Dim A1C$(50), A2C$(40), A3C$(20), A4C$(15), A5C$(15), A6C$(10), A7C$(10)
 Dim DFC$(1), DIC$(55), DSC$(55)
 Dim FGC$(6), KRC$(4), KRRS$(15, 15, 1)
 Dim PRC$(4), PRRS$(15, 15, 1), PUC$(2)
@@ -109,7 +109,7 @@ Dim careerFF!(15, 30), careerII!(15, 30), careerPP!(15, 30), careerYY!(15, 30)
 Dim careerFGS!(15, 10, 17), careerGIS!(15, 55, 3), careerGSS!(15, 55, 3)
 Dim careerKRS!(15, 15, 11), careerPRS!(15, 15, 11), careerPUS!(15, 10, 4)
 Dim careerQBS!(15, 20, 13), careerRBS!(15, 50, 11), careerWRS!(15, 40, 11)
-Dim careerRC!(6), careerTT!(60)
+Dim careerRC!(6), careerTT!(50)
 
 
 '----------------------------------------
@@ -121,22 +121,22 @@ Dim PU$
 
 Dim compAP%(1, 120), APR%(1, 120)
 
-Dim BRC$(50, 2), compZ1$(60), compZ2$(240), compZ3$(240)
+Dim BRC$(50, 2), compZ1$(50), compZ2$(240), compZ3$(240)
 Dim compPK$(2), H1$(30)
 Dim KR$(3), N2$(240), N3$(240), NT$(10, 20)
 Dim PR$(3), compPS$(10), PT$(1200), QB$(4), RB$(10)
-Dim TB$(18), TR$(10, 20), TRC$(60), TT$(10, 20)
+Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 Dim WR$(16)
 
 
-Dim BRC!(60), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
+Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
 Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
-Dim O1!(60), O2!(60), O3!(60), OT!(38)
-Dim PR!(11, 11), PT!(1200, 5), PTSA!(60), PTSF!(60)
+Dim O1!(50), O2!(50), O3!(50), OT!(38)
+Dim PR!(11, 11), PT!(1200, 5), PTSA!(50), PTSF!(50)
 Dim QB!(11, 11), RB!(11, 11)
-Dim TD!(16), TG!(16), TP!(18), TRC!(60), TT!(10, 20, 9)
+Dim TD!(16), TG!(16), TP!(18), TRC!(50), TT!(10, 20, 9)
 Dim WR!(16, 13), YD!(16)
 
 
@@ -252,7 +252,7 @@ Dim K!(1, 12), K2!(1, 13, 17)
 Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
+Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(50), A7T$(50)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim compO$(120), expCategories$(74), statsH$(120), HR$(120)
 Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
@@ -269,9 +269,9 @@ Dim Z1$(40), Z2$(40)
 '----------------------------------------
 ' Used in SEExxx routines
 '----------------------------------------
-Dim L!(60), LD!(240), LZ!(240), T!(60), W!(60)
-Dim seeP$(60), TM$(60) ', TR$(10, 20)
-Dim seePR$(1200), seeT$(60)
+Dim L!(50), LD!(240), LZ!(240), T!(50), W!(50)
+Dim seeP$(50), TM$(50) ', TR$(10, 20)
+Dim seePR$(1200), seeT$(50)
 
 
 '----------------------------------------
@@ -315,7 +315,7 @@ Dim Shared gameClock!, pbpDelay!, timeElapsed!
 Dim Shared actualAttendance&, averageAttendance&
 
 Dim Shared AF(1, 1, 4), AM(1, 1, 4)
-Dim Shared C(60), DDI(1), DDS(1), defInts(1), defSacks(1)
+Dim Shared C(50), DDI(1), DDS(1), defInts(1), defSacks(1)
 Dim Shared F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
 Dim Shared K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6)
 Dim Shared GI(1, 9, 2), GS(1, 14, 1), hasRunFF(1), ints(1, 9), IR(1, 9)
@@ -325,7 +325,7 @@ Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3)
 Dim Shared P(2), PK(1, 2), PR(1, 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
 Dim Shared QB(1, 3), qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared RB(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
-Dim Shared sacks(1, 14), score(0 To 1, 0 To 10), scoreTimes(60), schedGame(2)
+Dim Shared sacks(1, 14), score(0 To 1, 0 To 10), scoreTimes(50), schedGame(2)
 Dim Shared SI(1, 9, 2), SK(1, 14, 1), teamIdx_GAME(2), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
 Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1), ydsPerComp(1)
 
@@ -352,7 +352,7 @@ Dim Shared kicker$(1, 1), kickRet$(1, 2)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1)
 Dim Shared G$(3), H$(120), HO$(120)
 Dim Shared LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1)
-Dim Shared O$(60), NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
+Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3), rbacks$(1, 10)
 Dim Shared R$(14), strRB$(1, 17), RP$(30), gameStadium$(120), SX$(1 To 33, 0 To 1)
 
