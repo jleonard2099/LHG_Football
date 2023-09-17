@@ -1,7 +1,9 @@
 '----------------------------------------
-'
+'         RecordsMenu Subroutine
 '----------------------------------------
-'
+'This subroutine gives the user a number of 
+'menu selections for viewing, updating and
+'printing records
 Sub RecordsMenu (menuChoice)
 
     _Title "3-in-1 Football - Analyze Records"
@@ -100,7 +102,8 @@ End Sub
 '----------------------------------------
 '       ViewSeasonRecords Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the usere with
+'viewing the records on the default display
 Sub ViewSeasonRecords ()
 
     Shared BRC$()
@@ -447,7 +450,8 @@ End Sub
 '----------------------------------------
 '       PrintSeasonRecords Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine assists the usere with
+'viewing the records on the default printer
 Sub PrintSeasonRecords ()
 
     Shared BRC$()

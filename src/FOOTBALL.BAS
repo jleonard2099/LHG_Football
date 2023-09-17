@@ -169,7 +169,7 @@ Sub FOOTBALL ()
             Locate 7, 2
             Color 14: Print "(5) ";: Color 15: Print "LOCATION: "; location$(gameLoc)
             Locate 8, 2
-            Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; pbpDelay!
+            Color 14: Print "(6) ";: Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; pbpDelay!
             Locate 9, 2
             Color 14: Print "(7) ";: Color 15: Print "START GAME"
             Locate 10, 2

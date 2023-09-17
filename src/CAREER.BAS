@@ -194,7 +194,7 @@ Sub MergeFirstYear
 
             Do
                 Locate , 5
-                Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
+                Print "WOULD YOU LIKE TO POST CAREER LEADERS? (Y/N)"
                 K$ = GetKeyPress$
             Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
 
@@ -214,7 +214,7 @@ Sub MergeFirstYear
 
                 Locate 20, 5
                 Color 15
-                Print "MERGING CAREER STATS AND UPDATING CAREER LEADER FILE . . . . PLEASE WAIT"
+                Print "MERGING AND UPDATING CAREER STATS . . . . PLEASE WAIT"
 
                 Open diskPaths$(1) + statFile$ + "S" For Input As #1
 

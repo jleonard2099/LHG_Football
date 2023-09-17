@@ -551,7 +551,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
         Locate 4, 2: Color 14: Print "(3) ";: Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
         Locate 5, 2: Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
         Locate 6, 2: Color 14: Print "(5) ";: Color 15: Print "HOME FIELD ADVANTAGE: "; location$(scheduleNG%(gameIndex%, 2))
-        Locate 7, 2: Color 14: Print "(6) ";: Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#"; scheduleNG%(gameIndex%, 4) / 10
+        Locate 7, 2: Color 14: Print "(6) ";: Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
         Locate 8, 2: Color 14: Print "(7) ";: Color 15: Print "COLLEGE RULES "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
         Locate 9, 2: Color 14: Print "(8) ";: Color 15: Print "PRO RULES "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
         Locate 10, 2: Color 14: Print "(9) ";: Color 15: Print "GAME DATE (XX-XX-XX) "; DT$; "   "
@@ -876,7 +876,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                 Loop Until C$ = "0" Or C$ = "1"
 
                                 Print
-                                Input "ENTER DISPLAY PAUSE FOR THESE GAMES "; displayPause!
+                                Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
 
                             End If
 
@@ -1236,7 +1236,7 @@ Sub ChangeGlobalSettings ()
         Locate 3, 2: Color 14: Print "(1) ";
         Color 15: Print "TYPE OF GAME: "; rulesType$(G9%)
         Locate 4, 2: Color 14: Print "(2) ";
-        Color 15: Print Using "DISPLAY PAUSE IN SECONDS: ##.#  "; displayPause!
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
         Locate 5, 2: Color 14: Print "(3) ";
         Color 15: Print "RESERVED FOR FUTURE"
         Locate 6, 2: Color 14: Print "(4) ";

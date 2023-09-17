@@ -109,7 +109,7 @@ Sub MergeAddYear (selectedFile$, statFile$)
 
         Do
             Locate , 5
-            Print "IS THIS THE FINAL UPDATE FOR THE CURRENT SEASON? (Y/N)"
+            Print "WOULD YOU LIKE TO POST CAREER LEADERS? (Y/N)"
             K$ = GetKeyPress$
             finalUpdate$ = UCase$(K$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N" Or K$ = Chr$(27)
@@ -159,7 +159,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
 
     Locate 20, 5
-    Print "LOADING CAREER STATS AND LEADER FILE . . . . PLEASE WAIT"
+    Print "LOADING CAREER STATS . . . . PLEASE WAIT"
 
     Open diskPaths$(1) + careerFile$ + ".CAR" For Input As #1
 

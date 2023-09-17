@@ -27,7 +27,7 @@ Sub HD2HDCOL ()
         Locate , 25: Color 15: Print "O";
         Color 7: Print "NE CONFERENCE"
         Locate , 25: Color 15: Print "T";
-        Color 7: Print "WO CONFERENCES WITH INTERCONFERENCE PLAY"
+        Color 7: Print "WO CONFERENCES WITH COMPETING PLAY"
         Locate , 25: Color 15: Print "R";
         Color 7: Print "ETURN TO MAIN MENU"
 
@@ -127,7 +127,7 @@ Sub Hd2HdColl_Conf (X2)
         Color 7, 0
         Cls
 
-		Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox (8, 8, 61, 5, 15, 1)
 
         Do
             Locate 10, 32
@@ -368,7 +368,7 @@ Sub Hd2HdColl_Conf (X2)
 
         Call TITLE_UTILS
 
-		Call MenuBox (8, 8, 61, 6, 15, 1)
+        Call MenuBox (8, 8, 61, 6, 15, 1)
 
         Do
 

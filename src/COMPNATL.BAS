@@ -72,6 +72,7 @@ Sub CompileNatlOrg ()
     C$ = ","
     finalUpdate$ = "N"
 
+    'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
 
         Open diskPaths$(1) + "RECORDS.CFB" For Input As #1
@@ -96,10 +97,13 @@ Sub CompileNatlOrg ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
+        'Initialize values first
+        '--- this is not done !?!?
+
         Do
             Color 15, 0
             Cls
-            Print "IS THIS THE FINAL UPDATE FOR THE SEASON? (Y/N)";
+            Print "WOULD YOU LIKE TO POST SEASON LEADERS? (Y/N)";
             I$ = GetKeyPress$
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"

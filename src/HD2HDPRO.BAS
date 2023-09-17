@@ -23,12 +23,12 @@ Sub HD2HDPRO ()
         Locate 10, 15
         Color 3
 
-        Locate , 25: Print "SELECT OPTION:"
-        Locate , 25: Color 15: Print "O";
-        Color 7: Print "NE LEAGUE"
-        Locate , 25: Color 15: Print "T";
-        Color 7: Print "WO LEAGUES WITH INTERLEAGUE PLAY"
-        Locate , 25: Color 15: Print "R";
+        Locate , 20: Print "SELECT OPTION:"
+        Locate , 20: Color 15: Print "O";
+        Color 7: Print "NE LEAGUE / CONFERENCE"
+        Locate , 20: Color 15: Print "T";
+        Color 7: Print "WO LEAGUES / CONFERENCES WITH COMPETING PLAY"
+        Locate , 20: Color 15: Print "R";
         Color 7: Print "ETURN TO MAIN MENU"
 
         I$ = GetKeyPress$

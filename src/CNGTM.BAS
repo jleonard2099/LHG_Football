@@ -1,7 +1,7 @@
 '----------------------------------------
 '            CNGTM Subroutine
 '----------------------------------------
-'This subroutine presents a menu of all 
+'This subroutine presents a menu of all
 'the options related to team rosters
 Sub CNGTM ()
 
@@ -59,7 +59,7 @@ Sub CNGTM ()
                         Call ViewRoster(team$, teamNbr)
 
                 End Select
-                
+
             End If
 
         End If
@@ -77,13 +77,13 @@ End Sub
 Sub PrintRoster (teamName$, teamIdx)
 
     Shared mascot$, stadium$
-    
+
     Shared YC!
-    
+
     Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
-    
+
     Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared wrRecept(), wrRecAvg()
     Shared passAtt(), compPct(), qbIntPct()
@@ -209,7 +209,7 @@ End Sub
 '----------------------------------------
 '          EditTeam Subroutine
 '----------------------------------------
-'This subroutine steps the user through 
+'This subroutine steps the user through
 'screens for adjusting team data and players
 '
 'NOTE: <ENTER> key is valued as 0 for when
@@ -219,24 +219,101 @@ End Sub
 Sub EditTeam (teamName$, YN$, teamNbr)
 
     Shared mascot$, stadium$
-    
+
     Shared YC!
-    
+
     Shared teamAttendance&
 
     Shared rbName$(), wrName$(), qbName$(), krName$()
     Shared prName$(), punterName$(), pkName$()
-
     Shared intName$(), sackName$()
-    Shared rushAvg(), rbRecAvg(), wrRecAvg(), compPct(), qbIntPct()
-    Shared krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
-    Shared pkFGPct(), leagueRatings%(), pkPAT(), pkPATPct()
+
+    Shared rushAtt(), rushAvg(), rbRecAvg(), rbRecepts()
+    Shared wrRecAvg(), wrRecept()
+    Shared armRating(), compPct(), passAtt(), qbIntPct()
+    Shared krRet(), krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
+    Shared pkFGPct(), pkPAT(), pkPATPct()
     Shared numInts(), numSacks()
-    Shared teamRatings%(), armRating()
+    Shared leagueRatings%(), teamRatings%()
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
+    Dim contrib2(15), contrib3(15)
 
+    'Calculate contribution %s for each individual
+    For I = 0 To 15:
+        contrib2(I) = 0
+        contrib3(I) = 0
+    Next
+
+    U = 0
+
+    For I = 1 To 9
+        If rushAtt(I) = 0 Then
+            U = U + 1
+        Else
+            contrib3(I) = rushAtt(I) - rushAtt(I - 1 - U)
+            U = 0
+        End If
+    Next
+
+    For I = 1 To 9:
+        rushAtt(I) = contrib3(I)
+    Next
+
+    For I = 0 To 5:
+        rbRecepts(I + 10) = wrRecept(I)
+    Next
+
+    U = 0
+
+    For I = 1 To 15
+        If rbRecepts(I) = 0 Then
+            U = U + 1
+        Else
+            contrib2(I) = rbRecepts(I) - rbRecepts(I - 1 - U): U = 0
+        End If
+    Next
+
+    For I = 1 To 15:
+        rbRecepts(I) = contrib2(I)
+    Next
+
+    For I = 0 To 5:
+        wrRecept(I) = rbRecepts(I + 10)
+    Next
+
+    For I = 3 To 1 Step -1
+        If passAtt(I) <> 0 Then
+            passAtt(I) = passAtt(I) - passAtt(I - 1)
+        End If
+    Next
+
+    For I = 2 To 1 Step -1
+        If krRet(I) <> 0 Then
+            krRet(I) = krRet(I) - krRet(I - 1)
+        End If
+    Next
+
+    For I = 2 To 1 Step -1
+        If prRet(I) <> 0 Then
+            prRet(I) = prRet(I) - prRet(I - 1)
+        End If
+    Next
+
+    For I = 1 To 1 Step -1
+        If pkFGPct(I) <> 0 Then
+            pkFGPct(I) = pkFGPct(I) - pkFGPct(I - 1)
+        End If
+    Next
+
+    For I = 1 To 1 Step -1
+        If pkPATPct(I) <> 0 Then
+            pkPATPct(I) = pkPATPct(I) - pkPATPct(I - 1)
+        End If
+    Next
+
+    'Present menu
     Do
 
         Color 15, 0
@@ -833,14 +910,14 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         Call CheckContributions
 
-        '-- Why do we do this???
+        '-- Why do we make this converstion and lose accuracy?
         '-- We lose accuracy here!!!
-        '-- To change it though means updating
-        '-- our routines for reading/saving teams
-        '-- Not only that, but we have to
-        '-- update every team file to accomodate
+        '-- To change it means updating routines for team files,
+        '-- and updating every team file to accomodate
         YC% = YC!
 
+        'Convert individual contribution %'s
+        'Back to the scaled / cumulative #'s
         S0 = 0
         S1 = 0
         S2 = 0
@@ -978,9 +1055,9 @@ End Sub
 Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
 
     Shared mascot$, stadium$
-    
+
     Shared YC!
-    
+
     Shared teamAttendance&
 
     Shared rbName$(), wrName$(), qbName$(), krName$()
@@ -1028,7 +1105,7 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
         Locate 22, 1
         Print "TEAM APPEARANCE: ";
-        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
+        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
     End If
 
     Color 15, 0
@@ -1098,7 +1175,7 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                     End If
                     Color 15, 0
 
@@ -1107,7 +1184,7 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTRim$(team$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                     End If
                     Color 15, 0
 
@@ -1136,13 +1213,13 @@ End Sub
 Sub ViewRoster (team$, teamNbr)
 
     Shared mascot$, stadium$
-    
+
     Shared YC!
-    
+
     Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
-    
+
     Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared wrRecept(), wrRecAvg()
     Shared passAtt(), compPct(), qbIntPct()
@@ -1714,13 +1791,13 @@ End Sub
 Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     Shared mascot$, stadium$
-    
+
     Shared YC!
-    
+
     Shared teamAttendance&
 
     Shared leagueRatings%(), teamRatings%()
-    
+
     Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared wrRecept(), wrRecAvg()
     Shared passAtt(), compPct(), qbIntPct()
@@ -1904,3 +1981,4 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     Next
 
 End Sub
+

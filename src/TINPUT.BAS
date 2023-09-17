@@ -629,7 +629,9 @@ Sub InputTeam ()
             If O9 <> 0 And rushAvg(I) <> 0 Then rushAvg(I) = rushAvg(I) - O9
         Next I
 
-        For I = 0 To 5: RM = RM + wrRecept(I): Next I
+        For I = 0 To 5: 
+            RM = RM + wrRecept(I)
+        Next I
 
         RK = 100 / RM
 
