@@ -1,10 +1,11 @@
 ## RECOMMENDATIONS ##
 
-Rumbling, bumbling, stumbling...
-
 - QB mobility
 	- is only used to determine likelihood of scramble
 	- Should also impact ability to avoid a rush / blitz (I did not check if response to blitz calls rollout code)
+ 	- On-the-fly calculation
+		- with current code, base this on rushing average
+		- with a database, this could be based on attempts / yardage
 
 - Incomplete passes are sometimes "throw aways"
 	- Pressure situations are the primary cause
@@ -44,10 +45,6 @@ Rumbling, bumbling, stumbling...
 	- do we account for turnovers in the end zone?
 	- how are interceptions in the end zone handled?
 	- we could look for pass lengths longer than "to goal" and process those???
-
-- On-the-fly recommendation for QB mobility rating
-	- with current code, base this on rushing average
-	- with a database, this could be based on attempts / yardage
 
 - Find reference on football formations
 	- make as database
