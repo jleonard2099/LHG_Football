@@ -1,17 +1,3 @@
-### Replay Stats ###
-
-|PARTIAL LEAGUE			|Current EXE	| Original code | Original Game |
-|-------------------------------|---------------|---------------|---------------|
-|With overtime rules		|7 		| 8		|		|
-|Without overtime rules 	|20		| -		|		|
-
-|FULL LEAGUE			|Current EXE	| Original code | Original Game |
-|-------------------------------|---------------|---------------|---------------|
-|With overtime rules 		|		|		|		|
-|Without overtime rules		|		|		|		|
-
-___
-
 ### Actual Rules ###
 
 College	Regular Season
