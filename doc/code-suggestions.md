@@ -1,21 +1,23 @@
 #### SIDENOTE: Do any of these fall into the "Issues" realm? If so, create GitHub issue items ####
 
-[ ] CheckStats
-- Coll = Natl = Pro
-- routines are all mostly identical
-- I suspect other routines in COMPCOLL/COMPNATL are
-- Org should essentially be looping over all Conf, then posting Poll
+[ ] Punting
+how high is the punter's average?
+if that would take them into the endzone, they're obviously going to attempt a coffin corner
+there needs to be a % chance of success associated with that
+when successful, it goes OB or stops rolling
+the ball position there should be inside the 10 ???
 
-[ ] Paths / folders
-- add "Boxes" subfolder to structure and adapt code
-- add "Schedules" subfolder to structure and adapt code
- 
-[ ] SCHEDULE.BAS - menu needs to come down some
+[ ] Challenges
+	give player option to challenge plays
+	how frequent to make it possible?
+	track # allowed 
+	be sure to penalize
 
-[ ] SCHEDULE.BAS - Box Score editor disabled because (uses QEdit); just remove it!
+[ ] New overtime rules
 
-[ ] SCHEDULE.BAS - playing games should return back to the menu, not DOS
-
+[ ] All penalty types
+Penalty yardage changes over time
+	
 [ ] Integrate team file selection, stat file name functions
 - College BB already has "STATCONVERT" subroutine
 - Team file functions already built, just not tested
@@ -24,19 +26,11 @@
 - Menu / box routines
 - QB ratings / calculations
 
-[ ] Review all file selection routines
-- Are they overly wordy?
-- Are they "centered" reasonably?
-
 [ ] Change Pro to support 4 divisions not just 3
 
 [ ] Stats Considerations
 - "Does this team have saved stats"??? - update to just detect it!!!
 - View Standings - doesn't confirm it's pro / college
-
-[ ] Develop "Select File" function (for LDR/LIB/etc)
-- should only take a file as a parameter
-- set as function to just return the file name
 
 [ ] AutoPlay global variable
 - If AP=1 and u5 = 6 or u5...
