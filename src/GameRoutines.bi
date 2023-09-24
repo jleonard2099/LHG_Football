@@ -44,7 +44,7 @@ Declare Sub FUMBLE ()
 Declare Sub FumblePBP ()
 Declare Sub GetKeyWhenNoDelay ()
 Declare Sub GOALLINE ()
-Declare Sub GoForTwo ()
+Declare Sub TryForTwoResult ()
 Declare Sub HALFSTART ()
 Declare Sub HANDOFF ()
 Declare Sub INCOMPLETE ()
@@ -52,12 +52,12 @@ Declare Sub InitVar ()
 Declare Sub KICKOFF ()
 Declare Sub KICKSET ()
 Declare Sub LGPBP ()
-Declare Sub MADEFG
+Declare Sub ITSGOOD
 Declare Sub MADEPAT
 Declare Sub MARKER ()
 Declare Sub MARKER1 ()
 Declare Sub MEASUREMENT ()
-Declare Sub MISSFG
+Declare Sub MISSEDFG
 Declare Sub MISSPAT
 Declare Sub MOVEBALL ()
 Declare Sub NAMEEDIT ()

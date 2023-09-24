@@ -11,10 +11,13 @@ Sub SCHEDULE ()
     ReDim menuChoices$(1 To 8)
 
     Shared NS%
+
     Shared scheduleAP%(), scheduleNG%()
 
     _Title "3-in-1 Football - Scheduler"
 
+    '--- Pay close attention to this and consider the "why"
+    '--- I think this is setting defaults - much like we want to do!
     scheduleNG%(0, 8) = 0
     scheduleNG%(0, 3) = 1
     scheduleNG%(0, 7) = 0
@@ -301,13 +304,14 @@ Sub NewSchedule (scheduleFile$)
 
             Case "B":
                 'ReDim array$(500) 'holds the main editor string array
-                'Do
-                '   Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                '   Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
-                'Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-                'NS% = Int((targetGame%- 1) / 20)
-                'BN$ = diskPaths$(1) + "box" + Mid$(Str$(targetGame%, 2, Len(Str$(targetGame%))
-                'Call EditBoxscore (BN$)
+                Do
+                   Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                   Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+                NS% = Int((targetGame%- 1) / 20)
+                boxName$ = diskPaths$(1) + "BOX" + Mid$( Str$(targetGame%), 2, Len(Str$(targetGame%)) )
+                Call EditBoxscore (boxName$)
+                Color 15, 0
 
             Case "D":
                 ' *** DELETE A GAME FROM THE SCHEDULE ***
@@ -1062,9 +1066,9 @@ Sub BoxscoreMaintenance ()
                 Case 2:
                     boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
 
-                    If ExitCode% <> 27 And ExitCode% <> 0 Then
+                    If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
                         boxName$ = diskPaths$(1) + boxscoreFile$
-                        'ReDim array$(500) 'holds the main editor string array
+                        Call EditBoxscore (boxName$)
                     End If
 
                 Case 3
@@ -1220,13 +1224,19 @@ Sub ChangeGlobalSettings ()
     scheduleYN$(0, 0) = ""
     scheduleYN$(0, 1) = ""
 
+    ' GLOBAL SETTINGS FOR A SCHEDULE
+    ruleOptType = 1
+    ruleOptColl = 5
+    ruleOptPro = 3
+    overtimeOpt = 1
+    windOpt = 3
+    weatherOpt = 3
+
     'QB selections
     qbName$(4) = "RANDOM"
 
     DT$ = "10-01-91"
     TM$ = "07:30P"
-    windOpt = 3
-    weatherOpt = 3
 
     Do
         Color 15, 0
@@ -1234,17 +1244,17 @@ Sub ChangeGlobalSettings ()
         Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
 
         Locate 3, 2: Color 14: Print "(1) ";
-        Color 15: Print "TYPE OF GAME: "; rulesType$(G9%)
+        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
         Locate 4, 2: Color 14: Print "(2) ";
         Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
         Locate 5, 2: Color 14: Print "(3) ";
         Color 15: Print "RESERVED FOR FUTURE"
         Locate 6, 2: Color 14: Print "(4) ";
-        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(Y9%)
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
         Locate 7, 2: Color 14: Print "(5) ";
-        Color 15: Print "PRO RULES: "; ruleYrPro$(Y8%)
+        Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
         Locate 8, 2: Color 14: Print "(6) ";
-        Color 15: Print "SUDDEN DEATH: "; overtime$(SD%)
+        Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
         Locate 9, 2: Color 14: Print "(7) ";
         Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
         Locate 10, 2: Color 14: Print "(8) ";
@@ -1263,8 +1273,8 @@ Sub ChangeGlobalSettings ()
         Select Case I
 
             Case 1:
-                G9% = G9% + 1
-                If G9% > 5 Then G9% = 0
+                ruleOptType = ruleOptType + 1
+                If ruleOptType > 5 Then ruleOptType = 0
 
             Case 2:
                 Input "DISPLAY VARIABLE "; displayPause!
@@ -1273,16 +1283,16 @@ Sub ChangeGlobalSettings ()
                 '
 
             Case 4:
-                Y9% = Y9% + 1
-                If Y9% > 5 Then Y9% = 0
+                ruleOptColl = ruleOptColl + 1
+                If ruleOptColl > 5 Then ruleOptColl = 0
 
             Case 5:
-                Y8% = Y8% + 1
-                If Y8% > 3 Then Y8% = 0
+                ruleOptPro = ruleOptPro + 1
+                If ruleOptPro > 3 Then ruleOptPro = 0
 
             Case 6:
-                SD% = SD% + 1
-                If SD% > 3 Then SD% = 0
+                overtimeOpt = overtimeOpt + 1
+                If overtimeOpt > 3 Then overtimeOpt = 0
 
             Case 7:
                 windOpt = windOpt + 1
@@ -1297,11 +1307,11 @@ Sub ChangeGlobalSettings ()
     Loop Until I = 0
 
     For I = 1 To scheduleAP%(0)
-        scheduleNG%(I, 3) = G9%
+        scheduleNG%(I, 3) = ruleOptType
         scheduleNG%(I, 4) = displayPause! * 10
-        scheduleNG%(I, 7) = Y9%
-        scheduleNG%(I, 11) = Y8%
-        scheduleNG%(I, 14) = SD%
+        scheduleNG%(I, 7) = ruleOptColl
+        scheduleNG%(I, 11) = ruleOptPro
+        scheduleNG%(I, 14) = overtimeOpt
         scheduleNG%(I, 19) = windOpt
         scheduleNG%(I, 20) = weatherOpt
     Next
@@ -1437,9 +1447,6 @@ End Sub
 'boxscores in their favorite text editor.
 Sub EditBoxscore (boxName$)
 
-    F2$ = Chr$(0) + Chr$(60) 'extended code for the F2 function key
-    F3$ = Chr$(0) + Chr$(61) 'extended code for the F3 function key
-
     If Not _FileExists(boxName$) Then
 
         MsgText$ = "BOXSCORE DOES NOT EXIST PRESS ANY KEY TO RETURN TO MAIN MENU"
@@ -1452,70 +1459,7 @@ Sub EditBoxscore (boxName$)
 
     Else
 
-        Open boxName$ For Input As #1
-
-        CURLINE = 1
-
-        While Not EOF(1)
-            Line Input #1, array$(CURLINE)
-            CURLINE = CURLINE + 1
-        Wend
-
-        Close #1
-
-        Cls '  show how QEdit saves the screen
-
-        Color 15, 0 'print instructions on bottom of screen
-        Locate 25, 1
-        Print " ESC - Quit    F1 - Help    F2 - Print Boxscore   F3 - Save Boxscore"; Tab(79);
-
-        '----- fill in editing parameters
-        Select Case Monitor% 'determine the monitor type
-            Case 3, 5, 7, 9, 10, 12 'CGA, EGA, VGA monitors
-                Ed.AColor = 23 'white on blue
-            Case Else 'all other monitors
-                Ed.AColor = 7 'white on black
-        End Select
-        Ed.Wrap = 0 'word wrap at column 65 (use 0 for to disable word wrap)
-        Ed.Frame = 0 'frame code (1 = show ruler line & scroll bars, 0 = don't)
-        Ed.Rows = 24 'number of text lines to display on the screen (3 - 25)
-        Ed.Wide = 80 'width of the active screen (10 - 80)
-        Ed.HTab = 4 'set tab stops to 4 spaces
-        Locate 1, 1 'locate the upper left corner of the edit window frame
-        Action = 1 'Action 1 to save underlying screen and
-        '  display text, operate in polled mode
-
-        '----- main loop for editing
-        Do
-            '----- call QEdit in polled mode
-            'CALL QEdit(array$(), Ky$, Action, Ed)
-            '----- F2 function key pressed? - change margin
-            If Ky$ = F2$ Then: For I = 1 To CURLINE - 1: LPrint array$(I): Next
-
-            If Ky$ = F3$ Then
-
-                Open BN$ For Output As #2
-
-                For I = 1 To CURLINE - 1
-                    Print #2, array$(I)
-                Next
-
-                Close #2
-
-                MsgText$ = "REVISED BOXSCORE HAS BEEN SAVED... PRESS ANY KEY TO CONTINUE"
-                BoxWidth = 18
-                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-                Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                I$ = GetKeyPress$
-                Call CSMsgBox("", 0, Pass)
-
-            End If
-
-        Loop Until Ky$ = Chr$(27) 'keep calling QEdit until Esc is pressed
-
-        '----- call QEdit again with an Action flag of 5 to restore the screen
-        'CALL QEdit(array$(), Ky$, 5, Ed)
+        Call QBWRITE (boxName$)
 
     End If
 
@@ -1606,4 +1550,3 @@ Function GetQBName$ (targetGame%, I5)
     GetQBName$ = qbName$(I2)
 
 End Function
-

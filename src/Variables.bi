@@ -9,8 +9,8 @@ Dim Shared teamIndex%(MAX_TEAMS)
 
 ' *** Reading Stat Data ***
 ' -------------------------
-Dim ORD$(120)
-Dim ORD%(120)
+Dim ORD$(NUM_STATRECORDS)
+Dim ORD%(NUM_STATRECORDS)
 
 ' *** Schedule Data ***
 ' -------------------------
@@ -238,28 +238,28 @@ Dim TP$(46), TP1$(43)
 Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 Dim TMR, totStats
 
-Dim statsO%(120), lookyP%(1)
-Dim statsT%(120), TR%(120), Y%(30)
+Dim statsO%(NUM_STATRECORDS), lookyP%(1)
+Dim statsT%(NUM_STATRECORDS), TR%(NUM_STATRECORDS), Y%(30)
 
-Dim GMA!(300), GMB!(180), GMC!(120)
+Dim GMA!(300), GMB!(180), GMC!(NUM_STATRECORDS)
 
-Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(NUM_STATRECORDS, 13), A3R!(NUM_STATRECORDS, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
-Dim CRD!(120), CRDR!(120)
+Dim CRD!(NUM_STATRECORDS), CRDR!(NUM_STATRECORDS)
 Dim GI!(1, 9, 2), GS!(1, 14, 1)
 Dim K!(1, 12), K2!(1, 13, 17)
 Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
 
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
+Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(NUM_STATRECORDS), A4L$(90), A4T$(90)
 Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(50), A7T$(50)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
-Dim compO$(120), expCategories$(74), statsH$(120), HR$(120)
-Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
+Dim compO$(NUM_STATRECORDS), expCategories$(74), statsH$(NUM_STATRECORDS), HR$(NUM_STATRECORDS)
+Dim LCL$(480), LKL$(90), LPL$(NUM_STATRECORDS), LRL$(300), PKL$(90)
 Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
 'Dim lookyrbacks$(1, 10), lookywdRec$(1, 6), lookyqbacks$(1, 4), lookykickRet$(1, 3), lookypret$(1, 3), lookypunter$(1, 2), lookykicker$(1, 2)
 Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
-Dim QBL$(120), gameSITE$(120), SITER$(120)
+Dim QBL$(NUM_STATRECORDS), gameSITE$(NUM_STATRECORDS), SITER$(NUM_STATRECORDS)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
 Dim Z1$(40), Z2$(40)
@@ -299,16 +299,17 @@ Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT
 Dim Shared E, EY, endGame, endAllGames, F2, F8, F9
 Dim Shared G, gameLoc, goalPostAdj, halfTime
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I
-Dim Shared J, JJ, K3, N, NT, O, OT
+Dim Shared J, JJ, K3, N, NT, O, OT, overtimeOpt
 Dim Shared playerOpt, P1, P2, PN, PQ, PR, PW
-Dim Shared Q, QB, R1, RP, RY, ruleOpt
+Dim Shared Q, QB, ruleOptColl, ruleOptPro, ruleOptType, R1, RP, RY
 Dim Shared S, S2, S3, S6, SN, SY
-Dim Shared T1, TMT, W5, WE, WS, X, X1, X2, XD, XE
-Dim Shared Y, Y1, ruleOptColl, YC, YF, YL, YT, Z1
+Dim Shared T1, TMT, W5, WE, WS, winTeam
+Dim Shared X, X1, X2, XD, XE
+Dim Shared Y, Y1, YC, YF, YL, YT, Z1
 
 Dim Shared BO%, C%, EG%, F%, GL%, HB%, intChance
 Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, SX%
-Dim Shared W%, WX%, yrdLine
+Dim Shared WX%, yrdLine
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
@@ -333,33 +334,33 @@ Dim Shared BY%(38, 4), D3%(0 To 8, 0 To 10)
 Dim Shared GL%(1 To 30, 1 To 2), HB%(1)
 
 'intPR% has something to do with schedule stats
-Dim Shared NG%(20), O%(120), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
+Dim Shared NG%(20), O%(NUM_STATRECORDS), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
 
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared teamScore(120), thirdDownAtt(1), thirdDownFail(1), V4%(1, 3), WX%(6)
+Dim Shared teamScore(NUM_STATRECORDS), thirdDownAtt(1), thirdDownFail(1), V4%(1, 3), WX%(6)
 
 Dim Shared Z(38), Z1(38), Z2(13, 17)
 
-Dim Shared CRD&(120)
+Dim Shared CRD&(NUM_STATRECORDS)
 
 Dim Shared A1$, A2$, A3$, A4$, A5$, A6$, A7$, D2$, DI$, DN$, DR$, DS$, DV$
-Dim Shared F$, G$, I$, LO$, NM$, NN$, PS$, Q$, RP$, RV$, NY$
-Dim Shared SD$, gameStadium$, SX$, U$, U5$, X$, ruleOptPro$, ruleOptColl$, YN$
+Dim Shared F$, G$, gameStadium$, I$, LO$, NM$, NN$, NY$, PS$, Q$
+Dim Shared ruleOptPro$, ruleOptColl$, RP$, RV$, SD$, SX$, U$, U5$, X$, YN$
 
-Dim Shared B$(1), D$(15), D1$(11), D2$(15), defInts$(1, 9), DN$(4), DR$(1), defSacks$(1, 14)
+Dim Shared B$(1), D2$(15), defInts$(1, 9), DN$(4), DR$(1), defSacks$(1, 14)
+Dim Shared gameMascots$(1), gameTeams$(0 To 1), gameStadium$(NUM_STATRECORDS)
+Dim Shared G$(3), H$(NUM_STATRECORDS), HO$(NUM_STATRECORDS)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
-Dim Shared gameMascots$(1), gameTeams$(0 To 1)
-Dim Shared G$(3), H$(120), HO$(120)
 Dim Shared LF$(1, 1), LI$(1, 9, 1), LK$(1, 2, 1), LP$(1, 3, 1)
-Dim Shared O$(50), NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
-Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3), rbacks$(1, 10)
-Dim Shared R$(14), strRB$(1, 17), RP$(30), gameStadium$(120), SX$(1 To 33, 0 To 1)
+Dim Shared NN$(0 To 1), P$(2), PK$(1, 2, 1), PS$(9)
+Dim Shared qbacks$(1, 3), pret$(1, 2), punter$(1, 2), rbacks$(1, 10)
+Dim Shared RP$(30), SX$(1 To 33, 0 To 1)
 
 'Trying to figure out how these below are used.
 'It seems obvious but they are used sparingly. 
 'They appear to simply be assigned a "t" value when a TD is implied.
 'They are included in the compiling of stats file
-Dim Shared strIR$(1, 9), strKR$(1, 2), strLC$(1, 20, 1), strLR$(1, 9, 1), strPR$(1, 2), strQB$(1, 3), strWR$(1, 20) 
+Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1), gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20) 
 
 Dim Shared wdRec$(1, 5), Y$(1), YN$(1), YR%(1)

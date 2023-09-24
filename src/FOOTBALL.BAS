@@ -68,7 +68,7 @@ Sub FOOTBALL ()
     Input #4, R5%
     Input #4, ruleOptPro
     Input #4, ruleOptColl
-    Input #4, NG%(14) 'Overtime setting
+    Input #4, overtimeOpt 'Overtime setting
     Close #4
 
     If _FileExists("TICKER") Then
@@ -177,7 +177,7 @@ Sub FOOTBALL ()
             Locate 11, 2
             Color 14: Print "(9) ";: Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
             Locate 12, 2
-            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(NG%(14))
+            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
             Locate 13, 2
             Color 14: Print "(0) ";: Color 15: Print "SAVE SETTINGS"
 
@@ -223,7 +223,7 @@ Sub FOOTBALL ()
                         Print #8, R5% '
                         Print #8, ruleOptPro '
                         Print #8, ruleOptColl '
-                        Print #8, NG%(14) 'overtime setting
+                        Print #8, overtimeOpt 'overtime setting
                         Close #8
 
                     Case 1
@@ -268,8 +268,8 @@ Sub FOOTBALL ()
                         If ruleOptPro > 3 Then ruleOptPro = 0
 
                     Case 10
-                        NG%(14) = NG%(14) + 1
-                        If NG%(14) > 3 Then NG%(14) = 0
+                        overtimeOpt = overtimeOpt + 1
+                        If overtimeOpt > 3 Then overtimeOpt = 0
 
                 End Select
 
@@ -379,23 +379,33 @@ Sub FOOTBALL ()
     '----------------------------------------
     '    AUTO-DETERMINE OTHER OPTIONS
     '----------------------------------------
+
     If ruleOptPro = 1 And ruleOptType <> 0 Then goalPostAdj = -10
     If ruleOptType = 4 Then goalPostAdj = 0
     If ruleOptColl = 0 And ruleOptType = 0 Then R5% = 1
 
     Color 15, 0
 
+    ' Determine computer team
     Select Case playerOpt
 
         Case 1:
             compTeam = 0
+
         Case 2:
             playerOpt = 1
             compTeam = 1
+
         Case 3:
             playerOpt = 2
 
     End Select
+
+    'At this point, the value of playerOpt has been changed.
+    'It now represents the following values:
+    '   0 = Human
+    '   1 = Computer Team
+    '   2 = PC vs. PC
 
     If ruleOptType <> 0 Then
         leagRat_GAME(0, 7) = leagRat_GAME(0, 7) + 2
@@ -410,10 +420,9 @@ Sub FOOTBALL ()
     For I3 = 0 To 1
 
         If autoPlay = 1 Then
-            'Auutoamtic determine QB
+            'Auutomatic determine QB
             Q7%(0) = 0
             Q7%(1) = 0
-
             Q6%(0) = NG%(5)
 
             If Q6%(0) = 4 Then
@@ -429,6 +438,8 @@ Sub FOOTBALL ()
             Else
                 qbMobility(1) = NG%(9)
             End If
+
+            overtimeOpt = NG%(14)
 
             For I = 0 To 3
                 V4%(I3, I) = -1
@@ -458,7 +469,7 @@ Sub FOOTBALL ()
     '----------
     'Coin Toss
     '----------
-    W% = Int(Rnd(1) * 2)
+    winTeam = Int(Rnd(1) * 2)
 
     Call SCOUT
     Call HALFSTART
@@ -477,9 +488,9 @@ Sub FOOTBALL ()
     Call d100(RN)
 
     If RN <= 50 Then
-        U$ = gameTeams$(W%) + " WON THE COIN TOSS"
+        U$ = gameTeams$(winTeam) + " WON THE COIN TOSS"
     Else
-        U$ = gameMascots$(W%) + " WON THE COIN TOSS"
+        U$ = gameMascots$(winTeam) + " WON THE COIN TOSS"
     End If
 
     Call PBP
@@ -708,7 +719,7 @@ Sub FOOTBALL ()
 
                     K2(P1, I1, 15) = K2(P1, I1, 15) + 100 - N
                     K2(P1, I1, 16) = K2(P1, I1, 16) + 1
-                    If 100 - N > KR(P1, I1) Then strKR$(P1, I1) = "t": KR(P1, I1) = 100 - N
+                    If 100 - N > KR(P1, I1) Then gameKR$(P1, I1) = "t": KR(P1, I1) = 100 - N
 
                     GoTo 3200
 
@@ -723,7 +734,7 @@ Sub FOOTBALL ()
 
                     Y = G + N
 
-                    If G > KR(P1, I1) Then strKR$(P1, I1) = "": KR(P1, I1) = G
+                    If G > KR(P1, I1) Then gameKR$(P1, I1) = "": KR(P1, I1) = G
 
                     K2(P1, I1, 15) = K2(P1, I1, 15) + G
                     F% = 3
@@ -797,127 +808,172 @@ Sub FOOTBALL ()
 
     If ruleOptType = 4 Then
         'WFL = No PAT
-        I$ = "2"
-
+        convChoice = 2
     Else
 
-        U$ = "1-KICK EP 2-GO FOR TWO"
+        IF ruleOptType=1 AND ruleOptPro<>3 THEN 
+            'NFL prior to 1994 (2 PT conversion not supported)
+            convChoice = 1
 
-        Call PBP
+        ELSE
 
-        If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+            If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
 
-            I$ = "1"
+                U$="1-KICK EP 2-GO FOR TWO"
+                CALL PBP
+                
+                ' *** Computer on Offense, or PC vs. PC ***
 
-            I5 = score(P1, 0) - score(D, 0)
+                'By default, go for one
+                convChoice = 1
 
-            If ruleOptType = 1 And ruleOptPro = 3 Then
-                If Q = 4 And (I5 = -9 And gameClock! < 600 Or I5 = -2 And gameClock! < 120 Or I5 = -5 And gameClock! < 420) Then I$ = "2"
-            End If
+                'Determine score deficit
+                I5 = score(P1, 0) - score(D, 0)
 
-            'Even after rewriting this is still seems absurd
-            If I5 = -2 Or I5 = 1 Or I5 = 5 Or I5 = 12 Then
-                I$ = "2"
-            Else
-                If I5 = -1 Or I5 = -5 Or I5 = -8 Or I5 = -13 Or I5 = -4 Or I5 = -10 Then
-                    I$ = "2"
+                ' ***** When to "Go for TWO" *****
+
+                If ruleOptType = 1 And ruleOptPro = 3 Then
+                'NFL, Post 1994 (when 2 pt conversion was implemented)
+                    ' 4th quarter, down by 2 and 2 minutes left
+                    ' 4th quarter, down by 9 and 5 minutes left
+                    ' 4th quarter, down by 6 and 7 minutes left
+                    If Q = 4 And (I5 = -9 And gameClock! < 600 Or I5 = -2 And gameClock! < 120 Or I5 = -5 And gameClock! < 420) Then convChoice = 2
+                
                 Else
-                    'Is this logic accurate?
-                    'Or just an artifact of how things
-                    'were written before???
-                    'If Q = 4 And gameClock! > 240 Or Q < 4 Then 3702
-                End If
-            End If
+                    'College / AFL / WLAF / USFL
+                        ' 3rd / 4th quarter, down by 18
+                        ' 4th quarter, down by 16
+                    IF Q >= 3 AND I5 = -18 OR Q = 4 AND I5 = -16 THEN 
+                        convChoice = 2
+                    Else
+                        '1) down by 2
+                        '2) ahead by 5 | 12           
+                        If I5 = -2 Or I5 = 1 Or I5 = 5 Or I5 = 12 Then
+                            convChoice = 2
+                        Else
+                            'Anytime outside the final 2-min warning
+                            If Not (Q = 4 And gameClock! > 240 Or Q < 4) Then 
+                                'down by 1 | 4 | 5 | 8 | 10 | 13
+                                If I5=-1 Or I5=-5 Or I5=-8 Or I5=-13 Or I5=-4 Or I5=-10 Then convChoice = 2
+                            End If
 
-        Else
-            I$ = GetKeyPress$
+                        End If
+
+                    End If
+
+                End If
+
+            Else
+                ' *** Human player on Offense ***
+                U$ = "1-KICK EP 2-GO FOR TWO"
+
+                Do
+                    Call PBP
+                    I$ = GetKeyPress$
+                Loop Until I$ = "1" Or I$ = "2"
+                
+                convChoice = Val(I$)
+                
+            End If
+                
         End If
 
     End If
 
     '3702
-    If ruleOptType = 1 Then
+    If convChoice = 2 Then
 
-        If ruleOptPro <> 3 Then
+        'Since the "down" is not reset after the score,
+        'we should treat the 2-point conversion as a 
+        '"1st down" for AI / play selection purposes
+        'D = 1
 
-            I$ = "1"
+        G = 0
+        E = 1
 
-            If Val(I$) = 2 Then
-
-                G = 0
-                Y = 97
-                E = 1
-
-                If ruleOptType = 1 And ruleOptPro = 3 Then Y = 98
-
-                GoTo 700
-
-            End If
-
+        'NFL, Post 1994
+        If ruleOptType = 1 And ruleOptPro = 3 Then 
+            Y = 98
+        Else
+            Y = 97
         End If
 
+        'Choose a play for 2-point conversion
+        Goto 700
+    
     Else
 
-        I$ = "1"
+        ' ******************************
+        ' **** POINT AFTER ATTEMPT *****
+        ' ******************************
+        'Adjust distance for goal posts
+        K1(X2, 4) = K1(X2, 4) + 10
 
-    End If
+        'Determine kicker
+        Call d100(RN1)
 
-    K1(X2, 4) = K1(X2, 4) + 10
+        For J = 1 To 0 Step -1:
+            'Auto-determine target kicker, I1
+            'If RN1 <= kickerPATPct(P1, J) Then I1 = J
+            If RN1 <= kickerPATPct(P1, J) Then Q7%(P1) = J
 
-    Call d100(RN1)
+        Next J
 
-    'Was previously I2 not J
-    For J = 1 To 0 Step -1:
-        If RN1 <= kickerPATPct(P1, J) Then I1 = J
-    Next J
+        'Determine success
+        Call d100(RN1)
 
-    Q7%(P1) = I1
+        K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) + 1
 
-    Call d100(RN1)
-
-    K2(P1, 6 + Q7%(P1) * 4, 17) = K2(P1, 6 + Q7%(P1) * 4, 17) + 1
-
-    U$ = kicker$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
-
-    Call PBP
-
-    If RN1 <= kickerNumPAT(P1, Q7%(P1)) Then
-
-        K2(P1, 5 + Q7%(P1) * 4, 17) = K2(P1, 5 + Q7%(P1) * 4, 17) + 1
-
-        U$ = "THE KICK IS UP..."
+        U$ = kicker$(P1, Q7%(P1)) + " IS ON TO TRY THE EXTRA POINT"
         Call PBP
-        Call MADEPAT
 
-        score(P1, 0) = score(P1, 0) + 1
-        score(P1, Q) = score(P1, Q) + 1
-        K1(X2, 6) = Q7%(P1)
-        K1(X2, 4) = K1(X2, 4) + 1
+        If RN1 <= kickerNumPAT(P1, Q7%(P1)) Then
 
-        Call DisplayField
+            K2(P1, 5 + Q7%(P1) * 4, 17) = K2(P1, 5 + Q7%(P1) * 4, 17) + 1
 
-    Else
-
-        Call d100(RN2)
-
-        If RN2 <= 9 Then
-
-            U$ = "KICK IS BLOCKED!!"
+            U$ = "THE KICK IS UP..."
             Call PBP
+            Call MADEPAT
 
-            If ruleOptType <> 1 Then
-                GoTo 6605
-            End If
+            'Increase score
+            score(P1, 0) = score(P1, 0) + 1
+            score(P1, Q) = score(P1, Q) + 1
+            
+            'Track the attempt for the kicker
+            K1(X2, 6) = Q7%(P1)
+            K1(X2, 4) = K1(X2, 4) + 1
+
+            Call DisplayField
 
         Else
 
-            Call MISSPAT
+            Call d100(RN2)
+
+            '-- 9% chance of blocked PAT
+            If RN2 <= 9 Then
+
+                U$ = "KICK IS BLOCKED!!"
+                Call PBP
+
+                If ruleOptType <> 1 Then
+                'Not NFL
+                    GoTo 6605
+                End If
+
+            Else
+
+                Call MISSPAT
+
+            End If
 
         End If
 
     End If
 
     Return 'For PointsAfterTD "sub"
+
+
+
 
 
     '----- NOODLE -----
@@ -1000,7 +1056,7 @@ Sub FOOTBALL ()
     GoSub 3900
 
     'College Overtime
-    If NG%(14) = 3 And Q > 4 Then 3364
+    If overtimeOpt = 3 And Q > 4 Then 3364
 
     700 '
     Call MARKER1
@@ -1023,7 +1079,6 @@ Sub FOOTBALL ()
 
         Call DEFMENU
 
-        'Call pbplog(1351)
         'Offense Play Selection
         validPlay% = 1
         autoPlaySelect% = 0
@@ -1031,11 +1086,15 @@ Sub FOOTBALL ()
         Do
 
             If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+            'Computer is on offense
 
                 Call OFFMENU
 
                 RP = P2
 
+                'If a run play was not chosen, we must
+                'shift RP because it should be a unique 
+                'value > 14
                 If P2 > 8 Then RP = P2 + 6
 
                 autoPlaySelect% = 1
@@ -1067,6 +1126,7 @@ Sub FOOTBALL ()
                             Exit Sub
                         End If
 
+                        ' *** Select Gadget Play ***
                         If UCase$(I$) = "G" Then
 
                             Call FRAMEOPTION(8, P1)
@@ -1097,6 +1157,7 @@ Sub FOOTBALL ()
                                     Call FLEA
 
                                     If RN <= S% Then
+
                                         R1 = 1
                                         W5 = 1
                                         G = (Int(Rnd(1) * 6) + 10)
@@ -1273,6 +1334,7 @@ Sub FOOTBALL ()
 
                     Screen , , 0, 0
 
+                    ' *** Play Type Selection
                     Select Case XX
 
                         Case 0
@@ -1280,33 +1342,75 @@ Sub FOOTBALL ()
                             Call RUNMENU
 
                             Do
-                                Locate 20, 14: Print "             SELECT PLAY ";: Input P2
+                                Locate 20, 14
+                                Print "             SELECT PLAY ";
+                                Input P2
                             Loop Until P2 >= 0 And P2 <= 15
 
                             If P2 = 0 Then Screen , , 0, 0: GoTo 3118
+
                             RP = P2
+                            
+                            'RP is the play chosen from the menu, so
+                            'here we are "interpreting" some play names
+                            'as their older counterparts.
+                            
+                            'Power Sweep / Quick Pitch = Toss Sweep
                             If P2 = 9 Or P2 = 10 Then P2 = 4
+
+                            'Quick Trap = Trap / Misdirection
                             If P2 = 11 Then P2 = 7
+                            
+                            'Isolation = Off Tackle
                             If P2 = 12 Then P2 = 3
+
+                            'Sprint Draw = Draw
                             If P2 = 13 Then P2 = 6
+
+                            'Over the Top = Trap / Misdirection
                             If P2 = 14 Then P2 = 7
+
+                            'Counter = Dive
                             If P2 = 15 Then P2 = 2
 
                         Case 1
+
                             Call PASSMENU
+
                             Do
-                                Locate 19, 14: Print "             SELECT PLAY ";: Input P2
+                                Locate 19, 14
+                                Print "             SELECT PLAY ";
+                                Input P2
                             Loop Until P2 >= 0 And P2 <= 14
+
                             Screen , , 0, 0
 
                             If P2 = 0 Then GoTo 3118
+
+                            'RP is the play chosen from the menu, so
+                            'here we are "interpreting" some play names
+                            'as their older counterparts.
+                            
+                            '-- we have 15 run plays, so RP needs
+                            '-- a unique value up to 29
                             RP = P2 + 15
+
+                            'Cross / Curl = Medium Pass
                             If P2 = 11 Or P2 = 12 Then P2 = 3
+
+                            'Deep Post / Deep Corner = Long Pass
                             If P2 = 13 Or P2 = 14 Then P2 = 4
-                            P2 = P2 - 1
-                            P2 = P2 + 9
+
+                            'P2 needs a unique value as well
+                            'that represents a chosen play,
+                            'not just a number on the menu
+                            'So here we account for the
+                            'presence of 8 run play types
+                            P2 = P2 + 8
 
                         Case Is >= 2
+                            'P2 needs a unique value; values of XX from 3+ 
+                            'will translate to 20+
                             P2 = XX + 17
 
                     End Select
@@ -1315,7 +1419,9 @@ Sub FOOTBALL ()
 
                 If P2 = 26 Then P2 = 24
 
+                'P2 = 25, from above
                 If XX = 8 Then
+
                     U$ = gameTeams$(P1) + " IS LETTING THE PLAY CLOCK WIND DOWN"
                     Call PBP
 
@@ -1326,8 +1432,11 @@ Sub FOOTBALL ()
 
                     I2 = 0
                     P = 5
+
                     GoTo 3326
+
                 End If
+
                 If XX = 7 Then P2 = 9: R1 = 1: GoTo 3403
 
                 If (Q = 3 Or Q = 1) And P2 = 16 Or gameClock! > 120 And P2 = 16 Then
@@ -1416,7 +1525,6 @@ Sub FOOTBALL ()
     'Call pbplog(1680)
 
     Call SCOREBOARD
-
     Call MARKER1
 
     If playerOpt = 1 And D = compTeam Then Call COMPCHEAT
@@ -1465,6 +1573,7 @@ Sub FOOTBALL ()
         End If
 
     End If
+
 
     Select Case P2
 
@@ -1516,7 +1625,7 @@ Sub FOOTBALL ()
                     U$ = "HE GAINS" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
                     Call PBP
 
-                    If E = 1 Then Call GoForTwo
+                    If E = 1 Then Call TryForTwoResult
 
                     'There was a RETURN in the original code
                     'But it was always sent to with GOTO
@@ -1539,7 +1648,7 @@ Sub FOOTBALL ()
 
                     Call QBSNEAK
 
-                    If E = 1 Then Call GoForTwo
+                    If E = 1 Then Call TryForTwoResult
 
                     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then 3200
                     If Int((G + Y) * 10 + .5) / 10 < .05 Then 3250
@@ -1578,7 +1687,7 @@ Sub FOOTBALL ()
 
                     Else
 
-                        If E = 1 Then Call GoForTwo
+                        If E = 1 Then Call TryForTwoResult
 
                         F9 = 1
 
@@ -1818,7 +1927,7 @@ Sub FOOTBALL ()
 
                 If RV% > 0 Then RV% = 0
 
-                If E = 1 Then F9 = 0: Call GoForTwo
+                If E = 1 Then F9 = 0: Call TryForTwoResult
 
                 If Int((G + Y) * 10 + .5) / 10 >= 99.94999 Then F9 = 0: GoTo 3200
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
@@ -1916,7 +2025,7 @@ Sub FOOTBALL ()
                 X = 4
                 R1 = 1
 
-                If E = 1 Then Call GoForTwo
+                If E = 1 Then Call TryForTwoResult
 
                 If Int((G + Y) * 10 + .5) / 10 < .05 Then
                     GoTo 3250
@@ -2023,7 +2132,7 @@ Sub FOOTBALL ()
 
                 Call PBP
 
-                If E = 1 Then Call GoForTwo
+                If E = 1 Then Call TryForTwoResult
 
                 If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then K(P1, 0) = K(P1, 0) + 1: GoTo 3200
 
@@ -2123,8 +2232,8 @@ Sub FOOTBALL ()
                         U$ = U$ + " GAINED" + Str$(Int(100 - Y)) + " YARDS"
 
                         G = 100 - Y
-                        If G > WR(P1, I3) Then strWR$(P1, I3) = "t": WR(P1, I3) = G
-                        If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "t": QB(P1, Q6%(P1)) = G
+                        If G > WR(P1, I3) Then gameWR$(P1, I3) = "t": WR(P1, I3) = G
+                        If G > QB(P1, Q6%(P1)) Then gameQB$(P1, Q6%(P1)) = "t": QB(P1, Q6%(P1)) = G
 
                         Call PBP
 
@@ -2135,8 +2244,8 @@ Sub FOOTBALL ()
                             Call WHICHRECEIVER
                             U$ = U$ + " LOST" + Str$(Int((G * -1) * 10 + .5) / 10) + " YARDS"
 
-                            If G > WR(P1, I3) Then strWR$(P1, I3) = "": WR(P1, I3) = G
-                            If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "": QB(P1, Q6%(P1)) = G
+                            If G > WR(P1, I3) Then gameWR$(P1, I3) = "": WR(P1, I3) = G
+                            If G > QB(P1, Q6%(P1)) Then gameQB$(P1, Q6%(P1)) = "": QB(P1, Q6%(P1)) = G
 
                         Else
 
@@ -2144,15 +2253,15 @@ Sub FOOTBALL ()
                             Call WHICHRECEIVER
                             U$ = U$ + " GAINED" + Str$(Int((G) * 10 + .5) / 10) + " YARDS"
 
-                            If G > WR(P1, I3) Then strWR$(P1, I3) = "": WR(P1, I3) = G
-                            If G > QB(P1, Q6%(P1)) Then strQB$(P1, Q6%(P1)) = "": QB(P1, Q6%(P1)) = G
+                            If G > WR(P1, I3) Then gameWR$(P1, I3) = "": WR(P1, I3) = G
+                            If G > QB(P1, Q6%(P1)) Then gameQB$(P1, Q6%(P1)) = "": QB(P1, Q6%(P1)) = G
                         End If
 
                     End If
 
                     Call PBP
 
-                    If E = 1 Then F9 = 0: Call GoForTwo
+                    If E = 1 Then F9 = 0: Call TryForTwoResult
 
                     If Int((G + Y) * 10 + .5) / 10 < .05 Then F9 = 0: GoTo 3250
                     If Int((G + Y) * 10 + .5) / 10 >= 99.9499 Then F9 = 0: K(P1, 0) = K(P1, 0) + 1: GoTo 3200
@@ -2685,7 +2794,7 @@ Sub FOOTBALL ()
                             K2(P1, PR + 3, 15) = K2(P1, PR + 3, 15) + 100 - Y
                             K2(P1, PR + 3, 16) = K2(P1, PR + 3, 16) + 1
                             BG = 100 - Y
-                            If BG > PR(P1, PR) Then strPR$(P1, PR) = "t": PR(P1, PR) = BG
+                            If BG > PR(P1, PR) Then gamePR$(P1, PR) = "t": PR(P1, PR) = BG
                             I1 = PR
                             GoTo 3200
                         End If
@@ -2693,7 +2802,7 @@ Sub FOOTBALL ()
                         K2(P1, PR + 3, 14) = K2(P1, PR + 3, 14) + 1
                         K2(P1, PR + 3, 15) = K2(P1, PR + 3, 15) + G
 
-                        If G > PR(P1, PR) Then strPR$(P1, PR) = "": PR(P1, PR) = G
+                        If G > PR(P1, PR) Then gamePR$(P1, PR) = "": PR(P1, PR) = G
 
                         If G + Y <= .01 Then 3250
 
@@ -2756,15 +2865,20 @@ Sub FOOTBALL ()
             '--- without considering how the
             '--- distance impacts accuracy
             If Y < 52 + goalPostAdj Then
+
                 U$ = "NOT IN FIELD GOAL RANGE"
                 Call PBP
                 GoTo 700
+
             Else
 
                 ' *** FIELD GOAL DECISION ***
                 If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+
                     I1 = 0
+
                 Else
+
                     Call FRAMEOPTION(6, P1)
                     Print "FIELD GOAL OPTIONS "; gameTeams$(P1)
                     Locate 12, 14
@@ -2786,8 +2900,11 @@ Sub FOOTBALL ()
                 Call d100(RN)
 
                 If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
+
                     choice = 1
+
                 Else
+
                     Call FRAMEOPTION(9, D)
 
                     Print "THE FIELD GOAL UNIT FOR "; gameTeams$(P1); " IS ON THE FIELD"
@@ -2810,9 +2927,12 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If choice = 2 Then
+
                         U$ = gameTeams$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL? (Y/N)"
                         Call PBP
+
                     Else
+
                         Do
                             I$ = GetKeyPress$
                         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
@@ -3074,7 +3194,7 @@ Sub FOOTBALL ()
     Else
 
         Call INCOMPLETE
-        If E = 1 Then Call GoForTwo
+        If E = 1 Then Call TryForTwoResult
         O = 4
 
     End If
@@ -3104,13 +3224,11 @@ Sub FOOTBALL ()
     Call COMPILER
 
     If ruleOptType <> 4 Then
-        'Not WFL
-        'Touchdowns worth 6
+        'Not WFL; Touchdowns worth 6
         score(P1, Q) = score(P1, Q) + 6
         score(P1, 0) = score(P1, 0) + 6
     Else
-        'WFL
-        'Touchdowns worth 7
+        'WFL; Touchdowns worth 7
         score(P1, Q) = score(P1, Q) + 7
         score(P1, 0) = score(P1, 0) + 7
     End If
@@ -3558,7 +3676,7 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     'College Overtime
-    3339 If NG%(14) = 3 And Q > 4 Then 3364
+    3339 If overtimeOpt = 3 And Q > 4 Then 3364
 
     D1 = 1
     Y1 = 10
@@ -3641,7 +3759,7 @@ Sub FOOTBALL ()
             U$ = "HALF TIME"
             Call PBP
 
-            W% = 1 - W%
+            winTeam = 1 - winTeam
 
             Call HALFSTART
             Call GetKeyWhenNoDelay
@@ -3682,7 +3800,7 @@ Sub FOOTBALL ()
             Call SCOREBOARD
 
             'Check if we're configured for overtime
-            If NG%(14) = 0 Or (score(0, 0) <> score(1, 0) And NG%(14) <> 3) Or (score(0, 0) <> score(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
+            If overtimeOpt = 0 Or (score(0, 0) <> score(1, 0) And overtimeOpt <> 3) Or (score(0, 0) <> score(1, 0) And overtimeOpt = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
 
                 'Nope!
                 'Leave Q at 4
@@ -3708,7 +3826,7 @@ Sub FOOTBALL ()
                 Call MARKER1
 
                 'Determine if we should display stats
-                Select Case NG%(14)
+                Select Case overtimeOpt
 
                     Case 1
                         'Show stats before overtime
@@ -3716,7 +3834,7 @@ Sub FOOTBALL ()
 
                         'Sudden Death 1 Quarter
                         'play overtime as 1 quarter with no overtime
-                        NG%(14) = 0
+                        overtimeOpt = 0
 
                     Case 2
                         'Show stats before overtime
@@ -3834,6 +3952,7 @@ Sub FOOTBALL ()
 
     End Select
 
+
     '----- NOODLE -----
 
     3552 '
@@ -3878,7 +3997,7 @@ Sub FOOTBALL ()
         U$ = U$ + " IN THE END ZONE"
         Call PBP
         'College overtime
-        If NG%(14) = 3 And Q > 4 Then 3364
+        If overtimeOpt = 3 And Q > 4 Then 3364
         Call Touchback
         GoTo 700
     End If
@@ -3915,7 +4034,7 @@ Sub FOOTBALL ()
         SI(P1, Z1, 1) = SI(P1, Z1, 1) + 100 - Y
         SI(P1, Z1, 2) = SI(P1, Z1, 2) + 1
         If 100 - Y > IR(P1, Z1) Then
-            strIR$(P1, Z1) = "t"
+            gameIR$(P1, Z1) = "t"
             IR(P1, Z1) = 100 - Y
         End If
         Call PBP
@@ -3932,14 +4051,14 @@ Sub FOOTBALL ()
     SI(P1, Z1, 1) = SI(P1, Z1, 1) + G
 
     If G > IR(P1, Z1) Then
-        strIR$(P1, Z1) = ""
+        gameIR$(P1, Z1) = ""
         IR(P1, Z1) = G
     End If
 
     If Y >= 90 Then Y1 = 100 - Y
 
     'College overtime
-    If NG%(14) = 3 And Q > 4 Then 3364
+    If overtimeOpt = 3 And Q > 4 Then 3364
 
     F% = 5
 
@@ -4281,10 +4400,10 @@ Sub FOOTBALL ()
             Y1 = 10
             score(P1, 0) = score(P1, 0) + 3
             score(P1, Q) = score(P1, Q) + 3
-            Call FGMADE
 
+            Call FGMADE
             Call AddPossessionTime(4, 7)
-            Call MADEFG
+            Call ITSGOOD
             Call DisplayField
 
             Y = 35
@@ -4306,7 +4425,7 @@ Sub FOOTBALL ()
 
         End If
 
-        Call MISSFG
+        Call MISSEDFG
         D1 = 1
         Y1 = 10
 
@@ -4325,7 +4444,7 @@ Sub FOOTBALL ()
         If gameClock! = 0 Then GoTo 3360
 
         'College overtime
-        If Q > 4 And NG%(14) = 3 Then 3364
+        If Q > 4 And overtimeOpt = 3 Then 3364
 
     End If
 

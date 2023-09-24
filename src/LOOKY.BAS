@@ -96,29 +96,29 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Input #1, totalGames%
 
     'Opponent Score
-    For I = 1 To 120: Input #1, statsO%(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, statsO%(I): Next I
 
     'Opponent
-    For I = 1 To 120: Input #1, compO$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, compO$(I): Next I
 
     'Team Score
-    For I = 1 To 120: Input #1, statsT%(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, statsT%(I): Next I
 
     'Home / Away
-    For I = 1 To 120: Input #1, statsH$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, statsH$(I): Next I
 
     For I = 0 To 1
-        For I1 = 1 To 120
+        For I1 = 1 To NUM_STATRECORDS
             ' ???
             Input #1, compAP%(I, I1)
         Next
     Next
 
     'Attendance
-    For I = 1 To 120: Input #1, CRD!(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, CRD!(I): Next I
 
     'Stadium
-    For I = 1 To 120: Input #1, gameSITE$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Input #1, gameSITE$(I): Next I
 
     Close #1
 

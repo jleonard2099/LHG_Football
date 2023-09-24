@@ -2965,26 +2965,26 @@ Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
     Input #1, numberGames%
 
-    For I = 1 To 120:
+    For I = 1 to NUM_STATRECORDS:
         Input #1, statsO%(I)
         PTSF!(XW) = PTSF!(XW) + statsO%(I)
     Next I
 
-    For I = 1 To 120:
+    For I = 1 to NUM_STATRECORDS:
         Input #1, compO$(I)
     Next I
 
-    For I = 1 To 120:
+    For I = 1 to NUM_STATRECORDS:
         Input #1, statsT%(I)
         PTSA!(XW) = PTSA!(XW) + statsT%(I)
     Next I
 
-    For I = 1 To 120:
+    For I = 1 to NUM_STATRECORDS:
         Input #1, statsH$(I)
     Next I
 
     For I = 0 To 1
-        For I1 = 1 To 120
+        For I1 = 1 to NUM_STATRECORDS
             Input #1, compAP%(I, I1)
         Next
     Next

@@ -209,19 +209,19 @@ Sub MergeStats ()
 
                     Input #2, Yroad%
 
-                    For I = 1 To 120: Input #2, ORD%(I): Next I
-                    For I = 1 To 120: Input #2, ORD$(I): Next I
-                    For I = 1 To 120: Input #2, TR%(I): Next I
-                    For I = 1 To 120: Input #2, HR$(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, ORD%(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, ORD$(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, TR%(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, HR$(I): Next I
 
                     For I = 0 To 1
-                        For I1 = 1 To 120: 
+                        For I1 = 1 To NUM_STATRECORDS: 
                             Input #2, APR%(I, I1)
                         Next
                     Next
 
-                    For I = 1 To 120: Input #2, CRDR!(I): Next I
-                    For I = 1 To 120: Input #2, SITER$(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, CRDR!(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, SITER$(I): Next I
 
                     Close #2
 
@@ -314,19 +314,19 @@ Sub MergeStats ()
 
                         Input #4, Ycurr%
 
-                        For I = 1 To 120: Input #4, statsO%(I): Next I
-                        For I = 1 To 120: Input #4, compO$(I): Next I
-                        For I = 1 To 120: Input #4, statsT%(I): Next I
-                        For I = 1 To 120: Input #4, statsH$(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, statsO%(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, compO$(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, statsT%(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, statsH$(I): Next I
 
                         For I = 0 To 1
-                            For I1 = 1 To 120: 
+                            For I1 = 1 To NUM_STATRECORDS: 
                                 Input #4, compAP%(I, I1)
                             Next
                         Next
 
-                        For I = 1 To 120: Input #4, CRD!(I): Next I
-                        For I = 1 To 120: Input #4, gameSITE$(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, CRD!(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, gameSITE$(I): Next I
 
                         Close #4
 
@@ -676,22 +676,22 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     Write #2, Ycurr%
 
-    For I = 1 To 120: Write #2, statsO%(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, statsO%(I): Next I
 
-    For I = 1 To 120: Write #2, compO$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, compO$(I): Next I
 
-    For I = 1 To 120: Write #2, statsT%(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, statsT%(I): Next I
 
-    For I = 1 To 120: Write #2, statsH$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, statsH$(I): Next I
 
     For I = 0 To 1
 
-        For I1 = 1 To 120: Write #2, compAP%(I, I1): Next
+        For I1 = 1 To NUM_STATRECORDS: Write #2, compAP%(I, I1): Next
     Next
 
-    For I = 1 To 120: Write #2, CRD!(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, CRD!(I): Next I
 
-    For I = 1 To 120: Write #2, gameSITE$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, gameSITE$(I): Next I
 
     Close #2
 

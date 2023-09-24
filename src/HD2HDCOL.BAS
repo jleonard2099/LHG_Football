@@ -101,13 +101,13 @@ Sub Hd2HdColl_Conf (X2)
 
             Input #1, YY%
 
-            For I = 1 To 120: Input #1, statsO%(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, statsO%(I): Next I
 
-            For I = 1 To 120: Input #1, compO$(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, compO$(I): Next I
 
-            For I = 1 To 120: Input #1, statsT%(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, statsT%(I): Next I
 
-            For I = 1 To 120: Input #1, statsH$(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, statsH$(I): Next I
 
             Close #1
 
