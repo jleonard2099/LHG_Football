@@ -68,7 +68,7 @@ Sub FOOTBALL ()
     Input #4, R5%
     Input #4, ruleOptPro
     Input #4, ruleOptColl
-    Input #4, overtimeOpt 'Overtime setting
+    Input #4, NG%(14) 'Overtime setting
     Close #4
 
     If _FileExists("TICKER") Then
@@ -177,7 +177,7 @@ Sub FOOTBALL ()
             Locate 11, 2
             Color 14: Print "(9) ";: Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
             Locate 12, 2
-            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
+            Color 14: Print "(A) ";: Color 15: Print "SUDDEN DEATH: "; overtime$(NG%(14))
             Locate 13, 2
             Color 14: Print "(0) ";: Color 15: Print "SAVE SETTINGS"
 
@@ -223,7 +223,7 @@ Sub FOOTBALL ()
                         Print #8, R5% '
                         Print #8, ruleOptPro '
                         Print #8, ruleOptColl '
-                        Print #8, overtimeOpt 'overtime setting
+                        Print #8, NG%(14) 'overtime setting
                         Close #8
 
                     Case 1
@@ -268,8 +268,8 @@ Sub FOOTBALL ()
                         If ruleOptPro > 3 Then ruleOptPro = 0
 
                     Case 10
-                        overtimeOpt = overtimeOpt + 1
-                        If overtimeOpt > 3 Then overtimeOpt = 0
+                        NG%(14) = NG%(14) + 1
+                        If NG%(14) > 3 Then NG%(14) = 0
 
                 End Select
 
@@ -420,9 +420,10 @@ Sub FOOTBALL ()
     For I3 = 0 To 1
 
         If autoPlay = 1 Then
-            'Auutomatic determine QB
+            'Auutoamtic determine QB
             Q7%(0) = 0
             Q7%(1) = 0
+
             Q6%(0) = NG%(5)
 
             If Q6%(0) = 4 Then
@@ -438,8 +439,6 @@ Sub FOOTBALL ()
             Else
                 qbMobility(1) = NG%(9)
             End If
-
-            overtimeOpt = NG%(14)
 
             For I = 0 To 3
                 V4%(I3, I) = -1
@@ -811,17 +810,17 @@ Sub FOOTBALL ()
         convChoice = 2
     Else
 
-        IF ruleOptType=1 AND ruleOptPro<>3 THEN 
+        If ruleOptType = 1 And ruleOptPro <> 3 Then
             'NFL prior to 1994 (2 PT conversion not supported)
             convChoice = 1
 
-        ELSE
+        Else
 
             If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
 
-                U$="1-KICK EP 2-GO FOR TWO"
-                CALL PBP
-                
+                U$ = "1-KICK EP 2-GO FOR TWO"
+                Call PBP
+
                 ' *** Computer on Offense, or PC vs. PC ***
 
                 'By default, go for one
@@ -833,28 +832,28 @@ Sub FOOTBALL ()
                 ' ***** When to "Go for TWO" *****
 
                 If ruleOptType = 1 And ruleOptPro = 3 Then
-                'NFL, Post 1994 (when 2 pt conversion was implemented)
+                    'NFL, Post 1994 (when 2 pt conversion was implemented)
                     ' 4th quarter, down by 2 and 2 minutes left
                     ' 4th quarter, down by 9 and 5 minutes left
                     ' 4th quarter, down by 6 and 7 minutes left
                     If Q = 4 And (I5 = -9 And gameClock! < 600 Or I5 = -2 And gameClock! < 120 Or I5 = -5 And gameClock! < 420) Then convChoice = 2
-                
+
                 Else
                     'College / AFL / WLAF / USFL
-                        ' 3rd / 4th quarter, down by 18
-                        ' 4th quarter, down by 16
-                    IF Q >= 3 AND I5 = -18 OR Q = 4 AND I5 = -16 THEN 
+                    ' 3rd / 4th quarter, down by 18
+                    ' 4th quarter, down by 16
+                    If Q >= 3 And I5 = -18 Or Q = 4 And I5 = -16 Then
                         convChoice = 2
                     Else
                         '1) down by 2
-                        '2) ahead by 5 | 12           
+                        '2) ahead by 5 | 12
                         If I5 = -2 Or I5 = 1 Or I5 = 5 Or I5 = 12 Then
                             convChoice = 2
                         Else
                             'Anytime outside the final 2-min warning
-                            If Not (Q = 4 And gameClock! > 240 Or Q < 4) Then 
+                            If Not (Q = 4 And gameClock! > 240 Or Q < 4) Then
                                 'down by 1 | 4 | 5 | 8 | 10 | 13
-                                If I5=-1 Or I5=-5 Or I5=-8 Or I5=-13 Or I5=-4 Or I5=-10 Then convChoice = 2
+                                If I5 = -1 Or I5 = -5 Or I5 = -8 Or I5 = -13 Or I5 = -4 Or I5 = -10 Then convChoice = 2
                             End If
 
                         End If
@@ -871,11 +870,11 @@ Sub FOOTBALL ()
                     Call PBP
                     I$ = GetKeyPress$
                 Loop Until I$ = "1" Or I$ = "2"
-                
+
                 convChoice = Val(I$)
-                
+
             End If
-                
+
         End If
 
     End If
@@ -884,7 +883,7 @@ Sub FOOTBALL ()
     If convChoice = 2 Then
 
         'Since the "down" is not reset after the score,
-        'we should treat the 2-point conversion as a 
+        'we should treat the 2-point conversion as a
         '"1st down" for AI / play selection purposes
         'D = 1
 
@@ -892,15 +891,15 @@ Sub FOOTBALL ()
         E = 1
 
         'NFL, Post 1994
-        If ruleOptType = 1 And ruleOptPro = 3 Then 
+        If ruleOptType = 1 And ruleOptPro = 3 Then
             Y = 98
         Else
             Y = 97
         End If
 
         'Choose a play for 2-point conversion
-        Goto 700
-    
+        GoTo 700
+
     Else
 
         ' ******************************
@@ -938,7 +937,7 @@ Sub FOOTBALL ()
             'Increase score
             score(P1, 0) = score(P1, 0) + 1
             score(P1, Q) = score(P1, Q) + 1
-            
+
             'Track the attempt for the kicker
             K1(X2, 6) = Q7%(P1)
             K1(X2, 4) = K1(X2, 4) + 1
@@ -956,7 +955,7 @@ Sub FOOTBALL ()
                 Call PBP
 
                 If ruleOptType <> 1 Then
-                'Not NFL
+                    'Not NFL
                     GoTo 6605
                 End If
 
@@ -1056,7 +1055,7 @@ Sub FOOTBALL ()
     GoSub 3900
 
     'College Overtime
-    If overtimeOpt = 3 And Q > 4 Then 3364
+    If NG%(14) = 3 And Q > 4 Then 3364
 
     700 '
     Call MARKER1
@@ -1086,15 +1085,15 @@ Sub FOOTBALL ()
         Do
 
             If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
-            'Computer is on offense
+                'Computer is on offense
 
                 Call OFFMENU
 
                 RP = P2
 
                 'If a run play was not chosen, we must
-                'shift RP because it should be a unique 
-                'value > 14
+                'shift RP because it should be a unique
+                'value over 14
                 If P2 > 8 Then RP = P2 + 6
 
                 autoPlaySelect% = 1
@@ -1350,17 +1349,17 @@ Sub FOOTBALL ()
                             If P2 = 0 Then Screen , , 0, 0: GoTo 3118
 
                             RP = P2
-                            
+
                             'RP is the play chosen from the menu, so
                             'here we are "interpreting" some play names
                             'as their older counterparts.
-                            
+
                             'Power Sweep / Quick Pitch = Toss Sweep
                             If P2 = 9 Or P2 = 10 Then P2 = 4
 
                             'Quick Trap = Trap / Misdirection
                             If P2 = 11 Then P2 = 7
-                            
+
                             'Isolation = Off Tackle
                             If P2 = 12 Then P2 = 3
 
@@ -1390,7 +1389,7 @@ Sub FOOTBALL ()
                             'RP is the play chosen from the menu, so
                             'here we are "interpreting" some play names
                             'as their older counterparts.
-                            
+
                             '-- we have 15 run plays, so RP needs
                             '-- a unique value up to 29
                             RP = P2 + 15
@@ -1409,7 +1408,7 @@ Sub FOOTBALL ()
                             P2 = P2 + 8
 
                         Case Is >= 2
-                            'P2 needs a unique value; values of XX from 3+ 
+                            'P2 needs a unique value; values of XX from 3+
                             'will translate to 20+
                             P2 = XX + 17
 
@@ -3676,7 +3675,7 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     'College Overtime
-    3339 If overtimeOpt = 3 And Q > 4 Then 3364
+    3339 If NG%(14) = 3 And Q > 4 Then 3364
 
     D1 = 1
     Y1 = 10
@@ -3800,7 +3799,7 @@ Sub FOOTBALL ()
             Call SCOREBOARD
 
             'Check if we're configured for overtime
-            If overtimeOpt = 0 Or (score(0, 0) <> score(1, 0) And overtimeOpt <> 3) Or (score(0, 0) <> score(1, 0) And overtimeOpt = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
+            If NG%(14) = 0 Or (score(0, 0) <> score(1, 0) And NG%(14) <> 3) Or (score(0, 0) <> score(1, 0) And NG%(14) = 3 And (OT(1) = 1 And OT(0) = 1 Or OT(1) = 0 And OT(0) = 0)) Then
 
                 'Nope!
                 'Leave Q at 4
@@ -3826,7 +3825,7 @@ Sub FOOTBALL ()
                 Call MARKER1
 
                 'Determine if we should display stats
-                Select Case overtimeOpt
+                Select Case NG%(14)
 
                     Case 1
                         'Show stats before overtime
@@ -3834,7 +3833,7 @@ Sub FOOTBALL ()
 
                         'Sudden Death 1 Quarter
                         'play overtime as 1 quarter with no overtime
-                        overtimeOpt = 0
+                        NG%(14) = 0
 
                     Case 2
                         'Show stats before overtime
@@ -3952,7 +3951,6 @@ Sub FOOTBALL ()
 
     End Select
 
-
     '----- NOODLE -----
 
     3552 '
@@ -3997,7 +3995,7 @@ Sub FOOTBALL ()
         U$ = U$ + " IN THE END ZONE"
         Call PBP
         'College overtime
-        If overtimeOpt = 3 And Q > 4 Then 3364
+        If NG%(14) = 3 And Q > 4 Then 3364
         Call Touchback
         GoTo 700
     End If
@@ -4058,7 +4056,7 @@ Sub FOOTBALL ()
     If Y >= 90 Then Y1 = 100 - Y
 
     'College overtime
-    If overtimeOpt = 3 And Q > 4 Then 3364
+    If NG%(14) = 3 And Q > 4 Then 3364
 
     F% = 5
 
@@ -4444,7 +4442,7 @@ Sub FOOTBALL ()
         If gameClock! = 0 Then GoTo 3360
 
         'College overtime
-        If Q > 4 And overtimeOpt = 3 Then 3364
+        If Q > 4 And NG%(14) = 3 Then 3364
 
     End If
 
@@ -4683,4 +4681,5 @@ Sub FOOTBALL ()
     End If
 
 End Sub
+
 

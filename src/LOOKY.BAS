@@ -282,6 +282,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, S
 
         Color 15, 0
         Cls
+
         Call TITLE_STATS
 
 		Call MenuBox (8, 8, 61, 4, 15, 1)

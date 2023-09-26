@@ -11,7 +11,11 @@ Sub CNGTM ()
 
     Do
 
+        Cls
+        Color 15, 0
+
         Call TITLE
+
         menuChoices$(1) = "EDIT AN EXISTING TEAM"
         menuChoices$(2) = "PRINT A TEAM ROSTER  "
         menuChoices$(3) = "VIEW A TEAM ROSTER   "
@@ -24,9 +28,10 @@ Sub CNGTM ()
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
-        Column% = 25
+        menuWidth% = Len(menuChoices$(1))
+        Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(7, 24, 12, 46, 2, 15, 1)
+        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -42,7 +47,6 @@ Sub CNGTM ()
 
         If ExitCode% <> 27 Then
 
-            'Call GetTeam_CNGTM(A$, YN$, teamNbr, )
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
             If teamNbr <> 0 Then
@@ -1809,6 +1813,8 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
     Shared punterName$(), pkName$(), intName$(), sackName$()
 
+    Call CSMsgBox("SAVING TEAM FILES", 20, Pass)
+
     teamYear$ = RTrim$(YN$)
 
     Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
@@ -1979,6 +1985,8 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
         pkPATPct(I) = 0
         pkName$(I) = ""
     Next
+
+    Call CSMsgBox("", 0, Pass)
 
 End Sub
 

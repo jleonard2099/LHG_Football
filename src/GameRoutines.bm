@@ -294,7 +294,6 @@ Sub AUTOSETUP
     playerOpt = NG%(10)
     ruleOptPro = NG%(11)
     tickerStart = NG%(12)
-    overtimeOpt = NG%(14)
 
     For P9 = 0 To 1
 
@@ -3875,7 +3874,7 @@ Sub OFFMENU ()
         8800 '
         'Overtime and 4th Down
         'Change to Long Pass
-        If Q > 4 And overtimeOpt = 3 And D1 = 4 Then
+        If Q > 4 And NG%(14) = 3 And D1 = 4 Then
 
             'Punt chosen but score tied
             If P2 = 19 And score(D, 0) = score(P1, 0) Then P2 = 12
@@ -7858,6 +7857,7 @@ Sub COMPILESTATFILES (teamIdx)
     Print #2, Y$(teamIdx)
 
     For I = 0 To 9: Print #2, rbacks$(teamIdx, I): Next
+
     For I = 0 To 5: Print #2, wdRec$(teamIdx, I): Next
 
     For I = 0 To 3: Print #2, qbacks$(teamIdx, I): Next
@@ -8465,6 +8465,4 @@ Sub EndOfGame
     End If
 
 End Sub
-
-
 
