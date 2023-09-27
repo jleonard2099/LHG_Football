@@ -25,8 +25,7 @@ DefInt A-Z
 '$INCLUDE: 'BoxRoutines.bi'
 '$INCLUDE: 'FileTeamSelection.bi'
 '$INCLUDE: 'Variables.bi'
-
-Dim Shared D$(15), D1$(11), O$(50), R$(14)
+Dim A7L!(60, 5), A8L!(300), A9L!(450)
 
 '$INCLUDE: 'MainRoutines.bi'
 '$INCLUDE: 'TITLE.bi'
@@ -826,14 +825,14 @@ Sub Leaders_Menu ()
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
                 Case 5: Call RecordsMenu(1)
-                Case 6: Call ViewExpandedStats(1)
+                Case 6: Call NEWLDR(1) 'Call ViewExpandedStats(1)
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
                 Case 9: Call CompileCollege
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
                 Case 12: Call RecordsMenu(2)
-                Case 13: Call ViewExpandedStats(0)
+                Case 13: Call NEWLDR(0) 'Call ViewExpandedStats(0)
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
                 Case 16: Call CompileNatlOrg

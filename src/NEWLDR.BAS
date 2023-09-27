@@ -4,16 +4,21 @@
 'This subroutine provides the user a menu
 'for viewing stats compiled for the new
 '"Expanded" Stats/Standings screens
-Sub NEWLDR ()
+Sub NEWLDR (statType)
 
     _Title "3-in-1 Football - View Stat Leaders"
 
-    '-- This menu is currently redundant
-    '-- However the routine is left here
-    '-- in the event we add EXPANDED STANDINGS
-    '-- as a menu option and need a similar
-    '-- logic to the games that use them
-    ReDim menuChoices$(1 To 4)
+    ReDim menuChoices$(1 To 3)
+
+    If statType = 1 Then
+        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS"
+        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS  "
+        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU      "
+    Else
+        menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS"
+        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS  "
+        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU              "
+    End If
 
     Do
 
@@ -22,9 +27,6 @@ Sub NEWLDR ()
 
         Call TITLE
 
-        menuChoices$(1) = "VIEW EXPANDED PRO LEAGUE        "
-        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE"
-        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU    "
         Selection% = 1
         Count% = 3
         Start% = 1
@@ -36,7 +38,7 @@ Sub NEWLDR ()
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -49,10 +51,21 @@ Sub NEWLDR ()
             Select Case Selection%
 
                 Case 1
-                    Call ViewExpandedStats(1)
+                    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
+
+                    If FileExit% <> 27 And FileExit% <> 0 Then
+                        Call ReadConferenceStats(confStatFile$, statType)
+                        Call UpdateExpandedLeaders(statType, tStats)
+                        Call SAVELEADER(confStatFile$, tStats)
+                    End If
 
                 Case 2
-                    Call ViewExpandedStats(0)
+                    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
+
+                    If FileExit% <> 27 And FileExit% <> 0 Then
+                        Call READLEADER(leaderFile$, tStats)
+                        Call ExpandedLeaders_Menu(tStats)
+                    End If
 
             End Select
 
@@ -62,12 +75,77 @@ Sub NEWLDR ()
 
 End Sub
 
+
+'----------------------------------------
+'     ReadConferenceStats Subroutine
+'----------------------------------------
+'This subroutine reads in the league stats
+'from the .TMS file and assigns them to
+'variables for use later in the routine.
+
+'statType
+'   0 = College
+'   1 = Pro
+Sub ReadConferenceStats (statFile$, statType)
+
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
+
+    Shared TMM$(), TPP$(), Z1$()
+
+    Erase Z1$
+
+    For X = 1 To 30
+        Z1$(X) = "XXX"
+    Next
+
+    JA = 0
+    JB = 0
+    JC = 0
+    JD = 0
+    JE = 0
+    JF = 0
+    JG = 0
+    JH = 0
+    JI = 0
+    JJ = 0
+    tStats = 0
+
+    div1$ = ""
+    div2$ = ""
+    div3$ = ""
+
+    Erase TMM$, TPP$
+
+    Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
+
+    If statType = 1 Then
+        'Pro
+        Input #1, league$
+        Input #1, div1$
+        Input #1, div2$
+        Input #1, div3$
+    Else
+        'College
+        Input #1, league$
+        Input #1, div1$
+        Input #1, div2$
+    End If
+
+    For X = 1 To 30:
+        Input #1, Z1$(X)
+    Next
+
+    Close #1
+
+End Sub
+
+
 '----------------------------------------
 '      ViewExpandedStats Subroutine
 '----------------------------------------
 'This subroutine reads in the league stats
 'from the .TMS file. It then relies on other
-'routines to calculate the expanded stats, 
+'routines to calculate the expanded stats,
 'write them to a file and present a categ-
 'orized menu to use for reviewing them
 
@@ -82,9 +160,9 @@ Sub ViewExpandedStats (statType)
 
     Shared TMM$(), TPP$(), Z1$()
 
-    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", menuExit%)
+    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
-    If menuExit% <> 27 Then
+    If FileExit% <> 27 Then
 
         Erase Z1$
 
@@ -136,7 +214,7 @@ Sub ViewExpandedStats (statType)
 
         Call SAVELEADER(confStatFile$, tStats)
 
-        Call ExpandedLeaders_Menu (printOrView%, tStats)
+        Call ExpandedLeaders_Menu(tStats)
 
     End If
 
@@ -146,7 +224,7 @@ End Sub
 '----------------------------------------
 '    UpdateExpandedLeaders Subroutine
 '----------------------------------------
-'This subroutine calculates the expanded 
+'This subroutine calculates the expanded
 'stats from those previously read in to
 'a variety of arrays.
 
@@ -219,27 +297,50 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 'Place Kickers
                 For I = 0 To 1: Input #1, lookyA7$(PX, I): Next I
 
+                'Leader Values
                 For J = 0 To 13
-                    For K = 0 To 17: Input #1, statsZ2!(J, K): Next K
+                    For K = 0 To 17:
+                        Input #1, statsZ2!(J, K)
+                    Next K
                 Next J
 
-                For L = 0 To 38: Input #1, statsZ!(L): Next L
+                For L = 0 To 38:
+                    Input #1, statsZ!(L)
+                Next L
 
-                For L = 0 To 38: Input #1, statsZ1!(L): Next L
+                For L = 0 To 38:
+                    Input #1, statsZ1!(L)
+                Next L
 
-                For J = 0 To 9: Input #1, intName$(PX, J): For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next: Next
+                For J = 0 To 9:
+                    Input #1, intName$(PX, J):
+                    For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next
+                Next
 
-                For J = 0 To 14: Input #1, sackName$(PX, J): For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next: Next
+                For J = 0 To 14:
+                    Input #1, sackName$(PX, J)
+                    For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next
+                Next
 
-                For I = 0 To 9: Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1): Next
+                For I = 0 To 9:
+                    Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1)
+                Next
 
-                For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+                For I = 0 To 15:
+                    Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1)
+                Next
 
-                For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
+                For I = 0 To 3:
+                    Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1)
+                Next
 
-                For I = 0 To 2: Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1): Next
+                For I = 0 To 2:
+                    Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1)
+                Next
 
-                For I = 0 To 2: Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1): Next
+                For I = 0 To 2:
+                    Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1)
+                Next
 
                 For I = 0 To 1
                     Input #1, LF!(I)
@@ -253,7 +354,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Close #1
 
                 Open diskPaths$(1) + teamStatFile$ + "S" For Input As #2
-                Input #2, Y% 'number of games?!
+                Input #2, nbrGames
                 Close #2
 
                 tStats = tStats + 1
@@ -277,7 +378,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                     'I added the line below based on patterns in this routine
                     'In original code GMA!() was written to output files,
                     'but was never assigned a value!!!
-                    GMA!(JA) = Y%
+                    GMA!(JA) = nbrGames
 
                     For I1 = 0 To 5: A1L!(JA, I1) = statsZ2!(I, I1): Next I1
 
@@ -290,7 +391,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                     A2L$(JB) = lookyA2$(PX, I)
                     A2T$(JB) = statsA$
                     LCL$(JB) = LC$(I + 10, 0)
-                    GMB!(JB) = Y%
+                    GMB!(JB) = nbrGames
 
                     For I1 = 6 To 8: A2L!(JB, I1 - 6) = statsZ2!(I, I1): Next I1
 
@@ -303,7 +404,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                     QBL$(JC) = lookyA3$(PX, I)
                     A3T$(JC) = statsA$
                     LPL$(JC) = statsLP$(I, 0)
-                    GMC!(JC) = Y%
+                    GMC!(JC) = nbrGames
 
                     For I1 = 9 To 13: A3L!(JC, I1 - 9) = statsZ2!(I, I1): Next I1
 
@@ -348,16 +449,18 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 A7L$(JG) = lookyA7$(PX, 0)
                 A7T$(JG) = statsA$
 
-                For I = 0 To 3: A7L!(JJG, I) = statsZ2!(I + 3, 17): Next
+                For I = 0 To 3:
+                    A7L!(JG, I) = statsZ2!(I + 3, 17)
+                Next
 
-                A7L!(JJG, 4) = LF!(0)
+                A7L!(JG, 4) = LF!(0)
                 JG = JG + 1
                 A7L$(JG) = lookyA7$(PX, 1)
                 A7T$(JG) = statsA$
 
-                For I = 0 To 3: A7L!(JJG, I) = statsZ2!(I + 7, 17): Next
+                For I = 0 To 3: A7L!(JG, I) = statsZ2!(I + 7, 17): Next
 
-                A7L!(JJG, 4) = LF!(1)
+                A7L!(JG, 4) = LF!(1)
 
                 For I = 0 To 9
                     JH = JH + 1
@@ -374,7 +477,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next
 
                 JJ = JJ + 1
-                Y%(JJ) = Y%
+                Y%(JJ) = nbrGames
 
             End If
 
@@ -386,10 +489,191 @@ End Sub
 
 
 '----------------------------------------
+'        READLEADER Subroutine
+'----------------------------------------
+'This subroutine reads in the leader files
+'(.LDS) for the expanded standings modules
+Sub READLEADER (leaderFile$, tStats)
+
+    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
+
+    Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
+    Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
+    Shared A8L$(), A8T$(), A9L$(), A9T$()
+    Shared LCL$(), LKL$(), LPL$(), LRL$(), lookyTT$()
+    Shared PKL$(), QBL$()
+
+    Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
+    Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
+    Shared lookyTT!()
+
+    Shared GMA!(), GMB!(), GMC!()
+    Shared Y%()
+
+    TMR = 1660
+
+    'Print "READING LEADER FILES . . . . PLEASE WAIT"
+
+    If Not _FileExists(diskPaths$(2) + leaderFile$ + ".LDS") Then
+
+        MsgText$ = "NO COMPILED LEADER FILES WERE FOUND. PRESS ANY KEY TO RETURN TO MAIN MENU"
+        BoxWidth = 20
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        Open diskPaths$(2) + leaderFile$ + ".LDS" For Input As #1
+
+        Input #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, tStats, JJ
+
+        For I = 1 To 30:
+
+            For I1 = 0 To 29:
+                Input #1, lookyTT!(I, I1), lookyTT$(I, I1)
+            Next
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next
+
+        For I = 1 To 300:
+
+            Input #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA!(I)
+
+            For I1 = 0 To 7:
+                Input #1, A1L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 180:
+
+            Input #1, A2L$(I), A2T$(I), LCL$(I), GMB!(I)
+
+            For I1 = 0 To 3:
+                Input #1, A2L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 120:
+
+            Input #1, QBL$(I), A3T$(I), LPL$(I), A3R!(I, 0), GMC!(I)
+
+            For I1 = 0 To 6:
+                Input #1, A3L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 90:
+
+            Input #1, A4L$(I), A4T$(I), LKL$(I)
+
+            For I1 = 0 To 3: Input #1, A4L!(I, I1): Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 90:
+
+            Input #1, A5L$(I), A5T$(I), PKL$(I)
+
+            For I1 = 0 To 3:
+                Input #1, A5L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 30:
+
+            Input #1, A6L$(I), A6T$(I)
+
+            For I1 = 0 To 1:
+                Input #1, A6L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 60:
+
+            Input #1, A7L$(I), A7T$(I)
+
+            For I1 = 0 To 4:
+                Input #1, A7L!(I, I1)
+            Next I1
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 300:
+
+            Input #1, A8L$(I), A8T$(I), A8L!(I)
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 450:
+
+            Input #1, A9L$(I), A9T$(I), A9L!(I)
+
+            Color 14
+            Locate 16, 38
+            TMR = TMR - 1: Print Using "####"; TMR
+
+        Next I
+
+        For I = 1 To 30:
+            Input #1, Y%(I)
+        Next
+
+        Close #1
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
 '        SAVELEADER Subroutine
 '----------------------------------------
-'This subroutine compiles the leader files 
-'(.LDS) for the exapnded standings modules 
+'This subroutine compiles the leader files
+'(.LDS) for the expanded standings modules
 Sub SAVELEADER (leaderFile$, tStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
@@ -416,85 +700,136 @@ Sub SAVELEADER (leaderFile$, tStats)
     Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, tStats, JJ
 
     For I = 1 To 30:
+
         For I1 = 0 To 29:
             Write #1, lookyTT!(I, I1), lookyTT$(I, I1)
         Next
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next
 
     For I = 1 To 300:
+
         Write #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA!(I)
-        For I1 = 0 To 7: Write #1, A1L!(I, I1): Next I1
+
+        For I1 = 0 To 7:
+            Write #1, A1L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 180:
+
         Write #1, A2L$(I), A2T$(I), LCL$(I), GMB!(I)
-        For I1 = 0 To 3: Write #1, A2L!(I, I1): Next I1
+
+        For I1 = 0 To 3:
+            Write #1, A2L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 120:
+
         Write #1, QBL$(I), A3T$(I), LPL$(I), A3R!(I, 0), GMC!(I)
-        For I1 = 0 To 6: Write #1, A3L!(I, I1): Next I1
+
+        For I1 = 0 To 6:
+            Write #1, A3L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 90:
+
         Write #1, A4L$(I), A4T$(I), LKL$(I)
+
         For I1 = 0 To 3: Write #1, A4L!(I, I1): Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 90:
+
         Write #1, A5L$(I), A5T$(I), PKL$(I)
-        For I1 = 0 To 3: Write #1, A5L!(I, I1): Next I1
+
+        For I1 = 0 To 3:
+            Write #1, A5L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 30:
+
         Write #1, A6L$(I), A6T$(I)
-        For I1 = 0 To 1: Write #1, A6L!(I, I1): Next I1
+
+        For I1 = 0 To 1:
+            Write #1, A6L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 60:
+
         Write #1, A7L$(I), A7T$(I)
-        For I1 = 0 To 4: Write #1, A7L!(I, I1): Next I1
+
+        For I1 = 0 To 4:
+            Write #1, A7L!(I, I1)
+        Next I1
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 300:
+
         Write #1, A8L$(I), A8T$(I), A8L!(I)
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
     For I = 1 To 450:
+
         Write #1, A9L$(I), A9T$(I), A9L!(I)
+
         Color 14
         Locate 16, 38
         TMR = TMR - 1: Print Using "####"; TMR
+
     Next I
 
-    For I = 1 To 30: Write #1, Y%(I): Next
+    For I = 1 To 30:
+        Write #1, Y%(I)
+    Next
 
     Close #1
 
@@ -508,7 +843,7 @@ End Sub
 'menu for viewing expanded leaders. It then
 'relies on various subroutines for the end
 'user display of those statistics.
-Sub ExpandedLeaders_Menu (printOrView%, tStats)
+Sub ExpandedLeaders_Menu (tStats)
 
     Dim PPP, sortType%
 
@@ -1423,6 +1758,7 @@ Sub ExpandedLeaders_Menu (printOrView%, tStats)
                                 For I = 1 To JG
 
                                     If A7L!(I, X) <> 0 Then
+
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
@@ -1796,7 +2132,7 @@ Sub SortOptions (statType, printOrView%, sortType%)
                 sortType% = 2
 
             Case "R", Chr$(27):
-                If ZZ = 1 Then Call ViewExpandedStats(statType)
+                'If ZZ = 1 Then Call ExpandedLeaders_Menu(tStats)
 
         End Select
 
@@ -2289,3 +2625,4 @@ Sub GetListLength (printOrView%, listLength, maxItems)
     End If
 
 End Sub
+

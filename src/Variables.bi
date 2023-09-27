@@ -245,14 +245,14 @@ Dim GMA!(300), GMB!(180), GMC!(NUM_STATRECORDS)
 
 Dim A1L!(300, 8), A2L!(180, 4), A3L!(NUM_STATRECORDS, 13), A3R!(NUM_STATRECORDS, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
-Dim A7L!(60, 5), A8L!(300), A9L!(450)
+'Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim CRD!(NUM_STATRECORDS), CRDR!(NUM_STATRECORDS)
 Dim GI!(1, 9, 2), GS!(1, 14, 1)
 Dim K!(1, 12), K2!(1, 13, 17)
 Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(NUM_STATRECORDS), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(50), A7T$(50)
+Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim compO$(NUM_STATRECORDS), expCategories$(74), statsH$(NUM_STATRECORDS), HR$(NUM_STATRECORDS)
 Dim LCL$(480), LKL$(90), LPL$(NUM_STATRECORDS), LRL$(300), PKL$(90)
@@ -349,6 +349,7 @@ Dim Shared F$, G$, gameStadium$, I$, LO$, NM$, NN$, NY$, PS$, Q$
 Dim Shared ruleOptPro$, ruleOptColl$, RP$, RV$, SD$, SX$, U$, U5$, X$, YN$
 
 Dim Shared B$(1), D2$(15), defInts$(1, 9), DN$(4), DR$(1), defSacks$(1, 14)
+Dim Shared D$(15), D1$(11), O$(50), R$(14)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gameStadium$(NUM_STATRECORDS)
 Dim Shared G$(3), H$(NUM_STATRECORDS), HO$(NUM_STATRECORDS)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
