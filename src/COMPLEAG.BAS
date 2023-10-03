@@ -569,8 +569,8 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
                 If compZ2$(Y) = RB$(X) And compZ3$(Y) = WT$ Then
 
-                    compZ1!(Y, 1) = RB!(X, 9)
-                    compZ1!(Y, 2) = RB!(X, 1)
+                    compZ1!(Y, 1) = RB!(X, 9)   'Rush Avg
+                    compZ1!(Y, 2) = RB!(X, 1)   'Rush Att
 
                     'Only include players with 10 ATT / game
                     If compZ1!(Y, 2) < numberGames% * 10 Then

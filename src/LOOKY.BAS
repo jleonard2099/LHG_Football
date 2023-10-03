@@ -15,7 +15,7 @@ Sub LOOKY ()
         Color 15, 0
         Cls
 
-		Call MenuBox (8, 8, 61, 6, 15, 1)
+        Call MenuBox (8, 8, 61, 6, 15, 1)
 
         Locate 10, 15
 
@@ -285,7 +285,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, S
 
         Call TITLE_STATS
 
-		Call MenuBox (8, 8, 61, 4, 15, 1)
+        Call MenuBox (8, 8, 61, 4, 15, 1)
 
         Do
 
@@ -318,7 +318,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, S
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 1, 15, 1)
+        Call MenuBox (6, 8, 61, 1, 15, 1)
 
         Do
             Locate 7
@@ -356,12 +356,14 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
-    Color , 0
+    Color 15, 0
     Cls
+
+    Call TITLE_STATS
 
     Locate 1, 1
     Color 14, 1
-    Print Tab(80);
+    Print Tab(81);
 
     header$ = "GAME-BY-GAME REPORT FOR " + teamName$
     Xcoord = Len(header$)
@@ -373,7 +375,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print teamName$
 
     Color 14, 1
-    Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD   "
+    Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD    ";
+    Print
     Color 15, 0
 
     For I = 1 To totalGames%
@@ -397,6 +400,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         lookyP%(0) = lookyP%(0) + statsO%(I): lookyP%(1) = lookyP%(1) + statsT%(I)
 
         If (I Mod 20 = 0) Then
+
+            Locate 24, 1
+            Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
             I$ = GetKeyPress$
             ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
             Cls
@@ -418,7 +424,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Next I
 
     If statFormat = 0 Then
-        Locate 24, 1
+        Locate 23, 31
         Print Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; teamPower; SS;
     End If
 
@@ -428,7 +434,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     L% = 0
     X% = 0
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -484,7 +494,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 15: Print Using "NEUTRAL         ##    #####,###   ###,###"; ND&; NT&; NA&
     Color 15: Print Using "TOTAL           ##    #####,###   ###,###"; TD&; TT&; TA&
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -582,7 +596,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print Tab(64);
     If statFormat = 0 Then Print Using "###.#"; (K!(1, 2) + K!(1, 6)) / totalGames% Else Print Using "###.#"; (K!(1, 2) + W6!(1, 1) + K!(1, 6)) / totalGames%
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -663,7 +681,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print Using "###"; W6!(0, 0);: Print "/";: Print Using "####"; W6!(0, 1);
     Print Tab(61); Using "###"; W6!(1, 0);: Print "/";: Print Using "####"; W6!(1, 1)
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -738,7 +760,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         Print Using "####  ####   ##.#      ###.#    ##"; K!(1, 1) - W6!(1, 0); K!(1, 2) + W6!(1, 1); (K!(1, 2) + W6!(1, 1)) / (K!(1, 1) - W6!(1, 0)); (K!(1, 2) + W6!(1, 1)) / totalGames%; statsZ1!(15)
     End If
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -802,7 +828,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     If K!(1, 4) = 0 Then Print "  --"; Else Print Using "##.#"; K!(1, 6) / K!(1, 4);
     Print Using "      ###.#    ##"; K!(1, 6) / totalGames%; statsZ1!(17)
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -904,10 +934,13 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     Next
 
-    If X = 0 Then
-        I$ = GetKeyPress$
-        Cls
-    End If
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
     Call TITLE_STATS
 
     Locate 3, 1
@@ -972,7 +1005,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "OPPONENT TOTALS"; Tab(18);
     If statsZ1!(24) = 0 Then Print "   0     0   --.-        -.-     0" Else Print Using "####  ####   ##.#      ###.#    ##"; statsZ1!(24); statsZ1!(25); statsZ1!(25) / statsZ1!(24); statsZ1!(25) / totalGames%; statsZ1!(19)
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -1047,7 +1084,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
 
     NOONE:
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -1080,7 +1121,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Next I1
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress$
+
+    Color , 0
     Cls
 
     Call TITLE_STATS
@@ -1097,6 +1142,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     Next
 
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
     I$ = GetKeyPress
 
 End Sub
@@ -1683,7 +1730,7 @@ Sub ResetStatPrompt (statFile$)
 
     If UCase$(I$) = "Y" Then
 
-		Call MenuBox (6, 8, 61, 1, 15, 1)
+        Call MenuBox (6, 8, 61, 1, 15, 1)
 
         Do
 

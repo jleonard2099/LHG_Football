@@ -99,6 +99,7 @@ Sub StatOptions_Natl (FF$, NRT)
     Do
 
         Cls
+
         Call TITLE_STATS
 
 		Call MenuBox (8, 8, 61, 5, 15, 1)
