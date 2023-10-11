@@ -22,11 +22,12 @@ Dim yearNumber$(MAX_GAMES, 1)
 ' -------------------------
 Dim Shared DT$, TM$, TN$
 
-Dim modeAbbrev$(3), yesNo$(1)
-Dim Shared location$(2), playMode$(3)
-Dim Shared rulesType$(5), overtime$(3)
-Dim Shared ruleYrPro$(3), ruleYrColl$(5)
-Dim windSetting$(3), weather$(3)
+Dim location$(2), modeAbbrev$(3), overtime$(3)
+Dim playMode$(3)
+Dim rulesType$(5), ruleYrPro$(3), ruleYrColl$(5)
+Dim teamIndicator$(1), weather$(3), windSetting$(3)
+Dim yesNo$(1), yesNoText$(1)
+
 
 ' *** Miscellaneous Use ***
 ' -------------------------
@@ -245,7 +246,7 @@ Dim GMA!(300), GMB!(180), GMC!(NUM_STATRECORDS)
 
 Dim A1L!(300, 8), A2L!(180, 4), A3L!(NUM_STATRECORDS, 13), A3R!(NUM_STATRECORDS, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
-'Dim A7L!(60, 5), A8L!(300), A9L!(450)
+Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim CRD!(NUM_STATRECORDS), CRDR!(NUM_STATRECORDS)
 Dim GI!(1, 9, 2), GS!(1, 14, 1)
 Dim K!(1, 12), K2!(1, 13, 17)
@@ -290,17 +291,18 @@ Dim scheduleYN$(MAX_GAMES, 1)
 ' Used in Game Routines
 '----------------------------------------
 Dim scheduleFile$
-
 Dim tickerStart
+Dim actualAttendance&, avgAttendance&
 
 Dim Shared A, A2, A3, A4, A5, A6, A7, A8, A9, autoPlay
-Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW, CP, compTeam
+Dim Shared B, B1, B2, B3, B4, B5, B7, B8, BW
+Dim Shared CP, compTeam, compOffense
 Dim Shared D, D1, D2, D3, DDI, DDS, DI, DR, DS, DT
 Dim Shared E, EY, endGame, endAllGames, F2, F8, F9
 Dim Shared G, gameLoc, goalPostAdj, halfTime
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I
 Dim Shared J, JJ, K3, N, NT, O, OT, overtimeOpt
-Dim Shared playerOpt, P1, P2, PN, PQ, PR, PW
+Dim Shared playerMode, playerOpt, P1, P2, PN, PQ, PR, PW
 Dim Shared Q, QB, ruleOptColl, ruleOptPro, ruleOptType, R1, RP, RY
 Dim Shared S, S2, S3, S6, SN, SY
 Dim Shared T1, TMT, W5, WE, WS, winTeam
@@ -312,8 +314,6 @@ Dim Shared PA%, PC%, PS%, Q6%, Q7%, QBN%, QX%, R5%, RF%, S1%, SX%
 Dim Shared WX%, yrdLine
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
-
-Dim Shared actualAttendance&, averageAttendance&
 
 Dim Shared AF(1, 1, 4), AM(1, 1, 4)
 Dim Shared C(50), DDI(1), DDS(1), defInts(1), defSacks(1)

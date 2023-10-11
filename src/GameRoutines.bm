@@ -17,7 +17,7 @@ Sub INFO ()
     Locate 24, 1
     Print Tab(80);
     Locate , 1
-    Print "(C) LANCE HAFFNER 1986-2000"; Tab(70); Left$(Time$, 5);
+    Print "    LANCE HAFFNER 1986-2000"; Tab(70); Left$(Time$, 5);
     Locate 3, 1
     Color , 0
 
@@ -33,6 +33,8 @@ End Sub
 Sub InitVar ()
 
     Shared scheduleFile$
+    Shared actualAttendance&, avgAttendance&
+    Shared teamIndicator$()
 
     '-- Does this really belong here???
     If ruleOptType <> 0 Then
@@ -56,14 +58,18 @@ Sub InitVar ()
     For J1 = 12 To 15:
         D2$(J1 - 5) = D2$(J1)
     Next
-    '-- Does this really belong here???
+    '--------------------???
 
+    teamIndicator$(0) = "VISITING TEAM"
+    teamIndicator$(1) = "HOME TEAM"
 
     DR$(0) = "RIGHT"
     DR$(1) = "LEFT"
     D$(11) = "GOAL LINE"
 
-    For I = 0 To 6: WX%(I) = 0: Next
+    For I = 0 To 6:
+        WX%(I) = 0
+    Next
 
     G$(1) = "FLEA FLICKER"
     G$(2) = "REVERSE"
@@ -206,6 +212,7 @@ Sub InitVar ()
     WX% = 0
 
     actualAttendance& = 0
+    avgAttendance& = 0
 
     A$ = ""
     A1$ = ""
@@ -291,7 +298,7 @@ Sub AUTOSETUP
     ruleOptType = NG%(3)
     pbpDelay! = NG%(4) / 10
     ruleOptColl = NG%(7)
-    playerOpt = NG%(10)
+    playerMode = NG%(10)
     ruleOptPro = NG%(11)
     tickerStart = NG%(12)
 
@@ -486,10 +493,10 @@ Sub PBP ()
     M$ = InKey$
 
     If UCase$(M$) = "Q" Then Cls: End
-
-    Call PLACEPBP
+    If UCase$(M$) = "O" Then Call OPTIONS
 
     If pbpDelay! > 0 Then
+        Call PLACEPBP
         Call DELAY
     End If
 
@@ -505,7 +512,7 @@ End Sub
 'matches the current game time / period.
 Sub TICKER ()
 
-    If Not (autoPlay = 1 And playerOpt = 2) Then
+    If Not (autoPlay = 1 And playerMode = 2) Then
 
         Color 14, 0
         Cls
@@ -1321,6 +1328,9 @@ Sub PLACEPBP ()
     '-- I never knew the color for this
     '-- was supposed to be variable?
     '-- The value of BW is always 0.
+    '-- Perhaps the "variable" was
+    '-- part of the shared graphics
+    '-- libraries?
     '-- See DISPWEATHER/SETSCREEN as examples.
     Color 14 - 7 * BW, 1 - BW
 
@@ -3217,7 +3227,7 @@ End Sub
 Sub DEFMENU ()
 
 
-    If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
+    If playerMode = 1 And D = compTeam Or playerMode = 2 Then
 
         Call DEFENSE
         Call DEFGOALLINE
@@ -3545,23 +3555,22 @@ End Sub
 
 
 '----------------------------------------
-'           OFFMENU Subroutine
+'           ComputerOffense Subroutine
 '----------------------------------------
 'This subroutine gives the user a menu for
 'selecting their offensive choices.
-Sub OFFMENU ()
+Sub ComputerOffense ()
 
     If E = 0 Then
 
         '4th Quarter
-        'Any down, Less than 105 seconds to go, 0 Timeouts Opponent, Offense leading
+        'Any down, Less than 35 seconds to go, 0 Timeouts Opponent, Offense leading
         If Q = 4 And gameClock! <= 35 * (4 - D1) And timeouts(D) = 0 And score(P1, 0) > score(D, 0) Then
 
-            '3-Step Drop
             P2 = 9
-
-            'Select kicker
             R1 = 1
+
+            'QB Take Knee ???
             QBN% = 1
 
         Else
@@ -4130,7 +4139,7 @@ Sub KICKOFF ()
 
     Call SCOREBOARD
 
-    If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+    If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
         I9 = 2
 
@@ -4156,7 +4165,7 @@ Sub KICKOFF ()
 
         Call SCOREBOARD
 
-        If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
+        If playerMode = 1 And D = compTeam Or playerMode = 2 Then
             I1 = 1
         Else
             Call OPTIONBOX(7)
@@ -4190,7 +4199,7 @@ Sub KICKOFF ()
 
         Call SCOREBOARD
 
-        If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+        If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
             I1 = 2
         Else
             Call OPTIONBOX(7)
@@ -4227,7 +4236,7 @@ Sub COLKICKOFF ()
 
         Call SCOREBOARD
 
-        If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+        If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
             I9 = 2
         Else
             Call OPTIONBOX(9)
@@ -4254,7 +4263,7 @@ Sub COLKICKOFF ()
 
                 Call SCOREBOARD
 
-                If playerOpt = 1 And D = compTeam Or playerOpt = 2 Then
+                If playerMode = 1 And D = compTeam Or playerMode = 2 Then
                     I1 = 1
                 Else
                     Call OPTIONBOX(7)
@@ -4284,7 +4293,7 @@ Sub COLKICKOFF ()
 
                 Call SCOREBOARD
 
-                If playerOpt = 1 And P1 = compTeam Or playerOpt = 2 Then
+                If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
                     I1 = 2
                 Else
                     Call OPTIONBOX(7)
@@ -4878,37 +4887,68 @@ End Sub
 
 
 '----------------------------------------
-'          ARMADJUST Subroutine
+'          AdjustCompPct Subroutine
 '----------------------------------------
-'This subroutine does some calculations
-'related to the QB "arm rating"
-Sub ARMADJUST ()
+'This subroutine performs adjustments to
+'the QB's completion %. It shifts it based
+'on the defense's overall rating), ball
+'position, play type and wind (PW)
 
+'Passes are completed if the random # generated
+' is below the sum of all these ratings
+
+Sub AdjustCompPct ()
+
+    'Comp %, adjusted for DEF team's rating
     S2 = qbCompPct(P1, I1) + Int(leagRat_GAME(D, 1))
 
     If P1 = gameLoc Then
+        'Add 3% for home game
         S2 = S2 + 3
     Else
         'P1 <> gameLoc
         If gameLoc <> 2 Then S2 = S2 - 3
     End If
 
+    'Adjust ?? based on position
     Select Case Y
-        Case 0 To 40.001: PQ = 3
-        Case 40.002 To 80.001: PQ = -2
-        Case 80.002 To 85.001: PQ = -4
-        Case 85.002 To 90.001: PQ = -10
-        Case 90.002 To 95.001: PQ = -26
-        Case Is > 95.001: PQ = -13
+
+        'Goal Line to Own 0
+        Case 0 To 40.001:
+            PQ = 3
+
+            'Own 40 to Opp 20
+        Case 40.002 To 80.001:
+            PQ = -2
+
+            'Opp 20 to Opp 15
+        Case 80.002 To 85.001:
+            PQ = -4
+
+            'Opp 15 to Opp 10
+        Case 85.002 To 90.001:
+            PQ = -10
+
+            'Opp 10 to Opp 5
+        Case 90.002 To 95.001:
+            PQ = -26
+
+            'Opp 5 to  Goal
+        Case Is > 95.001:
+            PQ = -13
+
     End Select
 
+    'Adjust for pass type
     S3 = S1%(1, P2 - 8, D3)
 
+    'Adjust for wind direction NOT in team's favor
     PW = 0
 
-    If WX%(0) <> P1 And (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18) Then PW = WX%(2)
-
-    If WX%(0) <> P1 And (P2 = 12 Or P2 = 15) Then PW = WX%(3) + WX%(6)
+    If WX%(0) <> P1 Then
+        If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18) Then PW = WX%(2)
+        If (P2 = 12 Or P2 = 15) Then PW = WX%(3) + WX%(6)
+    End If
 
 End Sub
 
@@ -4991,6 +5031,7 @@ Sub COMPILER ()
             Case 1
 
                 K2(P1, I1, 0) = K2(P1, I1, 0) + 1
+
                 If G + Y >= 99.95 Then
                     K2(P1, I1, 1) = K2(P1, I1, 1) + 100 - Y
                     K2(P1, I1, 2) = K2(P1, I1, 2) + 1
@@ -5089,14 +5130,14 @@ Sub TWOMIN ()
 
     Do
 
-        If playerOpt <> 0 Then
+        If playerMode <> 0 Then
 
             I5 = score(P1, 0) - score(D, 0)
 
             'Is it possible for more than one of these to be TRUE at the same time?
             'If not, consider setting a flag value to then be checked outside the if
             'That would only give us one Exit Do
-            If (playerOpt = 1 And D = compTeam Or playerOpt = 2) Then
+            If (playerMode = 1 And D = compTeam Or playerMode = 2) Then
 
                 If I5 > 0 And I5 <= 14 And timeouts(D) > 0 And Q = 4 Then I1 = 3: Exit Do
 
@@ -5114,9 +5155,9 @@ Sub TWOMIN ()
 
             End If
 
-            If playerOpt = 2 Then I1 = 1: Exit Do
+            If playerMode = 2 Then I1 = 1: Exit Do
 
-            If Q = 2 And Y > 15 And (playerOpt = 1 And P1 = compTeam Or playerOpt = 2) And I5 <= 0 Then
+            If Q = 2 And Y > 15 And (playerMode = 1 And P1 = compTeam Or playerMode = 2) And I5 <= 0 Then
                 If timeouts(P1) > 0 Then
                     I1 = 2
                 Else
@@ -5125,15 +5166,15 @@ Sub TWOMIN ()
                 Exit Do
             End If
 
-            If Q = 2 And Y > 40 And I5 > 0 And leagRat_GAME(P1, 7) < 65 And (playerOpt = 1 And P1 = compTeam Or playerOpt = 2) And timeouts(P1) > 0 Then I1 = 2: Exit Do
-            If Q = 2 And Y > 40 And I5 >= 0 And leagRat_GAME(P1, 7) < 65 And (playerOpt = 2 Or playerOpt = 1 And P1 = compTeam) Then I1 = 4: Exit Do
+            If Q = 2 And Y > 40 And I5 > 0 And leagRat_GAME(P1, 7) < 65 And (playerMode = 1 And P1 = compTeam Or playerMode = 2) And timeouts(P1) > 0 Then I1 = 2: Exit Do
+            If Q = 2 And Y > 40 And I5 >= 0 And leagRat_GAME(P1, 7) < 65 And (playerMode = 2 Or playerMode = 1 And P1 = compTeam) Then I1 = 4: Exit Do
 
         End If
 
         I$ = GetKeyPress$
         I1 = Val(I$)
 
-    Loop Until Not (I1 < 1 Or I1 > 5 Or (I1 = 2 Or I1 = 4 Or I1 = 5) And playerOpt = 1 And P1 = compTeam Or I1 = 3 And playerOpt = 1 And D = compTeam)
+    Loop Until Not (I1 < 1 Or I1 > 5 Or (I1 = 2 Or I1 = 4 Or I1 = 5) And playerMode = 1 And P1 = compTeam Or I1 = 3 And playerMode = 1 And D = compTeam)
 
     Color 0, 5 * (1 - BW)
 
@@ -5812,13 +5853,16 @@ Sub KICKSET ()
     U$ = "AND THE KICK IS ON ITS WAY"
     Call PBP
 
+    'Swap defense and offense
     Swap P1, D
 
     Call d100(RN)
 
     If RN <= 88 Then
+        '88% chance of kick travelling 55 to 67 yds
         N = 100 - (Y + Int(Rnd(1) * 13) + 55 + goalPostAdj)
     Else
+        '12% chance of kick travelling 68 to 75 yds
         N = 100 - (Y + Int(Rnd(1) * 8) + 68 + goalPostAdj)
     End If
 
@@ -5979,6 +6023,7 @@ Sub PCPBP ()
     Call QBTHROW
 
     If FF% = 0 Then
+        'Adjust Comp % based on ???
 
         Select Case P2
 
@@ -6089,6 +6134,7 @@ Sub PCPBP ()
         End Select
 
         If FF% <> 0 Then U$ = RV$ + " MAKES A GREAT CATCH"
+
         U$ = U$ + " AT THE" + Str$(Int(YL)) + " YARD LINE"
 
         If IT = 1 Then
@@ -6096,6 +6142,7 @@ Sub PCPBP ()
             Call PBP
             Call PBP
         Else
+            'Adjust team position
             Call PBP
             Call PBP
             SY = 100 - Y - CP
@@ -6222,6 +6269,75 @@ Sub TryForTwoResult ()
 
     'No longer dealing with endzone situation
     E = 0
+
+End Sub
+
+
+
+'----------------------------------------
+'           OPTIONS Subroutine
+'----------------------------------------
+'This subroutine gives you a small menu
+'for changing some of the game options
+'(such as pbp delay, coaching mode) in
+'the middle of game play.
+Sub OPTIONS ()
+
+    Shared playMode$()
+
+    Color 15, 0
+
+    Screen , , 0, 0
+
+    Call INFO
+
+    Do
+
+        Color , 0
+        Locate 3, 1
+        Color 14: Print "(1) ";
+        Color 15: Print playMode$(playerOpt)
+        Color 14: Print "(2) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY: #.# "; pbpDelay!
+        Print
+        Color 14: Print "<ENTER> ";
+        Color 15: Print "RETURN TO GAME PLAY"
+
+        Do
+            Color 7, 0
+            'Locate 24, 1: Print "HIT ANY KEY TO CONTINUE";
+            I$ = GetKeyPress$
+            I = Val(I$)
+        Loop Until I >= 0 And I <= 2
+
+        Select Case I 
+            Case 1
+                playerOpt = playerOpt + 1
+                If playerOpt > 3 Then playerOpt = 0
+            Case 2
+                Locate 4, 23: Input pbpDelay!
+        End Select
+
+        ' Determine computer team
+        Select Case playerOpt
+
+            Case 1:
+                playerMode = 1
+                compTeam = 0
+
+            Case 2:
+                playerMode = 1
+                compTeam = 1
+
+            Case 3:
+                playerMode = 2
+
+        End Select
+
+    Loop Until I$ = Chr$(13)
+
+    Screen , , 0, 0
+    'Call DisplayField 
 
 End Sub
 
@@ -6359,7 +6475,7 @@ End Sub
 Sub FoundSpecial (specialCount, specialStat)
 
     'Beep
-    Spec$ = diskPaths$(1) + "*.SPC"
+    Spec$ = diskPaths$(1) + "*.BSS"
     specialCount = FileCount%(Spec$)
     specialCount = specialCount + 1
     specialStat = 1
@@ -6400,7 +6516,7 @@ Sub POSTGAME ()
         Color 14: Print "(2) ";
         Color 15: Print "STATS TO TEXT FILE"
 
-        If autoPlay = 1 And playerOpt = 2 Then
+        If autoPlay = 1 And playerMode = 2 Then
             X = 2
         Else
 
@@ -6419,7 +6535,7 @@ Sub POSTGAME ()
         Color 15, 0
         Cls
 
-        If Not (autoPlay = 1 And playerOpt = 2) Then
+        If Not (autoPlay = 1 And playerMode = 2) Then
 
             Do
                 'Using Home Team's color for the box
@@ -6433,14 +6549,14 @@ Sub POSTGAME ()
 
         End If
 
-    Loop Until UCase$(I$) = "N" Or (autoPlay = 1 And playerOpt = 2)
+    Loop Until UCase$(I$) = "N" Or (autoPlay = 1 And playerMode = 2)
 
     Call TICKER
 
     'If we had special events
     If specialStat = 1 Then
 
-        NM$ = "BOX" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".SPC"
+        NM$ = "BOXSCORE" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".BSS"
 
         'Append special events
         'Call BOX2SPC(NM$)
@@ -6491,10 +6607,10 @@ Sub BOXOPTIONS (outputChoice)
                 If autoPlay% <> 1 Then
                     Cls
                     Print "ENTER 8-CHARACTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";: Input NM$
-                    NM$ = NM$ + ".SPC"
+                    NM$ = NM$ + ".BSS"
                 Else
-                    ' NM$ = "BOXSCORE." + MID$(STR$(schedGame(0) + schedGame(2)), 2, LEN(STR$(schedGame(0) + schedGame(2))))
-                    NM$ = "BOX" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2))))
+                    'ScheduleName_GameXXX.BS
+                    NM$ = Mid$(scheduleFile$, 1, Len(scheduleFile$) - 4) + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
                 End If
 
             End If
@@ -6520,6 +6636,8 @@ End Sub
 'create a temporary file, then loop THROUGH
 'it to print each line.
 Sub BOX2FILE (printChoice, NM$)
+
+    Shared actualAttendance&
 
     Open diskPaths$(1) + NM$ For Append As #1
 
@@ -6665,29 +6783,44 @@ Sub BOX2FILE (printChoice, NM$)
     hSpace1 = (15 - Len(gameTeams$(0))) / 2
     hSpace2 = (15 - Len(gameTeams$(1))) / 2
 
+    'K() = Offense Stats
     Print #1, Tab(10 + hSpace1); gameTeams$(0); Tab(45 + hSpace2); gameTeams$(1)
 
+    'K(x, 0) = First downs
     Print #1, Tab(17); K(0, 0); Tab(29); "FIRST DOWNS"; Tab(51); K(1, 0)
 
     Print #1, Tab(14);
+
+    'K(x, 1) = Rush Att
+    'K(x, 2) = Rush Yds
     If ruleOptType = 0 Then
         Print #1, K(0, 1); "-"; Int(K(0, 2) + .5); Tab(29); "RUSHING YDS"; Tab(48); K(1, 1); "-"; Int(K(1, 2) + .5)
     Else
         Print #1, K(0, 1) - W6(0, 0); "-"; Int(K(0, 2) + W6(0, 1) + .5); Tab(29); "RUSHING YDS"; Tab(48); K(1, 1) - W6(1, 0); "-"; Int(K(1, 2) + W6(1, 1) + .5)
     End If
 
+    'K(x, 6) = Pass Yds
     Print #1, Tab(16); Int(K(0, 6) + .5); Tab(29); "PASSING YDS"; Tab(51); Int(K(1, 6) + .5)
 
     Print #1, Tab(16); Int(K(0, 6) + .5) + Int(K(0, 2) + .5); Tab(30); "TOTAL YDS"; Tab(51); Int(K(1, 6) + .5) + Int(K(1, 2) + .5)
 
+    'K(x, 3) = Pass Att
+    'K(x, 4) = Pass Comp
+    'K(x, 5) = Pass Int
     Print #1, Tab(13); K(0, 4); "-"; K(0, 3); "-"; K(0, 5); Tab(31); "PASSES"; Tab(47); K(1, 4); "-"; K(1, 3); "-"; K(1, 5)
 
+    'K(x, 7) = Punts
+    'K(x, 8) = Punt Yds
     If K(0, 7) <> 0 And K(1, 7) <> 0 Then
         Print #1, Tab(15); K(0, 7); "-"; Int((K(0, 8) / K(0, 7)) * 10 + .5) / 10; Tab(32); "PUNTS"; Tab(49); K(1, 7); "-"; Int((K(1, 8) / K(1, 7)) * 10 + .5) / 10
     End If
 
+    'K(x, 9) = Fumbles Total
+    'K(x, 10) = Fumbles Lost
     Print #1, Tab(15); K(0, 9); "-"; K(0, 10); Tab(31); "FUM/LOST"; Tab(50); K(1, 9); "-"; K(1, 10)
 
+    'K(x, 11) = Penalties
+    'K(x, 12) = Penalty Yards
     Print #1, Tab(15); K(0, 11); "-"; Int(K(0, 12) + .5); Tab(31); "PENALTIES"; Tab(50); K(1, 11); "-"; Int(K(1, 12) + .5)
 
     Print #1, Tab(15); W6(0, 0); "-"; Int(W6(0, 1) + .5); Tab(32); "SACKED"; Tab(50); W6(1, 0); "-"; Int(W6(1, 1) + .5)
@@ -6696,7 +6829,9 @@ Sub BOX2FILE (printChoice, NM$)
     Print #1, Using "##"; Int(timePoss(0) / 60);
     Print #1, ":";
     Print #1, Using "##"; timePoss(0) - Int(timePoss(0) / 60) * 60;
+
     Print #1, Tab(26); "TIME OF POSSESSION";
+
     Print #1, Tab(51);
     Print #1, Using "##"; Int(timePoss(1) / 60);
     Print #1, ":";
@@ -6710,36 +6845,67 @@ Sub BOX2FILE (printChoice, NM$)
     Call ADDBACKS
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "TC   YDS   AVG   LG   TD"
+
         For I1 = 0 To 13
+
             If K2(I, I1, 0) <> 0 Then
-                If I1 <= 9 Then Print #1, rbacks$(I, I1);
-                If I1 > 9 Then Print #1, qbacks$(I, I1 - 10);
+
+                If I1 <= 9 Then
+                    Print #1, rbacks$(I, I1);
+                Else
+                    Print #1, qbacks$(I, I1 - 10);
+                End If
+
+                'K2(x, 0) = Rush Att
+                'K2(x, 1) = Yds
+                'K2(x, 2) = TD
                 Print #1, Tab(18); Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
-                If I1 <= 9 Then Print #1, Using "###   ##"; RB(I, I1), K2(I, I1, 2)
-                If I1 > 9 Then Print #1, Using "      ##"; K2(I, I1, 2)
+
+                If I1 <= 9 Then
+                    'Longest TD
+                    Print #1, Using "###   ##"; RB(I, I1), K2(I, I1, 2)
+                Else
+                    'TD
+                    Print #1, Using "      ##"; K2(I, I1, 2)
+                End If
             End If
+
         Next I1
+
         Print #1,
+
     Next I
 
     Print #1, Tab(17); "RECEIVING"
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "TC    YDS    AVG   LG    TD"
 
         For I1 = 0 To 5
+
             If K2(I, I1, 6) <> 0 Then
                 Print #1, wdRec$(I, I1); Tab(19);
+                'K2(x, 6) = Catches
+                'K2(x, 7) = Yds
+                'K2(x, 8) = TD
                 Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
             End If
+
         Next I1
 
         For I1 = 0 To 9
+
             If K2(I, I1, 3) <> 0 Then
                 Print #1, rbacks$(I, I1); Tab(19);
+                'K2(x, 3) = Catches
+                'K2(x, 4) = Yds
+                'K2(x, 5) = TD
                 Print #1, Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
             End If
+
         Next I1
 
         Print #1,
@@ -6755,101 +6921,159 @@ Sub BOX2FILE (printChoice, NM$)
         For I1 = 0 To 3
 
             If K2(I, I1, 9) <> 0 Then
+
                 Print #1, qbacks$(I, I1); Tab(19);
+                'K2(x, 9) = Pass Att
+                'K2(x, 10) = Completions
+                'K2(x, 11) = Interceptions
+                'K2(x, 12) = Yards
+                'K2(x, 13) = TDs
                 Print #1, Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
 
                 If K2(I, I1, 10) <> 0 Then
+                    'Y/C, TD
                     Print #1, Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
                 Else
+                    'TDs
                     Print #1, Using "      ##"; K2(I, I1, 13);
                 End If
 
+                'TD%, Ints, Int%, Longest
                 Print #1, Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, QB(I, I1)
             End If
+
         Next I1
+
         Print #1,
+
     Next I
 
     Print #1, Tab(17); "KICKOFF RETURNS"
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "KR   YDS   AVG   LG  TD"
+
         For I1 = 0 To 2
             If K2(I, I1, 14) <> 0 Then
                 Print #1, kickRet$(I, I1); Tab(19);
+                'K2(x, 14) = # Returns
+                'K2(x, 15) = Yards
+                'K2(x, 16) = TDs
                 Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
             End If
         Next I1
+
         Print #1,
+
     Next I
 
     Print #1,
     Print #1, Tab(17); "PUNT RETURNS"
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "PR   YDS   AVG   LG  TD"
+
         For I1 = 3 To 5
             If K2(I, I1, 14) <> 0 Then
                 Print #1, pret$(I, I1 - 3); Tab(19);
+                'K2(x, 14) = # Returns
+                'K2(x, 15) = Yards
+                'K2(x, 16) = TDs
                 Print #1, Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
             End If
         Next I1
+
         Print #1,
+
     Next I
 
     Print #1, Tab(17); "PUNTING"
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "PNT   AVG  LG  TB  BLK  20"
+
         If K(I, 7) <> 0 Then
             Print #1, punter$(I, 0); Tab(19);
+            'K(x, 7) = # Punts
+            'K(x, 8) = Yards
+            'K(x, 26) = Longest
+            'K(x, 27) = Touchbacks
+            'K(x, 28) = Blocks
+            'K(x, 29) = 20
             Print #1, Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; K(I, 7), K(I, 8) / K(I, 7), K(I, 26), K(I, 27), K(I, 28), K(I, 29)
         End If
+
         Print #1,
+
     Next I
 
     Print #1, Tab(17); "KICKING"
 
     For I = 0 To 1
+
         Print #1, gameTeams$(I); Tab(19); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
 
         If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
 
             Print #1, kicker$(I, 0); Tab(19);
-
+            'K2(x, 5, 17) = EPM, 1st PK
+            'K2(x, 6, 17) = EPA, 1st PK
             If K2(I, 6, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
 
             If K2(I, 4, 17) = 0 Then
                 Print #1,
             Else
                 Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
+                'K2(x, 3, 17) = FGM, 1st PK
+                'K2(x, 4, 17) = FGA, 1st PK
+
+                'FG's 0 - 19
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
+                'FG's 20 - 29
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
+                'FG's 30 - 39
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
+                'FG's 40 - 49
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
+                'FG's 50+
                 Print #1, "- ";: Print #1, Using "#"; FA(I, 0, 4)
             End If
 
         End If
 
         If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
-            Print #1, kicker$(I, 1); Tab(19);
 
+            Print #1, kicker$(I, 1); Tab(19);
+            'K2(x, 7, 17) = EPM, 2nd PK
+            'K2(x, 8, 17) = EPA, 2nd PK
             If K2(I, 10, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
 
             If K2(I, 8, 17) = 0 Then
                 Print #1,
             Else
                 Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
+                'K2(x, 9, 17) = FGM, 2nd PK
+                'K2(x, 10, 17) = FGA, 2nd PK
+
+                'FG's 0 - 19
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
+                'FG's 20 - 29
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
+                'FG's 30 - 39
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
+                'FG's 40 - 49
                 Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
+                'FG's 50+
                 Print #1, "- ";: Print #1, Using "#"; FA(I, 1, 4)
             End If
+
         End If
 
         Print #1,
+
     Next I
 
     Print #1,
@@ -6934,9 +7158,13 @@ End Sub
 'output to the end user display.
 Sub BOX2SCREEN ()
 
+    Shared actualAttendance&
+
     Cls
 
     Color 14
+    Locate 2, 1
+
     If gameLoc = 2 Then
         Print "SITE: ";
         Color 15
@@ -6955,7 +7183,10 @@ Sub BOX2SCREEN ()
 
     Call ScoreSummary
 
-    If Not (autoPlay = 1 And playerOpt = 2) Then
+    If Not (autoPlay = 1 And playerMode = 2) Then
+        Locate 24, 27
+        Color 14
+        Print "PRESS ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
     End If
 
@@ -6971,7 +7202,7 @@ End Sub
 'for each team.
 Sub ScoreSummary
 
-    Locate 4, 20
+    Locate 5, 20
     Color 14
 
     '-- Q has been increased prior to this call
@@ -7026,6 +7257,9 @@ Sub ScoreSummary
 
     Print
     Color 15, 0
+
+    scoreLines = 0
+    maxScoreLines = 13 'for page 1
 
     'X2 = number of scores
     If X2 <> 0 Then
@@ -7100,6 +7334,8 @@ Sub ScoreSummary
 
             End Select
 
+            scoreLines = scoreLines + 1
+
             If tryPAT = 1 Then
 
                 Locate , 17
@@ -7109,14 +7345,26 @@ Sub ScoreSummary
                 If K1(I, 4) = 21 Then Print " (RUN GOOD)"
                 If K1(I, 4) = 30 Then Print " (PASS FAILED)"
                 If K1(I, 4) = 31 Then Print " (PASS GOOD)"
+                scoreLines = scoreLines + 1
 
             End If
 
-            'Wait for a key to clear and print more every 10 scores
-            If I = 10 And K1(11, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
-            If I = 20 And K1(21, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
-            If I = 30 And K1(31, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
-            If I = 40 And K1(41, 0) <> 0 And X = 0 Then Call GetKeyWhenNoDelay: Cls
+            If Not (autoPlay = 1 And playerMode = 2) And scoreLines >= maxScoreLines Then
+                Locate 24, 20
+                Color 14
+                Print "PRESS ANY KEY FOR MORE SCORE INFORMATION";
+                Call GetKeyWhenNoDelay
+
+                Cls
+                Locate 2, 27
+                Print "SCORE SUMMARY (CONTINUED)"
+                Color 15
+                Locate 4, 1
+
+                'We can show more lines of scores on pages 2/3
+                scoreLines = 0
+                maxScoreLines = 18
+            End If
 
         Next I
 
@@ -7135,9 +7383,10 @@ Sub STATS2SCREEN ()
     Color , 1
     Cls
 
-    Call OPTIONBOX(14)
+    Call OPTIONBOX(15)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
 
-    Locate , 32
+    Locate 10, 32
 
     Print "TEAM STATISTICS"
 
@@ -7202,28 +7451,55 @@ Sub STATS2SCREEN ()
     Locate , 51: Print thirdDownAtt(1) - thirdDownFail(1); "-"; thirdDownAtt(1)
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 32: Print "RUSHING STATISTICS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    nbrPlayers = 0
+    Locate 2, 32: Print "RUSHING STATISTICS"
+    Print
     Call ADDBACKS
 
     For I = 0 To 1
 
-        Locate , 10
-        Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
-        Locate , 26
+        Locate , 20
+        Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
+        Color 0, 7
+        Locate , 36
         Print "TC   YDS   AVG   LG   TD"
 
         For I1 = 0 To 13
+
             If K2(I, I1, 0) <> 0 Then
-                Locate , 10
+                Locate , 20
                 If I1 <= 9 Then Print rbacks$(I, I1);
                 If I1 > 9 Then Print qbacks$(I, I1 - 10);
 
-                Locate , 25: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
+                Locate , 35: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
                 If I1 <= 9 Then Print Using "###   ##"; RB(I, I1), K2(I, I1, 2)
                 If I1 > 9 Then Print Using "      ##"; K2(I, I1, 2)
+                nbrPlayers = nbrPlayers + 1
             End If
+
+            If nbrPlayers > 16 Then
+            'Create a 2nd page if there are enough rushers
+            'to spam out past the page
+                Call GetKeyWhenNoDelay
+
+                Call FRAMESTATS(22)
+                Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+                Locate 2, 32: Print "RUSHING STATISTICS"
+                Call ADDBACKS
+
+                Locate , 20
+                Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
+                Color 0, 7
+                Locate , 36
+                Print "TC   YDS   AVG   LG   TD"
+
+            End If
+
         Next I1
 
         Print
@@ -7231,29 +7507,77 @@ Sub STATS2SCREEN ()
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 32: Print "RECEIVING STATISTICS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 32: Print "RECEIVING STATISTICS"
+    Print
+    nbrPlayers = 0
 
     For I = 0 To 1
-        Locate , 10
+
+        Locate , 18
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
-        Locate , 28: Print "TC    YDS    AVG   LG    TD"
+        Locate , 36: Print "TC    YDS    AVG   LG    TD"
 
         For I1 = 0 To 5
+
             If K2(I, I1, 6) <> 0 Then
-                Locate , 10
+                Locate , 18
                 Print wdRec$(I, I1);
-                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 6), Int(K2(I, I1, 7) + .5), Int(K2(I, I1, 7) + .5) / K2(I, I1, 6), WR(I, I1 + 10), K2(I, I1, 8)
+                nbrPlayers = nbrPlayers + 1
             End If
+
+
+            If nbrPlayers > 16 Then
+            'Create a 2nd page if there are enough rushers
+            'to spam out past the page
+                Call GetKeyWhenNoDelay
+
+                Call FRAMESTATS(22)
+                Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+                Locate 2, 32: Print "PASSING STATISTICS"
+                Print
+
+                Locate , 18
+                Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
+                Color 0, 7
+                Locate , 36: Print "TC    YDS    AVG   LG    TD"
+
+            End If
+
         Next I1
 
         For I1 = 0 To 9
+
             If K2(I, I1, 3) <> 0 Then
-                Locate , 10
+                Locate , 18
                 Print rbacks$(I, I1);
-                Locate , 28: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; K2(I, I1, 3), Int(K2(I, I1, 4) + .5), Int(K2(I, I1, 4) + .5) / K2(I, I1, 3), WR(I, I1), K2(I, I1, 5)
+                nbrPlayers = nbrPlayers + 1
             End If
+
+            If nbrPlayers > 16 Then
+            'Create a 2nd page if there are enough rushers
+            'to spam out past the page
+                Call GetKeyWhenNoDelay
+
+                Call FRAMESTATS(22)
+                Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+                Locate 2, 32: Print "PASSING STATISTICS"
+                Print
+
+                Locate , 18
+                Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
+                Color 0, 7
+                Locate , 36: Print "TC    YDS    AVG   LG    TD"
+
+            End If
+
         Next I1
 
         Print
@@ -7261,22 +7585,26 @@ Sub STATS2SCREEN ()
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 32: Print "PASSING STATISTICS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 32: Print "PASSING STATISTICS"
+    Print
 
     For I = 0 To 1
-        Locate , 10
-        Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
-        Locate , 26: Print "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
+        Locate , 6
+        Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
+        Color 0, 7
+        Locate , 22: Print "ATT  COM COM %  YDS  Y/A  Y/C  TD  TD%  I    I%  LG"
 
         For I1 = 0 To 3
 
             If K2(I, I1, 9) <> 0 Then
 
-                Locate , 10
+                Locate , 6
                 Print qbacks$(I, I1);
-                Locate , 26: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
+                Locate , 22: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
 
                 If K2(I, I1, 10) <> 0 Then
                     Print Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
@@ -7295,22 +7623,25 @@ Sub STATS2SCREEN ()
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 25: Print "KICKOFF RETURN STATISTICS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 25: Print "KICKOFF RETURN STATISTICS"
+    Print
 
     For I = 0 To 1
-        Locate , 10
+        Locate , 20
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
         Color 0, 7
-        Locate , 26: Print "KR   YDS   AVG   LG  TD"
+        Locate , 36: Print "KR   YDS   AVG   LG  TD"
 
         For I1 = 0 To 2
 
             If K2(I, I1, 14) <> 0 Then
-                Locate , 10
+                Locate , 20
                 Print kickRet$(I, I1);
-                Locate , 26
+                Locate , 36
                 Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), KR(I, I1), K2(I, I1, 16)
 
             End If
@@ -7322,18 +7653,19 @@ Sub STATS2SCREEN ()
 
     Print
     Locate , 25: Print "PUNT RETURN STATISTICS"
+    Print
 
     For I = 0 To 1
-        Locate , 10
+        Locate , 20
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
         Color 0, 7
-        Locate , 26: Print "PR   YDS   AVG   LG  TD"
+        Locate , 36: Print "PR   YDS   AVG   LG  TD"
 
         For I1 = 3 To 5
             If K2(I, I1, 14) <> 0 Then
-                Locate , 10
+                Locate , 20
                 Print pret$(I, I1 - 3);
-                Locate , 26
+                Locate , 36
                 Print Using "##  ####  ##.#  ###  ##"; K2(I, I1, 14), Int(K2(I, I1, 15) + .5), Int(K2(I, I1, 15) + .5) / K2(I, I1, 14), PR(I, I1 - 3), K2(I, I1, 16)
             End If
         Next I1
@@ -7342,9 +7674,11 @@ Sub STATS2SCREEN ()
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 29: Print "PUNTING STATISTICS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 29: Print "PUNTING STATISTICS"
     Print
 
     For I = 0 To 1
@@ -7364,16 +7698,17 @@ Sub STATS2SCREEN ()
     Next I
 
     Print
-    Locate , 29: Print "KICKING STATISTICS": Print
+    Locate , 29: Print "KICKING STATISTICS"
+    Print
 
     For I = 0 To 1
 
-        Locate , 2
+        Locate , 3
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
         Locate , 18: Print "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
 
         If K2(I, 4, 17) <> 0 Or K2(I, 6, 17) <> 0 Then
-            Locate , 2
+            Locate , 3
             Print kicker$(I, 0);
             Locate , 18
 
@@ -7395,7 +7730,7 @@ Sub STATS2SCREEN ()
 
         If K2(I, 8, 17) <> 0 Or K2(I, 10, 17) <> 0 Then
 
-            Locate , 2
+            Locate , 3
             Print kicker$(I, 1);
             Locate , 18
 
@@ -7417,26 +7752,29 @@ Sub STATS2SCREEN ()
 
         End If
 
-        8594 Print
+        Print
+
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 35: Print "INTERCEPTIONS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 35: Print "INTERCEPTIONS"
     Print
 
     For I = 0 To 1:
-        Locate , 19
+        Locate , 20
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
         Color 0, 7
-        Locate , 35
+        Locate , 36
         Print "IR   YDS   AVG   LG  TD"
 
         For I1 = 0 To 9
             If SI(I, I1, 0) <> 0 Then
-                Locate , 19: Print defInts$(I, I1);
-                Locate , 35: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
+                Locate , 20: Print defInts$(I, I1);
+                Locate , 36: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
             End If
         Next I1
 
@@ -7445,22 +7783,24 @@ Sub STATS2SCREEN ()
     Next I
 
     Call GetKeyWhenNoDelay
-    Call FRAMESTATS(22)
 
-    Locate , 39: Print "SACKS"
+    Call FRAMESTATS(22)
+    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+
+    Locate 2, 39: Print "SACKS"
     Print
 
     For I = 0 To 1
-        Locate , 19
+        Locate , 25
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
 
-        Locate , 35
+        Locate , 41
         Print "NO.   YDS LOST"
 
         For I1 = 0 To 14
             If SK(I, I1, 0) <> 0 Then
-                Locate , 19: Print defSacks$(I, I1);
-                Locate , 35: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
+                Locate , 25: Print defSacks$(I, I1);
+                Locate , 41: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
             End If
         Next I1
 
@@ -7586,6 +7926,8 @@ End Sub
 'files for the corresponding team based on
 'the stats generated for a completed game.
 Sub COMPILESTATFILES (teamIdx)
+
+    Shared actualAttendance&
 
     'Determine stat file name
     statFile$ = nameStatFile$(B$(teamIdx))
@@ -8053,9 +8395,9 @@ End Function
 'This limit was chosen because all of
 'the earliest files with 1900 teams are
 'for NFL / 1925.
-Function GetTeamYear% (teamName$)
+Function GetTeamYear% (yearFromName$)
 
-    teamYear% = Val(teamName$)
+    teamYear% = Val(yearFromName$)
 
     If teamYear% >= 0 And teamYear% <= 24 Then
         GetTeamYear% = 2000 + teamYear%
@@ -8092,6 +8434,8 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
     Shared previousYear$
 
+    Shared teamIndicator$()
+
     Do
 
         Color 15, 0
@@ -8114,12 +8458,14 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
         Locate 7, 32
 
+        Locate , 12: Print teamIndicator$(gameIdx)
         Locate , 12: Print "ENTER DISK ID: "
         Print
         Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
         Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
         Print
         Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
+        Locate 8,
 
         I$ = GetKeyPress$
 
@@ -8127,8 +8473,8 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
             If I$ <> Chr$(13) Then
 
-                Locate 7, 27: Print I$
-                Locate 7, 28: Line Input NY$
+                Locate 8, 27: Print I$
+                Locate 8, 28: Line Input NY$
                 NY$ = I$ + NY$
                 Color 15, 0
 
@@ -8419,7 +8765,7 @@ End Sub
 Sub GetKeyWhenNoDelay ()
 
     'If we're not in autoplay
-    If Not (autoPlay = 1 And playerOpt = 2) Then
+    If Not (autoPlay = 1 And playerMode = 2) Then
         I$ = GetKeyPress$
     End If
 

@@ -309,7 +309,8 @@ Sub NewSchedule (scheduleFile$)
                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
                 NS% = Int((targetGame%- 1) / 20)
-                boxName$ = diskPaths$(1) + "BOX" + Mid$( Str$(targetGame%), 2, Len(Str$(targetGame%)) )
+
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
                 Call EditBoxscore (boxName$)
                 Color 15, 0
 
@@ -532,9 +533,10 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
     Shared scheduleQB_V$(), scheduleQB_H$()
     Shared scheduleYN$()
 
-    Shared qbName$(), modeAbbrev$()
-    Shared yesNo$()
-    Shared windSetting$(), weather$()
+    Shared location$(), modeAbbrev$(), overtime$()
+    Shared playMode$(), qbName$()
+    Shared rulesType$(), ruleYrPro$(), ruleYrColl$()
+    Shared weather$(), windSetting$(), yesNoText$()
 
     Dim displayPause!
 
@@ -547,33 +549,54 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
 
         ' ** Enter New Game **
         Cls
-        Color 2: Print Tab(29); "SELECT GAME OPTIONS"
-        Print
 
-        Locate 2, 2: Color 14: Print "(1) ";: Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
-        Locate 3, 2: Color 14: Print "(2) ";: Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
-        Locate 4, 2: Color 14: Print "(3) ";: Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
-        Locate 5, 2: Color 14: Print "(4) ";: Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
-        Locate 6, 2: Color 14: Print "(5) ";: Color 15: Print "HOME FIELD ADVANTAGE: "; location$(scheduleNG%(gameIndex%, 2))
-        Locate 7, 2: Color 14: Print "(6) ";: Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
-        Locate 8, 2: Color 14: Print "(7) ";: Color 15: Print "COLLEGE RULES "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
-        Locate 9, 2: Color 14: Print "(8) ";: Color 15: Print "PRO RULES "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
-        Locate 10, 2: Color 14: Print "(9) ";: Color 15: Print "GAME DATE (XX-XX-XX) "; DT$; "   "
-        Locate 11, 2: Color 14: Print "(A) ";: Color 15: Print "GAME TIME (XX:XXP) "; TM$; "   "
-        Locate 12, 2: Color 14: Print "(B) ";: Color 15: Print "SUDDEN DEATH "; overtime$(scheduleNG%(gameIndex%, 14))
-        Locate 13, 2: Color 14: Print "(C) ";: Color 15: Print "WIND "; windSetting$(scheduleNG%(gameIndex%, 19))
-        Locate 14, 2: Color 14: Print "(D) ";: Color 15: Print "WEATHER "; weather$(scheduleNG%(gameIndex%, 20))
-        Locate 15, 2: Color 14: Print "(0) ";: Color 15: Print "ACCEPT SETTINGS"
+        Color 2
+        Print Tab(29); "SELECT OPENING OPTIONS"
 
-        Locate 16, 2: Print "NOTES: CLOCK IS STOPPED AFTER A 1ST DOWN IN COLLEGE BEGINNING IN 1968"
-        Locate , 2: Print "       HOLDING IS A 15 YARD PENALTY FOR COLLEGE PRE-1981 AND PRO PRE-1974"
-        Locate , 2: Print "       1991-PRESENT, COLLEGE HOLDING MARKED FROM POINT OF INFRACTION"
-        Locate , 2: Print "       1974-77, PRO HOLDING ON A RUN IS 10 YDS AND 15 ON A PASS"
-        Locate , 2: Print "       FROM 1978-PRESENT, ALL PRO HOLDING PENALTIES ARE 10 YARDS"
-        Locate , 2: Print "       PRE-1974, IN THE PROS, GOAL POSTS WERE ON THE GOAL LINE, THE BALL WAS"
-        Locate , 2: Print "       PLACED ON THE 20 AFTER MISSED FIELD GOALS, KICKOFFS WERE FROM THE 40"
-        Locate , 2: Print "       1992-PRESENT, COLLEGE RULES ALLOW ADVANCEMENT OF A FUMBLE"
-        Locate , 2: Print "       PRE-1984, IN COLLEGE PASS INTERFERENCE AT SPOT OF INFRACTION";: Locate 1, 1
+        Locate 2, 2: Color 14
+        Print "(1) ";
+        Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
+        Locate 3, 2: Color 14
+        Print "(2) ";
+        Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
+        Locate 4, 2: Color 14
+        Print "(3) ";
+        Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
+        Locate 5, 2: Color 14
+        Print "(4) ";
+        Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$; "   "
+        Locate 6, 2: Color 14
+        Print "(5) ";
+        Color 15: Print "GAME TIME (XX:XXP)  "; TM$; "   "
+        Locate 7, 2: Color 14
+        Print "(6) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
+        Locate 8, 2: Color 14
+        Print "(7) ";
+        Color 15: Print "GAME LOCATION: "; location$(scheduleNG%(gameIndex%, 2))
+        Locate 9, 2: Color 14
+        Print "(8) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
+        Locate 10, 2: Color 14
+        Print "(9) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
+        Locate 11, 2: Color 14
+        Print "(A) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
+        Locate 12, 2: Color 14
+        Print "(B) ";
+        Color 15: Print "SUDDEN DEATH: "; overtime$(scheduleNG%(gameIndex%, 14))
+        Locate 13, 2: Color 14
+        Print "(C) ";
+        Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
+        Locate 14, 2: Color 14
+        Print "(D) ";
+        Color 15: Print "WEATHER: "; weather$(scheduleNG%(gameIndex%, 20))
+        Locate 16, 2: Color 14
+        Print "(0) ";
+        Color 15: Print "ACCEPT SETTINGS"
+
+        Locate 1, 1
 
         Do
             I$ = GetKeyPress$
@@ -620,32 +643,34 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                     End If
 
                 Case 4:
-                    scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
-                    If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
+                    Locate 5, 26: Input DT$
 
                 Case 5:
-                    N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
-                    scheduleNG%(gameIndex%, 2) = N + 1
+                    Locate 6, 24: Input TM$
 
                 Case 6:
                     Locate 7, 32: Input displayPause!
                     scheduleNG%(gameIndex%, 4) = displayPause! * 10
 
                 Case 7:
-                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
-                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
+                    'N = 1 - (scheduleNG%(gameIndex%, 2))
+                    'scheduleNG%(gameIndex%, 2) = N
+                    N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
+                    scheduleNG%(gameIndex%, 2) = N + 1
 
                 Case 8:
-                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
-                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
+                    scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
+                    If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
 
                 Case 9:
-                    Locate 11, 27: Input DT$
-
+                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
+                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
+ 
                 Case 10: ' Back to beginning of loop
 
                 Case 11:
-                    Locate 11, 25: Input TM$
+                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
+                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
 
                 Case 12:
                     scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
@@ -1065,7 +1090,7 @@ Sub BoxscoreMaintenance ()
                     Call EditParameters
 
                 Case 2:
-                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
+                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
 
                     If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
                         boxName$ = diskPaths$(1) + boxscoreFile$
@@ -1073,26 +1098,25 @@ Sub BoxscoreMaintenance ()
                     End If
 
                 Case 3
-                    Spec$ = diskPaths$(1) + "BOX*."
+                    Spec$ = diskPaths$(1) + "*.BS"
                     Call DeleteBoxscores(Selection%, Spec$)
-                    '-- we should give the user a confirmation message
 
                 Case 4
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    Call DeleteBoxscores(Selection%, Spec$)
+
                     Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
-                    '-- we should give the user a confirmation message
 
                 Case 5:
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    Call DeleteBoxscores(Selection%, Spec$)
+
                     Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
-                    '-- we should give the user a confirmation message
 
-                    Spec$ = diskPaths$(1) + "BOX*."
+                    Spec$ = diskPaths$(1) + "*.BS"
                     Call DeleteBoxscores(Selection%, Spec$)
-                    '-- we should give the user a confirmation message
-
-                Case 6:
-                    Cls
 
             End Select
 
@@ -1215,7 +1239,7 @@ Sub ChangeGlobalSettings ()
 
     Shared scheduleAP%(), scheduleNG%()
 
-    Shared modeAbbrev$(), yesNo$()
+    Shared modeAbbrev$()
     Shared qbName$(), scheduleYN$()
 
     Shared windSetting$(), weather$()
@@ -1226,17 +1250,29 @@ Sub ChangeGlobalSettings ()
     scheduleYN$(0, 1) = ""
 
     ' GLOBAL SETTINGS FOR A SCHEDULE
-    ruleOptType = 1
-    ruleOptColl = 5
-    ruleOptPro = 3
-    overtimeOpt = 1
-    windOpt = 3
-    weatherOpt = 3
+    ' The code below would use default values based on the most recent rules
+    'ruleOptType = 1
+    'ruleOptColl = 5
+    'ruleOptPro = 3
+    'overtimeOpt = 1
+    'windOpt = 3
+    'weatherOpt = 3
 
     'QB selections
     qbName$(4) = "RANDOM"
 
-    DT$ = "10-01-91"
+    'This code will assign defaults based on the first game in the schedule.
+    'Usually when I want to change global settings, I want to keep most
+    'settings in the schedule the same.
+    ruleOptType = scheduleNG%(0, 3)
+    displayPause! = scheduleNG%(0, 4) / 10
+    ruleOptColl = scheduleNG%(0, 7)
+    ruleOptPro = scheduleNG%(0, 11)
+    overtimeOpt = scheduleNG%(0, 14)
+    windOpt = scheduleNG%(0, 19)
+    weatherOpt = scheduleNG%(0, 20)
+
+    DT$ = "09-01-23"
     TM$ = "07:30P"
 
     Do

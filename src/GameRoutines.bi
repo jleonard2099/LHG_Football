@@ -2,7 +2,7 @@ Declare Sub FOOTBALL ()
 Declare Sub EndOfGame
 Declare Sub ADDBACKS ()
 Declare Sub AddPossessionTime (minSeconds, maxSeconds)
-Declare Sub ARMADJUST ()
+Declare Sub AdjustCompPct ()
 Declare Sub AUTOSETUP
 Declare Sub BLITZ ()
 Declare Sub BLITZ2 ()
@@ -61,9 +61,10 @@ Declare Sub MISSEDFG
 Declare Sub MISSPAT
 Declare Sub MOVEBALL ()
 Declare Sub NAMEEDIT ()
-Declare Sub OFFMENU ()
+Declare Sub ComputerOffense ()
 Declare Sub ONSIDE ()
 Declare Sub OPTIONBOX (J)
+Declare Sub OPTIONS ()
 Declare Sub OVERUSE ()
 Declare Sub PASSBALL ()
 Declare Sub PASSMENU ()
@@ -112,5 +113,5 @@ Declare Sub YARDLINE ()
 
 
 Declare Function FNP (X) 'Used only in "Marker" subroutine
-Declare Function GetTeamYear% (teamName$)
+Declare Function GetTeamYear% (yearFromName$)
 Declare Function TickerTime% (timeInterval, X)

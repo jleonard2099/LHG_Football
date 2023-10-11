@@ -25,7 +25,6 @@ DefInt A-Z
 '$INCLUDE: 'BoxRoutines.bi'
 '$INCLUDE: 'FileTeamSelection.bi'
 '$INCLUDE: 'Variables.bi'
-Dim A7L!(60, 5), A8L!(300), A9L!(450)
 
 '$INCLUDE: 'MainRoutines.bi'
 '$INCLUDE: 'TITLE.bi'
@@ -112,8 +111,11 @@ Data 0,-3,3,0,3,3,-3,-3,0,0: 'SWEEP
 Data 0,-3,6,0,6,3,-3,-6,0,0: 'OPTION
 Data -6,-6,-3,-3,-3,-3,-3,-3,6,6: 'DRAW
 Data 3,3,-3,-3,-6,-6,-6,-6,-3,-3: 'TRAP
+
 Data OFF,5,DEF,5,OFF,10: 'PENALTY INFO
+
 Data 90,88,80,78,60,68,20,62,-5,52: 'FIELD GOAL INFO
+
 Data -3,-4,0,3,-6,-6,0,0,0,0,0: ' INT HITCH
 Data -3,-4,0,-1,-6,-6,0,0,0,0,0: ' INT SP
 Data 0,-1,0,-1,0,-1,0,0,0,0,0: ' INT MP
@@ -124,6 +126,7 @@ Data 3,2,3,2,4,5,0,0,0,0,0: ' INT L PA
 Data 0,1,-1,-1,0,0,0,0,0,0,0: ' INT SL
 Data 0,0,0,0,0,0,0,0,0,0,0: ' INT ROLLOUT
 Data 0,0,0,0,0,0,0,0,0,0,0: ' INT BOOTLEG
+
 Data 31,21,21,11,40,50,8,8,-5,-5,-13: ' C% HITCH
 Data 21,11,11,1,30,40,-10,-10,-20,-20,-23: ' C% SP
 Data 1,-9,6,-4,-5,-10,-19,-19,-17,-17,-13: ' C% MP
@@ -134,6 +137,7 @@ Data -14,-29,-19,-29,-30,-40,-25,-25,-17,-17,-6: ' C% L PA
 Data 6,-14,1,-4,10,10,-13,-13,-19,-19,-17: ' C% SL
 Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% ROLLOUT
 Data -5,5,-10,10,0,0,-19,-17,-19,-13,-13: ' C% BOOTLEG
+
 Data 0,1,-1,0,1,2,1,1,2,2,3: ' Y/C HITCH
 Data 0,1,-1,0,1,2,3,3,21,21,25: ' Y/C SP
 Data 0,1,0,0,1,2,21,21,25,25,28: ' Y/C MED
@@ -144,6 +148,7 @@ Data 1,1,1,2,-1,-1,42,42,42,42,42: ' Y/C L PA
 Data 0,-1,1,2,1,2,18,18,28,28,33: ' Y/C SL
 Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C ROLL
 Data 0,1,-1,0,1,2,21,25,21,28,28: ' Y/C BOOTLEG
+
 Data -8,-8,-4,-4,-8,-8,-6,-8,-4,-8,-4: ' SCK HITCH
 Data -4,-4,0,0,-8,-8,-2,-2,0,0,2: ' SCK SP
 Data 0,0,-2,-2,2,-6,3,3,13,13,23: ' SCK MP
@@ -154,10 +159,13 @@ Data 4,4,0,0,8,-2,23,23,33,33,43: ' SCK L PA
 Data -4,-4,-2,-2,2,-6,0,0,3,3,13: ' SCK SL
 Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK ROLL
 Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK BOOTLEG
-Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0, )
-Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1, )
-Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' RN%(0, )
-Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' RN%(1, )
+
+Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0,X)
+Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1,X)
+
+Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' RN%(0,X)
+Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' RN%(1,X)
+
 'BY%
 Data 11,-5,11,0
 Data 11,-5,11,0
@@ -253,6 +261,8 @@ Data 0,0,0,0,0,26,69,75,81,86,91,94,97,100: ' LP 7
 Data 0,0,0,0,0,0,17,40,64,72,80,88,94,100: ' LP 8
 Data 0,0,0,0,0,0,6,29,54,64,74,84,92,100: ' LP 9
 Data 0,0,0,0,0,0,3,23,44,56,68,80,90,100: ' LP 10
+
+
 Data 0,10,20,30,40,50,60,70,80,90,50,55,60,65,70,75,80,85,90,95,100
 Data 0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2
 
@@ -262,17 +272,41 @@ Data 0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3
 
 For I = 1 To 7:
     For I1 = 1 To 10:
+        'Run Ydg Adjustments (Based on DEF?)
         Read D3%(I, I1)
     Next I1
 Next I
 
-For I = 0 To 2: Read P$(I): Read P(I): Next I
+For I = 0 To 2:
+    'Penalty Info
+    Read P$(I) 'OFF/DEF
+    Read P(I) '# Yds
+Next I
 
-For I = 0 To 4: Read F(I): Read F1(I): Next I
+For I = 0 To 4:
+    'Field Goal adjustments?
+    Read F(I)
+    Read F1(I)
+Next I
 
 For I = 0 To 3:
+    '0 = INT%
+    '1 = COMP%
+    '2 = Y/C
+    '3 = Sack
     For I1 = 1 To 10:
+        '1 = Hitch
+        '2 = Short Pass
+        '3 = Medium Pass
+        '4 = Long Pass
+        '5 = Screen
+        '6 = Med Play Action
+        '7 = Long Play Action
+        '8 = SL
+        '9 = Rollout
+        '10 = Bootleg
         For J = 1 To 11:
+            'Pass Adjustments
             Read S1%(I, I1, J)
         Next J
     Next I1
@@ -280,31 +314,42 @@ Next I
 
 For I = 0 To 1:
     For I1 = 0 To 14:
+        'Run yard adjustments?
         Read RM%(I, I1)
     Next
 Next
 
 For I = 0 To 1:
     For I1 = 1 To 38:
+        'Run yard adjustments?
         Read RN%(I, I1)
     Next
 Next
 
 For I = 1 To 38:
     For I1 = 1 To 4:
+        'Breakaway yardage???
         Read BY%(I, I1)
     Next
 Next
 
 For I = 1 To 30:
     For I1 = 1 To 2:
+        'Goalline yard adjustments
         Read GL%(I, I1)
     Next
 Next
 
 For I = 1 To 5:
+    '1 = Hitch
+    '2 = Screen
+    '3 = Short PASS
+    '4 = Medium Pass
+    '5 = Long Pass
     For I1 = 1 To 10:
         For J = 1 To 14:
+            'What type of passing adjustment is this?
+            'It doesn't cover all types of pass plays
             Read S2%(I, I1, J)
         Next
     Next
@@ -312,12 +357,14 @@ Next
 
 For I = 1 To 2:
     For I1 = 1 To 21:
+        '???
         Read PS%(I, I1)
     Next
 Next
 
 For I = 1 To 2:
     For I1 = 0 To 20:
+        'Y/C% Adjustment
         Read QR%(I1, I)
     Next
 Next
@@ -333,15 +380,24 @@ Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
 For I = 1 To 29: Read RP$(I): Next
 
 ' Game options
+'location$(0) = "@ VISITING TEAM"
+location$(1) = "HOME FIELD  "
+location$(2) = "NEUTRAL SITE"
+
+overtime$(0) = "NO OVERTIME          "
+overtime$(1) = "ONE 15-MINUTE QUARTER"
+overtime$(2) = "SUDDEN DEATH TO WIN  "
+overtime$(3) = "NCAA DIVISION I-AA   "
+
 modeAbbrev$(0) = "HH"
 modeAbbrev$(1) = "CV"
 modeAbbrev$(2) = "CH"
 modeAbbrev$(3) = "CC"
 
-playMode$(0) = "HUMAN OPPONENT      "
-playMode$(1) = "COMPUTER IS TEAM 1  "
-playMode$(2) = "COMPUTER IS TEAM 2  "
-playMode$(3) = "COMPUTER VS COMPUTER"
+playMode$(0) = "HUMAN OPPONENT           "
+playMode$(1) = "COMPUTER IS VISITING TEAM"
+playMode$(2) = "COMPUTER IS HOME TEAM    "
+playMode$(3) = "COMPUTER VS COMPUTER     "
 
 rulesType$(0) = "PLAY USING COLLEGE RULES"
 rulesType$(1) = "PLAY USING NFL RULES    "
@@ -349,14 +405,6 @@ rulesType$(2) = "PLAY USING USFL RULES   "
 rulesType$(3) = "PLAY USING AFL RULES    "
 rulesType$(4) = "PLAY USING WFL RULES    "
 rulesType$(5) = "PLAY USING WLAF RULES   "
-
-overtime$(0) = "NO OVERTIME          "
-overtime$(1) = "ONE 15-MINUTE QUARTER"
-overtime$(2) = "SUDDEN DEATH TO WIN  "
-overtime$(3) = "NCAA DIVISION I-AA   "
-
-yesNo$(0) = "Y"
-yesNo$(1) = "N"
 
 ruleYrPro$(0) = "1978-1993"
 ruleYrPro$(1) = "PRE-1974 "
@@ -370,18 +418,21 @@ ruleYrColl$(3) = "1984-1991"
 ruleYrColl$(4) = "1991     "
 ruleYrColl$(5) = "POST-1991"
 
-location$(1) = "HOME FIELD  "
-location$(2) = "NEUTRAL SITE"
+weather$(0) = "GOOD                          "
+weather$(1) = "BAD (RAIN/SNOW)               "
+weather$(2) = "TERRIBLE (BLIZZARD/HEAVY RAIN)"
+weather$(3) = "COMPUTER SELECT               "
 
 windSetting$(0) = "NONE             "
 windSetting$(1) = "LIGHT TO MODERATE"
 windSetting$(2) = "STRONG AND GUSTY "
 windSetting$(3) = "COMPUTER SELECT  "
 
-weather$(0) = "GOOD                          "
-weather$(1) = "BAD (RAIN/SNOW)               "
-weather$(2) = "TERRIBLE (BLIZZARD/HEAVY RAIN)"
-weather$(3) = "COMPUTER SELECT               "
+yesNoText$(0) = "NO "
+yesNoText$(1) = "YES"
+
+yesNo$(0) = "Y"
+yesNo$(1) = "N"
 
 
 
