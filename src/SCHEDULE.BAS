@@ -579,13 +579,13 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
         Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
         Locate 10, 2: Color 14
         Print "(9) ";
-        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
+        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
         Locate 11, 2: Color 14
         Print "(A) ";
-        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
         Locate 12, 2: Color 14
         Print "(B) ";
-        Color 15: Print "SUDDEN DEATH: "; overtime$(scheduleNG%(gameIndex%, 14))
+        Color 15: Print "OVERTIME: "; overtime$(scheduleNG%(gameIndex%, 14))
         Locate 13, 2: Color 14
         Print "(C) ";
         Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
@@ -1242,6 +1242,8 @@ Sub ChangeGlobalSettings ()
     Shared modeAbbrev$()
     Shared qbName$(), scheduleYN$()
 
+    Shared location$(), overtime$(), playMode$()
+    Shared rulesType$(), ruleYrColl$(), ruleYrPro$()
     Shared windSetting$(), weather$()
 
     Dim displayPause!
@@ -1264,11 +1266,13 @@ Sub ChangeGlobalSettings ()
     'This code will assign defaults based on the first game in the schedule.
     'Usually when I want to change global settings, I want to keep most
     'settings in the schedule the same.
+    playerOpt = scheduleNG%(0, 10)
+    gameLoc = scheduleNG%(0, 2)
     ruleOptType = scheduleNG%(0, 3)
-    displayPause! = scheduleNG%(0, 4) / 10
-    ruleOptColl = scheduleNG%(0, 7)
     ruleOptPro = scheduleNG%(0, 11)
+    ruleOptColl = scheduleNG%(0, 7)
     overtimeOpt = scheduleNG%(0, 14)
+    displayPause! = scheduleNG%(0, 4) / 10
     windOpt = scheduleNG%(0, 19)
     weatherOpt = scheduleNG%(0, 20)
 
@@ -1281,24 +1285,24 @@ Sub ChangeGlobalSettings ()
         Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
 
         Locate 3, 2: Color 14: Print "(1) ";
-        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
+        Color 15: Print "GAME PLAY: "; playMode$(playerOpt)
         Locate 4, 2: Color 14: Print "(2) ";
-        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
+        Color 15: Print "GAME LOCATION: "; location$(gameLoc)
         Locate 5, 2: Color 14: Print "(3) ";
-        Color 15: Print "RESERVED FOR FUTURE"
+        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
         Locate 6, 2: Color 14: Print "(4) ";
-        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
-        Locate 7, 2: Color 14: Print "(5) ";
         Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
+        Locate 7, 2: Color 14: Print "(5) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
         Locate 8, 2: Color 14: Print "(6) ";
-        Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
+        Color 15: Print "OVERTIME: "; overtime$(overtimeOpt)
         Locate 9, 2: Color 14: Print "(7) ";
-        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
         Locate 10, 2: Color 14: Print "(8) ";
-        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
+        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
         Locate 11, 2: Color 14: Print "(9) ";
-        Color 15: Print "RESERVED FOR FUTURE"
-        Locate 12, 2: Color 14: Print "(0) ";
+        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
+        Locate 13, 2: Color 14: Print "(0) ";
         Color 15: Print "ACCEPT GLOBAL SETTINGS"
 
         Do
@@ -1310,32 +1314,38 @@ Sub ChangeGlobalSettings ()
         Select Case I
 
             Case 1:
+                playerOpt = playerOpt + 1
+                If playerOpt > 3 Then playerOpt = 0
+
+            Case 2:
+                gameLoc = gameLoc + 1
+                If gameLoc = 3 Then gameLoc = 1
+
+            Case 3:
                 ruleOptType = ruleOptType + 1
                 If ruleOptType > 5 Then ruleOptType = 0
 
-            Case 2:
-                Input "DISPLAY VARIABLE "; displayPause!
-
-            Case 3:
-                '
-
             Case 4:
-                ruleOptColl = ruleOptColl + 1
-                If ruleOptColl > 5 Then ruleOptColl = 0
-
-            Case 5:
                 ruleOptPro = ruleOptPro + 1
                 If ruleOptPro > 3 Then ruleOptPro = 0
+
+            Case 5:
+                ruleOptColl = ruleOptColl + 1
+                If ruleOptColl > 5 Then ruleOptColl = 0
 
             Case 6:
                 overtimeOpt = overtimeOpt + 1
                 If overtimeOpt > 3 Then overtimeOpt = 0
 
             Case 7:
+                Locate 9, 32: Input displayPause!
+                'Input "DISPLAY VARIABLE "; displayPause!
+
+            Case 8:
                 windOpt = windOpt + 1
                 If windOpt > 3 Then windOpt = 0
 
-            Case 8:
+            Case 9
                 weatherOpt = weatherOpt + 1
                 If weatherOpt > 3 Then weatherOpt = 0
 
@@ -1344,9 +1354,11 @@ Sub ChangeGlobalSettings ()
     Loop Until I = 0
 
     For I = 1 To scheduleAP%(0)
+        scheduleNG%(I, 2) = gameLoc
         scheduleNG%(I, 3) = ruleOptType
         scheduleNG%(I, 4) = displayPause! * 10
         scheduleNG%(I, 7) = ruleOptColl
+        scheduleNG%(I, 10) = playerOpt
         scheduleNG%(I, 11) = ruleOptPro
         scheduleNG%(I, 14) = overtimeOpt
         scheduleNG%(I, 19) = windOpt

@@ -7455,7 +7455,6 @@ Sub STATS2SCREEN ()
     Call FRAMESTATS(22)
     Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
 
-    nbrPlayers = 0
     Locate 2, 32: Print "RUSHING STATISTICS"
     Print
     Call ADDBACKS
@@ -7478,26 +7477,6 @@ Sub STATS2SCREEN ()
                 Locate , 35: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
                 If I1 <= 9 Then Print Using "###   ##"; RB(I, I1), K2(I, I1, 2)
                 If I1 > 9 Then Print Using "      ##"; K2(I, I1, 2)
-                nbrPlayers = nbrPlayers + 1
-            End If
-
-            If nbrPlayers > 16 Then
-            'Create a 2nd page if there are enough rushers
-            'to spam out past the page
-                Call GetKeyWhenNoDelay
-
-                Call FRAMESTATS(22)
-                Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
-
-                Locate 2, 32: Print "RUSHING STATISTICS"
-                Call ADDBACKS
-
-                Locate , 20
-                Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);
-                Color 0, 7
-                Locate , 36
-                Print "TC   YDS   AVG   LG   TD"
-
             End If
 
         Next I1
@@ -8419,8 +8398,9 @@ End Function
 'issues are happening in a game.
 Sub pbplog (lineNumber)
 
-    Print #7, "Called from line "; lineNumber
-    Print #7,
+    Print #11, "Called from line "; lineNumber
+    Print #11, gameTeams$(0); " vs "; gameTeams$(1)
+    Print #11,
 
 End Sub
 

@@ -12,8 +12,6 @@ Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GRIDIRON!"
 
-    'Open "pbplog" For Output As #7
-
     Shared scheduleFile$
     Shared tickerStart
 
@@ -120,6 +118,10 @@ Sub FOOTBALL ()
 
         Close #6
 
+        'currGame = schedGame(0) + schedGame(2)
+
+        'Open "pbplog" + Str$(currGame) For Append As #11
+
         'Read in schedule options
         Open diskPaths$(0) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
 
@@ -142,6 +144,10 @@ Sub FOOTBALL ()
         Close #7
 
         autoPlay = 1
+
+    Else
+    
+        Open "pbplog" For Append As #11
 
     End If
 
@@ -181,13 +187,13 @@ Sub FOOTBALL ()
             Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
             Locate 7, 2: Color 14
             Print "(6) ";
-            Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
+            Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
             Locate 8, 2: Color 14
             Print "(7) ";
-            Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
+            Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
             Locate 9, 2: Color 14
             Print "(8) ";
-            Color 15: Print "SUDDEN DEATH: "; overtime$(NG%(14))
+            Color 15: Print "OVERTIME: "; overtime$(NG%(14))
             Locate 10, 2: Color 14
             Print "(9) ";
             Color 15: Print "START GAME"
@@ -274,12 +280,12 @@ Sub FOOTBALL ()
                         If ruleOptType = 6 Then ruleOptType = 0
 
                     Case 6:
-                        ruleOptColl = ruleOptColl + 1
-                        If ruleOptColl > 5 Then ruleOptColl = 0
-
-                    Case 7
                         ruleOptPro = ruleOptPro + 1
                         If ruleOptPro > 3 Then ruleOptPro = 0
+
+                    Case 7
+                        ruleOptColl = ruleOptColl + 1
+                        If ruleOptColl > 5 Then ruleOptColl = 0
 
                     Case 8:
                         NG%(14) = NG%(14) + 1
@@ -1518,8 +1524,6 @@ Sub FOOTBALL ()
 
         Loop Until validPlay% = 1
 
-        'Call pbplog(1606)
-
         If autoPlaySelect% = 0 Then
 
             If P2 = 8 Then
@@ -1571,8 +1575,6 @@ Sub FOOTBALL ()
 
         End If
 
-        'Call pbplog(1658)
-
         'If Computer is playing offense and a long Pass was chosen inside the Opp 15 --> Change to Medium Pass
         If ((playerMode = 1 And P1 = compTeam Or playerMode = 2) And (P2 = 12 Or P2 = 15) And Y >= 85) Then P2 = 11
 
@@ -1591,11 +1593,7 @@ Sub FOOTBALL ()
 
         End If
 
-        'Call pbplog(1675)
-
     Loop While (timeouts(P1) > 0 And Y > 80 And Int(Rnd(1) * 25) + 1 = 16)
-
-    'Call pbplog(1680)
 
     Call SCOREBOARD
     Call MARKER1
