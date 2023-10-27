@@ -761,7 +761,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             If careerQBS!(V, I, 0) > 0 Then careerQBS!(V, I, 11) = Int(careerQBS!(V, I, 1) / careerQBS!(V, I, 0) * 1000) / 10
 
                             If careerQBS!(V, I, 0) = 0 Then
-                                careerQBS!(V, I, 11) = 0: careerQBS!(V, I, 8) = 0: careerQBS!(V, I, 10) = 0: careerQBS!(V, I, 9) = 0
+                                careerQBS!(V, I, 11) = 0
+                                careerQBS!(V, I, 8) = 0
+                                careerQBS!(V, I, 10) = 0
+                                careerQBS!(V, I, 9) = 0
                             Else
                                 careerQBS!(V, I, 8) = Int(careerQBS!(V, I, 4) / careerQBS!(V, I, 0) * 1000) / 10
                                 careerQBS!(V, I, 10) = Int(careerQBS!(V, I, 3) / careerQBS!(V, I, 0) * 100) / 100
@@ -863,7 +866,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         If careerTT!(11) > 0 Then careerTT!(30) = Int(careerTT!(10) / careerTT!(11) * 1000) / 10
                         If careerTT!(11) = 0 Then
-                            careerTT!(30) = 0: careerTT!(27) = 0: careerTT!(29) = 0: careerTT!(28) = 0
+                            careerTT!(30) = 0
+                            careerTT!(27) = 0
+                            careerTT!(29) = 0
+                            careerTT!(28) = 0
                         Else
                             careerTT!(27) = Int(careerTT!(13) / careerTT!(11) * 1000) / 10
                             careerTT!(29) = Int(careerTT!(14) / careerTT!(11) * 100) / 100

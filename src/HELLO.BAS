@@ -1,6 +1,6 @@
 $Debug
 
-Const GAME_VERSION$ = "6.40"
+Const GAME_VERSION$ = "6.45"
 Const MAX_TEAMS = 1000
 Const MAX_GAMES = 1500
 Const MAX_FILES = 10240
@@ -475,7 +475,7 @@ Do
 
     Call Main_Menu(Selection%)
 
-Loop Until Selection% = 8
+Loop Until Selection% = 7
 
 End
 
@@ -508,21 +508,21 @@ Sub Main_Menu (menuSelection%)
 
         Call TITLE
 
-        ReDim menuChoices$(1 To 8)
+        ReDim menuChoices$(1 To 7)
 
         menuChoices$(1) = "PLAY SINGLE GAME                "
         menuChoices$(2) = "TEAM MANAGEMENT / ORGANIZATION  "
         menuChoices$(3) = "REPLAY STATISTICS AND REPORTS   "
         menuChoices$(4) = "LEADERS / STANDINGS / RECORDS   "
         menuChoices$(5) = "SCHEDULER / AUTOPLAY / BOXSCORES"
-        menuChoices$(6) = "HARD DRIVE INSTALLATION         "
-        menuChoices$(7) = "CONFIGURE DRIVES FOR TEAMS,STATS"
-        menuChoices$(8) = "EXIT TO DOS                     "
+        'menuChoices$(6) = "HARD DRIVE INSTALLATION         "
+        menuChoices$(6) = "CONFIGURE DRIVES FOR TEAMS,STATS"
+        menuChoices$(7) = "EXIT TO DOS                     "
 
         menuSelection% = 1
-        Count% = 8
+        Count% = 7
         Start% = 1
-        ExitCode% = 8
+        ExitCode% = 7
         FileFGColor% = 15: FileBGColor% = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -542,21 +542,31 @@ Sub Main_Menu (menuSelection%)
 
             Select Case menuSelection%
 
-                Case 1: Call FOOTBALL
-                Case 2: Call TeamMgt_Menu
-                Case 3: Call Replay_Menu
-                Case 4: Call Leaders_Menu
-                Case 5: Call SCHEDULE
-                Case 6: '
-                Case 7: Call ConfigureDrives
+                Case 1:
+                    Call FOOTBALL
+                
+                Case 2:
+                    Call TeamMgt_Menu
+                
+                Case 3:
+                    Call Replay_Menu
+
+                Case 4:
+                    Call Leaders_Menu
+
+                Case 5:
+                    Call SCHEDULE
+
+                Case 6:
+                    Call ConfigureDrives
 
             End Select
 
         End If
 
-    Loop Until menuSelection% = 8 Or ExitCode% = 27
+    Loop Until menuSelection% = 7 Or ExitCode% = 27
 
-    If ExitCode% = 27 Then menuSelection% = 8
+    If ExitCode% = 27 Then menuSelection% = 7
 
 End Sub
 
@@ -671,6 +681,7 @@ End Sub
 Sub TeamMgt_Menu ()
 
     Do
+
         Cls
 
         Call TITLE
@@ -748,7 +759,10 @@ End Sub
 '----------------------------------------
 '         Replay_Menu Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provodes the user with
+'several options for managing replay
+'data, from statistics to reports and
+'team careers
 Sub Replay_Menu ()
 
     Do
@@ -757,16 +771,17 @@ Sub Replay_Menu ()
 
         Call TITLE
 
-        ReDim menuChoices$(1 To 4)
+        ReDim menuChoices$(1 To 5)
 
         menuChoices$(1) = "VIEW / PRINT COMPILED STATS       "
         menuChoices$(2) = "ENCYCLOPEDIA / TEAM REPLAY OPTIONS"
-        menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES  "
-        menuChoices$(4) = "RETURN TO MAIN MENU               "
+        menuChoices$(3) = "MODIFY REPLAY STATS               "
+        menuChoices$(4) = "MERGE SEPARATE STATISTICAL FILES  "
+        menuChoices$(5) = "RETURN TO MAIN MENU               "
         Selection% = 1
-        Count% = 4
+        Count% = 5
         Start% = 1
-        ExitCode% = 4
+        ExitCode% = 5
         FileFGColor% = 15: FileBGColor% = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -783,15 +798,26 @@ Sub Replay_Menu ()
         Color , 0
 
         If ExitCode% <> 27 Then
+
             Select Case Selection%
-                Case 1: Call LOOKY
-                Case 2: Call CAREER
-                Case 3: Call MERGE
-                Case 4: Cls
+
+                Case 1:
+                    3 Call LOOKY
+
+                Case 2:
+                    Call CAREER
+
+                Case 3:
+                    Call EditStats
+
+                Case 4:
+                    Call MERGE
+
             End Select
+
         End If
 
-    Loop Until Selection% = 4 Or ExitCode% = 27
+    Loop Until Selection% = 5 Or ExitCode% = 27
 
 End Sub
 
@@ -799,7 +825,9 @@ End Sub
 '----------------------------------------
 '        Leaders_Menu Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provodes the user with
+'several options for managing team
+'leaders, stats and standings
 Sub Leaders_Menu ()
 
     Do
@@ -875,20 +903,20 @@ Sub Leaders_Menu ()
                 Case 2: Call CompileLeague
                 Case 3: Call SEEPRO
                 Case 4: Call HD2HDPRO
-                Case 5: Call RecordsMenu(1)
+                Case 5: Call Records_Menu(1)
                 Case 6: Call NEWLDR(1) 'Call ViewExpandedStats(1)
                 Case 7: Call BLANKPRO
                 Case 8: Call CREATCOL
                 Case 9: Call CompileCollege
                 Case 10: Call SEECOLL
                 Case 11: Call HD2HDCOL
-                Case 12: Call RecordsMenu(2)
+                Case 12: Call Records_Menu(2)
                 Case 13: Call NEWLDR(0) 'Call ViewExpandedStats(0)
                 Case 14: Call BLANKCOL
                 Case 15: Call CREATNAT
                 Case 16: Call CompileNatlOrg
                 Case 17: Call SEENATL
-                Case 18: Call RecordsMenu(3)
+                Case 18: Call Records_Menu(3)
                 Case 19: Call BLANKORG
 
             End Select

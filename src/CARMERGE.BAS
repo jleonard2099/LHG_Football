@@ -148,7 +148,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Shared careerFGS!(), careerPUS!()
     Shared statsZ!(), statsZ1!(), statsZ2!()
 
-    Dim LC$(60, 1), statsLF$(1), statsLI$(9, 1), statsLK$(15, 1), statsLP$(20, 1), LR$(50, 1)
+    Dim statsLC$(60, 1), statsLF$(1), statsLI$(9, 1), statsLK$(15, 1), statsLP$(20, 1), statsLR$(50, 1)
     Dim careerPK$(15, 1)
 
     Dim careerLC!(60), careerLF!(1), careerLK!(15)
@@ -419,14 +419,14 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     For I = 0 To 9: 
         Input #3, careerLR!(I)
-        Input #3, LR$(I, 0)
-        Input #3, LR$(I, 1)
+        Input #3, statsLR$(I, 0)
+        Input #3, statsLR$(I, 1)
     Next
 
     For I = 0 To 15: 
         Input #3, careerLC!(I)
-        Input #3, LC$(I, 0)
-        Input #3, LC$(I, 1)
+        Input #3, statsLC$(I, 0)
+        Input #3, statsLC$(I, 1)
     Next
 
     For I = 0 To 3: 
@@ -524,8 +524,8 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     RBBS!(N, J, K) = statsZ2!(I, K)
                 Next K
 
-                RBBS!(N, J, 6) = careerLR!(I): careerRBS$(N, J, 0) = LR$(I, 0)
-                RBBS!(N, J, 9) = careerLC!(I): careerRBS$(N, J, 1) = LC$(I, 0)
+                RBBS!(N, J, 6) = careerLR!(I): careerRBS$(N, J, 0) = statsLR$(I, 0)
+                RBBS!(N, J, 9) = careerLC!(I): careerRBS$(N, J, 1) = statsLC$(I, 0)
                 RBBS!(N, J, 7) = 1: RBBS!(N, J, 8) = targetYear
 
                 Exit For
@@ -547,9 +547,9 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     For K = 0 To 5: RBBS!(N, NB, K) = statsZ2!(I, K): Next
 
                     RBBS!(N, NB, 6) = careerLR!(I)
-                    careerRBS$(N, NB, 0) = LR$(I, 0)
+                    careerRBS$(N, NB, 0) = statsLR$(I, 0)
                     RBBS!(N, NB, 9) = careerLC!(I)
-                    careerRBS$(N, NB, 1) = LC$(I, 0)
+                    careerRBS$(N, NB, 1) = statsLC$(I, 0)
                     RBBS!(N, NB, 7) = 1
                     RBBS!(N, NB, 8) = targetYear
                 End If
@@ -590,7 +590,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 Next K
 
                 WRRS!(N, J, 3) = careerLC!(I + 10)
-                careerWRS$(N, J, 0) = LC$(I + 10, 0)
+                careerWRS$(N, J, 0) = statsLC$(I + 10, 0)
                 WRRS!(N, J, 4) = 1
                 WRRS!(N, J, 5) = targetYear
 
@@ -610,7 +610,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     For K = 6 To 8: WRRS!(N, NC, K - 6) = statsZ2!(I, K): Next
 
                     WRRS!(N, NC, 3) = careerLC!(I + 10)
-                    careerWRS$(N, NC, 0) = LC$(I + 10, 0)
+                    careerWRS$(N, NC, 0) = statsLC$(I + 10, 0)
                     WRRS!(N, NC, 4) = 1
                     WRRS!(N, NC, 5) = targetYear
                 End If

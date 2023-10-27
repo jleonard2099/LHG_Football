@@ -233,25 +233,24 @@ End Sub
 '   1 = Pro
 Sub UpdateExpandedLeaders (statType, tStats)
 
-    Dim PX
-
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
-    Shared AM!(), AF!(), GI!(), GS!()
+    Shared AM!(), AF!()
     Shared LC!(), LK!(), LF!(), LP!(), LR!()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared PK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
-    Dim intName$(1, 10), sackName$(1, 15), LC$(16, 1), statsLK$(2, 1), statsLP$(3, 1), LR$(9, 1)
+    Shared statsGI%(), statsGS%()
 
     Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
+    Shared intName$(), statsLC$(), statsLR$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared statsLF$(), statsPK$()
+    Shared sackName$(), statsLF$(), statsLK$(), statsLP$(), statsPK$()
     Shared QBL$(), lookyTT$(), Z1$()
 
     Shared GMA!(), GMB!(), GMC!()
@@ -259,8 +258,6 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
     Color 15, 0
     Cls
-
-    PX = 0
 
     For ZX = 1 To 30
 
@@ -277,25 +274,25 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Input #1, statsA$
 
                 'RBs
-                For I = 0 To 9: Input #1, lookyA1$(PX, I): Next I
+                For I = 0 To 9: Input #1, lookyA1$(I): Next I
 
                 'WR's
-                For I = 0 To 5: Input #1, lookyA2$(PX, I): Next I
+                For I = 0 To 5: Input #1, lookyA2$(I): Next I
 
                 'QBs
-                For I = 0 To 3: Input #1, lookyA3$(PX, I): Next I
+                For I = 0 To 3: Input #1, lookyA3$(I): Next I
 
                 'KR's
-                For I = 0 To 2: Input #1, lookyA4$(PX, I): Next I
+                For I = 0 To 2: Input #1, lookyA4$(I): Next I
 
                 'PR's
-                For I = 0 To 2: Input #1, lookyA5$(PX, I): Next I
+                For I = 0 To 2: Input #1, lookyA5$(I): Next I
 
                 'Punter
-                Input #1, lookyA6$(PX, 0)
+                Input #1, lookyA6$(0)
 
                 'Place Kickers
-                For I = 0 To 1: Input #1, lookyA7$(PX, I): Next I
+                For I = 0 To 1: Input #1, lookyA7$(I): Next I
 
                 'Leader Values
                 For J = 0 To 13
@@ -313,21 +310,21 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next L
 
                 For J = 0 To 9:
-                    Input #1, intName$(PX, J):
-                    For J1 = 0 To 2: Input #1, GI!(PX, J, J1): Next
+                    Input #1, intName$(J):
+                    For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next
                 Next
 
                 For J = 0 To 14:
-                    Input #1, sackName$(PX, J)
-                    For J1 = 0 To 1: Input #1, GS!(PX, J, J1): Next
+                    Input #1, sackName$(J)
+                    For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next
                 Next
 
                 For I = 0 To 9:
-                    Input #1, LR!(I): Input #1, LR$(I, 0): Input #1, LR$(I, 1)
+                    Input #1, LR!(I): Input #1, statsLR$(I, 0): Input #1, statsLR$(I, 1)
                 Next
 
                 For I = 0 To 15:
-                    Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1)
+                    Input #1, LC!(I): Input #1, statsLC$(I, 0): Input #1, statsLC$(I, 1)
                 Next
 
                 For I = 0 To 3:
@@ -371,10 +368,10 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 For I = 0 To 9
                     JA = JA + 1
-                    A1L$(JA) = lookyA1$(PX, I)
+                    A1L$(JA) = lookyA1$(I)
                     A1T$(JA) = statsA$
-                    LRL$(JA) = LR$(I, 0)
-                    LCL$(JA) = LC$(I, 0)
+                    LRL$(JA) = statsLR$(I, 0)
+                    LCL$(JA) = statsLC$(I, 0)
                     'I added the line below based on patterns in this routine
                     'In original code GMA!() was written to output files,
                     'but was never assigned a value!!!
@@ -388,9 +385,9 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 For I = 0 To 5
                     JB = JB + 1
-                    A2L$(JB) = lookyA2$(PX, I)
+                    A2L$(JB) = lookyA2$(I)
                     A2T$(JB) = statsA$
-                    LCL$(JB) = LC$(I + 10, 0)
+                    LCL$(JB) = statsLC$(I + 10, 0)
                     GMB!(JB) = nbrGames
 
                     For I1 = 6 To 8: A2L!(JB, I1 - 6) = statsZ2!(I, I1): Next I1
@@ -401,7 +398,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 3
 
                     JC = JC + 1
-                    QBL$(JC) = lookyA3$(PX, I)
+                    QBL$(JC) = lookyA3$(I)
                     A3T$(JC) = statsA$
                     LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = nbrGames
@@ -417,7 +414,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 2
 
                     JD = JD + 1
-                    A4L$(JD) = lookyA4$(PX, I)
+                    A4L$(JD) = lookyA4$(I)
                     A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
@@ -430,7 +427,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 2
 
                     JE = JE + 1
-                    A5L$(JE) = lookyA5$(PX, I)
+                    A5L$(JE) = lookyA5$(I)
                     A5T$(JE) = statsA$
                     PKL$(JE) = statsPK$(I, 0)
 
@@ -441,12 +438,12 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next I
 
                 JF = JF + 1
-                A6L$(JF) = lookyA6$(PX, 0)
+                A6L$(JF) = lookyA6$(0)
                 A6T$(JF) = statsA$
                 A6L!(JF, 0) = statsZ!(7)
                 A6L!(JF, 1) = statsZ!(8)
                 JG = JG + 1
-                A7L$(JG) = lookyA7$(PX, 0)
+                A7L$(JG) = lookyA7$(0)
                 A7T$(JG) = statsA$
 
                 For I = 0 To 3:
@@ -455,7 +452,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 A7L!(JG, 4) = LF!(0)
                 JG = JG + 1
-                A7L$(JG) = lookyA7$(PX, 1)
+                A7L$(JG) = lookyA7$(1)
                 A7T$(JG) = statsA$
 
                 For I = 0 To 3: A7L!(JG, I) = statsZ2!(I + 7, 17): Next
@@ -464,16 +461,16 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 For I = 0 To 9
                     JH = JH + 1
-                    A8L$(JH) = intName$(PX, I)
+                    A8L$(JH) = intName$(I)
                     A8T$(JH) = statsA$
-                    A8L!(JH) = GI!(PX, I, 0)
+                    A8L!(JH) = statsGI%(I, 0)
                 Next
 
                 For I = 0 To 14
                     JI = JI + 1
-                    A9L$(JI) = sackName$(PX, I)
+                    A9L$(JI) = sackName$(I)
                     A9T$(JI) = statsA$
-                    A9L!(JI) = GS!(PX, I, 0)
+                    A9L!(JI) = statsGS%(I, 0)
                 Next
 
                 JJ = JJ + 1

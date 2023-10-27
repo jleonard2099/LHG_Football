@@ -1531,10 +1531,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
 
     Close #1
 
-    For I = 0 To 15:
-        C2!(I) = 0
-        C3!(I) = 0
-    Next
+    Erase C2!, C3!
 
     U = 0
 

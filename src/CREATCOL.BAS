@@ -107,11 +107,47 @@ Sub DefineConference (conference$, div1$, div2$)
     Loop Until UCase$(I$) = "N"
 
     'Determine division names
-    Color 15, 0
-    Print
-    Print
-    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
-    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
+    'Color 15, 0
+    'Print
+    'Print
+    'Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
+    'Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
+
+    FG = 0
+    BG = 7
+
+    Cls
+    Color 15, 1
+
+    Locate 5, 1: QPrint "Name for Division 1 ", 14, 1, -1
+    Locate , 21: QPrint PadRight$(div1$, 50), FG, BG, -1
+    Locate 7, 1: QPrint "Name for Division 2 ", 14, 1, -1
+    Locate , 21: QPrint PadRight$(div2$, 50), FG, BG, -1
+
+    GetDiv1:
+    Locate 5, 21 'location of beginning of field
+    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
+    Call TextIn(div1$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
+    If XCode = 2 GoTo Done 'all done entering data
+
+    GetDiv2:
+    Locate 7, 21 'location of beginning of field
+    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
+    Call TextIn(div2$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
+
+    Done:
+    Color 14, 1
+    Locate 23, 1
+    Print "Is this okay? (Yes/No) ";
+    X$ = ""
+    Call YesNoB(X$, XCode, FG, BG)
+    Locate , 1
+    ClearEOL 14, 1
+    If XCode = 1 GoTo GetDiv2
+    If X$ = "N" GoTo GetDiv1
+    If X$ <> "Y" GoTo Done 'insist on either Y or N or up-arrow
 
 End Sub
 

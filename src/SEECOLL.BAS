@@ -74,6 +74,9 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
 
     Close #2
 
+    '--- Use an outside loop here for each
+    '--- chunk of 15 values of P
+
     D1 = W!(1) - L!(1)
 
     For P = 1 To 15:

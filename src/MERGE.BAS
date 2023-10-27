@@ -73,9 +73,9 @@ Sub MergeStats ()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
     Shared intName$(), DRI$(), sackName$(), DSR$()
     Shared statsH$(), HR$()
-    Shared LC$(), LCR$(), statsLF$(), LFR$()
+    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
-    Shared statsLP$(), LPR$(), LR$(), LRR$()
+    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
     Shared compO$(), statsPK$(), PKR$()
     Shared gameSITE$(), SITER$()
 
@@ -170,8 +170,8 @@ Sub MergeStats ()
                     
                     For I = 0 To 3: 
                         Input #1, LPR!(I)
-                        Input #1, LR$(I, 0)
-                        Input #1, LR$(I, 1)
+                        Input #1, statsLR$(I, 0)
+                        Input #1, statsLR$(I, 1)
                     Next
                     
                     For I = 0 To 2: 
@@ -266,14 +266,14 @@ Sub MergeStats ()
 
                         For I = 0 To 9: 
                             Input #3, LR!(I)
-                            Input #3, LR$(I, 0)
-                            Input #3, LR$(I, 1)
+                            Input #3, statsLR$(I, 0)
+                            Input #3, statsLR$(I, 1)
                         Next
 
                         For I = 0 To 15: 
                             Input #3, LC!(I)
-                            Input #3, LC$(I, 0)
-                            Input #3, LC$(I, 1)
+                            Input #3, statsLC$(I, 0)
+                            Input #3, statsLC$(I, 1)
                         Next
 
                         For I = 0 To 3: 
@@ -465,9 +465,9 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
     Shared intName$(), DRI$(), sackName$(), DSR$()
     Shared statsH$(), HR$()
-    Shared LC$(), LCR$(), statsLF$(), LFR$()
+    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
-    Shared statsLP$(), LPR$(), LR$(), LRR$()
+    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
     Shared compO$(), statsPK$(), PKR$()
     Shared gameSITE$(), SITER$()
     Shared ORD$()
@@ -535,24 +535,24 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     For I = 0 To 9
         If LRR!(I) > LR!(I) Then
             LR!(I) = LRR!(I)
-            LR$(I, 0) = LRR$(I, 0)
-            LR$(I, 1) = LRR$(I, 1)
+            statsLR$(I, 0) = LRR$(I, 0)
+            statsLR$(I, 1) = LRR$(I, 1)
         End If
     Next
 
     For I = 0 To 15
         If LCR!(I) > LC!(I) Then
             LC!(I) = LCR!(I)
-            LC$(I, 0) = LCR$(I, 0)
-            LC$(I, 1) = LCR$(I, 1)
+            statsLC$(I, 0) = LCR$(I, 0)
+            statsLC$(I, 1) = LCR$(I, 1)
         End If
     Next
 
     For I = 0 To 3:
         If LPR!(I) > LP!(I) Then
             LP!(I) = LPR!(I)
-            statsLP$(I, 0) = LR$(I, 0)
-            statsLP$(I, 1) = LR$(I, 1)
+            statsLP$(I, 0) = statsLR$(I, 0)
+            statsLP$(I, 1) = statsLR$(I, 1)
         End If
     Next
 
@@ -628,14 +628,14 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     For I = 0 To 9:
         Print #1, LR!(I)
-        Print #1, LR$(I, 0)
-        Print #1, LR$(I, 1)
+        Print #1, statsLR$(I, 0)
+        Print #1, statsLR$(I, 1)
     Next
 
     For I = 0 To 15:
         Print #1, LC!(I)
-        Print #1, LC$(I, 0)
-        Print #1, LC$(I, 1)
+        Print #1, statsLC$(I, 0)
+        Print #1, statsLC$(I, 1)
     Next
 
     For I = 0 To 3:

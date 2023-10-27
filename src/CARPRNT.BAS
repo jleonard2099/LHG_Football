@@ -24,8 +24,6 @@ Sub CARPRNT ()
     Shared careerII!(), careerPP!(), careerTT!(), careerYY!()
     Shared careerRC!()
 
-    Dim statsGS%(1, 55), statsGI%(1, 55)
-
     careerFile$ = ChooseFile$ (diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then

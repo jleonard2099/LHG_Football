@@ -1635,48 +1635,12 @@ Sub DoTheTrade (tradeIdx)
 
     Close #1
 
-    For I = 0 To 9
-        rbAtt_TRADE(tradeIdx, I) = 0
-        rbAvg_TRADE(tradeIdx, I) = 0
-        rbRec_TRADE(tradeIdx, I) = 0
-        rbRecAvg_TRADE(tradeIdx, I) = 0
-        rbNam_TRADE$(tradeIdx, I) = ""
-    Next
-
-    For I = 0 To 5
-        wrRec_TRADE(tradeIdx, I) = 0
-        wrAvg_TRADE(tradeIdx, I) = 0
-        wrNam_TRADE$(tradeIdx, I) = ""
-    Next
-
-    For I = 0 To 3
-        qbPA_TRADE(tradeIdx, I) = 0
-        qbPCPct_TRADE(tradeIdx, I) = 0
-        qbIntPct_TRADE(tradeIdx, I) = 0
-        qbArmRat_TRADE(tradeIdx, I) = 0
-        qbNam_TRADE$(tradeIdx, I) = ""
-    Next
-
-    For I = 0 To 2
-        krNumRet_TRADE(tradeIdx, I) = 0
-        krRetAvg_TRADE(tradeIdx, I) = 0
-        prRet_TRADE(tradeIdx, I) = 0
-        prRetAvg_TRADE(tradeIdx, I) = 0
-        krNam_TRADE$(tradeIdx, I) = ""
-        prNam_TRADE$(tradeIdx, I) = ""
-    Next
-
-    pntNam_TRADE$(tradeIdx, 0) = ""
-    puntAvg_TRADE(tradeIdx, I) = 0
-
-    For I = 0 To 1
-        FGA_TRADE(tradeIdx, I) = 0
-        FGPct_TRADE(tradeIdx, I) = 0
-        PAT_TRADE(tradeIdx, I) = 0
-        PATPct_TRADE(tradeIdx, I) = 0
-        pkNam_TRADE$(tradeIdx, I) = ""
-    Next
-
+    Erase qbPA_TRADE, qbPCPct_TRADE, qbIntPct_TRADE, qbArmRat_TRADE
+    Erase krRetAvg_TRADE, krNumRet_TRADE, prRetAvg_TRADE, prRet_TRADE
+    Erase FGA_TRADE, FGPct_TRADE, PAT_TRADE, PATPct_TRADE, puntAvg_TRADE
+    Erase rbAtt_TRADE, rbAvg_TRADE, rbRec_TRADE, rbRecAvg_TRADE
+    Erase wrAvg_TRADE, wrRec_TRADE
+    Erase krNam_TRADE$, pkNam_TRADE$, puntNam_TRADE$, prNam_TRADE$, rbNam_TRADE$, wrNam_TRADE$, qbNam_TRADE$
 
 End Sub
 

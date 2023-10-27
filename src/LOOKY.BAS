@@ -1,5 +1,3 @@
-'INCLUDE: 'QBFunctions.bm'
-
 '----------------------------------------
 '            LOOKY Subroutine
 '----------------------------------------
@@ -15,7 +13,7 @@ Sub LOOKY ()
         Color 15, 0
         Cls
 
-        Call MenuBox (8, 8, 61, 6, 15, 1)
+        Call MenuBox(8, 8, 61, 6, 15, 1)
 
         Locate 10, 15
 
@@ -68,11 +66,11 @@ End Sub
 '----------------------------------------
 '       LoadTeamStats Subroutine
 '----------------------------------------
-'This subroutine loads the selected team's 
+'This subroutine loads the selected team's
 'stats into arrays
 Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
-    Shared AF!(), AM!(), GI!(), GS!()
+    Shared AF!(), AM!(), statsGI%(), statsGS%()
     Shared CRD!()
     Shared K!(), K2!(), PK!(), W6!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
@@ -82,8 +80,8 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared lookyP%(), teamRatings%()
 
     Shared statsH$(), compO$(), gameSITE$()
-    Shared intNam_TRADE$(), sackNam_TRADE$()
-    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared intName$(), sackName$()
+    Shared statsLC$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
     Shared statsPK$()
 
@@ -155,7 +153,6 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     X% = 0
 
     D% = 0
-    PX = 0
     lookyP%(0) = 0
     lookyP%(1) = 0
 
@@ -169,80 +166,86 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     'if this belongs here or somewhere else.
     Input #2, teamName$
 
-    For I = 0 To 9: Input #2, lookyA1$(PX, I): Next I
-    For I = 0 To 5: Input #2, lookyA2$(PX, I): Next I
-    For I = 0 To 3: Input #2, lookyA3$(PX, I): Next I
-    For I = 0 To 2: Input #2, lookyA4$(PX, I): Next I
-    For I = 0 To 2: Input #2, lookyA5$(PX, I): Next I
+    For I = 0 To 9: Input #2, lookyA1$(I): Next I
+    For I = 0 To 5: Input #2, lookyA2$(I): Next I
+    For I = 0 To 3: Input #2, lookyA3$(I): Next I
+    For I = 0 To 2: Input #2, lookyA4$(I): Next I
+    For I = 0 To 2: Input #2, lookyA5$(I): Next I
 
-    Input #2, lookyA6$(PX, 0)
+    Input #2, lookyA6$(0)
 
-    For I = 0 To 1: 
-        Input #2, lookyA7$(PX, I)
+    For I = 0 To 1:
+        Input #2, lookyA7$(I)
     Next I
 
     For J = 0 To 13
-        For K = 0 To 17: Input #2, statsZ2!(J, K): Next K
+        For K = 0 To 17:
+            Input #2, statsZ2!(J, K)
+        Next K
     Next J
 
-    For L = 0 To 38: 
+    For L = 0 To 38:
         Input #2, statsZ!(L)
     Next L
 
-    For L = 0 To 38: 
+    For L = 0 To 38:
         Input #2, statsZ1!(L)
     Next L
 
-    For J = 0 To 9: 
-        Input #2, intNam_TRADE$(PX, J)
-        For J1 = 0 To 2: Input #2, GI!(PX, J, J1): Next
+    For J = 0 To 9:
+        Input #2, intName$(J)
+        For J1 = 0 To 2:
+            Input #2, statsGI%(J, J1)
+        Next
     Next
 
-    For J = 0 To 14: 
-        Input #2, sackNam_TRADE$(PX, J)
-        For J1 = 0 To 1: Input #2, GS!(PX, J, J1): Next
+    For J = 0 To 14:
+        Input #2, sackName$(J)
+        For J1 = 0 To 1:
+            Input #2, statsGS%(J, J1)
+        Next
     Next
 
-    For I = 0 To 9: 
+    For I = 0 To 9:
         Input #2, LR!(I)
-        Input #2, LR$(I, 0)
-        Input #2, LR$(I, 1)
+        Input #2, statsLR$(I, 0)
+        Input #2, statsLR$(I, 1)
     Next
 
-    For I = 0 To 15: 
+    For I = 0 To 15:
         Input #2, LC!(I)
-        Input #2, LC$(I, 0)
-        Input #2, LC$(I, 1)
+        Input #2, statsLC$(I, 0)
+        Input #2, statsLC$(I, 1)
     Next
 
-    For I = 0 To 3: 
+    For I = 0 To 3:
         Input #2, LP!(I)
         Input #2, statsLP$(I, 0)
         Input #2, statsLP$(I, 1)
     Next
 
-    For I = 0 To 2: 
+    For I = 0 To 2:
         Input #2, LK!(I)
         Input #2, statsLK$(I, 0)
         Input #2, statsLK$(I, 1)
     Next
 
-    For I = 0 To 2: 
+    For I = 0 To 2:
         Input #2, PK!(I)
         Input #2, statsPK$(I, 0)
         Input #2, statsPK$(I, 1)
     Next
 
-    For I = 0 To 1: 
+    For I = 0 To 1:
         Input #2, LF!(I)
         Input #2, statsLF$(I)
-        For I1 = 0 To 4: 
+        For I1 = 0 To 4:
             Input #2, AM!(I, I1)
             Input #2, AF!(I, I1)
         Next
     Next
 
-    For I = 0 To 9: 
+    For I = 0 To 9:
         Input #2, LI!(I)
         Input #2, statsLI$(I, 0)
         Input #2, statsLI$(I, 1)
@@ -251,11 +254,18 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Close #2
 
     For J = 0 To 13
-        For K = 0 To 17: K2!(PX, J, K) = statsZ2!(J, K): Next K
+        For K = 0 To 17:
+            K2!(J, K) = statsZ2!(J, K)
+        Next K
     Next J
 
-    For M = 0 To 12: K!(0, M) = statsZ!(M): Next M
-    For M = 0 To 12: K!(1, M) = statsZ1!(M): Next M
+    For M = 0 To 12:
+        K!(0, M) = statsZ!(M)
+    Next M
+
+    For M = 0 To 12:
+        K!(1, M) = statsZ1!(M)
+    Next M
 
     W6!(0, 0) = statsZ!(13)
     W6!(0, 1) = statsZ!(14)
@@ -268,7 +278,7 @@ End Sub
 '----------------------------------------
 '       ViewStatSummary Subroutine
 '----------------------------------------
-'This subroutine formats and outputs the 
+'This subroutine formats and outputs the
 'selected team's record to the display,
 'then provides routines for output of
 'the other stat categories
@@ -285,7 +295,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, S
 
         Call TITLE_STATS
 
-        Call MenuBox (8, 8, 61, 4, 15, 1)
+        Call MenuBox(8, 8, 61, 4, 15, 1)
 
         Do
 
@@ -318,7 +328,7 @@ Sub ViewStatSummary (statFile$, teamName$, totalGames%, statFormat, teamPower, S
         Color 15, 0
         Cls
 
-        Call MenuBox (6, 8, 61, 1, 15, 1)
+        Call MenuBox(6, 8, 61, 1, 15, 1)
 
         Do
             Locate 7
@@ -340,11 +350,11 @@ End Sub
 '----------------------------------------
 '      StatsToScreen Subroutine
 '----------------------------------------
-'This subroutine formats and outputs the 
+'This subroutine formats and outputs the
 'selected team's stats to the display
 Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
-    Shared AF!(), AM!(), CRD!(), GI!(), GS!()
+    Shared AF!(), AM!(), CRD!(), statsGI%(), statsGS%()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared PK!(), W6!(), statsZ!(), statsZ1!(), statsZ2!()
@@ -352,8 +362,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared statsO%(), teamRatings%(), statsT%(), lookyP%()
 
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared intNam_TRADE$(), sackNam_TRADE$(), statsH$()
-    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared intName$(), sackName$(), statsH$()
+    Shared statsLC$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
     Color 15, 0
@@ -694,21 +704,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 12
     Print "RUSHING           ATT   YDS  YDS/ATT  YDS/GAME   TD  LONG RUN  AGAINST"
 
-    I = 0
-
     If D% <> 1 Then
 
         For I1 = 0 To 9
 
             For I2 = 0 To 3
 
-                If lookyA1$(I, I1) = lookyA3$(I, I2) Then
-                    K2!(I, I1, 0) = K2!(I, I1, 0) + K2!(I, I2 + 10, 0)
-                    K2!(I, I1, 1) = K2!(I, I1, 1) + K2!(I, I2 + 10, 1)
-                    K2!(I, I1, 2) = K2!(I, I1, 2) + K2!(I, I2 + 10, 2)
-                    K2!(I, I2 + 10, 0) = 0
-                    K2!(I, I2 + 10, 1) = 0
-                    K2!(I, I2 + 10, 2) = 0
+                If lookyA1$(I1) = lookyA3$(I2) Then
+                    K2!(I1, 0) = K2!(I1, 0) + K2!(I2 + 10, 0)
+                    K2!(I1, 1) = K2!(I1, 1) + K2!(I2 + 10, 1)
+                    K2!(I1, 2) = K2!(I1, 2) + K2!(I2 + 10, 2)
+                    K2!(I2 + 10, 0) = 0
+                    K2!(I2 + 10, 1) = 0
+                    K2!(I2 + 10, 2) = 0
                 End If
 
             Next I2
@@ -722,21 +730,21 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 13
 
-        If K2!(I, I1, 0) <> 0 Then
+        If K2!(I1, 0) <> 0 Then
 
             DM% = DM% + 1
             Color 7
 
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            If I1 <= 9 Then Print lookyA1$(I, I1);
-            If I1 > 9 Then Print lookyA3$(I, I1 - 10);
+            If I1 <= 9 Then Print lookyA1$(I1);
+            If I1 > 9 Then Print lookyA3$(I1 - 10);
 
-            Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; K2!(I, I1, 0); K2!(I, I1, 1); K2!(I, I1, 1) / K2!(I, I1, 0); K2!(I, I1, 1) / totalGames%; K2!(I, I1, 2);
+            Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; K2!(I1, 0); K2!(I1, 1); K2!(I1, 1) / K2!(I1, 0); K2!(I1, 1) / totalGames%; K2!(I1, 2);
 
             If I1 > 9 Then
                 Print
             Else
-                Print Using "###"; LR!(I1);: Print LR$(I1, 0); Tab(64); LR$(I1, 1)
+                Print Using "###"; LR!(I1);: Print statsLR$(I1, 0); Tab(64); statsLR$(I1, 1)
             End If
 
         End If
@@ -777,19 +785,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 5
 
-        If K2!(I, I1, 6) <> 0 Then
+        If K2!(I1, 6) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
-            Print lookyA2$(I, I1); Tab(18);
-            Print Using "####  ####   "; K2!(I, I1, 6); K2!(I, I1, 7);
+            Print lookyA2$(I1); Tab(18);
+            Print Using "####  ####   "; K2!(I1, 6); K2!(I1, 7);
 
-            If K2!(I, I1, 6) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 7) / K2!(I, I1, 6);
+            If K2!(I1, 6) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I1, 7) / K2!(I1, 6);
 
-            Print Using "      ###.#    ##    "; K2!(I, I1, 7) / totalGames%; K2!(I, I1, 8);
-            Print Using "###"; LC!(I1 + 10);: Print LC$(I1 + 10, 0); Tab(64); LC$(I1 + 10, 1)
+            Print Using "      ###.#    ##    "; K2!(I1, 7) / totalGames%; K2!(I1, 8);
+            Print Using "###"; LC!(I1 + 10);: Print statsLC$(I1 + 10, 0); Tab(64); statsLC$(I1 + 10, 1)
 
         End If
 
@@ -797,19 +805,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 9
 
-        If K2!(I, I1, 3) <> 0 Then
+        If K2!(I1, 3) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
-            Print lookyA1$(I, I1); Tab(18);
-            Print Using "####  ####   "; K2!(I, I1, 3); K2!(I, I1, 4);
+            Print lookyA1$(I1); Tab(18);
+            Print Using "####  ####   "; K2!(I1, 3); K2!(I1, 4);
 
-            If K2!(I, I1, 3) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 4) / K2!(I, I1, 3);
+            If K2!(I1, 3) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I1, 4) / K2!(I1, 3);
 
-            Print Using "      ###.#    ##    "; K2!(I, I1, 4) / totalGames%; K2!(I, I1, 5);
-            Print Using "###"; LC!(I1);: Print LC$(I1, 0); Tab(64); LC$(I1, 1)
+            Print Using "      ###.#    ##    "; K2!(I1, 4) / totalGames%; K2!(I1, 5);
+            Print Using "###"; LC!(I1);: Print statsLC$(I1, 0); Tab(64); statsLC$(I1, 1)
 
         End If
 
@@ -843,26 +851,26 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 3
 
-        If K2!(I, I1, 9) <> 0 Then
+        If K2!(I1, 9) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
             'Att / Comp / Comp % / Yds
-            Print lookyA3$(I, I1); Tab(18); Using "####  ### ###.# #### "; K2!(I, I1, 9); K2!(I, I1, 10); K2!(I, I1, 10) / K2!(I, I1, 9) * 100; K2!(I, I1, 12);
+            Print lookyA3$(I1); Tab(18); Using "####  ### ###.# #### "; K2!(I1, 9); K2!(I1, 10); K2!(I1, 10) / K2!(I1, 9) * 100; K2!(I1, 12);
 
             'Yds / Att
-            If K2!(I, I1, 9) = 0 Then Print "   --"; Else Print Using "##.#"; K2!(I, I1, 12) / K2!(I, I1, 9);
+            If K2!(I1, 9) = 0 Then Print "   --"; Else Print Using "##.#"; K2!(I1, 12) / K2!(I1, 9);
 
             ' Yds / Catch
-            If K2!(I, I1, 10) = 0 Then Print "   --"; Else Print Using " ##.#"; K2!(I, I1, 12) / K2!(I, I1, 10);
+            If K2!(I1, 10) = 0 Then Print "   --"; Else Print Using " ##.#"; K2!(I1, 12) / K2!(I1, 10);
 
             'TD / INT / INT %
-            Print Using " ###.# ### ### ###.#     "; K2!(I, I1, 12) / totalGames%; K2!(I, I1, 13); K2!(I, I1, 11); K2!(I, I1, 11) / K2!(I, I1, 9) * 100;
+            Print Using " ###.# ### ### ###.#     "; K2!(I1, 12) / totalGames%; K2!(I1, 13); K2!(I1, 11); K2!(I1, 11) / K2!(I1, 9) * 100;
 
             'QB Rating
-            RT! = QBRating!(I, I1, statFormat)
+            RT! = QBRating!(I1, statFormat)
             Print Using "###.#"; RT!
 
         End If
@@ -926,11 +934,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "PASSING           LONG PASS    AGAINST"
 
     For I1 = 0 To 3
-        If K2!(I, I1, 9) <> 0 Then
+        If K2!(I1, 9) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            Print lookyA3$(I, I1); Tab(22); Using "###"; LP!(I1);: Print statsLP$(I1, 0); Tab(32); statsLP$(I1, 1)
+            Print lookyA3$(I1); Tab(22); Using "###"; LP!(I1);: Print statsLP$(I1, 0); Tab(32); statsLP$(I1, 1)
         End If
     Next
 
@@ -950,14 +958,14 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 0 To 2
-        If K2!(I, I1, 14) <> 0 Then
+        If K2!(I1, 14) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            Print lookyA4$(I, I1); Tab(18);
-            Print Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
-            If K2!(I, I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
-            Print Using "      ###.#    ##    "; K2!(I, I1, 15) / totalGames%; K2!(I, I1, 16);
+            Print lookyA4$(I1); Tab(18);
+            Print Using "####  ####   "; K2!(I1, 14); K2!(I1, 15);
+            If K2!(I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I1, 15) / K2!(I1, 14);
+            Print Using "      ###.#    ##    "; K2!(I1, 15) / totalGames%; K2!(I1, 16);
             Print Using "###"; LK!(I1);: Print statsLK$(I1, 0); Tab(64); statsLK$(I1, 1)
         End If
     Next I1
@@ -979,18 +987,18 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 3 To 5
 
-        If K2!(I, I1, 14) <> 0 Then
+        If K2!(I1, 14) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
-            Print lookyA5$(I, I1 - 3); Tab(18);
-            Print Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
+            Print lookyA5$(I1 - 3); Tab(18);
+            Print Using "####  ####   "; K2!(I1, 14); K2!(I1, 15);
 
-            If K2!(I, I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
+            If K2!(I1, 14) = 0 Then Print "  --"; Else Print Using "##.#"; K2!(I1, 15) / K2!(I1, 14);
 
-            Print Using "      ###.#    ##    "; K2!(I, I1, 15) / totalGames%; K2!(I, I1, 16);
+            Print Using "      ###.#    ##    "; K2!(I1, 15) / totalGames%; K2!(I1, 16);
             Print Using "###"; PK!(I1 - 3);: Print statsPK$(I1 - 3, 0); Tab(64); statsPK$(I1 - 3, 1)
 
         End If
@@ -1014,12 +1022,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Call TITLE_STATS
 
-    I = 0
     Locate 3, 1
     Color 12
     Print "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
     Color 15
-    Print lookyA6$(I, 0); Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
+    Print lookyA6$(0); Tab(18); Using "####  ####    "; K!(0, 7); K!(0, 8);
     If K!(0, 7) = 0 Then Print "  --"; Else Print Using "##.#"; K!(0, 8) / K!(0, 7);
     Print Using "    ##.#      ##     ##      ##"; K!(0, 7) / totalGames%; statsZ!(31); statsZ!(30); statsZ!(28)
 
@@ -1048,15 +1055,15 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
     Color 15
 
-    If K2!(I, 4, 17) <> 0 And K2!(I, 6, 17) <> 0 Then
-        Print lookyA7$(I, 0);
+    If K2!(4, 17) <> 0 And K2!(6, 17) <> 0 Then
+        Print lookyA7$(0);
         Print Tab(16);
-        If K2!(I, 6, 17) <> 0 Then Print Using "### ### ###.# "; K2!(I, 5, 17); K2!(I, 6, 17); K2!(I, 5, 17) / K2!(I, 6, 17) * 100;
-        If K2!(I, 4, 17) = 0 Then
+        If K2!(6, 17) <> 0 Then Print Using "### ### ###.# "; K2!(5, 17); K2!(6, 17); K2!(5, 17) / K2!(6, 17) * 100;
+        If K2!(4, 17) = 0 Then
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; K2!(I, 3, 17); K2!(I, 4, 17); K2!(I, 3, 17) / K2!(I, 4, 17) * 100; LF!(0); AM!(0, 0);
+            Print Using "### ### ###.# ## ##"; K2!(3, 17); K2!(4, 17); K2!(3, 17) / K2!(4, 17) * 100; LF!(0); AM!(0, 0);
             Print "-";: Print Using "## ##"; AF!(0, 0); AM!(0, 1);
             Print "-";: Print Using "## ##"; AF!(0, 1); AM!(0, 2);
             Print "-";: Print Using "## ##"; AF!(0, 2); AM!(0, 3);
@@ -1065,14 +1072,14 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     End If
 
-    If K2!(I, 8, 17) <> 0 And K2!(I, 10, 17) <> 0 Then
-        Print lookyA7$(I, 1); Tab(16);
-        If K2!(I, 10, 17) <> 0 Then Print Using "### ### ###.# "; K2!(I, 9, 17); K2!(I, 10, 17); K2!(I, 9, 17) / K2!(I, 10, 17) * 100;
-        If K2!(I, 8, 17) = 0 Then
+    If K2!(8, 17) <> 0 And K2!(10, 17) <> 0 Then
+        Print lookyA7$(1); Tab(16);
+        If K2!(10, 17) <> 0 Then Print Using "### ### ###.# "; K2!(9, 17); K2!(10, 17); K2!(9, 17) / K2!(10, 17) * 100;
+        If K2!(8, 17) = 0 Then
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; K2!(I, 7, 17); K2!(I, 8, 17); K2!(I, 7, 17) / K2!(I, 8, 17) * 100; LF!(1); AM!(1, 0);
+            Print Using "### ### ###.# ## ##"; K2!(7, 17); K2!(8, 17); K2!(7, 17) / K2!(8, 17) * 100; LF!(1); AM!(1, 0);
             Print "-";: Print Using "## ##"; AF!(1, 0); AM!(1, 1);
             Print "-";: Print Using "## ##"; AF!(1, 1); AM!(1, 2);
             Print "-";: Print Using "## ##"; AF!(1, 2); AM!(1, 3);
@@ -1095,24 +1102,23 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Locate 3, 1: Color 12
     Print "INTERCEPTIONS     RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
-    I = 0
 
     For I1 = 0 To 9
 
-        If GI!(I, I1, 0) <> 0 Then
+        If statsGI%(I1, 0) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
-            Print intNam_TRADE$(I, I1); Tab(18);
+            Print intName$(I1); Tab(18);
 
-            Print Using "####  ####   "; GI!(I, I1, 0); GI!(I, I1, 1);
+            Print Using "####  ####   "; statsGI%(I1, 0); statsGI%(I1, 1);
 
             'Yds / Ret
-            If GI!(I, I1, 0) = 0 Then Print " --"; Else Print Using "##.#"; GI!(I, I1, 1) / GI!(I, I1, 0);
+            If statsGI%(I1, 0) = 0 Then Print " --"; Else Print Using "##.#"; statsGI%(I1, 1) / statsGI%(I1, 0);
 
             'Yds / Gm, TD
-            Print Using "      ###.#    ##    "; GI!(I, I1, 1) / totalGames%; GI!(I, I1, 2);
+            Print Using "      ###.#    ##    "; statsGI%(I1, 1) / totalGames%; statsGI%(I1, 2);
 
             'Long Ret / Against
             Print Using "###"; LI!(I1);: Print statsLI$(I1, 0); Tab(64); statsLI$(I1, 1)
@@ -1134,11 +1140,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "DEFENSIVE SACKS    SACKS      YARDS LOST"
 
     For I1 = 0 To 14
-        If GS!(I, I1, 0) <> 0 Then
+        If statsGS%(I1, 0) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
-            Print sackNam_TRADE$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
+            Print sackName$(I1); Tab(20); Using "###            ###"; statsGS%(I1, 0); statsGS%(I1, 1)
         End If
     Next
 
@@ -1151,11 +1157,11 @@ End Sub
 '----------------------------------------
 '       StatsToPrinter Subroutine
 '----------------------------------------
-'This subroutine formats and outputs the 
+'This subroutine formats and outputs the
 'selected team's stats to the default printer
 Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
-    Shared AF!(), AM!(), CRD!(), GI!(), GS!()
+    Shared AF!(), AM!(), CRD!(), statsGI%(), statsGS%()
     Shared K!(), K2!()
     Shared LC!(), LF!(), LI!(), LK!(), LP!(), LR!()
     Shared PK!(), W6!(), statsZ!(), statsZ1!(), statsZ2!()
@@ -1163,8 +1169,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared statsO%(), statsT%(), lookyP%()
 
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
-    Shared intNam_TRADE$(), sackNam_TRADE$(), statsH$()
-    Shared LC$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared intName$(), sackName$(), statsH$()
+    Shared statsLC$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared compO$(), statsPK$(), gameSITE$()
 
     Color 0, 15
@@ -1222,7 +1228,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
         If Left$(statsH$(I), 1) = "H" Then HD = HD + 1: HT = HT + CRD!(I)
         If Left$(statsH$(I), 1) = "A" Then AD = AD + 1: CT = CT + CRD!(I)
         If Left$(statsH$(I), 1) = "X" Then ND = ND + 1: NT = NT + CRD!(I)
-        TD = TD + 1: TT = TT + CRD!(I)
+        TD = TD + 1
+        TT = TT + CRD!(I)
     Next
 
     If HD <> 0 Then HA = HT / HD
@@ -1433,13 +1440,13 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     If D% <> 1 Then
         For I1 = 0 To 9
             For I2 = 0 To 3
-                If lookyA1$(I, I1) = lookyA3$(I, I2) Then
-                    K2!(I, I1, 0) = K2!(I, I1, 0) + K2!(I, I2 + 10, 0)
-                    K2!(I, I1, 1) = K2!(I, I1, 1) + K2!(I, I2 + 10, 1)
-                    K2!(I, I1, 2) = K2!(I, I1, 2) + K2!(I, I2 + 10, 2)
-                    K2!(I, I2 + 10, 0) = 0
-                    K2!(I, I2 + 10, 1) = 0
-                    K2!(I, I2 + 10, 2) = 0
+                If lookyA1$(I1) = lookyA3$(I2) Then
+                    K2!(I1, 0) = K2!(I1, 0) + K2!(I2 + 10, 0)
+                    K2!(I1, 1) = K2!(I1, 1) + K2!(I2 + 10, 1)
+                    K2!(I1, 2) = K2!(I1, 2) + K2!(I2 + 10, 2)
+                    K2!(I2 + 10, 0) = 0
+                    K2!(I2 + 10, 1) = 0
+                    K2!(I2 + 10, 2) = 0
                 End If
             Next I2
         Next I1
@@ -1449,15 +1456,15 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     End If
 
     For I1 = 0 To 13
-        If K2!(I, I1, 0) <> 0 Then
-            If I1 <= 9 Then Print #1, lookyA1$(I, I1);
-            If I1 > 9 Then Print #1, lookyA3$(I, I1 - 10);
-            Print #1, Tab(18); Using "####  ####   ##.#      ###.#    ##    "; K2!(I, I1, 0); K2!(I, I1, 1); K2!(I, I1, 1) / K2!(I, I1, 0); K2!(I, I1, 1) / totalGames%; K2!(I, I1, 2);
+        If K2!(I1, 0) <> 0 Then
+            If I1 <= 9 Then Print #1, lookyA1$(I1);
+            If I1 > 9 Then Print #1, lookyA3$(I1 - 10);
+            Print #1, Tab(18); Using "####  ####   ##.#      ###.#    ##    "; K2!(I1, 0); K2!(I1, 1); K2!(I1, 1) / K2!(I1, 0); K2!(I1, 1) / totalGames%; K2!(I1, 2);
             If I1 > 9 Then
                 Print #1,
             Else
                 Print #1, Using "###"; LR!(I1);
-                Print #1, LR$(I1, 0); Tab(64); LR$(I1, 1)
+                Print #1, statsLR$(I1, 0); Tab(64); statsLR$(I1, 1)
             End If
         End If
     Next I1
@@ -1476,20 +1483,20 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 0 To 5
-        If K2!(I, I1, 6) <> 0 Then
-            Print #1, lookyA2$(I, I1); Tab(18);
-            Print #1, Using "####  ####   ##.#      ###.#    ##    "; K2!(I, I1, 6); K2!(I, I1, 7); K2!(I, I1, 7) / K2!(I, I1, 6); K2!(I, I1, 7) / totalGames%; K2!(I, I1, 8);
+        If K2!(I1, 6) <> 0 Then
+            Print #1, lookyA2$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; K2!(I1, 6); K2!(I1, 7); K2!(I1, 7) / K2!(I1, 6); K2!(I1, 7) / totalGames%; K2!(I1, 8);
             Print #1, Using "###"; LC!(I1 + 10);
-            Print #1, LC$(I1 + 10, 0); Tab(64); LC$(I1 + 10, 1)
+            Print #1, statsLC$(I1 + 10, 0); Tab(64); statsLC$(I1 + 10, 1)
         End If
     Next I1
 
     For I1 = 0 To 9
-        If K2!(I, I1, 3) <> 0 Then
-            Print #1, lookyA1$(I, I1); Tab(18);
-            Print #1, Using "####  ####   ##.#      ###.#    ##    "; K2!(I, I1, 3); K2!(I, I1, 4); K2!(I, I1, 4) / K2!(I, I1, 3); K2!(I, I1, 4) / totalGames%; K2!(I, I1, 5);
+        If K2!(I1, 3) <> 0 Then
+            Print #1, lookyA1$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; K2!(I1, 3); K2!(I1, 4); K2!(I1, 4) / K2!(I1, 3); K2!(I1, 4) / totalGames%; K2!(I1, 5);
             Print #1, Using "###"; LC!(I1);
-            Print #1, LC$(I1, 0); Tab(64); LC$(I1, 1)
+            Print #1, statsLC$(I1, 0); Tab(64); statsLC$(I1, 1)
         End If
     Next I1
 
@@ -1511,15 +1518,15 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 3
 
-        If K2!(I, I1, 9) <> 0 Then
+        If K2!(I1, 9) <> 0 Then
 
-            Print #1, lookyA3$(I, I1); Tab(18); Using "####  ### ###.# #### ##.#"; K2!(I, I1, 9); K2!(I, I1, 10); K2!(I, I1, 10) / K2!(I, I1, 9) * 100; K2!(I, I1, 12); K2!(I, I1, 12) / K2!(I, I1, 9);
+            Print #1, lookyA3$(I1); Tab(18); Using "####  ### ###.# #### ##.#"; K2!(I1, 9); K2!(I1, 10); K2!(I1, 10) / K2!(I1, 9) * 100; K2!(I1, 12); K2!(I1, 12) / K2!(I1, 9);
 
-            If K2!(I, I1, 10) = 0 Then Print #1, "   --"; Else Print #1, Using " ##.#"; K2!(I, I1, 12) / K2!(I, I1, 10);
+            If K2!(I1, 10) = 0 Then Print #1, "   --"; Else Print #1, Using " ##.#"; K2!(I1, 12) / K2!(I1, 10);
 
-            Print #1, Using " ###.# ### ### ###.#     "; K2!(I, I1, 12) / totalGames%; K2!(I, I1, 13); K2!(I, I1, 11); K2!(I, I1, 11) / K2!(I, I1, 9) * 100;
+            Print #1, Using " ###.# ### ### ###.#     "; K2!(I1, 12) / totalGames%; K2!(I1, 13); K2!(I1, 11); K2!(I1, 11) / K2!(I1, 9) * 100;
 
-            RT! = QBRating!(I, I1, statFormat)
+            RT! = QBRating!(I1, statFormat)
 
             Print #1, Using "###.#"; RT!
 
@@ -1560,8 +1567,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #1, "PASSING           LONG PASS    AGAINST"
 
     For I1 = 0 To 3
-        If K2!(I, I1, 9) <> 0 Then
-            Print #1, lookyA3$(I, I1); Tab(22); Using "###"; LP!(I1);
+        If K2!(I1, 9) <> 0 Then
+            Print #1, lookyA3$(I1); Tab(22); Using "###"; LP!(I1);
             Print #1, statsLP$(I1, 0); Tab(32); statsLP$(I1, 1)
         End If
     Next
@@ -1572,11 +1579,11 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 0 To 2
-        If K2!(I, I1, 14) <> 0 Then
-            Print #1, lookyA4$(I, I1); Tab(18);
-            Print #1, Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
-            If K2!(I, I1, 14) = 0 Then Print #1, "  --"; Else Print #1, Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
-            Print #1, Using "      ###.#    ##    "; K2!(I, I1, 15) / totalGames%; K2!(I, I1, 16);
+        If K2!(I1, 14) <> 0 Then
+            Print #1, lookyA4$(I1); Tab(18);
+            Print #1, Using "####  ####   "; K2!(I1, 14); K2!(I1, 15);
+            If K2!(I1, 14) = 0 Then Print #1, "  --"; Else Print #1, Using "##.#"; K2!(I1, 15) / K2!(I1, 14);
+            Print #1, Using "      ###.#    ##    "; K2!(I1, 15) / totalGames%; K2!(I1, 16);
             Print #1, Using "###"; LK!(I1);: Print #1, statsLK$(I1, 0); Tab(64); statsLK$(I1, 1)
         End If
     Next I1
@@ -1597,11 +1604,11 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 3 To 5
-        If K2!(I, I1, 14) <> 0 Then
-            Print #1, lookyA5$(I, I1 - 3); Tab(18);
-            Print #1, Using "####  ####   "; K2!(I, I1, 14); K2!(I, I1, 15);
-            If K2!(I, I1, 14) = 0 Then Print #1, "  --"; Else Print #1, Using "##.#"; K2!(I, I1, 15) / K2!(I, I1, 14);
-            Print #1, Using "      ###.#    ##    "; K2!(I, I1, 15) / totalGames%; K2!(I, I1, 16);
+        If K2!(I1, 14) <> 0 Then
+            Print #1, lookyA5$(I1 - 3); Tab(18);
+            Print #1, Using "####  ####   "; K2!(I1, 14); K2!(I1, 15);
+            If K2!(I1, 14) = 0 Then Print #1, "  --"; Else Print #1, Using "##.#"; K2!(I1, 15) / K2!(I1, 14);
+            Print #1, Using "      ###.#    ##    "; K2!(I1, 15) / totalGames%; K2!(I1, 16);
             Print #1, Using "###"; PK!(I1 - 3);: Print #1, statsPK$(I1 - 3, 0); Tab(64); statsPK$(I1 - 3, 1)
         End If
     Next I1
@@ -1619,7 +1626,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     Print #1, "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
-    Print #1, lookyA6$(I, 0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); K!(0, 7) / totalGames%; statsZ!(31); statsZ!(30); statsZ!(28)
+    Print #1, lookyA6$(0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; K!(0, 7); K!(0, 8); K!(0, 8) / K!(0, 7); K!(0, 7) / totalGames%; statsZ!(31); statsZ!(30); statsZ!(28)
     Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; K!(1, 7); K!(1, 8); K!(1, 8) / K!(1, 7); K!(1, 7) / totalGames%; statsZ1!(31); statsZ1!(30)
     Print #1,
     Print #1,
@@ -1632,15 +1639,15 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #1,
     Print #1, "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
 
-    If K2!(I, 4, 17) <> 0 Or K2!(I, 6, 17) <> 0 Then
-        Print #1, lookyA7$(I, 0);
+    If K2!(4, 17) <> 0 Or K2!(6, 17) <> 0 Then
+        Print #1, lookyA7$(0);
         Print #1, Tab(16);
-        If K2!(I, 6, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2!(I, 5, 17); K2!(I, 6, 17); K2!(I, 5, 17) / K2!(I, 6, 17) * 100;
-        If K2!(I, 4, 17) = 0 Then
+        If K2!(6, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2!(5, 17); K2!(6, 17); K2!(5, 17) / K2!(6, 17) * 100;
+        If K2!(4, 17) = 0 Then
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; K2!(I, 3, 17); K2!(I, 4, 17); K2!(I, 3, 17) / K2!(I, 4, 17) * 100; LF!(0); AM!(0, 0);
+            Print #1, Using "### ### ###.# ## ##"; K2!(3, 17); K2!(4, 17); K2!(3, 17) / K2!(4, 17) * 100; LF!(0); AM!(0, 0);
             Print #1, "-";: Print #1, Using "## ##"; AF!(0, 0); AM!(0, 1);
             Print #1, "-";: Print #1, Using "## ##"; AF!(0, 1); AM!(0, 2);
             Print #1, "-";: Print #1, Using "## ##"; AF!(0, 2); AM!(0, 3);
@@ -1649,14 +1656,14 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     End If
 
-    If K2!(I, 8, 17) <> 0 Or K2!(I, 10, 17) <> 0 Then
-        Print #1, lookyA7$(I, 1); Tab(16);
-        If K2!(I, 10, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2!(I, 9, 17); K2!(I, 10, 17); K2!(I, 9, 17) / K2!(I, 10, 17) * 100;
-        If K2!(I, 8, 17) = 0 Then
+    If K2!(8, 17) <> 0 Or K2!(10, 17) <> 0 Then
+        Print #1, lookyA7$(1); Tab(16);
+        If K2!(10, 17) <> 0 Then Print #1, Using "### ### ###.# "; K2!(9, 17); K2!(10, 17); K2!(9, 17) / K2!(10, 17) * 100;
+        If K2!(8, 17) = 0 Then
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; K2!(I, 7, 17); K2!(I, 8, 17); K2!(I, 7, 17) / K2!(I, 8, 17) * 100; LF!(1); AM!(1, 0);
+            Print #1, Using "### ### ###.# ## ##"; K2!(7, 17); K2!(8, 17); K2!(7, 17) / K2!(8, 17) * 100; LF!(1); AM!(1, 0);
             Print #1, "-";: Print #1, Using "## ##"; AF!(1, 0); AM!(1, 1);
             Print #1, "-";: Print #1, Using "## ##"; AF!(1, 1); AM!(1, 2);
             Print #1, "-";: Print #1, Using "## ##"; AF!(1, 2); AM!(1, 3);
@@ -1671,9 +1678,9 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 0 To 9
-        If GI!(I, I1, 0) <> 0 Then
-            Print #1, intNam_TRADE$(I, I1); Tab(18);
-            Print #1, Using "####  ####   ##.#      ###.#    ##    "; GI!(I, I1, 0); GI!(I, I1, 1); GI!(I, I1, 1) / GI!(I, I1, 0); GI!(I, I1, 1) / totalGames%; GI!(I, I1, 2);
+        If statsGI%(I1, 0) <> 0 Then
+            Print #1, intName$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; statsGI%(I1, 0); statsGI%(I1, 1); statsGI%(I1, 1) / statsGI%(I1, 0); statsGI%(I1, 1) / totalGames%; statsGI%(I1, 2);
             Print #1, Using "###"; LI!(I1);: Print #1, statsLI$(I1, 0); Tab(64); statsLI$(I1, 1)
         End If
     Next I1
@@ -1682,8 +1689,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Print #1, "DEFENSIVE SACKS    SACKS      YARDS LOST"
 
     For I1 = 0 To 14
-        If GS!(I, I1, 0) <> 0 Then
-            Print #1, sackNam_TRADE$(I, I1); Tab(20); Using "###            ###"; GS!(I, I1, 0); GS!(I, I1, 1)
+        If statsGS%(I1, 0) <> 0 Then
+            Print #1, sackName$(I1); Tab(20); Using "###            ###"; statsGS%(I1, 0); statsGS%(I1, 1)
         End If
     Next
 
@@ -1708,15 +1715,15 @@ End Sub
 '----------------------------------------
 '       ResetStatPrompt Subroutine
 '----------------------------------------
-'This subroutine prompts the user with 
-'a choice to reset stats. If they chose, 
-'and confirm, it will then proceed to 
+'This subroutine prompts the user with
+'a choice to reset stats. If they chose,
+'and confirm, it will then proceed to
 'delete the files.
 Sub ResetStatPrompt (statFile$)
 
     Cls
 
-    Call MenuBox (6, 8, 61, 1, 15, 1)
+    Call MenuBox(6, 8, 61, 1, 15, 1)
 
     Do
         Locate 7
@@ -1730,7 +1737,7 @@ Sub ResetStatPrompt (statFile$)
 
     If UCase$(I$) = "Y" Then
 
-        Call MenuBox (6, 8, 61, 1, 15, 1)
+        Call MenuBox(6, 8, 61, 1, 15, 1)
 
         Do
 
@@ -1755,3 +1762,4 @@ Sub ResetStatPrompt (statFile$)
     End If 'Done checking if reset stats
 
 End Sub
+

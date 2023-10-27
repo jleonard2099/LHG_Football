@@ -67,10 +67,6 @@ Sub InitVar ()
     DR$(1) = "LEFT"
     D$(11) = "GOAL LINE"
 
-    For I = 0 To 6:
-        WX%(I) = 0
-    Next
-
     G$(1) = "FLEA FLICKER"
     G$(2) = "REVERSE"
     G$(3) = "HB PASS"
@@ -273,13 +269,14 @@ Sub InitVar ()
     Erase QB, RB, rbRushAtt, rbRushAvg, rbNumRec, rbYdsPerC
     Erase sacks, score, schedGame, SI, SK
     Erase teamIdx_GAME, timeouts, timePoss, tmRat_GAME
-    Erase W6, WR, wrNumRec, wrYdsPerC, XD, ydsPerComp, Z, Z1, Z2
-
+    Erase thirdDownAtt, thirdDownFail, teamScore
+    Erase W6, WR, wrNumRec, wrYdsPerC, XD
+    Erase ydsPerComp, Z, Z1, Z2
+    
     Erase defInts, defSacks
-    Erase HB%
-    Erase O%, PC%, intPR%
+    Erase HB%, O%, PC%, intPR%
     Erase Q6%, Q7%, RQ%, RV%
-    Erase ST%, SX%, thirdDownAtt, thirdDownFail, teamScore, YR%
+    Erase ST%, SX%, WX%, YR%
 
     Erase teamIndex%, V4%
 
@@ -6310,7 +6307,7 @@ Sub OPTIONS ()
             I = Val(I$)
         Loop Until I >= 0 And I <= 2
 
-        Select Case I 
+        Select Case I
             Case 1
                 playerOpt = playerOpt + 1
                 If playerOpt > 3 Then playerOpt = 0
@@ -6337,7 +6334,7 @@ Sub OPTIONS ()
     Loop Until I$ = Chr$(13)
 
     Screen , , 0, 0
-    'Call DisplayField 
+    'Call DisplayField
 
 End Sub
 
@@ -7509,16 +7506,15 @@ Sub STATS2SCREEN ()
                 nbrPlayers = nbrPlayers + 1
             End If
 
-
-            If nbrPlayers > 16 Then
-            'Create a 2nd page if there are enough rushers
-            'to spam out past the page
+            If (nbrPlayers Mod 16 = 0) Then
+                'Create a 2nd page if there are enough players
+                'to spam out past the page
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
                 Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
 
-                Locate 2, 32: Print "PASSING STATISTICS"
+                Locate 2, 32: Print "RECEIVING STATISTICS"
                 Print
 
                 Locate , 18
@@ -7539,15 +7535,15 @@ Sub STATS2SCREEN ()
                 nbrPlayers = nbrPlayers + 1
             End If
 
-            If nbrPlayers > 16 Then
-            'Create a 2nd page if there are enough rushers
-            'to spam out past the page
+            If (nbrPlayers Mod 16 = 0) Then
+                'Create a 2nd page if there are enough players
+                'to spam out past the page
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
                 Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
 
-                Locate 2, 32: Print "PASSING STATISTICS"
+                Locate 2, 32: Print "RECEIVING STATISTICS"
                 Print
 
                 Locate , 18
@@ -7956,7 +7952,7 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For J = 0 To 14
-            Input #1, defSacks$(teamIdx, J)
+                Input #1, defSacks$(teamIdx, J)
             For J1 = 0 To 1
                 Input #1, GS(teamIdx, J, J1)
             Next
@@ -8333,23 +8329,10 @@ Sub COMPILESTATFILES (teamIdx)
 
     Close #4
 
-    For I = 1 To NUM_STATRECORDS
-        intPR%(0, I) = 0
-        intPR%(1, I) = 0
-        O%(I) = 0
-        teamScore(I) = 0
-        HO$(I) = ""
-        H$(I) = ""
-    Next
-
-    For J = 0 To 10:
-        For K = 0 To 17
-            Z2(J, K) = 0
-        Next
-    Next
-
-    For L = 0 To 38: Z(L) = 0: Next
-    For L = 0 To 38: Z1(L) = 0: Next
+    Erase O%, intPR%
+    Erase teamScore
+    Erase H$, HO$
+    Erase Z!, Z1!, Z2!
 
 End Sub
 
@@ -8365,20 +8348,20 @@ End Function
 
 
 '----------------------------------------
-'      GetTeamYear Function
+'          GetTeamYear Function
 '----------------------------------------
 'This subroutine determines the 4-digit
 'team year from the team loaded by the
 'file. It uses the 2 digit year to make
 'assumptions. (00 to 24 are year 2000.)
-'This limit was chosen because all of
-'the earliest files with 1900 teams are
-'for NFL / 1925.
+'The earliest years of pro football began
+'in 1925, so years 00 to 24 are safe to 
+'be considered as 2000's
 Function GetTeamYear% (yearFromName$)
 
     teamYear% = Val(yearFromName$)
 
-    If teamYear% >= 0 And teamYear% <= 24 Then
+    If teamYear% >= 0 And teamYear% < 25 Then
         GetTeamYear% = 2000 + teamYear%
     Else
         GetTeamYear% = 1900 + teamYear%

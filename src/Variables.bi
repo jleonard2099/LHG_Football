@@ -40,25 +40,34 @@ Dim Shared PTSFC, PTSAC
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
 Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
 Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
-Dim LC$(15, 1), LCN$(15, 1), LCR$(15, 1), LFN$(1), LFR$(1)
-Dim statsLF$(1), statsLI$(9, 1), statsLK$(2, 1), statsLP$(3, 1)
-Dim LIN$(9, 1), LIR$(9, 1), LKN$(2, 1), LKR$(2, 1)
-Dim LPN$(3, 1), LPR$(3, 1), LR$(9, 1), LRN$(9, 1), LRR$(9, 1)
-Dim PKN$(2, 1), PKR$(2, 1)
+Dim LCN$(0 To 15, 0 To 1), LCR$(0 To 15, 0 To 1), LFN$(0 To 1), LFR$(0 To 1)
+Dim LIN$(0 To 9, 0 To 1), LIR$(0 To 9, 0 To 1), LKN$(0 To 2, 0 To 1), LKR$(0 To 2, 0 To 1)
+Dim LPN$(0 To 3, 0 To 1), LPR$(0 To 3, 0 To 1), LRN$(0 To 9, 0 To 1), LRR$(0 To 9, 0 To 1)
+Dim PKN$(0 To 2, 0 To 1), PKR$(0 To 2, 0 To 1)
+Dim statsLC$(0 To 15, 0 To 1), statsLF$(0 To 1), statsLI$(0 To 9, 0 To 1)
+Dim statsLK$(0 To 2, 0 To 1), statsLP$(0 To 3, 0 To 1), statsLR$(0 To 9, 0 To 1)
+Dim statsPK$(0 To 2, 1)
 
-Dim statsPK$(2, 1)
+Dim GIN%(0 To 9, 2), GIR%(0 To 9, 2), GSN%(0 To 15, 1), GSR%(0 To 15, 1)
+Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1), statsZ1%(40)
 
-Dim statsGI%(9, 2), GIN%(9, 2), GIR%(9, 2), statsGS%(15, 1), GSN%(15, 1), GSR%(15, 1)
-Dim statsZ1%(40)
+Dim AF!(0 To 1, 0 To 4), AM!(1, 4)
+Dim AFN!(0 To 1, 0 To 4), AFR!(0 To 1, 0 To 4)
+Dim AMN!(1, 4), AMR!(1, 4)
 
-Dim AF!(1, 4), AFN!(1, 4), AFR!(1, 4)
-Dim AMR!(1, 4), AM!(1, 4), AMN!(1, 4)
-Dim LC!(16), LCN!(15), LCR!(15), LI!(0 To 9), LIN!(0 To 9), LIR!(0 To 9)
-Dim LF!(0 To 9), LFR!(1), LFN!(1), LK!(3), LKN!(2), LKR!(2)
-Dim LP!(4), LPN!(3), LPR!(3), LR!(9), LRN!(0 To 9), LRR!(0 To 9)
-Dim PK!(3), PKN!(2), PKR!(2)
-Dim statsZ!(38), statsZ1!(38)
-Dim statsZ2!(50, 18), ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
+Dim K2!(13, 17)
+
+'--LF! is only 0 to 9 b/c of career behavior
+Dim LC!(0 To 15), LF!(0 To 9), LI!(0 To 9), LK!(0 To 3)
+Dim LP!(0 To 3), LR!(0 To 9), PK!(0 To 2)
+
+Dim LCN!(15), LCR!(15), LIN!(0 To 9), LIR!(0 To 9)
+Dim LFR!(1), LFN!(1), LKN!(2), LKR!(2)
+Dim LPN!(3), LPR!(3), LRN!(0 To 9), LRR!(0 To 9)
+Dim PKN!(2), PKR!(2)
+Dim statsZ!(38), statsZ1!(38), statsZ2!(50, 18)
+
+Dim ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 
 
 '----------------------------------------
@@ -130,7 +139,7 @@ Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 Dim WR$(16)
 
 
-Dim BRC!(50), compZ1!(240, 2), compZ2!(1 To 14, 1 To 18)
+Dim BRC!(50), compZ1!(240, 2), compZ2!(14, 18)
 Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
@@ -227,6 +236,12 @@ Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
 
 
 '----------------------------------------
+' Used in NEWLDR routines
+'----------------------------------------
+Dim GI!(1, 9, 2), GS!(1, 14, 1)
+
+
+'----------------------------------------
 ' Used in RECORD routines
 '----------------------------------------
 '   ind recs, team recs
@@ -248,8 +263,7 @@ Dim A1L!(300, 8), A2L!(180, 4), A3L!(NUM_STATRECORDS, 13), A3R!(NUM_STATRECORDS,
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim CRD!(NUM_STATRECORDS), CRDR!(NUM_STATRECORDS)
-Dim GI!(1, 9, 2), GS!(1, 14, 1)
-Dim K!(1, 12), K2!(1, 13, 17)
+Dim K!(1, 12)
 Dim TYP!(480), lookyTT!(31, 30), W6!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(NUM_STATRECORDS), A4L$(90), A4T$(90)
@@ -257,8 +271,8 @@ Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim compO$(NUM_STATRECORDS), expCategories$(74), statsH$(NUM_STATRECORDS), HR$(NUM_STATRECORDS)
 Dim LCL$(480), LKL$(90), LPL$(NUM_STATRECORDS), LRL$(300), PKL$(90)
-Dim lookyA1$(1, 10), lookyA2$(1, 6), lookyA3$(1, 4), lookyA4$(1, 3), lookyA5$(1, 3), lookyA6$(1, 2), lookyA7$(1, 2)
-'Dim lookyrbacks$(1, 10), lookywdRec$(1, 6), lookyqbacks$(1, 4), lookykickRet$(1, 3), lookypret$(1, 3), lookypunter$(1, 2), lookykicker$(1, 2)
+Dim lookyA1$(10), lookyA2$(6), lookyA3$(4), lookyA4$(3), lookyA5$(3), lookyA6$(2), lookyA7$(2)
+'Dim lookyrbacks$(10), lookywdRec$(6), lookyqbacks$(4), lookykickRet$(3), lookypret$(3), lookypunter$(2), lookykicker$(2)
 Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14), lookyTT$(31, 30)
 Dim QBL$(NUM_STATRECORDS), gameSITE$(NUM_STATRECORDS), SITER$(NUM_STATRECORDS)
 Dim TMM$(480), TPP$(480), TYY$(480)
@@ -315,32 +329,32 @@ Dim Shared WX%, yrdLine
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
-Dim Shared AF(1, 1, 4), AM(1, 1, 4)
+Dim Shared AF(1, 1, 0 to 4), AM(1, 1, 0 to 4)
 Dim Shared C(50), DDI(1), DDS(1), defInts(1), defSacks(1)
 Dim Shared F(4), F1(4), FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
 Dim Shared K(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6)
-Dim Shared GI(1, 9, 2), GS(1, 14, 1), hasRunFF(1), ints(1, 9), IR(1, 9)
+Dim Shared GI(0 to 1, 0 to 9, 0 to 2), GS(0 to 1, 0 to 14, 0 to 1), hasRunFF(1), ints(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerNumPAT(1, 1), kickerPATPct(1, 1)
 Dim Shared KR(1, 2), krNumRet(1, 2), krYdsPerRet(1, 2)
-Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 9), LK(1, 2), LP(1, 3), LR(1, 9), OT(1)
-Dim Shared P(2), PK(1, 2), PR(1, 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
+Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 to 9), LK(1, 0 to 2), LP(1, 0 to 3), LR(1, 0 to 9), OT(1)
+Dim Shared P(2), PK(0 to 1, 0 to 2), PR(1, 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
 Dim Shared QB(1, 3), qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared RB(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
 Dim Shared sacks(1, 14), score(0 To 1, 0 To 10), scoreTimes(50), schedGame(2)
 Dim Shared SI(1, 9, 2), SK(1, 14, 1), teamIdx_GAME(2), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
 Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1), ydsPerComp(1)
+Dim Shared Z(0 to 38), Z1(0 to 38), Z2(0 to 13, 0 to 17)
+
 
 Dim Shared BY%(38, 4), D3%(0 To 8, 0 To 10)
 Dim Shared GL%(1 To 30, 1 To 2), HB%(1)
 
-'intPR% has something to do with schedule stats
+'-- intPR% has to do with schedule stats
 Dim Shared NG%(20), O%(NUM_STATRECORDS), PC%(1, 9), intPR%(1, 120), PS%(2, 21)
-
 Dim Shared Q6%(1), Q7%(1), QR%(50, 2), RM%(1, 14), RN%(1, 38), RQ%(1), RV%(1)
 Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared teamScore(NUM_STATRECORDS), thirdDownAtt(1), thirdDownFail(1), V4%(1, 3), WX%(6)
-
-Dim Shared Z(38), Z1(38), Z2(13, 17)
+Dim Shared teamScore(NUM_STATRECORDS), thirdDownAtt(1), thirdDownFail(1)
+Dim Shared V4%(1, 3), WX%(6), YR%(1)
 
 Dim Shared CRD&(NUM_STATRECORDS)
 
@@ -364,4 +378,4 @@ Dim Shared RP$(30), SX$(1 To 33, 0 To 1)
 'They are included in the compiling of stats file
 Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1), gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20) 
 
-Dim Shared wdRec$(1, 5), Y$(1), YN$(1), YR%(1)
+Dim Shared wdRec$(1, 5), Y$(1), YN$(1)

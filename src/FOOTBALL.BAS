@@ -146,7 +146,7 @@ Sub FOOTBALL ()
         autoPlay = 1
 
     Else
-    
+
         Open "pbplog" For Append As #11
 
     End If
@@ -265,7 +265,7 @@ Sub FOOTBALL ()
 
                     Case 2:
                         Call ChooseGameTeam(NN$(0), NTMS, teamNbr, gameTeams$(0), 0)
-                        teamIdx_GAME(I) = teamNbr
+                        teamIdx_GAME(0) = teamNbr
 
                     Case 3:
                         Call ChooseGameTeam(NN$(1), NTMS, teamNbr, gameTeams$(1), 1)
@@ -362,17 +362,17 @@ Sub FOOTBALL ()
 
     'Determine attendance
     ' ** In the future, we could break this up
-    ' ** by averages over each decade, based on 
-    ' ** available data (specifics not often recorded) 
+    ' ** by averages over each decade, based on
+    ' ** available data (specifics not often recorded)
     If gameLoc = 2 Then
 
         'Neutral stadium and attendance
         gameStadium$ = "NEUTRAL FIELD"
-        
+
         'These averages should be pretty accurate for
         'at least years 1980 +
         If ruleOptType = 0 Then
-        'Random # 5,000 - 35,000 for College
+            'Random # 5,000 - 35,000 for College
             actualAttendance& = Int(Rnd(1) * 30000) + 5000
         Else
             'Random # 50,000 - 80,000 for Pro
@@ -384,7 +384,7 @@ Sub FOOTBALL ()
         If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc)) Then
             'Generic stadium and attendance
             gameStadium$ = "MEMORIAL STADIUM"
-            
+
             'Random # 45,000 - 55,000
             actualAttendance& = Int(Rnd(1) * 10000) + 45000
 
@@ -412,14 +412,14 @@ Sub FOOTBALL ()
             Else
                 'Use random # +/- 5,000 of team's average attendance
                 '-- real #'s reflect a wider range throughout the year,
-                '-- however many teams have their avg. attendance close 
+                '-- however many teams have their avg. attendance close
                 '-- to max capacity. Since we don't have max capacity
                 '-- available for now, we're less likely to go over if
                 '-- we don't go higher on our range.
                 actualAttendance& = avgAttendance& + Int(Rnd(1) * 10000) - 5000
-                
+
                 'If original team's average attendance was less than 10,000,
-                'we could end up with a negative number. So let's use an 
+                'we could end up with a negative number. So let's use an
                 'arbitrary one instead.
                 'Random # from 500 - 700
                 ' ** I commented this out as it seems absurdly low.
@@ -479,8 +479,7 @@ Sub FOOTBALL ()
 
         If autoPlay = 1 Then
             'Auutoamtic determine QB
-            Q7%(0) = 0
-            Q7%(1) = 0
+            Erase Q7%
 
             Q6%(0) = NG%(5)
 
@@ -669,7 +668,7 @@ Sub FOOTBALL ()
                     'Computer is receiving? Return it unless N < -2
                     If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
-                        If N < -2 Then 
+                        If N < -2 Then
                             I$ = "1"
                         Else
                             I$ = "2"
@@ -1272,7 +1271,7 @@ Sub FOOTBALL ()
                                     Else
 
                                         3181 '
-                                        'Random ball carrier 
+                                        'Random ball carrier
                                         Call d100(I2)
 
                                         For I = 9 To 0 Step -1:
@@ -1299,7 +1298,7 @@ Sub FOOTBALL ()
                                                 Next
 
                                                 If RV% = 1 Then
-                                                'Reverse play?
+                                                    'Reverse play?
                                                     GoTo 3181
                                                 Else
                                                     GoTo 3401
@@ -1313,7 +1312,7 @@ Sub FOOTBALL ()
                                             I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0) + WX%(4)
 
                                             If RV% = 1 Then
-                                            'Reverse play?
+                                                'Reverse play?
                                                 Call REVGAIN
                                                 GoTo 3416
                                             Else
@@ -1375,7 +1374,7 @@ Sub FOOTBALL ()
                                     End If
 
                                     Call d100(RN)
-                                    
+
                                     If RN <= intChance Then
                                         'Interception
                                         G = CP
@@ -1508,7 +1507,7 @@ Sub FOOTBALL ()
 
                 End If
 
-                If XX = 7 Then 
+                If XX = 7 Then
                     P2 = 9
                     R1 = 1
                     GoTo 3403
@@ -1660,7 +1659,7 @@ Sub FOOTBALL ()
                 R1 = 1
 
                 3403 '
-                'Average rush yards               
+                'Average rush yards
                 RY = rbRushAvg(P1, I1)
 
                 'Adjust yardage based on DEF league ratings and weather
@@ -2022,7 +2021,7 @@ Sub FOOTBALL ()
                 3401 '
                 'Random ball carrier
                 Call d100(I2)
-        
+
                 For I = 9 To 0 Step -1:
                     If I2 <= rbRushAtt(P1, I) Then I1 = I
                 Next I
@@ -2031,7 +2030,7 @@ Sub FOOTBALL ()
 
                 If I1 = (V4%(P1, 0) Or I1 = V4%(P1, 1) Or I1 = V4%(P1, 2) Or I1 = V4%(P1, 3)) Then
 
-                    
+
                     If rbNumRec(P1, I1) > 0 Then
                         GoTo 3403
                     Else
@@ -2042,7 +2041,7 @@ Sub FOOTBALL ()
                         Next
 
                         If RV% = 1 Then
-                        'Reverse play?
+                            'Reverse play?
                             GoTo 3181
                         Else
                             'Look for new ball carrier
@@ -2057,7 +2056,7 @@ Sub FOOTBALL ()
                     I2 = rbRushAvg(P1, I1) + leagRat_GAME(D, 0) + WX%(4)
 
                     If RV% = 1 Then
-                    'Reverse play?
+                        'Reverse play?
                         Call REVGAIN
                         GoTo 3416
                     Else
@@ -2241,10 +2240,10 @@ Sub FOOTBALL ()
 
                 'Compare value to expected interception %
                 '               QB's Int % - Pass type adjustment + league DEF Int %
-                If I > (100 - qbPctInt(P1, I1) - S1%(0, P2 - 8, D3) + leagRat_GAME(D, 2)) Then 
+                If I > (100 - qbPctInt(P1, I1) - S1%(0, P2 - 8, D3) + leagRat_GAME(D, 2)) Then
                     GoTo 3552
-                Else 
-                
+                Else
+
                     'Determine % chance of completion
                     Call AdjustCompPct
 
@@ -2259,7 +2258,7 @@ Sub FOOTBALL ()
                             I4 = rbYdsPerC(P1, I3)
                             RY = I4
                         End If
-                        
+
                         'Adjust yards for weather
                         If WX%(4) = -3 Then I4 = I4 - 1
                         If WX%(4) = -6 Then I4 = I4 - 2
@@ -2286,7 +2285,7 @@ Sub FOOTBALL ()
 
                             If P2 <> 12 And P2 <> 15 And I = 25 Or (P2 = 12 Or P2 = 15) And I = 25 And ruleOptType = 0 Or (P2 = 12 Or P2 = 15) And ruleOptType <> 0 And I >= 24 Then
                                 'Longer gains
-                                If I = 25 And Int(Rnd(1) * 32) = 11 And score(P1, 0) > 13 And XD(D) > .6 Then 
+                                If I = 25 And Int(Rnd(1) * 32) = 11 And score(P1, 0) > 13 And XD(D) > .6 Then
                                     G = 102
                                 Else
                                     G = Int(Rnd(1) * I4 * 12) + 1 + (I4 * 6)
@@ -2842,7 +2841,7 @@ Sub FOOTBALL ()
 
                     'Track punt yards
                     K(P1, 8) = K(P1, 8) + 100 - Y
-                    
+
                     'Update clock;
                     '-- Punts always take 5 seconds???
                     gameClock! = gameClock! - 5
@@ -2861,13 +2860,13 @@ Sub FOOTBALL ()
                     Call d100(I)
 
                     If G + Y > 80 Then K(P1, 29) = K(P1, 29) + 1
-                    
+
                     'Determine if longest punt and track, if so
                     If G > K(P1, 26) Then K(P1, 26) = G
 
                     Call d100(RN0)
 
-                    '  Punt inside the 10 and 
+                    '  Punt inside the 10 and
                     '  Fake Punt
                     '  40% Chance overall
                     '  Normal Punt, 80% Chance
@@ -3600,12 +3599,12 @@ Sub FOOTBALL ()
             End Select
 
         Case 2
-        'Pass Play?
+            'Pass Play?
 
             Select Case I4
 
                 Case 1 To 17 + tmRat_GAME(P1, 0)
-                    
+
                     'Pro Rules before 1978 | College Rules before 1984
                     If (ruleOptType <> 0 And ruleOptPro <> 0 And ruleOptPro <> 3 Or ruleOptType = 0 And ruleOptColl < 3) Then
                         U$ = U$ + "OFF... HOLDING 15 YARDS ***"
@@ -3998,8 +3997,7 @@ Sub FOOTBALL ()
                         If OT(0) = 1 And OT(1) = 1 Then Q = Q + 1
 
                         If OT(0) = 1 And OT(1) = 1 Or OT(0) = 0 And OT(1) = 0 Then
-                            OT(0) = 0
-                            OT(1) = 0
+                            Erase OT
                             P1 = Int(Rnd(1) * 2)
                             D = 1 - P1
                             Call CHANGEPOSS
@@ -4819,5 +4817,4 @@ Sub FOOTBALL ()
     End If
 
 End Sub
-
 

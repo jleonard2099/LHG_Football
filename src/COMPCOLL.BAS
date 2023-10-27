@@ -301,7 +301,7 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
 
     Shared BRC$(), intName$(), sackName$(), H1$()
     Shared KR$()
-    Shared LR$(), LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$()
+    Shared statsLR$(), statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$()
     Shared compPK$(), PKR$(), PR$(), QB$()
     Shared RB$(), TB$(), WR$()
 
@@ -346,11 +346,11 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
 
     For I = 0 To 9:
         Input #1, LR!(I)
-        Input #1, LR$(I, 0)
-        Input #1, LR$(I, 1)
+        Input #1, statsLR$(I, 0)
+        Input #1, statsLR$(I, 1)
     Next
 
-    For I = 0 To 15: Input #1, LC!(I): Input #1, LC$(I, 0): Input #1, LC$(I, 1): Next
+    For I = 0 To 15: Input #1, LC!(I): Input #1, statsLC$(I, 0): Input #1, statsLC$(I, 1): Next
 
     For I = 0 To 3: Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1): Next
 
@@ -515,10 +515,10 @@ Sub ReadStatsColl (statFile$, numberGames%, TM$)
 
     If TG!(8) > 0 Then puntNum = Int(TG!(9) / TG!(8) * 10) / 10
 
+    Erase EP!, FG!
+
     For I = 1 To 2
-        FG!(I) = 0
         If FA!(I) >= numberGames% Then FG!(I) = Int(FM!(I) / FA!(I) * 1000) / 10
-        EP!(I) = 0
         If EA!(I) >= numberGames% Then EP!(I) = Int(EM!(I) / EA!(I) * 1000) / 10
     Next
 
@@ -537,7 +537,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
     Shared BRC$()
     Shared compPK$(), compZ2$(), compZ3$()
     Shared intName$(), sackName$(), KR$()
-    Shared LC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), LR$()
+    Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared PKR$(), PR$(), compPS$()
     Shared QB$(), RB$(), TB$(), WR$()
 
@@ -576,7 +576,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
                 BRC!(4) = LR!(X - 1)
                 BRC$(4, 0) = RB$(X)
                 BRC$(4, 1) = TM$
-                BRC$(4, 2) = LR$(X - 1, 0)
+                BRC$(4, 2) = statsLR$(X - 1, 0)
             End If
 
             compPS$(X) = WT$
@@ -752,7 +752,7 @@ Sub CheckStatsColl (numberGames%, TM$, WT$, finalUpdate$)
                 BRC!(9) = LC!(X - 1)
                 BRC$(9, 0) = WR$(X)
                 BRC$(9, 1) = TM$
-                BRC$(9, 2) = LC$(X - 1, 0)
+                BRC$(9, 2) = statsLC$(X - 1, 0)
             End If
 
             For Z = 21 To 40:

@@ -8,19 +8,19 @@ Sub EditStats ()
 
     _Title "3-in-1 Football - Stats Input"
 
-    Shared compZ2!()
-    Shared AF!(), AM!(), K!(), K2!()
-    Shared LC!(), LK!(), LR!(), PK!()
+    Shared statsGI%(), statsGS%()
 
-    Shared intNam_TRADE$(), sackNam_TRADE$()
+    Shared AF!(), AM!(), K!()
+    Shared K2!(), LC!(), LF!(), LI!(), LK!(), LP!(), LR!(), PK!()
+
+    Shared statsZ!(), statsZ1!(), statsZ2!
+    Dim W6!(1, 1)
+
+    Shared intName$(), sackName$()
     Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$()
     Shared lookyA5$(), lookyA6$(), lookyA7$()
 
-    Dim inputLF!(0 to 1), W6!(1,1), Z!(14), Z1!(14)
-    Dim sinputGI%(1,9), sinputGS%(1,14)
-
-    Dim sinputsinputLC$(0 to 15), sinputLK$(0 to 2), sinputLP$(0 to 3), sinputLR$(0 to 9)
-    Dim sinputPK$(0 to 2)
+    Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$(), statsPK$()
 
     'Call GetTeam_EditStats (T1$, YN$, D)
     Call ChooseTeam(YN$, NTMS, teamNbr, team$)
@@ -38,115 +38,131 @@ Sub EditStats ()
 
     Else
 
-        OPEN diskPaths$(1) + statFile$ FOR INPUT AS #1
+        Open diskPaths$(1) + statFile$ For Input As #1
 
-        INPUT #1,A$(PX)
+        Input #1, teamName$
 
-        FOR I=0 TO 9:
-            INPUT #1,lookyA1$(PX,I)
-        NEXT I
-        
-        FOR I=0 TO 5:
-            INPUT #1,lookyA2$(PX,I)
-        NEXT I
-        
-        FOR I = 0 TO 3:
-            INPUT #1,lookyA3$(PX,I)
-        NEXT I
+        For I = 0 To 9:
+            Input #1, lookyA1$(I)
+        Next I
 
-        FOR I=0 TO 2:
-            INPUT #1,lookyA4$(PX,I)
-        NEXT I
-        
-        FOR I=0 TO 2
-            INPUT #1,lookyA5$(PX,I)
-        NEXT I
-        
-        INPUT #1,lookyA6$(PX,0)
-        
-        FOR I = 0 TO 1:
-            INPUT #1,lookyA7$(PX,I)
-        NEXT I
+        For I = 0 To 5:
+            Input #1, lookyA2$(I)
+        Next I
 
-        FOR J=0 TO 13
+        For I = 0 To 3:
+            Input #1, lookyA3$(I)
+        Next I
 
-            FOR K=0 TO 17:
-                INPUT #1,compZ2!(J,K)
-            NEXT K
+        For I = 0 To 2:
+            Input #1, lookyA4$(I)
+        Next I
 
-        NEXT J
+        For I = 0 To 2
+            Input #1, lookyA5$(I)
+        Next I
 
-        FOR L=0 TO 14:
-            INPUT #1,Z!(L)
-        NEXT L
+        Input #1, lookyA6$(0)
 
-        FOR L=0 TO 14:
-            INPUT #1,Z1!(L)
-        NEXT L
-        
-        FOR J=0 TO 9:
-            INPUT #1,intNam_TRADE$(PX,J)
-            INPUT #1,sinputGI%(PX,J)
-        NEXT
-        
-        FOR J=0 TO 14:
-            INPUT #1,sackNam_TRADE$(PX,J)
-            INPUT #1,sinputGS%(PX,J)
-        NEXT
-        
-        FOR I=0 TO 9:
-            INPUT #1,LR!(I)
-            INPUT #1,sinputLR$(I)
-        NEXT
-        
-        FOR I=0 TO 15:
-            INPUT #1,LC!(I)
-            INPUT #1,sinputLC$(I)
-        NEXT
-        
-        FOR I=0 TO 3:
-            INPUT #1,LP!(I)
-            INPUT #1,sinputLP$(I)
-        NEXT
-        
-        FOR I=0 TO 2:
-            INPUT #1,LK!(I)
-            INPUT #1,sinputLK$(I)
-        NEXT
-        
-        FOR I=0 TO 2:
-            INPUT #1,PK!(I)
-            INPUT #1,sinputPK$(I)
-        NEXT
-        
-        FOR I=0 TO 1:
-            INPUT #1,LF!(I)
-            FOR I1=0 TO 4:
-                INPUT #1,AM!(I,I1)
-                INPUT #1,AF!(I,I1)
-            NEXT
-        NEXT
+        For I = 0 To 1:
+            Input #1, lookyA7$(I)
+        Next I
 
-        CLOSE #1
+        For J = 0 To 13
 
-        FOR J=0 TO 13
-            FOR K=0 TO 17:
-                K2!(PX,J,K)=compZ2!(J,K)
-            NEXT K
-        NEXT J
+            For K = 0 To 17:
+                Input #1, statsZ2!(J, K)
+            Next K
 
-        FOR L=0 TO 12:
-            K!(0,L)=Z!(L)
-        NEXT L
+        Next J
 
-        FOR L=0 TO 12:
-            K!(1,L)=Z1!(L)
-        NEXT L
+        For L = 0 To 38:
+            Input #1, statsZ!(L)
+        Next L
 
-        W6!(0,0)=Z!(13)
-        W6!(0,1)=Z!(14)
-        W6!(1,0)=Z1!(13)
-        W6!(1,1)=Z1!(14)
+        For L = 0 To 38:
+            Input #1, statsZ1!(L)
+        Next L
+
+        For J = 0 To 9:
+            Input #1, intName$(J)
+            For J1 = 0 To 2
+                Input #1, statsGI%(J, J1)
+            Next J1
+        Next
+
+        For J = 0 To 14:
+            Input #1, sackName$(J)
+            For J1 = 0 To 1
+                Input #1, statsGS%(J, J1)
+            Next J1
+        Next
+
+        For I = 0 To 9:
+            Input #1, LR!(I)
+            Input #1, statsLR$(I, 0)
+            Input #1, statsLR$(I, 1)
+        Next
+
+        For I = 0 To 15:
+            Input #1, LC!(I)
+            Input #1, statsLC$(I, 0)
+            Input #1, statsLC$(I, 1)
+        Next
+
+        For I = 0 To 3:
+            Input #1, LP!(I)
+            Input #1, statsLP$(I, 0)
+            Input #1, statsLP$(I, 1)
+        Next
+
+        For I = 0 To 2:
+            Input #1, LK!(I)
+            Input #1, statsLK$(I, 0)
+            Input #1, statsLK$(I, 1)
+        Next
+
+        For I = 0 To 2:
+            Input #1, PK!(I)
+            Input #1, statsPK$(I, 0)
+            Input #1, statsPK$(I, 1)
+        Next
+
+        For I = 0 To 1:
+            Input #1, LF!(I)
+            Input #1, statsLF$(I)
+            For I1 = 0 To 4:
+                Input #1, AM!(I, I1)
+                Input #1, AF!(I, I1)
+            Next
+        Next
+
+        For I = 0 To 9:
+            Input #1, LI!(I)
+            Input #1, statsLI$(I, 0)
+            Input #1, statsLI$(I, 1)
+        Next
+
+        Close #1
+
+        For J = 0 To 13
+            For K = 0 To 17:
+                K2!(J, K) = statsZ2!(J, K)
+            Next K
+        Next J
+
+        For L = 0 To 12:
+            K!(0, L) = statsZ!(L)
+        Next L
+
+        For L = 0 To 12:
+            K!(1, L) = statsZ1!(L)
+        Next L
+
+        W6!(0, 0) = statsZ!(13)
+        W6!(0, 1) = statsZ!(14)
+        W6!(1, 0) = statsZ1!(13)
+        W6!(1, 1) = statsZ1!(14)
 
         '---------------
         ' Team Offense
@@ -156,25 +172,25 @@ Sub EditStats ()
 
         X$ = "TEAM OFFENSIVE STATS"
         Call TITLE_STAT_HEADER(X$)
-            
-        LOCATE 4,1
 
-        PRINT "1. STAT FILE NAME ";statFile$
-        PRINT "2. TM 1ST DOWNS ";K!(0,0)
-        PRINT "3. TM RUSH ATT ";K!(0,1)
-        PRINT "4. TM RUSH YDS ";INT(K!(0,2))
-        PRINT "5. TM PASS ATT ";K!(0,3)
-        PRINT "6. TM PASS COM ";K!(0,4)
-        PRINT "7. TM PASS INT ";K!(0,5)
-        PRINT "8. TM PASS YDS ";INT(K!(0,6))
-        PRINT "9. TM PUNTS ";K!(0,7)
-        PRINT "10. TM TOTAL PUNT YDS ";INT(K!(0,8))
-        PRINT "11. TM FUMBLES ";K!(0,9)
-        PRINT "12. TM FUM LOST ";K!(0,10)
-        PRINT "13. TM PENALTIES ";K!(0,11)
-        PRINT "14. TM PENALTY YDS ";INT(K!(0,12))
-        PRINT "15. TM TIMES SACKED ";W6!(0,0)
-        PRINT "16. TM YARDS LOST FROM SACKS ";INT(W6!(0,1))
+        Locate 4, 1
+
+        Print "1. STAT FILE NAME "; statFile$
+        Print "2. TM 1ST DOWNS "; K!(0, 0)
+        Print "3. TM RUSH ATT "; K!(0, 1)
+        Print "4. TM RUSH YDS "; Int(K!(0, 2))
+        Print "5. TM PASS ATT "; K!(0, 3)
+        Print "6. TM PASS COM "; K!(0, 4)
+        Print "7. TM PASS INT "; K!(0, 5)
+        Print "8. TM PASS YDS "; Int(K!(0, 6))
+        Print "9. TM PUNTS "; K!(0, 7)
+        Print "10. TM TOTAL PUNT YDS "; Int(K!(0, 8))
+        Print "11. TM FUMBLES "; K!(0, 9)
+        Print "12. TM FUM LOST "; K!(0, 10)
+        Print "13. TM PENALTIES "; K!(0, 11)
+        Print "14. TM PENALTY YDS "; Int(K!(0, 12))
+        Print "15. TM TIMES SACKED "; W6!(0, 0)
+        Print "16. TM YARDS LOST FROM SACKS "; Int(W6!(0, 1))
 
         Do
 
@@ -186,56 +202,56 @@ Sub EditStats ()
             Select Case B9
 
                 Case 1
-                    LOCATE 4,1:INPUT "1. STAT FILE NAME ";statFile$
+                    Locate 4, 1: Input "1. STAT FILE NAME "; statFile$
 
                 Case 2
-                    LOCATE 5,1:INPUT "2. TM 1ST DOWNS ";K!(0,0)
+                    Locate 5, 1: Input "2. TM 1ST DOWNS "; K!(0, 0)
 
                 Case 3
-                    LOCATE 6,1:INPUT "3. TM RUSH ATT ";K!(0,1)
+                    Locate 6, 1: Input "3. TM RUSH ATT "; K!(0, 1)
 
                 Case 4
-                    LOCATE 7,1:INPUT "4. TM RUSH YDS ";K!(0,2)
+                    Locate 7, 1: Input "4. TM RUSH YDS "; K!(0, 2)
 
                 Case 5
-                    LOCATE 8,1:INPUT "5. TM PASS ATT ";K!(0,3)
+                    Locate 8, 1: Input "5. TM PASS ATT "; K!(0, 3)
 
                 Case 6
-                    LOCATE 9,1:INPUT "6. TM PASS COM ";K!(0,4)
+                    Locate 9, 1: Input "6. TM PASS COM "; K!(0, 4)
 
                 Case 7
-                    LOCATE 10,1:INPUT "7. TM PASS INT ";K!(0,5)
+                    Locate 10, 1: Input "7. TM PASS INT "; K!(0, 5)
 
                 Case 8
-                    LOCATE 11,1:INPUT "8. TM PASS YDS ";K!(0,6)
+                    Locate 11, 1: Input "8. TM PASS YDS "; K!(0, 6)
 
                 Case 9
-                    LOCATE 12,1:INPUT "9. TM PUNTS ";K!(0,7)
+                    Locate 12, 1: Input "9. TM PUNTS "; K!(0, 7)
 
                 Case 10
-                    LOCATE 13,1:INPUT "10. TM TOTAL PUNT YDS ";K!(0,8)
+                    Locate 13, 1: Input "10. TM TOTAL PUNT YDS "; K!(0, 8)
 
                 Case 11
-                    LOCATE 14,1:INPUT "11. TM FUMBLES ";K!(0,9)
+                    Locate 14, 1: Input "11. TM FUMBLES "; K!(0, 9)
 
                 Case 12
-                    LOCATE 15,1:INPUT "12. TM FUM LOST ";K!(0,10)
+                    Locate 15, 1: Input "12. TM FUM LOST "; K!(0, 10)
 
                 Case 13
-                    LOCATE 16,1:INPUT "13. TM PENALTIES ";K!(0,11)
+                    Locate 16, 1: Input "13. TM PENALTIES "; K!(0, 11)
 
                 Case 14
-                    LOCATE 17,1:INPUT "14. TM PENALTY YDS ";K!(0,12)
+                    Locate 17, 1: Input "14. TM PENALTY YDS "; K!(0, 12)
 
                 Case 15
-                    LOCATE 18,1:INPUT "15. TM TIMES SACKED ";W6!(0,0)
+                    Locate 18, 1: Input "15. TM TIMES SACKED "; W6!(0, 0)
 
                 Case 16
-                    LOCATE 19,1:INPUT "16. TM YARDS LOST FROM SACKS ";W6!(0,1)
+                    Locate 19, 1: Input "16. TM YARDS LOST FROM SACKS "; W6!(0, 1)
 
             End Select
-            
-        Loop Until B9 >= 0
+
+        Loop Until B9 = 0
 
 
         '---------------
@@ -245,23 +261,23 @@ Sub EditStats ()
 
         X$ = "TEAM DEFENSIVE STATS"
         Call TITLE_STAT_HEADER(X$)
-        
-        LOCATE 4,1  
-        PRINT "1. TM 1ST DOWNS ";K!(1,0)
-        PRINT "2. TM RUSH ATT ";K!(1,1)
-        PRINT "3. TM RUSH YDS ";INT(K!(1,2))
-        PRINT "4. TM PASS ATT ";K!(1,3)
-        PRINT "5. TM PASS COM ";K!(1,4)
-        PRINT "6. TM PASS INT ";K!(1,5)
-        PRINT "7. TM PASS YDS ";INT(K!(1,6))
-        PRINT "8. TM PUNTS ";K!(1,7)
-        PRINT "9. TM TOTAL PUNT YDS ";INT(K!(1,8))
-        PRINT "10. TM FUMBLES ";K!(1,9)
-        PRINT "11. TM FUM LOST ";K!(1,10)
-        PRINT "12. TM PENALTIES ";K!(1,11)
-        PRINT "13. TM PENALTY YDS ";INT(K!(1,12))
-        PRINT "14. TM TIMES SACKED ";W6!(1,0)
-        PRINT "15. TM YARDS LOST FROM SACKS ";INT(W6!(1,1))
+
+        Locate 4, 1
+        Print "1. TM 1ST DOWNS "; K!(1, 0)
+        Print "2. TM RUSH ATT "; K!(1, 1)
+        Print "3. TM RUSH YDS "; Int(K!(1, 2))
+        Print "4. TM PASS ATT "; K!(1, 3)
+        Print "5. TM PASS COM "; K!(1, 4)
+        Print "6. TM PASS INT "; K!(1, 5)
+        Print "7. TM PASS YDS "; Int(K!(1, 6))
+        Print "8. TM PUNTS "; K!(1, 7)
+        Print "9. TM TOTAL PUNT YDS "; Int(K!(1, 8))
+        Print "10. TM FUMBLES "; K!(1, 9)
+        Print "11. TM FUM LOST "; K!(1, 10)
+        Print "12. TM PENALTIES "; K!(1, 11)
+        Print "13. TM PENALTY YDS "; Int(K!(1, 12))
+        Print "14. TM TIMES SACKED "; W6!(1, 0)
+        Print "15. TM YARDS LOST FROM SACKS "; Int(W6!(1, 1))
 
         Do
 
@@ -273,53 +289,53 @@ Sub EditStats ()
             Select Case B9
 
                 Case 1
-                    LOCATE 4,1:INPUT "1. TM 1ST DOWNS ";K!(1,0)
+                    Locate 4, 1: Input "1. TM 1ST DOWNS "; K!(1, 0)
 
                 Case 2
-                    LOCATE 5,1:INPUT "2. TM RUSH ATT ";K!(1,1)
+                    Locate 5, 1: Input "2. TM RUSH ATT "; K!(1, 1)
 
                 Case 3
-                    LOCATE 6,1:INPUT "3. TM RUSH YDS ";K!(1,2)
+                    Locate 6, 1: Input "3. TM RUSH YDS "; K!(1, 2)
 
                 Case 4
-                    LOCATE 7,1:INPUT "4. TM PASS ATT ";K!(1,3)
+                    Locate 7, 1: Input "4. TM PASS ATT "; K!(1, 3)
 
                 Case 5
-                    LOCATE 8,1:INPUT "5. TM PASS COM ";K!(1,4)
+                    Locate 8, 1: Input "5. TM PASS COM "; K!(1, 4)
 
                 Case 6
-                    LOCATE 9,1:INPUT "6. TM PASS INT ";K!(1,5)
+                    Locate 9, 1: Input "6. TM PASS INT "; K!(1, 5)
 
                 Case 7
-                    LOCATE 10,1:INPUT "7. TM PASS YDS ";K!(1,6)
+                    Locate 10, 1: Input "7. TM PASS YDS "; K!(1, 6)
 
                 Case 8
-                    LOCATE 11,1:INPUT "8. TM PUNTS ";K!(1,7)
+                    Locate 11, 1: Input "8. TM PUNTS "; K!(1, 7)
 
                 Case 9
-                    LOCATE 12,1:INPUT "9. TM TOTAL PUNT YDS ";K!(1,8)
+                    Locate 12, 1: Input "9. TM TOTAL PUNT YDS "; K!(1, 8)
 
                 Case 10
-                    LOCATE 13,1:INPUT "10. TM FUMBLES ";K!(1,9)
+                    Locate 13, 1: Input "10. TM FUMBLES "; K!(1, 9)
 
                 Case 11
-                    LOCATE 14,1:INPUT "11. TM FUM LOST ";K!(1,10)
+                    Locate 14, 1: Input "11. TM FUM LOST "; K!(1, 10)
 
                 Case 12
-                    LOCATE 15,1:INPUT "12. TM PENALTIES ";K!(1,11)
+                    Locate 15, 1: Input "12. TM PENALTIES "; K!(1, 11)
 
                 Case 13
-                    LOCATE 16,1:INPUT "13. TM PENALTY YDS ";K!(1,12)
+                    Locate 16, 1: Input "13. TM PENALTY YDS "; K!(1, 12)
 
                 Case 14
-                    LOCATE 17,1:INPUT "14. TM TIMES SACKED ";W6!(1,0)
+                    Locate 17, 1: Input "14. TM TIMES SACKED "; W6!(1, 0)
 
                 Case 15
-                    LOCATE 18,1:INPUT "15. TM YARDS LOST FROM SACKS ";W6!(1,1)
+                    Locate 18, 1: Input "15. TM YARDS LOST FROM SACKS "; W6!(1, 1)
 
             End Select
-            
-        Loop Until B9 >= 0
+
+        Loop Until B9 = 0
 
 
         '---------------
@@ -329,16 +345,16 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE RUSHERS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=0 TO 9:
-                PRINT USING "##";I1+1;
-                PRINT " ";lookyA1$(0,I1)
-            NEXT
+            For I1 = 0 To 9:
+                Print Using "##"; I1 + 1;
+                Print " "; lookyA1$(I1)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
             Loop Until I >= 0 And I <= 10
 
@@ -347,15 +363,16 @@ Sub EditStats ()
                 I = I - 1
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA1$(0,I1)
-                PRINT "2. RUSHING ATTEMPTS ";K2!(0,I1,0)
-                PRINT "3. RUSHING YARDAGE ";INT(K2!(0,I1,1))
-                PRINT "4. RUSHING TD'S ";K2!(0,I1,2)
-                PRINT "5. RECEPTIONS ";K2!(0,I1,3)
-                PRINT "6. RECEIVING YARDAGE ";INT(K2!(0,I1,4))
-                PRINT "7. RECEIVING TD'S ";K2!(0,I1,5)
+                Locate 4, 1
+                Print "1. NAME "; lookyA1$(I)
+                Print "2. RUSHING ATTEMPTS "; K2!(I, 0)
+                Print "3. RUSHING YARDAGE "; Int(K2!(I, 1))
+                Print "4. RUSHING TD'S "; K2!(I, 2)
+                Print "5. RECEPTIONS "; K2!(I, 3)
+                Print "6. RECEIVING YARDAGE "; Int(K2!(I, 4))
+                Print "7. RECEIVING TD'S "; K2!(I, 5)
 
                 Do
 
@@ -367,29 +384,29 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA1$(0,I1)
-                        
+                            Locate 4, 1: Input "1. NAME "; lookyA1$(I1)
+
                         Case 2
-                            LOCATE 5,1:INPUT "2. RUSHING ATTEMPTS ";K2!(0,I1,0)
+                            Locate 5, 1: Input "2. RUSHING ATTEMPTS "; K2!(I, 0)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. RUSHING YARDAGE ";K2!(0,I1,1)
+                            Locate 6, 1: Input "3. RUSHING YARDAGE "; K2!(I, 1)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. RUSHING TD'S ";K2!(0,I1,2)
+                            Locate 7, 1: Input "4. RUSHING TD'S "; K2!(I, 2)
 
                         Case 5
-                            LOCATE 8,1:INPUT "5. RECEPTIONS ";K2!(0,I1,3)
+                            Locate 8, 1: Input "5. RECEPTIONS "; K2!(I, 3)
 
                         Case 6
-                            LOCATE 9,1:INPUT "6. RECEIVING YARDAGE ";K2!(0,I1,4)
+                            Locate 9, 1: Input "6. RECEIVING YARDAGE "; K2!(I, 4)
 
                         Case 7
-                            LOCATE 10,1:INPUT "7. RECEIVING TD'S ";K2!(0,I1,5)
+                            Locate 10, 1: Input "7. RECEIVING TD'S "; K2!(I, 5)
 
                     End Select
-            
-                 Loop Until B9 = 0
+
+                Loop Until B9 = 0
 
             End If
 
@@ -403,16 +420,16 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE RECEIVERS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=0 TO 5:
-                PRINT USING "##";I1+1;
-                PRINT " ";lookyA2$(0,I1)
-            NEXT
+            For I1 = 0 To 5:
+                Print Using "##"; I1 + 1;
+                Print " "; lookyA2$(I1)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
             Loop Until I >= 0 And I <= 6
 
@@ -421,12 +438,13 @@ Sub EditStats ()
                 I = I - 1
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA2$(0,I1)
-                PRINT "2. RECEPTIONS ";K2!(0,I1,6)
-                PRINT "3. RECEIVING YARDAGE ";INT(K2!(0,I1,7))
-                PRINT "4. RECEIVING TD'S ";K2!(0,I1,8)
+                Locate 4, 1
+                Print "1. NAME "; lookyA2$(I)
+                Print "2. RECEPTIONS "; K2!(I, 6)
+                Print "3. RECEIVING YARDAGE "; Int(K2!(I, 7))
+                Print "4. RECEIVING TD'S "; K2!(I, 8)
 
                 Do
 
@@ -438,20 +456,20 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA2$(0,I1)
+                            Locate 4, 1: Input "1. NAME "; lookyA2$(I)
 
                         Case 2
-                            LOCATE 5,1:INPUT "2. RECEPTIONS ";K2!(0,I1,6)
+                            Locate 5, 1: Input "2. RECEPTIONS "; K2!(I, 6)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. RECEIVING YARDAGE ";K2!(0,I1,7)
+                            Locate 6, 1: Input "3. RECEIVING YARDAGE "; K2!(I, 7)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. RECEIVING TD'S ";K2!(0,I1,8)
+                            Locate 7, 1: Input "4. RECEIVING TD'S "; K2!(I, 8)
 
                     End Select
 
-                 Loop Until B9 = 0
+                Loop Until B9 = 0
 
             End If
 
@@ -465,16 +483,16 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE QUARTERBACKS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=0 TO 3:
-                PRINT USING "##";I1+1;
-                PRINT " ";lookyA3$(0,I1)
-            NEXT
+            For I1 = 0 To 3:
+                Print Using "##"; I1 + 1;
+                Print " "; lookyA3$(I1)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
             Loop Until I >= 0 And I <= 4
 
@@ -483,14 +501,15 @@ Sub EditStats ()
                 I = I - 1
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA3$(0,I1)
-                PRINT "2. PASSES THROWN ";K2!(0,I1,9)
-                PRINT "3. PASSES COMPLETED ";K2!(0,I1,10)
-                PRINT "4. PASSES INTERCEPTED ";K2!(0,I1,11)
-                PRINT "5. TOTAL PASSING YARDS ";INT(K2!(0,I1,12))
-                PRINT "6. TOUCHDOWN PASSES ";K2!(0,I1,13)
+                Locate 4, 1
+                Print "1. NAME "; lookyA3$(I)
+                Print "2. PASSES THROWN "; K2!(I, 9)
+                Print "3. PASSES COMPLETED "; K2!(I, 10)
+                Print "4. PASSES INTERCEPTED "; K2!(I, 11)
+                Print "5. TOTAL PASSING YARDS "; Int(K2!(I, 12))
+                Print "6. TOUCHDOWN PASSES "; K2!(I, 13)
 
                 Do
 
@@ -502,26 +521,26 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA3$(0,I1)
+                            Locate 4, 1: Input "1. NAME "; lookyA3$(I)
 
                         Case 2
-                            LOCATE 5,1:INPUT "2. PASSES THROWN ";K2!(0,I1,9)
+                            Locate 5, 1: Input "2. PASSES THROWN "; K2!(I, 9)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. PASSES COMPLETED ";K2!(0,I1,10)
+                            Locate 6, 1: Input "3. PASSES COMPLETED "; K2!(I, 10)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. PASSES INTERCEPTED ";K2!(0,I1,11)
+                            Locate 7, 1: Input "4. PASSES INTERCEPTED "; K2!(I, 11)
 
                         Case 5
-                            LOCATE 8,1:INPUT "5. TOTAL PASSING YARDS ";K2!(0,I1,12)
+                            Locate 8, 1: Input "5. TOTAL PASSING YARDS "; K2!(I, 12)
 
                         Case 6
-                            LOCATE 9,1:INPUT "6. TOUCHDOWN PASSES ";K2!(0,I1,13)
+                            Locate 9, 1: Input "6. TOUCHDOWN PASSES "; K2!(I, 13)
 
                     End Select
 
-                 Loop Until B9 = 0
+                Loop Until B9 = 0
 
             End If
 
@@ -535,16 +554,16 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE KICKOFF RETURNS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=0 TO 2:
-                PRINT USING "##";I1+1;
-                PRINT " ";lookyA4$(0,I1)
-            NEXT
+            For I1 = 0 To 2:
+                Print Using "##"; I1 + 1;
+                Print " "; lookyA4$(I1)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
             Loop Until I >= 0 And I <= 3
 
@@ -553,12 +572,13 @@ Sub EditStats ()
                 I = I - 1
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA4$(0,I1)
-                PRINT "2. KICKS RETURNED ";K2!(0,I1,14)
-                PRINT "3. KICK RETURN YARDAGE ";INT(K2!(0,I1,15))
-                PRINT "4. KICK RETURN TD'S ";K2!(0,I1,16)
+                Locate 4, 1
+                Print "1. NAME "; lookyA4$(I)
+                Print "2. KICKS RETURNED "; K2!(I, 14)
+                Print "3. KICK RETURN YARDAGE "; Int(K2!(I, 15))
+                Print "4. KICK RETURN TD'S "; K2!(I, 16)
 
                 Do
 
@@ -570,20 +590,20 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA4$(0,I1)
+                            Locate 4, 1: Input "1. NAME "; lookyA4$(I)
 
                         Case 2
-                            LOCATE 5,1:INPUT "2. KICKS RETURNED ";K2!(0,I1,14)
+                            Locate 5, 1: Input "2. KICKS RETURNED "; K2!(I, 14)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. KICK RETURN YARDAGE ";K2!(0,I1,15)
+                            Locate 6, 1: Input "3. KICK RETURN YARDAGE "; K2!(I, 15)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. KICK RETURN TD'S ";K2!(0,I1,16)
+                            Locate 7, 1: Input "4. KICK RETURN TD'S "; K2!(I, 16)
 
                     End Select
 
-                 Loop Until B9 = 0
+                Loop Until B9 = 0
 
             End If
 
@@ -597,30 +617,31 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE PUNT RETURNS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=3 TO 5:
-                PRINT USING "##";I1-2;
-                PRINT " ";lookyA5$(0,I1-3)
-            NEXT
+            For I1 = 3 To 5:
+                Print Using "##"; I1 - 2;
+                Print " "; lookyA5$(I1 - 3)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
-            Loop Until I >= 0 And I <= 2
+            Loop Until I >= 0 And I <= 3
 
             If I > 0 Then
 
-                I1 = I1 + 3
+                I = I + 2
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA5$(0,I1-3)
-                PRINT "2. PUNTS RETURNED ";K2!(0,I1,14)
-                PRINT "3. PUNT RETURN YARDAGE ";INT(K2!(0,I1,15))
-                PRINT "4. PUNT RETURN TD'S ";K2!(0,I1,16)
+                Locate 4, 1
+                Print "1. NAME "; lookyA5$(I - 3)
+                Print "2. PUNTS RETURNED "; K2!(I, 14)
+                Print "3. PUNT RETURN YARDAGE "; Int(K2!(I, 15))
+                Print "4. PUNT RETURN TD'S "; K2!(I, 16)
 
                 Do
 
@@ -632,20 +653,20 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA5$(0,I1-3)
+                            Locate 4, 1: Input "1. NAME "; lookyA5$(I - 2)
 
                         Case 2
-                            LOCATE 5,1:INPUT "2. PUNTS RETURNED ";K2!(0,I1,14)
+                            Locate 5, 1: Input "2. PUNTS RETURNED "; K2!(I, 14)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. PUNT RETURN YARDAGE ";K2!(0,I1,15)
+                            Locate 6, 1: Input "3. PUNT RETURN YARDAGE "; K2!(I, 15)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. PUNT RETURN TD'S ";K2!(0,I1,16)
+                            Locate 7, 1: Input "4. PUNT RETURN TD'S "; K2!(I, 16)
 
                     End Select
 
-                 Loop Until B9 = 0
+                Loop Until B9 = 0
 
             End If
 
@@ -657,12 +678,12 @@ Sub EditStats ()
         '---------------
         Cls
         X$ = "CHANGE PUNTER"
-        Call TITLE_EDITSTATS(2, X$)
+        Call Title_EDITSTATS(2, X$)
 
-        LOCATE 4,1          
-        PRINT "1. NAME ";lookyA6$(0,0)
-        PRINT "2. PUNTS ";K!(0,7)
-        PRINT "3. TOTAL PUNT YARDAGE ";INT(K!(0,8))
+        Locate 4, 1
+        Print "1. NAME "; lookyA6$(0)
+        Print "2. PUNTS "; K!(0, 7)
+        Print "3. TOTAL PUNT YARDAGE "; Int(K!(0, 8))
 
         Do
 
@@ -674,13 +695,13 @@ Sub EditStats ()
             Select Case B9
 
                 Case 1
-                    LOCATE 4,1:INPUT "1. NAME ";lookyA6$(0,0)
+                    Locate 4, 1: Input "1. NAME "; lookyA6$(0)
 
                 Case 2
-                    LOCATE 5,1:INPUT "2. PUNTS ";K!(0,7)
+                    Locate 5, 1: Input "2. PUNTS "; K!(0, 7)
 
                 Case 3
-                    LOCATE 6,1:INPUT "3. TOTAL PUNT YARDAGE ";K!(0,8)
+                    Locate 6, 1: Input "3. TOTAL PUNT YARDAGE "; K!(0, 8)
 
             End Select
 
@@ -695,16 +716,16 @@ Sub EditStats ()
 
             Cls
             X$ = "CHANGE PLACE KICKERS"
-            Call TITLE_EDITSTATS(2, X$)
+            Call Title_EDITSTATS(2, X$)
             Print
 
-            FOR I1=0 TO 1:
-                PRINT USING "##";I1+1;
-                PRINT " ";lookyA7$(0,I1)
-            NEXT
+            For I1 = 0 To 1:
+                Print Using "##"; I1 + 1;
+                Print " "; lookyA7$(I1)
+            Next
 
             Do
-                LOCATE 20,1
+                Locate 20, 1
                 Input "# TO CHANGE (0 TO CONTINUE) "; I
             Loop Until I >= 0 And I <= 2
 
@@ -713,13 +734,14 @@ Sub EditStats ()
                 I = I - 1
 
                 Cls
+                Call Title_EDITSTATS(2, X$)
 
-                LOCATE 4,1
-                PRINT "1. NAME ";lookyA7$(0,I1)
-                PRINT "2. FIELD GOALS ATT ";K2!(0,4+I1*4,17)
-                PRINT "3. FIELD GOALS MADE ";K2!(0,3+I1*4,17)
-                PRINT "4. EXTRA POINTS ATT ";K2!(0,6+I1*4,17)
-                PRINT "5. EXTRA POINTS MADE ";K2!(0,5+I1*4,17)
+                Locate 4, 1
+                Print "1. NAME "; lookyA7$(I)
+                Print "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
+                Print "3. FIELD GOALS MADE "; K2!(3 + I * 4, 17)
+                Print "4. EXTRA POINTS ATT "; K2!(6 + I * 4, 17)
+                Print "5. EXTRA POINTS MADE "; K2!(5 + I * 4, 17)
 
                 Do
 
@@ -731,23 +753,23 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            LOCATE 4,1:INPUT "1. NAME ";lookyA7$(0,I1)
+                            Locate 4, 1: Input "1. NAME "; lookyA7$(I)
 
                         Case 2
-                            LOCATE 5,1:INPUT "2. FIELD GOALS ATT ";K2!(0,4+I1*4,17)
+                            Locate 5, 1: Input "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
 
                         Case 3
-                            LOCATE 6,1:INPUT "3. FIELD GOALS MADE ";K2!(0,3+I1*4,17)
+                            Locate 6, 1: Input "3. FIELD GOALS MADE "; K2!(3 + I * 4, 17)
 
                         Case 4
-                            LOCATE 7,1:INPUT "4. EXTRA POINTS ATT ";K2!(0,6+I1*4,17)
+                            Locate 7, 1: Input "4. EXTRA POINTS ATT "; K2!(6 + I * 4, 17)
 
                         Case 5
-                            LOCATE 8,1:INPUT "5. EXTRA POINTS MADE ";K2!(0,5+I1*4,17)
+                            Locate 8, 1: Input "5. EXTRA POINTS MADE "; K2!(5 + I * 4, 17)
 
                     End Select
 
-                 Loop Until B9 = 0
+                Loop Until B9 = 0
 
             End If
 
@@ -757,114 +779,131 @@ Sub EditStats ()
         '---------------
         ' Save Edits
         '---------------
-        FOR J=0 TO 13
-            FOR K=0 TO 17
-                compZ2!(J,K)=K2!(PX,J,K)
-            NEXT K
-        NEXT J
+        For J = 0 To 13
+            For K = 0 To 17
+                statsZ2!(J, K) = K2!(J, K)
+            Next K
+        Next J
 
-        FOR L=0 TO 12:
-            Z!(L)=K!(0,L)
-        NEXT L
-        
-        FOR L=0 TO 12:
-            Z1!(L)=K!(1,L)
-        NEXT L
+        For L = 0 To 12:
+            statsZ!(L) = K!(0, L)
+        Next L
 
-        Z!(13)=W6!(0,0)
-        Z!(14)=W6!(0,1)
-        Z1!(13)=W6!(1,0)
-        Z1!(14)=W6!(1,1)
+        For L = 0 To 12:
+            statsZ1!(L) = K!(1, L)
+        Next L
 
-        OPEN diskPaths$(1) + statFile$ FOR OUTPUT AS #1
-        
-        PRINT #1,A$(PX)
-        
-        FOR I=0 TO 9:
-            PRINT #1,lookyA1$(PX,I)
-        NEXT I
-        
-        FOR I=0 TO 5:
-            PRINT #1,lookyA2$(PX,I)
-        NEXT I
-        
-        FOR I = 0 TO 3:
-            PRINT #1,lookyA3$(PX,I)
-        NEXT I
-        
-        FOR I=0 TO 2:
-            PRINT #1,lookyA4$(PX,I)
-        NEXT I
-        
-        FOR I=0 TO 2:
-            PRINT #1,lookyA5$(PX,I)
-        NEXT I
-        
-        PRINT #1,lookyA6$(PX,0)
-        
-        FOR I = 0 TO 1:
-            PRINT #1,lookyA7$(PX,I)
-        NEXT I
-        
-        FOR J=0 TO 13
-            FOR K=0 TO 17:
-                PRINT #1,compZ2!(J,K)
-            NEXT K
-        NEXT J
-        
-        FOR L=0 TO 14:
-            PRINT #1,Z!(L)
-        NEXT L
-        
-        FOR L=0 TO 14:
-            PRINT #1,Z1!(L)
-        NEXT L
-        
-        FOR J=0 TO 9:
-            PRINT #1,intNam_TRADE$(PX,J)
-            PRINT #1,sinputGI%(PX,J)
-        NEXT
-        
-        FOR J=0 TO 14:
-            PRINT #1,sackNam_TRADE$(PX,J)
-            PRINT #1,sinputGS%(PX,J)
-        NEXT
-        
-        FOR I=0 TO 9:
-            PRINT #1,LR!(I)
-            PRINT #1,sinputLR$(I)
-        NEXT
-        
-        FOR I=0 TO 15:
-            PRINT #1,LC!(I)
-            PRINT #1,sinputLC$(I)
-        NEXT
-        
-        FOR I=0 TO 3:
-            PRINT #1,LP!(I)
-            PRINT #1,sinputLP$(I)
-        NEXT
-        
-        FOR I=0 TO 2:
-            PRINT #1,LK!(I)
-            PRINT #1,sinputLK$(I)
-        NEXT
-        
-        FOR I=0 TO 2:
-            PRINT #1,PK!(I)
-            PRINT #1,sinputPK$(I)
-        NEXT
-        
-        FOR I=0 TO 1:
-            PRINT #1,LF!(I)
-            FOR I1=0 TO 4:
-                PRINT #1,AM!(I,I1)
-                PRINT #1,AF!(I,I1)
-            NEXT
-        NEXT
+        statsZ!(13) = W6!(0, 0)
+        statsZ!(14) = W6!(0, 1)
+        statsZ1!(13) = W6!(1, 0)
+        statsZ1!(14) = W6!(1, 1)
 
-        CLOSE #1
+        Open diskPaths$(1) + statFile$ For Output As #1
+
+        Print #1, teamName$
+
+        For I = 0 To 9:
+            Print #1, lookyA1$(I)
+        Next I
+
+        For I = 0 To 5:
+            Print #1, lookyA2$(I)
+        Next I
+
+        For I = 0 To 3:
+            Print #1, lookyA3$(I)
+        Next I
+
+        For I = 0 To 2:
+            Print #1, lookyA4$(I)
+        Next I
+
+        For I = 0 To 2:
+            Print #1, lookyA5$(I)
+        Next I
+
+        Print #1, lookyA6$(0)
+
+        For I = 0 To 1:
+            Print #1, lookyA7$(I)
+        Next I
+
+        For J = 0 To 13
+            For K = 0 To 17:
+                Print #1, statsZ2!(J, K)
+            Next K
+        Next J
+
+        For L = 0 To 38:
+            Print #1, statsZ!(L)
+        Next L
+
+        For L = 0 To 38:
+            Print #1, statsZ1!(L)
+        Next L
+
+        For J = 0 To 9:
+            Print #1, intName$(J)
+            For J1 = 0 To 2
+                Print #1, statsGI%(J, J1)
+            Next J1
+        Next
+
+        For J = 0 To 14:
+            Print #1, sackName$(J)
+            For J1 = 0 To 1
+                Print #1, statsGS%(J, J1)
+            Next J1
+        Next
+
+        For I = 0 To 9:
+            Print #1, LR!(I)
+            Print #1, statsLR$(I, 0)
+            Print #1, statsLR$(I, 1)
+        Next
+
+        For I = 0 To 15:
+            Print #1, LC!(I)
+            Print #1, statsLC$(I, 0)
+            Print #1, statsLC$(I, 1)
+        Next
+
+        For I = 0 To 3:
+            Print #1, LP!(I)
+            Print #1, statsLP$(I, 0)
+            Print #1, statsLP$(I, 1)
+        Next
+
+        For I = 0 To 2:
+            Print #1, LK!(I)
+            Print #1, statsLK$(I, 0)
+            Print #1, statsLK$(I, 1)
+        Next
+
+        For I = 0 To 2:
+            Print #1, PK!(I)
+            Print #1, statsPK$(I, 0)
+            Print #1, statsPK$(I, 1)
+        Next
+
+        For I = 0 To 1:
+            Print #1, LF!(I)
+            Print #1, statsLF$(I)
+            For I1 = 0 To 4:
+                Print #1, AM!(I, I1)
+                Print #1, AF!(I, I1)
+            Next
+        Next
+
+        For I = 0 To 9:
+            Print #1, LI!(I)
+            Print #1, statsLI$(I, 0)
+            Print #1, statsLI$(I, 1)
+        Next
+
+        Close #1
 
     End If
 
 End Sub
+

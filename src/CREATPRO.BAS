@@ -86,7 +86,7 @@ Sub DefineLeaguePro (league$, div1$, div2$, div3$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Do
 
@@ -111,12 +111,58 @@ Sub DefineLeaguePro (league$, div1$, div2$, div3$)
     Loop Until UCase$(I$) = "N"
 
     'Determine Division names
-    Color 15, 0
-    Print
-    Print
-    Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
-    Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
-    Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
+    'Color 15, 0
+    'Print
+    'Print
+    'Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
+    'Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
+    'Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
+
+    FG = 0
+    BG = 7
+
+    Cls
+    Color 15, 1
+
+    Locate 5, 1: QPrint "Name for Division 1 ", 14, 1, -1
+    Locate , 21: QPrint PadRight$(div1$, 50), FG, BG, -1
+    Locate 7, 1: QPrint "Name for Division 2 ", 14, 1, -1
+    Locate , 21: QPrint PadRight$(div2$, 50), FG, BG, -1
+    Locate 9, 1: QPrint "Name for Division 3 ", 14, 1, -1
+    Locate , 21: QPrint PadRight$(div3$, 50), FG, BG, -1
+
+    GetDiv1:
+    Locate 5, 21 'location of beginning of field
+    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
+    Call TextIn(div1$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
+    If XCode = 2 GoTo Done 'all done entering data
+
+    GetDiv2:
+    Locate 7, 21 'location of beginning of field
+    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
+    Call TextIn(div2$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
+    If XCode = 2 GoTo Done 'all done entering data
+
+    GetDiv3:
+    Locate 9, 21 'location of beginning of field
+    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
+    Call TextIn(div3$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    If XCode = 1 GoTo GetDiv2: 'can't back up any more, stay here
+
+    Done:
+    Color 14, 1
+    Locate 23, 1
+    Print "Is this okay? (Yes/No) ";
+    X$ = ""
+    Call YesNoB(X$, XCode, FG, BG)
+    Locate , 1
+    ClearEOL 14, 1
+    If XCode = 1 GoTo GetDiv3
+    If X$ = "N" GoTo GetDiv1
+    If X$ <> "Y" GoTo Done 'insist on either Y or N or up-arrow
+
 
 End Sub
 
@@ -273,7 +319,7 @@ Sub SaveLeague (league$, div1$, div2$, div3$)
             Z1$(X) = Chr$(42)
         Else
             teamName$ = Z1$(X)
-			statFile$ = nameStatFile$(teamName$)
+            statFile$ = nameStatFile$(teamName$)
             Z1$(X) = statFile$
         End If
 

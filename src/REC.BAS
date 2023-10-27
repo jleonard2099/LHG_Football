@@ -1,10 +1,10 @@
 '----------------------------------------
-'         RecordsMenu Subroutine
+'         Records_Menu Subroutine
 '----------------------------------------
 'This subroutine gives the user a number of 
 'menu selections for viewing, updating and
 'printing records
-Sub RecordsMenu (menuChoice)
+Sub Records_Menu (menuChoice)
 
     _Title "3-in-1 Football - Analyze Records"
 

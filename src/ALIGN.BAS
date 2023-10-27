@@ -14,9 +14,9 @@ Sub ALIGN ()
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
     Shared AR$(), intName$(), DIN$(), DRI$(), sackName$(), DSN$(), DSR$()
-    Shared LC$(), LCN$(), LCR$(), statsLF$(), LFN$(), LFR$()
+    Shared statsLC$(), LCN$(), LCR$(), statsLF$(), LFN$(), LFR$()
     Shared statsLI$(), LIN$(), LIR$(), statsLK$(), LKN$(), LKR$()
-    Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), LR$()
+    Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), statsLR$()
     Shared PKN$(), statsPK$(), PKR$()
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
 
@@ -148,14 +148,14 @@ Sub ALIGN ()
 
                     For I = 0 To 9: 
                         Input #2, LR!(I)
-                        Input #2, LR$(I, 0)
-                        Input #2, LR$(I, 1)
+                        Input #2, statsLR$(I, 0)
+                        Input #2, statsLR$(I, 1)
                     Next
 
                     For I = 0 To 15: 
                         Input #2, LC!(I)
-                        Input #2, LC$(I, 0)
-                        Input #2, LC$(I, 1)
+                        Input #2, statsLC$(I, 0)
+                        Input #2, statsLC$(I, 1)
                     Next
 
                     For I = 0 To 3: 
@@ -243,7 +243,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Shared intName$(), DIN$(), DRI$(), sackName$(), DSN$(), DSR$()
     Shared LCN$(), LCR$(), LFN$(), LFR$()
     Shared statsLK$(), LKN$(), LKR$(), LPN$(), LPR$(), statsLP$()
-    Shared LRN$(), LRR$(), LR$(), PKN$(), statsPK$(), PKR$()
+    Shared LRN$(), LRR$(), statsLR$(), PKN$(), statsPK$(), PKR$()
     Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%()
 
     Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()

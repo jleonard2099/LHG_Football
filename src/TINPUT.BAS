@@ -938,64 +938,19 @@ Sub SaveTeam (team$, mascot$, YN$, teamNumber, teamAttendance&)
     Close #3
 
     'Reset everything
-    For I = 0 To 7:
-        leagueRatings%(I) = 0
-    Next I
+    Erase leagueRatings%
 
-    For I = 0 To 9:
-        rbName$(I) = ""
-        rushAtt(I) = 0
-        A1!(I) = 0
-        rushAvg(I) = 0
-        rbRecepts(I) = 0
-        rbRecAvg(I) = 0
-    Next I
-
-    For I = 0 To 5:
-        wrName$(I) = ""
-        wrRecept(I) = 0
-        wrRecAvg(I) = 0
-    Next I
-
-    For I = 0 To 3:
-        qbName$(I) = ""
-        passAtt(I) = 0
-        compPct(I) = 0
-        qbIntPct(I) = 0
-    Next I
-
-    For I = 0 To 2:
-        krName$(I) = ""
-        krRet(I) = 0
-        krRetAvg(I) = 0
-    Next I
-
-    For I = 0 To 2:
-        prName$(I) = ""
-        prRet(I) = 0
-        prRetAvg(I) = 0
-    Next I
+    Erase armRating, compPct, passAtt, qbIntPct
+    Erase krRetAvg, krRet, prRetAvg, prRet
+    Erase numInts, numSacks
+    Erase pkFGA, pkFGPct, pkPAT, pkPATPct, puntAvg
+    Erase rushAtt, rushAvg, rbRecepts, rbRecAvg
+    Erase wrRecAvg, wrRecept
+    Erase intName$, sackName$
+    Erase krName$, pkName$, prName$, rbName$, wrName$, qbName$
 
     punterName$(0) = ""
     puntAvg(0) = 0
-
-    For I = 0 To 1:
-        pkName$(I) = ""
-        pkFGA(I) = 0
-        pkPAT(I) = 0
-        pkFGPct(I) = 0
-        pkPATPct(I) = 0
-    Next
-
-    For I = 0 To 9:
-        intName$(I) = ""
-        numInts(I) = 0
-    Next
-
-    For I = 0 To 14:
-        sackName$(I) = ""
-        numSacks(I) = 0
-    Next
 
 End Sub
 

@@ -245,10 +245,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
     Dim contrib2(15), contrib3(15)
 
     'Calculate contribution %s for each individual
-    For I = 0 To 15:
-        contrib2(I) = 0
-        contrib3(I) = 0
-    Next
+    '-- this should technically be done each time 
+    '-- this is called because of the Dim ????
+    Erase contrib2, contrib3
 
     U = 0
 
@@ -1944,49 +1943,17 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     stadium$ = ""
     teamAttendance& = 0
 
-    For I = 0 To 9
-        rushAtt(I) = 0
-        rushAvg(I) = 0
-        rbRecepts(I) = 0
-        rbRecAvg(I) = 0
-        rbName$(I) = ""
-    Next
-
-    For I = 0 To 5
-        wrRecept(I) = 0
-        wrRecAvg(I) = 0
-        wrName$(I) = ""
-    Next
-
-    For I = 0 To 3
-        passAtt(I) = 0
-        compPct(I) = 0
-        qbIntPct(I) = 0
-        armRating(I) = 0
-        qbName$(I) = ""
-    Next
-
-    For I = 0 To 2
-        krRet(I) = 0
-        krRetAvg(I) = 0
-        prRet(I) = 0
-        prRetAvg(I) = 0
-        krName$(I) = ""
-        prName$(I) = ""
-    Next
+    Erase armRating, compPct, passAtt, qbIntPct
+    Erase krRetAvg, krRet, prRetAvg, prRet
+    Erase numInts, numSacks
+    Erase pkFGA, pkFGPct, pkPAT, pkPATPct, puntAvg
+    Erase rushAtt, rushAvg, rbRecepts, rbRecAvg
+    Erase wrRecAvg, wrRecept
+    Erase intName$, sackName$
+    Erase krName$, pkName$, prName$, rbName$, wrName$, qbName$
 
     punterName$(0) = ""
-
-    For I = 0 To 1
-        puntAvg(I) = 0
-        pkFGA(I) = 0
-        pkFGPct(I) = 0
-        pkPAT(I) = 0
-        pkPATPct(I) = 0
-        pkName$(I) = ""
-    Next
 
     Call CSMsgBox("", 0, Pass)
 
 End Sub
-

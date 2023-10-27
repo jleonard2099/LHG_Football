@@ -233,34 +233,11 @@ Sub Hd2HdPro_League (X2)
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
         'Initialization for 1st league
-        For K = 1 To 30
-            AW!(K) = 0
-            HW!(K) = 0
-            AL!(K) = 0
-            HL!(K) = 0
-            RT!(K) = 0
-            HT!(K) = 0
-        Next
-
-        For K = 1 To 3
-            THW!(K) = 0
-            THL!(K) = 0
-            TAW!(K) = 0
-            TAL!(K) = 0
-            THT!(K) = 0
-            TRT!(K) = 0
-            TG1!(K) = 0
-            TG2!(K) = 0
-            TG3!(K) = 0
-            TG4!(K) = 0
-        Next
-
-        For K = 1 To 30
-            G1!(K) = 0
-            G2!(K) = 0
-            G3!(K) = 0
-            G4!(K) = 0
-        Next
+        Erase AL!, AW!, 
+        Erase G1!, G2!, G3!, G4!
+        Erase HL!, HT!, HW!, RT!
+        Erase TAL!, TAW!, THL!, TLW!, TRT!
+        Erase TG1!, TG2!, TG3!, TG4!
 
         'Calculations for 1st league
         For K = 1 To 30
@@ -286,35 +263,13 @@ Sub Hd2HdPro_League (X2)
 
         'If we're doing a 2nd league..
         If X2 = 1 Then
+        
             'Initialization for 2nd league
-            For K = 1 To 30:
-                AW2!(K) = 0
-                HW2!(K) = 0
-                AL2!(K) = 0
-                HL2!(K) = 0
-                RT2!(K) = 0
-                HT2!(K) = 0
-            Next
-
-            For K = 1 To 3:
-                THW2!(K) = 0
-                THL2!(K) = 0
-                TAW2!(K) = 0
-                TAL2!(K) = 0
-                THT2!(K) = 0
-                TRT!(K) = 0
-                TG12!(K) = 0
-                TG22!(K) = 0
-                TG32!(K) = 0
-                TG42!(K) = 0
-            Next
-
-            For K = 1 To 30:
-                G12!(K) = 0
-                G22!(K) = 0
-                G32!(K) = 0
-                G42!(K) = 0
-            Next
+            Erase AL2!, AW2!, G12!, G22!, G32!, G42!
+            Erase HL2!, HT2!, HW2!
+            Erase RT2!
+            Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
+            Erase TG12!, TG22!, TG32!, TG42!
 
             'Calculations for 2nd league
             For K = 1 To 30
@@ -402,31 +357,10 @@ Sub Hd2HdPro_League (X2)
                 Case "S"
 
                     'Re-initialize for the next loop
-                    For K = 1 To 3:
-                        THW!(K) = 0
-                        THL!(K) = 0
-                        TAW!(K) = 0
-                        TAL!(K) = 0
-                        THT!(K) = 0
-                        TRT!(K) = 0
-                        TG1!(K) = 0
-                        TG2!(K) = 0
-                        TG3!(K) = 0
-                        TG4!(K) = 0
-                    Next
-
-                    For K = 1 To 3:
-                        THW2!(K) = 0
-                        THL2!(K) = 0
-                        TAW2!(K) = 0
-                        TAL2!(K) = 0
-                        THT2!(K) = 0
-                        TRT2!(K) = 0
-                        TG12!(K) = 0
-                        TG22!(K) = 0
-                        TG32!(K) = 0
-                        TG42!(K) = 0
-                    Next
+                    Erase TAL!, TAW!, THL!, THT!, THW!, TRT!
+                    Erase TG1!, TG2!, TG3!, TG4!
+                    Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
+                    Erase TG12!, TG22!, TG32!, TG42!
 
                     newTeam = 0
 

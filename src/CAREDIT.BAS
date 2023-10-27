@@ -1723,7 +1723,8 @@ Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
                 LPrint careerKRS$(V, B9, 0)
             Next V
 
-            careerRC!(0) = 0: careerRC$(0) = ""
+            careerRC!(0) = 0
+			careerRC$(0) = ""
 
             For V = 1 To VV
                 TT15 = TT15 + careerKRS!(V, B9, 0)

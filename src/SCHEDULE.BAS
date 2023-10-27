@@ -760,13 +760,13 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                     Locate 7, 32
 
-                    Locate , 12: Print "ENTER NAME FOR SUB-SCHEDULE: ": Print
+                    Locate , 12: Print "ENTER NAME FOR SUB-SCHEDULE: "
+                    Print
                     Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
                     Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
                     Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
-                    Locate , 12: Print "SAMPLE NAMES ARE ARKANSAS, LSU68, IU76, ARK90, ETC"
-
-                    Locate 7, 37: Input subSchedFile$
+                    Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
+                    Locate 7, 40: Input subSchedFile$
 
                     If subSchedFile$ <> "" Then
 
@@ -1266,15 +1266,15 @@ Sub ChangeGlobalSettings ()
     'This code will assign defaults based on the first game in the schedule.
     'Usually when I want to change global settings, I want to keep most
     'settings in the schedule the same.
-    playerOpt = scheduleNG%(0, 10)
-    gameLoc = scheduleNG%(0, 2)
-    ruleOptType = scheduleNG%(0, 3)
-    ruleOptPro = scheduleNG%(0, 11)
-    ruleOptColl = scheduleNG%(0, 7)
-    overtimeOpt = scheduleNG%(0, 14)
-    displayPause! = scheduleNG%(0, 4) / 10
-    windOpt = scheduleNG%(0, 19)
-    weatherOpt = scheduleNG%(0, 20)
+    playerOpt = scheduleNG%(1, 10)
+    gameLoc = scheduleNG%(1, 2)
+    ruleOptType = scheduleNG%(1, 3)
+    ruleOptPro = scheduleNG%(1, 11)
+    ruleOptColl = scheduleNG%(1, 7)
+    overtimeOpt = scheduleNG%(1, 14)
+    displayPause! = scheduleNG%(1, 4) / 10
+    windOpt = scheduleNG%(1, 19)
+    weatherOpt = scheduleNG%(1, 20)
 
     DT$ = "09-01-23"
     TM$ = "07:30P"
