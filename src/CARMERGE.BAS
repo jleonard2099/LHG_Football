@@ -114,7 +114,7 @@ Sub MergeAddYear (selectedFile$, statFile$)
             finalUpdate$ = UCase$(K$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N" Or K$ = Chr$(27)
 
-        If finalUpdate$ = "Y" Then finalupdate% = 1 Else finalupdate% = 0
+        If finalUpdate$ = "Y" Then doPostLeaders = 1 Else doPostLeaders = 0
 
         Call AddCareerYear(finalUpdate, selectedFile$, statFile$)
 
@@ -132,8 +132,8 @@ End Sub
 'new values. 
 Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$()
     Shared careerRBS$(), careerQBS$(), careerWRS$()
 
     Shared A1C$(), A2C$(), A3C$(), A4C$(), A5C$(), A6C$(), A7C$()
@@ -379,19 +379,19 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Input #3, A$
 
-    For I = 0 To 9: Input #3, careerA1$(I): Next I
+    For I = 0 To 9: Input #3, carRBacks$(I): Next I
 
-    For I = 0 To 5: Input #3, careerA2$(I): Next I
+    For I = 0 To 5: Input #3, carWdRec$(I): Next I
 
-    For I = 0 To 3: Input #3, careerA3$(I): Next I
+    For I = 0 To 3: Input #3, carQBacks$(I): Next I
 
-    For I = 0 To 2: Input #3, careerA4$(I): Next I
+    For I = 0 To 2: Input #3, carKickRet$(I): Next I
 
-    For I = 0 To 2: Input #3, careerA5$(I): Next I
+    For I = 0 To 2: Input #3, carPRet$(I): Next I
 
-    Input #3, careerA6$(0)
+    Input #3, carPunters$(0)
 
-    For I = 0 To 1: Input #3, careerA7$(I): Next I
+    For I = 0 To 1: Input #3, carKicker$(I): Next I
 
     For J = 0 To 13
         For K = 0 To 17: 
@@ -404,14 +404,14 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     For L = 0 To 38: Input #3, statsZ1!(L): Next L
 
     For J = 0 To 9: 
-        Input #3, careerDI$(J)
+        Input #3, carDefInts$(J)
         For J1 = 0 To 2: 
             Input #3, careerGI%(J, J1)
         Next
     Next
 
     For J = 0 To 14: 
-        Input #3, careerDS$(J)
+        Input #3, carDefSacks$(J)
         For J1 = 0 To 1: 
             Input #3, careerGS%(J, J1)
         Next
@@ -464,36 +464,36 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Close #3
 
-    For I = 0 To 9: T% = Len(careerA1$(I))
-        If T% = 0 Then careerA1$(I) = "XXX"
+    For I = 0 To 9: T% = Len(carRBacks$(I))
+        If T% = 0 Then carRBacks$(I) = "XXX"
     Next
 
-    For I = 0 To 5: T% = Len(careerA2$(I))
-        If T% = 0 Then careerA2$(I) = "XXX"
+    For I = 0 To 5: T% = Len(carWdRec$(I))
+        If T% = 0 Then carWdRec$(I) = "XXX"
     Next
 
-    For I = 0 To 3: T% = Len(careerA3$(I))
-        If T% = 0 Then careerA3$(I) = "XXX"
+    For I = 0 To 3: T% = Len(carQBacks$(I))
+        If T% = 0 Then carQBacks$(I) = "XXX"
     Next
 
-    For I = 0 To 2: T% = Len(careerA4$(I))
-        If T% = 0 Then careerA4$(I) = "XXX"
+    For I = 0 To 2: T% = Len(carKickRet$(I))
+        If T% = 0 Then carKickRet$(I) = "XXX"
     Next
 
-    For I = 0 To 2: T% = Len(careerA5$(I))
-        If T% = 0 Then careerA5$(I) = "XXX"
+    For I = 0 To 2: T% = Len(carPRet$(I))
+        If T% = 0 Then carPRet$(I) = "XXX"
     Next
 
-    For I = 0 To 1: T% = Len(careerA7$(I))
-        If T% = 0 Then careerA7$(I) = "XXX"
+    For I = 0 To 1: T% = Len(carKicker$(I))
+        If T% = 0 Then carKicker$(I) = "XXX"
     Next
 
-    For I = 0 To 9: T% = Len(careerDI$(I))
-        If T% = 0 Then careerDI$(I) = "XXX"
+    For I = 0 To 9: T% = Len(carDefInts$(I))
+        If T% = 0 Then carDefInts$(I) = "XXX"
     Next
 
-    For I = 0 To 14: T% = Len(careerDS$(I))
-        If T% = 0 Then careerDS$(I) = "XXX"
+    For I = 0 To 14: T% = Len(carDefSacks$(I))
+        If T% = 0 Then carDefSacks$(I) = "XXX"
     Next
 
     '-----
@@ -504,7 +504,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 49
 
-            If careerA1$(I) = A1C$(J) Then
+            If carRBacks$(I) = A1C$(J) Then
 
                 For W = 1 To 15:
                     If RBBS!(W, J, 8) = targetYear Then
@@ -539,9 +539,9 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
             If RR = 50 Then
 
-                If careerA1$(I) <> "END" And careerA1$(I) <> "XXX" And Left$(careerA1$(I), 1) <> " " Then
+                If carRBacks$(I) <> "END" And carRBacks$(I) <> "XXX" And Left$(carRBacks$(I), 1) <> " " Then
                     NB = NB + 1
-                    A1C$(NB) = careerA1$(I)
+                    A1C$(NB) = carRBacks$(I)
                     N = 1
 
                     For K = 0 To 5: RBBS!(N, NB, K) = statsZ2!(I, K): Next
@@ -569,7 +569,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 39
 
-            If careerA2$(I) = A2C$(J) Then
+            If carWdRec$(I) = A2C$(J) Then
 
                 For W = 1 To 15
                     If WRRS!(W, J, 5) = targetYear Then
@@ -602,9 +602,9 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
             RR = RR + 1
             If RR = 40 Then
 
-                If careerA2$(I) <> "END" And careerA2$(I) <> "XXX" And Left$(careerA2$(I), 1) <> " " Then
+                If carWdRec$(I) <> "END" And carWdRec$(I) <> "XXX" And Left$(carWdRec$(I), 1) <> " " Then
                     NC = NC + 1
-                    A2C$(NC) = careerA2$(I)
+                    A2C$(NC) = carWdRec$(I)
                     N = 1
 
                     For K = 6 To 8: WRRS!(N, NC, K - 6) = statsZ2!(I, K): Next
@@ -630,7 +630,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 19
 
-            If careerA3$(I) = A3C$(J) Then
+            If carQBacks$(I) = A3C$(J) Then
 
                 For W = 1 To 15:
                     If QBBS!(W, J, 7) = targetYear Then
@@ -662,10 +662,10 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If RR = 20 Then
 
-                    If careerA3$(I) <> "END" And careerA3$(I) <> "XXX" And Left$(careerA3$(I), 1) <> " " Then
+                    If carQBacks$(I) <> "END" And carQBacks$(I) <> "XXX" And Left$(carQBacks$(I), 1) <> " " Then
 
                         ND = ND + 1
-                        A3C$(ND) = careerA3$(I)
+                        A3C$(ND) = carQBacks$(I)
                         N = 1
                         For K = 9 To 13: QBBS!(N, ND, K - 9) = statsZ2!(I, K): Next
                         QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = statsLP$(I, 0)
@@ -689,7 +689,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 14
 
-            If careerA4$(I) = A4C$(J) Then
+            If carKickRet$(I) = A4C$(J) Then
 
                 For W = 1 To 15:
                     If KRS!(W, J, 5) = targetYear Then
@@ -722,10 +722,10 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If RR = 15 Then
 
-                    If careerA4$(I) <> "END" And careerA4$(I) <> "XXX" And Left$(careerA4$(I), 1) <> " " Then
+                    If carKickRet$(I) <> "END" And carKickRet$(I) <> "XXX" And Left$(carKickRet$(I), 1) <> " " Then
 
                         NE = NE + 1
-                        A4C$(NE) = careerA4$(I)
+                        A4C$(NE) = carKickRet$(I)
                         N = 1
 
                         For K = 14 To 16: KRS!(N, NE, K - 14) = statsZ2!(I, K): Next
@@ -754,7 +754,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 14
 
-            If careerA5$(I) = A5C$(J) Then
+            If carPRet$(I) = A5C$(J) Then
 
                 For W = 1 To 15:
                     If PRS!(W, J, 5) = targetYear Then
@@ -785,9 +785,9 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 RR = RR + 1
                 If RR = 15 Then
 
-                    If careerA5$(I) <> "END" And careerA5$(I) <> "XXX" And Left$(careerA5$(I), 1) <> " " Then
+                    If carPRet$(I) <> "END" And carPRet$(I) <> "XXX" And Left$(carPRet$(I), 1) <> " " Then
                         NF = NF + 1
-                        A5C$(NF) = careerA5$(I)
+                        A5C$(NF) = carPRet$(I)
                         N = 1
 
                         For K = 14 To 16: PRS!(N, NF, K - 14) = statsZ2!(I + 3, K): Next
@@ -814,7 +814,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 9
 
-            If careerA6$(I) = A6C$(J) Then
+            If carPunters$(I) = A6C$(J) Then
 
                 For W = 1 To 15:
                     If careerPUS!(W, J, 3) = targetYear Then
@@ -839,9 +839,9 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If RR = 10 Then
 
-                    If careerA6$(I) <> "END" And careerA6$(I) <> "XXX" And Left$(careerA6$(I), 1) <> " " Then
+                    If carPunters$(I) <> "END" And carPunters$(I) <> "XXX" And Left$(carPunters$(I), 1) <> " " Then
                         NG = NG + 1
-                        A6C$(NG) = careerA6$(I)
+                        A6C$(NG) = carPunters$(I)
                         N = 1
                         careerPUS!(N, NG, 0) = statsZ!(7)
                         careerPUS!(N, NG, 1) = statsZ!(8)
@@ -867,7 +867,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 9
 
-            If careerA7$(I) = A7C$(J) Then
+            If carKicker$(I) = A7C$(J) Then
                 For W = 1 To 15:
                     If careerFGS!(W, J, 16) = targetYear Then
                         CHK = CHK + 1
@@ -914,10 +914,10 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If RR = 10 Then
 
-                    If careerA7$(I) <> "END" And careerA7$(I) <> "XXX" And Left$(careerA7$(I), 1) <> " " Then
+                    If carKicker$(I) <> "END" And carKicker$(I) <> "XXX" And Left$(carKicker$(I), 1) <> " " Then
 
                         NH = NH + 1
-                        A7C$(NH) = careerA7$(I)
+                        A7C$(NH) = carKicker$(I)
                         N = 1
 
                         If I = 0 Then
@@ -966,7 +966,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 54
 
-            If careerDI$(I) = DIC$(J) Then
+            If carDefInts$(I) = DIC$(J) Then
                 For W = 1 To 15:
                     If careerGIS!(W, J, 2) = targetYear Then
                         CHK = CHK + 1
@@ -986,10 +986,10 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 RR = RR + 1
                 If RR = 10 Then
 
-                    If careerDI$(I) <> "END" And careerDI$(I) <> "XXX" And Left$(careerDI$(I), 1) <> " " Then
+                    If carDefInts$(I) <> "END" And carDefInts$(I) <> "XXX" And Left$(carDefInts$(I), 1) <> " " Then
 
                         NJ = NJ + 1
-                        DIC$(NJ) = careerDI$(I)
+                        DIC$(NJ) = carDefInts$(I)
                         N = 1
                         careerGIS!(N, NJ, 0) = careerGI%(I, 0)
                         careerGIS!(N, NJ, 1) = 1
@@ -1011,7 +1011,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 54
 
-            If careerDS$(I) = DSC$(J) Then
+            If carDefSacks$(I) = DSC$(J) Then
 
                 For W = 1 To 15:
                     If careerGSS!(W, J, 2) = targetYear Then
@@ -1036,10 +1036,10 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
                 If RR = 15 Then
 
-                    If careerDS$(I) <> "END" And careerDS$(I) <> "XXX" And Left$(careerDS$(I), 1) <> " " Then
+                    If carDefSacks$(I) <> "END" And carDefSacks$(I) <> "XXX" And Left$(carDefSacks$(I), 1) <> " " Then
 
                         NK = NK + 1
-                        DSC$(NK) = careerDS$(I)
+                        DSC$(NK) = carDefSacks$(I)
                         N = 1
                         careerGSS!(N, NK, 0) = careerGS%(I, 0)
                         careerGSS!(N, NK, 1) = 1

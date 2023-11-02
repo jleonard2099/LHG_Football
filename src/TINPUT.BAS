@@ -751,19 +751,8 @@ Sub InputTeam ()
 
         Cls
 
-        JJ = 1
-        Locate 6, 8
-        Color 15, 1
+        Call box0 (6, 8, 8, 70, 2, 15, 1)
 
-        Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-
-        For II = 1 To JJ:
-            Locate 6 + II, 8
-            Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-        Next
-
-        Locate 7 + JJ, 8
-        Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
         Locate 7
 
         U$ = "INPUT ANOTHER TEAM? (Y/N)"

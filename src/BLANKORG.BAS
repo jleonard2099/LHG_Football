@@ -8,7 +8,7 @@ Sub BLANKORG ()
 
     _Title "3-in-1 Football - Erase National Stats"
 
-    Dim teamName$(40), Z4$(40)
+    Dim teamName$(40)
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 

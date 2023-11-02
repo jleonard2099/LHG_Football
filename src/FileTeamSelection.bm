@@ -387,7 +387,7 @@ End Sub
 'This routine is highly customized TO
 ' the specific game for which it has
 ' been included for.
-Sub ReadExtraData (teamYear$, targetTeam$, teamIdx)
+Sub ReadExtraData (teamYear$, teamIdx)
 
     Shared teamAttendance&
 

@@ -102,7 +102,9 @@ Data ROLLOUT PASS,BOOTLEG PASS,PUNT,FG ATT,SCOUT REPORT
 For I = 0 To 14: Read R$(I): Next
 For I = 1 To 10: Read D$(I): Next I
 For I = 1 To 11: Read D1$(I): Next I
-For I = 1 To 20: Read O$(I): Next I
+
+'-- this has been retired in favor of RP$()
+For I = 1 To 20: Read offensePlay$(I): Next I
 
 Data 0,3,-6,0,-3,0,0,3,-3,-3: 'BLAST DATA
 Data 0,3,-3,0,-6,0,0,6,0,0: 'DIVE

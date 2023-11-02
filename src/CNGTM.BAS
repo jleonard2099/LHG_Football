@@ -102,7 +102,7 @@ Sub PrintRoster (teamName$, teamIdx)
     Color 0, 15
 
     ' *** PRINT TEAM ROSTER ***
-    LPrint "TEAM ROSTER FOR "; teamName; " "; mascot$; " TEAM NUMBER ="; teamIdx
+    LPrint "TEAM ROSTER FOR "; teamName$; " "; mascot$; " TEAM NUMBER ="; teamIdx
     LPrint
     LPrint Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
     LPrint Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)

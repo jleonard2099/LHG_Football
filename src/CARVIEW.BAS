@@ -12,7 +12,7 @@ Sub CARVIEW ()
 
     _Title "3-in-1 Football - View Careers"
 
-    Shared careerKRS$(), careerPRS$()
+    Shared carKRS$(), carPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
 
     Shared careerGIS!(), careerGSS!(), careerFGS!()
@@ -23,8 +23,8 @@ Sub CARVIEW ()
     ' We could probably not need these extra variables
     ' If we simply acounted for the first dimension
     ' within our code
-    Shared carviewA1$(), carviewA2$(), carviewA3$(), carviewA4$(), carviewA5$(), carviewA6$(), carviewA7$()
-    Shared carviewDI$(), carviewDS$()
+    Shared viewRBacks$(), viewWdRec$(), viewQBacks$(), viewKickRet$(), viewPRet$(), viewPunter$(), viewKicker$()
+    Shared viewDefInts$(), viewDefSacks$()
 
     careerFile$ = ChooseFile$ (diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
@@ -42,63 +42,63 @@ Sub CARVIEW ()
         Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
         For I = 0 To 49: 
-            Input #1, carviewA1$(PX, I)
+            Input #1, viewRBacks$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 39
-            Input #1, carviewA2$(PX, I)
+            Input #1, viewWdRec$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 19
-            Input #1, carviewA3$(PX, I)
+            Input #1, viewQBacks$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 14
-            Input #1, carviewA4$(PX, I)
+            Input #1, viewKickRet$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 14
-            Input #1, carviewA5$(PX, I)
+            Input #1, viewPRet$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 9
-            Input #1, carviewA6$(PX, I)
+            Input #1, viewPunter$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 9
-            Input #1, carviewA7$(PX, I)
+            Input #1, viewKicker$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 54
-            Input #1, carviewDI$(PX, I)
+            Input #1, viewDefInts$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
 
         For I = 0 To 54
-            Input #1, carviewDS$(PX, I)
+            Input #1, viewDefSacks$(PX, I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
@@ -204,7 +204,7 @@ Sub CARVIEW ()
         For N = 1 To 15: 
 
             For J = 0 To 14
-                Input #1, careerKRS$(N, J, 0)
+                Input #1, carKRS$(N, J, 0)
                 Locate 21, 38
                 Color 5
                 TMR = TMR - 1: Print Using "####"; TMR
@@ -231,7 +231,7 @@ Sub CARVIEW ()
         For N = 1 To 15: 
 
             For J = 0 To 14
-                Input #1, careerPRS$(N, J, 0)
+                Input #1, carPRS$(N, J, 0)
                 Locate 21, 38
                 Color 5
                 TMR = TMR - 1: Print Using "####"; TMR
@@ -351,9 +351,9 @@ Sub CARVIEW ()
                 Case "R"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
-                    For I = 17 To 33: Locate I - 15, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
-                    For I = 34 To 49: Locate I - 32, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA1$(PX, I), 12): Next
+                    For I = 0 To 16: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewRBacks$(PX, I), 12): Next
+                    For I = 17 To 33: Locate I - 15, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewRBacks$(PX, I), 12): Next
+                    For I = 34 To 49: Locate I - 32, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewRBacks$(PX, I), 12): Next
 
                     Print
                     Print
@@ -366,8 +366,8 @@ Sub CARVIEW ()
                 Case "W"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
-                    For I = 20 To 39: Locate I - 18, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA2$(PX, I), 12): Next
+                    For I = 0 To 19: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewWdRec$(PX, I), 12): Next
+                    For I = 20 To 39: Locate I - 18, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewWdRec$(PX, I), 12): Next
                     Print
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
@@ -379,8 +379,8 @@ Sub CARVIEW ()
                 Case "Q"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
-                    For I = 10 To 19: Locate I - 8, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA3$(PX, I), 12): Next
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewQBacks$(PX, I), 12): Next
+                    For I = 10 To 19: Locate I - 8, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewQBacks$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -391,8 +391,8 @@ Sub CARVIEW ()
                 Case "K"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
-                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA4$(PX, I), 12): Next
+                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewKickRet$(PX, I), 12): Next
+                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewKickRet$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -403,8 +403,8 @@ Sub CARVIEW ()
                 Case "U"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
-                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA5$(PX, I), 12): Next
+                    For I = 0 To 7: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewPRet$(PX, I), 12): Next
+                    For I = 8 To 14: Locate I - 6, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewPRet$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -415,7 +415,7 @@ Sub CARVIEW ()
                 Case "P"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA6$(PX, I), 12): Next
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewPunter$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -426,7 +426,7 @@ Sub CARVIEW ()
                 Case "C"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewA7$(PX, I), 12): Next
+                    For I = 0 To 9: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewKicker$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -437,9 +437,9 @@ Sub CARVIEW ()
                 Case "I"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
-                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
-                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDI$(PX, I), 12): Next
+                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefInts$(PX, I), 12): Next
+                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefInts$(PX, I), 12): Next
+                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefInts$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -450,9 +450,9 @@ Sub CARVIEW ()
                 Case "D"
                     Cls
                     Color 12: Print careerFile$
-                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
-                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
-                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carviewDS$(PX, I), 12): Next
+                    For I = 0 To 18: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefSacks$(PX, I), 12): Next
+                    For I = 19 To 36: Locate I - 17, 20: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefSacks$(PX, I), 12): Next
+                    For I = 37 To 54: Locate I - 35, 40: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(viewDefSacks$(PX, I), 12): Next
                     Print
                     Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                     RT = 2
@@ -498,15 +498,15 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
     Shared careerFF!(), careerII!(), careerPP!(), careerTT!(), careerYY!()
 
-    Shared careerKRS$(), careerPRS$()
+    Shared carKRS$(), carPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
 
     Shared careerGIS!(), careerGSS!(), careerFGS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
-    Shared carviewA1$(), carviewA2$(), carviewA3$(), carviewA4$(), carviewA5$(), carviewA6$(), carviewA7$()
-    Shared carviewDI$(), carviewDS$()
+    Shared viewRBacks$(), viewWdRec$(), viewQBacks$(), viewKickRet$(), viewPRet$(), viewPunter$(), viewKicker$()
+    Shared viewDefInts$(), viewDefSacks$()
 
     Do
 
@@ -524,10 +524,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 49
 
-                    If carviewA1$(PX, I) <> "" And carviewA1$(PX, I) <> "XXX" Then
+                    If viewRBacks$(PX, I) <> "" And viewRBacks$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA1$(PX, I), 13);
+                        Locate 3: Print Left$(viewRBacks$(PX, I), 13);
 
                         VV = careerRBS!(1, I, 7) + careerRBS!(2, I, 7) + careerRBS!(3, I, 7) + careerRBS!(4, I, 7) + careerRBS!(5, I, 7) + careerRBS!(6, I, 7) + careerRBS!(7, I, 7) + careerRBS!(7, I, 7) + careerRBS!(9, I, 7) + careerRBS!(10, I, 7) + careerRBS!(11, I, 7) + careerRBS!(12, I, 7) + careerRBS!(13, I, 7) + careerRBS!(14, I, 7) + careerRBS!(15, I, 7)
 
@@ -648,10 +648,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 39
 
-                    If carviewA2$(PX, I) <> "" And carviewA2$(PX, I) <> "XXX" Then
+                    If viewWdRec$(PX, I) <> "" And viewWdRec$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA2$(PX, I), 13);
+                        Locate 3: Print Left$(viewWdRec$(PX, I), 13);
                         VV = careerWRS!(1, I, 4) + careerWRS!(2, I, 4) + careerWRS!(3, I, 4) + careerWRS!(4, I, 4) + careerWRS!(5, I, 4) + careerWRS!(6, I, 4) + careerWRS!(7, I, 4) + careerWRS!(8, I, 4) + careerWRS!(9, I, 4) + careerWRS!(10, I, 4) + careerWRS!(11, I, 4) + careerWRS!(12, I, 4) + careerWRS!(13, I, 4) + careerWRS!(14, I, 4) + careerWRS!(15, I, 4)
 
                         For V = 1 To VV
@@ -737,10 +737,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 19
 
-                    If carviewA3$(PX, I) <> "" And carviewA3$(PX, I) <> "XXX" Then
+                    If viewQBacks$(PX, I) <> "" And viewQBacks$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA3$(PX, I), 12);
+                        Locate 3: Print Left$(viewQBacks$(PX, I), 12);
 
                         VV = careerQBS!(1, I, 6) + careerQBS!(2, I, 6) + careerQBS!(3, I, 6) + careerQBS!(4, I, 6) + careerQBS!(5, I, 6) + careerQBS!(6, I, 6) + careerQBS!(7, I, 6) + careerQBS!(8, I, 6) + careerQBS!(9, I, 6) + careerQBS!(10, I, 6) + careerQBS!(11, I, 6) + careerQBS!(12, I, 6) + careerQBS!(13, I, 6) + careerQBS!(14, I, 6) + careerQBS!(15, I, 6)
 
@@ -974,10 +974,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 14
 
-                    If carviewA4$(PX, I) <> "" And carviewA4$(PX, I) <> "XXX" Then
+                    If viewKickRet$(PX, I) <> "" And viewKickRet$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA4$(PX, I), 13);
+                        Locate 3: Print Left$(viewKickRet$(PX, I), 13);
 
                         VV = careerKRS!(1, I, 4) + careerKRS!(2, I, 4) + careerKRS!(3, I, 4) + careerKRS!(4, I, 4) + careerKRS!(5, I, 4) + careerKRS!(6, I, 4) + careerKRS!(7, I, 4) + careerKRS!(8, I, 4) + careerKRS!(9, I, 4) + careerKRS!(10, I, 4) + careerKRS!(11, I, 4) + careerKRS!(12, I, 4) + careerKRS!(13, I, 4) + careerKRS!(14, I, 4) + careerKRS!(15, I, 4)
 
@@ -992,7 +992,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                             Print Tab(62); Using "##"; careerKRS!(V, I, 2);
                             Print Tab(70); Using "##"; careerKRS!(V, I, 3);
-                            Print Tab(72); careerKRS$(V, I, 0)
+                            Print Tab(72); carKRS$(V, I, 0)
                         Next V
 
                         VV = careerKRS!(1, I, 4) + careerKRS!(2, I, 4) + careerKRS!(3, I, 4) + careerKRS!(4, I, 4) + careerKRS!(5, I, 4) + careerKRS!(6, I, 4) + careerKRS!(7, I, 4) + careerKRS!(8, I, 4) + careerKRS!(9, I, 4) + careerKRS!(10, I, 4) + careerKRS!(11, I, 4) + careerKRS!(12, I, 4) + careerKRS!(13, I, 4) + careerKRS!(14, I, 4) + careerKRS!(15, I, 4)
@@ -1003,12 +1003,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             careerTT!(17) = careerTT!(17) + careerKRS!(V, I, 2)
                         Next V
 
-                        careerRC!(4) = careerKRS!(1, I, 3): careerRC$(4) = careerKRS$(1, I, 0)
+                        careerRC!(4) = careerKRS!(1, I, 3): careerRC$(4) = carKRS$(1, I, 0)
 
                         For V = 2 To VV
                             If careerKRS!(V, I, 3) >= careerRC!(4) Then
                                 careerRC!(4) = careerKRS!(V, I, 3)
-                                careerRC$(4) = careerKRS$(V, I, 0)
+                                careerRC$(4) = carKRS$(V, I, 0)
                             End If
                         Next
 
@@ -1066,10 +1066,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 14
 
-                    If carviewA5$(PX, I) <> "" And carviewA5$(PX, I) <> "XXX" Then
+                    If viewPRet$(PX, I) <> "" And viewPRet$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA5$(PX, I), 13);
+                        Locate 3: Print Left$(viewPRet$(PX, I), 13);
 
                         VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
@@ -1084,7 +1084,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                             Print Tab(62); Using "##"; careerPRS!(V, I, 2);
                             Print Tab(70); Using "##"; careerPRS!(V, I, 3);
-                            Print Tab(72); careerPRS$(V, I, 0)
+                            Print Tab(72); carPRS$(V, I, 0)
                         Next V
 
                         VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
@@ -1096,12 +1096,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Next V
 
                         careerRC!(5) = careerPRS!(1, I, 3)
-                        careerRC$(5) = careerPRS$(1, I, 0)
+                        careerRC$(5) = carPRS$(1, I, 0)
 
                         For V = 2 To VV
                             If careerPRS!(V, I, 3) >= careerRC!(5) Then
                                 careerRC!(5) = careerPRS!(V, I, 3)
-                                careerRC$(5) = careerPRS$(V, I, 0)
+                                careerRC$(5) = carPRS$(V, I, 0)
                             End If
                         Next
 
@@ -1159,9 +1159,9 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 9
 
-                    If carviewA6$(PX, I) <> "" And carviewA6$(PX, I) <> "XXX" Then
+                    If viewPunter$(PX, I) <> "" And viewPunter$(PX, I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carviewA6$(PX, I), 13);
+                        Locate 3: Color 15: Print Left$(viewPunter$(PX, I), 13);
 
                         VV = careerPUS!(1, I, 2) + careerPUS!(2, I, 2) + careerPUS!(3, I, 2) + careerPUS!(4, I, 2) + careerPUS!(5, I, 2) + careerPUS!(6, I, 2) + careerPUS!(7, I, 2) + careerPUS!(8, I, 2) + careerPUS!(9, I, 2) + careerPUS!(10, I, 2) + careerPUS!(11, I, 2) + careerPUS!(12, I, 2) + careerPUS!(13, I, 2) + careerPUS!(14, I, 2) + careerPUS!(15, I, 2)
 
@@ -1231,10 +1231,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 9
 
-                    If carviewA7$(PX, I) <> "" And carviewA7$(PX, I) <> "XXX" Then
+                    If viewKicker$(PX, I) <> "" And viewKicker$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewA7$(PX, I), 13);
+                        Locate 3: Print Left$(viewKicker$(PX, I), 13);
 
                         VV = careerFGS!(1, I, 15) + careerFGS!(2, I, 15) + careerFGS!(3, I, 15) + careerFGS!(4, I, 15) + careerFGS!(5, I, 15) + careerFGS!(6, I, 15) + careerFGS!(7, I, 15) + careerFGS!(8, I, 15) + careerFGS!(9, I, 15) + careerFGS!(10, I, 15) + careerFGS!(11, I, 15) + careerFGS!(12, I, 15) + careerFGS!(13, I, 15) + careerFGS!(14, I, 15) + careerFGS!(15, I, 15)
 
@@ -1362,10 +1362,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If carviewDI$(PX, I) <> "" And carviewDI$(PX, I) <> "XXX" Then
+                    If viewDefInts$(PX, I) <> "" And viewDefInts$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewDI$(PX, I), 13);
+                        Locate 3: Print Left$(viewDefInts$(PX, I), 13);
 
                         VV = careerGIS!(1, I, 1) + careerGIS!(2, I, 1) + careerGIS!(3, I, 1) + careerGIS!(4, I, 1) + careerGIS!(5, I, 1) + careerGIS!(6, I, 1) + careerGIS!(7, I, 1) + careerGIS!(8, I, 1) + careerGIS!(9, I, 1) + careerGIS!(10, I, 1) + careerGIS!(11, I, 1) + careerGIS!(12, I, 1) + careerGIS!(13, I, 1) + careerGIS!(14, I, 1) + careerGIS!(15, I, 1)
 
@@ -1426,10 +1426,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If carviewDS$(PX, I) <> "" And carviewDS$(PX, I) <> "XXX" Then
+                    If viewDefSacks$(PX, I) <> "" And viewDefSacks$(PX, I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carviewDS$(PX, I), 13);
+                        Locate 3: Print Left$(viewDefSacks$(PX, I), 13);
 
                         VV = careerGSS!(1, I, 1) + careerGSS!(2, I, 1) + careerGSS!(3, I, 1) + careerGSS!(4, I, 1) + careerGSS!(5, I, 1) + careerGSS!(6, I, 1) + careerGSS!(7, I, 1) + careerGSS!(8, I, 1) + careerGSS!(9, I, 1) + careerGSS!(10, I, 1) + careerGSS!(11, I, 1) + careerGSS!(12, I, 1) + careerGSS!(13, I, 1) + careerGSS!(14, I, 1) + careerGSS!(15, I, 1)
 

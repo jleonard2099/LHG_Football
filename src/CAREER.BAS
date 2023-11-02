@@ -125,8 +125,8 @@ End Sub
 'year's worth of stats to the career file
 Sub MergeFirstYear
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$()
     Shared careerQBS$(), careerRBS$()
 
     Shared statsZ!(), statsZ1!(), statsZ2!()
@@ -159,7 +159,7 @@ Sub MergeFirstYear
     NK = 0
     D = 0
     VV = 0
-    finalUpdate% = 0
+    doPostLeaders = 0
 
     Do
 
@@ -199,7 +199,7 @@ Sub MergeFirstYear
                 K$ = GetKeyPress$
             Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
 
-            If UCase$(K$) = "Y" Then finalUpdate% = 1 Else finalUpdate% = 0
+            If UCase$(K$) = "Y" Then doPostLeaders = 1 Else doPostLeaders = 0
 
             If Not _FileExists(diskPaths$(1) + statFile$) Then
 
@@ -228,29 +228,29 @@ Sub MergeFirstYear
                 Input #2, A$
 
                 For I = 0 To 9: 
-                    Input #2, careerA1$(I)
+                    Input #2, carRBacks$(I)
                 Next I
                 
                 For I = 0 To 5: 
-                    Input #2, careerA2$(I)
+                    Input #2, carWdRec$(I)
                 Next I
                 
                 For I = 0 To 3: 
-                    Input #2, careerA3$(I)
+                    Input #2, carQBacks$(I)
                 Next I
                 
                 For I = 0 To 2: 
-                    Input #2, careerA4$(I)
+                    Input #2, carKickRet$(I)
                 Next I
                 
                 For I = 0 To 2: 
-                    Input #2, careerA5$(I)
+                    Input #2, carPRet$(I)
                 Next I
 
-                Input #2, careerA6$(0)
+                Input #2, carPunters$(0)
 
                 For I = 0 To 1: 
-                    Input #2, careerA7$(I)
+                    Input #2, carKicker$(I)
                 Next I
 
                 For J = 0 To 13
@@ -268,14 +268,14 @@ Sub MergeFirstYear
                 Next L
 
                 For J = 0 To 9: 
-                    Input #2, careerDI$(J)
+                    Input #2, carDefInts$(J)
                     For J1 = 0 To 2: 
                         Input #2, careerGI%(J, J1)
                     Next
                 Next
 
                 For J = 0 To 14: 
-                    Input #2, careerDS$(J)
+                    Input #2, carDefSacks$(J)
                     For J1 = 0 To 1: 
                         Input #2, careerGS%(J, J1)
                     Next
@@ -329,53 +329,53 @@ Sub MergeFirstYear
                 Close #2
 
                 For I = 0 To 9
-                    T% = Len(careerA1$(I))
-                    If T% = 0 Then careerA1$(I) = "XXX"
+                    T% = Len(carRBacks$(I))
+                    If T% = 0 Then carRBacks$(I) = "XXX"
                 Next
 
                 For I = 0 To 5
-                    T% = Len(careerA2$(I))
-                    If T% = 0 Then careerA2$(I) = "XXX"
+                    T% = Len(carWdRec$(I))
+                    If T% = 0 Then carWdRec$(I) = "XXX"
                 Next
 
                 For I = 0 To 3
-                    T% = Len(careerA3$(I))
-                    If T% = 0 Then careerA3$(I) = "XXX"
+                    T% = Len(carQBacks$(I))
+                    If T% = 0 Then carQBacks$(I) = "XXX"
                 Next
 
                 For I = 0 To 2
-                    T% = Len(careerA4$(I))
-                    If T% = 0 Then careerA4$(I) = "XXX"
+                    T% = Len(carKickRet$(I))
+                    If T% = 0 Then carKickRet$(I) = "XXX"
                 Next
 
                 For I = 0 To 2
-                    T% = Len(careerA5$(I))
-                    If T% = 0 Then careerA5$(I) = "XXX"
+                    T% = Len(carPRet$(I))
+                    If T% = 0 Then carPRet$(I) = "XXX"
                 Next
 
                 For I = 0 To 1
-                    T% = Len(careerA7$(I))
-                    If T% = 0 Then careerA7$(I) = "XXX"
+                    T% = Len(carKicker$(I))
+                    If T% = 0 Then carKicker$(I) = "XXX"
                 Next
 
                 For I = 0 To 9
-                    T% = Len(careerDI$(I))
-                    If T% = 0 Then careerDI$(I) = "XXX"
+                    T% = Len(carDefInts$(I))
+                    If T% = 0 Then carDefInts$(I) = "XXX"
                 Next
 
                 For I = 0 To 14
-                    T% = Len(careerDS$(I))
-                    If T% = 0 Then careerDS$(I) = "XXX"
+                    T% = Len(carDefSacks$(I))
+                    If T% = 0 Then carDefSacks$(I) = "XXX"
                 Next
 
                 For I = 0 To 49
 
                     N = 1
 
-                    If careerA1$(I) <> "END" And careerA1$(I) <> "XXX" And careerA1$(I) <> "" Then
+                    If carRBacks$(I) <> "END" And carRBacks$(I) <> "XXX" And carRBacks$(I) <> "" Then
                         NB = NB + 1
                     Else
-                        careerA1$(I) = ""
+                        carRBacks$(I) = ""
                     End If
 
                     For J = 0 To 5
@@ -395,10 +395,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA2$(I) <> "END" And careerA2$(I) <> "XXX" And careerA2$(I) <> "" Then
+                    If carWdRec$(I) <> "END" And carWdRec$(I) <> "XXX" And carWdRec$(I) <> "" Then
                         NC = NC + 1
                     Else
-                        careerA2$(I) = ""
+                        carWdRec$(I) = ""
                     End If
 
                     For J = 6 To 8
@@ -416,10 +416,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA3$(I) <> "END" And careerA3$(I) <> "XXX" And careerA3$(I) <> "" Then
+                    If carQBacks$(I) <> "END" And carQBacks$(I) <> "XXX" And carQBacks$(I) <> "" Then
                         ND = ND + 1
                     Else
-                        careerA3$(I) = ""
+                        carQBacks$(I) = ""
                     End If
 
                     For J = 9 To 13:
@@ -437,11 +437,11 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA4$(I) <> "END" And careerA4$(I) <> "XXX" And careerA4$(I) <> "" Then
+                    If carKickRet$(I) <> "END" And carKickRet$(I) <> "XXX" And carKickRet$(I) <> "" Then
 
                         NE = NE + 1
                     Else
-                        careerA4$(I) = ""
+                        carKickRet$(I) = ""
                     End If
 
                     For J = 14 To 16:
@@ -458,10 +458,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA5$(I) <> "END" And careerA5$(I) <> "XXX" And careerA5$(I) <> "" Then
+                    If carPRet$(I) <> "END" And carPRet$(I) <> "XXX" And carPRet$(I) <> "" Then
                         NF = NF + 1
                     Else
-                        careerA5$(I) = ""
+                        carPRet$(I) = ""
                     End If
 
                     For J = 14 To 16:
@@ -479,10 +479,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA6$(I) <> "END" And careerA6$(I) <> "XXX" And careerA6$(I) <> "" Then
+                    If carPunters$(I) <> "END" And carPunters$(I) <> "XXX" And carPunters$(I) <> "" Then
                         NG = NG + 1
                     Else
-                        careerA6$(I) = ""
+                        carPunters$(I) = ""
                     End If
 
                     careerPUS!(N, I, 0) = statsZ!(7)
@@ -495,10 +495,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerA7$(I) <> "END" And careerA7$(I) <> "XXX" And careerA7$(I) <> "" Then
+                    If carKicker$(I) <> "END" And carKicker$(I) <> "XXX" And carKicker$(I) <> "" Then
                         NH = NH + 1
                     Else
-                        careerA7$(I) = ""
+                        carKicker$(I) = ""
                     End If
 
                     If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
@@ -535,10 +535,10 @@ Sub MergeFirstYear
 
                     N = 1
 
-                    If careerDI$(I) <> "END" And careerDI$(I) <> "XXX" And careerDI$(I) <> "" Then
+                    If carDefInts$(I) <> "END" And carDefInts$(I) <> "XXX" And carDefInts$(I) <> "" Then
                         NJ = NJ + 1
                     Else
-                        careerDI$(I) = ""
+                        carDefInts$(I) = ""
                     End If
 
                     careerGIS!(N, I, 0) = careerGI%(I, 0)
@@ -549,10 +549,10 @@ Sub MergeFirstYear
                 For I = 0 To 54
                     N = 1
 
-                    If careerDS$(I) <> "END" And careerDS$(I) <> "XXX" And careerDS$(I) <> "" Then
+                    If carDefSacks$(I) <> "END" And carDefSacks$(I) <> "XXX" And carDefSacks$(I) <> "" Then
                         NK = NK + 1
                     Else
-                        careerDS$(I) = ""
+                        carDefSacks$(I) = ""
                     End If
 
                     careerGSS!(N, I, 0) = careerGS%(I, 0)
@@ -561,7 +561,7 @@ Sub MergeFirstYear
 
                 Next I
 
-                If finalUpdate% = 1 Then Call UpdateCareerLeaders(statFile$)
+                If doPostLeaders = 1 Then Call UpdateCareerLeaders(statFile$)
 
                 TMR = 6420
 
@@ -570,63 +570,63 @@ Sub MergeFirstYear
                 Write #3, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
                 For I = 0 To 49:
-                    Write #3, careerA1$(I)
+                    Write #3, carRBacks$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 39: 
-                    Write #3, careerA2$(I)
+                    Write #3, carWdRec$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 19: 
-                    Write #3, careerA3$(I)
+                    Write #3, carQBacks$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
-                    Write #3, careerA4$(I)
+                    Write #3, carKickRet$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 14: 
-                    Write #3, careerA5$(I)
+                    Write #3, carPRet$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
-                    Write #3, careerA6$(I)
+                    Write #3, carPunters$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 9: 
-                    Write #3, careerA7$(I)
+                    Write #3, carKicker$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
-                    Write #3, careerDI$(I)
+                    Write #3, carDefInts$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
                 Next
 
                 For I = 0 To 54: 
-                    Write #3, careerDS$(I)
+                    Write #3, carDefSacks$(I)
                     Locate 21, 38
                     Color 5
                     TMR = TMR - 1: Print Using "####"; TMR
@@ -1105,8 +1105,8 @@ End Sub
 'career leader file (.CLD)
 Sub UpdateCareerLeaders (careerFile$)
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$(), careerQBS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$(), careerQBS$()
     Shared careerRBC$(), careerRBS$(), careerWRS$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!()
@@ -1126,7 +1126,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     Dim PP(15, 20), FF(15, 20), II(15, 20), YY(15, 20)
 
-    If _FileExists(diskPaths$(2) + Left$(careerFile$, finalUpdate%) + ".CLD") Then
+    If _FileExists(diskPaths$(2) + Left$(careerFile$, doPostLeaders) + ".CLD") Then
 
         Open diskPaths$(2) + careerFile$ + ".CLD" For Input As #1
 
@@ -1162,7 +1162,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 49
 
-        If careerA1$(I) <> "" And careerA1$(I) <> "XXX" And careerA1$(I) <> "END" Then
+        If carRBacks$(I) <> "" And carRBacks$(I) <> "XXX" And carRBacks$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1170,62 +1170,62 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If RBBS!(J, I, 0) > RBBC!(0) Then
                     RBBC!(0) = RBBS!(J, I, 0)
-                    careerRBC$(0) = careerA1$(I)
+                    careerRBC$(0) = carRBacks$(I)
                     RBYR%(0) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 1) > RBBC!(1) Then
-                    RBBC!(1) = RBBS!(J, I, 1): careerRBC$(1) = careerA1$(I): RBYR%(1) = RBBS!(J, I, 8)
+                    RBBC!(1) = RBBS!(J, I, 1): careerRBC$(1) = carRBacks$(I): RBYR%(1) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 0) <> 0 Then
 
                     If RBBS!(J, I, 1) / RBBS!(J, I, 0) > RBBC!(2) And RBBS!(J, I, 0) >= GAMES * 10 Then
                         RBBC!(2) = RBBS!(J, I, 1) / RBBS!(J, I, 0)
-                        careerRBC$(2) = careerA1$(I): RBYR%(2) = RBBS!(J, I, 8)
+                        careerRBC$(2) = carRBacks$(I): RBYR%(2) = RBBS!(J, I, 8)
                     End If
 
                 End If
 
                 If RBBS!(J, I, 2) > RBBC!(3) Then
                     RBBC!(3) = RBBS!(J, I, 2)
-                    careerRBC$(3) = careerA1$(I)
+                    careerRBC$(3) = carRBacks$(I)
                     RBYR%(3) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 3) > RBBC!(4) Then
                     RBBC!(4) = RBBS!(J, I, 3)
-                    careerRBC$(4) = careerA1$(I)
+                    careerRBC$(4) = carRBacks$(I)
                     RBYR%(4) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 4) > RBBC!(5) Then
                     RBBC!(5) = RBBS!(J, I, 4)
-                    careerRBC$(5) = careerA1$(I)
+                    careerRBC$(5) = carRBacks$(I)
                     RBYR%(5) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 3) <> 0 Then
                     If RBBS!(J, I, 4) / RBBS!(J, I, 3) > RBBC!(6) And RBBS!(J, I, 3) >= GAMES * 3 Then
                         RBBC!(6) = RBBS!(J, I, 4) / RBBS!(J, I, 3)
-                        careerRBC$(6) = careerA1$(I)
+                        careerRBC$(6) = carRBacks$(I)
                         RBYR%(6) = RBBS!(J, I, 8)
                     End If
                 End If
 
                 If RBBS!(J, I, 5) > RBBC!(7) Then
                     RBBC!(7) = RBBS!(J, I, 5)
-                    careerRBC$(7) = careerA1$(I)
+                    careerRBC$(7) = carRBacks$(I)
                     RBYR%(7) = RBBS!(J, I, 8)
                 End If
 
                 If RBBS!(J, I, 6) > RBBC!(8) Then
-                    RBBC!(8) = RBBS!(J, I, 6): careerRBC$(8) = careerA1$(I): RBYR%(8) = RBBS!(J, I, 8): RBR$(0) = careerRBS$(J, I, 0)
+                    RBBC!(8) = RBBS!(J, I, 6): careerRBC$(8) = carRBacks$(I): RBYR%(8) = RBBS!(J, I, 8): RBR$(0) = careerRBS$(J, I, 0)
                 End If
 
                 If RBBS!(J, I, 9) > RBBC!(9) Then
                     RBBC!(9) = RBBS!(J, I, 9)
-                    careerRBC$(9) = careerA1$(I)
+                    careerRBC$(9) = carRBacks$(I)
                     RBYR%(9) = RBBS!(J, I, 8)
                     RBR$(1) = careerRBS$(J, I, 1)
                 End If
@@ -1240,7 +1240,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 39
 
-        If careerA2$(I) <> "" And careerA2$(I) <> "XXX" And careerA2$(I) <> "END" Then
+        If carWdRec$(I) <> "" And carWdRec$(I) <> "XXX" And carWdRec$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1250,29 +1250,29 @@ Sub UpdateCareerLeaders (careerFile$)
 
                     If WRRS!(J, I, 0) > WRRC!(0) Then
                         WRRC!(0) = WRRS!(J, I, 0)
-                        WRC$(0) = careerA2$(I)
+                        WRC$(0) = carWdRec$(I)
                         WRYR%(0) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 1) > WRRC!(1) Then
-                        WRRC!(1) = WRRS!(J, I, 1): WRC$(1) = careerA2$(I): WRYR%(1) = WRRS!(J, I, 5)
+                        WRRC!(1) = WRRS!(J, I, 1): WRC$(1) = carWdRec$(I): WRYR%(1) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 0) <> 0 Then
                         If WRRS!(J, I, 1) / WRRS!(J, I, 0) > WRRC!(2) And WRRS!(J, I, 0) >= GAMES * 3 Then
-                            WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = careerA2$(I): WRYR%(2) = WRRS!(J, I, 5)
+                            WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = carWdRec$(I): WRYR%(2) = WRRS!(J, I, 5)
                         End If
                     End If
 
                     If WRRS!(J, I, 2) > WRRC!(3) Then
                         WRRC!(3) = WRRS!(J, I, 2)
-                        WRC$(3) = careerA2$(I)
+                        WRC$(3) = carWdRec$(I)
                         WRYR%(3) = WRRS!(J, I, 5)
                     End If
 
                     If WRRS!(J, I, 3) > WRRC!(4) Then
                         WRRC!(4) = WRRS!(J, I, 3)
-                        WRC$(4) = careerA2$(I)
+                        WRC$(4) = carWdRec$(I)
                         WRYR%(4) = WRRS!(J, I, 5)
                         WRR$ = careerWRS$(J, I, 0)
                     End If
@@ -1289,7 +1289,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 19
 
-        If careerA3$(I) <> "" And careerA3$(I) <> "XXX" And careerA3$(I) <> "END" Then
+        If carQBacks$(I) <> "" And carQBacks$(I) <> "XXX" And carQBacks$(I) <> "END" Then
 
             For J = 1 To 15:
 
@@ -1363,38 +1363,38 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If QBBS!(J, I, 1) > QBBC!(0) Then
                     QBBC!(0) = QBBS!(J, I, 1)
-                    QBC$(0) = careerA3$(I)
+                    QBC$(0) = carQBacks$(I)
                     QBYR%(0) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 0) > QBBC!(1) Then
                     QBBC!(1) = QBBS!(J, I, 0)
-                    QBC$(1) = careerA3$(I)
+                    QBC$(1) = carQBacks$(I)
                     QBYR%(1) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 2) > QBBC!(2) Then
                     QBBC!(2) = QBBS!(J, I, 2)
-                    QBC$(2) = careerA3$(I)
+                    QBC$(2) = carQBacks$(I)
                     QBYR%(2) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 4) > QBBC!(3) Then
                     QBBC!(3) = QBBS!(J, I, 4)
-                    QBC$(3) = careerA3$(I)
+                    QBC$(3) = carQBacks$(I)
                     QBYR%(3) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 3) > QBBC!(4) Then
                     QBBC!(4) = QBBS!(J, I, 3)
-                    QBC$(4) = careerA3$(I)
+                    QBC$(4) = carQBacks$(I)
                     QBYR%(4) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 0) <> 0 Then
                     If QBBS!(J, I, 1) / QBBS!(J, I, 0) > QBBC!(5) And QBBS!(J, I, 0) >= GAMES * 15 Then
                         QBBC!(5) = QBBS!(J, I, 1) / QBBS!(J, I, 0)
-                        QBC$(5) = careerA3$(I)
+                        QBC$(5) = carQBacks$(I)
                         QBYR%(5) = QBBS!(J, I, 7)
                     End If
                 End If
@@ -1402,19 +1402,19 @@ Sub UpdateCareerLeaders (careerFile$)
                 If QBBS!(J, I, 1) <> 0 Then
                     If QBBS!(J, I, 3) / QBBS!(J, I, 1) > QBBC!(6) And QBBS!(J, I, 0) >= GAMES * 15 Then
                         QBBC!(6) = QBBS!(J, I, 3) / QBBS!(J, I, 1)
-                        QBC$(6) = careerA3$(I)
+                        QBC$(6) = carQBacks$(I)
                         QBYR%(6) = QBBS!(J, I, 7)
                     End If
 
                 End If
 
                 If QBBS!(J, I, 12) > QBBC!(7) Then
-                    QBBC!(7) = QBBS!(J, I, 12): QBC$(7) = careerA3$(I): QBYR%(7) = QBBS!(J, I, 7)
+                    QBBC!(7) = QBBS!(J, I, 12): QBC$(7) = carQBacks$(I): QBYR%(7) = QBBS!(J, I, 7)
                 End If
 
                 If QBBS!(J, I, 5) > QBBC!(8) Then
                     QBBC!(8) = QBBS!(J, I, 5)
-                    QBC$(8) = careerA3$(I)
+                    QBC$(8) = carQBacks$(I)
                     QBYR%(8) = QBBS!(J, I, 7)
                     QBR$ = careerQBS$(J, I, 0)
                 End If
@@ -1429,7 +1429,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 14
 
-        If careerA4$(I) <> "" And careerA4$(I) <> "XXX" And careerA4$(I) <> "END" Then
+        If carKickRet$(I) <> "" And carKickRet$(I) <> "XXX" And carKickRet$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1437,33 +1437,33 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If careerKRS!(J, I, 0) <= KRRC!(0) Then
                     KRRC!(0) = careerKRS!(J, I, 0)
-                    KRC$(0) = careerA4$(I)
+                    KRC$(0) = carKickRet$(I)
                     KRYR%(0) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 1) <= KRRC!(1) Then
                     KRRC!(1) = careerKRS!(J, I, 1)
-                    KRC$(1) = careerA4$(I)
+                    KRC$(1) = carKickRet$(I)
                     KRYR%(1) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 0) = 0 Then
                     If careerKRS!(J, I, 1) / careerKRS!(J, I, 0) > KRRC!(2) And careerKRS!(J, I, 0) >= GAMES * 1.2 Then
                         KRRC!(2) = careerKRS!(J, I, 1) / careerKRS!(J, I, 0)
-                        KRC$(2) = careerA4$(I)
+                        KRC$(2) = carKickRet$(I)
                         KRYR%(2) = careerKRS!(J, I, 5)
                     End If
                 End If
 
                 If careerKRS!(J, I, 2) > KRRC!(3) Then
                     KRRC!(3) = careerKRS!(J, I, 2)
-                    KRC$(3) = careerA4$(I)
+                    KRC$(3) = carKickRet$(I)
                     KRYR%(3) = careerKRS!(J, I, 5)
                 End If
 
                 If careerKRS!(J, I, 3) > KRRC!(4) Then
                     KRRC!(4) = careerKRS!(J, I, 3)
-                    KRC$(4) = careerA4$(I)
+                    KRC$(4) = carKickRet$(I)
                     KRYR%(4) = careerKRS!(J, I, 5)
                     KRR$ = KRRS$(J, I, 0)
                 End If
@@ -1478,7 +1478,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 14
 
-        If careerA5$(I) <> "" And careerA5$(I) <> "XXX" And careerA5$(I) <> "END" Then
+        If carPRet$(I) <> "" And carPRet$(I) <> "XXX" And carPRet$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1486,33 +1486,33 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If careerPRS!(J, I, 0) > PRRC!(0) Then
                     PRRC!(0) = careerPRS!(J, I, 0)
-                    PRC$(0) = careerA5$(I)
+                    PRC$(0) = carPRet$(I)
                     PRYR%(0) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 1) > PRRC!(1) Then
                     PRRC!(1) = careerPRS!(J, I, 1)
-                    PRC$(1) = careerA5$(I)
+                    PRC$(1) = carPRet$(I)
                     PRYR%(1) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 0) <> 0 Then
                     If careerPRS!(J, I, 1) / careerPRS!(J, I, 0) > PRRC!(2) And careerPRS!(J, I, 0) >= GAMES * 1.2 Then
                         PRRC!(2) = careerPRS!(J, I, 1) / careerPRS!(J, I, 0)
-                        PRC$(2) = careerA5$(I)
+                        PRC$(2) = carPRet$(I)
                         PRYR%(2) = careerPRS!(J, I, 5)
                     End If
                 End If
 
                 If careerPRS!(J, I, 2) > PRRC!(3) Then
                     PRRC!(3) = careerPRS!(J, I, 2)
-                    PRC$(3) = careerA5$(I)
+                    PRC$(3) = carPRet$(I)
                     PRYR%(3) = careerPRS!(J, I, 5)
                 End If
 
                 If careerPRS!(J, I, 3) > PRRC!(4) Then
                     PRRC!(4) = careerPRS!(J, I, 3)
-                    PRC$(4) = careerA5$(I)
+                    PRC$(4) = carPRet$(I)
                     PRYR%(4) = careerPRS!(J, I, 5)
                     PRR$ = PRRS$(J, I, 0)
                 End If
@@ -1527,7 +1527,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 9
 
-        If careerA6$(I) <> "" And careerA6$(I) <> "XXX" And careerA6$(I) <> "END" Then
+        If carPunters$(I) <> "" And carPunters$(I) <> "XXX" And carPunters$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1535,20 +1535,20 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If careerPUS!(J, I, 0) > PUUC!(0) Then
                     PUUC!(0) = careerPUS!(J, I, 0)
-                    PUC$(0) = careerA6$(I)
+                    PUC$(0) = carPunters$(I)
                     PUYR%(0) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 1) > PUUC!(1) Then
                     PUUC!(1) = careerPUS!(J, I, 1)
-                    PUC$(1) = careerA6$(I)
+                    PUC$(1) = carPunters$(I)
                     PUYR%(1) = careerPUS!(J, I, 3)
                 End If
 
                 If careerPUS!(J, I, 0) <> 0 Then
                     If careerPUS!(J, I, 1) / careerPUS!(J, I, 0) > PUUC!(2) Then
                         PUUC!(2) = careerPUS!(J, I, 1) / careerPUS!(J, I, 0)
-                        PUC$(2) = careerA6$(I)
+                        PUC$(2) = carPunters$(I)
                         PUYR%(2) = careerPUS!(J, I, 3)
                     End If
                 End If
@@ -1563,7 +1563,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 9
 
-        If careerA7$(I) <> "" Or careerA7$(I) <> "XXX" And careerA7$(I) <> "END" Then
+        If carKicker$(I) <> "" Or carKicker$(I) <> "XXX" And carKicker$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1571,47 +1571,47 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If careerFGS!(J, I, 1) > FGGC!(0) Then
                     FGGC!(0) = careerFGS!(J, I, 1)
-                    FGC$(0) = careerA7$(I)
+                    FGC$(0) = carKicker$(I)
                     FGYR%(0) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 0) > FGGC!(1) Then
                     FGGC!(1) = careerFGS!(J, I, 0)
-                    FGC$(1) = careerA7$(I)
+                    FGC$(1) = carKicker$(I)
                     FGYR%(1) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 1) <> 0 Then
                     If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > FGGC!(2) And careerFGS!(J, I, 1) >= GAMES Then
                         FGGC!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
-                        FGC$(2) = careerA7$(I)
+                        FGC$(2) = carKicker$(I)
                         FGYR%(2) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 3) > FGGC!(3) Then
                     FGGC!(3) = careerFGS!(J, I, 3)
-                    FGC$(3) = careerA7$(I)
+                    FGC$(3) = carKicker$(I)
                     FGYR%(3) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) > FGGC!(4) Then
                     FGGC!(4) = careerFGS!(J, I, 2)
-                    FGC$(4) = careerA7$(I)
+                    FGC$(4) = carKicker$(I)
                     FGYR%(4) = careerFGS!(J, I, 16)
                 End If
 
                 If careerFGS!(J, I, 2) <> 0 Then
                     If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > FGGC!(5) And careerFGS!(J, I, 3) >= GAMES Then
                         FGGC!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
-                        FGC$(5) = careerA7$(I)
+                        FGC$(5) = carKicker$(I)
                         FGYR%(5) = careerFGS!(J, I, 16)
                     End If
                 End If
 
                 If careerFGS!(J, I, 4) > FGGC!(6) Then
                     FGGC!(6) = careerFGS!(J, I, 4)
-                    FGC$(6) = careerA7$(I)
+                    FGC$(6) = carKicker$(I)
                     FGYR%(6) = careerFGS!(J, I, 16)
                 End If
 
@@ -1625,7 +1625,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 54
 
-        If careerDI$(I) <> "" And careerDI$(I) <> "XXX" And careerDI$(I) <> "END" Then
+        If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" And carDefInts$(I) <> "END" Then
 
             For J = 1 To 15
 
@@ -1633,7 +1633,7 @@ Sub UpdateCareerLeaders (careerFile$)
 
                 If careerGIS!(J, I, 0) > DFFC!(0) Then
                     DFFC!(0) = careerGIS!(J, I, 0)
-                    DFC$(0) = careerDI$(I)
+                    DFC$(0) = carDefInts$(I)
                     FGYR%(0) = careerGIS!(J, I, 2)
                 End If
 
@@ -1647,14 +1647,14 @@ Sub UpdateCareerLeaders (careerFile$)
 
     For I = 0 To 54
 
-        If careerDS$(I) <> "" And careerDS$(I) <> "XXX" And careerDS$(I) <> "END" Then
+        If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" And carDefSacks$(I) <> "END" Then
 
             For J = 1 To 15
                 If careerGSS!(J, I, 2) = 0 Then Exit For
 
                 If careerGSS!(J, I, 0) > DFFC!(1) Then
                     DFFC!(1) = careerGSS!(J, I, 0)
-                    DFC$(1) = careerDS$(I)
+                    DFC$(1) = carDefSacks$(I)
                     FGYR%(1) = careerGSS!(J, I, 2)
                 End If
 

@@ -9,10 +9,10 @@ Sub CARPRNT ()
 
     _Title "3-in-1 Football - Print Career Files"
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$()
 
-    Shared careerKRS$(), careerPRS$(), careerQBS$(), careerRBS$(), careerWRS$()
+    Shared carKRS$(), carPRS$(), careerQBS$(), careerRBS$(), careerWRS$()
     Shared careerRC$()
 
     Shared careerFF!()
@@ -39,63 +39,63 @@ Sub CARPRNT ()
         Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
         For I = 0 To 49
-            Input #1, careerA1$(I)
+            Input #1, carRBacks$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 39
-            Input #1, careerA2$(I)
+            Input #1, carWdRec$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 19
-            Input #1, careerA3$(I)
+            Input #1, carQBacks$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 14
-            Input #1, careerA4$(I)
+            Input #1, carKickRet$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 14
-            Input #1, careerA5$(I)
+            Input #1, carPRet$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 9
-            Input #1, careerA6$(I)
+            Input #1, carPunters$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 9
-            Input #1, careerA7$(I)
+            Input #1, carKicker$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 54
-            Input #1, careerDI$(I)
+            Input #1, carDefInts$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
         Next
         
         For I = 0 To 54
-            Input #1, careerDS$(I)
+            Input #1, carDefSacks$(I)
             Locate 21, 38
             Color 5
             TMR = TMR - 1: Print Using "####"; TMR
@@ -177,7 +177,7 @@ Sub CARPRNT ()
 
         For N = 1 To 15:
             For J = 0 To 14:
-                Input #1, careerKRS$(N, J, 0)
+                Input #1, carKRS$(N, J, 0)
                 Locate 21, 38
                 Color 5
                 TMR = TMR - 1: Print Using "####"; TMR
@@ -197,7 +197,7 @@ Sub CARPRNT ()
 
         For N = 1 To 15:
             For J = 0 To 14:
-                Input #1, careerPRS$(N, J, 0)
+                Input #1, carPRS$(N, J, 0)
                 Locate 21, 38
                 Color 5
                 TMR = TMR - 1: Print Using "####"; TMR
@@ -259,11 +259,11 @@ Sub CARPRNT ()
 
         For I = 0 To 50
 
-            If careerA1$(I) <> "" And careerA1$(I) <> "XXX" Then
+            If carRBacks$(I) <> "" And carRBacks$(I) <> "XXX" Then
 
                 VV = careerRBS!(1, I, 7) + careerRBS!(2, I, 7) + careerRBS!(3, I, 7) + careerRBS!(4, I, 7) + careerRBS!(5, I, 7) + careerRBS!(6, I, 7) + careerRBS!(7, I, 7) + careerRBS!(7, I, 7) + careerRBS!(9, I, 7) + careerRBS!(10, I, 7) + careerRBS!(11, I, 7) + careerRBS!(12, I, 7) + careerRBS!(13, I, 7) + careerRBS!(14, I, 7) + careerRBS!(15, I, 7)
 
-                Print #2, Left$(careerA1$(I), 13);
+                Print #2, Left$(carRBacks$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(15); careerRBS!(V, I, 8);
@@ -352,11 +352,11 @@ Sub CARPRNT ()
 
         For I = 0 To 40
 
-            If careerA2$(I) <> "" And careerA2$(I) <> "XXX" Then
+            If carWdRec$(I) <> "" And carWdRec$(I) <> "XXX" Then
 
                 VV = careerWRS!(1, I, 4) + careerWRS!(2, I, 4) + careerWRS!(3, I, 4) + careerWRS!(4, I, 4) + careerWRS!(5, I, 4) + careerWRS!(6, I, 4) + careerWRS!(7, I, 4) + careerWRS!(8, I, 4) + careerWRS!(9, I, 4) + careerWRS!(10, I, 4) + careerWRS!(11, I, 4) + careerWRS!(12, I, 4) + careerWRS!(13, I, 4) + careerWRS!(14, I, 4) + careerWRS!(15, I, 4)
 
-                Print #2, Left$(careerA2$(I), 13);
+                Print #2, Left$(carWdRec$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(16); careerWRS!(V, I, 5);
@@ -414,11 +414,11 @@ Sub CARPRNT ()
 
         For I = 0 To 19
 
-            If careerA3$(I) <> "" And careerA3$(I) <> "XXX" Then
+            If carQBacks$(I) <> "" And carQBacks$(I) <> "XXX" Then
 
                 VV = careerQBS!(1, I, 6) + careerQBS!(2, I, 6) + careerQBS!(3, I, 6) + careerQBS!(4, I, 6) + careerQBS!(5, I, 6) + careerQBS!(6, I, 6) + careerQBS!(7, I, 6) + careerQBS!(8, I, 6) + careerQBS!(9, I, 6) + careerQBS!(10, I, 6) + careerQBS!(11, I, 6) + careerQBS!(12, I, 6) + careerQBS!(13, I, 6) + careerQBS!(14, I, 6) + careerQBS!(15, I, 6)
 
-                Print #2, Left$(careerA3$(I), 13);
+                Print #2, Left$(carQBacks$(I), 13);
 
                 For V = 1 To VV
 
@@ -626,11 +626,11 @@ Sub CARPRNT ()
 
         For I = 0 To 14
 
-            If careerA4$(I) <> "" And careerA4$(I) <> "XXX" Then
+            If carKickRet$(I) <> "" And carKickRet$(I) <> "XXX" Then
 
                 VV = careerKRS!(1, I, 4) + careerKRS!(2, I, 4) + careerKRS!(3, I, 4) + careerKRS!(4, I, 4) + careerKRS!(5, I, 4) + careerKRS!(6, I, 4) + careerKRS!(7, I, 4) + careerKRS!(8, I, 4) + careerKRS!(9, I, 4) + careerKRS!(10, I, 4) + careerKRS!(11, I, 4) + careerKRS!(12, I, 4) + careerKRS!(13, I, 4) + careerKRS!(14, I, 4) + careerKRS!(15, I, 4)
 
-                Print #2, Left$(careerA4$(I), 13);
+                Print #2, Left$(carKickRet$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(22); careerKRS!(V, I, 5);
@@ -642,7 +642,7 @@ Sub CARPRNT ()
 
                     Print #2, Tab(62); Using "##"; careerKRS!(V, I, 2);
                     Print #2, Tab(70); Using "###"; careerKRS!(V, I, 3);
-                    Print #2, careerKRS$(V, I, 0)
+                    Print #2, carKRS$(V, I, 0)
                 Next V
 
                 careerRC!(0) = 0
@@ -655,7 +655,7 @@ Sub CARPRNT ()
 
                     If careerKRS!(V, I, 3) > careerRC!(0) Then
                         careerRC!(0) = careerKRS!(V, I, 3)
-                        careerRC$(0) = careerKRS$(V, I, 0)
+                        careerRC$(0) = carKRS$(V, I, 0)
                     End If
 
                 Next V
@@ -686,11 +686,11 @@ Sub CARPRNT ()
 
         For I = 0 To 14
 
-            If careerA5$(I) <> "" And careerA5$(I) <> "XXX" Then
+            If carPRet$(I) <> "" And carPRet$(I) <> "XXX" Then
 
                 VV = careerPRS!(1, I, 4) + careerPRS!(2, I, 4) + careerPRS!(3, I, 4) + careerPRS!(4, I, 4) + careerPRS!(5, I, 4) + careerPRS!(6, I, 4) + careerPRS!(7, I, 4) + careerPRS!(8, I, 4) + careerPRS!(9, I, 4) + careerPRS!(10, I, 4) + careerPRS!(11, I, 4) + careerPRS!(12, I, 4) + careerPRS!(13, I, 4) + careerPRS!(14, I, 4) + careerPRS!(15, I, 4)
 
-                Print #2, Left$(careerA5$(I), 13);
+                Print #2, Left$(carPRet$(I), 13);
 
                 For V = 1 To VV
 
@@ -702,7 +702,7 @@ Sub CARPRNT ()
                     If careerPRS!(V, I, 0) > 0 Then Print #2, Tab(52); Using "##.#"; careerPRS!(V, I, 1) / careerPRS!(V, I, 0);
 
                     Print #2, Tab(62); Using "##"; careerPRS!(V, I, 2);
-                    Print #2, Tab(70); Using "###"; careerPRS!(V, I, 3);: Print #2, careerPRS$(V, I, 0)
+                    Print #2, Tab(70); Using "###"; careerPRS!(V, I, 3);: Print #2, carPRS$(V, I, 0)
 
                 Next V
 
@@ -715,7 +715,7 @@ Sub CARPRNT ()
                     TT20 = TT20 + careerPRS!(V, I, 2)
                     If careerPRS!(V, I, 3) > careerRC!(0) Then
                         careerRC!(0) = careerPRS!(V, I, 3)
-                        careerRC$(0) = careerPRS$(V, I, 0)
+                        careerRC$(0) = carPRS$(V, I, 0)
                     End If
 
                 Next V
@@ -745,11 +745,11 @@ Sub CARPRNT ()
 
         For I = 0 To 9
 
-            If careerA6$(I) <> "" And careerA6$(I) <> "XXX" Then
+            If carPunters$(I) <> "" And carPunters$(I) <> "XXX" Then
 
                 VV = careerPUS!(1, I, 2) + careerPUS!(2, I, 2) + careerPUS!(3, I, 2) + careerPUS!(4, I, 2) + careerPUS!(5, I, 2) + careerPUS!(6, I, 2) + careerPUS!(7, I, 2) + careerPUS!(8, I, 2) + careerPUS!(9, I, 2) + careerPUS!(10, I, 2) + careerPUS!(11, I, 2) + careerPUS!(12, I, 2) + careerPUS!(13, I, 2) + careerPUS!(14, I, 2) + careerPUS!(15, I, 2)
 
-                Print #2, Left$(careerA6$(I), 13);
+                Print #2, Left$(carPunters$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(18); careerPUS!(V, I, 3);
@@ -787,11 +787,11 @@ Sub CARPRNT ()
 
         For I = 0 To 9
 
-            If careerA7$(I) <> "" And careerA7$(I) <> "XXX" Then
+            If carKicker$(I) <> "" And carKicker$(I) <> "XXX" Then
 
                 VV = careerFGS!(1, I, 15) + careerFGS!(2, I, 15) + careerFGS!(3, I, 15) + careerFGS!(4, I, 15) + careerFGS!(5, I, 15) + careerFGS!(6, I, 15) + careerFGS!(7, I, 15) + careerFGS!(8, I, 15) + careerFGS!(9, I, 15) + careerFGS!(10, I, 15) + careerFGS!(11, I, 15) + careerFGS!(12, I, 15) + careerFGS!(13, I, 15) + careerFGS!(14, I, 15) + careerFGS!(15, I, 15)
 
-                Print #2, Left$(careerA7$(I), 13);
+                Print #2, Left$(carKicker$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(13); careerFGS!(V, I, 16);
@@ -885,10 +885,10 @@ Sub CARPRNT ()
 
         For I = 0 To 54
 
-            If careerDI$(I) <> "" And careerDI$(I) <> "XXX" Then
+            If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" Then
                 VV = careerGIS!(1, I, 1) + careerGIS!(2, I, 1) + careerGIS!(3, I, 1) + careerGIS!(4, I, 1) + careerGIS!(5, I, 1) + careerGIS!(6, I, 1) + careerGIS!(7, I, 1) + careerGIS!(8, I, 1) + careerGIS!(9, I, 1) + careerGIS!(10, I, 1) + careerGIS!(11, I, 1) + careerGIS!(12, I, 1) + careerGIS!(13, I, 1) + careerGIS!(14, I, 1) + careerGIS!(15, I, 1)
 
-                Print #2, Left$(careerDI$(I), 13);
+                Print #2, Left$(carDefInts$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(20); careerGIS!(V, I, 2);
@@ -915,10 +915,10 @@ Sub CARPRNT ()
 
         For I = 0 To 54
 
-            If careerDS$(I) <> "" And careerDS$(I) <> "XXX" Then
+            If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" Then
                 VV = careerGSS!(1, I, 1) + careerGSS!(2, I, 1) + careerGSS!(3, I, 1) + careerGSS!(4, I, 1) + careerGSS!(5, I, 1) + careerGSS!(6, I, 1) + careerGSS!(7, I, 1) + careerGSS!(8, I, 1) + careerGSS!(9, I, 1) + careerGSS!(10, I, 1) + careerGSS!(11, I, 1) + careerGSS!(12, I, 1) + careerGSS!(13, I, 1) + careerGSS!(14, I, 1) + careerGSS!(15, I, 1)
 
-                Print #2, Left$(careerDS$(I), 13);
+                Print #2, Left$(carDefSacks$(I), 13);
 
                 For V = 1 To VV
                     Print #2, Tab(20); careerGSS!(V, I, 2);

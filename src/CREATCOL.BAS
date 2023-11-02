@@ -8,7 +8,7 @@ Sub CREATCOL ()
 
     _Title "3-in-1 Football - Manage Conferences"
 
-    Shared Z1$()
+    Shared statsZ1$()
 
     ReDim menuChoices$(1 To 4)
 
@@ -42,7 +42,7 @@ Sub CREATCOL ()
         If ExitCode% <> 27 Then
 
             For X = 1 To 30
-                Z1$(X) = "XXX"
+                statsZ1$(X) = "XXX"
             Next
 
             div1$ = ""
@@ -162,7 +162,7 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
     Shared statsZ1%()
 
-    Shared Z1$(), Z2$()
+    Shared statsZ1$(), statsZ2$()
 
     If _FileExists(diskPaths$(2) + conference$ + ".LIB") Then
 
@@ -186,9 +186,9 @@ Sub ReviewEditConference (conference$, div1$, div2$)
             Input #1, conference$, div1$, div2$
 
             For X = 1 To 30:
-                Input #1, Z1$(X)
+                Input #1, statsZ1$(X)
                 Input #1, statsZ1%(X)
-                Input #1, Z2$(X)
+                Input #1, statsZ2$(X)
             Next
 
         End If
@@ -215,11 +215,11 @@ Sub ReviewEditConference (conference$, div1$, div2$)
             For I = 1 To 15
 
                 Color 2: Print Using "  ##"; I;
-                Color 15: Print " "; Z1$(I);
+                Color 15: Print " "; statsZ1$(I);
 
                 Locate , 50
                 Color 2: Print Using "##"; I + 15;
-                Color 15: Print " "; Z1$(I + 15)
+                Color 15: Print " "; statsZ1$(I + 15)
 
             Next I
 
@@ -248,11 +248,11 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATCOL(Z1$(B), Z2$(B), statsZ1%(B))
-                    Call ChooseTeam(Z2$(B), NTMS, statsZ1%(B), Z1$(B))
+                    'Call GetTeam_CREATCOL(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team
-                    Z1$(B) = "XXX"
+                    statsZ1$(B) = "XXX"
                 End If
 
             End If 'Done checking if ready to save
@@ -276,7 +276,7 @@ Sub SaveConferences (conference$, div1$, div2$)
 
     Shared statsZ1%()
 
-    Shared Z1$(), Z2$()
+    Shared statsZ1$(), statsZ2$()
 
     'Ready to save work
     Open diskPaths$(2) + conference$ + ".LIB" For Output As #1
@@ -287,21 +287,21 @@ Sub SaveConferences (conference$, div1$, div2$)
     Print #1, div2$
 
     For X = 1 To 30:
-        Print #1, Z1$(X)
+        Print #1, statsZ1$(X)
         Print #1, statsZ1%(X)
-        Print #1, Z2$(X)
+        Print #1, statsZ2$(X)
     Next
 
     Close #1
 
     For X = 1 To 30
 
-        If Z1$(X) = "XXX" Then
-            Z1$(X) = Chr$(42)
+        If statsZ1$(X) = "XXX" Then
+            statsZ1$(X) = Chr$(42)
         Else
-            teamName$ = Z1$(X)
+            teamName$ = statsZ1$(X)
 			statFile$ = nameStatFile$(teamName$)
-            Z1$(X) = statFile$
+            statsZ1$(X) = statFile$
         End If
 
     Next X
@@ -313,7 +313,7 @@ Sub SaveConferences (conference$, div1$, div2$)
     Write #2, div2$
 
     For X = 1 To 30:
-        Write #2, Z1$(X)
+        Write #2, statsZ1$(X)
     Next
 
     Close #2

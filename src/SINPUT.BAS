@@ -17,8 +17,8 @@ Sub EditStats ()
     Dim W6!(1, 1)
 
     Shared intName$(), sackName$()
-    Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$()
-    Shared lookyA5$(), lookyA6$(), lookyA7$()
+    Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$()
+    Shared lookyPRet$(), lookyPunter$(), lookyKicker$()
 
     Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$(), statsPK$()
 
@@ -43,29 +43,29 @@ Sub EditStats ()
         Input #1, teamName$
 
         For I = 0 To 9:
-            Input #1, lookyA1$(I)
+            Input #1, lookyRBacks$(I)
         Next I
 
         For I = 0 To 5:
-            Input #1, lookyA2$(I)
+            Input #1, lookyWdRec$(I)
         Next I
 
         For I = 0 To 3:
-            Input #1, lookyA3$(I)
+            Input #1, lookyQBacks$(I)
         Next I
 
         For I = 0 To 2:
-            Input #1, lookyA4$(I)
+            Input #1, lookyKickRet$(I)
         Next I
 
         For I = 0 To 2
-            Input #1, lookyA5$(I)
+            Input #1, lookyPRet$(I)
         Next I
 
-        Input #1, lookyA6$(0)
+        Input #1, lookyPunter$(0)
 
         For I = 0 To 1:
-            Input #1, lookyA7$(I)
+            Input #1, lookyKicker$(I)
         Next I
 
         For J = 0 To 13
@@ -350,7 +350,7 @@ Sub EditStats ()
 
             For I1 = 0 To 9:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyA1$(I1)
+                Print " "; lookyRBacks$(I1)
             Next
 
             Do
@@ -366,7 +366,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA1$(I)
+                Print "1. NAME "; lookyRBacks$(I)
                 Print "2. RUSHING ATTEMPTS "; K2!(I, 0)
                 Print "3. RUSHING YARDAGE "; Int(K2!(I, 1))
                 Print "4. RUSHING TD'S "; K2!(I, 2)
@@ -384,7 +384,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA1$(I1)
+                            Locate 4, 1: Input "1. NAME "; lookyRBacks$(I1)
 
                         Case 2
                             Locate 5, 1: Input "2. RUSHING ATTEMPTS "; K2!(I, 0)
@@ -425,7 +425,7 @@ Sub EditStats ()
 
             For I1 = 0 To 5:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyA2$(I1)
+                Print " "; lookyWdRec$(I1)
             Next
 
             Do
@@ -441,7 +441,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA2$(I)
+                Print "1. NAME "; lookyWdRec$(I)
                 Print "2. RECEPTIONS "; K2!(I, 6)
                 Print "3. RECEIVING YARDAGE "; Int(K2!(I, 7))
                 Print "4. RECEIVING TD'S "; K2!(I, 8)
@@ -456,7 +456,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA2$(I)
+                            Locate 4, 1: Input "1. NAME "; lookyWdRec$(I)
 
                         Case 2
                             Locate 5, 1: Input "2. RECEPTIONS "; K2!(I, 6)
@@ -488,7 +488,7 @@ Sub EditStats ()
 
             For I1 = 0 To 3:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyA3$(I1)
+                Print " "; lookyQBacks$(I1)
             Next
 
             Do
@@ -504,7 +504,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA3$(I)
+                Print "1. NAME "; lookyQBacks$(I)
                 Print "2. PASSES THROWN "; K2!(I, 9)
                 Print "3. PASSES COMPLETED "; K2!(I, 10)
                 Print "4. PASSES INTERCEPTED "; K2!(I, 11)
@@ -521,7 +521,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA3$(I)
+                            Locate 4, 1: Input "1. NAME "; lookyQBacks$(I)
 
                         Case 2
                             Locate 5, 1: Input "2. PASSES THROWN "; K2!(I, 9)
@@ -559,7 +559,7 @@ Sub EditStats ()
 
             For I1 = 0 To 2:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyA4$(I1)
+                Print " "; lookyKickRet$(I1)
             Next
 
             Do
@@ -575,7 +575,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA4$(I)
+                Print "1. NAME "; lookyKickRet$(I)
                 Print "2. KICKS RETURNED "; K2!(I, 14)
                 Print "3. KICK RETURN YARDAGE "; Int(K2!(I, 15))
                 Print "4. KICK RETURN TD'S "; K2!(I, 16)
@@ -590,7 +590,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA4$(I)
+                            Locate 4, 1: Input "1. NAME "; lookyKickRet$(I)
 
                         Case 2
                             Locate 5, 1: Input "2. KICKS RETURNED "; K2!(I, 14)
@@ -622,7 +622,7 @@ Sub EditStats ()
 
             For I1 = 3 To 5:
                 Print Using "##"; I1 - 2;
-                Print " "; lookyA5$(I1 - 3)
+                Print " "; lookyPRet$(I1 - 3)
             Next
 
             Do
@@ -638,7 +638,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA5$(I - 3)
+                Print "1. NAME "; lookyPRet$(I - 3)
                 Print "2. PUNTS RETURNED "; K2!(I, 14)
                 Print "3. PUNT RETURN YARDAGE "; Int(K2!(I, 15))
                 Print "4. PUNT RETURN TD'S "; K2!(I, 16)
@@ -653,7 +653,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA5$(I - 2)
+                            Locate 4, 1: Input "1. NAME "; lookyPRet$(I - 2)
 
                         Case 2
                             Locate 5, 1: Input "2. PUNTS RETURNED "; K2!(I, 14)
@@ -681,7 +681,7 @@ Sub EditStats ()
         Call Title_EDITSTATS(2, X$)
 
         Locate 4, 1
-        Print "1. NAME "; lookyA6$(0)
+        Print "1. NAME "; lookyPunter$(0)
         Print "2. PUNTS "; K!(0, 7)
         Print "3. TOTAL PUNT YARDAGE "; Int(K!(0, 8))
 
@@ -695,7 +695,7 @@ Sub EditStats ()
             Select Case B9
 
                 Case 1
-                    Locate 4, 1: Input "1. NAME "; lookyA6$(0)
+                    Locate 4, 1: Input "1. NAME "; lookyPunter$(0)
 
                 Case 2
                     Locate 5, 1: Input "2. PUNTS "; K!(0, 7)
@@ -721,7 +721,7 @@ Sub EditStats ()
 
             For I1 = 0 To 1:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyA7$(I1)
+                Print " "; lookyKicker$(I1)
             Next
 
             Do
@@ -737,7 +737,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME "; lookyA7$(I)
+                Print "1. NAME "; lookyKicker$(I)
                 Print "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
                 Print "3. FIELD GOALS MADE "; K2!(3 + I * 4, 17)
                 Print "4. EXTRA POINTS ATT "; K2!(6 + I * 4, 17)
@@ -753,7 +753,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyA7$(I)
+                            Locate 4, 1: Input "1. NAME "; lookyKicker$(I)
 
                         Case 2
                             Locate 5, 1: Input "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
@@ -803,29 +803,29 @@ Sub EditStats ()
         Print #1, teamName$
 
         For I = 0 To 9:
-            Print #1, lookyA1$(I)
+            Print #1, lookyRBacks$(I)
         Next I
 
         For I = 0 To 5:
-            Print #1, lookyA2$(I)
+            Print #1, lookyWdRec$(I)
         Next I
 
         For I = 0 To 3:
-            Print #1, lookyA3$(I)
+            Print #1, lookyQBacks$(I)
         Next I
 
         For I = 0 To 2:
-            Print #1, lookyA4$(I)
+            Print #1, lookyKickRet$(I)
         Next I
 
         For I = 0 To 2:
-            Print #1, lookyA5$(I)
+            Print #1, lookyPRet$(I)
         Next I
 
-        Print #1, lookyA6$(0)
+        Print #1, lookyPunter$(0)
 
         For I = 0 To 1:
-            Print #1, lookyA7$(I)
+            Print #1, lookyKicker$(I)
         Next I
 
         For J = 0 To 13

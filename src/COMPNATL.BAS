@@ -10,12 +10,12 @@ Sub CompileNatlOrg ()
 
     _Title "3-in-1 Football - Update Org Stats"
 
-    Shared statsT%()
+    Shared compT%()
 
     Shared BRC!()
     Shared compZ1!(), N1!(), NT!()
     Shared O1!(), O2!(), O3!(), OT!()
-    Shared PT!(), PTSA!(), PTSF!(), TRC!(), TT!()
+    Shared PT!(), PTSA!(), PTSF!(), TRC!(), compTT!()
 
     Shared BRC$()
     Shared compZ1$(), compZ2$(), compZ3$()
@@ -46,7 +46,7 @@ Sub CompileNatlOrg ()
     TRC!(42) = 999
     TRC!(43) = 999
 
-    Erase compZ1!, NT!, TT!
+    Erase compZ1!, NT!, compTT!
     Erase O1!, O2!, O3!
     Erase PTSF!, PTSA!
 
@@ -138,11 +138,11 @@ Sub CompileNatlOrg ()
                 Next
 
                 For I = 1 To 20
-                    TT!(2, I, 5) = 9999
-                    TT!(4, I, 5) = 9999
-                    TT!(6, I, 3) = 9999
-                    TT!(8, I, 8) = 9999
-                    TT!(10, I, 7) = -99
+                    compTT!(2, I, 5) = 9999
+                    compTT!(4, I, 5) = 9999
+                    compTT!(6, I, 3) = 9999
+                    compTT!(8, I, 8) = 9999
+                    compTT!(10, I, 7) = -99
                 Next
 
                 Cls
@@ -495,7 +495,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     Shared compPK$(), compZ2$(), compZ3$()
     Shared intName$(), sackName$(), KR$()
     Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
-    Shared PKR$(), PR$(), compPS$()
+    Shared PKR$(), PR$(), PS$()
     Shared QB$(), RB$(), TB$(), WR$()
 
     Shared BRC!(), compZ1!()
@@ -536,7 +536,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 BRC$(4, 2) = statsLR$(X - 1, 0)
             End If
 
-            compPS$(X) = WT$
+            PS$(X) = WT$
 
             For Y = 1 To 20:
 
@@ -1472,11 +1472,11 @@ End Sub
 'see if any should be updated
 Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
-    Shared DT!(), OT!(), TRC!(), TT!()
+    Shared DT!(), OT!(), TRC!(), compTT!()
 
     Shared TRC$(), TT$()
 
-    Shared statsO%(), statsT%()
+    Shared statsO%(), compT%()
 
     Cls
 
@@ -1488,21 +1488,21 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If OT!(6) + OT!(2) > TRC!(1) Then TRC!(1) = OT!(6) + OT!(2): TRC$(1) = TM$
     If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)) > TRC!(2) Then TRC!(2) = (OT!(6) + OT!(2)) / (OT!(1) + OT!(3)): TRC$(2) = TM$
 
-    If (OT!(6) + OT!(2)) / numberGames% > TT!(CA, 20, 5) Then
+    If (OT!(6) + OT!(2)) / numberGames% > compTT!(CA, 20, 5) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1) + OT!(3)
-        TT!(CA, 20, 3) = OT!(6) + OT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = OT!(1) + OT!(3)
+        compTT!(CA, 20, 3) = OT!(6) + OT!(2)
+        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                If compTT!(CA, Z, 5) < compTT!(CA, Z1, 5) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1517,21 +1517,21 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)) < TRC!(27) Then TRC!(27) = (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)): TRC$(27) = TM$
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% > TRC!(28) Then TRC!(28) = (DT!(6) + DT!(2)) / numberGames%: TRC$(28) = TM$
 
-    If (DT!(6) + DT!(2)) / numberGames% < TT!(CA, 20, 5) Then
+    If (DT!(6) + DT!(2)) / numberGames% < compTT!(CA, 20, 5) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(1) + DT!(3)
-        TT!(CA, 20, 3) = DT!(6) + DT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = DT!(1) + DT!(3)
+        compTT!(CA, 20, 3) = DT!(6) + DT!(2)
+        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                If compTT!(CA, Z, 5) > compTT!(CA, Z1, 5) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1546,22 +1546,22 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And OT!(2) / OT!(1) > TRC!(5) Then TRC!(5) = OT!(2) / OT!(1): TRC$(5) = TM$
 
     test! = OT!(2) / numberGames%
-    test2! = TT!(CA, 20, 5)
+    test2! = compTT!(CA, 20, 5)
 
-    If OT!(2) / numberGames% > TT!(CA, 20, 5) Then
+    If OT!(2) / numberGames% > compTT!(CA, 20, 5) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(1)
-        TT!(CA, 20, 3) = OT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = OT!(1)
+        compTT!(CA, 20, 3) = OT!(2)
+        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) < TT!(CA, Z1, 5) Then
+                If compTT!(CA, Z, 5) < compTT!(CA, Z1, 5) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1576,21 +1576,21 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And DT!(2) < TRC!(30) Then TRC!(30) = DT!(2): TRC$(30) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(2) / DT!(1) < TRC!(31) Then TRC!(31) = DT!(2) / DT!(1): TRC$(31) = TM$
 
-    If DT!(2) / numberGames% < TT!(CA, 20, 5) Then
+    If DT!(2) / numberGames% < compTT!(CA, 20, 5) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(1)
-        TT!(CA, 20, 3) = DT!(2)
-        TT!(CA, 20, 4) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = DT!(1)
+        compTT!(CA, 20, 3) = DT!(2)
+        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 5) > TT!(CA, Z1, 5) Then
+                If compTT!(CA, Z, 5) > compTT!(CA, Z1, 5) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1605,25 +1605,25 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     For I = 1 To numberGames%
         PTS = PTS + statsO%(I)
-        OPTS = OPTS + statsT%(I)
+        OPTS = OPTS + compT%(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
     If PTS > TRC!(12) Then TRC!(12) = PTS: TRC$(12) = TM$
     If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > TRC!(14) Then TRC!(14) = (PTS - OPTS) / numberGames%: TRC$(14) = TM$
-    If PTS / numberGames% > TT!(CA, 20, 3) Then
+    If PTS / numberGames% > compTT!(CA, 20, 3) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = PTS
+        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) < TT!(CA, Z1, 3) Then
+                If compTT!(CA, Z, 3) < compTT!(CA, Z1, 3) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1637,7 +1637,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + statsT%(I)
+        PTS = PTS + compT%(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
@@ -1646,20 +1646,20 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     If PTS > TRC!(40) Then TRC!(40) = PTS: TRC$(40) = TM$
 
-    If PTS / numberGames% < TT!(CA, 20, 3) Then
+    If PTS / numberGames% < compTT!(CA, 20, 3) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = PTS
-        TT!(CA, 20, 3) = TT!(CA, 20, 2) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = PTS
+        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
 
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 3) > TT!(CA, Z1, 3) Then
+                If compTT!(CA, Z, 3) > compTT!(CA, Z1, 3) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1678,24 +1678,24 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > TRC!(10) Then TRC!(10) = OT!(4) / OT!(3): TRC$(10) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < TRC!(11) Then TRC!(11) = OT!(5) / OT!(3): TRC$(11) = TM$
 
-    If OT!(6) / numberGames% > TT!(CA, 20, 8) Then
+    If OT!(6) / numberGames% > compTT!(CA, 20, 8) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = OT!(3)
-        TT!(CA, 20, 3) = OT!(4)
-        TT!(CA, 20, 4) = OT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = OT!(6)
-        TT!(CA, 20, 7) = OT!(6) / OT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = OT!(3)
+        compTT!(CA, 20, 3) = OT!(4)
+        compTT!(CA, 20, 4) = OT!(5)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 6) = OT!(6)
+        compTT!(CA, 20, 7) = OT!(6) / OT!(3)
+        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) < TT!(CA, Z1, 8) Then
+                If compTT!(CA, Z, 8) < compTT!(CA, Z1, 8) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1713,24 +1713,24 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < TRC!(36) Then TRC!(36) = DT!(4) / DT!(3): TRC$(36) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > TRC!(37) Then TRC!(37) = DT!(5) / DT!(3): TRC$(37) = TM$
 
-    If DT!(6) / numberGames% < TT!(CA, 20, 8) Then
+    If DT!(6) / numberGames% < compTT!(CA, 20, 8) Then
 
-        TT!(CA, 20, 1) = numberGames%
-        TT!(CA, 20, 2) = DT!(3)
-        TT!(CA, 20, 3) = DT!(4)
-        TT!(CA, 20, 4) = DT!(5)
-        TT!(CA, 20, 5) = TT!(CA, 20, 3) / TT!(CA, 20, 2)
-        TT!(CA, 20, 6) = DT!(6)
-        TT!(CA, 20, 7) = DT!(6) / DT!(3)
-        TT!(CA, 20, 8) = TT!(CA, 20, 6) / numberGames%
+        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 2) = DT!(3)
+        compTT!(CA, 20, 3) = DT!(4)
+        compTT!(CA, 20, 4) = DT!(5)
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        compTT!(CA, 20, 6) = DT!(6)
+        compTT!(CA, 20, 7) = DT!(6) / DT!(3)
+        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames%
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 8) > TT!(CA, Z1, 8) Then
+                If compTT!(CA, Z, 8) > compTT!(CA, Z1, 8) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1743,18 +1743,18 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > TRC!(15) Then TRC!(15) = OT!(8) / OT!(7): TRC$(15) = TM$
 
-    If OT!(8) / OT!(7) > TT!(CA, 20, 2) Then
+    If OT!(8) / OT!(7) > compTT!(CA, 20, 2) Then
 
-        TT!(CA, 20, 1) = OT!(7)
-        TT!(CA, 20, 2) = OT!(8) / OT!(7)
+        compTT!(CA, 20, 1) = OT!(7)
+        compTT!(CA, 20, 2) = OT!(8) / OT!(7)
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 2) < TT!(CA, Z1, 2) Then
+                If compTT!(CA, Z, 2) < compTT!(CA, Z1, 2) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1771,23 +1771,23 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     IL = OT!(5)
     TM = (FG + IG - FL - IL) / numberGames%
 
-    If TM > TT!(CA, 20, 7) Then
+    If TM > compTT!(CA, 20, 7) Then
 
-        TT!(CA, 20, 1) = FG
-        TT!(CA, 20, 2) = IG
-        TT!(CA, 20, 3) = FG + IG
-        TT!(CA, 20, 4) = FL
-        TT!(CA, 20, 5) = IL
-        TT!(CA, 20, 6) = FL + IL
-        TT!(CA, 20, 7) = TM
+        compTT!(CA, 20, 1) = FG
+        compTT!(CA, 20, 2) = IG
+        compTT!(CA, 20, 3) = FG + IG
+        compTT!(CA, 20, 4) = FL
+        compTT!(CA, 20, 5) = IL
+        compTT!(CA, 20, 6) = FL + IL
+        compTT!(CA, 20, 7) = TM
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If TT!(CA, Z, 7) < TT!(CA, Z1, 7) Then
+                If compTT!(CA, Z, 7) < compTT!(CA, Z1, 7) Then
                     Swap TT$(CA, Z1), TT$(CA, Z)
                     For MN = 1 To 9
-                        Swap TT!(CA, Z1, MN), TT!(CA, Z, MN)
+                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1825,10 +1825,10 @@ End Sub
 '...explanation...
 Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
 
-    Shared compO$(), H1$(), statsH$()
+    Shared statsO$(), H1$(), statsH$()
 
     Shared compAP%()
-    Shared statsO%(), statsT%()
+    Shared statsO%(), compT%()
 
     Shared PT!(), PT$()
     Shared PTSA!(), PTSF!()
@@ -1888,7 +1888,7 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
 
             For EC = 1 To 30
 
-                If compO$(I) = H1$(EC) Then
+                If statsO$(I) = H1$(EC) Then
                     confGame = 1
                     Exit For
                 End If
@@ -1896,17 +1896,17 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
             Next EC
 
             If confGame <> 1 Then
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1
+                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1
+                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1
+                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1
             Else
-                If statsO%(I) > statsT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If statsO%(I) < statsT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If statsO%(I) = statsT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
             End If
 
             PTSFC = PTSFC + statsO%(I)
-            PTSAC = PTSAC + statsT%(I)
+            PTSAC = PTSAC + compT%(I)
             EC = 0
 
         Next I
@@ -1926,7 +1926,7 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
         teamPower = 0
 
         For I = 1 To numberGames%
-            RAT = statsO%(I) - statsT%(I) + compAP%(1, I)
+            RAT = statsO%(I) - compT%(I) + compAP%(1, I)
             If Left$(statsH$(I), 1) = "H" Then RAT = RAT - 3
             If Left$(statsH$(I), 1) = "A" Then RAT = RAT + 3
             teamPower = teamPower + RAT
@@ -1973,7 +1973,7 @@ End Function
 Sub SortLeadersNat ()
 
     Shared compZ1!()
-    Shared N1!(), NT!(), TT!()
+    Shared N1!(), NT!(), compTT!()
 
     Shared compZ1$(), compZ2$(), compZ3$()
     Shared N2$(), N3$(), NT$(), TT$()
@@ -2553,10 +2553,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
+            If compTT!(CA, X, 5) >= NT!(CA, 20, 5) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2585,10 +2585,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+            If compTT!(CA, X, 5) <= NT!(CA, 20, 5) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2617,10 +2617,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 5) >= NT!(CA, 20, 5) Then
+            If compTT!(CA, X, 5) >= NT!(CA, 20, 5) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2651,10 +2651,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 5) <= NT!(CA, 20, 5) Then
+            If compTT!(CA, X, 5) <= NT!(CA, 20, 5) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2683,10 +2683,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 3) >= NT!(CA, 20, 3) Then
+            If compTT!(CA, X, 3) >= NT!(CA, 20, 3) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2715,10 +2715,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 3) <= NT!(CA, 20, 3) Then
+            If compTT!(CA, X, 3) <= NT!(CA, 20, 3) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2747,10 +2747,10 @@ Sub SortLeadersNat ()
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
 
-            If TT!(CA, X, 8) >= NT!(CA, 20, 8) Then
+            If compTT!(CA, X, 8) >= NT!(CA, 20, 8) Then
 
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
 
                 NT$(CA, 20) = TT$(CA, X)
@@ -2777,9 +2777,9 @@ Sub SortLeadersNat ()
     For X = 1 To 20
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 8) <= NT!(CA, 20, 8) Then
+            If compTT!(CA, X, 8) <= NT!(CA, 20, 8) Then
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
                 NT$(CA, 20) = TT$(CA, X)
                 For Z = 1 To 19
@@ -2802,9 +2802,9 @@ Sub SortLeadersNat ()
     For X = 1 To 20
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 2) >= NT!(CA, 20, 2) Then
+            If compTT!(CA, X, 2) >= NT!(CA, 20, 2) Then
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
                 NT$(CA, 20) = TT$(CA, X)
                 For Z = 1 To 19
@@ -2827,9 +2827,9 @@ Sub SortLeadersNat ()
     For X = 1 To 20
 
         If TT$(CA, X) <> "*" And TT$(CA, X) <> "" Then
-            If TT!(CA, X, 7) >= NT!(CA, 20, 7) Then
+            If compTT!(CA, X, 7) >= NT!(CA, 20, 7) Then
                 For I = 1 To 8
-                    NT!(CA, 20, I) = TT!(CA, X, I)
+                    NT!(CA, 20, I) = compTT!(CA, X, I)
                 Next
                 NT$(CA, 20) = TT$(CA, X)
                 For Z = 1 To 19
@@ -2862,7 +2862,7 @@ Sub POSTLEADERS (confName$)
     Shared TT$()
 
     Shared compZ1!(), O1!(), O2!(), O3!()
-    Shared TT!(), PTSA!(), PTSF!()
+    Shared compTT!(), PTSA!(), PTSF!()
 
     Cls
 
@@ -2881,7 +2881,7 @@ Sub POSTLEADERS (confName$)
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Write #1, TT!(I, I1, I2)
+                Write #1, compTT!(I, I1, I2)
             Next
         Next
     Next
@@ -2950,9 +2950,9 @@ End Sub
 'team's schedule stats file.
 Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
-    Shared compO$(), statsH$()
+    Shared statsO$(), statsH$()
 
-    Shared compAP%(), statsO%(), statsT%()
+    Shared compAP%(), statsO%(), compT%()
 
     Shared PTSA!(), PTSF!()
 
@@ -2966,12 +2966,12 @@ Sub ReadScheduleStats (statFile$, XW, numberGames%)
     Next I
 
     For I = 1 to NUM_STATRECORDS:
-        Input #1, compO$(I)
+        Input #1, statsO$(I)
     Next I
 
     For I = 1 to NUM_STATRECORDS:
-        Input #1, statsT%(I)
-        PTSA!(XW) = PTSA!(XW) + statsT%(I)
+        Input #1, compT%(I)
+        PTSA!(XW) = PTSA!(XW) + compT%(I)
     Next I
 
     For I = 1 to NUM_STATRECORDS:

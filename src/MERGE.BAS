@@ -67,7 +67,7 @@ End Sub
 'perform the merge
 Sub MergeStats ()
 
-    Shared Ycurr%, Yroad%
+    Dim allGames, roadGames
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
@@ -76,8 +76,8 @@ Sub MergeStats ()
     Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
     Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared compO$(), statsPK$(), PKR$()
-    Shared gameSITE$(), SITER$()
+    Shared statsO$(), statsPK$(), PKR$()
+    Shared gameSite$(), gameSiteRoad$()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
     Shared CRD!(), CRDR!()
@@ -89,7 +89,7 @@ Sub MergeStats ()
 
     Shared compAP%(), APR%()
     Shared statsGI%(), GIR%(), statsGS%(), GSR%()
-    Shared statsO%(), statsT%(), TR%()
+    Shared statsO%(), compT%(), TR%()
 
     Shared ORD$()
     Shared ORD%()
@@ -208,7 +208,7 @@ Sub MergeStats ()
 
                     Open pathRoadStats$ + statFile$ + "S" For Input As #2
 
-                    Input #2, Yroad%
+                    Input #2, roadGames
 
                     For I = 1 To NUM_STATRECORDS: Input #2, ORD%(I): Next I
                     For I = 1 To NUM_STATRECORDS: Input #2, ORD$(I): Next I
@@ -222,7 +222,7 @@ Sub MergeStats ()
                     Next
 
                     For I = 1 To NUM_STATRECORDS: Input #2, CRDR!(I): Next I
-                    For I = 1 To NUM_STATRECORDS: Input #2, SITER$(I): Next I
+                    For I = 1 To NUM_STATRECORDS: Input #2, gameSiteRoad$(I): Next I
 
                     Close #2
 
@@ -313,11 +313,11 @@ Sub MergeStats ()
 
                         Open pathCurrentStats$ + statFile$ + "S" For Input As #4
 
-                        Input #4, Ycurr%
+                        Input #4, allGames
 
                         For I = 1 To NUM_STATRECORDS: Input #4, statsO%(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, compO$(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, statsT%(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, statsO$(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, compT%(I): Next I
                         For I = 1 To NUM_STATRECORDS: Input #4, statsH$(I): Next I
 
                         For I = 0 To 1
@@ -327,7 +327,7 @@ Sub MergeStats ()
                         Next
 
                         For I = 1 To NUM_STATRECORDS: Input #4, CRD!(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, gameSITE$(I): Next I
+                        For I = 1 To NUM_STATRECORDS: Input #4, gameSite$(I): Next I
 
                         Close #4
 
@@ -373,7 +373,7 @@ Sub MergeStats ()
 
                         If SEQ = 0 Then
 
-                            Call DoTheMerge(pathCurrentStats$, statFile$, B$)
+                            Call DoTheMerge(pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
                             For J = 13 To 23
                                 Locate J
@@ -457,9 +457,7 @@ End Sub
 'values together from each file and then
 'overwrites the current file with the
 'newly aggregated results.
-Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
-
-    Shared Ycurr%, Yroad%
+Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
@@ -468,8 +466,8 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
     Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared compO$(), statsPK$(), PKR$()
-    Shared gameSITE$(), SITER$()
+    Shared statsO$(), statsPK$(), PKR$()
+    Shared gameSite$(), gameSiteRoad$()
     Shared ORD$()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
@@ -483,19 +481,19 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
     Shared compAP%(), APR%()
     Shared ORD%()
     Shared statsGI%(), GIR%(), statsGS%(), GSR%()
-    Shared statsO%(), statsT%(), TR%()
+    Shared statsO%(), compT%(), TR%()
 
-    For K = 1 To Yroad%
-        Ycurr% = Ycurr% + 1
-        statsO%(Ycurr%) = ORD%(K)
-        compO$(Ycurr%) = ORD$(K)
-        statsT%(Ycurr%) = TR%(K)
-        statsH$(Ycurr%) = HR$(K)
-        CRD!(Ycurr%) = CRDR!(K)
-        gameSITE$(Ycurr%) = SITER$(K)
+    For K = 1 To roadGames
+        allGames = allGames + 1
+        statsO%(allGames) = ORD%(K)
+        statsO$(allGames) = ORD$(K)
+        compT%(allGames) = TR%(K)
+        statsH$(allGames) = HR$(K)
+        CRD!(allGames) = CRDR!(K)
+        gameSite$(allGames) = gameSiteRoad$(K)
 
         For I = 0 To 1
-            compAP%(I, Ycurr%) = APR%(I, K)
+            compAP%(I, allGames) = APR%(I, K)
         Next
     Next
 
@@ -675,13 +673,13 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     Open pathCurrentStats$ + statFile$ + "S" For Output As #2
 
-    Write #2, Ycurr%
+    Write #2, allGames
 
     For I = 1 To NUM_STATRECORDS: Write #2, statsO%(I): Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, compO$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, statsO$(I): Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, statsT%(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, compT%(I): Next I
 
     For I = 1 To NUM_STATRECORDS: Write #2, statsH$(I): Next I
 
@@ -692,7 +690,7 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$)
 
     For I = 1 To NUM_STATRECORDS: Write #2, CRD!(I): Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, gameSITE$(I): Next I
+    For I = 1 To NUM_STATRECORDS: Write #2, gameSite$(I): Next I
 
     Close #2
 

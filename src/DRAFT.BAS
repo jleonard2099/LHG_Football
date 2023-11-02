@@ -50,7 +50,7 @@ Sub DRAFT ()
                     Locate 1, 1: Color 15, 0
 
                     Call NewTeamParameters(YN$, team$, teamNbr)
-                    Call DraftChoices(YN$, team$)
+                    Call DraftChoices(team$)
                     Call DoTheDraft(1, doneDraft, YN$, team$, teamNbr)
 
                 Case 2:
@@ -60,7 +60,7 @@ Sub DRAFT ()
                     If teamNbr > 0 Then
                         Call DraftExistingTeam(YN$, teamNbr)
                         Call ExistingTeamParameters(YN$, team$, teamNbr)
-                        Call DraftChoices(YN$, team$)
+                        Call DraftChoices(team$)
                         Call DoTheDraft(0, doneDraft, YN$, team$, teamNbr)
                     End If
 
@@ -408,7 +408,7 @@ End Sub
 'user can operate to choose their draft
 'selections. For each position chosen, a
 'source team will need selected.
-Sub DraftChoices (YN$, teamName$)
+Sub DraftChoices (teamName$)
 
     Shared leagueRatings%(), teamRatings%()
 
@@ -1032,18 +1032,7 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
 
     Cls
 
-    JJ = 1
-
-    Locate 6, 8: Color 15, 1
-
-    Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-
-    For II = 1 To JJ: Locate 6 + II, 8
-        Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-    Next
-
-    Locate 7 + JJ, 8
-    Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+    Call box0 (6, 8, 8, 70, 2, 15, 1)
 
     Locate 7
 

@@ -12,8 +12,6 @@ Sub TRADE ()
 
     _Title "3-in-1 Football - Trade Players"
 
-    ReDim menuChoices$(1 To 2)
-
     Dim NY$(1)
 
     Shared haveStats()
@@ -1396,7 +1394,7 @@ Sub DoTheTrade (tradeIdx)
     Shared teams_TRADE$(), nicks_TRADE$()
     Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared tradeYN$()
-    Shared rbNam_TRADE$(), wrNam_TRADE$(), qbNam_TRADE$(), krNam_TRADE$(), prNam_TRADE$(), pntNam_TRADE$(), pkNam_TRADE$()
+    Shared krNam_TRADE$(), pkNam_TRADE$(), prNam_TRADE$(), pntNam_TRADE$(), rbNam_TRADE$(), wrNam_TRADE$(), qbNam_TRADE$()
 
     Shared tradeT!(), ydCmpAdj_TRADE!()
 
@@ -1640,7 +1638,8 @@ Sub DoTheTrade (tradeIdx)
     Erase FGA_TRADE, FGPct_TRADE, PAT_TRADE, PATPct_TRADE, puntAvg_TRADE
     Erase rbAtt_TRADE, rbAvg_TRADE, rbRec_TRADE, rbRecAvg_TRADE
     Erase wrAvg_TRADE, wrRec_TRADE
-    Erase krNam_TRADE$, pkNam_TRADE$, puntNam_TRADE$, prNam_TRADE$, rbNam_TRADE$, wrNam_TRADE$, qbNam_TRADE$
+    Erase krNam_TRADE$, pkNam_TRADE$, prNam_TRADE$, pntNam_TRADE$, rbNam_TRADE$, wrNam_TRADE$, qbNam_TRADE$
+
 
 End Sub
 
@@ -1825,7 +1824,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
             Do
 
-                Call SelectTradeTeam (numberTeams, yearNumber$, chosenIdx, teamName$, ExitCode%, tradeIdx)
+                Call SelectTradeTeam (numberTeams, yearNumber$, chosenIdx, ExitCode%, tradeIdx)
 
                 If ExitCode% <> 27 Then
 
@@ -1858,7 +1857,7 @@ End Sub
 '----------------------------------------
 'This subroutine provides an interface for 
 'selecting the team to trade players from
-Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%, tradeIdx)
+Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
 
     If numberTeams > 0 Then
 
@@ -1892,7 +1891,7 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
             Locate 2, 33: Color 3
             Print "LOADING.."
 
-            Call ReadTradeTeam(yearNumber$, teamName$, selectedIdx, tradeIdx)
+            Call ReadTradeTeam(yearNumber$, selectedIdx, tradeIdx)
             
         End If
 
@@ -1906,12 +1905,12 @@ End Sub
 '----------------------------------------
 'This subroutine reads team data into 
 'arrays for the selected team
-Sub ReadTradeTeam (teamYear$, targetTeam$, teamIdx, tradeIdx)
+Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx)
 
     'C2 has to do with RB Rec 
     'C3 has to do with RB Att
     '-- contribution calculation??
-    Dim C2!(15), C3!(15)
+    Dim C2!(15)
 
     Shared ydCmpAdj_TRADE!()
 
@@ -2045,7 +2044,6 @@ Sub ReadTradeTeam (teamYear$, targetTeam$, teamIdx, tradeIdx)
 
     For I = 0 To 15: 
         C2!(I) = 0
-        'C3!(I) = 0
     Next
 
     For I = 9 To 1 Step -1

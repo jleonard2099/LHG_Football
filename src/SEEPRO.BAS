@@ -1,7 +1,7 @@
 '----------------------------------------
 '            SEEPRO Subroutine
 '----------------------------------------
-'This subroutine lets the user choose a 
+'This subroutine lets the user choose a
 'league stat file to view, then calls
 'other routines to both load the Stats
 'and then provide options for display
@@ -32,7 +32,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), TT!(), W!()
+    Shared T!(), compTT!(), W!()
 
     Shared div1$, div2$, div3$
 
@@ -61,7 +61,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Input #2, TT!(I, I1, I2)
+                Input #2, compTT!(I, I1, I2)
             Next
         Next
     Next
@@ -254,24 +254,24 @@ Sub StatOptions_Pro (league$)
 
         Call TITLE_STATS
 
-		Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox (8, 8, 61, 5, 15, 1)
 
-		Locate 7, 32
+        Locate 7, 32
 
         Do
-			Locate 10
-			Color 7, 1
+            Locate 10
+            Color 7, 1
 
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "S";: Color 7: Print "CREEN"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "P";: Color 7: Print "RINTER"
-			Locate , 30: Print "STATS TO ";
-			Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "S";: Color 7: Print "CREEN"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "P";: Color 7: Print "RINTER"
+            Locate , 30: Print "STATS TO ";
+            Color 15: Print "F";: Color 7: Print "ILE"
 
             I$ = GetKeyPress$
-			
-			Color 14, 0
+            
+            Color 14, 0
 
         Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
 
@@ -287,28 +287,14 @@ Sub StatOptions_Pro (league$)
                     Call SavePrintProLeaders(0, SF$, league$)
 
                 Case "S":
-                    Call LeaderStatsPro_Screen(league$)
+                    Call LeaderStatsPro_Screen
 
             End Select
 
             Color 15, 0
             Cls
 
-            JJ = 4
-
-            Locate 6, 8
-            Color 15, 1
-
-            Print " "; Chr$(201); String$(61, 205); Chr$(187); " ";
-
-            For II = 1 To JJ:
-                Locate 6 + II, 8
-                Print " " + Chr$(186); String$(61, 32); Chr$(186) + " ";
-            Next
-
-            Locate 7 + JJ, 8
-
-            Print " "; Chr$(200); String$(61, 205); Chr$(188); " ";
+            Call box0 (6, 8, 11, 70, 2, 15, 1)
 
             Do
                 Color 15, 1
@@ -339,7 +325,7 @@ Sub ReportFilePrompt_Pro (reportFile$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
 
@@ -352,7 +338,7 @@ Sub ReportFilePrompt_Pro (reportFile$)
         If reportFile$ <> "" Then
 
             Do
-				Locate 13, 12: Print "ANY CHANGE? (Y/N) "
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -369,18 +355,18 @@ End Sub
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub LeaderStatsPro_Screen (league$)
+Sub LeaderStatsPro_Screen ()
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), TT!(), W!()
+    Shared T!(), compTT!(), W!()
 
     Shared div1$, div2$, div3$
 
-	Color 15, 0
+    Color 15, 0
     Cls
 
     Color 12
@@ -865,7 +851,7 @@ Sub LeaderStatsPro_Screen (league$)
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
 
@@ -881,7 +867,7 @@ Sub LeaderStatsPro_Screen (league$)
             Locate , 41
             Print TR$(CA, P);
             Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
 
@@ -904,7 +890,7 @@ Sub LeaderStatsPro_Screen (league$)
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
 
@@ -920,7 +906,7 @@ Sub LeaderStatsPro_Screen (league$)
             Locate , 41
             Print TR$(CA, P);
             Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
 
@@ -943,7 +929,7 @@ Sub LeaderStatsPro_Screen (league$)
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
-            Print Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3)
+            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
     Next
 
@@ -959,7 +945,7 @@ Sub LeaderStatsPro_Screen (league$)
             Locate , 41
             Print TR$(CA, P);
             Locate , 55
-            Print Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3)
+            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
     Next
 
@@ -982,7 +968,7 @@ Sub LeaderStatsPro_Screen (league$)
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
 
@@ -1005,7 +991,7 @@ Sub LeaderStatsPro_Screen (league$)
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);
             Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
 
@@ -1027,7 +1013,7 @@ Sub LeaderStatsPro_Screen (league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);: Locate , 15
-            Print Using "###    ##.#"; TT!(CA, P, 1); TT!(CA, P, 2)
+            Print Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
     Next
 
@@ -1050,7 +1036,7 @@ Sub LeaderStatsPro_Screen (league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print TR$(CA, P);: Locate , 18
-            Print Using "### ###  ###    ### ###  ###       ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5); TT!(CA, P, 6); TT!(CA, P, 7)
+            Print Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next
 
@@ -1078,7 +1064,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
     Shared L!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), TT!(), W!()
+    Shared T!(), compTT!(), W!()
 
     Shared div1$, div2$, div3$
 
@@ -1088,7 +1074,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
         Open reportFile$ + ".RPT" For Output As #1
     End If
 
-	Color 0, 15
+    Color 0, 15
     Cls
 
     Print #1, league$ + " OVERALL RECORD"
@@ -1449,7 +1435,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1, Tab(41);
         Else
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
+            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
@@ -1459,7 +1445,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1,
         Else
             Print #1, TR$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
     Next
@@ -1475,7 +1461,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1, Tab(41);
         Else
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5);
+            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
@@ -1485,7 +1471,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1,
         Else
             Print #1, TR$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5)
+            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
     Next
@@ -1498,7 +1484,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
 
@@ -1510,7 +1496,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5) * 100; TT!(CA, P, 6); TT!(CA, P, 7); TT!(CA, P, 8)
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
 
@@ -1525,7 +1511,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1, Tab(41);
         Else
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3);
+            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3);
             Print #1, Tab(41);
         End If
 
@@ -1535,7 +1521,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
             Print #1,
         Else
             Print #1, TR$(CA, P); Tab(56);
-            Print #1, Using "##   ####   ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3)
+            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
 
     Next
@@ -1548,7 +1534,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print #1, TR$(CA, P); Tab(15);
-            Print #1, Using "###    ##.#"; TT!(CA, P, 1); TT!(CA, P, 2)
+            Print #1, Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
     Next
 
@@ -1561,7 +1547,7 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 1 To 20
         If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
             Print #1, TR$(CA, P); Tab(18);
-            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; TT!(CA, P, 1); TT!(CA, P, 2); TT!(CA, P, 3); TT!(CA, P, 4); TT!(CA, P, 5); TT!(CA, P, 6); TT!(CA, P, 7)
+            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next
 

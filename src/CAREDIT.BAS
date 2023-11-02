@@ -9,8 +9,8 @@ Sub CAREDIT ()
 
     _Title "3-in-1 Football - Edit Career Files"
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$(), careerKRS$(), careerPRS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$(), carKRS$(), carPRS$()
     Shared careerQBS$(), careerRBS$(), careerRC$(), careerWRS$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!()
@@ -35,63 +35,63 @@ Sub CAREDIT ()
 		Input #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
 		For I = 0 To 49: 
-			Input #1, careerA1$(I)
+			Input #1, carRBacks$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 39: 
-			Input #1, careerA2$(I)
+			Input #1, carWdRec$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 19: 
-			Input #1, careerA3$(I)
+			Input #1, carQBacks$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 14: 
-			Input #1, careerA4$(I)
+			Input #1, carKickRet$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 14: 
-			Input #1, careerA5$(I)
+			Input #1, carPRet$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 9: 
-			Input #1, careerA6$(I)
+			Input #1, carPunters$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 9: 
-			Input #1, careerA7$(I)
+			Input #1, carKicker$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 54: 
-			Input #1, careerDI$(I)
+			Input #1, carDefInts$(I)
 			Locate 21, 38
 			Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
 		
 		For I = 0 To 54: 
-			Input #1, careerDS$(I)
+			Input #1, carDefSacks$(I)
 			Locate 21, 38: Color 5
 			TMR = TMR - 1: Print Using "####"; TMR
 		Next
@@ -169,7 +169,7 @@ Sub CAREDIT ()
 		
 		For N = 1 To 15: 
 			For J = 0 To 14: 
-				Input #1, careerKRS$(N, J, 0)
+				Input #1, carKRS$(N, J, 0)
 				Locate 21, 38
 				Color 5
 				TMR = TMR - 1: Print Using "####"; TMR
@@ -189,7 +189,7 @@ Sub CAREDIT ()
 		
 		For N = 1 To 15: 
 			For J = 0 To 14: 
-				Input #1, careerPRS$(N, J, 0)
+				Input #1, carPRS$(N, J, 0)
 				Locate 21, 38
 				Color 5
 				TMR = TMR - 1: Print Using "####"; TMR
@@ -283,19 +283,19 @@ Sub CAREDIT ()
 					For I = 0 To 16:
 						Locate I + 2
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA1$(I), 12)
+						Color 7: Print Left$(carRBacks$(I), 12)
 					Next
 
 					For I = 17 To 33:
 						Locate I - 15, 20
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA1$(I), 12)
+						Color 7: Print Left$(carRBacks$(I), 12)
 					Next
 
 					For I = 34 To 50:
 						Locate I - 32, 40
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA1$(I), 12)
+						Color 7: Print Left$(carRBacks$(I), 12)
 					Next
 
 					Do
@@ -315,7 +315,7 @@ Sub CAREDIT ()
 
 								Locate 5, 15: Print "CHANGING RUNNING BACK FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 49: careerA1$(I) = careerA1$(I + 1): Next
+								For I = B9 To 49: carRBacks$(I) = carRBacks$(I + 1): Next
 
 								UPP = (50 - B9) * 15
 								I = B9
@@ -339,7 +339,7 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerA1$(49) = ""
+							carRBacks$(49) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 9:
@@ -362,13 +362,13 @@ Sub CAREDIT ()
 					For I = 0 To 19:
 						Locate I + 2
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA2$(I), 12)
+						Color 7: Print Left$(carWdRec$(I), 12)
 					Next
 
 					For I = 20 To 39:
 						Locate I - 18, 20
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA2$(I), 12)
+						Color 7: Print Left$(carWdRec$(I), 12)
 					Next
 
 					Do
@@ -387,7 +387,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING RECEIVER FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 38: careerA2$(I) = careerA2$(I + 1): Next
+								For I = B9 To 38: carWdRec$(I) = carWdRec$(I + 1): Next
 
 								UPP = (39 - B9) * 15
 								I = B9
@@ -408,7 +408,7 @@ Sub CAREDIT ()
 						End If
 
 						If exitFlag% <> 1 Then
-							careerA2$(39) = ""
+							carWdRec$(39) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 5:
@@ -430,13 +430,13 @@ Sub CAREDIT ()
 					For I = 0 To 9:
 						Locate I + 2
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA3$(I), 12)
+						Color 7: Print Left$(carQBacks$(I), 12)
 					Next
 
 					For I = 10 To 19:
 						Locate I - 8, 20
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA3$(I), 12)
+						Color 7: Print Left$(carQBacks$(I), 12)
 					Next
 
 					Do
@@ -454,7 +454,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING QUARTERBACK FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 18: careerA3$(I) = careerA3$(I + 1): Next
+								For I = B9 To 18: carQBacks$(I) = carQBacks$(I + 1): Next
 
 								UPP = (19 - B9) * 15
 								I = B9
@@ -479,7 +479,7 @@ Sub CAREDIT ()
 
 					If exitFlag% <> 1 Then
 
-						careerA3$(19) = ""
+						carQBacks$(19) = ""
 
 						For J = 1 To 15:
 							For I1 = 0 To 7:
@@ -496,7 +496,7 @@ Sub CAREDIT ()
 
 					Color 12: Print careerFile$
 
-					For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(careerA4$(I), 12): Next
+					For I = 0 To 14: Locate I + 2: Color 11: Print Using "##"; I;: Print " ";: Color 7: Print Left$(carKickRet$(I), 12): Next
 
 					Do
 						Locate 22: Color 15
@@ -514,7 +514,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING KICK RETURNER FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 13: careerA4$(I) = careerA4$(I + 1): Next
+								For I = B9 To 13: carKickRet$(I) = carKickRet$(I + 1): Next
 
 								UPP = (14 - B9) * 15
 								I = B9
@@ -523,7 +523,7 @@ Sub CAREDIT ()
 									For I = B9 To 13:
 										For I1 = 0 To 5:
 											careerKRS!(J, I, I1) = careerKRS!(J, I + 1, I1)
-											careerKRS$(J, I, 0) = careerKRS$(J, I + 1, 0)
+											carKRS$(J, I, 0) = carKRS$(J, I + 1, 0)
 										Next
 										UPP = UPP - 1
 										Locate 7, 36: Color 12: Print Using "####"; UPP
@@ -535,12 +535,12 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerA4$(14) = ""
+							carKickRet$(14) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 5:
 									careerKRS!(J, 14, I1) = 0
-									careerKRS$(J, 14, 0) = ""
+									carKRS$(J, 14, 0) = ""
 								Next
 							Next
 						End If
@@ -557,7 +557,7 @@ Sub CAREDIT ()
 						Locate I + 2: Color 11
 						Print Using "##"; I;
 						Print " ";
-						Color 7: Print Left$(careerA5$(I), 12)
+						Color 7: Print Left$(carPRet$(I), 12)
 					Next
 
 					Do
@@ -577,7 +577,7 @@ Sub CAREDIT ()
 
 								Locate 5, 15: Print "CHANGING PUNT RETURNER FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 13: careerA5$(I) = careerA5$(I + 1): Next
+								For I = B9 To 13: carPRet$(I) = carPRet$(I + 1): Next
 
 								UPP = (14 - B9) * 15
 								I = B9
@@ -586,7 +586,7 @@ Sub CAREDIT ()
 									For I = B9 To 13:
 										For I1 = 0 To 5:
 											careerPRS!(J, I, I1) = careerPRS!(J, I + 1, I1)
-											careerPRS$(J, I, 0) = careerPRS$(J, I + 1, 0)
+											carPRS$(J, I, 0) = carPRS$(J, I + 1, 0)
 										Next
 										Locate 7, 36: Color 12: UPP = UPP - 1: Print Using "####"; UPP
 									Next
@@ -597,12 +597,12 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerA5$(14) = ""
+							carPRet$(14) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 5:
 									careerPRS!(J, 14, I1) = 0
-									careerPRS$(J, 14, 0) = ""
+									carPRS$(J, 14, 0) = ""
 								Next
 							Next
 
@@ -619,7 +619,7 @@ Sub CAREDIT ()
 					For I = 0 To 9:
 						Locate I + 2
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA6$(I), 12)
+						Color 7: Print Left$(carPunters$(I), 12)
 					Next
 
 					Do
@@ -639,7 +639,7 @@ Sub CAREDIT ()
 
 								Locate 5, 15: Print "CHANGING PUNTER FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 8: careerA6$(I) = careerA6$(I + 1): Next
+								For I = B9 To 8: carPunters$(I) = carPunters$(I + 1): Next
 
 								UPP = (9 - B9) * 15
 								I = B9
@@ -662,7 +662,7 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerA6$(9) = ""
+							carPunters$(9) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 3:
@@ -682,7 +682,7 @@ Sub CAREDIT ()
 
 					For I = 0 To 9:
 						Locate I + 2: Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerA7$(I), 12)
+						Color 7: Print Left$(carKicker$(I), 12)
 					Next
 
 					Do
@@ -701,7 +701,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING FIELD GOAL KICKER FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 8: careerA7$(I) = careerA7$(I + 1): Next
+								For I = B9 To 8: carKicker$(I) = carKicker$(I + 1): Next
 
 								UPP = (9 - B9) * 15
 								I = B9
@@ -742,19 +742,19 @@ Sub CAREDIT ()
 					For I = 0 To 17:
 						Locate I + 2
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerDI$(I), 12)
+						Color 7: Print Left$(carDefInts$(I), 12)
 					Next
 
 					For I = 18 To 35:
 						Locate I - 16, 20
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerDI$(I), 12)
+						Color 7: Print Left$(carDefInts$(I), 12)
 					Next
 
 					For I = 36 To 54:
 						Locate I - 34, 40
 						Color 11: Print Using "##"; I;: Print " ";
-						Color 7: Print Left$(careerDI$(I), 12)
+						Color 7: Print Left$(carDefInts$(I), 12)
 					Next
 
 					Do
@@ -772,7 +772,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 8: careerDI$(I) = careerDI$(I + 1): Next
+								For I = B9 To 8: carDefInts$(I) = carDefInts$(I + 1): Next
 
 								UPP = (54 - B9) * 15
 								I = B9
@@ -794,7 +794,7 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerDI$(54) = ""
+							carDefInts$(54) = ""
 
 							For J = 1 To 15:
 								For I1 = 0 To 2:
@@ -816,21 +816,21 @@ Sub CAREDIT ()
 						Locate I + 2: Color 11
 						Print Using "##"; I;
 						Print " ";
-						Color 7: Print Left$(careerDS$(I), 12)
+						Color 7: Print Left$(carDefSacks$(I), 12)
 					Next
 
 					For I = 18 To 35: 
 						Locate I - 16, 20: Color 11
 						Print Using "##"; I;
 						Print " ";
-						Color 7: Print Left$(careerDS$(I), 12)
+						Color 7: Print Left$(carDefSacks$(I), 12)
 					Next
 
 					For I = 36 To 54: 
 						Locate I - 34, 40: Color 11
 						Print Using "##"; I;
 						Print " ";
-						Color 7: Print Left$(careerDS$(I), 12)
+						Color 7: Print Left$(carDefSacks$(I), 12)
 					Next
 
 					Do
@@ -849,7 +849,7 @@ Sub CAREDIT ()
 								Cls
 								Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
-								For I = B9 To 8: careerDS$(I) = careerDS$(I + 1): Next
+								For I = B9 To 8: carDefSacks$(I) = carDefSacks$(I + 1): Next
 
 								UPP = (54 - B9) * 15
 								I = B9
@@ -875,7 +875,7 @@ Sub CAREDIT ()
 
 						If exitFlag% <> 1 Then
 
-							careerDS$(54) = ""
+							carDefSacks$(54) = ""
 
 							For J = 1 To 15: 
 								For I1 = 0 To 2: careerGSS!(J, 54, I1) = 0: Next
@@ -907,9 +907,9 @@ End Sub
 'file with the modified stats values.
 Sub UpdateCareerFile (saveFile$)
 
-    Shared careerA1$(), careerA2$(), careerA3$(), careerA4$(), careerA5$(), careerA6$(), careerA7$()
-    Shared careerDI$(), careerDS$()
-    Shared careerKRS$(), careerPRS$()
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
+    Shared carDefInts$(), carDefSacks$()
+    Shared carKRS$(), carPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!()
@@ -927,63 +927,63 @@ Sub UpdateCareerFile (saveFile$)
     Write #1, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
     For I = 0 To 49
-        Write #1, careerA1$(I)
+        Write #1, carRBacks$(I)
         Locate 21, 38: Color 5
         TMR = TMR - 1
         Print Using "####"; TMR
     Next
 
     For I = 0 To 39
-        Write #1, careerA2$(I)
+        Write #1, carWdRec$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 19
-        Write #1, careerA3$(I)
+        Write #1, carQBacks$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 14
-        Write #1, careerA4$(I)
+        Write #1, carKickRet$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 14
-        Write #1, careerA5$(I)
+        Write #1, carPRet$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 9
-        Write #1, careerA6$(I)
+        Write #1, carPunters$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 9
-        Write #1, careerA7$(I)
+        Write #1, carKicker$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54
-        Write #1, careerDI$(I)
+        Write #1, carDefInts$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54
-        Write #1, careerDS$(I)
+        Write #1, carDefSacks$(I)
         Locate 21, 38
 		Color 5
         TMR = TMR - 1: Print Using "####"; TMR
@@ -1100,7 +1100,7 @@ Sub UpdateCareerFile (saveFile$)
 
     For N = 1 To 15
         For J = 0 To 14
-            Write #1, careerKRS$(N, J, 0)
+            Write #1, carKRS$(N, J, 0)
             Locate 21, 38
 			Color 5
             TMR = TMR - 1: Print Using "####"; TMR
@@ -1131,7 +1131,7 @@ Sub UpdateCareerFile (saveFile$)
     For N = 1 To 15
 
         For J = 0 To 14
-            Write #1, careerPRS$(N, J, 0)
+            Write #1, carPRS$(N, J, 0)
             Locate 21, 38
 			Color 5
             TMR = TMR - 1: Print Using "####"; TMR
@@ -1218,14 +1218,14 @@ End Sub
 'stats associated with the team's RB's
 Sub PrintCareerStatsRB (exitFlag%, B9, careerFile$)
 
-    Shared careerA1$(), careerRBS$(), careerRC$()
+    Shared carRBacks$(), careerRBS$(), careerRC$()
     Shared careerRBS!(), careerRC!()
 
     Cls
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA1$(B9);
+	Color 12: Print carRBacks$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1233,7 +1233,7 @@ Sub PrintCareerStatsRB (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA1$(B9);
+	Color 12: Print carRBacks$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1252,7 +1252,7 @@ Sub PrintCareerStatsRB (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerRBS!(I, B9, 7): Next
 
-            LPrint Left$(careerA1$(B9), 13);
+            LPrint Left$(carRBacks$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(15); careerRBS!(V, B9, 8);
@@ -1342,20 +1342,20 @@ End Sub
 'stats associated with the team's WR's
 Sub PrintCareerStatsWR (exitFlag%, B9, careerFile$)
 
-    Shared careerA2$(), careerWRS$(), careerRC$()
+    Shared carWdRec$(), careerWRS$(), careerRC$()
     Shared careerWRS!(), careerRC!()
 
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA2$(B9);
+	Color 12: Print carWdRec$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA2$(B9);
+	Color 12: Print carWdRec$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1372,7 +1372,7 @@ Sub PrintCareerStatsWR (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerWRS!(I, B9, 4): Next
 
-            LPrint Left$(careerA2$(B9), 13);
+            LPrint Left$(carWdRec$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(16); careerWRS!(V, B9, 5);
@@ -1432,7 +1432,7 @@ End Sub
 'stats associated with the team's QB's
 Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
 
-    Shared careerA3$(), careerQBS$(), careerRC$()
+    Shared carQBacks$(), careerQBS$(), careerRC$()
     Shared careerQBS!(), careerRC!()
 
     Dim careerII(15, 30), careerPP(15, 30), careerYY(15, 30)
@@ -1442,7 +1442,7 @@ Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA3$(B9);
+	Color 12: Print carQBacks$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1450,7 +1450,7 @@ Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA3$(B9);
+	Color 12: Print carQBacks$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1467,7 +1467,7 @@ Sub PrintCareerStatsQB (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerQBS!(I, B9, 6): Next
 
-            LPrint Left$(careerA3$(B9), 13);
+            LPrint Left$(carQBacks$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(13); careerQBS!(V, B9, 7);
@@ -1677,14 +1677,14 @@ End Sub
 'stats associated with the team's KR's
 Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
-    Shared careerA4$(), careerKRS$(), careerRC$()
+    Shared carKickRet$(), carKRS$(), careerRC$()
     Shared careerKRS!(), careerRC!()
 
     Cls
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA4$(B9);
+	Color 12: Print carKickRet$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1692,7 +1692,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA4$(B9);
+	Color 12: Print carKickRet$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1708,7 +1708,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerKRS!(I, B9, 4): Next
 
-            LPrint Left$(careerA4$(B9), 13);
+            LPrint Left$(carKickRet$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(22); careerKRS!(V, B9, 5);
@@ -1720,7 +1720,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
                 LPrint Tab(62); "##"; careerKRS!(V, B9, 2);
                 LPrint Tab(68); "##"; careerKRS!(V, B9, 3);
-                LPrint careerKRS$(V, B9, 0)
+                LPrint carKRS$(V, B9, 0)
             Next V
 
             careerRC!(0) = 0
@@ -1733,7 +1733,7 @@ Sub PrintCareerStatsKR (exitFlag%, B9, careerFile$)
 
                 If careerKRS!(V, B9, 3) > careerRC!(0) Then
                     careerRC!(0) = careerKRS!(V, B9, 3)
-                    careerRC$(0) = careerKRS$(V, B9, 0)
+                    careerRC$(0) = carKRS$(V, B9, 0)
                 End If
 
             Next V
@@ -1771,14 +1771,14 @@ End Sub
 'stats associated with the team's PR's
 Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
 
-    Shared careerA5$(), careerPRS$(), careerRC$()
+    Shared carPRet$(), carPRS$(), careerRC$()
     Shared careerPRS!(), careerRC!()
 
     Cls
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA5$(B9);
+	Color 12: Print carPRet$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1786,7 +1786,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA5$(B9);
+	Color 12: Print carPRet$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1802,7 +1802,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerPRS!(I, B9, 4): Next
 
-            LPrint Left$(careerA5$(B9), 13);
+            LPrint Left$(carPRet$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(22); careerPRS!(V, B9, 5);
@@ -1811,7 +1811,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
                 If careerPRS!(V, B9, 0) = 0 Or careerPRS!(V, B9, 1) = 0 Then LPrint Tab(52); " 00";
                 If careerPRS!(V, B9, 0) > 0 Then LPrint Tab(52); "##.#"; careerPRS!(V, B9, 1) / careerPRS!(V, B9, 0);
                 LPrint Tab(62); "##"; careerPRS!(V, B9, 2);
-                LPrint Tab(68); "##"; careerPRS!(V, B9, 3);: LPrint careerPRS$(V, B9, 0)
+                LPrint Tab(68); "##"; careerPRS!(V, B9, 3);: LPrint carPRS$(V, B9, 0)
             Next V
 
             careerRC!(0) = 0
@@ -1822,7 +1822,7 @@ Sub PrintCareerStatsPR (exitFlag%, B9, careerFile$)
                 TT19 = TT19 + careerPRS!(V, B9, 1)
                 TT20 = TT20 + careerPRS!(V, B9, 2)
                 If careerPRS!(V, B9, 3) > careerRC!(0) Then
-                    careerRC!(0) = careerPRS!(V, B9, 3): careerRC$(0) = careerPRS$(V, B9, 0)
+                    careerRC!(0) = careerPRS!(V, B9, 3): careerRC$(0) = carPRS$(V, B9, 0)
                 End If
             Next V
 
@@ -1858,7 +1858,7 @@ End Sub
 'stats associated with the team's Punter
 Sub PrintCareerStatsP (exitFlag%, B9, careerFile$)
 
-    Shared careerA6$(), careerRC$()
+    Shared carPunters$(), careerRC$()
     Shared careerPUS!(), careerRC!()
 
     Cls
@@ -1866,14 +1866,14 @@ Sub PrintCareerStatsP (exitFlag%, B9, careerFile$)
     Locate 5, 20: Color 15
 
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA6$(B9);
+	Color 12: Print carPunters$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA6$(B9);
+	Color 12: Print carPunters$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1889,7 +1889,7 @@ Sub PrintCareerStatsP (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerPUS!(I, B9, 2): Next
 
-            LPrint Left$(careerA6$(B9), 13);
+            LPrint Left$(carPunters$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(18); careerPUS!(V, B9, 3);
@@ -1931,14 +1931,14 @@ End Sub
 'stats associated with the team's Kickers
 Sub PrintCareerStatsK (exitFlag%, B9, careerFile$)
 
-    Shared careerA7$(), careerRC$()
+    Shared carKicker$(), careerRC$()
     Shared careerFGS!(), careerRC!(), careerTT!()
 
     Cls
 	
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerA7$(B9);
+	Color 12: Print carKicker$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1946,7 +1946,7 @@ Sub PrintCareerStatsK (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerA7$(B9);
+	Color 12: Print carKicker$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -1962,7 +1962,7 @@ Sub PrintCareerStatsK (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerFGS!(I, B9, 15): Next
 
-            LPrint Left$(careerA7$(B9), 13);
+            LPrint Left$(carKicker$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(13); careerFGS!(V, B9, 16);
@@ -2062,13 +2062,13 @@ End Sub
 'stats associated with the team's INT's
 Sub PrintCareerStatsINT (exitFlag%, B9, careerFile$)
 
-    Shared careerDI$()
+    Shared carDefInts$()
     Shared careerGIS!(), careerTT!()
 
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careercareerDI$(B9);
+	Color 12: Print careercarDefInts$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2076,7 +2076,7 @@ Sub PrintCareerStatsINT (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerDI$(B9);
+	Color 12: Print carDefInts$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -2092,7 +2092,7 @@ Sub PrintCareerStatsINT (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerGIS!(I, B9, 1): Next
 
-            LPrint Left$(careerDI$(B9), 13);
+            LPrint Left$(carDefInts$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(20); careerGIS!(V, B9, 2);
@@ -2127,13 +2127,13 @@ End Sub
 'stats associated with the team's sacks
 Sub PrintCareerStatsSACK (exitFlag%, B9, careerFile$)
 
-    Shared careerDS$()
+    Shared carDefSacks$()
     Shared careerGSS!(), careerTT!()
 
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-	Color 12: Print careerDS$(B9);
+	Color 12: Print carDefSacks$(B9);
 	Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2141,7 +2141,7 @@ Sub PrintCareerStatsSACK (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-	Color 12: Print careerDS$(B9);
+	Color 12: Print carDefSacks$(B9);
     Color 14: Print " HIT 'E'"
 
     Do
@@ -2157,7 +2157,7 @@ Sub PrintCareerStatsSACK (exitFlag%, B9, careerFile$)
 
             For I = 1 To 15: VV = VV + careerGSS!(I, B9, 1): Next
 
-            LPrint Left$(careerDS$(B9), 13);
+            LPrint Left$(carDefSacks$(B9), 13);
 
             For V = 1 To VV
                 LPrint Tab(20); careerGSS!(V, B9, 2);

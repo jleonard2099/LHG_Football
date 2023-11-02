@@ -65,12 +65,12 @@ Sub Hd2HdPro_League (X2)
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
-    Shared statsO%(), statsT%(), statsZ1%()
+    Shared statsO%(), compT%(), statsZ1%()
 
     Dim Z12%(30)
 
-    Shared DV$(), DV2$(), statsH$(), compO$()
-    Shared Z1$(), Z12$(), Z2$(), Z22$()
+    Shared DV$(), DV2$(), statsH$(), statsO$()
+    Shared statsZ1$(), Z12$(), statsZ2$(), Z22$()
 
     newTeam = 1
 
@@ -103,9 +103,9 @@ Sub Hd2HdPro_League (X2)
 
             For I = 1 To NUM_STATRECORDS: Input #1, statsO%(I): Next I
 
-            For I = 1 To NUM_STATRECORDS: Input #1, compO$(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, statsO$(I): Next I
 
-            For I = 1 To NUM_STATRECORDS: Input #1, statsT%(I): Next I
+            For I = 1 To NUM_STATRECORDS: Input #1, compT%(I): Next I
 
             For I = 1 To NUM_STATRECORDS: Input #1, statsH$(I): Next I
 
@@ -161,9 +161,9 @@ Sub Hd2HdPro_League (X2)
             Input #2, div2$
 
             For X = 1 To 15:
-                Input #2, Z1$(X)
+                Input #2, statsZ1$(X)
                 Input #2, statsZ1%(X)
-                Input #2, Z2$(X)
+                Input #2, statsZ2$(X)
             Next
 
             NT = 15
@@ -177,9 +177,9 @@ Sub Hd2HdPro_League (X2)
             Input #2, div3$
 
             For X = 1 To 30:
-                Input #2, Z1$(X)
+                Input #2, statsZ1$(X)
                 Input #2, statsZ1%(X)
-                Input #2, Z2$(X)
+                Input #2, statsZ2$(X)
             Next
 
             NT = 30
@@ -233,28 +233,28 @@ Sub Hd2HdPro_League (X2)
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
         'Initialization for 1st league
-        Erase AL!, AW!, 
+        Erase AL!, AW!
         Erase G1!, G2!, G3!, G4!
         Erase HL!, HT!, HW!, RT!
-        Erase TAL!, TAW!, THL!, TLW!, TRT!
+        Erase TAL!, TAW!, THL!, TRT!
         Erase TG1!, TG2!, TG3!, TG4!
 
         'Calculations for 1st league
         For K = 1 To 30
 
-            If Z1$(K) <> "XXX" Then
+            If statsZ1$(K) <> "XXX" Then
 
                 For I = 1 To YY%
-                    If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AW!(K) = AW!(K) + 1
-                    If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HW!(K) = HW!(K) + 1
-                    If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then AL!(K) = AL!(K) + 1
-                    If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HL!(K) = HL!(K) + 1
-                    If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z1$(K) Then RT!(K) = RT!(K) + 1
-                    If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z1$(K) Then HT!(K) = HT!(K) + 1
-                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "H" Then G1!(K) = G1!(K) + statsO%(I)
-                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "H" Then G2!(K) = G2!(K) + statsT%(I)
-                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G3!(K) = G3!(K) + statsO%(I)
-                    If compO$(I) = Z1$(K) And Left$(statsH$(I), 1) = "A" Then G4!(K) = G4!(K) + statsT%(I)
+                    If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then AW!(K) = AW!(K) + 1
+                    If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
+                    If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then AL!(K) = AL!(K) + 1
+                    If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
+                    If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
+                    If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
+                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "H" Then G1!(K) = G1!(K) + statsO%(I)
+                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "H" Then G2!(K) = G2!(K) + compT%(I)
+                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "A" Then G3!(K) = G3!(K) + statsO%(I)
+                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "A" Then G4!(K) = G4!(K) + compT%(I)
                 Next I
 
             End If
@@ -278,16 +278,16 @@ Sub Hd2HdPro_League (X2)
 
                     For I = 1 To YY%
 
-                        If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
-                        If statsO%(I) > statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
-                        If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
-                        If statsO%(I) < statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
-                        If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "A" And compO$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
-                        If statsO%(I) = statsT%(I) And Left$(statsH$(I), 1) = "H" And compO$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
-                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G12!(K) = G12!(K) + statsO%(I)
-                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G22!(K) = G22!(K) + statsT%(I)
-                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G32!(K) = G32!(K) + statsO%(I)
-                        If compO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G42!(K) = G42!(K) + statsT%(I)
+                        If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
+                        If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
+                        If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
+                        If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
+                        If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
+                        If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
+                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G12!(K) = G12!(K) + statsO%(I)
+                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G22!(K) = G22!(K) + compT%(I)
+                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G32!(K) = G32!(K) + statsO%(I)
+                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G42!(K) = G42!(K) + compT%(I)
 
                     Next I
 
@@ -395,7 +395,7 @@ Sub Hd2HdPro_Screen (A$, leag1$, leag2$, DV$(), DV2$())
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
     Shared DV$(), DV2$()
-    Shared Z1$(), Z12$()
+    Shared statsZ1$(), Z12$()
 
     DV$(1) = div1$
     DV$(2) = div2$
@@ -430,10 +430,10 @@ Sub Hd2HdPro_Screen (A$, leag1$, leag2$, DV$(), DV2$())
 
         For K = DD To EE
 
-            If Z1$(K) <> "XXX" And Z1$(K) <> A$ And Z1$(K) <> "" Then
+            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> A$ And statsZ1$(K) <> "" Then
 
                 Color 15
-                Locate , 1: Print Left$(Z1$(K), 15);
+                Locate , 1: Print Left$(statsZ1$(K), 15);
 
                 Color 7
                 Locate , 17: Print Using "##"; HW!(K);
@@ -869,7 +869,7 @@ Sub Hd2HdPro_Report (A$, leag1$, leag2$, DV$(), DV2$())
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
-    Shared Z1$(), Z12$()
+    Shared statsZ1$(), Z12$()
 
     Do
 
@@ -939,8 +939,8 @@ Sub Hd2HdPro_Report (A$, leag1$, leag2$, DV$(), DV2$())
 
             For K = DD To EE
 
-                If Z1$(K) <> "XXX" And Z1$(K) <> A$ Then
-                    Print #1, Left$(Z1$(K), 15);
+                If statsZ1$(K) <> "XXX" And statsZ1$(K) <> A$ Then
+                    Print #1, Left$(statsZ1$(K), 15);
                     Print #1, Tab(17); Using "##"; HW!(K);
                     Print #1, Tab(20); Using "##"; HL!(K);
                     Print #1, Tab(23); Using "##"; HT!(K);

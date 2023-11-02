@@ -8,7 +8,7 @@ Sub CREATNAT ()
 
     _Title "3-in-1 Football - Manage Organizations"
 
-    Shared Z1$()
+    Shared statsZ1$()
 
     ReDim menuChoices$(1 To 3)
 
@@ -43,7 +43,7 @@ Sub CREATNAT ()
         If ExitCode% <> 27 Then
 
             For X = 1 To 40
-                Z1$(X) = "XXX"
+                statsZ1$(X) = "XXX"
             Next
 
             Select Case Selection%
@@ -113,7 +113,7 @@ End Sub
 'conferences from the org definition.
 Sub ReviewEditNatOrg (organization$)
 
-    Shared Z1$()
+    Shared statsZ1$()
 
     If _FileExists(diskPaths$(2) + organization$ + ".CON") Then
 
@@ -122,7 +122,7 @@ Sub ReviewEditNatOrg (organization$)
         Input #1, organization$
 
         For X = 1 To 40
-            Input #1, Z1$(X)
+            Input #1, statsZ1$(X)
         Next
 
         Close #1
@@ -143,19 +143,19 @@ Sub ReviewEditNatOrg (organization$)
         For I = 1 To 10
 
             Color 2: Print Using "## "; I;
-            Color 15: Print Z1$(I);
+            Color 15: Print statsZ1$(I);
 
             Locate , 21
             Color 2: Print Using "## "; I + 10;
-            Color 15: Print Z1$(I + 10);
+            Color 15: Print statsZ1$(I + 10);
 
             Locate , 41
             Color 2: Print Using "## "; I + 20;
-            Color 15: Print Z1$(I + 20);
+            Color 15: Print statsZ1$(I + 20);
 
             Locate , 61
             Color 2: Print Using "## "; I + 30;
-            Color 15: Print Z1$(I + 30)
+            Color 15: Print statsZ1$(I + 30)
 
         Next I
 
@@ -184,10 +184,10 @@ Sub ReviewEditNatOrg (organization$)
 
             If choice = 1 Then
                 'Add conference
-                Z1$(B) = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+                statsZ1$(B) = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
             Else
                 'Remove conference
-                Z1$(B) = "XXX"
+                statsZ1$(B) = "XXX"
             End If
 
         End If 'Done checking if ready to save
@@ -206,14 +206,14 @@ End Sub
 'each of the corresponding files (.CON)
 Sub SaveNatOrg (organization$)
 
-    Shared Z1$()
+    Shared statsZ1$()
 
     Open diskPaths$(2) + organization$ + ".CON" For Output As #1
 
     Print #1, organization$
 
     For X = 1 To 40
-        Print #1, Z1$(X)
+        Print #1, statsZ1$(X)
     Next
 
     Close #1

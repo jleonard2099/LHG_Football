@@ -34,7 +34,14 @@ Sub InitVar ()
 
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
+
+    Shared gamePK$(), HO$(), statsH$(), statStadium$()
     Shared teamIndicator$()
+    Shared teamScore(), tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+
+    Shared statsO%(), statsPR%()
+
+    Shared statsAttendance&()
 
     '-- Does this really belong here???
     If ruleOptType <> 0 Then
@@ -71,22 +78,22 @@ Sub InitVar ()
     G$(2) = "REVERSE"
     G$(3) = "HB PASS"
 
-    PS$(0) = "RUN"
-    PS$(1) = "PASS"
-    PS$(3) = "FIELD GOAL ATTEMPT"
-    PS$(2) = "PUNT"
-    PS$(4) = "SCOUTING REPORT"
-    PS$(5) = "CHANGE/SELECT QB"
-    PS$(6) = "SHOW GAME STATS"
-    PS$(7) = "QB KNEEL DOWN"
-    PS$(8) = "TEN MINUTE TICKER "
-    PS$(9) = "CHANGE/SELECT KICKER"
+    playSelect$(0) = "RUN"
+    playSelect$(1) = "PASS"
+    playSelect$(3) = "FIELD GOAL ATTEMPT"
+    playSelect$(2) = "PUNT"
+    playSelect$(4) = "SCOUTING REPORT"
+    playSelect$(5) = "CHANGE/SELECT QB"
+    playSelect$(6) = "SHOW GAME STATS"
+    playSelect$(7) = "QB KNEEL DOWN"
+    playSelect$(8) = "TEN MINUTE TICKER "
+    playSelect$(9) = "CHANGE/SELECT KICKER"
 
-    DN$(0) = "FIRST"
-    DN$(1) = DN$(0)
-    DN$(2) = "SECOND"
-    DN$(3) = "THIRD"
-    DN$(4) = "FOURTH"
+    downDesc$(0) = "FIRST"
+    downDesc$(1) = downDesc$(0)
+    downDesc$(2) = "SECOND"
+    downDesc$(3) = "THIRD"
+    downDesc$(4) = "FOURTH"
 
     A = 0
     A2 = 0
@@ -247,15 +254,16 @@ Sub InitVar ()
     YN$ = ""
 
     Erase B$, defInts$, defSacks$, diskPaths$
-    Erase kicker$, kickRet$
     Erase gameMascots$, gameTeams$
-    Erase H$, HO$
-    Erase gameIR$, gameKR$, gameLC$, gameLR$, gamePR$, gameQB$, gameRB$, gameWR$, gameStadium$
-    Erase LF$, LI$, LK$, LP$, NN$, PK$, Q$
-    Erase qbacks$, pret$, punter$, rbacks$
-    Erase SX$, teamNames$, wdRec$, Y$, YN$
+    Erase HO$, kicker$, kickRet$
+    Erase gameIR$, gameKR$, gameLC$, gameLR$, gamePR$, gameQB$, gameRB$, gameWR$
+    Erase NN$, gamePK$, Q$
+    Erase qbacks$, pret$, punter$, rbacks$, SX$
+    Erase statsH$, statStadium$
+    Erase tradeLF$, tradeLI$, tradeLK$, tradeLP$
+    Erase teamNames$, wdRec$, Y$, YN$
 
-    Erase CRD&
+    Erase statsAttendance&
 
     Erase AF, AM
     Erase C, DDI, DDS, FA, FL, FM
@@ -271,10 +279,10 @@ Sub InitVar ()
     Erase teamIdx_GAME, timeouts, timePoss, tmRat_GAME
     Erase thirdDownAtt, thirdDownFail, teamScore
     Erase W6, WR, wrNumRec, wrYdsPerC, XD
-    Erase ydsPerComp, Z, Z1, Z2
+    Erase ydsPerComp, gameZ, gameZ1, gameZ2
     
     Erase defInts, defSacks
-    Erase HB%, O%, PC%, intPR%
+    Erase HB%, statsO%, PC%, statsPR%
     Erase Q6%, Q7%, RQ%, RV%
     Erase ST%, SX%, WX%, YR%
 
@@ -5588,8 +5596,8 @@ Sub QBLINE ()
             Case 4: U$ = "THE " + gameMascots$(P1) + " BREAK THE HUDDLE AND LINE UP"
             Case 5: U$ = qbacks$(P1, QB) + " BARKS OUT THE SIGNALS"
             Case 6: U$ = qbacks$(P1, QB) + " LOOKS OVER THE DEFENSE"
-            Case 7: U$ = "HERE IS THE " + DN$(D1) + " DOWN AND" + Str$(Int(Y1)) + " YARD PLAY FOR " + gameTeams$(P1)
-            Case 8: U$ = "HERE IS THE " + DN$(D1) + " DOWN AND" + Str$(Int(Y1)) + " YARD PLAY FOR THE " + gameMascots$(P1)
+            Case 7: U$ = "HERE IS THE " + downDesc$(D1) + " DOWN AND" + Str$(Int(Y1)) + " YARD PLAY FOR " + gameTeams$(P1)
+            Case 8: U$ = "HERE IS THE " + downDesc$(D1) + " DOWN AND" + Str$(Int(Y1)) + " YARD PLAY FOR THE " + gameMascots$(P1)
         End Select
 
         Call PBP
@@ -7904,6 +7912,16 @@ Sub COMPILESTATFILES (teamIdx)
 
     Shared actualAttendance&
 
+    Shared statsO%(), statsPR%()
+    Shared teamScore()
+
+    Shared statsAttendance&()
+
+    Shared gamePK$(), HO$()
+    Shared statStadium$()
+    Shared statsH$()
+    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+
     'Determine stat file name
     statFile$ = nameStatFile$(B$(teamIdx))
 
@@ -7932,16 +7950,16 @@ Sub COMPILESTATFILES (teamIdx)
 
         For J = 0 To 13:
             For K = 0 To 17:
-                Input #1, Z2(J, K)
+                Input #1, gameZ2(J, K)
             Next
         Next
 
         For L = 0 To 38:
-            Input #1, Z(L)
+            Input #1, gameZ(L)
         Next
 
         For L = 0 To 38:
-            Input #1, Z1(L)
+            Input #1, gameZ1(L)
         Next
 
         For J = 0 To 9
@@ -7972,25 +7990,25 @@ Sub COMPILESTATFILES (teamIdx)
 
         For I = 0 To 3:
             Input #1, LP(teamIdx, I)
-            Input #1, LP$(teamIdx, I, 0)
-            Input #1, LP$(teamIdx, I, 1)
+            Input #1, tradeLP$(teamIdx, I, 0)
+            Input #1, tradeLP$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
             Input #1, LK(teamIdx, I)
-            Input #1, LK$(teamIdx, I, 0)
-            Input #1, LK$(teamIdx, I, 1)
+            Input #1, tradeLK$(teamIdx, I, 0)
+            Input #1, tradeLK$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
             Input #1, PK(teamIdx, I)
-            Input #1, PK$(teamIdx, I, 0)
-            Input #1, PK$(teamIdx, I, 1)
+            Input #1, gamePK$(teamIdx, I, 0)
+            Input #1, gamePK$(teamIdx, I, 1)
         Next
 
         For I = 0 To 1:
             Input #1, LF(teamIdx, I)
-            Input #1, LF$(teamIdx, I)
+            Input #1, tradeLF$(teamIdx, I)
             For I1 = 0 To 4:
                 Input #1, AM(teamIdx, I, I1)
                 Input #1, AF(teamIdx, I, I1)
@@ -7999,8 +8017,8 @@ Sub COMPILESTATFILES (teamIdx)
 
         For I = 0 To 9:
             Input #1, LI(teamIdx, I)
-            Input #1, LI$(teamIdx, I, 0)
-            Input #1, LI$(teamIdx, I, 1)
+            Input #1, tradeLI$(teamIdx, I, 0)
+            Input #1, tradeLI$(teamIdx, I, 1)
         Next
 
         Close #1
@@ -8016,8 +8034,8 @@ Sub COMPILESTATFILES (teamIdx)
 
         If IR(teamIdx, I) > LI(teamIdx, I) Then
             LI(teamIdx, I) = IR(teamIdx, I)
-            LI$(teamIdx, I, 0) = gameIR$(teamIdx, I)
-            LI$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+            tradeLI$(teamIdx, I, 0) = gameIR$(teamIdx, I)
+            tradeLI$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
@@ -8032,32 +8050,32 @@ Sub COMPILESTATFILES (teamIdx)
     For I = 0 To 3
         If QB(teamIdx, I) > LP(teamIdx, I) Then
             LP(teamIdx, I) = QB(teamIdx, I)
-            LP$(teamIdx, I, 0) = gameQB$(teamIdx, I)
-            LP$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+            tradeLP$(teamIdx, I, 0) = gameQB$(teamIdx, I)
+            tradeLP$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 2
         If KR(teamIdx, I) > LK(teamIdx, I) Then
             LK(teamIdx, I) = KR(teamIdx, I)
-            LK$(teamIdx, I, 0) = gameKR$(teamIdx, I)
-            LK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+            tradeLK$(teamIdx, I, 0) = gameKR$(teamIdx, I)
+            tradeLK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
         If PR(teamIdx, I) > PK(teamIdx, I) Then
             PK(teamIdx, I) = PR(teamIdx, I)
-            PK$(teamIdx, I, 0) = gamePR$(teamIdx, I)
-            PK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+            gamePK$(teamIdx, I, 0) = gamePR$(teamIdx, I)
+            gamePK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
-    If K(teamIdx, 26) > Z(28) Then Z(28) = K(teamIdx, 26)
+    If K(teamIdx, 26) > gameZ(28) Then gameZ(28) = K(teamIdx, 26)
 
     For I = 0 To 1
 
         If FL(teamIdx, I) > LF(teamIdx, I) Then
             LF(teamIdx, I) = FL(teamIdx, I)
-            LF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
+            tradeLF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
         For I1 = 0 To 4
@@ -8069,87 +8087,87 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Z2(J, K) = Z2(J, K) + Int(K2(teamIdx, J, K) + .5)
+            gameZ2(J, K) = gameZ2(J, K) + Int(K2(teamIdx, J, K) + .5)
         Next
     Next
 
-    Z(32) = Z(32) + score(teamIdx, 1)
-    Z(33) = Z(33) + score(teamIdx, 2)
-    Z(34) = Z(34) + score(teamIdx, 3)
-    Z(35) = Z(35) + score(teamIdx, 4)
+    gameZ(32) = gameZ(32) + score(teamIdx, 1)
+    gameZ(33) = gameZ(33) + score(teamIdx, 2)
+    gameZ(34) = gameZ(34) + score(teamIdx, 3)
+    gameZ(35) = gameZ(35) + score(teamIdx, 4)
 
     For K = 5 To PN
-        Z(36) = Z(36) + score(teamIdx, K)
+        gameZ(36) = gameZ(36) + score(teamIdx, K)
     Next
 
-    Z1(32) = Z1(32) + score(1 - teamIdx, 1)
-    Z1(33) = Z1(33) + score(1 - teamIdx, 2)
-    Z1(34) = Z1(34) + score(1 - teamIdx, 3)
-    Z1(35) = Z1(35) + score(1 - teamIdx, 4)
+    gameZ1(32) = gameZ1(32) + score(1 - teamIdx, 1)
+    gameZ1(33) = gameZ1(33) + score(1 - teamIdx, 2)
+    gameZ1(34) = gameZ1(34) + score(1 - teamIdx, 3)
+    gameZ1(35) = gameZ1(35) + score(1 - teamIdx, 4)
 
     For K = 5 To PN
-        Z1(36) = Z1(36) + score(1 - teamIdx, K)
+        gameZ1(36) = gameZ1(36) + score(1 - teamIdx, K)
     Next
 
     For J = 0 To 3
-        Z(17) = Z(17) + K2(teamIdx, J, 13)
-        Z1(17) = Z1(17) + K2(1 - teamIdx, J, 13)
+        gameZ(17) = gameZ(17) + K2(teamIdx, J, 13)
+        gameZ1(17) = gameZ1(17) + K2(1 - teamIdx, J, 13)
     Next
 
     For J = 0 To 13
-        Z(15) = Z(15) + K2(teamIdx, J, 2)
-        Z1(15) = Z1(15) + K2(1 - teamIdx, J, 2)
+        gameZ(15) = gameZ(15) + K2(teamIdx, J, 2)
+        gameZ1(15) = gameZ1(15) + K2(1 - teamIdx, J, 2)
     Next
 
     For J = 0 To 2
-        Z(18) = Z(18) + K2(teamIdx, J, 16)
-        Z1(18) = Z1(18) + K2(1 - teamIdx, J, 16)
-        Z(22) = Z(22) + K2(teamIdx, J, 14)
-        Z1(22) = Z1(22) + K2(1 - teamIdx, J, 14)
-        Z(23) = Z(23) + K2(teamIdx, J, 15)
-        Z1(23) = Z1(23) + K2(1 - teamIdx, J, 15)
-        Z(19) = Z(19) + K2(teamIdx, J + 3, 16)
-        Z1(18) = Z1(19) + K2(1 - teamIdx, J + 3, 16)
-        Z(24) = Z(24) + K2(teamIdx, J + 3, 14)
-        Z1(24) = Z1(24) + K2(1 - teamIdx, J + 3, 14)
-        Z(25) = Z(25) + K2(teamIdx, J + 3, 15)
-        Z1(25) = Z1(25) + K2(1 - teamIdx, J + 3, 15)
+        gameZ(18) = gameZ(18) + K2(teamIdx, J, 16)
+        gameZ1(18) = gameZ1(18) + K2(1 - teamIdx, J, 16)
+        gameZ(22) = gameZ(22) + K2(teamIdx, J, 14)
+        gameZ1(22) = gameZ1(22) + K2(1 - teamIdx, J, 14)
+        gameZ(23) = gameZ(23) + K2(teamIdx, J, 15)
+        gameZ1(23) = gameZ1(23) + K2(1 - teamIdx, J, 15)
+        gameZ(19) = gameZ(19) + K2(teamIdx, J + 3, 16)
+        gameZ1(18) = gameZ1(19) + K2(1 - teamIdx, J + 3, 16)
+        gameZ(24) = gameZ(24) + K2(teamIdx, J + 3, 14)
+        gameZ1(24) = gameZ1(24) + K2(1 - teamIdx, J + 3, 14)
+        gameZ(25) = gameZ(25) + K2(teamIdx, J + 3, 15)
+        gameZ1(25) = gameZ1(25) + K2(1 - teamIdx, J + 3, 15)
     Next
 
     For J = 0 To 9
-        Z(20) = Z(20) + SI(teamIdx, J, 2)
-        Z1(20) = Z1(20) + SI(1 - teamIdx, J, 2)
-        Z(26) = Z(26) + SI(teamIdx, J, 0)
-        Z1(26) = Z1(26) + SI(1 - teamIdx, J, 0)
-        Z(27) = Z(27) + SI(teamIdx, J, 1)
-        Z1(27) = Z1(27) + SI(1 - teamIdx, J, 1)
+        gameZ(20) = gameZ(20) + SI(teamIdx, J, 2)
+        gameZ1(20) = gameZ1(20) + SI(1 - teamIdx, J, 2)
+        gameZ(26) = gameZ(26) + SI(teamIdx, J, 0)
+        gameZ1(26) = gameZ1(26) + SI(1 - teamIdx, J, 0)
+        gameZ(27) = gameZ(27) + SI(teamIdx, J, 1)
+        gameZ1(27) = gameZ1(27) + SI(1 - teamIdx, J, 1)
     Next
 
-    Z(21) = Z(21) + K(teamIdx, 19)
-    Z1(21) = Z1(21) + K(1 - teamIdx, 19)
-    Z(37) = Z(37) + K(teamIdx, 35)
-    Z1(37) = Z1(37) + K(1 - teamIdx, 35)
-    Z(38) = Z(38) + K(teamIdx, 36)
-    Z1(38) = Z1(38) + K(1 - teamIdx, 36)
-    Z(30) = Z(30) + K(teamIdx, 28)
-    Z1(30) = Z1(30) + K(1 - teamIdx, 28)
-    Z(29) = Z(29) + K(teamIdx, 27)
-    Z1(29) = Z1(29) + K(1 - teamIdx, 27)
-    Z(31) = Z(31) + K(teamIdx, 29)
-    Z1(31) = Z1(31) + K(1 - teamIdx, 29)
+    gameZ(21) = gameZ(21) + K(teamIdx, 19)
+    gameZ1(21) = gameZ1(21) + K(1 - teamIdx, 19)
+    gameZ(37) = gameZ(37) + K(teamIdx, 35)
+    gameZ1(37) = gameZ1(37) + K(1 - teamIdx, 35)
+    gameZ(38) = gameZ(38) + K(teamIdx, 36)
+    gameZ1(38) = gameZ1(38) + K(1 - teamIdx, 36)
+    gameZ(30) = gameZ(30) + K(teamIdx, 28)
+    gameZ1(30) = gameZ1(30) + K(1 - teamIdx, 28)
+    gameZ(29) = gameZ(29) + K(teamIdx, 27)
+    gameZ1(29) = gameZ1(29) + K(1 - teamIdx, 27)
+    gameZ(31) = gameZ(31) + K(teamIdx, 29)
+    gameZ1(31) = gameZ1(31) + K(1 - teamIdx, 29)
 
     For L = 0 To 12:
-        Z(L) = Z(L) + K(teamIdx, L)
+        gameZ(L) = gameZ(L) + K(teamIdx, L)
     Next
 
     For L = 0 To 12:
-        Z1(L) = Z1(L) + K(1 - teamIdx, L)
+        gameZ1(L) = gameZ1(L) + K(1 - teamIdx, L)
     Next
 
-    Z(13) = Z(13) + W6(teamIdx, 0)
-    Z(14) = Z(14) + W6(teamIdx, 1)
-    Z1(13) = Z1(13) + W6(1 - teamIdx, 0)
-    Z1(14) = Z1(14) + W6(1 - teamIdx, 1)
+    gameZ(13) = gameZ(13) + W6(teamIdx, 0)
+    gameZ(14) = gameZ(14) + W6(teamIdx, 1)
+    gameZ1(13) = gameZ1(13) + W6(1 - teamIdx, 0)
+    gameZ1(14) = gameZ1(14) + W6(1 - teamIdx, 1)
 
     For J = 0 To 9
         For J1 = 0 To 2
@@ -8191,16 +8209,16 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Print #2, Z2(J, K)
+            Print #2, gameZ2(J, K)
         Next
     Next
 
     For L = 0 To 38:
-        Print #2, Z(L)
+        Print #2, gameZ(L)
     Next
 
     For L = 0 To 38:
-        Print #2, Z1(L)
+        Print #2, gameZ1(L)
     Next
 
     For J = 0 To 9
@@ -8231,25 +8249,25 @@ Sub COMPILESTATFILES (teamIdx)
 
     For I = 0 To 3:
         Print #2, LP(teamIdx, I)
-        Print #2, LP$(teamIdx, I, 0)
-        Print #2, LP$(teamIdx, I, 1)
+        Print #2, tradeLP$(teamIdx, I, 0)
+        Print #2, tradeLP$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
         Print #2, LK(teamIdx, I)
-        Print #2, LK$(teamIdx, I, 0)
-        Print #2, LK$(teamIdx, I, 1)
+        Print #2, tradeLK$(teamIdx, I, 0)
+        Print #2, tradeLK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
         Print #2, PK(teamIdx, I)
-        Print #2, PK$(teamIdx, I, 0)
-        Print #2, PK$(teamIdx, I, 1)
+        Print #2, gamePK$(teamIdx, I, 0)
+        Print #2, gamePK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
         Print #2, LF(teamIdx, I)
-        Print #2, LF$(teamIdx, I)
+        Print #2, tradeLF$(teamIdx, I)
         For I1 = 0 To 4:
             Print #2, AM(teamIdx, I, I1)
             Print #2, AF(teamIdx, I, I1)
@@ -8258,8 +8276,8 @@ Sub COMPILESTATFILES (teamIdx)
 
     For I = 0 To 9:
         Print #2, LI(teamIdx, I)
-        Print #2, LI$(teamIdx, I, 0)
-        Print #2, LI$(teamIdx, I, 1)
+        Print #2, tradeLI$(teamIdx, I, 0)
+        Print #2, tradeLI$(teamIdx, I, 1)
     Next
 
     Close #2
@@ -8277,62 +8295,62 @@ Sub COMPILESTATFILES (teamIdx)
 
         Input #3, numberGames
 
-        For I = 1 To NUM_STATRECORDS: Input #3, O%(I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statsO%(I): Next
         For I = 1 To NUM_STATRECORDS: Input #3, HO$(I): Next
         For I = 1 To NUM_STATRECORDS: Input #3, teamScore(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, H$(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, intPR%(0, I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, intPR%(1, I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, CRD&(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, gameStadium$(I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statsH$(I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statsPR%(0, I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statsPR%(1, I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statsAttendance&(I): Next
+        For I = 1 To NUM_STATRECORDS: Input #3, statStadium$(I): Next
 
         Close #3
 
     End If
 
     If numberGames < NUM_STATRECORDS Then numberGames = numberGames + 1
-    If gameLoc = teamIdx Then H$(numberGames) = "H"
-    If gameLoc <> teamIdx Then H$(numberGames) = "A"
-    If gameLoc = 2 Then H$(numberGames) = "X"
-    If gameLoc = teamIdx And PN > 4 Then H$(numberGames) = "H-" + Str$(PN - 4) + " OT"
-    If gameLoc <> teamIdx And PN > 4 Then H$(numberGames) = "A-" + Str$(PN - 4) + " OT"
-    If gameLoc = 2 And PN > 4 Then H$(numberGames) = "X-" + Str$(PN - 4) + " OT"
+    If gameLoc = teamIdx Then statsH$(numberGames) = "H"
+    If gameLoc <> teamIdx Then statsH$(numberGames) = "A"
+    If gameLoc = 2 Then statsH$(numberGames) = "X"
+    If gameLoc = teamIdx And PN > 4 Then statsH$(numberGames) = "H-" + Str$(PN - 4) + " OT"
+    If gameLoc <> teamIdx And PN > 4 Then statsH$(numberGames) = "A-" + Str$(PN - 4) + " OT"
+    If gameLoc = 2 And PN > 4 Then statsH$(numberGames) = "X-" + Str$(PN - 4) + " OT"
 
-    O%(numberGames) = score(teamIdx, 0)
+    statsO%(numberGames) = score(teamIdx, 0)
     HO$(numberGames) = gameTeams$(1 - teamIdx)
     teamScore(numberGames) = score(1 - teamIdx, 0)
-    CRD&(numberGames) = actualAttendance&
-    gameStadium$(numberGames) = gameStadium$
-    intPR%(0, numberGames) = tmRat_GAME(teamIdx, 4)
-    intPR%(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
+    statsAttendance&(numberGames) = actualAttendance&
+    statStadium$(numberGames) = gameStadium$
+    statsPR%(0, numberGames) = tmRat_GAME(teamIdx, 4)
+    statsPR%(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
 
     'Write stats to new file
     Open diskPaths$(1) + statFile$ + "S" For Output As #4
 
     Print #4, numberGames%
 
-    For I = 1 To NUM_STATRECORDS: Print #4, O%(I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statsO%(I): Next
 
     For I = 1 To NUM_STATRECORDS: Print #4, HO$(I): Next
 
     For I = 1 To NUM_STATRECORDS: Print #4, teamScore(I): Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, H$(I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statsH$(I): Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, intPR%(0, I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statsPR%(0, I): Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, intPR%(1, I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statsPR%(1, I): Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, CRD&(I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statsAttendance&(I): Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, gameStadium$(I): Next
+    For I = 1 To NUM_STATRECORDS: Print #4, statStadium$(I): Next
 
     Close #4
 
-    Erase O%, intPR%
+    Erase statsO%, statsPR%
     Erase teamScore
-    Erase H$, HO$
-    Erase Z!, Z1!, Z2!
+    Erase statsH$, HO$
+    Erase gameZ, gameZ1, gameZ2
 
 End Sub
 

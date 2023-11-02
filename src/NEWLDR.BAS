@@ -90,12 +90,12 @@ Sub ReadConferenceStats (statFile$, statType)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared TMM$(), TPP$(), Z1$()
+    Shared TMM$(), TPP$(), statsZ1$()
 
-    Erase Z1$
+    Erase statsZ1$
 
     For X = 1 To 30
-        Z1$(X) = "XXX"
+        statsZ1$(X) = "XXX"
     Next
 
     JA = 0
@@ -132,7 +132,7 @@ Sub ReadConferenceStats (statFile$, statType)
     End If
 
     For X = 1 To 30:
-        Input #1, Z1$(X)
+        Input #1, statsZ1$(X)
     Next
 
     Close #1
@@ -158,16 +158,16 @@ Sub ViewExpandedStats (statType)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared TMM$(), TPP$(), Z1$()
+    Shared TMM$(), TPP$(), statsZ1$()
 
     confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
     If FileExit% <> 27 Then
 
-        Erase Z1$
+        Erase statsZ1$
 
         For X = 1 To 30
-            Z1$(X) = "XXX"
+            statsZ1$(X) = "XXX"
         Next
 
         JA = 0
@@ -204,7 +204,7 @@ Sub ViewExpandedStats (statType)
             Input #1, div2$
         End If
 
-        For X = 1 To 30: Input #1, Z1$(X): Next
+        For X = 1 To 30: Input #1, statsZ1$(X): Next
 
         Close #1
 
@@ -249,9 +249,9 @@ Sub UpdateExpandedLeaders (statType, tStats)
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared intName$(), statsLC$(), statsLR$()
-    Shared lookyA1$(), lookyA2$(), lookyA3$(), lookyA4$(), lookyA5$(), lookyA6$(), lookyA7$()
+    Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
     Shared sackName$(), statsLF$(), statsLK$(), statsLP$(), statsPK$()
-    Shared QBL$(), lookyTT$(), Z1$()
+    Shared QBL$(), lookyTT$(), statsZ1$()
 
     Shared GMA!(), GMB!(), GMC!()
     Shared Y%()
@@ -261,7 +261,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
     For ZX = 1 To 30
 
-        teamStatFile$ = Z1$(ZX)
+        teamStatFile$ = statsZ1$(ZX)
 
         If teamStatFile$ <> "XXX" And teamStatFile$ <> "*" And teamStatFile$ <> " " Then
 
@@ -274,25 +274,25 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Input #1, statsA$
 
                 'RBs
-                For I = 0 To 9: Input #1, lookyA1$(I): Next I
+                For I = 0 To 9: Input #1, lookyRBacks$(I): Next I
 
                 'WR's
-                For I = 0 To 5: Input #1, lookyA2$(I): Next I
+                For I = 0 To 5: Input #1, lookyWdRec$(I): Next I
 
                 'QBs
-                For I = 0 To 3: Input #1, lookyA3$(I): Next I
+                For I = 0 To 3: Input #1, lookyQBacks$(I): Next I
 
                 'KR's
-                For I = 0 To 2: Input #1, lookyA4$(I): Next I
+                For I = 0 To 2: Input #1, lookyKickRet$(I): Next I
 
                 'PR's
-                For I = 0 To 2: Input #1, lookyA5$(I): Next I
+                For I = 0 To 2: Input #1, lookyPRet$(I): Next I
 
                 'Punter
-                Input #1, lookyA6$(0)
+                Input #1, lookyPunter$(0)
 
                 'Place Kickers
-                For I = 0 To 1: Input #1, lookyA7$(I): Next I
+                For I = 0 To 1: Input #1, lookyKicker$(I): Next I
 
                 'Leader Values
                 For J = 0 To 13
@@ -368,7 +368,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 For I = 0 To 9
                     JA = JA + 1
-                    A1L$(JA) = lookyA1$(I)
+                    A1L$(JA) = lookyRBacks$(I)
                     A1T$(JA) = statsA$
                     LRL$(JA) = statsLR$(I, 0)
                     LCL$(JA) = statsLC$(I, 0)
@@ -385,7 +385,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 For I = 0 To 5
                     JB = JB + 1
-                    A2L$(JB) = lookyA2$(I)
+                    A2L$(JB) = lookyWdRec$(I)
                     A2T$(JB) = statsA$
                     LCL$(JB) = statsLC$(I + 10, 0)
                     GMB!(JB) = nbrGames
@@ -398,7 +398,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 3
 
                     JC = JC + 1
-                    QBL$(JC) = lookyA3$(I)
+                    QBL$(JC) = lookyQBacks$(I)
                     A3T$(JC) = statsA$
                     LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = nbrGames
@@ -414,7 +414,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 2
 
                     JD = JD + 1
-                    A4L$(JD) = lookyA4$(I)
+                    A4L$(JD) = lookyKickRet$(I)
                     A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
@@ -427,7 +427,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 For I = 0 To 2
 
                     JE = JE + 1
-                    A5L$(JE) = lookyA5$(I)
+                    A5L$(JE) = lookyPRet$(I)
                     A5T$(JE) = statsA$
                     PKL$(JE) = statsPK$(I, 0)
 
@@ -438,12 +438,12 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next I
 
                 JF = JF + 1
-                A6L$(JF) = lookyA6$(0)
+                A6L$(JF) = lookyPunter$(0)
                 A6T$(JF) = statsA$
                 A6L!(JF, 0) = statsZ!(7)
                 A6L!(JF, 1) = statsZ!(8)
                 JG = JG + 1
-                A7L$(JG) = lookyA7$(0)
+                A7L$(JG) = lookyKicker$(0)
                 A7T$(JG) = statsA$
 
                 For I = 0 To 3:
@@ -452,7 +452,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                 A7L!(JG, 4) = LF!(0)
                 JG = JG + 1
-                A7L$(JG) = lookyA7$(1)
+                A7L$(JG) = lookyKicker$(1)
                 A7T$(JG) = statsA$
 
                 For I = 0 To 3: A7L!(JG, I) = statsZ2!(I + 7, 17): Next
@@ -851,7 +851,7 @@ Sub ExpandedLeaders_Menu (tStats)
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared expCategories$(), lookyTT$()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared QBL$(), TMM$(), TPP$(), TYY$(), Z1$()
+    Shared QBL$(), TMM$(), TPP$(), TYY$(), statsZ1$()
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
@@ -946,7 +946,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "B":
                     J = 8
@@ -973,7 +973,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "C":
                     J = 12
@@ -998,7 +998,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 8
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "D":
                     J = 8
@@ -1024,7 +1024,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "E":
                     J = 8
@@ -1050,7 +1050,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "F":
                     J = 6
@@ -1076,7 +1076,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "G":
                     J = 10
@@ -1102,7 +1102,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 6
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "H":
                     J = 6
@@ -1128,10 +1128,10 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 1
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "I":
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "J":
                     J = 6
@@ -1157,7 +1157,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
                 Case "K":
                     J = 17
@@ -1200,7 +1200,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                     Loop Until B9 <= 28
 
-                    Call SortOptions(statType, printOrView%, sortType%)
+                    Call SortOptions( printOrView%, sortType%)
 
             End Select
 
@@ -2077,7 +2077,7 @@ End Sub
 'sortType%
 '   1: Sort HIGH to LOW
 '   2: Sort LOW to HIGH
-Sub SortOptions (statType, printOrView%, sortType%)
+Sub SortOptions (printOrView%, sortType%)
 
     Do
 

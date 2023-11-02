@@ -1168,7 +1168,7 @@ Sub FOOTBALL ()
 
                     For P2 = 0 To 4:
                         Locate 12 + P2, 14
-                        Print P2; "-"; PS$(P2); Tab(41); P2 + 5; "-"; PS$(P2 + 5)
+                        Print P2; "-"; playSelect$(P2); Tab(41); P2 + 5; "-"; playSelect$(P2 + 5)
                     Next P2
 
                     Locate , 15
