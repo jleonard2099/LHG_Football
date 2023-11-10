@@ -2,7 +2,7 @@
 '           CARMERGE Subroutine
 '----------------------------------------
 'This routine assists thet user with the
-'addition of career stats from any extra 
+'addition of career stats from any extra
 'season years that have been compiled.
 Sub MergeCareerFiles ()
 
@@ -144,7 +144,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Shared QBBS!(), RBBS!(), WRRS!()
 
     Shared AF!(), AM!()
-    Shared careerGIS!(), careerGSS!(), LI!()
+    Shared careerGIS!(), careerGSS!(), statsLI!()
     Shared careerFGS!(), careerPUS!()
     Shared statsZ!(), statsZ1!(), statsZ2!()
 
@@ -153,7 +153,6 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Dim careerLC!(60), careerLF!(1), careerLK!(15)
     Dim careerLP!(20), careerLR!(50), careerPK!(15)
-    Shared LI!()
 
     Dim careerGS%(55, 1), careerGI%(55, 2)
 
@@ -377,7 +376,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Open diskPaths$(1) + statFile$ For Input As #3
 
-    Input #3, A$
+    Input #3, temp$
 
     For I = 0 To 9: Input #3, carRBacks$(I): Next I
 
@@ -457,7 +456,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Next
 
     For I = 0 To 9: 
-        Input #3, LI!(I)
+        Input #3, statsLI!(I)
         Input #3, statsLI$(I, 0)
         Input #3, statsLI$(I, 1)
     Next

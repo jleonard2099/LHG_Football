@@ -1,7 +1,7 @@
 '----------------------------------------
 '          CAREER Subroutine
 '----------------------------------------
-'This routine gives the user a menu from 
+'This routine gives the user a menu from
 'which they can choose several options
 'for managing career files
 Sub CAREER ()
@@ -136,7 +136,7 @@ Sub MergeFirstYear
     Dim careerPK!(15)
     Shared careerFGS!(), careerGIS!(), careerGSS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
-    Shared LF!(), LI!()
+    Shared statsLF!(), statsLI!()
     Shared QBBS!(), RBBS!(), WRRS!()
 
     Shared KRRS$(), PRRS$()
@@ -225,7 +225,7 @@ Sub MergeFirstYear
 
                 Open diskPaths$(1) + statFile$ For Input As #2
 
-                Input #2, A$
+                Input #2, temp$
 
                 For I = 0 To 9: 
                     Input #2, carRBacks$(I)
@@ -312,7 +312,7 @@ Sub MergeFirstYear
                 Next
 
                 For I = 0 To 1: 
-                    Input #2, LF!(I)
+                    Input #2, statsLF!(I)
                     Input #2, statsLF$(I)
                     For I1 = 0 To 4: 
                         Input #2, careerAM!(I, I1)
@@ -321,7 +321,7 @@ Sub MergeFirstYear
                 Next
 
                 For I = 0 To 9: 
-                    Input #2, LI!(I)
+                    Input #2, statsLI!(I)
                     Input #2, statsLI$(I, 0)
                     Input #2, statsLI$(I, 1)
                 Next
@@ -507,7 +507,7 @@ Sub MergeFirstYear
                             careerFGS!(N, I, J - 3) = statsZ2!(J, 17)
                         Next J
 
-                        careerFGS!(N, I, 4) = LF!(I)
+                        careerFGS!(N, I, 4) = statsLF!(I)
                         careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
 
                         For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next
@@ -521,7 +521,7 @@ Sub MergeFirstYear
                             careerFGS!(N, I, J - 7) = statsZ2!(J, 17)
                         Next J
 
-                        careerFGS!(N, I, 4) = LF!(I)
+                        careerFGS!(N, I, 4) = statsLF!(I)
                         careerFGS!(N, I, 15) = 1: careerFGS!(N, I, 16) = statYear
 
                         For I1 = 0 To 4: careerFGS!(N, I, I1 + 5) = careerAM!(I, I1): Next

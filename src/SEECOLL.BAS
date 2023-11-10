@@ -1,7 +1,7 @@
 '----------------------------------------
 '           SEECOLL Subroutine
 '----------------------------------------
-'This subroutine lets the user choose a 
+'This subroutine lets the user choose a
 'conference stat file to view, then calls
 'other routines to both load the Stats
 'and then provide options for display
@@ -28,9 +28,9 @@ End Sub
 'from the file into several arrays
 Sub LoadLeaderFiles_Coll (FF$, targetFile$)
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
@@ -51,7 +51,7 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
     Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To 60
-        Input #2, seeT$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
+        Input #2, seeT$(X), seeW!(X), seeL!(X), seeT!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
@@ -77,7 +77,7 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
     '--- Use an outside loop here for each
     '--- chunk of 15 values of P
 
-    D1 = W!(1) - L!(1)
+    D1 = seeW!(1) - seeL!(1)
 
     For P = 1 To 15:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
@@ -85,20 +85,20 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
         Else
             seeP$(P) = PadRight$(seeT$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
-            If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
 
@@ -106,34 +106,34 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
 
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                If Len(A$) < 3 Then
-                    A$ = "0" + A$
+                If Len(rightStr$) < 3 Then
+                    rightStr$ = "0" + rightStr$
                 Else
-                    A$ = " ." + Right$(A$, 3)
-                    seeP$(P) = seeP$(P) + A$
+                    rightStr$ = " ." + Right$(rightStr$, 3)
+                    seeP$(P) = seeP$(P) + rightStr$
                 End If
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
             'seeP$(P) = seeP$(P)
 
         End If
 
     Next P
 
-    D1 = W!(16) - L!(16)
+    D1 = seeW!(16) - seeL!(16)
 
     For P = 16 To 30:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
@@ -141,36 +141,36 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
         Else
             seeP$(P) = PadRight$(seeT$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
-            If W!(P) + L!(P) > 0 Then A = Int(W!(P) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int(seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 30)
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 30)
 
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
             'seeP$(P) = seeP$(P)
         End If
     Next P
 
-    D1 = W!(31) - L!(31)
+    D1 = seeW!(31) - seeL!(31)
 
     For P = 31 To 45:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
@@ -178,52 +178,52 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
         Else
             seeP$(P) = PadRight$(seeT$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
-            If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
             If A = 1000 Then
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
 
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                If Len(A$) < 3 Then
-                    A$ = "0" + A$
+                If Len(rightStr$) < 3 Then
+                    rightStr$ = "0" + rightStr$
                 Else
-                    A$ = " ." + Right$(A$, 3)
-                    seeP$(P) = seeP$(P) + A$
+                    rightStr$ = " ." + Right$(rightStr$, 3)
+                    seeP$(P) = seeP$(P) + rightStr$
                 End If
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
             'seeP$(P) = seeP$(P)
         End If
     Next P
 
-    D1 = W!(46) - L!(46)
+    D1 = seeW!(46) - seeL!(46)
 
     For P = 46 To 60:
         If seeT$(P) = "*" Or seeT$(P) = "" Then
@@ -231,46 +231,46 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
         Else
             seeP$(P) = PadRight$(seeT$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
-            If W!(P) + L!(P) > 0 Then A = Int(W!(P) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int(seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
             A = Int(1000 * A + .5)
             If A = 1000 Then
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
 
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                If Len(A$) < 3 Then
-                    A$ = "0" + A$
+                If Len(rightStr$) < 3 Then
+                    rightStr$ = "0" + rightStr$
                 Else
-                    A$ = " ." + Right$(A$, 3)
-                    seeP$(P) = seeP$(P) + A$
+                    rightStr$ = " ." + Right$(rightStr$, 3)
+                    seeP$(P) = seeP$(P) + rightStr$
                 End If
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
             'seeP$(P) = seeP$(P)
         End If
     Next P
@@ -291,7 +291,7 @@ Sub StatOptions_Coll (FF$)
 
         Call TITLE_STATS
 
-		Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox (8, 8, 61, 5, 15, 1)
 
         Do
 
@@ -361,7 +361,7 @@ Sub ReportFilePrompt_Coll (reportFile$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
 
@@ -395,9 +395,9 @@ End Sub
 'user display.
 Sub LeaderStatsColl_Screen (FF$)
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
@@ -425,18 +425,18 @@ Sub LeaderStatsColl_Screen (FF$)
             RT = RT + 1
         Else
             Locate (P + 3 - RT)
-            Print seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -461,18 +461,18 @@ Sub LeaderStatsColl_Screen (FF$)
                 RT = RT + 1
             Else
                 Locate (P - 12 - RT), 41
-                Print seeT$(P); Tab(54); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+                Print seeT$(P); Tab(54); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-                If W!(P) + L!(P) + T!(P) = 0 Then
+                If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                     Print "  .---";
                 Else
-                    If L!(P) + T!(P) = 0 Then
+                    If seeL!(P) + seeT!(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If W!(P) = 0 Then
+                        If seeW!(P) = 0 Then
                             Print "  .000";
                         Else
-                            Print Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                            Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                         End If
                     End If
                 End If
@@ -515,18 +515,18 @@ Sub LeaderStatsColl_Screen (FF$)
             RT = RT + 1
         Else
             Locate (P - 27 - RT)
-            Print seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -550,18 +550,18 @@ Sub LeaderStatsColl_Screen (FF$)
                 RT = RT + 1
             Else
                 Locate (P - 42 - RT), 41
-                Print seeT$(P); Tab(54); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+                Print seeT$(P); Tab(54); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-                If W!(P) + L!(P) + T!(P) = 0 Then
+                If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                     Print "  .---";
                 Else
-                    If L!(P) + T!(P) = 0 Then
+                    If seeL!(P) + seeT!(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If W!(P) = 0 Then
+                        If seeW!(P) = 0 Then
                             Print "  .000";
                         Else
-                            Print Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                            Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                         End If
                     End If
                 End If
@@ -1151,9 +1151,9 @@ End Sub
 'the default printer
 Sub SavePrintCollLeaders (reportFile$, FF$, destination)
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared seeP$(), seeT$(), TR$()
     Shared compZ2$(), compZ3$()
@@ -1178,17 +1178,17 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     For P = 1 To 15
 
         If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1204,17 +1204,17 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     For P = 16 To 30
 
         If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1233,17 +1233,17 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     For P = 31 To 45
 
         If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1259,17 +1259,17 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     For P = 46 To 60
 
         If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If

@@ -1,4 +1,4 @@
-'----------------------------------------
+    '----------------------------------------
 '             ALIGN Subroutine
 '----------------------------------------
 'This routine presents a menu / interface
@@ -23,10 +23,10 @@ Sub ALIGN ()
     Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), teamRatings%()
 
     Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
-    Shared LC!(), LCN!(), LCR!(), LIN!(), LIR!()
-    Shared LFR!(), LF!(), LFN!()
-    Shared LP!(), LPN!(), LPR!(), LK!(), LKN!(), LKR!()
-    Shared LI!(), LR!(), LRN!(), LRR!(), PK!(), PKN!(), PKR!()
+    Shared statsLC!(), LCN!(), LCR!(), LIN!(), LIR!()
+    Shared LFR!(), statsLF!(), LFN!()
+    Shared statsLP!(), LPN!(), LPR!(), statsLK!(), LKN!(), LKR!()
+    Shared statsLI!(), statsLR!(), LRN!(), LRR!(), statsPK!(), PKN!(), PKR!()
     Shared statsZ2!(), statsZ!(), statsZ1!(), ZN2!(), ZR2!(), ZR!(), ZR1!()
 
     Do
@@ -108,7 +108,7 @@ Sub ALIGN ()
 
                     Open pathCurrentStats$ + statFile$ For Input As #2
 
-                    Input #2, statsA$
+                    Input #2, temp$
 
                     For I = 0 To 9: Input #2, rbName$(I): Next I
 
@@ -147,37 +147,37 @@ Sub ALIGN ()
                     Next
 
                     For I = 0 To 9: 
-                        Input #2, LR!(I)
+                        Input #2, statsLR!(I)
                         Input #2, statsLR$(I, 0)
                         Input #2, statsLR$(I, 1)
                     Next
 
                     For I = 0 To 15: 
-                        Input #2, LC!(I)
+                        Input #2, statsLC!(I)
                         Input #2, statsLC$(I, 0)
                         Input #2, statsLC$(I, 1)
                     Next
 
                     For I = 0 To 3: 
-                        Input #2, LP!(I)
+                        Input #2, statsLP!(I)
                         Input #2, statsLP$(I, 0)
                         Input #2, statsLP$(I, 1)
                     Next
 
                     For I = 0 To 2: 
-                        Input #2, LK!(I)
+                        Input #2, statsLK!(I)
                         Input #2, statsLK$(I, 0)
                         Input #2, statsLK$(I, 1)
                     Next
 
                     For I = 0 To 2: 
-                        Input #2, PK!(I)
+                        Input #2, statsPK!(I)
                         Input #2, statsPK$(I, 0)
                         Input #2, statsPK$(I, 1)
                     Next
 
                     For I = 0 To 1: 
-                        Input #2, LF!(I)
+                        Input #2, statsLF!(I)
                         Input #2, statsLF$(I)
                         For I1 = 0 To 4: 
                             Input #2, AM!(I, I1)
@@ -186,7 +186,7 @@ Sub ALIGN ()
                     Next
 
                     For I = 0 To 9: 
-                        Input #2, LI!(I)
+                        Input #2, statsLI!(I)
                         Input #2, statsLI$(I, 0)
                         Input #2, statsLI$(I, 1)
                     Next

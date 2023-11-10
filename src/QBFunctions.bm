@@ -10,31 +10,31 @@
 '   1 = Pro
 Function QBRating! (qbIdx, teamType)
 
-    Dim II!(3), PP!(3), QB!(3, 10)
+    Dim II!(3), PP!(3)
     Dim TT!(3), YY!(3)
 
-    Shared K2!()
+    Shared K2!(), ratingsQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * QB!(1)=PASS ATT, QB!(2)=COMP, QB!(3)=INT, QB!(4)=YDS, QB!(5)=TD'S     *
-    ' * QB!(6)=COMP%, QB!(7)=RATING, QB!(8)=TD%, QB!(9)=INT%, QB!(10)=YDS/ATT *
+    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
+    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
     ' ********************************************************************
 
     Select Case teamType
 
         Case 0:
             ' *** COLLEGE QB RATING ***
-            QB!(qbIdx, 7) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9)) * 8.399999 + K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100 + Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10 * 2
-            QB!(qbIdx, 7) = Int(QB!(qbIdx, 7) * 10) / 10
+            ratingsQB!(qbIdx, 7) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9)) * 8.399999 + K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100 + Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10 * 2
+            ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
 
         Case 1: '
             ' *** NFL QB RATING ***
-            QB!(qbIdx, 8) = Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10
-            QB!(qbIdx, 6) = K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100
-            QB!(qbIdx, 10) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9) * 100) / 100
-            QB!(qbIdx, 9) = Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 8) = Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 6) = K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100
+            ratingsQB!(qbIdx, 10) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9) * 100) / 100
+            ratingsQB!(qbIdx, 9) = Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10
 
-            PP!(tmIdx) = QB!(qbIdx, 6) - 30
+            PP!(tmIdx) = ratingsQB!(qbIdx, 6) - 30
 
             If PP!(tmIdx) < 0 Then
                 PP!(tmIdx) = 0
@@ -46,52 +46,52 @@ Function QBRating! (qbIdx, teamType)
                 End If
             End If
 
-            If QB!(qbIdx, 8) > 11.9 Then
+            If ratingsQB!(qbIdx, 8) > 11.9 Then
                 TT!(tmIdx) = 2.375
             Else
-                TT!(tmIdx) = QB!(qbIdx, 8) * .2
+                TT!(tmIdx) = ratingsQB!(qbIdx, 8) * .2
             End If
 
-            If QB!(qbIdx, 9) = 0 Then
+            If ratingsQB!(qbIdx, 9) = 0 Then
                 II!(tmIdx) = 2.375
             Else
-                If QB!(qbIdx, 9) > 9.5 Then
+                If ratingsQB!(qbIdx, 9) > 9.5 Then
                     II!(tmIdx) = 0
                 Else
-                    II!(tmIdx) = 2.375 - (.25 * QB!(qbIdx, 9))
+                    II!(tmIdx) = 2.375 - (.25 * ratingsQB!(qbIdx, 9))
                 End If
             End If
 
-            QB!(qbIdx, 10) = QB!(qbIdx, 10) - 3
+            ratingsQB!(qbIdx, 10) = ratingsQB!(qbIdx, 10) - 3
 
-            If QB!(qbIdx, 10) < 0 Then
+            If ratingsQB!(qbIdx, 10) < 0 Then
                 YY!(tmIdx) = 0
             Else
-                If QB!(qbIdx, 10) > 12.5 Then
+                If ratingsQB!(qbIdx, 10) > 12.5 Then
                     YY!(tmIdx) = 2.375
                 Else
-                    D = Int(QB!(qbIdx, 10) * 100) / 2
-                    If D = QB!(qbIdx, 10) / 2 Then
-                        YY!(tmIdx) = QB!(qbIdx, 10) / 2 * .3 + QB!(qbIdx, 10) / 2 * .2
+                    D = Int(ratingsQB!(qbIdx, 10) * 100) / 2
+                    If D = ratingsQB!(qbIdx, 10) / 2 Then
+                        YY!(tmIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2
                     Else
-                        YY!(tmIdx) = QB!(qbIdx, 10) / 2 * .3 + QB!(qbIdx, 10) / 2 * .2 + .003
+                        YY!(tmIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2 + .003
                     End If
                 End If
             End If
 
-            QB!(qbIdx, 7) = PP!(tmIdx) + TT!(tmIdx) + II!(tmIdx) + YY!(tmIdx)
+            ratingsQB!(qbIdx, 7) = PP!(tmIdx) + TT!(tmIdx) + II!(tmIdx) + YY!(tmIdx)
 
-            If QB!(qbIdx, 7) >= 9.5 Then
-                QB!(qbIdx, 7) = 158.3
+            If ratingsQB!(qbIdx, 7) >= 9.5 Then
+                ratingsQB!(qbIdx, 7) = 158.3
             Else
-                QB!(qbIdx, 7) = QB!(qbIdx, 7) * 50 / 3
+                ratingsQB!(qbIdx, 7) = ratingsQB!(qbIdx, 7) * 50 / 3
             End If
 
-            QB!(qbIdx, 7) = Int(QB!(qbIdx, 7) * 10) / 10
+            ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
 
     End Select
 
-    QBRating! = QB!(qbIdx, 7)
+    QBRating! = ratingsQB!(qbIdx, 7)
 
 End Function
 
@@ -199,31 +199,31 @@ End Sub
 'This uses the NFL rating only.
 '
 'Actual RB rating is stored in the following:
-'   QB!(qbIdx, 7)
+'   ratingsQB!(qbIdx, 7)
 Sub QBRatingPro (qbIdx)
 
     Dim PP!(4), QT!(4), II!(4), YY!(4)
 
-    Shared QB!()
+    Shared ratingsQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * QB!(1)=PASS ATT, QB!(2)=COMP, QB!(3)=INT, QB!(4)=YDS, QB!(5)=TD'S     *
-    ' * QB!(6)=COMP%, QB!(7)=RATING, QB!(8)=TD%, QB!(9)=INT%, QB!(10)=YDS/ATT *
+    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
+    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
     ' ********************************************************************
-    If QB!(qbIdx, 1) > 0 Then QB!(qbIdx, 6) = Int(QB!(qbIdx, 2) / QB!(qbIdx, 1) * 1000) / 10
+    If ratingsQB!(qbIdx, 1) > 0 Then ratingsQB!(qbIdx, 6) = Int(ratingsQB!(qbIdx, 2) / ratingsQB!(qbIdx, 1) * 1000) / 10
 
-    If QB!(qbIdx, 1) = 0 Then
-        QB!(qbIdx, 6) = 0
-        QB!(qbIdx, 8) = 0
-        QB!(qbIdx, 9) = 0
-        QB!(qbIdx, 10) = 0
+    If ratingsQB!(qbIdx, 1) = 0 Then
+        ratingsQB!(qbIdx, 6) = 0
+        ratingsQB!(qbIdx, 8) = 0
+        ratingsQB!(qbIdx, 9) = 0
+        ratingsQB!(qbIdx, 10) = 0
     Else
-        QB!(qbIdx, 8) = Int(QB!(qbIdx, 5) / QB!(qbIdx, 1) * 1000) / 10
-        QB!(qbIdx, 9) = Int(QB!(qbIdx, 3) / QB!(qbIdx, 1) * 1000) / 10
-        QB!(qbIdx, 10) = Int(QB!(qbIdx, 4) / QB!(qbIdx, 1) * 100) / 100
+        ratingsQB!(qbIdx, 8) = Int(ratingsQB!(qbIdx, 5) / ratingsQB!(qbIdx, 1) * 1000) / 10
+        ratingsQB!(qbIdx, 9) = Int(ratingsQB!(qbIdx, 3) / ratingsQB!(qbIdx, 1) * 1000) / 10
+        ratingsQB!(qbIdx, 10) = Int(ratingsQB!(qbIdx, 4) / ratingsQB!(qbIdx, 1) * 100) / 100
     End If
 
-    PP!(qbIdx) = QB!(qbIdx, 6) - 30
+    PP!(qbIdx) = ratingsQB!(qbIdx, 6) - 30
 
     If PP!(qbIdx) < 0 Then
         PP!(qbIdx) = 0
@@ -235,48 +235,48 @@ Sub QBRatingPro (qbIdx)
         End If
     End If
 
-    If QB!(qbIdx, 8) > 11.9 Then
+    If ratingsQB!(qbIdx, 8) > 11.9 Then
         QT!(qbIdx) = 2.375
     Else
-        QT!(qbIdx) = QB!(qbIdx, 8) * .2
+        QT!(qbIdx) = ratingsQB!(qbIdx, 8) * .2
     End If
 
-    If QB!(qbIdx, 9) = 0 Then
+    If ratingsQB!(qbIdx, 9) = 0 Then
         II!(qbIdx) = 2.375
     Else
-        If QB!(qbIdx, 9) > 9.5 Then
+        If ratingsQB!(qbIdx, 9) > 9.5 Then
             II!(qbIdx) = 0
         Else
-            II!(qbIdx) = 2.375 - (.25 * QB!(qbIdx, 9))
+            II!(qbIdx) = 2.375 - (.25 * ratingsQB!(qbIdx, 9))
         End If
     End If
 
-    QB!(qbIdx, 10) = QB!(qbIdx, 10) - 3
+    ratingsQB!(qbIdx, 10) = ratingsQB!(qbIdx, 10) - 3
 
-    If QB!(qbIdx, 10) < 0 Then
+    If ratingsQB!(qbIdx, 10) < 0 Then
         YY!(qbIdx) = 0
     Else
-        If QB!(qbIdx, 10) > 12.5 Then
+        If ratingsQB!(qbIdx, 10) > 12.5 Then
             YY!(qbIdx) = 2.375
         Else
-            D = Int(QB!(qbIdx, 10) * 100) / 2
-            If D = QB!(qbIdx, 10) / 2 Then
-                YY!(qbIdx) = QB!(qbIdx, 10) / 2 * .3 + QB!(qbIdx, 10) / 2 * .2
+            D = Int(ratingsQB!(qbIdx, 10) * 100) / 2
+            If D = ratingsQB!(qbIdx, 10) / 2 Then
+                YY!(qbIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2
             Else
-                YY!(qbIdx) = QB!(qbIdx, 10) / 2 * .3 + QB!(qbIdx, 10) / 2 * .2 + .003
+                YY!(qbIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2 + .003
             End If
         End If
     End If
 
-    QB!(qbIdx, 7) = PP!(qbIdx) + QT!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
+    ratingsQB!(qbIdx, 7) = PP!(qbIdx) + QT!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
 
-    If QB!(qbIdx, 7) >= 9.5 Then
-        QB!(qbIdx, 7) = 158.3
+    If ratingsQB!(qbIdx, 7) >= 9.5 Then
+        ratingsQB!(qbIdx, 7) = 158.3
     Else
-        QB!(qbIdx, 7) = QB!(qbIdx, 7) * 50 / 3
+        ratingsQB!(qbIdx, 7) = ratingsQB!(qbIdx, 7) * 50 / 3
     End If
 
-    QB!(qbIdx, 7) = Int(QB!(qbIdx, 7) * 10) / 10
+    ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
 
 End Sub
 
@@ -289,26 +289,26 @@ End Sub
 'This uses the college rating only.
 '
 'Actual RB rating is stored in the following:
-'   QB!(qbIdx, 7)
+'   ratingsQB!(qbIdx, 7)
 Sub QBRatingColl (qbIdx)
 
-    Shared QB!()
+    Shared ratingsQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * QB!(1)=PASS ATT, QB!(2)=COMP, QB!(3)=INT, QB!(4)=YDS, QB!(5)=TD'S     *
-    ' * QB!(6)=COMP%, QB!(7)=RATING, QB!(8)=TD%, QB!(9)=INT%, QB!(10)=YDS/ATT *
+    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
+    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
     ' ********************************************************************
-    If QB!(qbIdx, 1) > 0 Then QB!(qbIdx, 6) = Int(QB!(qbIdx, 2) / QB!(qbIdx, 1) * 1000) / 10
+    If ratingsQB!(qbIdx, 1) > 0 Then ratingsQB!(qbIdx, 6) = Int(ratingsQB!(qbIdx, 2) / ratingsQB!(qbIdx, 1) * 1000) / 10
 
-    If QB!(qbIdx, 1) = 0 Then
-        QB!(qbIdx, 6) = 0
-        QB!(qbIdx, 7) = 0
-        QB!(qbIdx, 8) = 0
-        QB!(qbIdx, 9) = 0
-        QB!(qbIdx, 10) = 0
+    If ratingsQB!(qbIdx, 1) = 0 Then
+        ratingsQB!(qbIdx, 6) = 0
+        ratingsQB!(qbIdx, 7) = 0
+        ratingsQB!(qbIdx, 8) = 0
+        ratingsQB!(qbIdx, 9) = 0
+        ratingsQB!(qbIdx, 10) = 0
     Else
-        QB!(qbIdx, 7) = Int(QB!(qbIdx, 4) / QB!(qbIdx, 1)) * 8.399999 + QB!(qbIdx, 6) + Int(QB!(qbIdx, 5) / QB!(qbIdx, 1) * 1000) / 10 * 3.3 - Int(QB!(qbIdx, 3) / QB!(qbIdx, 1) * 1000) / 10 * 2
-        QB!(qbIdx, 7) = Int(QB!(qbIdx, 7) * 10) / 10
+        ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 4) / ratingsQB!(qbIdx, 1)) * 8.399999 + ratingsQB!(qbIdx, 6) + Int(ratingsQB!(qbIdx, 5) / ratingsQB!(qbIdx, 1) * 1000) / 10 * 3.3 - Int(ratingsQB!(qbIdx, 3) / ratingsQB!(qbIdx, 1) * 1000) / 10 * 2
+        ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
     End If
 
 End Sub

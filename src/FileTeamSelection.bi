@@ -12,14 +12,12 @@ Const DATA_FILE_NAME$ = "STADIUMS"
 
 Dim previousYear$
 
-Dim Shared A$
-
 '-- transition away from this
 Dim Shared fileLength&
 
 Dim teamAttendance&
 
-Dim ydsCompAdj 'YC! is used elsewhere
+Dim ydsCompAdj
 
 Dim mascot$, stadium$, teamNick$
 

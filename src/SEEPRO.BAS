@@ -30,9 +30,9 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared div1$, div2$, div3$
 
@@ -51,7 +51,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     Open diskPaths$(2) + leagueFile$ + ".LDR" For Input As #2
 
     For X = 1 To 30
-        Input #2, TM$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
+        Input #2, TM$(X), seeW!(X), seeL!(X), seeT!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
@@ -74,7 +74,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Close #2
 
-    D1 = W!(1) - L!(1)
+    D1 = seeW!(1) - seeL!(1)
 
     For P = 1 To 10:
 
@@ -84,33 +84,33 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
             seeP$(P) = PadRight$(TM$(P), 12)
 
-            A$ = Right$("     " + Str$(Int(W!(P))), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            rightStr$ = Right$("     " + Str$(Int(seeW!(P))), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A$ = Right$("     " + Str$(Int(L!(P))), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            rightStr$ = Right$("     " + Str$(Int(seeL!(P))), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A$ = Right$("     " + Str$(Int(T!(P))), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            rightStr$ = Right$("     " + Str$(Int(seeT!(P))), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
 
-            If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                Do While (Len(A$) < 3)
-                    A$ = "0" + A$
+                Do While (Len(rightStr$) < 3)
+                    rightStr$ = "0" + rightStr$
                 Loop
 
-                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(rightStr$, 3)
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
@@ -125,7 +125,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Next P
 
-    D1 = W!(11) - L!(11)
+    D1 = seeW!(11) - seeL!(11)
 
     For P = 11 To 20:
 
@@ -135,53 +135,53 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
             seeP$(P) = PadRight$(TM$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
 
-            If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                Do While (Len(A$) < 3)
-                    A$ = "0" + A$
+                Do While (Len(rightStr$) < 3)
+                    rightStr$ = "0" + rightStr$
                 Loop
 
-                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(rightStr$, 3)
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
 
             'seeP$(P) = seeP$(P)
         End If
 
     Next P
 
-    D1 = W!(21) - L!(21)
+    D1 = seeW!(21) - seeL!(21)
 
     For P = 21 To 30:
 
@@ -191,47 +191,47 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
             seeP$(P) = PadRight$(TM$(P), 12)
 
-            A = Int(W!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 16)
+            A = Int(seeW!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
 
-            A = Int(L!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 20)
+            A = Int(seeL!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
 
-            A = Int(T!(P))
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + A$, 24)
+            A = Int(seeT!(P))
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
 
             A = 0
 
-            If W!(P) + L!(P) > 0 Then A = Int((W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P)) * 1000 + .5) / 1000
+            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
 
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
                 seeP$(P) = seeP$(P) + "1.000 "
             Else
-                A$ = Str$(A)
-                L = Len(A$)
-                A$ = Right$(A$, L - 1)
+                rightStr$ = Str$(A)
+                L = Len(rightStr$)
+                rightStr$ = Right$(rightStr$, L - 1)
 
-                Do While (Len(A$) < 3)
-                    A$ = "0" + A$
+                Do While (Len(rightStr$) < 3)
+                    rightStr$ = "0" + rightStr$
                 Loop
 
-                seeP$(P) = seeP$(P) + " ." + Right$(A$, 3)
+                seeP$(P) = seeP$(P) + " ." + Right$(rightStr$, 3)
             End If
 
             seeP$(P) = PadRight$(seeP$(P), 30)
 
             A = PTSF!(P)
-            A$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 3)
+            seeP$(P) = seeP$(P) + rightStr$
 
             A = PTSA!(P)
-            A$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + A$
+            rightStr$ = Right$("     " + Str$(A), 4)
+            seeP$(P) = seeP$(P) + rightStr$
 
             'seeP$(P) = seeP$(P)
         End If
@@ -360,9 +360,9 @@ Sub LeaderStatsPro_Screen ()
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared div1$, div2$, div3$
 
@@ -382,18 +382,18 @@ Sub LeaderStatsPro_Screen ()
             RT = RT + 1
         Else
             Locate (P + 2 - RT)
-            Print TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print TM$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (W!(P) + T!(P) * .5) / (W!(P) + L!(P) + T!(P));
+                        Print Using "  .###"; (seeW!(P) + seeT!(P) * .5) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -420,18 +420,18 @@ Sub LeaderStatsPro_Screen ()
             RT = RT + 1
         Else
             Locate (P - 8 - RT), 41
-            Print TM$(P); Tab(54); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print TM$(P); Tab(54); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P));
+                        Print Using "  .###"; (seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -458,18 +458,18 @@ Sub LeaderStatsPro_Screen ()
             RT = RT + 1
         Else
             Locate (P - 6 - RT), 20
-            Print TM$(P); Tab(33); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print TM$(P); Tab(33); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (W!(P) + .5 * T!(P)) / (W!(P) + L!(P) + T!(P));
+                        Print Using "  .###"; (seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1062,9 +1062,9 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TR$()
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared div1$, div2$, div3$
 
@@ -1084,18 +1084,18 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 1 To 10
 
         If seeP$(P) <> "" Then
-            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1112,18 +1112,18 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     For P = 11 To 20
 
         If seeP$(P) <> "" Then
-            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If
@@ -1141,18 +1141,18 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
         If seeP$(P) <> "" Then
 
-            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; W!(P); L!(P); T!(P);
+            Print #1, TM$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
 
-            If W!(P) + L!(P) + T!(P) = 0 Then
+            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If L!(P) + T!(P) = 0 Then
+                If seeL!(P) + seeT!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If W!(P) = 0 Then
+                    If seeW!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; W!(P) / (W!(P) + L!(P) + T!(P));
+                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
                     End If
                 End If
             End If

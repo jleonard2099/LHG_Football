@@ -239,9 +239,9 @@ Sub UpdateExpandedLeaders (statType, tStats)
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
     Shared AM!(), AF!()
-    Shared LC!(), LK!(), LF!(), LP!(), LR!()
+    Shared statsLC!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared PK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
+    Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsGI%(), statsGS%()
 
@@ -254,7 +254,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
     Shared QBL$(), lookyTT$(), statsZ1$()
 
     Shared GMA!(), GMB!(), GMC!()
-    Shared Y%()
+    Shared gameCount()
 
     Color 15, 0
     Cls
@@ -320,27 +320,27 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next
 
                 For I = 0 To 9:
-                    Input #1, LR!(I): Input #1, statsLR$(I, 0): Input #1, statsLR$(I, 1)
+                    Input #1, statsLR!(I): Input #1, statsLR$(I, 0): Input #1, statsLR$(I, 1)
                 Next
 
                 For I = 0 To 15:
-                    Input #1, LC!(I): Input #1, statsLC$(I, 0): Input #1, statsLC$(I, 1)
+                    Input #1, statsLC!(I): Input #1, statsLC$(I, 0): Input #1, statsLC$(I, 1)
                 Next
 
                 For I = 0 To 3:
-                    Input #1, LP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1)
+                    Input #1, statsLP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1)
                 Next
 
                 For I = 0 To 2:
-                    Input #1, LK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1)
+                    Input #1, statsLK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1)
                 Next
 
                 For I = 0 To 2:
-                    Input #1, PK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1)
+                    Input #1, statsPK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1)
                 Next
 
                 For I = 0 To 1
-                    Input #1, LF!(I)
+                    Input #1, statsLF!(I)
                     Input #1, statsLF$(I)
                     For I1 = 0 To 4
                         Input #1, AM!(I, I1)
@@ -379,8 +379,8 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                     For I1 = 0 To 5: A1L!(JA, I1) = statsZ2!(I, I1): Next I1
 
-                    A1L!(JA, 6) = LR!(I)
-                    A1L!(JA, 7) = LC!(I)
+                    A1L!(JA, 6) = statsLR!(I)
+                    A1L!(JA, 7) = statsLC!(I)
                 Next I
 
                 For I = 0 To 5
@@ -392,7 +392,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                     For I1 = 6 To 8: A2L!(JB, I1 - 6) = statsZ2!(I, I1): Next I1
 
-                    A2L!(JB, 3) = LC!(I + 10)
+                    A2L!(JB, 3) = statsLC!(I + 10)
                 Next I
 
                 For I = 0 To 3
@@ -405,7 +405,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                     For I1 = 9 To 13: A3L!(JC, I1 - 9) = statsZ2!(I, I1): Next I1
 
-                    A3L!(JC, 5) = LP!(I)
+                    A3L!(JC, 5) = statsLP!(I)
                     Call QBRating_Expanded(JC, statType)
                     A3R!(JC, 0) = A3L!(JC, 12)
 
@@ -420,7 +420,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                     For I1 = 14 To 16: A4L!(JD, I1 - 14) = statsZ2!(I, I1): Next I1
 
-                    A4L!(JD, 3) = LK!(I)
+                    A4L!(JD, 3) = statsLK!(I)
 
                 Next I
 
@@ -433,7 +433,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
 
                     For I1 = 14 To 16: A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1): Next I1
 
-                    A5L!(JE, 3) = PK!(I)
+                    A5L!(JE, 3) = statsPK!(I)
 
                 Next I
 
@@ -450,14 +450,14 @@ Sub UpdateExpandedLeaders (statType, tStats)
                     A7L!(JG, I) = statsZ2!(I + 3, 17)
                 Next
 
-                A7L!(JG, 4) = LF!(0)
+                A7L!(JG, 4) = statsLF!(0)
                 JG = JG + 1
                 A7L$(JG) = lookyKicker$(1)
                 A7T$(JG) = statsA$
 
                 For I = 0 To 3: A7L!(JG, I) = statsZ2!(I + 7, 17): Next
 
-                A7L!(JG, 4) = LF!(1)
+                A7L!(JG, 4) = statsLF!(1)
 
                 For I = 0 To 9
                     JH = JH + 1
@@ -474,7 +474,7 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Next
 
                 JJ = JJ + 1
-                Y%(JJ) = nbrGames
+                gameCount(JJ) = nbrGames
 
             End If
 
@@ -505,7 +505,7 @@ Sub READLEADER (leaderFile$, tStats)
     Shared lookyTT!()
 
     Shared GMA!(), GMB!(), GMC!()
-    Shared Y%()
+    Shared gameCount()
 
     TMR = 1660
 
@@ -656,7 +656,7 @@ Sub READLEADER (leaderFile$, tStats)
         Next I
 
         For I = 1 To 30:
-            Input #1, Y%(I)
+            Input #1, gameCount(I)
         Next
 
         Close #1
@@ -686,7 +686,7 @@ Sub SAVELEADER (leaderFile$, tStats)
     Shared lookyTT!()
 
     Shared GMA!(), GMB!(), GMC!()
-    Shared Y%()
+    Shared gameCount()
 
     TMR = 1660
 
@@ -825,7 +825,7 @@ Sub SAVELEADER (leaderFile$, tStats)
     Next I
 
     For I = 1 To 30:
-        Write #1, Y%(I)
+        Write #1, gameCount(I)
     Next
 
     Close #1
@@ -857,7 +857,7 @@ Sub ExpandedLeaders_Menu (tStats)
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
     Shared lookyTT!(), TYP!()
 
-    Shared Y%()
+    Shared gameCount()
 
     Do
 
@@ -1258,7 +1258,7 @@ Sub ExpandedLeaders_Menu (tStats)
                             Case 2
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) > Y%(1) * 10 Then
+                                    If A1L!(I, X) > gameCount(1) * 10 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = A1L$(I)
@@ -1337,7 +1337,7 @@ Sub ExpandedLeaders_Menu (tStats)
                                 PPP = 0
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) >= Y%(1) * 4 Then
+                                    If A1L!(I, X) >= gameCount(1) * 4 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = A1L$(I)
@@ -1347,7 +1347,7 @@ Sub ExpandedLeaders_Menu (tStats)
                                 Next I
 
                                 For I = 1 To JB
-                                    If A2L!(I, X2) >= Y%(1) * 4 Then
+                                    If A2L!(I, X2) >= gameCount(1) * 4 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = A2L$(I)
@@ -1430,7 +1430,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                                 For I = 1 To JC
 
-                                    If A3L!(I, X) >= Y%(1) * 15 Then
+                                    If A3L!(I, X) >= gameCount(1) * 15 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
@@ -1454,7 +1454,7 @@ Sub ExpandedLeaders_Menu (tStats)
                             Case 6:
 
                                 For I = 1 To JC
-                                    If A3L!(I, X2) >= Y%(1) * 15 Then
+                                    If A3L!(I, X2) >= gameCount(1) * 15 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
@@ -1477,7 +1477,7 @@ Sub ExpandedLeaders_Menu (tStats)
 
                                 For I = 1 To JC
 
-                                    If A3L!(I, X) >= Y%(1) * 15 Then
+                                    If A3L!(I, X) >= gameCount(1) * 15 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = QBL$(I)

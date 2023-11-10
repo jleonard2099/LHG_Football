@@ -663,14 +663,14 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, NTMS, gameIndex%)
                     If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
 
                 Case 9:
-                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
-                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
+                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
+                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
  
                 Case 10: ' Back to beginning of loop
 
                 Case 11:
-                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
-                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
+                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
+                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
 
                 Case 12:
                     scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
@@ -798,9 +798,9 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                             Open diskPaths$(2) + conferenceFile$ + ".LIB" For Input As #1
 
-                            Input #1, X%
+                            Input #1, statType
 
-                            If X% = 0 Then
+                            If statType = 0 Then
 
                                 Input #1, LG$
                                 Input #1, X$
@@ -818,7 +818,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                             End If
 
-                            If X% = 1 Then
+                            If statType = 1 Then
 
                                 Input #1, LG$
 
@@ -993,7 +993,6 @@ Sub EditParameters ()
 
     Print "PARAMETERS FOR SAVING SPECIAL EVENTS BOXSCORES"
 
-    X% = 2
     Color 15
 
     Print " 1. IF QUARTERS ARE OVER "; eventSettings(1)
@@ -1527,7 +1526,7 @@ End Sub
 'overview and the index will be used to
 'determine which QB to use whenever the
 'generated schedule is run.
-Function GetQBName$ (targetGame%, I5)
+Function GetQBName$ (targetGame%, teamIndicator)
 
     Shared armRating()
     Shared passAtt(), compPct(), qbIntPct()
@@ -1535,7 +1534,6 @@ Function GetQBName$ (targetGame%, I5)
     Shared scheduleNG%()
 
     Shared qbName$()
-
 
     Do
 
@@ -1580,20 +1578,21 @@ Function GetQBName$ (targetGame%, I5)
 
     Loop Until I2 >= 0 And I2 <= 4
 
-    Q6% = I2
+    qbNbr = I2
 
     If scheduleNG%(targetGame%, 3) <> 0 And I2 <= 3 Then
 
         Do
             Print "ENTER "; qbName$(I2); " MOBILITY RATING (1-9)"
             I$ = GetKeyPress$
-            R9% = Val(I$)
-        Loop Until R9% >= 1 And R9% <= 9
+            mobility = Val(I$)
+        Loop Until mobility >= 1 And mobility <= 9
 
     End If
 
-    scheduleNG%(targetGame%, (I5 - 2) * 3 + 5) = Q6%
-    scheduleNG%(targetGame%, (I5 - 2) * 3 + 6) = R9%
+    'teamIndicator = 2 for Visitor, 3 for Home
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 5) = qbNbr
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 6) = mobility
     qbName$(4) = "RANDOM"
 
     GetQBName$ = qbName$(I2)

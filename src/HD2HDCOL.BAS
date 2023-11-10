@@ -152,9 +152,9 @@ Sub Hd2HdColl_Conf (X2)
 
         Open diskPaths$(2) + conf1$ + ".LIB" For Input As #2
 
-        Input #2, X%
+        Input #2, statType
 
-        If X% = 0 Then
+        If statType = 0 Then
 
             Input #2, conf1$
             Input #2, div1$
@@ -170,7 +170,7 @@ Sub Hd2HdColl_Conf (X2)
 
         End If
 
-        If X% = 1 Then
+        If statType = 1 Then
             Input #2, conf1$
             Input #2, div1$
             Input #2, div2$
@@ -192,9 +192,9 @@ Sub Hd2HdColl_Conf (X2)
 
             Open diskPaths$(2) + conf2$ + ".LIB" For Input As #2
 
-            Input #2, X%
+            Input #2, statType
 
-            If X% = 0 Then
+            If statType = 0 Then
                 Input #2, conf2$
                 Input #2, div1_2$
                 Input #2, div2_2$
@@ -207,7 +207,7 @@ Sub Hd2HdColl_Conf (X2)
 
             End If
 
-            If X% = 1 Then
+            If statType = 1 Then
                 Input #2, conf2$
                 Input #2, div1_2$
                 Input #2, div2_2$
@@ -378,7 +378,7 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to the end user display
-Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
+Sub Hd2HdColl_Screen (teamName$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
 
@@ -408,7 +408,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
         Cls
 
         Locate 2, 35
-        Color teamRatings%(2), teamRatings%(1): Print A$
+        Color teamRatings%(2), teamRatings%(1): Print teamName$
         Color 3, 0
 
         Locate 4
@@ -430,7 +430,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
 
         For K = DD To EE
 
-            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> A$ And statsZ1$(K) <> "" Then
+            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ And statsZ1$(K) <> "" Then
 
                 Color 15
                 Locate , 1: Print Left$(statsZ1$(K), 15);
@@ -531,7 +531,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
             Cls
 
             Locate 2, 35
-            Color teamRatings%(2), teamRatings%(1): Print A$
+            Color teamRatings%(2), teamRatings%(1): Print teamName$
 
             Color 3, 0
 
@@ -547,7 +547,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
 
             For K = DD To EE
 
-                If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
+                If Z12$(K) <> "XXX" And Z12$(K) <> teamName$ Then
 
                     Color 15
                     Locate , 1: Print Left$(Z12$(K), 15);
@@ -632,7 +632,7 @@ Sub Hd2HdColl_Screen (A$, conf1$, conf2$, DV$(), DV2$())
     Cls
 
     Locate 2, 35
-    Color teamRatings%(2), teamRatings%(1): Print A$
+    Color teamRatings%(2), teamRatings%(1): Print teamName$
     Color 3, 0
 
     Locate 4
@@ -853,7 +853,7 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to a report file
-Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
+Sub Hd2HdColl_Report (teamName$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
 
@@ -915,7 +915,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
     RDD = 0
 
-    Print #1, Tab(48); A$
+    Print #1, Tab(48); teamName$
     Print #1,
 
     Do
@@ -937,7 +937,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             For K = DD To EE
 
-                If statsZ1$(K) <> "XXX" And statsZ1$(K) <> A$ Then
+                If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ Then
                     Print #1, Left$(statsZ1$(K), 15);
                     Print #1, Tab(17); Using "##"; HW!(K);
                     Print #1, Tab(20); Using "##"; HL!(K);
@@ -1000,7 +1000,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
         Do
 
-            Print #1, Tab(48); A$
+            Print #1, Tab(48); teamName$
             Print #1,
 
             RDD = RDD + 1
@@ -1019,7 +1019,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
             For K = DD To EE
 
-                If Z12$(K) <> "XXX" And Z12$(K) <> A$ Then
+                If Z12$(K) <> "XXX" And Z12$(K) <> teamName$ Then
 
                     Print #1, Left$(Z12$(K), 15);
                     Print #1, Tab(17); Using "##"; HW2!(K);
@@ -1077,7 +1077,7 @@ Sub Hd2HdColl_Report (A$, conf1$, conf2$, DV$(), DV2$())
 
     End If
 
-    Print #1, Tab(48); A$
+    Print #1, Tab(48); teamName$
     Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
     Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
     Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";

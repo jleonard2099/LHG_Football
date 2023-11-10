@@ -28,9 +28,9 @@ End Sub
 'stats from the file into several arrays
 Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
 
-    Shared L!(), LD!(), LZ!()
+    Shared seeL!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
-    Shared T!(), compTT!(), W!()
+    Shared seeT!(), compTT!(), seeW!()
 
     Shared seePR$(), seeT$()
     Shared compZ2$(), compZ3$()
@@ -49,7 +49,7 @@ Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
     Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2
 
     For X = 1 To 60
-        Input #2, seeT$(X), W!(X), L!(X), T!(X), PTSF!(X), PTSA!(X)
+        Input #2, seeT$(X), seeW!(X), seeL!(X), seeT!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
@@ -98,7 +98,7 @@ Sub StatOptions_Natl (FF$, NRT)
 
         Call TITLE_STATS
 
-		Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox (8, 8, 61, 5, 15, 1)
 
         Do
 
@@ -168,7 +168,7 @@ Sub ReportFilePrompt_Natl (reportFile$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
 
@@ -201,7 +201,7 @@ End Sub
 Sub LeaderStatsNat_Screen (FF$, NRT)
 
     Shared LD!(), LZ!(), PT!()
-    Shared T!(), compTT!()
+    Shared seeT!(), compTT!()
 
     Shared seePR$(), TR$()
     Shared compZ2$(), compZ3$()
@@ -814,7 +814,7 @@ End Sub
 Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     Shared LZ!(), PT!()
-    Shared T!(), compTT!()
+    Shared seeT!(), compTT!()
 
     Shared compZ2$(), compZ3$()
     Shared seePR$(), TR$()

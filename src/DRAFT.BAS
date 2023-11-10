@@ -106,7 +106,7 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
     Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0)
     Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
     Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
-    Locate 18: Input "16. STADIUM NAME "; S$
+    Locate 18: Input "16. STADIUM NAME "; stad$
     Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
     Locate 20: Input "18. POWER RATING "; teamRatings%(4)
     Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
@@ -116,7 +116,8 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
         Locate 21, 37
         Print "TEAM APPEARANCE: ";
         Locate 22, 37
-        Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+        Color teamRatings%(2), teamRatings%(1)
+        Print RTrim$(teamName$) + " " + RTrim$(mascot$)
         Color 15, 0
     End If
 
@@ -177,7 +178,7 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
                     Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
 
                 Case 16
-                    Locate 18: Input "16. STADIUM NAME "; S$
+                    Locate 18: Input "16. STADIUM NAME "; stad$
 
                 Case 17
                     Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
@@ -192,7 +193,8 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1)
+                        Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
@@ -203,7 +205,8 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(A$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1)
+                        Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 

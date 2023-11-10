@@ -81,9 +81,9 @@ Sub MergeStats ()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
     Shared CRD!(), CRDR!()
-    Shared LC!(), LCR!(), LF!(), LFR!()
-    Shared LI!(), LIR!(), LK!(), LKR!(), LP!(), LPR!()
-    Shared LR!(), LRR!(), PK!(), PKR!()
+    Shared statsLC!(), LCR!(), statsLF!(), LFR!()
+    Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
+    Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
@@ -265,37 +265,37 @@ Sub MergeStats ()
                         Next
 
                         For I = 0 To 9: 
-                            Input #3, LR!(I)
+                            Input #3, statsLR!(I)
                             Input #3, statsLR$(I, 0)
                             Input #3, statsLR$(I, 1)
                         Next
 
                         For I = 0 To 15: 
-                            Input #3, LC!(I)
+                            Input #3, statsLC!(I)
                             Input #3, statsLC$(I, 0)
                             Input #3, statsLC$(I, 1)
                         Next
 
                         For I = 0 To 3: 
-                            Input #3, LP!(I)
+                            Input #3, statsLP!(I)
                             Input #3, statsLP$(I, 0)
                             Input #3, statsLP$(I, 1)
                         Next
 
                         For I = 0 To 2: 
-                            Input #3, LK!(I)
+                            Input #3, statsLK!(I)
                             Input #3, statsLK$(I, 0)
                             Input #3, statsLK$(I, 1)
                         Next
 
                         For I = 0 To 2: 
-                            Input #3, PK!(I)
+                            Input #3, statsPK!(I)
                             Input #3, statsPK$(I, 0)
                             Input #3, statsPK$(I, 1)
                         Next
 
                         For I = 0 To 1: 
-                            Input #3, LF!(I)
+                            Input #3, statsLF!(I)
                             Input #3, statsLF$(I)
                             For I1 = 0 To 4: 
                                 Input #3, AM!(I, I1)
@@ -304,7 +304,7 @@ Sub MergeStats ()
                         Next
 
                         For I = 0 To 9: 
-                            Input #3, LI!(I)
+                            Input #3, statsLI!(I)
                             Input #3, statsLI$(I, 0)
                             Input #3, statsLI$(I, 1)
                         Next
@@ -472,9 +472,9 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Shared AF!(), AFR!(), AMR!(), AM!()
     Shared CRD!(), CRDR!()
-    Shared LC!(), LCR!(), LF!(), LFR!()
-    Shared LI!(), LIR!(), LK!(), LKR!(), LP!(), LPR!()
-    Shared LR!(), LRR!(), PK!(), PKR!()
+    Shared statsLC!(), LCR!(), statsLF!(), LFR!()
+    Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
+    Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
@@ -531,48 +531,48 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
     Next
 
     For I = 0 To 9
-        If LRR!(I) > LR!(I) Then
-            LR!(I) = LRR!(I)
+        If LRR!(I) > statsLR!(I) Then
+            statsLR!(I) = LRR!(I)
             statsLR$(I, 0) = LRR$(I, 0)
             statsLR$(I, 1) = LRR$(I, 1)
         End If
     Next
 
     For I = 0 To 15
-        If LCR!(I) > LC!(I) Then
-            LC!(I) = LCR!(I)
+        If LCR!(I) > statsLC!(I) Then
+            statsLC!(I) = LCR!(I)
             statsLC$(I, 0) = LCR$(I, 0)
             statsLC$(I, 1) = LCR$(I, 1)
         End If
     Next
 
     For I = 0 To 3:
-        If LPR!(I) > LP!(I) Then
-            LP!(I) = LPR!(I)
+        If LPR!(I) > statsLP!(I) Then
+            statsLP!(I) = LPR!(I)
             statsLP$(I, 0) = statsLR$(I, 0)
             statsLP$(I, 1) = statsLR$(I, 1)
         End If
     Next
 
     For I = 0 To 2:
-        If LKR!(I) > LK!(I) Then
-            LK!(I) = LKR!(I)
+        If LKR!(I) > statsLK!(I) Then
+            statsLK!(I) = LKR!(I)
             statsLK$(I, 0) = LKR$(I, 0)
             statsLK$(I, 1) = LKR$(I, 1)
         End If
     Next
 
     For I = 0 To 2:
-        If PKR!(I) > PK!(I) Then
-            PK!(I) = PKR!(I)
+        If PKR!(I) > statsPK!(I) Then
+            statsPK!(I) = PKR!(I)
             statsPK$(I, 0) = PKR$(I, 0)
             statsPK$(I, 1) = PKR$(I, 1)
         End If
     Next
 
     For I = 0 To 1:
-        If LFR!(I) > LF!(I) Then
-            LF!(I) = LFR!(I)
+        If LFR!(I) > statsLF!(I) Then
+            statsLF!(I) = LFR!(I)
             statsLF$(I) = LFR$(I)
         End If
     Next
@@ -585,8 +585,8 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
     Next
 
     For I = 0 To 9
-        If LIR!(I) > LI!(I) Then
-            LI!(I) = LIR!(I)
+        If LIR!(I) > statsLI!(I) Then
+            statsLI!(I) = LIR!(I)
             statsLI$(I, 0) = LIR$(I, 0)
             statsLI$(I, 1) = LIR$(I, 1)
         End If
@@ -625,37 +625,37 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
     Next
 
     For I = 0 To 9:
-        Print #1, LR!(I)
+        Print #1, statsLR!(I)
         Print #1, statsLR$(I, 0)
         Print #1, statsLR$(I, 1)
     Next
 
     For I = 0 To 15:
-        Print #1, LC!(I)
+        Print #1, statsLC!(I)
         Print #1, statsLC$(I, 0)
         Print #1, statsLC$(I, 1)
     Next
 
     For I = 0 To 3:
-        Print #1, LP!(I)
+        Print #1, statsLP!(I)
         Print #1, statsLP$(I, 0)
         Print #1, statsLP$(I, 1)
     Next
 
     For I = 0 To 2:
-        Print #1, LK!(I)
+        Print #1, statsLK!(I)
         Print #1, statsLK$(I, 0)
         Print #1, statsLK$(I, 1)
     Next
 
     For I = 0 To 2:
-        Print #1, PK!(I)
+        Print #1, statsPK!(I)
         Print #1, statsPK$(I, 0)
         Print #1, statsPK$(I, 1)
     Next
 
     For I = 0 To 1:
-        Print #1, LF!(I)
+        Print #1, statsLF!(I)
         Print #1, statsLF$(I)
         For I1 = 0 To 4:
             Print #1, AM!(I, I1)
@@ -664,7 +664,7 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
     Next
 
     For I = 0 To 9:
-        Print #1, LI!(I)
+        Print #1, statsLI!(I)
         Print #1, statsLI$(I, 0)
         Print #1, statsLI$(I, 1)
     Next
