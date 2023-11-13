@@ -134,18 +134,21 @@ Sub MergeFirstYear
     Dim careerAF!(9, 4), careerAM!(9, 4)
     Dim careerLR!(50), careerLC!(60), careerLP!(20), careerLK!(15)
     Dim careerPK!(15)
+
     Shared careerFGS!(), careerGIS!(), careerGSS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared statsLF!(), statsLI!()
     Shared QBBS!(), RBBS!(), WRRS!()
 
+    Shared careerWRS$()
     Shared KRRS$(), PRRS$()
+    Shared statsLF$(), statsLI$()
+
+    Dim careerGS%(55, 1), careerGI%(55, 2)
+
     Dim careerLC$(60, 1), careerLK$(15, 1)
     Dim careerLP$(20, 1), careerLR$(50, 1)
     Dim careerPK$(15, 1)
-    Shared statsLF$(), statsLI$(), careerWRS$()
-
-    Dim careerGS%(55, 1), careerGI%(55, 2)
 
     NB = -1
     NC = -1

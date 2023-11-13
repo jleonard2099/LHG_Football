@@ -141,7 +141,7 @@ Sub FOOTBALL ()
         Next
 
         For X = 0 To 1:
-            YN$(X) = Q$(22 + X)
+            teamYearsTxt$(X) = Q$(22 + X)
         Next
 
         Close #7
@@ -150,7 +150,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Open "pbplog" For Append As #11
+        'Open "pbplog" For Append As #11
 
     End If
 
@@ -267,11 +267,11 @@ Sub FOOTBALL ()
                         If playerOpt > 3 Then playerOpt = 0
 
                     Case 2:
-                        Call ChooseGameTeam(NN$(0), NTMS, teamNbr, gameTeams$(0), 0)
+                        Call ChooseGameTeam(teamYearsTxt$(0), NTMS, teamNbr, gameTeams$(0), 0)
                         teamIdx_GAME(0) = teamNbr
 
                     Case 3:
-                        Call ChooseGameTeam(NN$(1), NTMS, teamNbr, gameTeams$(1), 1)
+                        Call ChooseGameTeam(teamYearsTxt$(1), NTMS, teamNbr, gameTeams$(1), 1)
                         teamIdx_GAME(1) = teamNbr
 
                     Case 4:
@@ -384,7 +384,7 @@ Sub FOOTBALL ()
 
     Else
 
-        If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc)) Then
+        If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYearsTxt$(gameLoc)) Then
             'Generic stadium and attendance
             gameStadium$ = "MEMORIAL STADIUM"
 
@@ -393,7 +393,7 @@ Sub FOOTBALL ()
 
         Else
 
-            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + NN$(gameLoc) For Random As #9 Len = DATA_SIZE_BYTES
+            Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYearsTxt$(gameLoc) For Random As #9 Len = DATA_SIZE_BYTES
 
             Field #9, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
@@ -2399,12 +2399,12 @@ Sub FOOTBALL ()
 
                         If endZone = 1 Then ballFumbled = 0: Call TryForTwoResult
 
-                        If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then 
+                        If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
                             ballFumbled = 0
                             GoTo 3250
                         End If
 
-                        If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then 
+                        If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
                             ballFumbled = 0
                             gameStats(P1, 0) = gameStats(P1, 0) + 1
                             GoTo 3200
@@ -3435,17 +3435,17 @@ Sub FOOTBALL ()
 
     Call SCOREBOARD
 
-    If ruleOptType <> 0 And goalPostAdj < 0 Then 
+    If ruleOptType <> 0 And goalPostAdj < 0 Then
         ydLine = 40
         ydsToScore = 60
     End If
 
-    If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then 
+    If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then
         ydLine = 30
         ydsToScore = 70
     End If
 
-    If ruleOptType = 0 And ruleOptColl = 0 Then 
+    If ruleOptType = 0 And ruleOptColl = 0 Then
         ydLine = 40
         ydsToScore = 60
     End If
@@ -3976,7 +3976,7 @@ Sub FOOTBALL ()
                 If Not (autoPlay = 1 And playerMode = 2) Then
                     Do
                         pbpString$ = "DISPLAY STATS AGAIN? (Y/N)"
-                        Locate 7, (80 - Len(U$)) / 2
+                        Locate 7, (80 - Len(pbpString$)) / 2
                         Print pbpString$
                         Color 15, 0
                         I$ = GetKeyPress$

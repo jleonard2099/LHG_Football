@@ -198,11 +198,11 @@ End Sub
 'found, notifying the user
 Function FindStatsPro% (XW, statFile$, numberGames%)
 
-    Shared compAP%()
-    Shared H1$(), statsH$(), statsO$()
+    Shared powerRating()
+    Shared H1$(), locIndicator$(), oppName$()
 
     Shared statsGI%(), statsGS%()
-    Shared compT%(), statsO%()
+    Shared oppScore(), teamScore()
 
     If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
@@ -219,9 +219,9 @@ Function FindStatsPro% (XW, statFile$, numberGames%)
         fullTies = 0
 
         For I = 1 To numberGames%
-            If statsO%(I) > compT%(I) Then fullWins = fullWins + 1
-            If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1
-            If statsO%(I) = compT%(I) Then fullTies = fullTies + 1
+            If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1
+            If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1
+            If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1
         Next
 
         Cls
@@ -1543,7 +1543,7 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared TRC$(), TT$()
 
-    Shared compT%(), statsO%()
+    Shared oppScore(), teamScore()
 
     Cls
 
@@ -1686,8 +1686,8 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
     OPTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + statsO%(I)
-        OPTS = OPTS + compT%(I)
+        PTS = PTS + teamScore(I)
+        OPTS = OPTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
@@ -1720,7 +1720,7 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + compT%(I)
+        PTS = PTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$

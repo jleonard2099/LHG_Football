@@ -69,27 +69,31 @@ Sub MergeStats ()
 
     Dim allGames, roadGames
 
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
-    Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared intName$(), DRI$(), sackName$(), DSR$()
-    Shared statsH$(), HR$()
-    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
-    Shared statsLI$(), LIR$(), statsLK$(), LKR$()
-    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared statsO$(), statsPK$(), PKR$()
-    Shared gameSite$(), gameSiteRoad$()
+    Shared APR%(), GIR%(), GSR%()
+    Shared oppScore(), powerRating()
+    Shared statsGI%(), statsGS%()
+    Shared teamScore(), TR%()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
-    Shared CRD!(), CRDR!()
+    Shared CRDR!(), gameAttendance&()
     Shared statsLC!(), LCR!(), statsLF!(), LFR!()
     Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
     Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
-    Shared compAP%(), APR%()
-    Shared statsGI%(), GIR%(), statsGS%(), GSR%()
-    Shared statsO%(), compT%(), TR%()
+    Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
+    Shared DRI$(), DSR$(), intName$()
+    Shared gameSite$(), gameSiteRoad$()
+    Shared HR$(), krName$(), locIndicator$()
+    Shared oppName$(), PKR$(), prName$(), punterName$(), pkName$()
+    Shared qbName$(), rbName$(), sackName$(), wrName$()
+
+    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
+    Shared statsLI$(), LIR$(), statsLK$(), LKR$()
+    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
+    Shared statsPK$()
+
 
     Shared ORD$()
     Shared ORD%()
@@ -210,19 +214,35 @@ Sub MergeStats ()
 
                     Input #2, roadGames
 
-                    For I = 1 To NUM_STATRECORDS: Input #2, ORD%(I): Next I
-                    For I = 1 To NUM_STATRECORDS: Input #2, ORD$(I): Next I
-                    For I = 1 To NUM_STATRECORDS: Input #2, TR%(I): Next I
-                    For I = 1 To NUM_STATRECORDS: Input #2, HR$(I): Next I
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, ORD%(I)
+                    Next I
+                    
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, ORD$(I)
+                    Next I
+                    
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, TR%(I)
+                    Next I
+                    
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, HR$(I)
+                    Next I
 
                     For I = 0 To 1
-                        For I1 = 1 To NUM_STATRECORDS: 
+                        For I1 = 1 To MAX_SCHED_STATS: 
                             Input #2, APR%(I, I1)
                         Next
                     Next
 
-                    For I = 1 To NUM_STATRECORDS: Input #2, CRDR!(I): Next I
-                    For I = 1 To NUM_STATRECORDS: Input #2, gameSiteRoad$(I): Next I
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, CRDR!(I)
+                    Next I
+
+                    For I = 1 To MAX_SCHED_STATS: 
+                        Input #2, gameSiteRoad$(I)
+                    Next I
 
                     Close #2
 
@@ -232,23 +252,45 @@ Sub MergeStats ()
 
                         Input #3, B$
 
-                        For I = 0 To 9: Input #3, rbName$(I): Next I
-                        For I = 0 To 5: Input #3, wrName$(I): Next I
-                        For I = 0 To 3: Input #3, qbName$(I): Next I
-                        For I = 0 To 2: Input #3, krName$(I): Next I
-                        For I = 0 To 2: Input #3, prName$(I): Next I
+                        For I = 0 To 9: 
+                            Input #3, rbName$(I)
+                        Next I
+                        
+                        For I = 0 To 5: 
+                            Input #3, wrName$(I)
+                        Next I
+                        
+                        For I = 0 To 3: 
+                            Input #3, qbName$(I)
+                        Next I
+                        
+                        For I = 0 To 2: 
+                            Input #3, krName$(I)
+                        Next I
+                        
+                        For I = 0 To 2: 
+                            Input #3, prName$(I)
+                        Next I
 
                         Input #3, punterName$(0)
 
-                        For I = 0 To 1: Input #3, pkName$(I): Next I
+                        For I = 0 To 1: 
+                            Input #3, pkName$(I)
+                        Next I
 
                         For J = 0 To 13
-                            For K = 0 To 17: Input #3, statsZ2!(J, K): Next K
+                            For K = 0 To 17: 
+                                Input #3, statsZ2!(J, K)
+                            Next K
                         Next J
 
-                        For L = 0 To 38: Input #3, statsZ!(L): Next L
+                        For L = 0 To 38: 
+                            Input #3, statsZ!(L)
+                        Next L
 
-                        For L = 0 To 38: Input #3, statsZ1!(L): Next L
+                        For L = 0 To 38: 
+                            Input #3, statsZ1!(L)
+                        Next L
 
                         For J = 0 To 9: 
                             Input #3, intName$(J)
@@ -315,19 +357,35 @@ Sub MergeStats ()
 
                         Input #4, allGames
 
-                        For I = 1 To NUM_STATRECORDS: Input #4, statsO%(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, statsO$(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, compT%(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, statsH$(I): Next I
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, teamScore(I)
+                        Next I
+
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, oppName$(I)
+                        Next I
+
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, oppScore(I)
+                        Next I
+
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, locIndicator$(I)
+                        Next I
 
                         For I = 0 To 1
-                            For I1 = 1 To NUM_STATRECORDS: 
-                                Input #4, compAP%(I, I1)
+                            For I1 = 1 To MAX_SCHED_STATS: 
+                                Input #4, powerRating(I, I1)
                             Next
                         Next
 
-                        For I = 1 To NUM_STATRECORDS: Input #4, CRD!(I): Next I
-                        For I = 1 To NUM_STATRECORDS: Input #4, gameSite$(I): Next I
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, gameAttendance&(I)
+                        Next I
+                        
+                        For I = 1 To MAX_SCHED_STATS: 
+                            Input #4, gameSite$(I)
+                        Next I
 
                         Close #4
 
@@ -462,38 +520,38 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
     Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
     Shared intName$(), DRI$(), sackName$(), DSR$()
-    Shared statsH$(), HR$()
+    Shared locIndicator$(), HR$()
     Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
     Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared statsO$(), statsPK$(), PKR$()
+    Shared oppName$(), statsPK$(), PKR$()
     Shared gameSite$(), gameSiteRoad$()
     Shared ORD$()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
-    Shared CRD!(), CRDR!()
+    Shared gameAttendance&(), CRDR!()
     Shared statsLC!(), LCR!(), statsLF!(), LFR!()
     Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
     Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
-    Shared compAP%(), APR%()
-    Shared ORD%()
-    Shared statsGI%(), GIR%(), statsGS%(), GSR%()
-    Shared statsO%(), compT%(), TR%()
+    Shared APR%(), oppScore(), ORD%()
+    Shared GIR%(), GSR%(), powerRating()
+    Shared statsGI%(), statsGS%()
+    Shared teamScore(), TR%()
 
     For K = 1 To roadGames
         allGames = allGames + 1
-        statsO%(allGames) = ORD%(K)
-        statsO$(allGames) = ORD$(K)
-        compT%(allGames) = TR%(K)
-        statsH$(allGames) = HR$(K)
-        CRD!(allGames) = CRDR!(K)
+        teamScore(allGames) = ORD%(K)
+        oppName$(allGames) = ORD$(K)
+        oppScore(allGames) = TR%(K)
+        locIndicator$(allGames) = HR$(K)
+        gameAttendance&(allGames) = CRDR!(K)
         gameSite$(allGames) = gameSiteRoad$(K)
 
         For I = 0 To 1
-            compAP%(I, allGames) = APR%(I, K)
+            powerRating(I, allGames) = APR%(I, K)
         Next
     Next
 
@@ -596,27 +654,51 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Print #1, B$
 
-    For I = 0 To 9: Print #1, rbName$(I): Next I
-    For I = 0 To 5: Print #1, wrName$(I): Next I
-    For I = 0 To 3: Print #1, qbName$(I): Next I
-    For I = 0 To 2: Print #1, krName$(I): Next I
-    For I = 0 To 2: Print #1, prName$(I): Next I
+    For I = 0 To 9: 
+        Print #1, rbName$(I)
+    Next I
+
+    For I = 0 To 5: 
+        Print #1, wrName$(I)
+    Next I
+
+    For I = 0 To 3: 
+        Print #1, qbName$(I)
+    Next I
+
+    For I = 0 To 2: 
+        Print #1, krName$(I)
+    Next I
+
+    For I = 0 To 2: 
+        Print #1, prName$(I)
+    Next I
 
     Print #1, punterName$(0)
 
-    For I = 0 To 1: Print #1, pkName$(I): Next I
+    For I = 0 To 1: 
+        Print #1, pkName$(I)
+    Next I
 
     For J = 0 To 13
-        For K = 0 To 17: Print #1, statsZ2!(J, K): Next K
+        For K = 0 To 17: 
+            Print #1, statsZ2!(J, K)
+        Next K
     Next J
 
-    For L = 0 To 38: Print #1, statsZ!(L): Next L
+    For L = 0 To 38: 
+        Print #1, statsZ!(L)
+    Next L
 
-    For L = 0 To 38: Print #1, statsZ1!(L): Next L
+    For L = 0 To 38: 
+        Print #1, statsZ1!(L)
+    Next L
 
     For J = 0 To 9:
         Print #1, intName$(J)
-        For J1 = 0 To 2: Print #1, statsGI%(J, J1): Next
+        For J1 = 0 To 2: 
+            Print #1, statsGI%(J, J1)
+        Next
     Next
 
     For J = 0 To 14:
@@ -675,26 +757,40 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Write #2, allGames
 
-    For I = 1 To NUM_STATRECORDS: Write #2, statsO%(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, teamScore(I)
+    Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, statsO$(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, oppName$(I)
+    Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, compT%(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, oppScore(I)
+    Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, statsH$(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, locIndicator$(I)
+    Next I
 
     For I = 0 To 1
-
-        For I1 = 1 To NUM_STATRECORDS: Write #2, compAP%(I, I1): Next
+        For I1 = 1 To MAX_SCHED_STATS: 
+            Write #2, powerRating(I, I1)
+        Next
     Next
 
-    For I = 1 To NUM_STATRECORDS: Write #2, CRD!(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, gameAttendance&(I)
+    Next I
 
-    For I = 1 To NUM_STATRECORDS: Write #2, gameSite$(I): Next I
+    For I = 1 To MAX_SCHED_STATS: 
+        Write #2, gameSite$(I)
+    Next I
 
     Close #2
 
     Y = 0
+
     Locate 20, 20: Color 12: Print "RESULTS SUCCESSFULLY MERGED!!"
 
 End Sub

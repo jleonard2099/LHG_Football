@@ -10,7 +10,7 @@ Sub CompileCollege ()
 
     _Title "3-in-1 Football - Update Conference Stats"
 
-    Shared compT%()
+    Shared oppScore()
 
     Shared BRC!(), compTT!()
     Shared O1!(), O2!(), O3!()
@@ -205,11 +205,11 @@ End Sub
 'found, notifying the user
 Function FindStatsColl% (XW, statFile$, numberGames%)
 
-    Shared compAP%(), statsO%(), compT%()
+    Shared powerRating(), teamScore(), oppScore()
 
     Shared PTSA!(), PTSF!()
 
-    Shared H1$(), statsH$(), statsO$()
+    Shared H1$(), locIndicator$(), oppName$()
 
     If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
@@ -233,7 +233,7 @@ Function FindStatsColl% (XW, statFile$, numberGames%)
 
         For I = 1 To numberGames%
 
-            statName$ = nameStatFile$(statsO$(I))
+            statName$ = nameStatFile$(oppName$(I))
             confGame = 0
 
             For EC = 1 To 30
@@ -246,15 +246,15 @@ Function FindStatsColl% (XW, statFile$, numberGames%)
             Next EC
 
             If confGame <> 1 Then
-                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1
+                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1
+                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1
+                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1
             Else
-                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
-                PTSFC = PTSFC + statsO%(I)
-                PTSAC = PTSAC + compT%(I)
+                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+                PTSFC = PTSFC + teamScore(I)
+                PTSAC = PTSAC + oppScore(I)
             End If
 
             EC = 0
@@ -1600,7 +1600,7 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared TRC$(), TT$()
 
-    Shared compT%(), statsO%()
+    Shared oppScore(), teamScore()
 
     Cls
 
@@ -1727,8 +1727,8 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
     OPTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + statsO%(I)
-        OPTS = OPTS + compT%(I)
+        PTS = PTS + teamScore(I)
+        OPTS = OPTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
@@ -1759,7 +1759,7 @@ Sub StatsByCategoryColl (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + compT%(I)
+        PTS = PTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$

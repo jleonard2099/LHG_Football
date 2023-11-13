@@ -2,7 +2,7 @@
 '          BLANKORG Subroutine
 '----------------------------------------
 'This routine assists the user in choosing
-'a national org, and then proceeds to delete 
+'a national org, and then proceeds to delete
 ' all stats files for all associated teams
 Sub BLANKORG ()
 
@@ -57,7 +57,7 @@ Sub BLANKORG ()
             For XW = 1 To 30
 
                 If teamName$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(2) + teamName$(XW)
+                    statFile$ = diskPaths$(1) + teamName$(XW)
                     Print "DELETING "; teamName$(XW); " STATS"
                     If _FileExists(statFile$) Then Kill statFile$
                     If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"

@@ -54,7 +54,7 @@ Sub Hd2HdPro_League (X2)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
-    Shared AL!(), AL2!(), AW!(), AW2!()
+    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
     Shared G3!(), G32!(), G4!(), G42!()
     Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
@@ -65,11 +65,11 @@ Sub Hd2HdPro_League (X2)
     Shared THL!(), THL2!(), THW!(), THW2!()
     Shared THT!(), THT2!(), TRT!(), TRT2!()
 
-    Shared statsO%(), compT%(), statsZ1%()
+    Shared teamScore(), oppScore(), statsZ1%()
 
     Dim Z12%(30)
 
-    Shared DV$(), DV2$(), statsH$(), statsO$()
+    Shared DV$(), DV2$(), locIndicator$(), oppName$()
     Shared statsZ1$(), Z12$(), statsZ2$(), Z22$()
 
     newTeam = 1
@@ -101,13 +101,21 @@ Sub Hd2HdPro_League (X2)
 
             Input #1, YY%
 
-            For I = 1 To NUM_STATRECORDS: Input #1, statsO%(I): Next I
+            For I = 1 To MAX_SCHED_STATS: 
+                Input #1, teamScore(I)
+            Next I
 
-            For I = 1 To NUM_STATRECORDS: Input #1, statsO$(I): Next I
+            For I = 1 To MAX_SCHED_STATS: 
+                Input #1, oppName$(I)
+            Next I
 
-            For I = 1 To NUM_STATRECORDS: Input #1, compT%(I): Next I
+            For I = 1 To MAX_SCHED_STATS: 
+                Input #1, oppScore(I)
+            Next I
 
-            For I = 1 To NUM_STATRECORDS: Input #1, statsH$(I): Next I
+            For I = 1 To MAX_SCHED_STATS: 
+                Input #1, locIndicator$(I)
+            Next I
 
             Close #1
 
@@ -233,7 +241,7 @@ Sub Hd2HdPro_League (X2)
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
         'Initialization for 1st league
-        Erase AL!, AW!
+        Erase awayLosses!, awayWins!
         Erase G1!, G2!, G3!, G4!
         Erase HL!, HT!, HW!, RT!
         Erase TAL!, TAW!, THL!, TRT!
@@ -245,16 +253,16 @@ Sub Hd2HdPro_League (X2)
             If statsZ1$(K) <> "XXX" Then
 
                 For I = 1 To YY%
-                    If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then AW!(K) = AW!(K) + 1
-                    If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
-                    If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then AL!(K) = AL!(K) + 1
-                    If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
-                    If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
-                    If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
-                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "H" Then G1!(K) = G1!(K) + statsO%(I)
-                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "H" Then G2!(K) = G2!(K) + compT%(I)
-                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "A" Then G3!(K) = G3!(K) + statsO%(I)
-                    If statsO$(I) = statsZ1$(K) And Left$(statsH$(I), 1) = "A" Then G4!(K) = G4!(K) + compT%(I)
+                    If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayWins!(K) = awayWins!(K) + 1
+                    If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
+                    If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayLosses!(K) = awayLosses!(K) + 1
+                    If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
+                    If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
+                    If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
+                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G1!(K) = G1!(K) + teamScore(I)
+                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G2!(K) = G2!(K) + oppScore(I)
+                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G3!(K) = G3!(K) + teamScore(I)
+                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G4!(K) = G4!(K) + oppScore(I)
                 Next I
 
             End If
@@ -278,16 +286,16 @@ Sub Hd2HdPro_League (X2)
 
                     For I = 1 To YY%
 
-                        If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
-                        If statsO%(I) > compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
-                        If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
-                        If statsO%(I) < compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
-                        If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "A" And statsO$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
-                        If statsO%(I) = compT%(I) And Left$(statsH$(I), 1) = "H" And statsO$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
-                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G12!(K) = G12!(K) + statsO%(I)
-                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "H" Then G22!(K) = G22!(K) + compT%(I)
-                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G32!(K) = G32!(K) + statsO%(I)
-                        If statsO$(I) = Z12$(K) And Left$(statsH$(I), 1) = "A" Then G42!(K) = G42!(K) + compT%(I)
+                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
+                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
+                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
+                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
+                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
+                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
+                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G12!(K) = G12!(K) + teamScore(I)
+                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G22!(K) = G22!(K) + oppScore(I)
+                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G32!(K) = G32!(K) + teamScore(I)
+                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G42!(K) = G42!(K) + oppScore(I)
 
                     Next I
 
@@ -383,7 +391,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     Shared teamRatings%()
 
-    Shared AL!(), AL2!(), AW!(), AW2!()
+    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
     Shared G3!(), G32!(), G4!(), G42!()
     Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
@@ -445,8 +453,8 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
                 Color 3: Print Tab(35); Chr$(179);
 
                 Color 7
-                Locate , 36: Print Using "##"; AW!(K);
-                Locate , 39: Print Using "##"; AL!(K);
+                Locate , 36: Print Using "##"; awayWins!(K);
+                Locate , 39: Print Using "##"; awayLosses!(K);
                 Locate , 42: Print Using "##"; RT!(K);
                 Locate , 47: Print Using "##"; G3!(K);
                 Locate , 51: Print Using "##"; G4!(K);
@@ -454,8 +462,8 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
                 Color 3: Print Tab(53); Chr$(179);
 
                 Color 7
-                Locate , 54: Print Using "##"; HW!(K) + AW!(K);
-                Locate , 57: Print Using "##"; HL!(K) + AL!(K);
+                Locate , 54: Print Using "##"; HW!(K) + awayWins!(K);
+                Locate , 57: Print Using "##"; HL!(K) + awayLosses!(K);
                 Locate , 60: Print Using "##"; HT!(K) + RT!(K);
                 Locate , 64: Print Using "###"; G1!(K) + G3!(K);
                 Locate , 68: Print Using "###"; G2!(K) + G4!(K)
@@ -464,8 +472,8 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
                 THW!(RDD) = THW!(RDD) + HW!(K)
                 THL!(RDD) = THL!(RDD) + HL!(K)
-                TAW!(RDD) = TAW!(RDD) + AW!(K)
-                TAL!(RDD) = TAL!(RDD) + AL!(K)
+                TAW!(RDD) = TAW!(RDD) + awayWins!(K)
+                TAL!(RDD) = TAL!(RDD) + awayLosses!(K)
                 TRT!(RDD) = TRT!(RDD) + RT!(K)
                 THT!(RDD) = THT!(RDD) + HT!(K)
                 TG1!(RDD) = TG1!(RDD) + G1!(K)
@@ -858,7 +866,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     Shared div1$, div2$, div3$
 
-    Shared AL!(), AL2!(), AW!(), AW2!()
+    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
     Shared G3!(), G32!(), G4!(), G42!()
     Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
@@ -946,20 +954,20 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
                     Print #1, Tab(23); Using "##"; HT!(K);
                     Print #1, Tab(27); Using "###"; G1!(K);
                     Print #1, Tab(32); Using "###"; G2!(K);
-                    Print #1, Tab(38); Using "##"; AW!(K);
-                    Print #1, Tab(41); Using "##"; AL!(K);
+                    Print #1, Tab(38); Using "##"; awayWins!(K);
+                    Print #1, Tab(41); Using "##"; awayLosses!(K);
                     Print #1, Tab(44); Using "##"; RT!(K);
                     Print #1, Tab(48); Using "###"; G3!(K);
                     Print #1, Tab(52); Using "###"; G4!(K);
-                    Print #1, Tab(58); Using "##"; HW!(K) + AW!(K);
-                    Print #1, Tab(61); Using "##"; HL!(K) + AL!(K);
+                    Print #1, Tab(58); Using "##"; HW!(K) + awayWins!(K);
+                    Print #1, Tab(61); Using "##"; HL!(K) + awayLosses!(K);
                     Print #1, Tab(64); Using "##"; HT!(K) + RT!(K);
                     Print #1, Tab(68); Using "###"; G1!(K) + G3!(K);
                     Print #1, Tab(72); Using "###"; G2!(K) + G4!(K)
                     THW!(RDD) = THW!(RDD) + HW!(K)
                     THL!(RDD) = THL!(RDD) + HL!(K)
-                    TAW!(RDD) = TAW!(RDD) + AW!(K)
-                    TAL!(RDD) = TAL!(RDD) + AL!(K)
+                    TAW!(RDD) = TAW!(RDD) + awayWins!(K)
+                    TAL!(RDD) = TAL!(RDD) + awayLosses!(K)
                     TRT!(RDD) = TRT!(RDD) + RT!(K)
                     THT!(RDD) = THT!(RDD) + HT!(K)
                     TG1!(RDD) = TG1!(RDD) + G1!(K)

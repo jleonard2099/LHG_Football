@@ -2,8 +2,8 @@
 '          BLANKCOL Subroutine
 '----------------------------------------
 'This routine assists the user in choosing
-'a college conference, and then proceeds to 
-'delete all stats files for all associated 
+'a college conference, and then proceeds to
+'delete all stats files for all associated
 'teams in the conference
 Sub BLANKCOL ()
 
@@ -38,7 +38,7 @@ Sub BLANKCOL ()
             For XW = 1 To 30
 
                 If H1$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(2) + H1$(XW)
+                    statFile$ = diskPaths$(1) + H1$(XW)
                     Print "DELETING " + H1$(XW) + " STATS"
                     If _FileExists(statFile$) Then Kill statFile$
                     If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"

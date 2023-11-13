@@ -10,7 +10,7 @@ Sub CompileNatlOrg ()
 
     _Title "3-in-1 Football - Update Org Stats"
 
-    Shared compT%()
+    Shared oppScore()
 
     Shared BRC!(), compTT!(), compZ1!()
     Shared N1!(), NT!()
@@ -1477,7 +1477,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
 
     Shared TRC$(), TT$()
 
-    Shared compT%(), statsO%()
+    Shared oppScore(), teamScore()
 
     Cls
 
@@ -1605,8 +1605,8 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     OPTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + statsO%(I)
-        OPTS = OPTS + compT%(I)
+        PTS = PTS + teamScore(I)
+        OPTS = OPTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > TRC!(13) Then TRC!(13) = PTS / numberGames%: TRC$(13) = TM$
@@ -1638,7 +1638,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
 
     For I = 1 To numberGames%
-        PTS = PTS + compT%(I)
+        PTS = PTS + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < TRC!(39) Then TRC!(39) = PTS / numberGames%: TRC$(39) = TM$
@@ -1888,9 +1888,9 @@ End Sub
 '...explanation...
 Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
 
-    Shared H1$(), PT$(), statsH$(), statsO$()
+    Shared H1$(), PT$(), locIndicator$(), oppName$()
 
-    Shared compAP%(), compT%(), statsO%()
+    Shared powerRating(), oppScore(), teamScore()
 
     Shared PT!(), PTSA!(), PTSF!()
 
@@ -1949,7 +1949,7 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
 
             For EC = 1 To 30
 
-                If statsO$(I) = H1$(EC) Then
+                If oppName$(I) = H1$(EC) Then
                     confGame = 1
                     Exit For
                 End If
@@ -1957,17 +1957,17 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
             Next EC
 
             If confGame <> 1 Then
-                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1
-                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1
-                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1
+                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1
+                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1
+                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1
             Else
-                If statsO%(I) > compT%(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If statsO%(I) < compT%(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If statsO%(I) = compT%(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1: confWins = confWins + 1
+                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
+                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1: confTies = confTies + 1
             End If
 
-            PTSFC = PTSFC + statsO%(I)
-            PTSAC = PTSAC + compT%(I)
+            PTSFC = PTSFC + teamScore(I)
+            PTSAC = PTSAC + oppScore(I)
             EC = 0
 
         Next I
@@ -1977,7 +1977,7 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
         SS = 0
 
         For I = 1 To numberGames%
-            SS = compAP%(1, I) + SS
+            SS = powerRating(1, I) + SS
         Next
 
         SS = SS / numberGames%
@@ -1987,15 +1987,15 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
         teamPower = 0
 
         For I = 1 To numberGames%
-            RAT = statsO%(I) - compT%(I) + compAP%(1, I)
-            If Left$(statsH$(I), 1) = "H" Then RAT = RAT - 3
-            If Left$(statsH$(I), 1) = "A" Then RAT = RAT + 3
+            RAT = teamScore(I) - oppScore(I) + powerRating(1, I)
+            If Left$(locIndicator$(I), 1) = "H" Then RAT = RAT - 3
+            If Left$(locIndicator$(I), 1) = "A" Then RAT = RAT + 3
             teamPower = teamPower + RAT
         Next
 
         If numberGames% <= 4 Then
             GL = 5 - numberGames%
-            teamPower = teamPower + GL * compAP%(0, 1)
+            teamPower = teamPower + GL * powerRating(0, 1)
         End If
 
         teamPower = teamPower / (numberGames% + GL)
@@ -3010,9 +3010,9 @@ End Sub
 'team's schedule stats file.
 Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
-    Shared statsO$(), statsH$()
+    Shared oppName$(), locIndicator$()
 
-    Shared compAP%(), compT%(), statsO%()
+    Shared powerRating(), oppScore(), teamScore()
 
     Shared PTSA!(), PTSF!()
 
@@ -3020,27 +3020,27 @@ Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
     Input #1, numberGames%
 
-    For I = 1 to NUM_STATRECORDS:
-        Input #1, statsO%(I)
-        PTSF!(XW) = PTSF!(XW) + statsO%(I)
+    For I = 1 to MAX_SCHED_STATS:
+        Input #1, teamScore(I)
+        PTSF!(XW) = PTSF!(XW) + teamScore(I)
     Next I
 
-    For I = 1 to NUM_STATRECORDS:
-        Input #1, statsO$(I)
+    For I = 1 to MAX_SCHED_STATS:
+        Input #1, oppName$(I)
     Next I
 
-    For I = 1 to NUM_STATRECORDS:
-        Input #1, compT%(I)
-        PTSA!(XW) = PTSA!(XW) + compT%(I)
+    For I = 1 to MAX_SCHED_STATS:
+        Input #1, oppScore(I)
+        PTSA!(XW) = PTSA!(XW) + oppScore(I)
     Next I
 
-    For I = 1 to NUM_STATRECORDS:
-        Input #1, statsH$(I)
+    For I = 1 to MAX_SCHED_STATS:
+        Input #1, locIndicator$(I)
     Next I
 
     For I = 0 To 1
-        For I1 = 1 to NUM_STATRECORDS
-            Input #1, compAP%(I, I1)
+        For I1 = 1 to MAX_SCHED_STATS
+            Input #1, powerRating(I, I1)
         Next
     Next
 

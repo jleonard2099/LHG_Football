@@ -1235,10 +1235,13 @@ Sub ViewRoster (team$, teamNbr)
     Shared punterName$(), pkName$(), intName$(), sackName$()
 
     Do
+        Color 15, 0
         Cls
+
         Color 11
         Print "TEAM ROSTER FOR ";
-        Color teamRatings%(2), teamRatings%(1): Print team$;
+        Color teamRatings%(2), teamRatings%(1)
+        Print team$;
 
         Color 11, 0: Print "   TEAM NUMBER =";
         Color 14: Print teamNbr

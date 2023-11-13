@@ -35,13 +35,13 @@ Sub InitVar ()
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
 
-    Shared gamePK$(), HO$(), statsH$(), statStadium$()
+    Shared gamePK$(), oppName$(), locIndicator$(), gameSite$()
     Shared teamIndicator$()
-    Shared teamScore(), tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
 
-    Shared statsO%(), statsPR%()
+    Shared oppScore(), teamScore(), powerRating()
 
-    Shared statsAttendance&()
+    Shared gameAttendance&()
 
     If ruleOptType <> 0 Then
         For I = 1 To 10
@@ -187,52 +187,45 @@ Sub InitVar ()
     targetWRName$ = ""
     YN$ = ""
 
-    Erase gamePK$, HO$, statsH$, statStadium$
-    Erase teamIndicator$
+    Erase gamePK$, oppName$, locIndicator$, gameSite$
     Erase tradeLF$, tradeLI$, tradeLK$, tradeLP$
 
-    Erase statsO%, statsPR%, teamScore
+    Erase oppScore, powerRating, teamScore
 
-    Erase adjF0, adjF1, AF, AM
-    Erase defInts, defSacks, defYdAdj
-    Erase FA, FL, FM
-    Erase gameStats, K1, K2, K3
-    Erase gameZ, gameZ1, gameZ2
-    Erase GI, GS, hasRunFF, ints, IR
-    Erase kickerFGA, kickerFGPct, kickerNumPAT, kickerPATPct
+    Erase AF, AM, defInts, defSacks
+    Erase FA, FM
+    Erase gameLongFG, gameStats, gameZ, gameZ1, gameZ2
+    Erase K1, K2, K3
+    Erase gameInts, gameSacks, hasRunFF, playerInts, IR
+    Erase kickerFGA, kickerFGPct, kickerIdx, kickerPATPct
     Erase kickReturners, krNumRet, krYdsPerRet
     Erase LC, leagRat_GAME, LF, LI, LK, LP, LR
-    Erase nbrPossOT, penaltyYds, PK
-    Erase puntReturners, prNumRet, prYdsPerRet, puntYdsPerP
+    Erase nbrPossOT
+    Erase PK, playerSacks, prNumRet, prYdsPerRet
+    Erase puntReturners, puntYdsPerP
     Erase quarterbacks, qbNumber
     Erase qbArmRat, qbMobility, qbNumAtt, qbCompPct, qbPctInt
     Erase runBacks, rbRushAtt, rbRushAvg, rbNumRec, rbYdsPerC
-    Erase sacks, score, scoreQuarters, scoreTimes, schedGame
-    Erase SI, SK
-    Erase teamIdx_GAME, teamInts, teamSacks, timeouts, timePoss, tmRat_GAME
+    Erase score, scoreQuarters, scoreTimes, schedGame
+    Erase teamIdx_GAME, teamInts, teamSacks, timeouts, timePoss
+    Erase totalInts, totalSacks, tmRat_GAME
     Erase useRandomQB
     Erase W6, WR, wrNumRec, wrYdsPerC, XD, ydsPerComp
 
-    Erase BY%, GL%, HB%
-    Erase NG%, PC%, PS%
-    Erase Q7%, QR%
-    Erase RM%, RN%, RV%
-    Erase S1%, S2%, ST%, SX%
+    Erase HB%, NG%, PC%
+    Erase Q7%, RV%, S1%, ST%, SX%
     Erase teamYears, thirdDownAtt, thirdDownFail
     Erase V4%, WX%
 
-    Erase defPlay$, defInts$, downDesc$, direction$
-    Erase defFormation$, passCov$, defSacks$
-    Erase gameMascots$, gameTeams$, gadget$
-    Erase kicker$, kickRet$, NN$
-    Erase offensePlay$
-    Erase penaltyDesc$, playDesc$, playSelect$
+    Erase defInts$, defSacks$
+    Erase gameMascots$, gameTeams$, kicker$, kickRet$
+    Erase passCov$, playDesc$
     Erase pret$, punter$, qbacks$
-    Erase rbacks$, SX$, tickerPeriod$
-    Erase wdRec$, YN$
+    Erase rbacks$, SX$
+    Erase wdRec$, diskIDs$
 
     Erase gameIR$, gameKR$, gameLC$, gameLR$
-    Erase gamePR$, gameRB$, gameQB$, gameWR$ 
+    Erase gamePR$, gameRB$, gameQB$, gameWR$
 
 End Sub
 
@@ -244,6 +237,16 @@ End Sub
 'eters from a schedule file's data.
 Sub AUTOSETUP
 
+    For P9 = 0 To 1
+
+        teamNbr = NG%(P9)
+        Call ReadGameTeam(diskIDs$(P9), gameTeams$(P9), teamNbr, P9)
+        'NG%(P9) = teamNbr
+        teamIdx_GAME(P9) = NG%(P9)
+        X = 0
+
+    Next P9
+
     'Assign settings from schedule / etc.
     gameLoc = NG%(2)
     ruleOptType = NG%(3)
@@ -252,15 +255,6 @@ Sub AUTOSETUP
     playerMode = NG%(10)
     ruleOptPro = NG%(11)
     tickerStart = NG%(12)
-
-    For P9 = 0 To 1
-
-        teamNbr = NG%(P9)
-        Call ReadGameTeam(YN$(P9), gameTeams$(P9), teamNbr, P9)
-        NG%(P9) = teamNbr
-        X = 0
-
-    Next P9
 
     'If college rules, pre-1974
     If ruleOptPro = 1 And ruleOptType <> 0 Then
@@ -1102,7 +1096,9 @@ Sub TickerSchedule ()
 
     For X = 0 To 20: LSet Q$(X + 1) = MKI$(NG%(X)): Next
 
-    For X = 0 To 1: LSet Q$(22 + X) = YN$(X): Next
+    For X = 0 To 1:
+        LSet Q$(22 + X) = diskIDs$(X)
+    Next
 
     LSet Q$(24) = MKI$(score(0, 0))
     LSet Q$(25) = MKI$(score(1, 0))
@@ -1173,7 +1169,7 @@ Sub SCOUT ()
         K3(I, 2) = Int((I3 / 100) - leagRat_GAME(I1, 2) + .5)
         K3(I, 4) = (puntYdsPerP(I, 0) * 2) + 28
         K3(I, 5) = (kickerFGA(I, Q7%(I)) * 5) + 25
-        K3(I, 6) = kickerNumPAT(I, Q7%(I))
+        K3(I, 6) = kickerIdx(I, Q7%(I))
 
         XE = ydsPerComp(I1) / 100
 
@@ -1227,17 +1223,17 @@ Sub HALFSTART ()
     Y1 = 10
     YF = -Y1
 
-    If ruleOptType <> 0 And goalPostAdj < 0 Then 
+    If ruleOptType <> 0 And goalPostAdj < 0 Then
         ydLine = 40
         ydsToScore = 60
     End If
 
-    If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then 
+    If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then
         ydLine = 30
         ydsToScore = 70
     End If
 
-    If ruleOptType = 0 And ruleOptColl = 0 Then 
+    If ruleOptType = 0 And ruleOptColl = 0 Then
         ydLine = 40
         ydsToScore = 60
     End If
@@ -1267,7 +1263,7 @@ Sub CHOOSEKICKER ()
             Locate , 18
             Print I; "-"; kicker$(I3, I);
             Locate , 36
-            Print Using " ###   ###  ###   ###"; kickerFGA(I3, I) * 5 + 25, kickerFGPct(I3, I), kickerNumPAT(I3, I), kickerPATPct(I3, I)
+            Print Using " ###   ###  ###   ###"; kickerFGA(I3, I) * 5 + 25, kickerFGPct(I3, I), kickerIdx(I3, I), kickerPATPct(I3, I)
         End If
 
         Locate , 1
@@ -1296,7 +1292,7 @@ End Sub
 'care to center the text as well.
 Sub PLACEPBP ()
 
-    pbpString$ = Left$(U$, 76)
+    pbpString$ = Left$(pbpString$, 76)
 
     Color 14 - 7 * BW, 1 - BW
 
@@ -1304,11 +1300,11 @@ Sub PLACEPBP ()
 
     Print String$(74, 46);
 
-    Locate 22, 39 - Len(U$) / 2
+    Locate 22, 39 - Len(pbpString$) / 2
 
-    Print " "; U$; " ";
+    Print " "; pbpString$; " ";
 
-    'Print #9, pbpString$
+    'Print #11, pbpString$
 
 End Sub
 
@@ -1403,7 +1399,7 @@ Sub DisplayField ()
     Locate 2, 40
     Color 1 + BW * 6, 0
     Print Chr$(220)
-    
+
     Locate 3, 2, 0
     Color 15 * (1 - BW), 1 + BW * 6
     Print String$(22, 32); "1  2  3  4   T   ";
@@ -2483,7 +2479,7 @@ Sub PBPINT ()
         RN = Int(Rnd(1) * teamSacks(D)) + 1
 
         For Z1 = 0 To 14
-            M5 = M5 + sacks(D, Z1)
+            M5 = M5 + playerSacks(D, Z1)
             If RN <= M5 Then pbpString$ = defSacks$(D, Z1) + " OF ": Exit For
         Next
 
@@ -3413,13 +3409,13 @@ Sub SETWEATHER ()
 
         'If choice = 0 Then 200
 
-        If choice = 1 Then 
+        If choice = 1 Then
             WX%(4) = -3
             WX%(5) = 1
             WX%(6) = -10
         End If
 
-        If choice = 2 Then 
+        If choice = 2 Then
             WX%(4) = -6
             WX%(5) = 2
             WX%(6) = -20
@@ -3429,13 +3425,13 @@ Sub SETWEATHER ()
 
             I = Int(Rnd(1) * 22) + 1
 
-            If I = 18 Then 
+            If I = 18 Then
                 WX%(4) = -3
                 WX%(5) = 1
                 WX%(6) = -10
             End If
 
-            If I = 7 Then 
+            If I = 7 Then
                 WX%(4) = -6
                 WX%(5) = 2
                 WX%(6) = -20
@@ -3464,29 +3460,29 @@ Sub SETWEATHER ()
         Screen , , 0, 0
 
         'If choice = 0 Then 299
-        If choice = 1 Then 
+        If choice = 1 Then
             WX%(1) = -7
             WX%(2) = -5
             WX%(3) = -10
         End If
 
-        If choice = 2 Then 
+        If choice = 2 Then
             WX%(1) = -15
             WX%(2) = -15
             WX%(3) = -30
         End If
 
         If choice = 3 Then
-        
+
             I = Int(Rnd(1) * 22) + 1
 
-            If I = 14 Then 
+            If I = 14 Then
                 WX%(1) = -7
                 WX%(2) = -5
                 WX%(3) = -10
             End If
 
-            If I = 3 Then 
+            If I = 3 Then
                 WX%(1) = -15
                 WX%(2) = -15
                 WX%(3) = -30
@@ -3553,11 +3549,11 @@ Sub FGMADE ()
         Case 40 To 49
             FM(P1, Q7%(P1), 3) = FM(P1, Q7%(P1), 3) + 1
 
-        Case 50 To FL(P1, Q7%(P1))
+        Case 50 To gameLongFG(P1, Q7%(P1))
             FM(P1, Q7%(P1), 4) = FM(P1, Q7%(P1), 4) + 1
 
-        Case Is > FL(P1, Q7%(P1))
-            FL(P1, Q7%(P1)) = fgAttYds
+        Case Is > gameLongFG(P1, Q7%(P1))
+            gameLongFG(P1, Q7%(P1)) = fgAttYds
 
     End Select
 
@@ -4196,7 +4192,7 @@ Sub KICKOFF ()
 
         If I1 = 2 Then WX%(0) = 1 - D
 
-        If I9 = 1 Then 
+        If I9 = 1 Then
             Call CHANGEPOSS
             winTeam = 1 - winTeam
         End If
@@ -4374,7 +4370,7 @@ Sub FINDINT ()
     RN = Int(Rnd(1) * teamInts(1 - P1)) + 1
 
     For Z1 = 0 To 9
-        M5 = M5 + ints(1 - P1, Z1)
+        M5 = M5 + playerInts(1 - P1, Z1)
         If RN <= M5 Then defTeam$ = defInts$(1 - P1, Z1): Exit For
     Next
 
@@ -4970,11 +4966,11 @@ Sub AdjustCompPct ()
 
     If WX%(0) <> P1 Then
 
-        If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18) Then 
+        If (P2 = 11 Or P2 = 14 Or P2 = 16 Or P2 = 17 Or P2 = 18) Then
             windCmpAdj = WX%(2)
         End If
 
-        If (P2 = 12 Or P2 = 15) Then 
+        If (P2 = 12 Or P2 = 15) Then
             windCmpAdj = WX%(3) + WX%(6)
         End If
 
@@ -5147,8 +5143,8 @@ Sub COMPILER ()
                 If W5 = 1 Then
                     W6(P1, 0) = W6(P1, 0) + 1
                     W6(P1, 1) = W6(P1, 1) + ydsGained * -1
-                    SgameStats(1 - P1, Z1, 0) = SgameStats(1 - P1, Z1, 0) + 1
-                    SgameStats(1 - P1, Z1, 1) = SgameStats(1 - P1, Z1, 1) + ydsGained * -1
+                    gameSacks(1 - P1, Z1, 0) = gameSacks(1 - P1, Z1, 0) + 1
+                    gameSacks(1 - P1, Z1, 1) = gameSacks(1 - P1, Z1, 1) + ydsGained * -1
                 End If
 
                 If HB% = 1 Then HB% = 0
@@ -5250,7 +5246,7 @@ Sub FGDIST ()
 
     I9 = 0
 
-    If WX%(0) = P1 then
+    If WX%(0) = P1 Then
         If WX%(1) = -7 Then I9 = -7
         If WX%(1) = -15 Then I9 = -15
     Else
@@ -5260,18 +5256,24 @@ Sub FGDIST ()
 
     For I = 4 To 0 Step -1:
 
-        If ydLine >= adjF1(I) + goalPostAdj + I9 Then 
-            F2 = adjF0(I) - ((9 - kickerFGA(P1, Q7%(P1))) * 5)
+        If ydLine >= adjF1(I) + goalPostAdj + I9 Then
+            fgSuccessChance = adjF0(I) - ((9 - kickerFGA(P1, Q7%(P1))) * 5)
         End If
 
-        If ydLine >= 68 + goalPostAdj And ydLine >= adjF1(I) + goalPostAdj + I9 Then 
-            F2 = F2 + (ydLine - adjF1(I)) + goalPostAdj - 4 + I9
+        If ydLine >= 68 + goalPostAdj And ydLine >= adjF1(I) + goalPostAdj + I9 Then
+            fgSuccessChance = fgSuccessChance + (ydLine - adjF1(I)) + goalPostAdj - 4 + I9
         End If
 
     Next I
 
-    If F2 <= 0 Then F2 = 5
-    If F2 >= 100 Then F2 = 95
+    'Force there to always be a 5% chance of failure?
+    If fgSuccessChance <= 0 Then
+        fgSuccessChance = 5
+    End If
+
+    If fgSuccessChance >= 100 Then
+        fgSuccessChance = 95
+    End If
 
 End Sub
 
@@ -5503,7 +5505,7 @@ Sub PASSPBP ()
                     RN = Int(Rnd(1) * teamSacks(1 - P1)) + 1
 
                     For Z1 = 0 To 14
-                        M5 = M5 + sacks(1 - P1, Z1)
+                        M5 = M5 + playerSacks(1 - P1, Z1)
                         If RN <= M5 Then defTeam$ = defSacks$(1 - P1, Z1): Exit For
                     Next
 
@@ -6145,7 +6147,7 @@ Sub PCPBP ()
 
     PC = CP
 
-    If CP > ydsGained Then 
+    If CP > ydsGained Then
         CP = ydsGained
         IT = 1
     End If
@@ -6624,7 +6626,7 @@ Sub POSTGAME ()
                 'Using Home Team's color for the box
                 Call TEAMBOX(1, 1)
                 pbpString$ = "DISPLAY STATS AGAIN? (Y/N)"
-                Locate 7, (80 - Len(U$)) / 2
+                Locate 7, (80 - Len(pbpString$)) / 2
                 Print pbpString$
                 Color 15, 0
                 I$ = GetKeyPress$
@@ -6947,7 +6949,7 @@ Sub BOX2FILE (printChoice, NM$)
                 Print #1, Tab(18); Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
 
                 If I1 <= 9 Then
-                    'Longest TD
+                    'Long   TD
                     Print #1, Using "###   ##"; runBacks(I, I1), K2(I, I1, 2)
                 Else
                     'TD
@@ -7109,7 +7111,7 @@ Sub BOX2FILE (printChoice, NM$)
             If K2(I, 4, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
                 'K2(x, 3, 17) = FGM, 1st PK
                 'K2(x, 4, 17) = FGA, 1st PK
 
@@ -7137,7 +7139,7 @@ Sub BOX2FILE (printChoice, NM$)
             If K2(I, 8, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
                 'K2(x, 9, 17) = FGM, 2nd PK
                 'K2(x, 10, 17) = FGA, 2nd PK
 
@@ -7168,9 +7170,9 @@ Sub BOX2FILE (printChoice, NM$)
         Print #1, "IR   YDS   AVG   LG  TD"
 
         For I1 = 0 To 9
-            If SI(I, I1, 0) <> 0 Then
+            If gameInts(I, I1, 0) <> 0 Then
                 Print #1, defInts$(I, I1); Tab(16);
-                Print #1, Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
+                Print #1, Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), Int(gameInts(I, I1, 1) + .5), Int(gameInts(I, I1, 1) + .5) / gameInts(I, I1, 0), IR(I, I1), gameInts(I, I1, 2)
             End If
         Next I1
 
@@ -7184,9 +7186,9 @@ Sub BOX2FILE (printChoice, NM$)
         Print #1, gameTeams$(I); Tab(19);
         Print #1, "NO.   YDS LOST"
         For I1 = 0 To 14
-            If SgameStats(I, I1, 0) <> 0 Then
+            If gameSacks(I, I1, 0) <> 0 Then
                 Print #1, defSacks$(I, I1); Tab(19);
-                Print #1, Using " ##       ##"; SgameStats(I, I1, 0), Int(SgameStats(I, I1, 1) + .5)
+                Print #1, Using " ##       ##"; gameSacks(I, I1, 0), Int(gameSacks(I, I1, 1) + .5)
             End If
         Next I1
         Locate , 1: Print #1,
@@ -7473,11 +7475,13 @@ Sub STATS2SCREEN ()
     Print "TEAM STATISTICS"
 
     Locate , 15
-    Color tmRat_GAME(0, 2), tmRat_GAME(0, 1): Print gameTeams$(0);
+    Color tmRat_GAME(0, 2), tmRat_GAME(0, 1)
+    Print gameTeams$(0);
 
     Color 0, 7
     Locate , 50
-    Color tmRat_GAME(1, 2), tmRat_GAME(1, 1): Print gameTeams$(1)
+    Color tmRat_GAME(1, 2), tmRat_GAME(1, 1)
+    Print gameTeams$(1)
 
     Color 0, 7
     Locate , 20: Print gameStats(0, 0);
@@ -7552,13 +7556,22 @@ Sub STATS2SCREEN ()
         For I1 = 0 To 13
 
             If K2(I, I1, 0) <> 0 Then
+
                 Locate , 20
-                If I1 <= 9 Then Print rbacks$(I, I1);
-                If I1 > 9 Then Print qbacks$(I, I1 - 10);
+                If I1 <= 9 Then
+                    Print rbacks$(I, I1);
+                Else
+                    Print qbacks$(I, I1 - 10);
+                End If
 
                 Locate , 35: Print Using "###  #### ###.#  "; K2(I, I1, 0), Int(K2(I, I1, 1) + .5), Int(K2(I, I1, 1) + .5) / K2(I, I1, 0);
-                If I1 <= 9 Then Print Using "###   ##"; runBacks(I, I1), K2(I, I1, 2)
-                If I1 > 9 Then Print Using "      ##"; K2(I, I1, 2)
+
+                If I1 <= 9 Then
+                    Print Using "###   ##"; runBacks(I, I1), K2(I, I1, 2)
+                Else
+                    Print Using "      ##"; K2(I, I1, 2)
+                End If
+
             End If
 
         Next I1
@@ -7667,11 +7680,13 @@ Sub STATS2SCREEN ()
                 Locate , 22: Print Using "###  ### ###.#  ### ##.# "; K2(I, I1, 9), K2(I, I1, 10), K2(I, I1, 10) / K2(I, I1, 9) * 100, Int(K2(I, I1, 12) + .5), Int(K2(I, I1, 12) + .5) / K2(I, I1, 9);
 
                 If K2(I, I1, 10) <> 0 Then
+                    'Y/C, TD
                     Print Using "##.#  ##"; Int(K2(I, I1, 12) + .5) / K2(I, I1, 10), K2(I, I1, 13);
                 Else
                     Print Using "      ##"; K2(I, I1, 13);
                 End If
 
+                '             TD%, I, I%,   LG
                 Print Using "###.# ## ###.# ###"; K2(I, I1, 13) / K2(I, I1, 9) * 100, K2(I, I1, 11), K2(I, I1, 11) / K2(I, I1, 9) * 100, quarterbacks(I, I1)
 
             End If
@@ -7772,13 +7787,15 @@ Sub STATS2SCREEN ()
             Print kicker$(I, 0);
             Locate , 18
 
-            If K2(I, 6, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
+            If K2(I, 6, 17) <> 0 Then
+                Print Using "### ### ###.# "; K2(I, 5, 17), K2(I, 6, 17), K2(I, 5, 17) / K2(I, 6, 17) * 100;
+            End If
 
             If K2(I, 4, 17) = 0 Then
                 Print
             Else
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, FL(I, 0), FM(I, 0, 0);
+                Print Using "### ### ###.# ##  #"; K2(I, 3, 17), K2(I, 4, 17), K2(I, 3, 17) / K2(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
@@ -7794,14 +7811,16 @@ Sub STATS2SCREEN ()
             Print kicker$(I, 1);
             Locate , 18
 
-            If K2(I, 10, 17) <> 0 Then Print Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
+            If K2(I, 10, 17) <> 0 Then
+                Print Using "### ### ###.# "; K2(I, 9, 17), K2(I, 10, 17), K2(I, 9, 17) / K2(I, 10, 17) * 100;
+            End If
 
             If K2(I, 8, 17) = 0 Then
                 Print
             Else
 
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, FL(I, 1), FM(I, 1, 0);
+                Print Using "### ### ###.# ##  #"; K2(I, 7, 17), K2(I, 8, 17), K2(I, 7, 17) / K2(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
@@ -7832,9 +7851,9 @@ Sub STATS2SCREEN ()
         Print "IR   YDS   AVG   LG  TD"
 
         For I1 = 0 To 9
-            If SI(I, I1, 0) <> 0 Then
+            If gameInts(I, I1, 0) <> 0 Then
                 Locate , 20: Print defInts$(I, I1);
-                Locate , 36: Print Using "##  ####  ##.#  ###  ##"; SI(I, I1, 0), Int(SI(I, I1, 1) + .5), Int(SI(I, I1, 1) + .5) / SI(I, I1, 0), IR(I, I1), SI(I, I1, 2)
+                Locate , 36: Print Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), Int(gameInts(I, I1, 1) + .5), Int(gameInts(I, I1, 1) + .5) / gameInts(I, I1, 0), IR(I, I1), gameInts(I, I1, 2)
             End If
         Next I1
 
@@ -7858,9 +7877,9 @@ Sub STATS2SCREEN ()
         Print "NO.   YDS LOST"
 
         For I1 = 0 To 14
-            If SK(I, I1, 0) <> 0 Then
+            If gameSacks(I, I1, 0) <> 0 Then
                 Locate , 25: Print defSacks$(I, I1);
-                Locate , 41: Print Using " ##       ##"; SK(I, I1, 0), Int(SK(I, I1, 1) + .5)
+                Locate , 41: Print Using " ##       ##"; gameSacks(I, I1, 0), Int(gameSacks(I, I1, 1) + .5)
             End If
         Next I1
 
@@ -7894,7 +7913,7 @@ Sub SAVESTATS ()
         Do
             Call TEAMBOX(1, 1)
             pbpString$ = "SAVE STATISTICS? (Y/N)"
-            Locate , (80 - Len(U$)) / 2
+            Locate , (80 - Len(pbpString$)) / 2
             Print pbpString$
             Color 15, 0
 
@@ -7947,7 +7966,7 @@ Sub SAVESTATS ()
             Call FRAMEOPTION(1, idx)
 
             pbpString$ = "COMPILE STATS FOR " + gameTeams$(idx) + "? (Y/N)"
-            Locate , (80 - Len(U$)) / 2
+            Locate , (80 - Len(pbpString$)) / 2
             Print pbpString$
             Color 15, 0
 
@@ -7984,14 +8003,14 @@ Sub COMPILESTATFILES (teamIdx)
 
     Shared actualAttendance&
 
-    Shared statsO%(), statsPR%()
+    Shared oppScore(), powerRating()
     Shared teamScore()
 
-    Shared statsAttendance&()
+    Shared gameAttendance&()
 
-    Shared gamePK$(), HO$()
-    Shared statStadium$()
-    Shared statsH$()
+    Shared gamePK$(), oppName$()
+    Shared gameSite$()
+    Shared locIndicator$()
     Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
 
     'Determine stat file name
@@ -8004,15 +8023,25 @@ Sub COMPILESTATFILES (teamIdx)
 
         Input #1, gameTeams$(teamIdx)
 
-        For I = 0 To 9: Input #1, rbacks$(teamIdx, I): Next
+        For I = 0 To 9:
+            Input #1, rbacks$(teamIdx, I)
+        Next
 
-        For I = 0 To 5: Input #1, wdRec$(teamIdx, I): Next
+        For I = 0 To 5:
+            Input #1, wdRec$(teamIdx, I)
+        Next
 
-        For I = 0 To 3: Input #1, qbacks$(teamIdx, I): Next
+        For I = 0 To 3:
+            Input #1, qbacks$(teamIdx, I)
+        Next
 
-        For I = 0 To 2: Input #1, kickRet$(teamIdx, I): Next
+        For I = 0 To 2:
+            Input #1, kickRet$(teamIdx, I)
+        Next
 
-        For I = 0 To 2: Input #1, pret$(teamIdx, I): Next
+        For I = 0 To 2:
+            Input #1, pret$(teamIdx, I)
+        Next
 
         Input #1, punter$(teamIdx, 0)
 
@@ -8037,14 +8066,14 @@ Sub COMPILESTATFILES (teamIdx)
         For J = 0 To 9
             Input #1, defInts$(teamIdx, J)
             For J1 = 0 To 2
-                Input #1, GI(teamIdx, J, J1)
+                Input #1, totalInts(teamIdx, J, J1)
             Next
         Next
 
         For J = 0 To 14
             Input #1, defSacks$(teamIdx, J)
             For J1 = 0 To 1
-                Input #1, GS(teamIdx, J, J1)
+                Input #1, totalSacks(teamIdx, J, J1)
             Next
         Next
 
@@ -8141,12 +8170,12 @@ Sub COMPILESTATFILES (teamIdx)
         End If
     Next
 
-    If K(teamIdx, 26) > gameZ(28) Then gameZ(28) = K(teamIdx, 26)
+    If gameStats(teamIdx, 26) > gameZ(28) Then gameZ(28) = gameStats(teamIdx, 26)
 
     For I = 0 To 1
 
-        If FL(teamIdx, I) > LF(teamIdx, I) Then
-            LF(teamIdx, I) = FL(teamIdx, I)
+        If gameLongFG(teamIdx, I) > LF(teamIdx, I) Then
+            LF(teamIdx, I) = gameLongFG(teamIdx, I)
             tradeLF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
@@ -8207,12 +8236,12 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For J = 0 To 9
-        gameZ(20) = gameZ(20) + SI(teamIdx, J, 2)
-        gameZ1(20) = gameZ1(20) + SI(1 - teamIdx, J, 2)
-        gameZ(26) = gameZ(26) + SI(teamIdx, J, 0)
-        gameZ1(26) = gameZ1(26) + SI(1 - teamIdx, J, 0)
-        gameZ(27) = gameZ(27) + SI(teamIdx, J, 1)
-        gameZ1(27) = gameZ1(27) + SI(1 - teamIdx, J, 1)
+        gameZ(20) = gameZ(20) + gameInts(teamIdx, J, 2)
+        gameZ1(20) = gameZ1(20) + gameInts(1 - teamIdx, J, 2)
+        gameZ(26) = gameZ(26) + gameInts(teamIdx, J, 0)
+        gameZ1(26) = gameZ1(26) + gameInts(1 - teamIdx, J, 0)
+        gameZ(27) = gameZ(27) + gameInts(teamIdx, J, 1)
+        gameZ1(27) = gameZ1(27) + gameInts(1 - teamIdx, J, 1)
     Next
 
     gameZ(21) = gameZ(21) + gameStats(teamIdx, 19)
@@ -8243,15 +8272,17 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 9
         For J1 = 0 To 2
-            GI(teamIdx, J, J1) = GI(teamIdx, J, J1) + SI(teamIdx, J, J1)
+            totalInts(teamIdx, J, J1) = totalInts(teamIdx, J, J1) + gameInts(teamIdx, J, J1)
         Next
     Next
 
     For J = 0 To 14
         For J1 = 0 To 1
-            GS(teamIdx, J, J1) = GS(teamIdx, J, J1) + SK(teamIdx, J, J1)
+            totalSacks(teamIdx, J, J1) = totalSacks(teamIdx, J, J1) + gameSacks(teamIdx, J, J1)
         Next
     Next
+
+    Cls
 
     Print ">>>>>"
     Print " THE STATS ARE BEING SAVED UNDER"
@@ -8263,15 +8294,25 @@ Sub COMPILESTATFILES (teamIdx)
 
     Print #2, gameTeams$(teamIdx)
 
-    For I = 0 To 9: Print #2, rbacks$(teamIdx, I): Next
+    For I = 0 To 9:
+        Print #2, rbacks$(teamIdx, I)
+    Next
 
-    For I = 0 To 5: Print #2, wdRec$(teamIdx, I): Next
+    For I = 0 To 5:
+        Print #2, wdRec$(teamIdx, I)
+    Next
 
-    For I = 0 To 3: Print #2, qbacks$(teamIdx, I): Next
+    For I = 0 To 3:
+        Print #2, qbacks$(teamIdx, I)
+    Next
 
-    For I = 0 To 2: Print #2, kickRet$(teamIdx, I): Next
+    For I = 0 To 2:
+        Print #2, kickRet$(teamIdx, I)
+    Next
 
-    For I = 0 To 2: Print #2, pret$(teamIdx, I): Next
+    For I = 0 To 2:
+        Print #2, pret$(teamIdx, I)
+    Next
 
     Print #2, punter$(teamIdx, 0)
 
@@ -8296,14 +8337,14 @@ Sub COMPILESTATFILES (teamIdx)
     For J = 0 To 9
         Print #2, defInts$(teamIdx, J)
         For J1 = 0 To 2
-            Print #2, GI(teamIdx, J, J1)
+            Print #2, totalInts(teamIdx, J, J1)
         Next
     Next
 
     For J = 0 To 14
         Print #2, defSacks$(teamIdx, J)
         For J1 = 0 To 1
-            Print #2, GS(teamIdx, J, J1)
+            Print #2, totalSacks(teamIdx, J, J1)
         Next
     Next
 
@@ -8367,61 +8408,101 @@ Sub COMPILESTATFILES (teamIdx)
 
         Input #3, numberGames
 
-        For I = 1 To NUM_STATRECORDS: Input #3, statsO%(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, HO$(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, teamScore(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, statsH$(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, statsPR%(0, I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, statsPR%(1, I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, statsAttendance&(I): Next
-        For I = 1 To NUM_STATRECORDS: Input #3, statStadium$(I): Next
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, teamScore(I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, oppName$(I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, oppScore(I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, locIndicator$(I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, powerRating(0, I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, powerRating(1, I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, gameAttendance&(I)
+        Next
+
+        For I = 1 To MAX_SCHED_STATS:
+            Input #3, gameSite$(I)
+        Next
 
         Close #3
 
     End If
 
-    If numberGames < NUM_STATRECORDS Then numberGames = numberGames + 1
-    If gameLoc = teamIdx Then statsH$(numberGames) = "H"
-    If gameLoc <> teamIdx Then statsH$(numberGames) = "A"
-    If gameLoc = 2 Then statsH$(numberGames) = "X"
-    If gameLoc = teamIdx And periodNbr > 4 Then statsH$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc <> teamIdx And periodNbr > 4 Then statsH$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc = 2 And periodNbr > 4 Then statsH$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+    If numberGames < MAX_SCHED_STATS Then numberGames = numberGames + 1
+    If gameLoc = teamIdx Then locIndicator$(numberGames) = "H"
+    If gameLoc <> teamIdx Then locIndicator$(numberGames) = "A"
+    If gameLoc = 2 Then locIndicator$(numberGames) = "X"
+    If gameLoc = teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
+    If gameLoc <> teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
+    If gameLoc = 2 And periodNbr > 4 Then locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
 
-    statsO%(numberGames) = score(teamIdx, 0)
-    HO$(numberGames) = gameTeams$(1 - teamIdx)
-    teamScore(numberGames) = score(1 - teamIdx, 0)
-    statsAttendance&(numberGames) = actualAttendance&
-    statStadium$(numberGames) = gameStadium$
-    statsPR%(0, numberGames) = tmRat_GAME(teamIdx, 4)
-    statsPR%(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
+    teamScore(numberGames) = score(teamIdx, 0)
+    oppName$(numberGames) = gameTeams$(1 - teamIdx)
+    oppScore(numberGames) = score(1 - teamIdx, 0)
+    gameAttendance&(numberGames) = actualAttendance&
+    gameSite$(numberGames) = gameStadium$
+    powerRating(0, numberGames) = tmRat_GAME(teamIdx, 4)
+    powerRating(1, numberGames) = tmRat_GAME(1 - teamIdx, 4)
 
     'Write stats to new file
     Open diskPaths$(1) + statFile$ + "S" For Output As #4
 
     Print #4, numberGames%
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statsO%(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, teamScore(I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, HO$(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, oppName$(I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, teamScore(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, oppScore(I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statsH$(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, locIndicator$(I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statsPR%(0, I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, powerRating(0, I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statsPR%(1, I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, powerRating(1, I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statsAttendance&(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, gameAttendance&(I)
+    Next
 
-    For I = 1 To NUM_STATRECORDS: Print #4, statStadium$(I): Next
+    For I = 1 To MAX_SCHED_STATS:
+        Print #4, gameSite$(I)
+    Next
 
     Close #4
 
-    Erase statsO%, statsPR%
+    Erase oppScore, powerRating
     Erase teamScore
-    Erase statsH$, HO$
+    Erase gameAttendance&
+    Erase locIndicator$, oppName$, gameSite$
     Erase gameZ, gameZ1, gameZ2
 
 End Sub
@@ -8473,6 +8554,8 @@ Sub pbplog (lineNumber)
 
     Print #11, "Called from line "; lineNumber
     Print #11, gameTeams$(0); " vs "; gameTeams$(1)
+    Print #11, "Random # =  "; I
+    Print #11, "INT % Chance = "; intChance
     Print #11,
 
 End Sub
@@ -8762,25 +8845,25 @@ Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx)
     kicker$(gameIdx, 0) = RTrim$(Q$(124))
     kickerFGA(gameIdx, 0) = CVI(Q$(125))
     kickerFGPct(gameIdx, 0) = CVI(Q$(126))
-    kickerNumPAT(gameIdx, 0) = CVI(Q$(127))
+    kickerIdx(gameIdx, 0) = CVI(Q$(127))
     kickerPATPct(gameIdx, 0) = CVI(Q$(128))
 
     kicker$(gameIdx, 1) = Q$(129)
     kickerFGA(gameIdx, 1) = CVI(Q$(130))
     kickerFGPct(gameIdx, 1) = CVI(Q$(131))
-    kickerNumPAT(gameIdx, 1) = CVI(Q$(132))
+    kickerIdx(gameIdx, 1) = CVI(Q$(132))
     kickerPATPct(gameIdx, 1) = CVI(Q$(133))
 
     ydsPerComp(gameIdx) = CVI(Q$(134))
 
     For I1 = 0 To 14
         defSacks$(gameIdx, I1) = Q$(I1 * 2 + 135)
-        sacks(gameIdx, I1) = CVI(Q$(I1 * 2 + 136))
+        playerSacks(gameIdx, I1) = CVI(Q$(I1 * 2 + 136))
     Next I1
 
     For I1 = 0 To 9
         defInts$(gameIdx, I1) = Q$(I1 * 2 + 165)
-        ints(gameIdx, I1) = CVI(Q$(I1 * 2 + 166))
+        playerInts(gameIdx, I1) = CVI(Q$(I1 * 2 + 166))
     Next I1
 
     Close #1
@@ -8799,13 +8882,13 @@ Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx)
     teamInts(gameIdx) = 0
 
     For I1 = 0 To 14
-        teamSacks(gameIdx) = teamSacks(gameIdx) + sacks(gameIdx, I1)
-        If sacks(gameIdx, 0) > 0 Then defSacks(gameIdx) = 1
+        teamSacks(gameIdx) = teamSacks(gameIdx) + playerSacks(gameIdx, I1)
+        If playerSacks(gameIdx, 0) > 0 Then defSacks(gameIdx) = 1
     Next I1
 
     For I1 = 0 To 9
-        teamInts(gameIdx) = teamInts(gameIdx) + ints(gameIdx, I1)
-        If ints(gameIdx, 0) > 0 Then defInts(gameIdx) = 1
+        teamInts(gameIdx) = teamInts(gameIdx) + playerInts(gameIdx, I1)
+        If playerInts(gameIdx, 0) > 0 Then defInts(gameIdx) = 1
     Next I1
 
 End Sub
@@ -8834,8 +8917,6 @@ End Sub
 'looking to determine whether a new game
 'should be started.
 Sub EndOfGame
-    'Close #7
-    'Close #5
 
     Call POSTGAME
 
@@ -8848,7 +8929,7 @@ Sub EndOfGame
 
         Do
             pbpString$ = "PLAY ANOTHER GAME? (Y/N)"
-            Locate 7, (80 - Len(U$)) / 2
+            Locate 7, (80 - Len(pbpString$)) / 2
             Print pbpString$
 
             Color 15, 0
@@ -8856,6 +8937,8 @@ Sub EndOfGame
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     End If
+
+    'Close #11
 
     If UCase$(I$) = "Y" Or (autoPlay = 1 And endAllGames <> 1) Then
         Cls

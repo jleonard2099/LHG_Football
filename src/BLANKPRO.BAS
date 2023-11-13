@@ -2,7 +2,7 @@
 '          BLANKPRO Subroutine
 '----------------------------------------
 'This routine assists the user in choosing
-'a league, and then proceeds to delete all 
+'a league, and then proceeds to delete all
 'stats files for all the associated teams
 Sub BLANKPRO ()
 
@@ -37,7 +37,7 @@ Sub BLANKPRO ()
             For XW = 1 To 30
 
                 If H1$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(2) + H1$(XW)
+                    statFile$ = diskPaths$(1) + H1$(XW)
                     Print "DELETING "; H1$(XW); " STATS"
                     If _FileExists(statFile$) Then Kill statFile$
                     If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"

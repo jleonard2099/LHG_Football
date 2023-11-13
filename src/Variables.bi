@@ -9,34 +9,33 @@ Dim Shared teamIndex%(MAX_TEAMS)
 
 ' *** Reading Stat Data ***
 ' -------------------------
-Dim statsO%(NUM_STATRECORDS), statsPR%(1, 120)
-Dim teamScore(NUM_STATRECORDS)
+Dim oppScore(MAX_SCHED_STATS), powerRating(1, MAX_SCHED_STATS)
+Dim teamScore(MAX_SCHED_STATS)
+
+Dim gameAttendance&(MAX_SCHED_STATS)
+
+Dim gamePK$(1, 2, 1)
+Dim gameSite$(MAX_SCHED_STATS), locIndicator$(MAX_SCHED_STATS), oppName$(MAX_SCHED_STATS)
 
 Dim statsZ!(38), statsZ1!(38), statsZ2!(50, 18)
 
-Dim gamePK$(1, 2, 1), HO$(NUM_STATRECORDS)
-Dim statsH$(NUM_STATRECORDS), statsO$(NUM_STATRECORDS)
-Dim statStadium$(NUM_STATRECORDS)
 Dim statsZ1$(40), statsZ2$(40)
 
-Dim statsAttendance&(NUM_STATRECORDS)
+'-- For Road Data
+Dim APR%(1, MAX_SCHED_STATS), ORD%(MAX_SCHED_STATS)
+Dim TR%(MAX_SCHED_STATS)
 
+Dim CRDR!(MAX_SCHED_STATS)
 
-'-- For Utilities
-Dim ORD%(NUM_STATRECORDS)
-Dim TR%(NUM_STATRECORDS)
-
-Dim CRD!(NUM_STATRECORDS), CRDR!(NUM_STATRECORDS)
-
-Dim gameSite$(NUM_STATRECORDS), gameSiteRoad$(NUM_STATRECORDS)
-Dim ORD$(NUM_STATRECORDS)
+Dim gameSiteRoad$(MAX_SCHED_STATS)
+Dim HR$(MAX_SCHED_STATS), ORD$(MAX_SCHED_STATS)
 
 
 ' *** Schedule Data ***
 ' -------------------------
-Dim homeScores(MAX_GAMES), visitorScores(MAX_GAMES)
-'Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
-'Dim yearNumber$(MAX_GAMES, 1)
+Dim homeScores(MAX_SCHEDULE_GAMES), visitorScores(MAX_SCHEDULE_GAMES)
+'Dim homeTeam$(MAX_SCHEDULE_GAMES), visitingTeam$(MAX_SCHEDULE_GAMES)
+'Dim yearNumber$(MAX_SCHEDULE_GAMES, 1)
 
 ' *** Game Options ***
 ' -------------------------
@@ -130,9 +129,6 @@ Dim careerRC!(6), careerTT!(50)
 Dim fumbGain, puntNum
 Dim puntName$
 
-Dim compAP%(1, 120), APR%(1, 120)
-Dim compT%(NUM_STATRECORDS)
-
 Dim BRC$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
 Dim compZ1$(50), compZ2$(240), compZ3$(240)
@@ -222,8 +218,7 @@ Dim div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
-'awayLoss, awayWins
-Dim AL!(30), AL2!(30), AW!(30), AW2!(30)
+Dim awayLosses!(30), AL2!(30), awayWins!(30), AW2!(30)
 
 Dim G1!(100), G12!(100), G2!(100), G22!(100)
 Dim G3!(100), G32!(100), G4!(100), G42!(100)
@@ -262,7 +257,7 @@ Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 30), sackStats!(1, 1)
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(100), A4L$(90), A4T$(90)
 Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
-Dim expCategories$(74), HR$(100)
+Dim expCategories$(74)
 
 Dim intNam_TRADE$(1, 9)
 Dim LCL$(480), LKL$(90), LPL$(100), LRL$(300), PKL$(90)
@@ -287,11 +282,11 @@ Dim seePR$(1200), seeT$(50)
 '----------------------------------------
 Dim BS%, NS%
 
-Dim scheduleAP%(1), scheduleNG%(MAX_GAMES, 20)
+Dim scheduleAP%(1), scheduleNG%(MAX_SCHEDULE_GAMES, 20)
 
 Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
 Dim scheduleQB_V$(20), scheduleQB_H$(20)
-Dim scheduleYN$(MAX_GAMES, 1)
+Dim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
 
 
 '----------------------------------------
@@ -336,17 +331,17 @@ Dim Shared PC%, PS%, R5%
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
-Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 to 4), AM(1, 1, 0 to 4)
+Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
 Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
 Dim Shared FA(1, 1, 4), FL(1, 1), FM(1, 1, 4)
 Dim Shared gameStats(1, 36), K1(50, 6), K2(1, 13, 17), K3(1, 6)
-Dim Shared gameZ(0 to 38), gameZ1(0 to 38), gameZ2(0 to 13, 0 to 17)
-Dim Shared GI(0 to 1, 0 to 9, 0 to 2), GS(0 to 1, 0 to 14, 0 to 1), hasRunFF(1), ints(1, 9), IR(1, 9)
+Dim Shared gameZ(0 To 38), gameZ1(0 To 38), gameZ2(0 To 13, 0 To 17)
+Dim Shared GI(0 To 1, 0 To 9, 0 To 2), GS(0 To 1, 0 To 14, 0 To 1), hasRunFF(1), ints(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerNumPAT(1, 1), kickerPATPct(1, 1)
-Dim Shared kickReturners(0 to 1, 0 to 2), krNumRet(1, 2), krYdsPerRet(1, 2)
-Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 to 9), LK(1, 0 to 2), LP(1, 0 to 3), LR(1, 0 to 9)
-Dim Shared nbrPossOT(1), penaltyYds(2), PK(0 to 1, 0 to 2)
-Dim Shared puntReturners(0 to 1, 0 to 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
+Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
+Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
+Dim Shared nbrPossOT(1), penaltyYds(2), PK(0 To 1, 0 To 2)
+Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared runBacks(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
@@ -369,11 +364,11 @@ Dim scheduleFile$
 Dim Shared defTeam$, gameStadium$, markers$
 Dim Shared pbpString$, targetWRName$, YN$
 
-Dim Shared defFormation$(1 to 15), defPlay$(1 to 15), defInts$(1, 9)
-Dim Shared defSacks$(1, 14), downDesc$(0 to 4), direction$(0 to 1)
+Dim Shared defFormation$(0 To 15), defPlay$(1 To 15), defInts$(1, 9)
+Dim Shared defSacks$(1, 14), downDesc$(0 To 4), direction$(0 To 1)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gadget$(3)
 Dim Shared kicker$(1, 1), kickRet$(1, 2), NN$(0 To 1)
-Dim Shared offensePlay$(50), passCov$(1 to 11)
+Dim Shared offensePlay$(50), passCov$(0 To 11)
 Dim Shared penaltyDesc$(2), playDesc$(30), playSelect$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3)
 Dim Shared rbacks$(1, 10), SX$(1 To 33, 0 To 1), tickerPeriod$(14)
@@ -383,4 +378,5 @@ Dim Shared wdRec$(1, 5), YN$(1)
 'They are included in the compiling of stats file
 'I believe they are for tracking records / "longest" plays
 Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1)
-Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20) 
+Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
+

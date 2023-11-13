@@ -55,16 +55,16 @@ Sub NEWLDR (statType)
 
                     If FileExit% <> 27 And FileExit% <> 0 Then
                         Call ReadConferenceStats(confStatFile$, statType)
-                        Call UpdateExpandedLeaders(statType, tStats)
-                        Call SAVELEADER(confStatFile$, tStats)
+                        Call UpdateExpandedLeaders(statType, totalStats)
+                        Call SAVELEADER(confStatFile$, totalStats)
                     End If
 
                 Case 2
                     leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
 
                     If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call READLEADER(leaderFile$, tStats)
-                        Call ExpandedLeaders_Menu(tStats)
+                        Call READLEADER(leaderFile$, totalStats)
+                        Call ExpandedLeaders_Menu(totalStats)
                     End If
 
             End Select
@@ -108,7 +108,7 @@ Sub ReadConferenceStats (statFile$, statType)
     JH = 0
     JI = 0
     JJ = 0
-    tStats = 0
+    totalStats = 0
 
     div1$ = ""
     div2$ = ""
@@ -181,7 +181,7 @@ Sub ViewExpandedStats (statType)
         JI = 0
         JJ = 0
         printOrView% = 0
-        tStats = 0
+        totalStats = 0
 
         div1$ = ""
         div2$ = ""
@@ -210,11 +210,11 @@ Sub ViewExpandedStats (statType)
 
         Cls
 
-        Call UpdateExpandedLeaders(statType, tStats)
+        Call UpdateExpandedLeaders(statType, totalStats)
 
-        Call SAVELEADER(confStatFile$, tStats)
+        Call SAVELEADER(confStatFile$, totalStats)
 
-        Call ExpandedLeaders_Menu(tStats)
+        Call ExpandedLeaders_Menu(totalStats)
 
     End If
 
@@ -231,7 +231,7 @@ End Sub
 'statType
 '   0 = College
 '   1 = Pro
-Sub UpdateExpandedLeaders (statType, tStats)
+Sub UpdateExpandedLeaders (statType, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -354,16 +354,16 @@ Sub UpdateExpandedLeaders (statType, tStats)
                 Input #2, nbrGames
                 Close #2
 
-                tStats = tStats + 1
+                totalStats = totalStats + 1
 
                 For I = 0 To 14
-                    lookyTT!(tStats, I) = statsZ!(I)
-                    lookyTT$(tStats, I) = statsA$
+                    lookyTT!(totalStats, I) = statsZ!(I)
+                    lookyTT$(totalStats, I) = statsA$
                 Next
 
                 For I = 15 To 29
-                    lookyTT!(tStats, I) = statsZ1!(I - 15)
-                    lookyTT$(tStats, I) = statsA$
+                    lookyTT!(totalStats, I) = statsZ1!(I - 15)
+                    lookyTT$(totalStats, I) = statsA$
                 Next
 
                 For I = 0 To 9
@@ -490,7 +490,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads in the leader files
 '(.LDS) for the expanded standings modules
-Sub READLEADER (leaderFile$, tStats)
+Sub READLEADER (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -525,7 +525,7 @@ Sub READLEADER (leaderFile$, tStats)
 
         Open diskPaths$(2) + leaderFile$ + ".LDS" For Input As #1
 
-        Input #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, tStats, JJ
+        Input #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totalStats, JJ
 
         For I = 1 To 30:
 
@@ -671,7 +671,7 @@ End Sub
 '----------------------------------------
 'This subroutine compiles the leader files
 '(.LDS) for the expanded standings modules
-Sub SAVELEADER (leaderFile$, tStats)
+Sub SAVELEADER (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -694,7 +694,7 @@ Sub SAVELEADER (leaderFile$, tStats)
 
     Open diskPaths$(2) + leaderFile$ + ".LDS" For Output As #1
 
-    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, tStats, JJ
+    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totalStats, JJ
 
     For I = 1 To 30:
 
@@ -840,7 +840,7 @@ End Sub
 'menu for viewing expanded leaders. It then
 'relies on various subroutines for the end
 'user display of those statistics.
-Sub ExpandedLeaders_Menu (tStats)
+Sub ExpandedLeaders_Menu (totalStats)
 
     Dim PPP, sortType%
 
@@ -1952,57 +1952,57 @@ Sub ExpandedLeaders_Menu (tStats)
 
                         Select Case B9
                             Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = lookyTT!(I, X)
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 1
 
                             Case 1, 16
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 1
 
                             Case 2, 5, 17, 20
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 1
 
                             Case 3, 18
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 2
 
                             Case 6, 21
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 2
 
                             Case 10
-                                For I = 1 To tStats
+                                For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
                                     TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(tStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType%)
                                 TVN = 1
 
                         End Select
@@ -2021,7 +2021,7 @@ Sub ExpandedLeaders_Menu (tStats)
                     End If
                 Else
 
-                    QW = tStats
+                    QW = totalStats
 
                     If printOrView% = 1 Then
                         Call DisplayLeaders(XX, QW, TVN)
@@ -2129,7 +2129,7 @@ Sub SortOptions (printOrView%, sortType%)
                 sortType% = 2
 
             Case "R", Chr$(27):
-                'If ZZ = 1 Then Call ExpandedLeaders_Menu(tStats)
+                'If ZZ = 1 Then Call ExpandedLeaders_Menu(totalStats)
 
         End Select
 
