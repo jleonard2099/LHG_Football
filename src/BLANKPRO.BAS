@@ -10,7 +10,7 @@ Sub BLANKPRO ()
 
     Dim H1$(40)
 
-    leagueFile$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -49,5 +49,6 @@ Sub BLANKPRO ()
         End If 'Done confirming to move forward with deletion
 
     End If
-    
+
 End Sub
+
