@@ -31,7 +31,7 @@ Sub CNGTM ()
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -242,12 +242,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
-    Dim contrib2(15), contrib3(15)
+    Dim contrib2(0 To 15), contrib3(0 To 15)
 
     'Calculate contribution %s for each individual
-    '-- this should technically be done each time 
+    '-- this should technically be done each time
     '-- this is called because of the Dim ????
-    Erase contrib2, contrib3
+    'Erase contrib2, contrib3
 
     U = 0
 
@@ -274,7 +274,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         If rbRecepts(I) = 0 Then
             U = U + 1
         Else
-            contrib2(I) = rbRecepts(I) - rbRecepts(I - 1 - U): U = 0
+            contrib2(I) = rbRecepts(I) - rbRecepts(I - 1 - U)
+            U = 0
         End If
     Next
 
@@ -1960,3 +1961,4 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     Call CSMsgBox("", 0, Pass)
 
 End Sub
+

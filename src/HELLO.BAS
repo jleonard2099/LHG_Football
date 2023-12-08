@@ -421,7 +421,7 @@ ruleYrPro$(0) = "1978-1993"
 ruleYrPro$(1) = "PRE-1974 "
 ruleYrPro$(2) = "1974-1977"
 ruleYrPro$(3) = "POST-1993"
-'ruleYrPro$(3) = "1993-2007"
+'ruleYrPro$(3) = "1994-2007"
 'ruleYrPro$(4) = "POST-2007"
 
 ruleYrColl$(0) = "PRE-1968 "
@@ -430,6 +430,9 @@ ruleYrColl$(2) = "1981-1983"
 ruleYrColl$(3) = "1984-1991"
 ruleYrColl$(4) = "1991     "
 ruleYrColl$(5) = "POST-1991"
+'ruleYrColl$(5) = "1992-2007"
+'ruleYrColl$(6) = "POST-2007"
+
 
 weather$(0) = "GOOD                          "
 weather$(1) = "BAD (RAIN/SNOW)               "
@@ -557,7 +560,7 @@ Sub Main_Menu (menuSelection%)
 
                 Case 1:
                     Call FOOTBALL
-                
+
                 Case 2:
                     Call TeamMgt_Menu
                 
@@ -784,17 +787,17 @@ Sub Replay_Menu ()
 
         Call TITLE
 
-        ReDim menuChoices$(1 To 5)
+        ReDim menuChoices$(1 To 4)
 
         menuChoices$(1) = "VIEW / PRINT COMPILED STATS       "
         menuChoices$(2) = "ENCYCLOPEDIA / TEAM REPLAY OPTIONS"
-        menuChoices$(3) = "MODIFY REPLAY STATS               "
-        menuChoices$(4) = "MERGE SEPARATE STATISTICAL FILES  "
-        menuChoices$(5) = "RETURN TO MAIN MENU               "
+        'menuChoices$(3) = "MODIFY REPLAY STATS               "
+        menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES  "
+        menuChoices$(4) = "RETURN TO MAIN MENU               "
         Selection% = 1
-        Count% = 5
+        Count% = 4
         Start% = 1
-        ExitCode% = 5
+        ExitCode% = 4
         FileFGColor% = 15: FileBGColor% = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -821,16 +824,16 @@ Sub Replay_Menu ()
                     Call CAREER
 
                 Case 3:
-                    Call EditStats
+                    Call MERGE
 
                 Case 4:
-                    Call MERGE
+                    '
 
             End Select
 
         End If
 
-    Loop Until Selection% = 5 Or ExitCode% = 27
+    Loop Until Selection% = 4 Or ExitCode% = 27
 
 End Sub
 
@@ -991,3 +994,4 @@ End Sub
 ' For Game
 '$INCLUDE: 'FOOTBALL.BAS'
 '$INCLUDE: 'GameRoutines.bm'
+

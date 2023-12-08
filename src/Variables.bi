@@ -308,7 +308,7 @@ Dim Shared gameLoc, goalPostAdj, halfTime
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I, J
 
-Dim Shared isOT, JJ, K3, kickDir, kickYL
+Dim Shared isOT, JJ, K3, fieldSide, kickYL
 Dim Shared O, overtimeOpt, nbrScores
 Dim Shared penaltyYds, playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
@@ -343,7 +343,7 @@ Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
 Dim Shared nbrPossOT(1), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
-Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2), puntYdsPerP(1, 2)
+Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared runBacks(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
@@ -351,7 +351,8 @@ Dim Shared score(0 To 1, 0 To 10), scoreQuarters(50), scoreTimes(50), schedGame(
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
 Dim Shared useRandomQB(1)
-Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1), ydsPerComp(1)
+Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
+Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
 
 Dim Shared BY%(38, 4), GL%(1 To 30, 1 To 2), HB%(1)
 Dim Shared NG%(20), PC%(1, 9), PS%(2, 21)
