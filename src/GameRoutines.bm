@@ -192,15 +192,14 @@ Sub InitVar ()
     'Erase kicker$, kickRet$
     'Erase pret$, punter$, qbacks$, rbacks$
     'Erase wdRec$
-    'Erase kickerFGA, kickerFGPct, kickerIdx, kickerPATPct
-    'Erase krNumRet, krYdsPerRet, leagRat_GAME
-    'Erase playerInts, playerSacks, prNumRet, prYdsPerRet, ydsPerPunt
-    'Erase qbArmRat, qbCompPct, qbNumAtt, qbPctInt
-    'Erase rbNumRec, rbRushAtt, rbRushAvg, rbYdsPerC
-    'Erase teamInts, teamSacks, tmRat_GAME
-    'Erase wrNumRec, wrYdsPerC, ydsPerComp
+    Erase kickerFGA, kickerFGPct, kickerIdx, kickerPATPct
+    Erase krNumRet, krYdsPerRet, leagRat_GAME
+    Erase playerInts, playerSacks, prNumRet, prYdsPerRet, ydsPerPunt
+    Erase qbArmRat, qbCompPct, qbNumAtt, qbPctInt
+    Erase rbNumRec, rbRushAtt, rbRushAvg, rbYdsPerC
+    Erase teamInts, teamSacks, tmRat_GAME
+    Erase wrNumRec, wrYdsPerC, ydsPerComp
 
-    Erase oppScore, powerRating, teamScore
 
     Erase AF, AM, defInts, defSacks
     Erase FA, FM
@@ -210,6 +209,9 @@ Sub InitVar ()
     Erase kickReturners
     Erase LC, LF, LI, LK, LP, LR
     Erase nbrPossOT, PK, puntReturners
+
+    Erase oppScore, powerRating, teamScore
+
     Erase quarterbacks, qbNumber, qbMobility, runBacks
     Erase score, scoreQuarters, scoreTimes, schedGame
     Erase teamIdx_GAME, timeouts, timePoss
