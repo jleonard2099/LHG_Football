@@ -22,7 +22,7 @@ Sub CompileLeague ()
 
     Shared div1$, div2$, div3$
 
-    'Read in any existing records
+    'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.PFB") Then
 
         Open diskPaths$(1) + "RECORDS.PFB" For Input As #1
@@ -47,43 +47,48 @@ Sub CompileLeague ()
 
     End If
 
+    'Initialize values first
+    'These are defensive record values, so they should be really high
+    'To determine if a "record" was broken, the stat values will be
+    'compared to see if they are lower than this.
+    'If we initialized to 0, the "record" would always be 0
+
+    TRC!(11) = 999
+    TRC!(22) = 999
+
+    For I = 25 To 27:
+        TRC!(I) = 9999
+    Next
+
+    For I = 29 To 36:
+        TRC!(I) = 9999
+    Next
+
+    TRC!(38) = 999
+    TRC!(39) = 999
+    TRC!(42) = 999
+    TRC!(43) = 999
+
+    Erase compTT!, compZ1!, compZ2!
+    Erase compZ1$, compZ3$, TT$
+
+    For X = 1 To 240
+        compZ2$(X) = "*"
+    Next
+
+    For I = 1 To 20
+        compTT!(2, I, 5) = 9999
+        compTT!(4, I, 5) = 9999
+        compTT!(6, I, 3) = 9999
+        compTT!(8, I, 8) = 9999
+        compTT!(10, I, 7) = -99
+    Next
+
     C$ = ","
 
     leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
-
-        'Initialize values first
-        TRC!(11) = 999
-        TRC!(22) = 999
-
-        For I = 25 To 27:
-            TRC!(I) = 9999
-        Next
-
-        For I = 29 To 36:
-            TRC!(I) = 9999
-        Next
-
-        TRC!(38) = 999
-        TRC!(39) = 999
-        TRC!(42) = 999
-        TRC!(43) = 999
-
-        Erase compTT!, compZ1!, compZ2!
-        Erase compZ1$, compZ3$, TT$
-
-        For X = 1 To 240
-            compZ2$(X) = "*"
-        Next
-
-        For I = 1 To 20
-            compTT!(2, I, 5) = 9999
-            compTT!(4, I, 5) = 9999
-            compTT!(6, I, 3) = 9999
-            compTT!(8, I, 8) = 9999
-            compTT!(10, I, 7) = -99
-        Next
 
         finalUpdate$ = "N"
 
