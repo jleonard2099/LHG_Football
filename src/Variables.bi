@@ -88,7 +88,7 @@ Dim PKN!(2), PKR!(2)
 
 Dim ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
 
-Dim ratingsQB!(3, 10)
+Dim ratingsQB!(0 To 3, 10)
 
 '----------------------------------------
 ' Used in CAREER routines
@@ -136,7 +136,7 @@ Dim H1$(30), N2$(240), N3$(240), NT$(10, 20)
 Dim PS$(10), PT$(1200)
 Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
 
-Dim compPR!(11, 11), compQB!(11, 11), compRB!(11, 11)
+Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
 Dim compTT!(10, 20, 9), compWR!(16, 13)
 Dim compZ1!(240, 2), compZ2!(14, 18)
 

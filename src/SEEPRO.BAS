@@ -507,7 +507,7 @@ Sub LeaderStatsPro_Screen ()
 
     Locate 1, 41
     Color 14
-    Print "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print "RECEIVING LEADERS (MIN 3 REC/G)"
     Locate 2, 41
 
     Color 12

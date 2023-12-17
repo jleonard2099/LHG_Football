@@ -204,26 +204,26 @@ Sub QBRatingPro (qbIdx)
 
     Dim PP!(4), QT!(4), II!(4), YY!(4)
 
-    Shared ratingsQB!()
+    Shared compQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
-    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
+    ' * compQB!(1)=PASS ATT, compQB!(2)=COMP, compQB!(3)=INT, compQB!(4)=YDS, compQB!(5)=TD'S     *
+    ' * compQB!(6)=COMP%, compQB!(7)=RATING, compQB!(8)=TD%, compQB!(9)=INT%, compQB!(10)=YDS/ATT *
     ' ********************************************************************
-    If ratingsQB!(qbIdx, 1) > 0 Then ratingsQB!(qbIdx, 6) = Int(ratingsQB!(qbIdx, 2) / ratingsQB!(qbIdx, 1) * 1000) / 10
+    If compQB!(qbIdx, 1) > 0 Then compQB!(qbIdx, 6) = Int(compQB!(qbIdx, 2) / compQB!(qbIdx, 1) * 1000) / 10
 
-    If ratingsQB!(qbIdx, 1) = 0 Then
-        ratingsQB!(qbIdx, 6) = 0
-        ratingsQB!(qbIdx, 8) = 0
-        ratingsQB!(qbIdx, 9) = 0
-        ratingsQB!(qbIdx, 10) = 0
+    If compQB!(qbIdx, 1) = 0 Then
+        compQB!(qbIdx, 6) = 0
+        compQB!(qbIdx, 8) = 0
+        compQB!(qbIdx, 9) = 0
+        compQB!(qbIdx, 10) = 0
     Else
-        ratingsQB!(qbIdx, 8) = Int(ratingsQB!(qbIdx, 5) / ratingsQB!(qbIdx, 1) * 1000) / 10
-        ratingsQB!(qbIdx, 9) = Int(ratingsQB!(qbIdx, 3) / ratingsQB!(qbIdx, 1) * 1000) / 10
-        ratingsQB!(qbIdx, 10) = Int(ratingsQB!(qbIdx, 4) / ratingsQB!(qbIdx, 1) * 100) / 100
+        compQB!(qbIdx, 8) = Int(compQB!(qbIdx, 5) / compQB!(qbIdx, 1) * 1000) / 10
+        compQB!(qbIdx, 9) = Int(compQB!(qbIdx, 3) / compQB!(qbIdx, 1) * 1000) / 10
+        compQB!(qbIdx, 10) = Int(compQB!(qbIdx, 4) / compQB!(qbIdx, 1) * 100) / 100
     End If
 
-    PP!(qbIdx) = ratingsQB!(qbIdx, 6) - 30
+    PP!(qbIdx) = compQB!(qbIdx, 6) - 30
 
     If PP!(qbIdx) < 0 Then
         PP!(qbIdx) = 0
@@ -235,48 +235,48 @@ Sub QBRatingPro (qbIdx)
         End If
     End If
 
-    If ratingsQB!(qbIdx, 8) > 11.9 Then
+    If compQB!(qbIdx, 8) > 11.9 Then
         QT!(qbIdx) = 2.375
     Else
-        QT!(qbIdx) = ratingsQB!(qbIdx, 8) * .2
+        QT!(qbIdx) = compQB!(qbIdx, 8) * .2
     End If
 
-    If ratingsQB!(qbIdx, 9) = 0 Then
+    If compQB!(qbIdx, 9) = 0 Then
         II!(qbIdx) = 2.375
     Else
-        If ratingsQB!(qbIdx, 9) > 9.5 Then
+        If compQB!(qbIdx, 9) > 9.5 Then
             II!(qbIdx) = 0
         Else
-            II!(qbIdx) = 2.375 - (.25 * ratingsQB!(qbIdx, 9))
+            II!(qbIdx) = 2.375 - (.25 * compQB!(qbIdx, 9))
         End If
     End If
 
-    ratingsQB!(qbIdx, 10) = ratingsQB!(qbIdx, 10) - 3
+    compQB!(qbIdx, 10) = compQB!(qbIdx, 10) - 3
 
-    If ratingsQB!(qbIdx, 10) < 0 Then
+    If compQB!(qbIdx, 10) < 0 Then
         YY!(qbIdx) = 0
     Else
-        If ratingsQB!(qbIdx, 10) > 12.5 Then
+        If compQB!(qbIdx, 10) > 12.5 Then
             YY!(qbIdx) = 2.375
         Else
-            D = Int(ratingsQB!(qbIdx, 10) * 100) / 2
-            If D = ratingsQB!(qbIdx, 10) / 2 Then
-                YY!(qbIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2
+            D = Int(compQB!(qbIdx, 10) * 100) / 2
+            If D = compQB!(qbIdx, 10) / 2 Then
+                YY!(qbIdx) = compQB!(qbIdx, 10) / 2 * .3 + compQB!(qbIdx, 10) / 2 * .2
             Else
-                YY!(qbIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2 + .003
+                YY!(qbIdx) = compQB!(qbIdx, 10) / 2 * .3 + compQB!(qbIdx, 10) / 2 * .2 + .003
             End If
         End If
     End If
 
-    ratingsQB!(qbIdx, 7) = PP!(qbIdx) + QT!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
+    compQB!(qbIdx, 7) = PP!(qbIdx) + QT!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
 
-    If ratingsQB!(qbIdx, 7) >= 9.5 Then
-        ratingsQB!(qbIdx, 7) = 158.3
+    If compQB!(qbIdx, 7) >= 9.5 Then
+        compQB!(qbIdx, 7) = 158.3
     Else
-        ratingsQB!(qbIdx, 7) = ratingsQB!(qbIdx, 7) * 50 / 3
+        compQB!(qbIdx, 7) = compQB!(qbIdx, 7) * 50 / 3
     End If
 
-    ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
+    compQB!(qbIdx, 7) = Int(compQB!(qbIdx, 7) * 10) / 10
 
 End Sub
 
@@ -289,26 +289,26 @@ End Sub
 'This uses the college rating only.
 '
 'Actual RB rating is stored in the following:
-'   ratingsQB!(qbIdx, 7)
+'   compQB!(qbIdx, 7)
 Sub QBRatingColl (qbIdx)
 
-    Shared ratingsQB!()
+    Shared compQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
-    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
+    ' * compQB!(1)=PASS ATT, compQB!(2)=COMP, compQB!(3)=INT, compQB!(4)=YDS, compQB!(5)=TD'S     *
+    ' * compQB!(6)=COMP%, compQB!(7)=RATING, compQB!(8)=TD%, compQB!(9)=INT%, compQB!(10)=YDS/ATT *
     ' ********************************************************************
-    If ratingsQB!(qbIdx, 1) > 0 Then ratingsQB!(qbIdx, 6) = Int(ratingsQB!(qbIdx, 2) / ratingsQB!(qbIdx, 1) * 1000) / 10
+    If compQB!(qbIdx, 1) > 0 Then compQB!(qbIdx, 6) = Int(compQB!(qbIdx, 2) / compQB!(qbIdx, 1) * 1000) / 10
 
-    If ratingsQB!(qbIdx, 1) = 0 Then
-        ratingsQB!(qbIdx, 6) = 0
-        ratingsQB!(qbIdx, 7) = 0
-        ratingsQB!(qbIdx, 8) = 0
-        ratingsQB!(qbIdx, 9) = 0
-        ratingsQB!(qbIdx, 10) = 0
+    If compQB!(qbIdx, 1) = 0 Then
+        compQB!(qbIdx, 6) = 0
+        compQB!(qbIdx, 7) = 0
+        compQB!(qbIdx, 8) = 0
+        compQB!(qbIdx, 9) = 0
+        compQB!(qbIdx, 10) = 0
     Else
-        ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 4) / ratingsQB!(qbIdx, 1)) * 8.399999 + ratingsQB!(qbIdx, 6) + Int(ratingsQB!(qbIdx, 5) / ratingsQB!(qbIdx, 1) * 1000) / 10 * 3.3 - Int(ratingsQB!(qbIdx, 3) / ratingsQB!(qbIdx, 1) * 1000) / 10 * 2
-        ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
+        compQB!(qbIdx, 7) = Int(compQB!(qbIdx, 4) / compQB!(qbIdx, 1)) * 8.399999 + compQB!(qbIdx, 6) + Int(compQB!(qbIdx, 5) / compQB!(qbIdx, 1) * 1000) / 10 * 3.3 - Int(compQB!(qbIdx, 3) / compQB!(qbIdx, 1) * 1000) / 10 * 2
+        compQB!(qbIdx, 7) = Int(compQB!(qbIdx, 7) * 10) / 10
     End If
 
 End Sub

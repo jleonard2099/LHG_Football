@@ -176,9 +176,11 @@ Sub CompileCollege ()
                         'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
 
                         If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+
                             Call ReadStatsColl(H1$(XW), numberGames%, TM$)
                             Call StatsByCategoryColl(numberGames%, TM$, WT$, finalUpdate$)
                             Call CheckStatsColl(numberGames%, TM$, WT$, finalUpdate$)
+
                         End If
 
                     End If
