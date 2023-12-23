@@ -8733,9 +8733,8 @@ Sub pbplog (lineNumber)
 
     Print #11, "Called from line "; lineNumber
     Print #11, gameTeams$(0); " vs "; gameTeams$(1)
-    Print #11, pbpString$
     Print #11, downDesc$(currDown); " down and"; ydsToFirst; "at the"; ydLineTeam
-    Print #11, "Penalty yards = "; penaltyYds
+    Print #11, pbpString$
     Print #11,
 
 End Sub

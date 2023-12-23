@@ -1,7 +1,7 @@
 '----------------------------------------
 '         Records_Menu Subroutine
 '----------------------------------------
-'This subroutine gives the user a number of 
+'This subroutine gives the user a number of
 'menu selections for viewing, updating and
 'printing records
 Sub Records_Menu (menuChoice)
@@ -35,15 +35,15 @@ Sub Records_Menu (menuChoice)
         Open diskPaths$(1) + recordsFile$ For Input As #1
 
         For I = 0 To 50
-            Input #1, BRC!(I)
-            Input #1, BRC$(I, 0)
-            Input #1, BRC$(I, 1)
-            Input #1, BRC$(I, 2)
+            Input #1, indRecords!(I)
+            Input #1, indRecDesc$(I, 0)
+            Input #1, indRecDesc$(I, 1)
+            Input #1, indRecDesc$(I, 2)
         Next
 
         For I = 0 To 50
-            Input #1, TRC!(I)
-            Input #1, TRC$(I)
+            Input #1, teamRecords!(I)
+            Input #1, teamRecDesc$(I)
         Next
 
         Close #1
@@ -68,7 +68,7 @@ Sub Records_Menu (menuChoice)
             Row% = 8
             menuWidth% = Len(menuChoices$(1))
             Column% = (80 - menuWidth% - 2) / 2
-            Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+            Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
             _MouseShow "DEFAULT"
             MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -76,14 +76,14 @@ Sub Records_Menu (menuChoice)
 
             Color , 0
 
-            If ExitCode% <> 27 Then 
+            If ExitCode% <> 27 Then
 
                 Select Case Selection%
 
-                    Case 1: 
+                    Case 1:
                         Call ViewSeasonRecords
 
-                    Case 2: 
+                    Case 2:
                         Call PrintSeasonRecords
 
                     Case 3:
@@ -106,9 +106,9 @@ End Sub
 'viewing the records on the default display
 Sub ViewSeasonRecords ()
 
-    Shared BRC$()
-    Shared TP$(), TP1$(), TRC$()
-    Shared BRC!(), TRC!()
+    Shared indRecDesc$()
+    Shared indRecCategory$(), teamRecCategory$(), teamRecDesc$()
+    Shared indRecords!(), teamRecords!()
 
     Color 0, 0
     Cls
@@ -141,35 +141,35 @@ Sub ViewSeasonRecords ()
 
     For I = 0 To 2
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(3); Tab(28); BRC$(3, 0); Tab(42); BRC$(3, 1); Tab(62); Using "##.#"; BRC!(3)
+    Print indRecCategory$(3); Tab(28); indRecDesc$(3, 0); Tab(42); indRecDesc$(3, 1); Tab(62); Using "##.#"; indRecords!(3)
     Locate , 4
-    Print TP$(4); Tab(28); BRC$(4, 0); Tab(42); BRC$(4, 1); Tab(62); Using " ###"; BRC!(4);: Print BRC$(4, 2)
+    Print indRecCategory$(4); Tab(28); indRecDesc$(4, 0); Tab(42); indRecDesc$(4, 1); Tab(62); Using " ###"; indRecords!(4);: Print indRecDesc$(4, 2)
 
     For I = 5 To 7
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(8); Tab(28); BRC$(8, 0); Tab(42); BRC$(8, 1); Tab(62); Using "##.#"; BRC!(8)
+    Print indRecCategory$(8); Tab(28); indRecDesc$(8, 0); Tab(42); indRecDesc$(8, 1); Tab(62); Using "##.#"; indRecords!(8)
     Locate , 4
-    Print TP$(9); Tab(28); BRC$(9, 0); Tab(42); BRC$(9, 1); Tab(62); Using " ###"; BRC!(9);: Print BRC$(9, 2)
+    Print indRecCategory$(9); Tab(28); indRecDesc$(9, 0); Tab(42); indRecDesc$(9, 1); Tab(62); Using " ###"; indRecords!(9);: Print indRecDesc$(9, 2)
 
     For I = 10 To 14
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(15); Tab(28); BRC$(15, 0); Tab(42); BRC$(15, 1); Tab(62); Using "##.#"; BRC!(15)
+    Print indRecCategory$(15); Tab(28); indRecDesc$(15, 0); Tab(42); indRecDesc$(15, 1); Tab(62); Using "##.#"; indRecords!(15)
     Locate , 4
-    Print TP$(16); Tab(28); BRC$(16, 0); Tab(42); BRC$(16, 1); Tab(61); Using "###.#"; BRC!(16)
+    Print indRecCategory$(16); Tab(28); indRecDesc$(16, 0); Tab(42); indRecDesc$(16, 1); Tab(61); Using "###.#"; indRecords!(16)
     Locate , 4
-    Print TP$(17); Tab(28); BRC$(17, 0); Tab(42); BRC$(17, 1); Tab(62); Using " ###"; BRC!(17);: Print BRC$(17, 2)
+    Print indRecCategory$(17); Tab(28); indRecDesc$(17, 0); Tab(42); indRecDesc$(17, 1); Tab(62); Using " ###"; indRecords!(17);: Print indRecDesc$(17, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -186,31 +186,31 @@ Sub ViewSeasonRecords ()
 
     For I = 18 To 24
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(25); Tab(28); BRC$(25, 0); Tab(42); BRC$(25, 1); Tab(62); Using "##.#"; BRC!(25)
+    Print indRecCategory$(25); Tab(28); indRecDesc$(25, 0); Tab(42); indRecDesc$(25, 1); Tab(62); Using "##.#"; indRecords!(25)
     Locate , 4
-    Print TP$(26); Tab(28); BRC$(26, 0); Tab(42); BRC$(26, 1); Tab(62); Using " ###"; BRC!(26);: Print BRC$(26, 2)
+    Print indRecCategory$(26); Tab(28); indRecDesc$(26, 0); Tab(42); indRecDesc$(26, 1); Tab(62); Using " ###"; indRecords!(26);: Print indRecDesc$(26, 2)
 
     For I = 27 To 29
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(30); Tab(28); BRC$(30, 0); Tab(42); BRC$(30, 1); Tab(62); Using "##.#"; BRC!(30)
+    Print indRecCategory$(30); Tab(28); indRecDesc$(30, 0); Tab(42); indRecDesc$(30, 1); Tab(62); Using "##.#"; indRecords!(30)
     Locate , 4
-    Print TP$(31); Tab(28); BRC$(31, 0); Tab(42); BRC$(31, 1); Tab(62); Using " ###"; BRC!(31);: Print BRC$(31, 2)
+    Print indRecCategory$(31); Tab(28); indRecDesc$(31, 0); Tab(42); indRecDesc$(31, 1); Tab(62); Using " ###"; indRecords!(31);: Print indRecDesc$(31, 2)
 
     For I = 32 To 33
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(34); Tab(28); BRC$(34, 0); Tab(42); BRC$(34, 1); Tab(62); Using "##.#"; BRC!(34)
+    Print indRecCategory$(34); Tab(28); indRecDesc$(34, 0); Tab(42); indRecDesc$(34, 1); Tab(62); Using "##.#"; indRecords!(34)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -227,29 +227,29 @@ Sub ViewSeasonRecords ()
 
     For I = 35 To 36
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(37); Tab(28); BRC$(37, 0); Tab(42); BRC$(37, 1); Tab(61); Using "###.#"; BRC!(37)
+    Print indRecCategory$(37); Tab(28); indRecDesc$(37, 0); Tab(42); indRecDesc$(37, 1); Tab(61); Using "###.#"; indRecords!(37)
     Locate , 4
-    Print TP$(38); Tab(28); BRC$(38, 0); Tab(42); BRC$(38, 1); Tab(62); Using " ###"; BRC!(38);: Print BRC$(38, 2)
+    Print indRecCategory$(38); Tab(28); indRecDesc$(38, 0); Tab(42); indRecDesc$(38, 1); Tab(62); Using " ###"; indRecords!(38);: Print indRecDesc$(38, 2)
 
     For I = 39 To 40
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(41); Tab(28); BRC$(41, 0); Tab(42); BRC$(41, 1); Tab(61); Using "###.#"; BRC!(41)
+    Print indRecCategory$(41); Tab(28); indRecDesc$(41, 0); Tab(42); indRecDesc$(41, 1); Tab(61); Using "###.#"; indRecords!(41)
 
     For I = 42 To 44
         Locate , 4
-        Print TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
     Locate , 4
-    Print TP$(45); Tab(28); BRC$(45, 0); Tab(42); BRC$(45, 1); Tab(62); Using " ###"; BRC!(45);: Print BRC$(45, 2)
+    Print indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);: Print indRecDesc$(45, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -292,42 +292,42 @@ Sub ViewSeasonRecords ()
     Color 7
 
     Locate , 4
-    Print TP1$(0); Tab(28); TRC$(0); Tab(53); Using "###.#"; TRC!(0)
+    Print teamRecCategory$(0); Tab(28); teamRecDesc$(0); Tab(53); Using "###.#"; teamRecords!(0)
     Locate , 4
-    Print TP1$(1); Tab(28); TRC$(1); Tab(53); Using "#####"; TRC!(1)
+    Print teamRecCategory$(1); Tab(28); teamRecDesc$(1); Tab(53); Using "#####"; teamRecords!(1)
 
     For I = 2 To 3
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     Locate , 4
-    Print TP1$(4); Tab(28); TRC$(4); Tab(53); Using "#####"; TRC!(4)
+    Print teamRecCategory$(4); Tab(28); teamRecDesc$(4); Tab(53); Using "#####"; teamRecords!(4)
 
     For I = 5 To 6
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     Locate , 4
-    Print TP1$(7); Tab(28); TRC$(7); Tab(53); Using "#####"; TRC!(7)
+    Print teamRecCategory$(7); Tab(28); teamRecDesc$(7); Tab(53); Using "#####"; teamRecords!(7)
 
     For I = 8 To 9
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     For I = 10 To 11
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I) * 100
     Next I
 
     Locate , 4
-    Print TP1$(12); Tab(28); TRC$(12); Tab(53); Using "#####"; TRC!(12)
+    Print teamRecCategory$(12); Tab(28); teamRecDesc$(12); Tab(53); Using "#####"; teamRecords!(12)
 
     For I = 13 To 14
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -344,23 +344,23 @@ Sub ViewSeasonRecords ()
 
     For I = 15 To 17
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     Locate , 4
-    Print TP1$(18); Tab(28); TRC$(18); Tab(53); Using "#####"; TRC!(18)
+    Print teamRecCategory$(18); Tab(28); teamRecDesc$(18); Tab(53); Using "#####"; teamRecords!(18)
     Locate , 4
-    Print TP1$(19); Tab(28); TRC$(19); Tab(53); Using "###.#"; TRC!(19)
+    Print teamRecCategory$(19); Tab(28); teamRecDesc$(19); Tab(53); Using "###.#"; teamRecords!(19)
 
     For I = 20 To 22
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "#####"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "#####"; teamRecords!(I)
     Next I
 
     Locate , 4
-    Print TP1$(23); Tab(28); TRC$(23); Tab(53); Using "###.#"; TRC!(23)
+    Print teamRecCategory$(23); Tab(28); teamRecDesc$(23); Tab(53); Using "###.#"; teamRecords!(23)
     Locate , 4
-    Print TP1$(24); Tab(28); TRC$(24); Tab(53); Using "###.#"; TRC!(24)
+    Print teamRecCategory$(24); Tab(28); teamRecDesc$(24); Tab(53); Using "###.#"; teamRecords!(24)
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
@@ -380,34 +380,34 @@ Sub ViewSeasonRecords ()
     Color 7
 
     Locate , 4
-    Print TP1$(25); Tab(28); TRC$(25); Tab(53); Using "###.#"; TRC!(25)
+    Print teamRecCategory$(25); Tab(28); teamRecDesc$(25); Tab(53); Using "###.#"; teamRecords!(25)
     Locate , 4
-    Print TP1$(26); Tab(28); TRC$(26); Tab(53); Using "#####"; TRC!(26)
+    Print teamRecCategory$(26); Tab(28); teamRecDesc$(26); Tab(53); Using "#####"; teamRecords!(26)
 
     For I = 27 To 29
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     Locate , 4
-    Print TP1$(30); Tab(28); TRC$(30); Tab(53); Using "#####"; TRC!(30)
+    Print teamRecCategory$(30); Tab(28); teamRecDesc$(30); Tab(53); Using "#####"; teamRecords!(30)
 
     For I = 31 To 32
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     Locate , 4
-    Print TP1$(33); Tab(28); TRC$(33); Tab(53); Using "#####"; TRC!(33)
+    Print teamRecCategory$(33); Tab(28); teamRecDesc$(33); Tab(53); Using "#####"; teamRecords!(33)
 
     For I = 34 To 35
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     For I = 36 To 37
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I) * 100
     Next
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -423,17 +423,17 @@ Sub ViewSeasonRecords ()
     Locate 4
 
     Locate , 4
-    Print TP1$(38); Tab(28); TRC$(38); Tab(53); Using "#####"; TRC!(38)
+    Print teamRecCategory$(38); Tab(28); teamRecDesc$(38); Tab(53); Using "#####"; teamRecords!(38)
     Locate , 4
-    Print TP1$(39); Tab(28); TRC$(39); Tab(53); Using "###.#"; TRC!(39)
+    Print teamRecCategory$(39); Tab(28); teamRecDesc$(39); Tab(53); Using "###.#"; teamRecords!(39)
     Locate , 4
-    Print TP1$(40); Tab(28); TRC$(40); Tab(53); Using "#####"; TRC!(40)
+    Print teamRecCategory$(40); Tab(28); teamRecDesc$(40); Tab(53); Using "#####"; teamRecords!(40)
     Locate , 4
-    Print TP1$(41); Tab(28); TRC$(41); Tab(53); Using "###.#"; TRC!(41)
+    Print teamRecCategory$(41); Tab(28); teamRecDesc$(41); Tab(53); Using "###.#"; teamRecords!(41)
 
     For I = 42 To 43
         Locate , 4
-        Print TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -454,9 +454,9 @@ End Sub
 'viewing the records on the default printer
 Sub PrintSeasonRecords ()
 
-    Shared BRC$()
-    Shared TP$(), TP1$(), TRC$()
-    Shared BRC!(), TRC!()
+    Shared indRecDesc$()
+    Shared indRecCategory$(), teamRecCategory$(), teamRecDesc$()
+    Shared indRecords!(), teamRecords!()
 
     Color 0, 15
 
@@ -465,148 +465,149 @@ Sub PrintSeasonRecords ()
     LPrint "CATEGORY                   PLAYER           TEAM           RECORD"
 
     For I = 0 To 2
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(3); Tab(28); BRC$(3, 0); Tab(42); BRC$(3, 1); Tab(62); Using "##.#"; BRC!(3)
-    LPrint TP$(4); Tab(28); BRC$(4, 0); Tab(42); BRC$(4, 1); Tab(62); Using " ###"; BRC!(4);: LPrint BRC$(4, 2)
+    LPrint indRecCategory$(3); Tab(28); indRecDesc$(3, 0); Tab(42); indRecDesc$(3, 1); Tab(62); Using "##.#"; indRecords!(3)
+    LPrint indRecCategory$(4); Tab(28); indRecDesc$(4, 0); Tab(42); indRecDesc$(4, 1); Tab(62); Using " ###"; indRecords!(4);: LPrint indRecDesc$(4, 2)
 
     For I = 5 To 7
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(8); Tab(28); BRC$(8, 0); Tab(42); BRC$(8, 1); Tab(62); Using "##.#"; BRC!(8)
-    LPrint TP$(9); Tab(28); BRC$(9, 0); Tab(42); BRC$(9, 1); Tab(62); Using " ###"; BRC!(9);: LPrint BRC$(9, 2)
+    LPrint indRecCategory$(8); Tab(28); indRecDesc$(8, 0); Tab(42); indRecDesc$(8, 1); Tab(62); Using "##.#"; indRecords!(8)
+    LPrint indRecCategory$(9); Tab(28); indRecDesc$(9, 0); Tab(42); indRecDesc$(9, 1); Tab(62); Using " ###"; indRecords!(9);: LPrint indRecDesc$(9, 2)
 
     For I = 10 To 14
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(15); Tab(28); BRC$(15, 0); Tab(42); BRC$(15, 1); Tab(62); Using "##.#"; BRC!(15)
-    LPrint TP$(16); Tab(28); BRC$(16, 0); Tab(42); BRC$(16, 1); Tab(61); Using "###.#"; BRC!(16)
-    LPrint TP$(17); Tab(28); BRC$(17, 0); Tab(42); BRC$(17, 1); Tab(62); Using " ###"; BRC!(17);: LPrint BRC$(17, 2)
+    LPrint indRecCategory$(15); Tab(28); indRecDesc$(15, 0); Tab(42); indRecDesc$(15, 1); Tab(62); Using "##.#"; indRecords!(15)
+    LPrint indRecCategory$(16); Tab(28); indRecDesc$(16, 0); Tab(42); indRecDesc$(16, 1); Tab(61); Using "###.#"; indRecords!(16)
+    LPrint indRecCategory$(17); Tab(28); indRecDesc$(17, 0); Tab(42); indRecDesc$(17, 1); Tab(62); Using " ###"; indRecords!(17);: LPrint indRecDesc$(17, 2)
 
     For I = 18 To 24
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(25); Tab(28); BRC$(25, 0); Tab(42); BRC$(25, 1); Tab(62); Using "##.#"; BRC!(25)
-    LPrint TP$(26); Tab(28); BRC$(26, 0); Tab(42); BRC$(26, 1); Tab(62); Using " ###"; BRC!(26);: LPrint BRC$(26, 2)
+    LPrint indRecCategory$(25); Tab(28); indRecDesc$(25, 0); Tab(42); indRecDesc$(25, 1); Tab(62); Using "##.#"; indRecords!(25)
+    LPrint indRecCategory$(26); Tab(28); indRecDesc$(26, 0); Tab(42); indRecDesc$(26, 1); Tab(62); Using " ###"; indRecords!(26);: LPrint indRecDesc$(26, 2)
 
     For I = 27 To 29
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(30); Tab(28); BRC$(30, 0); Tab(42); BRC$(30, 1); Tab(62); Using "##.#"; BRC!(30)
-    LPrint TP$(31); Tab(28); BRC$(31, 0); Tab(42); BRC$(31, 1); Tab(62); Using " ###"; BRC!(31);: LPrint BRC$(31, 2)
+    LPrint indRecCategory$(30); Tab(28); indRecDesc$(30, 0); Tab(42); indRecDesc$(30, 1); Tab(62); Using "##.#"; indRecords!(30)
+    LPrint indRecCategory$(31); Tab(28); indRecDesc$(31, 0); Tab(42); indRecDesc$(31, 1); Tab(62); Using " ###"; indRecords!(31);: LPrint indRecDesc$(31, 2)
 
     For I = 32 To 33
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(34); Tab(28); BRC$(34, 0); Tab(42); BRC$(34, 1); Tab(62); Using "##.#"; BRC!(34)
+    LPrint indRecCategory$(34); Tab(28); indRecDesc$(34, 0); Tab(42); indRecDesc$(34, 1); Tab(62); Using "##.#"; indRecords!(34)
 
     For I = 35 To 36
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(37); Tab(28); BRC$(37, 0); Tab(42); BRC$(37, 1); Tab(61); Using "###.#"; BRC!(37)
-    LPrint TP$(38); Tab(28); BRC$(38, 0); Tab(42); BRC$(38, 1); Tab(62); Using " ###"; BRC!(38);: LPrint BRC$(38, 2)
+    LPrint indRecCategory$(37); Tab(28); indRecDesc$(37, 0); Tab(42); indRecDesc$(37, 1); Tab(61); Using "###.#"; indRecords!(37)
+    LPrint indRecCategory$(38); Tab(28); indRecDesc$(38, 0); Tab(42); indRecDesc$(38, 1); Tab(62); Using " ###"; indRecords!(38);: LPrint indRecDesc$(38, 2)
 
     For I = 39 To 40
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(41); Tab(28); BRC$(41, 0); Tab(42); BRC$(41, 1); Tab(61); Using "###.#"; BRC!(41)
+    LPrint indRecCategory$(41); Tab(28); indRecDesc$(41, 0); Tab(42); indRecDesc$(41, 1); Tab(61); Using "###.#"; indRecords!(41)
 
     For I = 42 To 44
-        LPrint TP$(I); Tab(28); BRC$(I, 0); Tab(42); BRC$(I, 1); Tab(62); Using "####"; BRC!(I)
+        LPrint indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
 
-    LPrint TP$(45); Tab(28); BRC$(45, 0); Tab(42); BRC$(45, 1); Tab(62); Using " ###"; BRC!(45);: LPrint BRC$(45, 2)
+    LPrint indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);: LPrint indRecDesc$(45, 2)
     LPrint Chr$(12)
     LPrint Tab(23); "******* OFFENSIVE TEAM RECORDS *******"
     LPrint
     LPrint "CATEGORY                      TEAM                 RECORD            "
-    LPrint TP1$(0); Tab(28); TRC$(0); Tab(53); Using "###.#"; TRC!(0)
-    LPrint TP1$(1); Tab(28); TRC$(1); Tab(53); Using "#####"; TRC!(1)
+    LPrint teamRecCategory$(0); Tab(28); teamRecDesc$(0); Tab(53); Using "###.#"; teamRecords!(0)
+    LPrint teamRecCategory$(1); Tab(28); teamRecDesc$(1); Tab(53); Using "#####"; teamRecords!(1)
 
     For I = 2 To 3
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
-    LPrint TP1$(4); Tab(28); TRC$(4); Tab(53); Using "#####"; TRC!(4)
+    LPrint teamRecCategory$(4); Tab(28); teamRecDesc$(4); Tab(53); Using "#####"; teamRecords!(4)
 
     For I = 5 To 6
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
-    LPrint TP1$(7); Tab(28); TRC$(7); Tab(53); Using "#####"; TRC!(7)
+    LPrint teamRecCategory$(7); Tab(28); teamRecDesc$(7); Tab(53); Using "#####"; teamRecords!(7)
 
     For I = 8 To 9
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     For I = 10 To 11
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I) * 100
     Next I
 
-    LPrint TP1$(12); Tab(28); TRC$(12); Tab(53); Using "#####"; TRC!(12)
+    LPrint teamRecCategory$(12); Tab(28); teamRecDesc$(12); Tab(53); Using "#####"; teamRecords!(12)
 
     For I = 13 To 14
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
     For I = 15 To 17
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
-    LPrint TP1$(18); Tab(28); TRC$(18); Tab(53); Using "#####"; TRC!(18)
-    LPrint TP1$(19); Tab(28); TRC$(19); Tab(53); Using "###.#"; TRC!(19)
+    LPrint teamRecCategory$(18); Tab(28); teamRecDesc$(18); Tab(53); Using "#####"; teamRecords!(18)
+    LPrint teamRecCategory$(19); Tab(28); teamRecDesc$(19); Tab(53); Using "###.#"; teamRecords!(19)
 
     For I = 20 To 22
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "#####"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "#####"; teamRecords!(I)
     Next I
 
-    LPrint TP1$(23); Tab(28); TRC$(23); Tab(53); Using "###.#"; TRC!(23)
-    LPrint TP1$(24); Tab(28); TRC$(24); Tab(53); Using "###.#"; TRC!(24)
+    LPrint teamRecCategory$(23); Tab(28); teamRecDesc$(23); Tab(53); Using "###.#"; teamRecords!(23)
+    LPrint teamRecCategory$(24); Tab(28); teamRecDesc$(24); Tab(53); Using "###.#"; teamRecords!(24)
     LPrint
     LPrint
     LPrint Tab(23); "******* DEFENSIVE TEAM RECORDS *******"
     LPrint
     LPrint "CATEGORY                      TEAM                 RECORD            "
-    LPrint TP1$(25); Tab(28); TRC$(25); Tab(53); Using "###.#"; TRC!(25)
-    LPrint TP1$(26); Tab(28); TRC$(26); Tab(53); Using "#####"; TRC!(26)
+    LPrint teamRecCategory$(25); Tab(28); teamRecDesc$(25); Tab(53); Using "###.#"; teamRecords!(25)
+    LPrint teamRecCategory$(26); Tab(28); teamRecDesc$(26); Tab(53); Using "#####"; teamRecords!(26)
 
     For I = 27 To 29
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
-    LPrint TP1$(30); Tab(28); TRC$(30); Tab(53); Using "#####"; TRC!(30)
+    LPrint teamRecCategory$(30); Tab(28); teamRecDesc$(30); Tab(53); Using "#####"; teamRecords!(30)
 
     For I = 31 To 32
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
-    LPrint TP1$(33); Tab(28); TRC$(33); Tab(53); Using "#####"; TRC!(33)
+    LPrint teamRecCategory$(33); Tab(28); teamRecDesc$(33); Tab(53); Using "#####"; teamRecords!(33)
 
     For I = 34 To 35
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     For I = 36 To 37
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I) * 100
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I) * 100
     Next
 
-    LPrint TP1$(38); Tab(28); TRC$(38); Tab(53); Using "#####"; TRC!(38)
-    LPrint TP1$(39); Tab(28); TRC$(39); Tab(53); Using "###.#"; TRC!(39)
-    LPrint TP1$(40); Tab(28); TRC$(40); Tab(53); Using "#####"; TRC!(40)
-    LPrint TP1$(41); Tab(28); TRC$(41); Tab(53); Using "###.#"; TRC!(41)
+    LPrint teamRecCategory$(38); Tab(28); teamRecDesc$(38); Tab(53); Using "#####"; teamRecords!(38)
+    LPrint teamRecCategory$(39); Tab(28); teamRecDesc$(39); Tab(53); Using "###.#"; teamRecords!(39)
+    LPrint teamRecCategory$(40); Tab(28); teamRecDesc$(40); Tab(53); Using "#####"; teamRecords!(40)
+    LPrint teamRecCategory$(41); Tab(28); teamRecDesc$(41); Tab(53); Using "###.#"; teamRecords!(41)
 
     For I = 42 To 43
-        LPrint TP1$(I); Tab(28); TRC$(I); Tab(53); Using "###.#"; TRC!(I)
+        LPrint teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
     LPrint Chr$(12)
 
 End Sub
+

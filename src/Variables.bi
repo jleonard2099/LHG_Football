@@ -129,23 +129,23 @@ Dim careerRC!(6), careerTT!(50)
 Dim fumbGain, puntNum
 Dim puntName$
 
-Dim BRC$(50, 2), compKR$(3), compPK$(2), compPR$(3)
+Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
 Dim compZ1$(50), compZ2$(240), compZ3$(240)
 Dim H1$(30), N2$(240), N3$(240), NT$(10, 20)
 Dim PS$(10), PT$(1200)
-Dim TB$(18), TR$(10, 20), TRC$(50), TT$(10, 20)
+Dim TB$(18), TR$(10, 20), teamRecDesc$(50), TT$(10, 20)
 
 Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
 Dim compTT!(10, 20, 9), compWR!(16, 13)
 Dim compZ1!(240, 2), compZ2!(14, 18)
 
-Dim BRC!(50), DT!(38), EA!(2), EM!(2), EP!(2)
+Dim indRecords!(50), DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(50), O2!(50), O3!(50), OT!(38)
 Dim PT!(1200, 5), PTSA!(50), PTSF!(50)
-Dim TD!(16), TG!(16), TP!(18), TRC!(50)
+Dim TD!(16), TG!(16), TP!(18), teamRecords!(50)
 Dim YD!(16)
 
 '----------------------------------------
@@ -237,7 +237,7 @@ Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
 ' Used in RECORD routines
 '----------------------------------------
 '   ind recs, team recs
-Dim TP$(46), TP1$(43)
+Dim indRecCategory$(46), teamRecCategory$(43)
 
 
 '----------------------------------------
@@ -247,23 +247,23 @@ Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 
 Dim gameCount(30), lookyP%(1)
 
-Dim GMA!(300), GMB!(180), GMC!(100)
+Dim GMA!(300), GMB!(180), GMC!(120)
 
-Dim A1L!(300, 8), A2L!(180, 4), A3L!(100, 13), A3R!(100, 1)
+Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
 Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 30), sackStats!(1, 1)
 
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(100), A4L$(90), A4T$(90)
+Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
 Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
 Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
 Dim expCategories$(74)
 
 Dim intNam_TRADE$(1, 9)
-Dim LCL$(480), LKL$(90), LPL$(100), LRL$(300), PKL$(90)
+Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyRBacks$(10), lookyWdRec$(6), lookyQBacks$(4), lookyKickRet$(3), lookyPRet$(3), lookyPunter$(2), lookyKicker$(2)
 Dim lookyTT$(31, 30)
-Dim QBL$(100), sackNam_TRADE$(1, 14)
+Dim QBL$(120), sackNam_TRADE$(1, 14)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
 
@@ -382,4 +382,3 @@ Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
 'I believe they are for tracking records / "longest" plays
 Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1)
 Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
-

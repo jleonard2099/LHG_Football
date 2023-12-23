@@ -240,7 +240,6 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
     Shared AM!(), AF!()
     Shared statsLC!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
-    Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsGI%(), statsGS%()
@@ -249,6 +248,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared intName$(), statsLC$(), statsLR$()
+    Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
     Shared sackName$(), statsLF$(), statsLK$(), statsLP$(), statsPK$()
     Shared QBL$(), lookyTT$(), statsZ1$()
@@ -455,7 +455,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                 A7L$(JG) = lookyKicker$(1)
                 A7T$(JG) = statsA$
 
-                For I = 0 To 3: A7L!(JG, I) = statsZ2!(I + 7, 17): Next
+                For I = 0 To 3:
+                    A7L!(JG, I) = statsZ2!(I + 7, 17)
+                Next
 
                 A7L!(JG, 4) = statsLF!(1)
 
@@ -946,7 +948,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "B":
                     J = 8
@@ -973,7 +975,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "C":
                     J = 12
@@ -998,7 +1000,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 8
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "D":
                     J = 8
@@ -1024,7 +1026,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "E":
                     J = 8
@@ -1050,7 +1052,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "F":
                     J = 6
@@ -1076,7 +1078,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "G":
                     J = 10
@@ -1102,7 +1104,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 6
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "H":
                     J = 6
@@ -1128,10 +1130,10 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 1
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "I":
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "J":
                     J = 6
@@ -1157,7 +1159,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
                 Case "K":
                     J = 17
@@ -1200,7 +1202,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 28
 
-                    Call SortOptions( printOrView%, sortType%)
+                    Call SortOptions(printOrView%, sortType%)
 
             End Select
 
@@ -1419,7 +1421,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         TPP$(PPP) = QBL$(I)
                                         TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = A3R!(I, X)
+                                        TYP!(PPP) = A3L!(I, X)
                                     End If
                                 Next I
 

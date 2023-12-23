@@ -9,7 +9,7 @@ Sub SEEPRO ()
 
     _Title "3-in-1 Football - View League Stats"
 
-    leaderFile$ = ChooseFile$ (diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
+    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -254,7 +254,7 @@ Sub StatOptions_Pro (league$)
 
         Call TITLE_STATS
 
-        Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 8, 61, 5, 15, 1)
 
         Locate 7, 32
 
@@ -270,7 +270,7 @@ Sub StatOptions_Pro (league$)
             Color 15: Print "F";: Color 7: Print "ILE"
 
             I$ = GetKeyPress$
-            
+
             Color 14, 0
 
         Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
@@ -294,7 +294,7 @@ Sub StatOptions_Pro (league$)
             Color 15, 0
             Cls
 
-            Call box0 (6, 8, 11, 70, 2, 15, 1)
+            Call box0(6, 8, 11, 70, 2, 15, 1)
 
             Do
                 Color 15, 1
@@ -325,7 +325,7 @@ Sub ReportFilePrompt_Pro (reportFile$)
         Color 15, 0
         Cls
 
-        Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox(6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
 
@@ -400,7 +400,7 @@ Sub LeaderStatsPro_Screen ()
 
             Print Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
         End If
-    
+
     Next
 
     RT = 0
@@ -593,7 +593,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "ALL PURPOSE YARDAGE"
     Color 15
@@ -654,7 +654,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "COMPLETION PERCENTAGE"
     Color 15
@@ -716,7 +716,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "KO RETURN AVERAGE                 #"
     Color 15
@@ -840,7 +840,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"
     Color 15
@@ -879,7 +879,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"
     Color 15
@@ -957,7 +957,7 @@ Sub LeaderStatsPro_Screen ()
     '-----
 
     Cls
-    
+
     Color 14
     Print "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
     Color 15
@@ -1569,3 +1569,4 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     End If
 
 End Sub
+

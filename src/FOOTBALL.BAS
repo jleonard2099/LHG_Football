@@ -2462,6 +2462,7 @@ Sub FOOTBALL ()
                                     gameWR$(P1, I3) = ""
                                     WR(P1, I3) = ydsGained
                                 End If
+
                                 If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
                                     gameQB$(P1, qbNumber(P1)) = ""
                                     quarterbacks(P1, qbNumber(P1)) = ydsGained
@@ -3631,9 +3632,6 @@ Sub FOOTBALL ()
 
     If RN0 <= 6 + tmRat_GAME(D, 0) Then
 
-        'Where are we before the penalty?
-        'Call pbplog(4967)
-
         pbpString$ = "PENALTY AFTER WHISTLE - "
         RN1 = Int(Rnd(1) * 10) + 1
 
@@ -3711,8 +3709,6 @@ Sub FOOTBALL ()
 
         End Select
 
-        'Call pbplog(5045)
-
     Else
 
         GoSub 3900
@@ -3726,8 +3722,6 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     3309 '
-    'Where are we before the penalty?
-    'Call pbplog(5059)
 
     pbpString$ = "*** PENALTY - "
 
@@ -3832,8 +3826,6 @@ Sub FOOTBALL ()
         End If
     End If
 
-    'Call pbplog(5164)
-
     'Reset for next penalty
     holding = 0
     pbpString$ = pbpString$ + " 1-ACCEPT 2-DECLINE "
@@ -3915,8 +3907,6 @@ Sub FOOTBALL ()
             gameStats(P1, 12) = gameStats(P1, 12) + penaltyYds
         End If
 
-        'Call pbplog(5266)
-
         gameStats(P1, 11) = gameStats(P1, 11) + 1
 
         If Int(ydsToFirst * 10 + .5) / 10 < .05 Then 3335
@@ -3942,8 +3932,6 @@ Sub FOOTBALL ()
 
             If 100 - ydLine < 9.95 Then ydsToFirst = 100 - ydLine
             If O < 1 And ruleOptType = 0 And R5% = 0 Then O = 1
-
-            'Call pbplog(5294)
 
             gameStats(P1, 0) = gameStats(P1, 0) + 1
 
@@ -3978,8 +3966,6 @@ Sub FOOTBALL ()
     End If
 
     gameStats(D, 11) = gameStats(D, 11) + 1
-
-    'Call pbplog(5328)
 
     If ydsToFirst < .01 Or autoFD = 1 Then
         autoFD = 0
