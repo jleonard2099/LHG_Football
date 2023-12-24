@@ -324,8 +324,9 @@ Dim Shared X, X1
 'The below 2 variables are related to scouting
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst, YC, YF, Z1
-Dim Shared ydsGained, ydLine, ydLineTeam, ydsToScore
+Dim Shared ydsToFirst As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared YC, YF, Z1
 
 Dim Shared BO%, EG%, F%, FF%, GL%, HB%, intChance
 Dim Shared PC%, PS%, R5%

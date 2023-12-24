@@ -3266,6 +3266,7 @@ Sub SCOREBOARD ()
         Call YARDLINE
 
         Color 15 * (1 - BW), 4 + BW * 3
+
         TI = gameClock!
         TI = TI + TI * (TI < 0)
         I = Int(TI / 60)
@@ -3281,7 +3282,12 @@ Sub SCOREBOARD ()
         Locate 4, 44: Print Using " DOWN: #"; currDown;
         Print Tab(60);
 
-        Print Using " TO GO: ##.#"; ydsToFirst;
+        If ydsToFirst >= 0.7 Then
+            Print Using " TO GO: ##"; Int(ydsToFirst + 0.5);
+        Else
+            Print " TO GO: INCHES";
+        End If
+
         Print Tab(80); " ";
 
         Locate 5, 44: Print " BALL ON ";
@@ -3291,7 +3297,8 @@ Sub SCOREBOARD ()
             Print "OPP";
         End If
 
-        Print Using " ##.# YD LINE "; ydLineTeam;
+        'Print Using " ##.# YD LINE "; ydLineTeam;
+        Print Using " ## YD LINE "; Int(ydLineTeam + 0.5);
         Print Tab(80); " ";
 
     End If
@@ -4067,10 +4074,7 @@ Sub MEASUREMENT ()
     Call PBP
     Call PBP
 
-    'Are these numbers accurate? I'm not confident they are
-    'I believe we're converting these numbers as yards to
-    'feet / inches???
-    '1 yard = 36 inches
+    test! = ydsGained - ydsToFirst
     Select Case ydsGained - ydsToFirst
 
         Case Is < -.2
@@ -9126,4 +9130,5 @@ Sub EndOfGame
     End If
 
 End Sub
+
 

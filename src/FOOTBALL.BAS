@@ -1710,7 +1710,8 @@ Sub FOOTBALL ()
                     I1 = qbNumber(P1)
 
                     If ydLine + ydsGained < 99.94999 Then
-                        If ydsGained - ydsToFirst >= -.3 And ydsGained - ydsToFirst <= .3 Then Call MEASUREMENT
+                        'If we're within a foot of the first down
+                        If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then Call MEASUREMENT
                     End If
 
                     pbpString$ = "HE GAINS" + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
@@ -2007,7 +2008,8 @@ Sub FOOTBALL ()
                     Call FUMBLE
 
                     If ballFumbled <> 1 Then
-                        If ydsGained - ydsToFirst >= -.3 And ydsGained - ydsToFirst <= .3 Then Call MEASUREMENT
+                        'If we're within a foot of the first down
+                        If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then Call MEASUREMENT
                     End If
 
                 End If
@@ -2409,7 +2411,8 @@ Sub FOOTBALL ()
                             Call FUMBLE
 
                             If ballFumbled <> 1 Then
-                                If ydsGained - ydsToFirst >= -.3 And ydsGained - ydsToFirst <= .3 Then Call MEASUREMENT
+                                'If we're within a foot of the first down
+                                If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then Call MEASUREMENT
                             End If
 
                         End If
