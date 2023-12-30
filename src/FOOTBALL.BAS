@@ -4789,86 +4789,90 @@ Sub FOOTBALL ()
 
             End If
 
+            'Done handling blocked kick
             GoTo 3200
 
-        End If
-
-        'Increase FG attempt
-        K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
-
-        pbpString$ = "THE KICK IS UP AND ON ITS WAY"
-        Call PBP
-
-        If WX%(0) <> P1 Then
-            fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - WX%(1)
-        Else
-            fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + WX%(1)
-        End If
-
-        Call FGATT
-
-        If I <= fgSuccessChance Then
-
-            'Increase FGM
-            K2(P1, 3 + Q7%(P1) * 4, 17) = K2(P1, 3 + Q7%(P1) * 4, 17) + 1
-            X1 = 8
-            I1 = Q7%(P1)
-
-            Call SCOREUPD
-
-            currDown = 1
-            ydsToFirst = 10
-            score(P1, 0) = score(P1, 0) + 3
-            score(P1, quarter) = score(P1, quarter) + 3
-
-            Call FGMADE
-            Call AddPossessionTime(4, 7)
-            Call ITSGOOD
-            Call DisplayField
-
-            ydLine = 35
-
-            Call CHANGEPOSS
-            Call SCOREBOARD
-
-            If ruleOptType <> 0 And goalPostAdj < 0 Then ydLine = 40
-            If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then ydLine = 30
-            If ruleOptColl = 0 And ruleOptType = 0 Then ydLine = 40
-
-            Call SCOREBOARD
-            Call CheckGameClock
-            If gameClock! = 0 Then U3 = 9: GoTo 3360
-
-            If quarter > 4 Then 3364
-
-            GoTo 340
-
         Else
 
-            Call MISSEDFG
-            currDown = 1
-            ydsToFirst = 10
+            'Increase FG attempt
+            K2(P1, 4 + Q7%(P1) * 4, 17) = K2(P1, 4 + Q7%(P1) * 4, 17) + 1
 
-            Call CHANGEPOSS
+            pbpString$ = "THE KICK IS UP AND ON ITS WAY"
+            Call PBP
 
-            If ydLine > 40 And ydLine <= 79.99 And ruleOptPro = 3 And ruleOptType = 1 Then
-                ydLine = ydLine - 7
-                ydLine = 100 - ydLine
+            If WX%(0) <> P1 Then
+                fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - WX%(1)
             Else
-                If ydLine > 79.99 Or goalPostAdj < 0 Then ydLine = 20
-                If ydLine > 40 And ydLine <= 79.99 And goalPostAdj = 0 Then ydLine = 100 - ydLine
+                fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + WX%(1)
             End If
 
-            Call AddPossessionTime(4, 7)
-            Call CheckGameClock
-            If gameClock! = 0 Then GoTo 3360
+            Call FGATT
 
-            'College overtime
-            If quarter > 4 And NG%(14) = 3 Then 3364
+            'Where does "I" come from ???
+                If fgChance <= fgSuccessChance Then
 
-        End If
+                'Increase FGM
+                K2(P1, 3 + Q7%(P1) * 4, 17) = K2(P1, 3 + Q7%(P1) * 4, 17) + 1
+                X1 = 8
+                I1 = Q7%(P1)
 
-    End If
+                Call SCOREUPD
+
+                currDown = 1
+                ydsToFirst = 10
+                score(P1, 0) = score(P1, 0) + 3
+                score(P1, quarter) = score(P1, quarter) + 3
+
+                Call FGMADE
+                Call AddPossessionTime(4, 7)
+                Call ITSGOOD
+                Call DisplayField
+
+                ydLine = 35
+
+                Call CHANGEPOSS
+                Call SCOREBOARD
+
+                If ruleOptType <> 0 And goalPostAdj < 0 Then ydLine = 40
+                If ruleOptType = 1 And ruleOptPro = 3 Or ruleOptType = 4 Then ydLine = 30
+                If ruleOptColl = 0 And ruleOptType = 0 Then ydLine = 40
+
+                Call SCOREBOARD
+                Call CheckGameClock
+                If gameClock! = 0 Then U3 = 9: GoTo 3360
+
+                If quarter > 4 Then 3364
+
+                GoTo 340
+
+            Else
+
+                Call MISSEDFG
+                currDown = 1
+                ydsToFirst = 10
+
+                Call CHANGEPOSS
+
+                If ydLine > 40 And ydLine <= 79.99 And ruleOptPro = 3 And ruleOptType = 1 Then
+                    ydLine = ydLine - 7
+                    ydLine = 100 - ydLine
+                Else
+                    If ydLine > 79.99 Or goalPostAdj < 0 Then ydLine = 20
+                    If ydLine > 40 And ydLine <= 79.99 And goalPostAdj = 0 Then ydLine = 100 - ydLine
+                End If
+
+                Call AddPossessionTime(4, 7)
+                Call CheckGameClock
+                If gameClock! = 0 Then GoTo 3360
+
+                'College overtime
+                If quarter > 4 And NG%(14) = 3 Then 3364
+
+            End If 'Done checking FG success
+
+        End If ' Done handling successful FG
+
+    End If ' Done checking for bad snap
 
     GoTo 700
 

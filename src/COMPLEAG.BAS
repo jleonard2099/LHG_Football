@@ -10,11 +10,10 @@ Sub CompileLeague ()
 
     _Title "3-in-1 Football - Update League Stats"
 
-    Shared indRecords!()
     Shared compTT!(), compZ1!(), compZ2!()
     Shared O1!(), O2!(), O3!()
-    Shared PTSF!(), PTSA!()
-    Shared teamRecords!()
+
+    Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
     Shared compZ1$(), compZ2$(), compZ3$()
@@ -40,6 +39,7 @@ Sub CompileLeague ()
         Next
 
         Close #1
+        
     Else
 
         Erase indRecords!, teamRecords!
@@ -207,10 +207,6 @@ End Sub
 'found, notifying the user
 Function FindStatsPro% (XW, statFile$, numberGames%)
 
-    Shared powerRating()
-    Shared H1$(), locIndicator$(), oppName$()
-
-    Shared statsGI%(), statsGS%()
     Shared oppScore(), teamScore()
 
     If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
@@ -261,10 +257,9 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     Shared statsGI%(), statsGS%()
 
-    Shared AM!(), AF!()
+    Shared AF!(), AM!()
     Shared compPR!(), compQB!(), compRB!(), compWR!(), compZ2!()
-    Shared DT!()
-    Shared EA!(), EM!(), EP!()
+    Shared DT!(), EA!(), EM!(), EP!()
     Shared FA!(), FG!(), FM!(), KR!()
     Shared OT!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
@@ -273,10 +268,10 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
 
     Shared compKR$(), compPK$(), compPR$()
     Shared compQB$(), compRB$(), compWR$()
-    Shared H1$(), intName$(), sackName$()
+    Shared H1$(), intName$(), PKR$()
+    Shared sackName$()
     Shared statsLC$(), statsLF$(), statsLI$()
     Shared statsLK$(), statsLP$(), statsLR$()
-    Shared PKR$()
     Shared TB$()
 
     'Erase compKR$, compPK$, compPR$, compQB$, compRB$, compWR$
@@ -384,6 +379,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     For I = 0 To 1:
         Input #1, statsLF!(I)
         Input #1, statsLF$(I)
+        
         For I1 = 0 To 4
             Input #1, AM!(I, I1)
             Input #1, AF!(I, I1)
@@ -397,6 +393,8 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     Next
 
     Close #1
+
+    '--- Done reading in all data ---
 
     For I = 1 To 10:
         For J = 1 To 6:
@@ -487,19 +485,25 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
         TP!(16 + I) = EM!(I) + FM!(I) * 3
     Next
 
-    For I = 1 To 10
+    For I = 1 To 10:
         compRB!(I, 9) = 0
-        If compRB!(I, 1) > 0 Then compRB!(I, 9) = Int(compRB!(I, 2) / compRB!(I, 1) * 10) / 10
+        If compRB!(I, 1) > 0 Then
+            compRB!(I, 9) = Int(compRB!(I, 2) / compRB!(I, 1) * 10) / 10
+        End If
     Next
 
-    For I = 1 To 10
+    For I = 1 To 10:
         compRB!(I, 10) = 0
-        If compRB!(I, 4) > 0 Then compRB!(I, 10) = Int(compRB!(I, 5) / compRB!(I, 4) * 10) / 10
+        If compRB!(I, 4) > 0 Then
+            compRB!(I, 10) = Int(compRB!(I, 5) / compRB!(I, 4) * 10) / 10
+        End If
     Next
 
     For I = 1 To 16:
         compWR!(I, 4) = 0
-        If compWR!(I, 1) > 0 Then compWR!(I, 4) = Int(compWR!(I, 2) / compWR!(I, 1) * 10) / 10
+        If compWR!(I, 1) > 0 Then
+            compWR!(I, 4) = Int(compWR!(I, 2) / compWR!(I, 1) * 10) / 10
+        End If
     Next
 
     For I = 1 To 4:
@@ -508,6 +512,7 @@ Sub ReadStatsPro (statFile$, numberGames%, TM$)
     Next
 
     For I = 1 To 3:
+
         KR!(I, 4) = 0
         If KR!(I, 1) > 0 And KR!(I, 1) >= numberGames% Then
             KR!(I, 4) = Int(KR!(I, 2) / KR!(I, 1) * 10) / 10
@@ -1343,11 +1348,36 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
         If compPR$(X) <> "OTHERS" Then
 
-            If compPR!(X, 1) > indRecords!(27) Then indRecords!(27) = compPR!(X, 1): indRecDesc$(27, 0) = compPR$(X): indRecDesc$(27, 1) = TM$
-            If compPR!(X, 2) > indRecords!(28) Then indRecords!(28) = compPR!(X, 2): indRecDesc$(28, 0) = compPR$(X): indRecDesc$(28, 1) = TM$
-            If compPR!(X, 3) > indRecords!(29) Then indRecords!(29) = compPR!(X, 3): indRecDesc$(29, 0) = compPR$(X): indRecDesc$(29, 1) = TM$
-            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames% * 1.2 Then indRecords!(30) = compPR!(X, 4): indRecDesc$(30, 0) = compPR$(X): indRecDesc$(30, 1) = TM$
-            If statsPK!(X - 1) > indRecords!(31) Then indRecords!(31) = statsPK!(X - 1): indRecDesc$(31, 0) = compPR$(X): indRecDesc$(31, 1) = TM$: indRecDesc$(31, 2) = PKR$(X - 1, 0)
+            If compPR!(X, 1) > indRecords!(27) Then 
+                indRecords!(27) = compPR!(X, 1)
+                indRecDesc$(27, 0) = compPR$(X)
+                indRecDesc$(27, 1) = TM$
+            End If
+
+            If compPR!(X, 2) > indRecords!(28) Then 
+                indRecords!(28) = compPR!(X, 2)
+                indRecDesc$(28, 0) = compPR$(X)
+                indRecDesc$(28, 1) = TM$
+            End If
+
+            If compPR!(X, 3) > indRecords!(29) Then 
+                indRecords!(29) = compPR!(X, 3)
+                indRecDesc$(29, 0) = compPR$(X)
+                indRecDesc$(29, 1) = TM$
+            End If
+
+            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames% * 1.2 Then 
+                indRecords!(30) = compPR!(X, 4)
+                indRecDesc$(30, 0) = compPR$(X)
+                indRecDesc$(30, 1) = TM$
+            End If
+
+            If statsPK!(X - 1) > indRecords!(31) Then 
+                indRecords!(31) = statsPK!(X - 1)
+                indRecDesc$(31, 0) = compPR$(X)
+                indRecDesc$(31, 1) = TM$
+                indRecDesc$(31, 2) = PKR$(X - 1, 0)
+            End If
 
             For Z = 171 To 180
                 If compZ2$(Z) = compPR$(X) And compZ3$(Z) = WT$ Then
@@ -1503,7 +1533,6 @@ Sub CheckStatsPro (numberGames%, TM$, WT$, finalUpdate$)
 
         End If
 
-        'PRINT"   CHECKING STATS OF ";EP$
         For Z = 211 To 220
             If compZ2$(Z) = compPK$(X) And compZ3$(Z) = WT$ Then
                 compZ1!(Z, 1) = EP!(X)
@@ -1646,6 +1675,8 @@ End Sub
 'stats to each of the record categories to
 'see if any should be updated
 Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
+
+    Shared fumbGain
 
     Shared compTT!(), DT!(), OT!(), teamRecords!()
 
@@ -1824,7 +1855,6 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
 
     'CATEGORY 6 - SCORING DEFENSE
     CA = 6
-
     PTS = 0
 
     For I = 1 To numberGames%
@@ -1953,6 +1983,9 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 10 - TURNOVER MARGIN
     CA = 10
 
+    'IG = Interceptions Gained
+    'FL = Fumbles Lost
+    'IL = Interceptions Lost
     fumbGain = OT!(9) - OT!(10) + DT!(10)
     IG = DT!(5)
     FL = OT!(10) + DT!(9) - DT!(10)
@@ -1960,6 +1993,7 @@ Sub StatsByCategoryPro (numberGames%, TM$, WT$, finalUpdate$)
     TM! = (fumbGain + IG - FL - IL) / numberGames%
 
     If TM > compTT!(CA, 20, 7) Then
+
         compTT!(CA, 20, 1) = fumbGain
         compTT!(CA, 20, 2) = IG
         compTT!(CA, 20, 3) = fumbGain + IG
@@ -2014,6 +2048,7 @@ End Sub
 Sub SortLeadersPro
 
     Shared O1!(), O2!(), O3!()
+
     Shared PTSA!(), PTSF!()
 
     Shared compZ1$()
@@ -2119,4 +2154,3 @@ Sub PostLeadersPro (leaderFile$)
     Close #2
 
 End Sub
-

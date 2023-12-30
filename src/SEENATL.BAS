@@ -269,7 +269,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
 
     Locate 1, 41
     Color 14
-    Print "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print "RECEIVING LEADERS (MIN 3 REC/G)"
     Locate 2, 41
     Color 12
     Print "                            AVG  REC"
@@ -837,7 +837,7 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     Next
 
     Print #1, Chr$(12)
-    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 3 REC/G)"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20

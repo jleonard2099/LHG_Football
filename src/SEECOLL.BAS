@@ -9,7 +9,7 @@ Sub SEECOLL ()
 
     _Title "3-in-1 Football - View Conference Stats"
 
-    leaderFile$ = ChooseFile$ (diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
+    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -291,7 +291,7 @@ Sub StatOptions_Coll (FF$)
 
         Call TITLE_STATS
 
-        Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 8, 61, 5, 15, 1)
 
         Do
 
@@ -330,7 +330,7 @@ Sub StatOptions_Coll (FF$)
             Color 15, 0
             Cls
 
-            Call box0 (6, 8, 11, 70, 2, 15, 1)
+            Call box0(6, 8, 11, 70, 2, 15, 1)
 
             Do
                 Color 15, 1
@@ -361,7 +361,7 @@ Sub ReportFilePrompt_Coll (reportFile$)
         Color 15, 0
         Cls
 
-        Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox(6, 8, 61, 7, 15, 1)
 
         Locate 7, 32
 
@@ -598,7 +598,7 @@ Sub LeaderStatsColl_Screen (FF$)
 
     Locate 1, 41
     Color 14
-    Print "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print "RECEIVING LEADERS (MIN 3 REC/G)"
 
     Locate 2, 41
     Color 12
@@ -1279,7 +1279,7 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     Next
 
     Print #1, Chr$(12)
-    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
+    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 3 REC/G)"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
@@ -1684,3 +1684,4 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     End If
 
 End Sub
+

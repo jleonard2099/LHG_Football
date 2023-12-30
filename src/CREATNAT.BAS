@@ -80,15 +80,17 @@ Sub DefineNatOrg (organization$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Do
             Locate 7, 32
 
-            Locate , 12: Print "ENTER NAME FOR ORGANIZATION: ": Print
+            Locate , 12: Print "ENTER NAME FOR ORGANIZATION: "
+            Print
             Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
             Locate , 12: Print "SAMPLE NAMES ARE NCAA-90, SOUTH, MIDWEST"
-            Locate 7, 37: Input organization$
+
+            Locate 7, 40: Input organization$
 
             If organization$ <> "" Then
 

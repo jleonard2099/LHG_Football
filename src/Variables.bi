@@ -131,20 +131,20 @@ Dim puntName$
 
 Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
-Dim compZ1$(50), compZ2$(240), compZ3$(240)
+Dim compZ1$(60), compZ2$(1 To 240), compZ3$(1 To 240)
 Dim H1$(30), N2$(240), N3$(240), NT$(10, 20)
 Dim PS$(10), PT$(1200)
 Dim TB$(18), TR$(10, 20), teamRecDesc$(50), TT$(10, 20)
 
 Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
 Dim compTT!(10, 20, 9), compWR!(16, 13)
-Dim compZ1!(240, 2), compZ2!(14, 18)
+Dim compZ1!(1 To 240, 1 To 2), compZ2!(14, 18)
 
 Dim indRecords!(50), DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
-Dim O1!(50), O2!(50), O3!(50), OT!(38)
-Dim PT!(1200, 5), PTSA!(50), PTSF!(50)
+Dim O1!(60), O2!(60), O3!(60), OT!(38)
+Dim PT!(1200, 5), PTSA!(60), PTSF!(60)
 Dim TD!(16), TG!(16), TP!(18), teamRecords!(50)
 Dim YD!(16)
 
@@ -271,10 +271,10 @@ Dim TMM$(480), TPP$(480), TYY$(480)
 ' Used in SEExxx routines
 '----------------------------------------
 Dim LD!(240), LZ!(240)
-Dim seeL!(50), seeT!(50), seeW!(50)
+Dim seeL!(60), seeT!(60), seeW!(60)
 
-Dim seeP$(50), TM$(50) ', TR$(10, 20)
-Dim seePR$(1200), seeT$(50)
+Dim seeP$(60), TM$(60) ', TR$(10, 20)
+Dim seePR$(1200), seeT$(60)
 
 
 '----------------------------------------
