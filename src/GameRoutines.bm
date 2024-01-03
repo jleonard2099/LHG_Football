@@ -258,7 +258,7 @@ Sub AUTOSETUP
     ruleOptType = NG%(3)
     pbpDelay! = NG%(4) / 10
     ruleOptColl = NG%(7)
-    playerMode = NG%(10)
+    playerOpt = NG%(10)
     ruleOptPro = NG%(11)
     tickerStart = NG%(12)
 
