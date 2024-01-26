@@ -55,11 +55,15 @@ Sub CREATCOL ()
                     Call ReviewEditConference(conference$, div1$, div2$)
 
                 Case 2:
-                    conference$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReviewEditConference(conference$, div1$, div2$)
-                    End If
+                    Do
+                        conference$ = ChooseFile$(diskPaths$(2) + "*.LIB", "CONFERENCE", FileExit%)
+
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReviewEditConference(conference$, div1$, div2$)
+                        End If
+
+                    Loop Until FileExit% = 27
 
             End Select
 
@@ -82,7 +86,7 @@ Sub DefineConference (conference$, div1$, div2$)
         Color 15, 0
         Cls
 
-		Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Do
 
@@ -300,7 +304,7 @@ Sub SaveConferences (conference$, div1$, div2$)
             statsZ1$(X) = Chr$(42)
         Else
             teamName$ = statsZ1$(X)
-			statFile$ = nameStatFile$(teamName$)
+            statFile$ = nameStatFile$(teamName$)
             statsZ1$(X) = statFile$
         End If
 

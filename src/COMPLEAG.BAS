@@ -95,7 +95,7 @@ Sub CompileLeague ()
         Do
             Color 15, 0
             Cls
-            Print "WOULD YOU LIKE TO POST SEASON LEADERS? (Y/N)";
+            Print "WOULD YOU LIKE TO POST SEASON RECORDS? (Y/N)";
             I$ = GetKeyPress$
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"

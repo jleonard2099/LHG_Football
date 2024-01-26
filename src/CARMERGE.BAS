@@ -109,7 +109,7 @@ Sub MergeAddYear (selectedFile$, statFile$)
 
         Do
             Locate , 5
-            Print "WOULD YOU LIKE TO POST CAREER LEADERS? (Y/N)"
+            Print "WOULD YOU LIKE TO POST CAREER RECORDS? (Y/N)"
             K$ = GetKeyPress$
             finalUpdate$ = UCase$(K$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N" Or K$ = Chr$(27)

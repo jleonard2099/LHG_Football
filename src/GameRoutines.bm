@@ -3315,15 +3315,16 @@ Sub DEFMENU ()
 
 
     If playerMode = 1 And D = compTeam Or playerMode = 2 Then
+        'Computer on Defense or PC vs PC
 
         Call DEFENSE
         Call DEFGOALLINE
 
     Else
 
-        goodSelection = 1
-
         Do
+
+            goodSelection = 1
 
             Call FRAMEOPTION(10, D)
             Print "SELECT DEFENSIVE LINE PLAY "; gameTeams$(D)
@@ -3372,24 +3373,32 @@ Sub DEFMENU ()
             Locate , 41: Print " B - BLITZ ENGAGE"
 
             Do
-                I$ = GetKeyPress$
+                J$ = GetKeyPress$
 
                 'Main loop condition
-                If I$ <> Chr$(27) Then
+                If J$ <> Chr$(27) Then
                     If UCase$(I$) = "B" Then coverage = 10: Exit Do
-                    coverage = Val(I$)
+                    coverage = Val(J$)
                 End If
 
             Loop Until coverage >= 0 And coverage <= 9 Or I$ = Chr$(27)
 
-            If I$ <> Chr$(27) Then
+            If J$ <> Chr$(27) Then
+
                 ' 3065
                 coverage = coverage + 1
                 Screen , , 0, 0
 
                 'More loop conditions
-                If (dLine = 5 Or dLine = 6) And (coverage = 7 Or coverage = 9 Or coverage = 11) Then goodSelection = 0
-                If (dLine = 7 Or dLine = 8) And (coverage = 8 Or coverage = 10 Or coverage = 11) Then goodSelection = 0
+                '(5-2 Pass Rush Or Inside Stunt) AND (Blitz ILB or Blitz Engage)
+                If (dLine = 5 Or dLine = 6) And (coverage = 7 Or coverage = 9 Or coverage = 11) Then
+                    goodSelection = 0
+                End If
+
+                '(5-2 Inside Stunt Or 4-3 Outside Stunt) AND (Blitz OLB or Blitz Engage)
+                If (dLine = 7 Or dLine = 8) And (coverage = 8 Or coverage = 10 Or coverage = 11) Then
+                    goodSelection = 0
+                End If
 
             End If
 
