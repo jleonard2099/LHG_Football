@@ -77,10 +77,7 @@ Sub CompileNatlOrg ()
     teamRecords!(42) = 999
     teamRecords!(43) = 999
 
-    Erase compTT!, compZ1!
-    Erase NT!, O1!, O2!, O3!
-    Erase PTSF!, PTSA!
-    
+    Erase NT!
     Erase N2$, N3$, NT$
 
     For X = 1 To 240
@@ -103,7 +100,6 @@ Sub CompileNatlOrg ()
     Next
 
     C$ = ","
-    finalUpdate$ = "N"
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
@@ -129,7 +125,14 @@ Sub CompileNatlOrg ()
 
         For NC = 1 To 40
 
+            'Look for * as terminating char
             If CN$(NC) <> "XXX" Then
+
+                Cls
+
+                Erase compTT!, compZ1!
+                Erase O1!, O2!, O3!
+                Erase PTSF!, PTSA!
 
                 For X = 1 To 60
                     compZ1$(X) = "*"
@@ -153,8 +156,6 @@ Sub CompileNatlOrg ()
                     compTT!(8, I, 8) = 9999
                     compTT!(10, I, 7) = -99
                 Next
-
-                Cls
 
                 Open diskPaths$(2) + CN$(NC) + ".TMS" For Input As #3
 
@@ -199,9 +200,10 @@ Sub CompileNatlOrg ()
 
                     For XW = 1 To 30
 
+                        'Look for * as terminating char
                         If H1$(XW) <> Chr$(42) Then
 
-                            haveStats = FindStatsNat%(XW, H1$(XW), numberGames%, NRT)
+                            haveStats = FindStatsNat%(XW, H1$(XW), numberGames, NRT)
 
                             If (haveStats) Then
 
@@ -213,38 +215,43 @@ Sub CompileNatlOrg ()
                                     WT$ = WT$ + Chr$(A)
                                 Next X
 
-                                confGame = 0
+                                nonConfGame = 0
 
                                 For X = 1 To 30
 
                                     If compZ1$(X) = WT$ Then
 
                                         If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
-                                            confGame = 1
+
+                                            nonConfGame = 1
+                                            Exit For
+
                                         Else
+
                                             O1!(X) = fullWins
                                             O2!(X) = fullLosses
                                             O3!(X) = fullTies
+
                                             O1!(X + 30) = confWins
                                             O2!(X + 30) = confLosses
                                             O3!(X + 30) = confTies
+
                                             PTSF!(X + 30) = PTSFC
                                             PTSA!(X + 30) = PTSAC
                                             compZ1$(X + 30) = compZ1$(X)
-                                        End If
 
-                                        If (confGame) Then Exit For
+                                        End If
 
                                     End If
 
                                 Next X
-                                'alternatively, use a Do / Until loop; confGame = 1 or EC = 30
+                                'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
 
-                                If confGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                                If nonConfGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
 
-                                    Call ReadStatsNat(H1$(XW), numberGames%, TM$)
-                                    Call StatsByCategoryNatl(numberGames%, TM$, WT$, finalUpdate$)
-                                    Call CheckStatsNatl(numberGames%, TM$, WT$, finalUpdate$)
+                                    Call ReadStatsNat(H1$(XW), numberGames, TM$)
+                                    Call StatsByCategoryNatl(numberGames, TM$, WT$, finalUpdate$)
+                                    Call CheckStatsNatl(numberGames, TM$, WT$, finalUpdate$)
 
                                 End If
 
@@ -257,7 +264,7 @@ Sub CompileNatlOrg ()
                 End If 'Done checking for valid conference
 
                 Call SortLeadersConf
-                Call POSTLEADERS(CN$(NC))
+                Call PostLeadersConf(CN$(NC))
                 Call SortLeadersNat
 
             End If
@@ -265,7 +272,7 @@ Sub CompileNatlOrg ()
         Next NC
 
         'All conferences are done; post org leaders
-        Call POSTNATIONAL(organizationFile$)
+        Call PostLeadersOrg(organizationFile$)
 
         For Z = 1 To NRT - 1
             For Z1 = Z + 1 To NRT
@@ -315,7 +322,7 @@ End Sub
 '         FindStatsNat Function
 '----------------------------------------
 '...explanation...
-Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
+Function FindStatsNat% (XW, statFile$, numberGames, NRT)
 
     Shared H1$(), PT$(), locIndicator$(), oppName$()
 
@@ -323,56 +330,80 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
 
     Shared PT!(), PTSA!(), PTSF!()
 
-    fullWins = 0
-    fullLosses = 0
-    fullTies = 0
+    findFile$ = diskPaths$(1) + statFile$ + "S"
 
-    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
+    If Not _FileExists(findFile$) Then
 
+        Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
         FindStatsNat% = 0
 
     Else
 
-        Call ReadScheduleStats(statFile$, XW, numberGames%)
+        Call ReadScheduleStats(statFile$, XW, numberGames)
+
+        confWins = 0
+        confLosses = 0
+        confTies = 0
 
         fullWins = 0
         fullLosses = 0
         fullTies = 0
-        confWins = 0
-        confTies = 0
-        confLosses = 0
 
-        PTSFC = 0
         PTSAC = 0
+        PTSFC = 0
 
         'RATINGS
-        For I = 1 To numberGames%
+        For I = 1 To numberGames
 
-            statName$ = nameStatFile$(compo$(I))
-            confGame = 0
+            statName$ = nameStatFile$(oppName$(I))
+            nonConfGame = 0
 
             For EC = 1 To 30
-
+                'If team stat file = opponent of a conference game?
                 If statName$ = H1$(EC) Then
-                    confGame = 1
+                    nonConfGame = 1
                     Exit For
                 End If
 
             Next EC
 
-            If confGame <> 1 Then
-                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1
-                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1
-                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1
+            If nonConfGame <> 1 Then
+                
+                If teamScore(I) > oppScore(I) Then 
+                    fullWins = fullWins + 1
+                End If
+                
+                If teamScore(I) < oppScore(I) Then 
+                    fullLosses = fullLosses + 1
+                End If
+                
+                If teamScore(I) = oppScore(I) Then 
+                    fullTies = fullTies + 1
+                End If
+            
             Else
-                If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1: confWins = confWins + 1
-                If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1: confLosses = confLosses + 1
-                If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1: confTies = confTies + 1
+
+                If teamScore(I) > oppScore(I) Then 
+                    fullWins = fullWins + 1
+                    confWins = confWins + 1
+                End If
+
+                If teamScore(I) < oppScore(I) Then 
+                    fullLosses = fullLosses + 1
+                    confLosses = confLosses + 1
+                End If
+
+                If teamScore(I) = oppScore(I) Then 
+                    fullTies = fullTies + 1
+                    confTies = confTies + 1
+                End If
+
+                PTSFC = PTSFC + teamScore(I)
+                PTSAC = PTSAC + oppScore(I)
+
             End If
 
-            PTSFC = PTSFC + teamScore(I)
-            PTSAC = PTSAC + oppScore(I)
             EC = 0
 
         Next I
@@ -381,30 +412,29 @@ Function FindStatsNat% (XW, statFile$, numberGames%, NRT)
         teamPower = 0
         SS = 0
 
-        For I = 1 To numberGames%
+        For I = 1 To numberGames
             SS = powerRating(1, I) + SS
         Next
 
-        SS = SS / numberGames%
+        SS = SS / numberGames
 
         'INDIVIDUAL GAME POWER RATINGS
         GL = 0
         teamPower = 0
 
-        For I = 1 To numberGames%
+        For I = 1 To numberGames
             RAT = teamScore(I) - oppScore(I) + powerRating(1, I)
             If Left$(locIndicator$(I), 1) = "H" Then RAT = RAT - 3
             If Left$(locIndicator$(I), 1) = "A" Then RAT = RAT + 3
             teamPower = teamPower + RAT
         Next
 
-        If numberGames% <= 4 Then
-            GL = 5 - numberGames%
+        If numberGames <= 4 Then
+            GL = 5 - numberGames
             teamPower = teamPower + GL * powerRating(0, 1)
         End If
 
-        teamPower = teamPower / (numberGames% + GL)
-
+        teamPower = teamPower / (numberGames + GL)
         NRT = NRT + 1
         PT$(NRT) = statFile$
         PT!(NRT, 1) = teamPower
@@ -436,7 +466,7 @@ End Function
 '----------------------------------------
 'This subroutine reads stats in for a 
 'single team in the organization
-Sub ReadStatsNat (statFile$, numberGames%, TM$)
+Sub ReadStatsNat (statFile$, numberGames, TM$)
 
     Shared puntNum
     Shared puntName$
@@ -667,7 +697,7 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
     For I = 1 To 3:
         KR!(I, 4) = 0
-        If KR!(I, 1) > 0 And KR!(I, 1) >= numberGames% Then
+        If KR!(I, 1) > 0 And KR!(I, 1) >= numberGames Then
             KR!(I, 4) = Int(KR!(I, 2) / KR!(I, 1) * 10) / 10
         Else
             KR!(I, 4) = 0
@@ -677,7 +707,7 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
 
     For I = 1 To 3:
         compPR!(I, 4) = 0
-        If compPR!(I, 1) > 0 And compPR!(I, 1) >= numberGames% Then
+        If compPR!(I, 1) > 0 And compPR!(I, 1) >= numberGames Then
             compPR!(I, 4) = Int(compPR!(I, 2) / compPR!(I, 1) * 10) / 10
         Else
             compPR!(I, 4) = 0
@@ -691,8 +721,8 @@ Sub ReadStatsNat (statFile$, numberGames%, TM$)
     Erase FG!, EP!
 
     For I = 1 To 2
-        If FA!(I) >= numberGames% Then FG!(I) = Int(FM!(I) / FA!(I) * 1000) / 10
-        If EA!(I) >= numberGames% Then EP!(I) = Int(EM!(I) / EA!(I) * 1000) / 10
+        If FA!(I) >= numberGames Then FG!(I) = Int(FM!(I) / FA!(I) * 1000) / 10
+        If EA!(I) >= numberGames Then EP!(I) = Int(EM!(I) / EA!(I) * 1000) / 10
     Next
 
 End Sub
@@ -703,7 +733,7 @@ End Sub
 '----------------------------------------
 'This subroutine compares pre-loaded stats
 'to existing leaders and updates as needed
-Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
+Sub CheckStatsNatl (numberGames, TM$, WT$, finalUpdate$)
 
     Shared fumbGain, puntNum
     Shared puntName$
@@ -729,7 +759,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 10
 
-        Print "   CHECKING STATS OF "; compRB$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compRB$(X)
 
         If compRB$(X) <> "OTHERS" Then
 
@@ -737,7 +770,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
             If compRB!(X, 2) > indRecords!(1) Then indRecords!(1) = compRB!(X, 2): indRecDesc$(1, 0) = compRB$(X): indRecDesc$(1, 1) = TM$
             If compRB!(X, 3) > indRecords!(2) Then indRecords!(2) = compRB!(X, 3): indRecDesc$(2, 0) = compRB$(X): indRecDesc$(2, 1) = TM$
 
-            If compRB!(X, 9) > indRecords!(3) And UCase$(finalUpdate$) = "Y" And compRB!(X, 1) >= numberGames% * 10 Then
+            If compRB!(X, 9) > indRecords!(3) And UCase$(finalUpdate$) = "Y" And compRB!(X, 1) >= numberGames * 10 Then
                 'Rushing Average
                 indRecords!(3) = compRB!(X, 9)
                 indRecDesc$(3, 0) = compRB$(X)
@@ -762,7 +795,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                     compZ1!(Y, 2) = compRB!(X, 1) 'Rush Att
 
                     'Only include players with 10 ATT / game
-                    If compZ1!(Y, 2) < numberGames% * 10 Then
+                    If compZ1!(Y, 2) < numberGames * 10 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
@@ -792,7 +825,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compRB!(X, 1) < numberGames% * 10 Or compRB!(X, 9) < compZ1!(20, 1)) Then
+            If Not (compRB!(X, 1) < numberGames * 10 Or compRB!(X, 9) < compZ1!(20, 1)) Then
 
                 compZ2$(20) = compRB$(X)
                 compZ3$(20) = WT$
@@ -905,7 +938,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 16:
 
-        Print "   CHECKING STATS OF "; compWR$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compWR$(X)
 
         If compWR$(X) <> "OTHERS" Then
 
@@ -914,7 +950,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
             If compWR!(X, 3) > indRecords!(7) Then indRecords!(7) = compWR!(X, 3): indRecDesc$(7, 0) = compWR$(X): indRecDesc$(7, 1) = TM$
 
             'Look for at least 3 catches / game
-            If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= numberGames% * 3 Then
+            If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= numberGames * 3 Then
                 'Receiving Average
                 indRecords!(8) = compWR!(X, 4)
                 indRecDesc$(8, 0) = compWR$(X)
@@ -937,7 +973,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                     compZ1!(Z, 2) = compWR!(X, 1)
 
                     'Only include players with 4 RECs / game
-                    If compZ1!(Z, 2) < numberGames% * 4 Then
+                    If compZ1!(Z, 2) < numberGames * 4 Then
 
                         compZ2$(Z) = "*"
                         compZ3$(Z) = "*"
@@ -965,7 +1001,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 
             Next Z
 
-            If Not ((compWR!(X, 1) < numberGames% * 4 Or compWR!(X, 4) < compZ1!(40, 1))) Then
+            If Not ((compWR!(X, 1) < numberGames * 4 Or compWR!(X, 4) < compZ1!(40, 1))) Then
 
                 compZ2$(40) = compWR$(X)
                 compZ3$(40) = WT$
@@ -1076,7 +1112,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 16:
 
-        Print "   CHECKING STATS OF "; TB$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print TB$(X)
 
         If TB$(X) <> "OTHERS" Then
 
@@ -1187,7 +1226,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 4
 
-        Print "   CHECKING STATS OF "; compQB$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compQB$(X)
 
         If compQB$(X) <> "OTHERS" Then
 
@@ -1221,13 +1263,13 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 indRecDesc$(14, 1) = TM$
             End If
 
-            If compQB!(X, 6) > indRecords!(15) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames% * 15 Then
+            If compQB!(X, 6) > indRecords!(15) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames * 15 Then
                 indRecords!(15) = compQB!(X, 6)
                 indRecDesc$(15, 0) = compQB$(X)
                 indRecDesc$(15, 1) = TM$
             End If
 
-            If compQB!(X, 7) > indRecords!(16) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames% * 15 Then
+            If compQB!(X, 7) > indRecords!(16) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames * 15 Then
                 indRecords!(16) = compQB!(X, 7)
                 indRecDesc$(16, 0) = compQB$(X)
                 indRecDesc$(16, 1) = TM$
@@ -1247,7 +1289,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                     compZ1!(Y, 1) = compQB!(X, 6)
                     compZ1!(Y, 2) = compQB!(X, 1)
 
-                    If compZ1!(Y, 2) < numberGames% * 15 Then
+                    If compZ1!(Y, 2) < numberGames * 15 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
@@ -1273,7 +1315,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < numberGames% * 15 Or compQB!(X, 6) < compZ1!(130, 1)) Then
+            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < compZ1!(130, 1)) Then
 
                 compZ2$(130) = compQB$(X)
                 compZ3$(130) = WT$
@@ -1308,7 +1350,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                     compZ1!(Y, 1) = compQB!(X, 7)
                     compZ1!(Y, 2) = compQB!(X, 1)
 
-                    If compZ1!(Y, 2) < numberGames% * 15 Then
+                    If compZ1!(Y, 2) < numberGames * 15 Then
                         compZ2$(Y) = "*"
                         compZ3$(Y) = "*"
                         compZ1!(Y, 1) = 0
@@ -1337,7 +1379,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < numberGames% * 15 Or compQB!(X, 6) < compZ1!(140, 1)) Then
+            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < compZ1!(140, 1)) Then
 
                 compZ2$(140) = compQB$(X)
                 compZ3$(140) = WT$
@@ -1423,7 +1465,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 3
 
-        Print "   CHECKING STATS OF "; compKR$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compKR$(X)
 
         If compKR$(X) <> "OTHERS" Then
 
@@ -1445,7 +1490,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 indRecDesc$(24, 1) = TM$
             End If
 
-            If KR!(X, 4) > indRecords!(25) And UCase$(finalUpdate$) = "Y" And KR!(X, 1) >= numberGames% * 1.2 Then
+            If KR!(X, 4) > indRecords!(25) And UCase$(finalUpdate$) = "Y" And KR!(X, 1) >= numberGames * 1.2 Then
                 indRecords!(25) = KR!(X, 4)
                 indRecDesc$(25, 0) = compKR$(X)
                 indRecDesc$(25, 1) = TM$
@@ -1466,7 +1511,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Z
 
-            If Not (KR!(X, 1) < numberGames% * 1.2 Or KR!(X, 4) <= compZ1!(170, 1)) Then
+            If Not (KR!(X, 1) < numberGames * 1.2 Or KR!(X, 4) <= compZ1!(170, 1)) Then
 
                 compZ1!(170, 1) = KR!(X, 4)
                 compZ2$(170) = compKR$(X)
@@ -1499,7 +1544,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 3
 
-        Print "   CHECKING STATS OF "; compPR$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compPR$(X)
 
         If compPR$(X) <> "OTHERS" Then
 
@@ -1521,7 +1569,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 indRecDesc$(29, 1) = TM$
             End If
 
-            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames% * 1.2 Then
+            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames * 1.2 Then
                 indRecords!(30) = compPR!(X, 4)
                 indRecDesc$(30, 0) = compPR$(X)
                 indRecDesc$(30, 1) = TM$
@@ -1542,7 +1590,7 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Z
 
-            If Not (compPR!(X, 1) < numberGames% * 1.2 And compPR!(X, 4) <= compZ1!(180, 1)) Then
+            If Not (compPR!(X, 1) < numberGames * 1.2 And compPR!(X, 4) <= compZ1!(180, 1)) Then
 
                 compZ1!(180, 1) = compPR!(X, 4)
                 compZ2$(180) = compPR$(X)
@@ -1571,7 +1619,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     ' Punting
     '---------------
-    Print "   CHECKING STATS OF "; puntName$
+    'Color 14
+    Print "CHECKING STATS OF ";
+    Color 15
+    Print puntName$
 
     If TG!(8) > indRecords!(32) Then indRecords!(32) = TG!(8): indRecDesc$(32, 0) = puntName$: indRecDesc$(32, 1) = TM$
     If TG!(9) > indRecords!(33) Then indRecords!(33) = TG!(9): indRecDesc$(33, 0) = puntName$: indRecDesc$(33, 1) = TM$
@@ -1612,7 +1663,10 @@ Sub CheckStatsNatl (numberGames%, TM$, WT$, finalUpdate$)
     '---------------
     For X = 1 To 2
 
-        Print "   CHECKING STATS OF "; compPK$(X)
+        'Color 14
+        Print "CHECKING STATS OF ";
+        Color 15
+        Print compPK$(X)
 
         If FM!(X) > indRecords!(35) Then
             indRecords!(35) = FM!(X)
@@ -1829,7 +1883,7 @@ End Sub
 'This subroutine compares all pre-loaded 
 'stats to each of the record categories to 
 'see if any should be updated
-Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
+Sub StatsByCategoryNatl (numberGames, TM$, WT$, finalUpdate$)
 
     Shared compTT!(), DT!(), OT!(), teamRecords!()
 
@@ -1843,8 +1897,8 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 1 - TOTAL OFFENSE
     CA = 1
 
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / numberGames% > teamRecords!(0) Then
-        teamRecords!(0) = (OT!(6) + OT!(2)) / numberGames%
+    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2)) / numberGames > teamRecords!(0) Then
+        teamRecords!(0) = (OT!(6) + OT!(2)) / numberGames
         teamRecDesc$(0) = TM$
     End If
 
@@ -1858,13 +1912,13 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         teamRecDesc$(2) = TM$
     End If
 
-    If (OT!(6) + OT!(2)) / numberGames% > compTT!(CA, 20, 5) Then
+    If (OT!(6) + OT!(2)) / numberGames > compTT!(CA, 20, 5) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = OT!(1) + OT!(3)
         compTT!(CA, 20, 3) = OT!(6) + OT!(2)
         compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -1883,14 +1937,14 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% < teamRecords!(25) Then teamRecords!(25) = (DT!(6) + DT!(2)) / numberGames%: teamRecDesc$(25) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames < teamRecords!(25) Then teamRecords!(25) = (DT!(6) + DT!(2)) / numberGames: teamRecDesc$(25) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) < teamRecords!(26) Then teamRecords!(26) = DT!(6) + DT!(2): teamRecDesc$(26) = TM$
     If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)) < teamRecords!(27) Then teamRecords!(27) = (DT!(6) + DT!(2)) / (DT!(1) + DT!(3)): teamRecDesc$(27) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames% > teamRecords!(28) Then teamRecords!(28) = (DT!(6) + DT!(2)) / numberGames%: teamRecDesc$(28) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2)) / numberGames > teamRecords!(28) Then teamRecords!(28) = (DT!(6) + DT!(2)) / numberGames: teamRecDesc$(28) = TM$
 
-    If (DT!(6) + DT!(2)) / numberGames% < compTT!(CA, 20, 5) Then
+    If (DT!(6) + DT!(2)) / numberGames < compTT!(CA, 20, 5) Then
         'Games
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         'Plays
         compTT!(CA, 20, 2) = DT!(1) + DT!(3)
         'Yds
@@ -1898,7 +1952,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         'Avg Yds / Gm
         compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
         'Yds / Gm
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -1917,17 +1971,17 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 3 - RUSHING OFFENSE
     CA = 3
 
-    If UCase$(finalUpdate$) = "Y" And OT!(2) / numberGames% > teamRecords!(3) Then teamRecords!(3) = OT!(2) / numberGames%: teamRecDesc$(3) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(2) / numberGames > teamRecords!(3) Then teamRecords!(3) = OT!(2) / numberGames: teamRecDesc$(3) = TM$
     If OT!(2) > teamRecords!(4) Then teamRecords!(4) = OT!(2): teamRecDesc$(4) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(2) / OT!(1) > teamRecords!(5) Then teamRecords!(5) = OT!(2) / OT!(1): teamRecDesc$(5) = TM$
 
-    If OT!(2) / numberGames% > compTT!(CA, 20, 5) Then
+    If OT!(2) / numberGames > compTT!(CA, 20, 5) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = OT!(1)
         compTT!(CA, 20, 3) = OT!(2)
         compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -1946,17 +2000,17 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
-    If UCase$(finalUpdate$) = "Y" And DT!(2) / numberGames% < teamRecords!(29) Then teamRecords!(29) = DT!(2) / numberGames%: teamRecDesc$(29) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(2) / numberGames < teamRecords!(29) Then teamRecords!(29) = DT!(2) / numberGames: teamRecDesc$(29) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(2) < teamRecords!(30) Then teamRecords!(30) = DT!(2): teamRecDesc$(30) = TM$
     If UCase$(finalUpdate$) = "Y" And DT!(2) / DT!(1) < teamRecords!(31) Then teamRecords!(31) = DT!(2) / DT!(1): teamRecDesc$(31) = TM$
 
-    If DT!(2) / numberGames% < compTT!(CA, 20, 5) Then
+    If DT!(2) / numberGames < compTT!(CA, 20, 5) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = DT!(1)
         compTT!(CA, 20, 3) = DT!(2)
         compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames%
+        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -1977,20 +2031,20 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     PTS = 0
     OPTS = 0
 
-    For I = 1 To numberGames%
+    For I = 1 To numberGames
         PTS = PTS + teamScore(I)
         OPTS = OPTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > teamRecords!(13) Then teamRecords!(13) = PTS / numberGames%: teamRecDesc$(13) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then teamRecords!(13) = PTS / numberGames: teamRecDesc$(13) = TM$
     If PTS > teamRecords!(12) Then teamRecords!(12) = PTS: teamRecDesc$(12) = TM$
 
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames% > teamRecords!(14) Then teamRecords!(14) = (PTS - OPTS) / numberGames%: teamRecDesc$(14) = TM$
-    If PTS / numberGames% > compTT!(CA, 20, 3) Then
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then teamRecords!(14) = (PTS - OPTS) / numberGames: teamRecDesc$(14) = TM$
+    If PTS / numberGames > compTT!(CA, 20, 3) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = PTS
-        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames%
+        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -2010,20 +2064,20 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     CA = 6
     PTS = 0
 
-    For I = 1 To numberGames%
+    For I = 1 To numberGames
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% < teamRecords!(39) Then teamRecords!(39) = PTS / numberGames%: teamRecDesc$(39) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then teamRecords!(39) = PTS / numberGames: teamRecDesc$(39) = TM$
     If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then teamRecords!(38) = PTS: teamRecDesc$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames% > teamRecords!(41) Then teamRecords!(41) = PTS / numberGames%: teamRecDesc$(41) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then teamRecords!(41) = PTS / numberGames: teamRecDesc$(41) = TM$
     If PTS > teamRecords!(40) Then teamRecords!(40) = PTS: teamRecDesc$(40) = TM$
 
-    If PTS / numberGames% < compTT!(CA, 20, 3) Then
+    If PTS / numberGames < compTT!(CA, 20, 3) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = PTS
-        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames%
+        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -2044,23 +2098,23 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 7 - PASSING OFFENSE
     CA = 7
 
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames% > teamRecords!(6) Then teamRecords!(6) = OT!(6) / numberGames%: teamRecDesc$(6) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames > teamRecords!(6) Then teamRecords!(6) = OT!(6) / numberGames: teamRecDesc$(6) = TM$
     If OT!(6) > teamRecords!(7) Then teamRecords!(7) = OT!(6): teamRecDesc$(7) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > teamRecords!(8) Then teamRecords!(8) = OT!(6) / OT!(3): teamRecDesc$(8) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > teamRecords!(9) Then teamRecords!(9) = OT!(6) / OT!(4): teamRecDesc$(9) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > teamRecords!(10) Then teamRecords!(10) = OT!(4) / OT!(3): teamRecDesc$(10) = TM$
     If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < teamRecords!(11) Then teamRecords!(11) = OT!(5) / OT!(3): teamRecDesc$(11) = TM$
 
-    If OT!(6) / numberGames% > compTT!(CA, 20, 8) Then
+    If OT!(6) / numberGames > compTT!(CA, 20, 8) Then
 
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = OT!(3)
         compTT!(CA, 20, 3) = OT!(4)
         compTT!(CA, 20, 4) = OT!(5)
         compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
         compTT!(CA, 20, 6) = OT!(6)
         compTT!(CA, 20, 7) = OT!(6) / OT!(3)
-        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames%
+        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -2079,8 +2133,8 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames% < teamRecords!(32) Then 
-        teamRecords!(32) = DT!(6) / numberGames%
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames < teamRecords!(32) Then 
+        teamRecords!(32) = DT!(6) / numberGames
         teamRecDesc$(32) = TM$
     End If
 
@@ -2109,16 +2163,16 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         teamRecDesc$(37) = TM$
     End If
 
-    If DT!(6) / numberGames% < compTT!(CA, 20, 8) Then
+    If DT!(6) / numberGames < compTT!(CA, 20, 8) Then
     
-        compTT!(CA, 20, 1) = numberGames%
+        compTT!(CA, 20, 1) = numberGames
         compTT!(CA, 20, 2) = DT!(3)
         compTT!(CA, 20, 3) = DT!(4)
         compTT!(CA, 20, 4) = DT!(5)
         compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
         compTT!(CA, 20, 6) = DT!(6)
         compTT!(CA, 20, 7) = DT!(6) / DT!(3)
-        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames%
+        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames
         TT$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -2131,7 +2185,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
                 End If
             Next Z1
         Next Z
-
+    
     End If
 
     'CATEGORY 9 - PUNTING
@@ -2168,7 +2222,7 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     IG = DT!(5)
     FL = OT!(10) + DT!(9) - DT!(10)
     IL = OT!(5)
-    TM! = (fumbGain + IG - FL - IL) / numberGames%
+    TM! = (fumbGain + IG - FL - IL) / numberGames
 
     If TM! > compTT!(CA, 20, 7) Then
 
@@ -2222,8 +2276,8 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
         teamRecDesc$(18) = TM$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames% > teamRecords!(19) Then 
-        teamRecords!(19) = OT!(0) / numberGames%
+    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames > teamRecords!(19) Then 
+        teamRecords!(19) = OT!(0) / numberGames
         teamRecDesc$(19) = TM$
     End If
 
@@ -2244,13 +2298,13 @@ Sub StatsByCategoryNatl (numberGames%, TM$, WT$, finalUpdate$)
     End if
 
     'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames% > teamRecords!(23) Then 
-        teamRecords!(23) = OT!(11) / numberGames%
+    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames > teamRecords!(23) Then 
+        teamRecords!(23) = OT!(11) / numberGames
         teamRecDesc$(23) = TM$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames% > teamRecords!(24) Then 
-        teamRecords!(24) = OT!(12) / numberGames%
+    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames > teamRecords!(24) Then 
+        teamRecords!(24) = OT!(12) / numberGames
         teamRecDesc$(24) = TM$
     End If
 
@@ -3143,58 +3197,12 @@ End Sub
 
 
 '----------------------------------------
-'         POSTLEADERS Subroutine
-'----------------------------------------
-'This subroutine opens the existing leader
-'and record files for the conference,
-'and writes the updated stats to the file
-Sub POSTLEADERS (confName$)
-
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared TT$()
-
-    Shared compTT!(), compZ1!(), O1!(), O2!(), O3!()
-    Shared PTSA!(), PTSF!()
-
-    Cls
-
-    Open diskPaths$(2) + confName$ + ".LDR" For Output As #1
-
-    Print "POSTING "; confName$; " CONFERENCE LEADERS"
-
-    For X = 1 To 60:
-        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
-    Next
-
-    For X = 1 To 240
-        Write #1, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
-    Next X
-
-    For I = 1 To 10
-        For I1 = 1 To 20
-            For I2 = 1 To 9
-                Write #1, compTT!(I, I1, I2)
-            Next
-        Next
-    Next
-
-    For I = 1 To 10
-        For I1 = 1 To 20
-            Write #1, TT$(I, I1)
-        Next
-    Next
-
-    Close #1
-
-End Sub
-
-'----------------------------------------
-'        POSTNATIONAL Subroutine
+'        PostLeadersOrg Subroutine
 '----------------------------------------
 'This subroutine opens the existing leader
 'and record files for the organization,
 'and writes the updated stats to the file
-Sub POSTNATIONAL (leaderFile$)
+Sub PostLeadersOrg (leaderFile$)
 
     Shared compZ1$(), N2$(), N3$(), NT$()
 
@@ -3239,7 +3247,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads in all data from the
 'team's schedule stats file.
-Sub ReadScheduleStats (statFile$, XW, numberGames%)
+Sub ReadScheduleStats (statFile$, XW, numberGames)
 
     Shared oppName$(), locIndicator$()
 
@@ -3247,9 +3255,11 @@ Sub ReadScheduleStats (statFile$, XW, numberGames%)
 
     Shared PTSA!(), PTSF!()
 
-    Open diskPaths$(1) + statFile$ + "S" For Input As #1
+    findFile$ = diskPaths$(1) + statFile$ + "S"
 
-    Input #1, numberGames%
+    Open findFile$ For Input As #1
+
+    Input #1, numberGames
 
     For I = 1 to MAX_SCHED_STATS:
         Input #1, teamScore(I)

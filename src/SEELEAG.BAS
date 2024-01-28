@@ -1,11 +1,11 @@
 '----------------------------------------
-'            SEEPRO Subroutine
+'            SEELEAG Subroutine
 '----------------------------------------
 'This subroutine lets the user choose a
 'league stat file to view, then calls
 'other routines to both load the Stats
 'and then provide options for display
-Sub SEEPRO ()
+Sub SEELEAG ()
 
     _Title "3-in-1 Football - View League Stats"
 
@@ -28,7 +28,7 @@ End Sub
 Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Shared compZ2$(), compZ3$()
-    Shared seeP$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TT$()
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -68,7 +68,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Input #2, TR$(I, I1)
+            Input #2, TT$(I, I1)
         Next
     Next
 
@@ -358,7 +358,7 @@ End Sub
 Sub LeaderStatsPro_Screen ()
 
     Shared compZ2$(), compZ3$()
-    Shared seeP$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TT$()
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -848,8 +848,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 1
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
@@ -863,9 +863,9 @@ Sub LeaderStatsPro_Screen ()
     CA = 2
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);
+            Print TT$(CA, P);
             Locate , 55
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
@@ -887,8 +887,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 3
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
@@ -902,9 +902,9 @@ Sub LeaderStatsPro_Screen ()
     CA = 4
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);
+            Print TT$(CA, P);
             Locate , 55
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
@@ -926,8 +926,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 5
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
@@ -941,9 +941,9 @@ Sub LeaderStatsPro_Screen ()
     CA = 6
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);
+            Print TT$(CA, P);
             Locate , 55
             Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
@@ -965,8 +965,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 7
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
@@ -988,8 +988,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 8
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
@@ -1011,8 +1011,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 9
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
     Next
@@ -1034,8 +1034,8 @@ Sub LeaderStatsPro_Screen ()
     CA = 10
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 18
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 18
             Print Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next
@@ -1060,7 +1060,7 @@ End Sub
 Sub SavePrintProLeaders (destination, reportFile$, league$)
 
     Shared compZ2$(), compZ3$()
-    Shared seeP$(), TM$(), TR$()
+    Shared seeP$(), TM$(), TT$()
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -1431,20 +1431,20 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
         CA = 1
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 2
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
@@ -1457,20 +1457,20 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
         CA = 3
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 4
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
@@ -1482,8 +1482,8 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     CA = 7
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -1494,8 +1494,8 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     CA = 8
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -1507,20 +1507,20 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
         CA = 5
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3);
             Print #1, Tab(41);
         End If
 
         CA = 6
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
 
@@ -1532,8 +1532,8 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     CA = 9
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
     Next
@@ -1545,8 +1545,8 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
     CA = 10
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(18);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(18);
             Print #1, Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next

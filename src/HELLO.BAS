@@ -507,6 +507,7 @@ If _FileExists("GAME82") Then
     Print #10, "Schedule game # "; Using "###"; schedGame(0) + schedGame(2)
     Print #10, gameTeams$(0) + " vs. " + gameTeams$(1)
 End If
+Print #10, findFile$
 Print #10,
 Close #10
 Resume Next ' moves program to code following the error.
@@ -915,21 +916,21 @@ Sub Leaders_Menu ()
 
             Select Case Selection%
 
-                Case 1: Call CREATPRO
+                Case 1: Call CREATLEAG
                 Case 2: Call CompileLeague
-                Case 3: Call SEEPRO
-                Case 4: Call HD2HDPRO
+                Case 3: Call SEELEAG
+                Case 4: Call HD2HDLEAG
                 Case 5: Call Records_Menu(1)
                 Case 6: Call NEWLDR(1) 'Call ViewExpandedStats(1)
                 Case 7: Call BLANKPRO
-                Case 8: Call CREATCOL
+                Case 8: Call CREATECOLL
                 Case 9: Call CompileCollege
                 Case 10: Call SEECOLL
-                Case 11: Call HD2HDCOL
+                Case 11: Call HD2HDCOLL
                 Case 12: Call Records_Menu(2)
                 Case 13: Call NEWLDR(0) 'Call ViewExpandedStats(0)
                 Case 14: Call BLANKCOL
-                Case 15: Call CREATNAT
+                Case 15: Call CREATENATL
                 Case 16: Call CompileNatlOrg
                 Case 17: Call SEENATL
                 Case 18: Call Records_Menu(3)
@@ -972,12 +973,12 @@ End Sub
 '$INCLUDE: 'COMPCOLL.BAS'
 '$INCLUDE: 'COMPLEAG.BAS'
 '$INCLUDE: 'COMPNATL.BAS'
-'$INCLUDE: 'CREATCOL.BAS'
-'$INCLUDE: 'CREATNAT.BAS'
-'$INCLUDE: 'CREATPRO.BAS'
+'$INCLUDE: 'CREATCOLL.BAS'
+'$INCLUDE: 'CREATNATL.BAS'
+'$INCLUDE: 'CREATLEAG.BAS'
 '$INCLUDE: 'DRAFT.BAS'
-'$INCLUDE: 'HD2HDCOL.BAS'
-'$INCLUDE: 'HD2HDPRO.BAS'
+'$INCLUDE: 'HD2HDCOLL.BAS'
+'$INCLUDE: 'HD2HDLEAG.BAS'
 '$INCLUDE: 'LOOKY.BAS'
 '$INCLUDE: 'MERGE.BAS'
 '$INCLUDE: 'NEWLDR.BAS'
@@ -985,7 +986,7 @@ End Sub
 '$INCLUDE: 'SCHEDULE.BAS'
 '$INCLUDE: 'SEECOLL.BAS'
 '$INCLUDE: 'SEENATL.BAS'
-'$INCLUDE: 'SEEPRO.BAS'
+'$INCLUDE: 'SEELEAG.BAS'
 '$INCLUDE: 'SINPUT.BAS'
 '$INCLUDE: 'TINPUT.BAS'
 '$INCLUDE: 'TRADE.BAS'

@@ -8651,7 +8651,7 @@ Sub COMPILESTATFILES (teamIdx)
     'Write stats to new file
     Open diskPaths$(1) + statFile$ + "S" For Output As #4
 
-    Print #4, numberGames%
+    Print #4, numberGames
 
     For I = 1 To MAX_SCHED_STATS:
         Print #4, teamScore(I)

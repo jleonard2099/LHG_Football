@@ -1,10 +1,10 @@
 '----------------------------------------
-'          CREATPRO Subroutine
+'          CREATLEAG Subroutine
 '----------------------------------------
 'This subroutine provides a menu for the
 'user to choose options related to the
 'creation and editing of leagues
-Sub CREATPRO ()
+Sub CREATLEAG ()
 
     _Title "3-in-1 Football - Manage Leagues"
 
@@ -266,7 +266,7 @@ Sub ReviewEditLeague (league$, div1$, div2$, div3$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATPRO(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    'Call GetTeam_CREATLEAG(statsZ1$(B), statsZ2$(B), statsZ1%(B))
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team

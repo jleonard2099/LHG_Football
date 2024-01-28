@@ -1,12 +1,12 @@
 '----------------------------------------
-'          HD2HDPRO Subroutine
+'          HD2HDCOLL Subroutine
 '----------------------------------------
 'This subroutine presents the user a menu
 'of options for viewing Head-to-Head team
 'comparisons.
-Sub HD2HDPRO ()
+Sub HD2HDCOLL ()
 
-    _Title "3-in-1 Football - Head-to-Head League Stats"
+    _Title "3-in-1 Football - Head-to-Head Conference Stats"
 
     Color 15, 0
     Cls
@@ -17,18 +17,18 @@ Sub HD2HDPRO ()
     Color 2, 0
 
     Call MenuBox (8, 8, 61, 6, 15, 1)
-    
+
     Do
 
         Locate 10, 15
         Color 3
 
-        Locate , 20: Print "SELECT OPTION:"
-        Locate , 20: Color 15: Print "O";
-        Color 7: Print "NE LEAGUE / CONFERENCE"
-        Locate , 20: Color 15: Print "T";
-        Color 7: Print "WO LEAGUES / CONFERENCES WITH COMPETING PLAY"
-        Locate , 20: Color 15: Print "R";
+        Locate , 25: Print "SELECT OPTION:"
+        Locate , 25: Color 15: Print "O";
+        Color 7: Print "NE CONFERENCE"
+        Locate , 25: Color 15: Print "T";
+        Color 7: Print "WO CONFERENCES WITH COMPETING PLAY"
+        Locate , 25: Color 15: Print "R";
         Color 7: Print "ETURN TO MAIN MENU"
 
         I$ = GetKeyPress$
@@ -36,7 +36,7 @@ Sub HD2HDPRO ()
         If UCase$(I$) = "O" Then X2 = 0
         If UCase$(I$) = "T" Then X2 = 1
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call Hd2HdPro_League(X2)
+            Call Hd2HdColl_Conf(X2)
         End If
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
@@ -44,13 +44,13 @@ Sub HD2HDPRO ()
 End Sub
 
 '----------------------------------------
-'     Hd2HdPro_League Subroutine
+'     Hd2HdColl_Conf Subroutine
 '----------------------------------------
 'This subroutine assists the user with the
 'selection of a team for comparison, then
 'loads the associated stats, calculates
 'the comparisons and presents output options
-Sub Hd2HdPro_League (X2)
+Sub Hd2HdColl_Conf (X2)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -79,7 +79,7 @@ Sub Hd2HdPro_League (X2)
         If newTeam = 1 Then
 
             Do
-
+            
                 Call ChooseTeam(YN$, NTMS, teamNbr, team$)
                 statFile$ = nameStatFile$(team$)
 
@@ -90,7 +90,7 @@ Sub Hd2HdPro_League (X2)
                     BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                     Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                     Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                    J$ = GetKeyPress$
+                    K$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
 
                 End If
@@ -122,10 +122,10 @@ Sub Hd2HdPro_League (X2)
             'Check if same league
             If sameLeague <> 1 Then
 
-                leag1$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+                conf1$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
 
                 If X2 <> 0 Then
-                    leag2$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+                    conf2$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
                 End If
 
             End If
@@ -158,33 +158,33 @@ Sub Hd2HdPro_League (X2)
         If UCase$(J$) = "P" Then X1 = 1
         If UCase$(J$) = "S" Then VPP = 1
 
-        Open diskPaths$(2) + leag1$ + ".LIB" For Input As #2
+        Open diskPaths$(2) + conf1$ + ".LIB" For Input As #2
 
         Input #2, statType
 
         If statType = 0 Then
 
-            Input #2, leag1$
+            Input #2, conf1$
             Input #2, div1$
             Input #2, div2$
 
-            For X = 1 To 15:
+            For X = 1 To 30: 
                 Input #2, statsZ1$(X)
                 Input #2, statsZ1%(X)
                 Input #2, statsZ2$(X)
             Next
 
-            NT = 15
+            NT = 30
 
         End If
 
         If statType = 1 Then
-            Input #2, leag1$
+            Input #2, conf1$
             Input #2, div1$
             Input #2, div2$
             Input #2, div3$
 
-            For X = 1 To 30:
+            For X = 1 To 30: 
                 Input #2, statsZ1$(X)
                 Input #2, statsZ1%(X)
                 Input #2, statsZ2$(X)
@@ -198,50 +198,48 @@ Sub Hd2HdPro_League (X2)
 
         If X2 = 1 Then
 
-            Open diskPaths$(2) + leag2$ + ".LIB" For Input As #3
+            Open diskPaths$(2) + conf2$ + ".LIB" For Input As #2
 
-            Input #3, statType
+            Input #2, statType
 
             If statType = 0 Then
-                Input #3, leag2$
-                Input #3, div1_2$
-                Input #3, div2_2$
+                Input #2, conf2$
+                Input #2, div1_2$
+                Input #2, div2_2$
 
-                For X = 1 To 15:
-                    Input #3, Z12$(X)
-                    Input #3, Z12%(X)
-                    Input #3, Z22$(X)
+                For X = 1 To 30: 
+                    Input #2, Z12$(X)
+                    Input #2, Z12%(X)
+                    Input #2, Z22$(X)
                 Next
-
-                NT = 15
 
             End If
 
             If statType = 1 Then
-                Input #3, leag2$
-                Input #3, div1_2$
-                Input #3, div2_2$
-                Input #3, div3_2$
+                Input #2, conf2$
+                Input #2, div1_2$
+                Input #2, div2_2$
+                Input #2, div3_2$
 
-                For X = 1 To 30:
-                    Input #3, Z12$(X)
-                    Input #3, Z12%(X)
-                    Input #3, Z22$(X)
+                For X = 1 To 30: 
+                    Input #2, Z12$(X)
+                    Input #2, Z12%(X)
+                    Input #2, Z22$(X)
                 Next
-
-                NT = 30
 
             End If
 
+            NT = 30
+
         End If
 
-        Close #3
+        Close #2
 
         Color 15
         Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
         'Initialization for 1st league
-        Erase awayLosses!, awayWins!
+        Erase awayWins!, awayLosses!
         Erase G1!, G2!, G3!, G4!
         Erase HL!, HT!, HW!, RT!
         Erase TAL!, TAW!, THL!, TRT!
@@ -271,7 +269,7 @@ Sub Hd2HdPro_League (X2)
 
         'If we're doing a 2nd league..
         If X2 = 1 Then
-        
+
             'Initialization for 2nd league
             Erase AL2!, AW2!, G12!, G22!, G32!, G42!
             Erase HL2!, HT2!, HW2!
@@ -307,22 +305,22 @@ Sub Hd2HdPro_League (X2)
 
         'Generate output
         If VPP <> 1 Then
-            Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$())
+            Call Hd2HdColl_Report(A$, conf1$, conf2$, DV$(), DV2$())
         Else
-            Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$())
+            Call Hd2HdColl_Screen(A$, conf1$, conf2$, DV$(), DV2$())
         End If
 
         If X1 = 1 Then
             'If the option to send to printer was chosen,
             'print the pre-generated report
-            Open "REPORT" For Input As #4
+            Open "REPORT" For Input As #3
 
             Do While Not EOF(2)
-                Line Input #4, X$
+                Line Input #3, X$
                 LPrint X$
             Loop
 
-            Close #4
+            Close #3
 
             LPrint Chr$(12)
             X1 = 0
@@ -345,7 +343,7 @@ Sub Hd2HdPro_League (X2)
             Color 7: Print "AME TEAM AGAIN"
             Color 7: Locate , 25: Print "VIEW ";
             Color 15: Print "A";
-            Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
+            Color 7: Print "NOTHER TEAM IN THE SAME CONFERENCE"
             Locate , 25: Color 15: Print "R";
             Color 7: Print "ETURN TO MAIN MENU"
 
@@ -354,16 +352,19 @@ Sub Hd2HdPro_League (X2)
             Select Case UCase$(I$)
 
                 Case "A"
+                    RDD = 0
                     sameLeague = 1
                     VPP = 0
                     newTeam = 1
 
                 Case "R"
+                    RDD = 0
                     sameLeague = 0
                     VPP = 0
 
                 Case "S"
-
+                    RDD = 0
+ 
                     'Re-initialize for the next loop
                     Erase TAL!, TAW!, THL!, THT!, THW!, TRT!
                     Erase TG1!, TG2!, TG3!, TG4!
@@ -381,13 +382,13 @@ Sub Hd2HdPro_League (X2)
 End Sub
 
 '----------------------------------------
-'     Hd2HdPro_Screen Subroutine
+'      Hd2HdColl_Screen Subroutine
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to the end user display
-Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
+Sub Hd2HdColl_Screen (teamName$, conf1$, conf2$, DV$(), DV2$())
 
-    Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+    Shared div1$, div2$, div1_2$, div2_2$
 
     Shared teamRatings%()
 
@@ -407,7 +408,6 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     DV$(1) = div1$
     DV$(2) = div2$
-    DV$(3) = div3$
 
     RDD = 0
 
@@ -426,13 +426,13 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
         RDD = RDD + 1
 
-        DD = ((RDD - 1) * 10) + 1
-        EE = RDD * 10
+        DD = ((RDD - 1) * 15) + 1
+        EE = RDD * 15
 
         If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then RDD = 3
 
         Color 11
-        Print leag1$; " "; DV$(RDD);
+        Print conf1$; " "; DV$(RDD);
 
         Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -519,12 +519,11 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     Loop Until RDD = 3
 
-    'Second League
+    'Second Conference
     If X2 = 1 Then
 
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
-        DV2$(3) = div3_2$
 
         RDD = 0
 
@@ -532,8 +531,8 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
 
             RDD = RDD + 1
 
-            DD = ((RDD - 1) * 10) + 1
-            EE = RDD * 10
+            DD = ((RDD - 1) * 15) + 1
+            EE = RDD * 15
 
             If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
@@ -550,7 +549,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
             Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
             Color 11
-            Print leag2$; " "; DV2$(RDD);
+            Print conf2$; " "; DV2$(RDD);
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
@@ -648,19 +647,19 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
     Print Tab(18); String$(6, 196); " HOME "; String$(5, 196); Tab(35); Chr$(194); String$(6, 196); " AWAY "; String$(5, 196); Tab(53); Chr$(194); String$(4, 196); " TOTALS "; String$(5, 196)
     Locate 5
     Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
-
+    
     Color 11
-    Print leag1$;
+    Print conf1$;
 
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
-    For W = 1 To 3
+    For W = 1 To 2
 
         If DV$(W) <> "XXX" And DV$(W) <> "" Then
 
             Color 15
-            'We have to limit this to 16 because we start stats on column 17
-            Locate , 1: Print Left$(DV$(W), 16);
+            'We have to limit this to 15 because we start stats on column 16
+            Locate , 1: Print Left$(DV$(W), 15);
 
             Color 7
             Locate , 17: Print Using "##"; THW!(W);
@@ -752,9 +751,9 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
     If X2 = 1 Then
 
         Print
-        Print leag2$
+        Print conf2$
 
-        For W = 1 To 3
+        For W = 1 To 2
 
             If DV2$(W) <> "XXX" And DV2$(W) <> "" Then
 
@@ -858,13 +857,13 @@ End Sub
 
 
 '----------------------------------------
-'       Hd2HdPro_Report Subroutine
+'     Hd2HdColl_Report Subroutine
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to a report file
-Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
+Sub Hd2HdColl_Report (teamName$, conf1$, conf2$, DV$(), DV2$())
 
-    Shared div1$, div2$, div3$
+    Shared div1$, div2$, div1_2$, div2_2$
 
     Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
     Shared G1!(), G12!(), G2!(), G22!()
@@ -918,32 +917,31 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
     reportFile$ = reportFile$ + ".RPT"
 
     Open reportFile$ For Output As #1
-    
+
     DV$(1) = div1$
     DV$(2) = div2$
-    DV$(3) = div3$
 
     RDD = 0
 
     Print #1, Tab(48); teamName$
     Print #1,
 
-    Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-    Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-    Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-    Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-    Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-
     Do
 
         RDD = RDD + 1
 
-        DD = ((RDD - 1) * 10) + 1
-        EE = RDD * 10
+        DD = ((RDD - 1) * 15) + 1
+        EE = RDD * 15
 
         If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
-            Print #1, leag1$; " "; DV$(RDD)
+            Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+            Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+            Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+            Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+            Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+
+            Print #1, conf1$; " "; DV$(RDD)
 
             For K = DD To EE
 
@@ -1006,7 +1004,6 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
 
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
-        DV2$(3) = div3_2$
         RDD = 0
 
         Do
@@ -1014,20 +1011,19 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
             Print #1, Tab(48); teamName$
             Print #1,
 
+            RDD = RDD + 1
+
+            DD = ((RDD - 1) * 15) + 1
+            EE = RDD * 15
+
+            If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
+
             Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
             Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
             Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
             Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
             Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-
-            RDD = RDD + 1
-
-            DD = ((RDD - 1) * 10) + 1
-            EE = RDD * 10
-
-            If DV2$(RDD) <> "XXX" And DV2$(RDD) <> "" Then RDD = 3
-
-            Print #1, leag2$; " "; DV2$(RDD)
+            Print #1, conf2$; " "; DV2$(RDD)
 
             For K = DD To EE
 
@@ -1095,26 +1091,30 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
     Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
     Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
     Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-    Print #1, leag1$
+    Print #1, conf1$
 
-    For W = 1 To 3
+    For W = 1 To 2
 
-        Print #1, DV$(W);
-        Print #1, Tab(17); Using "##"; THW!(W);
-        Print #1, Tab(20); Using "##"; THL!(W);
-        Print #1, Tab(23); Using "##"; THT!(W);
-        Print #1, Tab(27); Using "###"; TG1!(W);
-        Print #1, Tab(32); Using "###"; TG2!(W);
-        Print #1, Tab(38); Using "##"; TAW!(W);
-        Print #1, Tab(41); Using "##"; TAL!(W);
-        Print #1, Tab(44); Using "##"; TRT!(W);
-        Print #1, Tab(48); Using "###"; TG3!(W);
-        Print #1, Tab(52); Using "###"; TG4!(W);
-        Print #1, Tab(58); Using "##"; THW!(W) + TAW!(W);
-        Print #1, Tab(61); Using "##"; THL!(W) + TAL!(W);
-        Print #1, Tab(64); Using "##"; THT!(W) + TRT!(W);
-        Print #1, Tab(68); Using "###"; TG1!(W) + TG3!(W);
-        Print #1, Tab(72); Using "###"; TG2!(W) + TG4!(W)
+        If W <> 2 And DV$(W) <> "" Then
+
+            Print #1, DV$(W);
+            Print #1, Tab(17); Using "##"; THW!(W);
+            Print #1, Tab(20); Using "##"; THL!(W);
+            Print #1, Tab(23); Using "##"; THT!(W);
+            Print #1, Tab(27); Using "###"; TG1!(W);
+            Print #1, Tab(32); Using "###"; TG2!(W);
+            Print #1, Tab(38); Using "##"; TAW!(W);
+            Print #1, Tab(41); Using "##"; TAL!(W);
+            Print #1, Tab(44); Using "##"; TRT!(W);
+            Print #1, Tab(48); Using "###"; TG3!(W);
+            Print #1, Tab(52); Using "###"; TG4!(W);
+            Print #1, Tab(58); Using "##"; THW!(W) + TAW!(W);
+            Print #1, Tab(61); Using "##"; THL!(W) + TAL!(W);
+            Print #1, Tab(64); Using "##"; THT!(W) + TRT!(W);
+            Print #1, Tab(68); Using "###"; TG1!(W) + TG3!(W);
+            Print #1, Tab(72); Using "###"; TG2!(W) + TG4!(W)
+
+        End If
 
     Next W
 
@@ -1167,25 +1167,30 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
     If X2 = 1 Then
 
         Print #1,
-        Print #1, leag2$
+        Print #1, conf2$
 
-        For W = 1 To 3
-            Print #1, DV2$(W);
-            Print #1, Tab(17); Using "##"; THW2!(W);
-            Print #1, Tab(20); Using "##"; THL2!(W);
-            Print #1, Tab(23); Using "##"; THT2!(W);
-            Print #1, Tab(27); Using "###"; TG12!(W);
-            Print #1, Tab(32); Using "###"; TG22!(W);
-            Print #1, Tab(38); Using "##"; TAW2!(W);
-            Print #1, Tab(41); Using "##"; TAL2!(W);
-            Print #1, Tab(44); Using "##"; TRT2!(W);
-            Print #1, Tab(48); Using "###"; TG32!(W);
-            Print #1, Tab(52); Using "###"; TG42!(W);
-            Print #1, Tab(58); Using "##"; THW2!(W) + TAW2!(W);
-            Print #1, Tab(61); Using "##"; THL2!(W) + TAL2!(W);
-            Print #1, Tab(64); Using "##"; THT2!(W) + TRT2!(W);
-            Print #1, Tab(68); Using "###"; TG12!(W) + TG32!(W);
-            Print #1, Tab(72); Using "###"; TG22!(W) + TG42!(W)
+        For W = 1 To 2
+
+            If W = 2 Or DV2$(W) <> "" Then
+                Print #1, DV2$(W);
+                Print #1, Tab(17); Using "##"; THW2!(W);
+                Print #1, Tab(20); Using "##"; THL2!(W);
+                Print #1, Tab(23); Using "##"; THT2!(W);
+                Print #1, Tab(27); Using "###"; TG12!(W);
+                Print #1, Tab(32); Using "###"; TG22!(W);
+                Print #1, Tab(38); Using "##"; TAW2!(W);
+                Print #1, Tab(41); Using "##"; TAL2!(W);
+                Print #1, Tab(44); Using "##"; TRT2!(W);
+                Print #1, Tab(48); Using "###"; TG32!(W);
+                Print #1, Tab(52); Using "###"; TG42!(W);
+                Print #1, Tab(58); Using "##"; THW2!(W) + TAW2!(W);
+                Print #1, Tab(61); Using "##"; THL2!(W) + TAL2!(W);
+                Print #1, Tab(64); Using "##"; THT2!(W) + TRT2!(W);
+                Print #1, Tab(68); Using "###"; TG12!(W) + TG32!(W);
+                Print #1, Tab(72); Using "###"; TG22!(W) + TG42!(W)
+
+            End If
+
         Next W
 
         THWW2 = 0

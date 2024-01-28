@@ -159,8 +159,8 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     teamPower = teamPower / (totalGames% + GL)
 
-    L% = 0
-    W% = 0
+    totalLosses = 0
+    totalWins = 0
     tiedGames = 0
 
     D% = 0
@@ -425,8 +425,16 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         Print "-";
         Print Using "###   "; oppScore(I);
 
-        If teamScore(I) > oppScore(I) Then W% = W% + 1: Print "W";
-        If teamScore(I) < oppScore(I) Then L% = L% + 1: Print "L";
+        If teamScore(I) > oppScore(I) Then 
+            totalWins = totalWins + 1
+            Print "W";
+        End If
+
+        If teamScore(I) < oppScore(I) Then 
+            totalLosses = totalLosses + 1
+            Print "L";
+        End If
+
         If teamScore(I) = oppScore(I) Then
             tiedGames = tiedGames + 1
             Print "T";
@@ -437,7 +445,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
         Locate , 69
         Print "(";
-        Print Using "##"; W%;: Print "-";: Print Using "##"; L%;: Print "-";: Print Using "##"; tiedGames;
+        Print Using "##"; totalWins;: Print "-";: Print Using "##"; totalLosses;: Print "-";: Print Using "##"; tiedGames;
         Print ")"
 
         lookyP%(0) = lookyP%(0) + teamScore(I)
@@ -474,8 +482,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     lookyP%(0) = 0
     lookyP%(1) = 0
-    W% = 0
-    L% = 0
+    totalWins = 0
+    totalLosses = 0
     tiedGames = 0
 
     Locate 24, 1
@@ -1272,9 +1280,20 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
         Print #1, oppName$(I); Tab(19); Using "###"; teamScore(I);
         Print #1, "-";: Print #1, Using "###   "; oppScore(I);
 
-        If teamScore(I) > oppScore(I) Then W% = W% + 1: Print #1, "W";
-        If teamScore(I) < oppScore(I) Then L% = L% + 1: Print #1, "L";
-        If teamScore(I) = oppScore(I) Then tiedGames = tiedGames + 1: Print #1, "T";
+        If teamScore(I) > oppScore(I) Then 
+            totalWins = totalWins + 1
+            Print #1, "W";
+        End If
+
+        If teamScore(I) < oppScore(I) Then 
+            totalLosses = totalLosses + 1
+            Print #1, "L";
+        End If
+        
+        If teamScore(I) = oppScore(I) Then 
+            tiedGames = tiedGames + 1
+            Print #1, "T";
+        End If
 
         Print #1, Tab(31);
         Print #1, Using "####,###   "; gameAttendance&(I);
@@ -1282,7 +1301,7 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
         Print #1, Tab(69);
         Print #1, "(";
-        Print #1, Using "##"; W%;: Print #1, "-";: Print #1, Using "##"; L%;: Print #1, "-";: Print #1, Using "##"; tiedGames;
+        Print #1, Using "##"; totalWins;: Print #1, "-";: Print #1, Using "##"; totalLosses;: Print #1, "-";: Print #1, Using "##"; tiedGames;
         Print #1, ")"
         lookyP%(0) = lookyP%(0) + teamScore(I)
         lookyP%(1) = lookyP%(1) + oppScore(I)
@@ -1293,8 +1312,8 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     lookyP%(0) = 0
     lookyP%(1) = 0
-    W% = 0
-    L% = 0
+    totalWins = 0
+    totalLosses = 0
     tiedGames = 0
 
     Print #1,

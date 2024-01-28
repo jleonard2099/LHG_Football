@@ -34,7 +34,7 @@ Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
 
     Shared seePR$(), seeT$()
     Shared compZ2$(), compZ3$()
-    Shared TR$()
+    Shared TT$()
 
     Cls
 
@@ -66,7 +66,7 @@ Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Input #2, TR$(I, I1)
+            Input #2, TT$(I, I1)
         Next
     Next
 
@@ -203,7 +203,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Shared LD!(), LZ!(), PT!()
     Shared seeT!(), compTT!()
 
-    Shared seePR$(), TR$()
+    Shared seePR$(), TT$()
     Shared compZ2$(), compZ3$()
 
     Color 15, 0
@@ -609,8 +609,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 1
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
@@ -623,9 +623,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 2
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);: Locate , 55
+            Print TT$(CA, P);: Locate , 55
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
@@ -646,8 +646,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 3
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
@@ -660,9 +660,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 4
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);: Locate , 55
+            Print TT$(CA, P);: Locate , 55
             Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
     Next
@@ -683,8 +683,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 5
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
     Next
@@ -697,9 +697,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 6
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
             Locate , 41
-            Print TR$(CA, P);: Locate , 55
+            Print TT$(CA, P);: Locate , 55
             Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
     Next
@@ -720,8 +720,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 7
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -742,8 +742,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 8
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 15
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 15
             Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -764,8 +764,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 9
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);
             Locate , 15
             Print Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
@@ -788,8 +788,8 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 10
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print TR$(CA, P);: Locate , 18
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print TT$(CA, P);: Locate , 18
             Print Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next
@@ -817,7 +817,7 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     Shared seeT!(), compTT!()
 
     Shared compZ2$(), compZ3$()
-    Shared seePR$(), TR$()
+    Shared seePR$(), TT$()
 
     Color 0, 15
     Cls
@@ -1107,20 +1107,20 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 1
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 2
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
@@ -1133,20 +1133,20 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 3
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 4
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
         End If
 
@@ -1158,8 +1158,8 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 7
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -1170,8 +1170,8 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 8
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
         End If
     Next
@@ -1183,20 +1183,20 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 5
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TR$(CA, P); Tab(15);
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3);
             Print #1, Tab(41);
         End If
 
         CA = 6
 
-        If TR$(CA, P) = "*" Or TR$(CA, P) = "" Then
+        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TR$(CA, P); Tab(56);
+            Print #1, TT$(CA, P); Tab(56);
             Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
         End If
 
@@ -1208,8 +1208,8 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 9
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(15);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(15);
             Print #1, Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
         End If
     Next
@@ -1221,8 +1221,8 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 10
 
     For P = 1 To 20
-        If TR$(CA, P) <> "*" And TR$(CA, P) <> "" Then
-            Print #1, TR$(CA, P); Tab(18);
+        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+            Print #1, TT$(CA, P); Tab(18);
             Print #1, Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
         End If
     Next

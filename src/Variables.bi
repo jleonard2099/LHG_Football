@@ -128,13 +128,14 @@ Dim careerRC!(6), careerTT!(50)
 '----------------------------------------
 Dim fumbGain, puntNum
 Dim puntName$
+Dim Shared findFile$
 
 Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
 Dim compZ1$(60), compZ2$(1 To 240), compZ3$(1 To 240)
 Dim H1$(30), N2$(240), N3$(240), NT$(10, 20)
 Dim PS$(10), PT$(1200)
-Dim TB$(18), TR$(10, 20), teamRecDesc$(50), TT$(10, 20)
+Dim TB$(18), teamRecDesc$(50), TT$(10, 20)
 
 Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
 Dim compTT!(10, 20, 9), compWR!(16, 13)
@@ -273,7 +274,7 @@ Dim TMM$(480), TPP$(480), TYY$(480)
 Dim LD!(240), LZ!(240)
 Dim seeL!(60), seeT!(60), seeW!(60)
 
-Dim seeP$(60), TM$(60) ', TR$(10, 20)
+Dim seeP$(60), TM$(60)
 Dim seePR$(1200), seeT$(60)
 
 
@@ -383,3 +384,5 @@ Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
 'I believe they are for tracking records / "longest" plays
 Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1)
 Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
+
+
