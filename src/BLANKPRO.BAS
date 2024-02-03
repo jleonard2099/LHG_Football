@@ -8,7 +8,7 @@ Sub BLANKPRO ()
 
     _Title "3-in-1 Football - Erase League Stats"
 
-    Dim H1$(40)
+    Dim statFiles$(40)
 
     leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
 
@@ -29,16 +29,16 @@ Sub BLANKPRO ()
             Input #1, league$, div1$, div2$, div3$
 
             For XW = 1 To 30
-                Input #1, H1$(XW)
+                Input #1, statFiles$(XW)
             Next
 
             Close #1
 
             For XW = 1 To 30
 
-                If H1$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(1) + H1$(XW)
-                    Print "DELETING "; H1$(XW); " STATS"
+                If statFiles$(XW) <> Chr$(42) Then
+                    statFile$ = diskPaths$(1) + statFiles$(XW)
+                    Print "DELETING "; statFiles$(XW); " STATS"
                     If _FileExists(statFile$) Then Kill statFile$
                     If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
 

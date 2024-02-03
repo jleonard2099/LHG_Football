@@ -133,8 +133,8 @@ Dim Shared findFile$
 Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
 Dim compZ1$(60), compZ2$(1 To 240), compZ3$(1 To 240)
-Dim H1$(30), N2$(240), N3$(240), NT$(10, 20)
-Dim PS$(10), PT$(1200)
+Dim N2$(240), N3$(240), NT$(10, 20)
+Dim PS$(10), PT$(1200), statFiles$(30)
 Dim TB$(18), teamRecDesc$(50), TT$(10, 20)
 
 Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
@@ -207,7 +207,7 @@ Dim tradeLK$(1, 2, 1), tradeLP$(1, 3, 1)
 Dim tradeLC$(1, 15, 1), tradeLR$(1, 9, 1)
 Dim tradePK$(1, 2, 1), tradePR$(1, 2)
 Dim tradeQB$(1, 3), tradeRB$(1, 9), tradeWR$(1, 5)
-Dim tradeF$(1), tradeFG$(1, 1), tradeKR$(1, 2)
+Dim tradeFG$(1, 1), tradeKR$(1, 2)
 Dim tradeYN$(1)
 
 '----------------------------------------

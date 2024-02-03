@@ -1,10 +1,10 @@
 '----------------------------------------
-'          CREATECOLL Subroutine
+'          CREATCON Subroutine
 '----------------------------------------
 'This subroutine provides a menu for the
 'user to choose options related to the
 'creation and editing of conferences
-Sub CREATECOLL ()
+Sub CREATCON ()
 
     _Title "3-in-1 Football - Manage Conferences"
 
@@ -252,7 +252,7 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATECOLL(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    'Call GetTeam_CREATCON(statsZ1$(B), statsZ2$(B), statsZ1%(B))
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team

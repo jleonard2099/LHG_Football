@@ -1,11 +1,11 @@
 '----------------------------------------
-'           SEECOLL Subroutine
+'           SEECON Subroutine
 '----------------------------------------
 'This subroutine lets the user choose a
 'conference stat file to view, then calls
 'other routines to both load the Stats
 'and then provide options for display
-Sub SEECOLL ()
+Sub SEECON ()
 
     _Title "3-in-1 Football - View Conference Stats"
 

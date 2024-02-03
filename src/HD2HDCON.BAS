@@ -1,10 +1,10 @@
 '----------------------------------------
-'          HD2HDCOLL Subroutine
+'          HD2HDCON Subroutine
 '----------------------------------------
 'This subroutine presents the user a menu
 'of options for viewing Head-to-Head team
 'comparisons.
-Sub HD2HDCOLL ()
+Sub HD2HDCON ()
 
     _Title "3-in-1 Football - Head-to-Head Conference Stats"
 
@@ -36,7 +36,7 @@ Sub HD2HDCOLL ()
         If UCase$(I$) = "O" Then X2 = 0
         If UCase$(I$) = "T" Then X2 = 1
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call Hd2HdColl_Conf(X2)
+            Call HD2HDCON_Conf(X2)
         End If
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
@@ -44,13 +44,13 @@ Sub HD2HDCOLL ()
 End Sub
 
 '----------------------------------------
-'     Hd2HdColl_Conf Subroutine
+'     HD2HDCON_Conf Subroutine
 '----------------------------------------
 'This subroutine assists the user with the
 'selection of a team for comparison, then
 'loads the associated stats, calculates
 'the comparisons and presents output options
-Sub Hd2HdColl_Conf (X2)
+Sub HD2HDCON_Conf (X2)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -305,9 +305,9 @@ Sub Hd2HdColl_Conf (X2)
 
         'Generate output
         If VPP <> 1 Then
-            Call Hd2HdColl_Report(A$, conf1$, conf2$, DV$(), DV2$())
+            Call HD2HDCON_Report(A$, conf1$, conf2$, DV$(), DV2$())
         Else
-            Call Hd2HdColl_Screen(A$, conf1$, conf2$, DV$(), DV2$())
+            Call HD2HDCON_Screen(A$, conf1$, conf2$, DV$(), DV2$())
         End If
 
         If X1 = 1 Then
@@ -382,11 +382,11 @@ Sub Hd2HdColl_Conf (X2)
 End Sub
 
 '----------------------------------------
-'      Hd2HdColl_Screen Subroutine
+'      HD2HDCON_Screen Subroutine
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to the end user display
-Sub Hd2HdColl_Screen (teamName$, conf1$, conf2$, DV$(), DV2$())
+Sub HD2HDCON_Screen (teamName$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
 
@@ -857,11 +857,11 @@ End Sub
 
 
 '----------------------------------------
-'     Hd2HdColl_Report Subroutine
+'     HD2HDCON_Report Subroutine
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to a report file
-Sub Hd2HdColl_Report (teamName$, conf1$, conf2$, DV$(), DV2$())
+Sub HD2HDCON_Report (teamName$, conf1$, conf2$, DV$(), DV2$())
 
     Shared div1$, div2$, div1_2$, div2_2$
 

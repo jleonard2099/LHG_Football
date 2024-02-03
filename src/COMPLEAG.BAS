@@ -17,7 +17,7 @@ Sub CompileLeague ()
 
     Shared indRecDesc$()
     Shared compZ1$(), compZ2$(), compZ3$()
-    Shared H1$(), teamRecDesc$(), TT$()
+    Shared statFiles$(), teamRecDesc$(), TT$()
 
     Shared div1$, div2$, div3$
 
@@ -90,8 +90,6 @@ Sub CompileLeague ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        finalUpdate$ = "N"
-
         Do
             Color 15, 0
             Cls
@@ -105,15 +103,13 @@ Sub CompileLeague ()
         Input #2, FF$, div1$, div2$, div3$
 
         For XW = 1 To 30
-            Input #2, H1$(XW)
+            Input #2, statFiles$(XW)
         Next XW
 
         Close #2
 
         Open diskPaths$(2) + leagueFile$ + ".LIB" For Input As #3
-
         Input #3, LG%
-
         Close #3
 
         If LG% <> 1 Then
@@ -140,17 +136,18 @@ Sub CompileLeague ()
 
             For XW = 1 To 30
 
-                If H1$(XW) <> Chr$(42) Then
+                'Look for * as terminating char
+                If statFiles$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsPro%(XW, H1$(XW), numberGames)
+                    haveStats = FindStatsPro%(XW, statFiles$(XW), numberGames)
 
                     If (haveStats) Then
 
-                        L = Len(H1$(XW))
+                        L = Len(statFiles$(XW))
                         WT$ = ""
 
                         For X = 1 To L:
-                            A = Asc(Mid$(H1$(XW), X, 1))
+                            A = Asc(Mid$(statFiles$(XW), X, 1))
                             WT$ = WT$ + Chr$(A)
                         Next X
 
@@ -161,26 +158,28 @@ Sub CompileLeague ()
                             If compZ1$(EC) = WT$ Then
 
                                 If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
+
                                     nonConfGame = 1
+                                    Exit For
+
                                 Else
+
                                     O1!(EC) = fullWins
                                     O2!(EC) = fullLosses
                                     O3!(EC) = fullTies
-                                    'Why don't we do PTSF / PTSA ?!?!
-                                End If
 
-                                If (nonConfGame) Then Exit For
+                                End If
 
                             End If
                             'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
 
                         Next EC
 
-                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + H1$(XW)) Then
+                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + statFiles$(XW)) Then
 
-                            Call ReadStatsPro(H1$(XW), numberGames, TM$)
-                            Call StatsByCategoryPro(numberGames, TM$, WT$, finalUpdate$)
-                            Call CheckStatsPro(numberGames, TM$, WT$, finalUpdate$)
+                            Call ReadStatsLeaders(statFiles$(XW), numberGames, TM$, 1)
+                            Call CalcStatTotalsPro(numberGames, TM$, WT$, finalUpdate$)
+                            Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
 
                         End If
 
@@ -190,7 +189,7 @@ Sub CompileLeague ()
 
             Next XW
 
-            Call SortLeadersPro
+            Call SortStandings
             Call PostLeadersLeague(leagueFile$)
             Call PostRecordsPro
 
@@ -247,11 +246,11 @@ End Function
 
 
 '----------------------------------------
-'       ReadStatsPro Subroutine
+'       ReadStatsLeaders Subroutine
 '----------------------------------------
 'This subroutine reads stats in for a
 'single team in the league
-Sub ReadStatsPro (statFile$, numberGames, TM$)
+Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     Shared puntNum
     Shared puntName$
@@ -269,21 +268,21 @@ Sub ReadStatsPro (statFile$, numberGames, TM$)
 
     Shared compKR$(), compPK$(), compPR$()
     Shared compQB$(), compRB$(), compWR$()
-    Shared H1$(), intName$(), PKR$()
+    Shared statFiles$(), intName$(), PKR$()
     Shared sackName$()
     Shared statsLC$(), statsLF$(), statsLI$()
     Shared statsLK$(), statsLP$(), statsLR$()
     Shared TB$()
 
-    'Erase compKR$, compPK$, compPR$, compQB$, compRB$, compWR$
-    'Erase intName$
+    Erase compKR$, compPK$, compPR$, compQB$, compRB$, compWR$
+    Erase intName$
 
-    'Erase AF!, AM!
-    'Erase compZ2!, OT!, DT!
-    'Erase statsGI%, statsGS%
+    Erase AF!, AM!
+    Erase compZ2!, OT!, DT!
+    Erase statsGI%, statsGS%
 
-    'Erase statsLC!, statsLF!, statsLI!, statsLK!, statsLP!, statsLR!
-    'Erase statsLC$, statsLF$, statsLI$, statsLK$, statsLP$, statsLR$
+    Erase statsLC!, statsLF!, statsLI!, statsLK!, statsLP!, statsLR!
+    Erase statsLC$, statsLF$, statsLI$, statsLK$, statsLP$, statsLR$
 
     Open diskPaths$(1) + statFile$ For Input As #1
 
@@ -509,7 +508,11 @@ Sub ReadStatsPro (statFile$, numberGames, TM$)
 
     For I = 1 To 4:
         compQB!(I, 6) = 0
-        Call QBRatingPro(I)
+        If proQB = 1 Then
+            Call QBRatingPro(I)
+        Else
+            Call QBRatingColl(I)
+        End If
     Next
 
     For I = 1 To 3:
@@ -547,11 +550,11 @@ End Sub
 
 
 '----------------------------------------
-'       CheckStatsPro Subroutine
+'       CalcStatLeaders Subroutine
 '----------------------------------------
 'This subroutine compares pre-loaded stats
 'to existing leaders and updates as needed
-Sub CheckStatsPro (numberGames, TM$, WT$, finalUpdate$)
+Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
     Shared fumbGain, puntNum
     Shared puntName$
@@ -831,6 +834,7 @@ Sub CheckStatsPro (numberGames, TM$, WT$, finalUpdate$)
                 For Y = 21 To 39:
                     For Z = Y + 1 To 40:
                         If compZ1!(Y, 1) < compZ1!(Z, 1) Then
+
                             Swap compZ3$(Y), compZ3$(Z)
                             Swap compZ2$(Y), compZ2$(Z)
                             For Z1 = 1 To 2:
@@ -1117,6 +1121,7 @@ Sub CheckStatsPro (numberGames, TM$, WT$, finalUpdate$)
 
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
+
                             If compZ1!(Y, 1) < compZ1!(Z, 1) Then
                                 Swap compZ3$(Y), compZ3$(Z)
                                 Swap compZ2$(Y), compZ2$(Z)
@@ -1125,10 +1130,12 @@ Sub CheckStatsPro (numberGames, TM$, WT$, finalUpdate$)
                                 Next Z1
 
                             End If
+
                         Next Z
                     Next Y
 
                     GoTo 3279
+
                 End If
 
             Next Y
@@ -1192,7 +1199,9 @@ Sub CheckStatsPro (numberGames, TM$, WT$, finalUpdate$)
                     Next Y
 
                     GoTo 3287
+
                 End If
+
             Next Y
 
             If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < compZ1!(140, 1)) Then
@@ -1694,12 +1703,12 @@ End Sub
 
 
 '----------------------------------------
-'     StatsByCategoryPro Subroutine
+'     CalcStatTotalsPro Subroutine
 '----------------------------------------
 'This subroutine compares all pre-loaded
 'stats to each of the record categories to
 'see if any should be updated
-Sub StatsByCategoryPro (numberGames, TM$, WT$, finalUpdate$)
+Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
 
     Shared fumbGain
 
@@ -2066,11 +2075,11 @@ End Sub
 
 
 '----------------------------------------
-'        SortLeadersPro Subroutine
+'         SortStandings Subroutine
 '----------------------------------------
 'This subroutine sorts the leaders in the
 'target league
-Sub SortLeadersPro
+Sub SortStandings
 
     Shared O1!(), O2!(), O3!()
 
@@ -2079,10 +2088,10 @@ Sub SortLeadersPro
     Shared compZ1$()
 
     'Sort leaders in league
-    For Z = 1 To 3
+    For Z = 0 To 2
 
-        AA = (10 * (Z - 1)) + 1
-        ZZ = 10 * Z
+        AA = (Z * 10) + 1
+        ZZ = (Z * 10) + 10
 
         For X = AA To ZZ - 1:
 
@@ -2116,7 +2125,7 @@ End Sub
 
 
 '----------------------------------------
-'        PostLeadersLeague Subroutine
+'      PostLeadersLeague Subroutine
 '----------------------------------------
 'This subroutine opens the existing leader
 'and record files for the league, and

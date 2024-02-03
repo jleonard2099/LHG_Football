@@ -50,7 +50,7 @@ End Sub
 'the stats are loaded from the team stats.
 Sub LoadStatsForTrade (tradeIdx)
 
-    Shared tradeF$(), tradeFG$(), tradeKR$()
+    Shared tradeFG$(), tradeKR$()
     Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared puntNam_TRADE$(), statNam_TRADE$()
     Shared tradeLC$(), tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$(), tradeLR$()
@@ -80,12 +80,13 @@ Sub LoadStatsForTrade (tradeIdx)
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     If UCase$(I$) = "N" Then
+
         haveStats(tradeIdx) = 1
+
     Else
 
         statFile$ = nameStatFile$(teams_TRADE$(tradeIdx))
-        tradeF$(tradeIdx) = statFile$
-
+        
         If _FileExists(diskPaths$(1) + statFile$) Then
 
             Open diskPaths$(1) + statFile$ For Input As #1
@@ -147,8 +148,6 @@ End Sub
 'relies on separate routines to summarize
 'the trade and then save the changes.
 Sub ContinueTrade ()
-
-    Shared haveStats()
 
     Do
 
@@ -225,21 +224,7 @@ Sub ContinueTrade ()
 
     Next J
 
-    For J = 0 To 1
-
-        If haveStats(J) <> 1 Then
-
-            Call TITLE
-
-            For XY = 2 To 23:
-                Locate XY, 1: Print Tab(79);
-            Next
-
-            Call SaveTradeStats(J)
-
-        End If
-
-    Next J
+    Call SaveTrades
 
 End Sub
 
@@ -370,9 +355,13 @@ Sub TradeRBs (W1)
     Swap tradeRB$(0, I), tradeRB$(1, I1)
 
     If haveStats(0) = 1 Or haveStats(1) = 1 Or W1 = 0 Then
-        For I2 = 0 To 5: tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0: Next I2
+        For I2 = 0 To 5: 
+            tradeZ2!(0, I, I2) = 0: tradeZ2!(1, I1, I2) = 0
+        Next I2
     Else
-        For I2 = 0 To 5: Swap tradeZ2!(0, I, I2), tradeZ2!(1, I1, I2): Next
+        For I2 = 0 To 5: 
+            Swap tradeZ2!(0, I, I2), tradeZ2!(1, I1, I2)
+        Next
     End If
 
     Call TITLE
@@ -1645,14 +1634,16 @@ End Sub
 
 
 '----------------------------------------
-'       SaveTradeStats Subroutine
+'       SaveTrades Subroutine
 '----------------------------------------
 'This subroutine saves the modified team
 'data from the trade to the team files.
-Sub SaveTradeStats (saveIdx)
+Sub SaveTrades ()
+
+    Shared haveStats()
 
     Shared teams_TRADE$(), nicks_TRADE$()
-    Shared tradeF$(), tradeFG$(), tradeKR$()
+    Shared tradeFG$(), tradeKR$()
     Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared puntNam_TRADE$(), statNam_TRADE$()
     Shared tradeLC$(), tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$(), tradeLR$()
@@ -1667,60 +1658,125 @@ Sub SaveTradeStats (saveIdx)
     Shared tmRat_TRADE()
     Shared tradeGI%(), tradeGS%()
 
-    Locate 12, 1
+    For saveIdx = 0 To 1
 
-    Print "SAVING ";: Color tmRat_TRADE(saveIdx, 2), tmRat_TRADE(saveIdx, 1)
+        If haveStats(saveIdx) <> 1 Then
 
-    Print teams_TRADE$(saveIdx);
+            Call TITLE
 
-    Color 15, 0
-    Print " STATS"
-    
-    Z = 0
+            For XY = 2 To 23:
+                Locate XY, 1: Print Tab(79);
+            Next
 
-    Open diskPaths$(1) + tradeF$(saveIdx) For Output As #1
+            Locate 12, 1
 
-    Print #1, statNam_TRADE$(saveIdx)
+            Print "SAVING ";: Color tmRat_TRADE(saveIdx, 2), tmRat_TRADE(saveIdx, 1)
 
-    For I = 0 To 9: Print #1, tradeRB$(saveIdx, I): Next
-    For I = 0 To 5: Print #1, tradeWR$(saveIdx, I): Next
-    For I = 0 To 3: Print #1, tradeQB$(saveIdx, I): Next
-    For I = 0 To 2: Print #1, tradeKR$(saveIdx, I): Next
-    For I = 0 To 2: Print #1, tradePR$(saveIdx, I): Next
+            Print teams_TRADE$(saveIdx);
 
-    Print #1, puntNam_TRADE$(saveIdx)
+            Color 15, 0
+            Print " STATS"
+            
+            Z = 0
 
-    For I = 0 To 1: Print #1, tradeFG$(saveIdx, I): Next
+            statFile$ = nameStatFile$(teams_TRADE$(tradeIdx))
+            Open diskPaths$(1) + statFile$ For Output As #1
 
-    For X = 0 To 13
-        For Y = 0 To 17:
-            Print #1, tradeZ2!(saveIdx, X, Y)
-        Next
-    Next
+            Print #1, statNam_TRADE$(saveIdx)
 
-    For X = 0 To 38: Print #1, tradeZ!(saveIdx, X): Next
+            For I = 0 To 9: Print #1, tradeRB$(saveIdx, I): Next
+            For I = 0 To 5: Print #1, tradeWR$(saveIdx, I): Next
+            For I = 0 To 3: Print #1, tradeQB$(saveIdx, I): Next
+            For I = 0 To 2: Print #1, tradeKR$(saveIdx, I): Next
+            For I = 0 To 2: Print #1, tradePR$(saveIdx, I): Next
 
-    For X = 0 To 38: Print #1, tradeZ1!(saveIdx, X): Next
+            Print #1, puntNam_TRADE$(saveIdx)
 
-    For X = 0 To 9: Print #1, intNam_TRADE$(saveIdx, X): For J1 = 0 To 2: Print #1, tradeGI%(saveIdx, X, J1): Next: Next
+            For I = 0 To 1: Print #1, tradeFG$(saveIdx, I): Next
 
-    For X = 0 To 14: Print #1, sackNam_TRADE$(saveIdx, X): For J1 = 0 To 1: Print #1, tradeGS%(saveIdx, X, J1): Next: Next
+            For X = 0 To 13
+                For Y = 0 To 17:
+                    Print #1, tradeZ2!(saveIdx, X, Y)
+                Next
+            Next
 
-    For I = 0 To 9: Print #1, tradeLR!(saveIdx, I): For J1 = 0 To 1: Print #1, tradeLR$(saveIdx, I, J1): Next: Next
+            For X = 0 To 38: 
+                Print #1, tradeZ!(saveIdx, X)
+            Next
 
-    For I = 0 To 15: Print #1, tradeLC!(saveIdx, I): For J1 = 0 To 1: Print #1, tradeLC$(saveIdx, I, J1): Next: Next
+            For X = 0 To 38: 
+                Print #1, tradeZ1!(saveIdx, X)
+            Next
 
-    For I = 0 To 3: Print #1, tradeLP!(saveIdx, I): For J1 = 0 To 1: Print #1, tradeLP$(saveIdx, I, J1): Next: Next
+            For X = 0 To 9: 
+                Print #1, intNam_TRADE$(saveIdx, X)
+                For J1 = 0 To 2: 
+                    Print #1, tradeGI%(saveIdx, X, J1)
+                Next
+            Next
 
-    For I = 0 To 2: Print #1, tradeLK!(saveIdx, I): For J1 = 0 To 1: Print #1, tradeLK$(saveIdx, I, J1): Next: Next
+            For X = 0 To 14: 
+                Print #1, sackNam_TRADE$(saveIdx, X)
+                For J1 = 0 To 1: 
+                    Print #1, tradeGS%(saveIdx, X, J1)
+                Next
+            Next
 
-    For I = 0 To 2: Print #1, tradePK!(saveIdx, I): For J1 = 0 To 1: Print #1, tradePK$(saveIdx, I, J1): Next: Next
+            For I = 0 To 9: 
+                Print #1, tradeLR!(saveIdx, I)
+                For J1 = 0 To 1: 
+                    Print #1, tradeLR$(saveIdx, I, J1)
+                Next
+            Next
 
-    For I = 0 To 1: Print #1, tradeLF!(saveIdx, I): Print #1, tradeLF$(saveIdx, I): For I1 = 0 To 4: Print #1, tradeAM!(saveIdx, I, I1): Print #1, tradeAF!(saveIdx, I, I1): Next: Next
+            For I = 0 To 15: 
+                Print #1, tradeLC!(saveIdx, I)
+                For J1 = 0 To 1: 
+                    Print #1, tradeLC$(saveIdx, I, J1)
+                Next
+            Next
 
-    For I = 0 To 9: Print #1, tradeLI!(saveIdx, I): Print #1, tradeLI$(saveIdx, I, 0): Print #1, tradeLI$(saveIdx, I, 1): Next
+            For I = 0 To 3: 
+                Print #1, tradeLP!(saveIdx, I)
+                For J1 = 0 To 1: 
+                    Print #1, tradeLP$(saveIdx, I, J1)
+                Next
+            Next
 
-    Close #1
+            For I = 0 To 2: 
+                Print #1, tradeLK!(saveIdx, I)
+                For J1 = 0 To 1: 
+                    Print #1, tradeLK$(saveIdx, I, J1)
+                Next
+            Next
+
+            For I = 0 To 2: 
+                Print #1, tradePK!(saveIdx, I)
+                For J1 = 0 To 1: 
+                    Print #1, tradePK$(saveIdx, I, J1)
+                Next
+            Next
+
+            For I = 0 To 1: 
+                Print #1, tradeLF!(saveIdx, I)
+                Print #1, tradeLF$(saveIdx, I)
+                For I1 = 0 To 4: 
+                    Print #1, tradeAM!(saveIdx, I, I1)
+                    Print #1, tradeAF!(saveIdx, I, I1)
+                Next
+            Next
+
+            For I = 0 To 9: 
+                Print #1, tradeLI!(saveIdx, I)
+                Print #1, tradeLI$(saveIdx, I, 0)
+                Print #1, tradeLI$(saveIdx, I, 1)
+            Next
+
+            Close #1
+
+        End If
+
+    Next saveIdx
 
 End Sub
 

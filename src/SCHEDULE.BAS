@@ -53,7 +53,7 @@ Sub SCHEDULE ()
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -175,7 +175,7 @@ Sub NewSchedule (scheduleFile$)
     Do
 
         Cls
-        
+
         Locate 23, 1
         Color , 1: Print Tab(80);
         Locate 23, 1
@@ -218,7 +218,7 @@ Sub NewSchedule (scheduleFile$)
         Locate 1, 1: Print Tab(80);
         Locate 1, 1: Print scheduleFile$
         Locate 1, 33
-        
+
         Color 14: Print "AUTO SCHEDULER"
 
         Color 15, 0
@@ -325,15 +325,15 @@ Sub NewSchedule (scheduleFile$)
 
             Case "B":
                 Do
-                   Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                   Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-                NS% = Int((targetGame%- 1) / 20)
+                NS% = Int((targetGame% - 1) / 20)
 
                 boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
                 'boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
-                
-                Call EditBoxscore (boxName$)
+
+                Call EditBoxscore(boxName$)
                 Color 15, 0
 
             Case "D":
@@ -691,7 +691,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
                 Case 9:
                     scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
                     If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
- 
+
                 Case 10: ' Back to beginning of loop
 
                 Case 11:
@@ -721,10 +721,6 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
             MIN% = Val(Right$(fullTime$, 2))
             hourString$ = Left$(fullTime$, Len(fullTime$) - 3)
             HR% = Val(hourString$)
-
-            If HR% < 10 Then
-                TM$ = " " + TM$
-            End If
 
             If UCase$(meridian$) = "P" And HR% < 12 Then
                 'If user typed in PM, we are storing as military time
@@ -1109,7 +1105,7 @@ Sub BoxscoreMaintenance ()
 
         Call TITLE_SCHEDULER
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -1242,10 +1238,10 @@ Sub SortSchedule ()
             Locate 1, 1: Print Z, Z1
 
             If scheduleNG%(Z, 12) > scheduleNG%(Z1, 12) Then
-                For I = 0 To 20: 
+                For I = 0 To 20:
                     Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
                 Next
-                For I = 0 To 1: 
+                For I = 0 To 1:
                     Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
                 Next
                 Swap schedDates&(Z), schedDates&(Z1)
@@ -1262,10 +1258,10 @@ Sub SortSchedule ()
         For Z1 = Z + 1 To scheduleAP%(0)
 
             If schedDates&(Z) > schedDates&(Z1) Then
-                For I = 0 To 20: 
+                For I = 0 To 20:
                     Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
                 Next
-                For I = 0 To 1: 
+                For I = 0 To 1:
                     Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
                 Next
                 Swap schedDates&(Z), schedDates&(Z1)
@@ -1561,7 +1557,7 @@ Sub EditBoxscore (boxName$)
 
     Else
 
-        Call QBWRITE (boxName$)
+        Call QBWRITE(boxName$)
 
     End If
 
@@ -1652,3 +1648,4 @@ Function GetQBName$ (targetGame%, teamIndicator)
     GetQBName$ = qbName$(I2)
 
 End Function
+

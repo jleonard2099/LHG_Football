@@ -923,13 +923,13 @@ Sub Leaders_Menu ()
                 Case 5: Call Records_Menu(1)
                 Case 6: Call NEWLDR(1) 'Call ViewExpandedStats(1)
                 Case 7: Call BLANKPRO
-                Case 8: Call CREATECOLL
+                Case 8: Call CREATCON
                 Case 9: Call CompileCollege
-                Case 10: Call SEECOLL
-                Case 11: Call HD2HDCOLL
+                Case 10: Call SEECON
+                Case 11: Call HD2HDCON
                 Case 12: Call Records_Menu(2)
                 Case 13: Call NEWLDR(0) 'Call ViewExpandedStats(0)
-                Case 14: Call BLANKCOL
+                Case 14: Call BLANKCON
                 Case 15: Call CREATENATL
                 Case 16: Call CompileNatlOrg
                 Case 17: Call SEENATL
@@ -961,7 +961,7 @@ End Sub
 '$INCLUDE: 'FileTeamSelection.bm'
 '$INCLUDE: 'TITLE.bm'
 '$INCLUDE: 'ALIGN.BAS'
-'$INCLUDE: 'BLANKCOL.BAS'
+'$INCLUDE: 'BLANKCON.BAS'
 '$INCLUDE: 'BLANKORG.BAS'
 '$INCLUDE: 'BLANKPRO.BAS'
 '$INCLUDE: 'CAREDIT.BAS'
@@ -970,21 +970,21 @@ End Sub
 '$INCLUDE: 'CARPRNT.BAS'
 '$INCLUDE: 'CARVIEW.BAS'
 '$INCLUDE: 'CNGTM.BAS'
-'$INCLUDE: 'COMPCOLL.BAS'
+'$INCLUDE: 'COMPCON.BAS'
 '$INCLUDE: 'COMPLEAG.BAS'
 '$INCLUDE: 'COMPNATL.BAS'
-'$INCLUDE: 'CREATCOLL.BAS'
+'$INCLUDE: 'CREATCON.BAS'
 '$INCLUDE: 'CREATNATL.BAS'
 '$INCLUDE: 'CREATLEAG.BAS'
 '$INCLUDE: 'DRAFT.BAS'
-'$INCLUDE: 'HD2HDCOLL.BAS'
+'$INCLUDE: 'HD2HDCON.BAS'
 '$INCLUDE: 'HD2HDLEAG.BAS'
 '$INCLUDE: 'LOOKY.BAS'
 '$INCLUDE: 'MERGE.BAS'
 '$INCLUDE: 'NEWLDR.BAS'
 '$INCLUDE: 'REC.BAS'
 '$INCLUDE: 'SCHEDULE.BAS'
-'$INCLUDE: 'SEECOLL.BAS'
+'$INCLUDE: 'SEECON.BAS'
 '$INCLUDE: 'SEENATL.BAS'
 '$INCLUDE: 'SEELEAG.BAS'
 '$INCLUDE: 'SINPUT.BAS'
