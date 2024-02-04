@@ -2205,11 +2205,11 @@ Sub BLITZ ()
 
         If QX < 0 Then QX = QX * -1
 
-        If RN0 <= ydsPerCompPctAdjQX, 1) Then
+        If RN0 <= ydsPerCompPctAdj(QX, 1) Then
             If qbArmRat(P1, qbNumber(P1)) > 0 Then
-                I4 = I4 + ydsPerCompPctAdjQX, 2)
+                I4 = I4 + ydsPerCompPctAdj(QX, 2)
             Else
-                I4 = I4 - ydsPerCompPctAdjQX, 2)
+                I4 = I4 - ydsPerCompPctAdj(QX, 2)
             End If
         End If
 

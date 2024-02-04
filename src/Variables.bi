@@ -358,7 +358,7 @@ Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
 
 Dim Shared brkawayYds(38, 4), goalLnYdAdj(1 To 30, 1 To 2), HB%(1)
 Dim Shared NG%(20), PC%(1, 9), PS%(2, 21)
-Dim Shared Q7%(1), ydsPerCompPctAdj50, 2)
+Dim Shared Q7%(1), ydsPerCompPctAdj(50, 2)
 Dim Shared RM%(1, 14), runYdAdj(1, 38), RV%(1)
 Dim Shared passCovAdj(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
