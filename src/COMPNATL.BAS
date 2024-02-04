@@ -263,7 +263,7 @@ Sub CompileNatlOrg ()
 
                 End If 'Done checking for valid conference
 
-                Call SortStandings
+                Call SortStandingsLeague
                 Call PostLeadersConf(confNames$(currConf))
                 Call SortLeadersNat
 

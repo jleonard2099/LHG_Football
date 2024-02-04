@@ -1930,9 +1930,9 @@ Sub FOOTBALL ()
                                     ' *** BREAKAWAY ***
                                     Call d100(RN5)
                                     If RN5 <= 50 Then
-                                        ydsGained = Int(Rnd(1) * BY%(I2, 0)) + BY%(I2, 1)
+                                        ydsGained = Int(Rnd(1) * brkawayYds(I2, 0)) + brkawayYds(I2, 1)
                                     Else
-                                        ydsGained = Int(Rnd(1) * BY%(I2, 3)) + BY%(I2, 4)
+                                        ydsGained = Int(Rnd(1) * brkawayYds(I2, 3)) + brkawayYds(I2, 4)
                                     End If
 
                                 Else
@@ -1951,7 +1951,7 @@ Sub FOOTBALL ()
                                     Next I6
 
                                     Call d100(RN4)
-                                    If RN4 <= RN%(0, I2) Then ydsGained = ydsGained + RN%(1, I2)
+                                    If RN4 <= runYdAdj(0, I2) Then ydsGained = ydsGained + runYdAdj(1, I2)
 
                                 End If
 
@@ -2124,7 +2124,7 @@ Sub FOOTBALL ()
             Call PASSBALL(compChance)
 
             'SACKED
-            If compChance < S1%(3, playCall - 8, coverage) + leagRat_GAME(P1, 5) + leagRat_GAME(D, 6) + 1 Then
+            If compChance < passCovAdj(3, playCall - 8, coverage) + leagRat_GAME(P1, 5) + leagRat_GAME(D, 6) + 1 Then
 
                 playType = 1
                 W5 = 1
@@ -2315,9 +2315,9 @@ Sub FOOTBALL ()
 
                 'Compare value to expected interception %
                 '               QB's Int % - Pass type adjustment + league DEF Int %
-                intChance = qbPctInt(P1, I1) - S1%(0, playCall - 8, coverage) + leagRat_GAME(D, 2)
+                intChance = qbPctInt(P1, I1) - passCovAdj(0, playCall - 8, coverage) + leagRat_GAME(D, 2)
 
-                '                If I > (100 - qbPctInt(P1, I1) - S1%(0, playCall - 8, coverage) + leagRat_GAME(D, 2)) Then
+                '                If I > (100 - qbPctInt(P1, I1) - passCovAdj(0, playCall - 8, coverage) + leagRat_GAME(D, 2)) Then
                 If passChance > (100 - intChance) Then
 
                     'Intercepted!
@@ -2350,7 +2350,7 @@ Sub FOOTBALL ()
 
                         Else
 
-                            I4 = I4 + S1%(2, playCall - 8, coverage)
+                            I4 = I4 + passCovAdj(2, playCall - 8, coverage)
 
                             If ydsPerComp(D) / 100 > .5 Then I4 = I4 - (1 - ydsPerComp(D) / 100) * 10
                             If ydsPerComp(D) / 100 < .5 Then I4 = I4 + ydsPerComp(D) / 100 * 10

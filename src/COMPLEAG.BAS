@@ -189,7 +189,7 @@ Sub CompileLeague ()
 
             Next XW
 
-            Call SortStandings
+            Call SortStandingsLeague
             Call PostLeadersLeague(leagueFile$)
             Call PostRecordsPro
 
@@ -2075,11 +2075,12 @@ End Sub
 
 
 '----------------------------------------
-'         SortStandings Subroutine
+'     SortStandingsLeague Subroutine
 '----------------------------------------
 'This subroutine sorts the leaders in the
-'target league
-Sub SortStandings
+'target league. Currently setup using a 
+'bubble sort algorithm.
+Sub SortStandingsLeague
 
     Shared O1!(), O2!(), O3!()
 

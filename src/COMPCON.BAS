@@ -214,7 +214,7 @@ Sub CompileCollege ()
 
             Next XW
 
-            Call SortStandings
+            Call SortStandingsConference
             Call PostLeadersConf(conferenceFile$)
             Call PostRecordsColl
 
@@ -765,6 +765,58 @@ Sub CalcStatTotalsConf (numberGames, TM$, WT$, finalUpdate$)
         teamRecords!(24) = OT!(12) / numberGames
         teamRecDesc$(24) = TM$
     End If
+
+End Sub
+
+
+'----------------------------------------
+'   SortStandingsConference Subroutine
+'----------------------------------------
+'This subroutine sorts the leaders in the
+'target conference. Currently setup using
+'a bubble sort algorithm.
+Sub SortStandingsConference
+
+    Shared O1!(), O2!(), O3!()
+
+    Shared PTSA!(), PTSF!()
+
+    Shared compZ1$()
+
+    'Currently sorts by Conference Record 
+    '   To sort by Season Record, use Z = 0 to 1
+    For Z = 2 To 3
+
+        AA = (Z * 15) + 1
+        ZZ = (Z * 15) + 15
+
+        For X = AA To ZZ - 1:
+
+            For Y = X + 1 To ZZ:
+
+                diffX = O1!(X) - O2!(X)
+                diffY = O1!(Y) - O2!(Y)
+
+                If diffX <= diffY Then
+
+                    If diffX <> diffY Then
+                        If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
+                            Swap compZ1$(X), compZ1$(Y)
+                            Swap O1!(X), O1!(Y)
+                            Swap O2!(X), O2!(Y)
+                            Swap O3!(X), O3!(Y)
+                            Swap PTSF!(X), PTSF!(Y)
+                            Swap PTSA!(X), PTSA!(Y)
+                        End If
+                    End If
+
+                End If
+
+            Next Y
+
+        Next X
+
+    Next Z
 
 End Sub
 

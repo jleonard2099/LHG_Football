@@ -329,7 +329,7 @@ Dim Shared ydsToFirst As Single
 Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared YC, YF, Z1
 
-Dim Shared BO%, EG%, F%, FF%, GL%, HB%, intChance
+Dim Shared BO%, EG%, F%, FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%, R5%
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
@@ -356,11 +356,11 @@ Dim Shared useRandomQB(1)
 Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
 Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
 
-Dim Shared BY%(38, 4), GL%(1 To 30, 1 To 2), HB%(1)
+Dim Shared brkawayYds(38, 4), goalLnYdAdj(1 To 30, 1 To 2), HB%(1)
 Dim Shared NG%(20), PC%(1, 9), PS%(2, 21)
-Dim Shared Q7%(1), QR%(50, 2)
-Dim Shared RM%(1, 14), RN%(1, 38), RV%(1)
-Dim Shared S1%(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
+Dim Shared Q7%(1), ydsPerCompPctAdj50, 2)
+Dim Shared RM%(1, 14), runYdAdj(1, 38), RV%(1)
+Dim Shared passCovAdj(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared V4%(1, 3), WX%(6)
 

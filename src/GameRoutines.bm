@@ -167,7 +167,7 @@ Sub InitVar ()
     EG% = 0
     F% = 0
     FF% = 0
-    GL% = 0
+    goalLnYdAdj = 0
     HB% = 0
     intChance = 0
     PC% = 0
@@ -220,7 +220,7 @@ Sub InitVar ()
     Erase useRandomQB, W6, WR, XD
 
     Erase HB%, NG%, PC%
-    Erase Q7%, RV%, S1%, ST%, SX%
+    Erase Q7%, RV%, passCovAdj, ST%, SX%
     Erase teamYears, thirdDownAtt, thirdDownFail
     Erase V4%, WX%
 
@@ -1725,13 +1725,13 @@ Sub GOALLINE ()
         'leading to a negative index
         If I2 <= 0 Then I2 = 1
 
-        If RN7 <= GL%(I2, 1) Then ydsGained = ydsGained + GL%(I2, 2)
+        If RN7 <= goalLnYdAdj(I2, 1) Then ydsGained = ydsGained + goalLnYdAdj(I2, 2)
 
     Else
         'I2 > 30
         'Given how I2 is calculated (based on Rushing Avg),
         'it is not clear how you get a value this high
-        If RN7 <= GL%(30, 1) Then ydsGained = ydsGained + GL%(30, 2)
+        If RN7 <= goalLnYdAdj(30, 1) Then ydsGained = ydsGained + goalLnYdAdj(30, 2)
 
     End If
 
@@ -2205,11 +2205,11 @@ Sub BLITZ ()
 
         If QX < 0 Then QX = QX * -1
 
-        If RN0 <= QR%(QX, 1) Then
+        If RN0 <= ydsPerCompPctAdjQX, 1) Then
             If qbArmRat(P1, qbNumber(P1)) > 0 Then
-                I4 = I4 + QR%(QX, 2)
+                I4 = I4 + ydsPerCompPctAdjQX, 2)
             Else
-                I4 = I4 - QR%(QX, 2)
+                I4 = I4 - ydsPerCompPctAdjQX, 2)
             End If
         End If
 
@@ -2355,7 +2355,7 @@ Sub BLITZ ()
 
     If altYdg <> 1 Then
 
-        I4 = I4 + S1%(2, playCall - 8, coverage)
+        I4 = I4 + passCovAdj(2, playCall - 8, coverage)
 
         If I4 > 10 Then I4 = 10
         If I4 < 1 Then I4 = 1
@@ -5105,7 +5105,7 @@ Sub AdjustCompPct ()
     End Select
 
     'Adjust for pass type
-    passTypeCmpAdj = S1%(1, playCall - 8, coverage)
+    passTypeCmpAdj = passCovAdj(1, playCall - 8, coverage)
 
     'Adjust for wind direction NOT in team's favor
     windCmpAdj = 0
@@ -5615,10 +5615,10 @@ Sub SHORTYARDAGE ()
     Call d100(RN7)
 
     If I2 <= 30 Then
-        If RN7 <= GL%(I2, 1) Then ydsGained = ydsGained + GL%(I2, 2)
+        If RN7 <= goalLnYdAdj(I2, 1) Then ydsGained = ydsGained + goalLnYdAdj(I2, 2)
     Else
         'I2 < 30
-        If RN7 <= GL%(30, 1) Then ydsGained = ydsGained + GL%(30, 2)
+        If RN7 <= goalLnYdAdj(30, 1) Then ydsGained = ydsGained + goalLnYdAdj(30, 2)
     End If
 
 End Sub

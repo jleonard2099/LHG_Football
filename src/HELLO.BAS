@@ -48,7 +48,9 @@ Data PUNT RETURN TOUCHDOWNS,PUNT RETURN AVERAGE,LONGEST PUNT RETURN,PUNTS
 Data PUNTING YARDS,PUNTING AVERAGE,FIELD GOALS MADE,FIELD GOALS ATTEMPTED
 Data FIELD GOAL %,LONGEST FIELD GOAL,POINT AFTER MADE,POINT AFTER ATTEMPTS,PAT%
 Data INTERCEPTIONS,INTERCEPTION YARDS,INTERCEPTION TD'S,LONGEST INTERCEPTION
-For I = 0 To 45: Read indRecCategory$(I): Next
+For I = 0 To 45: 
+    Read indRecCategory$(I)
+Next
 
 Data YARDS/GAME,TOTAL YARDS,GAIN/PLAY,RUSHING YARDS/GAME,TOTAL RUSHING
 Data GAIN/RUSH,PASSING YARDS/GAME,PASSING YARDS,YARDS/ATTEMPT
@@ -61,7 +63,9 @@ Data RUSHING YARDS/GAME,RUSHING YARDS,GAIN/RUSH,PASSING YARDS/GAME
 Data PASSING YARDS,YARDS/ATTEMPT,YARDS/COMPLETION,COMPLETION PCT.
 Data INTERCEPTION PCT.,POINTS ALLOWED,POINTS/GAME,MOST POINTS ALLOWED
 Data MOST PTS ALLOWED/GAME,PUNT RET AVERAGE,KICKOFF RET AVERAGE
-For I = 0 To 43: Read teamRecCategory$(I): Next
+For I = 0 To 43: 
+    Read teamRecCategory$(I)
+Next
 
 
 Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,RUSING TOUCHDOWNS,LONGEST RUN
@@ -76,7 +80,9 @@ Data NON-KICKERS,KICKERS,ALL PLAYERS
 Data FIRST DOWNS,RUSH ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,PASSING YARDS,TOTAL YARDS,PASS COMPLETION PCT.,FUMBLES,FUMBLES LOST,INTERCEPTIONS THROWN,TURNOVER RATIO,PENALTIES,PENALTY YARDAGE,SACKS ALLOWED,SACK YARDAGE
 Data OPP. FIRST DOWNS,OPP. RUSH ATTEMPTS,OPP. RUSHING YARDS,OPP. RUSHING AVERAGE,OPP. PASSING YARDS,OPP. TOTAL YARDS,OPP. PASS COMPLETION PCT.,OPP. FUMBLES,OPP. FUMBLES RECOVERED,INTERCEPTIONS,OPP. PENALTIES,OPP. PENALTY YARDAGE,SACKS
 Data SACK YARDAGE LOST,ALL-PURPOSE YARDS
-For I = 0 To 73: Read expCategories$(I): Next
+For I = 0 To 73: 
+    Read expCategories$(I)
+Next
 
 
 '----------------------------------------
@@ -174,10 +180,10 @@ Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' SCK BOOTLEG
 Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0,X)
 Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1,X)
 
-Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' RN%(0,X)
-Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' RN%(1,X)
+Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' runYdAdj(0,X)
+Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' runYdAdj(1,X)
 
-'BY%
+'brkawayYds
 Data 11,-5,11,0
 Data 11,-5,11,0
 Data 11,0,21,0
@@ -318,7 +324,7 @@ For I = 0 To 3:
         '10 = Bootleg
         For J = 1 To 11:
             'Pass Adjustments per coverage
-            Read S1%(I, I1, J)
+            Read passCovAdj(I, I1, J)
         Next J
     Next I1
 Next I
@@ -333,21 +339,21 @@ Next
 For I = 0 To 1:
     For I1 = 1 To 38:
         'Run yard adjustments?
-        Read RN%(I, I1)
+        Read runYdAdj(I, I1)
     Next
 Next
 
 For I = 1 To 38:
     For I1 = 1 To 4:
         'Breakaway yardage???
-        Read BY%(I, I1)
+        Read brkawayYds(I, I1)
     Next
 Next
 
 For I = 1 To 30:
     For I1 = 1 To 2:
         'Goalline yard adjustments
-        Read GL%(I, I1)
+        Read goalLnYdAdj(I, I1)
     Next
 Next
 
@@ -368,7 +374,7 @@ Next
 
 For I = 1 To 2:
     For I1 = 1 To 21:
-        '???
+        'Play Action pass adjustment???
         Read PS%(I, I1)
     Next
 Next
@@ -376,7 +382,7 @@ Next
 For I = 1 To 2:
     For I1 = 0 To 20:
         'Y/C% Adjustment
-        Read QR%(I1, I)
+        Read ydsPerCompPctAdjI1, I)
     Next
 Next
 
