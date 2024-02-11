@@ -247,7 +247,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT(), krNumRet_DRAFT()
     Shared krRetAvg_DRAFT(), prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT(), FGA_DRAFT(), FGPct_DRAFT(), leagRat_DRAFT(), PAT_DRAFT(), PATPct_DRAFT()
-    Shared qbArmRat_DRAFT(), numInt_DRAFT(), numSack_DRAFT(), tmRat_DRAFT()
+    Shared qbArmRat_DRAFT(), numInt_DRAFT(), numSack_DRAFT(), teamRat_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
     Shared intNam_DRAFT$(), sackNam_DRAFT$()
@@ -259,7 +259,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
     Next I
 
     For I = 0 To 4:
-        teamRatings%(I) = tmRat_DRAFT(I)
+        teamRatings%(I) = teamRat_DRAFT(I)
     Next I
 
     For I = 0 To 9
@@ -428,7 +428,7 @@ Sub DraftChoices (teamName$)
 
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT(), krNumRet_DRAFT()
     Shared krRetAvg_DRAFT(), prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT(), FGA_DRAFT(), FGPct_DRAFT(), PAT_DRAFT(), PATPct_DRAFT()
-    Shared qbArmRat_DRAFT(), tmRat_DRAFT()
+    Shared qbArmRat_DRAFT(), teamRat_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
 
@@ -477,7 +477,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RUN AVG CX% RC AVG CX%"
 
@@ -537,7 +537,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "REC AVG  CX%"
 
@@ -593,7 +593,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
 
                         Color 7, 0: Print Tab(57); " C%  I%   ARM  CX%"
 
@@ -654,7 +654,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RET AVG  CX%"
 
@@ -713,7 +713,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RET AVG  CX%"
 
@@ -772,7 +772,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "PUNT AVG"
 
@@ -826,7 +826,7 @@ Sub DraftChoices (teamName$)
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "FG%  CX   EP%  CX"
 
@@ -1226,7 +1226,7 @@ End Sub
 'choosing the team to draft players from
 Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
-    Shared tmRat_DRAFT()
+    Shared teamRat_DRAFT()
 
     Shared previousYear$, teamNick$
 
@@ -1318,7 +1318,7 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                     Do
                         Locate 2, 33
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print teamName$
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print teamName$
 
                         Color 15, 4
                         Locate 3, 32: Print "ANY CHANGE? (Y/N)";
@@ -1410,7 +1410,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Shared prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT()
     Shared qbArmRat_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT()
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT()
-    Shared tmRat_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT()
+    Shared teamRat_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
     Shared intNam_DRAFT$(), sackNam_DRAFT$()
@@ -1463,7 +1463,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Next I
 
     For I = 0 To 4:
-        tmRat_DRAFT(I) = CVI(Q$(I + 11))
+        teamRat_DRAFT(I) = CVI(Q$(I + 11))
     Next I
 
     For I = 0 To 9

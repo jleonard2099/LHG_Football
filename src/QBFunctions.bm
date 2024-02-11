@@ -13,7 +13,7 @@ Function QBRating! (qbIdx, teamType)
     Dim II!(3), PP!(3)
     Dim TT!(3), YY!(3)
 
-    Shared K2!(), ratingsQB!()
+    Shared playerStats!(), ratingsQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
     ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
@@ -24,15 +24,15 @@ Function QBRating! (qbIdx, teamType)
 
         Case 0:
             ' *** COLLEGE QB RATING ***
-            ratingsQB!(qbIdx, 7) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9)) * 8.399999 + K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100 + Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10 * 2
+            ratingsQB!(qbIdx, 7) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9)) * 8.399999 + playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100 + Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10 * 2
             ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
 
         Case 1: '
             ' *** NFL QB RATING ***
-            ratingsQB!(qbIdx, 8) = Int(K2!(qbIdx, 13) / K2!(qbIdx, 9) * 1000) / 10
-            ratingsQB!(qbIdx, 6) = K2!(qbIdx, 10) / K2!(qbIdx, 9) * 100
-            ratingsQB!(qbIdx, 10) = Int(K2!(qbIdx, 12) / K2!(qbIdx, 9) * 100) / 100
-            ratingsQB!(qbIdx, 9) = Int(K2!(qbIdx, 11) / K2!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 8) = Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 6) = playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100
+            ratingsQB!(qbIdx, 10) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9) * 100) / 100
+            ratingsQB!(qbIdx, 9) = Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10
 
             PP!(tmIdx) = ratingsQB!(qbIdx, 6) - 30
 

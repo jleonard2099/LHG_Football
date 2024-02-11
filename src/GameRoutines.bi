@@ -12,10 +12,10 @@ Declare Sub BOX2SCREEN ()
 Declare Sub BOX2SPC (boxName$)
 Declare Sub BOXOPTIONS (outputChoice)
 Declare Sub CHANGEPOSS ()
-Declare Sub CHANGEQB ()
 Declare Sub CheckGameClock ()
 Declare Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
-Declare Sub CHOOSEKICKER ()
+Declare Sub CHOOSEQB (currTeam)
+Declare Sub CHOOSEKICKER (currTeam)
 Declare Sub CLIPPING ()
 Declare Sub COLKICKOFF ()
 Declare Sub COMPCHEAT ()
@@ -106,12 +106,12 @@ Declare Sub TICKER ()
 Declare Sub TickerSchedule ()
 Declare Sub TICKERUPDATE ()
 Declare Sub Touchback
-Declare Sub TWOMIN ()
+Declare Sub TwoMinMenu (menuChoice)
 Declare Sub WHICHRECEIVER
 Declare Sub YARDAGE ()
 Declare Sub YARDLINE ()
 
 
-Declare Function FNP (X) 'Used only in "Marker" subroutine
+Declare Function FindMarkerColumn (X) 'Used only in "Marker" subroutine
 Declare Function GetTeamYear% (yearFromName$)
 Declare Function TickerTime% (timeInterval, X)
