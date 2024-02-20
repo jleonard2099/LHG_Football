@@ -211,12 +211,12 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 
     Shared leagueRatings%(), teamRatings%()
     
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared intName$(), krName$()
@@ -280,7 +280,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'Name
         rbName$(I) = Q$(I * 5 + 16)
         'Rush Att
-        rushAtt(I) = CVI(Q$(I * 5 + 17))
+        rushContrib(I) = CVI(Q$(I * 5 + 17))
         'Rush Avg
         rushAvg(I) = CVI(Q$(I * 5 + 18))
         'Receptions
@@ -294,7 +294,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'Name
         wrName$(I) = Q$(I * 3 + 66)
         'Receptions
-        wrRecept(I) = CVI(Q$(I * 3 + 67))
+        recContrib(I) = CVI(Q$(I * 3 + 67))
         'Rec Avg
         wrRecAvg(I) = CVI(Q$(I * 3 + 68))
     Next I
@@ -304,7 +304,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'Name
         qbName$(I) = Q$(I * 5 + 84)
         'Attempts
-        passAtt(I) = CVI(Q$(I * 5 + 85))
+        passContrib(I) = CVI(Q$(I * 5 + 85))
         'Completion %
         compPct(I) = CVI(Q$(I * 5 + 86))
         'Interception %
@@ -318,7 +318,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'Name
         krName$(I) = Q$(I * 3 + 104)
         'Returns
-        krRet(I) = CVI(Q$(I * 3 + 105))
+        krContrib(I) = CVI(Q$(I * 3 + 105))
         'Return Avg
         krRetAvg(I) = CVI(Q$(I * 3 + 106))
     Next I
@@ -328,7 +328,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'Name
         prName$(I) = RTrim$(Q$(I * 3 + 113))
         'Returns
-        prRet(I) = CVI(Q$(I * 3 + 114))
+        prContrib(I) = CVI(Q$(I * 3 + 114))
         'Return Avg
         prRetAvg(I) = CVI(Q$(I * 3 + 115))
     Next I
@@ -345,11 +345,11 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
         'FGA
         pkFGA(I) = CVI(Q$(I * 5 + 125))
         'FG%
-        pkFGPct(I) = CVI(Q$(I * 5 + 126))
+        pkFGContrib(I) = CVI(Q$(I * 5 + 126))
         'PAT
         pkPAT(I) = CVI(Q$(I * 5 + 127))
         'PAT %
-        pkPATPct(I) = CVI(Q$(I * 5 + 128))
+        pkPATContrib(I) = CVI(Q$(I * 5 + 128))
 
     Next I
 

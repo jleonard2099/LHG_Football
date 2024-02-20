@@ -302,9 +302,9 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, chosenPlay, coverage, compTeam, CP, currDown ', compOffense
 Dim Shared D, dLine
-Dim Shared endAllGames, endGame, endYds, endZone, expCompPct
+Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
-Dim Shared gameLoc, goalPostAdj, halfTime
+Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I, J
@@ -342,40 +342,53 @@ Dim Shared ydsToFirst As Single
 Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared YC, YF, Z1
 
-Dim Shared BO%, EG%, F%, FF%, goalLnYdAdj, HB%, intChance
+Dim Shared BO%, F%, FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
 Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
+Dim Shared brkawayYds(38, 4), climate(6)
+'Climate array
+'index 0 = wind direction
+'index 1 = wind strength
+'index 2 = 
+'index 3 = 
+'index 4 = weather
+'index 5 = 
+'index 6 = 
+
+Dim Shared activeKicker(1)
 Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
 Dim Shared FA(1, 1, 4), FM(1, 1, 4)
-Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), sackStatsPlayer(1, 14, 1), gameStatsTeam(1, 36)
+Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
 Dim Shared gameZ(0 To 38), gameZ1(0 To 38), gameZ2(0 To 13, 0 To 17)
-Dim Shared K1(50, 6), gameStatsPlayer(1, 13, 17), K3(1, 6)
+Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
+Dim Shared K1(50, 6), K3(1, 6)
 Dim Shared hasRunFF(1), playerInts(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
-Dim Shared nbrPossOT(1), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
+Dim Shared nbrPossOT(1)
+Dim Shared passCovAdj(3, 10, 11), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
 Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
-Dim Shared runBacks(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
+Dim Shared runYdAdj(1, 38)
+Dim Shared runBacks(1, 17), rbrushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
+Dim Shared sackStatsPlayer(1, 14, 1)
 Dim Shared score(0 To 1, 0 To 10), scoreQuarters(50), scoreTimes(50), schedGame(2)
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
+Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
 Dim Shared useRandomQB(1)
 Dim Shared sackStatsTeam(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
-Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
+Dim Shared XD(1), ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
 
-Dim Shared brkawayYds(38, 4), goalLnYdAdj(1 To 30, 1 To 2), HB%(1)
-Dim Shared NG%(20), PC%(1, 9), PS%(2, 21)
-Dim Shared Q7%(1), ydsPerCompPctAdj(50, 2)
-Dim Shared RM%(1, 14), runYdAdj(1, 38), RV%(1)
-Dim Shared passCovAdj(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
-Dim Shared V4%(1, 3), WX%(6)
+Dim Shared HB%(1), NG%(20), indRushPct(1, 9), PS%(2, 21)
+Dim Shared RM%(1, 14), RV%(1)
+Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
+Dim Shared qbRushIdx(1, 3)
 
 Dim scheduleFile$
 

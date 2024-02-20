@@ -165,6 +165,7 @@ Declare Sub ViewSeasonRecords ()
 Declare Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
 Declare Function GetQBName$ (targetGame%, I5)
+Declare Function GetQBRushPct% (targetQB$)
 Declare Function FindStatsColl% (XW, statFile$, numberGames)
 Declare Function FindStatsNat% (XW, statFile$, numberGames, NRT)
 Declare Function FindStatsPro% (XW, statFile$, numberGames)

@@ -88,12 +88,12 @@ Sub PrintRoster (teamName$, teamIdx)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -130,7 +130,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
             LPrint rbName$(I); Tab(23);
-            LPrint Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
+            LPrint Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
         End If
 
     Next
@@ -143,7 +143,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
             LPrint wrName$(I); Tab(23);
-            LPrint Using "##       ###"; wrRecAvg(I) * 3; wrRecept(I)
+            LPrint Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
         End If
 
     Next
@@ -156,7 +156,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
             LPrint qbName$(I); Tab(21);
-            LPrint Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
+            LPrint Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
         End If
 
     Next
@@ -169,7 +169,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
             LPrint krName$(I); Tab(23);
-            LPrint Using "##       ###"; krRetAvg(I) * 3; krRet(I)
+            LPrint Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
         End If
 
     Next
@@ -182,7 +182,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
             LPrint prName$(I); Tab(23);
-            LPrint Using "##       ###"; prRetAvg(I) * 3; prRet(I)
+            LPrint Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
         End If
 
     Next
@@ -195,7 +195,7 @@ Sub PrintRoster (teamName$, teamIdx)
 
         If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
             LPrint pkName$(I); Tab(21);
-            LPrint Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
+            LPrint Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
         End If
 
     Next
@@ -232,11 +232,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
     Shared prName$(), punterName$(), pkName$()
     Shared intName$(), sackName$()
 
-    Shared rushAtt(), rushAvg(), rbRecAvg(), rbRecepts()
-    Shared wrRecAvg(), wrRecept()
-    Shared armRating(), compPct(), passAtt(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
-    Shared pkFGPct(), pkPAT(), pkPATPct()
+    Shared rushContrib(), rushAvg(), rbRecAvg(), rbRecepts()
+    Shared wrRecAvg(), recContrib()
+    Shared armRating(), compPct(), passContrib(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg(), puntAvg(), pkFGA()
+    Shared pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks()
     Shared leagueRatings%(), teamRatings%()
 
@@ -252,20 +252,20 @@ Sub EditTeam (teamName$, YN$, teamNbr)
     U = 0
 
     For I = 1 To 9
-        If rushAtt(I) = 0 Then
+        If rushContrib(I) = 0 Then
             U = U + 1
         Else
-            contrib3(I) = rushAtt(I) - rushAtt(I - 1 - U)
+            contrib3(I) = rushContrib(I) - rushContrib(I - 1 - U)
             U = 0
         End If
     Next
 
     For I = 1 To 9:
-        rushAtt(I) = contrib3(I)
+        rushContrib(I) = contrib3(I)
     Next
 
     For I = 0 To 5:
-        rbRecepts(I + 10) = wrRecept(I)
+        rbRecepts(I + 10) = recContrib(I)
     Next
 
     U = 0
@@ -284,36 +284,36 @@ Sub EditTeam (teamName$, YN$, teamNbr)
     Next
 
     For I = 0 To 5:
-        wrRecept(I) = rbRecepts(I + 10)
+        recContrib(I) = rbRecepts(I + 10)
     Next
 
     For I = 3 To 1 Step -1
-        If passAtt(I) <> 0 Then
-            passAtt(I) = passAtt(I) - passAtt(I - 1)
+        If passContrib(I) <> 0 Then
+            passContrib(I) = passContrib(I) - passContrib(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If krRet(I) <> 0 Then
-            krRet(I) = krRet(I) - krRet(I - 1)
+        If krContrib(I) <> 0 Then
+            krContrib(I) = krContrib(I) - krContrib(I - 1)
         End If
     Next
 
     For I = 2 To 1 Step -1
-        If prRet(I) <> 0 Then
-            prRet(I) = prRet(I) - prRet(I - 1)
+        If prContrib(I) <> 0 Then
+            prContrib(I) = prContrib(I) - prContrib(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If pkFGPct(I) <> 0 Then
-            pkFGPct(I) = pkFGPct(I) - pkFGPct(I - 1)
+        If pkFGContrib(I) <> 0 Then
+            pkFGContrib(I) = pkFGContrib(I) - pkFGContrib(I - 1)
         End If
     Next
 
     For I = 1 To 1 Step -1
-        If pkPATPct(I) <> 0 Then
-            pkPATPct(I) = pkPATPct(I) - pkPATPct(I - 1)
+        If pkPATContrib(I) <> 0 Then
+            pkPATContrib(I) = pkPATContrib(I) - pkPATContrib(I - 1)
         End If
     Next
 
@@ -928,19 +928,19 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         S3 = 0
 
         For I = 0 To 9:
-            S0 = S0 + rushAtt(I)
+            S0 = S0 + rushContrib(I)
             S2 = S2 + rbRecepts(I)
         Next
 
         S4 = 100 / S0
 
         For I = 0 To 9:
-            If rushAtt(I) <> 0 Then rushAtt(I) = Int(S4 * rushAtt(I) + .5) + S1: S1 = rushAtt(I)
-            If rushAtt(I) > 100 Then rushAtt(I) = 100
+            If rushContrib(I) <> 0 Then rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1: S1 = rushContrib(I)
+            If rushContrib(I) > 100 Then rushContrib(I) = 100
         Next I
 
         For I = 0 To 5:
-            S2 = S2 + wrRecept(I)
+            S2 = S2 + recContrib(I)
         Next
 
         S5 = 100 / S2
@@ -951,22 +951,22 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         Next I
 
         For I = 0 To 5:
-            If wrRecept(I) <> 0 Then wrRecept(I) = Int(S5 * wrRecept(I) + .5) + S3: S3 = wrRecept(I)
-            If wrRecept(I) > 100 Then wrRecept(I) = 100
+            If recContrib(I) <> 0 Then recContrib(I) = Int(S5 * recContrib(I) + .5) + S3: S3 = recContrib(I)
+            If recContrib(I) > 100 Then recContrib(I) = 100
         Next I
 
         S6 = 0
         S7 = 0
 
         For I = 0 To 3:
-            S6 = S6 + passAtt(I)
+            S6 = S6 + passContrib(I)
         Next
 
         S8 = 100 / S6
 
         For I = 0 To 3:
-            If passAtt(I) <> 0 Then passAtt(I) = Int(S8 * passAtt(I) + .5) + S7: S7 = passAtt(I)
-            If passAtt(I) > 100 Then passAtt(I) = 100
+            If passContrib(I) <> 0 Then passContrib(I) = Int(S8 * passContrib(I) + .5) + S7: S7 = passContrib(I)
+            If passContrib(I) > 100 Then passContrib(I) = 100
         Next
 
         G0 = 0
@@ -975,21 +975,21 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         G4 = 0
 
         For I = 0 To 2:
-            G0 = G0 + krRet(I)
-            G3 = G3 + prRet(I)
+            G0 = G0 + krContrib(I)
+            G3 = G3 + prContrib(I)
         Next
 
         G2 = 100 / G0
         G5 = 100 / G3
 
         For I = 0 To 2:
-            If krRet(I) <> 0 Then krRet(I) = Int(G2 * krRet(I) + .5) + G1: G1 = krRet(I)
-            If krRet(I) > 100 Then krRet(I) = 100
+            If krContrib(I) <> 0 Then krContrib(I) = Int(G2 * krContrib(I) + .5) + G1: G1 = krContrib(I)
+            If krContrib(I) > 100 Then krContrib(I) = 100
         Next
 
         For I = 0 To 2:
-            If prRet(I) <> 0 Then prRet(I) = Int(G5 * prRet(I) + .5) + G4: G4 = prRet(I)
-            If prRet(I) > 100 Then prRet(I) = 100
+            If prContrib(I) <> 0 Then prContrib(I) = Int(G5 * prContrib(I) + .5) + G4: G4 = prContrib(I)
+            If prContrib(I) > 100 Then prContrib(I) = 100
         Next
 
         G0 = 0
@@ -998,49 +998,49 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         G4 = 0
 
         For I = 0 To 1:
-            G0 = G0 + pkFGPct(I)
-            G3 = G3 + pkPATPct(I)
+            G0 = G0 + pkFGContrib(I)
+            G3 = G3 + pkPATContrib(I)
         Next
 
         G2 = 100 / G0
         G5 = 100 / G3
 
         For I = 0 To 1:
-            If pkFGPct(I) <> 0 Then pkFGPct(I) = Int(G2 * pkFGPct(I) + .5) + G1: G1 = pkFGPct(I)
-            If pkFGPct(I) > 100 Then pkFGPct(I) = 100
+            If pkFGContrib(I) <> 0 Then pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1: G1 = pkFGContrib(I)
+            If pkFGContrib(I) > 100 Then pkFGContrib(I) = 100
         Next
 
         For I = 0 To 1:
-            If pkPATPct(I) <> 0 Then pkPATPct(I) = Int(G5 * pkPATPct(I) + .5) + G4: G4 = pkPATPct(I)
-            If pkPATPct(I) > 100 Then pkPATPct(I) = 100
+            If pkPATContrib(I) <> 0 Then pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4: G4 = pkPATContrib(I)
+            If pkPATContrib(I) > 100 Then pkPATContrib(I) = 100
         Next
 
         For I = 9 To 0 Step -1:
-            If rushAtt(I) <> 0 Then rushAtt(I) = 100: Exit For
+            If rushContrib(I) <> 0 Then rushContrib(I) = 100: Exit For
         Next
 
         For I = 5 To 0 Step -1:
-            If wrRecept(I) <> 0 Then wrRecept(I) = 100: Exit For
+            If recContrib(I) <> 0 Then recContrib(I) = 100: Exit For
         Next
 
         For I = 3 To 0 Step -1:
-            If passAtt(I) <> 0 Then passAtt(I) = 100: Exit For
+            If passContrib(I) <> 0 Then passContrib(I) = 100: Exit For
         Next
 
         For I = 2 To 0 Step -1:
-            If krRet(I) <> 0 Then krRet(I) = 100: Exit For
+            If krContrib(I) <> 0 Then krContrib(I) = 100: Exit For
         Next
 
         For I = 2 To 0 Step -1:
-            If prRet(I) <> 0 Then prRet(I) = 100: Exit For
+            If prContrib(I) <> 0 Then prContrib(I) = 100: Exit For
         Next
 
         For I = 1 To 0 Step -1:
-            If pkFGPct(I) <> 0 Then pkFGPct(I) = 100: Exit For
+            If pkFGContrib(I) <> 0 Then pkFGContrib(I) = 100: Exit For
         Next
 
         For I = 1 To 0 Step -1:
-            If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
+            If pkPATContrib(I) <> 0 Then pkPATContrib(I) = 100: Exit For
         Next
 
         Call SaveChangedTeam(teamName$, YN$, teamNbr, YC%)
@@ -1069,8 +1069,8 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
 
     Shared intName$(), sackName$()
     Shared rushAvg(), rbRecAvg(), wrRecAvg(), compPct(), qbIntPct()
-    Shared krRetAvg(), prRet(), prRetAvg(), puntAvg(), pkFGA()
-    Shared pkFGPct(), leagueRatings%(), pkPAT(), pkPATPct()
+    Shared krRetAvg(), prContrib(), prRetAvg(), puntAvg(), pkFGA()
+    Shared pkFGContrib(), leagueRatings%(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks()
     Shared teamRatings%(), armRating()
 
@@ -1224,12 +1224,12 @@ Sub ViewRoster (team$, teamNbr)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -1272,9 +1272,11 @@ Sub ViewRoster (team$, teamNbr)
 
         For I = 0 To 9:
             If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
-                Color 3: Print rbName$(I);
+                Color 3
+                Print rbName$(I);
                 Color 15
-                Locate , 23: Print Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
+                Locate , 23
+                Print Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
             End If
         Next
 
@@ -1288,8 +1290,11 @@ Sub ViewRoster (team$, teamNbr)
 
         For I = 0 To 5:
             If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
-                Color 3: Print wrName$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; wrRecAvg(I) * 3; wrRecept(I)
+                Color 3
+                Print wrName$(I);
+                Color 15
+                Locate , 23
+                Print Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
             End If
         Next
 
@@ -1298,8 +1303,11 @@ Sub ViewRoster (team$, teamNbr)
         Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
         For I = 0 To 3:
             If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
-                Color 3: Print qbName$(I);
-                Color 15: Locate , 21: Print Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
+                Color 3
+                Print qbName$(I);
+                Color 15
+                Locate , 21
+                Print Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
             End If
         Next
 
@@ -1309,22 +1317,29 @@ Sub ViewRoster (team$, teamNbr)
 
         For I = 0 To 2:
             If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
-                Color 3: Print krName$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; krRetAvg(I) * 3; krRet(I)
+                Color 3
+                Print krName$(I);
+                Color 15
+                Locate , 23
+                Print Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
             End If
         Next
 
-        Locate 21: Color 15: Print "HIT ANY KEY TO CONTINUE"
-
+        Locate 23
+        Color 15: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
+
         Cls
         Color 12: Print "PUNT RETURNMEN-"
         Color 14: Print "NAME-              RET AVG     CX%"
 
         For I = 0 To 2:
             If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
-                Color 3: Print prName$(I);
-                Color 15: Locate , 23: Print Using "##       ###"; prRetAvg(I) * 3; prRet(I)
+                Color 3
+                Print prName$(I);
+                Color 15
+                Locate , 23
+                Print Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
             End If
         Next
 
@@ -1334,8 +1349,11 @@ Sub ViewRoster (team$, teamNbr)
 
         For I = 0 To 1:
             If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
-                Color 3: Print pkName$(I);
-                Color 15: Locate , 21: Print Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
+                Color 3
+                Print pkName$(I);
+                Color 15
+                Locate , 21
+                Print Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
             End If
         Next
 
@@ -1347,7 +1365,7 @@ Sub ViewRoster (team$, teamNbr)
         Locate , 21: Print Using "##"; puntAvg(0) * 2 + 28
 
         Do
-            Locate 21
+            Locate 23
             Color 15
             Print "VIEW AGAIN? (Y/N)"
             I$ = GetKeyPress$
@@ -1366,12 +1384,12 @@ End Sub
 'team category before saving the changes.
 Sub CheckContributions
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -1409,8 +1427,8 @@ Sub CheckContributions
         For I = 0 To 9:
             Print Using "## "; I + 1;
             Print " "; rbName$(I); Tab(20);
-            Print Using "     ###"; rushAtt(I)
-            BC% = BC% + rushAtt(I)
+            Print Using "     ###"; rushContrib(I)
+            BC% = BC% + rushContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1427,7 +1445,7 @@ Sub CheckContributions
 
             If I1 <> 10 Then
                 Locate I1 + 4, 24: Print "   "
-                Locate I1 + 4, 24: Input rushAtt(I1)
+                Locate I1 + 4, 24: Input rushContrib(I1)
             Else
                 If BC% <> 100 Then
                     Locate 19: Print "TOTAL IS NOT 100%!"
@@ -1467,8 +1485,8 @@ Sub CheckContributions
 
         For I = 0 To 5
             Print Using "## "; I + 11;
-            Print " "; wrName$(I); Tab(20);: Print Using "      ##"; wrRecept(I)
-            BC% = BC% + wrRecept(I)
+            Print " "; wrName$(I); Tab(20);: Print Using "      ##"; recContrib(I)
+            BC% = BC% + recContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1491,7 +1509,7 @@ Sub CheckContributions
                 If I1 <= 9 Then
                     Input rbRecepts(I1)
                 Else
-                    Input wrRecept(I1 - 10)
+                    Input recContrib(I1 - 10)
                 End If
 
             Else
@@ -1528,8 +1546,8 @@ Sub CheckContributions
         For I = 0 To 3:
             Print Using "## "; I + 1;
             Print " "; qbName$(I); Tab(20);
-            Print Using "     ###"; passAtt(I)
-            BC% = BC% + passAtt(I)
+            Print Using "     ###"; passContrib(I)
+            BC% = BC% + passContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1547,7 +1565,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input passAtt(I1)
+                Input passContrib(I1)
             Else
                 If BC% <> 100 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
@@ -1581,8 +1599,8 @@ Sub CheckContributions
         For I = 0 To 2
             Print Using "## "; I + 1;
             Print " "; krName$(I); Tab(20);
-            Print Using "     ###"; krRet(I)
-            BC% = BC% + krRet(I)
+            Print Using "     ###"; krContrib(I)
+            BC% = BC% + krContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1602,7 +1620,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input krRet(I1)
+                Input krContrib(I1)
 
             Else
 
@@ -1639,8 +1657,8 @@ Sub CheckContributions
         For I = 0 To 2:
             Print Using "## "; I + 1;
             Print " "; prName$(I); Tab(20);
-            Print Using "     ###"; prRet(I)
-            BC% = BC% + prRet(I)
+            Print Using "     ###"; prContrib(I)
+            BC% = BC% + prContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1659,7 +1677,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input prRet(I1)
+                Input prContrib(I1)
 
             Else
 
@@ -1695,8 +1713,8 @@ Sub CheckContributions
         For I = 0 To 1:
             Print Using "## "; I + 1;
             Print " "; pkName$(I); Tab(20);
-            Print Using "     ###"; pkFGPct(I)
-            BC% = BC% + pkFGPct(I)
+            Print Using "     ###"; pkFGContrib(I)
+            BC% = BC% + pkFGContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1715,7 +1733,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input pkFGPct(I1)
+                Input pkFGContrib(I1)
 
             Else
 
@@ -1751,7 +1769,7 @@ Sub CheckContributions
         For I = 0 To 1
             Print Using "## "; I + 1;
             Print " "; pkName$(I); Tab(20);
-            Print Using "     ###"; pkPATPct(I): BC% = BC% + pkPATPct(I)
+            Print Using "     ###"; pkPATContrib(I): BC% = BC% + pkPATContrib(I)
         Next
 
         Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
@@ -1770,7 +1788,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24
                 Print "   "
                 Locate I1 + 4, 24
-                Input pkPATPct(I1)
+                Input pkPATContrib(I1)
 
             Else
 
@@ -1805,12 +1823,12 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -1871,7 +1889,7 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)
-        LSet Q$(I * 5 + 17) = MKI$(rushAtt(I))
+        LSet Q$(I * 5 + 17) = MKI$(rushContrib(I))
         LSet Q$(I * 5 + 18) = MKI$(rushAvg(I))
         LSet Q$(I * 5 + 19) = MKI$(rbRecepts(I))
         LSet Q$(I * 5 + 20) = MKI$(rbRecAvg(I))
@@ -1879,13 +1897,13 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     For I = 0 To 5
         LSet Q$(I * 3 + 66) = wrName$(I)
-        LSet Q$(I * 3 + 67) = MKI$(wrRecept(I))
+        LSet Q$(I * 3 + 67) = MKI$(recContrib(I))
         LSet Q$(I * 3 + 68) = MKI$(wrRecAvg(I))
     Next I
 
     For I = 0 To 3
         LSet Q$(I * 5 + 84) = qbName$(I)
-        LSet Q$(I * 5 + 85) = MKI$(passAtt(I))
+        LSet Q$(I * 5 + 85) = MKI$(passContrib(I))
         LSet Q$(I * 5 + 86) = MKI$(compPct(I))
         LSet Q$(I * 5 + 87) = MKI$(qbIntPct(I))
         LSet Q$(I * 5 + 88) = MKI$(armRating(I))
@@ -1893,13 +1911,13 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     For I = 0 To 2
         LSet Q$(I * 3 + 104) = krName$(I)
-        LSet Q$(I * 3 + 105) = MKI$(krRet(I))
+        LSet Q$(I * 3 + 105) = MKI$(krContrib(I))
         LSet Q$(I * 3 + 106) = MKI$(krRetAvg(I))
     Next I
 
     For I = 0 To 2
         LSet Q$(I * 3 + 113) = prName$(I)
-        LSet Q$(I * 3 + 114) = MKI$(prRet(I))
+        LSet Q$(I * 3 + 114) = MKI$(prContrib(I))
         LSet Q$(I * 3 + 115) = MKI$(prRetAvg(I))
     Next I
 
@@ -1907,14 +1925,14 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     LSet Q$(123) = MKI$(puntAvg(0))
     LSet Q$(124) = RTrim$(pkName$(0))
     LSet Q$(125) = MKI$(pkFGA(0))
-    LSet Q$(126) = MKI$(pkFGPct(0))
+    LSet Q$(126) = MKI$(pkFGContrib(0))
     LSet Q$(127) = MKI$(pkPAT(0))
-    LSet Q$(128) = MKI$(pkPATPct(0))
+    LSet Q$(128) = MKI$(pkPATContrib(0))
     LSet Q$(129) = RTrim$(pkName$(1))
     LSet Q$(130) = MKI$(pkFGA(1))
-    LSet Q$(131) = MKI$(pkFGPct(1))
+    LSet Q$(131) = MKI$(pkFGContrib(1))
     LSet Q$(132) = MKI$(pkPAT(1))
-    LSet Q$(133) = MKI$(pkPATPct(1))
+    LSet Q$(133) = MKI$(pkPATContrib(1))
     LSet Q$(134) = MKI$(YC%)
 
     For I = 0 To 14
@@ -1947,12 +1965,12 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
     stadium$ = ""
     teamAttendance& = 0
 
-    Erase armRating, compPct, passAtt, qbIntPct
-    Erase krRetAvg, krRet, prRetAvg, prRet
+    Erase armRating, compPct, passContrib, qbIntPct
+    Erase krRetAvg, krContrib, prRetAvg, prContrib
     Erase numInts, numSacks
-    Erase pkFGA, pkFGPct, pkPAT, pkPATPct, puntAvg
-    Erase rushAtt, rushAvg, rbRecepts, rbRecAvg
-    Erase wrRecAvg, wrRecept
+    Erase pkFGA, pkFGContrib, pkPAT, pkPATContrib, puntAvg
+    Erase rushContrib, rushAvg, rbRecepts, rbRecAvg
+    Erase wrRecAvg, recContrib
     Erase intName$, sackName$
     Erase krName$, pkName$, prName$, rbName$, wrName$, qbName$
 

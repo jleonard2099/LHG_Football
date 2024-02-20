@@ -1,4 +1,249 @@
 '----------------------------------------
+'       QBName Function
+'----------------------------------------
+'This subroutine gives the user an over-
+'view of all team QB's and their ratings,
+'then lets them choose the QB to be used
+'in the schedule slot. Only the name and
+'index of the target QB is returned.
+'The name will be printed in the schedule
+'overview and the index will be used to
+'determine which QB to use whenever the
+'generated schedule is run.
+Function GetQBName$ (targetGame%, teamIndicator)
+
+    Shared armRating()
+    Shared passContrib(), compPct(), qbIntPct()
+
+    Shared scheduleNG%(), teamRatings%()
+
+    Shared qbName$()
+
+    Color 15, 0
+    Cls
+
+    Call MenuBox (6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+    Locate 7, 11
+
+    Locate , 31
+    Print "SELECT QUARTERBACK"
+    Print
+    Locate , 18: Print "# QB NAME      % OF  COMP  INT"
+    Locate , 18: Print "               ATTS  PCT   PCT  ARM"
+
+    For currQB = 0 To 3:
+
+        If qbName$(currQB) <> "XXX" And qbName$(currQB) <> "END" And qbName$(currQB) <> "" Then
+
+            Locate , 18: Print currQB; "- "; qbName$(currQB);
+            Locate , 33
+
+            If currQB = 0 Then
+                Print passContrib(currQB);
+                Locate , 39: Print compPct(currQB);
+                Locate , 45: Print qbIntPct(currQB);
+                Locate , 50: Print armRating(currQB)
+            Else
+                'Only print extra QB's if they
+                'don't have 100% contribution
+                If passContrib(currQB - 1) < 100 Then
+                    Print Int(passContrib(currQB)) - passContrib(currQB - 1);
+                    Locate , 39: Print compPct(currQB);
+                    Locate , 45: Print qbIntPct(currQB);
+                    Locate , 50: Print armRating(currQB)
+                End If
+            End If
+
+        End If
+
+        Locate , 1
+
+    Next currQB
+
+    Locate , 19: Print "4 - COMPUTER SELECT QUARTERBACK"
+    Print
+    Locate , 19: Print "SELECT (0-4) ";
+    Color 15, 0
+    
+    Do
+        I$ = GetKeyPress$
+        choice = Val(I$)    
+    Loop Until choice >= 0 And choice <= 4
+
+    qbNbr = choice
+
+    If choice <= 3 And scheduleNG%(targetGame%, 3) <> 0 Then
+
+        qbContrib = GetQBRushPct%(qbName$(choice))
+        suggestedMobility = GetQBMobility%(qbContrib)
+
+        Cls
+        Call MenuBox (6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+        Locate 7, 11
+        
+        Locate 8, 16: Print "ENTER "; qbName$(choice); " MOBILITY RATING (1-9)"
+        Locate , 16: Print "(1-LOW, 9-HIGH)"
+        Print
+        Locate , 16: Print "THIS IS HOW OFTEN HE RUNS OUT OF THE POCKET"
+        Locate , 16: Print "SOME QB'S LIKE MARINO & BRADY ALMOST NEVER DO"
+        Locate , 16: Print "OTHERS LIKE MAHOMES & VICK WILL TAKE OFF"
+        Locate , 16: Print "FOR AN AVERAGE QB, SIMPLY ENTER 5"
+        Print
+        Locate , 16: Print "THIS QB CONTRIBUTED"; qbContrib; "% OF TEAM RUNS"
+        Locate , 16: Print "A SUGGESTED VALUE FOR THEM IS"; suggestedMobility
+
+        Color 15, 0
+
+        Do
+            I$ = GetKeyPress$
+            mobility = Val(I$)
+        Loop Until mobility >= 1 And mobility <= 9
+
+    End If
+
+    'teamIndicator = 2 for Visitor, 3 for Home
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 5) = qbNbr
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 6) = mobility
+
+    qbName$(4) = "RANDOM"
+
+    GetQBName$ = qbName$(choice)
+
+End Function
+
+
+'----------------------------------------
+'         GetQBRushPct% Function
+'----------------------------------------
+'This function loops through all of the
+'team rushes to calculate the specific %
+'that the designated QB has contributed
+'This function works specifically with
+'the game utilities.
+Function GetQBRushPct% (targetQB$)
+
+    Shared rushContrib()
+
+    Shared rbName$()
+
+    'Determine a suggested mobility rating
+    previousContrib = 0
+
+    'we need a value in case we don't find the QB
+    qbRushContrib = 0
+
+    For currRB = 0 To 9
+
+        currContrib = rushContrib(currRB)
+
+        'Check for QB as a runner
+        If rbName$(currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            qbRushContrib = currContrib - previousContrib
+
+            Exit For
+
+        End If
+
+        If currContrib <> 0 Then previousContrib = currContrib
+
+    Next
+
+    GetQBRushPct% = qbRushContrib
+
+End Function
+
+
+'----------------------------------------
+'    GetQBRushPctGame% Function
+'----------------------------------------
+'This function loops through all of the
+'team rushes to calculate the specific %
+'that the designated QB has contributed
+'This function works specifically with
+'the game's 2-dimensional arrays that 
+'store values for each team
+Function GetQBRushPctGame% (targetQB$)
+
+    'Determine a suggested mobility rating
+    previousContrib = 0
+
+    'we need a value in case we don't find the QB
+    qbRushContrib = 0
+
+    For currRB = 0 To 9
+
+        currContrib = rbRushContrib(currTeam, currRB)
+
+        'Check for QB as a runner
+        If rbacks$(currTeam, currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            qbRushContrib = currContrib - previousContrib
+
+            Exit For
+
+        End If
+
+        If currContrib <> 0 Then previousContrib = currContrib
+
+    Next
+
+    GetQBRushPctGame% = qbRushContrib
+
+End Function
+
+
+'----------------------------------------
+'        GetQBMobility% Function
+'----------------------------------------
+'This function determines the recommended
+'mobility rating for the quarterback that
+'the user has selected.
+'This rating is based on their contributions
+'to team rushes, but is not necessarily
+'a linear calculation.
+Function GetQBMobility% (qbRushContrib)
+
+    'Suggest a value based on their rushing frequency
+    Select Case qbRushContrib
+
+        Case 0 To 4
+            mobilityRating = 1
+
+        Case 5 To 7
+            mobilityRating = 2
+
+        Case 8 To 10
+            mobilityRating = 3
+
+        Case 11 To 13
+            mobilityRating = 4
+
+        Case 14 To 16
+            mobilityRating = 5
+
+        Case 17 To 19
+            mobilityRating = 6
+
+        Case 20 To 22
+            mobilityRating = 7
+
+        Case 23 To 26
+            mobilityRating = 8
+
+        Case Is >= 27
+            mobilityRating = 9
+
+    End Select
+
+    GetQBMobility% = mobilityRating
+
+End Function
+
+
+'----------------------------------------
 '           QBRating Function
 '----------------------------------------
 'This function calculates the QB rating

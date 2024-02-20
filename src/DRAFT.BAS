@@ -234,12 +234,12 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -264,7 +264,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     For I = 0 To 9
         rbName$(I) = rbNam_DRAFT$(I)
-        rushAtt(I) = rbAtt_DRAFT(I)
+        rushContrib(I) = rbAtt_DRAFT(I)
         rushAvg(I) = rbAvg_DRAFT(I)
         rbRecepts(I) = rbRec_DRAFT(I)
         rbRecAvg(I) = rbRecAvg_DRAFT(I)
@@ -272,13 +272,13 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     For I = 0 To 5
         wrName$(I) = wrNam_DRAFT$(I)
-        wrRecept(I) = wrRec_DRAFT(I)
+        recContrib(I) = wrRec_DRAFT(I)
         wrRecAvg(I) = wrAvg_DRAFT(I)
     Next I
 
     For I = 0 To 3
         qbName$(I) = qbNam_DRAFT$(I)
-        passAtt(I) = qbPA_DRAFT(I)
+        passContrib(I) = qbPA_DRAFT(I)
         compPct(I) = qbPCPct_DRAFT(I)
         qbIntPct(I) = qbIntPct_DRAFT(I)
         armRating(I) = qbArmRat_DRAFT(I)
@@ -286,13 +286,13 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     For I = 0 To 2
         krName$(I) = krNam_DRAFT$(I)
-        krRet(I) = krNumRet_DRAFT(I)
+        krContrib(I) = krNumRet_DRAFT(I)
         krRetAvg(I) = krRetAvg_DRAFT(I)
     Next I
 
     For I = 0 To 2
         prName$(I) = prNam_DRAFT$(I)
-        prRet(I) = prRet_DRAFT(I)
+        prContrib(I) = prRet_DRAFT(I)
         prRetAvg(I) = prRetAvg_DRAFT(I)
     Next I
 
@@ -301,14 +301,14 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     pkName$(0) = pkNam_DRAFT$(0)
     pkFGA(0) = FGA_DRAFT(0)
-    pkFGPct(0) = FGPct_DRAFT(0)
+    pkFGContrib(0) = FGPct_DRAFT(0)
     pkPAT(0) = PAT_DRAFT(0)
-    pkPATPct(0) = PATPct_DRAFT(0)
+    pkPATContrib(0) = PATPct_DRAFT(0)
     pkName$(1) = pkNam_DRAFT$(1)
     pkFGA(1) = FGA_DRAFT(1)
-    pkFGPct(1) = FGPct_DRAFT(1)
+    pkFGContrib(1) = FGPct_DRAFT(1)
     pkPAT(1) = PAT_DRAFT(1)
-    pkPATPct(1) = PATPct_DRAFT(1)
+    pkPATContrib(1) = PATPct_DRAFT(1)
 
     For I = 0 To 14
         sackName$(I) = sackNam_DRAFT$(I)
@@ -415,12 +415,12 @@ Sub DraftChoices (teamName$)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -485,7 +485,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 9: Locate I + 4, 1
                             Print I; " "; rbName$(I); Tab(19);
-                            Print Using "##.#  ###   ##  ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
+                            Print Using "##.#  ###   ##  ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
                             Locate I + 4, 41
                             Print I; " "; rbNam_DRAFT$(I); Tab(59);
                             Print Using "##.#  ###   ##  ###"; rbAvg_DRAFT(I) * .3; rbAtt_DRAFT(I); rbRecAvg_DRAFT(I) * 3; rbRec_DRAFT(I)
@@ -503,7 +503,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 9
 
                             rbName$(P) = rbNam_DRAFT$(P1)
-                            rushAtt(P) = rbAtt_DRAFT(P1)
+                            rushContrib(P) = rbAtt_DRAFT(P1)
                             rushAvg(P) = rbAvg_DRAFT(P1)
                             rbRecepts(P) = rbRec_DRAFT(P1)
                             rbRecAvg(P) = rbRecAvg_DRAFT(P1)
@@ -545,7 +545,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 5:
                             Locate I + 4, 1: Print I; " "; wrName$(I);
-                            Print Tab(17); Using "  ##    ###"; wrRecAvg(I) * 3; wrRecept(I)
+                            Print Tab(17); Using "  ##    ###"; wrRecAvg(I) * 3; recContrib(I)
                             Locate I + 4, 41
                             Print I; " "; wrNam_DRAFT$(I);
                             Print Tab(57); Using "  ##    ###"; wrAvg_DRAFT(I) * 3; wrRec_DRAFT(I)
@@ -562,7 +562,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 5
 
                             wrName$(P) = wrNam_DRAFT$(P1)
-                            wrRecept(P) = wrRec_DRAFT(P1)
+                            recContrib(P) = wrRec_DRAFT(P1)
                             wrRecAvg(P) = wrAvg_DRAFT(P1)
 
                         End If
@@ -601,7 +601,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 3: Locate I + 4, 1
                             Print I; " "; qbName$(I);
-                            Print Tab(17); Using "###  ##  ###  ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
+                            Print Tab(17); Using "###  ##  ###  ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
                             Locate I + 4, 41
                             Print I; " "; qbNam_DRAFT$(I);
                             Print Tab(57); Using "###  ##  ###  ###"; qbPCPct_DRAFT(I); qbIntPct_DRAFT(I); qbArmRat_DRAFT(I); qbPA_DRAFT(I)
@@ -620,7 +620,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 3
 
                             qbName$(P) = qbNam_DRAFT$(P1)
-                            passAtt(P) = qbPA_DRAFT(P1)
+                            passContrib(P) = qbPA_DRAFT(P1)
                             compPct(P) = qbPCPct_DRAFT(P1)
                             qbIntPct(P) = qbIntPct_DRAFT(P1)
                             armRating(P) = qbArmRat_DRAFT(P1)
@@ -662,7 +662,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 2: Locate I + 4, 1
                             Print I; " "; krName$(I);
-                            Print Tab(17); Using "  ##     ###"; krRetAvg(I) * 3; krRet(I)
+                            Print Tab(17); Using "  ##     ###"; krRetAvg(I) * 3; krContrib(I)
                             Locate I + 4, 41
                             Print I; " "; krNam_DRAFT$(I);
                             Print Tab(57); Using "  ##     ###"; krRetAvg_DRAFT(I) * 3; krNumRet_DRAFT(I)
@@ -681,7 +681,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 2
 
                             krName$(P) = krNam_DRAFT$(P1)
-                            krRet(P) = krNumRet_DRAFT(P1)
+                            krContrib(P) = krNumRet_DRAFT(P1)
                             krRetAvg(P) = krRetAvg_DRAFT(P1)
 
                         End If
@@ -722,7 +722,7 @@ Sub DraftChoices (teamName$)
                         For I = 0 To 2
                             Locate I + 4, 1
                             Print I; " "; prName$(I);
-                            Print Tab(17); Using "  ##    ###"; prRetAvg(I) * 3; prRet(I)
+                            Print Tab(17); Using "  ##    ###"; prRetAvg(I) * 3; prContrib(I)
                             Locate I + 4, 41
                             Print I; " "; prNam_DRAFT$(I);
                             Print Tab(57); Using "  ##    ###"; prRetAvg_DRAFT(I) * 3; prRet_DRAFT(I)
@@ -740,7 +740,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 2
 
                             prName$(P) = prNam_DRAFT$(P1)
-                            prRet(P) = prRet_DRAFT(P1)
+                            prContrib(P) = prRet_DRAFT(P1)
                             prRetAvg(P) = prRetAvg_DRAFT(P1)
 
                         End If
@@ -835,7 +835,7 @@ Sub DraftChoices (teamName$)
                         For I = 0 To 1:
                             Locate I + 4, 1
                             Print I; " "; pkName$(I);
-                            Print Tab(17); Using "### ###   ### ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
+                            Print Tab(17); Using "### ###   ### ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
                             Locate I + 4, 41
                             Print I; " "; pkNam_DRAFT$(I);
                             Print Tab(57); Using "### ###   ### ###"; FGA_DRAFT(I) * 5 + 25; FGPct_DRAFT(I); PAT_DRAFT(I); PATPct_DRAFT(I)
@@ -854,9 +854,9 @@ Sub DraftChoices (teamName$)
 
                             pkName$(P) = pkNam_DRAFT$(P1)
                             pkFGA(P) = FGA_DRAFT(P1)
-                            pkFGPct(P) = FGPct_DRAFT(P1)
+                            pkFGContrib(P) = FGPct_DRAFT(P1)
                             pkPAT(P) = PAT_DRAFT(P1)
-                            pkPATPct(P) = PATPct_DRAFT(P1)
+                            pkPATContrib(P) = PATPct_DRAFT(P1)
 
                         End If
 
@@ -894,12 +894,12 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -911,19 +911,19 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     S3 = 0
 
     For I = 0 To 9:
-        S0 = S0 + rushAtt(I)
+        S0 = S0 + rushContrib(I)
         S2 = S2 + rbRecepts(I)
     Next
 
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If rushAtt(I) <> 0 Then rushAtt(I) = Int(S4 * rushAtt(I) + .5) + S1: S1 = rushAtt(I)
-        If rushAtt(I) > 100 Then rushAtt(I) = 100
+        If rushContrib(I) <> 0 Then rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1: S1 = rushContrib(I)
+        If rushContrib(I) > 100 Then rushContrib(I) = 100
     Next I
 
     For I = 0 To 5:
-        S2 = S2 + wrRecept(I)
+        S2 = S2 + recContrib(I)
     Next
 
     S5 = 100 / S2
@@ -934,22 +934,22 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     Next I
 
     For I = 0 To 5:
-        If wrRecept(I) <> 0 Then wrRecept(I) = Int(S5 * wrRecept(I) + .5) + S3: S3 = wrRecept(I)
-        If wrRecept(I) > 100 Then wrRecept(I) = 100
+        If recContrib(I) <> 0 Then recContrib(I) = Int(S5 * recContrib(I) + .5) + S3: S3 = recContrib(I)
+        If recContrib(I) > 100 Then recContrib(I) = 100
     Next I
 
     S6 = 0
     S7 = 0
 
     For I = 0 To 3:
-        S6 = S6 + passAtt(I)
+        S6 = S6 + passContrib(I)
     Next
 
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If passAtt(I) <> 0 Then passAtt(I) = Int(S8 * passAtt(I) + .5) + S7: S7 = passAtt(I)
-        If passAtt(I) > 100 Then passAtt(I) = 100
+        If passContrib(I) <> 0 Then passContrib(I) = Int(S8 * passContrib(I) + .5) + S7: S7 = passContrib(I)
+        If passContrib(I) > 100 Then passContrib(I) = 100
     Next
 
     G0 = 0
@@ -958,21 +958,21 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     G4 = 0
 
     For I = 0 To 2:
-        G0 = G0 + krRet(I)
-        G3 = G3 + prRet(I)
+        G0 = G0 + krContrib(I)
+        G3 = G3 + prContrib(I)
     Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 2:
-        If krRet(I) <> 0 Then krRet(I) = Int(G2 * krRet(I) + .5) + G1: G1 = krRet(I)
-        If krRet(I) > 100 Then krRet(I) = 100
+        If krContrib(I) <> 0 Then krContrib(I) = Int(G2 * krContrib(I) + .5) + G1: G1 = krContrib(I)
+        If krContrib(I) > 100 Then krContrib(I) = 100
     Next
 
     For I = 0 To 2:
-        If prRet(I) <> 0 Then prRet(I) = Int(G5 * prRet(I) + .5) + G4: G4 = prRet(I)
-        If prRet(I) > 100 Then prRet(I) = 100
+        If prContrib(I) <> 0 Then prContrib(I) = Int(G5 * prContrib(I) + .5) + G4: G4 = prContrib(I)
+        If prContrib(I) > 100 Then prContrib(I) = 100
     Next
 
     G0 = 0
@@ -981,50 +981,50 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     G4 = 0
 
     For I = 0 To 1:
-        G0 = G0 + pkFGPct(I)
-        G3 = G3 + pkPATPct(I)
+        G0 = G0 + pkFGContrib(I)
+        G3 = G3 + pkPATContrib(I)
     Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 1:
-        If pkFGPct(I) <> 0 Then pkFGPct(I) = Int(G2 * pkFGPct(I) + .5) + G1: G1 = pkFGPct(I)
-        If pkFGPct(I) > 100 Then pkFGPct(I) = 100
+        If pkFGContrib(I) <> 0 Then pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1: G1 = pkFGContrib(I)
+        If pkFGContrib(I) > 100 Then pkFGContrib(I) = 100
     Next
 
     For I = 0 To 1:
-        If pkPATPct(I) <> 0 Then pkPATPct(I) = Int(G5 * pkPATPct(I) + .5) + G4: G4 = pkPATPct(I)
-        If pkPATPct(I) > 100 Then pkPATPct(I) = 100
+        If pkPATContrib(I) <> 0 Then pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4: G4 = pkPATContrib(I)
+        If pkPATContrib(I) > 100 Then pkPATContrib(I) = 100
     Next
 
     For I = 9 To 0 Step -1:
-        If rushAtt(I) <> 0 Then rushAtt(I) = 100: Exit For
+        If rushContrib(I) <> 0 Then rushContrib(I) = 100: Exit For
     Next
 
     For I = 5 To 0 Step -1:
-        If wrRecept(I) <> 0 Then wrRecept(I) = 100: Exit For
+        If recContrib(I) <> 0 Then recContrib(I) = 100: Exit For
     Next
 
     For I = 3 To 0 Step -1:
-        If passAtt(I) <> 0 Then passAtt(I) = 100: Exit For
+        If passContrib(I) <> 0 Then passContrib(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
-        If krRet(I) <> 0 Then krRet(I) = 100: Exit For
+        If krContrib(I) <> 0 Then krContrib(I) = 100: Exit For
     Next
 
     For I = 2 To 0 Step -1:
 
-        If prRet(I) <> 0 Then prRet(I) = 100: Exit For
+        If prContrib(I) <> 0 Then prContrib(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If pkFGPct(I) <> 0 Then pkFGPct(I) = 100: Exit For
+        If pkFGContrib(I) <> 0 Then pkFGContrib(I) = 100: Exit For
     Next
 
     For I = 1 To 0 Step -1:
-        If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
+        If pkPATContrib(I) <> 0 Then pkPATContrib(I) = 100: Exit For
     Next
 
     X = Int((ydsCompAdj / .3) + .5)
@@ -1074,12 +1074,12 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     Shared leagueRatings%(), teamRatings%()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -1141,7 +1141,7 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)
-        LSet Q$(I * 5 + 17) = MKI$(rushAtt(I))
+        LSet Q$(I * 5 + 17) = MKI$(rushContrib(I))
         LSet Q$(I * 5 + 18) = MKI$(rushAvg(I))
         LSet Q$(I * 5 + 19) = MKI$(rbRecepts(I))
         LSet Q$(I * 5 + 20) = MKI$(rbRecAvg(I))
@@ -1149,13 +1149,13 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     For I = 0 To 5
         LSet Q$(I * 3 + 66) = wrName$(I)
-        LSet Q$(I * 3 + 67) = MKI$(wrRecept(I))
+        LSet Q$(I * 3 + 67) = MKI$(recContrib(I))
         LSet Q$(I * 3 + 68) = MKI$(wrRecAvg(I))
     Next I
 
     For I = 0 To 3
         LSet Q$(I * 5 + 84) = qbName$(I)
-        LSet Q$(I * 5 + 85) = MKI$(passAtt(I))
+        LSet Q$(I * 5 + 85) = MKI$(passContrib(I))
         LSet Q$(I * 5 + 86) = MKI$(compPct(I))
         LSet Q$(I * 5 + 87) = MKI$(qbIntPct(I))
         LSet Q$(I * 5 + 88) = MKI$(armRating(I))
@@ -1163,13 +1163,13 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     For I = 0 To 2
         LSet Q$(I * 3 + 104) = krName$(I)
-        LSet Q$(I * 3 + 105) = MKI$(krRet(I))
+        LSet Q$(I * 3 + 105) = MKI$(krContrib(I))
         LSet Q$(I * 3 + 106) = MKI$(krRetAvg(I))
     Next I
 
     For I = 0 To 2
         LSet Q$(I * 3 + 113) = prName$(I)
-        LSet Q$(I * 3 + 114) = MKI$(prRet(I))
+        LSet Q$(I * 3 + 114) = MKI$(prContrib(I))
         LSet Q$(I * 3 + 115) = MKI$(prRetAvg(I))
     Next I
 
@@ -1179,14 +1179,14 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     LSet Q$(123) = MKI$(puntAvg(0))
     LSet Q$(124) = pkName$(0)
     LSet Q$(125) = MKI$(pkFGA(0))
-    LSet Q$(126) = MKI$(pkFGPct(0))
+    LSet Q$(126) = MKI$(pkFGContrib(0))
     LSet Q$(127) = MKI$(pkPAT(0))
-    LSet Q$(128) = MKI$(pkPATPct(0))
+    LSet Q$(128) = MKI$(pkPATContrib(0))
     LSet Q$(129) = pkName$(1)
     LSet Q$(130) = MKI$(pkFGA(1))
-    LSet Q$(131) = MKI$(pkFGPct(1))
+    LSet Q$(131) = MKI$(pkFGContrib(1))
     LSet Q$(132) = MKI$(pkPAT(1))
-    LSet Q$(133) = MKI$(pkPATPct(1))
+    LSet Q$(133) = MKI$(pkPATContrib(1))
     LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14

@@ -316,7 +316,7 @@ Sub NewSchedule (scheduleFile$)
                     scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
                 Next
 
-                DT$ = "10-01-91"
+                DT$ = "09-01-23"
                 TM$ = "07:30P"
                 Call NewGame(V$, QV$, H$, QH$, YN$, DT$, TM$, NTMS, targetGame%)
 
@@ -643,6 +643,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
 
                 Case 2, 3:
 
+                    teamNbr = 0
                     Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
                     If teamNbr <> 0 Then
@@ -912,6 +913,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                     Case 3, 5
 
+                        T1 = 0
                         Call ChooseTeam(YN$, numberTeams, T1, N$)
 
                         If T1 <> 0 Then
@@ -1562,90 +1564,3 @@ Sub EditBoxscore (boxName$)
     End If
 
 End Sub
-
-
-'----------------------------------------
-'       QBName Function
-'----------------------------------------
-'This subroutine gives the user an over-
-'view of all team QB's and their ratings,
-'then lets them choose the QB to be used
-'in the schedule slot. Only the name and
-'index of the target QB is returned.
-'The name will be printed in the schedule
-'overview and the index will be used to
-'determine which QB to use whenever the
-'generated schedule is run.
-Function GetQBName$ (targetGame%, teamIndicator)
-
-    Shared armRating()
-    Shared passAtt(), compPct(), qbIntPct()
-
-    Shared scheduleNG%()
-
-    Shared qbName$()
-
-    Do
-
-        Cls
-        Print "SELECT QUARTERBACK"
-        Print " # QB NAME    % OF  COMP  INT"
-        Print "              ATTS  PCT   PCT"
-
-        For I1 = 0 To 3:
-
-            If qbName$(I1) <> "XXX" And qbName$(I1) <> "END" And qbName$(I1) <> "" Then
-
-                Print I1; "-"; qbName$(I1);
-                Locate , 14
-
-                If I1 = 0 Then
-                    Print passAtt(I1);
-                Else
-                    'I1 > 0
-                    'Only print extra QB's if they
-                    'don't have 100% contribution
-                    If passAtt(I1 - 1) < 100 Then
-                        Print Int(passAtt(I1)) - passAtt(I1 - 1);
-                    End If
-                End If
-
-                Locate , 20: Print compPct(I1);
-                Locate , 26: Print qbIntPct(I1)
-
-            End If
-
-            Locate , 1
-
-        Next I1
-
-        Print " 4 -COMPUTER SELECT QUARTERBACK"
-
-        Print
-        Locate , 1: Print "SELECT (0-4) ";
-        I$ = GetKeyPress$
-        I2 = Val(I$)
-
-    Loop Until I2 >= 0 And I2 <= 4
-
-    qbNbr = I2
-
-    If scheduleNG%(targetGame%, 3) <> 0 And I2 <= 3 Then
-
-        Do
-            Print "ENTER "; qbName$(I2); " MOBILITY RATING (1-9)"
-            I$ = GetKeyPress$
-            mobility = Val(I$)
-        Loop Until mobility >= 1 And mobility <= 9
-
-    End If
-
-    'teamIndicator = 2 for Visitor, 3 for Home
-    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 5) = qbNbr
-    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 6) = mobility
-    qbName$(4) = "RANDOM"
-
-    GetQBName$ = qbName$(I2)
-
-End Function
-
