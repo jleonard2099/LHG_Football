@@ -1065,7 +1065,9 @@ Sub TickerSchedule ()
 
     If schedGame(2) <= 32 Then
 
-        For X = 0 To 1: SX$(schedGame(2) + 1, X) = gameTeams$(X): Next
+        For X = 0 To 1: 
+            SX$(schedGame(2) + 1, X) = gameTeams$(X)
+        Next
 
         Open "TICKER" For Output As #1
 
@@ -2066,7 +2068,19 @@ End Sub
 Sub QBSNEAK ()
 
     ' *** QB SNEAK ***
-    pbpString$ = qbacks$(P1, qbNumber(P1)) + " KEEPS IT ON THE SNEAK"
+    brotherlyShove = 0
+
+    If qbacks$(P1, qbNumber(P1)) = "J.HURTS" And (gameTeams$(P1) = "22 PHILADELPHIA" Or gameTeams$(P1) = "23 PHILADELPHIA") then
+        brotherlyShove = 1
+        pbpString$ = gameTeams$(P1) + " LINES UP FOR THE BROTHERLY SHOVE!"
+        Call PBP
+    End If
+    
+    If brotherlyShove = 1 then
+        pbpString$ = qbacks$(P1, qbNumber(P1)) + " CHARGES FORWARD WITH SOME HELP FROM HIS LINE."
+    Else
+        pbpString$ = qbacks$(P1, qbNumber(P1)) + " KEEPS IT ON THE SNEAK"
+    End If
 
     Call PBP
 
@@ -4484,11 +4498,11 @@ End Sub
 
 
 '----------------------------------------
-'         Kickoff_Pro Subroutine
+'         KOChoices_NoDefer Subroutine
 '----------------------------------------
 'This subroutine gives the user choices
 'to handle a pro kick off.
-Sub Kickoff_Pro ()
+Sub KOChoices_NoDefer ()
 
     Call SCOREBOARD
 
@@ -4581,14 +4595,14 @@ End Sub
 
 
 '----------------------------------------
-'         Kickoff_College Subroutine
+'         KOChoices_Defer Subroutine
 '----------------------------------------
 'This subroutine gives the user choices
 'to handle a college kick off.
-Sub Kickoff_College ()
+Sub KOChoices_Defer ()
 
     If quarter > 2 Then
-        Call Kickoff_Pro
+        Call KOChoices_NoDefer
     Else
 
         Call SCOREBOARD
@@ -4686,7 +4700,7 @@ Sub Kickoff_College ()
             Case 5
                 Swap P1, D
                 winTeam = P1
-                Call Kickoff_Pro
+                Call KOChoices_NoDefer
 
         End Select
 
@@ -4757,12 +4771,12 @@ End Sub
 
 
 '----------------------------------------
-'          PUNTYARDS Subroutine
+'          PuntReturnYards Subroutine
 '----------------------------------------
 'This subroutine handles the calculations
 'for punt yardage and who receives the
 'punt.
-Sub PUNTYARDS ()
+Sub PuntReturnYards ()
 
     'Call d100(I3)
     ydLine = ydLine + ydsGained
@@ -4852,11 +4866,11 @@ End Sub
 
 
 '----------------------------------------
-'          FAKEYARDS Subroutine
+'          KickFakeYards Subroutine
 '----------------------------------------
 'This subroutine handles yardage gains and
 'Play-by-Play text for a fake play.
-Sub FAKEYARDS (choice)
+Sub KickFakeYards (choice)
 
     pbpString$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL"
     Call PBP
@@ -6328,11 +6342,11 @@ End Sub
 
 
 '----------------------------------------
-'           KICKSET Subroutine
+'           KickoffDistance Subroutine
 '----------------------------------------
 'This subroutine handles the setup for a
 'kick off by handling Play-by-Play
-Sub KICKSET ()
+Sub KickoffDistance ()
 
     pbpString$ = kicker$(P1, activeKicker(P1)) + " IS PLACING THE BALL ON THE TEE"
     Call PBP
@@ -9064,14 +9078,32 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
             If I$ <> Chr$(13) Then
 
-                Locate 8, 27: Print I$
-                Locate 8, 28: Line Input NY$
-                NY$ = I$ + NY$
-                Color 15, 0
+                Locate 7, 27: Print I$;
 
-                If Not (NY$ = "" And yearNumber$ <> "") Then
+                NY$ = ""
 
-                    yearNumber$ = RTrim$(NY$)
+                Do Until NY$ = Chr$(13)
+
+                    NY$ = GetKeyPress$
+
+                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
+                        col% = Pos(0)
+                        I$ = Left$(I$, (Len(I$) - 1))
+                        Locate , col% - 1
+                        Print " ";
+                        Locate , col% - 1
+                    Else
+                        I$ = I$ + NY$
+                        Print NY$;
+                    End If
+
+                Loop
+
+                I$ = Left$(I$, (Len(I$) - 1))
+
+                If Not (I$ = "" And yearNumber$ <> "") Then
+
+                    yearNumber$ = RTrim$(I$)
                     Erase teamNames$
                     numberTeams = 0
 

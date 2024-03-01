@@ -22,8 +22,9 @@ Sub EditStats ()
 
     Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$(), statsPK$()
 
-    'Call GetTeam_EditStats (T1$, YN$, D)
+    teamNbr = 0
     Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+
     statFile$ = nameStatFile$(team$)
 
     If Not _FileExists(diskPaths$(1) + statFile$) Then

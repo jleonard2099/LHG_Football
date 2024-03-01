@@ -104,7 +104,7 @@ Sub MergeStats ()
 
         If UCase$(I$) = "N" And I$ <> Chr$(27) Then
 
-            'Call GetDiskID_MERGE(A$)
+            teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 			statFile$ = nameStatFile$(team$)
 

@@ -266,7 +266,7 @@ Sub ReviewEditLeague (league$, div1$, div2$, div3$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATLEAG(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    teamNbr = 0
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team

@@ -252,7 +252,7 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATCON(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    teamNbr = 0
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team

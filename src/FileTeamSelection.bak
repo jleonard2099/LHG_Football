@@ -51,32 +51,14 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
             If I$ <> Chr$(13) Then
 
-                Locate 7, 27: Print I$;
+                Locate 7, 27: Print I$
+                Locate 7, 28: Line Input NY$
+                NY$ = I$ + NY$
+                Color 15, 0
 
-                NY$ = ""
+                If Not (NY$ = "" And yearNumber$ <> "") Then
 
-                Do Until NY$ = Chr$(13)
-
-                    NY$ = GetKeyPress$
-
-                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
-                        col% = Pos(0)
-                        I$ = Left$(I$, (Len(I$) - 1))
-                        Locate , col% - 1
-                        Print " ";
-                        Locate , col% - 1
-                    Else
-                        I$ = I$ + NY$
-                        Print NY$;
-                    End If
-
-                Loop
-
-                I$ = Left$(I$, (Len(I$) - 1))
-
-                If Not (I$ = "" And yearNumber$ <> "") Then
-
-                    yearNumber$ = RTrim$(I$)
+                    yearNumber$ = RTrim$(NY$)
                     Erase teamNames$
                     numberTeams = 0
 
@@ -113,7 +95,7 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
                         Close #1
 
                         previousYear$ = yearNumber$
-
+                        
                     End If 'Done checking if file exists
 
                 End If 'Done checking for blank year number
@@ -161,11 +143,11 @@ End Sub
 '----------------------------------------
 '          SelectTeam Subroutine
 '----------------------------------------
-'Presents selection menu of all teams
-' found in the target "disk" file.
-'The focus of this routine is confirming
-' a team choice. It then relies on
-' another subroutine to read in data
+'Presents selection menu of all teams 
+' found in the target "disk" file. 
+'The focus of this routine is confirming 
+' a team choice. It then relies on 
+' another subroutine to read in data 
 ' from the selected team.
 Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 
@@ -216,8 +198,8 @@ End Sub
 '----------------------------------------
 '           ReadTeam Subroutine
 '----------------------------------------
-'Reads in all data for the selected team,
-' given it's index in the team file.
+'Reads in all data for the selected team, 
+' given it's index in the team file. 
 'This routine is highly customized TO
 ' the specific game for which it has
 ' been included for.
@@ -228,7 +210,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
     Shared mascot$, teamNick$
 
     Shared leagueRatings%(), teamRatings%()
-
+    
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
     Shared passContrib(), compPct(), qbIntPct()
@@ -242,7 +224,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
     Shared qbName$(), rbName$()
     Shared sackName$(), wrName$()
 
-    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
+    Open diskPaths$(0) +  TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
     Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
 
@@ -285,11 +267,11 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
     targetTeam$ = RTrim$(Q$(1))
     mascot$ = RTrim$(Q$(2))
 
-    For I = 0 To 7:
+    For I = 0 To 7: 
         leagueRatings%(I) = CVI(Q$(I + 3))
     Next I
 
-    For I = 0 To 4:
+    For I = 0 To 4: 
         teamRatings%(I) = CVI(Q$(I + 11))
     Next I
 
@@ -398,8 +380,8 @@ End Sub
 '----------------------------------------
 '        ReadExtraData Subroutine
 '----------------------------------------
-'Reads in extra data for the selected team,
-' given it's index in the team file.
+'Reads in extra data for the selected team, 
+' given it's index in the team file. 
 'This extra file usually includes info.
 ' related to stadiums, coaches, etc.
 'This routine is highly customized TO
@@ -410,16 +392,16 @@ Sub ReadExtraData (teamYear$, teamIdx)
     Shared teamAttendance&
 
     Shared stadium$, Z$
-
+    
     If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
 
-        MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
-        BoxWidth = 20
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
+		MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
+		BoxWidth = 20
+		BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+		Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+		Call CSMsgBox(MsgText$, BoxWidth, Pass)
+		I$ = GetKeyPress$
+		Call CSMsgBox("", 0, Pass)
 
     Else
 
@@ -435,7 +417,7 @@ Sub ReadExtraData (teamYear$, teamIdx)
 
         Close #2
 
-        If Z$ <> "x" Then
+        If Z$ <> "x" Then 
             stadium$ = ""
             teamAttendance& = 0
         End If
@@ -448,7 +430,7 @@ End Sub
 '----------------------------------------
 '         nameStatFile$ Function
 '----------------------------------------
-'Helps create uniquely named file to
+'Helps create uniquely named file to 
 ' store a team's stats.
 '
 'There are 2 main changes done in order
@@ -460,10 +442,10 @@ End Sub
 Function nameStatFile$ (teamName$)
 
     teamPrefix$ = teamName$
-
+    
     For XX = 4 To 11
 
-        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then
+        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then 
             Mid$(teamPrefix$, XX, 1) = "_"
         End If
 
@@ -471,7 +453,7 @@ Function nameStatFile$ (teamName$)
 
     For XX = 12 To 14
 
-        If Mid$(teamPrefix$, XX, 2) = "ST" Then
+        If Mid$(teamPrefix$, XX, 2) = "ST" Then 
             Mid$(teamPrefix$, 9, 1) = "_"
             Mid$(teamPrefix$, 10, 2) = "ST"
         End If
@@ -501,15 +483,15 @@ End Function
 'Shows user a file selection menu, based
 ' on the file spec parameter passed.
 '
-'fileSpec$ - file specification to load
+'fileSpec$ - file specification to load 
 '            should include base path.
 '
 ' EXAMPLE - C:\Temp\*.tmp
 '
-'fileDesc$ - brief description of the
+'fileDesc$ - brief description of the 
 '            type of file
 '
-' RETURNS - base name of chosen file
+' RETURNS - base name of chosen file 
 '            (that is, without extension)
 Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
 
@@ -534,8 +516,8 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
             ReDim foundFiles$(0 To Count%)
 
             'For X = 1 To Count%
-            '8 char's filename + 4 char's (. + ext)
-            'foundFiles$(X) = Space$(12)
+                '8 char's filename + 4 char's (. + ext)
+                'foundFiles$(X) = Space$(12)
             'Next
 
             foundFiles$(0) = fileSpec$
@@ -544,7 +526,7 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
             Do
 
                 XCoord = Int((80 - (descLength + 12)) / 2)
-
+                
                 Color , 1
                 Cls
                 Locate , XCoord
@@ -578,7 +560,7 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
 
                     Color 15, 1
                     targetFile$ = RTrim$(foundFiles$(Selection%))
-                    XCoord = Int((80 - Len(targetFile$)) / 2)
+                    XCoord = Int((80 - Len(targetFile$))/2)
                     Locate 2, XCoord
                     Print targetFile$
 
@@ -604,5 +586,4 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
     End If
 
 End Function
-
 

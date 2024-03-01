@@ -60,6 +60,7 @@ Sub MergeCareerFiles ()
 
         If ExitCode% <> 27 And ExitCode% <> 0 Then
 
+            teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
             statFile$ = nameStatFile$(team$)
 

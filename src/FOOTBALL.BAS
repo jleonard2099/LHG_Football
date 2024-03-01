@@ -587,9 +587,9 @@ Sub FOOTBALL ()
 
     330 '
     If ruleOptType <> 0 Then
-        Call Kickoff_Pro
+        Call KOChoices_NoDefer
     Else
-        Call Kickoff_College
+        Call KOChoices_Defer
     End If
 
     340 '
@@ -671,7 +671,7 @@ Sub FOOTBALL ()
     Select Case kickChoice
 
         Case 0
-            Call KICKSET
+            Call KickoffDistance
             'kickYL represents yard line where kick lands
 
             If kickYL <= -9.99 Then
@@ -2979,7 +2979,7 @@ Sub FOOTBALL ()
 
                         Else
 
-                            Call FAKEYARDS(choice)
+                            Call KickFakeYards(choice)
 
                             If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then 3200
                             If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then 3250
@@ -3204,7 +3204,7 @@ Sub FOOTBALL ()
 
                     Else
 
-                        Call PUNTYARDS
+                        Call PuntReturnYards
 
                         If ydsGained + ydLine >= 99.99 Then
 

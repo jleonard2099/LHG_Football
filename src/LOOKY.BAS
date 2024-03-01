@@ -35,24 +35,31 @@ Sub LOOKY ()
 
         If UCase$(I$) = "C" Or UCase$(I$) = "P" Then
 
-            'Call GetDisk_LOOKY(numberTeams, YN$, A$)
+            teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
-            statFile$ = nameStatFile$(team$)
 
-            If Not _FileExists(diskPaths$(1) + statFile$) Then
+            If teamNbr > 0 Then
 
-                MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
-                BoxWidth = 24
-                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-                Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                I$ = GetKeyPress$
-                Call CSMsgBox("", 0, Pass)
+                Color 15, 0
 
-            Else
+                statFile$ = nameStatFile$(team$)
 
-                Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
-                Call ViewStatSummary(team$, totalGames%, statFormat, teamPower, SS)
+                If Not _FileExists(diskPaths$(1) + statFile$) And teamNbr > 0 Then
+
+                    MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                    BoxWidth = 24
+                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                    I$ = GetKeyPress$
+                    Call CSMsgBox("", 0, Pass)
+
+                Else
+
+                    Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
+                    Call ViewStatSummary(team$, totalGames%, statFormat, teamPower, SS)
+
+                End If
 
             End If
 

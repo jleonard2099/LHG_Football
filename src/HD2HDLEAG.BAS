@@ -80,6 +80,7 @@ Sub Hd2HdPro_League (X2)
 
             Do
 
+                teamNbr = 0
                 Call ChooseTeam(YN$, NTMS, teamNbr, team$)
                 statFile$ = nameStatFile$(team$)
 
