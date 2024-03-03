@@ -332,14 +332,15 @@ Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, chosenPlay, coverage, compTeam, CP, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
+Dim Shared fieldSide, firstDownClockOpt
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I, J
 
-Dim Shared isOT, JJ, K3, fieldSide, firstDownClockOpt
-Dim Shared kickYL, playSegment, overtimeOpt, nbrScores
+Dim Shared isOT, JJ, K3
+Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
 Dim Shared penaltyYds, playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
@@ -376,7 +377,7 @@ Dim Shared PC%, PS%
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
-Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
+Dim Shared adjF0(4), adjF1(4)
 Dim Shared brkawayYds(38, 4), climate(6)
 'Climate array
 'index 0 = wind direction
@@ -387,19 +388,24 @@ Dim Shared brkawayYds(38, 4), climate(6)
 'index 5 =
 'index 6 =
 
+Dim Shared gameAF!(1, 1, 0 To 4), gameAM!(1, 1, 0 To 4)
+Dim Shared gameLC!(1, 20), gameLF!(1, 1), gameLI!(1, 0 To 9), gameLK!(1, 0 To 2), gameLP!(1, 0 To 3), gameLR!(1, 0 To 9)
+Dim Shared gamePK!(0 To 1, 0 To 2)
+Dim Shared gameZ0!(0 To 38), gameZ1!(0 To 38), gameZ2!(0 To 13, 0 To 17)
+
+
 Dim Shared activeKicker(1)
 Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
 Dim Shared FA(1, 1, 4), FM(1, 1, 4)
 Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
-Dim Shared gameZ(0 To 38), gameZ1(0 To 38), gameZ2(0 To 13, 0 To 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
 Dim Shared K1(50, 6), K3(1, 6)
 Dim Shared hasRunFF(1), playerInts(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
-Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
+Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1)
-Dim Shared passCovAdj(3, 10, 11), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
+Dim Shared passCovAdj(3, 10, 11), penaltyYds(2), playerSacks(1, 14)
 Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
@@ -489,8 +495,8 @@ Next
 Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,RUSING TOUCHDOWNS,LONGEST RUN
 Data RECEPTIONS,RECEIVING YARDS,RECEIVING AVERAGE,RECEIVING TOUCHDOWNS,LONGEST RECEPTION
 Data PASS ATTEMPTS,PASS COMPLETIONS,INTERCEPTIONS,PASSING YARDS,TOUCHDOWN PASSES,COMPLETION PERCENTAGE,AVERAGE YDS/COMP.,QUARTERBACK RATING,LONGEST PASS
-Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF Return
-Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT Return
+Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF RETURN
+Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT RETURN
 Data PUNTS,PUNTING YARDS,AVERAGE PER PUNT
 Data F.G.'s MADE,F.G. ATTEMPTS,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST s
 Data INTERCEPTIONS,SACKS
@@ -1756,8 +1762,8 @@ Sub NewSchedule (scheduleFile$)
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
                 NS% = Int((targetGame% - 1) / 20)
 
-                boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
-                'boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+                'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
 
                 Call EditBoxscore(boxName$)
                 Color 15, 0
@@ -1876,16 +1882,16 @@ Sub NewSchedule (scheduleFile$)
                     scheduleNG%(I, 13) = 0
                 Next
 
-            Case Chr$(0) + "Q":
-                ' *** PAGE DOWN ***
+            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(73)
+                ' *** PAGE DOWN | RIGHT ARROW ***
                 If NS% >= BS% Then
                     NS% = BS%
                 Else
                     NS% = NS% + 1
                 End If
 
-            Case Chr$(0) + "I":
-                ' *** PAGE UP ***
+            Case Chr$(0) + Chr$(73), Chr$(0) + Chr$(75)
+                ' *** PAGE UP | LEFT ARROW ***
                 If NS% <> 0 Then
                     NS% = NS% - 1
                 End If
@@ -2547,35 +2553,32 @@ Sub BoxscoreMaintenance ()
                     Call EditParameters
 
                 Case 2:
-                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
-                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
 
                     If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
                         boxName$ = diskPaths$(1) + boxscoreFile$
-                        Call EditBoxscore(boxName$ + ".SPC")
+                        Call EditBoxscore(boxName$ + ".BSS")
+                        'Call EditBoxscore(boxName$ + ".SPC")
                     End If
 
                 Case 3
-                    Spec$ = diskPaths$(1) + "BOX*."
-                    'Spec$ = diskPaths$(1) + "*.BS"
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 4
                     Spec$ = diskPaths$(1) + "*.BSS"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "*.SPC"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 5:
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(Selection%, Spec$)
+
                     Spec$ = diskPaths$(1) + "*.BSS"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "*.SPC"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "BOX*."
-                    'Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
 
             End Select
@@ -3699,7 +3702,7 @@ Sub FOOTBALL ()
         '_Delay 2
         'End If
 
-        'Open "pbplog" + Str$(currGame) For Append As #11
+        Open "pbplog" + Str$(currGame) For Append As #11
         'Open "runlog" For Append As #11
 
         'Read in schedule options
@@ -3727,7 +3730,7 @@ Sub FOOTBALL ()
 
     Else
 
-        'Open "pbplog" For Append As #11
+        Open "pbplog" For Append As #11
 
     End If
 
@@ -4352,6 +4355,7 @@ Sub FOOTBALL ()
                     'Touchback will auto-change possession
                     Call CHANGEPOSS
                     Call Touchback
+                    Print #11, "TOUCHBACK - Kickoff, Automatic"
                     kickNotReturned = 1
 
                 Else
@@ -4401,6 +4405,7 @@ Sub FOOTBALL ()
                             'Touchback will auto-change possession
                             Call CHANGEPOSS
                             Call Touchback
+                            Print #11, "TOUCHBACK, Kickoff, Downed"
                             kickNotReturned = 1
 
                         Else
@@ -4440,24 +4445,30 @@ Sub FOOTBALL ()
                     Case Is <= 8
 
                         Select Case RN0
+
                             Case 1 To 5
                                 'Kick return for TD - 0.5% chance
                                 ydsGained = 110
+
                             Case 6 To 20 '1.5% chance
                                 '45 to 65 yds + (-21 to to 3 yds); based on KR's avg - 7
                                 ydsGained = Int((Rnd(1) * 21) + 45) + (krYdsPerRet(P1, I1) - 7) * 3
+
                             Case 21 To 70 '5% chance
                                 '25 to 45 ys + (-21 to to 3 yds); based on KR's avg - 7
                                 ydsGained = Int((Rnd(1) * 21) + 25) + (krYdsPerRet(P1, I1) - 7) * 3
+
                             Case Is >= 71 '93% chance
                                 '15 to 25 yds  + (-21 to to 3 yds); based on KR's avg - 7
                                 ydsGained = Int((Rnd(1) * 10) + 15) + (krYdsPerRet(P1, I1) - 7) * 3
+
                         End Select
 
                     Case 9
 
-                        If RN0 <= 50 Then
-                            'Kick return for TD - 5% chance
+                        'If RN0 <= 50 Then
+                        If RN0 <= 12 Then
+                            'Kick return for TD - 1% chance
                             ydsGained = 110
                         Else
                             '15 to 33 yds
@@ -4466,8 +4477,9 @@ Sub FOOTBALL ()
 
                     Case Is >= 10
 
-                        If RN0 <= 80 Then
-                            'Kick return for TD - 8% chance
+                        'If RN0 <= 80 Then
+                        If RN0 <= 20 Then
+                            'Kick return for TD - 2% chance
                             ydsGained = 110
                         Else
                             '15 to 33 yds + (3 yds / int value of return average > 10)
@@ -4504,6 +4516,7 @@ Sub FOOTBALL ()
                     'Returner didn't make it out of the endzone
                     Call CHANGEPOSS
                     Call Touchback
+                    Print #11, "TOUCHBACK, Kickoff, Nowhere"
 
                 Else
 
@@ -6233,13 +6246,6 @@ Sub FOOTBALL ()
                 End If
 
                 ydsGained = Int(Rnd(1) * qbRushMax)
-                'If ydsGained < 0 Then
-                '    Print #11, qbacks$(P1, qbNumber(P1)) + " RUNS FOR "; ydsGained
-                '    Print #11, "Mobility = "; qbMobility(P1)
-                '    Print #11, "QB Average = "; I6
-                '    Print #11, "Max Yards = "; qbRushMax
-                '    Print #11, "Special Gain = "; specialGain
-                'End If
                 Call YARDAGE
 
                 startYds = 100 - ydLine
@@ -9516,15 +9522,21 @@ Sub InitVar ()
     Erase wrNumRec, wrYdsPerC, ydsPerComp
 
 
-    Erase AF, AM, defInts, defSacks
+    Erase defInts, defSacks
     Erase FA, FM
-    Erase gameLongFG, sackStatsPlayer, gameStatsTeam, gameStatsPlayer
-    Erase gameZ, gameZ1, gameZ2
+    Erase sackStatsPlayer, gameStatsTeam, gameStatsPlayer
+    Erase gameLongFG
     Erase K1, K3
     Erase gameInts, hasRunFF, playerInts, IR
     Erase kickReturners
-    Erase LC, LF, LI, LK, LP, LR
-    Erase nbrPossOT, PK, puntReturners
+
+
+    Erase gameAF!, gameAM!
+    Erase gameZ0!, gameZ1!, gameZ2!
+    Erase gameLC!, gameLF!, gameLI!, gameLK!, gameLP!, gameLR!
+    Erase gamePK!
+
+    Erase nbrPossOT, puntReturners
 
     Erase oppScore, powerRating, teamScore
 
@@ -16040,17 +16052,85 @@ Sub KickoffDistance ()
 
     Call d100(RN0)
 
+    'Return rates sourced from internet
+    'https://theathletic.com/4552820/2023/05/25/nfl-kickoff-rules-changes/
+    'https://fivethirtyeight.com/features/why-are-we-still-returning-kicks-in-college-football/
+
     'Determine kickoff yardage based on game "era"
-    'Select Case teamYears((1))
+    If ruleOptType = 1 Then
 
+        Select Case ruleOptPro
+        
+            Case 0 to 1
+                'Prior to 1974, the NFL had a kick line at the 40
+                'They had a return rate of 75%
+                returnRate = 75
 
-    'End Select
+            Case 2 to 3
+                'In 1974, the NFL moved the kick line to the 35.
+                'They had a return rate of 92%
+                returnRate = 92
+            
+            Case 4 to 5
+                'In 1994, the NFL moved the kick line to the 30.
+                'They had a return rate up to 88%
+                returnRate = 88
+                
+            Case 6 to 9
+                'In 2011, the NFL moved the kick line to the 35.
+                'They also eliminated running starts. 
+                'Return rates fell to nearly 50%
+                returnRate = 50
 
-    If RN0 <= 88 Then
-        '88% chance of kick travelling 55 to 67 yds
+        End Select
+
+    End If
+
+    If ruleOptType = 0 Then
+
+        Select Case ruleOptColl
+
+            Case 0 to 1
+                'Return rates based on NFL,
+                'since there is no public data 
+                'that I have found
+                returnRate = 75
+            
+            Case 2 to 6
+                'Return rates based on NFL,
+                'since there is no public data 
+                'that I have found
+                returnRate = 88
+
+            Case 7 to 8
+                '1992 - 2007
+                returnRate = 60
+            
+            Case 9
+                '2008 - 2011
+                returnRate = 76
+                
+            Case 10 to 11
+                '2012 - 2017
+                returnRate = 58
+                
+            'In between here the return rate fell to 51%
+            
+            Case 11
+                '2018+
+                returnRate = 40
+
+        End Select
+
+    End If
+
+    If RN0 <= returnRate Then
+        'Kick will travel 55 to 67 yds
+        'that is, outside the end zone (returnable)
         kickYL = 100 - (ydLine + Int(Rnd(1) * 13) + 55 + goalPostAdj)
     Else
-        '12% chance of kick travelling 68 to 75 yds
+        'Kick will travel 68 to 75 yds
+        'that is, inside the end zone (not returnable)
         kickYL = 100 - (ydLine + Int(Rnd(1) * 8) + 68 + goalPostAdj)
     End If
 
@@ -16068,6 +16148,9 @@ Sub KickoffDistance ()
         'Wind direction favors kicking team for -3 to 3 yards
         kickYL = kickYL + Int(Rnd(1) * 7) - 3 + climate(1)
     End If
+
+    kickDist = 100 - ydLine - kickYL
+    Call pbplog(16088)
 
 End Sub
 
@@ -16735,8 +16818,8 @@ Sub FoundSpecial (specialCount, specialStat)
 
     'Get count of SPC files to determine
     'number to assign next one
-    'Spec$ = diskPaths$(1) + "*.BSS"
-    Spec$ = diskPaths$(1) + "*.SPC"
+    Spec$ = diskPaths$(1) + "*.BSS"
+    'Spec$ = diskPaths$(1) + "*.SPC"
     specialCount = FileCount%(Spec$)
     specialCount = specialCount + 1
     specialStat = 1
@@ -16817,8 +16900,8 @@ Sub POSTGAME ()
     'If we had special events
     If specialStat = 1 Then
 
-        boxName$ = "BOX" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".SPC"
-        'boxName$ = "BOXSCORE" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".BSS"
+        boxName$ = "BOXSCORE" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".BSS"
+        'boxName$ = "BOX" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".SPC"
 
         'Append special events
         'Call BOX2SPC(boxName$)
@@ -16868,14 +16951,14 @@ Sub BOXOPTIONS (outputChoice)
                 'File = prompt | auto-create
                 If autoPlay <> 1 Then
                     Cls
-                    Print "ENTER 8-CHARACTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
+                    Print "ENTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
                     Input boxName$
-                    boxName$ = boxName$ + ".SPC"
-                    'boxName$ = boxName$ + ".BSS"
+                    boxName$ = boxName$ + ".BSS"
+                    'boxName$ = boxName$ + ".SPC"
                 Else
                     'ScheduleName_GameXXX.BS
-                    boxName$ = "BOX" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2))))
-                    'boxName$ = Mid$(scheduleFile$, 1, Len(scheduleFile$) - 4) + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
+                    boxName$ = Mid$(scheduleFile$, 1, Len(scheduleFile$) - 4) + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
+                    'boxName$ = "BOX" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2))))
                 End If
 
             End If
@@ -18211,16 +18294,16 @@ Sub COMPILESTATFILES (teamIdx)
 
         For J = 0 To 13:
             For K = 0 To 17:
-                Input #1, gameZ2(J, K)
+                Input #1, gameZ2!(J, K)
             Next
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ(L)
+            Input #1, gameZ0!(L)
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ1(L)
+            Input #1, gameZ1!(L)
         Next
 
         For J = 0 To 9
@@ -18238,46 +18321,46 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For I = 0 To 9:
-            Input #1, LR(teamIdx, I)
+            Input #1, gameLR!(teamIdx, I)
             Input #1, gameLR$(teamIdx, I, 0)
             Input #1, gameLR$(teamIdx, I, 1)
         Next
 
         For I = 0 To 15:
-            Input #1, LC(teamIdx, I)
+            Input #1, gameLC!(teamIdx, I)
             Input #1, gameLC$(teamIdx, I, 0)
             Input #1, gameLC$(teamIdx, I, 1)
         Next
 
         For I = 0 To 3:
-            Input #1, LP(teamIdx, I)
+            Input #1, gameLP!(teamIdx, I)
             Input #1, tradeLP$(teamIdx, I, 0)
             Input #1, tradeLP$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, LK(teamIdx, I)
+            Input #1, gameLK!(teamIdx, I)
             Input #1, tradeLK$(teamIdx, I, 0)
             Input #1, tradeLK$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, PK(teamIdx, I)
+            Input #1, gamePK!(teamIdx, I)
             Input #1, gamePK$(teamIdx, I, 0)
             Input #1, gamePK$(teamIdx, I, 1)
         Next
 
         For I = 0 To 1:
-            Input #1, LF(teamIdx, I)
+            Input #1, gameLF!(teamIdx, I)
             Input #1, tradeLF$(teamIdx, I)
             For I1 = 0 To 4:
-                Input #1, AM(teamIdx, I, I1)
-                Input #1, AF(teamIdx, I, I1)
+                Input #1, gameAM!(teamIdx, I, I1)
+                Input #1, gameAF!(teamIdx, I, I1)
             Next
         Next
 
         For I = 0 To 9:
-            Input #1, LI(teamIdx, I)
+            Input #1, gameLI!(teamIdx, I)
             Input #1, tradeLI$(teamIdx, I, 0)
             Input #1, tradeLI$(teamIdx, I, 1)
         Next
@@ -18287,148 +18370,148 @@ Sub COMPILESTATFILES (teamIdx)
     End If
 
     For I = 0 To 9
-        If runBacks(teamIdx, I) > LR(teamIdx, I) Then
-            LR(teamIdx, I) = runBacks(teamIdx, I)
+        If runBacks(teamIdx, I) > gameLR!(teamIdx, I) Then
+            gameLR!(teamIdx, I) = runBacks(teamIdx, I)
             gameLR$(teamIdx, I, 0) = gameRB$(teamIdx, I)
             gameLR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If IR(teamIdx, I) > LI(teamIdx, I) Then
-            LI(teamIdx, I) = IR(teamIdx, I)
+        If IR(teamIdx, I) > gameLI!(teamIdx, I) Then
+            gameLI!(teamIdx, I) = IR(teamIdx, I)
             tradeLI$(teamIdx, I, 0) = gameIR$(teamIdx, I)
             tradeLI$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 15
-        If WR(teamIdx, I) > LC(teamIdx, I) Then
-            LC(teamIdx, I) = WR(teamIdx, I)
+        If WR(teamIdx, I) > gameLC!(teamIdx, I) Then
+            gameLC!(teamIdx, I) = WR(teamIdx, I)
             gameLC$(teamIdx, I, 0) = gameWR$(teamIdx, I)
             gameLC$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 3
-        If quarterbacks(teamIdx, I) > LP(teamIdx, I) Then
-            LP(teamIdx, I) = quarterbacks(teamIdx, I)
+        If quarterbacks(teamIdx, I) > gameLP!(teamIdx, I) Then
+            gameLP!(teamIdx, I) = quarterbacks(teamIdx, I)
             tradeLP$(teamIdx, I, 0) = gameQB$(teamIdx, I)
             tradeLP$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 2
-        If kickReturners(teamIdx, I) > LK(teamIdx, I) Then
-            LK(teamIdx, I) = kickReturners(teamIdx, I)
+        If kickReturners(teamIdx, I) > gameLK!(teamIdx, I) Then
+            gameLK!(teamIdx, I) = kickReturners(teamIdx, I)
             tradeLK$(teamIdx, I, 0) = gameKR$(teamIdx, I)
             tradeLK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If puntReturners(teamIdx, I) > PK(teamIdx, I) Then
-            PK(teamIdx, I) = puntReturners(teamIdx, I)
+        If puntReturners(teamIdx, I) > gamePK!(teamIdx, I) Then
+            gamePK!(teamIdx, I) = puntReturners(teamIdx, I)
             gamePK$(teamIdx, I, 0) = gamePR$(teamIdx, I)
             gamePK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
-    If gameStatsTeam(teamIdx, 26) > gameZ(28) Then gameZ(28) = gameStatsTeam(teamIdx, 26)
+    If gameStatsTeam(teamIdx, 26) > gameZ0!(28) Then gameZ0!(28) = gameStatsTeam(teamIdx, 26)
 
     For I = 0 To 1
 
-        If gameLongFG(teamIdx, I) > LF(teamIdx, I) Then
-            LF(teamIdx, I) = gameLongFG(teamIdx, I)
+        If gameLongFG(teamIdx, I) > gameLF!(teamIdx, I) Then
+            gameLF!(teamIdx, I) = gameLongFG(teamIdx, I)
             tradeLF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
         For I1 = 0 To 4
-            AM(teamIdx, I, I1) = AM(teamIdx, I, I1) + FM(teamIdx, I, I1)
-            AF(teamIdx, I, I1) = AF(teamIdx, I, I1) + FA(teamIdx, I, I1)
+            gameAM!(teamIdx, I, I1) = gameAM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
+            gameAF!(teamIdx, I, I1) = gameAF!(teamIdx, I, I1) + FA(teamIdx, I, I1)
         Next
 
     Next
 
     For J = 0 To 13
         For K = 0 To 17:
-            gameZ2(J, K) = gameZ2(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
+            gameZ2!(J, K) = gameZ2!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
         Next
     Next
 
-    gameZ(32) = gameZ(32) + score(teamIdx, 1)
-    gameZ(33) = gameZ(33) + score(teamIdx, 2)
-    gameZ(34) = gameZ(34) + score(teamIdx, 3)
-    gameZ(35) = gameZ(35) + score(teamIdx, 4)
+    gameZ0!(32) = gameZ0!(32) + score(teamIdx, 1)
+    gameZ0!(33) = gameZ0!(33) + score(teamIdx, 2)
+    gameZ0!(34) = gameZ0!(34) + score(teamIdx, 3)
+    gameZ0!(35) = gameZ0!(35) + score(teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ(36) = gameZ(36) + score(teamIdx, K)
+        gameZ0!(36) = gameZ0!(36) + score(teamIdx, K)
     Next
 
-    gameZ1(32) = gameZ1(32) + score(1 - teamIdx, 1)
-    gameZ1(33) = gameZ1(33) + score(1 - teamIdx, 2)
-    gameZ1(34) = gameZ1(34) + score(1 - teamIdx, 3)
-    gameZ1(35) = gameZ1(35) + score(1 - teamIdx, 4)
+    gameZ1!(32) = gameZ1!(32) + score(1 - teamIdx, 1)
+    gameZ1!(33) = gameZ1!(33) + score(1 - teamIdx, 2)
+    gameZ1!(34) = gameZ1!(34) + score(1 - teamIdx, 3)
+    gameZ1!(35) = gameZ1!(35) + score(1 - teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ1(36) = gameZ1(36) + score(1 - teamIdx, K)
+        gameZ1!(36) = gameZ1!(36) + score(1 - teamIdx, K)
     Next
 
     For J = 0 To 3
-        gameZ(17) = gameZ(17) + gameStatsPlayer(teamIdx, J, 13)
-        gameZ1(17) = gameZ1(17) + gameStatsPlayer(1 - teamIdx, J, 13)
+        gameZ0!(17) = gameZ0!(17) + gameStatsPlayer(teamIdx, J, 13)
+        gameZ1!(17) = gameZ1!(17) + gameStatsPlayer(1 - teamIdx, J, 13)
     Next
 
     For J = 0 To 13
-        gameZ(15) = gameZ(15) + gameStatsPlayer(teamIdx, J, 2)
-        gameZ1(15) = gameZ1(15) + gameStatsPlayer(1 - teamIdx, J, 2)
+        gameZ0!(15) = gameZ0!(15) + gameStatsPlayer(teamIdx, J, 2)
+        gameZ1!(15) = gameZ1!(15) + gameStatsPlayer(1 - teamIdx, J, 2)
     Next
 
     For J = 0 To 2
-        gameZ(18) = gameZ(18) + gameStatsPlayer(teamIdx, J, 16)
-        gameZ1(18) = gameZ1(18) + gameStatsPlayer(1 - teamIdx, J, 16)
-        gameZ(22) = gameZ(22) + gameStatsPlayer(teamIdx, J, 14)
-        gameZ1(22) = gameZ1(22) + gameStatsPlayer(1 - teamIdx, J, 14)
-        gameZ(23) = gameZ(23) + gameStatsPlayer(teamIdx, J, 15)
-        gameZ1(23) = gameZ1(23) + gameStatsPlayer(1 - teamIdx, J, 15)
-        gameZ(19) = gameZ(19) + gameStatsPlayer(teamIdx, J + 3, 16)
-        gameZ1(18) = gameZ1(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
-        gameZ(24) = gameZ(24) + gameStatsPlayer(teamIdx, J + 3, 14)
-        gameZ1(24) = gameZ1(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
-        gameZ(25) = gameZ(25) + gameStatsPlayer(teamIdx, J + 3, 15)
-        gameZ1(25) = gameZ1(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
+        gameZ0!(18) = gameZ0!(18) + gameStatsPlayer(teamIdx, J, 16)
+        gameZ1!(18) = gameZ1!(18) + gameStatsPlayer(1 - teamIdx, J, 16)
+        gameZ0!(22) = gameZ0!(22) + gameStatsPlayer(teamIdx, J, 14)
+        gameZ1!(22) = gameZ1!(22) + gameStatsPlayer(1 - teamIdx, J, 14)
+        gameZ0!(23) = gameZ0!(23) + gameStatsPlayer(teamIdx, J, 15)
+        gameZ1!(23) = gameZ1!(23) + gameStatsPlayer(1 - teamIdx, J, 15)
+        gameZ0!(19) = gameZ0!(19) + gameStatsPlayer(teamIdx, J + 3, 16)
+        gameZ1!(18) = gameZ1!(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
+        gameZ0!(24) = gameZ0!(24) + gameStatsPlayer(teamIdx, J + 3, 14)
+        gameZ1!(24) = gameZ1!(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
+        gameZ0!(25) = gameZ0!(25) + gameStatsPlayer(teamIdx, J + 3, 15)
+        gameZ1!(25) = gameZ1!(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
     Next
 
     For J = 0 To 9
-        gameZ(20) = gameZ(20) + gameInts(teamIdx, J, 2)
-        gameZ1(20) = gameZ1(20) + gameInts(1 - teamIdx, J, 2)
-        gameZ(26) = gameZ(26) + gameInts(teamIdx, J, 0)
-        gameZ1(26) = gameZ1(26) + gameInts(1 - teamIdx, J, 0)
-        gameZ(27) = gameZ(27) + gameInts(teamIdx, J, 1)
-        gameZ1(27) = gameZ1(27) + gameInts(1 - teamIdx, J, 1)
+        gameZ0!(20) = gameZ0!(20) + gameInts(teamIdx, J, 2)
+        gameZ1!(20) = gameZ1!(20) + gameInts(1 - teamIdx, J, 2)
+        gameZ0!(26) = gameZ0!(26) + gameInts(teamIdx, J, 0)
+        gameZ1!(26) = gameZ1!(26) + gameInts(1 - teamIdx, J, 0)
+        gameZ0!(27) = gameZ0!(27) + gameInts(teamIdx, J, 1)
+        gameZ1!(27) = gameZ1!(27) + gameInts(1 - teamIdx, J, 1)
     Next
 
-    gameZ(21) = gameZ(21) + gameStatsTeam(teamIdx, 19)
-    gameZ1(21) = gameZ1(21) + gameStatsTeam(1 - teamIdx, 19)
-    gameZ(37) = gameZ(37) + gameStatsTeam(teamIdx, 35)
-    gameZ1(37) = gameZ1(37) + gameStatsTeam(1 - teamIdx, 35)
-    gameZ(38) = gameZ(38) + gameStatsTeam(teamIdx, 36)
-    gameZ1(38) = gameZ1(38) + gameStatsTeam(1 - teamIdx, 36)
-    gameZ(30) = gameZ(30) + gameStatsTeam(teamIdx, 28)
-    gameZ1(30) = gameZ1(30) + gameStatsTeam(1 - teamIdx, 28)
-    gameZ(29) = gameZ(29) + gameStatsTeam(teamIdx, 27)
-    gameZ1(29) = gameZ1(29) + gameStatsTeam(1 - teamIdx, 27)
-    gameZ(31) = gameZ(31) + gameStatsTeam(teamIdx, 29)
-    gameZ1(31) = gameZ1(31) + gameStatsTeam(1 - teamIdx, 29)
+    gameZ0!(21) = gameZ0!(21) + gameStatsTeam(teamIdx, 19)
+    gameZ1!(21) = gameZ1!(21) + gameStatsTeam(1 - teamIdx, 19)
+    gameZ0!(37) = gameZ0!(37) + gameStatsTeam(teamIdx, 35)
+    gameZ1!(37) = gameZ1!(37) + gameStatsTeam(1 - teamIdx, 35)
+    gameZ0!(38) = gameZ0!(38) + gameStatsTeam(teamIdx, 36)
+    gameZ1!(38) = gameZ1!(38) + gameStatsTeam(1 - teamIdx, 36)
+    gameZ0!(30) = gameZ0!(30) + gameStatsTeam(teamIdx, 28)
+    gameZ1!(30) = gameZ1!(30) + gameStatsTeam(1 - teamIdx, 28)
+    gameZ0!(29) = gameZ0!(29) + gameStatsTeam(teamIdx, 27)
+    gameZ1!(29) = gameZ1!(29) + gameStatsTeam(1 - teamIdx, 27)
+    gameZ0!(31) = gameZ0!(31) + gameStatsTeam(teamIdx, 29)
+    gameZ1!(31) = gameZ1!(31) + gameStatsTeam(1 - teamIdx, 29)
 
     For L = 0 To 12:
-        gameZ(L) = gameZ(L) + gameStatsTeam(teamIdx, L)
+        gameZ0!(L) = gameZ0!(L) + gameStatsTeam(teamIdx, L)
     Next
 
     For L = 0 To 12:
-        gameZ1(L) = gameZ1(L) + gameStatsTeam(1 - teamIdx, L)
+        gameZ1!(L) = gameZ1!(L) + gameStatsTeam(1 - teamIdx, L)
     Next
 
-    gameZ(13) = gameZ(13) + sackStatsTeam(teamIdx, 0)
-    gameZ(14) = gameZ(14) + sackStatsTeam(teamIdx, 1)
-    gameZ1(13) = gameZ1(13) + sackStatsTeam(1 - teamIdx, 0)
-    gameZ1(14) = gameZ1(14) + sackStatsTeam(1 - teamIdx, 1)
+    gameZ0!(13) = gameZ0!(13) + sackStatsTeam(teamIdx, 0)
+    gameZ0!(14) = gameZ0!(14) + sackStatsTeam(teamIdx, 1)
+    gameZ1!(13) = gameZ1!(13) + sackStatsTeam(1 - teamIdx, 0)
+    gameZ1!(14) = gameZ1!(14) + sackStatsTeam(1 - teamIdx, 1)
 
     For J = 0 To 9
         For J1 = 0 To 2
@@ -18482,16 +18565,16 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Print #2, gameZ2(J, K)
+            Print #2, gameZ2!(J, K)
         Next
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ(L)
+        Print #2, gameZ0!(L)
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ1(L)
+        Print #2, gameZ1!(L)
     Next
 
     For J = 0 To 9
@@ -18509,46 +18592,46 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For I = 0 To 9:
-        Print #2, LR(teamIdx, I)
+        Print #2, gameLR!(teamIdx, I)
         Print #2, gameLR$(teamIdx, I, 0)
         Print #2, gameLR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 15:
-        Print #2, LC(teamIdx, I)
+        Print #2, gameLC!(teamIdx, I)
         Print #2, gameLC$(teamIdx, I, 0)
         Print #2, gameLC$(teamIdx, I, 1)
     Next
 
     For I = 0 To 3:
-        Print #2, LP(teamIdx, I)
+        Print #2, gameLP!(teamIdx, I)
         Print #2, tradeLP$(teamIdx, I, 0)
         Print #2, tradeLP$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, LK(teamIdx, I)
+        Print #2, gameLK!(teamIdx, I)
         Print #2, tradeLK$(teamIdx, I, 0)
         Print #2, tradeLK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, PK(teamIdx, I)
+        Print #2, gamePK!(teamIdx, I)
         Print #2, gamePK$(teamIdx, I, 0)
         Print #2, gamePK$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
-        Print #2, LF(teamIdx, I)
+        Print #2, gameLF!(teamIdx, I)
         Print #2, tradeLF$(teamIdx, I)
         For I1 = 0 To 4:
-            Print #2, AM(teamIdx, I, I1)
-            Print #2, AF(teamIdx, I, I1)
+            Print #2, gameAM!(teamIdx, I, I1)
+            Print #2, gameAF!(teamIdx, I, I1)
         Next
     Next
 
     For I = 0 To 9:
-        Print #2, LI(teamIdx, I)
+        Print #2, gameLI!(teamIdx, I)
         Print #2, tradeLI$(teamIdx, I, 0)
         Print #2, tradeLI$(teamIdx, I, 1)
     Next
@@ -18663,7 +18746,7 @@ Sub COMPILESTATFILES (teamIdx)
     Erase teamScore
     Erase gameAttendance&
     Erase locIndicator$, oppName$, gameSite$
-    Erase gameZ, gameZ1, gameZ2
+    Erase gameZ0!, gameZ1!, gameZ2!
 
 End Sub
 
@@ -18713,13 +18796,15 @@ End Function
 Sub pbplog (lineNumber)
 
 
-    ydsToScore = 100 - ydLine
-    ydLineTeam = ydsToScore - (ydsToScore > 50) * (100 - ydsToScore - ydsToScore)
-
     Print #11, "Called from line "; lineNumber
     Print #11, gameTeams$(0); " vs "; gameTeams$(1)
-    Print #11, downDesc$(currDown); " down and"; ydsToFirst; "at the"; ydLineTeam
-    Print #11, pbpString$
+    Print #11, "Kickoff from"; ydLine
+    Print #11, "Distance - "; kickDist; "yards"
+    Print #11, "Yardline - "; kickYL
+    'ydsToScore = 100 - ydLine
+    'ydLineTeam = ydsToScore - (ydsToScore > 50) * (100 - ydsToScore - ydsToScore)
+    'Print #11, downDesc$(currDown); " down and"; ydsToFirst; "at the"; ydLineTeam
+    'Print #11, pbpString$
     Print #11,
 
 End Sub
@@ -18887,8 +18972,10 @@ Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%,
         Color 14
         Locate , 33: Print "TEAM SELECTION"
         Locate 25, 1
-        Color 14: Print "ESC";: Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+        Color 14: Print "ESC";
+        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+        Color 14: Print "ENTER";
+        Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%

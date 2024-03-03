@@ -22,7 +22,7 @@ Function GetQBName$ (targetGame%, teamIndicator)
     Color 15, 0
     Cls
 
-    Call MenuBox (6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+    Call MenuBox(6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
     Locate 7, 11
 
     Locate , 31
@@ -64,10 +64,10 @@ Function GetQBName$ (targetGame%, teamIndicator)
     Print
     Locate , 19: Print "SELECT (0-4) ";
     Color 15, 0
-    
+
     Do
         I$ = GetKeyPress$
-        choice = Val(I$)    
+        choice = Val(I$)
     Loop Until choice >= 0 And choice <= 4
 
     qbNbr = choice
@@ -78,9 +78,9 @@ Function GetQBName$ (targetGame%, teamIndicator)
         suggestedMobility = GetQBMobility%(qbContrib)
 
         Cls
-        Call MenuBox (6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+        Call MenuBox(6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
         Locate 7, 11
-        
+
         Locate 8, 16: Print "ENTER "; qbName$(choice); " MOBILITY RATING (1-9)"
         Locate , 16: Print "(1-LOW, 9-HIGH)"
         Print
@@ -162,9 +162,9 @@ End Function
 'team rushes to calculate the specific %
 'that the designated QB has contributed
 'This function works specifically with
-'the game's 2-dimensional arrays that 
+'the game's 2-dimensional arrays that
 'store values for each team
-Function GetQBRushPctGame% (targetQB$)
+Function GetQBRushPctGame% (targetQB$, currTeam)
 
     'Determine a suggested mobility rating
     previousContrib = 0
@@ -174,7 +174,7 @@ Function GetQBRushPctGame% (targetQB$)
 
     For currRB = 0 To 9
 
-        currContrib = rbRushContrib(currTeam, currRB)
+        currContrib = rbrushContrib(currTeam, currRB)
 
         'Check for QB as a runner
         If rbacks$(currTeam, currRB) = targetQB$ Then

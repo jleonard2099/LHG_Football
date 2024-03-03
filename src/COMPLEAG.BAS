@@ -537,7 +537,9 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     puntNum = 0
 
-    If TG!(8) > 0 Then puntNum = Int(TG!(9) / TG!(8) * 10) / 10
+    If TG!(8) > 0 Then
+        puntNum = Int(TG!(9) / TG!(8) * 10) / 10
+    ENd If
 
     Erase EP!, FG!
 
@@ -1449,9 +1451,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
     Color 15
     Print puntName$
 
-    If TG!(8) > indRecords!(32) Then indRecords!(32) = TG!(8): indRecDesc$(32, 0) = puntName$: indRecDesc$(32, 1) = TM$
-    If TG!(9) > indRecords!(33) Then indRecords!(33) = TG!(9): indRecDesc$(33, 0) = puntName$: indRecDesc$(33, 1) = TM$
-    If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then indRecords!(34) = puntNum: indRecDesc$(34, 0) = puntName$: indRecDesc$(34, 1) = TM$
+    If TG!(8) > indRecords!(32) Then
+        indRecords!(32) = TG!(8)
+        indRecDesc$(32, 0) = puntName$
+        indRecDesc$(32, 1) = TM$
+    End If
+
+    If TG!(9) > indRecords!(33) Then
+        indRecords!(33) = TG!(9)
+        indRecDesc$(33, 0) = puntName$
+        indRecDesc$(33, 1) = TM$
+    End If
+
+    If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then
+        indRecords!(34) = puntNum
+        indRecDesc$(34, 0) = puntName$
+        indRecDesc$(34, 1) = TM$
+    End If
 
     For Z = 181 To 190
         If compZ2$(Z) = puntName$ And compZ3$(Z) = WT$ Then

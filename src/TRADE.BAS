@@ -1951,8 +1951,10 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
         Color 14
         Locate , 33: Print "TEAM SELECTION"
         Locate 25, 1
-        Color 14: Print "ESC";: Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+        Color 14: Print "ESC";
+        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+        Color 14: Print "ENTER";
+        Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
@@ -1962,8 +1964,8 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
 
             selectedIdx = teamIndex%(SELECTION%)
 
-            Locate 2, 33: Color 3
-            Print "LOADING.."
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
 
             Call ReadTradeTeam(yearNumber$, selectedIdx, tradeIdx)
             

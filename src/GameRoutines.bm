@@ -6993,8 +6993,8 @@ Sub FoundSpecial (specialCount, specialStat)
 
     'Get count of SPC files to determine
     'number to assign next one
-    'Spec$ = diskPaths$(1) + "*.BSS"
-    Spec$ = diskPaths$(1) + "*.SPC"
+    Spec$ = diskPaths$(1) + "*.BSS"
+    'Spec$ = diskPaths$(1) + "*.SPC"
     specialCount = FileCount%(Spec$)
     specialCount = specialCount + 1
     specialStat = 1
@@ -7075,8 +7075,8 @@ Sub POSTGAME ()
     'If we had special events
     If specialStat = 1 Then
 
-        boxName$ = "BOX" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".SPC"
-        'boxName$ = "BOXSCORE" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".BSS"
+        boxName$ = "BOXSCORE" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".BSS"
+        'boxName$ = "BOX" + Mid$(Str$(specialCount), 2, Len(Str$(specialCount))) + ".SPC"
 
         'Append special events
         'Call BOX2SPC(boxName$)
@@ -7126,14 +7126,14 @@ Sub BOXOPTIONS (outputChoice)
                 'File = prompt | auto-create
                 If autoPlay <> 1 Then
                     Cls
-                    Print "ENTER 8-CHARACTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
+                    Print "ENTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
                     Input boxName$
-                    boxName$ = boxName$ + ".SPC"
-                    'boxName$ = boxName$ + ".BSS"
+                    boxName$ = boxName$ + ".BSS"
+                    'boxName$ = boxName$ + ".SPC"
                 Else
                     'ScheduleName_GameXXX.BS
-                    boxName$ = "BOX" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2))))
-                    'boxName$ = Mid$(scheduleFile$, 1, Len(scheduleFile$) - 4) + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
+                    boxName$ = Mid$(scheduleFile$, 1, Len(scheduleFile$) - 4) + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
+                    'boxName$ = "BOX" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2))))
                 End If
 
             End If
@@ -9210,8 +9210,10 @@ Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%,
         Color 14
         Locate , 33: Print "TEAM SELECTION"
         Locate 25, 1
-        Color 14: Print "ESC";: Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+        Color 14: Print "ESC";
+        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+        Color 14: Print "ENTER";
+        Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
