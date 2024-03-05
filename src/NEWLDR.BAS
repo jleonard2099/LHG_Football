@@ -154,7 +154,7 @@ End Sub
 '   1 = Pro
 Sub ViewExpandedStats (statType)
 
-    Dim printOrView%
+    Dim printOrView
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -180,7 +180,7 @@ Sub ViewExpandedStats (statType)
         JH = 0
         JI = 0
         JJ = 0
-        printOrView% = 0
+        printOrView = 0
         totalStats = 0
 
         div1$ = ""
@@ -259,6 +259,8 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Color 15, 0
     Cls
 
+    totalStats = 0
+
     For ZX = 1 To 30
 
         teamStatFile$ = statsZ1$(ZX)
@@ -273,72 +275,110 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
                 Input #1, statsA$
 
-                'RBs
-                For I = 0 To 9: Input #1, lookyRBacks$(I): Next I
+                'RB Names
+                For I = 0 To 9:
+                    Input #1, lookyRBacks$(I)
+                Next I
 
-                'WR's
-                For I = 0 To 5: Input #1, lookyWdRec$(I): Next I
+                'WR Names
+                For I = 0 To 5:
+                    Input #1, lookyWdRec$(I)
+                Next I
 
-                'QBs
-                For I = 0 To 3: Input #1, lookyQBacks$(I): Next I
+                'QB Names
+                For I = 0 To 3:
+                    Input #1, lookyQBacks$(I)
+                Next I
 
-                'KR's
-                For I = 0 To 2: Input #1, lookyKickRet$(I): Next I
+                'KR Names
+                For I = 0 To 2:
+                    Input #1, lookyKickRet$(I)
+                Next I
 
-                'PR's
-                For I = 0 To 2: Input #1, lookyPRet$(I): Next I
+                'PR Names
+                For I = 0 To 2:
+                    Input #1, lookyPRet$(I)
+                Next I
 
-                'Punter
+                'Punters
                 Input #1, lookyPunter$(0)
 
                 'Place Kickers
-                For I = 0 To 1: Input #1, lookyKicker$(I): Next I
+                For I = 0 To 1:
+                    Input #1, lookyKicker$(I)
+                Next I
 
                 'Leader Values
+                '--------------------
+                'Rushers / Receivers
                 For J = 0 To 13
                     For K = 0 To 17:
                         Input #1, statsZ2!(J, K)
                     Next K
                 Next J
 
+                'Offensive Team stats
                 For L = 0 To 38:
                     Input #1, statsZ!(L)
                 Next L
 
+                'Defensive Team stats
                 For L = 0 To 38:
                     Input #1, statsZ1!(L)
                 Next L
 
                 For J = 0 To 9:
-                    Input #1, intName$(J):
-                    For J1 = 0 To 2: Input #1, statsGI%(J, J1): Next
+                    'Interception Names
+                    Input #1, intName$(J)
+                    For J1 = 0 To 2:
+                        Input #1, statsGI%(J, J1)
+                    Next
                 Next
 
                 For J = 0 To 14:
+                    'Sack Names
                     Input #1, sackName$(J)
-                    For J1 = 0 To 1: Input #1, statsGS%(J, J1): Next
+                    For J1 = 0 To 1:
+                        Input #1, statsGS%(J, J1)
+                    Next
                 Next
 
+                'Longest rush
                 For I = 0 To 9:
-                    Input #1, statsLR!(I): Input #1, statsLR$(I, 0): Input #1, statsLR$(I, 1)
+                    Input #1, statsLR!(I)
+                    Input #1, statsLR$(I, 0)
+                    Input #1, statsLR$(I, 1)
                 Next
 
+                'Longest catch
                 For I = 0 To 15:
-                    Input #1, statsLC!(I): Input #1, statsLC$(I, 0): Input #1, statsLC$(I, 1)
+                    Input #1, statsLC!(I)
+                    Input #1, statsLC$(I, 0)
+                    Input #1, statsLC$(I, 1)
                 Next
 
+                'Longest pass
                 For I = 0 To 3:
-                    Input #1, statsLP!(I): Input #1, statsLP$(I, 0): Input #1, statsLP$(I, 1)
+                    Input #1, statsLP!(I)
+                    Input #1, statsLP$(I, 0)
+                    Input #1, statsLP$(I, 1)
                 Next
 
+                'Longest kick return
                 For I = 0 To 2:
-                    Input #1, statsLK!(I): Input #1, statsLK$(I, 0): Input #1, statsLK$(I, 1)
+                    Input #1, statsLK!(I)
+                    Input #1, statsLK$(I, 0)
+                    Input #1, statsLK$(I, 1)
                 Next
 
+                'Longest punt return
                 For I = 0 To 2:
-                    Input #1, statsPK!(I): Input #1, statsPK$(I, 0): Input #1, statsPK$(I, 1)
+                    Input #1, statsPK!(I)
+                    Input #1, statsPK$(I, 0)
+                    Input #1, statsPK$(I, 1)
                 Next
 
+                'Longest FG
                 For I = 0 To 1
                     Input #1, statsLF!(I)
                     Input #1, statsLF$(I)
@@ -346,6 +386,15 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                         Input #1, AM!(I, I1)
                         Input #1, AF!(I, I1)
                     Next
+                Next
+
+                'Longest Interception
+                '--> was previously NOT read in
+                '--> is it not even calculated later!!!
+                For I = 0 To 9:
+                    Input #1, statsLI!(teamIdx, I)
+                    Input #1, statsLI$(teamIdx, I, 0)
+                    Input #1, statsLI$(teamIdx, I, 1)
                 Next
 
                 Close #1
@@ -377,7 +426,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     'but was never assigned a value!!!
                     GMA!(JA) = nbrGames
 
-                    For I1 = 0 To 5: A1L!(JA, I1) = statsZ2!(I, I1): Next I1
+                    For I1 = 0 To 5:
+                        A1L!(JA, I1) = statsZ2!(I, I1)
+                    Next I1
 
                     A1L!(JA, 6) = statsLR!(I)
                     A1L!(JA, 7) = statsLC!(I)
@@ -390,7 +441,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     LCL$(JB) = statsLC$(I + 10, 0)
                     GMB!(JB) = nbrGames
 
-                    For I1 = 6 To 8: A2L!(JB, I1 - 6) = statsZ2!(I, I1): Next I1
+                    For I1 = 6 To 8:
+                        A2L!(JB, I1 - 6) = statsZ2!(I, I1)
+                    Next I1
 
                     A2L!(JB, 3) = statsLC!(I + 10)
                 Next I
@@ -403,7 +456,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     LPL$(JC) = statsLP$(I, 0)
                     GMC!(JC) = nbrGames
 
-                    For I1 = 9 To 13: A3L!(JC, I1 - 9) = statsZ2!(I, I1): Next I1
+                    For I1 = 9 To 13:
+                        A3L!(JC, I1 - 9) = statsZ2!(I, I1)
+                    Next I1
 
                     A3L!(JC, 5) = statsLP!(I)
                     Call QBRating_Expanded(JC, statType)
@@ -418,7 +473,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     A4T$(JD) = statsA$
                     LKL$(JD) = statsLK$(I, 0)
 
-                    For I1 = 14 To 16: A4L!(JD, I1 - 14) = statsZ2!(I, I1): Next I1
+                    For I1 = 14 To 16:
+                        A4L!(JD, I1 - 14) = statsZ2!(I, I1)
+                    Next I1
 
                     A4L!(JD, 3) = statsLK!(I)
 
@@ -431,7 +488,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     A5T$(JE) = statsA$
                     PKL$(JE) = statsPK$(I, 0)
 
-                    For I1 = 14 To 16: A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1): Next I1
+                    For I1 = 14 To 16:
+                        A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1)
+                    Next I1
 
                     A5L!(JE, 3) = statsPK!(I)
 
@@ -844,7 +903,7 @@ End Sub
 'user display of those statistics.
 Sub ExpandedLeaders_Menu (totalStats)
 
-    Dim PPP, sortType%
+    Dim PPP, sortType
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -889,6 +948,7 @@ Sub ExpandedLeaders_Menu (totalStats)
         Locate , 17: Print String$(44, 177)
 
         RR = 0
+        newCategory = 0
 
         Locate 2, 24
         Color 4, 15: Print "LEADER SELECTION MENU"
@@ -948,7 +1008,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "B":
                     J = 8
@@ -975,7 +1035,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 5
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "C":
                     J = 12
@@ -1000,7 +1060,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 8
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "D":
                     J = 8
@@ -1026,7 +1086,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "E":
                     J = 8
@@ -1052,7 +1112,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 4
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "F":
                     J = 6
@@ -1078,7 +1138,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "G":
                     J = 10
@@ -1104,7 +1164,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 6
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "H":
                     J = 6
@@ -1130,10 +1190,10 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 1
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "I":
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "J":
                     J = 6
@@ -1159,7 +1219,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 2
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "K":
                     J = 17
@@ -1202,7 +1262,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Loop Until B9 <= 28
 
-                    Call SortOptions(printOrView%, sortType%)
+                    Call SortOptions(printOrView, sortType, newCategory)
 
             End Select
 
@@ -1211,29 +1271,18 @@ Sub ExpandedLeaders_Menu (totalStats)
                 PPP = 0
             End If
 
-            If UCase$(key$) <> "L" Then
+            If UCase$(key$) <> "L" And newCategory = 0 Then
 
                 Select Case UCase$(key$)
 
                     Case "A":
 
                         Select Case B9
-
-                            Case 0:
-                                X = 0: XX = 0
-
-                            Case 1
-                                X = 1: XX = 1
-
-                            Case 2
-                                X = 0: X1 = 1: XX = 2
-
-                            Case 3
-                                X = 2: XX = 3
-
-                            Case 4
-                                X = 6: XX = 4
-
+                            Case 0: X = 0: XX = 0
+                            Case 1: X = 1: XX = 1
+                            Case 2: X = 0: X1 = 1: XX = 2
+                            Case 3: X = 2: XX = 3
+                            Case 4: X = 6: XX = 4
                         End Select
 
                         Cls
@@ -1253,7 +1302,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
 
                                 TVN = 1
 
@@ -1269,7 +1318,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
 
                                 TVN = 2
 
@@ -1277,6 +1326,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Cls
                                 PPP = 0
+
                                 For I = 1 To JA
                                     If A1L!(I, X) <> 0 Then
                                         PPP = PPP + 1
@@ -1288,7 +1338,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
 
                                 TVN = 3
 
@@ -1302,7 +1352,6 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 2: X = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
                             Case 3: X = 5: X1 = 2: XX = 8
                             Case 4: X = 3: X1 = 7: XX = 9
-
                         End Select
 
                         Cls
@@ -1331,7 +1380,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 2:
@@ -1358,7 +1407,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 2
 
                             Case 3:
@@ -1387,7 +1436,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 3
 
                         End Select
@@ -1425,7 +1474,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 5:
@@ -1450,7 +1499,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 2
 
                             Case 6:
@@ -1472,7 +1521,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     End If
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 4
 
                             Case 7:
@@ -1489,7 +1538,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 4
 
                             Case 8:
@@ -1510,7 +1559,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 3
 
                         End Select
@@ -1544,7 +1593,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 2:
@@ -1569,7 +1618,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 2
 
                             Case 4:
@@ -1586,7 +1635,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 3
 
                         End Select
@@ -1600,6 +1649,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 3: X = 2: XX = 27
                             Case 4: X = 3: XX = 28
                         End Select
+
+                        Cls
+                        PPP = 0
 
                         Select Case B9
 
@@ -1617,7 +1669,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 2:
@@ -1640,7 +1692,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 2
 
                             Case 4:
@@ -1658,12 +1710,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
 
                         End Select
-
-                        Cls
-                        PPP = 0
 
                     Case "F":
 
@@ -1689,7 +1738,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 2:
@@ -1712,7 +1761,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 2
 
                         End Select
@@ -1727,7 +1776,6 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 4: X = 3: XX = 36
                             Case 5: X = 2: X1 = 3: XX = 37
                             Case 6: X = 4: XX = 38
-
                         End Select
 
                         Cls
@@ -1749,7 +1797,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 1
 
                             Case 2, 5
@@ -1775,15 +1823,19 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 Next I
 
-                                Call SortPlayer(stpl, PPP, sortType%)
+                                Call SortPlayer(PPP, stpl, sortType)
                                 TVN = 4
 
                         End Select
 
                     Case "H":
 
-                        If B9 = 0 Then X = 0: XX = 39
-                        If B9 = 1 Then X = 0: XX = 40
+                        If B9 = 0 Then
+                            X = 0: XX = 39
+                        End If
+                        If B9 = 1 Then
+                            X = 0: XX = 40
+                        End If
 
                         Cls
                         PPP = 0
@@ -1815,7 +1867,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         End If
 
-                        Call SortPlayer(stpl, PPP, sortType%)
+                        Call SortPlayer(PPP, stpl, sortType)
 
                         TVN = 1
 
@@ -1849,7 +1901,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                             End If
                         Next I
 
-                        Call SortPlayer(stpl, PPP, sortType%)
+                        Call SortPlayer(PPP, stpl, sortType)
 
                         TVN = 1
 
@@ -1915,7 +1967,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Next I
                         End If
 
-                        Call SortPlayer(stpl, PPP, sortType%)
+                        Call SortPlayer(PPP, stpl, sortType)
 
                         TVN = 1
 
@@ -1959,7 +2011,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = lookyTT!(I, X)
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 1
 
                             Case 1, 16
@@ -1968,7 +2020,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 1
 
                             Case 2, 5, 17, 20
@@ -1977,7 +2029,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 1
 
                             Case 3, 18
@@ -1986,7 +2038,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 2
 
                             Case 6, 21
@@ -1995,7 +2047,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 2
 
                             Case 10
@@ -2004,7 +2056,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                     TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
                                 Next I
 
-                                Call SortTeam(totalStats, stpl, sortType%)
+                                Call SortTeam(totalStats, stpl, sortType)
                                 TVN = 1
 
                         End Select
@@ -2014,22 +2066,22 @@ Sub ExpandedLeaders_Menu (totalStats)
                 If UCase$(key$) <> "K" Then
                     QW = PPP
 
-                    If printOrView% = 1 Then
+                    If printOrView = 1 Then
                         Call DisplayLeaders(XX, QW, TVN)
                     Else
-                        'printOrView% = 2
-                        Call GetListLength(printOrView%, LG, QW)
+                        'printOrView = 2
+                        Call GetListLength(printOrView, LG, QW)
                         Call PrintLeaders(XX, LG, TVN)
                     End If
                 Else
 
                     QW = totalStats
 
-                    If printOrView% = 1 Then
+                    If printOrView = 1 Then
                         Call DisplayLeaders(XX, QW, TVN)
                     Else
-                        'printOrView% = 2
-                        Call GetListLength(printOrView%, LG, QW)
+                        'printOrView = 2
+                        Call GetListLength(printOrView, LG, QW)
                         Call PrintLeaders(XX, LG, TVN)
                     End If
 
@@ -2076,16 +2128,17 @@ End Sub
 '   0 = College
 '   1 = Pro
 
-'sortType%
+'sortType
 '   1: Sort HIGH to LOW
 '   2: Sort LOW to HIGH
-Sub SortOptions (printOrView%, sortType%)
+Sub SortOptions (printOrView, sortType, reselect)
 
     Do
 
         J = 6
 
-        Locate 8, 8: Color 15, 1: Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
+        Locate 8, 8: Color 15, 1
+        Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
 
         For II = 1 To J:
             Locate 8 + II, 8
@@ -2096,7 +2149,9 @@ Sub SortOptions (printOrView%, sortType%)
         Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
         Locate 10, 15
 
-        Color 3: Locate , 30: Print "SELECT OPTION:"
+        Color 3
+
+        Locate , 30: Print "SELECT OPTION:"
         Locate , 30: Color 15: Print "H";
         Color 7: Print "IGHEST TO LOWEST"
         Locate , 30: Color 15: Print "L";
@@ -2104,7 +2159,9 @@ Sub SortOptions (printOrView%, sortType%)
         Locate , 30: Color 15: Print "R";
         Color 7: Print "E-SELECT CATEGORY"
 
-        I$ = GetKeyPress$
+        Do
+            I$ = GetKeyPress$
+        Loop Until UCase$(I$) = "H" Or UCase$(I$) = "L" Or UCase$(I$) = "R"
 
         Select Case UCase$(I$)
 
@@ -2112,30 +2169,33 @@ Sub SortOptions (printOrView%, sortType%)
                 Call PrintViewReselect(I2$)
 
                 Select Case UCase$(I2$)
-                    Case "P": printOrView% = 2
-                    Case "V": printOrView% = 1
+                    Case "P": printOrView = 2
+                    Case "V": printOrView = 1
                     Case "R":
+                        reselect = 1
                 End Select
 
-                sortType% = 1
+                sortType = 1
 
             Case "L":
                 Call PrintViewReselect(I2$)
 
                 Select Case UCase$(I2$)
-                    Case "P": printOrView% = 2
-                    Case "V": printOrView% = 1
+                    Case "P": printOrView = 2
+                    Case "V": printOrView = 1
                     Case "R":
+                        reselect = 1
                 End Select
 
-                sortType% = 2
+                sortType = 2
 
             Case "R", Chr$(27):
                 'If ZZ = 1 Then Call ExpandedLeaders_Menu(totalStats)
+                reselect = 1
 
         End Select
 
-    Loop Until UCase$(I$) = "H" Or UCase$(I$) = "L" Or UCase$(I$) = "R"
+    Loop Until UCase$(I2$) <> "R" Or UCase$(I$) = "R"
 
 End Sub
 
@@ -2181,7 +2241,7 @@ End Sub
 '----------------------------------------
 'This subroutine sorts the players involved
 'in the chosen stat category
-Sub SortPlayer (stpl, PPP, sortType%)
+Sub SortPlayer (stpl, PPP, sortType)
 
     Shared TMM$(), TPP$(), TYY$()
     Shared TYP!()
@@ -2194,7 +2254,7 @@ Sub SortPlayer (stpl, PPP, sortType%)
 
         For J = PPP To I Step -1
 
-            If sortType% = 1 Then
+            If sortType = 1 Then
                 If TYP!(J - 1) < TYP!(J) Then
                     Swap TPP$(J - 1), TPP$(J)
                     Swap TMM$(J - 1), TMM$(J)
@@ -2203,7 +2263,7 @@ Sub SortPlayer (stpl, PPP, sortType%)
                 End If
             End If
 
-            If sortType% = 2 Then
+            If sortType = 2 Then
                 If TYP!(J - 1) > TYP!(J) Then
                     Swap TPP$(J - 1), TPP$(J)
                     Swap TMM$(J - 1), TMM$(J)
@@ -2224,7 +2284,7 @@ End Sub
 '----------------------------------------
 'This subroutine sorts the teams involved
 'in the chosen stat category
-Sub SortTeam (sortMax, stpl, sortType%)
+Sub SortTeam (sortMax, stpl, sortType)
 
     Shared TYP!()
     Shared TMM$()
@@ -2237,14 +2297,14 @@ Sub SortTeam (sortMax, stpl, sortType%)
 
         For J = sortMax To I Step -1
 
-            If sortType% = 1 Then
+            If sortType = 1 Then
                 If TYP!(J - 1) < TYP!(J) Then
                     Swap TMM$(J - 1), TMM$(J)
                     Swap TYP!(J - 1), TYP!(J)
                 End If
             End If
 
-            If sortType% = 2 Then
+            If sortType = 2 Then
                 If TYP!(J - 1) > TYP!(J) Then
                     Swap TMM$(J - 1), TMM$(J)
                     Swap TYP!(J - 1), TYP!(J)
@@ -2584,12 +2644,12 @@ End Sub
 'helps the user have a custom view of the
 'categories without needing to page through
 'every result.
-Sub GetListLength (printOrView%, listLength, maxItems)
+Sub GetListLength (printOrView, listLength, maxItems)
 
     Color , 0
     Cls
 
-    If printOrView% <> 1 Then
+    If printOrView <> 1 Then
         'If printing...
 
         Do
@@ -2624,4 +2684,5 @@ Sub GetListLength (printOrView%, listLength, maxItems)
     End If
 
 End Sub
+
 

@@ -282,7 +282,7 @@ Dim GMA!(300), GMB!(180), GMC!(120)
 Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
-Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 30), sackStats!(1, 1)
+Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 0 To 29), sackStats!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
 Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
@@ -292,7 +292,7 @@ Dim expCategories$(74)
 Dim intNam_TRADE$(1, 9)
 Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyRBacks$(10), lookyWdRec$(6), lookyQBacks$(4), lookyKickRet$(3), lookyPRet$(3), lookyPunter$(2), lookyKicker$(2)
-Dim lookyTT$(31, 30)
+Dim lookyTT$(31, 0 To 29)
 Dim QBL$(120), sackNam_TRADE$(1, 14)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
@@ -3702,8 +3702,8 @@ Sub FOOTBALL ()
         '_Delay 2
         'End If
 
-        Open "pbplog" + Str$(currGame) For Append As #11
-        'Open "runlog" For Append As #11
+        'Open "pbplog" + Str$(currGame) For Append As #11
+        Open "runlog" For Append As #11
 
         'Read in schedule options
         Open diskPaths$(0) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
@@ -3730,7 +3730,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Open "pbplog" For Append As #11
+        'Open "pbplog" For Append As #11
 
     End If
 
@@ -4355,7 +4355,7 @@ Sub FOOTBALL ()
                     'Touchback will auto-change possession
                     Call CHANGEPOSS
                     Call Touchback
-                    Print #11, "TOUCHBACK - Kickoff, Automatic"
+                    'Print #11, "TOUCHBACK - Kickoff, Automatic"
                     kickNotReturned = 1
 
                 Else
@@ -4405,7 +4405,7 @@ Sub FOOTBALL ()
                             'Touchback will auto-change possession
                             Call CHANGEPOSS
                             Call Touchback
-                            Print #11, "TOUCHBACK, Kickoff, Downed"
+                            'Print #11, "TOUCHBACK, Kickoff, Downed"
                             kickNotReturned = 1
 
                         Else
@@ -4468,7 +4468,7 @@ Sub FOOTBALL ()
 
                         'If RN0 <= 50 Then
                         If RN0 <= 12 Then
-                            'Kick return for TD - 1% chance
+                            'Kick return for TD - 1.2% chance
                             ydsGained = 110
                         Else
                             '15 to 33 yds
@@ -4516,7 +4516,7 @@ Sub FOOTBALL ()
                     'Returner didn't make it out of the endzone
                     Call CHANGEPOSS
                     Call Touchback
-                    Print #11, "TOUCHBACK, Kickoff, Nowhere"
+                    'Print #11, "TOUCHBACK, Kickoff, Nowhere"
 
                 Else
 
@@ -7129,10 +7129,11 @@ Sub FOOTBALL ()
                             'Track Return TD
                             gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
 
-                            BG = 100 - ydLine
-                            If BG > puntReturners(P1, puntRetNbr) Then
+                            returnGain = 100 - ydLine
+
+                            If returnGain > puntReturners(P1, puntRetNbr) Then
                                 gamePR$(P1, puntRetNbr) = "t"
-                                puntReturners(P1, puntRetNbr) = BG
+                                puntReturners(P1, puntRetNbr) = returnGain
                             End If
 
                             I1 = puntRetNbr
@@ -14398,14 +14399,14 @@ Sub PuntReturnYards ()
                     '-6 to 16
                     ydsGained = Int((Rnd(1) * 14)) + (prYdsPerRet(P1, puntRetNbr) - 3) * 3
 
-                Case 900 To 988
+                Case 900 To 995
                     If I2 <> 1 Then
                         '6 to 53
                         ydsGained = Int((Rnd(1) * 39) + 12) + (prYdsPerRet(P1, puntRetNbr) - 3) * 3
                     End If
 
-                Case 989 To 1000
-                    '1.1% chance of TD
+                Case 993 To 1000
+                    '0.8% chance of TD; was 1.1%
                     If I2 <> 1 Then
                         ydsGained = 110
                     End If
@@ -14417,15 +14418,17 @@ Sub PuntReturnYards ()
             Select Case RN0
 
                 Case 1 To 900
+                    '90% chance
                     '0 - 24
                     ydsGained = Int((Rnd(1) * 25) + 0)
 
-                Case 901 To 940
+                Case 901 To 960
+                    '7% chance
                     '12 - 50
                     ydsGained = Int((Rnd(1) * 39) + 12)
 
-                Case 941 To 1000
-                    '6% chance of TD
+                Case 961 To 1000
+                    '4% chance of TD; was 6%
                     If I2 <> 1 Then
                         ydsGained = 110
                     End If
@@ -14434,10 +14437,11 @@ Sub PuntReturnYards ()
 
         Case Is >= 6
 
-            If RN0 > 900 And I2 <> 1 Then
-                '10% chance of TD
+            If RN0 > 925 And I2 <> 1 Then
+                '7.5% chance of TD; was 10%
                 ydsGained = 110
             Else
+                '95% chance
                 '0 to 34
                 ydsGained = Int((Rnd(1) * 26)) + (prYdsPerRet(P1, puntRetNbr) - 6) * 3
             End If
@@ -14450,6 +14454,10 @@ Sub PuntReturnYards ()
 
     pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetNbr) + " AT THE" + Str$(Int(ydLineTeam))
     Call PBP
+
+    Print #11, "Punt RETURNED for: "; ydsGained; "yards"
+    Print #11, "Punter Rating = "; prYdsPerRet(P1, puntRetNbr); "yds / return"
+    Print #11, "Random # = "; RN0
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
@@ -16061,24 +16069,24 @@ Sub KickoffDistance ()
 
         Select Case ruleOptPro
         
-            Case 0 to 1
+            Case 0 To 1
                 'Prior to 1974, the NFL had a kick line at the 40
                 'They had a return rate of 75%
                 returnRate = 75
 
-            Case 2 to 3
+            Case 2 To 3
                 'In 1974, the NFL moved the kick line to the 35.
                 'They had a return rate of 92%
                 returnRate = 92
             
-            Case 4 to 5
+            Case 4 To 5
                 'In 1994, the NFL moved the kick line to the 30.
                 'They had a return rate up to 88%
                 returnRate = 88
                 
-            Case 6 to 9
+            Case 6 To 9
                 'In 2011, the NFL moved the kick line to the 35.
-                'They also eliminated running starts. 
+                'They also eliminated running starts.
                 'Return rates fell to nearly 50%
                 returnRate = 50
 
@@ -16090,19 +16098,19 @@ Sub KickoffDistance ()
 
         Select Case ruleOptColl
 
-            Case 0 to 1
+            Case 0 To 1
                 'Return rates based on NFL,
-                'since there is no public data 
+                'since there is no public data
                 'that I have found
                 returnRate = 75
             
-            Case 2 to 6
+            Case 2 To 6
                 'Return rates based on NFL,
-                'since there is no public data 
+                'since there is no public data
                 'that I have found
                 returnRate = 88
 
-            Case 7 to 8
+            Case 7 To 8
                 '1992 - 2007
                 returnRate = 60
             
@@ -16110,11 +16118,11 @@ Sub KickoffDistance ()
                 '2008 - 2011
                 returnRate = 76
                 
-            Case 10 to 11
+            Case 10 To 11
                 '2012 - 2017
                 returnRate = 58
                 
-            'In between here the return rate fell to 51%
+                'In between here the return rate fell to 51%
             
             Case 11
                 '2018+
@@ -16150,7 +16158,7 @@ Sub KickoffDistance ()
     End If
 
     kickDist = 100 - ydLine - kickYL
-    Call pbplog(16088)
+    'Call pbplog(16088)
 
 End Sub
 
@@ -18254,6 +18262,7 @@ Sub COMPILESTATFILES (teamIdx)
     Shared gamePK$(), oppName$()
     Shared gameSite$()
     Shared locIndicator$()
+
     Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
 
     'Determine stat file name
@@ -18413,7 +18422,9 @@ Sub COMPILESTATFILES (teamIdx)
         End If
     Next
 
-    If gameStatsTeam(teamIdx, 26) > gameZ0!(28) Then gameZ0!(28) = gameStatsTeam(teamIdx, 26)
+    If gameStatsTeam(teamIdx, 26) > gameZ0!(28) Then
+        gameZ0!(28) = gameStatsTeam(teamIdx, 26)
+    End If
 
     For I = 0 To 1
 

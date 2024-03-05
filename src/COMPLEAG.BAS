@@ -288,23 +288,27 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     Input #1, TM$
 
-    'Positions
+    'RB Names
     For I = 1 To 10:
         Input #1, compRB$(I)
     Next
 
+    'WR Names
     For I = 1 To 6:
         Input #1, compWR$(I)
     Next
 
+    'QB Names
     For I = 1 To 4:
         Input #1, compQB$(I)
     Next
 
+    'KR Names
     For I = 1 To 3:
         Input #1, compKR$(I)
     Next
 
+    'PR Names
     For I = 1 To 3:
         Input #1, compPR$(I)
     Next I
@@ -312,7 +316,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     'Punter
     Input #1, puntName$
 
-    'Kickers
+    'Place Kickers
     For I = 1 To 2:
         Input #1, compPK$(I)
     Next
@@ -324,15 +328,18 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
         Next K
     Next J
 
+    'Offensive Team stats
     For L = 0 To 38:
         Input #1, OT!(L)
     Next L
 
+    'Defensive Team stats
     For L = 0 To 38:
         Input #1, DT!(L)
     Next L
 
     For J = 0 To 9:
+        'Interception Names
         Input #1, intName$(J)
         For J1 = 0 To 2
             Input #1, statsGI%(J, J1)
@@ -340,42 +347,49 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     Next
 
     For J = 0 To 14:
+        'Sack Names
         Input #1, sackName$(J)
         For J1 = 0 To 1:
             Input #1, statsGS%(J, J1)
         Next
     Next
 
+    'Longest rush?
     For I = 0 To 9:
         Input #1, statsLR!(I)
         Input #1, statsLR$(I, 0)
         Input #1, statsLR$(I, 1)
     Next
 
+    'Longest catch?
     For I = 0 To 15:
         Input #1, statsLC!(I)
         Input #1, statsLC$(I, 0)
         Input #1, statsLC$(I, 1)
     Next
 
+    'Longest punt?
     For I = 0 To 3:
         Input #1, statsLP!(I)
         Input #1, statsLP$(I, 0)
         Input #1, statsLP$(I, 1)
     Next
 
+    'Longest kick?
     For I = 0 To 2:
         Input #1, statsLK!(I)
         Input #1, statsLK$(I, 0)
         Input #1, statsLK$(I, 1)
     Next
 
+    'Longest placekick (FG)?
     For I = 0 To 2:
         Input #1, statsPK!(I)
         Input #1, PKR$(I, 0)
         Input #1, PKR$(I, 1)
     Next
 
+    'Longest fumble?
     For I = 0 To 1:
         Input #1, statsLF!(I)
         Input #1, statsLF$(I)
@@ -386,6 +400,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
         Next
     Next
 
+    'Longest interception?
     For I = 0 To 9:
         Input #1, statsLI!(I)
         Input #1, statsLI$(I, 0)
@@ -591,9 +606,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compRB$(X) <> "OTHERS" Then
 
-            If compRB!(X, 1) > indRecords!(0) Then indRecords!(0) = compRB!(X, 1): indRecDesc$(0, 0) = compRB$(X): indRecDesc$(0, 1) = TM$
-            If compRB!(X, 2) > indRecords!(1) Then indRecords!(1) = compRB!(X, 2): indRecDesc$(1, 0) = compRB$(X): indRecDesc$(1, 1) = TM$
-            If compRB!(X, 3) > indRecords!(2) Then indRecords!(2) = compRB!(X, 3): indRecDesc$(2, 0) = compRB$(X): indRecDesc$(2, 1) = TM$
+            If compRB!(X, 1) > indRecords!(0) Then 
+                indRecords!(0) = compRB!(X, 1)
+                indRecDesc$(0, 0) = compRB$(X)
+                indRecDesc$(0, 1) = TM$
+            End If
+
+            If compRB!(X, 2) > indRecords!(1) Then 
+                indRecords!(1) = compRB!(X, 2)
+                indRecDesc$(1, 0) = compRB$(X)
+                indRecDesc$(1, 1) = TM$
+            End If
+
+            If compRB!(X, 3) > indRecords!(2) Then 
+                indRecords!(2) = compRB!(X, 3)
+                indRecDesc$(2, 0) = compRB$(X)
+                indRecDesc$(2, 1) = TM$
+            End If
 
             If compRB!(X, 9) > indRecords!(3) And UCase$(finalUpdate$) = "Y" And compRB!(X, 1) >= numberGames * 10 Then
                 'Rushing Average
@@ -770,9 +799,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compWR$(X) <> "OTHERS" Then
 
-            If compWR!(X, 1) > indRecords!(5) Then indRecords!(5) = compWR!(X, 1): indRecDesc$(5, 0) = compWR$(X): indRecDesc$(5, 1) = TM$
-            If compWR!(X, 2) > indRecords!(6) Then indRecords!(6) = compWR!(X, 2): indRecDesc$(6, 0) = compWR$(X): indRecDesc$(6, 1) = TM$
-            If compWR!(X, 3) > indRecords!(7) Then indRecords!(7) = compWR!(X, 3): indRecDesc$(7, 0) = compWR$(X): indRecDesc$(7, 1) = TM$
+            If compWR!(X, 1) > indRecords!(5) Then 
+                indRecords!(5) = compWR!(X, 1)
+                indRecDesc$(5, 0) = compWR$(X)
+                indRecDesc$(5, 1) = TM$
+            End If
+
+            If compWR!(X, 2) > indRecords!(6) Then 
+                indRecords!(6) = compWR!(X, 2)
+                indRecDesc$(6, 0) = compWR$(X)
+                indRecDesc$(6, 1) = TM$
+            End If
+
+            If compWR!(X, 3) > indRecords!(7) Then 
+                indRecords!(7) = compWR!(X, 3)
+                indRecDesc$(7, 0) = compWR$(X)
+                indRecDesc$(7, 1) = TM$
+            End If
 
             'Look for at least 3 catches / game
             If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= numberGames * 3 Then
@@ -944,9 +987,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If TB$(X) <> "OTHERS" Then
 
-            If YD!(X) > indRecords!(18) Then indRecords!(18) = YD!(X): indRecDesc$(18, 0) = TB$(X): indRecDesc$(18, 1) = TM$
-            If TP!(X) > indRecords!(19) Then indRecords!(19) = TP!(X): indRecDesc$(19, 0) = TB$(X): indRecDesc$(19, 1) = TM$
-            If TP!(X) > indRecords!(21) Then indRecords!(21) = TP!(X): indRecDesc$(21, 0) = TB$(X): indRecDesc$(21, 1) = TM$
+            If YD!(X) > indRecords!(18) Then 
+                indRecords!(18) = YD!(X)
+                indRecDesc$(18, 0) = TB$(X)
+                indRecDesc$(18, 1) = TM$
+            End If
+            
+            If TP!(X) > indRecords!(19) Then 
+                indRecords!(19) = TP!(X)
+                indRecDesc$(19, 0) = TB$(X)
+                indRecDesc$(19, 1) = TM$
+            End If
+
+            If TP!(X) > indRecords!(21) Then 
+                indRecords!(21) = TP!(X)
+                indRecDesc$(21, 0) = TB$(X)
+                indRecDesc$(21, 1) = TM$
+            End If
 
             For Z = 101 To 110
                 If compZ2$(Z) = TB$(X) And compZ3$(Z) = WT$ Then
@@ -1626,9 +1683,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If Left$(intName$(X), 1) <> " " And intName$(X) <> "" And intName$(X) <> "END" Then
 
-            If statsGI%(X, 0) > indRecords!(42) Then indRecords!(42) = statsGI%(X, 0): indRecDesc$(42, 0) = intName$(X): indRecDesc$(42, 1) = TM$
-            If statsGI%(X, 1) > indRecords!(43) Then indRecords!(43) = statsGI%(X, 1): indRecDesc$(43, 0) = intName$(X): indRecDesc$(43, 1) = TM$
-            If statsGI%(X, 2) > indRecords!(44) Then indRecords!(44) = statsGI%(X, 2): indRecDesc$(44, 0) = intName$(X): indRecDesc$(44, 1) = TM$
+            If statsGI%(X, 0) > indRecords!(42) Then 
+                indRecords!(42) = statsGI%(X, 0)
+                indRecDesc$(42, 0) = intName$(X)
+                indRecDesc$(42, 1) = TM$
+            End If
+
+            If statsGI%(X, 1) > indRecords!(43) Then 
+                indRecords!(43) = statsGI%(X, 1)
+                indRecDesc$(43, 0) = intName$(X)
+                indRecDesc$(43, 1) = TM$
+            End If
+
+            If statsGI%(X, 2) > indRecords!(44) Then 
+                indRecords!(44) = statsGI%(X, 2)
+                indRecDesc$(44, 0) = intName$(X)
+                indRecDesc$(44, 1) = TM$
+            End If
 
             If X > 0 Then
                 If statsLI!(X - 1) > indRecords!(45) Then
@@ -1780,10 +1851,25 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames < teamRecords!(25) Then teamRecords!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames: teamRecDesc$(25) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) + DT!(14) < teamRecords!(26) Then teamRecords!(26) = DT!(6) + DT!(2) + DT!(14): teamRecDesc$(26) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)) < teamRecords!(27) Then teamRecords!(27) = (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)): teamRecDesc$(27) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames > teamRecords!(28) Then teamRecords!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames: teamRecDesc$(28) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames < teamRecords!(25) Then 
+        teamRecords!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames
+        teamRecDesc$(25) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) + DT!(14) < teamRecords!(26) Then 
+        teamRecords!(26) = DT!(6) + DT!(2) + DT!(14)
+        teamRecDesc$(26) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)) < teamRecords!(27) Then 
+        teamRecords!(27) = (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13))
+        teamRecDesc$(27) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames > teamRecords!(28) Then 
+        teamRecords!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames
+        teamRecDesc$(28) = TM$
+    End If
 
     If (DT!(6) + DT!(2) + DT!(14)) / numberGames < compTT!(CA, 20, 5) Then
         'Games
@@ -1814,9 +1900,20 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 3 - RUSHING OFFENSE
     CA = 3
 
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / numberGames > teamRecords!(3) Then teamRecords!(3) = (OT!(2) + OT!(14)) / numberGames: teamRecDesc$(3) = TM$
-    If OT!(2) + OT!(14) > teamRecords!(4) Then teamRecords!(4) = OT!(2) + OT!(14): teamRecDesc$(4) = TM$
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > teamRecords!(5) Then teamRecords!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)): teamRecDesc$(5) = TM$
+    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / numberGames > teamRecords!(3) Then 
+        teamRecords!(3) = (OT!(2) + OT!(14)) / numberGames
+        teamRecDesc$(3) = TM$
+    End If
+
+    If OT!(2) + OT!(14) > teamRecords!(4) Then 
+        teamRecords!(4) = OT!(2) + OT!(14)
+        teamRecDesc$(4) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > teamRecords!(5) Then 
+        teamRecords!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13))
+        teamRecDesc$(5) = TM$
+    End If
 
     If (OT!(2) + OT!(14)) / numberGames > compTT!(CA, 20, 5) Then
 
@@ -1843,9 +1940,20 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames < teamRecords!(29) Then teamRecords!(29) = (DT!(2) + DT!(14)) / numberGames: teamRecDesc$(29) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(2) + DT!(14) < teamRecords!(30) Then teamRecords!(30) = DT!(2) + DT!(14): teamRecDesc$(30) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < teamRecords!(31) Then teamRecords!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)): teamRecDesc$(31) = TM$
+    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames < teamRecords!(29) Then 
+        teamRecords!(29) = (DT!(2) + DT!(14)) / numberGames
+        teamRecDesc$(29) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(2) + DT!(14) < teamRecords!(30) Then 
+        teamRecords!(30) = DT!(2) + DT!(14)
+        teamRecDesc$(30) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < teamRecords!(31) Then 
+        teamRecords!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13))
+        teamRecDesc$(31) = TM$
+    End If
 
     If (DT!(2) + DT!(14)) / numberGames < compTT!(CA, 20, 5) Then
 
@@ -1879,9 +1987,20 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
         OPTS = OPTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then teamRecords!(13) = PTS / numberGames: teamRecDesc$(13) = TM$
-    If PTS > teamRecords!(12) Then teamRecords!(12) = PTS: teamRecDesc$(12) = TM$
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then teamRecords!(14) = (PTS - OPTS) / numberGames: teamRecDesc$(14) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then 
+        teamRecords!(13) = PTS / numberGames
+        teamRecDesc$(13) = TM$
+    End If
+
+    If PTS > teamRecords!(12) Then 
+        teamRecords!(12) = PTS
+        teamRecDesc$(12) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then 
+        teamRecords!(14) = (PTS - OPTS) / numberGames
+        teamRecDesc$(14) = TM$
+    End If
 
     If PTS / numberGames > compTT!(CA, 20, 3) Then
 
@@ -1939,12 +2058,34 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 7 - PASSING OFFENSE
     CA = 7
 
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames > teamRecords!(6) Then teamRecords!(6) = OT!(6) / numberGames: teamRecDesc$(6) = TM$
-    If OT!(6) > teamRecords!(7) Then teamRecords!(7) = OT!(6): teamRecDesc$(7) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > teamRecords!(8) Then teamRecords!(8) = OT!(6) / OT!(3): teamRecDesc$(8) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > teamRecords!(9) Then teamRecords!(9) = OT!(6) / OT!(4): teamRecDesc$(9) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > teamRecords!(10) Then teamRecords!(10) = OT!(4) / OT!(3): teamRecDesc$(10) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < teamRecords!(11) Then teamRecords!(11) = OT!(5) / OT!(3): teamRecDesc$(11) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames > teamRecords!(6) Then 
+        teamRecords!(6) = OT!(6) / numberGames
+        teamRecDesc$(6) = TM$
+    End If
+
+    If OT!(6) > teamRecords!(7) Then 
+        teamRecords!(7) = OT!(6): teamRecDesc$(7) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > teamRecords!(8) Then 
+        teamRecords!(8) = OT!(6) / OT!(3)
+        teamRecDesc$(8) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > teamRecords!(9) Then 
+        teamRecords!(9) = OT!(6) / OT!(4)
+        teamRecDesc$(9) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > teamRecords!(10) Then 
+        teamRecords!(10) = OT!(4) / OT!(3)
+        teamRecDesc$(10) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < teamRecords!(11) Then 
+        teamRecords!(11) = OT!(5) / OT!(3)
+        teamRecDesc$(11) = TM$
+    End If
 
     If OT!(6) / numberGames > compTT!(CA, 20, 8) Then
 
@@ -1974,12 +2115,35 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames < teamRecords!(32) Then teamRecords!(32) = DT!(6) / numberGames: teamRecDesc$(32) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) < teamRecords!(33) Then teamRecords!(33) = DT!(6): teamRecDesc$(33) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < teamRecords!(34) Then teamRecords!(34) = DT!(6) / DT!(3): teamRecDesc$(34) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < teamRecords!(35) Then teamRecords!(35) = DT!(6) / DT!(4): teamRecDesc$(35) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < teamRecords!(36) Then teamRecords!(36) = DT!(4) / DT!(3): teamRecDesc$(36) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > teamRecords!(37) Then teamRecords!(37) = DT!(5) / DT!(3): teamRecDesc$(37) = TM$
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames < teamRecords!(32) Then 
+        teamRecords!(32) = DT!(6) / numberGames
+        teamRecDesc$(32) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) < teamRecords!(33) Then 
+        teamRecords!(33) = DT!(6)
+        teamRecDesc$(33) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < teamRecords!(34) Then 
+        teamRecords!(34) = DT!(6) / DT!(3)
+        teamRecDesc$(34) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < teamRecords!(35) Then 
+        teamRecords!(35) = DT!(6) / DT!(4)
+        teamRecDesc$(35) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < teamRecords!(36) Then 
+        teamRecords!(36) = DT!(4) / DT!(3)
+        teamRecDesc$(36) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > teamRecords!(37) Then 
+        teamRecords!(37) = DT!(5) / DT!(3)
+        teamRecDesc$(37) = TM$
+    End If
 
     If DT!(6) / numberGames < compTT!(CA, 20, 8) Then
 
@@ -2067,25 +2231,64 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     End If
 
     'PUNT RETURNS
-    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > teamRecords!(16) Then teamRecords!(16) = OT!(25) / OT!(24): teamRecDesc$(16) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < teamRecords!(42) Then teamRecords!(42) = DT!(25) / DT!(24): teamRecDesc$(42) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > teamRecords!(16) Then 
+        teamRecords!(16) = OT!(25) / OT!(24)
+        teamRecDesc$(16) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < teamRecords!(42) Then 
+        teamRecords!(42) = DT!(25) / DT!(24)
+        teamRecDesc$(42) = TM$
+    End If
 
     'KO Return
-    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > teamRecords!(17) Then teamRecords!(17) = OT!(23) / OT!(22): teamRecDesc$(17) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < teamRecords!(43) Then teamRecords!(43) = DT!(23) / DT!(22): teamRecDesc$(43) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > teamRecords!(17) Then 
+        teamRecords!(17) = OT!(23) / OT!(22)
+        teamRecDesc$(17) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < teamRecords!(43) Then 
+        teamRecords!(43) = DT!(23) / DT!(22)
+        teamRecDesc$(43) = TM$
+    End If
 
     'FIRST DOWNS
-    If OT!(0) > teamRecords!(18) Then teamRecords!(18) = OT!(0): teamRecDesc$(18) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames > teamRecords!(19) Then teamRecords!(19) = OT!(0) / numberGames: teamRecDesc$(19) = TM$
+    If OT!(0) > teamRecords!(18) Then 
+        teamRecords!(18) = OT!(0)
+        teamRecDesc$(18) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames > teamRecords!(19) Then 
+        teamRecords!(19) = OT!(0) / numberGames
+        teamRecDesc$(19) = TM$
+    End If
 
     'FUMBLES
-    If OT!(9) > teamRecords!(20) Then teamRecords!(20) = OT!(9): teamRecDesc$(20) = TM$
-    If OT!(10) > teamRecords!(21) Then teamRecords!(21) = OT!(10): teamRecDesc$(21) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(10) < teamRecords!(22) Then teamRecords!(22) = OT!(10): teamRecDesc$(22) = TM$
+    If OT!(9) > teamRecords!(20) Then 
+        teamRecords!(20) = OT!(9)
+        teamRecDesc$(20) = TM$
+    End If
+
+    If OT!(10) > teamRecords!(21) Then 
+        teamRecords!(21) = OT!(10)
+        teamRecDesc$(21) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(10) < teamRecords!(22) Then 
+        teamRecords!(22) = OT!(10)
+        teamRecDesc$(22) = TM$
+    End If
 
     'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames > teamRecords!(23) Then teamRecords!(23) = OT!(11) / numberGames: teamRecDesc$(23) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames > teamRecords!(24) Then teamRecords!(24) = OT!(12) / numberGames: teamRecDesc$(24) = TM$
+    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames > teamRecords!(23) Then 
+        teamRecords!(23) = OT!(11) / numberGames
+        teamRecDesc$(23) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames > teamRecords!(24) Then 
+        teamRecords!(24) = OT!(12) / numberGames
+        teamRecDesc$(24) = TM$
+    End If
 
 End Sub
 
