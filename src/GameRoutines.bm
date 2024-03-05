@@ -206,7 +206,7 @@ Sub InitVar ()
     Erase FA, FM
     Erase gameLongFG, gameStatsTeam, gameZ0!, gameZ1!, gameZ2!
     Erase K1, gameStatsPlayer, K3
-    Erase gameInts, gameSacks, hasRunFF, playerInts, IR
+    Erase gameInts, sackStatsPlayer, hasRunFF, playerInts, IR
     Erase kickReturners
     Erase LC, LF, LI, LK, LP, LR
     Erase nbrPossOT, PK, puntReturners
@@ -7651,45 +7651,45 @@ Sub STATS2SCREEN ()
     Print gameTeams$(1)
 
     Color 0, 7
-    Locate , 20: Print gameStatsTeamTeam(0, 0);
+    Locate , 20: Print gameStatsTeam(0, 0);
     Locate , 34: Print "FIRST DOWNS";
-    Locate , 55: Print gameStatsTeamTeam(1, 0)
+    Locate , 55: Print gameStatsTeam(1, 0)
 
     If ruleOptType = 0 Then
-        Locate , 18: Print gameStatsTeamTeam(0, 1); "-"; Int(gameStatsTeamTeam(0, 2) + .5);
+        Locate , 18: Print gameStatsTeam(0, 1); "-"; Int(gameStatsTeam(0, 2) + .5);
         Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print gameStatsTeamTeam(1, 1); "-"; Int(gameStatsTeamTeam(1, 2) + .5)
+        Locate , 53: Print gameStatsTeam(1, 1); "-"; Int(gameStatsTeam(1, 2) + .5)
     Else
-        Locate , 18: Print gameStatsTeamTeam(0, 1) - sackStatsTeam(0, 0); "-"; Int(gameStatsTeamTeam(0, 2) + sackStatsTeam(0, 1) + .5);
+        Locate , 18: Print gameStatsTeam(0, 1) - sackStatsTeam(0, 0); "-"; Int(gameStatsTeam(0, 2) + sackStatsTeam(0, 1) + .5);
         Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print gameStatsTeamTeam(1, 1) - sackStatsTeam(1, 0); "-"; Int(gameStatsTeamTeam(1, 2) + sackStatsTeam(1, 1) + .5)
+        Locate , 53: Print gameStatsTeam(1, 1) - sackStatsTeam(1, 0); "-"; Int(gameStatsTeam(1, 2) + sackStatsTeam(1, 1) + .5)
     End If
 
-    Locate , 20: Print Int(gameStatsTeamTeam(0, 6) + .5);
+    Locate , 20: Print Int(gameStatsTeam(0, 6) + .5);
     Locate , 34: Print "PASSING YDS";
-    Locate , 55: Print Int(gameStatsTeamTeam(1, 6) + .5)
+    Locate , 55: Print Int(gameStatsTeam(1, 6) + .5)
 
     Locate , 35: Print "TOTAL YDS";
-    Locate , 20: Print Int(gameStatsTeamTeam(0, 6) + .5) + Int(gameStatsTeamTeam(0, 2) + .5);
-    Locate , 55: Print Int(gameStatsTeamTeam(1, 6) + .5) + Int(gameStatsTeamTeam(1, 2) + .5)
+    Locate , 20: Print Int(gameStatsTeam(0, 6) + .5) + Int(gameStatsTeam(0, 2) + .5);
+    Locate , 55: Print Int(gameStatsTeam(1, 6) + .5) + Int(gameStatsTeam(1, 2) + .5)
 
     Locate , 37: Print "PASSES";
-    Locate , 16: Print gameStatsTeamTeam(0, 4); "-"; gameStatsTeamTeam(0, 3); "-"; gameStatsTeamTeam(0, 5);
-    Locate , 51: Print gameStatsTeamTeam(1, 4); "-"; gameStatsTeamTeam(1, 3); "-"; gameStatsTeamTeam(1, 5)
+    Locate , 16: Print gameStatsTeam(0, 4); "-"; gameStatsTeam(0, 3); "-"; gameStatsTeam(0, 5);
+    Locate , 51: Print gameStatsTeam(1, 4); "-"; gameStatsTeam(1, 3); "-"; gameStatsTeam(1, 5)
 
-    If gameStatsTeamTeam(0, 7) <> 0 And gameStatsTeamTeam(1, 7) <> 0 Then
+    If gameStatsTeam(0, 7) <> 0 And gameStatsTeam(1, 7) <> 0 Then
         Locate , 38: Print "PUNTS";
-        Locate , 15: Print gameStatsTeamTeam(0, 7); "-"; Int((gameStatsTeamTeam(0, 8) / gameStatsTeamTeam(0, 7)) * 10 + .5) / 10;
-        Locate , 50: Print gameStatsTeamTeam(1, 7); "-"; Int((gameStatsTeamTeam(1, 8) / gameStatsTeamTeam(1, 7)) * 10 + .5) / 10
+        Locate , 15: Print gameStatsTeam(0, 7); "-"; Int((gameStatsTeam(0, 8) / gameStatsTeam(0, 7)) * 10 + .5) / 10;
+        Locate , 50: Print gameStatsTeam(1, 7); "-"; Int((gameStatsTeam(1, 8) / gameStatsTeam(1, 7)) * 10 + .5) / 10
     End If
 
     Locate , 36: Print "FUM/LOST";
-    Locate , 18: Print gameStatsTeamTeam(0, 9); "-"; gameStatsTeamTeam(0, 10);
-    Locate , 53: Print gameStatsTeamTeam(1, 9); "-"; gameStatsTeamTeam(1, 10)
+    Locate , 18: Print gameStatsTeam(0, 9); "-"; gameStatsTeam(0, 10);
+    Locate , 53: Print gameStatsTeam(1, 9); "-"; gameStatsTeam(1, 10)
 
     Locate , 35: Print "PENALTIES";
-    Locate , 18: Print gameStatsTeamTeam(0, 11); "-"; Int(gameStatsTeamTeam(0, 12) + .5);
-    Locate , 53: Print gameStatsTeamTeam(1, 11); "-"; Int(gameStatsTeamTeam(1, 12) + .5)
+    Locate , 18: Print gameStatsTeam(0, 11); "-"; Int(gameStatsTeam(0, 12) + .5);
+    Locate , 53: Print gameStatsTeam(1, 11); "-"; Int(gameStatsTeam(1, 12) + .5)
 
     Locate , 37: Print "SACKED";
     Locate , 18: Print sackStatsTeam(0, 0); "-"; Int(sackStatsTeam(0, 1) + .5);
@@ -7728,7 +7728,7 @@ Sub STATS2SCREEN ()
 
         For I1 = 0 To 13
 
-            If gameStatsTeamPlayer(I, I1, 0) <> 0 Then
+            If gameStatsPlayer(I, I1, 0) <> 0 Then
 
                 Locate , 20
                 If I1 <= 9 Then
@@ -7737,12 +7737,12 @@ Sub STATS2SCREEN ()
                     Print qbacks$(I, I1 - 10);
                 End If
 
-                Locate , 35: Print Using "###  #### ###.#  "; gameStatsTeamPlayer(I, I1, 0), Int(gameStatsTeamPlayer(I, I1, 1) + .5), Int(gameStatsTeamPlayer(I, I1, 1) + .5) / gameStatsTeamPlayer(I, I1, 0);
+                Locate , 35: Print Using "###  #### ###.#  "; gameStatsPlayer(I, I1, 0), Int(gameStatsPlayer(I, I1, 1) + .5), Int(gameStatsPlayer(I, I1, 1) + .5) / gameStatsPlayer(I, I1, 0);
 
                 If I1 <= 9 Then
-                    Print Using "###   ##"; runBacks(I, I1), gameStatsTeamPlayer(I, I1, 2)
+                    Print Using "###   ##"; runBacks(I, I1), gameStatsPlayer(I, I1, 2)
                 Else
-                    Print Using "      ##"; gameStatsTeamPlayer(I, I1, 2)
+                    Print Using "      ##"; gameStatsPlayer(I, I1, 2)
                 End If
 
             End If
@@ -7772,10 +7772,10 @@ Sub STATS2SCREEN ()
 
         For I1 = 0 To 5
 
-            If gameStatsTeamPlayer(I, I1, 6) <> 0 Then
+            If gameStatsPlayer(I, I1, 6) <> 0 Then
                 Locate , 18
                 Print wdRec$(I, I1);
-                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsTeamPlayer(I, I1, 6), Int(gameStatsTeamPlayer(I, I1, 7) + .5), Int(gameStatsTeamPlayer(I, I1, 7) + .5) / gameStatsTeamPlayer(I, I1, 6), WR(I, I1 + 10), gameStatsTeamPlayer(I, I1, 8)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 6), Int(gameStatsPlayer(I, I1, 7) + .5), Int(gameStatsPlayer(I, I1, 7) + .5) / gameStatsPlayer(I, I1, 6), WR(I, I1 + 10), gameStatsPlayer(I, I1, 8)
                 nbrPlayers = nbrPlayers + 1
             End If
 
@@ -7803,10 +7803,10 @@ Sub STATS2SCREEN ()
 
         For I1 = 0 To 9
 
-            If gameStatsTeamPlayer(I, I1, 3) <> 0 Then
+            If gameStatsPlayer(I, I1, 3) <> 0 Then
                 Locate , 18
                 Print rbacks$(I, I1);
-                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsTeamPlayer(I, I1, 3), Int(gameStatsTeamPlayer(I, I1, 4) + .5), Int(gameStatsTeamPlayer(I, I1, 4) + .5) / gameStatsTeamPlayer(I, I1, 3), WR(I, I1), gameStatsTeamPlayer(I, I1, 5)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 3), Int(gameStatsPlayer(I, I1, 4) + .5), Int(gameStatsPlayer(I, I1, 4) + .5) / gameStatsPlayer(I, I1, 3), WR(I, I1), gameStatsPlayer(I, I1, 5)
                 nbrPlayers = nbrPlayers + 1
             End If
 
@@ -7852,21 +7852,21 @@ Sub STATS2SCREEN ()
 
         For I1 = 0 To 3
 
-            If gameStatsTeamPlayer(I, I1, 9) <> 0 Then
+            If gameStatsPlayer(I, I1, 9) <> 0 Then
 
                 Locate , 6
                 Print qbacks$(I, I1);
-                Locate , 22: Print Using "###  ### ###.#  ### ##.# "; gameStatsTeamPlayer(I, I1, 9), gameStatsTeamPlayer(I, I1, 10), gameStatsTeamPlayer(I, I1, 10) / gameStatsTeamPlayer(I, I1, 9) * 100, Int(gameStatsTeamPlayer(I, I1, 12) + .5), Int(gameStatsTeamPlayer(I, I1, 12) + .5) / gameStatsTeamPlayer(I, I1, 9);
+                Locate , 22: Print Using "###  ### ###.#  ### ##.# "; gameStatsPlayer(I, I1, 9), gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 10) / gameStatsPlayer(I, I1, 9) * 100, Int(gameStatsPlayer(I, I1, 12) + .5), Int(gameStatsPlayer(I, I1, 12) + .5) / gameStatsPlayer(I, I1, 9);
 
-                If gameStatsTeamPlayer(I, I1, 10) <> 0 Then
+                If gameStatsPlayer(I, I1, 10) <> 0 Then
                     'Y/C, TD
-                    Print Using "##.#  ##"; Int(gameStatsTeamPlayer(I, I1, 12) + .5) / gameStatsTeamPlayer(I, I1, 10), gameStatsTeamPlayer(I, I1, 13);
+                    Print Using "##.#  ##"; Int(gameStatsPlayer(I, I1, 12) + .5) / gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 13);
                 Else
-                    Print Using "      ##"; gameStatsTeamPlayer(I, I1, 13);
+                    Print Using "      ##"; gameStatsPlayer(I, I1, 13);
                 End If
 
                 '             TD%, I, I%,   LG
-                Print Using "###.# ## ###.# ###"; gameStatsTeamPlayer(I, I1, 13) / gameStatsTeamPlayer(I, I1, 9) * 100, gameStatsTeamPlayer(I, I1, 11), gameStatsTeamPlayer(I, I1, 11) / gameStatsTeamPlayer(I, I1, 9) * 100, quarterbacks(I, I1)
+                Print Using "###.# ## ###.# ###"; gameStatsPlayer(I, I1, 13) / gameStatsPlayer(I, I1, 9) * 100, gameStatsPlayer(I, I1, 11), gameStatsPlayer(I, I1, 11) / gameStatsPlayer(I, I1, 9) * 100, quarterbacks(I, I1)
 
             End If
 
@@ -7894,11 +7894,11 @@ Sub STATS2SCREEN ()
 
         For I1 = 0 To 2
 
-            If gameStatsTeamPlayer(I, I1, 14) <> 0 Then
+            If gameStatsPlayer(I, I1, 14) <> 0 Then
                 Locate , 20
                 Print kickRet$(I, I1);
                 Locate , 36
-                Print Using "##  ####  ##.#  ###  ##"; gameStatsTeamPlayer(I, I1, 14), Int(gameStatsTeamPlayer(I, I1, 15) + .5), Int(gameStatsTeamPlayer(I, I1, 15) + .5) / gameStatsTeamPlayer(I, I1, 14), kickReturners(I, I1), gameStatsTeamPlayer(I, I1, 16)
+                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + .5), Int(gameStatsPlayer(I, I1, 15) + .5) / gameStatsPlayer(I, I1, 14), kickReturners(I, I1), gameStatsPlayer(I, I1, 16)
 
             End If
 
@@ -7919,11 +7919,11 @@ Sub STATS2SCREEN ()
         Locate , 36: Print "PR   YDS   AVG   LG  TD"
 
         For I1 = 3 To 5
-            If gameStatsTeamPlayer(I, I1, 14) <> 0 Then
+            If gameStatsPlayer(I, I1, 14) <> 0 Then
                 Locate , 20
                 Print pret$(I, I1 - 3);
                 Locate , 36
-                Print Using "##  ####  ##.#  ###  ##"; gameStatsTeamPlayer(I, I1, 14), Int(gameStatsTeamPlayer(I, I1, 15) + .5), Int(gameStatsTeamPlayer(I, I1, 15) + .5) / gameStatsTeamPlayer(I, I1, 14), puntReturners(I, I1 - 3), gameStatsTeamPlayer(I, I1, 16)
+                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + .5), Int(gameStatsPlayer(I, I1, 15) + .5) / gameStatsPlayer(I, I1, 14), puntReturners(I, I1 - 3), gameStatsPlayer(I, I1, 16)
             End If
         Next I1
 
@@ -7946,11 +7946,11 @@ Sub STATS2SCREEN ()
         Print gameTeams$(I);: Color 0, 7
         Locate , 26: Print "PNT   AVG  LG  TB  BLK  20"
 
-        If gameStatsTeamTeam(I, 7) <> 0 Then
+        If gameStatsTeam(I, 7) <> 0 Then
             Locate , 10
             Print punter$(I, 0);
             Locate , 26
-            Print Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; gameStatsTeamTeam(I, 7), gameStatsTeamTeam(I, 8) / gameStatsTeamTeam(I, 7), gameStatsTeamTeam(I, 26), gameStatsTeamTeam(I, 27), gameStatsTeamTeam(I, 28), gameStatsTeamTeam(I, 29)
+            Print Using "###  ##.#  ##  ##   ##  ##  ##  ##.#  ##.#"; gameStatsTeam(I, 7), gameStatsTeam(I, 8) / gameStatsTeam(I, 7), gameStatsTeam(I, 26), gameStatsTeam(I, 27), gameStatsTeam(I, 28), gameStatsTeam(I, 29)
         End If
 
         Print
@@ -7967,20 +7967,20 @@ Sub STATS2SCREEN ()
         Color tmRat_GAME(I, 2), tmRat_GAME(I, 1): Print gameTeams$(I);: Color 0, 7
         Locate , 18: Print "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
 
-        If gameStatsTeamPlayer(I, 4, 17) <> 0 Or gameStatsTeamPlayer(I, 6, 17) <> 0 Then
+        If gameStatsPlayer(I, 4, 17) <> 0 Or gameStatsPlayer(I, 6, 17) <> 0 Then
             Locate , 3
             Print kicker$(I, 0);
             Locate , 18
 
-            If gameStatsTeamPlayer(I, 6, 17) <> 0 Then
-                Print Using "### ### ###.# "; gameStatsTeamPlayer(I, 5, 17), gameStatsTeamPlayer(I, 6, 17), gameStatsTeamPlayer(I, 5, 17) / gameStatsTeamPlayer(I, 6, 17) * 100;
+            If gameStatsPlayer(I, 6, 17) <> 0 Then
+                Print Using "### ### ###.# "; gameStatsPlayer(I, 5, 17), gameStatsPlayer(I, 6, 17), gameStatsPlayer(I, 5, 17) / gameStatsPlayer(I, 6, 17) * 100;
             End If
 
-            If gameStatsTeamPlayer(I, 4, 17) = 0 Then
+            If gameStatsPlayer(I, 4, 17) = 0 Then
                 Print
             Else
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsTeamPlayer(I, 3, 17), gameStatsTeamPlayer(I, 4, 17), gameStatsTeamPlayer(I, 3, 17) / gameStatsTeamPlayer(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
                 Print "- ";: Print Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
@@ -7990,22 +7990,22 @@ Sub STATS2SCREEN ()
 
         End If
 
-        If gameStatsTeamPlayer(I, 8, 17) <> 0 Or gameStatsTeamPlayer(I, 10, 17) <> 0 Then
+        If gameStatsPlayer(I, 8, 17) <> 0 Or gameStatsPlayer(I, 10, 17) <> 0 Then
 
             Locate , 3
             Print kicker$(I, 1);
             Locate , 18
 
-            If gameStatsTeamPlayer(I, 10, 17) <> 0 Then
-                Print Using "### ### ###.# "; gameStatsTeamPlayer(I, 9, 17), gameStatsTeamPlayer(I, 10, 17), gameStatsTeamPlayer(I, 9, 17) / gameStatsTeamPlayer(I, 10, 17) * 100;
+            If gameStatsPlayer(I, 10, 17) <> 0 Then
+                Print Using "### ### ###.# "; gameStatsPlayer(I, 9, 17), gameStatsPlayer(I, 10, 17), gameStatsPlayer(I, 9, 17) / gameStatsPlayer(I, 10, 17) * 100;
             End If
 
-            If gameStatsTeamPlayer(I, 8, 17) = 0 Then
+            If gameStatsPlayer(I, 8, 17) = 0 Then
                 Print
             Else
 
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsTeamPlayer(I, 7, 17), gameStatsTeamPlayer(I, 8, 17), gameStatsTeamPlayer(I, 7, 17) / gameStatsTeamPlayer(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
                 Print "- ";: Print Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
@@ -9117,10 +9117,9 @@ Sub EndOfGame
 
         Cls
 
-        'Using Home Team's color for the box
-        Call TEAMBOX(1, 1)
-
         Do
+            'Using Home Team's color for the box
+            Call TEAMBOX(1, 1)
             pbpString$ = "PLAY ANOTHER GAME? (Y/N)"
             Locate 7, (80 - Len(pbpString$)) / 2
             Print pbpString$

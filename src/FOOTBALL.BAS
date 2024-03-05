@@ -4102,10 +4102,11 @@ Sub FOOTBALL ()
                 Color 15, 0
                 Cls
 
-                Call TEAMBOX(1, 1)
 
                 If Not (autoPlay = 1 And playerMode = 2) Then
+
                     Do
+                        Call TEAMBOX(1, 1)
                         pbpString$ = "DISPLAY STATS AGAIN? (Y/N)"
                         Locate 7, (80 - Len(pbpString$)) / 2
                         Print pbpString$
