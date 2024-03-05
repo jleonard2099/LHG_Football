@@ -239,7 +239,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
     Shared AM!(), AF!()
-    Shared statsLC!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
+    Shared statsLC!(), statsLI!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
     Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsGI%(), statsGS%()
@@ -250,7 +250,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared intName$(), statsLC$(), statsLR$()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
-    Shared sackName$(), statsLF$(), statsLK$(), statsLP$(), statsPK$()
+    Shared sackName$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsPK$()
     Shared QBL$(), lookyTT$(), statsZ1$()
 
     Shared GMA!(), GMB!(), GMC!()
@@ -390,11 +390,12 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
                 'Longest Interception
                 '--> was previously NOT read in
+                '--> was previously not WRITTEN?
                 '--> is it not even calculated later!!!
                 For I = 0 To 9:
-                    Input #1, statsLI!(teamIdx, I)
-                    Input #1, statsLI$(teamIdx, I, 0)
-                    Input #1, statsLI$(teamIdx, I, 1)
+                    Input #1, statsLI!(I)
+                    Input #1, statsLI$(I, 0)
+                    Input #1, statsLI$(I, 1)
                 Next
 
                 Close #1
@@ -2684,5 +2685,4 @@ Sub GetListLength (printOrView, listLength, maxItems)
     End If
 
 End Sub
-
 
