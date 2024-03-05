@@ -43,7 +43,7 @@ Dim Shared DT$, TM$, TN$
 
 Dim location$(2), modeAbbrev$(3), overtime$(3)
 Dim playMode$(3)
-Dim rulesType$(5), ruleYrPro$(3), ruleYrColl$(5)
+Dim rulesType$(5), ruleYrPro$(3), ruleYrColl$(0 To 5)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 
@@ -75,7 +75,7 @@ Dim AF!(0 To 1, 0 To 4), AM!(1, 4)
 Dim AFN!(0 To 1, 0 To 4), AFR!(0 To 1, 0 To 4)
 Dim AMN!(1, 4), AMR!(1, 4)
 
-Dim K2!(13, 17)
+Dim gameStatsPlayer!(13, 17)
 
 '--LF! is only 0 to 9 b/c of career behavior
 Dim statsLC!(0 To 15), statsLF!(0 To 9), statsLI!(0 To 9), statsLK!(0 To 3)
@@ -337,9 +337,9 @@ Dim Shared gameClock!, pbpDelay!, timeElapsed!
 Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
 Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
 Dim Shared FA(1, 1, 4), FM(1, 1, 4)
-Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameSacks(1, 14, 1), gameStats(1, 36)
-Dim Shared gameZ(0 To 38), gameZ1(0 To 38), gameZ2(0 To 13, 0 To 17)
-Dim Shared K1(50, 6), K2(1, 13, 17), K3(1, 6)
+Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), sackStatsPlayer(1, 14, 1), gameStatsTeam(1, 36)
+Dim Shared gameZ0!(0 To 38), gameZ1!(0 To 38), gameZ2!(0 To 13, 0 To 17)
+Dim Shared K1(50, 6), gameStatsPlayer(1, 13, 17), K3(1, 6)
 Dim Shared hasRunFF(1), playerInts(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
@@ -353,7 +353,7 @@ Dim Shared score(0 To 1, 0 To 10), scoreQuarters(50), scoreTimes(50), schedGame(
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
 Dim Shared useRandomQB(1)
-Dim Shared W6(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
+Dim Shared sackStatsTeam(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
 Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
 
 Dim Shared brkawayYds(38, 4), goalLnYdAdj(1 To 30, 1 To 2), HB%(1)

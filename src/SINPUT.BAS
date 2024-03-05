@@ -10,7 +10,7 @@ Sub EditStats ()
 
     Shared statsGI%(), statsGS%()
 
-    Shared AF!(), AM!(), teamStats!(), K2!()
+    Shared AF!(), AM!(), teamStats!(), gameStatsPlayer!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!(), statsPK!()
     Shared statsZ!(), statsZ1!(), statsZ2!
 
@@ -147,7 +147,7 @@ Sub EditStats ()
 
         For J = 0 To 13
             For K = 0 To 17:
-                K2!(J, K) = statsZ2!(J, K)
+                gameStatsPlayer!(J, K) = statsZ2!(J, K)
             Next K
         Next J
 
@@ -367,12 +367,12 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyRBacks$(I)
-                Print "2. RUSHING ATTEMPTS "; K2!(I, 0)
-                Print "3. RUSHING YARDAGE "; Int(K2!(I, 1))
-                Print "4. RUSHING TD'S "; K2!(I, 2)
-                Print "5. RECEPTIONS "; K2!(I, 3)
-                Print "6. RECEIVING YARDAGE "; Int(K2!(I, 4))
-                Print "7. RECEIVING TD'S "; K2!(I, 5)
+                Print "2. RUSHING ATTEMPTS "; gameStatsPlayer!(I, 0)
+                Print "3. RUSHING YARDAGE "; Int(gameStatsPlayer!(I, 1))
+                Print "4. RUSHING TD'S "; gameStatsPlayer!(I, 2)
+                Print "5. RECEPTIONS "; gameStatsPlayer!(I, 3)
+                Print "6. RECEIVING YARDAGE "; Int(gameStatsPlayer!(I, 4))
+                Print "7. RECEIVING TD'S "; gameStatsPlayer!(I, 5)
 
                 Do
 
@@ -387,22 +387,22 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyRBacks$(I1)
 
                         Case 2
-                            Locate 5, 1: Input "2. RUSHING ATTEMPTS "; K2!(I, 0)
+                            Locate 5, 1: Input "2. RUSHING ATTEMPTS "; gameStatsPlayer!(I, 0)
 
                         Case 3
-                            Locate 6, 1: Input "3. RUSHING YARDAGE "; K2!(I, 1)
+                            Locate 6, 1: Input "3. RUSHING YARDAGE "; gameStatsPlayer!(I, 1)
 
                         Case 4
-                            Locate 7, 1: Input "4. RUSHING TD'S "; K2!(I, 2)
+                            Locate 7, 1: Input "4. RUSHING TD'S "; gameStatsPlayer!(I, 2)
 
                         Case 5
-                            Locate 8, 1: Input "5. RECEPTIONS "; K2!(I, 3)
+                            Locate 8, 1: Input "5. RECEPTIONS "; gameStatsPlayer!(I, 3)
 
                         Case 6
-                            Locate 9, 1: Input "6. RECEIVING YARDAGE "; K2!(I, 4)
+                            Locate 9, 1: Input "6. RECEIVING YARDAGE "; gameStatsPlayer!(I, 4)
 
                         Case 7
-                            Locate 10, 1: Input "7. RECEIVING TD'S "; K2!(I, 5)
+                            Locate 10, 1: Input "7. RECEIVING TD'S "; gameStatsPlayer!(I, 5)
 
                     End Select
 
@@ -442,9 +442,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyWdRec$(I)
-                Print "2. RECEPTIONS "; K2!(I, 6)
-                Print "3. RECEIVING YARDAGE "; Int(K2!(I, 7))
-                Print "4. RECEIVING TD'S "; K2!(I, 8)
+                Print "2. RECEPTIONS "; gameStatsPlayer!(I, 6)
+                Print "3. RECEIVING YARDAGE "; Int(gameStatsPlayer!(I, 7))
+                Print "4. RECEIVING TD'S "; gameStatsPlayer!(I, 8)
 
                 Do
 
@@ -459,13 +459,13 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyWdRec$(I)
 
                         Case 2
-                            Locate 5, 1: Input "2. RECEPTIONS "; K2!(I, 6)
+                            Locate 5, 1: Input "2. RECEPTIONS "; gameStatsPlayer!(I, 6)
 
                         Case 3
-                            Locate 6, 1: Input "3. RECEIVING YARDAGE "; K2!(I, 7)
+                            Locate 6, 1: Input "3. RECEIVING YARDAGE "; gameStatsPlayer!(I, 7)
 
                         Case 4
-                            Locate 7, 1: Input "4. RECEIVING TD'S "; K2!(I, 8)
+                            Locate 7, 1: Input "4. RECEIVING TD'S "; gameStatsPlayer!(I, 8)
 
                     End Select
 
@@ -505,11 +505,11 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyQBacks$(I)
-                Print "2. PASSES THROWN "; K2!(I, 9)
-                Print "3. PASSES COMPLETED "; K2!(I, 10)
-                Print "4. PASSES INTERCEPTED "; K2!(I, 11)
-                Print "5. TOTAL PASSING YARDS "; Int(K2!(I, 12))
-                Print "6. TOUCHDOWN PASSES "; K2!(I, 13)
+                Print "2. PASSES THROWN "; gameStatsPlayer!(I, 9)
+                Print "3. PASSES COMPLETED "; gameStatsPlayer!(I, 10)
+                Print "4. PASSES INTERCEPTED "; gameStatsPlayer!(I, 11)
+                Print "5. TOTAL PASSING YARDS "; Int(gameStatsPlayer!(I, 12))
+                Print "6. TOUCHDOWN PASSES "; gameStatsPlayer!(I, 13)
 
                 Do
 
@@ -524,19 +524,19 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyQBacks$(I)
 
                         Case 2
-                            Locate 5, 1: Input "2. PASSES THROWN "; K2!(I, 9)
+                            Locate 5, 1: Input "2. PASSES THROWN "; gameStatsPlayer!(I, 9)
 
                         Case 3
-                            Locate 6, 1: Input "3. PASSES COMPLETED "; K2!(I, 10)
+                            Locate 6, 1: Input "3. PASSES COMPLETED "; gameStatsPlayer!(I, 10)
 
                         Case 4
-                            Locate 7, 1: Input "4. PASSES INTERCEPTED "; K2!(I, 11)
+                            Locate 7, 1: Input "4. PASSES INTERCEPTED "; gameStatsPlayer!(I, 11)
 
                         Case 5
-                            Locate 8, 1: Input "5. TOTAL PASSING YARDS "; K2!(I, 12)
+                            Locate 8, 1: Input "5. TOTAL PASSING YARDS "; gameStatsPlayer!(I, 12)
 
                         Case 6
-                            Locate 9, 1: Input "6. TOUCHDOWN PASSES "; K2!(I, 13)
+                            Locate 9, 1: Input "6. TOUCHDOWN PASSES "; gameStatsPlayer!(I, 13)
 
                     End Select
 
@@ -576,9 +576,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyKickRet$(I)
-                Print "2. KICKS RETURNED "; K2!(I, 14)
-                Print "3. KICK RETURN YARDAGE "; Int(K2!(I, 15))
-                Print "4. KICK RETURN TD'S "; K2!(I, 16)
+                Print "2. KICKS RETURNED "; gameStatsPlayer!(I, 14)
+                Print "3. KICK RETURN YARDAGE "; Int(gameStatsPlayer!(I, 15))
+                Print "4. KICK RETURN TD'S "; gameStatsPlayer!(I, 16)
 
                 Do
 
@@ -593,13 +593,13 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyKickRet$(I)
 
                         Case 2
-                            Locate 5, 1: Input "2. KICKS RETURNED "; K2!(I, 14)
+                            Locate 5, 1: Input "2. KICKS RETURNED "; gameStatsPlayer!(I, 14)
 
                         Case 3
-                            Locate 6, 1: Input "3. KICK RETURN YARDAGE "; K2!(I, 15)
+                            Locate 6, 1: Input "3. KICK RETURN YARDAGE "; gameStatsPlayer!(I, 15)
 
                         Case 4
-                            Locate 7, 1: Input "4. KICK RETURN TD'S "; K2!(I, 16)
+                            Locate 7, 1: Input "4. KICK RETURN TD'S "; gameStatsPlayer!(I, 16)
 
                     End Select
 
@@ -639,9 +639,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyPRet$(I - 3)
-                Print "2. PUNTS RETURNED "; K2!(I, 14)
-                Print "3. PUNT RETURN YARDAGE "; Int(K2!(I, 15))
-                Print "4. PUNT RETURN TD'S "; K2!(I, 16)
+                Print "2. PUNTS RETURNED "; gameStatsPlayer!(I, 14)
+                Print "3. PUNT RETURN YARDAGE "; Int(gameStatsPlayer!(I, 15))
+                Print "4. PUNT RETURN TD'S "; gameStatsPlayer!(I, 16)
 
                 Do
 
@@ -656,13 +656,13 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyPRet$(I - 2)
 
                         Case 2
-                            Locate 5, 1: Input "2. PUNTS RETURNED "; K2!(I, 14)
+                            Locate 5, 1: Input "2. PUNTS RETURNED "; gameStatsPlayer!(I, 14)
 
                         Case 3
-                            Locate 6, 1: Input "3. PUNT RETURN YARDAGE "; K2!(I, 15)
+                            Locate 6, 1: Input "3. PUNT RETURN YARDAGE "; gameStatsPlayer!(I, 15)
 
                         Case 4
-                            Locate 7, 1: Input "4. PUNT RETURN TD'S "; K2!(I, 16)
+                            Locate 7, 1: Input "4. PUNT RETURN TD'S "; gameStatsPlayer!(I, 16)
 
                     End Select
 
@@ -738,10 +738,10 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME "; lookyKicker$(I)
-                Print "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
-                Print "3. FIELD GOALS MADE "; K2!(3 + I * 4, 17)
-                Print "4. EXTRA POINTS ATT "; K2!(6 + I * 4, 17)
-                Print "5. EXTRA POINTS MADE "; K2!(5 + I * 4, 17)
+                Print "2. FIELD GOALS ATT "; gameStatsPlayer!(4 + I * 4, 17)
+                Print "3. FIELD GOALS MADE "; gameStatsPlayer!(3 + I * 4, 17)
+                Print "4. EXTRA POINTS ATT "; gameStatsPlayer!(6 + I * 4, 17)
+                Print "5. EXTRA POINTS MADE "; gameStatsPlayer!(5 + I * 4, 17)
 
                 Do
 
@@ -756,16 +756,16 @@ Sub EditStats ()
                             Locate 4, 1: Input "1. NAME "; lookyKicker$(I)
 
                         Case 2
-                            Locate 5, 1: Input "2. FIELD GOALS ATT "; K2!(4 + I * 4, 17)
+                            Locate 5, 1: Input "2. FIELD GOALS ATT "; gameStatsPlayer!(4 + I * 4, 17)
 
                         Case 3
-                            Locate 6, 1: Input "3. FIELD GOALS MADE "; K2!(3 + I * 4, 17)
+                            Locate 6, 1: Input "3. FIELD GOALS MADE "; gameStatsPlayer!(3 + I * 4, 17)
 
                         Case 4
-                            Locate 7, 1: Input "4. EXTRA POINTS ATT "; K2!(6 + I * 4, 17)
+                            Locate 7, 1: Input "4. EXTRA POINTS ATT "; gameStatsPlayer!(6 + I * 4, 17)
 
                         Case 5
-                            Locate 8, 1: Input "5. EXTRA POINTS MADE "; K2!(5 + I * 4, 17)
+                            Locate 8, 1: Input "5. EXTRA POINTS MADE "; gameStatsPlayer!(5 + I * 4, 17)
 
                     End Select
 
@@ -781,7 +781,7 @@ Sub EditStats ()
         '---------------
         For J = 0 To 13
             For K = 0 To 17
-                statsZ2!(J, K) = K2!(J, K)
+                statsZ2!(J, K) = gameStatsPlayer!(J, K)
             Next K
         Next J
 
