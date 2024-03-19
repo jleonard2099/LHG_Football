@@ -56,11 +56,14 @@ Sub CREATLEAG ()
                     Call ReviewEditLeague(league$, div1$, div2$, div3$)
 
                 Case 2:
-                    league$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", FileExit%)
+                    Do
+                        league$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReviewEditLeague(league$, div1$, div2$, div3$)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReviewEditLeague(league$, div1$, div2$, div3$)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -266,7 +269,7 @@ Sub ReviewEditLeague (league$, div1$, div2$, div3$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATLEAG(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    teamNbr = 0
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team

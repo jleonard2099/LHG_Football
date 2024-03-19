@@ -51,21 +51,27 @@ Sub NEWLDR (statType)
             Select Case Selection%
 
                 Case 1
-                    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
+                    Do
+                        confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReadConferenceStats(confStatFile$, statType)
-                        Call UpdateExpandedLeaders(statType, totalStats)
-                        Call SAVELEADER(confStatFile$, totalStats)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReadConferenceStats(confStatFile$, statType)
+                            Call UpdateExpandedLeaders(statType, totalStats)
+                            Call SAVELEADER(confStatFile$, totalStats)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
                 Case 2
-                    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
+                    Do
+                        leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call READLEADER(leaderFile$, totalStats)
-                        Call ExpandedLeaders_Menu(totalStats)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call READLEADER(leaderFile$, totalStats)
+                            Call ExpandedLeaders_Menu(totalStats)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -239,7 +245,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
     Shared AM!(), AF!()
-    Shared statsLC!(), statsLI!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
+    Shared statsLC!(), statsLK!(), statsLF!(), statsLI!(), statsLP!(), statsLR!()
     Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsGI%(), statsGS%()
@@ -390,7 +396,6 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
                 'Longest Interception
                 '--> was previously NOT read in
-                '--> was previously not WRITTEN?
                 '--> is it not even calculated later!!!
                 For I = 0 To 9:
                     Input #1, statsLI!(I)

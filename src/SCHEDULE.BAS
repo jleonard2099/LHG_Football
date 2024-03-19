@@ -105,26 +105,29 @@ Sub SCHEDULE ()
                     Call NewSchedule(scheduleFile$)
 
                 Case 2 To 6:
-                    'Have the user pick a schedule
-                    scheduleFile$ = ChooseFile$(diskPaths$(0) + "*.SCD", "SCHEDULE", FileExit%)
+                    Do
+                        'Have the user pick a schedule
+                        scheduleFile$ = ChooseFile$(diskPaths$(3) + "*.SCD", "SCHEDULE", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
+                        If FileExit% <> 27 And FileExit% <> 0 Then
 
-                        Call LoadScheduleInfo(scheduleFile$)
+                            Call LoadScheduleInfo(scheduleFile$)
 
-                        Cls
+                            Cls
 
-                        'Extract / Change / Global
-                        If Selection% >= 3 And Selection% <= 6 Then
-                            Call ExtractSchedule(Selection%, scheduleFile$)
-                            If action% >= 4 Then Call SaveScheduleFile(scheduleFile$)
-                        Else
-                            'Retrieve / Edit / Play Schedule
-                            Color 15, 0
-                            Call NewSchedule(scheduleFile$)
+                            'Extract / Change / Global
+                            If Selection% >= 3 And Selection% <= 6 Then
+                                Call ExtractSchedule(Selection%, scheduleFile$)
+                                If action% >= 4 Then Call SaveScheduleFile(scheduleFile$)
+                            Else
+                                'Retrieve / Edit / Play Schedule
+                                Color 15, 0
+                                Call NewSchedule(scheduleFile$)
+                            End If
+
                         End If
 
-                    End If
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
                 Case 7:
                     Call BoxscoreMaintenance
@@ -171,6 +174,9 @@ Sub NewSchedule (scheduleFile$)
 
     scheduleYN$(0, 0) = ""
     scheduleYN$(0, 1) = ""
+
+    DT$ = "09-01-23"
+    TM$ = "07:30P"
 
     Do
 
@@ -316,8 +322,6 @@ Sub NewSchedule (scheduleFile$)
                     scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
                 Next
 
-                DT$ = "10-01-91"
-                TM$ = "07:30P"
                 Call NewGame(V$, QV$, H$, QH$, YN$, DT$, TM$, NTMS, targetGame%)
 
             Case "E":
@@ -330,8 +334,8 @@ Sub NewSchedule (scheduleFile$)
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
                 NS% = Int((targetGame% - 1) / 20)
 
-                boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
-                'boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+                'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
 
                 Call EditBoxscore(boxName$)
                 Color 15, 0
@@ -450,16 +454,16 @@ Sub NewSchedule (scheduleFile$)
                     scheduleNG%(I, 13) = 0
                 Next
 
-            Case Chr$(0) + "Q":
-                ' *** PAGE DOWN ***
+            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(77)
+                ' *** PAGE DOWN | RIGHT ARROW ***
                 If NS% >= BS% Then
                     NS% = BS%
                 Else
                     NS% = NS% + 1
                 End If
 
-            Case Chr$(0) + "I":
-                ' *** PAGE UP ***
+            Case Chr$(0) + Chr$(73), Chr$(0) + Chr$(75)
+                ' *** PAGE UP | LEFT ARROW ***
                 If NS% <> 0 Then
                     NS% = NS% - 1
                 End If
@@ -643,6 +647,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
 
                 Case 2, 3:
 
+                    teamNbr = 0
                     Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
                     If teamNbr <> 0 Then
@@ -878,7 +883,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                             Print
                                             Print "FOUND A MATCH"
 
-                                            Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
+                                            Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
                                             fileLength& = LOF(2)
                                             targetGame% = fileLength& / SCHEDULE_SIZE_BYTES
 
@@ -912,6 +917,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                     Case 3, 5
 
+                        T1 = 0
                         Call ChooseTeam(YN$, numberTeams, T1, N$)
 
                         If T1 <> 0 Then
@@ -957,7 +963,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                         'Write matching games
                                         Locate 1, 1: Print numberGames + 1; " MATCHES"
 
-                                        Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
+                                        Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
                                         fileLength& = LOF(3)
 
                                         numberGames = fileLength& / SCHEDULE_SIZE_BYTES
@@ -1040,21 +1046,60 @@ Sub EditParameters ()
 
     Do
 
-        Locate 23, 1: Print "SELECT # TO CHANGE 1-13 (0 TO CONTINUE) ";
+        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE)";
         Input B9
 
         Select Case B9
 
-            Case 1: Locate 2: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
-            Case 2: Locate 3: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
-            Case 3: Locate 4: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
-            Case 4: Locate 5: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
-            Case 5: Locate 6: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
-            Case 6: Locate 7: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
-            Case 7: Locate 8: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
-            Case 8: Locate 9: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
-            Case 9: Locate 10: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
-            Case 10: Locate 11: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
+            Case 1: 
+                Locate 2, 25: Print Space$(10)
+                Locate 2, 1: Input " 1. IF QUARTERS ARE OVER"; eventSettings(1)
+                Locate 2, 25: Print " "
+
+            Case 2: 
+                Locate 3, 30: Print Space$(10)
+                Locate 3, 1: Input " 2. A TEAM'S POINTS MORE THAN"; eventSettings(2)
+                Locate 3, 30: Print " "
+
+            Case 3: 
+                Locate 4, 30: Print Space$(10)
+                Locate 4, 1: Input " 3. A TEAM'S POINTS LESS THAN"; eventSettings(3)
+                Locate 4, 30: Print " "
+
+            Case 4: 
+                Locate 5, 29: Print Space$(10)
+                Locate 5, 1: Input " 4. RUSHER'S YARDS MORE THAN"; eventSettings(4)
+                Locate 5, 29: Print " "
+
+            Case 5: 
+                Locate 6, 27: Print Space$(10)
+                Locate 6, 1: Input " 5. RUSHER'S TDS MORE THAN"; eventSettings(5)
+                Locate 6, 27: Print " "
+
+            Case 6: 
+                Locate 7, 31: Print Space$(10)
+                Locate 7, 1: Input " 6. RECEIVER'S YARDS MORE THAN"; eventSettings(6)
+                Locate 7, 31: Print " "
+
+            Case 7: 
+                Locate 8, 29: Print Space$(10)
+                Locate 8, 1: Input " 7. RECEIVER'S TDS MORE THAN"; eventSettings(7)
+                Locate 8, 29: Print " "
+
+            Case 8: 
+                Locate 9, 29: Print Space$(10)
+                Locate 9, 1: Input " 8. PASSER'S YARDS MORE THAN"; eventSettings(8)
+                Locate 9, 29: Print " "
+
+            Case 9: 
+                Locate 10, 27: Print Space$(10)
+                Locate 10, 1: Input " 9. PASSER'S TDS MORE THAN"; eventSettings(9)
+                Locate 10, 27: Print " "
+
+            Case 10: 
+                Locate 11, 27: Print Space$(10)
+                Locate 11, 1: Input "10. KICKER'S FGM MORE THAN"; eventSettings(10)
+                Locate 11, 27: `Print " "`
 
         End Select
 
@@ -1119,35 +1164,32 @@ Sub BoxscoreMaintenance ()
                     Call EditParameters
 
                 Case 2:
-                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
-                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
 
                     If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
                         boxName$ = diskPaths$(1) + boxscoreFile$
-                        Call EditBoxscore(boxName$ + ".SPC")
+                        Call EditBoxscore(boxName$ + ".BSS")
+                        'Call EditBoxscore(boxName$ + ".SPC")
                     End If
 
                 Case 3
-                    Spec$ = diskPaths$(1) + "BOX*."
-                    'Spec$ = diskPaths$(1) + "*.BS"
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 4
                     Spec$ = diskPaths$(1) + "*.BSS"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "*.SPC"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 5:
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(Selection%, Spec$)
+
                     Spec$ = diskPaths$(1) + "*.BSS"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "*.SPC"
-                    Call DeleteBoxscores(Selection%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "BOX*."
-                    'Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
                     Call DeleteBoxscores(Selection%, Spec$)
 
             End Select
@@ -1171,9 +1213,9 @@ Sub SaveScheduleFile (saveFile$)
     Shared scheduleAP%(), scheduleNG%()
     Shared scheduleYN$()
 
-    If _FileExists(diskPaths$(0) + saveFile$ + ".SCD") Then Kill diskPaths$(0) + saveFile$ + ".SCD"
+    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
 
-    Open diskPaths$(0) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
 
     For X = 0 To 20
         Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
@@ -1494,7 +1536,7 @@ Sub LoadScheduleInfo (targetFile$)
     Shared homeScores(), visitorScores()
     Shared scheduleYN$()
 
-    Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+    Open diskPaths$(3) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
 
     fileLength& = LOF(1)
 
@@ -1562,90 +1604,3 @@ Sub EditBoxscore (boxName$)
     End If
 
 End Sub
-
-
-'----------------------------------------
-'       QBName Function
-'----------------------------------------
-'This subroutine gives the user an over-
-'view of all team QB's and their ratings,
-'then lets them choose the QB to be used
-'in the schedule slot. Only the name and
-'index of the target QB is returned.
-'The name will be printed in the schedule
-'overview and the index will be used to
-'determine which QB to use whenever the
-'generated schedule is run.
-Function GetQBName$ (targetGame%, teamIndicator)
-
-    Shared armRating()
-    Shared passAtt(), compPct(), qbIntPct()
-
-    Shared scheduleNG%()
-
-    Shared qbName$()
-
-    Do
-
-        Cls
-        Print "SELECT QUARTERBACK"
-        Print " # QB NAME    % OF  COMP  INT"
-        Print "              ATTS  PCT   PCT"
-
-        For I1 = 0 To 3:
-
-            If qbName$(I1) <> "XXX" And qbName$(I1) <> "END" And qbName$(I1) <> "" Then
-
-                Print I1; "-"; qbName$(I1);
-                Locate , 14
-
-                If I1 = 0 Then
-                    Print passAtt(I1);
-                Else
-                    'I1 > 0
-                    'Only print extra QB's if they
-                    'don't have 100% contribution
-                    If passAtt(I1 - 1) < 100 Then
-                        Print Int(passAtt(I1)) - passAtt(I1 - 1);
-                    End If
-                End If
-
-                Locate , 20: Print compPct(I1);
-                Locate , 26: Print qbIntPct(I1)
-
-            End If
-
-            Locate , 1
-
-        Next I1
-
-        Print " 4 -COMPUTER SELECT QUARTERBACK"
-
-        Print
-        Locate , 1: Print "SELECT (0-4) ";
-        I$ = GetKeyPress$
-        I2 = Val(I$)
-
-    Loop Until I2 >= 0 And I2 <= 4
-
-    qbNbr = I2
-
-    If scheduleNG%(targetGame%, 3) <> 0 And I2 <= 3 Then
-
-        Do
-            Print "ENTER "; qbName$(I2); " MOBILITY RATING (1-9)"
-            I$ = GetKeyPress$
-            mobility = Val(I$)
-        Loop Until mobility >= 1 And mobility <= 9
-
-    End If
-
-    'teamIndicator = 2 for Visitor, 3 for Home
-    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 5) = qbNbr
-    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 6) = mobility
-    qbName$(4) = "RANDOM"
-
-    GetQBName$ = qbName$(I2)
-
-End Function
-

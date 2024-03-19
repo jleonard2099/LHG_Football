@@ -55,15 +55,15 @@ Sub CREATCON ()
                     Call ReviewEditConference(conference$, div1$, div2$)
 
                 Case 2:
-
                     Do
+
                         conference$ = ChooseFile$(diskPaths$(2) + "*.LIB", "CONFERENCE", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
                             Call ReviewEditConference(conference$, div1$, div2$)
                         End If
 
-                    Loop Until FileExit% = 27
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -72,6 +72,7 @@ Sub CREATCON ()
     Loop Until Selection% = 3 Or ExitCode% = 27
 
 End Sub
+
 
 '----------------------------------------
 '      DefineConference Subroutine
@@ -252,7 +253,7 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
                 If choice = 1 Then
                     'Add team
-                    'Call GetTeam_CREATCON(statsZ1$(B), statsZ2$(B), statsZ1%(B))
+                    teamNbr = 0
                     Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
                 Else
                     'Remove team
