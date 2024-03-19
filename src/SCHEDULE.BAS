@@ -1099,7 +1099,7 @@ Sub EditParameters ()
             Case 10: 
                 Locate 11, 27: Print Space$(10)
                 Locate 11, 1: Input "10. KICKER'S FGM MORE THAN"; eventSettings(10)
-                Locate 11, 27: `Print " "`
+                Locate 11, 27: Print " "
 
         End Select
 
