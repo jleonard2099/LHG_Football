@@ -42,7 +42,7 @@ Sub CREATENATL ()
 
         If ExitCode% <> 27 Then
 
-            For X = 1 To 40
+            For X = 1 To MAX_CONFERENCES
                 statsZ1$(X) = "XXX"
             Next
 
@@ -53,11 +53,14 @@ Sub CREATENATL ()
                     Call ReviewEditNatOrg(organization$)
 
                 Case 2:
-                    organization$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
+                    Do
+                        organization$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReviewEditNatOrg(organization$)
-                    End if
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReviewEditNatOrg(organization$)
+                        End if
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -123,7 +126,7 @@ Sub ReviewEditNatOrg (organization$)
 
         Input #1, organization$
 
-        For X = 1 To 40
+        For X = 1 To MAX_CONFERENCES
             Input #1, statsZ1$(X)
         Next
 
@@ -186,7 +189,7 @@ Sub ReviewEditNatOrg (organization$)
 
             If choice = 1 Then
                 'Add conference
-                statsZ1$(B) = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+                statsZ1$(B) = ChooseFile$ (diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
             Else
                 'Remove conference
                 statsZ1$(B) = "XXX"
@@ -214,7 +217,7 @@ Sub SaveNatOrg (organization$)
 
     Print #1, organization$
 
-    For X = 1 To 40
+    For X = 1 To MAX_CONFERENCES
         Print #1, statsZ1$(X)
     Next
 

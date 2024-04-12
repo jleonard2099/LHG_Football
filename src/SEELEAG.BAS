@@ -254,40 +254,46 @@ Sub StatOptions_Pro (league$)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 20, 40, 5, 15, 1)
 
         Locate 7, 32
 
         Do
+
             Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "P";
+            Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
             I$ = GetKeyPress$
 
             Color 14, 0
 
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S" Or I$ = Chr$(27)
 
         If I$ <> Chr$(27) Then
 
             Select Case UCase$(I$)
 
                 Case "F":
-                    Call ReportFilePrompt_Pro(SF$)
-                    Call SavePrintProLeaders(1, SF$, league$)
+                    userFile$ = _SAVEFILEDIALOG$("Save League Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    If userFile$ <> "" Then
+                        Call ProLeaders_Report(league$, 0, userFile$)
+                    End If
 
                 Case "P":
-                    Call SavePrintProLeaders(0, SF$, league$)
+                    Call ProLeaders_Report(league$, 1, "REPORT")
 
                 Case "S":
-                    Call LeaderStatsPro_Screen
+                    Call ProLeaders_Screen
 
             End Select
 
@@ -313,49 +319,14 @@ Sub StatOptions_Pro (league$)
 End Sub
 
 
-'----------------------------------------
-'     ReportFilePrompt_Pro Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub ReportFilePrompt_Pro (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox(6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
 
 '----------------------------------------
-'     LeaderStatsPro_Screen Subroutine
+'     ProLeaders_Screen Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub LeaderStatsPro_Screen ()
+Sub ProLeaders_Screen ()
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TT$()
@@ -1051,13 +1022,13 @@ End Sub
 
 
 '----------------------------------------
-'       SavePrintProLeaders Subroutine
+'       ProLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to a file
 'that is then looped through to send to
 'the default printer
-Sub SavePrintProLeaders (destination, reportFile$, league$)
+Sub ProLeaders_Report (league$, printDest, destFile$)
 
     Shared compZ2$(), compZ3$()
     Shared seeP$(), TM$(), TT$()
@@ -1068,14 +1039,10 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
     Shared div1$, div2$, div3$
 
-    If destination <> 1 Then
-        Open "REPORT" For Output As #1
-    Else
-        Open reportFile$ + ".RPT" For Output As #1
-    End If
-
     Color 0, 15
     Cls
+
+    Open destFile$ For Output As #1
 
     Print #1, league$ + " OVERALL RECORD"
     Print #1, div1$; " DIVISION"
@@ -1553,9 +1520,9 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
 
     Close #1
 
-    If destination <> 1 Then
+    If printDest = 1 Then
 
-        Open "REPORT" For Input As #2
+        Open destFile$ For Input As #2
 
         Do While Not EOF(2)
             Line Input #2, X$
@@ -1565,6 +1532,8 @@ Sub SavePrintProLeaders (destination, reportFile$, league$)
         Close #2
 
         LPrint Chr$(12)
+
+        Kill destFile$
 
     End If
 

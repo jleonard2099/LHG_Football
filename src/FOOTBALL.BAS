@@ -127,7 +127,7 @@ Sub FOOTBALL ()
         'Open "runlog" For Append As #11
 
         'Read in schedule options
-        Open diskPaths$(0) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
+        Open diskPaths$(3) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
 
         For X = 0 To 20
             Field #7, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
@@ -568,7 +568,7 @@ Sub FOOTBALL ()
 
     Call SETSCREEN
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 <= 50 Then
         pbpString$ = gameTeams$(winTeam) + " WON THE COIN TOSS"
@@ -620,7 +620,7 @@ Sub FOOTBALL ()
         End If
     Next I
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case KN
 
@@ -866,7 +866,7 @@ Sub FOOTBALL ()
             If ballFumbled = 1 Then Call FumblePBP: GoTo 650
 
             Call AddPossessionTime(4, 7)
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             '3% chance of clipping on squib kick
             If RN0 >= 97 Then
@@ -1014,7 +1014,7 @@ Sub FOOTBALL ()
         K1(nbrScores, 4) = K1(nbrScores, 4) + 10
 
         'Determine kicker
-        Call d100(RN1)
+        Call Rolld100(RN1)
 
         For J = 1 To 0 Step -1:
             'Auto-determine target kicker, I1
@@ -1024,7 +1024,7 @@ Sub FOOTBALL ()
         Next J
 
         'Determine success
-        Call d100(RN1)
+        Call Rolld100(RN1)
 
         gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) + 1
 
@@ -1051,7 +1051,7 @@ Sub FOOTBALL ()
 
         Else
 
-            Call d100(RN2)
+            Call Rolld100(RN2)
 
             '-- 9% chance of blocked PAT
             If RN2 <= 9 Then
@@ -1084,7 +1084,7 @@ Sub FOOTBALL ()
 
     650 '
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
@@ -1282,7 +1282,7 @@ Sub FOOTBALL ()
 
                                     Else
 
-                                        Call d100(RN0)
+                                        Call Rolld100(RN0)
 
                                         If RN0 <= intChance Then
 
@@ -1293,7 +1293,7 @@ Sub FOOTBALL ()
 
                                         Else
 
-                                            Call d100(RN0)
+                                            Call Rolld100(RN0)
                                             targetWRName$ = wdRec$(P1, I3)
                                             I3 = I3 + 10
 
@@ -1330,7 +1330,7 @@ Sub FOOTBALL ()
 
                                         3181 '
                                         'Random ball carrier
-                                        Call d100(I2)
+                                        Call Rolld100(I2)
 
                                         For I = 9 To 0 Step -1:
                                             If I2 <= rbRushContrib(P1, I) Then
@@ -1430,14 +1430,14 @@ Sub FOOTBALL ()
                                     pbpString$ = "HE HAS " + wdRec$(P1, I3) + " OPEN DOWNFIELD"
                                     Call PBP
 
-                                    Call d100(RN0)
+                                    Call Rolld100(RN0)
                                     If coverage = 10 Or coverage = 11 Or coverage = 8 And RN0 <= 35 Then
                                         ydsGained = (Int(Rnd(1) * 4) + 4)
                                         'Sacked
                                         GoTo 3541
                                     Else
 
-                                        Call d100(RN0)
+                                        Call Rolld100(RN0)
 
                                         If RN0 <= intChance Then
                                             'Interception
@@ -1447,7 +1447,7 @@ Sub FOOTBALL ()
                                             'Intercepted!
                                             GoTo 3552
                                         Else
-                                            Call d100(RN1)
+                                            Call Rolld100(RN1)
                                             targetWRName$ = wdRec$(P1, I3)
                                             I3 = I3 + 10
 
@@ -1848,7 +1848,7 @@ Sub FOOTBALL ()
 
                 End If
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 'Option play = 1% cance of fumble?
                 If playCall = 5 And RN0 = 49 Then
@@ -1928,7 +1928,7 @@ Sub FOOTBALL ()
                         If (playCall <= 2 And dLine = 5 Or playCall <= 2 And dLine = 6 Or playCall >= 6 And dLine = 5 Or playCall >= 6 And dLine = 6) Or (playCall > 2 And playCall < 5 And dLine = 7 Or playCall > 2 And playCall < 5 And dLine = 8) Then
 
                             ' *** STUNTS ***
-                            Call d100(RN4)
+                            Call Rolld100(RN4)
 
                             Select Case I2
 
@@ -1973,7 +1973,7 @@ Sub FOOTBALL ()
 
                         End If
 
-                        Call d100(RN4)
+                        Call Rolld100(RN4)
 
                         If (playCall <= 2 And RN4 <= 50 And coverage = 7) Or (playCall >= 6 And RN4 <= 50 And coverage = 7) Or (playCall <= 2 And coverage = 9) Or (playCall >= 6 And coverage = 9) Then
                             Call BLITZ2
@@ -2013,11 +2013,11 @@ Sub FOOTBALL ()
 
                             Else
 
-                                Call d100(RN4)
+                                Call Rolld100(RN4)
 
                                 If RN4 > 92 Then
                                     ' *** BREAKAWAY ***
-                                    Call d100(RN5)
+                                    Call Rolld100(RN5)
                                     If RN5 <= 50 Then
                                         ydsGained = Int(Rnd(1) * brkawayYds(I2, 0)) + brkawayYds(I2, 1)
                                     Else
@@ -2039,7 +2039,7 @@ Sub FOOTBALL ()
                                         End If
                                     Next I6
 
-                                    Call d100(RN4)
+                                    Call Rolld100(RN4)
                                     If RN4 <= runYdAdj(0, I2) Then ydsGained = ydsGained + runYdAdj(1, I2)
 
                                 End If
@@ -2157,7 +2157,7 @@ Sub FOOTBALL ()
                 playType = 1
 
                 'Pick random ball carrier based on contribution %
-                Call d100(I2)
+                Call Rolld100(I2)
 
                 For I = 9 To 0 Step -1:
                     If I2 <= rbRushContrib(P1, I) Then
@@ -2292,7 +2292,7 @@ Sub FOOTBALL ()
 
             'FORCED TO RUN ON BOOTLEG/ROLLOUT/KEEPER
             willScramble = 0
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             '3-Step Drop / Short Pass / Screen
             'Scramble 6% - 14% of the time
@@ -2468,7 +2468,7 @@ Sub FOOTBALL ()
             Else
 
                 'Determine pass outcome
-                Call d100(passChance)
+                Call Rolld100(passChance)
 
                 'Compare value to expected interception %
                 '               QB's Int % - Pass type adjustment + league DEF Int %
@@ -2687,7 +2687,7 @@ Sub FOOTBALL ()
 
         Case 19
 
-            Call d100(prChance)
+            Call Rolld100(prChance)
 
             For J = 2 To 0 Step -1
                 If prChance <= prNumRet(D, J) Then I1 = J
@@ -2728,7 +2728,7 @@ Sub FOOTBALL ()
 
                 If I1 = 5 Then
 
-                    Call d100(kickChance)
+                    Call Rolld100(kickChance)
                     X = 0
                     ydsGained = ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 11
 
@@ -2738,7 +2738,7 @@ Sub FOOTBALL ()
                         ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
                     End If
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
 
                     If RN0 <= 50 Then
                         pbpString$ = gameTeams$(P1) + " IS QUICK KICKING!!"
@@ -2836,7 +2836,7 @@ Sub FOOTBALL ()
 
             Call YARDAGE
 
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             If playerMode = 1 And D = compTeam Or playerMode = 2 Then
                 If RN0 <= 10 Then
@@ -2890,7 +2890,7 @@ Sub FOOTBALL ()
                             pbpString$ = "IT'S A FAKE!!! " + punter$(P1, 0) + " IS LOOKING TO PASS"
                             Call PBP
 
-                            Call d100(RN0)
+                            Call Rolld100(RN0)
 
                             If choice = 0 Then
 
@@ -3024,7 +3024,7 @@ Sub FOOTBALL ()
 
                 If ydLine + ydsGained <= .001 And ydLine + ydsGained >= -9.999 Then
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
 
                     If RN0 <= 50 Then
                         score(D, quarter) = score(D, quarter) + 2
@@ -3045,7 +3045,7 @@ Sub FOOTBALL ()
 
                 If ydsToFirst >= 90 Then ydsToFirst = 100 - ydLine
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 If RN0 <= 50 Then
                     pbpString$ = gameTeams$(P1) + " TAKES OVER ON THE"
@@ -3065,7 +3065,7 @@ Sub FOOTBALL ()
 
             Else
 
-                Call d100(RN5)
+                Call Rolld100(RN5)
 
                 If choice = 1 Then pbpString$ = "THERE'S A HEAVY RUSH!!!": Call PBP
 
@@ -3099,7 +3099,7 @@ Sub FOOTBALL ()
                 pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
                 Call PBP
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 If I1 = 1 Then
 
@@ -3148,7 +3148,7 @@ Sub FOOTBALL ()
                     'Track punt yards
                     gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + ydsGained
 
-                    Call d100(puntChance)
+                    Call Rolld100(puntChance)
 
                     If ydsGained + ydLine > 80 Then
                         gameStatsTeam(P1, 29) = gameStatsTeam(P1, 29) + 1
@@ -3159,7 +3159,7 @@ Sub FOOTBALL ()
                         gameStatsTeam(P1, 26) = ydsGained
                     End If
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
 
                     '  Punt inside the 10 and either...
                     '    - Fake Punt
@@ -3292,7 +3292,7 @@ Sub FOOTBALL ()
 
         Case 20
 
-            Call d100(fgChance)
+            Call Rolld100(fgChance)
 
             'Was previously I2 not J
             For J = 1 To 0 Step -1
@@ -3338,7 +3338,7 @@ Sub FOOTBALL ()
 
                 If I$ = Chr$(27) Then GoTo 3118
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 If playerMode = 1 And D = compTeam Or playerMode = 2 Then
 
@@ -3389,7 +3389,7 @@ Sub FOOTBALL ()
                         pbpString$ = "IT'S A FAKE!!! THE HOLDER IS LOOKING TO PASS"
                         Call PBP
                         ydsGained = 0
-                        Call d100(RN0)
+                        Call Rolld100(RN0)
 
                         passIncomplete = 0
                         passIntercepted = 0
@@ -3672,7 +3672,7 @@ Sub FOOTBALL ()
     3200 '
     Randomize Timer
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     'So essentially we have a 50/50 chance
     'of seeing the team name or the mascot name
@@ -4846,7 +4846,7 @@ Sub FOOTBALL ()
 
         If ydLine + ydsGained <= .001 And ydLine + ydsGained >= -9.999 Then
 
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             If RN0 <= 50 Then
                 score(D, quarter) = score(D, quarter) + 2
@@ -4865,7 +4865,7 @@ Sub FOOTBALL ()
 
             If ydsToFirst >= 90 Then ydsToFirst = 100 - ydLine
 
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             If RN0 <= 50 Then
                 pbpString$ = gameTeams$(P1) + " TAKES OVER ON THE"
@@ -4889,7 +4889,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Call d100(blockChance)
+        Call Rolld100(blockChance)
 
         If (blockChance >= 97 And ydLine >= 68 + goalPostAdj And I2 <> 2) Or (blockChance >= 92 And ydLine < 68 + goalPostAdj And I2 <> 2) Then
 
@@ -4909,7 +4909,7 @@ Sub FOOTBALL ()
 
                 Call CHANGEPOSS
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
                 If RN0 <= 50 Then
                     pbpString$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
                 Else
@@ -4922,7 +4922,7 @@ Sub FOOTBALL ()
 
             Else
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 If RN0 <= 94 Then
 
@@ -4951,7 +4951,7 @@ Sub FOOTBALL ()
 
                     Call MOVEBALL
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     If RN0 <= 50 Then
                         pbpString$ = gameTeams$(P1) + " TAKES IT INTO THE END ZONE!!"
                     Else
@@ -5082,7 +5082,7 @@ Sub FOOTBALL ()
         GoTo 3200
     End If
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 > 60 Then
 
@@ -5208,7 +5208,7 @@ Sub FOOTBALL ()
 
     Call YARDLINE
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
     If RN0 <= 18 Then
         ydsGained = 110
     Else

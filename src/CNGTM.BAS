@@ -387,7 +387,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 15
+                        Locate 15, 1
                         Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
                     Loop Until B9 >= 0 And B9 <= 10
 
@@ -402,14 +402,14 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; rbName$(I1)
-                        Print "2. RUSHING AVG ";: Print Using "##.#"; rushAvg(I1) * .3
-                        Print "3. RECEIVING AVG ";: Print Using "##"; rbRecAvg(I1) * 3
+                        Print "1. NAME   "; rbName$(I1)
+                        Print "2. RUSHING AVG  ";: Print Using "##.#"; rushAvg(I1) * .3
+                        Print "3. RECEIVING AVG  ";: Print Using "##"; rbRecAvg(I1) * 3
 
                         Do
 
                             Do
-                                Locate 7
+                                Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO RB SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 3
 
@@ -417,16 +417,25 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                                 Case 1
                                     Locate 3: Input "1. NAME "; rbName$(I1)
+                                    Locate 3, 8: Print " "
 
                                 Case 2
+                                    Locate 4, 15: Print Space$(10)
                                     Locate 4: Input "2. RUSHING AVG "; A1!(I1)
+                                    Locate 4, 15: Print " "
+
                                     rushAvg(I1) = Int(A1!(I1) / .3 + .5)
 
                                 Case 3
+                                    Locate 5, 17: Print Space$(10)
                                     Locate 5: Input "3. RECEIVING AVG "; A3!(I1)
+                                    Locate 5, 17: Print " "
+
                                     rbRecAvg(I1) = Int(A3!(I1) / 3 + .5)
 
                             End Select
+
+                            Locate 7, 46: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -454,8 +463,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 11
-                        Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
+                        Locate 11, 1
+                        Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU)"; B9
                     Loop Until B9 >= 0 And B9 <= 6
 
                     If B9 <> 0 Then
@@ -468,13 +477,13 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; wrName$(I1)
-                        Print "2. RECEIVING AVG ";: Print Using "##"; wrRecAvg(I1) * 3
+                        Print "1. NAME   "; wrName$(I1)
+                        Print "2. RECEIVING AVG  ";: Print Using "##"; wrRecAvg(I1) * 3
 
                         Do
 
                             Do
-                                Locate 6
+                                Locate 6, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO WR SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
 
@@ -482,13 +491,19 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                                 Case 1
                                     Locate 3: Input "1. NAME "; wrName$(I1)
+                                    Locate 3, 8: Print " "
 
                                 Case 2
+                                    Locate 4, 17: Print Space$(10)
                                     Locate 4: Input "2. RECEIVING AVG "; A5!(I1): wrRecAvg(I1) = Int(A5!(I1) / 3 + .5)
+                                    Locate 4, 17: Print " "
 
                             End Select
 
+
                         Loop Until C9 = 0
+
+                        Locate 6, 46: Print Space$(10)
 
                     End If
 
@@ -513,8 +528,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 9
-                        Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
+                        Locate 9, 1
+                        Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU)"; B9
                     Loop Until B9 >= 0 And B9 <= 4
 
                     If B9 <> 0 Then
@@ -528,15 +543,15 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; qbName$(I1)
-                        Print "2. COMPLETION % "; compPct(I1)
-                        Print "3. INTERCEPTION % "; qbIntPct(I1)
-                        Print "4. YDS/COMP ADJ "; armRating(I1)
+                        Print "1. NAME  "; qbName$(I1)
+                        Print "2. COMPLETION %  "; compPct(I1)
+                        Print "3. INTERCEPTION %  "; qbIntPct(I1)
+                        Print "4. YDS/COMP ADJ  "; armRating(I1)
 
                         Do
 
                             Do
-                                Locate 8
+                                Locate 8, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO QB SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 4
 
@@ -544,17 +559,26 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                                 Case 1
                                     Locate 3: Input "1. NAME "; qbName$(I1)
+                                    Locate 3, 8: Print " "
 
                                 Case 2
+                                    Locate 4, 16: Print Space$(10)
                                     Locate 4: Input "2. COMPLETION % "; compPct(I1)
+                                    Locate 4, 16: Print " "
 
                                 Case 3
+                                    Locate 5, 18: Print Space$(10)
                                     Locate 5: Input "3. INTERCEPTION % "; qbIntPct(I1)
+                                    Locate 5, 18: Print " "
 
                                 Case 4
+                                    Locate 6, 16: Print Space$(10)
                                     Locate 6: Input "4. YDS/COMP ADJ "; armRating(I1)
+                                    Locate 6, 16: Print " "
 
                             End Select
+
+                            Locate 8, 46: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -597,11 +621,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Color 15
                         Print
-                        Print "1. NAME "; krName$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; krRetAvg(I1) * 3
+                        Print "1. NAME   "; krName$(I1)
+                        Print "2. RETURN AVG  ";: Print Using "##"; krRetAvg(I1) * 3
 
                         Do
-                            Locate 6
+                            Locate 6, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO KOR SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 2
 
@@ -609,11 +633,18 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                             Case 1
                                 Locate 3: Input "1. NAME "; krName$(I1)
+                                Locate 3, 8: Print " "
 
                             Case 2
+                                Locate 4, 14: Print Space$(10)
                                 Locate 4: Input "2. RETURN AVG "; B!(I1)
+                                Locate 4, 14: Print " "
+
                                 krRetAvg(I1) = Int(B!(I1) / 3 + .5)
+
                         End Select
+
+                        Locate 6, 47: Print Space$(10)
 
                     End If
 
@@ -652,11 +683,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Color 15
                         Print
-                        Print "1. NAME "; prName$(I1)
-                        Print "2. RETURN AVG ";: Print Using "##"; prRetAvg(I1) * 3
+                        Print "1. NAME   "; prName$(I1)
+                        Print "2. RETURN AVG  ";: Print Using "##"; prRetAvg(I1) * 3
 
                         Do
-                            Locate 6
+                            Locate 6, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO PR SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 2
 
@@ -664,11 +695,18 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                             Case 1
                                 Locate 3: Input "1. NAME "; prName$(I1)
+                                Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4: Input "2. RETURN AVG "; B2!(I1): prRetAvg(I1) = Int(B2!(I1) / 3 + .5)
+                                Locate 4, 14: Print Space$(10)
+                                Locate 4: Input "2. RETURN AVG "; B2!(I1)
+                                Locate 4, 14: Print " "
+
+                                prRetAvg(I1) = Int(B2!(I1) / 3 + .5)
 
                         End Select
+
+                        Locate 6, 46: Print Space$(10)
 
                     End If
 
@@ -693,7 +731,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 6
+                        Locate 6, 1
                         Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
                     Loop Until B9 >= 0 And B9 <= 1
 
@@ -707,11 +745,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; punterName$(I1)
-                        Print "2. PUNTING AVG ";: Print Using "##"; puntAvg(I1) * 2 + 28
+                        Print "1. NAME   "; punterName$(I1)
+                        Print "2. PUNTING AVG  ";: Print Using "##"; puntAvg(I1) * 2 + 28
 
                         Do
-                            Locate 6
+                            Locate 6, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO PUNTER SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 2
 
@@ -719,11 +757,18 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                             Case 1
                                 Locate 3: Input "1. NAME "; punterName$(I1)
+                                Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4: Input "2. PUNTING AVG "; B3!(I1): puntAvg(I1) = Int(((B3!(I1) - 28) / 2) + .5)
+                                Locate 4, 15: Print Space$(10)
+                                Locate 4: Input "2. PUNTING AVG "; B3!(I1)
+                                Locate 4, 15: Print " "
+                                
+                                puntAvg(I1) = Int(((B3!(I1) - 28) / 2) + .5)
 
                         End Select
+
+                        Locate 6, 50: Print Space$(10)
 
                     End If
 
@@ -748,7 +793,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 7
+                        Locate 7, 1
                         Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
                     Loop Until B9 >= 0 And B9 <= 2
 
@@ -762,27 +807,35 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; pkName$(I1)
-                        Print "2. FIELD GOAL % ";: Print pkFGA(I1) * 5 + 25
-                        Print "3. EXTRA POINT % ";: Print pkPAT(I1)
+                        Print "1. NAME   "; pkName$(I1)
+                        Print "2. FIELD GOAL %  ";: Print pkFGA(I1) * 5 + 25
+                        Print "3. EXTRA POINT %  ";: Print pkPAT(I1)
 
                         Do
-                            Locate 7
+                            Locate 7, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO PK SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 3
 
                         Select Case C9
                             Case 1
                                 Locate 3: Input "1. NAME "; pkName$(I1)
+                                Locate 3, 8: Print " "
 
                             Case 2
+                                Locate 4, 16: Print Space$(10)
                                 Locate 4: Input "2. FIELD GOAL % "; B4!(I1)
+                                Locate 4, 16: Print " "
+
                                 pkFGA(I1) = Int((B4!(I1) / 5) + .5) - 5
 
                             Case 3
+                                Locate 5, 16: Print Space$(10)
                                 Locate 5: Input "3. EXTRA POINT % "; pkPAT(I1)
+                                Locate 5, 16: Print " "
 
                         End Select
+
+                        Locate 7, 46: Print Space$(10)
 
                     End If
 
@@ -822,11 +875,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Color 14: Print U$
                     Print
                     Color 15
-                    Print "1. NAME "; sackName$(I1)
-                    Print "2. SACKS "; numSacks(I1)
+                    Print "1. NAME   "; sackName$(I1)
+                    Print "2. SACKS  "; numSacks(I1)
 
                     Do
-                        Locate 6
+                        Locate 6, 1
                         Input "ENTER # TO CHANGE (0-RETURN TO SACKS SELECTION) "; C9
                     Loop Until C9 >= 0 And C9 <= 2
 
@@ -834,11 +887,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                         Case 1
                             Locate 3: Input "1. NAME "; sackName$(I1)
+                            Locate 3, 8: Print " "
 
                         Case 2
+                            Locate 4, 9: Print Space$(10)
                             Locate 4: Input "2. SACKS "; numSacks(I1)
+                            Locate 4, 9: Print " "
 
                     End Select
+
+                    Locate 6, 49: Print Space$(10)
 
                 End If
 
@@ -863,7 +921,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Next
 
                     Do
-                        Locate 15
+                        Locate 15, 1
                         Input "ENTER PLAYER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
                     Loop Until B9 >= 0 And B9 <= 10
 
@@ -877,11 +935,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 14: Print U$
                         Print
                         Color 15
-                        Print "1. NAME "; intName$(I1)
-                        Print "2. INTERCEPTIONS "; numInts(I1)
+                        Print "1. NAME   "; intName$(I1)
+                        Print "2. INTERCEPTIONS  "; numInts(I1)
 
                         Do
-                            Locate 6
+                            Locate 6, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO INT SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 2
 
@@ -889,11 +947,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                             Case 1
                                 Locate 3: Input "1. NAME "; intName$(I1)
+                                Locate 3, 8: Print " "
 
                             Case 2
+                                Locate 4, 17: Print Space$(10)
                                 Locate 4: Input "2. INTERCEPTIONS "; numInts(I1)
+                                Locate 4, 17: Print " "
 
                         End Select
+
+                        Locate 6, 47: Print Space$(10)
 
                     End If
 
@@ -936,8 +999,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         S4 = 100 / S0
 
         For I = 0 To 9:
-            If rushContrib(I) <> 0 Then rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1: S1 = rushContrib(I)
-            If rushContrib(I) > 100 Then rushContrib(I) = 100
+
+            If rushContrib(I) <> 0 Then 
+                rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
+                S1 = rushContrib(I)
+            End If
+
+            If rushContrib(I) > 100 Then 
+                rushContrib(I) = 100
+            End If
+
         Next I
 
         For I = 0 To 5:
@@ -947,13 +1018,29 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         S5 = 100 / S2
 
         For I = 0 To 9:
-            If rbRecepts(I) <> 0 Then rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3: S3 = rbRecepts(I)
-            If rbRecepts(I) > 100 Then rbRecepts(I) = 100
+
+            If rbRecepts(I) <> 0 Then 
+                rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
+                S3 = rbRecepts(I)
+            End If
+
+            If rbRecepts(I) > 100 Then 
+                rbRecepts(I) = 100
+            End If
+
         Next I
 
         For I = 0 To 5:
-            If recContrib(I) <> 0 Then recContrib(I) = Int(S5 * recContrib(I) + .5) + S3: S3 = recContrib(I)
-            If recContrib(I) > 100 Then recContrib(I) = 100
+
+            If recContrib(I) <> 0 Then 
+                recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
+                S3 = recContrib(I)
+            End If
+
+            If recContrib(I) > 100 Then 
+                recContrib(I) = 100
+            End If
+
         Next I
 
         S6 = 0
@@ -966,8 +1053,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         S8 = 100 / S6
 
         For I = 0 To 3:
-            If passContrib(I) <> 0 Then passContrib(I) = Int(S8 * passContrib(I) + .5) + S7: S7 = passContrib(I)
-            If passContrib(I) > 100 Then passContrib(I) = 100
+
+            If passContrib(I) <> 0 Then 
+                passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
+                S7 = passContrib(I)
+            End If
+
+            If passContrib(I) > 100 Then 
+                passContrib(I) = 100
+            End If
+
         Next
 
         G0 = 0
@@ -984,13 +1079,29 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         G5 = 100 / G3
 
         For I = 0 To 2:
-            If krContrib(I) <> 0 Then krContrib(I) = Int(G2 * krContrib(I) + .5) + G1: G1 = krContrib(I)
-            If krContrib(I) > 100 Then krContrib(I) = 100
+
+            If krContrib(I) <> 0 Then 
+                krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
+                G1 = krContrib(I)
+            End If
+
+            If krContrib(I) > 100 Then 
+                krContrib(I) = 100
+            End If
+
         Next
 
         For I = 0 To 2:
-            If prContrib(I) <> 0 Then prContrib(I) = Int(G5 * prContrib(I) + .5) + G4: G4 = prContrib(I)
-            If prContrib(I) > 100 Then prContrib(I) = 100
+
+            If prContrib(I) <> 0 Then 
+                prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
+                G4 = prContrib(I)
+            End If
+
+            If prContrib(I) > 100 Then 
+                prContrib(I) = 100
+            End If
+
         Next
 
         G0 = 0
@@ -1007,41 +1118,71 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         G5 = 100 / G3
 
         For I = 0 To 1:
-            If pkFGContrib(I) <> 0 Then pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1: G1 = pkFGContrib(I)
-            If pkFGContrib(I) > 100 Then pkFGContrib(I) = 100
+
+            If pkFGContrib(I) <> 0 Then 
+                pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
+                G1 = pkFGContrib(I)
+            End If
+
+            If pkFGContrib(I) > 100 Then 
+                pkFGContrib(I) = 100
+            End If
+
         Next
 
         For I = 0 To 1:
-            If pkPATContrib(I) <> 0 Then pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4: G4 = pkPATContrib(I)
-            If pkPATContrib(I) > 100 Then pkPATContrib(I) = 100
+
+            If pkPATContrib(I) <> 0 Then 
+                pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
+                G4 = pkPATContrib(I)
+            End If
+
+            If pkPATContrib(I) > 100 Then 
+                pkPATContrib(I) = 100
+            End If
+
         Next
 
         For I = 9 To 0 Step -1:
-            If rushContrib(I) <> 0 Then rushContrib(I) = 100: Exit For
+            If rushContrib(I) <> 0 Then 
+                rushContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 5 To 0 Step -1:
-            If recContrib(I) <> 0 Then recContrib(I) = 100: Exit For
+            If recContrib(I) <> 0 Then 
+                recContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 3 To 0 Step -1:
-            If passContrib(I) <> 0 Then passContrib(I) = 100: Exit For
+            If passContrib(I) <> 0 Then 
+                passContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 2 To 0 Step -1:
-            If krContrib(I) <> 0 Then krContrib(I) = 100: Exit For
+            If krContrib(I) <> 0 Then 
+                krContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 2 To 0 Step -1:
-            If prContrib(I) <> 0 Then prContrib(I) = 100: Exit For
+            If prContrib(I) <> 0 Then 
+                prContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 1 To 0 Step -1:
-            If pkFGContrib(I) <> 0 Then pkFGContrib(I) = 100: Exit For
+            If pkFGContrib(I) <> 0 Then 
+                pkFGContrib(I) = 100: Exit For
+            End If
         Next
 
         For I = 1 To 0 Step -1:
-            If pkPATContrib(I) <> 0 Then pkPATContrib(I) = 100: Exit For
+            If pkPATContrib(I) <> 0 Then 
+                pkPATContrib(I) = 100: Exit For
+            End If
         Next
 
         Call SaveChangedTeam(teamName$, YN$, teamNbr, YC%)
@@ -1057,7 +1198,7 @@ End Sub
 '----------------------------------------
 'This subroutine is focused on walking the
 'user through modifying team ratings
-Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
+Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
 
     Shared mascot$, stadium$
 
@@ -1083,34 +1224,34 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
     YC! = 10 / 3 * YC!
 
     Color 15
-    Locate 2: Print " 1. TEAM NUMBER "; teamNbr
-    Locate 3: Print " 2. DISK ID "; YN$
-    Locate 4: Print " 3. TEAM NAME "; teamName$
-    Locate 5: Print " 4. TEAM NICKNAME "; mascot$
-    Locate 6: Print " 5. DEF RUSHING ADJ "; leagueRatings%(0)
-    Locate 7: Print " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
-    Locate 8: Print " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
-    Locate 9: Print " 8. OFF FUMBLE % "; leagueRatings%(3)
-    Locate 10: Print " 9. DEF FUMBLE % "; leagueRatings%(4)
-    Locate 11: Print "10. OFF SACK ADJ % "; leagueRatings%(5)
-    Locate 12: Print "11. DEF SACK ADJ % "; leagueRatings%(6)
-    Locate 13: Print "12. DEF YDS/COMP ADJ ";
+    Locate 2: Print " 1. TEAM NUMBER  "; teamNbr
+    Locate 3: Print " 2. DISK ID   "; teamYear$
+    Locate 4: Print " 3. TEAM NAME   "; teamName$
+    Locate 5: Print " 4. TEAM NICKNAME   "; mascot$
+    Locate 6: Print " 5. DEF RUSHING ADJ  "; leagueRatings%(0)
+    Locate 7: Print " 6. DEF COMPLETION % ADJ  "; leagueRatings%(1)
+    Locate 8: Print " 7. DEF INTERCEPTION % ADJ  "; leagueRatings%(2)
+    Locate 9: Print " 8. OFF FUMBLE %  "; leagueRatings%(3)
+    Locate 10: Print " 9. DEF FUMBLE %  "; leagueRatings%(4)
+    Locate 11: Print "10. OFF SACK ADJ %  "; leagueRatings%(5)
+    Locate 12: Print "11. DEF SACK ADJ %  "; leagueRatings%(6)
+    Locate 13: Print "12. DEF YDS/COMP ADJ  ";
     If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
     If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-    Locate 14: Print "13. TM PENALTY ADJ "; teamRatings%(0)
-    Locate 15: Print "14. OFF RUN/PASS % "; leagueRatings%(7)
-    Locate 16: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
-    Locate 17: Print "16. POWER INDEX "; teamRatings%(4)
-    Locate 18: Print "17. TEXT COLOR (0-15) "; teamRatings%(2)
-    Locate 19: Print "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
-    Locate 20: Print "19. STADIUM NAME "; stadium$
-    Locate 21: Print "20. AVERAGE ATTENDANCE "; teamAttendance&
+    Locate 14: Print "13. TM PENALTY ADJ  "; teamRatings%(0)
+    Locate 15: Print "14. OFF RUN/PASS %  "; leagueRatings%(7)
+    Locate 16: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings%(3)
+    Locate 17: Print "16. POWER INDEX  "; teamRatings%(4)
+    Locate 18: Print "17. TEXT COLOR (0-15)  "; teamRatings%(2)
+    Locate 19: Print "18. BACKGROUND COLOR (0-7)  "; teamRatings%(1)
+    Locate 20: Print "19. STADIUM NAME   "; stadium$
+    Locate 21: Print "20. AVERAGE ATTENDANCE  "; teamAttendance&
 
     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
         Locate 22, 1
         Print "TEAM APPEARANCE: ";
-        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
     End If
 
     Color 15, 0
@@ -1118,7 +1259,7 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
     Do
 
         Do
-            Locate 23
+            Locate 23, 15
             Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
         Loop Until B9 >= 0 And B9 <= 20
 
@@ -1127,81 +1268,124 @@ Sub ChangeTeamRatings (teamName$, YN$, teamNbr)
             Select Case B9
 
                 Case 1
-                    Locate 2: Input " 1. TEAM NUMBER "; teamNbr
+                    Locate 2, 17: Print Space$(10)
+                    Locate 2, 1: Input " 1. TEAM NUMBER "; teamNbr
+                    Locate 2, 17: Print " "
 
                 Case 2
-                    Locate 3: Input " 2. DISK ID "; YN$
+                    Locate 3, 1: Input " 2. DISK ID "; teamYear$
+                    Locate 3, 13: Print " "
 
                 Case 3
-                    Locate 4: Input " 3. TEAM NAME "; teamName$
+                    Locate 4, 1: Input " 3. TEAM NAME "; teamName$
+                    Locate 4, 15: Print " "
 
                 Case 4
-                    Locate 5: Input " 4. TEAM NICKNAME "; mascot$
+                    Locate 5, 1: Input " 4. TEAM NICKNAME "; mascot$
+                    Locate 5, 19: Print " "
 
                 Case 5
-                    Locate 6: Input " 5. DEF RUSHING ADJ "; leagueRatings%(0)
+                    Locate 6, 21: Print Space$(10)
+                    Locate 6, 1: Input " 5. DEF RUSHING ADJ "; leagueRatings%(0)
+                    Locate 6, 21: Print " "
 
                 Case 6
-                    Locate 7: Input " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
+                    Locate 7, 26: Print Space$(10)
+                    Locate 7, 1: Input " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
+                    Locate 7, 26: Print " "
 
                 Case 7
-                    Locate 8: Input " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
+                    Locate 8, 28: Print Space$(10)
+                    Locate 8, 1: Input " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
+                    Locate 8, 28: Print " "
 
                 Case 8
-                    Locate 9: Input " 8. OFF FUMBLE % "; leagueRatings%(3)
+                    Locate 9, 18: Print Space$(10)
+                    Locate 9, 1: Input " 8. OFF FUMBLE % "; leagueRatings%(3)
+                    Locate 9, 18: Print " "
 
                 Case 9
-                    Locate 10: Input " 9. DEF FUMBLE % "; leagueRatings%(4)
+                    Locate 10, 18: Print Space$(10)
+                    Locate 10, 1: Input " 9. DEF FUMBLE % "; leagueRatings%(4)
+                    Locate 10, 18: Print " "
 
                 Case 10
-                    Locate 11: Input "10. OFF SACK ADJ % "; leagueRatings%(5)
+                    Locate 11, 20: Print Space$(10)
+                    Locate 11, 1: Input "10. OFF SACK ADJ % "; leagueRatings%(5)
+                    Locate 11, 20: Print " "
 
                 Case 11
-                    Locate 12: Input "11. DEF SACK ADJ % "; leagueRatings%(6)
+                    Locate 12, 20: Print Space$(10)
+                    Locate 12, 1: Input "11. DEF SACK ADJ % "; leagueRatings%(6)
+                    Locate 12, 20: Print " "
 
                 Case 12
-                    Locate 13: Input "12. DEF YDS/COMP ADJ "; YC!
+                    Locate 13, 22: Print Space$(10)
+                    Locate 13, 1: Input "12. DEF YDS/COMP ADJ "; YC!
+                    Locate 13, 22: Print " "
+
                     If YC! <= 0 Then YC! = 100 + (YC! * 10 / 3)
 
                 Case 13
-                    Locate 14: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 14, 20: Print Space$(10)
+                    Locate 14, 1: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 14, 20: Print " "
 
                 Case 14
-                    Locate 15: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 15, 20: Print Space$(10)
+                    Locate 15, 1: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 15, 20: Print " "
 
                 Case 15
-                    Locate 16: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 16, 35: Print Space$(10)
+                    Locate 16, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 16, 35: Print " "
 
                 Case 16
-                    Locate 17: Input "16. POWER INDEX "; teamRatings%(4)
+                    Locate 17, 17: Print Space$(10)
+                    Locate 17, 1: Input "16. POWER INDEX "; teamRatings%(4)
+                    Locate 17, 17: Print " "
 
                 Case 17
-                    Locate 18: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 18, 23: Print Space$(10)
+                    Locate 18, 1: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 18, 23: Print " "
+
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color 15, 0
                     End If
-                    Color 15, 0
 
                 Case 18
-                    Locate 19: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 20, 28: Print Space$(10)
+                    Locate 19, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 19, 28: Print " "
+
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color 15, 0
                     End If
-                    Color 15, 0
 
                 Case 19
-                    Locate 20: Input "19. STADIUM NAME "; stadium$
+                    Locate 20, 18: Print Space$(10)
+                    Locate 20, 1: Input "19. STADIUM NAME "; stadium$
+                    Locate 20, 18: Print " "
 
                 Case 20
-                    Locate 21: Input "20. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 21, 24: Print Space$(10)
+                    Locate 21, 1: Input "20. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 21, 24: Print " "
 
             End Select
 
         End If
+
+        Locate 23, 61
+        Print Space$(10)
 
     Loop Until B9 = 0
 
@@ -1814,7 +1998,7 @@ End Sub
 '----------------------------------------
 'This routine saves the modified data back
 'to the original team file
-Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
+Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
 
     Shared mascot$, stadium$
 
@@ -1837,7 +2021,7 @@ Sub SaveChangedTeam (team$, YN$, teamNbr, YC%)
 
     Call CSMsgBox("SAVING TEAM FILES", 20, Pass)
 
-    teamYear$ = RTrim$(YN$)
+    teamYear$ = RTrim$(teamYear$)
 
     Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 

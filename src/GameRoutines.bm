@@ -9,14 +9,14 @@ Sub INFO ()
 
     Color , 1
     Locate 1, 1
-    Print Tab(80);
+    Print Tab(80); " ";
 
     Locate , 33
     Color 14
     Print "GAME OPTIONS MENU"
 
     Locate 24, 1
-    Print Tab(80);
+    Print Tab(80); " ";
     Locate , 1
     Print "    LANCE HAFFNER 1986-2000"; Tab(70); Left$(Time$, 5);
     Locate 3, 1
@@ -407,14 +407,27 @@ End Sub
 
 
 '----------------------------------------
+'         Rolld100 Subroutine
+'----------------------------------------
+'This subroutine assigns a random number
+'between 1 and 100 to the variable that
+'it is called with
+Sub Rolld100 (randNumVar)
+
+    randNumVar = Int(Rnd(1) * 100) + 1
+
+End Sub
+
+
+'----------------------------------------
 '            d100 Subroutine
 '----------------------------------------
 'This subroutine assigns a random number
 'between 1 and 100 to the variable that
 'it is called with
-Sub d100 (randNumVar)
+Function d100% ()
 
-    randNumVar = Int(Rnd(1) * 100) + 1
+    d100% = Int(Rnd(1) * 100) + 1
 
 End Sub
 
@@ -469,7 +482,7 @@ Sub TICKER ()
         Color 14, 0
         Cls
 
-        Call d100(RN0)
+        Call Rolld100(RN0)
 
         If halfTime = 1 Then
 
@@ -1093,7 +1106,7 @@ Sub TickerSchedule ()
 
     End If
 
-    Open diskPaths$(0) + scheduleFile$ As #1 Len = 52
+    Open diskPaths$(3) + scheduleFile$ As #1 Len = 52
 
     For X = 0 To 20
         Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
@@ -1590,7 +1603,7 @@ End Sub
 Sub GOALLINE ()
 
     ' *** GOAL LINE DEFENSE ***
-    Call d100(RN6)
+    Call Rolld100(RN6)
 
     If dLine > 3 And dLine < 6 Then
 
@@ -1719,7 +1732,7 @@ Sub GOALLINE ()
 
     End If
 
-    Call d100(RN7)
+    Call Rolld100(RN7)
 
     If I2 <= 30 Then
         'Added this to avoid scenarios
@@ -1905,7 +1918,7 @@ End Sub
 'the Play-by-Play
 Sub ONSIDE ()
 
-    Call d100(X)
+    Call Rolld100(X)
 
     pbpString$ = kicker$(P1, activeKicker(P1)) + " IS PLACING THE BALL ON THE TEE"
     Call PBP
@@ -1958,15 +1971,15 @@ Sub INCOMPLETE ()
 
     Call QBTHROW
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 > 10 Then
 
-        Call d100(RN1)
+        Call Rolld100(RN1)
 
         If RN1 > 60 Then
 
-            Call d100(RN2)
+            Call Rolld100(RN2)
 
             Select Case playCall
 
@@ -2084,7 +2097,7 @@ Sub QBSNEAK ()
 
     Call PBP
 
-    Call d100(RN4)
+    Call Rolld100(RN4)
 
     If (coverage = 7 Or coverage = 9 Or coverage = 11) Then
 
@@ -2195,7 +2208,7 @@ End Sub
 'pass will be completed.
 Sub BLITZ ()
 
-    Call d100(RN5)
+    Call Rolld100(RN5)
     XE = ydsPerComp(D) / 100
 
     If XE <= .5 Then
@@ -2210,7 +2223,7 @@ Sub BLITZ ()
         If RN5 <= PS%(1, XE) Then I4 = I4 - PS%(2, XE)
     End If
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
     If qbArmRat(P1, qbNumber(P1)) > 20 Then qbArmRat(P1, qbNumber(P1)) = 20
     If qbArmRat(P1, qbNumber(P1)) < -20 Then qbArmRat(P1, qbNumber(P1)) = -20
 
@@ -2375,7 +2388,7 @@ Sub BLITZ ()
         If I4 > 10 Then I4 = 10
         If I4 < 1 Then I4 = 1
 
-        Call d100(RN9)
+        Call Rolld100(RN9)
 
         For I = 1 To 14
             If RN9 <= S2%(I7, I4, I) Then Exit For
@@ -2439,7 +2452,7 @@ End Sub
 'blitz yardage gains.
 Sub BLITZ2 ()
 
-    Call d100(RN4)
+    Call Rolld100(RN4)
 
     Select Case I2
 
@@ -2535,7 +2548,7 @@ Sub COMPCHEAT ()
     coverage = 1
 
     RN0 = Int(Rnd(1) * 4) + 1
-    Call d100(RN3)
+    Call Rolld100(RN3)
 
     If RN0 = 2 Then
 
@@ -2637,7 +2650,7 @@ Sub DEFENSE ()
 
             Case 1
                 If ydsToFirst > 10 Then
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 2
 
@@ -2645,7 +2658,7 @@ Sub DEFENSE ()
 
                         Case 1 To 5
                             dLine = 9
-                            Call d100(RN1)
+                            Call Rolld100(RN1)
 
                             Select Case RN1
 
@@ -2679,7 +2692,7 @@ Sub DEFENSE ()
 
                 If ydsToFirst < 10 Then
                     '8867
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 1
                     If RN0 <= 50 Then
@@ -2697,7 +2710,7 @@ Sub DEFENSE ()
 
                 If ydsToFirst > 8 Then
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 2
 
@@ -2705,7 +2718,7 @@ Sub DEFENSE ()
 
                         Case 1 To 5
                             dLine = 9
-                            Call d100(RN1)
+                            Call Rolld100(RN1)
 
                             Select Case RN1
 
@@ -2739,7 +2752,7 @@ Sub DEFENSE ()
 
                 If ydsToFirst < 5 Then
                     '8867
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 1
                     If RN0 <= 50 Then
@@ -2757,14 +2770,14 @@ Sub DEFENSE ()
 
                 If ydsToFirst >= 3 Then
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 2
 
                     Select Case RN0
                         Case 1 To 5
                             dLine = 9
-                            Call d100(RN1)
+                            Call Rolld100(RN1)
 
                             Select Case RN1
 
@@ -2796,7 +2809,7 @@ Sub DEFENSE ()
 
                 Else
                     '8867
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 1
                     If RN0 <= 50 Then
@@ -2816,7 +2829,7 @@ Sub DEFENSE ()
 
                     If (quarter = 4 And score(D, 0) - score(P1, 0) > 10) Or (quarter >= 3 And score(D, 0) - score(P1, 0) > 21) Then
 
-                        Call d100(RN0)
+                        Call Rolld100(RN0)
                         dLine = 1
                         coverage = 2
 
@@ -2824,7 +2837,7 @@ Sub DEFENSE ()
 
                             Case 1 To 5
                                 dLine = 9
-                                Call d100(RN1)
+                                Call Rolld100(RN1)
 
                                 Select Case RN1
 
@@ -2860,7 +2873,7 @@ Sub DEFENSE ()
 
                 If ydsToFirst >= 3 Then
 
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 2
 
@@ -2868,7 +2881,7 @@ Sub DEFENSE ()
 
                         Case 1 To 5
                             dLine = 9
-                            Call d100(RN1)
+                            Call Rolld100(RN1)
 
                             Select Case RN1
 
@@ -2900,7 +2913,7 @@ Sub DEFENSE ()
 
                 Else
                     '8867
-                    Call d100(RN0)
+                    Call Rolld100(RN0)
                     dLine = 1
                     coverage = 1
                     If RN0 <= 50 Then
@@ -2916,11 +2929,11 @@ Sub DEFENSE ()
 
             Case Else
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 If RN0 <= leagRat_GAME(P1, 7) Then
 
-                    Call d100(RN1)
+                    Call Rolld100(RN1)
                     dLine = 1
                     coverage = 1
                     If RN1 <= 50 Then
@@ -2932,7 +2945,7 @@ Sub DEFENSE ()
 
                 Else
 
-                    Call d100(RN1)
+                    Call Rolld100(RN1)
                     dLine = 1
                     coverage = 2
 
@@ -2940,7 +2953,7 @@ Sub DEFENSE ()
 
                         Case 1 To 5
                             dLine = 9
-                            Call d100(RN2)
+                            Call Rolld100(RN2)
 
                             Select Case RN2
 
@@ -2982,7 +2995,7 @@ Sub DEFENSE ()
 
         If score(P1, 0) - score(D, 0) <= 0 Then
 
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             If RN0 <= 50 Then
                 dLine = Int(Rnd(1) * 3) + 4
@@ -2990,7 +3003,7 @@ Sub DEFENSE ()
                 dLine = 3
             End If
 
-            Call d100(RN0)
+            Call Rolld100(RN0)
 
             Select Case RN0
 
@@ -3004,8 +3017,8 @@ Sub DEFENSE ()
 
         Else
 
-            Call d100(RN0)
-            Call d100(RN1)
+            Call Rolld100(RN0)
+            Call Rolld100(RN1)
 
             Select Case RN1
                 Case 1 To 50:
@@ -3826,7 +3839,7 @@ Sub ComputerOffense ()
                     GoTo 8800
                 End If
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 '-- Several of these could be triggered
                 '-- during a 2-point conversion
@@ -3910,7 +3923,7 @@ Sub ComputerOffense ()
                     End If
                 End If
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 Select Case qbMobility(P1)
 
@@ -3936,7 +3949,7 @@ Sub ComputerOffense ()
 
                 Else
 
-                    Call d100(RN1)
+                    Call Rolld100(RN1)
 
                     Select Case RN1
 
@@ -3986,7 +3999,7 @@ Sub ComputerOffense ()
 
                 '----- DECISION BRANCH 2 -----
                 8833 '
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 Select Case RN0
 
@@ -4060,7 +4073,7 @@ Sub ComputerOffense ()
                 'Score Tied or Down
                 If score(D, 0) - score(P1, 0) >= 0 Then 8885
 
-                Call d100(RN0)
+                Call Rolld100(RN0)
 
                 '2nd Quarter, Past Own 40 Yd Line
                 If ydLine > 40 And quarter = 2 Then 8885
@@ -4178,7 +4191,7 @@ Sub ComputerOffense ()
             End If
 
             8892 '
-            Call d100(R0)
+            Call Rolld100(R0)
 
             'Sideline pass
             playCall = 16
@@ -4234,7 +4247,7 @@ Sub ComputerOffense ()
     Else
 
         'We should only be here if going for 2
-        Call d100(R0)
+        Call Rolld100(R0)
 
         Select Case R0
 
@@ -4778,7 +4791,7 @@ End Sub
 'punt.
 Sub PuntReturnYards ()
 
-    'Call d100(I3)
+    'Call Rolld100(I3)
     ydLine = ydLine + ydsGained
 
     Call CHANGEPOSS
@@ -4875,7 +4888,7 @@ Sub KickFakeYards (choice)
     pbpString$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL"
     Call PBP
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case choice
 
@@ -4945,7 +4958,7 @@ End Sub
 'ulate if a player has fumbled the ball.
 Sub FUMBLE ()
 
-    Call d100(F8)
+    Call Rolld100(F8)
 
     If revFumble = 1 Then
 
@@ -4991,7 +5004,7 @@ Sub FLEA (ffChance)
     If coverage = 9 Or coverage = 10 Then ffPctSuccess = 50
     If coverage = 11 Then ffPctSuccess = 70
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 <= 25 Then
         ydsGained = Int(Rnd(1) * 50) + 51
@@ -5025,7 +5038,7 @@ Sub FLEA (ffChance)
     pbpString$ = wdRec$(P1, I3) + " IS OPEN DOWNFIELD"
     Call PBP
 
-    Call d100(ffChance)
+    Call Rolld100(ffChance)
 
 End Sub
 
@@ -5042,7 +5055,7 @@ Sub REVGAIN ()
     pbpString$ = pbpString$ + " AND HANDS OFF TO " + rbacks$(P1, I1) + " ON THE REVERSE!!"
     Call PBP
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RV%(P9) = 0 Then
 
@@ -5094,7 +5107,7 @@ Sub FAKERUN (choice)
     pbpString$ = "IT'S A FAKE!!! THE HOLDER IS RUNNING THE BALL"
     Call PBP
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case choice
         Case 1
@@ -5214,7 +5227,7 @@ Sub PASSBALL (passChance)
     playType = 2
 
     'Pick QB based on contribution
-    Call d100(qbChance)
+    Call Rolld100(qbChance)
 
     For J = 3 To 0 Step -1
         If qbChance <= qbNumAtt(P1, J) Then I1 = J
@@ -5235,7 +5248,7 @@ Sub PASSBALL (passChance)
 
     Do
 
-        Call d100(recChance)
+        Call Rolld100(recChance)
         newRandomNum% = 0
 
         For J = 15 To 10 Step -1
@@ -5310,7 +5323,7 @@ Sub PASSBALL (passChance)
 
     Call PBP
 
-    Call d100(passChance)
+    Call Rolld100(passChance)
 
 End Sub
 
@@ -5755,7 +5768,7 @@ End Sub
 'for Goal Line situations.
 Sub SHORTYARDAGE ()
 
-    Call d100(RN6)
+    Call Rolld100(RN6)
 
     If dLine > 3 And dLine < 6 Then
 
@@ -5885,7 +5898,7 @@ Sub SHORTYARDAGE ()
 
     End If
 
-    Call d100(RN7)
+    Call Rolld100(RN7)
 
     If I2 <= 30 Then
         If RN7 <= goalLnYdAdj(I2, 1) Then ydsGained = ydsGained + goalLnYdAdj(I2, 2)
@@ -5904,7 +5917,7 @@ End Sub
 'string for pass play.
 Sub PASSPBP ()
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If coverage >= 7 Then
 
@@ -6045,7 +6058,7 @@ Sub SACK ()
     Else
 
         RN0 = Int(Rnd(1) * 12) + 1
-        Call d100(RN1)
+        Call Rolld100(RN1)
 
         Select Case RN0
             Case 1: pbpString$ = pbpString$ + " IS SACKED"
@@ -6088,7 +6101,7 @@ Sub QBLINE ()
         qback = qbNumber(P1)
     End If
 
-    Call d100(RN1)
+    Call Rolld100(RN1)
     If Not (currDown <= 2 Or currDown = 3 And RN1 <= 80) Then
 
         RN0 = Int(Rnd(1) * 8) + 1
@@ -6234,7 +6247,7 @@ Sub MISSEDFG
     'direction of kick (right/left)
     fieldSide = Int(Rnd(1) * 2)
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case RN0
 
@@ -6271,7 +6284,7 @@ End Sub
 'string for a made Field Goal.
 Sub ITSGOOD
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case RN0
 
@@ -6300,7 +6313,7 @@ End Sub
 'string for a missed PAT.
 Sub MISSPAT
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case RN0
 
@@ -6324,7 +6337,7 @@ End Sub
 'string for a made PAT.
 Sub MADEPAT
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     Select Case RN0
         Case 1 To 25: pbpString$ = "IT'S GOOD!!!"
@@ -6351,7 +6364,7 @@ Sub KickoffDistance ()
     pbpString$ = kicker$(P1, activeKicker(P1)) + " IS PLACING THE BALL ON THE TEE"
     Call PBP
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 <= 50 Then
         pbpString$ = gameTeams$(P1) + " IS LINING UP FOR THE KICKOFF"
@@ -6367,7 +6380,7 @@ Sub KickoffDistance ()
     'Swap defense and offense
     Swap P1, D
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
 
     If RN0 <= 88 Then
         '88% chance of kick travelling 55 to 67 yds
@@ -6377,7 +6390,9 @@ Sub KickoffDistance ()
         kickYL = 100 - (ydLine + Int(Rnd(1) * 8) + 68 + goalPostAdj)
     End If
 
-    If ruleOptType = 0 And ruleOptColl = 0 Then kickYL = kickYL + 10
+    If ruleOptType = 0 And ruleOptColl = 0 Then 
+        kickYL = kickYL + 10
+    End If
 
     If climate(0) = P1 Then
         kickYL = kickYL - Int(Rnd(1) * 7) + 3 - climate(1)
@@ -6395,7 +6410,7 @@ End Sub
 'string for a QB pass.
 Sub QBTHROW ()
 
-    Call d100(RN0)
+    Call Rolld100(RN0)
     Select Case RN0
         Case 1: pbpString$ = "HE PASSES IT"
         Case 2: pbpString$ = "HE FIRES IT"
@@ -6593,7 +6608,7 @@ Sub PCPBP ()
         pbpString$ = targetWRName$ + " MAKES THE CATCH IN THE END ZONE!!!"
         Call PBP
     Else
-        Call d100(RN0)
+        Call Rolld100(RN0)
 
         Select Case playCall
             Case 9, 10
@@ -7654,7 +7669,6 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         Kill "TEMPBOX"
 
     End If
-
 
 End Sub
 
@@ -9061,7 +9075,7 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
         Locate 7 + JJ, 8
         Print " " + Chr$(211); String$(61, 196); Chr$(189) + " ";
 
-        Locate 7, 32
+        Locate 8, 32
 
         Locate , 12: Print teamIndicator$(gameIdx)
         Locate , 12: Print "ENTER DISK ID: "
@@ -9078,7 +9092,7 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
             If I$ <> Chr$(13) Then
 
-                Locate 7, 27: Print I$;
+                Locate 8, 27: Print I$;
 
                 NY$ = ""
 

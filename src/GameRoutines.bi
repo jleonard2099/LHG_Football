@@ -81,6 +81,7 @@ Declare Sub QBLINE ()
 Declare Sub QBSNEAK ()
 Declare Sub QBTHROW ()
 Declare Sub REVGAIN ()
+Declare Sub Rolld100 (randNumVar)
 Declare Sub RUNMENU ()
 Declare Sub RUNPBP ()
 Declare Sub RUNTDPBP ()
@@ -115,6 +116,7 @@ Declare Sub pbplog (lineNumber%)
 Declare Sub pbplog (lineNumber)
 
 
+Declare Function d100% ()
 Declare Function FindMarkerColumn (X) 'Used only in "Marker" subroutine
 Declare Function GetTeamYear% (yearFromName$)
 Declare Function GetQBMobility% (qbRushContrib)

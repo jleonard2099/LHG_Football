@@ -26,7 +26,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the organization 
 'stats from the file into several arrays
-Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
+Sub LoadLeaderFiles_Natl (confName$, NRT, targetFile$)
 
     Shared seeL!(), LD!(), LZ!()
     Shared PT!(), PTSA!(), PTSF!()
@@ -42,7 +42,7 @@ Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
 
     Open diskPaths$(2) + targetFile$ + ".CON" For Input As #1
 
-    Input #1, FF$
+    Input #1, confName$
 
     Close #1
 
@@ -90,7 +90,7 @@ End Sub
 'This subroutine gives the user various
 'options for viewing the previously loaded
 'stats, and then calls routines for each
-Sub StatOptions_Natl (FF$, NRT)
+Sub StatOptions_Natl (confName$, NRT)
 
     Do
 
@@ -98,39 +98,44 @@ Sub StatOptions_Natl (FF$, NRT)
 
         Call TITLE_STATS
 
-        Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 20, 40, 5, 15, 1)
 
         Do
 
-            Locate 10, 32
+            Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "P";
+            Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
             I$ = GetKeyPress$
 
             Color 14, 0
 
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S" Or I$ = Chr$(27)
 
         If I$ <> Chr$(27) Then
 
             Select Case UCase$(I$)
 
                 Case "F":
-                    Call ReportFilePrompt_Natl(SF$)
-                    Call SavePrintNatLeaders(SF$, FF$, NRT, 1)
+                    userFile$ = _SAVEFILEDIALOG$("Save Organization Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    If userFile$ <> "" Then
+                        Call NatLeaders_Report(confName$, NRT, 0, userFile$)
+                    End If
 
                 Case "P":
-                    Call SavePrintNatLeaders(SF$, FF$, NRT, 0)
+                    Call NatLeaders_Report(confName$, NRT, 1, "REPORT")
 
                 Case "S":
-                    Call LeaderStatsNat_Screen(FF$, NRT)
+                    Call NatLeaders_Screen(confName$, NRT)
 
             End Select
 
@@ -156,49 +161,14 @@ Sub StatOptions_Natl (FF$, NRT)
 End Sub
 
 
-'----------------------------------------
-'     ReportFilePrompt_Natl Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub ReportFilePrompt_Natl (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox (6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
 
 '----------------------------------------
-'     LeaderStatsNat_Screen Subroutine
+'     NatLeaders_Screen Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub LeaderStatsNat_Screen (FF$, NRT)
+Sub NatLeaders_Screen (confName$, NRT)
 
     Shared LD!(), LZ!(), PT!()
     Shared seeT!(), compTT!()
@@ -210,7 +180,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Cls
 
     Color 12
-    Print FF$ + " OVERALL RANKINGS"
+    Print confName$ + " OVERALL RANKINGS"
 
     Locate , 1
     Color 14
@@ -233,7 +203,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
             Cls
 
             Color 12
-            Print FF$ + " OVERALL RANKINGS"
+            Print confName$ + " OVERALL RANKINGS"
 
             Locate , 1
             Color 14
@@ -805,13 +775,13 @@ End Sub
 
 
 '----------------------------------------
-'     SavePrintNatLeaders Subroutine
+'     NatLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to a file
 'that is then looped through to send to
 'the default printer
-Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
+Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
     Shared LZ!(), PT!()
     Shared seeT!(), compTT!()
@@ -819,16 +789,12 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     Shared compZ2$(), compZ3$()
     Shared seePR$(), TT$()
 
-    Color 0, 15
-    Cls
+	Color 15, 0
+	Cls
 
-    If destination <> 1 Then
-        Open "REPORT" For Output As #1
-    Else
-        Open reportFile$ + ".RPT" For Output As #1
-    End If
+	Open destFile$ For Output As #1
 
-    Print #1, FF$ + " OVERALL RANKINGS"
+    Print #1, confName$ + " OVERALL RANKINGS"
     Print #1, "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
 
     For P = 1 To NRT
@@ -1229,20 +1195,22 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     Close #1
 
-    If destination <> 1 Then
+	If printDest = 1 Then
 
-        Open "REPORT" For Input As #2
+		Open destFile$ For Input As #2
 
-        Do While Not EOF(2)
-            Line Input #2, X$
-            LPrint X$
-        Loop
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
 
-        Close #2
+		Close #2
 
-        LPrint Chr$(12)
+		LPrint Chr$(12)
 
-    End If
+		Kill destFile$
+
+	End If
 
 End Sub
 

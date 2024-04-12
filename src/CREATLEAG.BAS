@@ -56,11 +56,14 @@ Sub CREATLEAG ()
                     Call ReviewEditLeague(league$, div1$, div2$, div3$)
 
                 Case 2:
-                    league$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", FileExit%)
+                    Do
+                        league$ = ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReviewEditLeague(league$, div1$, div2$, div3$)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReviewEditLeague(league$, div1$, div2$, div3$)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -179,9 +182,9 @@ Sub ReviewEditLeague (league$, div1$, div2$, div3$)
 
     Shared statsZ1$(), statsZ2$()
 
-    If _FileExists(diskPaths$(2) + league$ + ".LIB") Then
+    If _FileExists(diskPaths$(2) + league$ + ".TMI") Then
 
-        Open diskPaths$(2) + league$ + ".LIB" For Input As #1
+        Open diskPaths$(2) + league$ + ".TMI" For Input As #1
 
         Input #1, LG%
 
@@ -289,14 +292,14 @@ End Sub
 '----------------------------------------
 'This subroutine writes the league team
 'memberships and definition to each of
-'the corresponding files (.LIB, .TMS)
+'the corresponding files (.TMI, .TMS)
 Sub SaveLeague (league$, div1$, div2$, div3$)
 
     Shared statsZ1%()
 
     Shared statsZ1$(), statsZ2$()
 
-    Open diskPaths$(2) + league$ + ".LIB" For Output As #1
+    Open diskPaths$(2) + league$ + ".TMI" For Output As #1
 
     Print #1, 1
 

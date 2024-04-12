@@ -99,7 +99,7 @@ Sub CompileCollege ()
 
     C$ = ","
 
-    conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+    conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -123,7 +123,7 @@ Sub CompileCollege ()
 
         Close #2
 
-        Open diskPaths$(2) + conferenceFile$ + ".LIB" For Input As #3
+        Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #3
         Input #3, LG%
         Close #3
 
@@ -526,10 +526,25 @@ Sub CalcStatTotalsConf (numberGames, TM$, WT$, finalUpdate$)
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then teamRecords!(39) = PTS / numberGames: teamRecDesc$(39) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then teamRecords!(38) = PTS: teamRecDesc$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then teamRecords!(41) = PTS / numberGames: teamRecDesc$(41) = TM$
-    If PTS > teamRecords!(40) Then teamRecords!(40) = PTS: teamRecDesc$(40) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then 
+        teamRecords!(39) = PTS / numberGames
+        teamRecDesc$(39) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then 
+        teamRecords!(38) = PTS
+        teamRecDesc$(38) = TM$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then 
+        teamRecords!(41) = PTS / numberGames
+        teamRecDesc$(41) = TM$
+    End If
+
+    If PTS > teamRecords!(40) Then 
+        teamRecords!(40) = PTS
+        teamRecDesc$(40) = TM$
+    End If
 
     If PTS / numberGames < compTT!(CA, 20, 3) Then
 

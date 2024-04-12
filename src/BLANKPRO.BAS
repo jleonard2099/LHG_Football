@@ -8,9 +8,9 @@ Sub BLANKPRO ()
 
     _Title "3-in-1 Football - Erase League Stats"
 
-    Dim statFiles$(40)
+    Dim statFiles$(MAX_CONFERENCES)
 
-    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 

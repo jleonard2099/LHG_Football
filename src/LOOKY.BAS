@@ -327,17 +327,17 @@ Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 8, 61, 4, 15, 1)
+        Call MenuBox(8, 20, 40, 4, 15, 1)
 
         Do
 
-            Locate 10, 32
+            Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";
-            Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
             Color 15: Print "P";
             Color 7: Print "RINTER"
 
@@ -345,36 +345,46 @@ Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
             Color 14, 0
 
-        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "P"
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S" Or I$ = Chr$(27)
 
-        Select Case UCase$(I$)
+        If I$ <> Chr$(27) Then
 
-            Case "S"
-                Call StatsToScreen(teamName$, totalGames%, statFormat, teamPower, SS)
+            Select Case UCase$(I$)
 
-            Case "P"
-                Call StatsToPrinter(teamName$, totalGames%, statFormat, teamPower, SS)
+                Case "F"
+                    userFile$ = _SAVEFILEDIALOG$("Save Stats Report",_CWD$ + "\Report","*.txt","Text File")
+                    If userFile$ <> "" Then
+                        Call StatsToReport(0, userFile$, teamName$, totalGames%, statFormat, teamPower, SS)
+                    End If
 
-        End Select
+                Case "P"
+                    Call StatsToReport(1, "REPORT", teamName$, totalGames%, statFormat, teamPower, SS)
 
-        Color 15, 0
-        Cls
+                Case "S"
+                    Call StatsToScreen(teamName$, totalGames%, statFormat, teamPower, SS)
 
-        Call MenuBox(6, 8, 61, 1, 15, 1)
+            End Select
 
-        Do
-            Locate 7
-            U$ = "DISPLAY STATS AGAIN? (Y/N)"
-            Locate , (80 - Len(U$)) / 2
-            Print U$
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+            Color 15, 0
+            Cls
 
-        Color 15, 0
+            Call MenuBox(6, 8, 61, 1, 15, 1)
 
-        'Call ResetStatsPrompt (statFile$)
+            Do
+                Locate 7
+                U$ = "DISPLAY STATS AGAIN? (Y/N)"
+                Locate , (80 - Len(U$)) / 2
+                Print U$
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
-    Loop Until UCase$(I$) = "N"
+            Color 15, 0
+
+            'Call ResetStatsPrompt (statFile$)
+
+        End If
+
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
 
 End Sub
 
@@ -425,7 +435,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
         Color 7
 
-        If I / 2 = Int(I / 2) Then Color 15
+        If (I Mod 2) = 0 Then Color 15
 
         Print oppName$(I);
         Locate , 19: Print Using "###"; teamScore(I);
@@ -447,8 +457,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Print "T";
         End If
 
-        Locate , 31: Print Using "####,###   "; gameAttendance&(I);
-        Print locIndicator$(I); "  "; Left$(gameSite$(I), 24);
+        Locate , 31: Print Using "####,###"; gameAttendance&(I);
+        Locate , 43: Print locIndicator$(I); "  "; Left$(gameSite$(I), 24);
 
         Locate , 69
         Print "(";
@@ -466,7 +476,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
             Cls
             Color , 0
-            Locate 1, 1: Print Tab(80);
+            Locate 1, 1: Print Tab(80); " ";
             Locate , Xcoord
 
             Color 14
@@ -1256,11 +1266,11 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 End Sub
 
 '----------------------------------------
-'       StatsToPrinter Subroutine
+'       StatsToReport Subroutine
 '----------------------------------------
 'This subroutine formats and outputs the
 'selected team's stats to the default printer
-Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
+Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared AF!(), AM!(), gameAttendance&(), statsGI%(), statsGS%()
     Shared teamStats!(), playerStats!()
@@ -1274,9 +1284,10 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
     Shared statsLC$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared oppName$(), statsPK$(), gameSite$()
 
-    Color 0, 15
+	Color 15, 0
+	Cls
 
-    Open "REPORT" For Output As #1
+	Open destFile$ For Output As #1
 
     Print #1, "GAME-BY-GAME REPORT FOR "; teamName$
     Print #1,
@@ -1818,18 +1829,22 @@ Sub StatsToPrinter (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Close #1
 
-    Open "REPORT" For Input As #2
+	If printDest = 1 Then
 
-    Do While Not EOF(2)
-        Line Input #2, X$
-        LPrint X$
-    Loop
+		Open destFile$ For Input As #2
 
-    Close #2
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
 
-    LPrint Chr$(12)
+		Close #2
 
-    I$ = GetKeyPress$
+		LPrint Chr$(12)
+
+		Kill destFile$
+
+	End If
 
 End Sub
 

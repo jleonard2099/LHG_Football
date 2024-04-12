@@ -8,7 +8,7 @@ Sub BLANKORG ()
 
     _Title "3-in-1 Football - Erase National Stats"
 
-    Dim teamName$(40)
+    Dim teamName$(MAX_CONFERENCES)
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
@@ -28,13 +28,13 @@ Sub BLANKORG ()
 
             Input #1, org$
 
-            For X = 1 To 40
+            For X = 1 To MAX_CONFERENCES
                 Input #1, confName$(X)
             Next
 
             Close #1
 
-            For X = 1 To 40
+            For X = 1 To MAX_CONFERENCES
 
                 If confName$(X) <> "XXX" Then
                     Cls
@@ -48,13 +48,13 @@ Sub BLANKORG ()
 
             Input #2, org$, div1$, div2$
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_CONFERENCE
                 Input #2, teamName$(XW)
             Next
 
             Close #2
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_CONFERENCE
 
                 If teamName$(XW) <> Chr$(42) Then
                     statFile$ = diskPaths$(1) + teamName$(XW)

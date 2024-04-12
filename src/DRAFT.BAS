@@ -81,7 +81,7 @@ End Sub
 'This subroutine prompts the user for the
 'minimum required parameters to create a
 'new team that players will be drafted to.
-Sub NewTeamParameters (YN$, teamName$, teamIdx)
+Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
     Shared teamAttendance&
@@ -92,7 +92,7 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
     Shared teamRatings%()
 
     Locate 3: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
-    Locate 4: Input " 2. DISK ID  "; YN$
+    Locate 4: Input " 2. DISK ID "; teamYear$
     Locate 5: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
     Locate 6: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
     Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
@@ -124,7 +124,7 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
     Do
 
         Do
-            Locate 24
+            Locate 23, 25
             Input "# TO CHANGE (0 TO CONTINUE) "; B9
         Loop Until B9 >= 0 And B9 <= 6
 
@@ -133,61 +133,96 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
             Select Case B9
 
                 Case 1
-                    Locate 3: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
+                    Locate 3, 35: Print Space$(10)
+                    Locate 3, 1: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
+                    Locate 3, 35: Print " "
 
                 Case 2
-                    Locate 4: Input " 2. DISK ID  "; YN$
+                    Locate 4, 1: Input " 2. DISK ID "; teamYear$
+                    Locate 4, 13: Print " "
 
                 Case 3
-                    Locate 5: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
+                    Locate 5, 1: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
+                    Locate 5, 33: Print " "
 
                 Case 4
-                    Locate 6: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
+                    Locate 6, 1: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
+                    Locate 6, 34: Print " "
 
                 Case 5
-                    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
+                    Locate 7, 18: Print Space$(10)
+                    Locate 7, 1: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
+                    Locate 7, 18: Print " "
 
                 Case 6
-                    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
+                    Locate 8, 20: Print Space$(10)
+                    Locate 8, 1: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
+                    Locate 8, 20: Print " "
 
                 Case 7
-                    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
+                    Locate 9, 19: Print Space$(10)
+                    Locate 9, 1: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
+                    Locate 9, 19: Print " "
 
                 Case 8
-                    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
+                    Locate 10, 19: Print Space$(10)
+                    Locate 10, 1: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
+                    Locate 10, 19: Print " "
 
                 Case 9
-                    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
+                    Locate 11, 23: Print Space$(10)
+                    Locate 11, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
+                    Locate 11, 23: Print " "
 
                 Case 10
-                    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
+                    Locate 12, 26: Print Space$(10)
+                    Locate 12, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
+                    Locate 12, 26: Print " "
 
                 Case 11
-                    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+                    Locate 13, 18: Print Space$(10)
+                    Locate 13, 1: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+                    Locate 13, 18: Print " "
 
                 Case 12
-                    Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
+                    Locate 14, 21: Print Space$(10)
+                    Locate 14, 1: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
+                    Locate 14, 21: Print " "
 
                 Case 13
-                    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 15, 20: Print Space$(10)
+                    Locate 15, 1: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 15, 20: Print " "
 
                 Case 14
-                    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 16, 20: Print Space$(10)
+                    Locate 16, 1: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 16, 20: Print " "
 
                 Case 15
-                    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 17, 35: Print Space$(10)
+                    Locate 17, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 17, 35: Print " "
 
                 Case 16
-                    Locate 18: Input "16. STADIUM NAME "; stad$
+                    Locate 18, 17: Print Space$(10)
+                    Locate 18, 1: Input "16. STADIUM NAME "; stad$
+                    Locate 18, 17: Print " "
 
                 Case 17
-                    Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 19, 23: Print Space$(10)
+                    Locate 19, 1: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 19, 23: Print " "
 
                 Case 18
-                    Locate 20: Input "18. POWER RATING "; teamRatings%(4)
+                    Locate 20, 18: Print Space$(10)
+                    Locate 20, 1: Input "18. POWER RATING "; teamRatings%(4)
+                    Locate 20, 18: Print " "
 
                 Case 19
+                    Locate 21, 23: Print Space$(10)
                     Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 21, 23: Print " "
 
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 21, 37
@@ -199,7 +234,9 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
                     End If
 
                 Case 20
+                    Locate 22, 28: Print Space$(10)
                     Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 22, 28: Print " "
 
                     If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
                         Locate 21, 37
@@ -211,6 +248,9 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
                     End If
 
             End Select
+
+            Locate 23, 53
+            Print Space$(10)
 
         End If
 
@@ -228,7 +268,7 @@ End Sub
 'that we will be drafting from. This will,
 'in turn, assign those values to the extra
 'array that is available.
-Sub DraftExistingTeam (YN$, teamIdx)
+Sub DraftExistingTeam (teamYear$, teamIdx)
 
     Shared stadium$
 
@@ -320,7 +360,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
         numInts(I) = numInt_DRAFT(I)
     Next I
 
-    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$) Then
+    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
 
         stadium$ = ""
         teamAttendance& = 0
@@ -335,7 +375,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     Else
 
-        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$ For Random As #1 Len = DATA_SIZE_BYTES
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = DATA_SIZE_BYTES
 
         Field #1, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
@@ -363,7 +403,7 @@ End Sub
 'This subroutine simply prints the ratings
 'and values from the existing team so the
 'end user can review them before proceeding.
-Sub ExistingTeamParameters (YN$, teamName$, teamIdx)
+Sub ExistingTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
     Shared teamAttendance&
@@ -380,26 +420,26 @@ Sub ExistingTeamParameters (YN$, teamName$, teamIdx)
     Next
 
     Locate 1, 1: Color 15, 0
-    Locate 3: Print " 1. ENTER DISK ID FOR THIS TEAM "; YN$
-    Locate 4: Print " 2. TEAM # "; teamIdx
-    Locate 5: Print " 3. TEAM NAME "; teamName$
-    Locate 6: Print " 4. TEAM NICKNAME "; teamNick$
-    Locate 7: Print " 5. DEF RUSH ADJ "; leagueRatings%(0)
-    Locate 8: Print " 6. DEF COMP % ADJ "; leagueRatings%(1)
-    Locate 9: Print " 7. DEF INT % ADJ "; leagueRatings%(2)
-    Locate 10: Print " 8. FUM % "; leagueRatings%(3)
-    Locate 11: Print " 9. DEF FUM % "; leagueRatings%(4)
-    Locate 12: Print "10. OFF SACKED % "; leagueRatings%(5)
-    Locate 13: Print "11. DEF SACK ADJ "; leagueRatings%(6)
-    Locate 14: Print "12. DEF YD/COMP ADJ "; ydsCompAdj
-    Locate 15: Print "13. TM PENALTY ADJ "; teamRatings%(0)
-    Locate 16: Print "14. OFF RUN/PASS % "; leagueRatings%(7)
-    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
-    Locate 18: Print "16. POWER RATING "; teamRatings%(4)
-    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; teamRatings%(1)
-    Locate 20: Print "18. TM TEXT COLOR (0-15) "; teamRatings%(2)
-    Locate 21: Print "19. STADIUM NAME "; stadium$
-    Locate 22: Print "20. AVERAGE ATTENDANCE "; teamAttendance&
+    Locate 3: Print " 1. ENTER DISK ID FOR THIS TEAM   "; teamYear$
+    Locate 4: Print " 2. TEAM #  "; teamIdx
+    Locate 5: Print " 3. TEAM NAME   "; teamName$
+    Locate 6: Print " 4. TEAM NICKNAME   "; teamNick$
+    Locate 7: Print " 5. DEF RUSH ADJ  "; leagueRatings%(0)
+    Locate 8: Print " 6. DEF COMP % ADJ  "; leagueRatings%(1)
+    Locate 9: Print " 7. DEF INT % ADJ  "; leagueRatings%(2)
+    Locate 10: Print " 8. FUM %  "; leagueRatings%(3)
+    Locate 11: Print " 9. DEF FUM %  "; leagueRatings%(4)
+    Locate 12: Print "10. OFF SACKED %  "; leagueRatings%(5)
+    Locate 13: Print "11. DEF SACK ADJ  "; leagueRatings%(6)
+    Locate 14: Print "12. DEF YD/COMP ADJ  "; ydsCompAdj
+    Locate 15: Print "13. TM PENALTY ADJ  "; teamRatings%(0)
+    Locate 16: Print "14. OFF RUN/PASS %  "; leagueRatings%(7)
+    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings%(3)
+    Locate 18: Print "16. POWER RATING  "; teamRatings%(4)
+    Locate 19: Print "17. TM BACKGROUND COLOR (0-7)  "; teamRatings%(1)
+    Locate 20: Print "18. TM TEXT COLOR (0-15)  "; teamRatings%(2)
+    Locate 21: Print "19. STADIUM NAME   "; stadium$
+    Locate 22: Print "20. AVERAGE ATTENDANCE  "; teamAttendance&
 
 End Sub
 
@@ -441,14 +481,29 @@ Sub DraftChoices (teamName$)
         Next
 
         Locate 5
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "R";: Color 3: Print "UNNING BACKS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "W";: Color 3: Print "IDE RECEIVERS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "Q";: Color 3: Print "UARTERBACKS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "K";: Color 3: Print "ICKOFF RETURN"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "P";: Color 3: Print "UNT RETURN"
-        Locate , 5: Color 3: Print "DRAFT P";: Color 15: Print "U";: Color 3: Print "NTERS"
-        Locate , 5: Color 3: Print "DRAFT PLACE K";: Color 15: Print "I";: Color 3: Print "CKERS"
-        Locate , 5: Color 15: Print "E";: Color 3: Print "ND AND SAVE DRAFT"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "R";: Color 3: Print "UNNING BACKS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "W";: Color 3: Print "IDE RECEIVERS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "Q";: Color 3: Print "UARTERBACKS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "K";: Color 3: Print "ICKOFF RETURN"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "P";: Color 3: Print "UNT RETURN"
+        Locate , 5
+        Color 3: Print "DRAFT P";
+        Color 15: Print "U";: Color 3: Print "NTERS"
+        Locate , 5
+        Color 3: Print "DRAFT PLACE K";
+        Color 15: Print "I";: Color 3: Print "CKERS"
+        Locate , 5
+        Color 15: Print "E";: Color 3: Print "ND AND SAVE DRAFT"
 
         I$ = GetKeyPress$
 
@@ -884,7 +939,7 @@ End Sub
 'This subroutine calculates all the values
 'and stats that need to be swapped and then
 'performs the trading / swapping.
-Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
+Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
 
@@ -1031,7 +1086,7 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     If X < 0 Then X = 100 + X
     ydsCompAdj = X
 
-    Call SaveTeamDraft(draftNew, YN$, teamName$, teamIdx)
+    Call SaveTeamDraft(draftNew, teamYear$, teamName$, teamIdx)
 
     Cls
 

@@ -70,43 +70,15 @@ Sub SCHEDULE ()
                     scheduleAP%(0) = 0
                     NS% = 0
 
-                    Do
-                        'Get name of new schedule
-                        Color 15, 0
-                        Cls
+                    scheduleFile$ = _InputBox$("Schedule File Name","Enter name for schedule file")
 
-                        Call MenuBox(6, 8, 61, 8, 15, 1)
-
-                        Locate 7, 32
-
-                        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
-                        Print
-                        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-                        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-                        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
-                        Locate , 12: Print "SAMPLE NAMES ARE ARIZONA, LSU-68, IU76, ETC."
-
-                        Locate 7, 37: Input scheduleFile$
-
-                        If scheduleFile$ <> "" Then
-
-                            Do
-                                Locate 14, 12
-                                Print "ANY CHANGE? (Y/N) "
-                                I$ = GetKeyPress$
-                            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                        End If
-
-                    Loop Until UCase$(I$) = "N" And scheduleFile$ <> ""
-
-                    Color 15, 0
-
-                    Call NewSchedule(scheduleFile$)
+                    If scheduleFile$ <> "" Then
+                        Call NewSchedule(scheduleFile$)
+                    End If
 
                 Case 2 To 6:
                     'Have the user pick a schedule
-                    scheduleFile$ = ChooseFile$(diskPaths$(0) + "*.SCD", "SCHEDULE", FileExit%)
+                    scheduleFile$ = ChooseFile$(diskPaths$(3) + "*.SCD", "SCHEDULE", FileExit%)
 
                     If FileExit% <> 27 And FileExit% <> 0 Then
 
@@ -174,10 +146,11 @@ Sub NewSchedule (scheduleFile$)
 
     Do
 
+        Color 15, 0
         Cls
 
         Locate 23, 1
-        Color , 1: Print Tab(80);
+        Color , 1: Print Tab(80); " ";
         Locate 23, 1
         Color 13: Print "HF";
         Color 14: Print "-HOME FIELD ADV  ";
@@ -189,7 +162,7 @@ Sub NewSchedule (scheduleFile$)
         Color 14: Print "-BOXSCORE OPTIONS"
 
         Locate 24, 1
-        Color , 1: Print Tab(80);
+        Color , 1: Print Tab(80); " ";
         Locate 24, 1
         Color 11: Print "C";
         Color 14: Print "-SAVE AND CONTINUE  ";
@@ -202,7 +175,7 @@ Sub NewSchedule (scheduleFile$)
         Color 11: Print "PGUP  PGDN";
 
         Locate 25, 1
-        Color , 1: Print Tab(80);
+        Color , 1: Print Tab(80); " ";
         Locate 25, 1
         Color 11: Print "S";
         Color 14: Print "-SORT GAMES  ";
@@ -215,7 +188,7 @@ Sub NewSchedule (scheduleFile$)
         Color 11: Print "R";
         Color 14: Print "-RESET SCORES";
 
-        Locate 1, 1: Print Tab(80);
+        Locate 1, 1: Print Tab(80); " ";
         Locate 1, 1: Print scheduleFile$
         Locate 1, 33
 
@@ -316,7 +289,7 @@ Sub NewSchedule (scheduleFile$)
                     scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
                 Next
 
-                DT$ = "09-01-23"
+                DT$ = "10-01-91"
                 TM$ = "07:30P"
                 Call NewGame(V$, QV$, H$, QH$, YN$, DT$, TM$, NTMS, targetGame%)
 
@@ -389,8 +362,8 @@ Sub NewSchedule (scheduleFile$)
 
                     Locate 8, 12: Print "TOTAL GAMES ="; scheduleAP%(0)
                     Locate 9, 12: Print "SELECT GAME # TO START AND END WITH": Print
-                    Locate 10, 12: Input "ENTER START GAME #: "; SG%: Print
-                    Locate 11, 12: Input "ENTER END GAME #:"; EG%: Print
+                    Locate 10, 12: Input "ENTER START GAME #: "; startGame: Print
+                    Locate 11, 12: Input "ENTER END GAME #:"; endGame: Print
 
                     Do
                         Locate 13, 12: Print "ANY CHANGE? (Y/N)"
@@ -399,14 +372,14 @@ Sub NewSchedule (scheduleFile$)
 
                 Loop Until UCase$(I$) = "N"
 
-                If SG% <= 0 Then SG% = 1
-                If EG% > scheduleAP%(0) Then EG% = scheduleAP%(0)
+                If startGame <= 0 Then startGame = 1
+                If endGame > scheduleAP%(0) Then endGame = scheduleAP%(0)
 
                 Open "GAME82" For Output As #1
 
                 Print #1, scheduleFile$ + ".SCD"
-                Print #1, SG% 'Start Game
-                Print #1, EG% 'End Game
+                Print #1, startGame 'Start Game
+                Print #1, endGame 'End Game
                 Print #1, 0
 
                 Close #1
@@ -434,7 +407,7 @@ Sub NewSchedule (scheduleFile$)
                     Next
                 Next
 
-                For I = SG% To SG% + 31
+                For I = startGame To startGame + 31
                     Print #2, scheduleNG%(I, 12)
                 Next
 
@@ -773,7 +746,6 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Select Case scheduleAction%
 
         Case 6
-            ' GLOBAL SETTINGS FOR A SCHEDULE
             Call ChangeGlobalSettings
             Call SaveScheduleFile(scheduleFile$)
             Call NewSchedule(scheduleFile$)
@@ -781,194 +753,78 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
         Case 3, 4, 5
 
             If scheduleAction% = 3 Or scheduleAction% = 4 Then
-
-                Color 15, 0
-                Cls
-
-                Call MenuBox(6, 8, 61, 8, 15, 1)
-
-                Do
-
-                    Locate 7, 32
-
-                    Locate , 12: Print "ENTER NAME FOR SUB-SCHEDULE: "
-                    Print
-                    Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-                    Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-                    Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
-                    Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
-                    Locate 7, 40: Input subSchedFile$
-
-                    If subSchedFile$ <> "" Then
-
-                        Do
-
-                            Locate 14, 12
-                            Print "ANY CHANGE? (Y/N) "
-                            I$ = GetKeyPress$
-
-                        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
-
-                    End If
-
-                Loop Until (UCase$(I$) = "N" And subSchedFile$ <> "") Or I$ = Chr$(27)
-
+                subSchedFile$ = _InputBox$("Schedule File Name","Enter name for schedule file")
             End If
 
-            If I$ <> Chr$(27) Then
+            If scheduleAction% = 5 Or subSchedFile$ <> "" Then
 
-                Color 15, 0
-                Cls
+                If scheduleAction% = 4 Then
 
-                Select Case scheduleAction%
+                    conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
 
-                    Case 4
-                        conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+                    If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-                        If ExitCode% <> 27 And ExitCode% <> 0 Then
+                        Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #1
 
-                            Open diskPaths$(2) + conferenceFile$ + ".LIB" For Input As #1
+                        Input #1, statType
 
-                            Input #1, statType
+                        If statType = 0 Then
 
-                            If statType = 0 Then
+                            Input #1, LG$
+                            Input #1, X$
+                            Input #1, X$
 
-                                Input #1, LG$
-                                Input #1, X$
-                                Input #1, X$
+                            For X = 1 To 30
+                                Input #1, statsZ1$(X)
+                                Input #1, statsZ1%(X)
+                                Input #1, statsZ2$(X)
+                            Next
 
-                                For X = 1 To 30
-                                    Input #1, statsZ1$(X)
-                                    Input #1, statsZ1%(X)
-                                    Input #1, statsZ2$(X)
-                                Next
+                            numberTeams = 30
 
-                                numberTeams = 30
+                            Close #1
 
-                                Close #1
+                        End If
 
-                            End If
+                        If statType = 1 Then
 
-                            If statType = 1 Then
+                            Input #1, LG$
 
-                                Input #1, LG$
+                            For X = 1 To 30:
+                                Input #1, statsZ1$(X)
+                                Input #1, statsZ1%(X)
+                                Input #1, statsZ2$(X)
+                            Next
 
-                                For X = 1 To 30:
-                                    Input #1, statsZ1$(X)
-                                    Input #1, statsZ1%(X)
-                                    Input #1, statsZ2$(X)
-                                Next
+                            numberTeams = 30
 
-                                numberTeams = 30
+                            Close #1
 
-                                Close #1
+                        End If
 
-                            End If
+                        For I = 1 To scheduleAP%(0)
 
-                            For I = 1 To scheduleAP%(0)
+                            scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                            scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
 
-                                scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
-                                scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+                            For I1 = 1 To numberTeams
 
-                                For I1 = 1 To numberTeams
+                                If statsZ1$(I1) <> "XXX" Then
 
-                                    If statsZ1$(I1) <> "XXX" Then
+                                    If statsZ1%(I1) = scheduleNG%(I, 0) And statsZ2$(I1) = scheduleYN$(I, 0) Or statsZ1%(I1) = scheduleNG%(I, 1) And statsZ2$(I1) = scheduleYN$(I, 1) Then
 
-                                        If statsZ1%(I1) = scheduleNG%(I, 0) And statsZ2$(I1) = scheduleYN$(I, 0) Or statsZ1%(I1) = scheduleNG%(I, 1) And statsZ2$(I1) = scheduleYN$(I, 1) Then
+                                        Print
+                                        Print "FOUND A MATCH"
 
-                                            Print
-                                            Print "FOUND A MATCH"
-
-                                            Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
-                                            fileLength& = LOF(2)
-                                            targetGame% = fileLength& / SCHEDULE_SIZE_BYTES
-
-                                            For X = 0 To 20
-                                                Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-                                            Next
-
-                                            Field #2, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-
-                                            For X = 0 To 20: LSet Q$(X + 1) = MKI$(scheduleNG%(I, X)): Next
-
-                                            For X = 0 To 1: LSet Q$(22 + X) = scheduleYN$(I, X): Next
-
-                                            LSet Q$(24) = MKI$(visitorScores(I)): LSet Q$(25) = MKI$(homeScores(I))
-
-                                            Put #2, targetGame% + 1
-
-                                            Close #2
-
-                                            Exit For
-
-                                        End If
-
-                                    End If 'Done checking for "XXX"
-
-                                Next I1
-
-                            Next I
-
-                        End If 'Done checking COUNT
-
-                    Case 3, 5
-
-                        T1 = 0
-                        Call ChooseTeam(YN$, numberTeams, T1, N$)
-
-                        If T1 <> 0 Then
-
-                            Color 15, 0
-                            Cls
-
-                            'Change mode of play
-                            If scheduleAction% = 5 Then
-
-                                Color teamRatings%(2), teamRatings%(1): Print N$;
-                                Color 15, 0
-                                Print " IS TO BE:"
-                                Print
-                                Print "(0) MANUALLY CONTROLLED": Print
-                                Print "(1) COMPUTER CONTROLLED"
-
-                                Do
-                                    C$ = GetKeyPress$
-                                    I1 = Val(C$)
-                                Loop Until C$ = "0" Or C$ = "1"
-
-                                Print
-                                Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
-
-                            End If
-
-                            For I = 1 To scheduleAP%(0)
-
-                                scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
-                                scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
-
-                                If T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
-
-                                    'CHANGE SETTINGS FOR A TEAM
-                                    If T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Then scheduleNG%(I, 10) = 2
-                                    If T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then scheduleNG%(I, 10) = 1
-                                    If (T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1)) And I1 = 1 And scheduleAction% = 5 Then scheduleNG%(I, 10) = 3
-                                    scheduleNG%(I, 4) = displayPause! * 10
-
-                                    'Extract only
-                                    If Not (scheduleAction% = 5) Then
-                                        'Write matching games
-                                        Locate 1, 1: Print numberGames + 1; " MATCHES"
-
-                                        Open diskPaths$(0) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
-                                        fileLength& = LOF(3)
-
-                                        numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+                                        Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
+                                        fileLength& = LOF(2)
+                                        targetGame% = fileLength& / SCHEDULE_SIZE_BYTES
 
                                         For X = 0 To 20
-                                            Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                            Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
                                         Next
 
-                                        Field #3, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+                                        Field #2, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
                                         For X = 0 To 20: LSet Q$(X + 1) = MKI$(scheduleNG%(I, X)): Next
 
@@ -976,21 +832,102 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                                         LSet Q$(24) = MKI$(visitorScores(I)): LSet Q$(25) = MKI$(homeScores(I))
 
-                                        Put #3, numberGames + 1
+                                        Put #2, targetGame% + 1
 
-                                        Close #3
+                                        Close #2
 
-                                    End If 'Done checking schedule action
+                                        Exit For
 
-                                End If 'Done checking for matches
+                                    End If
 
-                            Next 'Done looping through games
+                                End If 'Done checking for "XXX"
+
+                            Next I1
+
+                        Next I
+
+                    End If 'Done checking COUNT
+
+                Else
+
+                    T1 = 0
+                    Call ChooseTeam(YN$, numberTeams, T1, N$)
+
+                    If T1 <> 0 Then
+
+                        Color 15, 0
+                        Cls
+
+                        'Change mode of play
+                        If scheduleAction% = 5 Then
+
+                            Color teamRatings%(2), teamRatings%(1): Print N$;
+                            Color 15, 0
+                            Print " IS TO BE:"
+                            Print
+                            Print "(0) MANUALLY CONTROLLED": Print
+                            Print "(1) COMPUTER CONTROLLED"
+
+                            Do
+                                C$ = GetKeyPress$
+                                I1 = Val(C$)
+                            Loop Until C$ = "0" Or C$ = "1"
+
+                            Print
+                            Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
 
                         End If
 
-                End Select
+                        For I = 1 To scheduleAP%(0)
 
-            End If 'Done checking for ESC
+                            scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                            scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+
+                            If T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
+
+                                'CHANGE SETTINGS FOR A TEAM
+                                If T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Then scheduleNG%(I, 10) = 2
+                                If T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then scheduleNG%(I, 10) = 1
+                                If (T1 = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or T1 = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1)) And I1 = 1 And scheduleAction% = 5 Then scheduleNG%(I, 10) = 3
+                                scheduleNG%(I, 4) = displayPause! * 10
+
+                                'Extract only
+                                If Not (scheduleAction% = 5) Then
+                                    'Write matching games
+                                    Locate 1, 1: Print numberGames + 1; " MATCHES"
+
+                                    Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
+                                    fileLength& = LOF(3)
+
+                                    numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                    For X = 0 To 20
+                                        Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                    Next
+
+                                    Field #3, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+                                    For X = 0 To 20: LSet Q$(X + 1) = MKI$(scheduleNG%(I, X)): Next
+
+                                    For X = 0 To 1: LSet Q$(22 + X) = scheduleYN$(I, X): Next
+
+                                    LSet Q$(24) = MKI$(visitorScores(I)): LSet Q$(25) = MKI$(homeScores(I))
+
+                                    Put #3, numberGames + 1
+
+                                    Close #3
+
+                                End If 'Done checking schedule action
+
+                            End If 'Done checking for matches
+
+                        Next 'Done looping through games
+
+                    End If
+
+                End If
+
+            End If
 
     End Select 'Done with actions 2 -5
 
@@ -1042,7 +979,7 @@ Sub EditParameters ()
 
     Do
 
-        Locate 23, 1: Print "SELECT # TO CHANGE 1-13 (0 TO CONTINUE) ";
+        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
         Input B9
 
         Select Case B9
@@ -1170,9 +1107,9 @@ Sub SaveScheduleFile (saveFile$)
     Shared scheduleAP%(), scheduleNG%()
     Shared scheduleYN$()
 
-    If _FileExists(diskPaths$(0) + saveFile$ + ".SCD") Then Kill diskPaths$(0) + saveFile$ + ".SCD"
+    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
 
-    Open diskPaths$(0) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
 
     For X = 0 To 20
         Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
@@ -1302,8 +1239,8 @@ Sub ChangeGlobalSettings ()
     ' GLOBAL SETTINGS FOR A SCHEDULE
     ' The code below would use default values based on the most recent rules
     'ruleOptType = 1
-    'ruleOptColl = 5
-    'ruleOptPro = 3
+    'ruleOptColl = 11
+    'ruleOptPro = 8
     'overtimeOpt = 1
     'windOpt = 3
     'weatherOpt = 3
@@ -1375,11 +1312,11 @@ Sub ChangeGlobalSettings ()
 
             Case 4:
                 ruleOptPro = ruleOptPro + 1
-                If ruleOptPro > 3 Then ruleOptPro = 0
+                If ruleOptPro > 9 Then ruleOptPro = 0
 
             Case 5:
                 ruleOptColl = ruleOptColl + 1
-                If ruleOptColl > 5 Then ruleOptColl = 0
+                If ruleOptColl > 11 Then ruleOptColl = 0
 
             Case 6:
                 overtimeOpt = overtimeOpt + 1
@@ -1493,7 +1430,7 @@ Sub LoadScheduleInfo (targetFile$)
     Shared homeScores(), visitorScores()
     Shared scheduleYN$()
 
-    Open diskPaths$(0) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+    Open diskPaths$(3) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
 
     fileLength& = LOF(1)
 

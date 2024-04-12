@@ -26,7 +26,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Coll (FF$, targetFile$)
+Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -38,7 +38,7 @@ Sub LoadLeaderFiles_Coll (FF$, targetFile$)
     Shared div1$, div2$
 
     Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #1
-    Input #1, FF$, div1$, div2$
+    Input #1, confName$, div1$, div2$
     Close #1
 
     div1$ = PadRight(div1$, 8)
@@ -283,7 +283,7 @@ End Sub
 'This subroutine gives the user various
 'options for viewing the previously loaded
 'stats, and then calls routines for each
-Sub StatOptions_Coll (FF$)
+Sub StatOptions_Coll (confName$)
 
     Do
 
@@ -291,39 +291,44 @@ Sub StatOptions_Coll (FF$)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 20, 40, 5, 15, 1)
 
         Do
 
-            Locate 10, 32
+            Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "P";
+            Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
             I$ = GetKeyPress$
 
             Color 14, 0
 
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S" Or I$ = Chr$(27)
 
         If I$ <> Chr$(27) Then
 
             Select Case UCase$(I$)
 
                 Case "F":
-                    Call ReportFilePrompt_Coll(SF$)
-                    Call SavePrintCollLeaders(SF$, FF$, 1)
+                    userFile$ = _SAVEFILEDIALOG$("Save Conference Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    If userFile$ <> "" Then
+                        Call CollLeaders_Report(confName$, 0, userFile$)
+                    End If
 
                 Case "P":
-                    Call SavePrintCollLeaders(SF$, FF$, 0)
+                    Call CollLeaders_Report(confName$, 1, "REPORT")
 
                 Case "S":
-                    Call LeaderStatsColl_Screen(FF$)
+                    Call CollLeaders_Screen(confName$)
 
             End Select
 
@@ -350,50 +355,12 @@ End Sub
 
 
 '----------------------------------------
-'     ReportFilePrompt_Coll Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub ReportFilePrompt_Coll (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox(6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
-
-'----------------------------------------
-'    LeaderStatsColl_Screen Subroutine
+'    CollLeaders_Screen Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub LeaderStatsColl_Screen (FF$)
+Sub CollLeaders_Screen (confName$)
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -408,7 +375,7 @@ Sub LeaderStatsColl_Screen (FF$)
     Cls
 
     Color 12
-    Print FF$ + " OVERALL RECORD"
+    Print confName$ + " OVERALL RECORD"
 
     If div1$ <> "" Then Print div1$; " DIVISION"
     Locate 2, 41
@@ -497,7 +464,7 @@ Sub LeaderStatsColl_Screen (FF$)
     Cls
 
     Color 12
-    Print FF$ + " CONFERENCE RECORD"
+    Print confName$ + " CONFERENCE RECORD"
 
     If div1$ <> "" Then Print div1$; " DIVISION"
 
@@ -1143,13 +1110,13 @@ End Sub
 
 
 '----------------------------------------
-'     SavePrintCollLeaders Subroutine
+'     CollLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to a file
 'that is then looped through to send to
 'the default printer
-Sub SavePrintCollLeaders (reportFile$, FF$, destination)
+Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Shared seeL!(), LD!(), LZ!()
     Shared PTSA!(), PTSF!()
@@ -1160,16 +1127,12 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
 
     Shared div1$, div2$
 
-    If destination <> 1 Then
-        Open "REPORT" For Output As #1
-    Else
-        Open reportFile$ + ".RPT" For Output As #1
-    End If
+	Color 15, 0
+	Cls
 
-    Color 0, 15
-    Cls
+	Open destFile$ For Output As #1
 
-    Print #1, FF$ + " OVERALL RECORD"
+    Print #1, confName$ + " OVERALL RECORD"
 
     If div1$ <> "" Then Print #1, div1$; " DIVISION"
 
@@ -1224,7 +1187,7 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
     Next
 
     Print #1,
-    Print #1, FF$ + " CONFERENCE RECORD"
+    Print #1, confName$ + " CONFERENCE RECORD"
 
     If div1$ <> "" Then Print #1, div1$; " DIVISION"
 
@@ -1668,20 +1631,22 @@ Sub SavePrintCollLeaders (reportFile$, FF$, destination)
 
     Close #1
 
-    If destination <> 1 Then
+	If printDest = 1 Then
 
-        Open "REPORT" For Input As #2
+		Open destFile$ For Input As #2
 
-        Do While Not EOF(2)
-            Line Input #2, X$
-            LPrint X$
-        Loop
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
 
-        Close #2
+		Close #2
 
-        LPrint Chr$(12)
+		LPrint Chr$(12)
 
-    End If
+		Kill destFile$
+
+	End If
 
 End Sub
 

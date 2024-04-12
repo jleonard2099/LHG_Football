@@ -50,7 +50,7 @@ End Sub
 'selection of a team for comparison, then
 'loads the associated stats, calculates
 'the comparisons and presents output options
-Sub Hd2HdPro_League (X2)
+Sub Hd2HdPro_League (secondLeague)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -123,10 +123,10 @@ Sub Hd2HdPro_League (X2)
             'Check if same league
             If sameLeague <> 1 Then
 
-                leag1$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+                leag1$ = ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
-                If X2 <> 0 Then
-                    leag2$ = ChooseFile$ (diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+                If secondLeague <> 0 Then
+                    leag2$ = ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
                 End If
 
             End If
@@ -136,82 +136,50 @@ Sub Hd2HdPro_League (X2)
         Color 7, 0
         Cls
 
-        Call MenuBox (8, 8, 61, 5, 15, 1)
+        Call MenuBox(8, 20, 40, 5, 15, 1)
 
         Do
-            Locate 10, 32
+
+            Locate 10
             Color 7, 1
 
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "F";: Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "P";
+            Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
             J$ = GetKeyPress$
 
             Color 14, 0
 
-        Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S"
+        Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S" Or J$ = Chr$(27)
 
-        VPP = 0
-        If UCase$(J$) = "P" Then X1 = 1
-        If UCase$(J$) = "S" Then VPP = 1
+        If J$ <> Chr$(27) Then
 
-        Open diskPaths$(2) + leag1$ + ".LIB" For Input As #2
+            VPP = 0
+            If UCase$(J$) = "F" Then printChoice = 0
+            If UCase$(J$) = "P" Then printChoice = 1
+            If UCase$(J$) = "S" Then VPP = 1
 
-        Input #2, statType
+            Open diskPaths$(2) + leag1$ + ".TMI" For Input As #2
 
-        If statType = 0 Then
-
-            Input #2, leag1$
-            Input #2, div1$
-            Input #2, div2$
-
-            For X = 1 To 15:
-                Input #2, statsZ1$(X)
-                Input #2, statsZ1%(X)
-                Input #2, statsZ2$(X)
-            Next
-
-            NT = 15
-
-        End If
-
-        If statType = 1 Then
-            Input #2, leag1$
-            Input #2, div1$
-            Input #2, div2$
-            Input #2, div3$
-
-            For X = 1 To 30:
-                Input #2, statsZ1$(X)
-                Input #2, statsZ1%(X)
-                Input #2, statsZ2$(X)
-            Next
-
-            NT = 30
-
-        End If
-
-        Close #2
-
-        If X2 = 1 Then
-
-            Open diskPaths$(2) + leag2$ + ".LIB" For Input As #3
-
-            Input #3, statType
+            Input #2, statType
 
             If statType = 0 Then
-                Input #3, leag2$
-                Input #3, div1_2$
-                Input #3, div2_2$
+
+                Input #2, leag1$
+                Input #2, div1$
+                Input #2, div2$
 
                 For X = 1 To 15:
-                    Input #3, Z12$(X)
-                    Input #3, Z12%(X)
-                    Input #3, Z22$(X)
+                    Input #2, statsZ1$(X)
+                    Input #2, statsZ1%(X)
+                    Input #2, statsZ2$(X)
                 Next
 
                 NT = 15
@@ -219,163 +187,187 @@ Sub Hd2HdPro_League (X2)
             End If
 
             If statType = 1 Then
-                Input #3, leag2$
-                Input #3, div1_2$
-                Input #3, div2_2$
-                Input #3, div3_2$
+                Input #2, leag1$
+                Input #2, div1$
+                Input #2, div2$
+                Input #2, div3$
 
                 For X = 1 To 30:
-                    Input #3, Z12$(X)
-                    Input #3, Z12%(X)
-                    Input #3, Z22$(X)
+                    Input #2, statsZ1$(X)
+                    Input #2, statsZ1%(X)
+                    Input #2, statsZ2$(X)
                 Next
 
                 NT = 30
 
             End If
 
-        End If
+            Close #2
 
-        Close #3
+            If secondLeague = 1 Then
 
-        Color 15
-        Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
+                Open diskPaths$(2) + leag2$ + ".TMI" For Input As #3
 
-        'Initialization for 1st league
-        Erase awayLosses!, awayWins!
-        Erase G1!, G2!, G3!, G4!
-        Erase HL!, HT!, HW!, RT!
-        Erase TAL!, TAW!, THL!, TRT!
-        Erase TG1!, TG2!, TG3!, TG4!
+                Input #3, statType
 
-        'Calculations for 1st league
-        For K = 1 To 30
+                If statType = 0 Then
+                    Input #3, leag2$
+                    Input #3, div1_2$
+                    Input #3, div2_2$
 
-            If statsZ1$(K) <> "XXX" Then
+                    For X = 1 To 15:
+                        Input #3, Z12$(X)
+                        Input #3, Z12%(X)
+                        Input #3, Z22$(X)
+                    Next
 
-                For I = 1 To YY%
-                    If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayWins!(K) = awayWins!(K) + 1
-                    If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
-                    If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayLosses!(K) = awayLosses!(K) + 1
-                    If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
-                    If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
-                    If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
-                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G1!(K) = G1!(K) + teamScore(I)
-                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G2!(K) = G2!(K) + oppScore(I)
-                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G3!(K) = G3!(K) + teamScore(I)
-                    If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G4!(K) = G4!(K) + oppScore(I)
-                Next I
+                    NT = 15
+
+                End If
+
+                If statType = 1 Then
+                    Input #3, leag2$
+                    Input #3, div1_2$
+                    Input #3, div2_2$
+                    Input #3, div3_2$
+
+                    For X = 1 To 30:
+                        Input #3, Z12$(X)
+                        Input #3, Z12%(X)
+                        Input #3, Z22$(X)
+                    Next
+
+                    NT = 30
+
+                End If
 
             End If
 
-        Next K
+            Close #3
 
-        'If we're doing a 2nd league..
-        If X2 = 1 Then
-        
-            'Initialization for 2nd league
-            Erase AL2!, AW2!, G12!, G22!, G32!, G42!
-            Erase HL2!, HT2!, HW2!
-            Erase RT2!
-            Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
-            Erase TG12!, TG22!, TG32!, TG42!
+            Color 15
+            Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
-            'Calculations for 2nd league
+            'Initialization for 1st league
+            Erase awayLosses!, awayWins!
+            Erase G1!, G2!, G3!, G4!
+            Erase HL!, HT!, HW!, RT!
+            Erase TAL!, TAW!, THL!, TRT!
+            Erase TG1!, TG2!, TG3!, TG4!
+
+            'Calculations for 1st league
             For K = 1 To 30
 
-                If Z12$(K) <> "XXX" Then
+                If statsZ1$(K) <> "XXX" Then
 
                     For I = 1 To YY%
-
-                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
-                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
-                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
-                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
-                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
-                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
-                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G12!(K) = G12!(K) + teamScore(I)
-                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G22!(K) = G22!(K) + oppScore(I)
-                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G32!(K) = G32!(K) + teamScore(I)
-                        If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G42!(K) = G42!(K) + oppScore(I)
-
+                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayWins!(K) = awayWins!(K) + 1
+                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
+                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayLosses!(K) = awayLosses!(K) + 1
+                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
+                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
+                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
+                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G1!(K) = G1!(K) + teamScore(I)
+                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G2!(K) = G2!(K) + oppScore(I)
+                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G3!(K) = G3!(K) + teamScore(I)
+                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G4!(K) = G4!(K) + oppScore(I)
                     Next I
 
                 End If
 
             Next K
 
+            'If we're doing a 2nd league..
+            If secondLeague = 1 Then
+            
+                'Initialization for 2nd league
+                Erase AL2!, AW2!, G12!, G22!, G32!, G42!
+                Erase HL2!, HT2!, HW2!
+                Erase RT2!
+                Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
+                Erase TG12!, TG22!, TG32!, TG42!
+
+                'Calculations for 2nd league
+                For K = 1 To 30
+
+                    If Z12$(K) <> "XXX" Then
+
+                        For I = 1 To YY%
+
+                            If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
+                            If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
+                            If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
+                            If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
+                            If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
+                            If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
+                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G12!(K) = G12!(K) + teamScore(I)
+                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G22!(K) = G22!(K) + oppScore(I)
+                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G32!(K) = G32!(K) + teamScore(I)
+                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G42!(K) = G42!(K) + oppScore(I)
+
+                        Next I
+
+                    End If
+
+                Next K
+
+            End If
+
+            'Generate output
+            If VPP <> 1 Then
+                Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printChoice)
+            Else
+                Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
+            End If
+
+            Cls
+
+            Call TITLE_UTILS
+
+            Call MenuBox (8, 8, 61, 6, 15, 1)
+
+            Do
+
+                Locate 10, 15
+
+                Color 3: Locate , 25: Print "SELECT OPTION:"
+                Color 7: Locate , 25: Print "VIEW ";
+                Color 15: Print "S";
+                Color 7: Print "AME TEAM AGAIN"
+                Color 7: Locate , 25: Print "VIEW ";
+                Color 15: Print "A";
+                Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
+                Locate , 25: Color 15: Print "R";
+                Color 7: Print "ETURN TO MAIN MENU"
+
+                I$ = GetKeyPress$
+
+                Select Case UCase$(I$)
+
+                    Case "A"
+                        sameLeague = 1
+                        VPP = 0
+                        newTeam = 1
+
+                    Case "R"
+                        sameLeague = 0
+                        VPP = 0
+
+                    Case "S"
+
+                        'Re-initialize for the next loop
+                        Erase TAL!, TAW!, THL!, THT!, THW!, TRT!
+                        Erase TG1!, TG2!, TG3!, TG4!
+                        Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
+                        Erase TG12!, TG22!, TG32!, TG42!
+
+                        newTeam = 0
+
+                End Select
+
+            Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R" Or I$ = Chr$(27) Or J$ = Chr$(27)
+
         End If
-
-        'Generate output
-        If VPP <> 1 Then
-            Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$())
-        Else
-            Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$())
-        End If
-
-        If X1 = 1 Then
-            'If the option to send to printer was chosen,
-            'print the pre-generated report
-            Open "REPORT" For Input As #4
-
-            Do While Not EOF(2)
-                Line Input #4, X$
-                LPrint X$
-            Loop
-
-            Close #4
-
-            LPrint Chr$(12)
-            X1 = 0
-
-        End If
-
-        Cls
-
-        Call TITLE_UTILS
-
-        Call MenuBox (8, 8, 61, 6, 15, 1)
-
-        Do
-
-            Locate 10, 15
-
-            Color 3: Locate , 25: Print "SELECT OPTION:"
-            Color 7: Locate , 25: Print "VIEW ";
-            Color 15: Print "S";
-            Color 7: Print "AME TEAM AGAIN"
-            Color 7: Locate , 25: Print "VIEW ";
-            Color 15: Print "A";
-            Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
-            Locate , 25: Color 15: Print "R";
-            Color 7: Print "ETURN TO MAIN MENU"
-
-            I$ = GetKeyPress$
-
-            Select Case UCase$(I$)
-
-                Case "A"
-                    sameLeague = 1
-                    VPP = 0
-                    newTeam = 1
-
-                Case "R"
-                    sameLeague = 0
-                    VPP = 0
-
-                Case "S"
-
-                    'Re-initialize for the next loop
-                    Erase TAL!, TAW!, THL!, THT!, THW!, TRT!
-                    Erase TG1!, TG2!, TG3!, TG4!
-                    Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
-                    Erase TG12!, TG22!, TG32!, TG42!
-
-                    newTeam = 0
-
-            End Select
-
-        Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R" Or I$ = Chr$(27)
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
 
@@ -386,7 +378,7 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to the end user display
-Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
+Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
     Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
 
@@ -521,7 +513,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
     Loop Until RDD = 3
 
     'Second League
-    If X2 = 1 Then
+    If secondLeague = 1 Then
 
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
@@ -750,7 +742,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$())
     Locate , 64: Print Using "###"; TG11 + TG33;
     Locate , 68: Print Using "###"; TG22 + TG44
 
-    If X2 = 1 Then
+    If secondLeague = 1 Then
 
         Print
         Print leag2$
@@ -863,7 +855,7 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated 
 'comparison values to a report file
-Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
+Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printDest)
 
     Shared div1$, div2$, div3$
 
@@ -880,45 +872,23 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     Shared statsZ1$(), Z12$()
 
+    Color 15, 0
+    Cls
+
     Do
 
-        If X1 = 1 Then
-            reportFile$ = "REPORT"
+        If printDest = 1 Then
+            reportFile$ = "COMPARISON"
         Else
 
             Color 15, 0
             Cls
 
-            Call MenuBox (6, 8, 61, 7, 15, 1)
-
-            Locate 7, 32
-
-            Locate , 12: Print "ENTER NAME FOR FILE: "
-            Print
-            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-            Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-            Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-
-            Locate 7, 37: Input reportFile$
-
-            If reportFile$ <> "" Then
-
-                Do
-                    Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                    I$ = GetKeyPress$
-                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-            End If
+            reportFile$ = _SAVEFILEDIALOG$("Save Comparison Report",_CWD$ + "\Comparison","*.txt","Text File")
 
         End If
 
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-    Color 15, 0
-    
-    reportFile$ = reportFile$ + ".RPT"
-
-    Open reportFile$ For Output As #1
+    Loop Until reportFile$ <> ""
     
     DV$(1) = div1$
     DV$(2) = div2$
@@ -926,6 +896,8 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     RDD = 0
 
+    Open reportFile$ For Output As #1
+    
     Print #1, Tab(48); teamName$
     Print #1,
 
@@ -1003,7 +975,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
 
     Loop Until RDD = 3
 
-    If X2 = 1 Then
+    If secondLeague = 1 Then
 
         DV2$(1) = div1_2$
         DV2$(2) = div2_2$
@@ -1165,7 +1137,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
     Print #1, Tab(68); Using "###"; TG11 + TG33;
     Print #1, Tab(72); Using "###"; TG22 + TG44
 
-    If X2 = 1 Then
+    If secondLeague = 1 Then
 
         Print #1,
         Print #1, leag2$
@@ -1238,5 +1210,24 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$())
     End If
 
     Close #1
+
+    If printDest = 1 Then
+
+        Open reportFile$ For Input As #2
+
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
+
+        Close #2
+
+        LPrint Chr$(12)
+
+        Kill reportFile$
+
+        printDest = 0
+
+    End If
 
 End Sub

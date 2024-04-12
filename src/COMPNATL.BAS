@@ -27,7 +27,7 @@ Sub CompileNatlOrg ()
 
     Dim NRT
 
-    Dim confNames$(40)
+    Dim confNames$(MAX_CONFERENCES)
 
     'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
@@ -117,13 +117,13 @@ Sub CompileNatlOrg ()
 
         Input #2, X$
 
-        For I = 1 To 40
+        For I = 1 To MAX_CONFERENCES
             Input #2, confNames$(I)
         Next
 
         Close #2
 
-        For currConf = 1 To 40
+        For currConf = 1 To MAX_CONFERENCES
 
             'Look for * as terminating char
             If confNames$(currConf) <> "XXX" Then
@@ -169,7 +169,7 @@ Sub CompileNatlOrg ()
 
                 Close #3
 
-                Open diskPaths$(2) + confNames$(currConf) + ".LIB" For Input As #4
+                Open diskPaths$(2) + confNames$(currConf) + ".TMI" For Input As #4
                 Input #4, LG%
                 Close #4
 

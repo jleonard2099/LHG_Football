@@ -51,21 +51,27 @@ Sub NEWLDR (statType)
             Select Case Selection%
 
                 Case 1
-                    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
+                    Do
+                        confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call ReadConferenceStats(confStatFile$, statType)
-                        Call UpdateExpandedLeaders(statType, totalStats)
-                        Call SAVELEADER(confStatFile$, totalStats)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call ReadConferenceStats(confStatFile$, statType)
+                            Call UpdateExpandedLeaders(statType, totalStats)
+                            Call SAVELEADER(confStatFile$, totalStats)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
                 Case 2
-                    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
+                    Do
+                        leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
 
-                    If FileExit% <> 27 And FileExit% <> 0 Then
-                        Call READLEADER(leaderFile$, totalStats)
-                        Call ExpandedLeaders_Menu(totalStats)
-                    End If
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Call READLEADER(leaderFile$, totalStats)
+                            Call ExpandedLeaders_Menu(totalStats)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
 
             End Select
 
@@ -239,7 +245,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
     Shared AM!(), AF!()
-    Shared statsLC!(), statsLK!(), statsLF!(), statsLP!(), statsLR!()
+    Shared statsLC!(), statsLK!(), statsLF!(), statsLI!(), statsLP!(), statsLR!()
     Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
     Shared statsGI%(), statsGS%()
@@ -250,7 +256,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared intName$(), statsLC$(), statsLR$()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
-    Shared sackName$(), statsLF$(), statsLK$(), statsLP$(), statsPK$()
+    Shared sackName$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsPK$()
     Shared QBL$(), lookyTT$(), statsZ1$()
 
     Shared GMA!(), GMB!(), GMC!()
@@ -392,9 +398,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                 '--> was previously NOT read in
                 '--> is it not even calculated later!!!
                 For I = 0 To 9:
-                    Input #1, statsLI!(teamIdx, I)
-                    Input #1, statsLI$(teamIdx, I, 0)
-                    Input #1, statsLI$(teamIdx, I, 1)
+                    Input #1, statsLI!(I)
+                    Input #1, statsLI$(I, 0)
+                    Input #1, statsLI$(I, 1)
                 Next
 
                 Close #1
@@ -2513,11 +2519,11 @@ End Sub
 
 
 '----------------------------------------
-'       TeamStatsToPrinter Subroutine
+'       TeamStatsToReport Subroutine
 '----------------------------------------
 'This subroutine displays the chosen team
 'stat category to the user display
-Sub TeamStatsToPrinter ()
+Sub TeamStatsToReport ()
 
     Shared expCategories$(), TMM$()
     Shared TYP!()
@@ -2684,5 +2690,4 @@ Sub GetListLength (printOrView, listLength, maxItems)
     End If
 
 End Sub
-
 
