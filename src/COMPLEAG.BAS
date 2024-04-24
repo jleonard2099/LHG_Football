@@ -19,7 +19,7 @@ Sub CompileLeague ()
     Shared compZ1$(), compZ2$(), compZ3$()
     Shared statFiles$(), teamRecDesc$(), TT$()
 
-    Shared div1$, div2$, div3$
+    Shared div1Name$, div2Name$, div3Name$
 
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.PFB") Then
@@ -100,7 +100,7 @@ Sub CompileLeague ()
 
         Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-        Input #2, FF$, div1$, div2$, div3$
+        Input #2, FF$, div1Name$, div2Name$, div3Name$
 
         For XW = 1 To 30
             Input #2, statFiles$(XW)
@@ -126,7 +126,7 @@ Sub CompileLeague ()
 
             Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #4
 
-            Input #4, FF$, div1$, div2$, div3$
+            Input #4, FF$, div1Name$, div2Name$, div3Name$
 
             For X = 1 To 30
                 Input #4, compZ1$(X)

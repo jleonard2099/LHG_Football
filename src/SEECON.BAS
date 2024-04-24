@@ -35,14 +35,14 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
     Shared seeP$(), seeT$(), TT$()
     Shared compZ2$(), compZ3$()
 
-    Shared div1$, div2$
+    Shared div1Name$, div2Name$
 
     Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #1
-    Input #1, confName$, div1$, div2$
+    Input #1, confName$, div1Name$, div2Name$
     Close #1
 
-    div1$ = PadRight(div1$, 8)
-    div2$ = PadRight(div2$, 8)
+    div1Name$ = PadRight(div1Name$, 8)
+    div2Name$ = PadRight(div2Name$, 8)
 
     Cls
 
@@ -291,7 +291,7 @@ Sub StatOptions_Coll (confName$)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 20, 40, 5, 15, 1)
+        Call MenuBox(8, 25, 24, 5, 15, 1)
 
         Do
 
@@ -319,7 +319,7 @@ Sub StatOptions_Coll (confName$)
             Select Case UCase$(I$)
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save Conference Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    userFile$ = _SAVEFILEDIALOG$("Save Conference Report",_CWD$ + "\Report","*.txt","Text File")
                     If userFile$ <> "" Then
                         Call CollLeaders_Report(confName$, 0, userFile$)
                     End If
@@ -349,7 +349,7 @@ Sub StatOptions_Coll (confName$)
 
         End If
 
-    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27) Or I$ = Chr$(27)
 
 End Sub
 
@@ -369,7 +369,7 @@ Sub CollLeaders_Screen (confName$)
     Shared seeP$(), seeT$(), TT$()
     Shared compZ2$(), compZ3$()
 
-    Shared div1$, div2$
+    Shared div1Name$, div2Name$
 
     Color 15, 0
     Cls
@@ -377,9 +377,9 @@ Sub CollLeaders_Screen (confName$)
     Color 12
     Print confName$ + " OVERALL RECORD"
 
-    If div1$ <> "" Then Print div1$; " DIVISION"
+    If div1Name$ <> "" Then Print div1Name$; " DIVISION"
     Locate 2, 41
-    If div2$ <> "" Then Print div2$; " DIVISION"
+    If div2Name$ <> "" Then Print div2Name$; " DIVISION"
 
     Locate , 1
     Color 14
@@ -416,7 +416,7 @@ Sub CollLeaders_Screen (confName$)
 
     RT = 0
 
-    If div2$ <> "" Then
+    If div2Name$ <> "" Then
 
         Locate 3, 41
         Color 14: Print "              W   L   T   PCT  PF  PA"
@@ -466,11 +466,11 @@ Sub CollLeaders_Screen (confName$)
     Color 12
     Print confName$ + " CONFERENCE RECORD"
 
-    If div1$ <> "" Then Print div1$; " DIVISION"
+    If div1Name$ <> "" Then Print div1Name$; " DIVISION"
 
     Locate 2, 41
 
-    If div2$ <> "" Then Print div2$; " DIVISION"
+    If div2Name$ <> "" Then Print div2Name$; " DIVISION"
 
     Locate , 1
     Color 14: Print "              W   L   T   PCT  PF  PA"
@@ -506,7 +506,7 @@ Sub CollLeaders_Screen (confName$)
 
     RT = 0
 
-    If div2$ <> "" Then
+    If div2Name$ <> "" Then
 
         Locate 3, 41
         Color 14: Print "              W   L   T   PCT  PF  PA"
@@ -1125,7 +1125,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Shared seeP$(), seeT$(), TT$()
     Shared compZ2$(), compZ3$()
 
-    Shared div1$, div2$
+    Shared div1Name$, div2Name$
 
 	Color 15, 0
 	Cls
@@ -1134,7 +1134,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Print #1, confName$ + " OVERALL RECORD"
 
-    If div1$ <> "" Then Print #1, div1$; " DIVISION"
+    If div1Name$ <> "" Then Print #1, div1Name$; " DIVISION"
 
     Print #1, "              W   L   T   PCT  PF  PA"
 
@@ -1161,7 +1161,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Next
 
     Print #1,
-    If div2$ <> "" Then Print #1, div2$; " DIVISION"
+    If div2Name$ <> "" Then Print #1, div2Name$; " DIVISION"
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 16 To 30
@@ -1189,7 +1189,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1,
     Print #1, confName$ + " CONFERENCE RECORD"
 
-    If div1$ <> "" Then Print #1, div1$; " DIVISION"
+    If div1Name$ <> "" Then Print #1, div1Name$; " DIVISION"
 
     Print #1, "              W   L   T   PCT  PF  PA"
 
@@ -1216,7 +1216,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Next
 
     Print #1,
-    If div2$ <> "" Then Print #1, div2$; " DIVISION"
+    If div2Name$ <> "" Then Print #1, div2Name$; " DIVISION"
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 46 To 60

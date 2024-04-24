@@ -260,10 +260,10 @@ Sub CARPRNT ()
             Locate 10
             Color 7, 1
 
-            Locate , 30: Print "SEND TO ";
+            Locate , 32: Print "SEND TO ";
             Color 15: Print "F";
             Color 7: Print "ILE"
-            Locate , 30: Print "SEND TO ";
+            Locate , 32: Print "SEND TO ";
             Color 15: Print "P";
             Color 7: Print "RINTER"
 
@@ -280,11 +280,11 @@ Sub CARPRNT ()
                 Case "F"
                     userFile$ = _SAVEFILEDIALOG$("Save Career Report",_CWD$ + "\Career","*.txt","Text File")
                     If userFile$ <> "" Then
-                        Call PrintCareerRecords(0, userFile$, careerFile$)
+                        Call CareerRecords_Report(0, userFile$, careerFile$)
                     End If
 
                 Case "P"
-                    Call PrintCareerRecords(1, "CAREER", careerFile$)
+                    Call CareerRecords_Report(1, "CAREER", careerFile$)
 
             End Select
 
@@ -298,12 +298,12 @@ End Sub
 
 
 '----------------------------------------
-'     PrintCareerRecords Subroutine
+'     CareerRecords_Report Subroutine
 '----------------------------------------
 'This subroutine facilitates formatting
 'of the record data to a file, that is
 'subsequently either saved, or printed.
-Sub PrintCareerRecords (printDest, destFile$, careerName$)
+Sub CareerRecords_Report (printDest, destFile$, careerName$)
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunters$(), carKicker$()
     Shared carDefInts$(), carDefSacks$()

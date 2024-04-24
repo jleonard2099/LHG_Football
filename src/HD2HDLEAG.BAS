@@ -14,29 +14,33 @@ Sub HD2HDLEAG ()
     Call TITLE_UTILS
 
     Locate 4, 1
-    Color 2, 0
 
-    Call MenuBox (8, 8, 61, 6, 15, 1)
-    
     Do
+
+        Color 2, 0
+        Call MenuBox(8, 10, 54, 6, 15, 1)
 
         Locate 10, 15
         Color 3
 
-        Locate , 20: Print "SELECT OPTION:"
-        Locate , 20: Color 15: Print "O";
+        Locate , 17: Print "SELECT OPTION:"
+        Locate , 17: Color 15: Print "O";
         Color 7: Print "NE LEAGUE / CONFERENCE"
-        Locate , 20: Color 15: Print "T";
+        Locate , 17: Color 15: Print "T";
         Color 7: Print "WO LEAGUES / CONFERENCES WITH COMPETING PLAY"
-        Locate , 20: Color 15: Print "R";
+        Locate , 17: Color 15: Print "R";
         Color 7: Print "ETURN TO MAIN MENU"
 
         I$ = GetKeyPress$
 
-        If UCase$(I$) = "O" Then X2 = 0
-        If UCase$(I$) = "T" Then X2 = 1
         If UCase$(I$) = "O" Or UCase$(I$) = "T" Then
-            Call Hd2HdPro_League(X2)
+
+            If UCase$(I$) = "O" Then 
+                Call Hd2HdPro_League(0)
+            Else
+                Call Hd2HdPro_League(1)
+            End If
+
         End If
 
     Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
@@ -52,25 +56,25 @@ End Sub
 'the comparisons and presents output options
 Sub Hd2HdPro_League (secondLeague)
 
-    Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+    Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
 
-    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
-    Shared G1!(), G12!(), G2!(), G22!()
-    Shared G3!(), G32!(), G4!(), G42!()
-    Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
-    Shared RT2!(), RT!()
-    Shared TAL!(), TAL2!(), TAW!(), TAW2!()
-    Shared TG1!(), TG12!(), TG2!(), TG22!()
-    Shared TG3!(), TG32!(), TG4!(), TG42!()
-    Shared THL!(), THL2!(), THW!(), THW2!()
-    Shared THT!(), THT2!(), TRT!(), TRT2!()
+    Shared awayLosses!(), awayLosses_2nd!(), awayWins!(), awayWins_2nd!()
+    Shared homeScoreTeam!(), homeScoreTeam_2nd!(), homeScoreOpp!(), homeScoreOpp_2nd!()
+    Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
+    Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!(), homeWins!(), homeWins_2nd!()
+    Shared awayTies_2nd!(), awayTies!()
+    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
+    Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
 
     Shared teamScore(), oppScore(), statsZ1%()
 
     Dim Z12%(30)
 
     Shared DV$(), DV2$(), locIndicator$(), oppName$()
-    Shared statsZ1$(), Z12$(), statsZ2$(), Z22$()
+    Shared statsZ1$(), statsZ1_2$(), statsZ2$(), statsZ2_2$()
 
     newTeam = 1
 
@@ -78,10 +82,11 @@ Sub Hd2HdPro_League (secondLeague)
 
         If newTeam = 1 Then
 
-            Do
+            teamNbr = 0
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
-                teamNbr = 0
-                Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+            If teamNbr > 0 Then
+
                 statFile$ = nameStatFile$(team$)
 
                 If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
@@ -94,216 +99,220 @@ Sub Hd2HdPro_League (secondLeague)
                     J$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
 
+                Else
+
+                    Open diskPaths$(1) + statFile$ + "S" For Input As #1
+
+                    Input #1, nbrGames
+
+                    For I = 1 To MAX_SCHED_STATS:
+                        Input #1, teamScore(I)
+                    Next I
+
+                    For I = 1 To MAX_SCHED_STATS:
+                        Input #1, oppName$(I)
+                    Next I
+
+                    For I = 1 To MAX_SCHED_STATS:
+                        Input #1, oppScore(I)
+                    Next I
+
+                    For I = 1 To MAX_SCHED_STATS:
+                        Input #1, locIndicator$(I)
+                    Next I
+
+                    Close #1
+
+                    'Check if same league
+                    If sameLeague <> 1 Then
+
+                        leag1$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+
+                        If secondLeague <> 0 Then
+                            leag2$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+                        End If
+
+                    End If
+
                 End If
 
-            Loop Until _FileExists(diskPaths$(1) + statFile$ + "S")
+            Else
+                'If a team wasn't chosen, treat it like ESC
+                ExitCode% = 27
 
-            Open diskPaths$(1) + statFile$ + "S" For Input As #1
-
-            Input #1, YY%
-
-            For I = 1 To MAX_SCHED_STATS: 
-                Input #1, teamScore(I)
-            Next I
-
-            For I = 1 To MAX_SCHED_STATS: 
-                Input #1, oppName$(I)
-            Next I
-
-            For I = 1 To MAX_SCHED_STATS: 
-                Input #1, oppScore(I)
-            Next I
-
-            For I = 1 To MAX_SCHED_STATS: 
-                Input #1, locIndicator$(I)
-            Next I
-
-            Close #1
-
-            'Check if same league
-            If sameLeague <> 1 Then
-
-                leag1$ = ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
-
-                If secondLeague <> 0 Then
-                    leag2$ = ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
-                End If
-
-            End If
-
-        End If
+            End If 'Done checking for valid team
+ 
+        End If 'Done checking for new team
 
         Color 7, 0
         Cls
 
-        Call MenuBox(8, 20, 40, 5, 15, 1)
+        If teamNbr > 0 And ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Do
+            Call MenuBox(8, 25, 24, 5, 15, 1)
 
-            Locate 10
-            Color 7, 1
+            Do
 
-            Locate , 32: Print "SEND TO ";
-            Color 15: Print "F";
-            Color 7: Print "ILE"
-            Locate , 32: Print "SEND TO ";
-            Color 15: Print "P";
-            Color 7: Print "RINTER"
-            Locate , 32: Print "SEND TO ";
-            Color 15: Print "S";
-            Color 7: Print "CREEN"
+                Locate 10
+                Color 7, 1
 
-            J$ = GetKeyPress$
+                Locate , 32: Print "SEND TO ";
+                Color 15: Print "F";
+                Color 7: Print "ILE"
+                Locate , 32: Print "SEND TO ";
+                Color 15: Print "P";
+                Color 7: Print "RINTER"
+                Locate , 32: Print "SEND TO ";
+                Color 15: Print "S";
+                Color 7: Print "CREEN"
 
-            Color 14, 0
+                J$ = GetKeyPress$
 
-        Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S" Or J$ = Chr$(27)
+                Color 14, 0
 
-        If J$ <> Chr$(27) Then
+            Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S" Or J$ = Chr$(27)
 
-            VPP = 0
-            If UCase$(J$) = "F" Then printChoice = 0
-            If UCase$(J$) = "P" Then printChoice = 1
-            If UCase$(J$) = "S" Then VPP = 1
+            If J$ <> Chr$(27) Then
 
-            Open diskPaths$(2) + leag1$ + ".TMI" For Input As #2
+                If UCase$(J$) = "F" Then
+                    printChoice = 0
+                End If
+                If UCase$(J$) = "P" Then
+                    printChoice = 1
+                End If
+                If UCase$(J$) = "S" Then
+                    VPP = 1
+                Else
+                    VPP = 0
+                End If
 
-            Input #2, statType
+                'Haven't checked that file exists
+                Open diskPaths$(2) + leag1$ + ".TMI" For Input As #2
 
-            If statType = 0 Then
-
-                Input #2, leag1$
-                Input #2, div1$
-                Input #2, div2$
-
-                For X = 1 To 15:
-                    Input #2, statsZ1$(X)
-                    Input #2, statsZ1%(X)
-                    Input #2, statsZ2$(X)
-                Next
-
-                NT = 15
-
-            End If
-
-            If statType = 1 Then
-                Input #2, leag1$
-                Input #2, div1$
-                Input #2, div2$
-                Input #2, div3$
-
-                For X = 1 To 30:
-                    Input #2, statsZ1$(X)
-                    Input #2, statsZ1%(X)
-                    Input #2, statsZ2$(X)
-                Next
-
-                NT = 30
-
-            End If
-
-            Close #2
-
-            If secondLeague = 1 Then
-
-                Open diskPaths$(2) + leag2$ + ".TMI" For Input As #3
-
-                Input #3, statType
+                Input #2, statType
 
                 If statType = 0 Then
-                    Input #3, leag2$
-                    Input #3, div1_2$
-                    Input #3, div2_2$
+
+                    Input #2, leag1$
+                    Input #2, div1Name$
+                    Input #2, div2Name$
 
                     For X = 1 To 15:
-                        Input #3, Z12$(X)
-                        Input #3, Z12%(X)
-                        Input #3, Z22$(X)
+                        Input #2, statsZ1$(X)
+                        Input #2, statsZ1%(X)
+                        Input #2, statsZ2$(X)
                     Next
-
-                    NT = 15
 
                 End If
 
                 If statType = 1 Then
-                    Input #3, leag2$
-                    Input #3, div1_2$
-                    Input #3, div2_2$
-                    Input #3, div3_2$
+                    Input #2, leag1$
+                    Input #2, div1Name$
+                    Input #2, div2Name$
+                    Input #2, div3Name$
 
-                    For X = 1 To 30:
-                        Input #3, Z12$(X)
-                        Input #3, Z12%(X)
-                        Input #3, Z22$(X)
+                    For X = 1 To TEAMS_PER_LEAGUE:
+                        Input #2, statsZ1$(X)
+                        Input #2, statsZ1%(X)
+                        Input #2, statsZ2$(X)
                     Next
 
-                    NT = 30
+                End If
+
+                Close #2
+
+                If secondLeague = 1 Then
+
+                    'Haven't checked that file exists
+                    Open diskPaths$(2) + leag2$ + ".TMI" For Input As #3
+
+                    Input #3, statType
+
+                    If statType = 0 Then
+                        Input #3, leag2$
+                        Input #3, div1Name_2$
+                        Input #3, div2Name_2$
+
+                        For X = 1 To 15:
+                            Input #3, statsZ1_2$(X)
+                            Input #3, Z12%(X)
+                            Input #3, statsZ2_2$(X)
+                        Next
+
+                        NT = 15
+
+                    End If
+
+                    If statType = 1 Then
+                        Input #3, leag2$
+                        Input #3, div1Name_2$
+                        Input #3, div2Name_2$
+                        Input #3, div3Name_2$
+
+                        For X = 1 To TEAMS_PER_LEAGUE:
+                            Input #3, statsZ1_2$(X)
+                            Input #3, Z12%(X)
+                            Input #3, statsZ2_2$(X)
+                        Next
+
+                    End If
 
                 End If
 
-            End If
+                Close #3
 
-            Close #3
+                Color 15
+                Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
 
-            Color 15
-            Locate 18, 18: Print "COMPUTING W/L/T RECORDS . . . PLEASE WAIT"
+                'Initialization for 1st league
+                Erase awayLosses!, awayWins!
+                Erase homeScoreTeam!, homeScoreOpp!, awayScoreTeam!, awayScoreOpp!
+                Erase homeLosses!, homeTies!, homeWins!, awayTies!
+                Erase totAwayLosses!, totAwayWins!, totHomeLosses!, totAwayTies!
+                Erase totHomeScoreTeam!, totHomeScoreOpp!, totAwayScoreTeam!, totAwayScoreOpp!
 
-            'Initialization for 1st league
-            Erase awayLosses!, awayWins!
-            Erase G1!, G2!, G3!, G4!
-            Erase HL!, HT!, HW!, RT!
-            Erase TAL!, TAW!, THL!, TRT!
-            Erase TG1!, TG2!, TG3!, TG4!
+                'Calculations for 1st league
+                For K = 1 To TEAMS_PER_LEAGUE
 
-            'Calculations for 1st league
-            For K = 1 To 30
+                    If statsZ1$(K) <> "XXX" Then
 
-                If statsZ1$(K) <> "XXX" Then
+                        For I = 1 To nbrGames
 
-                    For I = 1 To YY%
-                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayWins!(K) = awayWins!(K) + 1
-                        If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HW!(K) = HW!(K) + 1
-                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then awayLosses!(K) = awayLosses!(K) + 1
-                        If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HL!(K) = HL!(K) + 1
-                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then RT!(K) = RT!(K) + 1
-                        If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then HT!(K) = HT!(K) + 1
-                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G1!(K) = G1!(K) + teamScore(I)
-                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "H" Then G2!(K) = G2!(K) + oppScore(I)
-                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G3!(K) = G3!(K) + teamScore(I)
-                        If oppName$(I) = statsZ1$(K) And Left$(locIndicator$(I), 1) = "A" Then G4!(K) = G4!(K) + oppScore(I)
-                    Next I
+                            If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then
 
-                End If
+                                If teamScore(I) > oppScore(I) Then
+                                    awayWins!(K) = awayWins!(K) + 1
+                                End If
 
-            Next K
+                                If teamScore(I) < oppScore(I) Then
+                                    awayLosses!(K) = awayLosses!(K) + 1
+                                End If
 
-            'If we're doing a 2nd league..
-            If secondLeague = 1 Then
-            
-                'Initialization for 2nd league
-                Erase AL2!, AW2!, G12!, G22!, G32!, G42!
-                Erase HL2!, HT2!, HW2!
-                Erase RT2!
-                Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
-                Erase TG12!, TG22!, TG32!, TG42!
+                                If teamScore(I) = oppScore(I) Then
+                                   awayTies!(K) = awayTies!(K) + 1
+                                End If
 
-                'Calculations for 2nd league
-                For K = 1 To 30
+                               awayScoreTeam!(K) = awayScoreTeam!(K) + teamScore(I)
+                              awayScoreOpp!(K) = awayScoreOpp!(K) + oppScore(I)
 
-                    If Z12$(K) <> "XXX" Then
+                            End If
 
-                        For I = 1 To YY%
+                            If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then
 
-                            If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AW2!(K) = AW2!(K) + 1
-                            If teamScore(I) > oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HW2!(K) = HW2!(K) + 1
-                            If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then AL2!(K) = AL2!(K) + 1
-                            If teamScore(I) < oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HL2!(K) = HL2!(K) + 1
-                            If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "A" And oppName$(I) = Z12$(K) Then RT2!(K) = RT2!(K) + 1
-                            If teamScore(I) = oppScore(I) And Left$(locIndicator$(I), 1) = "H" And oppName$(I) = Z12$(K) Then HT2!(K) = HT2!(K) + 1
-                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G12!(K) = G12!(K) + teamScore(I)
-                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "H" Then G22!(K) = G22!(K) + oppScore(I)
-                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G32!(K) = G32!(K) + teamScore(I)
-                            If oppName$(I) = Z12$(K) And Left$(locIndicator$(I), 1) = "A" Then G42!(K) = G42!(K) + oppScore(I)
+                                If teamScore(I) > oppScore(I) Then
+                                    homeWins!(K) = homeWins!(K) + 1
+                                End If
+                                If teamScore(I) < oppScore(I) Then
+                                    homeLosses!(K) = homeLosses!(K) + 1
+                                End If
+                                If teamScore(I) = oppScore(I) Then
+                                    homeTies!(K) = homeTies!(K) + 1
+                                End If
+
+                                homeScoreTeam!(K) = homeScoreTeam!(K) + teamScore(I)
+                                homeScoreOpp!(K) = homeScoreOpp!(K) + oppScore(I)
+
+                            End If
 
                         Next I
 
@@ -311,98 +320,555 @@ Sub Hd2HdPro_League (secondLeague)
 
                 Next K
 
-            End If
+                'If we're doing a 2nd league..
+                If secondLeague = 1 Then
 
-            'Generate output
-            If VPP <> 1 Then
-                Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printChoice)
-            Else
-                Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
-            End If
+                    'Initialization for 2nd league
+                    Erase awayLosses_2nd!, awayWins_2nd!, homeScoreTeam_2nd!, homeScoreOpp_2nd!, awayScoreTeam_2nd!, awayScoreOpp_2nd!
+                    Erase homeLosses_2nd!, homeTies_2nd!, homeWins_2nd!
+                    Erase awayTies_2nd!
+                    Erase totAwayLoss_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
+                    Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, tototAwayScoreOpp_2nd!
 
-            Cls
+                    'Calculations for 2nd league
+                    For K = 1 To TEAMS_PER_LEAGUE
 
-            Call TITLE_UTILS
+                        If statsZ1_2$(K) <> "XXX" Then
 
-            Call MenuBox (8, 8, 61, 6, 15, 1)
+                            For I = 1 To nbrGames
 
-            Do
+                                If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1_2$(K) Then
 
-                Locate 10, 15
+                                    If teamScore(I) > oppScore(I) Then
+                                        awayWins_2nd!(K) = awayWins_2nd!(K) + 1
+                                    End If
 
-                Color 3: Locate , 25: Print "SELECT OPTION:"
-                Color 7: Locate , 25: Print "VIEW ";
-                Color 15: Print "S";
-                Color 7: Print "AME TEAM AGAIN"
-                Color 7: Locate , 25: Print "VIEW ";
-                Color 15: Print "A";
-                Color 7: Print "NOTHER TEAM IN THE SAME LEAGUE"
-                Locate , 25: Color 15: Print "R";
-                Color 7: Print "ETURN TO MAIN MENU"
+                                    If teamScore(I) < oppScore(I) Then
+                                        awayLosses_2nd!(K) = awayLosses_2nd!(K) + 1
+                                    End If
 
-                I$ = GetKeyPress$
+                                    If teamScore(I) = oppScore(I) Then
+                                        awayTies_2nd!(K) = awayTies_2nd!(K) + 1
+                                    End If
 
-                Select Case UCase$(I$)
+                                    awayScoreTeam_2nd!(K) = awayScoreTeam_2nd!(K) + teamScore(I)
+                                    awayScoreOpp_2nd!(K) = awayScoreOpp_2nd!(K) + oppScore(I)
 
-                    Case "A"
-                        sameLeague = 1
-                        VPP = 0
-                        newTeam = 1
+                                End If
 
-                    Case "R"
-                        sameLeague = 0
-                        VPP = 0
+                                If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1_2$(K) Then
 
-                    Case "S"
+                                    If teamScore(I) > oppScore(I) Then
+                                        homeWins_2nd!(K) = homeWins_2nd!(K) + 1
+                                    End If
 
-                        'Re-initialize for the next loop
-                        Erase TAL!, TAW!, THL!, THT!, THW!, TRT!
-                        Erase TG1!, TG2!, TG3!, TG4!
-                        Erase TAL2!, TAW2!, THL2!, THT2!, THW2!, TRT2!
-                        Erase TG12!, TG22!, TG32!, TG42!
+                                    If teamScore(I) < oppScore(I) Then
+                                        homeLosses_2nd!(K) = homeLosses_2nd!(K) + 1
+                                    End If
 
-                        newTeam = 0
+                                    If teamScore(I) = oppScore(I) Then
+                                        homeTies_2nd!(K) = homeTies_2nd!(K) + 1
+                                    End If
 
-                End Select
+                                    homeScoreTeam_2nd!(K) = homeScoreTeam_2nd!(K) + teamScore(I)
+                                    homeScoreOpp_2nd!(K) = homeScoreOpp_2nd!(K) + oppScore(I)
 
-            Loop Until UCase$(I$) = "S" Or UCase$(I$) = "A" Or UCase$(I$) = "R" Or I$ = Chr$(27) Or J$ = Chr$(27)
+                                End If
+
+                            Next I
+
+                        End If
+
+                    Next K
+
+                End If
+
+                'Generate output
+                If VPP <> 1 Then
+                    Call Hd2HdPro_Report(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printChoice)
+                Else
+                    Call Hd2HdPro_Screen(team$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
+                End If
+
+                Cls
+
+                Call TITLE_UTILS
+
+                'Call MenuBox(8, 23, 39, 5, 15, 1)
+                'Call MenuBox(8, 15, 44, 6, 15, 1)
+                Call MenuBox(8, 17, 40, 6, 15, 1)
+
+                Do
+
+                    Locate 10, 15
+
+                    Color 3: Locate , 24: Print "SELECT OPTION:"
+                    Color 7: Locate , 24: Print "VIEW ";
+                    Color 15: Print "S";
+                    Color 7: Print "AME TEAM AGAIN"
+                    Color 7: Locate , 24: Print "VIEW ";
+                    Color 15: Print "A";
+                    Color 7: Print "NOTHER TEAM (SAME LEAGUE)"
+                    Color 15: Locate , 24: Print "R";
+                    Color 7: Print "ETURN TO OPTIONS"
+
+                    K$ = GetKeyPress$
+
+                    Select Case UCase$(K$)
+
+                        Case "A"
+                            newTeam = 1
+                            sameLeague = 1
+                            RDD = 0
+
+                        Case "R"
+                            newTeam = 0
+                            sameLeague = 0
+                            RDD = 0
+
+                        Case "S"
+                            newTeam = 0
+                            sameLeague = 1
+                            RDD = 0
+
+                            'Re-initialize for the next loop
+                            Erase totAwayLosses!, totAwayTies!, totAwayWins!
+                            Erase totHomeLosses!, totHomeTies!, totHomeWins!
+                            Erase totHomeScoreTeam!, totHomeScoreOpp!, totAwayScoreTeam!, totAwayScoreOpp!
+                            Erase totAwayLoss_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
+                            Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, tototAwayScoreOpp_2nd!
+
+                    End Select
+
+                Loop Until UCase$(K$) = "A" Or UCase$(K$) = "R" Or UCase$(K$) = "S" Or K$ = Chr$(27) Or J$ = Chr$(27)
+                
+            End If 'Done checking for stats file
 
         End If
 
-    Loop Until UCase$(I$) = "R" Or I$ = Chr$(27)
+    Loop Until UCase$(K$) = "R" Or K$ = Chr$(27) Or J$ = Chr$(27) Or ExitCode% = 27
 
 End Sub
+
+
+
+
+'----------------------------------------
+'       Hd2HdPro_Report Subroutine
+'----------------------------------------
+'This subroutine outputs the calculated
+'comparison values to a report file
+Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printDest)
+
+    Shared div1Name$, div2Name$, div3Name$
+
+    Shared awayLosses!(), awayLosses_2nd!(), awayWins!(), awayWins_2nd!()
+    Shared awayTies_2nd!(), awayTies!()
+    Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
+    Shared homeScoreTeam!(), homeScoreTeam_2nd!(), homeScoreOpp!(), homeScoreOpp_2nd!()
+
+    Shared homeLosses!(), homeLosses_2nd!(), homeWins!(), homeWins_2nd!()
+    Shared homeTies!(), homeTies_2nd!()
+
+    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
+    Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
+
+    Shared statsZ1$(), statsZ1_2$()
+
+    If printDest = 0 Then
+        destFile$ = _SaveFileDialog$("Save Comparison Report", _CWD$ + "\Comparison", "*.txt", "Text File")
+    Else
+        destFile$ = "Comparison"
+    End If
+
+    Color 15, 0
+    Cls
+
+    DV$(1) = div1Name$
+    DV$(2) = div2Name$
+    DV$(3) = div3Name$
+
+    Open destFile$ For Output As #1
+
+    RDD = 1
+
+    Do
+
+        Print #1, Tab(48); teamName$
+        Print #1,
+
+        Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+        Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+        Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+        Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+        Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+
+        Print #1, leag1$; " "; DV$(RDD)
+
+        DD = ((RDD - 1) * TEAMS_PER_DIV_PRO) + 1
+        EE = RDD * TEAMS_PER_DIV_PRO
+
+        'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+
+        For K = DD To EE
+
+            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ Then
+
+                Print #1, Left$(statsZ1$(K), 15);
+                Print #1, Tab(17); Using "##"; homeWins!(K);
+                Print #1, Tab(20); Using "##"; homeLosses!(K);
+                Print #1, Tab(23); Using "##"; homeTies!(K);
+                Print #1, Tab(27); Using "###"; homeScoreTeam!(K);
+                Print #1, Tab(32); Using "###"; homeScoreOpp!(K);
+                Print #1, Tab(38); Using "##"; awayWins!(K);
+                Print #1, Tab(41); Using "##"; awayLosses!(K);
+                Print #1, Tab(44); Using "##"; awayTies!(K);
+                Print #1, Tab(48); Using "###"; awayScoreTeam!(K);
+                Print #1, Tab(52); Using "###"; awayScoreOpp!(K);
+                Print #1, Tab(58); Using "##"; homeWins!(K) + awayWins!(K);
+                Print #1, Tab(61); Using "##"; homeLosses!(K) + awayLosses!(K);
+                Print #1, Tab(64); Using "##"; homeTies!(K) + awayTies!(K);
+                Print #1, Tab(68); Using "###"; homeScoreTeam!(K) + awayScoreTeam!(K);
+                Print #1, Tab(72); Using "###"; homeScoreOpp!(K) + awayScoreOpp!(K)
+                totHomeWins!(RDD) = totHomeWins!(RDD) + homeWins!(K)
+                totHomeLosses!(RDD) = totHomeLosses!(RDD) + homeLosses!(K)
+                totAwayWins!(RDD) = totAwayWins!(RDD) + awayWins!(K)
+                totAwayLosses!(RDD) = totAwayLosses!(RDD) + awayLosses!(K)
+                totAwayTies!(RDD) = totAwayTies!(RDD) + awayTies!(K)
+                totHomeTies!(RDD) = totHomeTies!(RDD) + homeTies!(K)
+                totHomeScoreTeam!(RDD) = totHomeScoreTeam!(RDD) + homeScoreTeam!(K)
+                totHomeScoreOpp!(RDD) = totHomeScoreOpp!(RDD) + homeScoreOpp!(K)
+                totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam!(K)
+                totAwayScoreOpp!(RDD) = totAwayScoreOpp!(RDD) + awayScoreOpp!(K)
+
+            End If
+
+        Next K
+
+        Print #1,
+        Print #1, "TOTALS";
+        Print #1, Tab(17); Using "##"; totHomeWins!(RDD);
+        Print #1, Tab(20); Using "##"; totHomeLosses!(RDD);
+        Print #1, Tab(23); Using "##"; totHomeTies!(RDD);
+        Print #1, Tab(27); Using "###"; totHomeScoreTeam!(RDD);
+        Print #1, Tab(32); Using "###"; totHomeScoreOpp!(RDD);
+        Print #1, Tab(38); Using "##"; totAwayWins!(RDD);
+        Print #1, Tab(41); Using "##"; totAwayLosses!(RDD);
+        Print #1, Tab(44); Using "##"; totAwayTies!(RDD);
+        Print #1, Tab(48); Using "###"; totAwayScoreTeam!(RDD);
+        Print #1, Tab(52); Using "###"; totAwayScoreOpp!(RDD);
+        Print #1, Tab(58); Using "##"; totHomeWins!(RDD) + totAwayWins!(RDD);
+        Print #1, Tab(61); Using "##"; totHomeLosses!(RDD) + totAwayLosses!(RDD);
+        Print #1, Tab(64); Using "##"; totHomeTies!(RDD) + totAwayTies!(RDD);
+        Print #1, Tab(68); Using "###"; totHomeScoreTeam!(RDD) + totAwayScoreTeam!(RDD);
+        Print #1, Tab(72); Using "###"; totHomeScoreOpp!(RDD) + totAwayScoreOpp!(RDD)
+        Print #1,
+        Print #1,
+
+        RDD = RDD + 1
+
+    Loop Until RDD > DIVS_PER_LEAGUE Or DV$(RDD) = "XXX" Or DV$(RDD) = ""
+
+    If secondLeague = 1 Then
+
+        DV2$(1) = div1Name_2$
+        DV2$(2) = div2Name_2$
+        DV2$(3) = div3Name_2$
+
+        RDD = 1
+
+        Do
+
+            Print #1, Tab(48); teamName$
+            Print #1,
+
+            Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+            Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+            Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+            Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+            Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+
+            Print #1, leag2$; " "; DV2$(RDD)
+
+            DD = ((RDD - 1) * TEAMS_PER_DIV_PRO) + 1
+            EE = RDD * TEAMS_PER_DIV_PRO
+
+            'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+
+            For K = DD To EE
+
+                If statsZ1_2$(K) <> "XXX" And statsZ1_2$(K) <> teamName$ Then
+
+                    Print #1, Left$(statsZ1_2$(K), 15);
+                    Print #1, Tab(17); Using "##"; homeWins_2nd!(K);
+                    Print #1, Tab(20); Using "##"; homeLosses_2nd!(K);
+                    Print #1, Tab(23); Using "##"; homeTies_2nd!(K);
+                    Print #1, Tab(27); Using "###"; homeScoreTeam_2nd!(K);
+                    Print #1, Tab(32); Using "###"; homeScoreOpp_2nd!(K);
+                    Print #1, Tab(38); Using "##"; awayWins_2nd!(K);
+                    Print #1, Tab(41); Using "##"; awayLosses_2nd!(K);
+                    Print #1, Tab(44); Using "##"; awayTies_2nd!(K);
+                    Print #1, Tab(48); Using "###"; awayScoreTeam_2nd!(K);
+                    Print #1, Tab(52); Using "###"; awayScoreOpp_2nd!(K);
+                    Print #1, Tab(58); Using "##"; homeWins_2nd!(K) + awayWins_2nd!(K);
+                    Print #1, Tab(61); Using "##"; homeLosses_2nd!(K) + awayLosses_2nd!(K);
+                    Print #1, Tab(64); Using "##"; homeTies_2nd!(K) + awayTies_2nd!(K);
+                    Print #1, Tab(68); Using "###"; homeScoreTeam_2nd!(K) + awayScoreTeam_2nd!(K);
+                    Print #1, Tab(72); Using "###"; homeScoreOpp_2nd!(K) + awayScoreOpp_2nd!(K)
+
+                    totHomeWins_2nd!(RDD) = totHomeWins_2nd!(RDD) + homeWins_2nd!(K)
+                    totHomeLosses_2nd!(RDD) = totHomeLosses_2nd!(RDD) + homeLosses_2nd!(K)
+                    totAwayWins_2nd!(RDD) = totAwayWins_2nd!(RDD) + awayWins_2nd!(K)
+                    totAwayLoss_2nd!(RDD) = totAwayLoss_2nd!(RDD) + awayLosses_2nd!(K)
+                    totAwayTies_2nd!(RDD) = totAwayTies_2nd!(RDD) + awayTies_2nd!(K)
+                    totHomeTies_2nd!(RDD) = totHomeTies_2nd!(RDD) + homeTies_2nd!(K)
+                    totHomeScoreTeam_2nd(RDD) = totHomeScoreTeam_2nd(RDD) + homeScoreTeam_2nd!(K)
+                    totHomeScoreOpp_2nd!(RDD) = totHomeScoreOpp_2nd!(RDD) + homeScoreOpp_2nd!(K)
+                    totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam_2nd!(K)
+                    tototAwayScoreOpp_2nd!(RDD) = tototAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
+
+                End If
+
+            Next K
+
+            Print #1,
+            Print #1, "TOTALS";
+            Print #1, Tab(17); Using "##"; totHomeWins_2nd!(RDD);
+            Print #1, Tab(20); Using "##"; totHomeLosses_2nd!(RDD);
+            Print #1, Tab(23); Using "##"; totHomeTies_2nd!(RDD);
+            Print #1, Tab(27); Using "###"; totHomeScoreTeam_2nd(RDD);
+            Print #1, Tab(32); Using "###"; totHomeScoreOpp_2nd!(RDD);
+            Print #1, Tab(38); Using "##"; totAwayWins_2nd!(RDD);
+            Print #1, Tab(41); Using "##"; totAwayLoss_2nd!(RDD);
+            Print #1, Tab(44); Using "##"; totAwayTies_2nd!(RDD);
+            Print #1, Tab(48); Using "###"; totAwayScoreTeam!(RDD);
+            Print #1, Tab(52); Using "###"; tototAwayScoreOpp_2nd!(RDD);
+            Print #1, Tab(58); Using "##"; totHomeWins_2nd!(RDD) + totAwayWins_2nd!(RDD);
+            Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(RDD) + totAwayLoss_2nd!(RDD);
+            Print #1, Tab(64); Using "##"; totHomeTies_2nd!(RDD) + totAwayTies_2nd!(RDD);
+            Print #1, Tab(68); Using "###"; totHomeScoreTeam_2nd(RDD) + totAwayScoreTeam!(RDD);
+            Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(RDD) + tototAwayScoreOpp_2nd!(RDD)
+            Print #1,
+            Print #1,
+
+            RDD = RDD + 1
+
+        Loop Until RDD > DIVS_PER_LEAGUE Or DV$(RDD) = "XXX" Or DV$(RDD) = ""
+
+    End If
+
+    Print #1, Tab(48); teamName$
+    Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
+    Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
+    Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
+    Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
+    Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
+    Print #1, leag1$
+
+    For W = 1 To DIVS_PER_LEAGUE
+
+        If DV$(W) <> "XXX" Then
+
+            Print #1, DV$(W);
+            Print #1, Tab(17); Using "##"; totHomeWins!(W);
+            Print #1, Tab(20); Using "##"; totHomeLosses!(W);
+            Print #1, Tab(23); Using "##"; totHomeTies!(W);
+            Print #1, Tab(27); Using "###"; totHomeScoreTeam!(W);
+            Print #1, Tab(32); Using "###"; totHomeScoreOpp!(W);
+            Print #1, Tab(38); Using "##"; totAwayWins!(W);
+            Print #1, Tab(41); Using "##"; totAwayLosses!(W);
+            Print #1, Tab(44); Using "##"; totAwayTies!(W);
+            Print #1, Tab(48); Using "###"; totAwayScoreTeam!(W);
+            Print #1, Tab(52); Using "###"; totAwayScoreOpp!(W);
+            Print #1, Tab(58); Using "##"; totHomeWins!(W) + totAwayWins!(W);
+            Print #1, Tab(61); Using "##"; totHomeLosses!(W) + totAwayLosses!(W);
+            Print #1, Tab(64); Using "##"; totHomeTies!(W) + totAwayTies!(W);
+            Print #1, Tab(68); Using "###"; totHomeScoreTeam!(W) + totAwayScoreTeam!(W);
+            Print #1, Tab(72); Using "###"; totHomeScoreOpp!(W) + totAwayScoreOpp!(W)
+            
+        End If
+
+    Next W
+
+    THWW = 0
+    THLL = 0
+    THTT = 0
+    TAWW = 0
+    TALL = 0
+    TRTT = 0
+
+    For I = 1 To 4
+        THWW = THWW + totHomeWins!(I)
+        THLL = THLL + totHomeLosses!(I)
+        THTT = THTT + totHomeTies!(I)
+        TAWW = TAWW + totAwayWins!(I)
+        TALL = TALL + totAwayLosses!(I)
+        TRTT = TRTT + totAwayTies!(I)
+    Next
+
+    TG11 = 0
+    TG22 = 0
+    TG33 = 0
+    TG44 = 0
+
+    For I = 1 To 4
+        TG11 = TG11 + totHomeScoreTeam!(I)
+        TG22 = TG22 + totHomeScoreOpp!(I)
+        TG33 = TG33 + totAwayScoreTeam!(I)
+        TG44 = TG44 + totAwayScoreOpp!(I)
+    Next
+
+    Print #1,
+    Print #1, "TOTALS";
+    Print #1, Tab(17); Using "##"; THWW;
+    Print #1, Tab(20); Using "##"; THLL;
+    Print #1, Tab(23); Using "##"; THTT;
+    Print #1, Tab(27); Using "###"; TG11;
+    Print #1, Tab(32); Using "###"; TG22;
+    Print #1, Tab(38); Using "##"; TAWW;
+    Print #1, Tab(41); Using "##"; TALL;
+    Print #1, Tab(44); Using "##"; TRTT;
+    Print #1, Tab(48); Using "###"; TG33;
+    Print #1, Tab(52); Using "###"; TG44;
+    Print #1, Tab(58); Using "##"; THWW + TAWW;
+    Print #1, Tab(61); Using "##"; THLL + TALL;
+    Print #1, Tab(64); Using "##"; THTT + TRTT;
+    Print #1, Tab(68); Using "###"; TG11 + TG33;
+    Print #1, Tab(72); Using "###"; TG22 + TG44
+
+    If secondLeague = 1 Then
+
+        Print #1,
+        Print #1, leag2$
+
+        For W = 1 To DIVS_PER_LEAGUE
+
+            If DV$(W) <> "XXX" Then
+
+                Print #1, DV2$(W);
+                Print #1, Tab(17); Using "##"; totHomeWins_2nd!(W);
+                Print #1, Tab(20); Using "##"; totHomeLosses_2nd!(W);
+                Print #1, Tab(23); Using "##"; totHomeTies_2nd!(W);
+                Print #1, Tab(27); Using "###"; totHomeScoreTeam_2nd(W);
+                Print #1, Tab(32); Using "###"; totHomeScoreOpp_2nd!(W);
+                Print #1, Tab(38); Using "##"; totAwayWins_2nd!(W);
+                Print #1, Tab(41); Using "##"; totAwayLoss_2nd!(W);
+                Print #1, Tab(44); Using "##"; totAwayTies_2nd!(W);
+                Print #1, Tab(48); Using "###"; totAwayScoreTeam!(W);
+                Print #1, Tab(52); Using "###"; tototAwayScoreOpp_2nd!(W);
+                Print #1, Tab(58); Using "##"; totHomeWins_2nd!(W) + totAwayWins_2nd!(W);
+                Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(W) + totAwayLoss_2nd!(W);
+                Print #1, Tab(64); Using "##"; totHomeTies_2nd!(W) + totAwayTies_2nd!(W);
+                Print #1, Tab(68); Using "###"; totHomeScoreTeam_2nd(W) + totAwayScoreTeam!(W);
+                Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(W) + tototAwayScoreOpp_2nd!(W)
+
+            End If
+
+        Next W
+
+        THWW2 = 0
+        THLL2 = 0
+        THTT2 = 0
+        TAWW2 = 0
+        TALL2 = 0
+        TRTT2 = 0
+
+        For I = 1 To 4
+            THWW2 = THWW2 + totHomeWins_2nd!(I)
+            THLL2 = THLL2 + totHomeLosses_2nd!(I)
+            THTT2 = THTT2 + totHomeTies_2nd!(I)
+            TAWW2 = TAWW2 + totAwayWins_2nd!(I)
+            TALL2 = TALL2 + totAwayLoss_2nd!(I)
+            TRTT2 = TRTT2 + totAwayTies_2nd!(I)
+        Next
+
+        TG112 = 0
+        TG222 = 0
+        TG332 = 0
+        TG442 = 0
+
+        For I = 1 To 4
+            TG112 = TG112 + totHomeScoreTeam_2nd(I)
+            TG222 = TG222 + totHomeScoreOpp_2nd!(I)
+            TG332 = TG332 + totAwayScoreTeam!(I)
+            TG442 = TG442 + tototAwayScoreOpp_2nd!(I)
+        Next
+
+        Print #1,
+        Print #1, "TOTALS";
+        Print #1, Tab(17); Using "##"; THWW2;
+        Print #1, Tab(20); Using "##"; THLL2;
+        Print #1, Tab(23); Using "##"; THTT2;
+        Print #1, Tab(27); Using "###"; TG112;
+        Print #1, Tab(32); Using "###"; TG222;
+        Print #1, Tab(38); Using "##"; TAWW2;
+        Print #1, Tab(41); Using "##"; TALL2;
+        Print #1, Tab(44); Using "##"; TRTT2;
+        Print #1, Tab(48); Using "###"; TG332;
+        Print #1, Tab(52); Using "###"; TG442;
+        Print #1, Tab(58); Using "##"; THWW2 + TAWW2;
+        Print #1, Tab(61); Using "##"; THLL2 + TALL2;
+        Print #1, Tab(64); Using "##"; THTT2 + TRTT2;
+        Print #1, Tab(68); Using "###"; TG112 + TG332;
+        Print #1, Tab(72); Using "###"; TG222 + TG442
+
+    End If
+
+    Close #1
+
+    If printDest = 1 Then
+
+        Open destFile$ For Input As #2
+
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
+
+        Close #2
+
+        LPrint Chr$(12)
+
+        Kill destFile$
+
+    End If
+
+End Sub
+
 
 '----------------------------------------
 '     Hd2HdPro_Screen Subroutine
 '----------------------------------------
-'This subroutine outputs the calculated 
+'This subroutine outputs the calculated
 'comparison values to the end user display
 Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
-    Shared div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+    Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
 
     Shared teamRatings%()
 
-    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
-    Shared G1!(), G12!(), G2!(), G22!()
-    Shared G3!(), G32!(), G4!(), G42!()
-    Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
-    Shared RT2!(), RT!()
-    Shared TAL!(), TAL2!(), TAW!(), TAW2!()
-    Shared TG1!(), TG12!(), TG2!(), TG22!()
-    Shared TG3!(), TG32!(), TG4!(), TG42!()
-    Shared THL!(), THL2!(), THW!(), THW2!()
-    Shared THT!(), THT2!(), TRT!(), TRT2!()
+    Shared awayLosses!(), awayLosses_2nd!(), awayWins!(), awayWins_2nd!()
+    Shared homeScoreTeam!(), homeScoreTeam_2nd!(), homeScoreOpp!(), homeScoreOpp_2nd!()
+    Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
+    Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!(), homeWins!(), homeWins_2nd!()
+    Shared awayTies_2nd!(), awayTies!()
+    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
+    Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
 
     Shared DV$(), DV2$()
-    Shared statsZ1$(), Z12$()
+    Shared statsZ1$(), statsZ1_2$()
 
-    DV$(1) = div1$
-    DV$(2) = div2$
-    DV$(3) = div3$
+    DV$(1) = div1Name$
+    DV$(2) = div2Name$
+    DV$(3) = div3Name$
 
-    RDD = 0
+    RDD = 1
 
     Do
 
@@ -417,17 +883,15 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
         Locate 5
         Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
-        RDD = RDD + 1
-
-        DD = ((RDD - 1) * 10) + 1
-        EE = RDD * 10
-
-        If DV$(RDD) = "XXX" Or DV$(RDD) = "" Then RDD = 3
-
         Color 11
         Print leag1$; " "; DV$(RDD);
 
         Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
+
+        DD = ((RDD - 1) * TEAMS_PER_DIV) + 1
+        EE = RDD * TEAMS_PER_DIV
+
+        'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
 
         For K = DD To EE
 
@@ -437,42 +901,42 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
                 Locate , 1: Print Left$(statsZ1$(K), 15);
 
                 Color 7
-                Locate , 17: Print Using "##"; HW!(K);
-                Locate , 20: Print Using "##"; HL!(K);
-                Locate , 23: Print Using "##"; HT!(K);
-                Locate , 27: Print Using "###"; G1!(K);
-                Locate , 32: Print Using "###"; G2!(K);
+                Locate , 17: Print Using "##"; homeWins!(K);
+                Locate , 20: Print Using "##"; homeLosses!(K);
+                Locate , 23: Print Using "##"; homeTies!(K);
+                Locate , 27: Print Using "###"; homeScoreTeam!(K);
+                Locate , 32: Print Using "###"; homeScoreOpp!(K);
 
                 Color 3: Print Tab(35); Chr$(179);
 
                 Color 7
                 Locate , 36: Print Using "##"; awayWins!(K);
                 Locate , 39: Print Using "##"; awayLosses!(K);
-                Locate , 42: Print Using "##"; RT!(K);
-                Locate , 47: Print Using "##"; G3!(K);
-                Locate , 51: Print Using "##"; G4!(K);
+                Locate , 42: Print Using "##"; awayTies!(K);
+                Locate , 47: Print Using "##"; awayScoreTeam!(K);
+                Locate , 51: Print Using "##"; awayScoreOpp!(K);
 
                 Color 3: Print Tab(53); Chr$(179);
 
                 Color 7
-                Locate , 54: Print Using "##"; HW!(K) + awayWins!(K);
-                Locate , 57: Print Using "##"; HL!(K) + awayLosses!(K);
-                Locate , 60: Print Using "##"; HT!(K) + RT!(K);
-                Locate , 64: Print Using "###"; G1!(K) + G3!(K);
-                Locate , 68: Print Using "###"; G2!(K) + G4!(K)
+                Locate , 54: Print Using "##"; homeWins!(K) + awayWins!(K);
+                Locate , 57: Print Using "##"; homeLosses!(K) + awayLosses!(K);
+                Locate , 60: Print Using "##"; homeTies!(K) + awayTies!(K);
+                Locate , 64: Print Using "###"; homeScoreTeam!(K) + awayScoreTeam!(K);
+                Locate , 68: Print Using "###"; homeScoreOpp!(K) + awayScoreOpp!(K)
 
                 Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
-                THW!(RDD) = THW!(RDD) + HW!(K)
-                THL!(RDD) = THL!(RDD) + HL!(K)
-                TAW!(RDD) = TAW!(RDD) + awayWins!(K)
-                TAL!(RDD) = TAL!(RDD) + awayLosses!(K)
-                TRT!(RDD) = TRT!(RDD) + RT!(K)
-                THT!(RDD) = THT!(RDD) + HT!(K)
-                TG1!(RDD) = TG1!(RDD) + G1!(K)
-                TG2!(RDD) = TG2!(RDD) + G2!(K)
-                TG3!(RDD) = TG3!(RDD) + G3!(K)
-                TG4!(RDD) = TG4!(RDD) + G4!(K)
+                totHomeWins!(RDD) = totHomeWins!(RDD) + homeWins!(K)
+                totHomeLosses!(RDD) = totHomeLosses!(RDD) + homeLosses!(K)
+                totAwayWins!(RDD) = totAwayWins!(RDD) + awayWins!(K)
+                totAwayLosses!(RDD) = totAwayLosses!(RDD) + awayLosses!(K)
+                totAwayTies!(RDD) = totAwayTies!(RDD) + awayTies!(K)
+                totHomeTies!(RDD) = totHomeTies!(RDD) + homeTies!(K)
+                totHomeScoreTeam!(RDD) = totHomeScoreTeam!(RDD) + homeScoreTeam!(K)
+                totHomeScoreOpp!(RDD) = totHomeScoreOpp!(RDD) + homeScoreOpp!(K)
+                totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam!(K)
+                totAwayScoreOpp!(RDD) = totAwayScoreOpp!(RDD) + awayScoreOpp!(K)
 
             End If
 
@@ -482,53 +946,49 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
         Color 11
         Locate , 2: Print "TOTALS";
-        Locate , 17: Print Using "##"; THW!(RDD);
-        Locate , 20: Print Using "##"; THL!(RDD);
-        Locate , 23: Print Using "##"; THT!(RDD);
-        Locate , 27: Print Using "###"; TG1!(RDD);
-        Locate , 32: Print Using "###"; TG2!(RDD);
+        Locate , 17: Print Using "##"; totHomeWins!(RDD);
+        Locate , 20: Print Using "##"; totHomeLosses!(RDD);
+        Locate , 23: Print Using "##"; totHomeTies!(RDD);
+        Locate , 27: Print Using "###"; totHomeScoreTeam!(RDD);
+        Locate , 32: Print Using "###"; totHomeScoreOpp!(RDD);
 
         Color 3: Print Tab(35); Chr$(179);
 
         Color 11
-        Locate , 36: Print Using "##"; TAW!(RDD);
-        Locate , 39: Print Using "##"; TAL!(RDD);
-        Locate , 42: Print Using "##"; TRT!(RDD);
-        Locate , 46: Print Using "###"; TG3!(RDD);
-        Locate , 50: Print Using "###"; TG4!(RDD);
+        Locate , 36: Print Using "##"; totAwayWins!(RDD);
+        Locate , 39: Print Using "##"; totAwayLosses!(RDD);
+        Locate , 42: Print Using "##"; totAwayTies!(RDD);
+        Locate , 46: Print Using "###"; totAwayScoreTeam!(RDD);
+        Locate , 50: Print Using "###"; totAwayScoreOpp!(RDD);
 
         Color 3: Print Tab(53); Chr$(179);
 
         Color 11
-        Locate , 54: Print Using "##"; THW!(RDD) + TAW!(RDD);
-        Locate , 57: Print Using "##"; THL!(RDD) + TAL!(RDD);
-        Locate , 60: Print Using "##"; THT!(RDD) + TRT!(RDD);
-        Locate , 64: Print Using "###"; TG1!(RDD) + TG3!(RDD);
-        Locate , 68: Print Using "###"; TG2!(RDD) + TG4!(RDD)
+        Locate , 54: Print Using "##"; totHomeWins!(RDD) + totAwayWins!(RDD);
+        Locate , 57: Print Using "##"; totHomeLosses!(RDD) + totAwayLosses!(RDD);
+        Locate , 60: Print Using "##"; totHomeTies!(RDD) + totAwayTies!(RDD);
+        Locate , 64: Print Using "###"; totHomeScoreTeam!(RDD) + totAwayScoreTeam!(RDD);
+        Locate , 68: Print Using "###"; totHomeScoreOpp!(RDD) + totAwayScoreOpp!(RDD)
 
         Color 14
         Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+
         I$ = GetKeyPress$
 
-    Loop Until RDD = 3
+        RDD = RDD + 1
+
+    Loop Until RDD > DIVS_PER_LEAGUE Or DV$(RDD) = "XXX" Or DV$(RDD) = ""
 
     'Second League
     If secondLeague = 1 Then
 
-        DV2$(1) = div1_2$
-        DV2$(2) = div2_2$
-        DV2$(3) = div3_2$
+        DV2$(1) = div1Name_2$
+        DV2$(2) = div2Name_2$
+        DV2$(3) = div3Name_2$
 
-        RDD = 0
+        RDD = 1
 
         Do
-
-            RDD = RDD + 1
-
-            DD = ((RDD - 1) * 10) + 1
-            EE = RDD * 10
-
-            If DV2$(RDD) = "XXX" Or DV2$(RDD) = "" Then RDD = 3
 
             Cls
 
@@ -547,49 +1007,54 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
+            DD = ((RDD - 1) * TEAMS_PER_DIV) + 1
+            EE = RDD * TEAMS_PER_DIV
+
+            'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+
             For K = DD To EE
 
-                If Z12$(K) <> "XXX" And Z12$(K) <> teamName$ Then
+                If statsZ1_2$(K) <> "XXX" And statsZ1_2$(K) <> teamName$ Then
 
                     Color 15
-                    Locate , 1: Print Left$(Z12$(K), 15);
+                    Locate , 1: Print Left$(statsZ1_2$(K), 15);
                     Color 7
-                    Locate , 17: Print Using "##"; HW2!(K);
-                    Locate , 20: Print Using "##"; HL2!(K);
-                    Locate , 23: Print Using "##"; HT2!(K);
-                    Locate , 27: Print Using "###"; G12!(K);
-                    Locate , 32: Print Using "###"; G22!(K);
+                    Locate , 17: Print Using "##"; homeWins_2nd!(K);
+                    Locate , 20: Print Using "##"; homeLosses_2nd!(K);
+                    Locate , 23: Print Using "##"; homeTies_2nd!(K);
+                    Locate , 27: Print Using "###"; homeScoreTeam_2nd!(K);
+                    Locate , 32: Print Using "###"; homeScoreOpp_2nd!(K);
 
                     Color 3: Print Tab(35); Chr$(179);
 
                     Color 7
-                    Locate , 36: Print Using "##"; AW2!(K);
-                    Locate , 39: Print Using "##"; AL2!(K);
-                    Locate , 42: Print Using "##"; RT2!(K);
-                    Locate , 47: Print Using "##"; G32!(K);
-                    Locate , 51: Print Using "##"; G42!(K);
+                    Locate , 36: Print Using "##"; awayWins_2nd!(K);
+                    Locate , 39: Print Using "##"; awayLosses_2nd!(K);
+                    Locate , 42: Print Using "##"; awayTies_2nd!(K);
+                    Locate , 47: Print Using "##"; awayScoreTeam_2nd!(K);
+                    Locate , 51: Print Using "##"; awayScoreOpp_2nd!(K);
 
                     Color 3: Print Tab(53); Chr$(179);
 
                     Color 7
-                    Locate , 54: Print Using "##"; HW2!(K) + AW2!(K);
-                    Locate , 57: Print Using "##"; HL2!(K) + AL2!(K);
-                    Locate , 60: Print Using "##"; HT2!(K) + RT2!(K);
-                    Locate , 64: Print Using "###"; G12!(K) + G32!(K);
-                    Locate , 68: Print Using "###"; G22!(K) + G42!(K)
+                    Locate , 54: Print Using "##"; homeWins_2nd!(K) + awayWins_2nd!(K);
+                    Locate , 57: Print Using "##"; homeLosses_2nd!(K) + awayLosses_2nd!(K);
+                    Locate , 60: Print Using "##"; homeTies_2nd!(K) + awayTies_2nd!(K);
+                    Locate , 64: Print Using "###"; homeScoreTeam_2nd!(K) + awayScoreTeam_2nd!(K);
+                    Locate , 68: Print Using "###"; homeScoreOpp_2nd!(K) + awayScoreOpp_2nd!(K)
 
                     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
-                    THW2!(RDD) = THW2!(RDD) + HW2!(K)
-                    THL2!(RDD) = THL2!(RDD) + HL2!(K)
-                    TAW2!(RDD) = TAW2!(RDD) + AW2!(K)
-                    TAL2!(RDD) = TAL2!(RDD) + AL2!(K)
-                    TRT2!(RDD) = TRT2!(RDD) + RT2!(K)
-                    THT2!(RDD) = THT2!(RDD) + HT2!(K)
-                    TG12!(RDD) = TG12!(RDD) + G12!(K)
-                    TG22!(RDD) = TG22!(RDD) + G22!(K)
-                    TG32!(RDD) = TG32!(RDD) + G32!(K)
-                    TG42!(RDD) = TG42!(RDD) + G42!(K)
+                    totHomeWins_2nd!(RDD) = totHomeWins_2nd!(RDD) + homeWins_2nd!(K)
+                    totHomeLosses_2nd!(RDD) = totHomeLosses_2nd!(RDD) + homeLosses_2nd!(K)
+                    totAwayWins_2nd!(RDD) = totAwayWins_2nd!(RDD) + awayWins_2nd!(K)
+                    totAwayLoss_2nd!(RDD) = totAwayLoss_2nd!(RDD) + awayLosses_2nd!(K)
+                    totAwayTies_2nd!(RDD) = totAwayTies_2nd!(RDD) + awayTies_2nd!(K)
+                    totHomeTies_2nd!(RDD) = totHomeTies_2nd!(RDD) + homeTies_2nd!(K)
+                    totHomeScoreTeam_2nd(RDD) = totHomeScoreTeam_2nd(RDD) + homeScoreTeam_2nd!(K)
+                    totHomeScoreOpp_2nd!(RDD) = totHomeScoreOpp_2nd!(RDD) + homeScoreOpp_2nd!(K)
+                    totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam_2nd!(K)
+                    tototAwayScoreOpp_2nd!(RDD) = tototAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
 
                 End If
 
@@ -599,35 +1064,37 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
             Color 11
             Locate , 2: Print "TOTALS";
-            Locate , 17: Print Using "##"; THW2!(RDD);
-            Locate , 20: Print Using "##"; THL2!(RDD);
-            Locate , 23: Print Using "##"; THT2!(RDD);
-            Locate , 27: Print Using "###"; TG12!(RDD);
-            Locate , 32: Print Using "###"; TG22!(RDD);
+            Locate , 17: Print Using "##"; totHomeWins_2nd!(RDD);
+            Locate , 20: Print Using "##"; totHomeLosses_2nd!(RDD);
+            Locate , 23: Print Using "##"; totHomeTies_2nd!(RDD);
+            Locate , 27: Print Using "###"; totHomeScoreTeam_2nd(RDD);
+            Locate , 32: Print Using "###"; totHomeScoreOpp_2nd!(RDD);
 
             Color 3: Print Tab(35); Chr$(179);
 
             Color 11
-            Locate , 36: Print Using "##"; TAW2!(RDD);
-            Locate , 39: Print Using "##"; TAL2!(RDD);
-            Locate , 42: Print Using "##"; TRT2!(RDD);
-            Locate , 46: Print Using "###"; TG32!(RDD);
-            Locate , 50: Print Using "###"; TG42!(RDD);
+            Locate , 36: Print Using "##"; totAwayWins_2nd!(RDD);
+            Locate , 39: Print Using "##"; totAwayLoss_2nd!(RDD);
+            Locate , 42: Print Using "##"; totAwayTies_2nd!(RDD);
+            Locate , 46: Print Using "###"; totAwayScoreTeam!(RDD);
+            Locate , 50: Print Using "###"; tototAwayScoreOpp_2nd!(RDD);
 
             Color 3: Print Tab(53); Chr$(179);
 
             Color 11
-            Locate , 54: Print Using "##"; THW2!(RDD) + TAW2!(RDD);
-            Locate , 57: Print Using "##"; THL2!(RDD) + TAL2!(RDD);
-            Locate , 60: Print Using "##"; THT2!(RDD) + TRT2!(RDD);
-            Locate , 64: Print Using "###"; TG12!(RDD) + TG32!(RDD);
-            Locate , 68: Print Using "###"; TG22!(RDD) + TG42!(RDD)
+            Locate , 54: Print Using "##"; totHomeWins_2nd!(RDD) + totAwayWins_2nd!(RDD);
+            Locate , 57: Print Using "##"; totHomeLosses_2nd!(RDD) + totAwayLoss_2nd!(RDD);
+            Locate , 60: Print Using "##"; totHomeTies_2nd!(RDD) + totAwayTies_2nd!(RDD);
+            Locate , 64: Print Using "###"; totHomeScoreTeam_2nd(RDD) + totAwayScoreTeam!(RDD);
+            Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(RDD) + tototAwayScoreOpp_2nd!(RDD)
 
             Color 14
             Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
             I$ = GetKeyPress$
 
-        Loop Until RDD = 3
+            RDD = RDD + 1
+
+        Loop Until RDD > DIVS_PER_LEAGUE Or DV$(RDD) = "XXX" Or DV$(RDD) = ""
 
     End If
 
@@ -647,38 +1114,39 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
     Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
-    For W = 1 To 3
+    For W = 1 To DIVS_PER_LEAGUE
 
-        If DV$(W) <> "XXX" And DV$(W) <> "" Then
+        If DV$(W) <> "XXX" Then
 
             Color 15
+
             'We have to limit this to 16 because we start stats on column 17
             Locate , 1: Print Left$(DV$(W), 16);
 
             Color 7
-            Locate , 17: Print Using "##"; THW!(W);
-            Locate , 20: Print Using "##"; THL!(W);
-            Locate , 23: Print Using "##"; THT!(W);
-            Locate , 27: Print Using "###"; TG1!(W);
-            Locate , 32: Print Using "###"; TG2!(W);
+            Locate , 17: Print Using "##"; totHomeWins!(W);
+            Locate , 20: Print Using "##"; totHomeLosses!(W);
+            Locate , 23: Print Using "##"; totHomeTies!(W);
+            Locate , 27: Print Using "###"; totHomeScoreTeam!(W);
+            Locate , 32: Print Using "###"; totHomeScoreOpp!(W);
 
             Color 3: Print Tab(35); Chr$(179);
 
             Color 7
-            Locate , 36: Print Using "##"; TAW!(W);
-            Locate , 39: Print Using "##"; TAL!(W);
-            Locate , 42: Print Using "##"; TRT!(W);
-            Locate , 46: Print Using "###"; TG3!(W);
-            Locate , 50: Print Using "###"; TG4!(W);
+            Locate , 36: Print Using "##"; totAwayWins!(W);
+            Locate , 39: Print Using "##"; totAwayLosses!(W);
+            Locate , 42: Print Using "##"; totAwayTies!(W);
+            Locate , 46: Print Using "###"; totAwayScoreTeam!(W);
+            Locate , 50: Print Using "###"; totAwayScoreOpp!(W);
 
             Color 3: Print Tab(53); Chr$(179);
 
             Color 7
-            Locate , 54: Print Using "##"; THW!(W) + TAW!(W);
-            Locate , 57: Print Using "##"; THL!(W) + TAL!(W);
-            Locate , 60: Print Using "##"; THT!(W) + TRT!(W);
-            Locate , 64: Print Using "###"; TG1!(W) + TG3!(W);
-            Locate , 68: Print Using "###"; TG2!(W) + TG4!(W)
+            Locate , 54: Print Using "##"; totHomeWins!(W) + totAwayWins!(W);
+            Locate , 57: Print Using "##"; totHomeLosses!(W) + totAwayLosses!(W);
+            Locate , 60: Print Using "##"; totHomeTies!(W) + totAwayTies!(W);
+            Locate , 64: Print Using "###"; totHomeScoreTeam!(W) + totAwayScoreTeam!(W);
+            Locate , 68: Print Using "###"; totHomeScoreOpp!(W) + totAwayScoreOpp!(W)
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
@@ -694,12 +1162,12 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
     TRTT = 0
 
     For I = 1 To 4
-        THWW = THWW + THW!(I)
-        THLL = THLL + THL!(I)
-        THTT = THTT + THT!(I)
-        TAWW = TAWW + TAW!(I)
-        TALL = TALL + TAL!(I)
-        TRTT = TRTT + TRT!(I)
+        THWW = THWW + totHomeWins!(I)
+        THLL = THLL + totHomeLosses!(I)
+        THTT = THTT + totHomeTies!(I)
+        TAWW = TAWW + totAwayWins!(I)
+        TALL = TALL + totAwayLosses!(I)
+        TRTT = TRTT + totAwayTies!(I)
     Next
 
     TG11 = 0
@@ -708,10 +1176,10 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
     TG44 = 0
 
     For I = 1 To 4
-        TG11 = TG11 + TG1!(I)
-        TG22 = TG22 + TG2!(I)
-        TG33 = TG33 + TG3!(I)
-        TG44 = TG44 + TG4!(I)
+        TG11 = TG11 + totHomeScoreTeam!(I)
+        TG22 = TG22 + totHomeScoreOpp!(I)
+        TG33 = TG33 + totAwayScoreTeam!(I)
+        TG44 = TG44 + totAwayScoreOpp!(I)
     Next
 
     Print
@@ -747,37 +1215,37 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
         Print
         Print leag2$
 
-        For W = 1 To 3
+        For W = 1 To DIVS_PER_LEAGUE
 
-            If DV2$(W) <> "XXX" And DV2$(W) <> "" Then
+            If DV2$(W) <> "XXX" Then
 
                 Color 15
                 Locate , 2: Print DV2$(W);
 
                 Color 7
-                Locate , 17: Print Using "##"; THW2!(W);
-                Locate , 20: Print Using "##"; THL2!(W);
-                Locate , 23: Print Using "##"; THT2!(W);
-                Locate , 27: Print Using "###"; TG12!(W);
-                Locate , 32: Print Using "###"; TG22!(W);
+                Locate , 17: Print Using "##"; totHomeWins_2nd!(W);
+                Locate , 20: Print Using "##"; totHomeLosses_2nd!(W);
+                Locate , 23: Print Using "##"; totHomeTies_2nd!(W);
+                Locate , 27: Print Using "###"; totHomeScoreTeam_2nd(W);
+                Locate , 32: Print Using "###"; totHomeScoreOpp_2nd!(W);
 
                 Color 3: Print Tab(35); Chr$(179);
 
                 Color 7
-                Locate , 36: Print Using "##"; TAW2!(W);
-                Locate , 39: Print Using "##"; TAL2!(W);
-                Locate , 42: Print Using "##"; TRT2!(W);
-                Locate , 46: Print Using "###"; TG32!(W);
-                Locate , 50: Print Using "###"; TG42!(W);
+                Locate , 36: Print Using "##"; totAwayWins_2nd!(W);
+                Locate , 39: Print Using "##"; totAwayLoss_2nd!(W);
+                Locate , 42: Print Using "##"; totAwayTies_2nd!(W);
+                Locate , 46: Print Using "###"; totAwayScoreTeam!(W);
+                Locate , 50: Print Using "###"; tototAwayScoreOpp_2nd!(W);
 
                 Color 3: Print Tab(53); Chr$(179);
 
                 Color 7
-                Locate , 54: Print Using "##"; THW2!(W) + TAW2!(W);
-                Locate , 57: Print Using "##"; THL2!(W) + TAL2!(W);
-                Locate , 60: Print Using "##"; THT2!(W) + TRT2!(W);
-                Locate , 64: Print Using "###"; TG12!(W) + TG32!(W);
-                Locate , 68: Print Using "###"; TG22!(W) + TG42!(W)
+                Locate , 54: Print Using "##"; totHomeWins_2nd!(W) + totAwayWins_2nd!(W);
+                Locate , 57: Print Using "##"; totHomeLosses_2nd!(W) + totAwayLoss_2nd!(W);
+                Locate , 60: Print Using "##"; totHomeTies_2nd!(W) + totAwayTies_2nd!(W);
+                Locate , 64: Print Using "###"; totHomeScoreTeam_2nd(W) + totAwayScoreTeam!(W);
+                Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(W) + tototAwayScoreOpp_2nd!(W)
 
                 Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
@@ -793,12 +1261,12 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
         TRTT2 = 0
 
         For I = 1 To 4
-            THWW2 = THWW2 + THW2!(I)
-            THLL2 = THLL2 + THL2!(I)
-            THTT2 = THTT2 + THT2!(I)
-            TAWW2 = TAWW2 + TAW2!(I)
-            TALL2 = TALL2 + TAL2!(I)
-            TRTT2 = TRTT2 + TRT2!(I)
+            THWW2 = THWW2 + totHomeWins_2nd!(I)
+            THLL2 = THLL2 + totHomeLosses_2nd!(I)
+            THTT2 = THTT2 + totHomeTies_2nd!(I)
+            TAWW2 = TAWW2 + totAwayWins_2nd!(I)
+            TALL2 = TALL2 + totAwayLoss_2nd!(I)
+            TRTT2 = TRTT2 + totAwayTies_2nd!(I)
         Next
 
         TG112 = 0
@@ -807,10 +1275,10 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
         TG442 = 0
 
         For I = 1 To 4
-            TG112 = TG112 + TG12!(I)
-            TG222 = TG222 + TG22!(I)
-            TG332 = TG332 + TG32!(I)
-            TG442 = TG442 + TG42!(I)
+            TG112 = TG112 + totHomeScoreTeam_2nd(I)
+            TG222 = TG222 + totHomeScoreOpp_2nd!(I)
+            TG332 = TG332 + totAwayScoreTeam_2nd!(I)
+            TG442 = TG442 + tototAwayScoreOpp_2nd!(I)
         Next
 
         Print
@@ -845,389 +1313,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
     Color 14
     Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+
     I$ = GetKeyPress$
-
-End Sub
-
-
-'----------------------------------------
-'       Hd2HdPro_Report Subroutine
-'----------------------------------------
-'This subroutine outputs the calculated 
-'comparison values to a report file
-Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, printDest)
-
-    Shared div1$, div2$, div3$
-
-    Shared awayLosses!(), AL2!(), awayWins!(), AW2!()
-    Shared G1!(), G12!(), G2!(), G22!()
-    Shared G3!(), G32!(), G4!(), G42!()
-    Shared HL!(), HL2!(), HT!(), HT2!(), HW!(), HW2!()
-    Shared RT2!(), RT!()
-    Shared TAL!(), TAL2!(), TAW!(), TAW2!()
-    Shared TG1!(), TG12!(), TG2!(), TG22!()
-    Shared TG3!(), TG32!(), TG4!(), TG42!()
-    Shared THL!(), THL2!(), THW!(), THW2!()
-    Shared THT!(), THT2!(), TRT!(), TRT2!()
-
-    Shared statsZ1$(), Z12$()
-
-    Color 15, 0
-    Cls
-
-    Do
-
-        If printDest = 1 Then
-            reportFile$ = "COMPARISON"
-        Else
-
-            Color 15, 0
-            Cls
-
-            reportFile$ = _SAVEFILEDIALOG$("Save Comparison Report",_CWD$ + "\Comparison","*.txt","Text File")
-
-        End If
-
-    Loop Until reportFile$ <> ""
-    
-    DV$(1) = div1$
-    DV$(2) = div2$
-    DV$(3) = div3$
-
-    RDD = 0
-
-    Open reportFile$ For Output As #1
-    
-    Print #1, Tab(48); teamName$
-    Print #1,
-
-    Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-    Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-    Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-    Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-    Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-
-    Do
-
-        RDD = RDD + 1
-
-        DD = ((RDD - 1) * 10) + 1
-        EE = RDD * 10
-
-        If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
-
-            Print #1, leag1$; " "; DV$(RDD)
-
-            For K = DD To EE
-
-                If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ Then
-                    Print #1, Left$(statsZ1$(K), 15);
-                    Print #1, Tab(17); Using "##"; HW!(K);
-                    Print #1, Tab(20); Using "##"; HL!(K);
-                    Print #1, Tab(23); Using "##"; HT!(K);
-                    Print #1, Tab(27); Using "###"; G1!(K);
-                    Print #1, Tab(32); Using "###"; G2!(K);
-                    Print #1, Tab(38); Using "##"; awayWins!(K);
-                    Print #1, Tab(41); Using "##"; awayLosses!(K);
-                    Print #1, Tab(44); Using "##"; RT!(K);
-                    Print #1, Tab(48); Using "###"; G3!(K);
-                    Print #1, Tab(52); Using "###"; G4!(K);
-                    Print #1, Tab(58); Using "##"; HW!(K) + awayWins!(K);
-                    Print #1, Tab(61); Using "##"; HL!(K) + awayLosses!(K);
-                    Print #1, Tab(64); Using "##"; HT!(K) + RT!(K);
-                    Print #1, Tab(68); Using "###"; G1!(K) + G3!(K);
-                    Print #1, Tab(72); Using "###"; G2!(K) + G4!(K)
-                    THW!(RDD) = THW!(RDD) + HW!(K)
-                    THL!(RDD) = THL!(RDD) + HL!(K)
-                    TAW!(RDD) = TAW!(RDD) + awayWins!(K)
-                    TAL!(RDD) = TAL!(RDD) + awayLosses!(K)
-                    TRT!(RDD) = TRT!(RDD) + RT!(K)
-                    THT!(RDD) = THT!(RDD) + HT!(K)
-                    TG1!(RDD) = TG1!(RDD) + G1!(K)
-                    TG2!(RDD) = TG2!(RDD) + G2!(K)
-                    TG3!(RDD) = TG3!(RDD) + G3!(K)
-                    TG4!(RDD) = TG4!(RDD) + G4!(K)
-                End If
-
-            Next K
-
-            Print #1,
-            Print #1, "TOTALS";
-            Print #1, Tab(17); Using "##"; THW!(RDD);
-            Print #1, Tab(20); Using "##"; THL!(RDD);
-            Print #1, Tab(23); Using "##"; THT!(RDD);
-            Print #1, Tab(27); Using "###"; TG1!(RDD);
-            Print #1, Tab(32); Using "###"; TG2!(RDD);
-            Print #1, Tab(38); Using "##"; TAW!(RDD);
-            Print #1, Tab(41); Using "##"; TAL!(RDD);
-            Print #1, Tab(44); Using "##"; TRT!(RDD);
-            Print #1, Tab(48); Using "###"; TG3!(RDD);
-            Print #1, Tab(52); Using "###"; TG4!(RDD);
-            Print #1, Tab(58); Using "##"; THW!(RDD) + TAW!(RDD);
-            Print #1, Tab(61); Using "##"; THL!(RDD) + TAL!(RDD);
-            Print #1, Tab(64); Using "##"; THT!(RDD) + TRT!(RDD);
-            Print #1, Tab(68); Using "###"; TG1!(RDD) + TG3!(RDD);
-            Print #1, Tab(72); Using "###"; TG2!(RDD) + TG4!(RDD)
-            Print #1,
-            Print #1,
-
-        End If
-
-    Loop Until RDD = 3
-
-    If secondLeague = 1 Then
-
-        DV2$(1) = div1_2$
-        DV2$(2) = div2_2$
-        DV2$(3) = div3_2$
-        RDD = 0
-
-        Do
-
-            Print #1, Tab(48); teamName$
-            Print #1,
-
-            Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-            Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-            Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-            Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-            Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-
-            RDD = RDD + 1
-
-            DD = ((RDD - 1) * 10) + 1
-            EE = RDD * 10
-
-            If DV2$(RDD) <> "XXX" And DV2$(RDD) <> "" Then RDD = 3
-
-            Print #1, leag2$; " "; DV2$(RDD)
-
-            For K = DD To EE
-
-                If Z12$(K) <> "XXX" And Z12$(K) <> teamName$ Then
-
-                    Print #1, Left$(Z12$(K), 15);
-                    Print #1, Tab(17); Using "##"; HW2!(K);
-                    Print #1, Tab(20); Using "##"; HL2!(K);
-                    Print #1, Tab(23); Using "##"; HT2!(K);
-                    Print #1, Tab(27); Using "###"; G12!(K);
-                    Print #1, Tab(32); Using "###"; G22!(K);
-                    Print #1, Tab(38); Using "##"; AW2!(K);
-                    Print #1, Tab(41); Using "##"; AL2!(K);
-                    Print #1, Tab(44); Using "##"; RT2!(K);
-                    Print #1, Tab(48); Using "###"; G32!(K);
-                    Print #1, Tab(52); Using "###"; G42!(K);
-                    Print #1, Tab(58); Using "##"; HW2!(K) + AW2!(K);
-                    Print #1, Tab(61); Using "##"; HL2!(K) + AL2!(K);
-                    Print #1, Tab(64); Using "##"; HT2!(K) + RT2!(K);
-                    Print #1, Tab(68); Using "###"; G12!(K) + G32!(K);
-                    Print #1, Tab(72); Using "###"; G22!(K) + G42!(K)
-
-                    THW2!(RDD) = THW2!(RDD) + HW2!(K)
-                    THL2!(RDD) = THL2!(RDD) + HL2!(K)
-                    TAW2!(RDD) = TAW2!(RDD) + AW2!(K)
-                    TAL2!(RDD) = TAL2!(RDD) + AL2!(K)
-                    TRT2!(RDD) = TRT2!(RDD) + RT2!(K)
-                    THT2!(RDD) = THT2!(RDD) + HT2!(K)
-                    TG12!(RDD) = TG12!(RDD) + G12!(K)
-                    TG22!(RDD) = TG22!(RDD) + G22!(K)
-                    TG32!(RDD) = TG32!(RDD) + G32!(K)
-                    TG42!(RDD) = TG42!(RDD) + G42!(K)
-
-                End If
-
-            Next K
-
-            Print #1,
-            Print #1, "TOTALS";
-            Print #1, Tab(17); Using "##"; THW2!(RDD);
-            Print #1, Tab(20); Using "##"; THL2!(RDD);
-            Print #1, Tab(23); Using "##"; THT2!(RDD);
-            Print #1, Tab(27); Using "###"; TG12!(RDD);
-            Print #1, Tab(32); Using "###"; TG22!(RDD);
-            Print #1, Tab(38); Using "##"; TAW2!(RDD);
-            Print #1, Tab(41); Using "##"; TAL2!(RDD);
-            Print #1, Tab(44); Using "##"; TRT2!(RDD);
-            Print #1, Tab(48); Using "###"; TG32!(RDD);
-            Print #1, Tab(52); Using "###"; TG42!(RDD);
-            Print #1, Tab(58); Using "##"; THW2!(RDD) + TAW2!(RDD);
-            Print #1, Tab(61); Using "##"; THL2!(RDD) + TAL2!(RDD);
-            Print #1, Tab(64); Using "##"; THT2!(RDD) + TRT2!(RDD);
-            Print #1, Tab(68); Using "###"; TG12!(RDD) + TG32!(RDD);
-            Print #1, Tab(72); Using "###"; TG22!(RDD) + TG42!(RDD)
-            Print #1,
-            Print #1,
-
-        Loop Until RDD = 3
-
-    End If
-
-    Print #1, Tab(48); teamName$
-    Print #1, Tab(18); "------ HOME -----"; Tab(39); "------ AWAY -----"; Tab(59); "---- TOTALS -----"
-    Print #1, Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF";
-    Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
-    Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
-    Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-    Print #1, leag1$
-
-    For W = 1 To 3
-
-        Print #1, DV$(W);
-        Print #1, Tab(17); Using "##"; THW!(W);
-        Print #1, Tab(20); Using "##"; THL!(W);
-        Print #1, Tab(23); Using "##"; THT!(W);
-        Print #1, Tab(27); Using "###"; TG1!(W);
-        Print #1, Tab(32); Using "###"; TG2!(W);
-        Print #1, Tab(38); Using "##"; TAW!(W);
-        Print #1, Tab(41); Using "##"; TAL!(W);
-        Print #1, Tab(44); Using "##"; TRT!(W);
-        Print #1, Tab(48); Using "###"; TG3!(W);
-        Print #1, Tab(52); Using "###"; TG4!(W);
-        Print #1, Tab(58); Using "##"; THW!(W) + TAW!(W);
-        Print #1, Tab(61); Using "##"; THL!(W) + TAL!(W);
-        Print #1, Tab(64); Using "##"; THT!(W) + TRT!(W);
-        Print #1, Tab(68); Using "###"; TG1!(W) + TG3!(W);
-        Print #1, Tab(72); Using "###"; TG2!(W) + TG4!(W)
-
-    Next W
-
-    THWW = 0
-    THLL = 0
-    THTT = 0
-    TAWW = 0
-    TALL = 0
-    TRTT = 0
-
-    For I = 1 To 4
-        THWW = THWW + THW!(I)
-        THLL = THLL + THL!(I)
-        THTT = THTT + THT!(I)
-        TAWW = TAWW + TAW!(I)
-        TALL = TALL + TAL!(I)
-        TRTT = TRTT + TRT!(I)
-    Next
-
-    TG11 = 0
-    TG22 = 0
-    TG33 = 0
-    TG44 = 0
-
-    For I = 1 To 4
-        TG11 = TG11 + TG1!(I)
-        TG22 = TG22 + TG2!(I)
-        TG33 = TG33 + TG3!(I)
-        TG44 = TG44 + TG4!(I)
-    Next
-
-    Print #1,
-    Print #1, "TOTALS";
-    Print #1, Tab(17); Using "##"; THWW;
-    Print #1, Tab(20); Using "##"; THLL;
-    Print #1, Tab(23); Using "##"; THTT;
-    Print #1, Tab(27); Using "###"; TG11;
-    Print #1, Tab(32); Using "###"; TG22;
-    Print #1, Tab(38); Using "##"; TAWW;
-    Print #1, Tab(41); Using "##"; TALL;
-    Print #1, Tab(44); Using "##"; TRTT;
-    Print #1, Tab(48); Using "###"; TG33;
-    Print #1, Tab(52); Using "###"; TG44;
-    Print #1, Tab(58); Using "##"; THWW + TAWW;
-    Print #1, Tab(61); Using "##"; THLL + TALL;
-    Print #1, Tab(64); Using "##"; THTT + TRTT;
-    Print #1, Tab(68); Using "###"; TG11 + TG33;
-    Print #1, Tab(72); Using "###"; TG22 + TG44
-
-    If secondLeague = 1 Then
-
-        Print #1,
-        Print #1, leag2$
-
-        For W = 1 To 3
-            Print #1, DV2$(W);
-            Print #1, Tab(17); Using "##"; THW2!(W);
-            Print #1, Tab(20); Using "##"; THL2!(W);
-            Print #1, Tab(23); Using "##"; THT2!(W);
-            Print #1, Tab(27); Using "###"; TG12!(W);
-            Print #1, Tab(32); Using "###"; TG22!(W);
-            Print #1, Tab(38); Using "##"; TAW2!(W);
-            Print #1, Tab(41); Using "##"; TAL2!(W);
-            Print #1, Tab(44); Using "##"; TRT2!(W);
-            Print #1, Tab(48); Using "###"; TG32!(W);
-            Print #1, Tab(52); Using "###"; TG42!(W);
-            Print #1, Tab(58); Using "##"; THW2!(W) + TAW2!(W);
-            Print #1, Tab(61); Using "##"; THL2!(W) + TAL2!(W);
-            Print #1, Tab(64); Using "##"; THT2!(W) + TRT2!(W);
-            Print #1, Tab(68); Using "###"; TG12!(W) + TG32!(W);
-            Print #1, Tab(72); Using "###"; TG22!(W) + TG42!(W)
-        Next W
-
-        THWW2 = 0
-        THLL2 = 0
-        THTT2 = 0
-        TAWW2 = 0
-        TALL2 = 0
-        TRTT2 = 0
-
-        For I = 1 To 4
-            THWW2 = THWW2 + THW2!(I)
-            THLL2 = THLL2 + THL2!(I)
-            THTT2 = THTT2 + THT2!(I)
-            TAWW2 = TAWW2 + TAW2!(I)
-            TALL2 = TALL2 + TAL2!(I)
-            TRTT2 = TRTT2 + TRT2!(I)
-        Next
-
-        TG112 = 0
-        TG222 = 0
-        TG332 = 0
-        TG442 = 0
-
-        For I = 1 To 4
-            TG112 = TG112 + TG12!(I)
-            TG222 = TG222 + TG22!(I)
-            TG332 = TG332 + TG32!(I)
-            TG442 = TG442 + TG42!(I)
-        Next
-
-        Print #1,
-        Print #1, "TOTALS";
-        Print #1, Tab(17); Using "##"; THWW2;
-        Print #1, Tab(20); Using "##"; THLL2;
-        Print #1, Tab(23); Using "##"; THTT2;
-        Print #1, Tab(27); Using "###"; TG112;
-        Print #1, Tab(32); Using "###"; TG222;
-        Print #1, Tab(38); Using "##"; TAWW2;
-        Print #1, Tab(41); Using "##"; TALL2;
-        Print #1, Tab(44); Using "##"; TRTT2;
-        Print #1, Tab(48); Using "###"; TG332;
-        Print #1, Tab(52); Using "###"; TG442;
-        Print #1, Tab(58); Using "##"; THWW2 + TAWW2;
-        Print #1, Tab(61); Using "##"; THLL2 + TALL2;
-        Print #1, Tab(64); Using "##"; THTT2 + TRTT2;
-        Print #1, Tab(68); Using "###"; TG112 + TG332;
-        Print #1, Tab(72); Using "###"; TG222 + TG442
-
-    End If
-
-    Close #1
-
-    If printDest = 1 Then
-
-        Open reportFile$ For Input As #2
-
-        Do While Not EOF(2)
-            Line Input #2, X$
-            LPrint X$
-        Loop
-
-        Close #2
-
-        LPrint Chr$(12)
-
-        Kill reportFile$
-
-        printDest = 0
-
-    End If
 
 End Sub

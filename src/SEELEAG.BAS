@@ -34,15 +34,15 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     Shared PTSA!(), PTSF!()
     Shared seeT!(), compTT!(), seeW!()
 
-    Shared div1$, div2$, div3$
+    Shared div1Name$, div2Name$, div3Name$
 
     Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
-    Input #1, league$, div1$, div2$, div3$
+    Input #1, league$, div1Name$, div2Name$, div3Name$
     Close #1
 
-    div1$ = PadRight$(div1$, 8)
-    div2$ = PadRight$(div2$, 8)
-    div3$ = PadRight$(div3$, 8)
+    div1Name$ = PadRight$(div1Name$, 8)
+    div2Name$ = PadRight$(div2Name$, 8)
+    div3Name$ = PadRight$(div3Name$, 8)
 
     Cls
 
@@ -284,7 +284,7 @@ Sub StatOptions_Pro (league$)
             Select Case UCase$(I$)
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save League Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    userFile$ = _SAVEFILEDIALOG$("Save League Report",_CWD$ + "\Report","*.txt","Text File")
                     If userFile$ <> "" Then
                         Call ProLeaders_Report(league$, 0, userFile$)
                     End If
@@ -314,7 +314,7 @@ Sub StatOptions_Pro (league$)
 
         End If
 
-    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27) Or I$ = Chr$(27)
 
 End Sub
 
@@ -335,13 +335,13 @@ Sub ProLeaders_Screen ()
     Shared PTSA!(), PTSF!()
     Shared seeT!(), compTT!(), seeW!()
 
-    Shared div1$, div2$, div3$
+    Shared div1Name$, div2Name$, div3Name$
 
     Color 15, 0
     Cls
 
     Color 12
-    Print div1$; " DIVISION"
+    Print div1Name$; " DIVISION"
 
     Color 14
     Print "              W   L   T   PCT  PF  PA"
@@ -378,7 +378,7 @@ Sub ProLeaders_Screen ()
 
     Locate 1, 41
     Color 12
-    Print div2$ + " DIVISION"
+    Print div2Name$ + " DIVISION"
     Color 14
 
     Locate 2, 41
@@ -416,7 +416,7 @@ Sub ProLeaders_Screen ()
     Locate 13, 20
 
     Color 12
-    Print div3$ + " DIVISION"
+    Print div3Name$ + " DIVISION"
 
     Locate 14, 20
     Color 14
@@ -1037,7 +1037,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Shared PTSA!(), PTSF!()
     Shared seeT!(), compTT!(), seeW!()
 
-    Shared div1$, div2$, div3$
+    Shared div1Name$, div2Name$, div3Name$
 
     Color 0, 15
     Cls
@@ -1045,7 +1045,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Open destFile$ For Output As #1
 
     Print #1, league$ + " OVERALL RECORD"
-    Print #1, div1$; " DIVISION"
+    Print #1, div1Name$; " DIVISION"
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 1 To 10
@@ -1073,7 +1073,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Next
 
     Print #1,
-    Print #1, div2$; " DIVISION"
+    Print #1, div2Name$; " DIVISION"
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 11 To 20
@@ -1101,7 +1101,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Next
 
     Print #1,
-    Print #1, div3$; " DIVISION"
+    Print #1, div3Name$; " DIVISION"
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 21 To 30

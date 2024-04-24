@@ -20,7 +20,7 @@ Sub CompileCollege ()
     Shared compZ1$(), compZ2$(), compZ3$()
     Shared statFiles$(), teamRecDesc$(), TT$()
 
-    Shared div1$, div2$
+    Shared div1Name$, div2Name$
 
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
@@ -114,8 +114,8 @@ Sub CompileCollege ()
         Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #2
 
         Input #2, FF$
-        Input #2, div1$
-        Input #2, div2$
+        Input #2, div1Name$
+        Input #2, div2Name$
 
         For XW = 1 To 30
             Input #2, statFiles$(XW)
@@ -142,8 +142,8 @@ Sub CompileCollege ()
             Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #4
 
             Input #4, FF$
-            Input #4, div1$
-            Input #4, div2$
+            Input #4, div1Name$
+            Input #4, div2Name$
 
             For X = 1 To 30
                 Input #4, compZ1$(X)
@@ -526,22 +526,22 @@ Sub CalcStatTotalsConf (numberGames, TM$, WT$, finalUpdate$)
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then 
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then
         teamRecords!(39) = PTS / numberGames
         teamRecDesc$(39) = TM$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then 
+    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then
         teamRecords!(38) = PTS
         teamRecDesc$(38) = TM$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then 
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then
         teamRecords!(41) = PTS / numberGames
         teamRecDesc$(41) = TM$
     End If
 
-    If PTS > teamRecords!(40) Then 
+    If PTS > teamRecords!(40) Then
         teamRecords!(40) = PTS
         teamRecDesc$(40) = TM$
     End If
@@ -798,7 +798,7 @@ Sub SortStandingsConference
 
     Shared compZ1$()
 
-    'Currently sorts by Conference Record 
+    'Currently sorts by Conference Record
     '   To sort by Season Record, use Z = 0 to 1
     For Z = 2 To 3
 

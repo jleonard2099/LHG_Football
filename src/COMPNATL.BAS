@@ -23,7 +23,7 @@ Sub CompileNatlOrg ()
     Shared N2$(), N3$(), NT$()
     Shared PT$(), teamRecDesc$(), TT$()
 
-    Shared div1$, div2$
+    Shared div1Name$, div2Name$
 
     Dim NRT
 
@@ -160,8 +160,8 @@ Sub CompileNatlOrg ()
                 Open diskPaths$(2) + confNames$(currConf) + ".TMS" For Input As #3
 
                 Input #3, FF$
-                Input #3, div1$
-                Input #3, div2$
+                Input #3, div1Name$
+                Input #3, div2Name$
 
                 For XW = 1 To 30
                     Input #3, statFiles$(XW)
@@ -189,8 +189,8 @@ Sub CompileNatlOrg ()
                     Open diskPaths$(2) + confNames$(currConf) + ".TMS" For Input As #5
 
                     Input #5, FF$
-                    Input #5, div1$
-                    Input #5, div2$
+                    Input #5, div1Name$
+                    Input #5, div2Name$
 
                     For X = 1 To 30
                         Input #5, compZ1$(X)

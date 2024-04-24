@@ -31,37 +31,70 @@ Sub CNGTM ()
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        If (userChoice <> 0) Then
+            Selection% = userChoice
+        Else
 
-        _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
-        _MouseHide
+            Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
-        Color , 0
+            _MouseShow "DEFAULT"
+            MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+            _MouseHide
 
-        'In this case, RN is actually used later
-        'to control flow / operations
-        'It should probably be broken into
-        'different functions based on value
-        RN = Selection%
+            Color , 0
+        End If
 
-        If ExitCode% <> 27 Then
+        If ExitCode% <> 27 And Selection% <> 4 Then
 
             teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
             If teamNbr <> 0 Then
 
-                Select Case RN
+                Select Case Selection%
 
                     Case 1
                         Call EditTeam(team$, YN$, teamNbr)
 
                     Case 2
-                        Call PrintRoster(team$, teamNbr)
+                        Color 15, 0
+                        Cls
+
+                        Call MenuBox(8, 25, 24, 5, 15, 1)
+
+                        Do
+
+                            Locate 10, 32
+                            Color 7, 1
+
+                            Locate , 32: Print "SEND TO ";
+                            Color 15: Print "F";
+                            Color 7: Print "ILE"
+                            Locate , 32: Print "SEND TO ";
+                            Color 15: Print "P";
+                            Color 7: Print "RINTER"
+
+                            I$ = GetKeyPress$
+
+                            Color 14, 0
+
+                        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+
+                        Select Case UCase$(I$)
+
+                            Case "F"
+                                userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                                If userFile$ <> "" Then
+                                    Call PrintRoster(0, userFile$, team$)
+                                End If
+
+                            Case "P"
+                                Call PrintRoster(1, "REPORT", team$)
+
+                        End Select
 
                     Case 3
-                        Call ViewRoster(team$, teamNbr)
+                        Call ViewRoster(team$)
 
                 End Select
 
@@ -79,7 +112,7 @@ End Sub
 '----------------------------------------
 'This subroutine formats and outputs the
 'team roster to the user's display
-Sub PrintRoster (teamName$, teamIdx)
+Sub PrintRoster (printDest, destFile$, teamName$)
 
     Shared mascot$, stadium$
 
@@ -100,114 +133,132 @@ Sub PrintRoster (teamName$, teamIdx)
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
     Shared punterName$(), pkName$(), intName$(), sackName$()
 
-    Color 0, 15
+	Color 15, 0
+	Cls
+
+	Open destFile$ For Output As #1
 
     ' *** PRINT TEAM ROSTER ***
-    LPrint "TEAM ROSTER FOR "; teamName$; " "; mascot$; " TEAM NUMBER ="; teamIdx
-    LPrint
-    LPrint Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
-    LPrint Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
-    LPrint Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
-    LPrint Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
-    LPrint Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
-    LPrint Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
-    LPrint Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
-    LPrint Tab(35); "DEF YDS/COMP ADJ = ";
+    Print #1, "TEAM ROSTER FOR "; teamName$; " "; mascot$
+    Print #1,
+    Print #1, Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
+    Print #1, Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
+    Print #1, Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
+    Print #1, Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
+    Print #1, Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
+    Print #1, Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
+    Print #1, Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
+    Print #1, Tab(35); "DEF YDS/COMP ADJ = ";
 
-    If YC! < 50 Then LPrint Using "+#.#"; YC! / 100 * 30
-    If YC! > 50 Then LPrint Using "+#.#"; (100 - YC!) / 100 * -30
+    If YC! < 50 Then Print #1, Using "+#.#"; YC! / 100 * 30
+    If YC! > 50 Then Print #1, Using "+#.#"; (100 - YC!) / 100 * -30
 
-    LPrint Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
-    LPrint Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
-    LPrint Using "STAD TYPE      = ###"; teamRatings%(3);
-    LPrint Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings%(4)
-    LPrint Using "BACKGRND COLOR = ###"; teamRatings%(1);
-    LPrint Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
-    LPrint
-    LPrint "RUNNING BACKS-"
-    LPrint "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+    Print #1, Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
+    Print #1, Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
+    Print #1, Using "STAD TYPE      = ###"; teamRatings%(3);
+    Print #1, Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings%(4)
+    Print #1, Using "BACKGRND COLOR = ###"; teamRatings%(1);
+    Print #1, Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
+    Print #1,
+    Print #1, "RUNNING BACKS-"
+    Print #1, "NAME-               RUSH AVG   CX%  REC AVG   CX%"
 
     For I = 0 To 9:
 
         If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
-            LPrint rbName$(I); Tab(23);
-            LPrint Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
+            Print #1, rbName$(I); Tab(23);
+            Print #1, Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "WIDE RECEIVERS-"
-    LPrint "NAME-              REC AVG     CX%"
+    Print #1,
+    Print #1, "WIDE RECEIVERS-"
+    Print #1, "NAME-              REC AVG     CX%"
 
     For I = 0 To 5:
 
         If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
-            LPrint wrName$(I); Tab(23);
-            LPrint Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
+            Print #1, wrName$(I); Tab(23);
+            Print #1, Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "QUARTERBACKS-                     YDS/CMP"
-    LPrint "NAME-               COMP%   INT%    ADJ     CX%"
+    Print #1,
+    Print #1, "QUARTERBACKS-                     YDS/CMP"
+    Print #1, "NAME-               COMP%   INT%    ADJ     CX%"
 
     For I = 0 To 3:
 
         If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
-            LPrint qbName$(I); Tab(21);
-            LPrint Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
+            Print #1, qbName$(I); Tab(21);
+            Print #1, Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "KICKOFF RETURNMEN-"
-    LPrint "NAME-              RET AVG     CX%"
+    Print #1,
+    Print #1, "KICKOFF RETURNMEN-"
+    Print #1, "NAME-              RET AVG     CX%"
 
     For I = 0 To 2:
 
         If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
-            LPrint krName$(I); Tab(23);
-            LPrint Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
+            Print #1, krName$(I); Tab(23);
+            Print #1, Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "PUNT RETURNMEN-"
-    LPrint "NAME-              RET AVG     CX%"
+    Print #1,
+    Print #1, "PUNT RETURNMEN-"
+    Print #1, "NAME-              RET AVG     CX%"
 
     For I = 0 To 2:
 
         If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
-            LPrint prName$(I); Tab(23);
-            LPrint Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
+            Print #1, prName$(I); Tab(23);
+            Print #1, Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "PLACE KICKERS-"
-    LPrint "NAME-                FG%  CX%   EP%  CX%"
+    Print #1,
+    Print #1, "PLACE KICKERS-"
+    Print #1, "NAME-                FG%  CX%   EP%  CX%"
 
     For I = 0 To 1:
 
         If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
-            LPrint pkName$(I); Tab(21);
-            LPrint Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
+            Print #1, pkName$(I); Tab(21);
+            Print #1, Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
         End If
 
     Next
 
-    LPrint
-    LPrint "PUNTER-"
-    LPrint "NAME-              AVG"
-    LPrint punterName$(0); Tab(21);
-    LPrint Using "##"; puntAvg(0) * 2 + 28
+    Print #1,
+    Print #1, "PUNTER-"
+    Print #1, "NAME-              AVG"
+    Print #1, punterName$(0); Tab(21);
+    Print #1, Using "##"; puntAvg(0) * 2 + 28
 
-    LPrint Chr$(12)
+	If printDest = 1 Then
+
+		Open destFile$ For Input As #2
+
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
+
+		Close #2
+
+		LPrint Chr$(12)
+
+		Kill destFile$
+
+	End If
 
 End Sub
 
@@ -1399,7 +1450,7 @@ End Sub
 '----------------------------------------
 'This subroutine formats and outputs the
 'team roster to the user's display
-Sub ViewRoster (team$, teamNbr)
+Sub ViewRoster (team$)
 
     Shared mascot$, stadium$
 
@@ -1429,9 +1480,7 @@ Sub ViewRoster (team$, teamNbr)
         Color teamRatings%(2), teamRatings%(1)
         Print team$;
 
-        Color 11, 0: Print "   TEAM NUMBER =";
-        Color 14: Print teamNbr
-
+        Print
         Print
 
         Color 15: Print Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);

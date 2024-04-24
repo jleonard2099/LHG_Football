@@ -64,7 +64,7 @@ Sub CAREER ()
                     Call CAREDIT
 
                 Case 6: 
-                    Call ViewPrintCareerRecords
+                    Call ReviewCareerRecords
 
             End Select
 
@@ -186,8 +186,8 @@ Sub MergeFirstYear
             Color 15, 0
             Cls
 
-            Locate 8, 25: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
-            Locate 9, 25: Print "ANY CHANGE? (Y/N)"
+            Locate 8, 22: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
+            Locate 9, 22: Print "ANY CHANGE? (Y/N)"
 
             J$ = GetKeyPress$
 
@@ -796,14 +796,14 @@ End Sub
 
 
 '----------------------------------------
-'    ViewPrintCareerRecords Subroutine
+'    ReviewCareerRecords Subroutine
 '----------------------------------------
 'This routine loads in leader records from
 'the .CLD file (which were compiled from  
 'the career file). It then gives the user
 'an option to View or Print results, AND
 'formats the results for them as directed.
-Sub ViewPrintCareerRecords ()
+Sub ReviewCareerRecords ()
 
     Shared careerRBC$()
 
@@ -825,277 +825,446 @@ Sub ViewPrintCareerRecords ()
 
         Open diskPaths$(2) + recordFile$ + ".CLD" For Input As #1
 
-        For I = 0 To 9: Input #1, RBBC!(I), careerRBC$(I), RBYR%(I): Next
+        For I = 0 To 9: 
+            Input #1, RBBC!(I), careerRBC$(I), RBYR%(I)
+        Next
 
         Input #1, RBR$(0), RBR$(1)
 
-        For I = 0 To 4: Input #1, WRRC!(I), WRC$(I), WRYR%(I): Next
+        For I = 0 To 4: 
+            Input #1, WRRC!(I), WRC$(I), WRYR%(I)
+        Next
 
         Input #1, WRR$
 
-        For I = 0 To 8: Input #1, QBBC!(I), QBC$(I), QBYR%(I): Next
+        For I = 0 To 8: 
+            Input #1, QBBC!(I), QBC$(I), QBYR%(I)
+        Next
 
         Input #1, QBR$
 
-        For I = 0 To 4: Input #1, KRRC!(I), KRC$(I), KRYR%(I): Next
+        For I = 0 To 4: 
+            Input #1, KRRC!(I), KRC$(I), KRYR%(I)
+        Next
 
         Input #1, KRR$
 
-        For I = 0 To 4: Input #1, PRRC!(I), PRC$(I), PRYR%(I): Next
+        For I = 0 To 4: 
+            Input #1, PRRC!(I), PRC$(I), PRYR%(I)
+        Next
 
         Input #1, PRR$
 
-        For I = 0 To 2: Input #1, PUUC!(I), PUC$(I), PUYR%(I): Next
+        For I = 0 To 2: 
+            Input #1, PUUC!(I), PUC$(I), PUYR%(I)
+        Next
 
-        For I = 0 To 6: Input #1, FGGC!(I), FGC$(I), FGYR%(I): Next
+        For I = 0 To 6: 
+            Input #1, FGGC!(I), FGC$(I), FGYR%(I)
+        Next
 
-        For I = 0 To 1: Input #1, DFFC!(I), DFC$(I), DFYR%(I): Next
+        For I = 0 To 1: 
+            Input #1, DFFC!(I), DFC$(I), DFYR%(I)
+        Next
 
         Close #1
 
+        Color 15, 0
         Cls
 
+        Call MenuBox(8, 25, 24, 5, 15, 1)
+
         Do
-            Color 15, 0
-            Cls
 
-            Do
-                Locate 15, 10
-                Color 12: Print "V";: Color 7: Print "iew or ";
-                Color 12: Print "P";: Color 7: Print "rint"
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "V" Or UCase$(I$) = "P"
+            Locate 10, 32
+            Color 7, 1
 
-            Select Case UCase$(I$)
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "F";
+            Color 7: Print "ILE"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "P";
+            Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
-                Case "P"
-                
+            I$ = GetKeyPress$
+
+            Color 14, 0
+
+        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
+
+        Select Case UCase$(I$)
+
+            Case "F"
+                userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Career","*.txt","Text File")
+                If userFile$ <> "" Then
+                    Call CareerRecords_Report(0, userFile$)
+                End If
+
+            Case "P"
+                Call CareerRecords_Report(1, "CAREER")
+
+            Case "S"
+
+                Do
+                    Cls
                     Color 0, 15
 
-                    LPrint Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                    LPrint "RUSHING ATTEMPTS";
-                    LPrint Tab(32); Using "####"; RBBC!(0);: LPrint Tab(50); careerRBC$(0);: LPrint Tab(64); RBYR%(0)
-                    LPrint "RUSHING YARDS";
-                    LPrint Tab(32); Using "####"; RBBC!(1);: LPrint Tab(50); careerRBC$(1);: LPrint Tab(64); RBYR%(1)
-                    LPrint "RUSHING AVERAGE";
-                    LPrint Tab(32); Using "##.#"; RBBC!(2);: LPrint Tab(50); careerRBC$(2);: LPrint Tab(64); RBYR%(2)
-                    LPrint "RUSHING TOUCHDOWNS";
-                    LPrint Tab(33); Using "###"; RBBC!(3);: LPrint Tab(50); careerRBC$(3);: LPrint Tab(64); RBYR%(3)
-                    LPrint "LONGEST RUN";
-                    LPrint Tab(33); Using "###"; RBBC!(8);
-                    LPrint Tab(36); RBR$(0);: LPrint Tab(50); careerRBC$(8);: LPrint Tab(64); RBYR%(8)
-                    LPrint "RECEPTIONS (BACKS)";
-                    LPrint Tab(32); Using "####"; RBBC!(4);: LPrint Tab(50); careerRBC$(4);: LPrint Tab(64); RBYR%(4)
-                    LPrint "RECEIVING YARDS (BACKS)";
-                    LPrint Tab(32); Using "####"; RBBC!(5);: LPrint Tab(50); careerRBC$(5);: LPrint Tab(64); RBYR%(5)
-                    LPrint "RECEIVING AVERAGE (BACKS)";
-                    LPrint Tab(32); Using "##.#"; RBBC!(6);: LPrint Tab(50); careerRBC$(6);: LPrint Tab(64); RBYR%(6)
-                    LPrint "RECEIVING TOUCHDOWNS (BACKS)";
-                    LPrint Tab(32); Using " ###"; RBBC!(7);: LPrint Tab(50); careerRBC$(7);: LPrint Tab(64); RBYR%(7)
-                    LPrint "LONGEST RECEPTION (BACKS)";
-                    LPrint Tab(33); Using "###"; RBBC!(9);
-                    LPrint Tab(37); RBR$(1);: LPrint Tab(50); careerRBC$(9);: LPrint Tab(64); RBYR%(9)
-                    LPrint "RECEPTIONS";
-                    LPrint Tab(32); Using "####"; WRRC!(0);: LPrint Tab(50); WRC$(0);: LPrint Tab(64); WRYR%(0)
-                    LPrint "RECEIVING YARDS";
-                    LPrint Tab(32); Using "####"; WRRC!(1);: LPrint Tab(50); WRC$(1);: LPrint Tab(64); WRYR%(1)
-                    LPrint "RECEIVING AVERAGE";
-                    LPrint Tab(32); Using "##.#"; WRRC!(2);: LPrint Tab(50); WRC$(2);: LPrint Tab(64); WRYR%(2)
-                    LPrint "RECEIVING TOUCHDOWNS";
-                    LPrint Tab(32); Using " ###"; WRRC!(3);: LPrint Tab(50); WRC$(3);: LPrint Tab(64); WRYR%(3)
-                    LPrint "LONGEST RECEPTION";
-                    LPrint Tab(32); Using " ###"; WRRC!(4);
-                    LPrint Tab(36); WRR$;: LPrint Tab(50); WRC$(4);: LPrint Tab(64); WRYR%(4)
-                    LPrint "COMPLETIONS";
-                    LPrint Tab(32); Using "####"; QBBC!(0);: LPrint Tab(50); QBC$(0);: LPrint Tab(64); QBYR%(0)
-                    LPrint "ATTEMPTS";
-                    LPrint Tab(32); Using "####"; QBBC!(1);: LPrint Tab(50); QBC$(1);: LPrint Tab(64); QBYR%(1)
-                    LPrint "INTERCEPTIONS";
-                    LPrint Tab(32); Using "####"; QBBC!(2);: LPrint Tab(50); QBC$(2);: LPrint Tab(64); QBYR%(2)
-                    LPrint "TOUCHDOWNS";
-                    LPrint Tab(31); Using " ####"; QBBC!(3);: LPrint Tab(50); QBC$(3);: LPrint Tab(64); QBYR%(3)
-                    LPrint "PASSING YARDS";
-                    LPrint Tab(32); Using "####"; QBBC!(4);: LPrint Tab(50); QBC$(4);: LPrint Tab(64); QBYR%(4)
-                    LPrint "COMPLETION PERCENTAGE";
-                    LPrint Tab(32); Using "##.#"; QBBC!(5) * 100;: LPrint Tab(50); QBC$(5);: LPrint Tab(64); QBYR%(5)
-                    LPrint "YARDS PER COMPLETION";
-                    LPrint Tab(32); Using "##.#"; QBBC!(6);: LPrint Tab(50); QBC$(6);: LPrint Tab(64); QBYR%(6)
-                    LPrint "QUARTERBACK RATING";
-                    LPrint Tab(31); Using " ##.#"; QBBC!(7);: LPrint Tab(50); QBC$(7);: LPrint Tab(64); QBYR%(7)
-                    LPrint "LONGEST PASS";
-                    LPrint Tab(32); Using " ###"; QBBC!(8);
-                    LPrint Tab(36); QBR$;: LPrint Tab(50); QBC$(8);: LPrint Tab(64); QBYR%(8)
-                    LPrint "KICK RETURN ATTEMPTS";
-                    LPrint Tab(33); Using "###"; KRRC!(0);: LPrint Tab(50); KRC$(0);: LPrint Tab(64); KRYR%(0)
-                    LPrint "KICK RETURN YARDS";
-                    LPrint Tab(32); Using "####"; KRRC!(1);: LPrint Tab(50); KRC$(1);: LPrint Tab(64); KRYR%(1)
-                    LPrint "KICK RETURN AVERAGE";
-                    LPrint Tab(32); Using "##.#"; KRRC!(2);: LPrint Tab(50); KRC$(2);: LPrint Tab(64); KRYR%(2)
-                    LPrint "KICK RETURN TOUCHDOWNS";
-                    LPrint Tab(32); Using " ###"; KRRC!(3);: LPrint Tab(50); KRC$(3);: LPrint Tab(64); KRYR%(3)
-                    LPrint "LONGEST KICK RETURN";
-                    LPrint Tab(32); Using " ###"; KRRC!(4);
-                    LPrint Tab(36); KRR$;: LPrint Tab(50); KRC$(4);: LPrint Tab(64); KRYR%(4)
-                    LPrint "PUNT RETURN ATTEMPTS";
-                    LPrint Tab(33); Using "###"; PRRC!(0);: LPrint Tab(50); PRC$(0);: LPrint Tab(64); PRYR%(0)
-                    LPrint "PUNT RETURN YARDS";
-                    LPrint Tab(32); Using "####"; PRRC!(1);: LPrint Tab(50); PRC$(1);: LPrint Tab(64); PRYR%(1)
-                    LPrint "PUNT RETURN AVERAGE";
-                    LPrint Tab(32); Using "##.#"; PRRC!(2);: LPrint Tab(50); PRC$(2);: LPrint Tab(64); PRYR%(2)
-                    LPrint "PUNT RETURN TOUCHDOWNS";
-                    LPrint Tab(32); Using " ###"; PRRC!(3);: LPrint Tab(50); PRC$(3);: LPrint Tab(64); PRYR%(3)
-                    LPrint "LONGEST PUNT RETURN";
-                    LPrint Tab(32); Using " ###"; PRRC!(4);
-                    LPrint Tab(36); PRR$;: LPrint Tab(50); PRC$(4);: LPrint Tab(64); PRYR%(4)
-                    LPrint "PUNT ATTEMPTS";
-                    LPrint Tab(32); Using "####"; PUUC!(0);: LPrint Tab(50); PUC$(0);: LPrint Tab(64); PUYR%(0)
-                    LPrint "PUNTING YARDS";
-                    LPrint Tab(32); Using "####"; PUUC!(1);: LPrint Tab(50); PUC$(1);: LPrint Tab(64); PUYR%(1)
-                    LPrint "PUNTING AVERAGE";
-                    LPrint Tab(32); Using "##.#"; PUUC!(2);: LPrint Tab(50); PUC$(2);: LPrint Tab(64); PUYR%(2)
-                    LPrint "FIELD GOAL ATTEMPTS";
-                    LPrint Tab(32); Using "####"; FGGC!(0);: LPrint Tab(50); FGC$(0);: LPrint Tab(64); FGYR%(0)
-                    LPrint "FIELD GOALS MADE";
-                    LPrint Tab(32); Using "####"; FGGC!(1);: LPrint Tab(50); FGC$(1);: LPrint Tab(64); FGYR%(1)
-                    LPrint "FIELD GOAL PERCENTAGE";
-                    LPrint Tab(31); Using "###.#"; FGGC!(2) * 100;: LPrint Tab(50); FGC$(2);: LPrint Tab(64); FGYR%(2)
-                    LPrint "LONGEST FIELD GOAL MADE";
-                    LPrint Tab(34); Using "##"; FGGC!(6);: LPrint Tab(50); FGC$(6);: LPrint Tab(64); FGYR%(6)
-                    LPrint "EXTRA POINT ATTEMPTS";
-                    LPrint Tab(32); Using "####"; FGGC!(3);: LPrint Tab(50); FGC$(3);: LPrint Tab(64); FGYR%(3)
-                    LPrint "EXTRA POINTS MADE";
-                    LPrint Tab(32); Using "####"; FGGC!(4);: LPrint Tab(50); FGC$(4);: LPrint Tab(64); FGYR%(4)
-                    LPrint "EXTRA POINT PERCENTAGE";
-                    LPrint Tab(31); Using "###.#"; FGGC!(5) * 100;: LPrint Tab(50); FGC$(5);: LPrint Tab(64); FGYR%(5)
+                    Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+                    Print
 
-                    LPrint Chr$(12)
+                    Color 3: Print "RUSHING ATTEMPTS";
+                    Color 7: Print Tab(32); Using "####"; RBBC!(0);: Print Tab(50); careerRBC$(0);: Print Tab(64); RBYR%(0)
+                    Color 3: Print "RUSHING YARDS";
+                    Color 7: Print Tab(32); Using "####"; RBBC!(1);: Print Tab(50); careerRBC$(1);: Print Tab(64); RBYR%(1)
+                    Color 3: Print "RUSHING AVERAGE";
+                    Color 7: Print Tab(32); Using "##.#"; RBBC!(2);: Print Tab(50); careerRBC$(2);: Print Tab(64); RBYR%(2)
+                    Color 3: Print "RUSHING TOUCHDOWNS";
+                    Color 7: Print Tab(33); Using "###"; RBBC!(3);: Print Tab(50); careerRBC$(3);: Print Tab(64); RBYR%(3)
+                    Color 3: Print "LONGEST RUN";
+                    Color 7: Print Tab(33); Using "###"; RBBC!(8);: Print Tab(36); RBR$(0);: Print Tab(50); careerRBC$(8);: Print Tab(64); RBYR%(8)
+                    Color 3: Print "RECEPTIONS (BACKS)";
+                    Color 7: Print Tab(32); Using "####"; RBBC!(4);: Print Tab(50); careerRBC$(4);: Print Tab(64); RBYR%(4)
+                    Color 3: Print "RECEIVING YARDS (BACKS)";
+                    Color 7: Print Tab(32); Using "####"; RBBC!(5);: Print Tab(50); careerRBC$(5);: Print Tab(64); RBYR%(5)
+                    Color 3: Print "RECEIVING AVERAGE (BACKS)";
+                    Color 7: Print Tab(32); Using "##.#"; RBBC!(6);: Print Tab(50); careerRBC$(6);: Print Tab(64); RBYR%(6)
+                    Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";
+                    Color 7: Print Tab(32); Using " ###"; RBBC!(7);: Print Tab(50); careerRBC$(7);: Print Tab(64); RBYR%(7)
+                    Color 3: Print "LONGEST RECEPTION (BACKS)";
+                    Color 7: Print Tab(33); Using "###"; RBBC!(9);: Print Tab(37); RBR$(1);: Print Tab(50); careerRBC$(9);: Print Tab(64); RBYR%(9)
+                    Color 3: Print "RECEPTIONS";
+                    Color 7: Print Tab(32); Using "####"; WRRC!(0);: Print Tab(50); WRC$(0);: Print Tab(64); WRYR%(0)
+                    Color 3: Print "RECEIVING YARDS";
+                    Color 7: Print Tab(32); Using "####"; WRRC!(1);: Print Tab(50); WRC$(1);: Print Tab(64); WRYR%(1)
+                    Color 3: Print "RECEIVING AVERAGE";
+                    Color 7: Print Tab(32); Using "##.#"; WRRC!(2);: Print Tab(50); WRC$(2);: Print Tab(64); WRYR%(2)
+                    Color 3: Print "RECEIVING TOUCHDOWNS";
+                    Color 7: Print Tab(32); Using " ###"; WRRC!(3);: Print Tab(50); WRC$(3);: Print Tab(64); WRYR%(3)
+                    Color 3: Print "LONGEST RECEPTION";
+                    Color 7: Print Tab(32); Using " ###"; WRRC!(4);: Print Tab(36); WRR$;: Print Tab(50); WRC$(4);: Print Tab(64); WRYR%(4)
+                    Color 3: Print "COMPLETIONS";
+                    Color 7: Print Tab(32); Using "####"; QBBC!(0);: Print Tab(50); QBC$(0);: Print Tab(64); QBYR%(0)
+                    Color 3: Print "ATTEMPTS";
+                    Color 7: Print Tab(32); Using "####"; QBBC!(1);: Print Tab(50); QBC$(1);: Print Tab(64); QBYR%(1)
+                    Color 3: Print "INTERCEPTIONS";
+                    Color 7: Print Tab(32); Using "####"; QBBC!(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR%(2)
 
-                Case "V"
+                    Color 15
+                    Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+                    I$ = GetKeyPress$
+
+                    Cls
+                    Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+                    Color 3: Print "TOUCHDOWNS";
+                    Color 7: Print Tab(31); Using " ####"; QBBC!(3);: Print Tab(50); QBC$(3);: Print Tab(64); QBYR%(3)
+                    Color 3: Print "PASSING YARDS";
+                    Color 7: Print Tab(32); Using "####"; QBBC!(4);: Print Tab(50); QBC$(4);: Print Tab(64); QBYR%(4)
+                    Color 3: Print "COMPLETION PERCENTAGE";
+                    Color 7: Print Tab(32); Using "##.#"; QBBC!(5) * 100;: Print Tab(50); QBC$(5);: Print Tab(64); QBYR%(5)
+                    Color 3: Print "YARDS PER COMPLETION";
+                    Color 7: Print Tab(32); Using "##.#"; QBBC!(6);: Print Tab(50); QBC$(6);: Print Tab(64); QBYR%(6)
+                    Color 3: Print "QUARTERBACK RATING";
+                    Color 7: Print Tab(31); Using " ##.#"; QBBC!(7);: Print Tab(50); QBC$(7);: Print Tab(64); QBYR%(7)
+                    Color 3: Print "LONGEST PASS";
+                    Color 7: Print Tab(32); Using " ###"; QBBC!(8);: Print Tab(36); QBR$;: Print Tab(50); QBC$(8);: Print Tab(64); QBYR%(8)
+                    Color 3: Print "KICK RETURN ATTEMPTS";
+                    Color 7: Print Tab(33); Using "###"; KRRC!(0);: Print Tab(50); KRC$(0);: Print Tab(64); KRYR%(0)
+                    Color 3: Print "KICK RETURN YARDS";
+                    Color 7: Print Tab(32); Using "####"; KRRC!(1);: Print Tab(50); KRC$(1);: Print Tab(64); KRYR%(1)
+                    Color 3: Print "KICK RETURN AVERAGE";
+                    Color 7: Print Tab(32); Using "##.#"; KRRC!(2);: Print Tab(50); KRC$(2);: Print Tab(64); KRYR%(2)
+                    Color 3: Print "KICK RETURN TOUCHDOWNS";
+                    Color 7: Print Tab(32); Using " ###"; KRRC!(3);: Print Tab(50); KRC$(3);: Print Tab(64); KRYR%(3)
+                    Color 3: Print "LONGEST KICK RETURN";
+                    Color 7: Print Tab(32); Using " ###"; KRRC!(4);: Print Tab(36); KRR$;: Print Tab(50); KRC$(4);: Print Tab(64); KRYR%(4)
+                    Color 3: Print "PUNT RETURN ATTEMPTS";
+                    Color 7: Print Tab(33); Using "###"; PRRC!(0);: Print Tab(50); PRC$(0);: Print Tab(64); PRYR%(0)
+                    Color 3: Print "PUNT RETURN YARDS";
+                    Color 7: Print Tab(32); Using "####"; PRRC!(1);: Print Tab(50); PRC$(1);: Print Tab(64); PRYR%(1)
+                    Color 3: Print "PUNT RETURN AVERAGE";
+                    Color 7: Print Tab(32); Using "##.#"; PRRC!(2);: Print Tab(50); PRC$(2);: Print Tab(64); PRYR%(2)
+                    Color 3: Print "PUNT RETURN TOUCHDOWNS";
+                    Color 7: Print Tab(32); Using " ###"; PRRC!(3);: Print Tab(50); PRC$(3);: Print Tab(64); PRYR%(3)
+                    Color 3: Print "LONGEST PUNT RETURN";
+                    Color 7: Print Tab(32); Using " ###"; PRRC!(4);: Print Tab(36); PRR$;: Print Tab(50); PRC$(4);: Print Tab(64); PRYR%(4)
+                    Color 3: Print "PUNT ATTEMPTS";
+                    Color 7: Print Tab(32); Using "####"; PUUC!(0);: Print Tab(50); PUC$(0);: Print Tab(64); PUYR%(0)
+                    Color 3: Print "PUNTING YARDS";
+                    Color 7: Print Tab(32); Using "####"; PUUC!(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR%(1)
+
+                    Color 15
+                    Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+                    I$ = GetKeyPress$
+
+                    Cls
+                    Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+                    Color 3: Print "PUNTING AVERAGE";
+                    Color 7: Print Tab(32); Using "##.#"; PUUC!(2);: Print Tab(50); PUC$(2);: Print Tab(64); PUYR%(2)
+                    Color 3: Print "FIELD GOAL ATTEMPTS";
+                    Color 7: Print Tab(32); Using "####"; FGGC!(0);: Print Tab(50); FGC$(0);: Print Tab(64); FGYR%(0)
+                    Color 3: Print "FIELD GOALS MADE";
+                    Color 7: Print Tab(32); Using "####"; FGGC!(1);: Print Tab(50); FGC$(1);: Print Tab(64); FGYR%(1)
+                    Color 3: Print "FIELD GOAL PERCENTAGE";
+                    Color 7: Print Tab(31); Using "###.#"; FGGC!(2) * 100;: Print Tab(50); FGC$(2);: Print Tab(64); FGYR%(2)
+                    Color 3: Print "LONGEST FIELD GOAL MADE";
+                    Color 7: Print Tab(34); Using "##"; FGGC!(6);: Print Tab(50); FGC$(6);: Print Tab(64); FGYR%(6)
+                    Color 3: Print "EXTRA POINT ATTEMPTS";
+                    Color 7: Print Tab(32); Using "####"; FGGC!(3);: Print Tab(50); FGC$(3);: Print Tab(64); FGYR%(3)
+                    Color 3: Print "EXTRA POINTS MADE";
+                    Color 7: Print Tab(32); Using "####"; FGGC!(4);: Print Tab(50); FGC$(4);: Print Tab(64); FGYR%(4)
+                    Color 3: Print "EXTRA POINT PERCENTAGE";
+                    Color 7: Print Tab(31); Using "###.#"; FGGC!(5) * 100;: Print Tab(50); FGC$(5);: Print Tab(64); FGYR%(5)
+
+                    Color 15
 
                     Do
-                        Cls
-                        Color 0, 15
-
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Print
-
-                        Color 3: Print "RUSHING ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; RBBC!(0);: Print Tab(50); careerRBC$(0);: Print Tab(64); RBYR%(0)
-                        Color 3: Print "RUSHING YARDS";
-                        Color 7: Print Tab(32); Using "####"; RBBC!(1);: Print Tab(50); careerRBC$(1);: Print Tab(64); RBYR%(1)
-                        Color 3: Print "RUSHING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; RBBC!(2);: Print Tab(50); careerRBC$(2);: Print Tab(64); RBYR%(2)
-                        Color 3: Print "RUSHING TOUCHDOWNS";
-                        Color 7: Print Tab(33); Using "###"; RBBC!(3);: Print Tab(50); careerRBC$(3);: Print Tab(64); RBYR%(3)
-                        Color 3: Print "LONGEST RUN";
-                        Color 7: Print Tab(33); Using "###"; RBBC!(8);: Print Tab(36); RBR$(0);: Print Tab(50); careerRBC$(8);: Print Tab(64); RBYR%(8)
-                        Color 3: Print "RECEPTIONS (BACKS)";
-                        Color 7: Print Tab(32); Using "####"; RBBC!(4);: Print Tab(50); careerRBC$(4);: Print Tab(64); RBYR%(4)
-                        Color 3: Print "RECEIVING YARDS (BACKS)";
-                        Color 7: Print Tab(32); Using "####"; RBBC!(5);: Print Tab(50); careerRBC$(5);: Print Tab(64); RBYR%(5)
-                        Color 3: Print "RECEIVING AVERAGE (BACKS)";
-                        Color 7: Print Tab(32); Using "##.#"; RBBC!(6);: Print Tab(50); careerRBC$(6);: Print Tab(64); RBYR%(6)
-                        Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";
-                        Color 7: Print Tab(32); Using " ###"; RBBC!(7);: Print Tab(50); careerRBC$(7);: Print Tab(64); RBYR%(7)
-                        Color 3: Print "LONGEST RECEPTION (BACKS)";
-                        Color 7: Print Tab(33); Using "###"; RBBC!(9);: Print Tab(37); RBR$(1);: Print Tab(50); careerRBC$(9);: Print Tab(64); RBYR%(9)
-                        Color 3: Print "RECEPTIONS";
-                        Color 7: Print Tab(32); Using "####"; WRRC!(0);: Print Tab(50); WRC$(0);: Print Tab(64); WRYR%(0)
-                        Color 3: Print "RECEIVING YARDS";
-                        Color 7: Print Tab(32); Using "####"; WRRC!(1);: Print Tab(50); WRC$(1);: Print Tab(64); WRYR%(1)
-                        Color 3: Print "RECEIVING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; WRRC!(2);: Print Tab(50); WRC$(2);: Print Tab(64); WRYR%(2)
-                        Color 3: Print "RECEIVING TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; WRRC!(3);: Print Tab(50); WRC$(3);: Print Tab(64); WRYR%(3)
-                        Color 3: Print "LONGEST RECEPTION";
-                        Color 7: Print Tab(32); Using " ###"; WRRC!(4);: Print Tab(36); WRR$;: Print Tab(50); WRC$(4);: Print Tab(64); WRYR%(4)
-                        Color 3: Print "COMPLETIONS";
-                        Color 7: Print Tab(32); Using "####"; QBBC!(0);: Print Tab(50); QBC$(0);: Print Tab(64); QBYR%(0)
-                        Color 3: Print "ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; QBBC!(1);: Print Tab(50); QBC$(1);: Print Tab(64); QBYR%(1)
-                        Color 3: Print "INTERCEPTIONS";
-                        Color 7: Print Tab(32); Using "####"; QBBC!(2);: Print Tab(50); QBC$(2);: Print Tab(64); QBYR%(2)
-
-                        Color 15
-                        Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+                        Locate 22: Print "VIEW AGAIN? (Y/N)"
                         I$ = GetKeyPress$
-
-                        Cls
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Color 3: Print "TOUCHDOWNS";
-                        Color 7: Print Tab(31); Using " ####"; QBBC!(3);: Print Tab(50); QBC$(3);: Print Tab(64); QBYR%(3)
-                        Color 3: Print "PASSING YARDS";
-                        Color 7: Print Tab(32); Using "####"; QBBC!(4);: Print Tab(50); QBC$(4);: Print Tab(64); QBYR%(4)
-                        Color 3: Print "COMPLETION PERCENTAGE";
-                        Color 7: Print Tab(32); Using "##.#"; QBBC!(5) * 100;: Print Tab(50); QBC$(5);: Print Tab(64); QBYR%(5)
-                        Color 3: Print "YARDS PER COMPLETION";
-                        Color 7: Print Tab(32); Using "##.#"; QBBC!(6);: Print Tab(50); QBC$(6);: Print Tab(64); QBYR%(6)
-                        Color 3: Print "QUARTERBACK RATING";
-                        Color 7: Print Tab(31); Using " ##.#"; QBBC!(7);: Print Tab(50); QBC$(7);: Print Tab(64); QBYR%(7)
-                        Color 3: Print "LONGEST PASS";
-                        Color 7: Print Tab(32); Using " ###"; QBBC!(8);: Print Tab(36); QBR$;: Print Tab(50); QBC$(8);: Print Tab(64); QBYR%(8)
-                        Color 3: Print "KICK RETURN ATTEMPTS";
-                        Color 7: Print Tab(33); Using "###"; KRRC!(0);: Print Tab(50); KRC$(0);: Print Tab(64); KRYR%(0)
-                        Color 3: Print "KICK RETURN YARDS";
-                        Color 7: Print Tab(32); Using "####"; KRRC!(1);: Print Tab(50); KRC$(1);: Print Tab(64); KRYR%(1)
-                        Color 3: Print "KICK RETURN AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; KRRC!(2);: Print Tab(50); KRC$(2);: Print Tab(64); KRYR%(2)
-                        Color 3: Print "KICK RETURN TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; KRRC!(3);: Print Tab(50); KRC$(3);: Print Tab(64); KRYR%(3)
-                        Color 3: Print "LONGEST KICK RETURN";
-                        Color 7: Print Tab(32); Using " ###"; KRRC!(4);: Print Tab(36); KRR$;: Print Tab(50); KRC$(4);: Print Tab(64); KRYR%(4)
-                        Color 3: Print "PUNT RETURN ATTEMPTS";
-                        Color 7: Print Tab(33); Using "###"; PRRC!(0);: Print Tab(50); PRC$(0);: Print Tab(64); PRYR%(0)
-                        Color 3: Print "PUNT RETURN YARDS";
-                        Color 7: Print Tab(32); Using "####"; PRRC!(1);: Print Tab(50); PRC$(1);: Print Tab(64); PRYR%(1)
-                        Color 3: Print "PUNT RETURN AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; PRRC!(2);: Print Tab(50); PRC$(2);: Print Tab(64); PRYR%(2)
-                        Color 3: Print "PUNT RETURN TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; PRRC!(3);: Print Tab(50); PRC$(3);: Print Tab(64); PRYR%(3)
-                        Color 3: Print "LONGEST PUNT RETURN";
-                        Color 7: Print Tab(32); Using " ###"; PRRC!(4);: Print Tab(36); PRR$;: Print Tab(50); PRC$(4);: Print Tab(64); PRYR%(4)
-                        Color 3: Print "PUNT ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; PUUC!(0);: Print Tab(50); PUC$(0);: Print Tab(64); PUYR%(0)
-                        Color 3: Print "PUNTING YARDS";
-                        Color 7: Print Tab(32); Using "####"; PUUC!(1);: Print Tab(50); PUC$(1);: Print Tab(64); PUYR%(1)
-
-                        Color 15
-                        Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
-                        I$ = GetKeyPress$
-
-                        Cls
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Color 3: Print "PUNTING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; PUUC!(2);: Print Tab(50); PUC$(2);: Print Tab(64); PUYR%(2)
-                        Color 3: Print "FIELD GOAL ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; FGGC!(0);: Print Tab(50); FGC$(0);: Print Tab(64); FGYR%(0)
-                        Color 3: Print "FIELD GOALS MADE";
-                        Color 7: Print Tab(32); Using "####"; FGGC!(1);: Print Tab(50); FGC$(1);: Print Tab(64); FGYR%(1)
-                        Color 3: Print "FIELD GOAL PERCENTAGE";
-                        Color 7: Print Tab(31); Using "###.#"; FGGC!(2) * 100;: Print Tab(50); FGC$(2);: Print Tab(64); FGYR%(2)
-                        Color 3: Print "LONGEST FIELD GOAL MADE";
-                        Color 7: Print Tab(34); Using "##"; FGGC!(6);: Print Tab(50); FGC$(6);: Print Tab(64); FGYR%(6)
-                        Color 3: Print "EXTRA POINT ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; FGGC!(3);: Print Tab(50); FGC$(3);: Print Tab(64); FGYR%(3)
-                        Color 3: Print "EXTRA POINTS MADE";
-                        Color 7: Print Tab(32); Using "####"; FGGC!(4);: Print Tab(50); FGC$(4);: Print Tab(64); FGYR%(4)
-                        Color 3: Print "EXTRA POINT PERCENTAGE";
-                        Color 7: Print Tab(31); Using "###.#"; FGGC!(5) * 100;: Print Tab(50); FGC$(5);: Print Tab(64); FGYR%(5)
-
-                        Color 15
-
-                        Do
-                            Locate 22: Print "VIEW AGAIN? (Y/N)"
-                            I$ = GetKeyPress$
-                        Loop Until UCase$(I$) = "N"
-
                     Loop Until UCase$(I$) = "N"
 
-            End Select
+                Loop Until UCase$(I$) = "N"
 
-        Loop Until UCase$(I$) = "V" Or UCase$(I$) = "P" Or I$ = Chr$(27)
+        End Select
 
     End If 'Done checking for ESC
+
+End Sub
+
+
+'----------------------------------------
+'    CareerRecords_Report Subroutine
+'----------------------------------------
+'This routine formats career records for
+'output to either a file or printer, as
+'specified by the user. All operations
+'involve creating a file first, that can
+'then be looped through if sending to 
+'printer
+Sub CareerRecords_Report (printDest, destFile$)
+
+    Shared careerRBC$()
+
+    Shared DFC$(), FGC$(), KRC$()
+    Shared PRC$(), PUC$(), QBC$()
+    Shared RBR$(), WRC$()
+
+    Shared DFYR%(), FGYR%(), KRYR%()
+    Shared PRYR%(), PUYR%(), QBYR%()
+    Shared RBYR%(), WRYR%()
+
+    Shared DFFC!(), FGGC!(), KRRC!()
+    Shared PRRC!(), PUUC!(), QBBC!()
+    Shared RBBC!(), RBBS!(), WRRC!()
+
+	Color 15, 0
+	Cls
+
+	Open destFile$ For Output As #1
+
+    Print #1, Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+    Print #1, "RUSHING ATTEMPTS";
+    Print #1, Tab(32); Using "####"; RBBC!(0);
+    Print #1, Tab(50); careerRBC$(0);
+    Print #1, Tab(64); RBYR%(0)
+    Print #1, "RUSHING YARDS";
+    Print #1, Tab(32); Using "####"; RBBC!(1);
+    Print #1, Tab(50); careerRBC$(1);
+    Print #1, Tab(64); RBYR%(1)
+    Print #1, "RUSHING AVERAGE";
+    Print #1, Tab(32); Using "##.#"; RBBC!(2);
+    Print #1, Tab(50); careerRBC$(2);
+    Print #1, Tab(64); RBYR%(2)
+    Print #1, "RUSHING TOUCHDOWNS";
+    Print #1, Tab(33); Using "###"; RBBC!(3);
+    Print #1, Tab(50); careerRBC$(3);
+    Print #1, Tab(64); RBYR%(3)
+    Print #1, "LONGEST RUN";
+    Print #1, Tab(33); Using "###"; RBBC!(8);
+    Print #1, Tab(36); RBR$(0);
+    Print #1, Tab(50); careerRBC$(8);
+    Print #1, Tab(64); RBYR%(8)
+    Print #1, "RECEPTIONS (BACKS)";
+    Print #1, Tab(32); Using "####"; RBBC!(4);
+    Print #1, Tab(50); careerRBC$(4);
+    Print #1, Tab(64); RBYR%(4)
+    Print #1, "RECEIVING YARDS (BACKS)";
+    Print #1, Tab(32); Using "####"; RBBC!(5);
+    Print #1, Tab(50); careerRBC$(5);
+    Print #1, Tab(64); RBYR%(5)
+    Print #1, "RECEIVING AVERAGE (BACKS)";
+    Print #1, Tab(32); Using "##.#"; RBBC!(6);
+    Print #1, Tab(50); careerRBC$(6);
+    Print #1, Tab(64); RBYR%(6)
+    Print #1, "RECEIVING TOUCHDOWNS (BACKS)";
+    Print #1, Tab(32); Using " ###"; RBBC!(7);
+    Print #1, Tab(50); careerRBC$(7);
+    Print #1, Tab(64); RBYR%(7)
+    Print #1, "LONGEST RECEPTION (BACKS)";
+    Print #1, Tab(33); Using "###"; RBBC!(9);
+    Print #1, Tab(37); RBR$(1);
+    Print #1, Tab(50); careerRBC$(9);
+    Print #1, Tab(64); RBYR%(9)
+    Print #1, "RECEPTIONS";
+    Print #1, Tab(32); Using "####"; WRRC!(0);
+    Print #1, Tab(50); WRC$(0);
+    Print #1, Tab(64); WRYR%(0)
+    Print #1, "RECEIVING YARDS";
+    Print #1, Tab(32); Using "####"; WRRC!(1);
+    Print #1, Tab(50); WRC$(1);
+    Print #1, Tab(64); WRYR%(1)
+    Print #1, "RECEIVING AVERAGE";
+    Print #1, Tab(32); Using "##.#"; WRRC!(2);
+    Print #1, Tab(50); WRC$(2);
+    Print #1, Tab(64); WRYR%(2)
+    Print #1, "RECEIVING TOUCHDOWNS";
+    Print #1, Tab(32); Using " ###"; WRRC!(3);
+    Print #1, Tab(50); WRC$(3);
+    Print #1, Tab(64); WRYR%(3)
+    Print #1, "LONGEST RECEPTION";
+    Print #1, Tab(32); Using " ###"; WRRC!(4);
+    Print #1, Tab(36); WRR$;
+    Print #1, Tab(50); WRC$(4);
+    Print #1, Tab(64); WRYR%(4)
+    Print #1, "COMPLETIONS";
+    Print #1, Tab(32); Using "####"; QBBC!(0);
+    Print #1, Tab(50); QBC$(0);
+    Print #1, Tab(64); QBYR%(0)
+    Print #1, "ATTEMPTS";
+    Print #1, Tab(32); Using "####"; QBBC!(1);
+    Print #1, Tab(50); QBC$(1);
+    Print #1, Tab(64); QBYR%(1)
+    Print #1, "INTERCEPTIONS";
+    Print #1, Tab(32); Using "####"; QBBC!(2);
+    Print #1, Tab(50); QBC$(2);
+    Print #1, Tab(64); QBYR%(2)
+    Print #1, "TOUCHDOWNS";
+    Print #1, Tab(31); Using " ####"; QBBC!(3);
+    Print #1, Tab(50); QBC$(3);
+    Print #1, Tab(64); QBYR%(3)
+    Print #1, "PASSING YARDS";
+    Print #1, Tab(32); Using "####"; QBBC!(4);
+    Print #1, Tab(50); QBC$(4);
+    Print #1, Tab(64); QBYR%(4)
+    Print #1, "COMPLETION PERCENTAGE";
+    Print #1, Tab(32); Using "##.#"; QBBC!(5) * 100;
+    Print #1, Tab(50); QBC$(5);
+    Print #1, Tab(64); QBYR%(5)
+    Print #1, "YARDS PER COMPLETION";
+    Print #1, Tab(32); Using "##.#"; QBBC!(6);
+    Print #1, Tab(50); QBC$(6);
+    Print #1, Tab(64); QBYR%(6)
+    Print #1, "QUARTERBACK RATING";
+    Print #1, Tab(31); Using " ##.#"; QBBC!(7);
+    Print #1, Tab(50); QBC$(7);
+    Print #1, Tab(64); QBYR%(7)
+    Print #1, "LONGEST PASS";
+    Print #1, Tab(32); Using " ###"; QBBC!(8);
+    Print #1, Tab(36); QBR$;
+    Print #1, Tab(50); QBC$(8);
+    Print #1, Tab(64); QBYR%(8)
+    Print #1, "KICK RETURN ATTEMPTS";
+    Print #1, Tab(33); Using "###"; KRRC!(0);
+    Print #1, Tab(50); KRC$(0);
+    Print #1, Tab(64); KRYR%(0)
+    Print #1, "KICK RETURN YARDS";
+    Print #1, Tab(32); Using "####"; KRRC!(1);
+    Print #1, Tab(50); KRC$(1);
+    Print #1, Tab(64); KRYR%(1)
+    Print #1, "KICK RETURN AVERAGE";
+    Print #1, Tab(32); Using "##.#"; KRRC!(2);
+    Print #1, Tab(50); KRC$(2);
+    Print #1, Tab(64); KRYR%(2)
+    Print #1, "KICK RETURN TOUCHDOWNS";
+    Print #1, Tab(32); Using " ###"; KRRC!(3);
+    Print #1, Tab(50); KRC$(3);
+    Print #1, Tab(64); KRYR%(3)
+    Print #1, "LONGEST KICK RETURN";
+    Print #1, Tab(32); Using " ###"; KRRC!(4);
+    Print #1, Tab(36); KRR$;
+    Print #1, Tab(50); KRC$(4);
+    Print #1, Tab(64); KRYR%(4)
+    Print #1, "PUNT RETURN ATTEMPTS";
+    Print #1, Tab(33); Using "###"; PRRC!(0);
+    Print #1, Tab(50); PRC$(0);
+    Print #1, Tab(64); PRYR%(0)
+    Print #1, "PUNT RETURN YARDS";
+    Print #1, Tab(32); Using "####"; PRRC!(1);
+    Print #1, Tab(50); PRC$(1);
+    Print #1, Tab(64); PRYR%(1)
+    Print #1, "PUNT RETURN AVERAGE";
+    Print #1, Tab(32); Using "##.#"; PRRC!(2);
+    Print #1, Tab(50); PRC$(2);
+    Print #1, Tab(64); PRYR%(2)
+    Print #1, "PUNT RETURN TOUCHDOWNS";
+    Print #1, Tab(32); Using " ###"; PRRC!(3);
+    Print #1, Tab(50); PRC$(3);
+    Print #1, Tab(64); PRYR%(3)
+    Print #1, "LONGEST PUNT RETURN";
+    Print #1, Tab(32); Using " ###"; PRRC!(4);
+    Print #1, Tab(36); PRR$;
+    Print #1, Tab(50); PRC$(4);
+    Print #1, Tab(64); PRYR%(4)
+    Print #1, "PUNT ATTEMPTS";
+    Print #1, Tab(32); Using "####"; PUUC!(0);
+    Print #1, Tab(50); PUC$(0);
+    Print #1, Tab(64); PUYR%(0)
+    Print #1, "PUNTING YARDS";
+    Print #1, Tab(32); Using "####"; PUUC!(1);
+    Print #1, Tab(50); PUC$(1);
+    Print #1, Tab(64); PUYR%(1)
+    Print #1, "PUNTING AVERAGE";
+    Print #1, Tab(32); Using "##.#"; PUUC!(2);
+    Print #1, Tab(50); PUC$(2);
+    Print #1, Tab(64); PUYR%(2)
+    Print #1, "FIELD GOAL ATTEMPTS";
+    Print #1, Tab(32); Using "####"; FGGC!(0);
+    Print #1, Tab(50); FGC$(0);
+    Print #1, Tab(64); FGYR%(0)
+    Print #1, "FIELD GOALS MADE";
+    Print #1, Tab(32); Using "####"; FGGC!(1);
+    Print #1, Tab(50); FGC$(1);
+    Print #1, Tab(64); FGYR%(1)
+    Print #1, "FIELD GOAL PERCENTAGE";
+    Print #1, Tab(31); Using "###.#"; FGGC!(2) * 100;
+    Print #1, Tab(50); FGC$(2);
+    Print #1, Tab(64); FGYR%(2)
+    Print #1, "LONGEST FIELD GOAL MADE";
+    Print #1, Tab(34); Using "##"; FGGC!(6);
+    Print #1, Tab(50); FGC$(6);
+    Print #1, Tab(64); FGYR%(6)
+    Print #1, "EXTRA POINT ATTEMPTS";
+    Print #1, Tab(32); Using "####"; FGGC!(3);
+    Print #1, Tab(50); FGC$(3);
+    Print #1, Tab(64); FGYR%(3)
+    Print #1, "EXTRA POINTS MADE";
+    Print #1, Tab(32); Using "####"; FGGC!(4);
+    Print #1, Tab(50); FGC$(4);
+    Print #1, Tab(64); FGYR%(4)
+    Print #1, "EXTRA POINT PERCENTAGE";
+    Print #1, Tab(31); Using "###.#"; FGGC!(5) * 100;
+    Print #1, Tab(50); FGC$(5);
+    Print #1, Tab(64); FGYR%(5)
+
+
+	If printDest = 1 Then
+
+		Open destFile$ For Input As #2
+
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
+
+		Close #2
+
+		LPrint Chr$(12)
+
+		Kill destFile$
+
+	End If
 
 End Sub
 

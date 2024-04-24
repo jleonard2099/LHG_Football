@@ -2069,27 +2069,53 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                 End Select
 
-                If UCase$(key$) <> "K" Then
-                    QW = PPP
-
-                    If printOrView = 1 Then
-                        Call DisplayLeaders(XX, QW, TVN)
-                    Else
-                        'printOrView = 2
-                        Call GetListLength(printOrView, LG, QW)
-                        Call PrintLeaders(XX, LG, TVN)
-                    End If
-                Else
-
+                If UCase$(key$) = "K" Then
                     QW = totalStats
+                Else
+                    QW = PPP
+                End If
 
-                    If printOrView = 1 Then
-                        Call DisplayLeaders(XX, QW, TVN)
-                    Else
-                        'printOrView = 2
-                        Call GetListLength(printOrView, LG, QW)
-                        Call PrintLeaders(XX, LG, TVN)
-                    End If
+                If printOrView = 1 Then
+                    Call DisplayLeaders(XX, QW, TVN)
+                Else
+                    'printOrView = 2
+                    Call GetListLength(printOrView, LG, QW)
+
+                    Color 15, 0
+                    Cls
+
+                    Call MenuBox(8, 25, 24, 5, 15, 1)
+
+                    Do
+
+                        Locate 10, 32
+                        Color 7, 1
+
+                        Locate , 32: Print "SEND TO ";
+                        Color 15: Print "F";
+                        Color 7: Print "ILE"
+                        Locate , 32: Print "SEND TO ";
+                        Color 15: Print "P";
+                        Color 7: Print "RINTER"
+
+                        I$ = GetKeyPress$
+
+                        Color 14, 0
+
+                    Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+
+                    Select Case UCase$(I$)
+
+                        Case "F"
+                            userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                            If userFile$ <> "" Then
+                                Call PrintLeaders(0, userFile$, XX, LG, TVN)
+                            End If
+
+                        Case "P"
+                            Call PrintLeaders(1, "REPORT", XX, LG, TVN)
+
+                    End Select
 
                 End If
 
@@ -2473,47 +2499,66 @@ End Sub
 '----------------------------------------
 '         PrintLeaders Subroutine
 '----------------------------------------
-'...explanation...
-Sub PrintLeaders (XX, LG, TVN)
+'This subroutine displays individual player
+'stat categories to the default printer
+Sub PrintLeaders (printDest, destFile$, XX, LG, TVN)
 
     Shared expCategories$(), TMM$(), TPP$(), TYY$()
     Shared TYP!()
 
-    Color 0, 15
+	Color 15, 0
+	Cls
 
-    LPrint "     PLAYER                  TEAM                     "; expCategories$(XX)
+	Open destFile$ For Output As #1
+	
+    Print #1, "     PLAYER                  TEAM                     "; expCategories$(XX)
 
     For W = 1 To LG
 
         If (W <> 1 And W Mod 50 = 1) Then
-            LPrint Chr$(12)
-            LPrint "     PLAYER                  TEAM                     "; expCategories$(XX)
+            Print #1, Chr$(12)
+            Print #1, "     PLAYER                  TEAM                     "; expCategories$(XX)
         End If
 
-        LPrint Using "###"; W;
-        LPrint " ";
-        LPrint TPP$(W);
-        LPrint Tab(25); TMM$(W);
+        Print #1, Using "###"; W;
+        Print #1, " ";
+        Print #1, TPP$(W);
+        Print #1, Tab(25); TMM$(W);
 
         Select Case TVN
             Case 1
-                LPrint Tab(58); Using "#####"; TYP!(W)
+                Print #1, Tab(58); Using "#####"; TYP!(W)
 
             Case 2
-                LPrint Tab(58); Using "###.##"; TYP!(W)
+                Print #1, Tab(58); Using "###.##"; TYP!(W)
 
             Case 3
-                LPrint Tab(58); Using "###.#"; TYP!(W);
-                LPrint Tab(63); TYY$(W)
+                Print #1, Tab(58); Using "###.#"; TYP!(W);
+                Print #1, Tab(63); TYY$(W)
 
             Case 4
-                LPrint Tab(58); Using "###.#"; TYP!(W)
+                Print #1, Tab(58); Using "###.#"; TYP!(W)
 
         End Select
 
     Next W
 
-    LPrint Chr$(12)
+	If printDest = 1 Then
+
+		Open destFile$ For Input As #2
+
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
+
+		Close #2
+
+		LPrint Chr$(12)
+
+		Kill destFile$
+
+	End If
 
 End Sub
 

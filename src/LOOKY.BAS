@@ -152,8 +152,12 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     For I = 1 To totalGames%
         pwrRating = teamScore(I) - oppScore(I) + powerRating(1, I)
-        If Left$(locIndicator$(I), 1) = "H" Then pwrRating = pwrRating - 3
-        If Left$(locIndicator$(I), 1) = "A" Then pwrRating = pwrRating + 3
+        If Left$(locIndicator$(I), 1) = "H" Then 
+            pwrRating = pwrRating - 3
+        End If
+        If Left$(locIndicator$(I), 1) = "A" Then 
+            pwrRating = pwrRating + 3
+        End If
         teamPower = teamPower + pwrRating
     Next
 
@@ -327,7 +331,7 @@ Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 20, 40, 4, 15, 1)
+        Call MenuBox(8, 25, 24, 5, 15, 1)
 
         Do
 
@@ -340,6 +344,9 @@ Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
             Locate , 32: Print "SEND TO ";
             Color 15: Print "P";
             Color 7: Print "RINTER"
+            Locate , 32: Print "SEND TO ";
+            Color 15: Print "S";
+            Color 7: Print "CREEN"
 
             I$ = GetKeyPress$
 
@@ -942,8 +949,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Print Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
 
             'QB Rating
-            RT! = QBRating!(I1, statFormat)
-            Print Using "###.#"; RT!
+           awayTies! = QBRating!(I1, statFormat)
+            Print Using "###.#";awayTies!
 
         End If
 
@@ -1659,9 +1666,9 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
 
             Print #1, Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
 
-            RT! = QBRating!(I1, statFormat)
+           awayTies! = QBRating!(I1, statFormat)
 
-            Print #1, Using "###.#"; RT!
+            Print #1, Using "###.#";awayTies!
 
         End If
 

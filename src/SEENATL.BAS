@@ -98,7 +98,7 @@ Sub StatOptions_Natl (confName$, NRT)
 
         Call TITLE_STATS
 
-        Call MenuBox(8, 20, 40, 5, 15, 1)
+        Call MenuBox(8, 25, 24, 5, 15, 1)
 
         Do
 
@@ -126,7 +126,7 @@ Sub StatOptions_Natl (confName$, NRT)
             Select Case UCase$(I$)
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save Organization Report",_CWD$ + "\REPORT","*.txt","Text File")
+                    userFile$ = _SAVEFILEDIALOG$("Save Organization Report",_CWD$ + "\Report","*.txt","Text File")
                     If userFile$ <> "" Then
                         Call NatLeaders_Report(confName$, NRT, 0, userFile$)
                     End If
@@ -156,7 +156,7 @@ Sub StatOptions_Natl (confName$, NRT)
 
         End If
 
-    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27) Or I$ = Chr$(27)
 
 End Sub
 

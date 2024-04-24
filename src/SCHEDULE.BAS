@@ -34,14 +34,14 @@ Sub SCHEDULE ()
 
         Call TITLE_SCHEDULER
 
-        menuChoices$(1) = "ENTER A NEW SCHEDULE                            "
-        menuChoices$(2) = "RETRIEVE / EDIT / PLAY AN EXISTING SCHEDULE     "
-        menuChoices$(3) = "EXTRACT ONE TEAM'S SCHEDULE FROM LEAGUE SCHEDULE"
-        menuChoices$(4) = "EXTRACT A CONFERENCE SCHEDULE FROM MAIN SCHEDULE"
-        menuChoices$(5) = "CHANGE THE MODE OF PLAY FOR A TEAM IN A SCHEDULE"
-        menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE               "
-        menuChoices$(7) = "BOXSCORE MAINTENANCE / SAVE BOXSCORE PARAMETERS "
-        menuChoices$(8) = "EXIT AUTO SCHEDULER TO 3 IN 1 MENU              "
+        menuChoices$(1) = "ENTER A NEW SCHEDULE                    "
+        menuChoices$(2) = "REVIEW / EDIT AN EXISTING SCHEDULE      "
+        menuChoices$(3) = "EXTRACT TEAM SCHEDULE FROM CONFERENCE   "
+        menuChoices$(4) = "EXTRACT CONFERENCE SCHEDULE             "
+        menuChoices$(5) = "CHANGE TEAM'S MODE OF PLAY IN A SCHEDULE"
+        menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE       "
+        menuChoices$(8) = "BOXSCORE MAINTENANCE / PARAMETERS       "
+        menuChoices$(8) = "RETURN TO 3 IN 1 FB MENU                "
         Selection% = 1
         Count% = 8
         Start% = 1
@@ -303,8 +303,8 @@ Sub NewSchedule (scheduleFile$)
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
                 NS% = Int((targetGame% - 1) / 20)
 
-                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
                 'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
 
                 Call EditBoxscore(boxName$)
                 Color 15, 0
@@ -1068,22 +1068,22 @@ Sub BoxscoreMaintenance ()
                     End If
 
                 Case 3
-                    Spec$ = diskPaths$(1) + "*.BS"
                     'Spec$ = diskPaths$(1) + "BOX*."
+                    Spec$ = diskPaths$(1) + "*.BS"
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 4
-                    Spec$ = diskPaths$(1) + "*.BSS"
                     'Spec$ = diskPaths$(1) + "*.SPC"
+                    Spec$ = diskPaths$(1) + "*.BSS"
                     Call DeleteBoxscores(Selection%, Spec$)
 
                 Case 5:
-                    Spec$ = diskPaths$(1) + "*.BS"
                     'Spec$ = diskPaths$(1) + "BOX*."
+                    Spec$ = diskPaths$(1) + "*.BS"
                     Call DeleteBoxscores(Selection%, Spec$)
 
-                    Spec$ = diskPaths$(1) + "*.BSS"
                     'Spec$ = diskPaths$(1) + "*.SPC"
+                    Spec$ = diskPaths$(1) + "*.BSS"
                     Call DeleteBoxscores(Selection%, Spec$)
 
             End Select

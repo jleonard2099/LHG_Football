@@ -1456,10 +1456,6 @@ Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
 
             Call ReadSourceTeam(yearNumber$, teamName$, selectedIdx)
 
-        Else
-
-            BO% = 1
-
         End If
 
     End If

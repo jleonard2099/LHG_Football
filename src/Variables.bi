@@ -213,25 +213,25 @@ Dim tradeYN$(1)
 '----------------------------------------
 '   Used in Head-To-Head routines
 '----------------------------------------
-Dim div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+Dim div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
 
 'These are mostly keeping track of quantities (# wins, # losses, etc)
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
-Dim awayLosses!(30), AL2!(30), awayWins!(30), AW2!(30)
+Dim awayLosses!(30), awayLosses_2nd!(30), awayWins!(30), awayWins_2nd!(30)
 
-Dim G1!(100), G12!(100), G2!(100), G22!(100)
-Dim G3!(100), G32!(100), G4!(100), G42!(100)
-Dim HL!(30), HL2!(30), HT!(30), HT2!(30), HW!(30), HW2!(30)
-Dim RT2!(30), RT!(30)
-Dim TAL!(4), TAL2!(4), TAW!(4), TAW2!(4)
-Dim TG1!(4), TG12!(4), TG2!(4), TG22!(4)
-Dim TG3!(4), TG32!(4), TG4!(4), TG42!(4)
-Dim THL!(4), THL2!(4), THW!(4), THW2!(4)
-Dim THT!(4), THT2!(4), TRT!(4), TRT2!(4)
+DimhomeScoreTeam!(100), homeScoreTeam_2nd!(100), homeScoreOpp!(100), homeScoreOpp_2nd!(100)
+DimawayScoreTeam!(100), awayScoreTeam_2nd!(100),awayScoreOpp!(100), awayScoreOpp_2nd!(100)
+Dim homeLosses!(30), homeLosses_2nd!(30), homeTies!(30), homeTies_2nd!(30), homeWins!(30), homeWins_2nd!(30)
+Dim awayTies_2nd!(30),awayTies!(30)
+Dim totAwayLosses!(4), totAwayLoss_2nd!(4), totAwayWins!(4), totAwayWins_2nd!(4)
+Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd(4), totHomeScoreOpp!(4), totHomeScoreOpp_2nd!(4)
+Dim totAwayScoreTeam!(4), totAwayScoreTeam!(4), totAwayScoreOpp!(4), totAwayScoreOpp_2nd!(4)
+Dim totHomeLosses!(4), totHomeLosses_2nd!(4), totHomeWins!(4), totHomeWins_2nd!(4)
+Dim totHomeTies!(4), totHomeTies_2nd!(4), totAwayTies!(4), totAwayTies_2nd!(4)
 
-Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
+Dim DV$(3), DV2$(3), statsZ1_2$(30), statsZ2_2$(30)
 
 
 '----------------------------------------
