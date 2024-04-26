@@ -63,9 +63,9 @@ Sub Hd2HdPro_League (secondLeague)
     Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
     Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!(), homeWins!(), homeWins_2nd!()
     Shared awayTies_2nd!(), awayTies!()
-    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totAwayLosses!(), totAwayLosses_2nd!(), totAwayWins!(), totAwayWins_2nd!()
     Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), totAwayScoreOpp_2nd!()
     Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
     Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
 
@@ -149,42 +149,22 @@ Sub Hd2HdPro_League (secondLeague)
 
         If teamNbr > 0 And ExitCode% <> 27 And ExitCode% <> 0 Then
 
-            Call MenuBox(8, 25, 24, 5, 15, 1)
+            userKey$ = GetOutputOptions$
 
-            Do
+            If userKey$ <> Chr$(27) Then
 
-                Locate 10
-                Color 7, 1
+                Select Case userKey$
 
-                Locate , 32: Print "SEND TO ";
-                Color 15: Print "F";
-                Color 7: Print "ILE"
-                Locate , 32: Print "SEND TO ";
-                Color 15: Print "P";
-                Color 7: Print "RINTER"
-                Locate , 32: Print "SEND TO ";
-                Color 15: Print "S";
-                Color 7: Print "CREEN"
+                    Case "F"                   
+                        printChoice = 0
+                        VPP = 0
+                    Case "P"
+                        printChoice = 1
+                        VPP = 0
+                    Case "S"
+                        VPP = 1
 
-                J$ = GetKeyPress$
-
-                Color 14, 0
-
-            Loop Until UCase$(J$) = "F" Or UCase$(J$) = "P" Or UCase$(J$) = "S" Or J$ = Chr$(27)
-
-            If J$ <> Chr$(27) Then
-
-                If UCase$(J$) = "F" Then
-                    printChoice = 0
-                End If
-                If UCase$(J$) = "P" Then
-                    printChoice = 1
-                End If
-                If UCase$(J$) = "S" Then
-                    VPP = 1
-                Else
-                    VPP = 0
-                End If
+                End Select
 
                 'Haven't checked that file exists
                 Open diskPaths$(2) + leag1$ + ".TMI" For Input As #2
@@ -327,8 +307,8 @@ Sub Hd2HdPro_League (secondLeague)
                     Erase awayLosses_2nd!, awayWins_2nd!, homeScoreTeam_2nd!, homeScoreOpp_2nd!, awayScoreTeam_2nd!, awayScoreOpp_2nd!
                     Erase homeLosses_2nd!, homeTies_2nd!, homeWins_2nd!
                     Erase awayTies_2nd!
-                    Erase totAwayLoss_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
-                    Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, tototAwayScoreOpp_2nd!
+                    Erase totAwayLosses_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
+                    Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, totAwayScoreOpp_2nd!
 
                     'Calculations for 2nd league
                     For K = 1 To TEAMS_PER_LEAGUE
@@ -435,18 +415,18 @@ Sub Hd2HdPro_League (secondLeague)
                             Erase totAwayLosses!, totAwayTies!, totAwayWins!
                             Erase totHomeLosses!, totHomeTies!, totHomeWins!
                             Erase totHomeScoreTeam!, totHomeScoreOpp!, totAwayScoreTeam!, totAwayScoreOpp!
-                            Erase totAwayLoss_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
-                            Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, tototAwayScoreOpp_2nd!
+                            Erase totAwayLosses_2nd!, totAwayWins_2nd!, totHomeLosses_2nd!, totHomeTies_2nd!, totHomeWins_2nd!, totAwayTies_2nd!
+                            Erase totHomeScoreTeam_2nd, totHomeScoreOpp_2nd!, totAwayScoreTeam!, totAwayScoreOpp_2nd!
 
                     End Select
 
-                Loop Until UCase$(K$) = "A" Or UCase$(K$) = "R" Or UCase$(K$) = "S" Or K$ = Chr$(27) Or J$ = Chr$(27)
+                Loop Until UCase$(K$) = "A" Or UCase$(K$) = "R" Or UCase$(K$) = "S" Or K$ = Chr$(27)
                 
             End If 'Done checking for stats file
 
         End If
 
-    Loop Until UCase$(K$) = "R" Or K$ = Chr$(27) Or J$ = Chr$(27) Or ExitCode% = 27
+    Loop Until UCase$(K$) = "R" Or K$ = Chr$(27) Or userKey$ = Chr$(27) Or ExitCode% = 27
 
 End Sub
 
@@ -470,9 +450,9 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
     Shared homeLosses!(), homeLosses_2nd!(), homeWins!(), homeWins_2nd!()
     Shared homeTies!(), homeTies_2nd!()
 
-    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totAwayLosses!(), totAwayLosses_2nd!(), totAwayWins!(), totAwayWins_2nd!()
     Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), totAwayScoreOpp_2nd!()
     Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
     Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
 
@@ -622,13 +602,13 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
                     totHomeWins_2nd!(RDD) = totHomeWins_2nd!(RDD) + homeWins_2nd!(K)
                     totHomeLosses_2nd!(RDD) = totHomeLosses_2nd!(RDD) + homeLosses_2nd!(K)
                     totAwayWins_2nd!(RDD) = totAwayWins_2nd!(RDD) + awayWins_2nd!(K)
-                    totAwayLoss_2nd!(RDD) = totAwayLoss_2nd!(RDD) + awayLosses_2nd!(K)
+                    totAwayLosses_2nd!(RDD) = totAwayLosses_2nd!(RDD) + awayLosses_2nd!(K)
                     totAwayTies_2nd!(RDD) = totAwayTies_2nd!(RDD) + awayTies_2nd!(K)
                     totHomeTies_2nd!(RDD) = totHomeTies_2nd!(RDD) + homeTies_2nd!(K)
                     totHomeScoreTeam_2nd(RDD) = totHomeScoreTeam_2nd(RDD) + homeScoreTeam_2nd!(K)
                     totHomeScoreOpp_2nd!(RDD) = totHomeScoreOpp_2nd!(RDD) + homeScoreOpp_2nd!(K)
                     totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam_2nd!(K)
-                    tototAwayScoreOpp_2nd!(RDD) = tototAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
+                    totAwayScoreOpp_2nd!(RDD) = totAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
 
                 End If
 
@@ -642,15 +622,15 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
             Print #1, Tab(27); Using "###"; totHomeScoreTeam_2nd(RDD);
             Print #1, Tab(32); Using "###"; totHomeScoreOpp_2nd!(RDD);
             Print #1, Tab(38); Using "##"; totAwayWins_2nd!(RDD);
-            Print #1, Tab(41); Using "##"; totAwayLoss_2nd!(RDD);
+            Print #1, Tab(41); Using "##"; totAwayLosses_2nd!(RDD);
             Print #1, Tab(44); Using "##"; totAwayTies_2nd!(RDD);
             Print #1, Tab(48); Using "###"; totAwayScoreTeam!(RDD);
-            Print #1, Tab(52); Using "###"; tototAwayScoreOpp_2nd!(RDD);
+            Print #1, Tab(52); Using "###"; totAwayScoreOpp_2nd!(RDD);
             Print #1, Tab(58); Using "##"; totHomeWins_2nd!(RDD) + totAwayWins_2nd!(RDD);
-            Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(RDD) + totAwayLoss_2nd!(RDD);
+            Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(RDD) + totAwayLosses_2nd!(RDD);
             Print #1, Tab(64); Using "##"; totHomeTies_2nd!(RDD) + totAwayTies_2nd!(RDD);
             Print #1, Tab(68); Using "###"; totHomeScoreTeam_2nd(RDD) + totAwayScoreTeam!(RDD);
-            Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(RDD) + tototAwayScoreOpp_2nd!(RDD)
+            Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(RDD) + totAwayScoreOpp_2nd!(RDD)
             Print #1,
             Print #1,
 
@@ -755,15 +735,15 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
                 Print #1, Tab(27); Using "###"; totHomeScoreTeam_2nd(W);
                 Print #1, Tab(32); Using "###"; totHomeScoreOpp_2nd!(W);
                 Print #1, Tab(38); Using "##"; totAwayWins_2nd!(W);
-                Print #1, Tab(41); Using "##"; totAwayLoss_2nd!(W);
+                Print #1, Tab(41); Using "##"; totAwayLosses_2nd!(W);
                 Print #1, Tab(44); Using "##"; totAwayTies_2nd!(W);
                 Print #1, Tab(48); Using "###"; totAwayScoreTeam!(W);
-                Print #1, Tab(52); Using "###"; tototAwayScoreOpp_2nd!(W);
+                Print #1, Tab(52); Using "###"; totAwayScoreOpp_2nd!(W);
                 Print #1, Tab(58); Using "##"; totHomeWins_2nd!(W) + totAwayWins_2nd!(W);
-                Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(W) + totAwayLoss_2nd!(W);
+                Print #1, Tab(61); Using "##"; totHomeLosses_2nd!(W) + totAwayLosses_2nd!(W);
                 Print #1, Tab(64); Using "##"; totHomeTies_2nd!(W) + totAwayTies_2nd!(W);
                 Print #1, Tab(68); Using "###"; totHomeScoreTeam_2nd(W) + totAwayScoreTeam!(W);
-                Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(W) + tototAwayScoreOpp_2nd!(W)
+                Print #1, Tab(72); Using "###"; totHomeScoreOpp_2nd!(W) + totAwayScoreOpp_2nd!(W)
 
             End If
 
@@ -781,7 +761,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
             THLL2 = THLL2 + totHomeLosses_2nd!(I)
             THTT2 = THTT2 + totHomeTies_2nd!(I)
             TAWW2 = TAWW2 + totAwayWins_2nd!(I)
-            TALL2 = TALL2 + totAwayLoss_2nd!(I)
+            TALL2 = TALL2 + totAwayLosses_2nd!(I)
             TRTT2 = TRTT2 + totAwayTies_2nd!(I)
         Next
 
@@ -794,7 +774,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague, pri
             TG112 = TG112 + totHomeScoreTeam_2nd(I)
             TG222 = TG222 + totHomeScoreOpp_2nd!(I)
             TG332 = TG332 + totAwayScoreTeam!(I)
-            TG442 = TG442 + tototAwayScoreOpp_2nd!(I)
+            TG442 = TG442 + totAwayScoreOpp_2nd!(I)
         Next
 
         Print #1,
@@ -855,9 +835,9 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
     Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
     Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!(), homeWins!(), homeWins_2nd!()
     Shared awayTies_2nd!(), awayTies!()
-    Shared totAwayLosses!(), totAwayLoss_2nd!(), totAwayWins!(), totAwayWins_2nd!()
+    Shared totAwayLosses!(), totAwayLosses_2nd!(), totAwayWins!(), totAwayWins_2nd!()
     Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), tototAwayScoreOpp_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), totAwayScoreOpp_2nd!()
     Shared totHomeLosses!(), totHomeLosses_2nd!(), totHomeWins!(), totHomeWins_2nd!()
     Shared totHomeTies!(), totHomeTies_2nd!(), totAwayTies!(), totAwayTies_2nd!()
 
@@ -1048,13 +1028,13 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
                     totHomeWins_2nd!(RDD) = totHomeWins_2nd!(RDD) + homeWins_2nd!(K)
                     totHomeLosses_2nd!(RDD) = totHomeLosses_2nd!(RDD) + homeLosses_2nd!(K)
                     totAwayWins_2nd!(RDD) = totAwayWins_2nd!(RDD) + awayWins_2nd!(K)
-                    totAwayLoss_2nd!(RDD) = totAwayLoss_2nd!(RDD) + awayLosses_2nd!(K)
+                    totAwayLosses_2nd!(RDD) = totAwayLosses_2nd!(RDD) + awayLosses_2nd!(K)
                     totAwayTies_2nd!(RDD) = totAwayTies_2nd!(RDD) + awayTies_2nd!(K)
                     totHomeTies_2nd!(RDD) = totHomeTies_2nd!(RDD) + homeTies_2nd!(K)
                     totHomeScoreTeam_2nd(RDD) = totHomeScoreTeam_2nd(RDD) + homeScoreTeam_2nd!(K)
                     totHomeScoreOpp_2nd!(RDD) = totHomeScoreOpp_2nd!(RDD) + homeScoreOpp_2nd!(K)
                     totAwayScoreTeam!(RDD) = totAwayScoreTeam!(RDD) + awayScoreTeam_2nd!(K)
-                    tototAwayScoreOpp_2nd!(RDD) = tototAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
+                    totAwayScoreOpp_2nd!(RDD) = totAwayScoreOpp_2nd!(RDD) + awayScoreOpp_2nd!(K)
 
                 End If
 
@@ -1074,19 +1054,19 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
             Color 11
             Locate , 36: Print Using "##"; totAwayWins_2nd!(RDD);
-            Locate , 39: Print Using "##"; totAwayLoss_2nd!(RDD);
+            Locate , 39: Print Using "##"; totAwayLosses_2nd!(RDD);
             Locate , 42: Print Using "##"; totAwayTies_2nd!(RDD);
             Locate , 46: Print Using "###"; totAwayScoreTeam!(RDD);
-            Locate , 50: Print Using "###"; tototAwayScoreOpp_2nd!(RDD);
+            Locate , 50: Print Using "###"; totAwayScoreOpp_2nd!(RDD);
 
             Color 3: Print Tab(53); Chr$(179);
 
             Color 11
             Locate , 54: Print Using "##"; totHomeWins_2nd!(RDD) + totAwayWins_2nd!(RDD);
-            Locate , 57: Print Using "##"; totHomeLosses_2nd!(RDD) + totAwayLoss_2nd!(RDD);
+            Locate , 57: Print Using "##"; totHomeLosses_2nd!(RDD) + totAwayLosses_2nd!(RDD);
             Locate , 60: Print Using "##"; totHomeTies_2nd!(RDD) + totAwayTies_2nd!(RDD);
             Locate , 64: Print Using "###"; totHomeScoreTeam_2nd(RDD) + totAwayScoreTeam!(RDD);
-            Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(RDD) + tototAwayScoreOpp_2nd!(RDD)
+            Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(RDD) + totAwayScoreOpp_2nd!(RDD)
 
             Color 14
             Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
@@ -1233,19 +1213,19 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
 
                 Color 7
                 Locate , 36: Print Using "##"; totAwayWins_2nd!(W);
-                Locate , 39: Print Using "##"; totAwayLoss_2nd!(W);
+                Locate , 39: Print Using "##"; totAwayLosses_2nd!(W);
                 Locate , 42: Print Using "##"; totAwayTies_2nd!(W);
                 Locate , 46: Print Using "###"; totAwayScoreTeam!(W);
-                Locate , 50: Print Using "###"; tototAwayScoreOpp_2nd!(W);
+                Locate , 50: Print Using "###"; totAwayScoreOpp_2nd!(W);
 
                 Color 3: Print Tab(53); Chr$(179);
 
                 Color 7
                 Locate , 54: Print Using "##"; totHomeWins_2nd!(W) + totAwayWins_2nd!(W);
-                Locate , 57: Print Using "##"; totHomeLosses_2nd!(W) + totAwayLoss_2nd!(W);
+                Locate , 57: Print Using "##"; totHomeLosses_2nd!(W) + totAwayLosses_2nd!(W);
                 Locate , 60: Print Using "##"; totHomeTies_2nd!(W) + totAwayTies_2nd!(W);
                 Locate , 64: Print Using "###"; totHomeScoreTeam_2nd(W) + totAwayScoreTeam!(W);
-                Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(W) + tototAwayScoreOpp_2nd!(W)
+                Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(W) + totAwayScoreOpp_2nd!(W)
 
                 Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179);
 
@@ -1265,7 +1245,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
             THLL2 = THLL2 + totHomeLosses_2nd!(I)
             THTT2 = THTT2 + totHomeTies_2nd!(I)
             TAWW2 = TAWW2 + totAwayWins_2nd!(I)
-            TALL2 = TALL2 + totAwayLoss_2nd!(I)
+            TALL2 = TALL2 + totAwayLosses_2nd!(I)
             TRTT2 = TRTT2 + totAwayTies_2nd!(I)
         Next
 
@@ -1278,7 +1258,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, DV$(), DV2$(), secondLeague)
             TG112 = TG112 + totHomeScoreTeam_2nd(I)
             TG222 = TG222 + totHomeScoreOpp_2nd!(I)
             TG332 = TG332 + totAwayScoreTeam_2nd!(I)
-            TG442 = TG442 + tototAwayScoreOpp_2nd!(I)
+            TG442 = TG442 + totAwayScoreOpp_2nd!(I)
         Next
 
         Print

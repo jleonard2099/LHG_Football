@@ -3,7 +3,7 @@
 '----------------------------------------
 'This subroutine presents a menu of all
 'the options related to team rosters
-Sub CNGTM ()
+Sub CNGTM (userChoice)
 
     _Title "3-in-1 Football - Change Team"
 
@@ -57,41 +57,24 @@ Sub CNGTM ()
                         Call EditTeam(team$, YN$, teamNbr)
 
                     Case 2
-                        Color 15, 0
-                        Cls
+                        userKey$ = GetPrintOptions$
 
-                        Call MenuBox(8, 25, 24, 5, 15, 1)
+                        If userKey$ <> Chr$(27) Then
 
-                        Do
+                            Select Case userKey$
 
-                            Locate 10, 32
-                            Color 7, 1
+                                Case "F"
+                                    userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                                    If userFile$ <> "" Then
+                                        Call PrintRoster(0, userFile$, team$)
+                                    End If
 
-                            Locate , 32: Print "SEND TO ";
-                            Color 15: Print "F";
-                            Color 7: Print "ILE"
-                            Locate , 32: Print "SEND TO ";
-                            Color 15: Print "P";
-                            Color 7: Print "RINTER"
+                                Case "P"
+                                    Call PrintRoster(1, "REPORT", team$)
 
-                            I$ = GetKeyPress$
-
-                            Color 14, 0
-
-                        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
-
-                        Select Case UCase$(I$)
-
-                            Case "F"
-                                userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-                                If userFile$ <> "" Then
-                                    Call PrintRoster(0, userFile$, team$)
-                                End If
-
-                            Case "P"
-                                Call PrintRoster(1, "REPORT", team$)
-
-                        End Select
+                            End Select
+                            
+                        End If
 
                     Case 3
                         Call ViewRoster(team$)
@@ -133,10 +116,10 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
     Shared punterName$(), pkName$(), intName$(), sackName$()
 
-	Color 15, 0
-	Cls
+    Color 15, 0
+    Cls
 
-	Open destFile$ For Output As #1
+    Open destFile$ For Output As #1
 
     ' *** PRINT TEAM ROSTER ***
     Print #1, "TEAM ROSTER FOR "; teamName$; " "; mascot$
@@ -243,22 +226,22 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Print #1, punterName$(0); Tab(21);
     Print #1, Using "##"; puntAvg(0) * 2 + 28
 
-	If printDest = 1 Then
+    If printDest = 1 Then
 
-		Open destFile$ For Input As #2
+        Open destFile$ For Input As #2
 
-		Do While Not EOF(2)
-			Line Input #2, X$
-			LPrint X$
-		Loop
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
 
-		Close #2
+        Close #2
 
-		LPrint Chr$(12)
+        LPrint Chr$(12)
 
-		Kill destFile$
+        Kill destFile$
 
-	End If
+    End If
 
 End Sub
 

@@ -2081,41 +2081,24 @@ Sub ExpandedLeaders_Menu (totalStats)
                     'printOrView = 2
                     Call GetListLength(printOrView, LG, QW)
 
-                    Color 15, 0
-                    Cls
+                    userKey$ = GetPrintOptions$
 
-                    Call MenuBox(8, 25, 24, 5, 15, 1)
+                    If userKey$ <> Chr$(27) Then
 
-                    Do
+                        Select Case userKey$
 
-                        Locate 10, 32
-                        Color 7, 1
+                            Case "F"
+                                userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                                If userFile$ <> "" Then
+                                    Call PrintLeaders(0, userFile$, XX, LG, TVN)
+                                End If
 
-                        Locate , 32: Print "SEND TO ";
-                        Color 15: Print "F";
-                        Color 7: Print "ILE"
-                        Locate , 32: Print "SEND TO ";
-                        Color 15: Print "P";
-                        Color 7: Print "RINTER"
+                            Case "P"
+                                Call PrintLeaders(1, "REPORT", XX, LG, TVN)
 
-                        I$ = GetKeyPress$
-
-                        Color 14, 0
-
-                    Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
-
-                    Select Case UCase$(I$)
-
-                        Case "F"
-                            userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-                            If userFile$ <> "" Then
-                                Call PrintLeaders(0, userFile$, XX, LG, TVN)
-                            End If
-
-                        Case "P"
-                            Call PrintLeaders(1, "REPORT", XX, LG, TVN)
-
-                    End Select
+                        End Select
+                        
+                    End If
 
                 End If
 

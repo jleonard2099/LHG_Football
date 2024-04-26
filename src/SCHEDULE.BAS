@@ -16,8 +16,6 @@ Sub SCHEDULE ()
 
     _Title "3-in-1 Football - Scheduler"
 
-    '--- Pay close attention to this and consider the "why"
-    '--- I think this is setting defaults - much like we want to do!
     scheduleNG%(0, 8) = 0
     scheduleNG%(0, 3) = 1
     scheduleNG%(0, 7) = 0

@@ -1244,144 +1244,150 @@ Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
-			Color 15, 0
-			Cls
+			userKey$ = GetPrintOptions$
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+			If userKey$ <> Chr$(27) Then
 
-			Do
+				Select Case userKey$
 
-				Locate 10, 32
-				Color 7, 1
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				I$ = GetKeyPress$
+				End Select
 
-				Color 14, 0
+				Color 15, 0
+				Cls
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Open destFile$ For Output As #1
 
-			Select Case UCase$(I$)
+				Print #1, careerFile$
+				Print #1, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
+				VV = 0
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				For I = 1 To 15: 
+					VV = VV + careerRBS!(I, B9, 7)
+				Next
+
+				Print #1, Left$(carRBacks$(B9), 13);
+
+				For V = 1 To VV
+
+					Print #1, Tab(15); careerRBS!(V, B9, 8);
+					Print #1, Tab(23); Using "###"; careerRBS!(V, B9, 0);
+					Print #1, Tab(30); Using "####"; careerRBS!(V, B9, 1);
+
+					If careerRBS!(V, B9, 1) = 0 Or careerRBS!(V, B9, 0) = 0 Then 
+						Print #1, Tab(37); " 0.0";
+					End If
+					If careerRBS!(V, B9, 0) > 0 Then 
+						Print #1, Tab(37); Using "##.#"; careerRBS!(V, B9, 1) / careerRBS!(V, B9, 0);
 					End If
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+					Print #1, Tab(44); Using "###"; careerRBS!(V, B9, 2);
+					Print #1, Tab(50); Using "###"; careerRBS!(V, B9, 3);
+					Print #1, Tab(54); Using "####"; careerRBS!(V, B9, 4);
 
-			End Select
+					If careerRBS!(V, B9, 4) = 0 Or careerRBS!(V, B9, 3) = 0 Then 
+						Print #1, Tab(59); " 0.0";
+					End If
+					If careerRBS!(V, B9, 3) > 0 Then 
+						Print #1, Tab(59); Using "##.#"; careerRBS!(V, B9, 4) / careerRBS!(V, B9, 3);
+					End If
 
-			Color 15, 0
-			Cls
+					Print #1, Tab(65); Using "##"; careerRBS!(V, B9, 5);
+					Print #1, Tab(71); Using "##"; careerRBS!(V, B9, 6);: Print #1, careerRBS$(V, B9, 0);
+					Print #1, Tab(77); Using "##"; careerRBS!(V, B9, 9);: Print #1, careerRBS$(V, B9, 1)
 
-			Open destFile$ For Output As #1
+				Next V
 
-            Print #1, careerFile$
-            Print #1, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
-            VV = 0
+				careerRC!(0) = 0
+				careerRC!(1) = 0
+				careerRC$(0) = ""
+				careerRC$(1) = ""
 
-            For I = 1 To 15: 
-				VV = VV + careerRBS!(I, B9, 7)
-			Next
+				For V = 1 To VV
 
-            Print #1, Left$(carRBacks$(B9), 13);
+					TT1 = TT1 + careerRBS!(V, B9, 0)
+					TT2 = TT2 + careerRBS!(V, B9, 1)
+					TT3 = TT3 + careerRBS!(V, B9, 2)
+					TT4 = TT4 + careerRBS!(V, B9, 3)
+					TT5 = TT5 + careerRBS!(V, B9, 4)
+					TT6 = TT6 + careerRBS!(V, B9, 5)
 
-            For V = 1 To VV
-                Print #1, Tab(15); careerRBS!(V, B9, 8);
-                Print #1, Tab(23); Using "###"; careerRBS!(V, B9, 0);
-                Print #1, Tab(30); Using "####"; careerRBS!(V, B9, 1);
-                If careerRBS!(V, B9, 1) = 0 Or careerRBS!(V, B9, 0) = 0 Then Print #1, Tab(37); " 0.0";
-                If careerRBS!(V, B9, 0) > 0 Then Print #1, Tab(37); Using "##.#"; careerRBS!(V, B9, 1) / careerRBS!(V, B9, 0);
-                Print #1, Tab(44); Using "###"; careerRBS!(V, B9, 2);
-                Print #1, Tab(50); Using "###"; careerRBS!(V, B9, 3);
-                Print #1, Tab(54); Using "####"; careerRBS!(V, B9, 4);
-                If careerRBS!(V, B9, 4) = 0 Or careerRBS!(V, B9, 3) = 0 Then Print #1, Tab(59); " 0.0";
-                If careerRBS!(V, B9, 3) > 0 Then Print #1, Tab(59); Using "##.#"; careerRBS!(V, B9, 4) / careerRBS!(V, B9, 3);
-                Print #1, Tab(65); Using "##"; careerRBS!(V, B9, 5);
-                Print #1, Tab(71); Using "##"; careerRBS!(V, B9, 6);: Print #1, careerRBS$(V, B9, 0);
-                Print #1, Tab(77); Using "##"; careerRBS!(V, B9, 9);: Print #1, careerRBS$(V, B9, 1)
-            Next V
+					If careerRBS!(V, B9, 6) > careerRC!(0) Then
+						careerRC!(0) = careerRBS!(V, B9, 6)
+						careerRC$(0) = careerRBS$(V, B9, 0)
+					Else
+						If careerRBS!(V, B9, 9) > careerRC!(1) Then
+							careerRC!(1) = careerRBS!(V, B9, 9)
+							careerRC$(1) = careerRBS$(V, B9, 1)
+						End If
+					End If
 
-            careerRC!(0) = 0
-            careerRC!(1) = 0
-            careerRC$(0) = ""
-            careerRC$(1) = ""
+				Next V
 
-            For V = 1 To VV
-                TT1 = TT1 + careerRBS!(V, B9, 0)
-                TT2 = TT2 + careerRBS!(V, B9, 1)
-                TT3 = TT3 + careerRBS!(V, B9, 2)
-                TT4 = TT4 + careerRBS!(V, B9, 3)
-                TT5 = TT5 + careerRBS!(V, B9, 4)
-                TT6 = TT6 + careerRBS!(V, B9, 5)
+				Print #1,
+				Print #1, "TOTALS";
+				Print #1, Tab(18); Using "##"; VV;
+				Print #1, Tab(22); Using "####"; TT1;
+				Print #1, Tab(29); Using "#####"; TT2;
 
-                If careerRBS!(V, B9, 6) > careerRC!(0) Then
-                    careerRC!(0) = careerRBS!(V, B9, 6)
-                    careerRC$(0) = careerRBS$(V, B9, 0)
-                Else
-                    If careerRBS!(V, B9, 9) > careerRC!(1) Then
-                        careerRC!(1) = careerRBS!(V, B9, 9)
-                        careerRC$(1) = careerRBS$(V, B9, 1)
-                    End If
-                End If
+				If TT1 = 0 Or TT2 = 0 Then 
+					Print #1, Tab(37); " 0.0";
+				End If
+				If TT1 > 0 Then 
+					Print #1, Tab(37); Using "##.#"; TT2 / TT1;
+				End If
 
-            Next V
+				Print #1, Tab(44); Using "###"; TT3;
+				Print #1, Tab(49); Using "####"; TT4;
+				Print #1, Tab(53); Using "#####"; TT5;
 
-            Print #1,
-            Print #1, "TOTALS";
-            Print #1, Tab(18); Using "##"; VV;
-            Print #1, Tab(22); Using "####"; TT1;
-            Print #1, Tab(29); Using "#####"; TT2;
+				If TT4 = 0 Or TT5 = 0 Then 
+					Print #1, Tab(59); " 0.0";
+				End If
+				If TT4 > 0 Then 
+					Print #1, Tab(59); Using "##.#"; TT5 / TT4;
+				End If
 
-            If TT1 = 0 Or TT2 = 0 Then Print #1, Tab(37); " 0.0";
-            If TT1 > 0 Then Print #1, Tab(37); Using "##.#"; TT2 / TT1;
+				Print #1, Tab(64); Using "###"; TT6;
+				Print #1, Tab(71); Using "##"; careerRC!(0);: Print #1, careerRC$(0);
+				Print #1, Tab(77); Using "##"; careerRC!(1);: Print #1, careerRC$(1)
 
-            Print #1, Tab(44); Using "###"; TT3;
-            Print #1, Tab(49); Using "####"; TT4;
-            Print #1, Tab(53); Using "#####"; TT5;
-
-            If TT4 = 0 Or TT5 = 0 Then Print #1, Tab(59); " 0.0";
-            If TT4 > 0 Then Print #1, Tab(59); Using "##.#"; TT5 / TT4;
-
-            Print #1, Tab(64); Using "###"; TT6;
-            Print #1, Tab(71); Using "##"; careerRC!(0);: Print #1, careerRC$(0);
-            Print #1, Tab(77); Using "##"; careerRC!(1);: Print #1, careerRC$(1)
-
-            TT1 = 0
-            TT2 = 0
-            TT3 = 0
-            TT4 = 0
-            TT5 = 0
-            TT6 = 0
-
-			LPrint Chr$(12)
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
+				TT1 = 0
+				TT2 = 0
+				TT3 = 0
+				TT4 = 0
+				TT5 = 0
+				TT6 = 0
 
 				LPrint Chr$(12)
 
-				Kill destFile$
+				If printDest = 1 Then
 
+					Open destFile$ For Input As #2
+
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
+
+					Close #2
+
+					LPrint Chr$(12)
+
+					Kill destFile$
+
+				End If
+				
 			End If
 
         Case "N"
@@ -1424,113 +1430,95 @@ Sub CareerStatsWR_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerWRS!(I, B9, 4): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				Print #1, Left$(carWdRec$(B9), 13);
+
+				For V = 1 To VV
+					Print #1, Tab(16); careerWRS!(V, B9, 5);
+					Print #1, Tab(29); "###"; careerWRS!(V, B9, 0);
+					Print #1, Tab(40); "####"; careerWRS!(V, B9, 1);
+					If careerWRS!(V, B9, 0) = 0 Or careerWRS!(V, B9, 1) = 0 Then Print #1, Tab(49); " 0.0";
+					If careerWRS!(V, B9, 0) > 0 Then Print #1, Tab(49); "##.#"; careerWRS!(V, B9, 1) / careerWRS!(V, B9, 0);
+					Print #1, Tab(59); "##"; careerWRS!(V, B9, 2);
+					Print #1, Tab(67); "##"; careerWRS!(V, B9, 3);: Print #1, careerWRS$(V, B9, 0)
+				Next V
+
+				careerRC!(0) = 0
+				careerRC$(0) = ""
+
+				For V = 1 To VV
+					TT7 = TT7 + careerWRS!(V, B9, 0)
+					TT8 = TT8 + careerWRS!(V, B9, 1)
+					TT9 = TT9 + careerWRS!(V, B9, 2)
+
+					If careerWRS!(V, B9, 3) > careerRC!(0) Then
+						careerRC!(0) = careerWRS!(V, B9, 3)
+						careerRC$(0) = careerWRS$(V, B9, 0)
 					End If
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				Next V
 
-			End Select
+				Print #1, "TOTALS";
+				Print #1, Tab(19); "##"; VV;
+				Print #1, Tab(28); "####"; TT7;
+				Print #1, Tab(39); "#####"; TT8;
 
-			Color 15, 0
-			Cls
+				If TT7 = 0 Or TT8 = 0 Then Print #1, Tab(49); " 0.0";
+				If TT7 > 0 Then Print #1, Tab(49); "##.#"; TT8 / TT7;
 
-			Open destFile$ For Output As #1
+				Print #1, Tab(58); "###"; TT9;
+				Print #1, Tab(67); "##"; careerRC!(0);: Print #1, careerRC$(0)
 
-            Print #1, careerFile$
-            Print #1, "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
-            VV = 0
+				TT7 = 0
+				TT8 = 0
+				TT9 = 0
 
-            For I = 1 To 15: VV = VV + careerWRS!(I, B9, 4): Next
+				If printDest = 1 Then
 
-            Print #1, Left$(carWdRec$(B9), 13);
+					Open destFile$ For Input As #2
 
-            For V = 1 To VV
-                Print #1, Tab(16); careerWRS!(V, B9, 5);
-                Print #1, Tab(29); "###"; careerWRS!(V, B9, 0);
-                Print #1, Tab(40); "####"; careerWRS!(V, B9, 1);
-                If careerWRS!(V, B9, 0) = 0 Or careerWRS!(V, B9, 1) = 0 Then Print #1, Tab(49); " 0.0";
-                If careerWRS!(V, B9, 0) > 0 Then Print #1, Tab(49); "##.#"; careerWRS!(V, B9, 1) / careerWRS!(V, B9, 0);
-                Print #1, Tab(59); "##"; careerWRS!(V, B9, 2);
-                Print #1, Tab(67); "##"; careerWRS!(V, B9, 3);: Print #1, careerWRS$(V, B9, 0)
-            Next V
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            careerRC!(0) = 0
-            careerRC$(0) = ""
+					Close #2
 
-            For V = 1 To VV
-                TT7 = TT7 + careerWRS!(V, B9, 0)
-                TT8 = TT8 + careerWRS!(V, B9, 1)
-                TT9 = TT9 + careerWRS!(V, B9, 2)
+					LPrint Chr$(12)
 
-                If careerWRS!(V, B9, 3) > careerRC!(0) Then
-                    careerRC!(0) = careerWRS!(V, B9, 3)
-                    careerRC$(0) = careerWRS$(V, B9, 0)
-                End If
+					Kill destFile$
 
-            Next V
-
-            Print #1, "TOTALS";
-            Print #1, Tab(19); "##"; VV;
-            Print #1, Tab(28); "####"; TT7;
-            Print #1, Tab(39); "#####"; TT8;
-
-            If TT7 = 0 Or TT8 = 0 Then Print #1, Tab(49); " 0.0";
-            If TT7 > 0 Then Print #1, Tab(49); "##.#"; TT8 / TT7;
-
-            Print #1, Tab(58); "###"; TT9;
-            Print #1, Tab(67); "##"; careerRC!(0);: Print #1, careerRC$(0)
-
-            TT7 = 0
-            TT8 = 0
-            TT9 = 0
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -1578,263 +1566,245 @@ Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG.PASS"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerQBS!(I, B9, 6): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				Print #1, Left$(carQBacks$(B9), 13);
+
+				For V = 1 To VV
+					Print #1, Tab(13); careerQBS!(V, B9, 7);
+					Print #1, Tab(21); "###"; careerQBS!(V, B9, 1);
+					Print #1, Tab(29); "###"; careerQBS!(V, B9, 0);
+					Print #1, Tab(38); "##"; careerQBS!(V, B9, 2);
+					Print #1, Tab(43); "##"; careerQBS!(V, B9, 4);
+					Print #1, Tab(49); "####"; careerQBS!(V, B9, 3);
+
+					If careerQBS!(V, B9, 1) = 0 Or careerQBS!(V, B9, 0) = 0 Then Print #1, Tab(56); " 00";
+					If careerQBS!(V, B9, 1) > 0 Then Print #1, Tab(56); "##"; (careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0)) * 100;
+					If careerQBS!(V, B9, 0) = 0 Then Print #1, Tab(63); " 0.0";
+					If careerQBS!(V, B9, 1) > 0 Then Print #1, Tab(63); "##.#"; careerQBS!(V, B9, 3) / careerQBS!(V, B9, 1);
+
+					If careerQBS!(V, B9, 0) > 0 Then careerQBS!(V, B9, 11) = Int(careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0) * 1000) / 10
+
+					If careerQBS!(V, B9, 0) = 0 Then
+						careerQBS!(V, B9, 11) = 0
+						careerQBS!(V, B9, 8) = 0
+						careerQBS!(V, B9, 10) = 0
+						careerQBS!(V, B9, 9) = 0
+					Else
+						careerQBS!(V, B9, 8) = Int(careerQBS!(V, B9, 4) / careerQBS!(V, B9, 0) * 1000) / 10
+						careerQBS!(V, B9, 10) = Int(careerQBS!(V, B9, 3) / careerQBS!(V, B9, 0) * 100) / 100
+						careerQBS!(V, B9, 9) = Int(careerQBS!(V, B9, 2) / careerQBS!(V, B9, 0) * 1000) / 10
 					End If
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+					careerPP(V, B9) = careerQBS!(V, B9, 11) - 30
+					If careerPP(V, B9) < 0 Then
+						careerPP(V, B9) = 0
+					Else
+						If careerPP(V, B9) > 77.5 Then
+							careerPP(V, B9) = 2.375
+						Else
+							careerPP(V, B9) = careerPP(V, B9) * .05
+						End If
+					End If
 
-			End Select
+					If careerQBS!(V, B9, 8) > 11.9 Then
+						careerFF!(V, B9) = 2.375
+					Else
+						careerFF!(V, B9) = careerQBS!(V, B9, 8) * .2
+					End If
 
-			Color 15, 0
-			Cls
+					If careerQBS!(V, B9, 9) = 0 Then
+						careerII(V, B9) = 0
+					Else
+						If careerQBS!(V, B9, 9) > 9.5 Then
+							careerII(V, B9) = 0
+						Else
+							careerII(V, B9) = 2.375 - (.25 * careerQBS!(V, B9, 9))
+						End If
+					End If
 
-			Open destFile$ For Output As #1
+					careerQBS!(V, B9, 10) = careerQBS!(V, B9, 10) - 3
 
-            Print #1, careerFile$
-            Print #1, "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG.PASS"
-            VV = 0
+					If careerQBS!(V, B9, 10) < 0 Then
+						careerYY(V, B9) = 0
+					Else
+						If careerQBS!(V, B9, 10) > 12.5 Then
+							careerYY(V, B9) = 2.375
+						Else
+							D = Int(careerQBS!(V, B9, 10) * 100) / 2
+							If D = careerQBS!(V, B9, 10) / 2 Then
+								careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2
+							Else
+								careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2 + .003
+							End If
+						End If
+					End If
 
-            For I = 1 To 15: VV = VV + careerQBS!(I, B9, 6): Next
+					careerQBS!(V, B9, 12) = careerPP(V, B9) + careerFF!(V, B9) + careerII(V, B9) + careerYY(V, B9)
 
-            Print #1, Left$(carQBacks$(B9), 13);
+					If careerQBS!(V, B9, 12) > 9.5 Then
+						careerQBS!(V, B9, 12) = 158.3
+					Else
+						careerQBS!(V, B9, 12) = careerQBS!(V, B9, 12) * 50 / 3
+					End If
 
-            For V = 1 To VV
-                Print #1, Tab(13); careerQBS!(V, B9, 7);
-                Print #1, Tab(21); "###"; careerQBS!(V, B9, 1);
-                Print #1, Tab(29); "###"; careerQBS!(V, B9, 0);
-                Print #1, Tab(38); "##"; careerQBS!(V, B9, 2);
-                Print #1, Tab(43); "##"; careerQBS!(V, B9, 4);
-                Print #1, Tab(49); "####"; careerQBS!(V, B9, 3);
+					careerQBS!(V, B9, 12) = Int(careerQBS!(V, B9, 12) * 10) / 10
 
-                If careerQBS!(V, B9, 1) = 0 Or careerQBS!(V, B9, 0) = 0 Then Print #1, Tab(56); " 00";
-                If careerQBS!(V, B9, 1) > 0 Then Print #1, Tab(56); "##"; (careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0)) * 100;
-                If careerQBS!(V, B9, 0) = 0 Then Print #1, Tab(63); " 0.0";
-                If careerQBS!(V, B9, 1) > 0 Then Print #1, Tab(63); "##.#"; careerQBS!(V, B9, 3) / careerQBS!(V, B9, 1);
+					Print #1, Tab(70); "###.#"; careerQBS!(V, B9, 12);
+					Print #1, Tab(80); "##"; careerQBS!(V, B9, 5);: Print #1, careerQBS$(V, B9, 0)
 
-                If careerQBS!(V, B9, 0) > 0 Then careerQBS!(V, B9, 11) = Int(careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0) * 1000) / 10
+				Next V
 
-                If careerQBS!(V, B9, 0) = 0 Then
-                    careerQBS!(V, B9, 11) = 0
-                    careerQBS!(V, B9, 8) = 0
-                    careerQBS!(V, B9, 10) = 0
-                    careerQBS!(V, B9, 9) = 0
-                Else
-                    careerQBS!(V, B9, 8) = Int(careerQBS!(V, B9, 4) / careerQBS!(V, B9, 0) * 1000) / 10
-                    careerQBS!(V, B9, 10) = Int(careerQBS!(V, B9, 3) / careerQBS!(V, B9, 0) * 100) / 100
-                    careerQBS!(V, B9, 9) = Int(careerQBS!(V, B9, 2) / careerQBS!(V, B9, 0) * 1000) / 10
-                End If
+				careerRC!(0) = 0
+				careerRC$(0) = ""
 
-                careerPP(V, B9) = careerQBS!(V, B9, 11) - 30
-                If careerPP(V, B9) < 0 Then
-                    careerPP(V, B9) = 0
-                Else
-                    If careerPP(V, B9) > 77.5 Then
-                        careerPP(V, B9) = 2.375
-                    Else
-                        careerPP(V, B9) = careerPP(V, B9) * .05
-                    End If
-                End If
+				For V = 1 To VV
+					TT10 = TT10 + careerQBS!(V, B9, 1)
+					TT11 = TT11 + careerQBS!(V, B9, 0)
+					TT12 = TT12 + careerQBS!(V, B9, 2)
+					TT13 = TT13 + careerQBS!(V, B9, 4)
+					TT14 = TT14 + careerQBS!(V, B9, 3)
 
-                If careerQBS!(V, B9, 8) > 11.9 Then
-                    careerFF!(V, B9) = 2.375
-                Else
-                    careerFF!(V, B9) = careerQBS!(V, B9, 8) * .2
-                End If
+					If careerQBS!(V, B9, 5) > careerRC!(O) Then
+						careerRC!(0) = careerQBS!(V, B9, 5)
+						careerRC$(0) = careerQBS$(V, B9, 0)
+					End If
 
-                If careerQBS!(V, B9, 9) = 0 Then
-                    careerII(V, B9) = 0
-                Else
-                    If careerQBS!(V, B9, 9) > 9.5 Then
-                        careerII(V, B9) = 0
-                    Else
-                        careerII(V, B9) = 2.375 - (.25 * careerQBS!(V, B9, 9))
-                    End If
-                End If
+				Next V
 
-                careerQBS!(V, B9, 10) = careerQBS!(V, B9, 10) - 3
+				Print #1, "TOTALS";
+				Print #1, Tab(16); "##"; VV;
+				Print #1, Tab(20); "####"; TT10;
+				Print #1, Tab(28); "####"; TT11;
+				Print #1, Tab(37); "###"; TT12;
+				Print #1, Tab(41); "####"; TT13;
+				Print #1, Tab(48); "#####"; TT14;
 
-                If careerQBS!(V, B9, 10) < 0 Then
-                    careerYY(V, B9) = 0
-                Else
-                    If careerQBS!(V, B9, 10) > 12.5 Then
-                        careerYY(V, B9) = 2.375
-                    Else
-                        D = Int(careerQBS!(V, B9, 10) * 100) / 2
-                        If D = careerQBS!(V, B9, 10) / 2 Then
-                            careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2
-                        Else
-                            careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2 + .003
-                        End If
-                    End If
-                End If
+				If TT10 = 0 Or TT11 = 0 Then Print #1, Tab(56); " 00";
+				If TT10 > 0 Then Print #1, Tab(56); "##"; (TT10 / TT11) * 100;
+				If TT11 = 0 Then Print #1, Tab(63); " 0.0";
+				If TT10 > 0 Then Print #1, Tab(63); "##.#"; TT14 / TT10;
 
-                careerQBS!(V, B9, 12) = careerPP(V, B9) + careerFF!(V, B9) + careerII(V, B9) + careerYY(V, B9)
+				If TT11 > 0 Then TT30 = Int(TT10 / TT11 * 1000) / 10
+				If TT11 = 0 Then
+					TT30 = 0
+					TT27 = 0
+					TT29 = 0
+					TT28 = 0
+				Else
+					TT27 = Int(TT13 / TT11 * 1000) / 10
+					TT29 = Int(TT14 / TT11 * 100) / 100
+					TT28 = Int(TT12 / TT11 * 1000) / 10
+				End If
 
-                If careerQBS!(V, B9, 12) > 9.5 Then
-                    careerQBS!(V, B9, 12) = 158.3
-                Else
-                    careerQBS!(V, B9, 12) = careerQBS!(V, B9, 12) * 50 / 3
-                End If
+				PPT = TT30 - 30
 
-                careerQBS!(V, B9, 12) = Int(careerQBS!(V, B9, 12) * 10) / 10
+				If PPT < 0 Then
+					PPT = 0
+				Else
+					If PPT > 77.5 Then
+						PPT = 2.375
+					Else
+						PPT = PPT * .05
+					End If
+				End If
 
-                Print #1, Tab(70); "###.#"; careerQBS!(V, B9, 12);
-                Print #1, Tab(80); "##"; careerQBS!(V, B9, 5);: Print #1, careerQBS$(V, B9, 0)
+				If TT27 > 11.9 Then
+					FFT = 2.375
+				Else
+					FFT = TT27 * .2
+				End If
 
-            Next V
+				If TT28 = 0 Then
+					IIT = 0
+				Else
+					If TT28 > 9.5 Then
+						IIT = 0
+					Else
+						IIT = 2.375 - (.25 * TT28)
+					End If
+				End If
 
-            careerRC!(0) = 0
-            careerRC$(0) = ""
+				TT29 = TT29 - 3
 
-            For V = 1 To VV
-                TT10 = TT10 + careerQBS!(V, B9, 1)
-                TT11 = TT11 + careerQBS!(V, B9, 0)
-                TT12 = TT12 + careerQBS!(V, B9, 2)
-                TT13 = TT13 + careerQBS!(V, B9, 4)
-                TT14 = TT14 + careerQBS!(V, B9, 3)
+				If TT29 < 0 Then
+					YYT = 0
+				Else
+					If TT29 > 12.5 Then
+						YYT = 2.375
+					Else
+						D = Int(TT29 * 100) / 2
+						If D = TT29 / 2 Then
+							YYT = TT29 / 2 * .3 + TT29 / 2 * .2
+						Else
+							YYT = TT29 / 2 * .3 + TT29 / 2 * .2 + .003
+						End If
+					End If
+				End If
 
-                If careerQBS!(V, B9, 5) > careerRC!(O) Then
-                    careerRC!(0) = careerQBS!(V, B9, 5)
-                    careerRC$(0) = careerQBS$(V, B9, 0)
-                End If
+				TT31 = PPT + FFT + IIT + YYT
 
-            Next V
+				If TT31 > 9.5 Then
+					TT31 = 158.3
+				Else
+					TT31 = TT31 * 50 / 3
+				End If
 
-            Print #1, "TOTALS";
-            Print #1, Tab(16); "##"; VV;
-            Print #1, Tab(20); "####"; TT10;
-            Print #1, Tab(28); "####"; TT11;
-            Print #1, Tab(37); "###"; TT12;
-            Print #1, Tab(41); "####"; TT13;
-            Print #1, Tab(48); "#####"; TT14;
+				TT31 = Int(TT31 * 10) / 10
 
-            If TT10 = 0 Or TT11 = 0 Then Print #1, Tab(56); " 00";
-            If TT10 > 0 Then Print #1, Tab(56); "##"; (TT10 / TT11) * 100;
-            If TT11 = 0 Then Print #1, Tab(63); " 0.0";
-            If TT10 > 0 Then Print #1, Tab(63); "##.#"; TT14 / TT10;
+				Print #1, Tab(70); "###.#"; TT31;
+				Print #1, Tab(80); "##"; careerRC!(0);: Print #1, careerRC$(0)
+				TT10 = 0
+				TT11 = 0
+				TT12 = 0
+				TT13 = 0
+				TT14 = 0
 
-            If TT11 > 0 Then TT30 = Int(TT10 / TT11 * 1000) / 10
-            If TT11 = 0 Then
-                TT30 = 0
-                TT27 = 0
-                TT29 = 0
-                TT28 = 0
-            Else
-                TT27 = Int(TT13 / TT11 * 1000) / 10
-                TT29 = Int(TT14 / TT11 * 100) / 100
-                TT28 = Int(TT12 / TT11 * 1000) / 10
-            End If
+				If printDest = 1 Then
 
-            PPT = TT30 - 30
+					Open destFile$ For Input As #2
 
-            If PPT < 0 Then
-                PPT = 0
-            Else
-                If PPT > 77.5 Then
-                    PPT = 2.375
-                Else
-                    PPT = PPT * .05
-                End If
-            End If
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            If TT27 > 11.9 Then
-                FFT = 2.375
-            Else
-                FFT = TT27 * .2
-            End If
+					Close #2
 
-            If TT28 = 0 Then
-                IIT = 0
-            Else
-                If TT28 > 9.5 Then
-                    IIT = 0
-                Else
-                    IIT = 2.375 - (.25 * TT28)
-                End If
-            End If
+					LPrint Chr$(12)
 
-            TT29 = TT29 - 3
+					Kill destFile$
 
-            If TT29 < 0 Then
-                YYT = 0
-            Else
-                If TT29 > 12.5 Then
-                    YYT = 2.375
-                Else
-                    D = Int(TT29 * 100) / 2
-                    If D = TT29 / 2 Then
-                        YYT = TT29 / 2 * .3 + TT29 / 2 * .2
-                    Else
-                        YYT = TT29 / 2 * .3 + TT29 / 2 * .2 + .003
-                    End If
-                End If
-            End If
-
-            TT31 = PPT + FFT + IIT + YYT
-
-            If TT31 > 9.5 Then
-                TT31 = 158.3
-            Else
-                TT31 = TT31 * 50 / 3
-            End If
-
-            TT31 = Int(TT31 * 10) / 10
-
-            Print #1, Tab(70); "###.#"; TT31;
-            Print #1, Tab(80); "##"; careerRC!(0);: Print #1, careerRC$(0)
-            TT10 = 0
-            TT11 = 0
-            TT12 = 0
-            TT13 = 0
-            TT14 = 0
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -1879,116 +1849,98 @@ Sub CareerStatsKR_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerKRS!(I, B9, 4): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				Print #1, Left$(carKickRet$(B9), 13);
+
+				For V = 1 To VV
+					Print #1, Tab(22); careerKRS!(V, B9, 5);
+					Print #1, Tab(32); "###"; careerKRS!(V, B9, 0);
+					Print #1, Tab(42); "####"; careerKRS!(V, B9, 1);
+
+					If careerKRS!(V, B9, 0) = 0 Or careerKRS!(V, B9, 1) = 0 Then Print #1, Tab(52); " 00";
+					If careerKRS!(V, B9, 0) > 0 Then Print #1, Tab(52); "##.#"; careerKRS!(V, B9, 1) / careerKRS!(V, B9, 0);
+
+					Print #1, Tab(62); "##"; careerKRS!(V, B9, 2);
+					Print #1, Tab(68); "##"; careerKRS!(V, B9, 3);
+					Print #1, carKRS$(V, B9, 0)
+				Next V
+
+				careerRC!(0) = 0
+				careerRC$(0) = ""
+
+				For V = 1 To VV
+					TT15 = TT15 + careerKRS!(V, B9, 0)
+					TT16 = TT16 + careerKRS!(V, B9, 1)
+					TT17 = TT17 + careerKRS!(V, B9, 2)
+
+					If careerKRS!(V, B9, 3) > careerRC!(0) Then
+						careerRC!(0) = careerKRS!(V, B9, 3)
+						careerRC$(0) = carKRS$(V, B9, 0)
 					End If
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				Next V
 
-			End Select
+				Print #1, "TOTALS";
+				Print #1, Tab(25); "##"; VV;
+				Print #1, Tab(32); "###"; TT15;
+				Print #1, Tab(41); "#####"; TT16;
 
-			Color 15, 0
-			Cls
+				If TT15 = 0 Or TT16 = 0 Then Print #1, Tab(52); " 00";
+				If TT15 > 0 Then Print #1, Tab(52); "##.#"; TT16 / TT15;
 
-			Open destFile$ For Output As #1
+				Print #1, Tab(61); "###"; TT17;
+				Print #1, Tab(68); "##"; careerRC!(0);: Print #1, careerRC$(0)
 
-            Print #1, careerFile$
-            Print #1, "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
-            VV = 0
+				TT15 = 0
+				TT16 = 0
+				TT17 = 0
 
-            For I = 1 To 15: VV = VV + careerKRS!(I, B9, 4): Next
+				If printDest = 1 Then
 
-            Print #1, Left$(carKickRet$(B9), 13);
+					Open destFile$ For Input As #2
 
-            For V = 1 To VV
-                Print #1, Tab(22); careerKRS!(V, B9, 5);
-                Print #1, Tab(32); "###"; careerKRS!(V, B9, 0);
-                Print #1, Tab(42); "####"; careerKRS!(V, B9, 1);
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-                If careerKRS!(V, B9, 0) = 0 Or careerKRS!(V, B9, 1) = 0 Then Print #1, Tab(52); " 00";
-                If careerKRS!(V, B9, 0) > 0 Then Print #1, Tab(52); "##.#"; careerKRS!(V, B9, 1) / careerKRS!(V, B9, 0);
+					Close #2
 
-                Print #1, Tab(62); "##"; careerKRS!(V, B9, 2);
-                Print #1, Tab(68); "##"; careerKRS!(V, B9, 3);
-                Print #1, carKRS$(V, B9, 0)
-            Next V
+					LPrint Chr$(12)
 
-            careerRC!(0) = 0
-			careerRC$(0) = ""
+					Kill destFile$
 
-            For V = 1 To VV
-                TT15 = TT15 + careerKRS!(V, B9, 0)
-                TT16 = TT16 + careerKRS!(V, B9, 1)
-                TT17 = TT17 + careerKRS!(V, B9, 2)
-
-                If careerKRS!(V, B9, 3) > careerRC!(0) Then
-                    careerRC!(0) = careerKRS!(V, B9, 3)
-                    careerRC$(0) = carKRS$(V, B9, 0)
-                End If
-
-            Next V
-
-            Print #1, "TOTALS";
-            Print #1, Tab(25); "##"; VV;
-            Print #1, Tab(32); "###"; TT15;
-            Print #1, Tab(41); "#####"; TT16;
-
-            If TT15 = 0 Or TT16 = 0 Then Print #1, Tab(52); " 00";
-            If TT15 > 0 Then Print #1, Tab(52); "##.#"; TT16 / TT15;
-
-            Print #1, Tab(61); "###"; TT17;
-            Print #1, Tab(68); "##"; careerRC!(0);: Print #1, careerRC$(0)
-
-            TT15 = 0
-            TT16 = 0
-            TT17 = 0
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -2033,109 +1985,91 @@ Sub CareerStatsPR_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerPRS!(I, B9, 4): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				Print #1, Left$(carPRet$(B9), 13);
+
+				For V = 1 To VV
+					Print #1, Tab(22); careerPRS!(V, B9, 5);
+					Print #1, Tab(32); "###"; careerPRS!(V, B9, 0);
+					Print #1, Tab(42); "####"; careerPRS!(V, B9, 1);
+					If careerPRS!(V, B9, 0) = 0 Or careerPRS!(V, B9, 1) = 0 Then Print #1, Tab(52); " 00";
+					If careerPRS!(V, B9, 0) > 0 Then Print #1, Tab(52); "##.#"; careerPRS!(V, B9, 1) / careerPRS!(V, B9, 0);
+					Print #1, Tab(62); "##"; careerPRS!(V, B9, 2);
+					Print #1, Tab(68); "##"; careerPRS!(V, B9, 3);: Print #1, carPRS$(V, B9, 0)
+				Next V
+
+				careerRC!(0) = 0
+				careerRC$(0) = ""
+
+				For V = 1 To VV
+					TT18 = TT18 + careerPRS!(V, B9, 0)
+					TT19 = TT19 + careerPRS!(V, B9, 1)
+					TT20 = TT20 + careerPRS!(V, B9, 2)
+					If careerPRS!(V, B9, 3) > careerRC!(0) Then
+						careerRC!(0) = careerPRS!(V, B9, 3): careerRC$(0) = carPRS$(V, B9, 0)
 					End If
+				Next V
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				Print #1, "TOTALS";
+				Print #1, Tab(25); "##"; VV;
+				Print #1, Tab(32); "###"; TT18;
+				Print #1, Tab(41); "#####"; TT19;
 
-			End Select
+				If TT18 = 0 Or TT19 = 0 Then Print #1, Tab(52); " 00";
+				If TT18 > 0 Then Print #1, Tab(52); "##.#"; TT19 / TT18;
 
-			Color 15, 0
-			Cls
+				Print #1, Tab(61); "###"; TT20;
+				Print #1, Tab(68); "##"; careerRC!(0);: Print #1, careerRC$(0)
+				TT18 = 0
+				TT19 = 0
+				TT20 = 0
 
-			Open destFile$ For Output As #1
+				If printDest = 1 Then
 
-            Print #1, careerFile$
-            Print #1, "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
-            VV = 0
+					Open destFile$ For Input As #2
 
-            For I = 1 To 15: VV = VV + careerPRS!(I, B9, 4): Next
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            Print #1, Left$(carPRet$(B9), 13);
+					Close #2
 
-            For V = 1 To VV
-                Print #1, Tab(22); careerPRS!(V, B9, 5);
-                Print #1, Tab(32); "###"; careerPRS!(V, B9, 0);
-                Print #1, Tab(42); "####"; careerPRS!(V, B9, 1);
-                If careerPRS!(V, B9, 0) = 0 Or careerPRS!(V, B9, 1) = 0 Then Print #1, Tab(52); " 00";
-                If careerPRS!(V, B9, 0) > 0 Then Print #1, Tab(52); "##.#"; careerPRS!(V, B9, 1) / careerPRS!(V, B9, 0);
-                Print #1, Tab(62); "##"; careerPRS!(V, B9, 2);
-                Print #1, Tab(68); "##"; careerPRS!(V, B9, 3);: Print #1, carPRS$(V, B9, 0)
-            Next V
+					LPrint Chr$(12)
 
-            careerRC!(0) = 0
-            careerRC$(0) = ""
+					Kill destFile$
 
-            For V = 1 To VV
-                TT18 = TT18 + careerPRS!(V, B9, 0)
-                TT19 = TT19 + careerPRS!(V, B9, 1)
-                TT20 = TT20 + careerPRS!(V, B9, 2)
-                If careerPRS!(V, B9, 3) > careerRC!(0) Then
-                    careerRC!(0) = careerPRS!(V, B9, 3): careerRC$(0) = carPRS$(V, B9, 0)
-                End If
-            Next V
-
-            Print #1, "TOTALS";
-            Print #1, Tab(25); "##"; VV;
-            Print #1, Tab(32); "###"; TT18;
-            Print #1, Tab(41); "#####"; TT19;
-
-            If TT18 = 0 Or TT19 = 0 Then Print #1, Tab(52); " 00";
-            If TT18 > 0 Then Print #1, Tab(52); "##.#"; TT19 / TT18;
-
-            Print #1, Tab(61); "###"; TT20;
-            Print #1, Tab(68); "##"; careerRC!(0);: Print #1, careerRC$(0)
-            TT18 = 0
-            TT19 = 0
-            TT20 = 0
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -2180,95 +2114,77 @@ Sub CareerStatsP_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "PUNTERS           YEAR     ATT.     YARDS      AVG."
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerPUS!(I, B9, 2): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
-					End If
+				Print #1, Left$(carPunters$(B9), 13);
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				For V = 1 To VV
+					Print #1, Tab(18); careerPUS!(V, B9, 3);
+					Print #1, Tab(28); "###"; careerPUS!(V, B9, 0);
+					Print #1, Tab(38); "####"; careerPUS!(V, B9, 1);
+					If careerPUS!(V, B9, 0) = 0 Or careerPUS!(V, B9, 1) = 0 Then Print #1, Tab(47); "00.0"
+					If careerPUS!(V, B9, 0) > 0 Then Print #1, Tab(47); "##.#"; careerPUS!(V, B9, 1) / careerPUS!(V, B9, 0)
+				Next V
 
-			End Select
+				For V = 1 To VV
+					TT21 = TT21 + careerPUS!(V, B9, 0)
+					TT22 = TT22 + careerPUS!(V, B9, 1)
+				Next V
 
-			Color 15, 0
-			Cls
+				Print #1, "TOTALS";
+				Print #1, Tab(21); "##"; VV;
+				Print #1, Tab(27); "####"; TT21;
+				Print #1, Tab(37); "#####"; TT22;
+				If TT21 = 0 Or TT22 = 0 Then Print #1, Tab(47); " 00"
+				If TT21 > 0 Then Print #1, Tab(47); "##.#"; TT22 / TT21
+				TT21 = 0
+				TT22 = 0
 
-			Open destFile$ For Output As #1
+				If printDest = 1 Then
 
-            Print #1, careerFile$
-            Print #1, "PUNTERS           YEAR     ATT.     YARDS      AVG."
-            VV = 0
+					Open destFile$ For Input As #2
 
-            For I = 1 To 15: VV = VV + careerPUS!(I, B9, 2): Next
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            Print #1, Left$(carPunters$(B9), 13);
+					Close #2
 
-            For V = 1 To VV
-                Print #1, Tab(18); careerPUS!(V, B9, 3);
-                Print #1, Tab(28); "###"; careerPUS!(V, B9, 0);
-                Print #1, Tab(38); "####"; careerPUS!(V, B9, 1);
-                If careerPUS!(V, B9, 0) = 0 Or careerPUS!(V, B9, 1) = 0 Then Print #1, Tab(47); "00.0"
-                If careerPUS!(V, B9, 0) > 0 Then Print #1, Tab(47); "##.#"; careerPUS!(V, B9, 1) / careerPUS!(V, B9, 0)
-            Next V
+					LPrint Chr$(12)
 
-            For V = 1 To VV
-                TT21 = TT21 + careerPUS!(V, B9, 0)
-                TT22 = TT22 + careerPUS!(V, B9, 1)
-            Next V
+					Kill destFile$
 
-            Print #1, "TOTALS";
-            Print #1, Tab(21); "##"; VV;
-            Print #1, Tab(27); "####"; TT21;
-            Print #1, Tab(37); "#####"; TT22;
-            If TT21 = 0 Or TT22 = 0 Then Print #1, Tab(47); " 00"
-            If TT21 > 0 Then Print #1, Tab(47); "##.#"; TT22 / TT21
-            TT21 = 0
-            TT22 = 0
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -2313,153 +2229,135 @@ Sub CareerStatsK_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Locate 2: Print #1, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerFGS!(I, B9, 15): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
+				Print #1, Left$(carKicker$(B9), 13);
+
+				For V = 1 To VV
+					Print #1, Tab(13); careerFGS!(V, B9, 16);
+					Print #1, Tab(19); "###"; careerFGS!(V, B9, 3);
+					Print #1, Tab(23); "###"; careerFGS!(V, B9, 2);
+
+					If careerFGS!(V, B9, 2) = 0 Or careerFGS!(V, B9, 3) = 0 Then Print #1, Tab(27); "  0";
+					If careerFGS!(V, B9, 2) > 0 Then Print #1, Tab(27); "###"; (careerFGS!(V, B9, 2) / careerFGS!(V, B9, 3)) * 100;
+
+					Print #1, Tab(32); "###"; careerFGS!(V, B9, 1);
+					Print #1, Tab(36); "###"; careerFGS!(V, B9, 0);
+
+					If careerFGS!(V, B9, 0) = 0 Or careerFGS!(V, B9, 1) = 0 Then Print #1, Tab(40); "  0";
+					If careerFGS!(V, B9, 0) > 0 Then Print #1, Tab(40); "###"; (careerFGS!(V, B9, 0) / careerFGS!(V, B9, 1)) * 100;
+
+					Print #1, Tab(46); "##"; careerFGS!(V, B9, 4);
+					Print #1, Tab(49); "##"; careerFGS!(V, B9, 5);: Print #1, "-";
+					Print #1, Tab(52); "##"; careerFGS!(V, B9, 10);
+					Print #1, Tab(55); "##"; careerFGS!(V, B9, 6);: Print #1, "-";
+					Print #1, Tab(58); "##"; careerFGS!(V, B9, 11);
+					Print #1, Tab(61); "##"; careerFGS!(V, B9, 7);: Print #1, "-";
+					Print #1, Tab(64); "##"; careerFGS!(V, B9, 12);
+					Print #1, Tab(67); "##"; careerFGS!(V, B9, 8);: Print #1, "-";
+					Print #1, Tab(70); "##"; careerFGS!(V, B9, 13);
+					Print #1, Tab(73); "##"; careerFGS!(V, B9, 9);: Print #1, "-";
+					Print #1, Tab(76); "##"; careerFGS!(V, B9, 14)
+				Next V
+
+				For V = 1 To VV
+					careerTT!(23) = careerTT!(23) + careerFGS!(V, B9, 0)
+					careerTT!(24) = careerTT!(24) + careerFGS!(V, B9, 1)
+					careerTT!(34) = careerTT!(34) + careerFGS!(V, B9, 2)
+					careerTT!(35) = careerTT!(35) + careerFGS!(V, B9, 3)
+					careerTT!(36) = careerTT!(36) + careerFGS!(V, B9, 5)
+					careerTT!(37) = careerTT!(37) + careerFGS!(V, B9, 6)
+					careerTT!(38) = careerTT!(38) + careerFGS!(V, B9, 7)
+					careerTT!(39) = careerTT!(39) + careerFGS!(V, B9, 8)
+					careerTT!(40) = careerTT!(40) + careerFGS!(V, B9, 9)
+					careerTT!(41) = careerTT!(41) + careerFGS!(V, B9, 10)
+					careerTT!(42) = careerTT!(42) + careerFGS!(V, B9, 11)
+					careerTT!(43) = careerTT!(43) + careerFGS!(V, B9, 12)
+					careerTT!(44) = careerTT!(44) + careerFGS!(V, B9, 13)
+					careerTT!(45) = careerTT!(45) + careerFGS!(V, B9, 14)
+				Next V
+
+				careerRC!(0) = 0
+
+				For V = 1 To VV
+					If careerFGS!(V, B9, 4) >= careerRC!(0) Then
+						careerRC!(0) = careerFGS!(V, B9, 4)
 					End If
+				Next
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				Print #1, "TOTALS";
+				Print #1, Tab(16); VV;
+				Print #1, Tab(19); "###"; careerTT!(35);
+				Print #1, Tab(23); "###"; careerTT!(34);
 
-			End Select
+				If careerTT!(34) = 0 Or careerTT!(35) = 0 Then Print #1, Tab(27); "  0";
+				If careerTT!(34) > 0 Then Print #1, Tab(27); "###"; (careerTT!(34) / careerTT!(35)) * 100;
 
-			Color 15, 0
-			Cls
+				Print #1, Tab(32); "###"; careerTT!(24);
+				Print #1, Tab(36); "###"; careerTT!(23);
 
-			Open destFile$ For Output As #1
+				If careerTT!(23) = 0 Or careerTT!(24) = 0 Then Print #1, Tab(40); "  0";
+				If careerTT!(23) > 0 Then Print #1, Tab(40); "###"; (careerTT!(23) / careerTT!(24)) * 100;
 
-            Print #1, careerFile$
-            Locate 2: Print #1, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50- +"
-            VV = 0
+				Print #1, Tab(46); "##"; careerRC!(0);
+				Print #1, Tab(49); "##"; careerTT!(36);: Print #1, "-";
+				Print #1, Tab(52); "##"; careerTT!(41);
+				Print #1, Tab(55); "##"; careerTT!(37);: Print #1, "-";
+				Print #1, Tab(58); "##"; careerTT!(42);
+				Print #1, Tab(61); "##"; careerTT!(38);: Print #1, "-";
+				Print #1, Tab(64); "##"; careerTT!(43);
+				Print #1, Tab(67); "##"; careerTT!(39);: Print #1, "-";
+				Print #1, Tab(70); "##"; careerTT!(44);
+				Print #1, Tab(73); "##"; careerTT!(40);: Print #1, "-";
+				Print #1, Tab(76); "##"; careerTT!(45)
 
-            For I = 1 To 15: VV = VV + careerFGS!(I, B9, 15): Next
+				For J = 23 To 45: careerTT!(J) = 0: Next
 
-            Print #1, Left$(carKicker$(B9), 13);
+				If printDest = 1 Then
 
-            For V = 1 To VV
-                Print #1, Tab(13); careerFGS!(V, B9, 16);
-                Print #1, Tab(19); "###"; careerFGS!(V, B9, 3);
-                Print #1, Tab(23); "###"; careerFGS!(V, B9, 2);
+					Open destFile$ For Input As #2
 
-                If careerFGS!(V, B9, 2) = 0 Or careerFGS!(V, B9, 3) = 0 Then Print #1, Tab(27); "  0";
-                If careerFGS!(V, B9, 2) > 0 Then Print #1, Tab(27); "###"; (careerFGS!(V, B9, 2) / careerFGS!(V, B9, 3)) * 100;
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-                Print #1, Tab(32); "###"; careerFGS!(V, B9, 1);
-                Print #1, Tab(36); "###"; careerFGS!(V, B9, 0);
+					Close #2
 
-                If careerFGS!(V, B9, 0) = 0 Or careerFGS!(V, B9, 1) = 0 Then Print #1, Tab(40); "  0";
-                If careerFGS!(V, B9, 0) > 0 Then Print #1, Tab(40); "###"; (careerFGS!(V, B9, 0) / careerFGS!(V, B9, 1)) * 100;
+					LPrint Chr$(12)
 
-                Print #1, Tab(46); "##"; careerFGS!(V, B9, 4);
-                Print #1, Tab(49); "##"; careerFGS!(V, B9, 5);: Print #1, "-";
-                Print #1, Tab(52); "##"; careerFGS!(V, B9, 10);
-                Print #1, Tab(55); "##"; careerFGS!(V, B9, 6);: Print #1, "-";
-                Print #1, Tab(58); "##"; careerFGS!(V, B9, 11);
-                Print #1, Tab(61); "##"; careerFGS!(V, B9, 7);: Print #1, "-";
-                Print #1, Tab(64); "##"; careerFGS!(V, B9, 12);
-                Print #1, Tab(67); "##"; careerFGS!(V, B9, 8);: Print #1, "-";
-                Print #1, Tab(70); "##"; careerFGS!(V, B9, 13);
-                Print #1, Tab(73); "##"; careerFGS!(V, B9, 9);: Print #1, "-";
-                Print #1, Tab(76); "##"; careerFGS!(V, B9, 14)
-            Next V
+					Kill destFile$
 
-            For V = 1 To VV
-                careerTT!(23) = careerTT!(23) + careerFGS!(V, B9, 0)
-                careerTT!(24) = careerTT!(24) + careerFGS!(V, B9, 1)
-                careerTT!(34) = careerTT!(34) + careerFGS!(V, B9, 2)
-                careerTT!(35) = careerTT!(35) + careerFGS!(V, B9, 3)
-                careerTT!(36) = careerTT!(36) + careerFGS!(V, B9, 5)
-                careerTT!(37) = careerTT!(37) + careerFGS!(V, B9, 6)
-                careerTT!(38) = careerTT!(38) + careerFGS!(V, B9, 7)
-                careerTT!(39) = careerTT!(39) + careerFGS!(V, B9, 8)
-                careerTT!(40) = careerTT!(40) + careerFGS!(V, B9, 9)
-                careerTT!(41) = careerTT!(41) + careerFGS!(V, B9, 10)
-                careerTT!(42) = careerTT!(42) + careerFGS!(V, B9, 11)
-                careerTT!(43) = careerTT!(43) + careerFGS!(V, B9, 12)
-                careerTT!(44) = careerTT!(44) + careerFGS!(V, B9, 13)
-                careerTT!(45) = careerTT!(45) + careerFGS!(V, B9, 14)
-            Next V
-
-            careerRC!(0) = 0
-
-            For V = 1 To VV
-                If careerFGS!(V, B9, 4) >= careerRC!(0) Then
-                    careerRC!(0) = careerFGS!(V, B9, 4)
-                End If
-            Next
-
-            Print #1, "TOTALS";
-            Print #1, Tab(16); VV;
-            Print #1, Tab(19); "###"; careerTT!(35);
-            Print #1, Tab(23); "###"; careerTT!(34);
-
-            If careerTT!(34) = 0 Or careerTT!(35) = 0 Then Print #1, Tab(27); "  0";
-            If careerTT!(34) > 0 Then Print #1, Tab(27); "###"; (careerTT!(34) / careerTT!(35)) * 100;
-
-            Print #1, Tab(32); "###"; careerTT!(24);
-            Print #1, Tab(36); "###"; careerTT!(23);
-
-            If careerTT!(23) = 0 Or careerTT!(24) = 0 Then Print #1, Tab(40); "  0";
-            If careerTT!(23) > 0 Then Print #1, Tab(40); "###"; (careerTT!(23) / careerTT!(24)) * 100;
-
-            Print #1, Tab(46); "##"; careerRC!(0);
-            Print #1, Tab(49); "##"; careerTT!(36);: Print #1, "-";
-            Print #1, Tab(52); "##"; careerTT!(41);
-            Print #1, Tab(55); "##"; careerTT!(37);: Print #1, "-";
-            Print #1, Tab(58); "##"; careerTT!(42);
-            Print #1, Tab(61); "##"; careerTT!(38);: Print #1, "-";
-            Print #1, Tab(64); "##"; careerTT!(43);
-            Print #1, Tab(67); "##"; careerTT!(39);: Print #1, "-";
-            Print #1, Tab(70); "##"; careerTT!(44);
-            Print #1, Tab(73); "##"; careerTT!(40);: Print #1, "-";
-            Print #1, Tab(76); "##"; careerTT!(45)
-
-            For J = 23 To 45: careerTT!(J) = 0: Next
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -2503,88 +2401,70 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "INTERCEPTORS        YEAR     INTERCEPTIONS"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerGIS!(I, B9, 1): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
-					End If
+				Print #1, Left$(carDefInts$(B9), 13);
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				For V = 1 To VV
+					Print #1, Tab(20); careerGIS!(V, B9, 2);
+					Print #1, Tab(34); "###"; careerGIS!(V, B9, 0)
+				Next V
 
-			End Select
+				careerTT!(32) = 0
 
-			Color 15, 0
-			Cls
+				For V = 1 To VV
+					careerTT!(32) = careerTT!(32) + careerGIS!(V, B9, 0)
+				Next V
 
-			Open destFile$ For Output As #1
+				Print #1, "TOTALS";
+				Print #1, Tab(23); "##"; VV;
+				Print #1, Tab(33); "####"; careerTT!(32)
 
-            Print #1, careerFile$
-            Print #1, "INTERCEPTORS        YEAR     INTERCEPTIONS"
-            VV = 0
+				If printDest = 1 Then
 
-            For I = 1 To 15: VV = VV + careerGIS!(I, B9, 1): Next
+					Open destFile$ For Input As #2
 
-            Print #1, Left$(carDefInts$(B9), 13);
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            For V = 1 To VV
-                Print #1, Tab(20); careerGIS!(V, B9, 2);
-                Print #1, Tab(34); "###"; careerGIS!(V, B9, 0)
-            Next V
+					Close #2
 
-            careerTT!(32) = 0
+					LPrint Chr$(12)
 
-            For V = 1 To VV
-                careerTT!(32) = careerTT!(32) + careerGIS!(V, B9, 0)
-            Next V
+					Kill destFile$
 
-            Print #1, "TOTALS";
-            Print #1, Tab(23); "##"; VV;
-            Print #1, Tab(33); "####"; careerTT!(32)
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
-
+				End If
+				
 			End If
 
         Case "N"
@@ -2628,104 +2508,86 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
     Select Case UCase$(I$)
 
         Case "Y"
+			userKey$ = GetPrintOptions$
 
-			Color 15, 0
-			Cls
+			If userKey$ <> Chr$(27) Then
 
-			Call MenuBox(8, 25, 24, 5, 15, 1)
+				Select Case userKey$
 
-			Do
+					Case "F"
+						userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+						If userFile$ <> "" Then
+							printDest = 0
+							destFile$ = userFile$
+						End If
 
-				Locate 10, 32
-				Color 7, 1
+					Case "P"
+						printDest = 1
+						destFile$ = "REPORT"
 
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "F";
-				Color 7: Print "ILE"
-				Locate , 32: Print "SEND TO ";
-				Color 15: Print "P";
-				Color 7: Print "RINTER"
+				End Select
 
-				I$ = GetKeyPress$
+				Color 15, 0
+				Cls
 
-				Color 14, 0
+				Open destFile$ For Output As #1
 
-			Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P"
+				Print #1, careerFile$
+				Print #1, "SACKERS             YEAR     INTERCEPTIONS"
+				VV = 0
 
-			Select Case UCase$(I$)
+				For I = 1 To 15: VV = VV + careerGSS!(I, B9, 1): Next
 
-				Case "F"
-					userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
-					If userFile$ <> "" Then
-						printDest = 0
-						destFile$ = userFile$
-					End If
+				Print #1, Left$(carDefSacks$(B9), 13);
 
-				Case "P"
-					printDest = 1
-					destFile$ = "REPORT"
+				For V = 1 To VV
+					Print #1, Tab(20); careerGSS!(V, B9, 2);
+					Print #1, Tab(34); "###"; careerGSS!(V, B9, 0)
+				Next V
 
-			End Select
+				careerTT!(33) = 0
 
-			Color 15, 0
-			Cls
+				For V = 1 To VV
+					careerTT!(33) = careerTT!(33) + careerGSS!(V, B9, 0)
+				Next V
 
-			Open destFile$ For Output As #1
+				Print #1, "TOTALS";
+				Print #1, Tab(23); "##"; VV;
+				Print #1, Tab(33); "####"; careerTT!(33)
 
-            Print #1, careerFile$
-            Print #1, "SACKERS             YEAR     INTERCEPTIONS"
-            VV = 0
+				If printDest = 1 Then
 
-            For I = 1 To 15: VV = VV + careerGSS!(I, B9, 1): Next
+					Open destFile$ For Input As #2
 
-            Print #1, Left$(carDefSacks$(B9), 13);
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-            For V = 1 To VV
-                Print #1, Tab(20); careerGSS!(V, B9, 2);
-                Print #1, Tab(34); "###"; careerGSS!(V, B9, 0)
-            Next V
+					Close #2
 
-            careerTT!(33) = 0
+					LPrint Chr$(12)
 
-            For V = 1 To VV
-                careerTT!(33) = careerTT!(33) + careerGSS!(V, B9, 0)
-            Next V
+					Kill destFile$
 
-            Print #1, "TOTALS";
-            Print #1, Tab(23); "##"; VV;
-            Print #1, Tab(33); "####"; careerTT!(33)
+				End If
 
-			If printDest = 1 Then
+				If printDest = 1 Then
 
-				Open destFile$ For Input As #2
+					Open destFile$ For Input As #2
 
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
+					Do While Not EOF(2)
+						Line Input #2, X$
+						LPrint X$
+					Loop
 
-				Close #2
+					Close #2
 
-				LPrint Chr$(12)
+					LPrint Chr$(12)
 
-				Kill destFile$
+					Kill destFile$
 
-			End If
-
-			If printDest = 1 Then
-
-				Open destFile$ For Input As #2
-
-				Do While Not EOF(2)
-					Line Input #2, X$
-					LPrint X$
-				Loop
-
-				Close #2
-
-				LPrint Chr$(12)
-
-				Kill destFile$
+				End If
 
 			End If
 
