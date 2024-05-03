@@ -822,7 +822,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                             Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
                                         Next
 
-                                        Field #2, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+                                        Field #2, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
                                         For X = 0 To 20: LSet Q$(X + 1) = MKI$(scheduleNG%(I, X)): Next
 
@@ -903,7 +903,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                         Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
                                     Next
 
-                                    Field #3, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+                                    Field #3, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
                                     For X = 0 To 20: LSet Q$(X + 1) = MKI$(scheduleNG%(I, X)): Next
 
@@ -1113,7 +1113,7 @@ Sub SaveScheduleFile (saveFile$)
         Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
     Next
 
-    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
     For I = 1 To scheduleAP%(0)
 
@@ -1439,7 +1439,7 @@ Sub LoadScheduleInfo (targetFile$)
         Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
     Next
 
-    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
     For I = 1 To scheduleAP%(0)
 

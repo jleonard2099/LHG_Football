@@ -15,7 +15,7 @@ Const DIVS_PER_LEAGUE = 3
 Const TEAMS_PER_LEAGUE = 30
 
 Const MAX_SCHED_STATS = 120
-Const SCHEDULE_SIZE_BYTES = 52
+Const SCHEDULE_SIZE_BYTES = 56
 
 DefInt A-Z
 
@@ -2143,7 +2143,7 @@ Sub FOOTBALL ()
             Field #7, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
         Next
 
-        Field #7, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+        Field #7, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
         Get #7, schedGame(0) + schedGame(2)
 
@@ -8846,17 +8846,19 @@ Sub TickerSchedule ()
 
     End If
 
-    Open diskPaths$(3) + scheduleFile$ As #1 Len = 52
+    Open diskPaths$(3) + scheduleFile$ As #1 Len = SCHEDULE_SIZE_BYTES
 
     For X = 0 To 20
-        Field #1, X * 2 As X$, 2 As Q$(X + 1), 52 - 2 - 2 * X As X$
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
     Next
 
-    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
     NG%(13) = 1
 
-    For X = 0 To 20: LSet Q$(X + 1) = MKI$(NG%(X)): Next
+    For X = 0 To 20: 
+        LSet Q$(X + 1) = MKI$(NG%(X))
+    Next
 
     For X = 0 To 1:
         LSet Q$(22 + X) = diskIDs$(X)
