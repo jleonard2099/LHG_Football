@@ -47,6 +47,7 @@ Declare Sub GetKeyWhenNoDelay ()
 Declare Sub HALFSTART ()
 Declare Sub HANDOFF ()
 Declare Sub INCOMPLETE ()
+Declare Sub INFO ()
 Declare Sub ITSGOOD
 Declare Sub InitVar ()
 Declare Sub KickFakeYards (choice)
