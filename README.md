@@ -48,7 +48,7 @@ This phase will get the games available to the general public in a steady and re
 **Completed.**
 
 ### Phase 2 ###
-This phase will start to identify these as new games, and involve these short and simple goals:
+This phase will start to identify these as new games, making improvements to the flow and logic without impacting the styling.
 **Completed.**
 
 ### Phase 3 ###
@@ -70,8 +70,10 @@ Affero GNU GPL v3
 Contact me directly if interested in contributing. Only considering people who share my vision for these games and are able to honor Lance's work and legacy.
 
 ### Authors / Acknowledgment ###
-- [Manual images created by Cool Clips](http://search.coolclips.com/)
-- [Game icons created by Joseph Gan (Icon-Icons)](https://icon-icons.com/users/XHgnBHIfJk0ZlajSy0A0x/icon-sets/)
+- Manual images created by [Cool Clips](http://search.coolclips.com/)
+- Game icons created by [Joseph Gan (Icon-Icons)](https://icon-icons.com/users/XHgnBHIfJk0ZlajSy0A0x/icon-sets/)
+- Save icons created by [Those Icons - Flaticon](https://www.flaticon.com/free-icons/save)
+- File explorer icons created by [juicy_fish - Flaticon](https://www.flaticon.com/free-icons/file-explorer)
 - I am responsible for maintaining / updating most of the code and will spend equal effort cleaning up code as improving it
 - Jason Lamb, for lending his expertise in BASIC to helping me learn some standards and rewriting the menu functions.
 - Lance Haffner, for his hard work over 2 decades giving people endless hours of playable sports games and making dreams come true.

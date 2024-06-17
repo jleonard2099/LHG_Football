@@ -1,5 +1,5 @@
 '----------------------------------------
-'       QBName Function
+'          GetQBName$ Function
 '----------------------------------------
 'This subroutine gives the user an over-
 'view of all team QB's and their ratings,

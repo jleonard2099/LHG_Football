@@ -9476,7 +9476,7 @@ End Function
 
 
 '----------------------------------------
-'            pbplog Function
+'            pbplog Routine
 '----------------------------------------
 'This subroutine is designed to help me
 'print information about where the game

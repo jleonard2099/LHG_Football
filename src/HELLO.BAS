@@ -1551,235 +1551,6 @@ End Function
 
 
 '----------------------------------------
-'         GetQBRushPct% Function
-'----------------------------------------
-'This function loops through all of the
-'team rushes to calculate the specific %
-'that the designated QB has contributed
-'This function works specifically with
-'the game utilities.
-Function GetQBRushPct% (targetQB$)
-
-    Shared rushContrib()
-
-    Shared rbName$()
-
-    'Determine a suggested mobility rating
-    previousContrib = 0
-
-    'we need a value in case we don't find the QB
-    qbRushContrib = 0
-
-    For currRB = 0 To 9
-
-        currContrib = rushContrib(currRB)
-
-        'Check for QB as a runner
-        If rbName$(currRB) = targetQB$ Then
-
-            'Determine QB's individual rushing contributions
-            qbRushContrib = currContrib - previousContrib
-
-            Exit For
-
-        End If
-
-        If currContrib <> 0 Then previousContrib = currContrib
-
-    Next
-
-    GetQBRushPct% = qbRushContrib
-
-End Function
-
-
-'----------------------------------------
-'    GetQBRushPctGame% Function
-'----------------------------------------
-'This function loops through all of the
-'team rushes to calculate the specific %
-'that the designated QB has contributed
-'This function works specifically with
-'the game's 2-dimensional arrays that
-'store values for each team
-Function GetQBRushPctGame% (targetQB$, currTeam)
-
-    'Determine a suggested mobility rating
-    previousContrib = 0
-
-    'we need a value in case we don't find the QB
-    qbRushContrib = 0
-
-    For currRB = 0 To 9
-
-        currContrib = rbrushContrib(currTeam, currRB)
-
-        'Check for QB as a runner
-        If rbacks$(currTeam, currRB) = targetQB$ Then
-
-            'Determine QB's individual rushing contributions
-            qbRushContrib = currContrib - previousContrib
-
-            Exit For
-
-        End If
-
-        If currContrib <> 0 Then previousContrib = currContrib
-
-    Next
-
-    GetQBRushPctGame% = qbRushContrib
-
-End Function
-
-
-'----------------------------------------
-'        GetQBMobility% Function
-'----------------------------------------
-'This function determines the recommended
-'mobility rating for the quarterback that
-'the user has selected.
-'This rating is based on their contributions
-'to team rushes, but is not necessarily
-'a linear calculation.
-Function GetQBMobility% (qbRushContrib)
-
-    'Suggest a value based on their rushing frequency
-    Select Case qbRushContrib
-
-        Case 0 To 4
-            mobilityRating = 1
-
-        Case 5 To 7
-            mobilityRating = 2
-
-        Case 8 To 10
-            mobilityRating = 3
-
-        Case 11 To 13
-            mobilityRating = 4
-
-        Case 14 To 16
-            mobilityRating = 5
-
-        Case 17 To 19
-            mobilityRating = 6
-
-        Case 20 To 22
-            mobilityRating = 7
-
-        Case 23 To 26
-            mobilityRating = 8
-
-        Case Is >= 27
-            mobilityRating = 9
-
-    End Select
-
-    GetQBMobility% = mobilityRating
-
-End Function
-
-
-'----------------------------------------
-'           QBRating Function
-'----------------------------------------
-'This function calculates the QB rating
-'for the target team / QB combination.
-'I1
-'   index of team's QB (0-3)
-'teamType
-'   0 = College
-'   1 = Pro
-Function QBRating! (qbIdx, teamType)
-
-    Dim II!(3), PP!(3)
-    Dim TT!(3), YY!(3)
-
-    Shared playerStats!(), ratingsQB!()
-
-    ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
-    ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
-    ' * ratingsQB!(6)=COMP%, ratingsQB!(7)=RATING, ratingsQB!(8)=TD%, ratingsQB!(9)=INT%, ratingsQB!(10)=YDS/ATT *
-    ' ********************************************************************
-
-    Select Case teamType
-
-        Case 0:
-            ' *** COLLEGE QB RATING ***
-            ratingsQB!(qbIdx, 7) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9)) * 8.399999 + playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100 + Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10 * 2
-            ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
-
-        Case 1: '
-            ' *** NFL QB RATING ***
-            ratingsQB!(qbIdx, 8) = Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10
-            ratingsQB!(qbIdx, 6) = playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100
-            ratingsQB!(qbIdx, 10) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9) * 100) / 100
-            ratingsQB!(qbIdx, 9) = Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10
-
-            PP!(tmIdx) = ratingsQB!(qbIdx, 6) - 30
-
-            If PP!(tmIdx) < 0 Then
-                PP!(tmIdx) = 0
-            Else
-                If PP!(tmIdx) > 77.5 Then
-                    PP!(tmIdx) = 2.375
-                Else
-                    PP!(tmIdx) = PP!(tmIdx) * .05
-                End If
-            End If
-
-            If ratingsQB!(qbIdx, 8) > 11.9 Then
-                TT!(tmIdx) = 2.375
-            Else
-                TT!(tmIdx) = ratingsQB!(qbIdx, 8) * .2
-            End If
-
-            If ratingsQB!(qbIdx, 9) = 0 Then
-                II!(tmIdx) = 2.375
-            Else
-                If ratingsQB!(qbIdx, 9) > 9.5 Then
-                    II!(tmIdx) = 0
-                Else
-                    II!(tmIdx) = 2.375 - (.25 * ratingsQB!(qbIdx, 9))
-                End If
-            End If
-
-            ratingsQB!(qbIdx, 10) = ratingsQB!(qbIdx, 10) - 3
-
-            If ratingsQB!(qbIdx, 10) < 0 Then
-                YY!(tmIdx) = 0
-            Else
-                If ratingsQB!(qbIdx, 10) > 12.5 Then
-                    YY!(tmIdx) = 2.375
-                Else
-                    D = Int(ratingsQB!(qbIdx, 10) * 100) / 2
-                    If D = ratingsQB!(qbIdx, 10) / 2 Then
-                        YY!(tmIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2
-                    Else
-                        YY!(tmIdx) = ratingsQB!(qbIdx, 10) / 2 * .3 + ratingsQB!(qbIdx, 10) / 2 * .2 + .003
-                    End If
-                End If
-            End If
-
-            ratingsQB!(qbIdx, 7) = PP!(tmIdx) + TT!(tmIdx) + II!(tmIdx) + YY!(tmIdx)
-
-            If ratingsQB!(qbIdx, 7) >= 9.5 Then
-                ratingsQB!(qbIdx, 7) = 158.3
-            Else
-                ratingsQB!(qbIdx, 7) = ratingsQB!(qbIdx, 7) * 50 / 3
-            End If
-
-            ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
-
-    End Select
-
-    QBRating! = ratingsQB!(qbIdx, 7)
-
-End Function
-
-
-'----------------------------------------
 '      QBRating_Expanded Subroutine
 '----------------------------------------
 'This routine calculates a QB's rating
@@ -8035,6 +7806,35 @@ End Sub
 
 
 '----------------------------------------
+'       LetterToNumber Subroutine
+'----------------------------------------
+'This subroutine converts an alphabetic
+'character to a numeric equivalent,
+'where A = 10, B = 11, etc.
+'This is useful for long menus that have
+'more than 10 options (0 - 9) and a single
+'key is desired for a choice.
+Sub LetterToNumber (promptVal$, J)
+
+    J = Val(promptVal$)
+
+    Select Case UCase$(promptVal$)
+
+        Case "A": J = 10
+        Case "B": J = 11
+        Case "C": J = 12
+        Case "D": J = 13
+        Case "E": J = 14
+        Case "F": J = 15
+        Case "G": J = 16
+        Case "H": J = 17
+
+    End Select
+
+End Sub
+
+
+'----------------------------------------
 '           TEAMBOX Subroutine
 '----------------------------------------
 'This subroutine draws an ASCII box using
@@ -8172,6 +7972,19 @@ Sub Rolld100 (randNumVar)
     randNumVar = Int(Rnd(1) * 100) + 1
 
 End Sub
+
+
+'----------------------------------------
+'            d100 Subroutine
+'----------------------------------------
+'This subroutine assigns a random number
+'between 1 and 100 to the variable that
+'it is called with
+Function d100% ()
+
+    d100% = Int(Rnd(1) * 100) + 1
+
+End Function
 
 
 '----------------------------------------
@@ -10879,9 +10692,9 @@ End Sub
 Sub MARKER ()
 
     If P1 Then
-        J = FNP(ydsToScore) - 3
+        J = FindMarkerColumn(ydsToScore) - 3
     Else
-        J = FNP(100 - ydsToScore) - 3
+        J = FindMarkerColumn(100 - ydsToScore) - 3
     End If
 
     Locate 13, 4
@@ -10945,10 +10758,10 @@ Sub MARKER1 ()
     YF = -ydsToFirst
 
     If P1 Then
-        WS = FNP(ydsToScore + YF) - 3
+        WS = FindMarkerColumn(ydsToScore + YF) - 3
         WE = WS + 6
     Else
-        WE = FNP(100 - ydsToScore - YF) - 3
+        WE = FindMarkerColumn(100 - ydsToScore - YF) - 3
         WS = WE - 6
     End If
 
@@ -17193,40 +17006,7 @@ End Sub
 
 
 '----------------------------------------
-'            Custom Function
-'----------------------------------------
-'It's not clear at this time what this
-'function does
-Function FNP (X)
-    FNP = 11 + Int((X + Int(X / 5) - 1) / 2)
-End Function
-
-
-'----------------------------------------
-'          GetTeamYear Function
-'----------------------------------------
-'This subroutine determines the 4-digit
-'team year from the team loaded by the
-'file. It uses the 2 digit year to make
-'assumptions. (00 to 24 are year 2000.)
-'The earliest years of pro football began
-'in 1925, so years 00 to 24 are safe to
-'be considered as 2000's
-Function GetTeamYear% (yearFromName$)
-
-    teamYear% = Val(yearFromName$)
-
-    If teamYear% >= 0 And teamYear% < 25 Then
-        GetTeamYear% = 2000 + teamYear%
-    Else
-        GetTeamYear% = 1900 + teamYear%
-    End If
-
-End Function
-
-
-'----------------------------------------
-'            pbplog Function
+'            pbplog Routine
 '----------------------------------------
 'This subroutine is designed to help me
 'print information about where the game
@@ -17607,7 +17387,8 @@ End Sub
 '----------------------------------------
 '      GetKeyWhenNoDelay Subroutine
 '----------------------------------------
-' ...explanation...
+'Allows user to silently press a key 
+'(no prompt) when the game is not autoplay
 Sub GetKeyWhenNoDelay ()
 
     'If we're not in autoplay
@@ -17659,3 +17440,67 @@ Sub EndOfGame
 End Sub
 
 
+'----------------------------------------
+'         CheckString Subroutine
+'----------------------------------------
+'This function checks the given string
+'to determine if any characters are not
+'printable. If found, it will return a
+'value of 1. Otherwise, it will return 0.
+Function CheckString% (targetString$)
+
+    badString = 0
+    stringPosition% = 1
+
+    Do
+
+        test = Asc(Mid$(targetString$, stringPosition%, 1))
+
+        'If it is a non-printable character (corrupt data)
+        If test > 122 Or test < 32 Then
+            stringPosition% = 1
+            badString = 1
+        Else
+            stringPosition% = stringPosition% + 1
+        End If
+
+    Loop Until stringPosition% = Len(targetString$) Or badString = 1
+
+    CheckString% = badString
+
+End Function
+
+
+'----------------------------------------
+'        FindMarkerColumn Function
+'----------------------------------------
+'It's not clear at this time what this
+'function does
+Function FindMarkerColumn (X)
+
+    FindMarkerColumn = 11 + Int((X + Int(X / 5) - 1) / 2)
+
+End Function
+
+
+'----------------------------------------
+'          GetTeamYear Function
+'----------------------------------------
+'This subroutine determines the 4-digit
+'team year from the team loaded by the
+'file. It uses the 2 digit year to make
+'assumptions. (00 to 24 are year 2000.)
+'The earliest years of pro football began
+'in 1925, so years 00 to 24 are safe to
+'be considered as 2000's
+Function GetTeamYear% (yearFromName$)
+
+    teamYear% = Val(yearFromName$)
+
+    If teamYear% >= 0 And teamYear% < 25 Then
+        GetTeamYear% = 2000 + teamYear%
+    Else
+        GetTeamYear% = 1900 + teamYear%
+    End If
+
+End Function
