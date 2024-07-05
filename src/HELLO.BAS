@@ -635,124 +635,11 @@ End Sub
 
 
 '----------------------------------------
-'       ConfigureDrives Subroutine
-'----------------------------------------
-'Walks user through setup of folders and
-'drives for organizing their files.
-Sub ConfigureDrives ()
-
-    Shared opSysType$
-
-    Color 15, 1
-
-    FG = 0
-    BG = 7
-
-    For I = 0 To 3
-        diskPaths$(I) = Left$(diskPaths$(I), Len(diskPaths$(I)) - 1)
-    Next
-
-    Cls
-
-    Locate , 16: Print "SPECIFY PATHS FOR YOUR TEAMS AND COMPILED STATS"
-    Print
-    Locate , 31: Print "PATHNAME EXAMPLES:"
-
-    Select Case opSysType$
-        Case "[WINDOWS]":
-            Locate , 31: Print "A:"
-            Locate , 31: Print "C:\FOOT\TEAMS"
-        Case "[LINUX]":
-            Locate , 31: Print "/mnt/floppy"
-            Locate , 31: Print "/usr/bin/foot/teams"
-        Case "[MAC]", "[MACOSX]":
-            Locate , 31: Print "/Volumes/floppy"
-            Locate , 31: Print "/Applications/Foot/teams"
-    End Select
-
-    Print
-    Locate 7, 1: QPrint "Path for Teams ", 14, 1, -1
-    Locate , 16: QPrint PadRight$(diskPaths$(0), 61), FG, BG, -1
-    Locate 9, 1: QPrint "Path for Stats ", 14, 1, -1
-    Locate , 16: QPrint PadRight$(diskPaths$(1), 61), FG, BG, -1
-    Locate 11, 1: QPrint "Path for Leaders ", 14, 1, -1
-    Locate , 18: QPrint PadRight$(diskPaths$(2), 59), FG, BG, -1
-    Locate 13, 1: QPrint "Path for Schedules ", 14, 1, -1
-    Locate , 20: QPrint PadRight$(diskPaths$(3), 57), FG, BG, -1
-
-    GetDiv1:
-    Locate 7, 16 'location of beginning of field
-    CapsOn = 0
-    NumOnly = 0
-    Max = 50
-    Call TextIn(diskPaths$(0), Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 Then GoTo GetDiv1: 'can't back up any more, stay here
-    If XCode = 2 Then GoTo Done 'all done entering data
-    diskPaths$(0) = _Trim$(diskPaths$(0))
-
-    GetDiv2:
-    Locate 9, 16 'location of beginning of field
-    CapsOn = 0
-    NumOnly = 0
-    Max = 50
-    Call TextIn(diskPaths$(1), Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 Then GoTo GetDiv1: 'can't back up any more, stay here
-    If XCode = 2 Then GoTo Done 'all done entering data
-    diskPaths$(1) = _Trim$(diskPaths$(1))
-
-    GetDiv3:
-    Locate 11, 18 'location of beginning of field
-    CapsOn = 0
-    NumOnly = 0
-    Max = 50
-    Call TextIn(diskPaths$(2), Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 Then GoTo GetDiv2: 'can't back up any more, stay here
-    If XCode = 2 Then GoTo Done 'all done entering data
-    diskPaths$(2) = _Trim$(diskPaths$(2))
-
-    GetDiv4:
-    Locate 13, 20 'location of beginning of field
-    CapsOn = 0
-    NumOnly = 0
-    Max = 50
-    Call TextIn(diskPaths$(3), Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 GoTo GetDiv3: 'can't back up any more, stay here
-    diskPaths$(3) = _Trim$(diskPaths$(3))
-
-    Done:
-    Color 14, 1
-    Locate 23, 1
-    Print "Is this okay? (Yes/No) ";
-    X$ = ""
-    Call YesNoB(X$, XCode, FG, BG)
-    Locate , 1
-    ClearEOL 14, 1
-    If XCode = 1 Then GoTo GetDiv4
-    If X$ = "N" Then GoTo GetDiv1
-    If X$ <> "Y" Then GoTo Done 'insist on either Y or N or up-arrow
-
-    Open "DEV.BAS" For Output As #1
-
-    For R = 0 To 3:
-
-        Select Case opSysType$
-            Case "[WINDOWS]": diskPaths$(R) = diskPaths$(R) + "\"
-            Case "[MAC]", "[MACOSX]", "[LINUX]": diskPaths$(R) = diskPaths$(R) + "/"
-        End Select
-
-        Print #1, diskPaths$(R)
-
-    Next R
-
-    Close #1
-
-End Sub
-
-
-'----------------------------------------
 '        TeamMgmt_Menu Subroutine
 '----------------------------------------
-'...explanation...
+'This subroutine provodes the user with
+'several options for managing a team and
+'it's roster.
 Sub TeamMgt_Menu ()
 
     Do
@@ -1005,6 +892,7 @@ End Sub
 
 ' For Utils
 '$Include: 'BoxRoutines.bm'
+'$Include: 'ConfigureDrives.bm'
 '$Include: 'FileTeamSelection.bm'
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
