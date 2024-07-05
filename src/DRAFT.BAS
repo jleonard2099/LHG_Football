@@ -1454,9 +1454,19 @@ Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
             'Locate 2, 33
             'Color 31: Print "LOADING..."
 
-            Call ReadSourceTeam(yearNumber$, teamName$, selectedIdx)
+            Call ReadSourceTeam(yearNumber$, teamName$, selectedIdx, validData)
 
         End If
+
+    End If
+
+    If validData = 0 And ExitCode% <> 27 Then
+
+        selectedIdx = -1
+        Locate 9,
+        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
+        K$ = GetKeyPress$
+        Call CSMsgBox("", 0, PASS)
 
     End If
 
@@ -1467,7 +1477,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads team data into
 'arrays for the selected team
-Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
+Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx, dataOK)
 
     Dim C2!(15), C3!(15)
 
@@ -1593,76 +1603,89 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Next I
 
     Close #1
+    
+    If CheckString%(targetTeam$) = 1 then
 
-    Erase C2!, C3!
+        dataOK = 0
+        
+    Else
 
-    U = 0
+        'Get contribution %'s
+        Erase C3!
 
-    For I = 1 To 9
-        If rbAtt_DRAFT(I) = 0 Then
-            U = U + 1
-        Else
-            C3!(I) = rbAtt_DRAFT(I) - rbAtt_DRAFT(I - 1 - U)
-            U = 0
-        End If
-    Next
+        U = 0
 
-    For I = 1 To 9:
-        rbAtt_DRAFT(I) = C3!(I)
-    Next
+        For I = 1 To 9
+            If rbAtt_DRAFT(I) = 0 Then
+                U = U + 1
+            Else
+                C3!(I) = rbAtt_DRAFT(I) - rbAtt_DRAFT(I - 1 - U)
+                U = 0
+            End If
+        Next
 
-    For I = 0 To 5:
-        rbRec_DRAFT(I + 10) = wrRec_DRAFT(I)
-    Next
+        For I = 1 To 9:
+            rbAtt_DRAFT(I) = C3!(I)
+        Next
 
-    U = 0
+        For I = 0 To 5:
+            rbRec_DRAFT(I + 10) = wrRec_DRAFT(I)
+        Next
 
-    For I = 1 To 15
-        If rbRec_DRAFT(I) = 0 Then
-            U = U + 1
-        Else
-            C2!(I) = rbRec_DRAFT(I) - rbRec_DRAFT(I - 1 - U)
-            U = 0
-        End If
-    Next
+        Erase C2!
 
-    For I = 1 To 15:
-        rbRec_DRAFT(I) = C2!(I)
-    Next
+        U = 0
 
-    For I = 0 To 5:
-        wrRec_DRAFT(I) = rbRec_DRAFT(I + 10)
-    Next
+        For I = 1 To 15
+            If rbRec_DRAFT(I) = 0 Then
+                U = U + 1
+            Else
+                C2!(I) = rbRec_DRAFT(I) - rbRec_DRAFT(I - 1 - U)
+                U = 0
+            End If
+        Next
 
-    For I = 3 To 1 Step -1
-        If qbPA_DRAFT(I) <> 0 Then
-            qbPA_DRAFT(I) = qbPA_DRAFT(I) - qbPA_DRAFT(I - 1)
-        End If
-    Next
+        For I = 1 To 15:
+            rbRec_DRAFT(I) = C2!(I)
+        Next
 
-    For I = 2 To 1 Step -1
-        If krNumRet_DRAFT(I) <> 0 Then
-            krNumRet_DRAFT(I) = krNumRet_DRAFT(I) - krNumRet_DRAFT(I - 1)
-        End If
-    Next
+        For I = 0 To 5:
+            wrRec_DRAFT(I) = rbRec_DRAFT(I + 10)
+        Next
 
-    For I = 2 To 1 Step -1
-        If prRet_DRAFT(I) <> 0 Then
-            prRet_DRAFT(I) = prRet_DRAFT(I) - prRet_DRAFT(I - 1)
-        End If
-    Next
+        For I = 3 To 1 Step -1
+            If qbPA_DRAFT(I) <> 0 Then
+                qbPA_DRAFT(I) = qbPA_DRAFT(I) - qbPA_DRAFT(I - 1)
+            End If
+        Next
 
-    For I = 1 To 1 Step -1
-        If FGPct_DRAFT(I) <> 0 Then
-            FGPct_DRAFT(I) = FGPct_DRAFT(I) - FGPct_DRAFT(I - 1)
-        End If
-    Next
+        For I = 2 To 1 Step -1
+            If krNumRet_DRAFT(I) <> 0 Then
+                krNumRet_DRAFT(I) = krNumRet_DRAFT(I) - krNumRet_DRAFT(I - 1)
+            End If
+        Next
 
-    For I = 1 To 1 Step -1
-        If PATPct_DRAFT(I) <> 0 Then
-            PATPct_DRAFT(I) = PATPct_DRAFT(I) - PATPct_DRAFT(I - 1)
-        End If
-    Next
+        For I = 2 To 1 Step -1
+            If prRet_DRAFT(I) <> 0 Then
+                prRet_DRAFT(I) = prRet_DRAFT(I) - prRet_DRAFT(I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If FGPct_DRAFT(I) <> 0 Then
+                FGPct_DRAFT(I) = FGPct_DRAFT(I) - FGPct_DRAFT(I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If PATPct_DRAFT(I) <> 0 Then
+                PATPct_DRAFT(I) = PATPct_DRAFT(I) - PATPct_DRAFT(I - 1)
+            End If
+        Next
+        
+        dataOK = 1
+        
+    End If
 
 End Sub
 

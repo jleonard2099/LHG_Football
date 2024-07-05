@@ -94,33 +94,19 @@ End Sub
 '   1 = Pro
 Sub ReadConferenceStats (statFile$, statType)
 
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
+    Shared memberName$()
 
-    Shared TMM$(), TPP$(), statsZ1$()
+    Erase memberName$
 
-    Erase statsZ1$
-
-    For X = 1 To 30
-        statsZ1$(X) = "XXX"
-    Next
-
-    JA = 0
-    JB = 0
-    JC = 0
-    JD = 0
-    JE = 0
-    JF = 0
-    JG = 0
-    JH = 0
-    JI = 0
-    JJ = 0
-    totalStats = 0
-
-    div1$ = ""
-    div2$ = ""
-    div3$ = ""
-
-    Erase TMM$, TPP$
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE
+            memberName$(X) = "XXX"
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE
+            memberName$(X) = "XXX"
+        Next
+    End If
 
     Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
 
@@ -137,9 +123,15 @@ Sub ReadConferenceStats (statFile$, statType)
         Input #1, div2$
     End If
 
-    For X = 1 To 30:
-        Input #1, statsZ1$(X)
-    Next
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE:
+            Input #1, memberName$(X)
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE:
+            Input #1, memberName$(X)
+        Next
+    End If
 
     Close #1
 
@@ -154,27 +146,33 @@ End Sub
 'routines to calculate the expanded stats,
 'write them to a file and present a categ-
 'orized menu to use for reviewing them
-
 'statType
 '   0 = College
 '   1 = Pro
+' XXXX NO LONGER USED WITH NEW STRUCTURE XXXX
 Sub ViewExpandedStats (statType)
 
     Dim printOrView
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared TMM$(), TPP$(), statsZ1$()
+    Shared TMM$(), TPP$(), memberName$()
 
     confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
     If FileExit% <> 27 Then
 
-        Erase statsZ1$
+        Erase memberName$
 
-        For X = 1 To 30
-            statsZ1$(X) = "XXX"
-        Next
+        If statType = 0 Then
+            For X = 1 To TEAMS_PER_CONFERENCE
+                memberName$(X) = "XXX"
+            Next
+        Else
+            For X = 1 To TEAMS_PER_LEAGUE
+                memberName$(X) = "XXX"
+            Next
+        End If
 
         JA = 0
         JB = 0
@@ -210,16 +208,22 @@ Sub ViewExpandedStats (statType)
             Input #1, div2$
         End If
 
-        For X = 1 To 30: Input #1, statsZ1$(X): Next
+        If statType = 0 Then
+            For X = 1 To TEAMS_PER_CONFERENCE:
+                Input #1, memberName$(X)
+            Next
+        Else
+            For X = 1 To TEAMS_PER_LEAGUE:
+                Input #1, memberName$(X)
+            Next
+        End If
 
         Close #1
 
         Cls
 
         Call UpdateExpandedLeaders(statType, totalStats)
-
         Call SAVELEADER(confStatFile$, totalStats)
-
         Call ExpandedLeaders_Menu(totalStats)
 
     End If
@@ -257,7 +261,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
     Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
     Shared sackName$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsPK$()
-    Shared QBL$(), lookyTT$(), statsZ1$()
+    Shared QBL$(), lookyTT$()
+
+    Shared TMM$(), TPP$(), memberName$()
 
     Shared GMA!(), GMB!(), GMC!()
     Shared gameCount()
@@ -265,11 +271,33 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Color 15, 0
     Cls
 
+    JA = 0
+    JB = 0
+    JC = 0
+    JD = 0
+    JE = 0
+    JF = 0
+    JG = 0
+    JH = 0
+    JI = 0
+    JJ = 0
     totalStats = 0
 
-    For ZX = 1 To 30
+    div1$ = ""
+    div2$ = ""
+    div3$ = ""
 
-        teamStatFile$ = statsZ1$(ZX)
+    Erase TMM$, TPP$
+
+    If statType = 0 Then
+        totalUnits = TEAMS_PER_CONFERENCE
+    Else
+        totalUnits = TEAMS_PER_LEAGUE
+    End If
+
+    For ZX = 1 To totalUnits
+
+        teamStatFile$ = memberName$(ZX)
 
         If teamStatFile$ <> "XXX" And teamStatFile$ <> "*" And teamStatFile$ <> " " Then
 
@@ -918,7 +946,7 @@ Sub ExpandedLeaders_Menu (totalStats)
     Shared A8L$(), A8T$(), A9L$(), A9T$()
     Shared expCategories$(), lookyTT$()
     Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared QBL$(), TMM$(), TPP$(), TYY$(), statsZ1$()
+    Shared QBL$(), TMM$(), TPP$(), TYY$(), memberName$()
 
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
@@ -931,27 +959,7 @@ Sub ExpandedLeaders_Menu (totalStats)
         Color 0, 0
         Cls
 
-        J = 15
-
-        Locate 1, 15
-
-        Color 4, 15
-
-        Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
-
-        For II = 1 To J
-            Color 4, 15
-            Locate 1 + II, 15
-            Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-            Color 7, 4: Print String$(2, 177)
-        Next
-
-        Color 4, 15
-        Locate 1 + J, 15
-        Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
-
-        Color 7, 4: Print String$(2, 177)
-        Locate , 17: Print String$(44, 177)
+        Call ShadowBox(1, 15, 40, 15, 4, 15)
 
         RR = 0
         newCategory = 0
@@ -991,13 +999,9 @@ Sub ExpandedLeaders_Menu (totalStats)
             Select Case UCase$(key$)
 
                 Case "A":
-                    J = 8
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 4
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 8, 0, 4)
 
                     Do
                         For I = 0 To 4:
@@ -1017,14 +1021,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "B":
-                    J = 8
                     ZZ = 1
 
-                    Locate 2, 22
-
-                    Color 0, 2
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 8, 0, 2)
 
                     Do
                         For I = 5 To 9:
@@ -1044,13 +1043,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "C":
-                    J = 12
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 13
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 12, 0, 13)
 
                     Do
                         For I = 10 To 18:
@@ -1069,13 +1064,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "D":
-                    J = 8
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 5
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 8, 0, 5)
 
                     Do
                         For I = 19 To 23:
@@ -1095,13 +1086,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "E":
-                    J = 8
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 5
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 8, 0, 5)
 
                     Do
                         For I = 24 To 28:
@@ -1121,13 +1108,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "F":
-                    J = 6
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 5
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 6, 0, 5)
 
                     Do
                         For I = 29 To 31:
@@ -1147,13 +1130,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "G":
-                    J = 10
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 10
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 10, 0, 10)
 
                     Do
                         For I = 32 To 38:
@@ -1173,13 +1152,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "H":
-                    J = 6
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 12
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 6, 0, 12)
 
                     Do
                         For I = 39 To 40:
@@ -1202,13 +1177,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "J":
-                    J = 6
                     ZZ = 1
 
-                    Locate 2, 22
-                    Color 0, 13
-
-                    Call CATEGORY_BOX(J)
+                    Call MenuBox(2, 22, 36, 6, 0, 13)
 
                     Do
                         For I = 41 To 43:
@@ -1228,20 +1199,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Call SortOptions(printOrView, sortType, newCategory)
 
                 Case "K":
-                    J = 17
                     ZZ = 1
 
-                    Locate 2, 2
-                    Color 0, 14
-
-                    Print " " + Chr$(214); String$(66, 196); Chr$(183) + " ";
-
-                    For II = 1 To J:
-                        Locate 2 + II, 2: Print " " + Chr$(186); String$(66, 32); Chr$(186) + " ";
-                    Next
-
-                    Locate 3 + J, 2
-                    Print " " + Chr$(211); String$(66, 196); Chr$(189) + " ";
+                    Call MenuBox(2, 2, 66, 17, 0, 14)
                     Locate 10, 15
 
                     Do
@@ -2070,16 +2030,16 @@ Sub ExpandedLeaders_Menu (totalStats)
                 End Select
 
                 If UCase$(key$) = "K" Then
-                    QW = totalStats
+                    maxRecords = totalStats
                 Else
-                    QW = PPP
+                    maxRecords = PPP
                 End If
 
                 If printOrView = 1 Then
-                    Call DisplayLeaders(XX, QW, TVN)
+                    Call DisplayLeaders(TVN, maxRecords, XX)
                 Else
                     'printOrView = 2
-                    Call GetListLength(printOrView, LG, QW)
+                    Call GetListLength(printOrView, LG, maxRecords)
 
                     userKey$ = GetPrintOptions$
 
@@ -2088,16 +2048,16 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Select Case userKey$
 
                             Case "F"
-                                userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                                userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
                                 If userFile$ <> "" Then
-                                    Call PrintLeaders(0, userFile$, XX, LG, TVN)
+                                    Call Leaders_Report(0, userFile$, XX, LG, TVN)
                                 End If
 
                             Case "P"
-                                Call PrintLeaders(1, "REPORT", XX, LG, TVN)
+                                Call Leaders_Report(1, "REPORT", XX, LG, TVN)
 
                         End Select
-                        
+
                     End If
 
                 End If
@@ -2107,27 +2067,6 @@ Sub ExpandedLeaders_Menu (totalStats)
         End If
 
     Loop Until UCase$(key$) = "L" Or key$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
-'        CATEGORY_BOX Subroutine
-'----------------------------------------
-'This subroutines draws a simple box around
-'several of the category-based selections
-'of the expanded standings menus
-Sub CATEGORY_BOX (J)
-
-    Print " " + Chr$(214); String$(36, 196); Chr$(183) + " ";
-
-    For II = 1 To J:
-        Locate 2 + II, 22: Print " " + Chr$(186); String$(36, 32); Chr$(186) + " ";
-    Next
-
-    Locate 3 + J, 22
-    Print " " + Chr$(211); String$(36, 196); Chr$(189) + " ";
-    Locate 10, 15
 
 End Sub
 
@@ -2150,18 +2089,7 @@ Sub SortOptions (printOrView, sortType, reselect)
 
     Do
 
-        J = 6
-
-        Locate 8, 8: Color 15, 1
-        Print " " + Chr$(214); String$(57, 196); Chr$(183) + " ";
-
-        For II = 1 To J:
-            Locate 8 + II, 8
-            Print " " + Chr$(186); String$(57, 32); Chr$(186) + " ";
-        Next
-
-        Locate 9 + J, 8
-        Print " " + Chr$(211); String$(57, 196); Chr$(189) + " ";
+        Call MenuBox(8, 8, 57, 6, 15, 1)
         Locate 10, 15
 
         Color 3
@@ -2184,8 +2112,10 @@ Sub SortOptions (printOrView, sortType, reselect)
                 Call PrintViewReselect(I2$)
 
                 Select Case UCase$(I2$)
-                    Case "P": printOrView = 2
-                    Case "V": printOrView = 1
+                    Case "P":
+                        printOrView = 2
+                    Case "V":
+                        printOrView = 1
                     Case "R":
                         reselect = 1
                 End Select
@@ -2196,8 +2126,10 @@ Sub SortOptions (printOrView, sortType, reselect)
                 Call PrintViewReselect(I2$)
 
                 Select Case UCase$(I2$)
-                    Case "P": printOrView = 2
-                    Case "V": printOrView = 1
+                    Case "P":
+                        printOrView = 2
+                    Case "V":
+                        printOrView = 1
                     Case "R":
                         reselect = 1
                 End Select
@@ -2205,7 +2137,6 @@ Sub SortOptions (printOrView, sortType, reselect)
                 sortType = 2
 
             Case "R", Chr$(27):
-                'If ZZ = 1 Then Call ExpandedLeaders_Menu(totalStats)
                 reselect = 1
 
         End Select
@@ -2216,26 +2147,14 @@ End Sub
 
 
 '----------------------------------------
-'       PrintViewReselect Subroutine
+'      PrintViewReselect Subroutine
 '----------------------------------------
 'This subroutine presents the end user
 'with a choice to Print or View the exist-
 'ing category, or select a new category
 Sub PrintViewReselect (userOpt$)
 
-    J = 4
-
-    Locate 9, 15
-    Color 15, 0
-
-    Print " " + Chr$(214); String$(40, 196); Chr$(183) + " ";
-
-    For II = 1 To J
-        Locate 9 + II, 15: Print " " + Chr$(186); String$(40, 32); Chr$(186) + " ";
-    Next
-
-    Locate 10 + J, 15
-    Print " " + Chr$(211); String$(40, 196); Chr$(189) + " ";
+    Call MenuBox(9, 15, 40, 4, 15, 0)
     Locate 10, 10
 
     Color 12
@@ -2258,31 +2177,30 @@ End Sub
 'in the chosen stat category
 Sub SortPlayer (stpl, PPP, sortType)
 
-    Shared TMM$(), TPP$(), TYY$()
     Shared TYP!()
+    Shared TMM$(), TPP$(), TYY$()
 
     For I = 2 To PPP
 
         stpl = stpl + 1
-
         Locate 5, 5: Print "sorting player "; stpl
 
         For J = PPP To I Step -1
 
             If sortType = 1 Then
                 If TYP!(J - 1) < TYP!(J) Then
-                    Swap TPP$(J - 1), TPP$(J)
-                    Swap TMM$(J - 1), TMM$(J)
                     Swap TYP!(J - 1), TYP!(J)
+                    Swap TMM$(J - 1), TMM$(J)
+                    Swap TPP$(J - 1), TPP$(J)
                     Swap TYY$(J - 1), TYY$(J)
                 End If
             End If
 
             If sortType = 2 Then
                 If TYP!(J - 1) > TYP!(J) Then
-                    Swap TPP$(J - 1), TPP$(J)
-                    Swap TMM$(J - 1), TMM$(J)
                     Swap TYP!(J - 1), TYP!(J)
+                    Swap TMM$(J - 1), TMM$(J)
+                    Swap TPP$(J - 1), TPP$(J)
                     Swap TYY$(J - 1), TYY$(J)
                 End If
             End If
@@ -2338,46 +2256,30 @@ End Sub
 '----------------------------------------
 'This subroutine displays individual player
 'stat categories to the user display
-Sub DisplayLeaders (XX, QW, TVN)
+Sub DisplayLeaders (TVN, maxRecords, categoryId)
 
-    Shared expCategories$(), TMM$(), TPP$(), TYY$()
     Shared TYP!()
+    Shared expCategories$(), TMM$(), TPP$(), TYY$()
+
+    userExit% = 0
 
     Do
 
         Cls
 
-        J = 18
+        Call ShadowBox(1, 5, 67, 18, 15, 1)
 
-        Locate 1, 5: Color 15, 1
-
-        Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
-
-        For II = 1 To J
-            Color 15, 1
-            Locate 1 + II, 5
-            Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
-            Color 7, 1: Print String$(2, 177)
-        Next
-
-        Color 15, 1
-        Locate 1 + J, 5
-        Print " " + Chr$(211); String$(67, 196); Chr$(189) + " ";
-
-        Color 7, 1: Print String$(2, 177)
-        Locate , 7: Print String$(71, 177)
-
-        R = Len(expCategories$(XX))
+        R = Len(expCategories$(categoryId))
 
         Locate 2, 11
 
         Color 14, 1: Print "PLAYER             TEAM";
 
-        Locate , 60 - (Int(R) / 2): Print expCategories$(XX)
+        Locate , 60 - (Int(R) / 2): Print expCategories$(categoryId)
 
         I$ = ""
 
-        For W = 1 To QW
+        For W = 1 To maxRecords
 
             RR = RR + 1
 
@@ -2393,50 +2295,51 @@ Sub DisplayLeaders (XX, QW, TVN)
 
                 I$ = GetKeyPress$
 
-                If I$ <> Chr$(27) Then
-
+                If I$ = Chr$(27) Then
+                    userExit% = 1
+                Else
                     For I = 3 To 18:
                         Color 1, 1
                         Locate I, 7
                         Print Space$(66)
                     Next
-
                 End If
 
             End If
 
-            If I$ <> Chr$(27) Then
+            If userExit% <> 1 Then
 
                 Color 15
                 Locate RR + 2, 7
-                Print Using "###"; W;: Print " ";
-                Color 3
+                Print Using "###"; W;
+                Print " ";
+                Color 3: Print TPP$(W);
+                Print Tab(30); TMM$(W);:
 
                 Select Case TVN
 
                     Case 1:
-                        Print TPP$(W);: Print Tab(30); TMM$(W);: Print Tab(58); Using "#####"; TYP!(W)
+                        Print Tab(58); Using "#####"; TYP!(W)
 
                     Case 2:
-                        Print TPP$(W);: Print Tab(30); TMM$(W);: Print Tab(58); Using "###.##"; TYP!(W)
+                        Print Tab(58); Using "###.##"; TYP!(W)
 
                     Case 3:
-                        Print TPP$(W);: Print Tab(30); TMM$(W);: Print Tab(58); Using "###.#"; TYP!(W);: Print Tab(63); TYY$(W)
+                        Print Tab(58); Using "###.#"; TYP!(W);
+                        Print Tab(63); TYY$(W)
 
                     Case 4:
-                        Print TPP$(W);: Print Tab(30); TMM$(W);: Print Tab(58); Using "###.#"; TYP!(W)
+                        Print Tab(58); Using "###.#"; TYP!(W)
 
                 End Select
 
             Else
-
                 Exit For
-
             End If
 
         Next W
 
-        If I$ <> Chr$(27) Then
+        If userExit% <> 1 Then
 
             Color 0, 15
             Locate 22, 17
@@ -2480,27 +2383,27 @@ End Sub
 
 
 '----------------------------------------
-'         PrintLeaders Subroutine
+'         Leaders_Report Subroutine
 '----------------------------------------
 'This subroutine displays individual player
 'stat categories to the default printer
-Sub PrintLeaders (printDest, destFile$, XX, LG, TVN)
+Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
-    Shared expCategories$(), TMM$(), TPP$(), TYY$()
     Shared TYP!()
+    Shared expCategories$(), TMM$(), TPP$(), TYY$()
 
-	Color 15, 0
-	Cls
+    Color 15, 0
+    Cls
 
-	Open destFile$ For Output As #1
-	
-    Print #1, "     PLAYER                  TEAM                     "; expCategories$(XX)
+    Open destFile$ For Output As #1
 
-    For W = 1 To LG
+    Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
+
+    For W = 1 To maxRecords
 
         If (W <> 1 And W Mod 50 = 1) Then
             Print #1, Chr$(12)
-            Print #1, "     PLAYER                  TEAM                     "; expCategories$(XX)
+            Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
         End If
 
         Print #1, Using "###"; W;
@@ -2509,6 +2412,7 @@ Sub PrintLeaders (printDest, destFile$, XX, LG, TVN)
         Print #1, Tab(25); TMM$(W);
 
         Select Case TVN
+
             Case 1
                 Print #1, Tab(58); Using "#####"; TYP!(W)
 
@@ -2526,22 +2430,22 @@ Sub PrintLeaders (printDest, destFile$, XX, LG, TVN)
 
     Next W
 
-	If printDest = 1 Then
+    If printDest = 1 Then
 
-		Open destFile$ For Input As #2
+        Open destFile$ For Input As #2
 
-		Do While Not EOF(2)
-			Line Input #2, X$
-			LPrint X$
-		Loop
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
 
-		Close #2
+        Close #2
 
-		LPrint Chr$(12)
+        LPrint Chr$(12)
 
-		Kill destFile$
+        Kill destFile$
 
-	End If
+    End If
 
 End Sub
 
@@ -2551,7 +2455,7 @@ End Sub
 '----------------------------------------
 'This subroutine displays the chosen team
 'stat category to the user display
-Sub TeamStatsToReport ()
+Sub TeamStatsToReport (categoryId)
 
     Shared expCategories$(), TMM$()
     Shared TYP!()
@@ -2560,27 +2464,11 @@ Sub TeamStatsToReport ()
 
         Cls
 
-        J = 18
-        Locate 1, 5: Color 15, 4
-
-        Print " " + Chr$(214); String$(67, 196); Chr$(183) + " ";
-
-        For II = 1 To J
-            Color 15, 4
-            Locate 1 + II, 5
-            Print " " + Chr$(186); String$(67, 32); Chr$(186) + " ";
-            Color 7, 4: Print String$(2, 177)
-        Next
-
-        Color 15, 4: Locate 1 + J, 5
-        Print " " + Chr$(211); String$(67, 196); Chr$(189) + " ";
-
-        Color 7, 4: Print String$(2, 177)
-        Locate , 7: Print String$(71, 177)
+        Call ShadowBox(1, 15, 67, 18, 15, 4)
 
         Color 14, 4
-        R = Len(expCategories$(XX))
-        Locate 2, 40 - (Int(R) / 2): Print expCategories$(XX)
+        R = Len(expCategories$(categoryId))
+        Locate 2, 40 - (Int(R) / 2): Print expCategories$(categoryId)
 
         Locate 3, 11
 
@@ -2680,9 +2568,6 @@ End Sub
 'every result.
 Sub GetListLength (printOrView, listLength, maxItems)
 
-    Color , 0
-    Cls
-
     If printOrView <> 1 Then
         'If printing...
 
@@ -2695,18 +2580,8 @@ Sub GetListLength (printOrView, listLength, maxItems)
             Print
             Print
             Print
-            J = 2
 
-            Locate 10, 20
-            Color 4, 15
-            Print " " + Chr$(214); String$(30, 196); Chr$(183) + " ";
-
-            For II = 1 To J:
-                Locate 10 + II, 20: Print " " + Chr$(186); String$(30, 32); Chr$(186) + " ";
-            Next
-
-            Locate 11 + J, 20
-            Print " " + Chr$(211); String$(30, 196); Chr$(189) + " "
+            Call MenuBox(10, 20, 30, 2, 4, 15)
             Locate 11
 
             Color 1

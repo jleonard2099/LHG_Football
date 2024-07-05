@@ -8,7 +8,7 @@ Sub BLANKPRO ()
 
     _Title "3-in-1 Football - Erase League Stats"
 
-    Dim statFiles$(MAX_CONFERENCES)
+    Dim statFileNames$(TEAMS_PER_LEAGUE)
 
     leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
@@ -19,29 +19,30 @@ Sub BLANKPRO ()
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I2$ = GetKeyPress$
+        A$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
 
-        If UCase$(I2$) = "Y" Then
+        If UCase$(A$) = "Y" Then
 
             Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
 
             Input #1, league$, div1$, div2$, div3$
 
-            For XW = 1 To 30
-                Input #1, statFiles$(XW)
+            For XW = 1 To TEAMS_PER_LEAGUE
+                Input #1, statFileNames$(XW)
             Next
 
             Close #1
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_LEAGUE
 
-                If statFiles$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(1) + statFiles$(XW)
-                    Print "DELETING "; statFiles$(XW); " STATS"
-                    If _FileExists(statFile$) Then Kill statFile$
-                    If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
-
+                If statFileNames$(XW) <> Chr$(42) Then
+                    Print "DELETING "; statFileNames$(XW); " STATS"
+                    statFile$ = diskPaths$(1) + statFileNames$(XW)
+                    If _FileExists (statFile$) Then Kill statFile$
+                    If _FileExists (statFile$ + "R") Then Kill statFile$ + "R"
+                    If _FileExists (statFile$ + "S") Then Kill statFile$ + "S"
+                    If _FileExists (statFile$ + "D") Then Kill statFile$ + "D"
                 End If
 
             Next

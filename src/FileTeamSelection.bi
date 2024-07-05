@@ -1,7 +1,7 @@
 Declare Sub ChooseTeam (yearNumber$, numberTeams, teamIdx)
 Declare Sub SelectTeam (selectedIdx)
 Declare Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
-Declare Sub ReadExtraData (teamYear$, teamIdx)
+Declare Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 Declare Sub UserFilePrompt (reportFile$)
 
 Declare Function nameStatFile$ (teamName$)

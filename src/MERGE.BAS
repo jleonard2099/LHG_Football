@@ -67,36 +67,32 @@ End Sub
 'perform the merge
 Sub MergeStats ()
 
-    Dim allGames, roadGames
+    Shared rbName$(), rbName_Road$(), wrName$(), wrName_Road$()
+    Shared qbName$(), qbName_Road$(), krName$(), krName_Road$()
+    Shared prName$(), prName_Road$(), punterName$(), punterName_Road$()
+    Shared pkName$(), pkName_Road$()
+    Shared intName$(), DRI$(), sackName$(), DSR$()
+    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
+    Shared statsLI$(), LIR$(), statsLK$(), LKR$()
+    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
+    Shared statsPK$(), PKR$()
 
-    Shared APR%(), GIR%(), GSR%()
-    Shared oppScore(), powerRating()
-    Shared statsGI%(), statsGS%()
-    Shared teamScore(), TR%()
+    Shared gameSite$(), gameSite_Road$()
+    Shared oppName$(), oppName_Road$()
+    Shared locIndicator$(), locIndicator_Road$()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
-    Shared CRDR!(), gameAttendance&()
+    Shared statsGI%(), GIR%(), statsGS%(), GSR%()
     Shared statsLC!(), LCR!(), statsLF!(), LFR!()
     Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
     Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
-    Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
-    Shared DRI$(), DSR$(), intName$()
-    Shared gameSite$(), gameSiteRoad$()
-    Shared HR$(), krName$(), locIndicator$()
-    Shared oppName$(), PKR$(), prName$(), punterName$(), pkName$()
-    Shared qbName$(), rbName$(), sackName$(), wrName$()
-
-    Shared statsLC$(), LCR$(), statsLF$(), LFR$()
-    Shared statsLI$(), LIR$(), statsLK$(), LKR$()
-    Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared statsPK$()
-
-
-    Shared ORD$()
-    Shared ORD%()
+    Shared teamScore(), teamScore_Road()
+    Shared oppScore(), oppScore_Road()
+    Shared powerRating(), powerRating_Road()
+    Shared gameAttendance&(), gameAtt_Road!()
 
     Do
 
@@ -106,7 +102,7 @@ Sub MergeStats ()
 
             teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
-			statFile$ = nameStatFile$(team$)
+            statFile$ = nameStatFile$(team$)
 
             Color 15, 0
             Cls
@@ -128,15 +124,31 @@ Sub MergeStats ()
 
                     Input #1, B$
 
-                    For I = 0 To 9: Input #1, AR1$(I): Next I
-                    For I = 0 To 5: Input #1, AR2$(I): Next I
-                    For I = 0 To 3: Input #1, AR3$(I): Next I
-                    For I = 0 To 2: Input #1, AR4$(I): Next I
-                    For I = 0 To 2: Input #1, AR5$(I): Next I
+                    For I = 0 To 9: 
+                        Input #1, rbName_Road$(I)
+                    Next I
 
-                    Input #1, AR6$(0)
+                    For I = 0 To 5: 
+                        Input #1, wrName_Road$(I)
+                    Next I
 
-                    For I = 0 To 1: Input #1, AR7$(I): Next I
+                    For I = 0 To 3: 
+                        Input #1, qbName_Road$(I)
+                    Next I
+
+                    For I = 0 To 2: 
+                        Input #1, krName_Road$(I)
+                    Next I
+
+                    For I = 0 To 2: 
+                        Input #1, prName_Road$(I)
+                    Next I
+
+                    Input #1, punterName_Road$(0)
+
+                    For I = 0 To 1: 
+                        Input #1, pkName_Road$(I)
+                    Next I
 
                     For J = 0 To 13
                         For K = 0 To 17: 
@@ -144,8 +156,14 @@ Sub MergeStats ()
                         Next K
                     Next J
 
-                    For L = 0 To 38: Input #1, ZR!(L): Next L
-                    For L = 0 To 38: Input #1, ZR1!(L): Next L
+                    For L = 0 To 38: 
+                        Input #1, ZR!(L)
+                    Next L
+                        
+                    For L = 0 To 38: 
+                        Input #1, ZR1!(L)
+                    Next L
+
                     For J = 0 To 9: 
                         Input #1, DRI$(J)
                         For J1 = 0 To 2: 
@@ -212,36 +230,36 @@ Sub MergeStats ()
 
                     Open pathRoadStats$ + statFile$ + "S" For Input As #2
 
-                    Input #2, roadGames
+                    Input #2, nbrGamesRoad
 
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, ORD%(I)
+                        Input #2, teamScore_Road(I)
                     Next I
                     
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, ORD$(I)
+                        Input #2, oppName_Road$(I)
                     Next I
                     
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, TR%(I)
+                        Input #2, oppScore_Road(I)
                     Next I
                     
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, HR$(I)
+                        Input #2, locIndicator_Road$(I)
                     Next I
 
                     For I = 0 To 1
                         For I1 = 1 To MAX_SCHED_STATS: 
-                            Input #2, APR%(I, I1)
+                            Input #2, powerRating_Road(I, I1)
                         Next
                     Next
 
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, CRDR!(I)
+                        Input #2, gameAtt_Road!(I)
                     Next I
 
                     For I = 1 To MAX_SCHED_STATS: 
-                        Input #2, gameSiteRoad$(I)
+                        Input #2, (gameSite_Road$(I))
                     Next I
 
                     Close #2
@@ -355,7 +373,7 @@ Sub MergeStats ()
 
                         Open pathCurrentStats$ + statFile$ + "S" For Input As #4
 
-                        Input #4, allGames
+                        Input #4, nbrGamesCurr
 
                         For I = 1 To MAX_SCHED_STATS: 
                             Input #4, teamScore(I)
@@ -392,46 +410,46 @@ Sub MergeStats ()
                         SEQ = 0
 
                         For K = 0 To 9
-                            If UCase$(AR1$(K)) <> UCase$(rbName$(K)) Then
+                            If UCase$(rbName_Road$(K)) <> UCase$(rbName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 5
-                            If UCase$(AR2$(K)) <> UCase$(wrName$(K)) Then
+                            If UCase$(wrName_Road$(K)) <> UCase$(wrName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 3
-                            If UCase$(AR3$(K)) <> UCase$(qbName$(K)) Then
+                            If UCase$(qbName_Road$(K)) <> UCase$(qbName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If UCase$(AR4$(K)) <> UCase$(krName$(K)) Then
+                            If UCase$(krName_Road$(K)) <> UCase$(krName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
                         For K = 0 To 2
-                            If UCase$(AR5$(K)) <> UCase$(prName$(K)) Then
+                            If UCase$(prName_Road$(K)) <> UCase$(prName$(K)) Then
                                 SEQ = SEQ + 1
                             End If
                         Next
 
-                        If UCase$(AR6$(0)) <> UCase$(punterName$(0)) Then
+                        If UCase$(punterName_Road$(0)) <> UCase$(punterName$(0)) Then
                             SEQ = SEQ + 1
                         End If
 
-                        If UCase$(AR7$(0)) <> UCase$(pkName$(0)) Then
+                        If UCase$(pkName_Road$(0)) <> UCase$(pkName$(0)) Then
                             SEQ = SEQ + 1
                         End If
 
                         If SEQ = 0 Then
 
-                            Call DoTheMerge(pathCurrentStats$, statFile$, B$, allGames, roadGames)
+                            Call DoTheMerge(pathCurrentStats$, statFile$, B$, nbrGamesCurr, nbrGamesRoad)
 
                             For J = 13 To 23
                                 Locate J
@@ -515,43 +533,46 @@ End Sub
 'values together from each file and then
 'overwrites the current file with the
 'newly aggregated results.
-Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
+Sub DoTheMerge (pathCurrentStats$, statFile$, B$, nbrGamesCurr, nbrGamesRoad)
 
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
-    Shared AR1$(), AR2$(), AR3$(), AR4$(), AR5$(), AR6$(), AR7$()
+    Shared rbName$(), rbName_Road$(), wrName$(), wrName_Road$()
+    Shared qbName$(), qbName_Road$(), krName$(), krName_Road$()
+    Shared prName$(), prName_Road$(), punterName$(), punterName_Road$()
+    Shared pkName$(), pkName_Road$()
     Shared intName$(), DRI$(), sackName$(), DSR$()
-    Shared locIndicator$(), HR$()
     Shared statsLC$(), LCR$(), statsLF$(), LFR$()
     Shared statsLI$(), LIR$(), statsLK$(), LKR$()
     Shared statsLP$(), LPR$(), statsLR$(), LRR$()
-    Shared oppName$(), statsPK$(), PKR$()
-    Shared gameSite$(), gameSiteRoad$()
-    Shared ORD$()
+    Shared statsPK$(), PKR$()
+
+    Shared gameSite$(), gameSite_Road$()
+    Shared oppName$(), oppName_Road$()
+    Shared locIndicator$(), locIndicator_Road$()
 
     Shared AF!(), AFR!(), AMR!(), AM!()
-    Shared gameAttendance&(), CRDR!()
+    Shared statsGI%(), GIR%(), statsGS%(), GSR%()
     Shared statsLC!(), LCR!(), statsLF!(), LFR!()
     Shared statsLI!(), LIR!(), statsLK!(), LKR!(), statsLP!(), LPR!()
     Shared statsLR!(), LRR!(), statsPK!(), PKR!()
     Shared statsZ!(), statsZ2!(), statsZ1!()
     Shared ZR!(), ZR1!(), ZR2!()
 
-    Shared APR%(), oppScore(), ORD%()
-    Shared GIR%(), GSR%(), powerRating()
-    Shared statsGI%(), statsGS%()
-    Shared teamScore(), TR%()
+    Shared teamScore(), teamScore_Road()
+    Shared oppScore(), oppScore_Road()
+    Shared powerRating(), powerRating_Road()
+    Shared gameAttendance&(), gameAtt_Road!()
 
-    For K = 1 To roadGames
-        allGames = allGames + 1
-        teamScore(allGames) = ORD%(K)
-        oppName$(allGames) = ORD$(K)
-        oppScore(allGames) = TR%(K)
-        locIndicator$(allGames) = HR$(K)
-        gameAttendance&(allGames) = CRDR!(K)
-        gameSite$(allGames) = gameSiteRoad$(K)
+    For K = 1 To nbrGamesRoad
+        nbrGamesCurr = nbrGamesCurr + 1
+        teamScore(nbrGamesCurr) = teamScore_Road(K)
+        oppName$(nbrGamesCurr) = oppName_Road$(K)
+        oppScore(nbrGamesCurr) = oppScore_Road(K)
+        locIndicator$(nbrGamesCurr) = locIndicator_Road$(K)
+        gameAttendance&(nbrGamesCurr) = gameAtt_Road!(K)
+        gameSite$(nbrGamesCurr) = gameSiteRoad$(K)
 
         For I = 0 To 1
-            powerRating(I, allGames) = APR%(I, K)
+            powerRating(I, nbrGamesCurr) = powerRating_Road(I, K)
         Next
     Next
 
@@ -574,7 +595,9 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
         statsZ1!(I) = statsZ1!(I) + ZR1!(I)
     Next
 
-    If ZR!(28) > statsZ!(28) Then statsZ!(28) = ZR!(28)
+    If ZR!(28) > statsZ!(28) Then 
+        statsZ!(28) = ZR!(28)
+    End If
 
     For I = 0 To 9:
         For I1 = 0 To 2
@@ -755,7 +778,7 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Open pathCurrentStats$ + statFile$ + "S" For Output As #2
 
-    Write #2, allGames
+    Write #2, nbrGamesCurr
 
     For I = 1 To MAX_SCHED_STATS: 
         Write #2, teamScore(I)
@@ -791,7 +814,8 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, allGames, roadGames)
 
     Y = 0
 
-    Locate 20, 20: Color 12: Print "RESULTS SUCCESSFULLY MERGED!!"
+    Color 12
+    Locate 20, 20: Print "RESULTS SUCCESSFULLY MERGED!!"
 
 End Sub
 

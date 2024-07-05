@@ -19,16 +19,16 @@ Dim gameSite$(MAX_SCHED_STATS), locIndicator$(MAX_SCHED_STATS), oppName$(MAX_SCH
 
 Dim statsZ!(38), statsZ1!(38), statsZ2!(50, 18)
 
-Dim statsZ1$(40), statsZ2$(40)
+Dim memberName$(40), memberYear$(40)
 
 '-- For Road Data
-Dim APR%(1, MAX_SCHED_STATS), ORD%(MAX_SCHED_STATS)
-Dim TR%(MAX_SCHED_STATS)
+Dim powerRating_Road(1, MAX_SCHED_STATS), teamScore_Road(MAX_SCHED_STATS)
+Dim oppScore_Road(MAX_SCHED_STATS)
 
-Dim CRDR!(MAX_SCHED_STATS)
+Dim gameAtt_Road!(MAX_SCHED_STATS)
 
-Dim gameSiteRoad$(MAX_SCHED_STATS)
-Dim HR$(MAX_SCHED_STATS), ORD$(MAX_SCHED_STATS)
+Dim gameSite_Road$(MAX_SCHED_STATS)
+Dim locIndicator_Road$(MAX_SCHED_STATS), oppName_Road$(MAX_SCHED_STATS)
 
 
 ' *** Schedule Data ***
@@ -43,7 +43,7 @@ Dim Shared DT$, TM$, TN$
 
 Dim location$(2), modeAbbrev$(3), overtime$(3)
 Dim playMode$(3)
-Dim rulesType$(5), ruleYrPro$(3), ruleYrColl$(5)
+Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 
@@ -57,7 +57,7 @@ Dim Shared fullLosses, fullTies, fullWins
 Dim Shared PTSFC, PTSAC
 
 Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
-Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
+Dim rbName_Road$(9), wrName_Road$(5), qbName_Road$(3), krName_Road$(2), prName_Road$(2), punterName_Road$(3), pkName_Road$(1)
 Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
 Dim LCN$(0 To 15, 0 To 1), LCR$(0 To 15, 0 To 1), LFN$(0 To 1), LFR$(0 To 1)
 Dim LIN$(0 To 9, 0 To 1), LIR$(0 To 9, 0 To 1), LKN$(0 To 2, 0 To 1), LKR$(0 To 2, 0 To 1)
@@ -69,7 +69,7 @@ Dim statsLK$(0 To 2, 0 To 1), statsLP$(0 To 3, 0 To 1), statsLR$(0 To 9, 0 To 1)
 Dim statsPK$(0 To 2, 1)
 
 Dim GIN%(0 To 9, 2), GIR%(0 To 9, 2), GSN%(0 To 15, 1), GSR%(0 To 15, 1)
-Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1), statsZ1%(40)
+Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1), memberIdx(40)
 
 Dim AF!(0 To 1, 0 To 4), AM!(1, 4)
 Dim AFN!(0 To 1, 0 To 4), AFR!(0 To 1, 0 To 4)
@@ -132,9 +132,13 @@ Dim Shared findFile$
 
 Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
 Dim compQB$(4), compRB$(10), compWR$(16)
-Dim compZ1$(60), compZ2$(1 To 240), compZ3$(1 To 240)
+Dim compZ2$(1 To 240), compZ3$(1 To 240)
 Dim N2$(240), N3$(240), NT$(10, 20)
-Dim PS$(10), PT$(1200), statFiles$(30)
+Dim PS$(10), PT$(1200)
+
+'These are 30 / 60 because TEAMS_PER_CONFERENCE = TEAMS_PER_LEAGUE = 30
+'We currently can't distinguish
+Dim statFiles$(30), statFilesComp$(60)
 Dim TB$(18), teamRecDesc$(50), TT$(10, 20)
 
 Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
@@ -221,17 +225,17 @@ Dim div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
 
 Dim awayLosses!(30), awayLosses_2nd!(30), awayWins!(30), awayWins_2nd!(30)
 
-DimhomeScoreTeam!(100), homeScoreTeam_2nd!(100), homeScoreOpp!(100), homeScoreOpp_2nd!(100)
-DimawayScoreTeam!(100), awayScoreTeam_2nd!(100),awayScoreOpp!(100), awayScoreOpp_2nd!(100)
+Dim homeScoreTeam!(100), homeScoreTeam_2nd!(100), homeScoreOpp!(100), homeScoreOpp_2nd!(100)
+Dim awayScoreTeam!(100), awayScoreTeam_2nd!(100), awayScoreOpp!(100), awayScoreOpp_2nd!(100)
 Dim homeLosses!(30), homeLosses_2nd!(30), homeTies!(30), homeTies_2nd!(30), homeWins!(30), homeWins_2nd!(30)
-Dim awayTies_2nd!(30),awayTies!(30)
-Dim totAwayLosses!(4), totAwayLoss_2nd!(4), totAwayWins!(4), totAwayWins_2nd!(4)
+Dim awayTies_2nd!(30), awayTies!(30)
+Dim totAwayLosses!(4), totAwayLosses_2nd!(4), totAwayWins!(4), totAwayWins_2nd!(4)
 Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd(4), totHomeScoreOpp!(4), totHomeScoreOpp_2nd!(4)
-Dim totAwayScoreTeam!(4), totAwayScoreTeam!(4), totAwayScoreOpp!(4), totAwayScoreOpp_2nd!(4)
+Dim totAwayScoreTeam!(4), totAwayScoreTeam_2nd!(4), totAwayScoreOpp!(4), totAwayScoreOpp_2nd!(4)
 Dim totHomeLosses!(4), totHomeLosses_2nd!(4), totHomeWins!(4), totHomeWins_2nd!(4)
 Dim totHomeTies!(4), totHomeTies_2nd!(4), totAwayTies!(4), totAwayTies_2nd!(4)
 
-Dim DV$(3), DV2$(3), statsZ1_2$(30), statsZ2_2$(30)
+Dim DV$(3), DV2$(3), memberNames_2nd$(30), memberYear_2nd$(30)
 
 
 '----------------------------------------
@@ -253,7 +257,7 @@ Dim GMA!(300), GMB!(180), GMC!(120)
 Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
-Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 30), sackStats!(1, 1)
+Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 0 To 29), sackStats!(1, 1)
 
 Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
 Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
@@ -263,7 +267,7 @@ Dim expCategories$(74)
 Dim intNam_TRADE$(1, 9)
 Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
 Dim lookyRBacks$(10), lookyWdRec$(6), lookyQBacks$(4), lookyKickRet$(3), lookyPRet$(3), lookyPunter$(2), lookyKicker$(2)
-Dim lookyTT$(31, 30)
+Dim lookyTT$(31, 0 To 29)
 Dim QBL$(120), sackNam_TRADE$(1, 14)
 Dim TMM$(480), TPP$(480), TYY$(480)
 
@@ -303,14 +307,15 @@ Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, chosenPlay, coverage, compTeam, CP, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
+Dim Shared fieldSide, firstDownClockOpt
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I, J
 
-Dim Shared isOT, JJ, K3, fieldSide, firstDownClockOpt
-Dim Shared kickYL, playSegment, overtimeOpt, nbrScores
+Dim Shared isOT, JJ, K3
+Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
 Dim Shared penaltyYds, playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
@@ -347,30 +352,35 @@ Dim Shared PC%, PS%
 
 Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
-Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
+Dim Shared adjF0(4), adjF1(4)
 Dim Shared brkawayYds(38, 4), climate(6)
 'Climate array
 'index 0 = wind direction
 'index 1 = wind strength
-'index 2 = 
-'index 3 = 
+'index 2 =
+'index 3 =
 'index 4 = weather
-'index 5 = 
-'index 6 = 
+'index 5 =
+'index 6 =
+
+Dim Shared gameAF!(1, 1, 0 To 4), gameAM!(1, 1, 0 To 4)
+Dim Shared gameLC!(1, 20), gameLF!(1, 1), gameLI!(1, 0 To 9), gameLK!(1, 0 To 2), gameLP!(1, 0 To 3), gameLR!(1, 0 To 9)
+Dim Shared gamePK!(0 To 1, 0 To 2)
+Dim Shared gameZ0!(0 To 38), gameZ1!(0 To 38), gameZ2!(0 To 13, 0 To 17)
+
 
 Dim Shared activeKicker(1)
 Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
 Dim Shared FA(1, 1, 4), FM(1, 1, 4)
 Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
-Dim Shared gameZ(0 To 38), gameZ1(0 To 38), gameZ2(0 To 13, 0 To 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
 Dim Shared K1(50, 6), K3(1, 6)
 Dim Shared hasRunFF(1), playerInts(1, 9), IR(1, 9)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
-Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
+Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1)
-Dim Shared passCovAdj(3, 10, 11), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
+Dim Shared passCovAdj(3, 10, 11), penaltyYds(2), playerSacks(1, 14)
 Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
@@ -410,5 +420,4 @@ Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
 'I believe they are for tracking records / "longest" plays
 Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1)
 Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
-
 

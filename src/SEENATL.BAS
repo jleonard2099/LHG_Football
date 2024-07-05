@@ -41,9 +41,7 @@ Sub LoadLeaderFiles_Natl (confName$, NRT, targetFile$)
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
     Open diskPaths$(2) + targetFile$ + ".CON" For Input As #1
-
     Input #1, confName$
-
     Close #1
 
     Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2

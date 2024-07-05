@@ -17,17 +17,14 @@ Sub CompileNatlOrg ()
     Shared O1!(), O2!(), O3!(), OT!()
     Shared PT!(), PTSA!(), PTSF!(), teamRecords!()
 
+    Shared statFilesComp$(), compZ2$(), compZ3$()
     Shared indRecDesc$()
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared statFiles$()
+    Shared memberName$()
     Shared N2$(), N3$(), NT$()
     Shared PT$(), teamRecDesc$(), TT$()
-
-    Shared div1Name$, div2Name$
+    Shared statFiles$()
 
     Dim NRT
-
-    Dim confNames$(MAX_CONFERENCES)
 
     'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
@@ -118,7 +115,7 @@ Sub CompileNatlOrg ()
         Input #2, X$
 
         For I = 1 To MAX_CONFERENCES
-            Input #2, confNames$(I)
+            Input #2, memberName$(I)
         Next
 
         Close #2
@@ -126,7 +123,7 @@ Sub CompileNatlOrg ()
         For currConf = 1 To MAX_CONFERENCES
 
             'Look for * as terminating char
-            If confNames$(currConf) <> "XXX" Then
+            If memberName$(currConf) <> "XXX" Then
 
                 Cls
 
@@ -135,7 +132,7 @@ Sub CompileNatlOrg ()
                 Erase PTSF!, PTSA!
 
                 For X = 1 To 60
-                    compZ1$(X) = "*"
+                    statFilesComp$(X) = "*"
                 Next
 
                 For X = 1 To 240
@@ -157,115 +154,110 @@ Sub CompileNatlOrg ()
                     compTT!(10, I, 7) = -99
                 Next
 
-                Open diskPaths$(2) + confNames$(currConf) + ".TMS" For Input As #3
+                targetConf$ = diskPaths$(2) + memberName$(currConf) + ".TMS"
 
-                Input #3, FF$
-                Input #3, div1Name$
-                Input #3, div2Name$
+                If _FileExists(targetConf$) Then
 
-                For XW = 1 To 30
-                    Input #3, statFiles$(XW)
-                Next
+                    Open targetConf$ For Input As #4
+                    Input #4, statType
+                    Close #4
 
-                Close #3
+                    If statType <> 0 Then
 
-                Open diskPaths$(2) + confNames$(currConf) + ".TMI" For Input As #4
-                Input #4, LG%
-                Close #4
+                        MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
+                        BoxWidth = 20
+                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                        I$ = GetKeyPress$
+                        Call CSMsgBox("", 0, Pass)
+                        Exit Sub
 
-                If LG% <> 0 Then
+                    Else
 
-                    MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
-                    BoxWidth = 20
-                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                    I$ = GetKeyPress$
-                    Call CSMsgBox("", 0, Pass)
-                    Exit Sub
+                        Open targetConf$ For Input As #3
 
-                Else
+                        Input #3, confName$
+                        Input #3, div1$
+                        Input #3, div2$
 
-                    Open diskPaths$(2) + confNames$(currConf) + ".TMS" For Input As #5
+                        For XW = 1 To 30
+                            Input #3, statFiles$(XW)
+                            statFilesComp$(X) = statFiles$(XW)
+                        Next
 
-                    Input #5, FF$
-                    Input #5, div1Name$
-                    Input #5, div2Name$
+                        Close #3
 
-                    For X = 1 To 30
-                        Input #5, compZ1$(X)
-                    Next X
+                        For XW = 1 To 30
 
-                    Close #5
+                            'Look for * as terminating char
+                            If statFiles$(XW) <> Chr$(42) Then
 
-                    For XW = 1 To 30
+                                haveStats = FindStatsNat%(XW, statFiles$(XW), numberGames, NRT)
 
-                        'Look for * as terminating char
-                        If statFiles$(XW) <> Chr$(42) Then
+                                If (haveStats) Then
 
-                            haveStats = FindStatsNat%(XW, statFiles$(XW), numberGames, NRT)
+                                    L = Len(statFiles$(XW))
+                                    WT$ = ""
 
-                            If (haveStats) Then
+                                    For X = 1 To L
+                                        A = Asc(Mid$(statFiles$(XW), X, 1))
+                                        WT$ = WT$ + Chr$(A)
+                                    Next X
 
-                                L = Len(statFiles$(XW))
-                                WT$ = ""
+                                    nonConfGame = 0
 
-                                For X = 1 To L
-                                    A = Asc(Mid$(statFiles$(XW), X, 1))
-                                    WT$ = WT$ + Chr$(A)
-                                Next X
+                                    For X = 1 To 30
 
-                                nonConfGame = 0
+                                        If statFilesComp$(X) = WT$ Then
 
-                                For X = 1 To 30
+                                            If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
 
-                                    If compZ1$(X) = WT$ Then
+                                                nonConfGame = 1
+                                                Exit For
 
-                                        If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
+                                            Else
 
-                                            nonConfGame = 1
-                                            Exit For
+                                                O1!(X) = fullWins
+                                                O2!(X) = fullLosses
+                                                O3!(X) = fullTies
 
-                                        Else
+                                                O1!(X + 30) = confWins
+                                                O2!(X + 30) = confLosses
+                                                O3!(X + 30) = confTies
 
-                                            O1!(X) = fullWins
-                                            O2!(X) = fullLosses
-                                            O3!(X) = fullTies
+                                                PTSF!(X + 30) = PTSFC
+                                                PTSA!(X + 30) = PTSAC
+                                                statFilesComp$(X + 30) = statFilesComp$(X)
 
-                                            O1!(X + 30) = confWins
-                                            O2!(X + 30) = confLosses
-                                            O3!(X + 30) = confTies
-
-                                            PTSF!(X + 30) = PTSFC
-                                            PTSA!(X + 30) = PTSAC
-                                            compZ1$(X + 30) = compZ1$(X)
+                                            End If
 
                                         End If
 
+                                    Next X
+                                    'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
+
+                                    If nonConfGame <> 1 And _FileExists(diskPaths$(1) + statFiles$(XW)) Then
+
+                                        Call ReadStatsLeaders(statFiles$(XW), numberGames, TM$, 0)
+                                        Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
+                                        Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
+
                                     End If
 
-                                Next X
-                                'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
+                                End If 'Done looking for stats
 
-                                If nonConfGame <> 1 And _FileExists(diskPaths$(1) + statFiles$(XW)) Then
+                            End If 'Done checking for valid stat file
 
-                                    Call ReadStatsLeaders(statFiles$(XW), numberGames, TM$, 0)
-                                    Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
-                                    Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
+                        Next XW
 
-                                End If
+                        Call SortStandingsLeague
+                        Call PostLeadersConf(memberName$(currConf))
+                        Call SortLeadersNat
 
-                            End If
+                    End If 'Done checking for valid conference
 
-                        End If
-
-                    Next XW
-
-                End If 'Done checking for valid conference
-
-                Call SortStandingsLeague
-                Call PostLeadersConf(confNames$(currConf))
-                Call SortLeadersNat
+                End If 'Done checking if file exists
 
             End If
 
@@ -436,7 +428,7 @@ Sub SortLeadersNat ()
     Shared compTT!(), compZ1!()
     Shared N1!(), NT!()
 
-    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared compZ2$(), compZ3$()
     Shared N2$(), N3$(), NT$(), TT$()
 
     ' RUSHING AVERAGE
@@ -1319,7 +1311,7 @@ End Sub
 'and writes the updated stats to the file
 Sub PostLeadersOrg (organization$, NRT)
 
-    Shared compZ1$(), N2$(), N3$(), NT$()
+    Shared statFilesComp$(), N2$(), N3$(), NT$()
     Shared PT$()
 
     Shared N1!(), NT!()
@@ -1333,7 +1325,7 @@ Sub PostLeadersOrg (organization$, NRT)
     Print "POSTING "; organization$; " LEADERS"
 
     For X = 1 To 60:
-        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+        Write #1, statFilesComp$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240

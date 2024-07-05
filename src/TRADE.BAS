@@ -1967,9 +1967,19 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
             'Locate 2, 33
             'Color 31: Print "LOADING..."
 
-            Call ReadTradeTeam(yearNumber$, selectedIdx, tradeIdx)
+            Call ReadTradeTeam(yearNumber$, selectedIdx, tradeIdx, validData)
             
         End If
+
+    End If
+
+    If validData = 0 And ExitCode% <> 27 Then
+
+        selectedIdx = -1
+        Locate 9,
+        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
+        K$ = GetKeyPress$
+        Call CSMsgBox("", 0, PASS)
 
     End If
 
@@ -1981,7 +1991,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads team data into 
 'arrays for the selected team
-Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx)
+Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx, dataOK)
 
     'C2 has to do with RB Rec 
     'C3 has to do with RB Att
@@ -2118,68 +2128,77 @@ Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx)
 
     Close #1
 
-    For I = 0 To 15: 
-        C2!(I) = 0
-    Next
+    If CheckString%(targetTeam$) = 1 then
 
-    For I = 9 To 1 Step -1
-        If rbAtt_TRADE(tradeIdx, I) <> 0 Then
-            rbAtt_TRADE(tradeIdx, I) = rbAtt_TRADE(tradeIdx, I) - rbAtt_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        dataOK = 0
 
-    For I = 0 To 5: 
-        rbRec_TRADE(tradeIdx, I + 10) = wrRec_TRADE(tradeIdx, I)
-    Next
+    Else
 
-    U = 0
+        'Get contribution %'s
+        Erase C2!
 
-    For I = 1 To 15
-        If rbRec_TRADE(tradeIdx, I) = 0 Then
-            U = U + 1
-        Else
-            C2!(I) = rbRec_TRADE(tradeIdx, I) - rbRec_TRADE(tradeIdx, I - 1 - U)
-            U = 0
-        End If
-    Next
+        U = 0
 
-    For I = 1 To 15: 
-        rbRec_TRADE(tradeIdx, I) = C2!(I)
-    Next
+        For I = 9 To 1 Step -1
+            If rbAtt_TRADE(tradeIdx, I) <> 0 Then
+                rbAtt_TRADE(tradeIdx, I) = rbAtt_TRADE(tradeIdx, I) - rbAtt_TRADE(tradeIdx, I - 1)
+            End If
+        Next
 
-    For I = 0 To 5: 
-        wrRec_TRADE(tradeIdx, I) = rbRec_TRADE(tradeIdx, I + 10)
-    Next
+        For I = 0 To 5: 
+            rbRec_TRADE(tradeIdx, I + 10) = wrRec_TRADE(tradeIdx, I)
+        Next
 
-    For I = 3 To 1 Step -1
-        If qbPA_TRADE(tradeIdx, I) <> 0 Then
-            qbPA_TRADE(tradeIdx, I) = qbPA_TRADE(tradeIdx, I) - qbPA_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        For I = 1 To 15
+            If rbRec_TRADE(tradeIdx, I) = 0 Then
+                U = U + 1
+            Else
+                C2!(I) = rbRec_TRADE(tradeIdx, I) - rbRec_TRADE(tradeIdx, I - 1 - U)
+                U = 0
+            End If
+        Next
 
-    For I = 2 To 1 Step -1
-        If krNumRet_TRADE(tradeIdx, I) <> 0 Then
-            krNumRet_TRADE(tradeIdx, I) = krNumRet_TRADE(tradeIdx, I) - krNumRet_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        For I = 1 To 15: 
+            rbRec_TRADE(tradeIdx, I) = C2!(I)
+        Next
 
-    For I = 2 To 1 Step -1
-        If prRet_TRADE(tradeIdx, I) <> 0 Then
-            prRet_TRADE(tradeIdx, I) = prRet_TRADE(tradeIdx, I) - prRet_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        For I = 0 To 5: 
+            wrRec_TRADE(tradeIdx, I) = rbRec_TRADE(tradeIdx, I + 10)
+        Next
 
-    For I = 1 To 1 Step -1
-        If FGPct_TRADE(tradeIdx, I) <> 0 Then
-            FGPct_TRADE(tradeIdx, I) = FGPct_TRADE(tradeIdx, I) - FGPct_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        For I = 3 To 1 Step -1
+            If qbPA_TRADE(tradeIdx, I) <> 0 Then
+                qbPA_TRADE(tradeIdx, I) = qbPA_TRADE(tradeIdx, I) - qbPA_TRADE(tradeIdx, I - 1)
+            End If
+        Next
 
-    For I = 1 To 1 Step -1
-        If PATPct_TRADE(tradeIdx, I) <> 0 Then
-            PATPct_TRADE(tradeIdx, I) = PATPct_TRADE(tradeIdx, I) - PATPct_TRADE(tradeIdx, I - 1)
-        End If
-    Next
+        For I = 2 To 1 Step -1
+            If krNumRet_TRADE(tradeIdx, I) <> 0 Then
+                krNumRet_TRADE(tradeIdx, I) = krNumRet_TRADE(tradeIdx, I) - krNumRet_TRADE(tradeIdx, I - 1)
+            End If
+        Next
+
+        For I = 2 To 1 Step -1
+            If prRet_TRADE(tradeIdx, I) <> 0 Then
+                prRet_TRADE(tradeIdx, I) = prRet_TRADE(tradeIdx, I) - prRet_TRADE(tradeIdx, I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If FGPct_TRADE(tradeIdx, I) <> 0 Then
+                FGPct_TRADE(tradeIdx, I) = FGPct_TRADE(tradeIdx, I) - FGPct_TRADE(tradeIdx, I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If PATPct_TRADE(tradeIdx, I) <> 0 Then
+                PATPct_TRADE(tradeIdx, I) = PATPct_TRADE(tradeIdx, I) - PATPct_TRADE(tradeIdx, I - 1)
+            End If
+        Next
+
+        dataOK = 1
+        
+    End If
 
 End Sub
 

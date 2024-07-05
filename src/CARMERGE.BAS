@@ -117,9 +117,9 @@ Sub MergeAddYear (selectedFile$, statFile$)
 
         If finalUpdate$ = "Y" Then doPostLeaders = 1 Else doPostLeaders = 0
 
-        Call AddCareerYear(finalUpdate, selectedFile$, statFile$)
+        Call AddCareerYear(doPostLeaders, selectedFile$, statFile$)
 
-    End If
+    End If ' Done checking for year to add
 
 End Sub
 
@@ -156,7 +156,6 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
     Dim careerLP!(20), careerLR!(50), careerPK!(15)
 
     Dim careerGS%(55, 1), careerGI%(55, 2)
-
 
     Locate 20, 5
     Print "LOADING CAREER STATS . . . . PLEASE WAIT"
@@ -524,9 +523,12 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     RBBS!(N, J, K) = statsZ2!(I, K)
                 Next K
 
-                RBBS!(N, J, 6) = careerLR!(I): careerRBS$(N, J, 0) = statsLR$(I, 0)
-                RBBS!(N, J, 9) = careerLC!(I): careerRBS$(N, J, 1) = statsLC$(I, 0)
-                RBBS!(N, J, 7) = 1: RBBS!(N, J, 8) = targetYear
+                RBBS!(N, J, 6) = careerLR!(I)
+                careerRBS$(N, J, 0) = statsLR$(I, 0)
+                RBBS!(N, J, 9) = careerLC!(I)
+                careerRBS$(N, J, 1) = statsLC$(I, 0)
+                RBBS!(N, J, 7) = 1
+                RBBS!(N, J, 8) = targetYear
 
                 Exit For
 
@@ -540,11 +542,14 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
             If RR = 50 Then
 
                 If carRBacks$(I) <> "END" And carRBacks$(I) <> "XXX" And Left$(carRBacks$(I), 1) <> " " Then
+
                     NB = NB + 1
                     A1C$(NB) = carRBacks$(I)
                     N = 1
 
-                    For K = 0 To 5: RBBS!(N, NB, K) = statsZ2!(I, K): Next
+                    For K = 0 To 5: 
+                        RBBS!(N, NB, K) = statsZ2!(I, K)
+                    Next
 
                     RBBS!(N, NB, 6) = careerLR!(I)
                     careerRBS$(N, NB, 0) = statsLR$(I, 0)
@@ -552,6 +557,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     careerRBS$(N, NB, 1) = statsLC$(I, 0)
                     RBBS!(N, NB, 7) = 1
                     RBBS!(N, NB, 8) = targetYear
+
                 End If
 
             End If
@@ -603,16 +609,20 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
             If RR = 40 Then
 
                 If carWdRec$(I) <> "END" And carWdRec$(I) <> "XXX" And Left$(carWdRec$(I), 1) <> " " Then
+
                     NC = NC + 1
                     A2C$(NC) = carWdRec$(I)
                     N = 1
 
-                    For K = 6 To 8: WRRS!(N, NC, K - 6) = statsZ2!(I, K): Next
+                    For K = 6 To 8: 
+                        WRRS!(N, NC, K - 6) = statsZ2!(I, K)
+                    Next
 
                     WRRS!(N, NC, 3) = careerLC!(I + 10)
                     careerWRS$(N, NC, 0) = statsLC$(I + 10, 0)
                     WRRS!(N, NC, 4) = 1
                     WRRS!(N, NC, 5) = targetYear
+
                 End If
 
             End If
@@ -667,9 +677,14 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         ND = ND + 1
                         A3C$(ND) = carQBacks$(I)
                         N = 1
-                        For K = 9 To 13: QBBS!(N, ND, K - 9) = statsZ2!(I, K): Next
+
+                        For K = 9 To 13: 
+                            QBBS!(N, ND, K - 9) = statsZ2!(I, K)
+                        Next
+
                         QBBS!(N, ND, 5) = careerLP!(I): careerQBS$(N, ND, 0) = statsLP$(I, 0)
                         QBBS!(N, ND, 6) = 1: QBBS!(N, ND, 7) = targetYear
+
                     End If
 
                 End If
@@ -786,16 +801,20 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If RR = 15 Then
 
                     If carPRet$(I) <> "END" And carPRet$(I) <> "XXX" And Left$(carPRet$(I), 1) <> " " Then
+
                         NF = NF + 1
                         A5C$(NF) = carPRet$(I)
                         N = 1
 
-                        For K = 14 To 16: PRS!(N, NF, K - 14) = statsZ2!(I + 3, K): Next
+                        For K = 14 To 16: 
+                            PRS!(N, NF, K - 14) = statsZ2!(I + 3, K)
+                        Next
 
                         PRS!(N, NF, 3) = careerPK!(I)
                         PRRS$(N, NF, 0) = careerPK$(I, 0)
                         PRS!(N, NF, 4) = 1
                         PRS!(N, NF, 5) = targetYear
+
                     End If
 
                 End If
@@ -840,6 +859,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 If RR = 10 Then
 
                     If carPunters$(I) <> "END" And carPunters$(I) <> "XXX" And Left$(carPunters$(I), 1) <> " " Then
+
                         NG = NG + 1
                         A6C$(NG) = carPunters$(I)
                         N = 1
@@ -847,6 +867,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         careerPUS!(N, NG, 1) = statsZ!(8)
                         careerPUS!(N, NG, 2) = 1
                         careerPUS!(N, NG, 3) = targetYear
+
                     End If
 
                 End If
@@ -886,9 +907,17 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                     Next K
 
                     careerFGS!(N, J, 4) = careerLF!(I)
-                    careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = targetYear
-                    For J1 = 0 To 4: careerFGS!(N, J, J1 + 5) = AM!(I, J1): Next
-                    For J1 = 0 To 4: careerFGS!(N, J, J1 + 10) = AF!(I, J1): Next
+                    careerFGS!(N, J, 15) = 1
+                    careerFGS!(N, J, 16) = targetYear
+                    
+                    For J1 = 0 To 4: 
+                        careerFGS!(N, J, J1 + 5) = AM!(I, J1)
+                    Next
+                    
+                    For J1 = 0 To 4: 
+                        careerFGS!(N, J, J1 + 10) = AF!(I, J1)
+                    Next
+
                 Else
 
                     If I = 1 Then
@@ -898,10 +927,16 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         Next K
 
                         careerFGS!(N, J, 4) = careerLF!(I)
-                        careerFGS!(N, J, 15) = 1: careerFGS!(N, J, 16) = targetYear
+                        careerFGS!(N, J, 15) = 1
+                        careerFGS!(N, J, 16) = targetYear
 
-                        For J1 = 0 To 4: careerFGS!(N, J, J1 + 5) = AM!(I, J1): Next
-                        For J1 = 0 To 4: careerFGS!(N, J, J1 + 10) = AF!(I, J1): Next
+                        For J1 = 0 To 4: 
+                            careerFGS!(N, J, J1 + 5) = AM!(I, J1)
+                        Next
+                        
+                        For J1 = 0 To 4: 
+                            careerFGS!(N, J, J1 + 10) = AF!(I, J1)
+                        Next
 
                     End If
 
@@ -921,15 +956,26 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         N = 1
 
                         If I = 0 Then
+
                             For K = 3 To 6:
                                 careerFGS!(N, NH, K - 3) = statsZ2!(K, 17)
                             Next K
+
                             careerFGS!(N, NH, 4) = careerLF!(I)
-                            careerFGS!(N, NH, 15) = 1: careerFGS!(N, NH, 16) = targetYear
-                            For J1 = 0 To 4: careerFGS!(N, NH, J1 + 5) = AM!(I, J1): Next
-                            For J1 = 0 To 4: careerFGS!(N, NH, J1 + 10) = AF!(I, J1): Next
+                            careerFGS!(N, NH, 15) = 1
+                            careerFGS!(N, NH, 16) = targetYear
+
+                            For J1 = 0 To 4: 
+                                careerFGS!(N, NH, J1 + 5) = AM!(I, J1)
+                            Next
+
+                            For J1 = 0 To 4: 
+                                careerFGS!(N, NH, J1 + 10) = AF!(I, J1)
+                            Next
+
                             skipLoop% = 1
                             Exit For
+
                         End If
 
                         If I = 1 Then
@@ -980,9 +1026,12 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                 End If
 
                 careerGIS!(N, J, 0) = careerGI%(I, 0)
-                careerGIS!(N, J, 1) = 1: careerGIS!(N, J, 2) = targetYear
+                careerGIS!(N, J, 1) = 1
+                careerGIS!(N, J, 2) = targetYear
                 Exit For
+
             Else
+
                 RR = RR + 1
                 If RR = 10 Then
 
@@ -994,6 +1043,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         careerGIS!(N, NJ, 0) = careerGI%(I, 0)
                         careerGIS!(N, NJ, 1) = 1
                         careerGIS!(N, NJ, 2) = targetYear
+
                     End If
 
                 End If
@@ -1044,6 +1094,7 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
                         careerGSS!(N, NK, 0) = careerGS%(I, 0)
                         careerGSS!(N, NK, 1) = 1
                         careerGSS!(N, NK, 2) = targetYear
+
                     End If
 
                 End If
@@ -1072,23 +1123,41 @@ Sub AddCareerYear (finalUpdate, careerFile$, statFile$)
 
     Write #4, TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
-    For I = 0 To 49: Write #4, A1C$(I): Next
+    For I = 0 To 49: 
+        Write #4, A1C$(I)
+    Next
 
-    For I = 0 To 39: Write #4, A2C$(I): Next
+    For I = 0 To 39: 
+        Write #4, A2C$(I)
+    Next
 
-    For I = 0 To 19: Write #4, A3C$(I): Next
+    For I = 0 To 19: 
+        Write #4, A3C$(I)
+    Next
 
-    For I = 0 To 14: Write #4, A4C$(I): Next
+    For I = 0 To 14: 
+        Write #4, A4C$(I)
+    Next
 
-    For I = 0 To 14: Write #4, A5C$(I): Next
+    For I = 0 To 14: 
+        Write #4, A5C$(I)
+    Next
 
-    For I = 0 To 9: Write #4, A6C$(I): Next
+    For I = 0 To 9: 
+        Write #4, A6C$(I)
+    Next
 
-    For I = 0 To 9: Write #4, A7C$(I): Next
+    For I = 0 To 9: 
+        Write #4, A7C$(I)
+    Next
 
-    For I = 0 To 54: Write #4, DIC$(I): Next
+    For I = 0 To 54: 
+        Write #4, DIC$(I)
+    Next
 
-    For I = 0 To 54: Write #4, DSC$(I): Next
+    For I = 0 To 54: 
+        Write #4, DSC$(I)
+    Next
 
     For N = 1 To 15
         For J = 0 To 49
@@ -1313,6 +1382,7 @@ Sub ProcessLeaders (careerFile$)
         If A1C$(I) <> "" And A1C$(I) <> "XXX" And A1C$(I) <> "END" Then
 
             For J = 1 To 15
+
                 If RBBS!(J, I, 8) = 0 Then
                     Exit For
                 Else
@@ -1396,39 +1466,44 @@ Sub ProcessLeaders (careerFile$)
     For I = 0 To 39
 
         If A2C$(I) <> "" And A2C$(I) <> "XXX" And A2C$(I) <> "END" Then
+
             For J = 1 To 15
 
-                If WRRS!(J, I, 5) = 0 Then Exit For
+                If WRRS!(J, I, 5) = 0 Then
+                    Exit For
+                Else
 
-                If WRRS!(J, I, 0) > WRRC!(0) Then
-                    WRRC!(0) = WRRS!(J, I, 0)
-                    WRC$(0) = A2C$(I)
-                    WRYR%(0) = WRRS!(J, I, 5)
-                End If
+                    If WRRS!(J, I, 0) > WRRC!(0) Then
+                            WRRC!(0) = WRRS!(J, I, 0)
+                            WRC$(0) = A2C$(I)
+                            WRYR%(0) = WRRS!(J, I, 5)
+                        End If
 
-                If WRRS!(J, I, 1) > WRRC!(1) Then
-                    WRRC!(1) = WRRS!(J, I, 1)
-                    WRC$(1) = A2C$(I)
-                    WRYR%(1) = WRRS!(J, I, 5)
-                End If
+                        If WRRS!(J, I, 1) > WRRC!(1) Then
+                            WRRC!(1) = WRRS!(J, I, 1)
+                            WRC$(1) = A2C$(I)
+                            WRYR%(1) = WRRS!(J, I, 5)
+                        End If
 
-                If WRRS!(J, I, 0) <> 0 Then
-                    If WRRS!(J, I, 1) / WRRS!(J, I, 0) > WRRC!(2) And WRRS!(J, I, 0) >= GAMES * 3 Then
-                        WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = A2C$(I): WRYR%(2) = WRRS!(J, I, 5)
+                        If WRRS!(J, I, 0) <> 0 Then
+                            If WRRS!(J, I, 1) / WRRS!(J, I, 0) > WRRC!(2) And WRRS!(J, I, 0) >= GAMES * 3 Then
+                                WRRC!(2) = WRRS!(J, I, 1) / WRRS!(J, I, 0): WRC$(2) = A2C$(I): WRYR%(2) = WRRS!(J, I, 5)
+                            End If
+                        End If
+
+                        If WRRS!(J, I, 2) > WRRC!(3) Then
+                            WRRC!(3) = WRRS!(J, I, 2)
+                            WRC$(3) = A2C$(I)
+                            WRYR%(3) = WRRS!(J, I, 5)
+                        End If
+
+                        If WRRS!(J, I, 3) > WRRC!(4) Then
+                            WRRC!(4) = WRRS!(J, I, 3)
+                            WRC$(4) = A2C$(I)
+                            WRYR%(4) = WRRS!(J, I, 5)
+                            WRR$ = careerWRS$(J, I, 0)
                     End If
-                End If
-
-                If WRRS!(J, I, 2) > WRRC!(3) Then
-                    WRRC!(3) = WRRS!(J, I, 2)
-                    WRC$(3) = A2C$(I)
-                    WRYR%(3) = WRRS!(J, I, 5)
-                End If
-
-                If WRRS!(J, I, 3) > WRRC!(4) Then
-                    WRRC!(4) = WRRS!(J, I, 3)
-                    WRC$(4) = A2C$(I)
-                    WRYR%(4) = WRRS!(J, I, 5)
-                    WRR$ = careerWRS$(J, I, 0)
+                    
                 End If
 
             Next J
@@ -1723,50 +1798,56 @@ Sub ProcessLeaders (careerFile$)
 
             For J = 1 To 15
 
-                If careerFGS!(J, I, 16) = 0 Then Exit For
+                If careerFGS!(J, I, 16) = 0 Then 
+                    Exit For
+                Else
 
-                If careerFGS!(J, I, 1) > FGGC!(0) Then
-                    FGGC!(0) = careerFGS!(J, I, 1): FGC$(0) = A7C$(I): FGYR%(0) = careerFGS!(J, I, 16)
-                End If
-
-                If careerFGS!(J, I, 0) > FGGC!(1) Then
-                    FGGC!(1) = careerFGS!(J, I, 0)
-                    FGC$(1) = A7C$(I)
-                    FGYR%(1) = careerFGS!(J, I, 16)
-                End If
-
-                If careerFGS!(J, I, 1) <> 0 Then
-                    If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > FGGC!(2) And careerFGS!(J, I, 1) >= GAMES Then
-                        FGGC!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
-                        FGC$(2) = A7C$(I)
-                        FGYR%(2) = careerFGS!(J, I, 16)
+                    If careerFGS!(J, I, 1) > FGGC!(0) Then
+                        FGGC!(0) = careerFGS!(J, I, 1)
+                        FGC$(0) = A7C$(I)
+                        FGYR%(0) = careerFGS!(J, I, 16)
                     End If
-                End If
 
-                If careerFGS!(J, I, 3) > FGGC!(3) Then
-                    FGGC!(3) = careerFGS!(J, I, 3)
-                    FGC$(3) = A7C$(I)
-                    FGYR%(3) = careerFGS!(J, I, 16)
-                End If
-
-                If careerFGS!(J, I, 2) > FGGC!(4) Then
-                    FGGC!(4) = careerFGS!(J, I, 2)
-                    FGC$(4) = A7C$(I)
-                    FGYR%(4) = careerFGS!(J, I, 16)
-                End If
-
-                If careerFGS!(J, I, 2) <> 0 Then
-                    If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > FGGC!(5) And careerFGS!(J, I, 3) >= GAMES Then
-                        FGGC!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
-                        FGC$(5) = A7C$(I)
-                        FGYR%(5) = careerFGS!(J, I, 16)
+                    If careerFGS!(J, I, 0) > FGGC!(1) Then
+                        FGGC!(1) = careerFGS!(J, I, 0)
+                        FGC$(1) = A7C$(I)
+                        FGYR%(1) = careerFGS!(J, I, 16)
                     End If
-                End If
 
-                If careerFGS!(J, I, 4) > FGGC!(6) Then
-                    FGGC!(6) = careerFGS!(J, I, 4)
-                    FGC$(6) = A7C$(I)
-                    FGYR%(6) = careerFGS!(J, I, 16)
+                    If careerFGS!(J, I, 1) <> 0 Then
+                        If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > FGGC!(2) And careerFGS!(J, I, 1) >= GAMES Then
+                            FGGC!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
+                            FGC$(2) = A7C$(I)
+                            FGYR%(2) = careerFGS!(J, I, 16)
+                        End If
+                    End If
+
+                    If careerFGS!(J, I, 3) > FGGC!(3) Then
+                        FGGC!(3) = careerFGS!(J, I, 3)
+                        FGC$(3) = A7C$(I)
+                        FGYR%(3) = careerFGS!(J, I, 16)
+                    End If
+
+                    If careerFGS!(J, I, 2) > FGGC!(4) Then
+                        FGGC!(4) = careerFGS!(J, I, 2)
+                        FGC$(4) = A7C$(I)
+                        FGYR%(4) = careerFGS!(J, I, 16)
+                    End If
+
+                    If careerFGS!(J, I, 2) <> 0 Then
+                        If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > FGGC!(5) And careerFGS!(J, I, 3) >= GAMES Then
+                            FGGC!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
+                            FGC$(5) = A7C$(I)
+                            FGYR%(5) = careerFGS!(J, I, 16)
+                        End If
+                    End If
+
+                    If careerFGS!(J, I, 4) > FGGC!(6) Then
+                        FGGC!(6) = careerFGS!(J, I, 4)
+                        FGC$(6) = A7C$(I)
+                        FGYR%(6) = careerFGS!(J, I, 16)
+                    End If
+                    
                 End If
 
             Next J
@@ -1863,4 +1944,3 @@ Sub ProcessLeaders (careerFile$)
     Close #2
 
 End Sub
-

@@ -20,63 +20,63 @@ Sub Records_Menu (menuChoice)
 
     End Select
 
-    If Not _FileExists(diskPaths$(1) + recordsFile$) Then
+    Do
 
-        MsgText$ = "UNABLE TO LOCATE RECORDS PRESS ANY KEY TO RETURN TO MAIN MENU"
-        BoxWidth = 24
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
+        Cls
 
-    Else
+        Call TITLE
 
-        Open diskPaths$(1) + recordsFile$ For Input As #1
+        menuChoices$(1) = "VIEW SEASON RECORDS  "
+        menuChoices$(2) = "PRINT SEASON RECORDS "
+        menuChoices$(3) = "DELETE SEASON RECORDS"
+        menuChoices$(4) = "RETURN TO GAME MENU  "
+        Selection% = 1
+        Count% = 4
+        Start% = 1
+        ExitCode% = 4
+        FileFGColor% = 15: FileBGColor% = 1
+        HiLiteFGColor% = 0: HiLiteBGColor% = 7
+        Spacing% = 1
+        Row% = 8
+        menuWidth% = Len(menuChoices$(1))
+        Column% = (80 - menuWidth% - 2) / 2
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
 
-        For I = 0 To 50
-            Input #1, indRecords!(I)
-            Input #1, indRecDesc$(I, 0)
-            Input #1, indRecDesc$(I, 1)
-            Input #1, indRecDesc$(I, 2)
-        Next
+        _MouseShow "DEFAULT"
+        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        _MouseHide
 
-        For I = 0 To 50
-            Input #1, teamRecords!(I)
-            Input #1, teamRecDesc$(I)
-        Next
+        Color , 0
 
-        Close #1
+        If ExitCode% <> 27 Then
 
-        Do
+            If Not _FileExists(diskPaths$(1) + recordsFile$) Then
 
-            Cls
+                MsgText$ = "UNABLE TO LOCATE RECORDS PRESS ANY KEY TO RETURN TO MAIN MENU"
+                BoxWidth = 24
+                BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                I$ = GetKeyPress$
+                Call CSMsgBox("", 0, Pass)
 
-            Call TITLE
+            Else
 
-            menuChoices$(1) = "VIEW SEASON RECORDS  "
-            menuChoices$(2) = "PRINT SEASON RECORDS "
-            menuChoices$(3) = "DELETE SEASON RECORDS"
-            menuChoices$(4) = "RETURN TO GAME MENU  "
-            Selection% = 1
-            Count% = 4
-            Start% = 1
-            ExitCode% = 4
-            FileFGColor% = 15: FileBGColor% = 1
-            HiLiteFGColor% = 0: HiLiteBGColor% = 7
-            Spacing% = 1
-            Row% = 8
-            menuWidth% = Len(menuChoices$(1))
-            Column% = (80 - menuWidth% - 2) / 2
-            Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+                Open diskPaths$(1) + recordsFile$ For Input As #1
 
-            _MouseShow "DEFAULT"
-            MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
-            _MouseHide
+                For I = 0 To 50
+                    Input #1, indRecords!(I)
+                    Input #1, indRecDesc$(I, 0)
+                    Input #1, indRecDesc$(I, 1)
+                    Input #1, indRecDesc$(I, 2)
+                Next
 
-            Color , 0
+                For I = 0 To 50
+                    Input #1, teamRecords!(I)
+                    Input #1, teamRecDesc$(I)
+                Next
 
-            If ExitCode% <> 27 Then
+                Close #1
 
                 Select Case Selection%
 
@@ -109,12 +109,12 @@ Sub Records_Menu (menuChoice)
                         End If
 
                 End Select
+                
+            End If 'Done checking for record file
 
-            End If
+        End If 'Done checking for user ESC
 
-        Loop Until Selection% = 4 Or ExitCode% = 27
-
-    End If
+    Loop Until Selection% = 4 Or ExitCode% = 27
 
 End Sub
 
@@ -132,10 +132,7 @@ Sub ViewSeasonRecords ()
     Color 0, 15
     Cls
 
-    Call MenuBox (1,1,73,20,15,4)
-
-    Color 7, 4: Print String$(2, 177)
-    Locate , 3: Print String$(77, 177)
+    Call ShadowBox(1, 1, 73, 20, 15, 4)
 
     Color 15
     Locate 2, 23
@@ -270,10 +267,7 @@ Sub ViewSeasonRecords ()
     Color 0, 15
     Cls
 
-    Call MenuBox (1,1,73,20,15,4)
-
-    Color 7, 4: Print String$(2, 177)
-    Locate , 3: Print String$(77, 177)
+    Call ShadowBox(1, 1, 73, 20, 15, 4)
 
     Color 15
     Locate 2, 21

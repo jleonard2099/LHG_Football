@@ -738,8 +738,8 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Shared scheduleNG%(), teamRatings%()
     Shared scheduleYN$()
 
-    Shared statsZ1%()
-    Shared statsZ1$(), statsZ2$()
+    Shared memberIdx()
+    Shared memberName$(), memberYear$()
 
     Select Case scheduleAction%
 
@@ -772,9 +772,9 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                         Input #1, X$
 
                         For X = 1 To 30
-                            Input #1, statsZ1$(X)
-                            Input #1, statsZ1%(X)
-                            Input #1, statsZ2$(X)
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
                         Next
 
                         numberTeams = 30
@@ -788,9 +788,9 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                         Input #1, LG$
 
                         For X = 1 To 30:
-                            Input #1, statsZ1$(X)
-                            Input #1, statsZ1%(X)
-                            Input #1, statsZ2$(X)
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
                         Next
 
                         numberTeams = 30
@@ -806,9 +806,9 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                         For I1 = 1 To numberTeams
 
-                            If statsZ1$(I1) <> "XXX" Then
+                            If memberName$(I1) <> "XXX" Then
 
-                                If statsZ1%(I1) = scheduleNG%(I, 0) And statsZ2$(I1) = scheduleYN$(I, 0) Or statsZ1%(I1) = scheduleNG%(I, 1) And statsZ2$(I1) = scheduleYN$(I, 1) Then
+                                If memberIdx(I1) = scheduleNG%(I, 0) And memberYear$(I1) = scheduleYN$(I, 0) Or memberIdx(I1) = scheduleNG%(I, 1) And memberYear$(I1) = scheduleYN$(I, 1) Then
 
                                     Print
                                     Print "FOUND A MATCH"

@@ -17,10 +17,8 @@ Sub CompileCollege ()
     Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
-    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared statFilesComp$(), compZ2$(), compZ3$()
     Shared statFiles$(), teamRecDesc$(), TT$()
-
-    Shared div1Name$, div2Name$
 
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
@@ -75,7 +73,7 @@ Sub CompileCollege ()
     Erase PTSF!, PTSA!
 
     For X = 1 To 60
-        compZ1$(X) = "*"
+        statFilesComp$(X) = "*"
     Next
 
     For X = 1 To 240
@@ -113,9 +111,9 @@ Sub CompileCollege ()
 
         Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #2
 
-        Input #2, FF$
-        Input #2, div1Name$
-        Input #2, div2Name$
+        Input #2, confName$
+        Input #2, div1$
+        Input #2, div2$
 
         For XW = 1 To 30
             Input #2, statFiles$(XW)
@@ -124,10 +122,10 @@ Sub CompileCollege ()
         Close #2
 
         Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #3
-        Input #3, LG%
+        Input #3, statType
         Close #3
 
-        If LG% <> 0 Then
+        If statType <> 0 Then
 
             MsgText$ = "ERROR!! THIS IS NOT A COLLEGE CONFERENCE. PRESS ANY KEY TO RETURN TO MAIN MENU"
             BoxWidth = 20
@@ -141,12 +139,12 @@ Sub CompileCollege ()
 
             Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #4
 
-            Input #4, FF$
-            Input #4, div1Name$
-            Input #4, div2Name$
+            Input #4, confName$
+            Input #4, div1$
+            Input #4, div2$
 
             For X = 1 To 30
-                Input #4, compZ1$(X)
+                Input #4, statFilesComp$(X)
             Next X
 
             Close #4
@@ -172,7 +170,7 @@ Sub CompileCollege ()
 
                         For X = 1 To 30
 
-                            If compZ1$(X) = WT$ Then
+                            If statFilesComp$(X) = WT$ Then
 
                                 If O1!(X) = fullWins And O2!(X) = fullLosses And O3!(X) = fullTies Then
 
@@ -191,7 +189,7 @@ Sub CompileCollege ()
 
                                     PTSF!(X + 30) = PTSFC
                                     PTSA!(X + 30) = PTSAC
-                                    compZ1$(X + 30) = compZ1$(X)
+                                    statFilesComp$(X + 30) = statFilesComp$(X)
 
                                 End If
 
@@ -796,7 +794,7 @@ Sub SortStandingsConference
 
     Shared PTSA!(), PTSF!()
 
-    Shared compZ1$()
+    Shared statFilesComp$()
 
     'Currently sorts by Conference Record
     '   To sort by Season Record, use Z = 0 to 1
@@ -816,7 +814,7 @@ Sub SortStandingsConference
 
                     If diffX <> diffY Then
                         If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
-                            Swap compZ1$(X), compZ1$(Y)
+                            Swap statFilesComp$(X), statFilesComp$(Y)
                             Swap O1!(X), O1!(Y)
                             Swap O2!(X), O2!(Y)
                             Swap O3!(X), O3!(Y)
@@ -844,7 +842,7 @@ End Sub
 'and writes the updated stats to the file
 Sub PostLeadersConf (confName$)
 
-    Shared compZ1$(), compZ2$(), compZ3$()
+    Shared statFilesComp$(), compZ2$(), compZ3$()
     Shared TT$()
 
     Shared compTT!(), compZ1!()
@@ -858,7 +856,7 @@ Sub PostLeadersConf (confName$)
     Print "POSTING "; confName$; " CONFERENCE LEADERS"
 
     For X = 1 To 60:
-        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+        Write #1, statFilesComp$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
     Next
 
     For X = 1 To 240
@@ -912,4 +910,3 @@ Sub PostRecordsColl
     Close #2
 
 End Sub
-

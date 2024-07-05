@@ -76,12 +76,12 @@ Sub Hd2HdCon_Conf (secondConf)
     Shared totAwayScoreTeam!(), totAwayScoreOpp!()
     Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
 
-    Shared teamScore(), oppScore(), statsZ1%()
+    Shared teamScore(), oppScore(), memberIdx()
 
-    Dim Z12%(30)
+    Dim memberIdx_2nd(30)
 
     Shared DV$(), DV2$(), locIndicator$(), oppName$()
-    Shared statsZ1$(), statsZ1_2$(), statsZ2$(), statsZ2_2$()
+    Shared memberName$(), memberNames_2nd$(), memberYear$(), memberYear_2nd$()
 
     newTeam = 1
 
@@ -184,9 +184,9 @@ Sub Hd2HdCon_Conf (secondConf)
                     Input #2, div2Name$
 
                     For X = 1 To TEAMS_PER_CONFERENCE:
-                        Input #2, statsZ1$(X)
-                        Input #2, statsZ1%(X)
-                        Input #2, statsZ2$(X)
+                        Input #2, memberName$(X)
+                        Input #2, memberIdx(X)
+                        Input #2, memberYear$(X)
                     Next
 
                 End If
@@ -198,9 +198,9 @@ Sub Hd2HdCon_Conf (secondConf)
                     Input #2, div3Name$
 
                     For X = 1 To TEAMS_PER_CONFERENCE:
-                        Input #2, statsZ1$(X)
-                        Input #2, statsZ1%(X)
-                        Input #2, statsZ2$(X)
+                        Input #2, memberName$(X)
+                        Input #2, memberIdx(X)
+                        Input #2, memberYear$(X)
                     Next
 
                 End If
@@ -219,9 +219,9 @@ Sub Hd2HdCon_Conf (secondConf)
                         Input #2, div2Name_2$
 
                         For X = 1 To TEAMS_PER_CONFERENCE:
-                            Input #2, statsZ1_2$(X)
-                            Input #2, Z12%(X)
-                            Input #2, statsZ2_2$(X)
+                            Input #2, memberNames_2nd$(X)
+                            Input #2, memberIdx_2nd(X)
+                            Input #2, memberYear_2nd$(X)
                         Next
 
                     End If
@@ -233,9 +233,9 @@ Sub Hd2HdCon_Conf (secondConf)
                         Input #2, div3Name_2$
 
                         For X = 1 To TEAMS_PER_CONFERENCE:
-                            Input #2, statsZ1_2$(X)
-                            Input #2, Z12%(X)
-                            Input #2, statsZ2_2$(X)
+                            Input #2, memberNames_2nd$(X)
+                            Input #2, memberIdx_2nd(X)
+                            Input #2, memberYear_2nd$(X)
                         Next
 
                     End If
@@ -260,11 +260,11 @@ Sub Hd2HdCon_Conf (secondConf)
                 'Calculations for 1st conference
                 For K = 1 To TEAMS_PER_CONFERENCE
 
-                    If statsZ1$(K) <> "XXX" Then
+                    If memberName$(K) <> "XXX" Then
 
                         For I = 1 To nbrGames
 
-                            If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1$(K) Then
+                            If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = memberName$(K) Then
 
                                 If teamScore(I) > oppScore(I) Then
                                     awayWins!(K) = awayWins!(K) + 1
@@ -284,7 +284,7 @@ Sub Hd2HdCon_Conf (secondConf)
                             End If
 
 
-                            If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1$(K) Then
+                            If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = memberName$(K) Then
 
                                 If teamScore(I) > oppScore(I) Then
                                     homeWins!(K) = homeWins!(K) + 1
@@ -325,11 +325,11 @@ Sub Hd2HdCon_Conf (secondConf)
                     'Calculations for 2nd conference
                     For K = 1 To TEAMS_PER_CONFERENCE
 
-                        If statsZ1_2$(K) <> "XXX" Then
+                        If memberNames_2nd$(K) <> "XXX" Then
 
                             For I = 1 To nbrGames
 
-                                If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = statsZ1_2$(K) Then
+                                If Left$(locIndicator$(I), 1) = "A" And oppName$(I) = memberNames_2nd$(K) Then
 
                                     If teamScore(I) > oppScore(I) Then
                                         awayWins_2nd!(K) = awayWins_2nd!(K) + 1
@@ -348,7 +348,7 @@ Sub Hd2HdCon_Conf (secondConf)
 
                                 End If
 
-                                If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = statsZ1_2$(K) Then
+                                If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = memberNames_2nd$(K) Then
 
                                     If teamScore(I) > oppScore(I) Then
                                         homeWins_2nd!(K) = homeWins_2nd!(K) + 1
@@ -467,7 +467,7 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
     Shared totHomeScoreTeam_2nd(), totHomeScoreOpp_2nd!()
     Shared totAwayScoreTeam!(), totAwayScoreOpp!()
     Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
-    Shared statsZ1$(), statsZ1_2$()
+    Shared memberName$(), memberNames_2nd$()
 
     If printDest = 0 Then
         destFile$ = _SaveFileDialog$("Save Comparison Report", _CWD$ + "\Comparison", "*.txt", "Text File")
@@ -507,9 +507,9 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
         For K = DD To EE
 
-            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ Then
+            If memberName$(K) <> "XXX" And memberName$(K) <> teamName$ Then
 
-                Print #1, Left$(statsZ1$(K), 15);
+                Print #1, Left$(memberName$(K), 15);
                 Print #1, Tab(17); Using "##"; homeWins!(K);
                 Print #1, Tab(20); Using "##"; homeLosses!(K);
                 Print #1, Tab(23); Using "##"; homeTies!(K);
@@ -592,9 +592,9 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
             For K = DD To EE
 
-                If statsZ1_2$(K) <> "XXX" And statsZ1_2$(K) <> teamName$ Then
+                If memberNames_2nd$(K) <> "XXX" And memberNames_2nd$(K) <> teamName$ Then
 
-                    Print #1, Left$(statsZ1_2$(K), 15);
+                    Print #1, Left$(memberNames_2nd$(K), 15);
                     Print #1, Tab(17); Using "##"; homeWins_2nd!(K);
                     Print #1, Tab(20); Using "##"; homeLosses_2nd!(K);
                     Print #1, Tab(23); Using "##"; homeTies_2nd!(K);
@@ -858,7 +858,7 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
     Shared totAwayScoreTeam!(), totAwayScoreOpp!()
     Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
     Shared DV$(), DV2$()
-    Shared statsZ1$(), statsZ1_2$()
+    Shared memberName$(), memberNames_2nd$()
 
     DV$(1) = div1Name$
     DV$(2) = div2Name$
@@ -892,10 +892,10 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
         For K = DD To EE
 
-            If statsZ1$(K) <> "XXX" And statsZ1$(K) <> teamName$ And statsZ1$(K) <> "" Then
+            If memberName$(K) <> "XXX" And memberName$(K) <> teamName$ And memberName$(K) <> "" Then
 
                 Color 15
-                Locate , 1: Print Left$(statsZ1$(K), 15);
+                Locate , 1: Print Left$(memberName$(K), 15);
 
                 Color 7
                 Locate , 17: Print Using "##"; homeWins!(K);
@@ -1011,10 +1011,10 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
             For K = DD To EE
 
-                If statsZ1_2$(K) <> "XXX" And statsZ1_2$(K) <> teamName$ Then
+                If memberNames_2nd$(K) <> "XXX" And memberNames_2nd$(K) <> teamName$ Then
 
                     Color 15
-                    Locate , 1: Print Left$(statsZ1_2$(K), 15);
+                    Locate , 1: Print Left$(memberNames_2nd$(K), 15);
                     Color 7
                     Locate , 17: Print Using "##"; homeWins_2nd!(K);
                     Locate , 20: Print Using "##"; homeLosses_2nd!(K);
