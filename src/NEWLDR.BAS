@@ -1014,9 +1014,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 5
+                    Loop Until categoryId <= 5
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1036,9 +1036,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 5
+                    Loop Until categoryId <= 5
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1057,9 +1057,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 8
+                    Loop Until categoryId <= 8
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1079,9 +1079,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 4
+                    Loop Until categoryId <= 4
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1101,9 +1101,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 4
+                    Loop Until categoryId <= 4
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1123,9 +1123,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 2
+                    Loop Until categoryId <= 2
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1145,9 +1145,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 6
+                    Loop Until categoryId <= 6
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1167,9 +1167,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 1
+                    Loop Until categoryId <= 1
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1192,9 +1192,9 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 2
+                    Loop Until categoryId <= 2
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1224,9 +1224,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Print
                         Print
                         Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; B9
+                        Input "SELECT NUMBER TO VIEW"; categoryId
 
-                    Loop Until B9 <= 28
+                    Loop Until categoryId <= 28
 
                     Call SortOptions(printOrView, sortType, newCategory)
 
@@ -1243,7 +1243,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "A":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 0
                             Case 1: X = 1: XX = 1
                             Case 2: X = 0: X1 = 1: XX = 2
@@ -1254,7 +1254,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1, 3
 
@@ -1312,7 +1312,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "B":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 3: X1 = 0: XX = 5
                             Case 1: X = 4: X1 = 1: XX = 6
                             Case 2: X = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
@@ -1323,7 +1323,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1, 3:
                                 For I = 1 To JA
@@ -1409,7 +1409,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "C":
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0: X = 0: XX = 10
                             Case 1: X = 1: XX = 11
@@ -1426,7 +1426,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0 To 4:
 
@@ -1532,7 +1532,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "D":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 19
                             Case 1: X = 1: XX = 20
                             Case 2: X = 0: X1 = 1: XX = 21
@@ -1543,7 +1543,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1, 3:
 
@@ -1608,7 +1608,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "E":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 24
                             Case 1: X = 1: XX = 25
                             Case 2: X = 0: X1 = 1: XX = 26
@@ -1619,7 +1619,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1, 3:
 
@@ -1682,13 +1682,13 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "F":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 29
                             Case 1: X = 1: XX = 30
                             Case 2: X = 0: X1 = 1: XX = 31
                         End Select
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1:
 
@@ -1734,7 +1734,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "G":
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 32
                             Case 1: X = 1: XX = 33
                             Case 2: X = 0: X1 = 1: XX = 34
@@ -1747,7 +1747,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
                         PPP = 0
 
-                        Select Case B9
+                        Select Case categoryId
 
                             Case 0, 1, 3, 4, 6
 
@@ -1796,17 +1796,17 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "H":
 
-                        If B9 = 0 Then
+                        If categoryId = 0 Then
                             X = 0: XX = 39
                         End If
-                        If B9 = 1 Then
+                        If categoryId = 1 Then
                             X = 0: XX = 40
                         End If
 
                         Cls
                         PPP = 0
 
-                        If B9 = 0 Then
+                        If categoryId = 0 Then
 
                             For I = 1 To JH
                                 If A8L!(I) <> 0 Then
@@ -1820,7 +1820,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         End If
 
-                        If B9 = 1 Then
+                        If categoryId = 1 Then
                             For I = 1 To JI
                                 If A9L!(I) <> 0 Then
                                     PPP = PPP + 1
@@ -1872,7 +1872,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         TVN = 1
 
                     Case "J":
-                        Select Case B9
+                        Select Case categoryId
                             Case 0
                                 X = 2
                                 X1 = 5
@@ -1938,7 +1938,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         TVN = 1
 
                     Case "K":
-                        Select Case B9
+                        Select Case categoryId
                             Case 0: X = 0: XX = 44
                             Case 1: X = 1: X1 = 13: XX = 45
                             Case 2: X = 2: X1 = 14: XX = 46
@@ -1970,7 +1970,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 28: X = 29: XX = 72
                         End Select
 
-                        Select Case B9
+                        Select Case categoryId
                             Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
                                 For I = 1 To totalStats
                                     TMM$(I) = lookyTT$(I, X)
