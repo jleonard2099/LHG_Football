@@ -19,7 +19,7 @@ Sub CompileNatlOrg ()
 
     Shared statFilesComp$(), compZ2$(), compZ3$()
     Shared indRecDesc$()
-    Shared memberName$()
+    Shared memberConf$()
     Shared N2$(), N3$(), NT$()
     Shared PT$(), teamRecDesc$(), TT$()
     Shared statFiles$()
@@ -115,7 +115,7 @@ Sub CompileNatlOrg ()
         Input #2, X$
 
         For I = 1 To MAX_CONFERENCES
-            Input #2, memberName$(I)
+            Input #2, memberConf$(I)
         Next
 
         Close #2
@@ -123,7 +123,7 @@ Sub CompileNatlOrg ()
         For currConf = 1 To MAX_CONFERENCES
 
             'Look for * as terminating char
-            If memberName$(currConf) <> "XXX" Then
+            If memberConf$(currConf) <> "XXX" Then
 
                 Cls
 
@@ -154,7 +154,7 @@ Sub CompileNatlOrg ()
                     compTT!(10, I, 7) = -99
                 Next
 
-                targetConf$ = diskPaths$(2) + memberName$(currConf) + ".TMS"
+                targetConf$ = diskPaths$(2) + memberConf$(currConf) + ".TMS"
 
                 If _FileExists(targetConf$) Then
 
@@ -252,7 +252,7 @@ Sub CompileNatlOrg ()
                         Next XW
 
                         Call SortStandingsLeague
-                        Call PostLeadersConf(memberName$(currConf))
+                        Call PostLeadersConf(memberConf$(currConf))
                         Call SortLeadersNat
 
                     End If 'Done checking for valid conference

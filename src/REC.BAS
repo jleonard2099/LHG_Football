@@ -30,20 +30,20 @@ Sub Records_Menu (menuChoice)
         menuChoices$(2) = "PRINT SEASON RECORDS "
         menuChoices$(3) = "DELETE SEASON RECORDS"
         menuChoices$(4) = "RETURN TO GAME MENU  "
-        Selection% = 1
+        SELECTION% = 1
         Count% = 4
         Start% = 1
         ExitCode% = 4
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
@@ -78,7 +78,7 @@ Sub Records_Menu (menuChoice)
 
                 Close #1
 
-                Select Case Selection%
+                Select Case SELECTION%
 
                     Case 1:
                         Call ViewSeasonRecords
@@ -114,7 +114,7 @@ Sub Records_Menu (menuChoice)
 
         End If 'Done checking for user ESC
 
-    Loop Until Selection% = 4 Or ExitCode% = 27
+    Loop Until SELECTION% = 4 Or ExitCode% = 27
 
 End Sub
 
@@ -134,7 +134,6 @@ Sub ViewSeasonRecords ()
 
     Call ShadowBox(1, 1, 73, 20, 15, 4)
 
-    Color 15
     Locate 2, 23
     Print "******* INDIVIDUAL RECORDS *******"
     Locate , 4
@@ -269,7 +268,6 @@ Sub ViewSeasonRecords ()
 
     Call ShadowBox(1, 1, 73, 20, 15, 4)
 
-    Color 15
     Locate 2, 21
     Print "******* OFFENSIVE TEAM RECORDS *******"
     Locate , 4

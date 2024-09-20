@@ -12,25 +12,24 @@ Sub TRADE ()
 
     _Title "3-in-1 Football - Trade Players"
 
-    Dim NY$(1)
+    Dim yearNumbers$(1)
 
-    Shared haveStats()
-    
-    Shared tradeT!()
-    
-    Shared teams_TRADE$()
+    Shared teamIndexes()
+        
+    Shared tmInfo_TRADE$()
 
     tradeIdx = 0
-    Call ChooseTradeTeam (NY$(tradeIdx), numberTeams, teamNbr, teams_TRADE$(tradeIdx), tradeIdx)    
-    tradeT!(tradeIdx) = teamNbr
+    Call ChooseTradeTeam (yearNumbers$(tradeIdx), numberTeams, teamNbr, tmInfo_TRADE$(tradeIdx), tradeIdx)    
 
     If teamNbr> 0 Then
 
+        teamIndexes(tradeIdx) = teamNbr
+        
         Call LoadStatsForTrade(tradeIdx)
 
         tradeIdx = 1
-        Call ChooseTradeTeam (NY$(tradeIdx), numberTeams, teamNbr, teams_TRADE$(tradeIdx), tradeIdx)
-        tradeT!(tradeIdx) = teamNbr
+        Call ChooseTradeTeam (yearNumbers$(tradeIdx), numberTeams, teamNbr, tmInfo_TRADE$(tradeIdx), tradeIdx)
+        teamIndexes(tradeIdx) = teamNbr
         Call LoadStatsForTrade(tradeIdx)
 
         'Teams / Stats are loaded
@@ -57,7 +56,6 @@ Sub LoadStatsForTrade (tradeIdx)
     Shared tradePK$(), tradePR$()
     Shared tradeQB$(), tradeRB$(), tradeWR$()
 
-    Shared haveStats()
     Shared tradeAF!(), tradeAM!()
     Shared tradeLC!(), tradeLF!(), tradeLI!(), tradeLK!(), tradeLP!(), tradeLR!()
     Shared tradePK!()
@@ -65,17 +63,21 @@ Sub LoadStatsForTrade (tradeIdx)
 
     Shared tradeGI%(), tradeGS%()
 
+    Shared haveStats()
+
     Color 15, 0
     Call TITLE
 
-    For XY = 2 To 23:
-        Locate XY, 1: Print Tab(79);
-    Next
-
     haveStats(tradeIdx) = 0
 
+    Call box0 (6, 8, 8, 70, 2, 15, 1)
+
     Do
-        Locate 3: Print "DOES THIS TEAM HAVE SAVED STATS? (Y/N)"
+        Locate 3
+        U$ = "DOES THIS TEAM HAVE SAVED STATS? (Y/N)"
+        Locate , (80 - Len(U$)) / 2
+        Print U$
+        Color 15, 0
         I$ = GetKeyPress$
     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -85,7 +87,7 @@ Sub LoadStatsForTrade (tradeIdx)
 
     Else
 
-        statFile$ = nameStatFile$(teams_TRADE$(tradeIdx))
+        statFile$ = nameStatFile$(tmInfo_TRADE$(tradeIdx))
         
         If _FileExists(diskPaths$(1) + statFile$) Then
 
@@ -93,15 +95,31 @@ Sub LoadStatsForTrade (tradeIdx)
 
             Input #1, statNam_TRADE$(tradeIdx)
 
-            For I = 0 To 9: Input #1, tradeRB$(tradeIdx, I): Next
-            For I = 0 To 5: Input #1, tradeWR$(tradeIdx, I): Next
-            For I = 0 To 3: Input #1, tradeQB$(tradeIdx, I): Next
-            For I = 0 To 2: Input #1, tradeKR$(tradeIdx, I): Next
-            For I = 0 To 2: Input #1, tradePR$(tradeIdx, I): Next
+            For I = 0 To 9: 
+                Input #1, tradeRB$(tradeIdx, I)
+            Next
+            
+            For I = 0 To 5: 
+                Input #1, tradeWR$(tradeIdx, I)
+            Next
+            
+            For I = 0 To 3: 
+                Input #1, tradeQB$(tradeIdx, I)
+            Next
+            
+            For I = 0 To 2: 
+                Input #1, tradeKR$(tradeIdx, I)
+            Next
+            
+            For I = 0 To 2: 
+                Input #1, tradePR$(tradeIdx, I)
+            Next
 
             Input #1, puntNam_TRADE$(tradeIdx)
 
-            For I = 0 To 1: Input #1, tradeFG$(tradeIdx, I): Next
+            For I = 0 To 1: 
+                Input #1, tradeFG$(tradeIdx, I)
+            Next
 
             For X = 0 To 13
                 For Y = 0 To 17:
@@ -109,23 +127,84 @@ Sub LoadStatsForTrade (tradeIdx)
                 Next
             Next
 
-            For X = 0 To 38: Input #1, tradeZ!(tradeIdx, X): Next
-            For X = 0 To 38: Input #1, tradeZ1!(tradeIdx, X): Next
-            For X = 0 To 9: Input #1, intNam_TRADE$(tradeIdx, X): For J1 = 0 To 2: Input #1, tradeGI%(tradeIdx, X, J1): Next: Next
-            For X = 0 To 14: Input #1, sackNam_TRADE$(tradeIdx, X): For J1 = 0 To 1: Input #1, tradeGS%(tradeIdx, X, J1): Next: Next
-            For I = 0 To 9: Input #1, tradeLR!(tradeIdx, I): For J1 = 0 To 1: Input #1, tradeLR$(tradeIdx, I, J1): Next: Next
-            For I = 0 To 15: Input #1, tradeLC!(tradeIdx, I): For J1 = 0 To 1: Input #1, tradeLC$(tradeIdx, I, J1): Next: Next
-            For I = 0 To 3: Input #1, tradeLP!(tradeIdx, I): For J1 = 0 To 1: Input #1, tradeLP$(tradeIdx, I, J1): Next: Next
-            For I = 0 To 2: Input #1, tradeLK!(tradeIdx, I): For J1 = 0 To 1: Input #1, tradeLK$(tradeIdx, I, J1): Next: Next
-            For I = 0 To 2: Input #1, tradePK!(tradeIdx, I): For J1 = 0 To 1: Input #1, tradePK$(tradeIdx, I, J1): Next: Next
-            For I = 0 To 1: Input #1, tradeLF!(tradeIdx, I): Input #1, tradeLF$(tradeIdx, I): For I1 = 0 To 4: Input #1, tradeAM!(tradeIdx, I, I1): Input #1, tradeAF!(tradeIdx, I, I1): Next: Next
-            For I = 0 To 9: Input #1, tradeLI!(tradeIdx, I): Input #1, tradeLI$(tradeIdx, I, 0): Input #1, tradeLI$(tradeIdx, I, 1): Next
+            For X = 0 To 38: 
+                Input #1, tradeZ!(tradeIdx, X)
+            Next
+            
+            For X = 0 To 38: 
+                Input #1, tradeZ1!(tradeIdx, X)
+            Next
+            
+            For X = 0 To 9: 
+                Input #1, intNam_TRADE$(tradeIdx, X)
+                For J1 = 0 To 2: 
+                    Input #1, tradeGI%(tradeIdx, X, J1)
+                Next
+            Next
+            
+            For X = 0 To 14: 
+                Input #1, sackNam_TRADE$(tradeIdx, X)
+                For J1 = 0 To 1: 
+                    Input #1, tradeGS%(tradeIdx, X, J1)
+                Next
+            Next
+            
+            For I = 0 To 9: 
+                Input #1, tradeLR!(tradeIdx, I)
+                For J1 = 0 To 1: 
+                    Input #1, tradeLR$(tradeIdx, I, J1)
+                Next
+            Next
+            
+            For I = 0 To 15: 
+                Input #1, tradeLC!(tradeIdx, I)
+                For J1 = 0 To 1: 
+                    Input #1, tradeLC$(tradeIdx, I, J1)
+                Next
+            Next
+            
+            For I = 0 To 3: 
+                Input #1, tradeLP!(tradeIdx, I)
+                For J1 = 0 To 1: 
+                    Input #1, tradeLP$(tradeIdx, I, J1)
+                Next
+            Next
+            
+            For I = 0 To 2: 
+                Input #1, tradeLK!(tradeIdx, I)
+                For J1 = 0 To 1: 
+                    Input #1, tradeLK$(tradeIdx, I, J1)
+                Next
+            Next
+            
+            For I = 0 To 2: 
+                Input #1, tradePK!(tradeIdx, I)
+                For J1 = 0 To 1: 
+                    Input #1, tradePK$(tradeIdx, I, J1)
+                Next
+            Next
+            
+            For I = 0 To 1: 
+                Input #1, tradeLF!(tradeIdx, I)
+                Input #1, tradeLF$(tradeIdx, I)
+                For I1 = 0 To 4: 
+                    Input #1, tradeAM!(tradeIdx, I, I1)
+                    Input #1, tradeAF!(tradeIdx, I, I1)
+                Next
+            Next
+            
+            For I = 0 To 9: 
+                Input #1, tradeLI!(tradeIdx, I)
+                Input #1, tradeLI$(tradeIdx, I, 0)
+                Input #1, tradeLI$(tradeIdx, I, 1)
+            Next
 
             Close #1
+
         Else
 
             haveStats(tradeIdx) = 1
-            MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+            MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
             BoxWidth = 24
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
             Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
@@ -243,7 +322,7 @@ Sub TradeRBs (W1)
     Shared teamRat_TRADE()
     Shared haveStats()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared rbNam_TRADE$(), tradeLC$(), tradeLR$(), tradeRB$()
 
     Call TITLE
@@ -253,11 +332,11 @@ Sub TradeRBs (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
     Color 15, 0
 
     For I = 0 To 9:
@@ -271,7 +350,7 @@ Sub TradeRBs (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0: Print " PLAYER: ";: Input I$
             I = Val(I$)
         Loop Until I >= 0 And I <= 9
@@ -280,7 +359,7 @@ Sub TradeRBs (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0: Print " PLAYER: ";: Input I$
             I1 = Val(I$)
         Loop Until I >= 0 And I <= 9
@@ -426,7 +505,7 @@ Sub TradeWRs (W1)
 
     Shared tradeLC!(), tradeZ2!()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared wrNam_TRADE$(), tradeLC$(), tradeWR$()
 
     Call TITLE
@@ -436,11 +515,11 @@ Sub TradeWRs (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
     Color 15, 0
 
     For I = 0 To 5:
@@ -452,7 +531,7 @@ Sub TradeWRs (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -462,7 +541,7 @@ Sub TradeWRs (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -575,7 +654,7 @@ Sub TradeQBs (W1)
 
     Shared tradeLP!(), tradeZ2!()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared qbNam_TRADE$(), tradeLP$(), tradeQB$()
 
     Call TITLE
@@ -585,11 +664,11 @@ Sub TradeQBs (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
 
     Color 15, 0
 
@@ -604,7 +683,7 @@ Sub TradeQBs (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -614,7 +693,7 @@ Sub TradeQBs (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -744,7 +823,7 @@ Sub TradeKRs (W1)
 
     Shared tradeLK!(), tradeZ2!()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared krNam_TRADE$(), tradeKR$(), tradeLK$()
 
     Call TITLE
@@ -754,11 +833,11 @@ Sub TradeKRs (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
     Color 15, 0
 
     For I = 0 To 2:
@@ -772,7 +851,7 @@ Sub TradeKRs (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -782,7 +861,7 @@ Sub TradeKRs (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -894,7 +973,7 @@ Sub TradePRs (W1)
 
     Shared tradePK!(), tradeZ2!()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared prNam_TRADE$(), tradePK$(), tradePR$()
 
     Call TITLE
@@ -904,11 +983,11 @@ Sub TradePRs (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
     Color 15, 0
 
     For I = 0 To 2:
@@ -922,7 +1001,7 @@ Sub TradePRs (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -932,7 +1011,7 @@ Sub TradePRs (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -1041,7 +1120,7 @@ Sub TradePunters (W1)
     Shared puntAvg_TRADE(), teamRat_TRADE()
     Shared haveStats()
 
-    Shared puntNam_TRADE$(), teams_TRADE$()
+    Shared puntNam_TRADE$(), tmInfo_TRADE$()
     Shared pntNam_TRADE$()
 
     Do
@@ -1052,11 +1131,11 @@ Sub TradePunters (W1)
         Next
 
         Locate 4, 1
-        Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+        Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
         Color 15, 0
 
         Locate 4, 20
-        Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+        Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
         Color 15, 0
 
         Print
@@ -1171,7 +1250,7 @@ Sub TradeKickers (W1)
     Shared tradeAF!(), tradeAM!(), tradeLF!()
     Shared tradeZ2!()
 
-    Shared teams_TRADE$()
+    Shared tmInfo_TRADE$()
     Shared pkNam_TRADE$(), tradeFG$()
 
     Call TITLE
@@ -1181,11 +1260,11 @@ Sub TradeKickers (W1)
     Next
 
     Locate 4, 1
-    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0)
+    Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0)
     Color 15, 0
 
     Locate 4, 20
-    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1)
+    Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1)
     Color 15, 0
 
     For I = 0 To 1:
@@ -1199,7 +1278,7 @@ Sub TradeKickers (W1)
 
         Do
             Locate 17, 1
-            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print teams_TRADE$(0);
+            Color teamRat_TRADE(0, 2), teamRat_TRADE(0, 1): Print tmInfo_TRADE$(0);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I = Val(I$)
@@ -1209,7 +1288,7 @@ Sub TradeKickers (W1)
 
         Do
             Locate 19, 1
-            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print teams_TRADE$(1);
+            Color teamRat_TRADE(1, 2), teamRat_TRADE(1, 1): Print tmInfo_TRADE$(1);
             Color 15, 0
             Print " PLAYER: ";: Input I$
             I1 = Val(I$)
@@ -1380,12 +1459,12 @@ End Sub
 'modified teams
 Sub DoTheTrade (tradeIdx)
 
-    Shared teams_TRADE$(), nicks_TRADE$()
+    Shared tmInfo_TRADE$(), nicks_TRADE$()
     Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared tradeYN$()
     Shared krNam_TRADE$(), pkNam_TRADE$(), prNam_TRADE$(), pntNam_TRADE$(), rbNam_TRADE$(), wrNam_TRADE$(), qbNam_TRADE$()
 
-    Shared tradeT!(), ydCmpAdj_TRADE!()
+    Shared teamIndexes(), ydCmpAdj_TRADE!()
 
     Shared rbAtt_TRADE(), rbAvg_TRADE(), rbRec_TRADE(), rbRecAvg_TRADE(), wrRec_TRADE()
     Shared wrAvg_TRADE(), qbPA_TRADE(), qbPCPct_TRADE(), qbIntPct_TRADE(), krNumRet_TRADE()
@@ -1554,7 +1633,7 @@ Sub DoTheTrade (tradeIdx)
 
     Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
 
-    LSet Q$(1) = teams_TRADE$(tradeIdx)
+    LSet Q$(1) = tmInfo_TRADE$(tradeIdx)
     LSet Q$(2) = nicks_TRADE$(tradeIdx)
 
     For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagRat_TRADE(tradeIdx, I)): Next I
@@ -1618,7 +1697,7 @@ Sub DoTheTrade (tradeIdx)
         LSet Q$(I * 2 + 166) = MKI$(numInt_TRADE(tradeIdx, I))
     Next I
 
-    Put #1, tradeT!(tradeIdx)
+    Put #1, teamIndexes(tradeIdx)
 
     Close #1
 
@@ -1642,7 +1721,7 @@ Sub SaveTrades ()
 
     Shared haveStats()
 
-    Shared teams_TRADE$(), nicks_TRADE$()
+    Shared tmInfo_TRADE$(), nicks_TRADE$()
     Shared tradeFG$(), tradeKR$()
     Shared intNam_TRADE$(), sackNam_TRADE$()
     Shared puntNam_TRADE$(), statNam_TRADE$()
@@ -1672,14 +1751,14 @@ Sub SaveTrades ()
 
             Print "SAVING ";: Color teamRat_TRADE(saveIdx, 2), teamRat_TRADE(saveIdx, 1)
 
-            Print teams_TRADE$(saveIdx);
+            Print tmInfo_TRADE$(saveIdx);
 
             Color 15, 0
             Print " STATS"
             
             Z = 0
 
-            statFile$ = nameStatFile$(teams_TRADE$(tradeIdx))
+            statFile$ = nameStatFile$(tmInfo_TRADE$(tradeIdx))
             Open diskPaths$(1) + statFile$ For Output As #1
 
             Print #1, statNam_TRADE$(saveIdx)
@@ -1794,6 +1873,8 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
     Do
 
+        chosenIdx = 0
+
         Color 15, 0
         Cls
 
@@ -1853,8 +1934,8 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
                     If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
 
-                        MsgText$ = "NO TEAM FILES WERE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO MAIN MENU"
-                        BoxWidth = 20
+                        MsgText$ = "NO TEAM FILES COULD BE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
+                        BoxWidth = 24
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
@@ -1900,7 +1981,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
                 Call SelectTradeTeam (numberTeams, yearNumber$, chosenIdx, ExitCode%, tradeIdx)
 
-                If ExitCode% <> 27 Then
+                If ExitCode% <> 27 And numberTeams <> 0 And chosenIdx > 0 Then
 
                     Do
                         Locate 2, 33
@@ -1915,13 +1996,13 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
 
                 End If
 
-            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N"
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
 
         End If 'Done checking for ESC
 
     Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
 
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+    'If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
 
 End Sub
 
@@ -1933,12 +2014,15 @@ End Sub
 'selecting the team to trade players from
 Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
 
-    If numberTeams > 0 Then
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
 
         SELECTION% = 1
         Count% = numberTeams
         Start% = 1
-        FileFGColor% = 15: FileBGColor% = 4
+        FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Rows% = 20
         Columns% = 4
@@ -1949,7 +2033,7 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
         Color , 4
         Cls
         Color 14
-        Locate , 33: Print "TEAM SELECTION"
+        Locate , 33: Print "TEAM"; tradeIdx; "SELECTION"
         Locate 25, 1
         Color 14: Print "ESC";
         Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
@@ -1957,7 +2041,7 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
         Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
-        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% <> 27 Then
@@ -2016,7 +2100,7 @@ Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx, dataOK)
     Shared qbNam_TRADE$(), rbNam_TRADE$()
     Shared sackNam_TRADE$(), wrNam_TRADE$()
     
-    Shared teams_TRADE$(), nicks_TRADE$()
+    Shared tmInfo_TRADE$(), nicks_TRADE$()
 
     Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
 
@@ -2058,7 +2142,7 @@ Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx, dataOK)
 
     Get #1, teamIdx
 
-    teams_TRADE$(tradeIdx) = RTrim$(Q$(1))
+    tmInfo_TRADE$(tradeIdx) = RTrim$(Q$(1))
     nicks_TRADE$(tradeIdx) = RTrim$(Q$(2))
 
     For I = 0 To 7: 
@@ -2201,4 +2285,3 @@ Sub ReadTradeTeam (teamYear$, teamIdx, tradeIdx, dataOK)
     End If
 
 End Sub
-

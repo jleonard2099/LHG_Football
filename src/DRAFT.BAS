@@ -16,28 +16,28 @@ Sub DRAFT ()
         menuChoices$(1) = "DRAFT A NEW TEAM         "
         menuChoices$(2) = "DRAFT TO AN EXISTING TEAM"
         menuChoices$(3) = "EXIT TO MAIN MENU        "
-        Selection% = 1
+        SELECTION% = 1
         Count% = 3
         Start% = 1
         ExitCode% = 3
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1:
 
@@ -66,11 +66,11 @@ Sub DRAFT ()
 
             End Select
 
-            If doneDraft = 1 Then Selection% = 3
+            If doneDraft = 1 Then SELECTION% = 3
 
         End If
 
-    Loop Until Selection% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 3 Or ExitCode% = 27
 
 End Sub
 
@@ -1088,6 +1088,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     Call SaveTeamDraft(draftNew, teamYear$, teamName$, teamIdx)
 
+    Color 15, 0
     Cls
 
     Call box0 (6, 8, 8, 70, 2, 15, 1)
@@ -1287,6 +1288,8 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
     Do
 
+        chosenIdx = 0
+
         Color 15, 0
         Cls
 
@@ -1340,8 +1343,8 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                     If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
 
-                        MsgText$ = "NO TEAM FILES WERE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO MAIN MENU"
-                        BoxWidth = 20
+                        MsgText$ = "NO TEAM FILES COULD BE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
+                        BoxWidth = 24
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
@@ -1402,13 +1405,13 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                 End If
 
-            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N"
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
 
         End If 'Done checking for ESC
 
     Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
 
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+    'If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
 
 End Sub
 
@@ -1420,12 +1423,15 @@ End Sub
 'selecting the team to draft players from
 Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 
-    If numberTeams > 0 Then
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
 
         SELECTION% = 1
         Count% = numberTeams
         Start% = 1
-        FileFGColor% = 15: FileBGColor% = 4
+        FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Rows% = 20
         Columns% = 4
@@ -1444,7 +1450,7 @@ Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
         Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
-        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% <> 27 Then

@@ -46,7 +46,7 @@ Sub LOOKY ()
 
                 If Not _FileExists(diskPaths$(1) + statFile$) And teamNbr > 0 Then
 
-                    MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                    MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                     BoxWidth = 24
                     BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                     Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
@@ -57,7 +57,7 @@ Sub LOOKY ()
                 Else
 
                     Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
-                    Call ViewStatSummary(team$, totalGames%, statFormat, teamPower, SS)
+                    Call ViewStatsSummary(team$, totalGames%, statFormat, teamPower, SS)
 
                 End If
 
@@ -81,7 +81,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared statsGI%(), statsGS%()
     Shared teamRatings%(), teamScore()
 
-    Shared AF!(), AM!(), gameAttendance&()
+    Shared statsAF!(), statsAM!(), gameAttendance&()
     Shared playerStats!(), statsPK!(), sackStats!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
     Shared statsZ!(), statsZ1!(), statsZ2!()
@@ -276,8 +276,8 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
         Input #2, statsLF!(I)
         Input #2, statsLF$(I)
         For I1 = 0 To 4:
-            Input #2, AM!(I, I1)
-            Input #2, AF!(I, I1)
+            Input #2, statsAM!(I, I1)
+            Input #2, statsAF!(I, I1)
         Next
     Next
 
@@ -312,13 +312,13 @@ End Sub
 
 
 '----------------------------------------
-'       ViewStatSummary Subroutine
+'       ViewStatsSummary Subroutine
 '----------------------------------------
 'This subroutine formats and outputs the
 'selected team's record to the display,
 'then provides routines for output of
 'the other stat categories
-Sub ViewStatSummary (teamName$, totalGames%, statFormat, teamPower, SS)
+Sub ViewStatsSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared teamRatings%()
 
@@ -382,7 +382,7 @@ End Sub
 'selected team's stats to the display
 Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
-    Shared AF!(), AM!(), gameAttendance&(), statsGI%(), statsGS%()
+    Shared statsAF!(), statsAM!(), gameAttendance&(), statsGI%(), statsGS%()
     Shared teamStats!(), playerStats!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
     Shared statsPK!(), sackStats!(), statsZ!(), statsZ1!(), statsZ2!()
@@ -1147,12 +1147,12 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLF!(0); AM!(0, 0);
-            Print "-";: Print Using "## ##"; AF!(0, 0); AM!(0, 1);
-            Print "-";: Print Using "## ##"; AF!(0, 1); AM!(0, 2);
-            Print "-";: Print Using "## ##"; AF!(0, 2); AM!(0, 3);
-            Print "-";: Print Using "## ##"; AF!(0, 3); AM!(0, 4);
-            Print "-";: Print Using "##"; AF!(0, 4)
+            Print Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLF!(0); statsAM!(0, 0);
+            Print "-";: Print Using "## ##"; statsAF!(0, 0); statsAM!(0, 1);
+            Print "-";: Print Using "## ##"; statsAF!(0, 1); statsAM!(0, 2);
+            Print "-";: Print Using "## ##"; statsAF!(0, 2); statsAM!(0, 3);
+            Print "-";: Print Using "## ##"; statsAF!(0, 3); statsAM!(0, 4);
+            Print "-";: Print Using "##"; statsAF!(0, 4)
         End If
 
     End If
@@ -1169,12 +1169,12 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLF!(1); AM!(1, 0);
-            Print "-";: Print Using "## ##"; AF!(1, 0); AM!(1, 1);
-            Print "-";: Print Using "## ##"; AF!(1, 1); AM!(1, 2);
-            Print "-";: Print Using "## ##"; AF!(1, 2); AM!(1, 3);
-            Print "-";: Print Using "## ##"; AF!(1, 3); AM!(1, 4);
-            Print "-";: Print Using "##"; AF!(1, 4)
+            Print Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLF!(1); statsAM!(1, 0);
+            Print "-";: Print Using "## ##"; statsAF!(1, 0); statsAM!(1, 1);
+            Print "-";: Print Using "## ##"; statsAF!(1, 1); statsAM!(1, 2);
+            Print "-";: Print Using "## ##"; statsAF!(1, 2); statsAM!(1, 3);
+            Print "-";: Print Using "## ##"; statsAF!(1, 3); statsAM!(1, 4);
+            Print "-";: Print Using "##"; statsAF!(1, 4)
         End If
 
     End If
@@ -1258,7 +1258,7 @@ End Sub
 'selected team's stats to the default printer
 Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, teamPower, SS)
 
-    Shared AF!(), AM!(), gameAttendance&(), statsGI%(), statsGS%()
+    Shared statsAF!(), statsAM!(), gameAttendance&(), statsGI%(), statsGS%()
     Shared teamStats!(), playerStats!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
     Shared statsPK!(), sackStats!(), statsZ!(), statsZ1!(), statsZ2!()
@@ -1766,12 +1766,12 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLF!(0); AM!(0, 0);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(0, 0); AM!(0, 1);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(0, 1); AM!(0, 2);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(0, 2); AM!(0, 3);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(0, 3); AM!(0, 4);
-            Print #1, "-";: Print #1, Using "##"; AF!(0, 4)
+            Print #1, Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLF!(0); statsAM!(0, 0);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(0, 0); statsAM!(0, 1);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(0, 1); statsAM!(0, 2);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(0, 2); statsAM!(0, 3);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(0, 3); statsAM!(0, 4);
+            Print #1, "-";: Print #1, Using "##"; statsAF!(0, 4)
         End If
     End If
 
@@ -1782,12 +1782,12 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLF!(1); AM!(1, 0);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(1, 0); AM!(1, 1);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(1, 1); AM!(1, 2);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(1, 2); AM!(1, 3);
-            Print #1, "-";: Print #1, Using "## ##"; AF!(1, 3); AM!(1, 4);
-            Print #1, "-";: Print #1, Using "##"; AF!(1, 4)
+            Print #1, Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLF!(1); statsAM!(1, 0);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(1, 0); statsAM!(1, 1);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(1, 1); statsAM!(1, 2);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(1, 2); statsAM!(1, 3);
+            Print #1, "-";: Print #1, Using "## ##"; statsAF!(1, 3); statsAM!(1, 4);
+            Print #1, "-";: Print #1, Using "##"; statsAF!(1, 4)
         End If
     End If
 

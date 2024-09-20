@@ -2,17 +2,19 @@ $Debug
 $Color:32
 
 Const GAME_VERSION$ = "7.00"
-Const MAX_GAMES = 1500
+Const MAX_SCHEDULE_GAMES = 1500
+Const MAX_TOURNAMENT_GAMES = 200
 Const MAX_TEAMS = 1000
 Const MAX_FILES = 10240
 'optimium = 1048576 (but slows code)
-Const MAX_CONFERENCES = 40
 Const TEAMS_PER_DIV_COL = 15
+Const TEAMS_PER_DIV_PRO = 10
 Const DIVS_PER_CONFERENCE = 2
 Const TEAMS_PER_CONFERENCE = 30
-Const TEAMS_PER_DIV_PRO = 10
 Const DIVS_PER_LEAGUE = 3
 Const TEAMS_PER_LEAGUE = 30
+Const MAX_CAREER_YEARS = 15
+Const MAX_CONFERENCES = 40
 
 Const MAX_SCHED_STATS = 120
 Const SCHEDULE_SIZE_BYTES = 56
@@ -42,6 +44,12 @@ On Error GoTo Errhandler
 '----------------------------------------
 '          READ IN ALL DATA
 '----------------------------------------
+'Defaults for Event Settings
+Data 5,9,3,99,3,99,3,299,4,3,0,0,0
+For X = 1 To 13:
+    Read eventSettings(X)
+Next
+
 Data RUSHING ATTEMPTS,RUSHING YARDS,RUSHING TOUCHDOWNS,RUSHING AVERAGE,LONGEST RUN
 Data RECEPTIONS,RECEIVING YARDS,RECEIVING TOUCHDOWNS,RECEIVING AVERAGE,LONGEST CATCH
 Data PASS ATTEMPTS,PASS COMPLETIONS,PASSING TOUCHDOWNS,HAD INTERCEPTED,PASSING YARDS
@@ -501,6 +509,7 @@ If _FileExists("DEV.BAS") Then
 
     Open "DEV.BAS" For Input As #1
 
+    'DEV.BAS will not have the "Schedule" folder configured
     For I = 0 To 2
         Input #1, diskPaths$(I)
     Next
@@ -534,13 +543,13 @@ Next
 Close #3
 
 'Run main menu
-Selection% = 1
+SELECTION% = 1
 
 Do
 
-    Call Main_Menu(Selection%)
+    Call Main_Menu(SELECTION%)
 
-Loop Until Selection% = 7
+Loop Until SELECTION% = 7
 
 System
 
@@ -561,7 +570,7 @@ Resume Next ' moves program to code following the error.
 '----------------------------------------
 '       Main_Menu Subroutine
 '----------------------------------------
-Sub Main_Menu (menuSelection%)
+Sub Main_Menu (menuSelection)
 
     Do
 
@@ -582,28 +591,28 @@ Sub Main_Menu (menuSelection%)
         menuChoices$(6) = "CONFIGURE GAME FOLDERS "
         menuChoices$(7) = "EXIT PROGRAM           "
 
-        menuSelection% = 1
+        menuSelection = 1
         Count% = 7
         Start% = 1
         ExitCode% = 7
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), menuSelection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), menuSelection, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case menuSelection%
+            Select Case menuSelection
 
                 Case 1:
                     Call FOOTBALL
@@ -627,9 +636,9 @@ Sub Main_Menu (menuSelection%)
 
         End If
 
-    Loop Until menuSelection% = 7 Or ExitCode% = 27
+    Loop Until menuSelection = 7 Or ExitCode% = 27
 
-    If ExitCode% = 27 Then menuSelection% = 7
+    If ExitCode% = 27 Then menuSelection = 7
 
 End Sub
 
@@ -657,28 +666,28 @@ Sub TeamMgt_Menu ()
         menuChoices$(5) = "DRAFT PLAYERS             "
         menuChoices$(6) = "TRADE PLAYERS             "
         menuChoices$(7) = "RETURN TO MAIN MENU       "
-        menuSelection% = 1
+        menuSelection = 1
         Count% = 7
         Start% = 1
         ExitCode% = 7
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), menuSelection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), menuSelection, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case menuSelection%
+            Select Case menuSelection
 
                 Case 1:
                     Call InputTeam
@@ -702,7 +711,7 @@ Sub TeamMgt_Menu ()
 
         End If
 
-    Loop Until menuSelection% = 7 Or ExitCode% = 27
+    Loop Until menuSelection = 7 Or ExitCode% = 27
 
 End Sub
 
@@ -730,28 +739,28 @@ Sub Replay_Menu ()
         'menuChoices$(4) = "MODIFY REPLAY STATS             "
         menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES"
         menuChoices$(4) = "RETURN TO MAIN MENU             "
-        Selection% = 1
+        SELECTION% = 1
         Count% = 4
         Start% = 1
         ExitCode% = 4
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1:
                     Call LOOKY
@@ -769,7 +778,7 @@ Sub Replay_Menu ()
 
         End If
 
-    Loop Until Selection% = 4 Or ExitCode% = 27
+    Loop Until SELECTION% = 4 Or ExitCode% = 27
 
 End Sub
 
@@ -811,10 +820,10 @@ Sub Leaders_Menu ()
         menuChoices$(19) = "DELETE NATIONAL STATS  "
         menuChoices$(20) = "RETURN TO MAIN MENU    "
         menuChoices$(21) = "EXIT PROGRAM           "
-        Selection% = 1
+        SELECTION% = 1
         Count% = 21
         Start% = 1
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Rows% = 7
         Columns% = 3
@@ -840,7 +849,7 @@ Sub Leaders_Menu ()
         Print "TRACK AND UPDATE TO GENERATE A NATIONAL POLL AND LEADERS."
 
         _MouseShow "DEFAULT"
-        MAMenu menuChoices$(), Selection%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu menuChoices$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% = 27 Then Exit Sub
@@ -849,7 +858,7 @@ Sub Leaders_Menu ()
 
         If ExitCode% <> 27 Then
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1: Call CREATLEAG
                 Case 2: Call CompileLeague
@@ -875,9 +884,9 @@ Sub Leaders_Menu ()
 
         End If
 
-    Loop Until Selection% >= 20 Or ExitCode% = 27
+    Loop Until SELECTION% >= 20 Or ExitCode% = 27
 
-    If Selection% = 21 Then
+    If SELECTION% = 21 Then
         System
     End If
 
@@ -894,6 +903,7 @@ End Sub
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
 '$Include: 'FileTeamSelection.bm'
+
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
 '$Include: 'BLANKCON.BAS'
@@ -901,7 +911,7 @@ End Sub
 '$Include: 'BLANKPRO.BAS'
 '$Include: 'CAREDIT.BAS'
 '$Include: 'CAREER.BAS'
-'$Include: 'CARPRNT.BAS'
+'$Include: 'CARLDR.BAS'
 '$Include: 'CARVIEW.BAS'
 '$Include: 'CNGTM.BAS'
 '$Include: 'COMPCON.BAS'
@@ -925,7 +935,6 @@ End Sub
 '$Include: 'TINPUT.BAS'
 '$Include: 'TRADE.BAS'
 '$Include: 'QBFunctions.bm'
-
 
 ' For Game
 'INCLUDE: 'FOOTBALL.BAS'
@@ -966,26 +975,6 @@ Sub FOOTBALL ()
     '----------------------------------------
     '         DETERMINE GAME OPTIONS
     '----------------------------------------
-    If Not _FileExists("DEV.BAS") Then
-
-        Open "DEV.BAS" For Output As #1
-
-        For I = 0 To 2
-            Print #1, _CWD$ + "\"
-        Next
-
-        Close #1
-
-    End If
-
-    Open "DEV.BAS" For Input As #2
-
-    For I = 0 To 2
-        Input #2, diskPaths$(I)
-    Next
-
-    Close #2
-
     If Not _FileExists("DEFAULT") Then
 
         Open "DEFAULT" For Output As #3
@@ -1056,37 +1045,47 @@ Sub FOOTBALL ()
 
         currGame = schedGame(0) + schedGame(2)
 
-        'Build in an artificial delay for every 50 games
-        'This might let things in memory / CPU clear out?
-        'If (currGame Mod 50) = 0 Then
-        '_Delay 2
-        'End If
-
         'Open "pbplog" + Str$(currGame) For Append As #11
-        Open "runlog" For Append As #11
+        'Open "pbplog" For Append As #11
+        If Not _FileExists(diskPaths$(3) + scheduleFile$) Then
 
-        'Read in schedule options
-        Open diskPaths$(3) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
+            'Notify user that game won't execute
+            MsgText$ = "CAN'T FIND OR LOAD TARGET SCHEDULE.  PRESS ANY KEY TO RETURN TO MENU"
+            BoxWidth = 18
+            BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Call CSMsgBox(MsgText$, BoxWidth, PASS)
+            I$ = GetKeyPress$
+            Call CSMsgBox("", 0, PASS)
 
-        For X = 0 To 20
-            Field #7, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-        Next
+            earlyExit = 1
 
-        Field #7, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+        Else
 
-        Get #7, schedGame(0) + schedGame(2)
+            'Read in schedule options
+            Open diskPaths$(3) + scheduleFile$ As #7 Len = SCHEDULE_SIZE_BYTES
 
-        For X = 0 To 20:
-            NG%(X) = CVI(Q$(X + 1))
-        Next
+            For X = 0 To 20
+                Field #7, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+            Next
 
-        For X = 0 To 1:
-            diskIDs$(X) = Q$(22 + X)
-        Next
+            Field #7, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
-        Close #7
+            Get #7, schedGame(0) + schedGame(2)
 
-        autoPlay = 1
+            For X = 0 To 20:
+                NG%(X) = CVI(Q$(X + 1))
+            Next
+
+            For X = 0 To 1:
+                diskIDs$(X) = Q$(22 + X)
+            Next
+
+            Close #7
+
+            autoPlay = 1
+            
+        End If
 
     Else
 
@@ -1109,7 +1108,8 @@ Sub FOOTBALL ()
             Call CSMsgBox(MsgText$, BoxWidth, PASS)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, PASS)
-            Exit Sub
+
+            earlyExit = 1
 
         End If
 
@@ -1193,16 +1193,13 @@ Sub FOOTBALL ()
 
                 I$ = GetKeyPress$
 
-                If I$ <> Chr$(27) Then
-                    iVal = Val(I$)
-                    If UCase$(I$) = "A" Then iVal = 10
-                End If
+                Call LetterToNumber(I$, setting)
 
-            Loop Until iVal >= 0 And iVal <= 10 Or I$ = Chr$(27) Or UCase$(I$) = "Q"
+            Loop Until setting >= 0 And setting <= 10 Or I$ = Chr$(27) Or UCase$(I$) = "Q"
 
             If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
 
-                Select Case iVal
+                Select Case setting
 
                     Case 0:
                         Open "DEFAULT" For Output As #8
@@ -1259,7 +1256,7 @@ Sub FOOTBALL ()
 
                 End Select
 
-                If iVal >= 4 Then
+                If setting >= 4 Then
 
                     goalPostAdj = 0
                     firstDownClockOpt = 0
@@ -1283,7 +1280,7 @@ Sub FOOTBALL ()
 
             End If
 
-        Loop Until (iVal = 9 And gameTeams$(0) <> "" And gameTeams$(1) <> "") Or I$ = Chr$(27) Or UCase$(I$) = "Q"
+        Loop Until (setting = 9 And gameTeams$(0) <> "" And gameTeams$(1) <> "") Or I$ = Chr$(27) Or UCase$(I$) = "Q"
 
         If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
 
@@ -1319,12 +1316,39 @@ Sub FOOTBALL ()
 
         Else
 
-            'System
-            Exit Sub
+            earlyExit = 1
 
         End If
 
     End If
+
+    'If we've run into issues so far...
+    If earlyExit = 1 Then Exit Sub
+
+    '----------------------------------------
+    '    AUTO-DETERMINE OTHER OPTIONS
+    '----------------------------------------
+
+    ' Determine computer team
+    Select Case playerOpt
+
+        Case 1:
+            playerMode = 1
+            compTeam = 0
+
+        Case 2:
+            playerMode = 1
+            compTeam = 1
+
+        Case 3:
+            playerMode = 2
+
+    End Select
+
+    'playerMode represents the following values:
+    '   0 = Human
+    '   1 = Computer Team
+    '   2 = PC vs. PC
 
     For I = 0 To 1:
         teamYears(I) = GetTeamYear%(Left$(gameTeams$(I), 2))
@@ -1401,31 +1425,6 @@ Sub FOOTBALL ()
         End If
 
     End If
-
-    '----------------------------------------
-    '    AUTO-DETERMINE OTHER OPTIONS
-    '----------------------------------------
-
-    ' Determine computer team
-    Select Case playerOpt
-
-        Case 1:
-            playerMode = 1
-            compTeam = 0
-
-        Case 2:
-            playerMode = 1
-            compTeam = 1
-
-        Case 3:
-            playerMode = 2
-
-    End Select
-
-    'playerMode represents the following values:
-    '   0 = Human
-    '   1 = Computer Team
-    '   2 = PC vs. PC
 
     goalPostAdj = 0
     firstDownClockOpt = 0
@@ -6681,6 +6680,7 @@ Sub InitVar ()
     Shared teamIndicator$()
     Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
 
+    'Shared eventSettings()
     Shared oppScore(), teamScore(), powerRating()
 
     Shared gameAttendance&()
@@ -6804,7 +6804,6 @@ Sub InitVar ()
     ydLine = 0
     ydLineTeam = 0
     ydsToScore = 0
-    BO% = 0
     gameOver = 0
     F% = 0
     FF% = 0
@@ -6844,6 +6843,7 @@ Sub InitVar ()
 
 
     Erase defInts, defSacks
+    'Erase eventSettings
     Erase FA, FM
     Erase sackStatsPlayer, gameStatsTeam, gameStatsPlayer
     Erase gameLongFG
@@ -6896,8 +6896,9 @@ Sub AUTOSETUP (validTeam)
     For tgtTeam = 0 To 1
 
         tgtId = NG%(tgtTeam)
+        tgtYear$ = RTrim$(diskIDs$(tgtTeam))
 
-        Call ReadGameTeam(diskIDs$(tgtTeam), gameTeams$(tgtTeam), tgtId, tgtTeam, validTeam)
+        Call ReadGameTeam(tgtYear$, gameTeams$(tgtTeam), tgtId, tgtTeam, validTeam)
 
         teamIdx_GAME(tgtTeam) = NG%(tgtTeam)
         X = 0
@@ -7081,10 +7082,17 @@ Sub PBP ()
 
     M$ = InKey$
 
-    If UCase$(M$) = "Q" Then Cls: End
-    If UCase$(M$) = "O" Then Call OPTIONS
+    If UCase$(M$) = "O" Then
+        Call OPTIONS
+    End If
+
+    If UCase$(M$) = "Q" Then
+        Cls
+        End
+    End If
 
     If pbpDelay! > 0 Then
+        'If autoPlay <> 1 Then
         Call PLACEPBP
         Call DELAY
     End If
@@ -10423,6 +10431,10 @@ End Sub
 'the current kicker.
 Sub FGMADE ()
 
+    If fgAttYds > gameLongFG(P1, activeKicker(P1)) Then
+        gameLongFG(P1, activeKicker(P1)) = fgAttYds
+    End If
+
     Select Case fgAttYds
 
         Case 1 To 19
@@ -10437,11 +10449,8 @@ Sub FGMADE ()
         Case 40 To 49
             FM(P1, activeKicker(P1), 3) = FM(P1, activeKicker(P1), 3) + 1
 
-        Case 50 To gameLongFG(P1, activeKicker(P1))
+        Case Is >= 50
             FM(P1, activeKicker(P1), 4) = FM(P1, activeKicker(P1), 4) + 1
-
-        Case Is > gameLongFG(P1, activeKicker(P1))
-            gameLongFG(P1, activeKicker(P1)) = fgAttYds
 
     End Select
 
@@ -11741,9 +11750,9 @@ Sub PuntReturnYards ()
     pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetNbr) + " AT THE" + Str$(Int(ydLineTeam))
     Call PBP
 
-    Print #11, "Punt RETURNED for: "; ydsGained; "yards"
-    Print #11, "Punter Rating = "; prYdsPerRet(P1, puntRetNbr); "yds / return"
-    Print #11, "Random # = "; RN0
+    'Print #11, "Punt RETURNED for: "; ydsGained; "yards"
+    'Print #11, "Punter Rating = "; prYdsPerRet(P1, puntRetNbr); "yds / return"
+    'Print #11, "Random # = "; RN0
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
@@ -13987,8 +13996,9 @@ End Sub
 'a corresponding "special" box score
 Sub EVENTS (specialCount, specialStat)
 
-    Dim eventSettings(13)
+    Shared eventSettings()
 
+    'Read in existing parameters if there are any
     If _FileExists("EVENTS.BOX") Then
 
         Open "EVENTS.BOX" For Input As #1
@@ -15460,8 +15470,6 @@ Sub SAVESTATS ()
 
     If UCase$(I$) = "Y" Or autoPlay = 1 Then
 
-        PX = 0
-
         Cls
 
         ' Update schedule, ticker, etc.
@@ -16086,6 +16094,8 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
     Do
 
+        chosenIdx = 0
+
         Color 15, 0
         Cls
 
@@ -16213,7 +16223,7 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
 
     Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
 
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+    'If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
 
 End Sub
 
@@ -16226,7 +16236,10 @@ End Sub
 'the disk ID.
 Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%, gameIdx)
 
-    If numberTeams > 0 Then
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
 
         SELECTION% = 1
         Count% = numberTeams
@@ -16493,37 +16506,6 @@ Sub EndOfGame
     End If
 
 End Sub
-
-
-'----------------------------------------
-'         CheckString Subroutine
-'----------------------------------------
-'This function checks the given string
-'to determine if any characters are not
-'printable. If found, it will return a
-'value of 1. Otherwise, it will return 0.
-Function CheckString% (targetString$)
-
-    badString = 0
-    stringPosition% = 1
-
-    Do
-
-        test = Asc(Mid$(targetString$, stringPosition%, 1))
-
-        'If it is a non-printable character (corrupt data)
-        If test > 122 Or test < 32 Then
-            stringPosition% = 1
-            badString = 1
-        Else
-            stringPosition% = stringPosition% + 1
-        End If
-
-    Loop Until stringPosition% = Len(targetString$) Or badString = 1
-
-    CheckString% = badString
-
-End Function
 
 
 '----------------------------------------

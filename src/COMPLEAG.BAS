@@ -207,7 +207,9 @@ Function FindStatsPro% (XW, statFile$, numberGames)
 
     Shared oppScore(), teamScore()
 
-    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
+    findFile$ = diskPaths$(1) + statFile$ + "S"
+    
+    If Not _FileExists(findFile$) Then
 
         Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
@@ -255,7 +257,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     Shared statsGI%(), statsGS%()
 
-    Shared AF!(), AM!()
+    Shared statsAF!(), statsAM!()
     Shared compPR!(), compQB!(), compRB!(), compWR!(), compZ2!()
     Shared DT!(), EA!(), EM!(), EP!()
     Shared FA!(), FG!(), FM!(), KR!()
@@ -275,7 +277,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     Erase compKR$, compPK$, compPR$, compQB$, compRB$, compWR$
     Erase intName$
 
-    Erase AF!, AM!
+    Erase statsAF!, statsAM!
     Erase compZ2!, OT!, DT!
     Erase statsGI%, statsGS%
 
@@ -393,8 +395,8 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
         Input #1, statsLF$(I)
 
         For I1 = 0 To 4
-            Input #1, AM!(I, I1)
-            Input #1, AF!(I, I1)
+            Input #1, statsAM!(I, I1)
+            Input #1, statsAF!(I, I1)
         Next
     Next
 

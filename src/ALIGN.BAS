@@ -12,17 +12,20 @@ Sub ALIGN ()
     _Title "3-in-1 Football - Align Stats"
 
     Shared AN1$(), AN2$(), AN3$(), AN4$(), AN5$(), AN6$(), AN7$()
-    Shared rbName_Road$(), wrName_Road$(), qbName_Road$(), krName_Road$(), prName_Road$(), punterName_Road$(), pkName_Road$()
     Shared AR$(), intName$(), DIN$(), DRI$(), sackName$(), DSN$(), DSR$()
+    Shared AFN!(), AFR!(), statsAF!(), statsAM!(), AMN!(), AMR!()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+    Shared rbName_Road$(), wrName_Road$(), qbName_Road$(), krName_Road$(), prName_Road$(), punterName_Road$(), pkName_Road$()
+
     Shared statsLC$(), LCN$(), LCR$(), statsLF$(), LFN$(), LFR$()
     Shared statsLI$(), LIN$(), LIR$(), statsLK$(), LKN$(), LKR$()
+
     Shared LPN$(), LPR$(), statsLP$(), LRN$(), LRR$(), statsLR$()
     Shared PKN$(), statsPK$(), PKR$()
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
 
     Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%(), teamRatings%()
 
-    Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
     Shared statsLC!(), LCN!(), LCR!(), LIN!(), LIR!()
     Shared LFR!(), statsLF!(), LFN!()
     Shared statsLP!(), LPN!(), LPR!(), statsLK!(), LKN!(), LKR!()
@@ -253,8 +256,8 @@ Sub ALIGN ()
                         Input #2, statsLF!(I)
                         Input #2, statsLF$(I)
                         For I1 = 0 To 4: 
-                            Input #2, AM!(I, I1)
-                            Input #2, AF!(I, I1)
+                            Input #2, statsAM!(I, I1)
+                            Input #2, statsAF!(I, I1)
                         Next
                     Next
 
@@ -321,7 +324,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Shared LRN$(), LRR$(), statsLR$(), PKN$(), statsPK$(), PKR$()
     Shared statsGI%(), GIN%(), GIR%(), statsGS%(), GSN%(), GSR%()
 
-    Shared AFN!(), AFR!(), AF!(), AM!(), AMN!(), AMR!()
+    Shared AFN!(), AFR!(), AMN!(), AMR!()
     Shared LCN!(), LCR!(), LFR!(), LFN!()
     Shared LPN!(), LPR!(), LKN!(), LKR!()
     Shared LRN!(), LRR!(), PKN!(), PKR!()

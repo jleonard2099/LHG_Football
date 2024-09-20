@@ -10,7 +10,7 @@ Sub EditStats ()
 
     Shared statsGI%(), statsGS%()
 
-    Shared AF!(), AM!(), teamStats!(), playerStats!()
+    Shared statsAF!(), statsAM!(), teamStats!(), playerStats!()
     Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!(), statsPK!()
     Shared statsZ!(), statsZ1!(), statsZ2!
 
@@ -29,7 +29,7 @@ Sub EditStats ()
 
     If Not _FileExists(diskPaths$(1) + statFile$) Then
 
-        MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+        MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
         BoxWidth = 24
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
@@ -133,8 +133,8 @@ Sub EditStats ()
             Input #1, statsLF!(I)
             Input #1, statsLF$(I)
             For I1 = 0 To 4:
-                Input #1, AM!(I, I1)
-                Input #1, AF!(I, I1)
+                Input #1, statsAM!(I, I1)
+                Input #1, statsAF!(I, I1)
             Next
         Next
 
@@ -1041,8 +1041,8 @@ Sub EditStats ()
             Print #1, statsLF!(I)
             Print #1, statsLF$(I)
             For I1 = 0 To 4:
-                Print #1, AM!(I, I1)
-                Print #1, AF!(I, I1)
+                Print #1, statsAM!(I, I1)
+                Print #1, statsAF!(I, I1)
             Next
         Next
 

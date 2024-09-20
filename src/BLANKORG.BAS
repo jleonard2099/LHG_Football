@@ -9,14 +9,14 @@ Sub BLANKORG ()
     _Title "3-in-1 Football - Erase National Stats"
 
     Dim statFileNames$(MAX_CONFERENCES)
-    Shared memberName$()
+    Shared memberConf$()
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS ORGANIZATION. IF YOU STILL WISH TO ERASE ALL STATS, HIT 'Y' FOR YES"
-        BoxWidth = 27
+        MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS ORGANIZATION. IF YOU STILL WISH TO ERASE ALL STATS, PRESS 'Y' FOR YES"
+        BoxWidth = 31
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
@@ -30,16 +30,16 @@ Sub BLANKORG ()
             Input #1, org$
 
             For X = 1 To MAX_CONFERENCES
-                Input #1, memberName$(X)
+                Input #1, memberConf$(X)
             Next
 
             Close #1
 
             For X = 1 To MAX_CONFERENCES
 
-                If memberName$(X) <> "XXX" Then
+                If memberConf$(X) <> "XXX" Then
 
-                    Open diskPaths$(2) + memberName$(X) + ".TMS" For Input As #2
+                    Open diskPaths$(2) + memberConf$(X) + ".TMS" For Input As #2
 
                     Input #2, org$, div1$, div2$
 

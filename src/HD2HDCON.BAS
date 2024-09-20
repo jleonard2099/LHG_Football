@@ -98,7 +98,7 @@ Sub Hd2HdCon_Conf (secondConf)
 
                 If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
 
-                    MsgText$ = "NO COMPILED STATS WERE FOUND FOR THIS TEAM.  PRESS ANY KEY TO RETURN TO MAIN MENU"
+                    MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                     BoxWidth = 24
                     BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                     Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))

@@ -27,28 +27,28 @@ Sub NEWLDR (statType)
 
         Call TITLE
 
-        Selection% = 1
+        SELECTION% = 1
         Count% = 3
         Start% = 1
         ExitCode% = 3
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1
                     Do
@@ -77,7 +77,7 @@ Sub NEWLDR (statType)
 
         End If
 
-    Loop Until Selection% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 3 Or ExitCode% = 27
 
 End Sub
 
@@ -248,7 +248,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
     Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
 
-    Shared AM!(), AF!()
+    Shared statsAM!(), statsAF!()
     Shared statsLC!(), statsLK!(), statsLF!(), statsLI!(), statsLP!(), statsLR!()
     Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
 
@@ -417,8 +417,8 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     Input #1, statsLF!(I)
                     Input #1, statsLF$(I)
                     For I1 = 0 To 4
-                        Input #1, AM!(I, I1)
-                        Input #1, AF!(I, I1)
+                        Input #1, statsAM!(I, I1)
+                        Input #1, statsAF!(I, I1)
                     Next
                 Next
 
@@ -965,7 +965,7 @@ Sub ExpandedLeaders_Menu (totalStats)
         newCategory = 0
 
         Locate 2, 24
-        Color 4, 15: Print "LEADER SELECTION MENU"
+        Print "LEADER SELECTION MENU"
         Print
         Locate , 20: Color 14: Print "(A) ";
         Color 1: Print "VIEW RUSHING LEADERS"
@@ -2268,12 +2268,12 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
         Cls
 
         Call ShadowBox(1, 5, 67, 18, 15, 1)
+        Color 14
 
         R = Len(expCategories$(categoryId))
 
         Locate 2, 11
-
-        Color 14, 1: Print "PLAYER             TEAM";
+        Print "PLAYER             TEAM";
 
         Locate , 60 - (Int(R) / 2): Print expCategories$(categoryId)
 
@@ -2465,14 +2465,13 @@ Sub TeamStatsToReport (categoryId)
         Cls
 
         Call ShadowBox(1, 15, 67, 18, 15, 4)
+        Color 14
 
-        Color 14, 4
         R = Len(expCategories$(categoryId))
         Locate 2, 40 - (Int(R) / 2): Print expCategories$(categoryId)
 
         Locate 3, 11
-
-        Color 14, 4: Print "TEAM                               TEAM "
+        Print "TEAM                               TEAM "
 
         For W = 1 To 15
             If TVN = 1 Then

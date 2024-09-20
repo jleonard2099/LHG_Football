@@ -159,7 +159,10 @@ End Sub
 ' from the selected team.
 Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 
-    If numberTeams > 0 Then
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
 
         SELECTION% = 1
         Count% = numberTeams
@@ -436,11 +439,11 @@ Sub ReadExtraData (teamYear$, teamIdx, dataOK)
         Close #2
 
         If Z$ <> "x" Or teamAttendance& > 100000 Then
-        
+
             dataOK = 0
             stadium$ = ""
             teamAttendance& = 0
-            
+
         Else
 
             dataOK = 1
@@ -503,6 +506,39 @@ End Function
 
 
 '----------------------------------------
+'          CheckString Function
+'----------------------------------------
+'This function checks the given string
+'to determine if any characters are not
+'alpha-numeric or printable.
+'Return Values
+'1 = non-printable characters were found
+'0 = all characters in string are alpha-numeric.
+Function CheckString% (targetString$)
+
+    badString = 0
+    stringPosition% = 1
+
+    Do
+
+        test = Asc(Mid$(targetString$, stringPosition%, 1))
+
+        'If it is a non-printable character (corrupt data)
+        If test > 122 Or test < 32 Then
+            stringPosition% = 1
+            badString = 1
+        Else
+            stringPosition% = stringPosition% + 1
+        End If
+
+    Loop Until stringPosition% = Len(targetString$) Or badString = 1
+
+    CheckString% = badString
+
+End Function
+
+
+'----------------------------------------
 '        ChooseFile$ Function
 '----------------------------------------
 'Shows user a file selection menu, based
@@ -558,9 +594,9 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
                 Color 14
                 Print "SELECT "; fileDesc$; " FILE"
                 Color 15
-                Selection% = 1
+                SELECTION% = 1
                 START% = 1
-                FileFGColor% = 15: FileBGColor% = 1
+                FileFGColor = 15: FileBGColor = 1
                 HiLiteFGColor% = 0: HiLiteBGColor% = 7
                 Rows% = 20
                 Columns% = 3
@@ -578,13 +614,13 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
                 Color 15
 
                 _MouseShow "DEFAULT"
-                MAMenu foundFiles$(), Selection%, START%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+                MAMenu foundFiles$(), SELECTION%, START%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
                 _MouseHide
 
                 If ExitCode% <> 27 Then
 
                     Color 15, 1
-                    targetFile$ = RTrim$(foundFiles$(Selection%))
+                    targetFile$ = RTrim$(foundFiles$(SELECTION%))
                     XCoord = Int((80 - Len(targetFile$)) / 2)
                     Locate 2, XCoord
                     Print targetFile$
@@ -689,3 +725,4 @@ Sub ScheduleFilePrompt (scheduleFile$)
 
 
 End Sub
+

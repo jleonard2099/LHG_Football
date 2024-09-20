@@ -5,6 +5,7 @@ Declare Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 Declare Sub UserFilePrompt (reportFile$)
 
 Declare Function nameStatFile$ (teamName$)
+Declare Function CheckString% (targetString$)
 Declare Function ChooseFile$(fileSpec$, fileDesc$)
 
 Const TEAM_SIZE_BYTES = 934
