@@ -268,7 +268,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     Shared compKR$(), compPK$(), compPR$()
     Shared compQB$(), compRB$(), compWR$()
-    Shared statFiles$(), intName$(), PKR$()
+    Shared statFiles$(), intName$(), longPRName_Road$()
     Shared sackName$()
     Shared statsLC$(), statsLF$(), statsLI$()
     Shared statsLK$(), statsLP$(), statsLR$()
@@ -385,8 +385,8 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     'Longest placekick (FG)?
     For I = 0 To 2:
         Input #1, statsPK!(I)
-        Input #1, PKR$(I, 0)
-        Input #1, PKR$(I, 1)
+        Input #1, longPRName_Road$(I, 0)
+        Input #1, longPRName_Road$(I, 1)
     Next
 
     'Longest fumble?
@@ -579,7 +579,7 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
     Shared indRecDesc$()
     Shared compKR$(), compPK$(), compPR$(), compQB$()
     Shared compRB$(), compWR$(), compZ2$(), compZ3$()
-    Shared intName$(), PKR$(), PS$()
+    Shared intName$(), longPRName_Road$(), PS$()
     Shared sackName$()
     Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
     Shared TB$()
@@ -1463,7 +1463,7 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
                 indRecords!(31) = statsPK!(X - 1)
                 indRecDesc$(31, 0) = compPR$(X)
                 indRecDesc$(31, 1) = TM$
-                indRecDesc$(31, 2) = PKR$(X - 1, 0)
+                indRecDesc$(31, 2) = longPRName_Road$(X - 1, 0)
             End If
 
             For Z = 171 To 180

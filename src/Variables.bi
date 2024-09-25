@@ -70,45 +70,37 @@ Dim yesNo$(1), yesNoText$(1)
 '----------------------------------------
 ' Used in ALIGN / MERGE routines
 '----------------------------------------
+
 'Different aligned names by position
-Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
+Dim rbName_Align$(0 to 9), wrName_Align$(0 to 5), qbName_Align$(0 to 3), krName_Align$(0 to 2), prName_Align$(0 to 2), punterName_Align$(0 to 3), pkName_Align$(0 to 1)
+Dim intName_Align$(9), sackName_Align$(14)
 
 'Different original names by position
 Dim rbName_Road$(0 To 9), wrName_Road$(0 To 5), qbName_Road$(0 To 3), krName_Road$(0 To 2), prName_Road$(0 To 2), punterName_Road$(0 To 1), pkName_Road$(0 To 1)
+Dim intName_Road$(9), sackName_Road$(15)
 
-'Different road names
-Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
+Dim teamNameAlign$
 
-Dim LCN$(0 To 15, 0 To 1), LCR$(0 To 15, 0 To 1), LFN$(0 To 1), LFR$(0 To 1)
-Dim LIN$(0 To 9, 0 To 1), LIR$(0 To 9, 0 To 1), LKN$(0 To 2, 0 To 1), LKR$(0 To 2, 0 To 1)
-Dim LPN$(0 To 3, 0 To 1), LPR$(0 To 3, 0 To 1), LRN$(0 To 9, 0 To 1), LRR$(0 To 9, 0 To 1)
-Dim PKN$(0 To 2, 0 To 1), PKR$(0 To 2, 0 To 1)
+Dim longCatchName_Align$(0 To 15, 0 To 1), longCatchName_Road$(0 To 15, 0 To 1)
+Dim longFGName_Align$(0 To 1), longFGName_Road$(0 To 1)
+Dim longIntName_Align$(0 To 9, 0 To 1), longIntName_Road$(0 To 9, 0 To 1)
+Dim longKRName_Align$(0 To 2, 0 To 1), longKRName_Road$(0 To 2, 0 To 1)
+Dim longPassName_Align$(0 To 3, 0 To 1), longPassName_Road$(0 To 3, 0 To 1)
+Dim longRunName_Align$(0 To 9, 0 To 1), longRunName_Road$(0 To 9, 0 To 1)
+Dim longPRName_Align$(0 To 2, 0 To 1), longPRName_Road$(0 To 2, 0 To 1)
 
-Dim GIN%(0 To 9, 2), GIR%(0 To 9, 2), GSN%(0 To 15, 1), GSR%(0 To 15, 1)
+Dim FGA_Align!(0 To 1, 0 To 4), FGA_Road!(0 To 1, 0 To 4)
+Dim FGM_Align!(1, 4), FGM_Road!(1, 4)
+Dim longCatchVal_Align!(15), longCatchVal_Road!(15)
+Dim longFGVal_Road!(1), longFGVal_Align!(1)
+Dim longKRVal_Align!(2), longKRVal_Road!(2)
+Dim longIntVal_Align!(0 To 9), longIntVal_Road!(0 To 9)
+Dim longPassVal_Align!(3), longPassVal_Road!(3)
+Dim longRunVal_Align!(0 To 9), longRunVal_Align!(0 To 9)
+Dim longPRVal_Align!(2), longPRVal_Road!(2)
+Dim nbrInt_Align(0 To 9, 2), nbrInt_Road(0 To 9, 2), nbrSack_Align(0 To 15, 1), nbrSack_Road(0 To 15, 1)
 
-Dim statsAF!(0 To 1, 0 To 4), statsAM!(1, 4)
-Dim AFN!(0 To 1, 0 To 4), AFR!(0 To 1, 0 To 4)
-Dim AMN!(1, 4), AMR!(1, 4)
-
-Dim playerStats!(13, 17)
-
-'--LF! is only 0 to 9 b/c of career behavior
-Dim statsLC!(0 To 15), statsLF!(0 To 9), statsLI!(0 To 9), statsLK!(0 To 3)
-Dim statsLP!(0 To 3), statsLR!(0 To 9), statsPK!(0 To 2)
-Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1)
-
-Dim statsLC$(0 To 15, 0 To 1), statsLF$(0 To 1), statsLI$(0 To 9, 0 To 1)
-Dim statsLK$(0 To 2, 0 To 1), statsLP$(0 To 3, 0 To 1), statsLR$(0 To 9, 0 To 1)
-Dim statsPK$(0 To 2, 1)
-
-Dim LCN!(15), LCR!(15), LIN!(0 To 9), LIR!(0 To 9)
-Dim LFR!(1), LFN!(1), LKN!(2), LKR!(2)
-Dim LPN!(3), LPR!(3), LRN!(0 To 9), LRR!(0 To 9)
-Dim PKN!(2), PKR!(2)
-
-Dim ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
-
-Dim ratingsQB!(0 To 3, 10)
+Dim alignZ2!(14, 18), roadZ0!(38), roadZ1!(38), roadZ2!(14, 18)
 
 
 '----------------------------------------
@@ -125,7 +117,7 @@ Dim carDefInts$(55), carDefSacks$(55)
 
 'S = stats ???
 Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
-Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerRC$(6), careerWRS$(MAX_CAREER_YEARS, 40, 1)
+Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerWRS$(MAX_CAREER_YEARS, 40, 1)
 
 Dim carRBacks$(50), carWdRec$(40), carQBacks$(20), carKickRet$(15), carPRet$(15), carPunter$(10), carKicker$(10)
 
@@ -151,7 +143,8 @@ Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), c
 Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
 Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
 
-Dim careerRC!(6), careerTT!(50)
+Dim careerRecPlyr$(6)
+Dim careerRecVal!(6), careerTeamTotal!(50)
 
 'Dim carLdrPlyrName$(62, 20)
 'Dim carLdrVal!(62, 20)
@@ -172,24 +165,29 @@ Dim Shared PTSFC, PTSAC
 Dim fumbGain, puntNum
 Dim puntName$
 
-Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
-Dim compQB$(4), compRB$(10), compWR$(16)
+Dim indRecDesc$(50, 2), teamRecDesc$(50)
+Dim compRB$(10), compWR$(16), compQB$(4)
+Dim compKR$(3), compPR$(3), compPK$(2)
 Dim compZ2$(1 To 240), compZ3$(1 To 240)
+
 Dim N2$(240), N3$(240), NT$(10, 20)
 Dim PS$(10), PT$(1200)
+Dim TB$(18), TT$(10, 20)
 
-Dim TB$(18), teamRecDesc$(50), TT$(10, 20)
+Dim compRB!(11, 11), compWR!(16, 13), compQB!(1 To 11, 1 To 11)
+Dim compPR!(11, 11)
 
-Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
-Dim compTT!(10, 20, 9), compWR!(16, 13)
+Dim compTT!(10, 20, 9)
 Dim compZ1!(1 To 240, 1 To 2), compZ2!(14, 18)
 
-Dim indRecords!(50), DT!(38), EA!(2), EM!(2), EP!(2)
+Dim indRecords!(50), teamRecords!(50)
+
+Dim DT!(38), EA!(2), EM!(2), EP!(2)
 Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
 Dim N1!(240, 2), NT!(10, 20, 9)
 Dim O1!(60), O2!(60), O3!(60), OT!(38)
 Dim PT!(1200, 5), PTSA!(60), PTSF!(60)
-Dim TD!(16), TG!(16), TP!(18), teamRecords!(50)
+Dim TD!(16), TG!(16), TP!(18)
 Dim YD!(16)
 
 
@@ -236,13 +234,17 @@ Dim tmInfo_TRADE$(1), wrNam_TRADE$(2, 6)
 
 
 ' ** Stats File **
+Dim teamIndexes(1)
+
 Dim tradeAF!(1, 1, 4), tradeAM!(1, 1, 4)
 Dim tradeLC!(2, 15), tradeLF!(1, 1), tradeLI!(1, 9)
 Dim tradeLK!(1, 2), tradeLP!(1, 3), tradeLR!(1, 9)
-Dim tradePK!(1, 2), teamIndexes(1)
+Dim tradePK!(1, 2)
+
 Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
 
 Dim tradeGI%(1, 9, 2), tradeGS%(1, 14, 1)
+
 
 Dim gamePK$(1, 2, 1)
 Dim statNam_TRADE$(1)
@@ -301,26 +303,50 @@ Dim indRecCategory$(46), teamRecCategory$(43)
 '----------------------------------------
 Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 
-Dim gameCount(30), lookyP%(1)
-
-Dim GMA!(300), GMB!(180), GMC!(120)
+'-----
 
 Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
 Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
 Dim A7L!(60, 5), A8L!(300), A9L!(450)
+
+Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120)
+Dim A4L$(90), A4T$(90), A5L$(90), A5T$(90)
+Dim A6L$(30), A6T$(30), A7L$(60), A7T$(60)
+Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
+
+'-----
+
+Dim gameCount(30), lookyP%(1)
+
+Dim GMA!(300), GMB!(180), GMC!(120)
+
 Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 0 To 29), sackStats!(1, 1)
 
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
-Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
+
 Dim expCategories$(74)
 
 Dim intNam_TRADE$(1, 9)
 Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
+
 Dim lookyRBacks$(10), lookyWdRec$(6), lookyQBacks$(4), lookyKickRet$(3), lookyPRet$(3), lookyPunter$(2), lookyKicker$(2)
 Dim lookyTT$(31, 0 To 29)
+
 Dim QBL$(120), sackNam_TRADE$(1, 14)
 Dim TMM$(480), TPP$(480), TYY$(480)
+
+Dim playerStats!(13, 17)
+
+'--LF! is only 0 to 9 b/c of career behavior
+Dim statsAF!(0 To 1, 0 To 4), statsAM!(1, 4)
+Dim statsLC!(0 To 15), statsLF!(0 To 9), statsLI!(0 To 9), statsLK!(0 To 3)
+Dim statsLP!(0 To 3), statsLR!(0 To 9), statsPK!(0 To 2)
+Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1)
+
+Dim statsLC$(0 To 15, 0 To 1), statsLF$(0 To 1), statsLI$(0 To 9, 0 To 1)
+Dim statsLK$(0 To 2, 0 To 1), statsLP$(0 To 3, 0 To 1), statsLR$(0 To 9, 0 To 1)
+Dim statsPK$(0 To 2, 1)
+
+Dim ratingsQB!(0 To 3, 10)
 
 
 '----------------------------------------
