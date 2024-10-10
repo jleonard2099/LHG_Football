@@ -88,35 +88,34 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared teamNick$
 
-    Shared leagueRatings%()
-    Shared teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Locate 3: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
     Locate 4: Input " 2. DISK ID "; teamYear$
     Locate 5: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
     Locate 6: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
-    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
-    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
-    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
-    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
-    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
-    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
-    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
+    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
+    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings(2)
+    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
+    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
+    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
+    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings(6)
     Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
-    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0)
-    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
-    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings(0)
+    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings(7)
+    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
     Locate 18: Input "16. STADIUM NAME "; stad$
     Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
-    Locate 20: Input "18. POWER RATING "; teamRatings%(4)
-    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
-    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+    Locate 20: Input "18. POWER RATING "; teamRatings(4)
+    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings(2)
+    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings(1)
 
-    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
         Locate 21, 37
         Print "TEAM APPEARANCE: ";
         Locate 22, 37
-        Color teamRatings%(2), teamRatings%(1)
+        Color teamRatings(2), teamRatings(1)
         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
         Color 15, 0
     End If
@@ -151,37 +150,37 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
                 Case 5
                     Locate 7, 18: Print Space$(10)
-                    Locate 7, 1: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
+                    Locate 7, 1: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
                     Locate 7, 18: Print " "
 
                 Case 6
                     Locate 8, 20: Print Space$(10)
-                    Locate 8, 1: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
+                    Locate 8, 1: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
                     Locate 8, 20: Print " "
 
                 Case 7
                     Locate 9, 19: Print Space$(10)
-                    Locate 9, 1: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
+                    Locate 9, 1: Input " 7. DEF INT % ADJ "; leagueRatings(2)
                     Locate 9, 19: Print " "
 
                 Case 8
                     Locate 10, 19: Print Space$(10)
-                    Locate 10, 1: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
+                    Locate 10, 1: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
                     Locate 10, 19: Print " "
 
                 Case 9
                     Locate 11, 23: Print Space$(10)
-                    Locate 11, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
+                    Locate 11, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
                     Locate 11, 23: Print " "
 
                 Case 10
                     Locate 12, 26: Print Space$(10)
-                    Locate 12, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
+                    Locate 12, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
                     Locate 12, 26: Print " "
 
                 Case 11
                     Locate 13, 18: Print Space$(10)
-                    Locate 13, 1: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+                    Locate 13, 1: Input "11. DEF SACK ADJ "; leagueRatings(6)
                     Locate 13, 18: Print " "
 
                 Case 12
@@ -191,17 +190,17 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
                 Case 13
                     Locate 15, 20: Print Space$(10)
-                    Locate 15, 1: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 15, 1: Input "13. TM PENALTY ADJ "; teamRatings(0)
                     Locate 15, 20: Print " "
 
                 Case 14
                     Locate 16, 20: Print Space$(10)
-                    Locate 16, 1: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 16, 1: Input "14. OFF RUN/PASS % "; leagueRatings(7)
                     Locate 16, 20: Print " "
 
                 Case 15
                     Locate 17, 35: Print Space$(10)
-                    Locate 17, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 17, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
                     Locate 17, 35: Print " "
 
                 Case 16
@@ -216,33 +215,33 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
                 Case 18
                     Locate 20, 18: Print Space$(10)
-                    Locate 20, 1: Input "18. POWER RATING "; teamRatings%(4)
+                    Locate 20, 1: Input "18. POWER RATING "; teamRatings(4)
                     Locate 20, 18: Print " "
 
                 Case 19
                     Locate 21, 23: Print Space$(10)
-                    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings(2)
                     Locate 21, 23: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1)
+                        Color teamRatings(2), teamRatings(1)
                         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
                 Case 20
                     Locate 22, 28: Print Space$(10)
-                    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings(1)
                     Locate 22, 28: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1)
+                        Color teamRatings(2), teamRatings(1)
                         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
@@ -272,7 +271,7 @@ Sub DraftExistingTeam (teamYear$, teamIdx)
 
     Shared stadium$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -295,11 +294,11 @@ Sub DraftExistingTeam (teamYear$, teamIdx)
     Shared teamAttendance&
 
     For I = 0 To 7:
-        leagueRatings%(I) = leagRat_DRAFT(I)
+        leagueRatings(I) = leagRat_DRAFT(I)
     Next I
 
     For I = 0 To 4:
-        teamRatings%(I) = teamRat_DRAFT(I)
+        teamRatings(I) = teamRat_DRAFT(I)
     Next I
 
     For I = 0 To 9
@@ -410,8 +409,8 @@ Sub ExistingTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared teamNick$, stadium$
 
-    Shared leagueRatings%()
-    Shared teamRatings%()
+    Shared leagueRatings()
+    Shared teamRatings()
 
     Call TITLE
 
@@ -424,20 +423,20 @@ Sub ExistingTeamParameters (teamYear$, teamName$, teamIdx)
     Locate 4: Print " 2. TEAM #  "; teamIdx
     Locate 5: Print " 3. TEAM NAME   "; teamName$
     Locate 6: Print " 4. TEAM NICKNAME   "; teamNick$
-    Locate 7: Print " 5. DEF RUSH ADJ  "; leagueRatings%(0)
-    Locate 8: Print " 6. DEF COMP % ADJ  "; leagueRatings%(1)
-    Locate 9: Print " 7. DEF INT % ADJ  "; leagueRatings%(2)
-    Locate 10: Print " 8. FUM %  "; leagueRatings%(3)
-    Locate 11: Print " 9. DEF FUM %  "; leagueRatings%(4)
-    Locate 12: Print "10. OFF SACKED %  "; leagueRatings%(5)
-    Locate 13: Print "11. DEF SACK ADJ  "; leagueRatings%(6)
+    Locate 7: Print " 5. DEF RUSH ADJ  "; leagueRatings(0)
+    Locate 8: Print " 6. DEF COMP % ADJ  "; leagueRatings(1)
+    Locate 9: Print " 7. DEF INT % ADJ  "; leagueRatings(2)
+    Locate 10: Print " 8. FUM %  "; leagueRatings(3)
+    Locate 11: Print " 9. DEF FUM %  "; leagueRatings(4)
+    Locate 12: Print "10. OFF SACKED %  "; leagueRatings(5)
+    Locate 13: Print "11. DEF SACK ADJ  "; leagueRatings(6)
     Locate 14: Print "12. DEF YD/COMP ADJ  "; ydsCompAdj
-    Locate 15: Print "13. TM PENALTY ADJ  "; teamRatings%(0)
-    Locate 16: Print "14. OFF RUN/PASS %  "; leagueRatings%(7)
-    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings%(3)
-    Locate 18: Print "16. POWER RATING  "; teamRatings%(4)
-    Locate 19: Print "17. TM BACKGROUND COLOR (0-7)  "; teamRatings%(1)
-    Locate 20: Print "18. TM TEXT COLOR (0-15)  "; teamRatings%(2)
+    Locate 15: Print "13. TM PENALTY ADJ  "; teamRatings(0)
+    Locate 16: Print "14. OFF RUN/PASS %  "; leagueRatings(7)
+    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings(3)
+    Locate 18: Print "16. POWER RATING  "; teamRatings(4)
+    Locate 19: Print "17. TM BACKGROUND COLOR (0-7)  "; teamRatings(1)
+    Locate 20: Print "18. TM TEXT COLOR (0-15)  "; teamRatings(2)
     Locate 21: Print "19. STADIUM NAME   "; stadium$
     Locate 22: Print "20. AVERAGE ATTENDANCE  "; teamAttendance&
 
@@ -453,7 +452,7 @@ End Sub
 'source team will need selected.
 Sub DraftChoices (teamName$)
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -526,7 +525,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "RUNNING BACKS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RUN AVG CX% RC AVG CX%";
 
@@ -586,7 +585,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "WIDE RECEIVERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "REC AVG  CX% ";
 
@@ -643,7 +642,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "QUARTERBACKS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0: Print Tab(17); " C%  I%   ARM  CX% ";
 
                         Print Tab(41);
@@ -703,7 +702,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "KICKOFF RETURNERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RET AVG  CX%";
 
@@ -762,7 +761,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PUNT RETURNERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RET AVG  CX%";
 
@@ -821,7 +820,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PUNTER"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "PUNT AVG";
 
@@ -875,7 +874,7 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PLACE KICKERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "FG%  CX   EP%  CX";
 
@@ -947,7 +946,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     Shared teamNick$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -973,8 +972,13 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If rushContrib(I) <> 0 Then rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1: S1 = rushContrib(I)
-        If rushContrib(I) > 100 Then rushContrib(I) = 100
+        If rushContrib(I) <> 0 Then 
+            rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
+            S1 = rushContrib(I)
+        End If
+        If rushContrib(I) > 100 Then 
+            rushContrib(I) = 100
+        End If
     Next I
 
     For I = 0 To 5:
@@ -984,13 +988,23 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
     S5 = 100 / S2
 
     For I = 0 To 9:
-        If rbRecepts(I) <> 0 Then rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3: S3 = rbRecepts(I)
-        If rbRecepts(I) > 100 Then rbRecepts(I) = 100
+        If rbRecepts(I) <> 0 Then 
+            rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
+            S3 = rbRecepts(I)
+        End If
+        If rbRecepts(I) > 100 Then 
+            rbRecepts(I) = 100
+        End If
     Next I
 
     For I = 0 To 5:
-        If recContrib(I) <> 0 Then recContrib(I) = Int(S5 * recContrib(I) + .5) + S3: S3 = recContrib(I)
-        If recContrib(I) > 100 Then recContrib(I) = 100
+        If recContrib(I) <> 0 Then 
+            recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
+            S3 = recContrib(I)
+        End If
+        If recContrib(I) > 100 Then 
+            recContrib(I) = 100
+        End If
     Next I
 
     S6 = 0
@@ -1003,8 +1017,13 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If passContrib(I) <> 0 Then passContrib(I) = Int(S8 * passContrib(I) + .5) + S7: S7 = passContrib(I)
-        If passContrib(I) > 100 Then passContrib(I) = 100
+        If passContrib(I) <> 0 Then 
+            passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
+            S7 = passContrib(I)
+        End If
+        If passContrib(I) > 100 Then 
+            passContrib(I) = 100
+        End If
     Next
 
     G0 = 0
@@ -1021,13 +1040,23 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
     G5 = 100 / G3
 
     For I = 0 To 2:
-        If krContrib(I) <> 0 Then krContrib(I) = Int(G2 * krContrib(I) + .5) + G1: G1 = krContrib(I)
-        If krContrib(I) > 100 Then krContrib(I) = 100
+        If krContrib(I) <> 0 Then 
+            krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
+            G1 = krContrib(I)
+        End If
+        If krContrib(I) > 100 Then 
+            krContrib(I) = 100
+        End If
     Next
 
     For I = 0 To 2:
-        If prContrib(I) <> 0 Then prContrib(I) = Int(G5 * prContrib(I) + .5) + G4: G4 = prContrib(I)
-        If prContrib(I) > 100 Then prContrib(I) = 100
+        If prContrib(I) <> 0 Then 
+            prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
+            G4 = prContrib(I)
+        End If
+        If prContrib(I) > 100 Then 
+            prContrib(I) = 100
+        End If
     Next
 
     G0 = 0
@@ -1044,42 +1073,72 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
     G5 = 100 / G3
 
     For I = 0 To 1:
-        If pkFGContrib(I) <> 0 Then pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1: G1 = pkFGContrib(I)
-        If pkFGContrib(I) > 100 Then pkFGContrib(I) = 100
+        If pkFGContrib(I) <> 0 Then 
+            pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
+            G1 = pkFGContrib(I)
+        End If
+        If pkFGContrib(I) > 100 Then 
+            pkFGContrib(I) = 100
+        End If
     Next
 
     For I = 0 To 1:
-        If pkPATContrib(I) <> 0 Then pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4: G4 = pkPATContrib(I)
-        If pkPATContrib(I) > 100 Then pkPATContrib(I) = 100
+        If pkPATContrib(I) <> 0 Then 
+            pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
+            G4 = pkPATContrib(I)
+        End If
+        If pkPATContrib(I) > 100 Then 
+            pkPATContrib(I) = 100
+        End If
     Next
 
     For I = 9 To 0 Step -1:
-        If rushContrib(I) <> 0 Then rushContrib(I) = 100: Exit For
+        If rushContrib(I) <> 0 Then 
+            rushContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 5 To 0 Step -1:
-        If recContrib(I) <> 0 Then recContrib(I) = 100: Exit For
+        If recContrib(I) <> 0 Then 
+            recContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 3 To 0 Step -1:
-        If passContrib(I) <> 0 Then passContrib(I) = 100: Exit For
+        If passContrib(I) <> 0 Then 
+            passContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 2 To 0 Step -1:
-        If krContrib(I) <> 0 Then krContrib(I) = 100: Exit For
+        If krContrib(I) <> 0 Then 
+            krContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 2 To 0 Step -1:
-
-        If prContrib(I) <> 0 Then prContrib(I) = 100: Exit For
+        If prContrib(I) <> 0 Then 
+            prContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 1 To 0 Step -1:
-        If pkFGContrib(I) <> 0 Then pkFGContrib(I) = 100: Exit For
+        If pkFGContrib(I) <> 0 Then 
+            pkFGContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 1 To 0 Step -1:
-        If pkPATContrib(I) <> 0 Then pkPATContrib(I) = 100: Exit For
+        If pkPATContrib(I) <> 0 Then 
+            pkPATContrib(I) = 100
+            Exit For
+        End If            
     Next
 
     X = Int((ydsCompAdj / .3) + .5)
@@ -1128,7 +1187,7 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     Shared teamNick$, stadium$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -1192,8 +1251,8 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     LSet Q$(1) = teamName$
     LSet Q$(2) = teamNick$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings%(I)): Next
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings(I)): Next
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings(I)): Next I
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)

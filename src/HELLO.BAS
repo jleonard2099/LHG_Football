@@ -31,6 +31,10 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared fgAttLine
+Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
+Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
+Dim statsFGA!(0 To 1, 0 To 4), statsFGM!(1, 4)
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -86,7 +90,7 @@ Data PASS ATTEMPTS,PASS COMPLETIONS,INTERCEPTIONS,PASSING YARDS,TOUCHDOWN PASSES
 Data KICKOFF RETURNS,KICKOFF RETURN YARDS,AVERAGE GAIN/KO RETURN,KICKOFF RETURN TD'S,LONGEST KICKOFF RETURN
 Data PUNT RETURNS,PUNT RETURN YARDS,AVERAGE GAIN/PUNT RETURN,PUNT RETURN TD'S,LONGEST PUNT RETURN
 Data PUNTS,PUNTING YARDS,AVERAGE PER PUNT
-Data F.G.'s MADE,F.G. ATTEMPTS,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST s
+Data F.G.'s MADE,F.G. ATTEMPTS,F.G. PERCENTAGE,E.P.'s MADE,E.P. ATTEMPTS,E.P. PERCENTAGE,LONGEST FIELD GOAL
 Data INTERCEPTIONS,SACKS
 Data NON-KICKERS,KICKERS,ALL PLAYERS
 Data FIRST DOWNS,RUSH ATTEMPTS,RUSHING YARDS,RUSHING AVERAGE,PASSING YARDS,TOTAL YARDS,PASS COMPLETION PCT.,FUMBLES,FUMBLES LOST,INTERCEPTIONS THROWN,TURNOVER RATIO,PENALTIES,PENALTY YARDAGE,SACKS ALLOWED,SACK YARDAGE
@@ -143,7 +147,7 @@ Data 3,3,-3,-3,-6,-6,-6,-6,-3,-3: 'TRAP
 
 Data OFF,5,DEF,5,OFF,10: 'PENALTY INFO
 
-Data 90,88,80,78,60,68,20,62,-5,52: 'FIELD GOAL INFO
+Data 80,88,60,78,40,68,22,62,16,52: 'FIELD GOAL %'s / INTERVALS
 
 Data -3,-4,0,3,-6,-6,0,0,0,0,0: ' INT HITCH
 Data -3,-4,0,-1,-6,-6,0,0,0,0,0: ' INT SP
@@ -314,8 +318,8 @@ Next I
 
 For I = 0 To 4:
     'Field Goal adjustments?
-    Read adjF0(I)
-    Read adjF1(I)
+    Read adjFGPct(I)
+    Read adjFGLine(I)
 Next I
 
 For I = 0 To 3:
@@ -902,7 +906,739 @@ End Sub
 ' For Utils
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
-'$Include: 'FileTeamSelection.bm'
+'Include: 'FileTeamSelection.bm'
+
+
+'----------------------------------------
+'          ChooseTeam Subroutine
+'----------------------------------------
+'Provides dialog for user to select teams
+' from a previously populated team file.
+'The focus of this routine is to accept
+' a disk ID from the user. It then relies
+' on separate subroutines to assist with
+' actually choosing the team, and also
+' reading in data for the chosen team
+Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
+
+    Shared teamRatings()
+
+    'Shared teamNames$()
+
+    Shared previousYear$
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(6, 8, 61, 7, 15, 4)
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER DISK ID: "
+        Print
+        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+        Print
+        Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
+
+        I$ = GetKeyPress$
+
+        If I$ <> Chr$(27) Then
+
+            If I$ <> Chr$(13) Then
+
+                Locate 7, 27: Print I$;
+
+                NY$ = ""
+
+                Do Until NY$ = Chr$(13)
+
+                    NY$ = GetKeyPress$
+
+                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
+                        col% = Pos(0)
+                        I$ = Left$(I$, (Len(I$) - 1))
+                        Locate , col% - 1
+                        Print " ";
+                        Locate , col% - 1
+                    Else
+                        I$ = I$ + NY$
+                        Print NY$;
+                    End If
+
+                Loop
+
+                I$ = Left$(I$, (Len(I$) - 1))
+
+                If Not (I$ = "" And yearNumber$ <> "") Then
+
+                    yearNumber$ = RTrim$(I$)
+                    Erase teamNames$
+                    numberTeams = 0
+
+                    Cls
+
+                    If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
+
+                        MsgText$ = "NO TEAMS WERE FOUND MATCHING THAT ID... PRESS ANY KEY TO SELECT ANOTHER ID"
+                        BoxWidth = 20
+                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                        I$ = GetKeyPress$
+                        Call CSMsgBox("", 0, Pass)
+                        Exit Sub
+
+                    Else
+
+                        Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
+
+                        fileLength& = LOF(1)
+
+                        Field #1, 15 As Q$(0)
+
+                        numberTeams = fileLength& / TEAM_SIZE_BYTES
+
+                        For teamIdx = 1 To numberTeams
+                            Get #1, teamIdx
+                            'numberTeams = numberTeams + 1
+                            teamNames$(teamIdx) = Q$(0)
+                            teamIndex%(teamIdx) = teamIdx
+                        Next teamIdx
+
+                        Close #1
+
+                    End If 'Done checking if file exists
+
+                End If 'Done checking for blank year number
+
+                previousYear$ = yearNumber$
+
+            Else
+
+                yearNumber$ = previousYear$
+
+            End If 'Done checking for ENTER key
+
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
+
+            Do
+
+                Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$, ExitCode%)
+                'teamGender$(gameIdx) = GetTeamGender$(yearNumber$)
+
+                If ExitCode% <> 27 And numberTeams <> 0 And chosenIdx > 0 Then
+
+                    Do
+
+                        YCoord = Int((80 - Len(teamName$)) / 2)
+                        Locate 2, YCoord
+                        Color teamRatings(2), teamRatings(1): Print teamName$
+
+                        Color 15, 4
+                        Locate 3, 32: Print "ANY CHANGE? (Y/N)";
+
+                        J$ = GetKeyPress$
+
+                    Loop Until J$ = Chr$(27) Or UCase$(J$) = "Y" Or UCase$(J$) = "N"
+
+                End If
+
+                'chosenIdx = -1 means there was invalid data
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
+
+        End If 'Done checking for ESC
+
+    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
+
+    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+
+End Sub
+
+
+'----------------------------------------
+'          SelectTeam Subroutine
+'----------------------------------------
+'Presents selection menu of all teams
+' found in the target "disk" file.
+'The focus of this routine is confirming
+' a team choice. It then relies on
+' another subroutine to read in data
+' from the selected team.
+Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
+
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
+
+        SELECTION% = 1
+        Count% = numberTeams
+        Start% = 1
+        FileFGColor = 15: FileBGColor = 4
+        HiLiteFGColor = 0: HiLiteBGColor = 7
+        Rows = 20
+        Columns% = 4
+        Spacing% = 6
+        Row% = 4
+        Column% = 1
+
+        Color , 4
+        Cls
+        Color 14
+        Locate , 33: Print "TEAM SELECTION"
+        Locate 25, 1
+        Color 14: Print "ESC";
+        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+        Color 14: Print "ENTER";
+        Color 15: Print "-SELECTS TEAM";
+
+        _MouseShow "DEFAULT"
+        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor, HiLiteBGColor, Rows%, Columns%, Spacing%, Row%, Column%
+        _MouseHide
+
+        If ExitCode% <> 27 Then
+
+            selectedIdx = teamIndex%(SELECTION%)
+
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
+
+            Call ReadTeam(yearNumber$, teamName$, selectedIdx)
+            Call ReadExtraData(yearNumber$, selectedIdx, validData)
+
+        End If
+
+    End If
+
+    If validData = 0 And ExitCode% <> 27 Then
+
+        selectedIdx = -1
+        Locate 9,
+        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
+        K$ = GetKeyPress$
+        Call CSMsgBox("", 0, PASS)
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'           ReadTeam Subroutine
+'----------------------------------------
+'Reads in all data for the selected team,
+' given it's index in the team file.
+'This routine is highly customized TO
+' the specific game for which it has
+' been included for.
+Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
+
+    Shared ydsCompAdj
+
+    Shared mascot$, teamNick$
+
+    Shared leagueRatings(), teamRatings()
+
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared intName$(), krName$()
+    Shared pkName$(), prName$(), punterName$()
+    Shared qbName$(), rbName$()
+    Shared sackName$(), wrName$()
+
+    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
+
+    Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
+    Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
+    Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
+    Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
+    Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
+    Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
+    Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
+    Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
+    Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
+    Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
+    Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
+    Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
+    Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+
+    Get #1, teamIdx
+
+    targetTeam$ = RTrim$(Q$(1))
+    mascot$ = RTrim$(Q$(2))
+
+    For I = 0 To 7:
+        leagueRatings(I) = CVI(Q$(I + 3))
+    Next I
+
+    For I = 0 To 4:
+        teamRatings(I) = CVI(Q$(I + 11))
+    Next I
+
+    'Running Backs
+    For I = 0 To 9
+        'Name
+        rbName$(I) = Q$(I * 5 + 16)
+        'Rush Att
+        rushContrib(I) = CVI(Q$(I * 5 + 17))
+        'Rush Avg
+        rushAvg(I) = CVI(Q$(I * 5 + 18))
+        'Receptions
+        rbRecepts(I) = CVI(Q$(I * 5 + 19))
+        'Rec Avg
+        rbRecAvg(I) = CVI(Q$(I * 5 + 20))
+    Next I
+
+    'Wide Receivers
+    For I = 0 To 5
+        'Name
+        wrName$(I) = Q$(I * 3 + 66)
+        'Receptions
+        recContrib(I) = CVI(Q$(I * 3 + 67))
+        'Rec Avg
+        wrRecAvg(I) = CVI(Q$(I * 3 + 68))
+    Next I
+
+    'Quarterbacks
+    For I = 0 To 3
+        'Name
+        qbName$(I) = Q$(I * 5 + 84)
+        'Attempts
+        passContrib(I) = CVI(Q$(I * 5 + 85))
+        'Completion %
+        compPct(I) = CVI(Q$(I * 5 + 86))
+        'Interception %
+        qbIntPct(I) = CVI(Q$(I * 5 + 87))
+        'Arm Rating | Yds/Comp Adj
+        armRating(I) = CVI(Q$(I * 5 + 88))
+    Next I
+
+    'Kickoff Returners
+    For I = 0 To 2
+        'Name
+        krName$(I) = Q$(I * 3 + 104)
+        'Returns
+        krContrib(I) = CVI(Q$(I * 3 + 105))
+        'Return Avg
+        krRetAvg(I) = CVI(Q$(I * 3 + 106))
+    Next I
+
+    'Punt Returners
+    For I = 0 To 2
+        'Name
+        prName$(I) = RTrim$(Q$(I * 3 + 113))
+        'Returns
+        prContrib(I) = CVI(Q$(I * 3 + 114))
+        'Return Avg
+        prRetAvg(I) = CVI(Q$(I * 3 + 115))
+    Next I
+
+    'Punter Name
+    punterName$(0) = RTrim$(Q$(122))
+    'Punt Average
+    puntAvg(0) = CVI(Q$(123))
+
+    'Place Kickers
+    For I = 0 To 1
+        'Name
+        pkName$(I) = RTrim$(Q$(I * 5 + 124))
+        'FGA
+        pkFGA(I) = CVI(Q$(I * 5 + 125))
+        'FG%
+        pkFGContrib(I) = CVI(Q$(I * 5 + 126))
+        'PAT
+        pkPAT(I) = CVI(Q$(I * 5 + 127))
+        'PAT %
+        pkPATContrib(I) = CVI(Q$(I * 5 + 128))
+
+    Next I
+
+    ydsCompAdj = CVI(Q$(134))
+
+    'Sacks
+    For I = 0 To 14
+        'Name
+        sackName$(I) = Q$(I * 2 + 135)
+        '# Sacks
+        numSacks(I) = CVI(Q$(I * 2 + 136))
+    Next I
+
+    'Interceptions
+    For I = 0 To 9
+        'Name
+        intName$(I) = Q$(I * 2 + 165)
+        '# Ints
+        numInts(I) = CVI(Q$(I * 2 + 166))
+    Next I
+
+    'Close team file
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'        ReadExtraData Subroutine
+'----------------------------------------
+'Reads in extra data for the selected team,
+' given it's index in the team file.
+'This extra file usually includes info.
+' related to stadiums, coaches, etc.
+'This routine is highly customized TO
+' the specific game for which it has
+' been included for.
+Sub ReadExtraData (teamYear$, teamIdx, dataOK)
+
+    Shared teamAttendance&
+
+    Shared stadium$, Z$
+
+    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
+
+        MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
+        BoxWidth = 20
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #2 Len = DATA_SIZE_BYTES
+
+        Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
+
+        Get #2, teamIdx
+
+        stadium$ = RTrim$(QQ$(1))
+        teamAttendance& = CVL(QQ$(3))
+        Z$ = QQ$(4)
+
+        Close #2
+
+        T& = teamAttendance&
+
+        If Z$ <> "x" Or teamAttendance& > 200000 Then
+
+            dataOK = 0
+            stadium$ = ""
+            teamAttendance& = 0
+
+        Else
+
+            dataOK = 1
+
+        End If
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'         nameStatFile$ Function
+'----------------------------------------
+'Helps create uniquely named file to
+' store a team's stats.
+'
+'There are 2 main changes done in order
+' to accomodate this:
+' 1) Replaces invalid characters with _
+' 2) If "ST" is the name, shortens the
+'    prefix. This helps with college
+'    teams (ARKANSAS vs ARKANSAS ST)
+Function nameStatFile$ (teamName$)
+
+    teamPrefix$ = teamName$
+
+    For XX = 4 To 11
+
+        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then
+            Mid$(teamPrefix$, XX, 1) = "_"
+        End If
+
+    Next XX
+
+    For XX = 12 To 14
+
+        If Mid$(teamPrefix$, XX, 2) = "ST" Then
+            Mid$(teamPrefix$, 9, 1) = "_"
+            Mid$(teamPrefix$, 10, 2) = "ST"
+        End If
+
+    Next XX
+
+    'Length of 'converted' name for file
+    '-- update this if we want to support long files
+    QQ = 8
+
+    For XX = 11 To 4 Step -1
+        If Mid$(teamPrefix$, XX, 1) = "_" Then
+            QQ = XX - 4
+        Else
+            Exit For
+        End If
+    Next XX
+
+    nameStatFile$ = Mid$(teamPrefix$, 4, QQ) + "." + Left$(teamPrefix$, 2)
+
+End Function
+
+
+'----------------------------------------
+'          CheckString Function
+'----------------------------------------
+'This function checks the given string
+'to determine if any characters are not
+'alpha-numeric or printable.
+'Return Values
+'1 = non-printable characters were found
+'0 = all characters in string are alpha-numeric.
+Function CheckString% (targetString$)
+
+    badString = 0
+    stringPosition% = 1
+
+    Do
+
+        test = Asc(Mid$(targetString$, stringPosition%, 1))
+
+        'If it is a non-printable character (corrupt data)
+        If test > 122 Or test < 32 Then
+            stringPosition% = 1
+            badString = 1
+        Else
+            stringPosition% = stringPosition% + 1
+        End If
+
+    Loop Until stringPosition% = Len(targetString$) Or badString = 1
+
+    CheckString% = badString
+
+End Function
+
+
+'----------------------------------------
+'        ChooseFile$ Function
+'----------------------------------------
+'Shows user a file selection menu, based
+' on the file spec parameter passed.
+'
+'fileSpec$ - file specification to load
+'            should include base path.
+'
+' EXAMPLE - C:\Temp\*.tmp
+'
+'fileDesc$ - brief description of the
+'            type of file
+'
+' RETURNS - base name of chosen file
+'            (that is, without extension)
+Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
+
+    descLength = Len(fileDesc$)
+
+    Do
+        'Display list of files...
+
+        Count% = FileCount%(fileSpec$)
+
+        If Count% = 0 Then
+
+            Locate 10, 8
+            zeroCountMsg$ = "NO " + fileDesc$ + " FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU"
+
+            Call CSMsgBox(zeroCountMsg$, 20, Pass)
+            I$ = GetKeyPress$
+            Call CSMsgBox("", 0, Pass)
+
+        Else
+
+            ReDim foundFiles$(0 To Count%)
+
+            'For X = 1 To Count%
+            '8 char's filename + 4 char's (. + ext)
+            'foundFiles$(X) = Space$(12)
+            'Next
+
+            foundFiles$(0) = fileSpec$
+            Call ReadFile(foundFiles$())
+
+            Do
+
+                XCoord = Int((80 - (descLength + 12)) / 2)
+
+                Color , 1
+                Cls
+                Locate , XCoord
+                Color 14
+                Print "SELECT "; fileDesc$; " FILE"
+                Color 15
+                SELECTION% = 1
+                START% = 1
+                FileFGColor = 15: FileBGColor = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
+                Rows% = 20
+                Columns% = 3
+                Spacing% = 5
+                Row% = 4
+                Column% = 1
+                Locate 25, 1
+                Color 14
+                Print "ENTER";
+                Color 15
+                Print "-SELECTS "; fileDesc$;
+                Color 14
+                Locate , 55
+                Print "HIT ESCAPE KEY TO EXIT";
+                Color 15
+
+                _MouseShow "DEFAULT"
+                MAMenu foundFiles$(), SELECTION%, START%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+                _MouseHide
+
+                If ExitCode% <> 27 Then
+
+                    Color 15, 1
+                    targetFile$ = RTrim$(foundFiles$(SELECTION%))
+                    XCoord = Int((80 - Len(targetFile$)) / 2)
+                    Locate 2, XCoord
+                    Print targetFile$
+
+                    Do
+                        Locate , 31
+                        Print "ANY CHANGE? (Y/N)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Color 15, 0
+
+                End If
+
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
+
+        End If 'Done checking file count
+
+        '...Until we press ESC
+    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
+
+    If ExitCode% <> 27 Then
+        ChooseFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
+    End If
+
+End Function
+
+
+'----------------------------------------
+'     ReportFilePrompt_Pro Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the report file to be saved
+Sub UserFilePrompt (reportFile$)
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(6, 8, 61, 7, 15, 1)
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
+
+        If reportFile$ <> "" Then
+
+            Do
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
+
+End Sub
+
+
+'----------------------------------------
+'     ScheduleFilePrompt Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the schedule file to be saved
+Sub ScheduleFilePrompt (scheduleFile$)
+
+    Color 15, 0
+    Cls
+
+    Call MenuBox(6, 8, 61, 8, 15, 1)
+
+    Do
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
+        Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
+        Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
+        Locate 7, 40: Input scheduleFile$
+
+        If scheduleFile$ <> "" Then
+
+            Do
+
+                Locate 14, 12
+                Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+
+        End If
+
+    Loop Until (UCase$(I$) = "N" And scheduleFile$ <> "") Or I$ = Chr$(27)
+
+
+End Sub
+
 
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
@@ -923,11 +1659,3892 @@ End Sub
 '$Include: 'DRAFT.BAS'
 '$Include: 'HD2HDCON.BAS'
 '$Include: 'HD2HDLEAG.BAS'
-'$Include: 'LOOKY.BAS'
+'Include: 'LOOKY.BAS'
+
+
+'----------------------------------------
+'            LOOKY Subroutine
+'----------------------------------------
+'This subroutine guides the user through
+'choosing a team file and then calls other
+'routines to load and view the stats
+Sub LOOKY ()
+
+    _Title "3-in-1 Football - View Stats"
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(8, 8, 61, 6, 15, 1)
+
+        Locate 10, 15
+
+        Locate , 30: Color 3: Print "VIEW/PRINT STATS IN:"
+        Locate , 30: Color 15: Print "C";
+        Color 7: Print "OLLEGE FORMAT"
+        Locate , 30: Color 15: Print "P";
+        Color 7: Print "RO FORMAT"
+        Locate , 30: Color 15: Print "E";
+        Color 7: Print "XIT TO MAIN MENU"
+
+        I$ = GetKeyPress$
+
+        Select Case UCase$(I$)
+            Case "C": statFormat = 0
+            Case "P": statFormat = 1
+            Case "E", Chr$(27): '
+        End Select
+
+        If UCase$(I$) = "C" Or UCase$(I$) = "P" Then
+
+            teamNbr = 0
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+
+            If teamNbr > 0 Then
+
+                Color 15, 0
+
+                statFile$ = nameStatFile$(team$)
+
+                If Not _FileExists(diskPaths$(1) + statFile$) And teamNbr > 0 Then
+
+                    MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
+                    BoxWidth = 24
+                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                    I$ = GetKeyPress$
+                    Call CSMsgBox("", 0, Pass)
+
+                Else
+
+                    Call LoadTeamStats(statFile$, team$, totalGames%, teamPower, SS)
+                    Call ViewStatsSummary(team$, totalGames%, statFormat, teamPower, SS)
+
+                End If
+
+            End If
+
+        End If
+
+    Loop Until UCase$(I$) = "E" Or I$ = Chr$(27)
+
+End Sub
+
+
+'----------------------------------------
+'       LoadTeamStats Subroutine
+'----------------------------------------
+'This subroutine loads the selected team's
+'stats into arrays
+Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
+
+    Shared oppScore(), powerRating()
+    Shared statsGI(), statsGS()
+    Shared teamRatings(), teamScore()
+
+    Shared gameAttendance&()
+
+    Shared playerStats!(), teamStats!()
+    Shared scoreTotals()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLPR!(), sackStats!()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
+
+    Shared gameSite$(), locIndicator$(), oppName$()
+
+    Shared intName$(), sackName$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+
+    Shared statsLFG$(), statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$()
+
+    Open diskPaths$(1) + statFile$ + "S" For Input As #1
+
+    Input #1, totalGames%
+
+    'Opponent Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, teamScore(I)
+    Next I
+
+    'Opponent
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppName$(I)
+    Next I
+
+    'Team Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppScore(I)
+    Next I
+
+    'Home / Away
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, locIndicator$(I)
+    Next I
+
+    '???
+    For I = 0 To 1
+        For I1 = 1 To MAX_SCHED_STATS
+            Input #1, powerRating(I, I1)
+        Next
+    Next
+
+    'Attendance
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameAttendance&(I)
+    Next I
+
+    'Stadium
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameSite$(I)
+    Next I
+
+    Close #1
+
+    'STRENGTH OF SCHEDULE
+    SS = 0
+
+    For I = 1 To totalGames%
+        SS = powerRating(1, I) + SS
+    Next
+
+    SS = SS / totalGames%
+
+    'INDIVIDUAL GAME POWER RATINGS
+    teamPower = 0
+
+    For I = 1 To totalGames%
+        pwrRating = teamScore(I) - oppScore(I) + powerRating(1, I)
+        If Left$(locIndicator$(I), 1) = "H" Then
+            pwrRating = pwrRating - 3
+        End If
+        If Left$(locIndicator$(I), 1) = "A" Then
+            pwrRating = pwrRating + 3
+        End If
+        teamPower = teamPower + pwrRating
+    Next
+
+    GL = 0
+
+    If totalGames% <= 4 Then
+        GL = 5 - totalGames%
+        teamPower = teamPower + GL * powerRating(0, 1)
+    End If
+
+    teamPower = teamPower / (totalGames% + GL)
+
+    totalLosses = 0
+    totalWins = 0
+    tiedGames = 0
+
+    D% = 0
+    scoreTotals(0) = 0
+    scoreTotals(1) = 0
+
+    'Load player stats
+    Open diskPaths$(1) + statFile$ For Input As #2
+
+    'We are passed teamName$ as a variable from the disk routine
+    'However the format of the files for football is such that
+    'it's also contained here.
+    'To be consistent with other games, it needs evaluated
+    'if this belongs here or somewhere else.
+    Input #2, teamName$
+
+    For I = 0 To 9:
+        Input #2, rbName$(I)
+    Next I
+
+    For I = 0 To 5:
+        Input #2, wrName$(I)
+    Next I
+
+    For I = 0 To 3:
+        Input #2, qbName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, krName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, prName$(I)
+    Next I
+
+    Input #2, punterName$(0)
+
+    For I = 0 To 1:
+        Input #2, pkName$(I)
+    Next I
+
+    For J = 0 To 13
+        For K = 0 To 17:
+            Input #2, statsPlayers!(J, K)
+        Next K
+    Next J
+
+    For L = 0 To 38:
+        Input #2, statsTeam!(L)
+    Next L
+
+    For L = 0 To 38:
+        Input #2, statsOpp!(L)
+    Next L
+
+    For J = 0 To 9:
+        Input #2, intName$(J)
+        For J1 = 0 To 2:
+            Input #2, statsGI(J, J1)
+        Next
+    Next
+
+    For J = 0 To 14:
+        Input #2, sackName$(J)
+        For J1 = 0 To 1:
+            Input #2, statsGS(J, J1)
+        Next
+    Next
+
+    For I = 0 To 9:
+        Input #2, statsLRush!(I)
+        Input #2, statsLRush$(I, 0)
+        Input #2, statsLRush$(I, 1)
+    Next
+
+    For I = 0 To 15:
+        Input #2, statsLRec!(I)
+        Input #2, statsLRec$(I, 0)
+        Input #2, statsLRec$(I, 1)
+    Next
+
+    For I = 0 To 3:
+        Input #2, statsLPass!(I)
+        Input #2, statsLPass$(I, 0)
+        Input #2, statsLPass$(I, 1)
+    Next
+
+    For I = 0 To 2:
+        Input #2, statsLKR!(I)
+        Input #2, statsLKR$(I, 0)
+        Input #2, statsLKR$(I, 1)
+    Next
+
+    For I = 0 To 2:
+        Input #2, statsLPR!(I)
+        Input #2, statsLPR$(I, 0)
+        Input #2, statsLPR$(I, 1)
+    Next
+
+    For I = 0 To 1:
+        Input #2, statsLFG!(I)
+        Input #2, statsLFG$(I)
+        For I1 = 0 To 4:
+            Input #2, statsFGM!(I, I1)
+            Input #2, statsFGA!(I, I1)
+        Next
+    Next
+
+    For I = 0 To 9:
+        Input #2, statsLInt!(I)
+        Input #2, statsLInt$(I, 0)
+        Input #2, statsLInt$(I, 1)
+    Next
+
+    Close #2
+
+    For J = 0 To 13
+        For K = 0 To 17:
+            playerStats!(J, K) = statsPlayers!(J, K)
+        Next K
+    Next J
+
+    test = playerStats
+
+    For M = 0 To 12:
+        teamStats!(0, M) = statsTeam!(M)
+    Next M
+
+    For M = 0 To 12:
+        teamStats!(1, M) = statsOpp!(M)
+    Next M
+
+    sackStats!(0, 0) = statsTeam!(13)
+    sackStats!(0, 1) = statsTeam!(14)
+    sackStats!(1, 0) = statsOpp!(13)
+    sackStats!(1, 1) = statsOpp!(14)
+
+End Sub
+
+
+'----------------------------------------
+'       ViewStatsSummary Subroutine
+'----------------------------------------
+'This subroutine formats and outputs the
+'selected team's record to the display,
+'then provides routines for output of
+'the other stat categories
+Sub ViewStatsSummary (teamName$, totalGames%, statFormat, teamPower, SS)
+
+    Shared teamRatings()
+
+    Do
+
+        DM% = 0
+
+        Color 15, 0
+        Cls
+
+        Call TITLE_STATS
+
+        userKey$ = GetOutputOptions$
+
+        If userKey$ <> Chr$(27) Then
+
+            Select Case userKey$
+
+                Case "F"
+                    userFile$ = _SaveFileDialog$("Save Stats Report", _CWD$ + "\Report", "*.txt", "Text File")
+                    If userFile$ <> "" Then
+                        Call StatsToReport(0, userFile$, teamName$, totalGames%, statFormat, teamPower, SS)
+                    End If
+
+                Case "P"
+                    Call StatsToReport(1, "REPORT", teamName$, totalGames%, statFormat, teamPower, SS)
+
+                Case "S"
+                    Call StatsToScreen(teamName$, totalGames%, statFormat, teamPower, SS)
+
+            End Select
+
+            Color 15, 0
+            Cls
+
+            Call MenuBox(6, 8, 61, 1, 15, 1)
+
+            Do
+                Locate 7
+                U$ = "DISPLAY STATS AGAIN? (Y/N)"
+                Locate , (80 - Len(U$)) / 2
+                Print U$
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+            Color 15, 0
+
+            'Call ResetStatsPrompt (statFile$)
+
+        End If
+
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
+
+End Sub
+
+
+'----------------------------------------
+'      StatsToScreen Subroutine
+'----------------------------------------
+'This subroutine formats and outputs the
+'selected team's stats to the display
+Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
+
+    Shared statsFGA!(), statsFGM!()
+    Shared teamStats!(), playerStats!()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsLPR!(), sackStats!(), statsTeam!(), statsOpp!(), statsPlayers!()
+
+    Shared gameAttendance&()
+
+    Shared statsGI(), statsGS()
+
+    Shared teamScore(), teamRatings(), oppScore(), scoreTotals()
+
+    Shared intName$(), locIndicator$(), oppName$(), sackName$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+    Shared statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$(), gameSite$()
+
+    Color 15, 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 1, 1
+    Color 14, 1
+    Print Tab(81);
+
+    header$ = "GAME-BY-GAME REPORT FOR " + teamName$
+    Xcoord = Len(header$)
+    Xcoord = Int((80 - Xcoord) / 2)
+    Locate , Xcoord
+
+    Print "GAME-BY-GAME REPORT FOR ";
+    Color teamRatings(2), teamRatings(1)
+    Print teamName$
+
+    Color 14, 1
+    Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD    ";
+    Print
+    Color 15, 0
+
+    For I = 1 To totalGames%
+
+        Color 7
+
+        If (I Mod 2) = 0 Then Color 15
+
+        Print oppName$(I);
+        Locate , 19: Print Using "###"; teamScore(I);
+        Print "-";
+        Print Using "###   "; oppScore(I);
+
+        If teamScore(I) > oppScore(I) Then
+            totalWins = totalWins + 1
+            Print "W";
+        End If
+
+        If teamScore(I) < oppScore(I) Then
+            totalLosses = totalLosses + 1
+            Print "L";
+        End If
+
+        If teamScore(I) = oppScore(I) Then
+            tiedGames = tiedGames + 1
+            Print "T";
+        End If
+
+        Locate , 31: Print Using "####,###"; gameAttendance&(I);
+        Locate , 43: Print locIndicator$(I); "  "; Left$(gameSite$(I), 24);
+
+        Locate , 69
+        Print "(";
+        Print Using "##"; totalWins;: Print "-";: Print Using "##"; totalLosses;: Print "-";: Print Using "##"; tiedGames;
+        Print ")"
+
+        scoreTotals(0) = scoreTotals(0) + teamScore(I)
+        scoreTotals(1) = scoreTotals(1) + oppScore(I)
+
+        If (I Mod 20 = 0) Then
+
+            Locate 24, 1
+            Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+            I$ = GetKeyPress$
+            ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
+            Cls
+            Color , 0
+            Locate 1, 1: Print Tab(80); " ";
+            Locate , Xcoord
+
+            Color 14
+            Print "GAME-BY-GAME REPORT FOR ";
+            Color teamRatings(2), teamRatings(1)
+            Print teamName$
+
+            Color 14
+            Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD   "
+            Color 15, 0
+
+        End If
+
+    Next I
+
+    If statFormat = 0 Then
+        Locate 23, 31
+        Print Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; teamPower; SS;
+    End If
+
+    scoreTotals(0) = 0
+    scoreTotals(1) = 0
+    totalWins = 0
+    totalLosses = 0
+    tiedGames = 0
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 2
+    Color 12
+    Print teamName$; " STATISTICS REPORT"
+    Print
+
+    Color 14
+    Print "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
+    Color 15
+    Print teamName$;
+    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsTeam!(32); statsTeam!(33); statsTeam!(34); statsTeam!(35); statsTeam!(32) + statsTeam!(33) + statsTeam!(34) + statsTeam!(35) + statsTeam!(36)
+    Print "OPPONENTS";
+    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsOpp!(32); statsOpp!(33); statsOpp!(34); statsOpp!(35); statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsTeam!(36)
+    Print
+
+    Color 14
+    Print "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
+    Color 15
+    Print teamName$;
+    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsTeam!(32) / totalGames%; statsTeam!(33) / totalGames%; statsTeam!(34) / totalGames%; statsTeam!(35) / totalGames%; (statsTeam!(32) + statsTeam!(33) + statsTeam!(34) + statsTeam!(35) + statsTeam!(36)) / totalGames%
+    Print "OPPONENTS";
+    Locate , 30: Print Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsOpp!(32) / totalGames%; statsOpp!(33) / totalGames%; statsOpp!(34) / totalGames%; statsOpp!(35) / totalGames%; (statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsTeam!(36)) / totalGames%
+    Print
+
+    'H = Home; A = Away; N = Neutral; T = Total
+    'D = Dates; T = Total; A = Average
+    HD& = 0: AD& = 0: ND& = 0: TD& = 0
+    HT& = 0: CT& = 0: NT& = 0: TT& = 0
+    HA& = 0: AA& = 0: NA& = 0: TA& = 0
+
+    For I = 1 To totalGames%
+
+        If Left$(locIndicator$(I), 1) = "H" Then
+            HD& = HD& + 1
+            HT& = HT& + gameAttendance&(I)
+        End If
+
+        If Left$(locIndicator$(I), 1) = "A" Then
+            AD& = AD& + 1
+            CT& = CT& + gameAttendance&(I)
+        End If
+
+        If Left$(locIndicator$(I), 1) = "X" Then
+            ND& = ND& + 1
+            NT& = NT& + gameAttendance&(I)
+        End If
+
+        TD& = TD& + 1
+        TT& = TT& + gameAttendance&(I)
+
+    Next
+
+    If HD& <> 0 Then HA& = HT& / HD&
+    If AD& <> 0 Then AA& = CT& / AD&
+    If ND& <> 0 Then NA& = NT& / ND&
+    If TD& <> 0 Then TA& = TT& / TD&
+
+    Color 14: Print "ATTENDANCE    DATES      TOTAL    AVERAGE"
+    Color 15: Print Using "HOME            ##    #####,###   ###,###"; HD&; HT&; HA&
+    Color 15: Print Using "AWAY            ##    #####,###   ###,###"; AD&; CT&; AA&
+    Color 15: Print Using "NEUTRAL         ##    #####,###   ###,###"; ND&; NT&; NA&
+    Color 15: Print Using "TOTAL           ##    #####,###   ###,###"; TD&; TT&; TA&
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 2
+    Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); teamName$; Tab(61); "OPPONENT TOTALS"
+
+    Color 7
+    Print "FIRST DOWNS"; Tab(45); Using "####"; teamStats!(0, 0);: Print Tab(65); Using "####"; teamStats!(1, 0)
+    Print "RUSHING ATTEMPTS"; Tab(45);
+    'Team
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(0, 1);
+    Else
+        Print Using "####"; teamStats!(0, 1) - sackStats!(0, 0);
+    End If
+    Print Tab(65);
+    'Opponent
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(1, 1)
+    Else
+        Print Using "####"; teamStats!(1, 1) - sackStats!(1, 0)
+    End If
+
+    Color 15
+    Print "NET RUSHING YARDAGE"; Tab(45);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(0, 2);
+    Else
+        Print Using "####"; teamStats!(0, 2) + sackStats!(0, 1);
+    End If
+    Print Tab(65);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(1, 2)
+    Else
+        Print Using "####"; teamStats!(1, 2) + sackStats!(1, 1)
+    End If
+
+    Color 7
+    Print "YARDS PER RUSH"; Tab(45);
+    If statFormat = 0 And teamStats!(0, 1) <> 0 Then
+        Print Using "##.#"; teamStats!(0, 2) / teamStats!(0, 1);
+    End If
+    If statFormat <> 0 And teamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
+        Print Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0));
+    End If
+    Print Tab(65);
+    If statFormat = 0 And teamStats!(1, 1) <> 0 Then
+        Print Using "##.#"; teamStats!(1, 2) / teamStats!(1, 1)
+    End If
+    If statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
+        Print Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0))
+    End If
+    If statFormat = 0 And teamStats!(1, 1) = 0 Or statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) = 0 Then
+        Print
+    End If
+
+    Print "RUSHING YARDS PER GAME"; Tab(44);
+    If statFormat = 0 Then
+        Print Using "###.#"; teamStats!(0, 2) / totalGames%;
+    Else
+        Print Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
+    End If
+    Print Tab(64);
+    If statFormat = 0 Then
+        Print Using "###.#"; teamStats!(1, 2) / totalGames%
+    Else
+        Print Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
+    End If
+
+    Print
+    Print "PASSES ATTEMPTED"; Tab(45); Using "####"; teamStats!(0, 3);
+    Print Tab(65); Using "####"; teamStats!(1, 3)
+
+    Print "PASSES COMPLETED"; Tab(45); Using "####"; teamStats!(0, 4);
+    Print Tab(65); Using "####"; teamStats!(1, 4)
+
+    Print "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; teamStats!(0, 5);
+    Print Tab(65); Using "####"; teamStats!(1, 5)
+
+    Print "PASS COMPLETION PERCENTAGE"; Tab(44);
+    If teamStats!(0, 3) <> 0 Then
+        Print Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    End If
+    If teamStats!(1, 3) <> 0 Then
+        Print Tab(64); Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100
+    End If
+    If teamStats!(1, 3) = 0 Then
+        Print
+    End If
+
+    Color 15
+    Print "NET YARDS PASSING"; Tab(45); Using "####"; teamStats!(0, 6);
+    Print Tab(65); Using "####"; teamStats!(1, 6)
+
+    Color 7
+    Print "YARDS PER PASS ATTEMPT"; Tab(45);
+    If teamStats!(0, 3) <> 0 Then
+        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    End If
+    If teamStats!(1, 3) <> 0 Then
+        Print Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3)
+    End If
+    If teamStats!(1, 3) = 0 Then
+        Print
+    End If
+
+    Print "YARDS PER PASS COMPLETION"; Tab(45);
+    If teamStats!(0, 4) <> 0 Then
+        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+    If teamStats!(1, 4) <> 0 Then
+        Print Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4)
+    End If
+    If teamStats!(1, 4) = 0 Then
+        Print
+    End If
+
+    Print "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; teamStats!(0, 6) / totalGames%;
+    Print Tab(64); Using "###.#"; teamStats!(1, 6) / totalGames%
+    Print
+
+    Print "TOTAL PLAYS"; Tab(45);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(0, 1) + teamStats!(0, 3);
+    Else
+        Print Using "####"; teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3);
+    End If
+    Print Tab(65);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(1, 1) + teamStats!(1, 3)
+    Else
+        Print Using "####"; teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)
+    End If
+
+    Print "TOTAL PLAYS PER GAME"; Tab(44);
+    If statFormat = 0 Then
+        Print Using "###.#"; (teamStats!(0, 1) + teamStats!(0, 3)) / totalGames%;
+    Else
+        Print Using "###.#"; (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3)) / totalGames%;
+    End If
+    Print Tab(64);
+    If statFormat = 0 Then
+        Print Using "###.#"; (teamStats!(1, 1) + teamStats!(1, 3)) / totalGames%
+    Else
+        Print Using "###.#"; (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)) / totalGames%
+    End If
+
+    Color 15
+    Print "TOTAL NET YARDS"; Tab(45);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(0, 2) + teamStats!(0, 6);
+    Else
+        Print Using "####"; teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6);
+    End If
+    Print Tab(65);
+    If statFormat = 0 Then
+        Print Using "####"; teamStats!(1, 2) + teamStats!(1, 6)
+    Else
+        Print Using "####"; teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)
+    End If
+
+    Color 7
+    Print "YARDS GAINED PER PLAY"; Tab(45);
+    If statFormat = 0 Then
+        Print Using "##.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / (teamStats!(0, 1) + teamStats!(0, 3));
+    Else
+        Print Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3));
+    End If
+    Print Tab(64);
+    If statFormat = 0 Then
+        Print Using "##.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / (teamStats!(1, 1) + teamStats!(1, 3))
+    Else
+        Print Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3))
+    End If
+
+    Print "YARDS GAINED PER GAME"; Tab(44);
+    If statFormat = 0 Then
+        Print Using "###.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / totalGames%;
+    Else
+        Print Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / totalGames%;
+    End If
+    Print Tab(64);
+    If statFormat = 0 Then
+        Print Using "###.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / totalGames%
+    Else
+        Print Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / totalGames%
+    End If
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 2: Color 12
+    Print "TEAM STATISTICS CATEGORY"; Tab(41); teamName$; Tab(61); "OPPONENT TOTALS"
+
+    Color 7
+
+    Print "KICKOFF RETURNS / KICKOFF RETURN YARDS"; Tab(41);
+    Print Using "###"; statsTeam!(22);: Print "/";: Print Using "####"; statsTeam!(23);
+    Print Tab(61); Using "###"; statsOpp!(22);: Print "/";: Print Using "####"; statsOpp!(23)
+
+    Print "AVERAGE YARDAGE PER KICKOFF RETURN"; Tab(45);
+    If statsTeam!(22) <> 0 Then
+        Print Using "##.#"; statsTeam!(23) / statsTeam!(22);
+    End If
+    If statsOpp!(22) <> 0 Then
+        Print Tab(65); Using "##.#"; statsOpp!(23) / statsOpp!(22)
+    End If
+    If statsOpp!(22) = 0 Then
+        Print
+    End If
+
+    Print "KICKOFF RETURNS PER GAME"; Tab(45);
+    Print Using "##.#"; statsTeam!(22) / totalGames%;: Print Tab(65); Using "##.#"; statsOpp!(22) / totalGames%
+
+    Print "PUNT RETURNS / PUNT RETURN YARDS"; Tab(41);
+    Print Using "###"; statsTeam!(24);: Print "/";: Print Using "####"; statsTeam!(25);
+    Print Tab(61); Using "###"; statsOpp!(24);: Print "/";: Print Using "####"; statsOpp!(25)
+
+    Print "AVERAGE YARDAGE PER PUNT RETURN"; Tab(45);
+    If statsTeam!(24) <> 0 Then
+        Print Using "##.#"; statsTeam!(25) / statsTeam!(24);
+    End If
+    If statsOpp!(24) <> 0 Then
+        Print Tab(65); Using "##.#"; statsOpp!(25) / statsOpp!(24)
+    End If
+    If statsOpp!(24) = 0 Then
+        Print
+    End If
+
+    Print "PUNT RETURNS PER GAME"; Tab(45);
+    Print Using "##.#"; statsTeam!(24) / totalGames%;: Print Tab(65); Using "##.#"; statsOpp!(24) / totalGames%
+
+    Print "INTERCEPTION RETURNS / RETURN YARDS"; Tab(41);
+    Print Using "###"; statsTeam!(26);: Print "/";: Print Using "####"; statsTeam!(27);
+    Print Tab(61); Using "###"; statsOpp!(26);: Print "/";: Print Using "####"; statsOpp!(27)
+
+    Print "AVERAGE YARDAGE PER RETURN"; Tab(45);
+    If statsTeam!(26) <> 0 Then
+        Print Using "##.#"; statsTeam!(27) / statsTeam!(26);
+    End If
+    If statsOpp!(26) <> 0 Then
+        Print Tab(65); Using "##.#"; statsOpp!(27) / statsOpp!(26)
+    End If
+    If statsOpp!(26) = 0 Then
+        Print
+    End If
+
+    Print "INTERCEPTION RETURNS PER GAME"; Tab(45);
+    Print Using "##.#"; statsTeam!(26) / totalGames%;
+    Print Tab(65); Using "##.#"; statsOpp!(26) / totalGames%
+    Print
+
+    Print "PUNTS / TOTAL PUNT YARDAGE"; Tab(41);
+    Print Using "###"; teamStats!(0, 7);: Print "/";: Print Using "####"; teamStats!(0, 8);
+    Print Tab(61); Using "###"; teamStats!(1, 7);: Print "/";: Print Using "####"; teamStats!(1, 8)
+
+    Print "AVERAGE YARDS PER PUNT"; Tab(45);
+    If teamStats!(0, 7) <> 0 Then
+        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    End If
+    If teamStats!(1, 7) <> 0 Then
+        Print Tab(65); Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7)
+    End If
+    If teamStats!(1, 7) = 0 Then
+        Print
+    End If
+
+    Print "AVERAGE NUMBER OF PUNTS PER GAME"; Tab(45);: Print Using "##.#"; teamStats!(0, 7) / totalGames%;: Print Tab(65); Using "##.#"; teamStats!(1, 7) / totalGames%
+    Print
+
+    Print "FUMBLES / FUMBLES LOST"; Tab(41);
+    Print Using "###"; teamStats!(0, 9);: Print "/";: Print Using "####"; teamStats!(0, 10);
+    Print Tab(61); Using "###"; teamStats!(1, 9);: Print "/";: Print Using "####"; teamStats!(1, 10)
+
+    Print "PENALTIES / YARDS PENALIZED"; Tab(41);
+    Print Using "###"; teamStats!(0, 11);: Print "/";: Print Using "####"; teamStats!(0, 12);
+    Print Tab(61); Using "###"; teamStats!(1, 11);: Print "/";: Print Using "####"; teamStats!(1, 12)
+
+    Print "AVERAGE YARDS PER PENALTY"; Tab(45);
+    If teamStats!(0, 11) <> 0 Then
+        Print Using "##.#"; teamStats!(0, 12) / teamStats!(0, 11);
+    End If
+    If teamStats!(1, 11) <> 0 Then
+        Print Tab(65); Using "##.#"; teamStats!(1, 12) / teamStats!(1, 11)
+    End If
+    If teamStats!(1, 11) = 0 Then
+        Print
+    End If
+
+    Print "PENALTIES PER GAME / YARDS PER GAME"; Tab(40);
+    Print Using "##.#"; teamStats!(0, 11) / totalGames%;: Print "/";: Print Using "##.#"; teamStats!(0, 12) / totalGames%;
+    Print Tab(60); Using "##.#"; teamStats!(1, 11) / totalGames%;: Print "/";: Print Using "##.#"; teamStats!(1, 12) / totalGames%
+
+    Print "SAFETIES"; Tab(45);: Print Using "####"; statsTeam!(21);: Print Tab(65); Using "####"; statsOpp!(21)
+
+    Print "TIMES SACKED / YARDS LOST"; Tab(41);
+    Print Using "###"; sackStats!(0, 0);: Print "/";: Print Using "####"; sackStats!(0, 1);
+    Print Tab(61); Using "###"; sackStats!(1, 0);: Print "/";: Print Using "####"; sackStats!(1, 1)
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1
+    Color 12
+    Print "RUSHING           ATT   YDS  YDS/ATT  YDS/GAME   TD  LONG RUN  AGAINST"
+
+    If D% <> 1 Then
+
+        For I1 = 0 To 9
+
+            For I2 = 0 To 3
+
+                If rbName$(I1) = qbName$(I2) Then
+                    playerStats!(I1, 0) = playerStats!(I1, 0) + playerStats!(I2 + 10, 0)
+                    playerStats!(I1, 1) = playerStats!(I1, 1) + playerStats!(I2 + 10, 1)
+                    playerStats!(I1, 2) = playerStats!(I1, 2) + playerStats!(I2 + 10, 2)
+                    playerStats!(I2 + 10, 0) = 0
+                    playerStats!(I2 + 10, 1) = 0
+                    playerStats!(I2 + 10, 2) = 0
+                End If
+
+            Next I2
+
+        Next I1
+
+    Else
+        'This should be implied???
+        D% = 1
+    End If
+
+    For I1 = 0 To 13
+
+        If playerStats!(I1, 0) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+            If I1 <= 9 Then Print rbName$(I1);
+            If I1 > 9 Then Print qbName$(I1 - 10);
+
+            Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 0); playerStats!(I1, 1); playerStats!(I1, 1) / playerStats!(I1, 0); playerStats!(I1, 1) / totalGames%; playerStats!(I1, 2);
+
+            If I1 > 9 Then
+                Print
+            Else
+                Print Using "###"; statsLRush!(I1);: Print statsLRush$(I1, 0); Tab(64); statsLRush$(I1, 1)
+            End If
+
+        End If
+
+    Next I1
+
+    Color 14
+    Print
+    Print teamName$; Tab(18);
+
+    If statFormat = 0 Then
+        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1); teamStats!(0, 2); teamStats!(0, 2) / teamStats!(0, 1); teamStats!(0, 2) / totalGames%; statsTeam!(15)
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1) - sackStats!(0, 0); teamStats!(0, 2) + sackStats!(0, 1); (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0)); (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
+    End If
+
+    Print "OPPONENT TOTALS"; Tab(18);
+    If statFormat = 0 Then
+        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1); teamStats!(1, 2); teamStats!(1, 2) / teamStats!(1, 1); teamStats!(1, 2) / totalGames%; statsOpp!(15)
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1) - sackStats!(1, 0); teamStats!(1, 2) + sackStats!(1, 1); (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0)); (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
+    End If
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1
+    Color 12
+    Print "RECEIVING         REC   YDS  YDS/REC  YDS/GAME   TD  LONG REC  AGAINST"
+
+    I = 0
+
+    For I1 = 0 To 5
+
+        If playerStats!(I1, 6) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+
+            Print wrName$(I1); Tab(18);
+            Print Using "####  ####   "; playerStats!(I1, 6); playerStats!(I1, 7);
+
+            If playerStats!(I1, 6) = 0 Then
+                Print "  --";
+            Else
+                Print Using "##.#"; playerStats!(I1, 7) / playerStats!(I1, 6);
+            End If
+
+            Print Using "      ###.#    ##    "; playerStats!(I1, 7) / totalGames%; playerStats!(I1, 8);
+            Print Using "###"; statsLRec!(I1 + 10);: Print statsLRec$(I1 + 10, 0); Tab(64); statsLRec$(I1 + 10, 1)
+
+        End If
+
+    Next I1
+
+    For I1 = 0 To 9
+
+        If playerStats!(I1, 3) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+
+            Print rbName$(I1); Tab(18);
+            Print Using "####  ####   "; playerStats!(I1, 3); playerStats!(I1, 4);
+
+            If playerStats!(I1, 3) = 0 Then
+                Print "  --";
+            Else
+                Print Using "##.#"; playerStats!(I1, 4) / playerStats!(I1, 3);
+            End If
+
+            Print Using "      ###.#    ##    "; playerStats!(I1, 4) / totalGames%; playerStats!(I1, 5);
+            Print Using "###"; statsLRec!(I1);: Print statsLRec$(I1, 0); Tab(64); statsLRec$(I1, 1)
+
+        End If
+
+    Next I1
+
+    Print
+    Color 14
+    Print teamName$; Tab(18);
+
+    Print Using "####  ####   "; teamStats!(0, 4); teamStats!(0, 6);
+    If teamStats!(0, 4) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+    Print Using "      ###.#    ##"; teamStats!(0, 6) / totalGames%; statsTeam!(17)
+
+    Print "OPPONENT TOTALS"; Tab(18);
+    Print Using "####  ####   "; teamStats!(1, 4); teamStats!(1, 6);
+    If teamStats!(1, 4) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+    End If
+    Print Using "      ###.#    ##"; teamStats!(1, 6) / totalGames%; statsOpp!(17)
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1
+    Color 12
+    Print "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
+
+    For I1 = 0 To 3
+
+        If playerStats!(I1, 9) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+
+            'Att / Comp / Comp % / Yds
+            Print qbName$(I1); Tab(18); Using "####  ### ###.# #### "; playerStats!(I1, 9); playerStats!(I1, 10); playerStats!(I1, 10) / playerStats!(I1, 9) * 100; playerStats!(I1, 12);
+
+            'Yds / Att
+            If playerStats!(I1, 9) = 0 Then
+                Print "   --";
+            Else
+                Print Using "##.#"; playerStats!(I1, 12) / playerStats!(I1, 9);
+            End If
+
+            ' Yds / Catch
+            If playerStats!(I1, 10) = 0 Then
+                Print "   --";
+            Else
+                Print Using " ##.#"; playerStats!(I1, 12) / playerStats!(I1, 10);
+            End If
+
+            'TD / INT / INT %
+            Print Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
+
+            'QB Rating
+            awayTies! = QBRating!(I1, statFormat)
+            Print Using "###.#"; awayTies!
+
+        End If
+
+    Next I1
+
+    Print
+
+    Color 14
+    'Team Totals
+    Print teamName$; Tab(18);
+
+    'Att / Comp
+    Print Using "####  ### "; teamStats!(0, 3); teamStats!(0, 4);
+
+    'Comp %
+    If teamStats!(0, 3) = 0 Then
+        Print "   --";
+    Else
+        Print Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    End If
+
+    'Yds
+    Print Using " #### "; teamStats!(0, 6);
+
+    'Yds / Att
+    If teamStats!(0, 3) = 0 Then
+        Print " --";
+    Else
+        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    End If
+
+    'Yds / Catch
+    If teamStats!(0, 4) = 0 Then
+        Print "   --";
+    Else
+        Print Using " ##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+
+    'Yds / Gm, TD, INT
+    Print Using " ###.# ### ### ###.#     "; teamStats!(0, 6) / totalGames%; statsTeam!(17); teamStats!(0, 5);
+
+    'INT %
+    If teamStats!(0, 3) = 0 Then
+        Print "   --"
+    Else
+        Print Using "  #.#"; teamStats!(0, 5) / teamStats!(0, 3) * 100
+    End If
+
+    Print "OPPONENT TOTALS"; Tab(18);
+
+    'Att / Comp
+    Print Using "####  ### "; teamStats!(1, 3); teamStats!(1, 4);
+
+    'Comp %
+    If teamStats!(1, 3) = 0 Then
+        Print "   --"
+    Else
+        Print Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100;
+    End If
+
+    'Yds
+    Print Using " #### "; teamStats!(1, 6);
+
+    'Yds / Att
+    If teamStats!(1, 3) = 0 Then
+        Print " --";
+    Else
+        Print Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3);
+    End If
+
+    'Yds / Catch
+    If teamStats!(1, 4) = 0 Then
+        Print "   --";
+    Else
+        Print Using " ##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+    End If
+
+    'Yds / Gm, TD, INT
+    Print Using " ###.# ### ### ###.#     "; teamStats!(1, 6) / totalGames%; statsOpp!(17); teamStats!(1, 5);
+
+    'INT %
+    If teamStats!(1, 3) = 0 Then
+        Print "   --"
+    Else
+        Print Using "  #.#"; teamStats!(1, 5) / teamStats!(1, 3) * 100
+    End If
+
+    Print
+    Print
+    Color 12
+
+    Print "PASSING           LONG PASS    AGAINST"
+
+    For I1 = 0 To 3
+        If playerStats!(I1, 9) <> 0 Then
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+            Print qbName$(I1); Tab(22); Using "###"; statsLPass!(I1);: Print statsLPass$(I1, 0); Tab(32); statsLPass$(I1, 1)
+        End If
+    Next
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1
+    Color 12
+    Print "KICKOFF RETURNS   RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
+    I = 0
+
+    For I1 = 0 To 2
+        If playerStats!(I1, 14) <> 0 Then
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+            Print krName$(I1); Tab(18);
+            Print Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
+            If playerStats!(I1, 14) = 0 Then
+                Print "  --";
+            Else
+                Print Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+            End If
+            Print Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print Using "###"; statsLKR!(I1);: Print statsLKR$(I1, 0); Tab(64); statsLKR$(I1, 1)
+        End If
+    Next I1
+
+    Print
+    Color 14
+    Print teamName$; Tab(18);
+    If statsTeam!(22) = 0 Then
+        Print "   0     0   --.-        -.-     0"
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; statsTeam!(22); statsTeam!(23); statsTeam!(23) / statsTeam!(22); statsTeam!(23) / totalGames%; statsTeam!(18)
+    End If
+
+    Print "OPPONENT TOTALS"; Tab(18);
+    If statsOpp!(22) = 0 Then
+        Print "   0     0   --.-        -.-     0"
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; statsOpp!(22); statsOpp!(23); statsOpp!(23) / statsOpp!(22); statsOpp!(23) / totalGames%; statsOpp!(18)
+    End If
+
+    Print
+    Print
+    Print
+    Color 12
+    Print "PUNT RETURNS      RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
+    I = 0
+
+    For I1 = 3 To 5
+
+        If playerStats!(I1, 14) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+
+            Print prName$(I1 - 3); Tab(18);
+            Print Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
+
+            If playerStats!(I1, 14) = 0 Then
+                Print "  --";
+            Else
+                Print Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+            End If
+
+            Print Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print Using "###"; statsLPR!(I1 - 3);: Print statsLPR$(I1 - 3, 0); Tab(64); statsLPR$(I1 - 3, 1)
+
+        End If
+
+    Next I1
+
+    Print
+    Color 14
+    Print teamName$; Tab(18);
+    If statsTeam!(24) = 0 Then
+        Print "   0     0   --.-        -.-     0"
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; statsTeam!(24); statsTeam!(25); statsTeam!(25) / statsTeam!(24); statsTeam!(25) / totalGames%; statsTeam!(19)
+    End If
+
+    Print "OPPONENT TOTALS"; Tab(18);
+    If statsOpp!(24) = 0 Then
+        Print "   0     0   --.-        -.-     0"
+    Else
+        Print Using "####  ####   ##.#      ###.#    ##"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); statsOpp!(25) / totalGames%; statsOpp!(19)
+    End If
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1
+    Color 12
+    Print "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
+    Color 15
+    Print punterName$(0); Tab(18); Using "####  ####    "; teamStats!(0, 7); teamStats!(0, 8);
+    If teamStats!(0, 7) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    End If
+    Print Using "    ##.#      ##     ##      ##"; teamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
+
+    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; teamStats!(1, 7); teamStats!(1, 8);
+    If teamStats!(1, 7) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7);
+    End If
+    Print Using "    ##.#      ##     ##"; teamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
+
+    Print
+    Print
+    Print
+    Color 12
+    Print "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
+    Color 15
+    Print teamName$; Tab(18); Using "####  ####    "; teamStats!(0, 7); teamStats!(0, 8);
+    If teamStats!(0, 7) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    End If
+
+    Print Using "    ###       ####        ##.#     ##.#"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (teamStats!(0, 8) - statsOpp!(25)) / teamStats!(0, 7)
+
+    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; teamStats!(1, 7); teamStats!(1, 8);
+    If teamStats!(1, 7) = 0 Then
+        Print "  --";
+    Else
+        Print Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7);
+    End If
+
+    '                Ret       Yds         Avg      Net Avg
+    If statsTeam!(24) > 0 Then
+        oppPuntAvg! = statsTeam!(25) / statsTeam!(24)
+    Else
+        oppPuntAvg! = 0
+    End If
+    Print Using "    ###       ####        ##.#     ##.#"; statsTeam!(24); statsTeam!(25); oppPuntAvg!; (teamStats!(1, 8) - statsTeam!(25)) / teamStats!(1, 7)
+
+    Print
+    Print
+    Print
+    Color 12
+    Print "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
+    Color 15
+
+    testFGA = playerStats!(4, 17)
+    testFGM = playerStats!(3, 17)
+    testEPA = playerStats!(6, 17)
+    testEPM = playerStats!(5, 17)
+
+    If playerStats!(4, 17) <> 0 And playerStats!(6, 17) <> 0 Then
+
+        Print pkName$(0);
+        Print Tab(16);
+
+        If playerStats!(6, 17) <> 0 Then
+            'Extra Points
+            Print Using "### ### ###.# "; playerStats!(5, 17); playerStats!(6, 17); playerStats!(5, 17) / playerStats!(6, 17) * 100;
+        End If
+
+        'Field Goals
+        If playerStats!(4, 17) = 0 Then
+            Print
+        Else
+            Print Tab(30);
+            Print Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
+            Print "-";: Print Using "## ##"; statsFGA!(0, 0); statsFGM!(0, 1);
+            Print "-";: Print Using "## ##"; statsFGA!(0, 1); statsFGM!(0, 2);
+            Print "-";: Print Using "## ##"; statsFGA!(0, 2); statsFGM!(0, 3);
+            Print "-";: Print Using "## ##"; statsFGA!(0, 3); statsFGM!(0, 4);
+            Print "-";: Print Using "##"; statsFGA!(0, 4)
+        End If
+
+    End If
+
+    If playerStats!(8, 17) <> 0 And playerStats!(10, 17) <> 0 Then
+
+        Print pkName$(1); Tab(16);
+
+        If playerStats!(10, 17) <> 0 Then
+            Print Using "### ### ###.# "; playerStats!(9, 17); playerStats!(10, 17); playerStats!(9, 17) / playerStats!(10, 17) * 100;
+        End If
+
+        If playerStats!(8, 17) = 0 Then
+            Print
+        Else
+            Print Tab(30);
+            Print Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
+            Print "-";: Print Using "## ##"; statsFGA!(1, 0); statsFGM!(1, 1);
+            Print "-";: Print Using "## ##"; statsFGA!(1, 1); statsFGM!(1, 2);
+            Print "-";: Print Using "## ##"; statsFGA!(1, 2); statsFGM!(1, 3);
+            Print "-";: Print Using "## ##"; statsFGA!(1, 3); statsFGM!(1, 4);
+            Print "-";: Print Using "##"; statsFGA!(1, 4)
+        End If
+
+    End If
+
+    Print
+
+    NOONE:
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1: Color 12
+    Print "INTERCEPTIONS     RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
+    For I1 = 0 To 9
+
+        If statsGI(I1, 0) <> 0 Then
+
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+
+            Print intName$(I1); Tab(18);
+
+            '            Ret   Yds
+            Print Using "####  ####   "; statsGI(I1, 0); statsGI(I1, 1);
+
+            'Yds / Ret
+            If statsGI(I1, 0) = 0 Then
+                Print " --";
+            Else
+                Print Using "##.#"; statsGI(I1, 1) / statsGI(I1, 0);
+            End If
+
+            'Yds / Gm, TD
+            Print Using "      ###.#    ##    "; statsGI(I1, 1) / totalGames%; statsGI(I1, 2);
+
+            'Long Ret / Against
+            Print Using "###"; statsLInt!(I1);: Print statsLInt$(I1, 0); Tab(64); statsLInt$(I1, 1)
+
+        End If
+
+    Next I1
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress$
+
+    Color , 0
+    Cls
+
+    Call TITLE_STATS
+
+    Locate 3, 1: Color 12
+    Print "DEFENSIVE SACKS    SACKS      YARDS LOST"
+
+    For I1 = 0 To 14
+        If statsGS(I1, 0) <> 0 Then
+            DM% = DM% + 1
+            Color 7
+            If DM% / 2 = Int(DM% / 2) Then Color 15
+            Print sackName$(I1); Tab(20); Using "###            ###"; statsGS(I1, 0); statsGS(I1, 1)
+        End If
+    Next
+
+    Locate 24, 1
+    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    I$ = GetKeyPress
+
+End Sub
+
+'----------------------------------------
+'       StatsToReport Subroutine
+'----------------------------------------
+'This subroutine formats and outputs the
+'selected team's stats to the default printer
+Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, teamPower, SS)
+
+    Shared statsFGA!(), statsFGM!(), gameAttendance&(), statsGI(), statsGS()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsLPR!(), sackStats!(), statsTeam!(), statsOpp!(), statsPlayers!()
+
+    Shared playerStats!(), teamStats!()
+
+    Shared teamScore(), oppScore(), scoreTotals()
+
+    Shared gameSite$(), oppName$()
+    Shared intName$(), sackName$(), locIndicator$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+
+    Shared statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$()
+
+    Color 15, 0
+    Cls
+
+    Open destFile$ For Output As #1
+
+    Print #1, "GAME-BY-GAME REPORT FOR "; teamName$
+    Print #1,
+    Print #1, "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD"
+
+    For I = 1 To totalGames%
+
+        Print #1, oppName$(I); Tab(19); Using "###"; teamScore(I);
+        Print #1, "-";: Print #1, Using "###   "; oppScore(I);
+
+        If teamScore(I) > oppScore(I) Then
+            totalWins = totalWins + 1
+            Print #1, "W";
+        End If
+
+        If teamScore(I) < oppScore(I) Then
+            totalLosses = totalLosses + 1
+            Print #1, "L";
+        End If
+
+        If teamScore(I) = oppScore(I) Then
+            tiedGames = tiedGames + 1
+            Print #1, "T";
+        End If
+
+        Print #1, Tab(31);
+        Print #1, Using "####,###   "; gameAttendance&(I);
+        Print #1, locIndicator$(I); "  "; Left$(gameSite$(I), 24);
+
+        Print #1, Tab(69);
+        Print #1, "(";
+        Print #1, Using "##"; totalWins;: Print #1, "-";: Print #1, Using "##"; totalLosses;: Print #1, "-";: Print #1, Using "##"; tiedGames;
+        Print #1, ")"
+
+        scoreTotals(0) = scoreTotals(0) + teamScore(I)
+        scoreTotals(1) = scoreTotals(1) + oppScore(I)
+
+    Next I
+
+    Print #1,
+    If statFormat = 0 Then
+        Print #1, Using "POWER RATING ###.#    STRENGTH OF SCHEDULE ###.#"; teamPower; SS
+    End If
+
+    scoreTotals(0) = 0
+    scoreTotals(1) = 0
+    totalWins = 0
+    totalLosses = 0
+    tiedGames = 0
+
+    Print #1,
+    Print #1,
+    Print #1, "CUMULATIVE SCORE BY QUARTERS   1    2    3    4    TOT"
+    Print #1, teamName$; Tab(30); Using " ###  ###  ###  ###   ###"; statsTeam!(32); statsTeam!(33); statsTeam!(34); statsTeam!(35); statsTeam!(32) + statsTeam!(33) + statsTeam!(34) + statsTeam!(35) + statsTeam!(36)
+    Print #1, "OPPONENTS"; Tab(30); Using " ###  ###  ###  ###   ###"; statsOpp!(32); statsOpp!(33); statsOpp!(34); statsOpp!(35); statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsTeam!(36)
+    Print #1,
+
+    '-- Would totalGames% ever be 0?
+    Print #1, "AVERAGE SCORE BY QUARTERS       1     2     3     4     TOT"
+    Print #1, teamName$; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsTeam!(32) / totalGames%; statsTeam!(33) / totalGames%; statsTeam!(34) / totalGames%; statsTeam!(35) / totalGames%; (statsTeam!(32) + statsTeam!(33) + statsTeam!(34) + statsTeam!(35) + statsTeam!(36)) / totalGames%
+    Print #1, "OPPONENTS"; Tab(30); Using " ##.#  ##.#  ##.#  ##.#   ##.#"; statsOpp!(32) / totalGames%; statsOpp!(33) / totalGames%; statsOpp!(34) / totalGames%; statsOpp!(35) / totalGames%; (statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsTeam!(36)) / totalGames%
+    Print #1,
+
+    HD = 0: AD = 0: ND = 0: TD = 0
+    HT = 0: CT = 0: NT = 0: TT = 0
+    HA = 0: AA = 0: NA = 0: TA = 0
+
+    For I = 1 To totalGames%
+        If Left$(locIndicator$(I), 1) = "H" Then
+            HD = HD + 1
+            HT = HT + gameAttendance&(I)
+        End If
+        If Left$(locIndicator$(I), 1) = "A" Then
+            AD = AD + 1
+            CT = CT + gameAttendance&(I)
+        End If
+        If Left$(locIndicator$(I), 1) = "X" Then
+            ND = ND + 1
+            NT = NT + gameAttendance&(I)
+        End If
+        TD = TD + 1
+        TT = TT + gameAttendance&(I)
+    Next
+
+    If HD <> 0 Then HA = HT / HD
+    If AD <> 0 Then AA = CT / AD
+    If ND <> 0 Then NA = NT / ND
+    If TD <> 0 Then TA = TT / TD
+
+    Print #1, "ATTENDANCE    DATES      TOTAL    AVERAGE"
+    Print #1, Using "HOME            ##    #####,###   ###,###"; HD; HT; HA
+    Print #1, Using "AWAY            ##    #####,###   ###,###"; AD; CT; AA
+    Print #1, Using "NEUTRAL         ##    #####,###   ###,###"; ND; NT; NA
+    Print #1, Using "TOTAL           ##    #####,###   ###,###"; TD; TT; TA
+    Print #1, Chr$(12)
+
+    Print #1, "TEAM STATISTICS CATEGORY"; Tab(41); teamName$; Tab(61); "OPPONENT TOTALS"
+
+    Print #1, "FIRST DOWNS"; Tab(45); Using "####"; teamStats!(0, 0);
+    Print #1, Tab(65); Using "####"; teamStats!(1, 0)
+
+    Print #1, "RUSHING ATTEMPTS"; Tab(45);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(0, 1);
+    Else
+        Print #1, Using "####"; teamStats!(0, 1) - sackStats!(0, 0);
+    End If
+    Print #1, Tab(65);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(1, 1)
+    Else
+        Print #1, Using "####"; teamStats!(1, 1) - sackStats!(1, 0)
+    End If
+
+    Print #1, "NET RUSHING YARDAGE"; Tab(45);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(0, 2);
+    Else
+        Print #1, Using "####"; teamStats!(0, 2) + sackStats!(0, 1);
+    End If
+    Print #1, Tab(65);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(1, 2)
+    Else
+        Print #1, Using "####"; teamStats!(1, 2) + sackStats!(1, 1)
+    End If
+
+    Print #1, "YARDS PER RUSH"; Tab(45);
+    If statFormat = 0 And teamStats!(0, 1) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(0, 2) / teamStats!(0, 1);
+    End If
+    If statFormat <> 0 And teamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
+        Print #1, Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0));
+    End If
+
+    Print #1, Tab(65);
+
+    If statFormat = 0 And teamStats!(1, 1) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(1, 2) / teamStats!(1, 1)
+    End If
+    If statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
+        Print #1, Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0))
+    End If
+    If statFormat = 0 And teamStats!(1, 1) = 0 Or statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) = 0 Then
+        Print #1,
+    End If
+
+    Print #1, "RUSHING YARDS PER GAME"; Tab(44);
+
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; teamStats!(0, 2) / totalGames%;
+    Else
+        Print #1, Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
+    End If
+    Print #1, Tab(64);
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; teamStats!(1, 2) / totalGames%
+    Else
+        Print #1, Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
+    End If
+
+    Print #1,
+    Print #1, "PASSES ATTEMPTED"; Tab(45); Using "####"; teamStats!(0, 3);: Print #1, Tab(65); Using "####"; teamStats!(1, 3)
+    Print #1, "PASSES COMPLETED"; Tab(45); Using "####"; teamStats!(0, 4);: Print #1, Tab(65); Using "####"; teamStats!(1, 4)
+    Print #1, "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; teamStats!(0, 5);: Print #1, Tab(65); Using "####"; teamStats!(1, 5)
+    Print #1, "PASS COMPLETION PERCENTAGE"; Tab(44);
+
+    If teamStats!(0, 3) <> 0 Then
+        Print #1, Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    End If
+    If teamStats!(1, 3) <> 0 Then
+        Print #1, Tab(64); Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100
+    Else
+        Print #1,
+    End If
+
+    Print #1, "NET YARDS PASSING"; Tab(45); Using "####"; teamStats!(0, 6);
+    Print #1, Tab(65); Using "####"; teamStats!(1, 6)
+
+    Print #1, "YARDS PER PASS ATTEMPT"; Tab(45);
+    If teamStats!(0, 3) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    End If
+    If teamStats!(1, 3) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "YARDS PER PASS COMPLETION"; Tab(45);
+    If teamStats!(0, 4) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+    If teamStats!(1, 4) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; teamStats!(0, 6) / totalGames%;
+    Print #1, Tab(64); Using "###.#"; teamStats!(1, 6) / totalGames%
+    Print #1,
+
+    Print #1, "TOTAL PLAYS"; Tab(45);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(0, 1) + teamStats!(0, 3);
+    Else
+        Print #1, Using "####"; teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3);
+    End If
+    Print #1, Tab(65);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(1, 1) + teamStats!(1, 3)
+    Else
+        Print #1, Using "####"; teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)
+    End If
+
+    Print #1, "TOTAL PLAYS PER GAME"; Tab(44);
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; (teamStats!(0, 1) + teamStats!(0, 3)) / totalGames%;
+    Else
+        Print #1, Using "###.#"; (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3)) / totalGames%;
+    End If
+    Print #1, Tab(64);
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; (teamStats!(1, 1) + teamStats!(1, 3)) / totalGames%
+    Else
+        Print #1, Using "###.#"; (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)) / totalGames%
+    End If
+
+    Print #1, "TOTAL NET YARDS"; Tab(45);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(0, 2) + teamStats!(0, 6);
+    Else
+        Print #1, Using "####"; teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6);
+    End If
+    Print #1, Tab(65);
+    If statFormat = 0 Then
+        Print #1, Using "####"; teamStats!(1, 2) + teamStats!(1, 6)
+    Else
+        Print #1, Using "####"; teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)
+    End If
+
+    Print #1, "YARDS GAINED PER PLAY"; Tab(45);
+    If statFormat = 0 Then
+        Print #1, Using "##.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / (teamStats!(0, 1) + teamStats!(0, 3));
+    Else
+        Print #1, Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3));
+    End If
+    Print #1, Tab(64);
+    If statFormat = 0 Then
+        Print #1, Using "##.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / (teamStats!(1, 1) + teamStats!(1, 3))
+    Else
+        Print #1, Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3))
+    End If
+
+    Print #1, "YARDS GAINED PER GAME"; Tab(44);
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / totalGames%;
+    Else
+        Print #1, Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / totalGames%;
+    End If
+    Print #1, Tab(64);
+    If statFormat = 0 Then
+        Print #1, Using "###.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / totalGames%
+    Else
+        Print #1, Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / totalGames%
+    End If
+
+    Print #1,
+    Print #1, "KICKOFF RETURNS / KICKOFF RETURN YARDS"; Tab(41);
+    Print #1, Using "###"; statsTeam!(22);: Print #1, "/";: Print #1, Using "####"; statsTeam!(23);
+    Print #1, Tab(61); Using "###"; statsOpp!(22);: Print #1, "/";: Print #1, Using "####"; statsOpp!(23)
+
+    Print #1, "AVERAGE YARDAGE PER KICKOFF RETURN"; Tab(45);
+    If statsTeam!(22) <> 0 Then
+        Print #1, Using "##.#"; statsTeam!(23) / statsTeam!(22);
+    End If
+    If statsOpp!(22) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; statsOpp!(23) / statsOpp!(22)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "KICKOFF RETURNS PER GAME"; Tab(45);
+    Print #1, Using "##.#"; statsTeam!(22) / totalGames%;
+    Print #1, Tab(65); Using "##.#"; statsOpp!(22) / totalGames%
+
+    Print #1, "PUNT RETURNS / PUNT RETURN YARDS"; Tab(41);
+    Print #1, Using "###"; statsTeam!(24);: Print #1, "/";: Print #1, Using "####"; statsTeam!(25);
+    Print #1, Tab(61); Using "###"; statsOpp!(24);: Print #1, "/";: Print #1, Using "####"; statsOpp!(25)
+
+    Print #1, "AVERAGE YARDAGE PER PUNT RETURN"; Tab(45);
+    If statsTeam!(24) <> 0 Then
+        Print #1, Using "##.#"; statsTeam!(25) / statsTeam!(24);
+    End If
+    If statsOpp!(24) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; statsOpp!(25) / statsOpp!(24)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "PUNT RETURNS PER GAME"; Tab(45);
+    Print #1, Using "##.#"; statsTeam!(24) / totalGames%;
+    Print #1, Tab(65); Using "##.#"; statsOpp!(24) / totalGames%
+
+    Print #1, "INTERCEPTION RETURNS / RETURN YARDS"; Tab(41);
+    Print #1, Using "###"; statsTeam!(26);: Print #1, "/";: Print #1, Using "####"; statsTeam!(27);
+    Print #1, Tab(61); Using "###"; statsOpp!(26);: Print #1, "/";: Print #1, Using "####"; statsOpp!(27)
+
+    Print #1, "AVERAGE YARDAGE PER RETURN"; Tab(45);
+    If statsTeam!(26) <> 0 Then
+        Print #1, Using "##.#"; statsTeam!(27) / statsTeam!(26);
+    End If
+    If statsOpp!(26) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; statsOpp!(27) / statsOpp!(26)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "INTERCEPTION RETURNS PER GAME"; Tab(45);
+    Print #1, Using "##.#"; statsTeam!(26) / totalGames%;
+    Print #1, Tab(65); Using "##.#"; statsOpp!(26) / totalGames%
+
+    Print #1,
+
+    Print #1, "PUNTS / TOTAL PUNT YARDAGE"; Tab(41);
+    Print #1, Using "###"; teamStats!(0, 7);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 8);
+    Print #1, Tab(61); Using "###"; teamStats!(1, 7);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 8)
+
+    Print #1, "AVERAGE YARDS PER PUNT"; Tab(45);
+    If teamStats!(0, 7) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    End If
+    If teamStats!(1, 7) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "AVERAGE NUMBER OF PUNTS PER GAME"; Tab(45);
+    Print #1, Using "##.#"; teamStats!(0, 7) / totalGames%;
+    Print #1, Tab(65); Using "##.#"; teamStats!(1, 7) / totalGames%
+    Print #1,
+
+    Print #1, "FUMBLES / FUMBLES LOST"; Tab(41);
+    Print #1, Using "###"; teamStats!(0, 9);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 10);
+    Print #1, Tab(61); Using "###"; teamStats!(1, 9);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 10)
+
+    Print #1, "PENALTIES / YARDS PENALIZED"; Tab(41);
+    Print #1, Using "###"; teamStats!(0, 11);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 12);
+    Print #1, Tab(61); Using "###"; teamStats!(1, 11);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 12)
+
+    Print #1, "AVERAGE YARDS PER PENALTY"; Tab(45);
+    If teamStats!(0, 11) <> 0 Then
+        Print #1, Using "##.#"; teamStats!(0, 12) / teamStats!(0, 11);
+    End If
+    If teamStats!(1, 11) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; teamStats!(1, 12) / teamStats!(1, 11)
+    Else
+        Print #1,
+    End If
+
+    Print #1, "PENALTIES PER GAME / YARDS PER GAME"; Tab(40);
+    Print #1, Using "##.#"; teamStats!(0, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; teamStats!(0, 12) / totalGames%;
+    Print #1, Tab(60); Using "##.#"; teamStats!(1, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; teamStats!(1, 12) / totalGames%
+
+    Print #1, "SAFETIES"; Tab(45);
+    Print #1, Using "####"; statsTeam!(21);
+    Print #1, Tab(65); Using "####"; statsOpp!(21)
+
+    Print #1, "TIMES SACKED / YARDS LOST"; Tab(41);
+    Print #1, Using "###"; sackStats!(0, 0);: Print #1, "/";: Print #1, Using "####"; sackStats!(0, 1);
+    Print #1, Tab(61); Using "###"; sackStats!(1, 0);: Print #1, "/";: Print #1, Using "####"; sackStats!(1, 1)
+    Print #1, Chr$(12)
+
+    Print #1, "RUSHING           ATT   YDS  YDS/ATT  YDS/GAME   TD  LONG RUN  AGAINST"
+
+    I = 0
+
+    If D% <> 1 Then
+        For I1 = 0 To 9
+            For I2 = 0 To 3
+                If rbName$(I1) = qbName$(I2) Then
+                    playerStats!(I1, 0) = playerStats!(I1, 0) + playerStats!(I2 + 10, 0)
+                    playerStats!(I1, 1) = playerStats!(I1, 1) + playerStats!(I2 + 10, 1)
+                    playerStats!(I1, 2) = playerStats!(I1, 2) + playerStats!(I2 + 10, 2)
+                    playerStats!(I2 + 10, 0) = 0
+                    playerStats!(I2 + 10, 1) = 0
+                    playerStats!(I2 + 10, 2) = 0
+                End If
+            Next I2
+        Next I1
+    Else
+        'This should be implied???
+        D% = 1
+    End If
+
+    For I1 = 0 To 13
+        If playerStats!(I1, 0) <> 0 Then
+            If I1 <= 9 Then Print #1, rbName$(I1);
+            If I1 > 9 Then Print #1, qbName$(I1 - 10);
+            Print #1, Tab(18); Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 0); playerStats!(I1, 1); playerStats!(I1, 1) / playerStats!(I1, 0); playerStats!(I1, 1) / totalGames%; playerStats!(I1, 2);
+            If I1 > 9 Then
+                Print #1,
+            Else
+                Print #1, Using "###"; statsLRush!(I1);
+                Print #1, statsLRush$(I1, 0); Tab(64); statsLRush$(I1, 1)
+            End If
+        End If
+    Next I1
+
+    Print #1, teamName$; Tab(18);
+    If statFormat = 0 Then
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1); teamStats!(0, 2); teamStats!(0, 2) / teamStats!(0, 1); teamStats!(0, 2) / totalGames%; statsTeam!(15)
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1) - sackStats!(0, 0); teamStats!(0, 2) + sackStats!(0, 1); (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0)); (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
+    End If
+
+    Print #1, "OPPONENT TOTALS"; Tab(18);
+    If statFormat = 0 Then
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1); teamStats!(1, 2); teamStats!(1, 2) / teamStats!(1, 1); teamStats!(1, 2) / totalGames%; statsOpp!(15)
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1) - sackStats!(1, 0); teamStats!(1, 2) + sackStats!(1, 1); (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0)); (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
+    End If
+
+    Print #1,
+    Print #1, "RECEIVING         REC   YDS  YDS/REC  YDS/GAME   TD  LONG REC  AGAINST"
+
+    I = 0
+
+    For I1 = 0 To 5
+        If playerStats!(I1, 6) <> 0 Then
+            Print #1, wrName$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 6); playerStats!(I1, 7); playerStats!(I1, 7) / playerStats!(I1, 6); playerStats!(I1, 7) / totalGames%; playerStats!(I1, 8);
+            Print #1, Using "###"; statsLRec!(I1 + 10);
+            Print #1, statsLRec$(I1 + 10, 0); Tab(64); statsLRec$(I1 + 10, 1)
+        End If
+    Next I1
+
+    For I1 = 0 To 9
+        If playerStats!(I1, 3) <> 0 Then
+            Print #1, rbName$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 3); playerStats!(I1, 4); playerStats!(I1, 4) / playerStats!(I1, 3); playerStats!(I1, 4) / totalGames%; playerStats!(I1, 5);
+            Print #1, Using "###"; statsLRec!(I1);
+            Print #1, statsLRec$(I1, 0); Tab(64); statsLRec$(I1, 1)
+        End If
+    Next I1
+
+    Print #1, teamName$; Tab(18);
+    Print #1, Using "####  ####   "; teamStats!(0, 4); teamStats!(0, 6);
+
+    If teamStats!(0, 4) = 0 Then
+        Print #1, "  --";
+    Else
+        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+
+    Print #1, Using "      ###.#    ##"; teamStats!(0, 6) / totalGames%; statsTeam!(17)
+    Print #1, "OPPONENT TOTALS"; Tab(18);
+    Print #1, Using "####  ####   "; teamStats!(1, 4); teamStats!(1, 6);
+
+    If teamStats!(1, 4) = 0 Then
+        Print #1, "  --";
+    Else
+        Print #1, Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+    End If
+
+    Print #1, Using "      ###.#    ##"; teamStats!(1, 6) / totalGames%; statsOpp!(17)
+
+    Print #1,
+    Print #1, "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
+
+    For I1 = 0 To 3
+
+        If playerStats!(I1, 9) <> 0 Then
+
+            Print #1, qbName$(I1); Tab(18); Using "####  ### ###.# #### ##.#"; playerStats!(I1, 9); playerStats!(I1, 10); playerStats!(I1, 10) / playerStats!(I1, 9) * 100; playerStats!(I1, 12); playerStats!(I1, 12) / playerStats!(I1, 9);
+
+            If playerStats!(I1, 10) = 0 Then
+                Print #1, "   --";
+            Else
+                Print #1, Using " ##.#"; playerStats!(I1, 12) / playerStats!(I1, 10);
+            End If
+
+            Print #1, Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
+
+            awayTies! = QBRating!(I1, statFormat)
+
+            Print #1, Using "###.#"; awayTies!
+
+        End If
+
+    Next I1
+
+    Print #1, teamName$; Tab(18);
+    Print #1, Using "####  ### "; teamStats!(0, 3); teamStats!(0, 4);
+
+    If teamStats!(0, 3) = 0 Then
+        Print #1, "   --";
+    Else
+        Print #1, Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    End If
+
+    Print #1, Using "#### "; teamStats!(0, 6);
+
+    If teamStats!(0, 3) = 0 Then
+        Print #1, "  --";
+    Else
+        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    End If
+    If teamStats!(0, 4) = 0 Then
+        Print #1, "   --";
+    Else
+        Print #1, Using " ##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    End If
+
+    Print #1, Using " ###.# ### ### "; teamStats!(0, 6) / totalGames%; statsTeam!(17); teamStats!(0, 5);
+
+    If teamStats!(0, 3) = 0 Then
+        Print #1, "   --";
+    Else
+        Print #1, Using "###.#     "; teamStats!(0, 5) / teamStats!(0, 3) * 100
+    End If
+
+    Print #1, "OPPONENT TOTALS"; Tab(18);
+    Print #1, Using "####  ### "; teamStats!(1, 3); teamStats!(1, 4);
+
+    If teamStats!(1, 3) = 0 Then
+        Print #1, "   --";
+    Else
+        Print #1, Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100;
+    End If
+
+    Print #1, Using "#### "; teamStats!(1, 6);
+
+    If teamStats!(1, 3) = 0 Then
+        Print #1, "  --";
+    Else
+        Print #1, Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3);
+    End If
+    If teamStats!(1, 4) = 0 Then
+        Print #1, "  --";
+    Else
+        Print #1, Using " ##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+    End If
+
+    Print #1, Using " ###.# ### ### "; teamStats!(1, 6) / totalGames%; statsOpp!(17); teamStats!(1, 5);
+
+    If teamStats!(1, 3) = 0 Then
+        Print #1, "   --"
+    Else
+        Print #1, Using "###.#     "; teamStats!(1, 5) / teamStats!(1, 3) * 100
+    End If
+
+    Print #1,
+    Print #1,
+    Print #1, "PASSING           LONG PASS    AGAINST"
+
+    For I1 = 0 To 3
+        If playerStats!(I1, 9) <> 0 Then
+            Print #1, qbName$(I1); Tab(22); Using "###"; statsLPass!(I1);
+            Print #1, statsLPass$(I1, 0); Tab(32); statsLPass$(I1, 1)
+        End If
+    Next
+
+    Print #1, Chr$(12)
+    Print #1, "KICKOFF RETURNS   RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
+    I = 0
+
+    For I1 = 0 To 2
+        If playerStats!(I1, 14) <> 0 Then
+            Print #1, krName$(I1); Tab(18);
+            Print #1, Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
+            If playerStats!(I1, 14) = 0 Then
+                Print #1, "  --";
+            Else
+                Print #1, Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+            End If
+            Print #1, Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print #1, Using "###"; statsLKR!(I1);: Print #1, statsLKR$(I1, 0); Tab(64); statsLKR$(I1, 1)
+        End If
+    Next I1
+
+    Print #1, teamName$; Tab(18);
+
+    If statsTeam!(22) = 0 Then
+        Print #1, "   0     0   --.-        -.-     0"
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; statsTeam!(22); statsTeam!(23); statsTeam!(23) / statsTeam!(22); statsTeam!(23) / totalGames%; statsTeam!(18)
+    End If
+
+    Print #1, "OPPONENT TOTALS"; Tab(18);
+
+    If statsOpp!(22) = 0 Then
+        Print #1, "   0     0   --.-        -.-     0"
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; statsOpp!(22); statsOpp!(23); statsOpp!(23) / statsOpp!(22); statsOpp!(23) / totalGames%; statsOpp!(18)
+    End If
+
+    Print #1,
+    Print #1,
+    Print #1,
+    Print #1, "PUNT RETURNS      RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+
+    I = 0
+
+    For I1 = 3 To 5
+        If playerStats!(I1, 14) <> 0 Then
+            Print #1, prName$(I1 - 3); Tab(18);
+            Print #1, Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
+            If playerStats!(I1, 14) = 0 Then
+                Print #1, "  --";
+            Else
+                Print #1, Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+            End If
+            Print #1, Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print #1, Using "###"; statsLPR!(I1 - 3);: Print #1, statsLPR$(I1 - 3, 0); Tab(64); statsLPR$(I1 - 3, 1)
+        End If
+    Next I1
+
+    Print #1, teamName$; Tab(18);
+
+    If statsTeam!(24) = 0 Then
+        Print #1, "   0     0   --.-        -.-     0"
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; statsTeam!(24); statsTeam!(25); statsTeam!(25) / statsTeam!(24); statsTeam!(25) / totalGames%; statsTeam!(19)
+    End If
+
+    Print #1, "OPPONENT TOTALS"; Tab(18);
+
+    If statsOpp!(24) = 0 Then
+        Print #1, "   0     0   --.-        -.-     0"
+    Else
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); statsOpp!(25) / totalGames%; statsOpp!(19)
+    End If
+
+    Print #1,
+
+    I = 0
+
+    Print #1, "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
+    Print #1, punterName$(0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; teamStats!(0, 7); teamStats!(0, 8); teamStats!(0, 8) / teamStats!(0, 7); teamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
+    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; teamStats!(1, 7); teamStats!(1, 8); teamStats!(1, 8) / teamStats!(1, 7); teamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
+    Print #1,
+    Print #1,
+    Print #1,
+    Print #1, "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
+    Print #1, teamName$; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; teamStats!(0, 7); teamStats!(0, 8); teamStats!(0, 8) / teamStats!(0, 7); statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (teamStats!(0, 8) - statsOpp!(25)) / teamStats!(0, 7)
+    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; teamStats!(1, 7); teamStats!(1, 8); teamStats!(1, 8) / teamStats!(1, 7); statsTeam!(24); statsTeam!(25); statsTeam!(25) / statsTeam!(24); (teamStats!(1, 8) - statsTeam!(25)) / teamStats!(1, 7)
+    Print #1,
+    Print #1,
+    Print #1,
+    Print #1, "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
+
+    If playerStats!(4, 17) <> 0 Or playerStats!(6, 17) <> 0 Then
+        Print #1, pkName$(0);
+        Print #1, Tab(16);
+        If playerStats!(6, 17) <> 0 Then
+            Print #1, Using "### ### ###.# "; playerStats!(5, 17); playerStats!(6, 17); playerStats!(5, 17) / playerStats!(6, 17) * 100;
+        End If
+        If playerStats!(4, 17) = 0 Then
+            Print #1,
+        Else
+            Print #1, Tab(30);
+            Print #1, Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 0); statsFGM!(0, 1);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 1); statsFGM!(0, 2);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 2); statsFGM!(0, 3);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 3); statsFGM!(0, 4);
+            Print #1, "-";: Print #1, Using "##"; statsFGA!(0, 4)
+        End If
+    End If
+
+    If playerStats!(8, 17) <> 0 Or playerStats!(10, 17) <> 0 Then
+        Print #1, pkName$(1); Tab(16);
+        If playerStats!(10, 17) <> 0 Then
+            Print #1, Using "### ### ###.# "; playerStats!(9, 17); playerStats!(10, 17); playerStats!(9, 17) / playerStats!(10, 17) * 100;
+        End If
+        If playerStats!(8, 17) = 0 Then
+            Print #1,
+        Else
+            Print #1, Tab(30);
+            Print #1, Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 0); statsFGM!(1, 1);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 1); statsFGM!(1, 2);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 2); statsFGM!(1, 3);
+            Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 3); statsFGM!(1, 4);
+            Print #1, "-";: Print #1, Using "##"; statsFGA!(1, 4)
+        End If
+    End If
+
+    Print #1,
+    Print #1,
+    Print #1, "INTERCEPTIONS     RET   YDS  YDS/RET  YDS/GAME   TD  LONG RET  AGAINST"
+    I = 0
+
+    For I1 = 0 To 9
+        If statsGI(I1, 0) <> 0 Then
+            Print #1, intName$(I1); Tab(18);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; statsGI(I1, 0); statsGI(I1, 1); statsGI(I1, 1) / statsGI(I1, 0); statsGI(I1, 1) / totalGames%; statsGI(I1, 2);
+            Print #1, Using "###"; statsLInt!(I1);: Print #1, statsLInt$(I1, 0); Tab(64); statsLInt$(I1, 1)
+        End If
+    Next I1
+
+    Print #1,
+    Print #1, "DEFENSIVE SACKS    SACKS      YARDS LOST"
+
+    For I1 = 0 To 14
+        If statsGS(I1, 0) <> 0 Then
+            Print #1, sackName$(I1); Tab(20); Using "###            ###"; statsGS(I1, 0); statsGS(I1, 1)
+        End If
+    Next
+
+    Close #1
+
+    If printDest = 1 Then
+
+        Open destFile$ For Input As #2
+
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
+
+        Close #2
+
+        LPrint Chr$(12)
+
+        Kill destFile$
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'       ResetStatPrompt Subroutine
+'----------------------------------------
+'This subroutine prompts the user with
+'a choice to reset stats. If they chose,
+'and confirm, it will then proceed to
+'delete the files.
+Sub ResetStatPrompt (statFile$)
+
+    Cls
+
+    Call MenuBox(6, 8, 61, 1, 15, 1)
+
+    Do
+        Locate 7
+        U$ = "RESET COMPILED STATS TO 0? (Y/N)"
+        Locate , (80 - Len(U$)) / 2
+        Print U$
+        I$ = GetKeyPress$
+    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+    Color 15, 0
+
+    If UCase$(I$) = "Y" Then
+
+        Call MenuBox(6, 8, 61, 1, 15, 1)
+
+        Do
+
+            Locate 7
+            U$ = "ARE YOU SURE? (Y/N)"
+            Locate , (80 - Len(U$)) / 2
+            Print U$
+            I$ = GetKeyPress$
+
+        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        Color 15, 0
+
+        If UCase$(I$) = "Y" Then
+            Kill diskPaths$(1) + statFile$
+            Kill diskPaths$(1) + statFile$ + "S"
+            If _FileExists(diskPaths$(1) + statFile$ + "R") Then Kill diskPaths$(1) + statFile$ + "R"
+        End If
+
+        'Loop Until UCase$(I$) = "N"
+
+    End If 'Done checking if reset stats
+
+End Sub
+
+
 '$Include: 'MERGE.BAS'
 '$Include: 'NEWLDR.BAS'
 '$Include: 'REC.BAS'
-'$Include: 'SCHEDULE.BAS'
+'Include: 'SCHEDULE.BAS'
+
+
+'----------------------------------------
+'          SCHEDULE Subroutine
+'----------------------------------------
+'This subroutine gives the user several
+'options for interfacing with the Scheduler
+'and also user boxscores generated by
+'auto-played games
+Sub SCHEDULE ()
+
+    Dim scheduleFile$
+    ReDim menuChoices$(1 To 8)
+
+    Shared NS%
+
+    Shared scheduleAP%(), scheduleNG%()
+
+    _Title "3-in-1 Football - Scheduler"
+
+    'For I = 1 To 1500
+    '    scheduleNG%(I, 13) = 0
+    'Next
+
+    Do
+
+        Color 7, 0
+        Cls
+
+        Call TITLE_SCHEDULER
+
+        menuChoices$(1) = "ENTER A NEW SCHEDULE              "
+        menuChoices$(2) = "PLAY / EDIT AN EXISTING SCHEDULE  "
+        menuChoices$(3) = "EXTRACT TEAM SCHEDULE             "
+        menuChoices$(4) = "EXTRACT CONFERENCE SCHEDULE       "
+        menuChoices$(5) = "CHANGE TEAM CONTROL FOR A SCHEDULE"
+        menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE "
+        menuChoices$(7) = "BOXSCORE MAINTENANCE / PARAMETERS "
+        menuChoices$(8) = "RETURN TO 3 IN 1 FB MENU          "
+        SELECTION% = 1
+        Count% = 8
+        Start% = 1
+        ExitCode% = 8
+        FileFGColor = 15: FileBGColor = 1
+        HiLiteFGColor% = 0: HiLiteBGColor% = 7
+        Spacing% = 1
+        Row% = 8
+        menuWidth% = Len(menuChoices$(1))
+        Column% = (80 - menuWidth% - 2) / 2
+
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
+
+        _MouseShow "DEFAULT"
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        _MouseHide
+
+        Color , 0
+
+        If ExitCode% <> 27 Then
+
+            'Assign full array sizes for schedule games
+            ReDim homeScores(MAX_SCHEDULE_GAMES)
+            ReDim visitorScores(MAX_SCHEDULE_GAMES)
+            ReDim scheduleH$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleV$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
+
+            scheduleNG%(0, 2) = 1
+            scheduleNG%(0, 3) = 1
+            scheduleNG%(0, 7) = 11
+            scheduleNG%(0, 10) = 3
+            scheduleNG%(0, 11) = 8
+            scheduleNG%(0, 14) = 1
+            scheduleNG%(0, 19) = 3
+            scheduleNG%(0, 20) = 3
+
+            Select Case SELECTION%
+
+                Case 1:
+                    'number of games in schedule
+                    scheduleAP%(0) = 0
+                    NS% = 0
+
+                    scheduleFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
+
+                    If scheduleFile$ <> "" Then
+                        Call NewSchedule(scheduleFile$)
+                    End If
+
+                Case 2 To 6:
+
+                    Do
+
+                        'Have the user pick a schedule
+                        scheduleFile$ = ChooseFile$(diskPaths$(3) + "*.SCD", "SCHEDULE", FileExit%)
+
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+
+                            Call LoadScheduleInfo(scheduleFile$)
+
+                            Cls
+
+                            'Extract / Change / Global
+                            If SELECTION% >= 3 And SELECTION% <= 6 Then
+                                Call ExtractSchedule(SELECTION%, scheduleFile$)
+                                If SELECTION% >= 4 Then Call SaveScheduleFile(scheduleFile$)
+                            Else
+                                'Retrieve / Edit / Play Schedule
+                                Color 15, 0
+                                Call NewSchedule(scheduleFile$)
+                            End If
+
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
+
+                Case 7:
+                    Call BoxscoreMaintenance
+
+                Case 8:
+                    Cls
+
+            End Select
+
+        End If
+
+    Loop Until SELECTION% = 8 Or ExitCode% = 27
+
+    'Free up memory for rest of program
+    ReDim homeScores(1)
+    ReDim visitorScores(1)
+    ReDim scheduleH$(1)
+    ReDim scheduleV$(1)
+
+End Sub
+
+
+'----------------------------------------
+'       NewSchedule SubRoutine
+'----------------------------------------
+'This subroutine facilitates the user
+'creation of a schedule. It provides all
+'options required and displays the schedule
+'while editing
+Sub NewSchedule (scheduleFile$)
+
+    Shared BS%, NS%
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_V$(), scheduleQB_H$()
+    Shared scheduleYN$()
+
+    Shared modeAbbrev$()
+    Shared qbName$()
+
+    qbName$(4) = "RANDOM"
+
+    modeAbbrev$(0) = "HH"
+    modeAbbrev$(1) = "C1"
+    modeAbbrev$(2) = "C2"
+    modeAbbrev$(3) = "CC"
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Locate 23, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 23, 1
+        Color 13: Print "HF";
+        Color 14: Print "-HOME FIELD ADV  ";
+        Color 13: Print "MA";
+        Color 14: Print "-MODE OF PLAY  ";
+        Color 11: Print " G";
+        Color 14: Print "-GOTO GAME";
+        Color 11: Print " B";
+        Color 14: Print "-BOXSCORE OPTIONS"
+
+        Locate 24, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 24, 1
+        Color 11: Print "C";
+        Color 14: Print "-SAVE AND CONTINUE  ";
+        Color 11: Print "A";
+        Color 14: Print "-ADD A GAME  ";
+        Color 11: Print "D";
+        Color 14: Print "-DELETE A GAME  ";
+        Color 11: Print "E";
+        Color 14: Print "-EDIT A GAME  ";
+        Color 11: Print "PGUP  PGDN";
+
+        Locate 25, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 25, 1
+        Color 11: Print "S";
+        Color 14: Print "-SORT GAMES  ";
+        Color 11: Print "P";
+        Color 14: Print "-PLAY GAMES   ";
+        Color 11: Print "X";
+        Color 14: Print "-SAVE AND EXIT  ";
+        Color 11: Print "Q";
+        Color 14: Print "-QUIT  ";
+        Color 11: Print "R";
+        Color 14: Print "-RESET SCORES";
+
+        Locate 1, 1: Print Tab(80); " ";
+        Locate 1, 1: Print scheduleFile$
+        Locate 1, 33
+
+        Color 14: Print "AUTO SCHEDULER"
+
+        Color 15, 0
+
+        Locate 2, 1
+        Color 14
+        Print "GAME  DATE      TIME    VISITING TEAM        HOME TEAM            MA  HF"
+        Color 15
+
+        'Show 20 schedule entries on the screen at once
+        For X = 1 To 20
+
+            Locate X + 2, 1
+
+            If X + NS% * 20 <= scheduleAP%(0) Then
+
+                T1 = scheduleNG%(X + NS% * 20, 0)
+                YN$ = scheduleYN$(X + NS% * 20, 0)
+                Call ReadTeam(YN$, team$, T1)
+                Call ReadExtraData(YN$, T1, validData)
+                x$ = YN$
+                y$ = team$
+                z = T1
+
+                If validData = 1 Then
+
+                    scheduleV$(X + NS% * 20) = team$
+                    scheduleQB_V$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 5))
+
+                    T1 = scheduleNG%(X + NS% * 20, 1)
+                    YN$ = scheduleYN$(X + NS% * 20, 1)
+                    Call ReadTeam(YN$, team$, T1)
+                    Call ReadExtraData(YN$, T1, validData)
+
+                    If validData = 1 Then
+
+                        scheduleH$(X + NS% * 20) = team$
+                        scheduleQB_H$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 8))
+
+                        'Game number
+                        Print Using "####  "; X + NS% * 20;
+
+                        'Date
+                        Print Using "##/##/##"; scheduleNG%(X + NS% * 20, 17); scheduleNG%(X + NS% * 20, 16); scheduleNG%(X + NS% * 20, 18);
+
+                        'Time
+                        Locate , 17
+                        I$ = "A"
+                        HR% = scheduleNG%(X + NS% * 20, 15) / 100
+                        MIN% = scheduleNG%(X + NS% * 20, 15) - HR% * 100
+
+                        If HR% = 12 Then I$ = "P"
+                        If HR% > 12 Then HR% = HR% - 12: I$ = "P"
+
+                        leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
+
+                        If MIN% < 10 Then leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
+                        If MIN% >= 10 Then leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
+
+                        'Time
+                        leagLdrTeams$ = leagLdrTeams$ + I$
+                        Print leagLdrTeams$;
+
+                        'Visiting Team
+                        Locate , 25: Print scheduleV$(X + NS% * 20); " ";
+                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; visitorScores(X + NS% * 20);
+
+                        'Home Team
+                        Locate , 46: Print scheduleH$(X + NS% * 20); " ";
+                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; homeScores(X + NS% * 20);
+
+                        'Mode of Play
+                        Locate , 67: Print modeAbbrev$(scheduleNG%(X + NS% * 20, 10));
+
+                        'Home Field
+                        Locate , 72: If scheduleNG%(X + NS% * 20, 2) = 1 Then Print "Y" Else Print "N"
+
+                    End If
+
+                End If
+
+                If validData = 0 Then
+                    'Invalid team file
+                    Locate 9,
+                    Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA. CHECK THE TEAM FILE FOR ANY ERRORS... PRESS ANY KEY AND TRY ANOTHER SCHEDULE", 40, PASS)
+                    K$ = GetKeyPress$
+                    Call CSMsgBox("", 0, PASS)
+                    Exit Sub
+                End If
+
+            End If
+
+        Next
+
+        I$ = GetKeyPress$
+
+        Select Case UCase$(I$)
+
+            Case "A":
+                ' *** ADD A GAME TO THE SCHEDULE ***
+                V$ = ""
+                H$ = ""
+                QV$ = ""
+                QH$ = ""
+
+                'number of games in schedule
+                scheduleAP%(0) = scheduleAP%(0) + 1
+                targetGame% = scheduleAP%(0)
+
+                BS% = Int((targetGame% - 1) / 20)
+                If NS% < BS% Then NS% = BS%
+
+                For X = 0 To 20
+                    If X <> 13 Then
+                        scheduleNG%(targetGame%, X) = scheduleNG%(targetGame% - 1, X)
+                    End If
+                Next
+
+                For X = 0 To 1:
+                    scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
+                Next
+
+                DT$ = "10-01-91"
+                leagLdrTeams$ = "07:30P"
+                Call NewGame(V$, QV$, H$, QH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
+
+            Case "E":
+                Call EditGame(DT$, leagLdrTeams$)
+
+            Case "B":
+                Do
+                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+                NS% = Int((targetGame% - 1) / 20)
+
+                'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+
+                Call EditBoxscore(boxName$)
+                Color 15, 0
+
+            Case "D":
+                ' *** DELETE A GAME FROM THE SCHEDULE ***
+                Do
+                    Locate 24, 1: Input "ENTER GAME # TO DELETE "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
+                For X = targetGame% To scheduleAP%(0) - 1
+                    For X1 = 0 To 20
+                        scheduleNG%(X, X1) = scheduleNG%(X + 1, X1)
+                    Next
+
+                    visitorScores(X) = visitorScores(X + 1)
+                    homeScores(X) = homeScores(X + 1)
+
+                    For X1 = 0 To 1
+                        scheduleYN$(X, X1) = scheduleYN$(X + 1, X1)
+                    Next
+                Next
+
+                scheduleAP%(0) = scheduleAP%(0) - 1
+                BS% = Int((scheduleAP%(0) - 1) / 20)
+                If NS% > BS% Then NS% = BS%
+
+            Case "G":
+                'GOTO A SPECIFIC PAGE
+                Do
+                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
+                NS% = Int((targetGame% - 1) / 20)
+
+            Case "S":
+                Call SortSchedule
+
+            Case "C", "X":
+                Call SaveScheduleFile(scheduleFile$)
+
+            Case "Q", Chr$(27): '
+
+            Case "P":
+                Call SaveScheduleFile(scheduleFile$)
+
+                ' *** PLAY GAMES ***
+                Color , 0
+                Cls
+
+                Call MenuBox(6, 8, 61, 8, 15, 4)
+
+                Do
+
+                    Locate 8, 12: Print "TOTAL GAMES ="; scheduleAP%(0)
+                    Locate 9, 12: Print "SELECT GAME # TO START AND END WITH": Print
+                    Locate 10, 12: Input "ENTER START GAME #: "; startGame: Print
+                    Locate 11, 12: Input "ENTER END GAME #:"; endGame: Print
+
+                    Do
+                        Locate 13, 12: Print "ANY CHANGE? (Y/N)"
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "N" Or UCase$(I$) = "Y"
+
+                Loop Until UCase$(I$) = "N"
+
+                If startGame <= 0 Then startGame = 1
+                If endGame > scheduleAP%(0) Then endGame = scheduleAP%(0)
+
+                Open "GAME82" For Output As #1
+
+                Print #1, scheduleFile$ + ".SCD"
+                Print #1, startGame 'Start Game
+                Print #1, endGame 'End Game
+                Print #1, 0
+
+                Close #1
+
+                For I = 1 To scheduleAP%(0)
+                    HR% = Int(scheduleNG%(I, 15) / 100)
+                    MIN% = scheduleNG%(I, 15) - HR% * 100
+                    TM% = HR% * 60 + MIN%
+                    scheduleNG%(I, 12) = Int(TM% / 30) - 18
+                Next
+
+                Open "TICKER" For Output As #2
+
+                For I = 1 To 32:
+                    For I1 = 0 To 1:
+                        For I2 = 1 To 14
+                            Print #2, -1
+                        Next
+                    Next
+                Next
+
+                For I = 1 To 32:
+                    For I1 = 0 To 1:
+                        Print #2, "XXX"
+                    Next
+                Next
+
+                For I = startGame To startGame + 31
+                    Print #2, scheduleNG%(I, 12)
+                Next
+
+                Close #2
+
+                'Free up used memory so games can load faster
+                ReDim scheduleNG%(1, 20)
+                ReDim scheduleYN$(1, 1)
+                ReDim homeScores(1)
+                ReDim visitorScores(1)
+                ReDim scheduleH$(1)
+                ReDim scheduleV$(1)
+                ReDim scheduleQB_V$(1)
+                ReDim scheduleQB_H$(1)
+
+                Call FOOTBALL
+
+                'Restore memory so we can populate again
+                ReDim scheduleNG%(MAX_SCHEDULE_GAMES, 20)
+                ReDim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
+                ReDim homeScores(MAX_SCHEDULE_GAMES)
+                ReDim visitorScores(MAX_SCHEDULE_GAMES)
+                ReDim scheduleH$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleV$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
+
+                Call LoadScheduleInfo(scheduleFile$)
+
+            Case "R":
+                ' *** RESET GAMES ***
+                For I = 1 To scheduleAP%(0)
+                    scheduleNG%(I, 13) = 0
+                Next
+
+            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(73)
+                ' *** PAGE DOWN | RIGHT ARROW ***
+                If NS% >= BS% Then
+                    NS% = BS%
+                Else
+                    NS% = NS% + 1
+                End If
+
+            Case Chr$(0) + Chr$(73), Chr$(0) + Chr$(75)
+                ' *** PAGE UP | LEFT ARROW ***
+                If NS% <> 0 Then
+                    NS% = NS% - 1
+                End If
+
+        End Select
+
+    Loop Until UCase$(I$) = "Q" Or UCase$(I$) = "X"
+
+End Sub
+
+
+'----------------------------------------
+'          EditGame SubRoutine
+'----------------------------------------
+'This subroutine gives the user an inter-
+'face for choosing games to edit, then
+'calls the NewGame routine to essentially
+'display the existing parameters and allow
+'them to be modified
+Sub EditGame (DT$, leagLdrTeams$)
+
+    Shared scheduleAP%()
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_H$(), scheduleQB_V$()
+    Shared scheduleYN$()
+    Shared scheduleNG%()
+
+    ' *** EDIT A GAME ***
+    Do
+        Locate 23, 1: Print "ENTER GAME # TO EDIT        "
+        Locate 23, 1: Input "ENTER GAME # TO EDIT "; targetGame%
+    Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
+    V$ = scheduleV$(targetGame%)
+    H$ = scheduleH$(targetGame%)
+    YN$ = scheduleYN$(targetGame%, 0)
+    QV$ = scheduleQB_V$(targetGame%)
+    QH$ = scheduleQB_H$(targetGame%)
+
+    HR% = Int(scheduleNG%(targetGame%, 15) / 100)
+    MIN% = scheduleNG%(targetGame%, 15) - HR% * 100
+
+    If HR% >= 12 Then
+        I$ = "P"
+        If HR% > 12 Then HR% = HR% - 12
+    Else
+        I$ = "A"
+    End If
+
+    leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
+
+    If MIN% < 10 Then
+        leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
+    Else
+        leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
+    End If
+
+    leagLdrTeams$ = leagLdrTeams$ + I$
+    DT$ = Right$(Str$(scheduleNG%(targetGame%, 17)), 2) + "/"
+    DYMO% = Val(Right$(Str$(scheduleNG%(targetGame%, 16)), 2))
+
+    If DYMO% < 10 Then
+        DYMO$ = "0" + Right$(Str$(scheduleNG%(targetGame%, 16)), 1)
+    Else
+        DYMO$ = Right$(Str$(scheduleNG%(targetGame%, 16)), 2)
+    End If
+
+    DT$ = DT$ + DYMO$ + "/" + Right$(Str$(scheduleNG%(targetGame%, 18)), 2)
+
+    Call NewGame(V$, QBV$, H$, QBH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
+
+End Sub
+
+'----------------------------------------
+'           NewGame SubRoutine
+'----------------------------------------
+'This subroutine gives the user an interface
+'for editing and choosing options for the
+'specified game in the schedule
+Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS, gameIndex%)
+
+    Shared scheduleNG%(), teamRatings%()
+
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_V$(), scheduleQB_H$()
+    Shared scheduleYN$()
+
+    Shared location$(), modeAbbrev$(), overtime$()
+    Shared playMode$(), qbName$()
+    Shared rulesType$(), ruleYrPro$(), ruleYrColl$()
+    Shared weather$(), windSetting$(), yesNoText$()
+
+    Dim displayPause!
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
+
+    qbName$(4) = "RANDOM"
+
+    Do
+
+        ' ** Enter New Game **
+        Color 15, 0
+        Cls
+
+        Color 2
+        Print Tab(29); "SELECT OPENING OPTIONS"
+
+        Locate 2, 2: Color 14
+        Print "(1) ";
+        Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
+        Locate 3, 2: Color 14
+        Print "(2) ";
+        Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
+        Locate 4, 2: Color 14
+        Print "(3) ";
+        Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
+        Locate 5, 2: Color 14
+        Print "(4) ";
+        Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$
+        Locate 6, 2: Color 14
+        Print "(5) ";
+        Color 15: Print "GAME TIME (XX:XXP)    "; leagLdrTeams$
+        Locate 7, 2: Color 14
+        Print "(6) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
+        Locate 8, 2: Color 14
+        Print "(7) ";
+        Color 15: Print "GAME LOCATION: "; location$(scheduleNG%(gameIndex%, 2))
+        Locate 9, 2: Color 14
+        Print "(8) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
+        Locate 10, 2: Color 14
+        Print "(9) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
+        Locate 11, 2: Color 14
+        Print "(A) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
+        Locate 12, 2: Color 14
+        Print "(B) ";
+        Color 15: Print "OVERTIME: "; overtime$(scheduleNG%(gameIndex%, 14))
+        Locate 13, 2: Color 14
+        Print "(C) ";
+        Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
+        Locate 14, 2: Color 14
+        Print "(D) ";
+        Color 15: Print "WEATHER: "; weather$(scheduleNG%(gameIndex%, 20))
+        Locate 16, 2: Color 14
+        Print "(0) ";
+        Color 15: Print "ACCEPT SETTINGS"
+
+        Locate 1, 1
+
+        Do
+
+            I$ = GetKeyPress$
+
+            Call LetterToNumber(I$, setting)
+
+            Select Case setting
+
+                Case 1:
+                    scheduleNG%(gameIndex%, 10) = scheduleNG%(gameIndex%, 10) + 1
+                    If scheduleNG%(gameIndex%, 10) > 3 Then scheduleNG%(gameIndex%, 10) = 0
+
+                Case 2, 3:
+
+                    teamNbr = 0
+                    Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+
+                    If teamNbr <> 0 Then
+
+                        Color 15, 0
+                        scheduleNG%(gameIndex%, setting - 2) = teamNbr
+                        scheduleYN$(gameIndex%, setting - 2) = YN$
+
+                        If setting = 2 Then
+                            visitor$ = team$
+                            scheduleV$(gameIndex%) = team$
+                            visitorQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_V$(gameIndex%) = visitorQB$
+                        End If
+
+                        If setting = 3 Then
+                            home$ = team$
+                            scheduleH$(gameIndex%) = team$
+                            homeQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_H$(gameIndex%) = homeQB$
+                        End If
+
+                    End If
+
+                Case 4:
+                    Locate 5, 26: Input DT$
+
+                Case 5:
+                    Locate 6, 26: Print "        "
+                    Locate 6, 26: Input leagLdrTeams$
+
+                Case 6:
+                    Locate 7, 32: Input displayPause!
+                    scheduleNG%(gameIndex%, 4) = displayPause! * 10
+
+                Case 7:
+                    'N = 1 - (scheduleNG%(gameIndex%, 2))
+                    'scheduleNG%(gameIndex%, 2) = N
+                    N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
+                    scheduleNG%(gameIndex%, 2) = N + 1
+
+                Case 8:
+                    scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
+                    If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
+
+                Case 9:
+                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
+                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
+
+                Case 10:
+                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
+                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
+
+                Case 11:
+                    scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
+                    If scheduleNG%(gameIndex%, 14) > 3 Then scheduleNG%(gameIndex%, 14) = 0
+
+                Case 12:
+                    scheduleNG%(gameIndex%, 19) = scheduleNG%(gameIndex%, 19) + 1
+                    If scheduleNG%(gameIndex%, 19) > 3 Then scheduleNG%(gameIndex%, 19) = 0
+
+                Case 13:
+                    scheduleNG%(gameIndex%, 20) = scheduleNG%(gameIndex%, 20) + 1
+                    If scheduleNG%(gameIndex%, 20) > 3 Then scheduleNG%(gameIndex%, 20) = 0
+
+            End Select
+
+        Loop Until (setting >= 0 And setting <= 13)
+
+        If visitor$ <> "" And home$ <> "" And leagLdrTeams$ <> "" And DT$ <> "" Then
+
+            meridian$ = Right$(leagLdrTeams$, 1)
+            fullTime$ = Left$(leagLdrTeams$, Len(leagLdrTeams$) - 1)
+            MIN% = Val(Right$(fullTime$, 2))
+            hourString$ = Left$(fullTime$, Len(fullTime$) - 3)
+            HR% = Val(hourString$)
+
+            If UCase$(meridian$) = "P" And HR% < 12 Then
+                'If user typed in PM, we are storing as military time
+                'We don't check that military time may have been used
+                HR% = HR% + 12
+            End If
+
+            'Gane Time
+            scheduleNG%(gameIndex%, 15) = HR% * 100 + MIN%
+
+            'Month
+            scheduleNG%(gameIndex%, 17) = Val(Left$(DT$, 2))
+
+            'Day
+            scheduleNG%(gameIndex%, 16) = Val(Mid$((DT$), 4, 2))
+
+            'Year
+            scheduleNG%(gameIndex%, 18) = Val(Mid$((DT$), 7, 2))
+
+        End If
+
+    Loop Until setting = 0
+
+End Sub
+
+'----------------------------------------
+'       ExtractSchedule SubRoutine
+'----------------------------------------
+'This is the core subroutine to leverage
+'when mass changes are needing to be made
+'to a schedule. It essentially reads in
+'the existing schedule parameters, prompts
+'the user for the appropriate changes, and
+'then writes the changes back to the orig-
+'inal schedule file.
+Sub ExtractSchedule (scheduleAction%, scheduleFile$)
+    'scheduleAction% = 3: EXTRACT TEAM'S SCHEDULE FROM LEAGUE SCHEDULE
+    'scheduleAction% = 4: EXTRACT CONFERENCE SCHEDULE
+    'scheduleAction% = 5: CHANGE THE MODE OF PLAY FOR A TEAM
+    'scheduleAction% = 6: MAKE GLOBAL CHANGES TO A SCHEDULE
+
+    'EXTRACT A SCHEDULE FROM ANOTHER
+    Dim displayPause!
+
+    Shared homeScores(), visitorScores()
+
+    Shared scheduleAP%()
+    Shared scheduleNG%(), teamRatings%()
+    Shared scheduleYN$()
+
+    Shared memberIdx()
+    Shared memberName$(), memberYear$()
+
+    Select Case scheduleAction%
+
+        Case 6
+            Call ChangeGlobalSettings
+            Call SaveScheduleFile(scheduleFile$)
+            Call NewSchedule(scheduleFile$)
+
+        Case 3, 4, 5
+
+            If scheduleAction% = 3 Or scheduleAction% = 4 Then
+                'Pick name of target file
+                subSchedFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
+            End If
+
+            If scheduleAction% = 4 And subSchedFile$ <> "" Then
+                'Pick conference to extract
+                conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+
+                If ExitCode% <> 27 And ExitCode% <> 0 Then
+
+                    Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #1
+
+                    Input #1, statType
+
+                    If statType = 0 Then
+
+                        Input #1, LG$
+                        Input #1, X$
+                        Input #1, X$
+
+                        For X = 1 To 30
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
+                        Next
+
+                        numberTeams = 30
+
+                        Close #1
+
+                    End If
+
+                    If statType = 1 Then
+
+                        Input #1, LG$
+
+                        For X = 1 To 30:
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
+                        Next
+
+                        numberTeams = 30
+
+                        Close #1
+
+                    End If
+
+                    For I = 1 To scheduleAP%(0)
+
+                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+
+                        For I1 = 1 To numberTeams
+
+                            If memberName$(I1) <> "XXX" Then
+
+                                If memberIdx(I1) = scheduleNG%(I, 0) And memberYear$(I1) = scheduleYN$(I, 0) Or memberIdx(I1) = scheduleNG%(I, 1) And memberYear$(I1) = scheduleYN$(I, 1) Then
+
+                                    Print
+                                    Print "FOUND A MATCH"
+
+                                    Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
+
+                                    fileLength& = LOF(2)
+                                    numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                    For X = 0 To 20
+                                        Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                    Next
+
+                                    Field #2, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+                                    For X = 0 To 20:
+                                        LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+                                    Next
+
+                                    For X = 0 To 1:
+                                        LSet Q$(22 + X) = scheduleYN$(I, X)
+                                    Next
+
+                                    LSet Q$(24) = MKI$(visitorScores(I))
+                                    LSet Q$(25) = MKI$(homeScores(I))
+
+                                    Put #2, numberGames + 1
+
+                                    Close #2
+
+                                    Exit For
+
+                                End If
+
+                            End If 'Done checking for "XXX"
+
+                        Next I1
+
+                    Next I
+
+                End If 'Done checking COUNT
+
+            Else
+
+                If (scheduleAction% = 3 And subSchedFile$ = "") Then
+                    'If user cancelled from name entry
+                    teamNbr = 0
+                Else
+                    teamNbr = 0
+                    Call ChooseTeam(YN$, numberTeams, teamNbr, teamName$)
+                End If
+
+                If teamNbr <> 0 Then
+
+                    Color 15, 0
+                    Cls
+
+                    'Change mode of play
+                    If scheduleAction% = 5 Then
+
+                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color 15, 0
+                        Print " IS TO BE:"
+                        Print
+                        Color 12
+                        Print "(0)";
+                        Color 15
+                        Print " MANUALLY CONTROLLED"
+                        Print
+                        Color 12
+                        Print "(1)";
+                        Color 15
+                        Print " COMPUTER CONTROLLED"
+
+                        Do
+                            C$ = GetKeyPress$
+                            I1 = Val(C$)
+                        Loop Until C$ = "0" Or C$ = "1"
+
+                        Print
+                        Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
+
+                    End If
+
+                    For I = 1 To scheduleAP%(0)
+
+                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+
+                        If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
+
+                            'CHANGE SETTINGS FOR A TEAM
+                            If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Then
+                                scheduleNG%(I, 10) = 2
+                            End If
+
+                            If teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
+                                scheduleNG%(I, 10) = 1
+                            End If
+
+                            If (teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1)) And I1 = 1 And scheduleAction% = 5 Then
+                                scheduleNG%(I, 10) = 3
+                            End If
+
+                            scheduleNG%(I, 4) = displayPause! * 10
+
+                            'Extract only
+                            If Not (scheduleAction% = 5) Then
+
+                                Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
+                                fileLength& = LOF(3)
+                                totalGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                'Write matching games
+                                Locate 1, 1: Print totalGames + 1; " MATCHES"
+
+                                For X = 0 To 20
+                                    Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                Next
+
+                                Field #3, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+                                For X = 0 To 20:
+                                    LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+                                Next
+
+                                For X = 0 To 1:
+                                    LSet Q$(22 + X) = scheduleYN$(I, X)
+                                Next
+
+                                LSet Q$(24) = MKI$(visitorScores(I))
+                                LSet Q$(25) = MKI$(homeScores(I))
+
+                                Put #3, totalGames + 1
+
+                                Close #3
+
+                            End If 'Done checking schedule action
+
+                        End If 'Done checking for matches
+
+                    Next 'Done looping through games
+
+                End If
+
+            End If
+
+    End Select
+
+End Sub
+
+
+'----------------------------------------
+'       EditParameters SubRoutine
+'----------------------------------------
+'This subroutine gives the user an inter-
+'face for editing the parameters by which
+'"Special" boxscores are created / saved.
+Sub EditParameters ()
+
+    Shared eventSettings()
+
+    'Read in existing parameters if there are any
+    If _FileExists("EVENTS.BOX") Then
+
+        Open "EVENTS.BOX" For Input As #1
+
+        For X = 1 To 13
+            Input #1, eventSettings(X)
+        Next
+
+        Close #1
+
+    End If
+
+    Cls
+    Color 14
+
+    Print "PARAMETERS FOR SAVING SPECIAL EVENTS BOXSCORES"
+
+    Color 15
+
+    Print " 1. IF QUARTERS ARE OVER "; eventSettings(1)
+    Print " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
+    Print " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
+    Print " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
+    Print " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
+    Print " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
+    Print " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
+    Print " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
+    Print " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
+    Print "10. KICKER'S FGM MORE THAN "; eventSettings(10)
+
+    C1 = 1
+
+    Do
+
+        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
+        Input B9
+
+        Select Case B9
+
+            Case 1: Locate 2: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
+            Case 2: Locate 3: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
+            Case 3: Locate 4: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
+            Case 4: Locate 5: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
+            Case 5: Locate 6: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
+            Case 6: Locate 7: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
+            Case 7: Locate 8: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
+            Case 8: Locate 9: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
+            Case 9: Locate 10: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
+            Case 10: Locate 11: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
+
+        End Select
+
+    Loop Until B9 = 0 'ENTER also counts as 0
+
+    'Save all changes
+    Open "EVENTS.BOX" For Output As #2
+
+    For X = 1 To 13
+        Print #2, eventSettings(X)
+    Next
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
+'    BoxscoreMaintenance SubRoutine
+'----------------------------------------
+'This subroutine gives the user a menu
+'for several of the options available to
+'manage and maintain boxscores.
+Sub BoxscoreMaintenance ()
+
+    ReDim menuChoices$(1 To 6)
+
+    menuChoices$(1) = "SET PARAMETERS TO SAVE SPECIAL EVENTS BOXSCORES  "
+    menuChoices$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
+    menuChoices$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "
+    menuChoices$(4) = "DELETE ALL USER SAVED, & SPECIAL BOXSCORES       "
+    menuChoices$(5) = "DELETE ALL BOXSCORES (SCHEDULE, USER, &  SPECIAL)"
+    menuChoices$(6) = "RETURN TO MAIN AUTO SCHEDULER MENU               "
+    SELECTION% = 1
+    Count% = 6
+    Start% = 1
+    ExitCode% = 6
+    FileFGColor = 15: FileBGColor = 1
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
+    Spacing% = 1
+    Row% = 8
+    menuWidth% = Len(menuChoices$(1))
+    Column% = (80 - menuWidth% - 2) / 2
+
+    Do
+
+        Color 15, 0
+
+        Call TITLE_SCHEDULER
+
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
+
+        _MouseShow "DEFAULT"
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        _MouseHide
+
+        If ExitCode% <> 27 Then
+
+            Select Case SELECTION%
+
+                Case 1:
+                    Call EditParameters
+
+                Case 2:
+                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
+
+                    If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
+                        boxName$ = diskPaths$(1) + boxscoreFile$
+                        Call EditBoxscore(boxName$ + ".BSS")
+                        'Call EditBoxscore(boxName$ + ".SPC")
+                    End If
+
+                Case 3
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                Case 4
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                Case 5:
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+            End Select
+
+        End If
+
+    Loop Until SELECTION% = 6 Or ExitCode% = 27
+
+End Sub
+
+
+'----------------------------------------
+'       SaveScheduleFile SubRoutine
+'----------------------------------------
+'This subroutine writes all scheduled data,
+'as stored in the relevant arrays, back to
+'the target schedule file.
+Sub SaveScheduleFile (saveFile$)
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
+
+    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        For X = 0 To 20:
+            LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+        Next
+
+        For X = 0 To 1:
+            LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
+        Next
+
+        LSet Q$(24) = MKI$(visitorScores(I))
+        LSet Q$(25) = MKI$(homeScores(I))
+
+        Put #1, I
+
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       SortSchedule SubRoutine
+'----------------------------------------
+'This subroutine is used to automatically
+'sort all games in the schedule by their
+'date / time.
+Sub SortSchedule ()
+
+    Dim schedDates&(MAX_SCHEDULE_GAMES)
+    Dim D&, M&, Y&
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    For I = 1 To scheduleAP%(0)
+        HR% = Int(scheduleNG%(I, 15) / 100)
+        MIN% = scheduleNG%(I, 15) - HR% * 100
+        TM% = HR% * 60 + MIN%
+        scheduleNG%(I, 12) = Int(TM% / 30 - 18)
+        D& = (scheduleNG%(I, 18) - 1)
+        D& = D& * 365
+        M& = (scheduleNG%(I, 17) - 1)
+        M& = M& * 31
+        Y& = scheduleNG%(I, 16)
+        schedDates&(I) = (D& + M& + Y&) * 24 * 60 + TM%
+    Next
+
+    For Z = 1 To scheduleAP%(0) - 1
+
+        For Z1 = Z + 1 To scheduleAP%(0)
+
+            Locate 1, 1: Print Z, Z1
+
+            If scheduleNG%(Z, 12) > scheduleNG%(Z1, 12) Then
+
+                For I = 0 To 20:
+                    Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
+                Next
+
+                For I = 0 To 1:
+                    Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
+                Next
+
+                Swap schedDates&(Z), schedDates&(Z1)
+                Swap visitorScores(Z), visitorScores(Z1)
+                Swap homeScores(Z), homeScores(Z1)
+
+            End If
+
+        Next Z1
+
+    Next Z
+
+    For Z = 1 To scheduleAP%(0) - 1
+
+        For Z1 = Z + 1 To scheduleAP%(0)
+
+            If schedDates&(Z) > schedDates&(Z1) Then
+
+                For I = 0 To 20:
+                    Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
+                Next
+
+                For I = 0 To 1:
+                    Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
+                Next
+
+                Swap schedDates&(Z), schedDates&(Z1)
+                Swap visitorScores(Z), visitorScores(Z1)
+                Swap homeScores(Z), homeScores(Z1)
+
+            End If
+
+        Next Z1
+
+    Next Z
+
+End Sub
+
+
+'----------------------------------------
+'    ChangeGlobalSettings SubRoutine
+'----------------------------------------
+'This subroutine presents the end user a
+'variety of game options that can be changed
+'or applied to all games in the schedule file.
+'These would be game-specific options, as
+'opposed to teams / dates / times.
+Sub ChangeGlobalSettings ()
+
+    Shared scheduleAP%(), scheduleNG%()
+
+    Shared modeAbbrev$()
+    Shared qbName$(), scheduleYN$()
+
+    Shared location$(), overtime$(), playMode$()
+    Shared rulesType$(), ruleYrColl$(), ruleYrPro$()
+    Shared windSetting$(), weather$()
+
+    Dim displayPause!
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
+
+    ' GLOBAL SETTINGS FOR A SCHEDULE
+    ' The code below would use default values based on the most recent rules
+    'ruleOptType = 1
+    'ruleOptColl = 11
+    'ruleOptPro = 8
+    'overtimeOpt = 1
+    'windOpt = 3
+    'weatherOpt = 3
+
+    'QB selections
+    qbName$(4) = "RANDOM"
+
+    'This code will assign defaults based on the first game in the schedule.
+    'Usually when I want to change global settings, I want to keep most
+    'settings in the schedule the same.
+    playerOpt = scheduleNG%(1, 10)
+    gameLoc = scheduleNG%(1, 2)
+    ruleOptType = scheduleNG%(1, 3)
+    ruleOptPro = scheduleNG%(1, 11)
+    ruleOptColl = scheduleNG%(1, 7)
+    overtimeOpt = scheduleNG%(1, 14)
+    displayPause! = scheduleNG%(1, 4) / 10
+    windOpt = scheduleNG%(1, 19)
+    weatherOpt = scheduleNG%(1, 20)
+
+    DT$ = "09-01-23"
+    leagLdrTeams$ = "07:30P"
+
+    Do
+        Color 15, 0
+        Cls
+        Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
+
+        Locate 3, 2: Color 14: Print "(1) ";
+        Color 15: Print "GAME PLAY: "; playMode$(playerOpt)
+        Locate 5, 2: Color 14: Print "(2) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
+        Locate 6, 2: Color 14: Print "(3) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
+        Locate 7, 2: Color 14: Print "(4) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
+        Locate 8, 2: Color 14: Print "(5) ";
+        Color 15: Print "OVERTIME: "; overtime$(overtimeOpt)
+        Locate 9, 2: Color 14: Print "(6) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
+        Locate 10, 2: Color 14: Print "(7) ";
+        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
+        Locate 11, 2: Color 14: Print "(8) ";
+        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
+
+        Locate 13, 2: Color 14: Print "(0) ";
+        Color 15: Print "ACCEPT GLOBAL SETTINGS"
+
+        Do
+
+            I$ = GetKeyPress$
+
+            Call LetterToNumber(I$, iVal)
+
+        Loop Until iVal >= 0 And iVal <= 10
+
+        Select Case iVal
+
+            Case 1:
+                playerOpt = playerOpt + 1
+                If playerOpt > 3 Then playerOpt = 0
+
+            Case 2:
+                ruleOptType = ruleOptType + 1
+                If ruleOptType > 5 Then ruleOptType = 0
+
+            Case 3:
+                ruleOptPro = ruleOptPro + 1
+                If ruleOptPro > 9 Then ruleOptPro = 0
+
+            Case 4:
+                ruleOptColl = ruleOptColl + 1
+                If ruleOptColl > 11 Then ruleOptColl = 0
+
+            Case 5:
+                overtimeOpt = overtimeOpt + 1
+                If overtimeOpt > 3 Then overtimeOpt = 0
+
+            Case 6:
+                Locate 9, 32: Input displayPause!
+                'Input "DISPLAY VARIABLE "; displayPause!
+
+            Case 7:
+                windOpt = windOpt + 1
+                If windOpt > 3 Then windOpt = 0
+
+            Case 8:
+                weatherOpt = weatherOpt + 1
+                If weatherOpt > 3 Then weatherOpt = 0
+
+        End Select
+
+    Loop Until iVal = 0
+
+    For I = 1 To scheduleAP%(0)
+        scheduleNG%(I, 2) = gameLoc
+        scheduleNG%(I, 3) = ruleOptType
+        scheduleNG%(I, 4) = displayPause! * 10
+        scheduleNG%(I, 7) = ruleOptColl
+        scheduleNG%(I, 10) = playerOpt
+        scheduleNG%(I, 11) = ruleOptPro
+        scheduleNG%(I, 14) = overtimeOpt
+        scheduleNG%(I, 19) = windOpt
+        scheduleNG%(I, 20) = weatherOpt
+    Next
+
+End Sub
+
+
+'----------------------------------------
+'       DeleteBoxscores Subroutine
+'----------------------------------------
+'This subroutine prompts for confirmation
+'of and proceeds to delete the specified
+'types of boxscores. This is called by
+'BoxScore maintenance routine.
+Sub DeleteBoxscores (fileChoice%, fileSpec$)
+
+    Spec$ = diskPaths$(0) + fileSpec$
+    Count% = FileCount%(Spec$)
+
+    If Count% = 0 Then
+
+        Select Case fileChoice%
+
+            Case 3:
+                MsgText$ = "NO BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
+
+            Case 4:
+                MsgText$ = "NO SPECIAL EVENTS BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
+
+            Case 5:
+                ' Exit Sub
+
+        End Select
+
+        BoxWidth = 24
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        ReDim boxFiles$(0 To Count%)
+
+        For X = 1 To Count%
+            boxFiles$(X) = Space$(12)
+        Next
+
+        boxFiles$(0) = fileSpec$
+        Call ReadFile(boxFiles$())
+
+        For X = 1 To Count%
+            Kill (diskPaths$(1) + boxFiles$(X))
+            Locate 12, 34: Print "DELETING "; boxFiles$(X)
+        Next
+
+        MsgText$ = "ALL BOXSCORE FILES HAVE BEEN DELETED. PRESS ANY KEY TO RETURN TO MAIN MENU"
+        BoxWidth = 20
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'      LoadScheduleInfo SubRoutine
+'----------------------------------------
+'This subroutine opens the target SCHEDULE
+'file and reads the data into corresponding
+'arrays for use in the scheduler
+Sub LoadScheduleInfo (targetFile$)
+
+    Shared BS%, NS%
+
+    Shared scheduleAP%(), scheduleNG%()
+    Shared homeScores(), visitorScores()
+    Shared scheduleYN$()
+
+    Open diskPaths$(3) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
+    fileLength& = LOF(1)
+    scheduleAP%(0) = fileLength& / SCHEDULE_SIZE_BYTES
+    BS% = Int((scheduleAP%(0) - 1) / 20)
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        Get #1, I
+
+        For X = 0 To 20:
+            scheduleNG%(I, X) = CVI(Q$(X + 1))
+        Next
+
+        For X = 0 To 1:
+            scheduleYN$(I, X) = RTrim$(Q$(22 + X))
+        Next
+
+        visitorScores(I) = CVI(Q$(24))
+        homeScores(I) = CVI(Q$(25))
+
+    Next
+
+    Close #1
+
+    NS% = 0
+
+End Sub
+
+
+'----------------------------------------
+'       EditBoxscore SubRoutine
+'----------------------------------------
+'This subroutine is designed to facilitate
+'the user's ability to edit, in-realtime,
+'a boxscore that has been previously created
+'by the game. It is essentially a DOS-based
+'text editing routine, which was written in
+'x86 asm. Therefore, the corresponding code
+'is no longer available or useful. It is
+'recommended that users simply edit their
+'boxscores in their favorite text editor.
+Sub EditBoxscore (boxName$)
+
+    If Not _FileExists(boxName$) Then
+
+        MsgText$ = "BOXSCORE DOES NOT EXIST PRESS ANY KEY TO RETURN TO MAIN MENU"
+        BoxWidth = 24
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        Call QBWRITE(boxName$)
+
+    End If
+
+End Sub
+
+
 '$Include: 'SEECON.BAS'
 '$Include: 'SEENATL.BAS'
 '$Include: 'SEELEAG.BAS'
@@ -1046,7 +5663,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open "pbplog" + Str$(currGame) For Append As #11
-        'Open "pbplog" For Append As #11
+        Open "pbplog" For Append As #11
         If Not _FileExists(diskPaths$(3) + scheduleFile$) Then
 
             'Notify user that game won't execute
@@ -1089,7 +5706,7 @@ Sub FOOTBALL ()
 
     Else
 
-        'Open "pbplog" For Append As #11
+        Open "pbplog" For Append As #11
 
     End If
 
@@ -1405,21 +6022,18 @@ Sub FOOTBALL ()
                 'Random # 45,000 - 55,000
                 actualAttendance& = Int(Rnd(1) * 10000) + 45000
             Else
-                'Use random # +/- 5,000 of team's average attendance
-                '-- real #'s reflect a wider range throughout the year,
-                '-- however many teams have their avg. attendance close
-                '-- to max capacity. Since we don't have max capacity
-                '-- available for now, we're less likely to go over if
-                '-- we don't go higher on our range.
-                actualAttendance& = avgAttendance& + Int(Rnd(1) * 10000) - 5000
+                'Average attendance +/ 5%
+                If ruleOptType = 0 Then
+                    'College attendance ranges 75% to 100% of max capacity
+                    margin = avgAttendance& * .12
+                Else
+                    'Pro attendance ranges 90% to 100% of max capacity
+                    margin = avgAttendance& * .05
+                End If
+                actualAttendance& = avgAttendance& + Int(Rnd(1) * margin * 2) - margin
 
-                'If original team's average attendance was less than 10,000,
-                'we could end up with a negative number. So let's use an
-                'arbitrary one instead.
-                'Random # from 500 - 700
-                ' ** I commented this out as it seems absurdly low.
-                ' ** Was it meant to entertain the idea of high school football???
-                'If actualAttendance& < 0 Then actualAttendance& = Int(Rnd(1) * 500) + 200
+                'Average attendance +/- 5,000
+                'actualAttendance& = avgAttendance& + Int(Rnd(1) * 10000) - 5000
             End If
 
         End If
@@ -1525,7 +6139,10 @@ Sub FOOTBALL ()
 
     Next currTeam
 
-    Call SETWEATHER
+    'Set weather for non-dome stadium
+    If teamRat_GAME(gameLoc, 3) <> 1 Then
+        Call SETWEATHER
+    End If
 
     '----------
     'Coin Toss
@@ -1643,6 +6260,7 @@ Sub FOOTBALL ()
     End If
 
     kickNotReturned = 0
+    Call pbplog(3964)
 
     Select Case kickChoice
 
@@ -1675,20 +6293,39 @@ Sub FOOTBALL ()
 
             End Select
 
-            If kickYL <= fairCatchLine Then fairCatchZone = 1
+            If kickYL <= fairCatchLine Then
+                fairCatchZone = 1
+                Call pbplog(3998)
+            End If
 
-            If ((ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11)) And fairCatchZone = 1 Then
+            If ((ruleOptType > 0 And ruleOptPro >= 8) Or (ruleOptType = 0 And ruleOptColl >= 11)) And fairCatchZone = 1 Then
+
                 'Newer rules - fair Catch Allowed
-
                 Call Rolld100(RN0)
 
-                If (ruleOptType = 0 And RN0 <= 12) Or (ruleOptTyp1 = 1 And RN0 <= 6) Then
-                    'Based on available date, fair catch was called:
-                    ' NCAA - about 12% of the time since 2018
-                    ' NFL - about 6% of the time in 2023
+                fcChance = 0
 
+                Select Case ruleOptType
+
+                    Case 0
+                        'College, 2018+
+                        If ruleOptColl >= 11 Then
+                            If teamYears(D) >= 2018 And teamYears <= 2020 Then
+                                fcChance = 27
+                            Else
+                                fcChance = 33
+                            End If
+                        End If
+
+                    Case Is >= 1
+                        'Pro, 2018+
+                        If ruleOptPro = 8 Then fcChance = 12
+                        If ruleOptPro = 9 Then fcChance = 18
+
+                End Select
+
+                If RN0 <= fcChance Then
                     fairCatch = 1
-
                 End If
 
             End If
@@ -1708,6 +6345,8 @@ Sub FOOTBALL ()
 
                 Call PBP
 
+                Call pbplog(4048)
+
                 'Touchback will auto-change possession
                 Call CHANGEPOSS
                 Call Touchback
@@ -1721,9 +6360,9 @@ Sub FOOTBALL ()
                     'Kicked out of endzone
                     'Automatic touchback
                     'Touchback will auto-change possession
+                    Call pbplog(4063)
                     Call CHANGEPOSS
                     Call Touchback
-                    'Print #11, "TOUCHBACK - Kickoff, Automatic"
                     kickNotReturned = 1
 
                 Else
@@ -1901,12 +6540,17 @@ Sub FOOTBALL ()
 
                     Call FUMBLE
 
-                    If ballFumbled = 1 Then Call FumblePBP: GoTo 650
+                    If ballFumbled = 1 Then 
+                        Call FumblePBP
+                        GoTo 650
+                    End If
 
                     Call AddPossessionTime(4, 7)
 
                     RN1 = Int(Rnd(1) * 1000) + 1
-                    If RN1 >= 960 - teamRat_GAME(P1, 0) Then Call CLIPPING
+                    If RN1 >= 960 - teamRat_GAME(P1, 0) Then 
+                        Call CLIPPING
+                    End If
 
                     Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
@@ -1920,7 +6564,10 @@ Sub FOOTBALL ()
             Call SQUIB
             Call FUMBLE
 
-            If ballFumbled = 1 Then Call FumblePBP: GoTo 650
+            If ballFumbled = 1 Then 
+                Call FumblePBP
+                GoTo 650
+            End If
 
             Call AddPossessionTime(4, 7)
 
@@ -2079,10 +6726,12 @@ Sub FOOTBALL ()
         For J = 1 To 0 Step -1:
             'Auto-determine target kicker, I1
             'If RN1 <= kickerPATPct(P1, J) Then I1 = J
-            If d100% <= kickerPATPct(P1, J) Then activeKicker(P1) = J
-
+            If d100% <= kickerPATPct(P1, J) Then
+                activeKicker(P1) = J
+            End If
         Next J
 
+        test = activeKicker(P1)
         gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) + 1
 
         pbpString$ = kicker$(P1, activeKicker(P1)) + " IS ON TO TRY THE EXTRA POINT"
@@ -2108,7 +6757,7 @@ Sub FOOTBALL ()
 
         Else
 
-            '-- 9% chance of blocked PAT
+            'PAT blocked (9% chance)
             If d100% <= 9 Then
 
                 pbpString$ = "KICK IS BLOCKED!!"
@@ -2132,15 +6781,12 @@ Sub FOOTBALL ()
     Return 'For PointsAfterTD "sub"
 
 
-
-
-
     '----- NOODLE -----
 
     650 '
     gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
-    If d100% <= 50 Then
+    If d100% <= 45 Then
 
         Call PBPINT
 
@@ -2203,7 +6849,10 @@ Sub FOOTBALL ()
 
         End If
 
-        If ydLine >= 90 Then ydsToFirst = 100 - ydLine
+        If ydLine >= 90 Then 
+            ydsToFirst = 100 - ydLine
+        End If
+    
     Else
 
         pbpString$ = gameTeams$(P1) + " RECOVERS!!"
@@ -2264,11 +6913,16 @@ Sub FOOTBALL ()
 
                 'This chooses the call but not the intended player
                 Call ComputerOffense
+                If playCall = 19 Then
+                    Call pbplog(4608)
+                End If
                 chosenPlay = playCall
 
                 'If a run play was not chosen, shift chosenPlay because
                 'It should be a unique value over 14
-                If playCall > 8 Then chosenPlay = playCall + 6
+                If playCall > 8 Then
+                    chosenPlay = playCall + 6
+                End If
 
             Else
 
@@ -3673,7 +8327,6 @@ Sub FOOTBALL ()
                 '               QB's Int % - Pass type adjustment + league DEF Int %
                 intChance = qbPctInt(P1, I1) - passCovAdj(0, playCall - 8, coverage) + leagRat_GAME(D, 2)
 
-                '                If I > (100 - qbPctInt(P1, I1) - passCovAdj(0, playCall - 8, coverage) + leagRat_GAME(D, 2)) Then
                 If passChance > (100 - intChance) Then
 
                     'Intercepted!
@@ -3697,8 +8350,12 @@ Sub FOOTBALL ()
                         End If
 
                         'Adjust yards for weather
-                        If climate(4) = -3 Then I4 = I4 - 1
-                        If climate(4) = -6 Then I4 = I4 - 2
+                        If climate(4) = -3 Then
+                            I4 = I4 - 1
+                        End If
+                        If climate(4) = -6 Then
+                            I4 = I4 - 2
+                        End If
 
                         If I4 < 11 Then
                             'Determine impact of blitz
@@ -3708,8 +8365,12 @@ Sub FOOTBALL ()
 
                             I4 = I4 + passCovAdj(2, playCall - 8, coverage)
 
-                            If ydsPerComp(D) / 100 > .5 Then I4 = I4 - (1 - ydsPerComp(D) / 100) * 10
-                            If ydsPerComp(D) / 100 < .5 Then I4 = I4 + ydsPerComp(D) / 100 * 10
+                            If ydsPerComp(D) / 100 > .5 Then
+                                I4 = I4 - (1 - ydsPerComp(D) / 100) * 10
+                            End If
+                            If ydsPerComp(D) / 100 < .5 Then
+                                I4 = I4 + ydsPerComp(D) / 100 * 10
+                            End If
 
                             'Check if the play is overused
                             Call OVERUSE
@@ -3897,7 +8558,9 @@ Sub FOOTBALL ()
             Call Rolld100(prChance)
 
             For J = 2 To 0 Step -1
-                If prChance <= prNumRet(D, J) Then I1 = J
+                If prChance <= prNumRet(D, J) Then
+                    I1 = J
+                End If
             Next J
 
             puntRetNbr = I1
@@ -3929,11 +8592,20 @@ Sub FOOTBALL ()
                         puntChoice = Val(I$)
                     End If
 
+                    '-- Shouldn't these be "And Not" ??
                 Loop Until puntChoice >= 0 And puntChoice <= 5 Or Not (ydLine > 20 And puntChoice = 4) Or Not (currDown = 4 And puntChoice = 5) Or Not (currDown < 4 And puntChoice < 5)
 
                 Screen , , 0, 0
 
                 If puntChoice = 5 Then
+
+                    If d100% <= 50 Then
+                        pbpString$ = gameTeams$(P1) + " IS QUICK KICKING!!"
+                    Else
+                        pbpString$ = gameMascots$(P1) + " ARE QUICK KICKING!!"
+                    End If
+
+                    Call PBP
 
                     Call Rolld100(kickChance)
                     X = 0
@@ -3944,14 +8616,6 @@ Sub FOOTBALL ()
                     Else
                         ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
                     End If
-
-                    If d100% <= 50 Then
-                        pbpString$ = gameTeams$(P1) + " IS QUICK KICKING!!"
-                    Else
-                        pbpString$ = gameMascots$(P1) + " ARE QUICK KICKING!!"
-                    End If
-
-                    Call PBP
 
                     If (coverage > 6 And kickChance >= 60 And kickChance <= 72) Or (coverage <= 6 And kickChance >= 50 And kickChance <= 56) Then
                         'Blocked punt
@@ -3971,6 +8635,8 @@ Sub FOOTBALL ()
 
                     gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
+                    Call pbplog(6315)
+
                     If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then
                         'Punt travels to end zone
 
@@ -3988,12 +8654,10 @@ Sub FOOTBALL ()
                         'Track touchback for punter
                         gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
+                        Call pbplog(6334)
                         Call Touchback
 
                     Else
-
-                        'Why do these punts not get returned??
-                        'Simply be design / "quick kick" ???
 
                         'Track punt yards
                         gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + ydsGained
@@ -4021,7 +8685,7 @@ Sub FOOTBALL ()
                         End Select
 
                         If ydsGained + ydLine > fairCatchLine Then
-                            'Inside the 20
+                            'Inside the fair catch area (20/25 yd line)
                             fairCatchZone = 1
                             gameStatsTeam(P1, 29) = gameStatsTeam(P1, 29) + 1
                         End If
@@ -4031,13 +8695,14 @@ Sub FOOTBALL ()
                             gameStatsTeam(P1, 26) = ydsGained
                         End If
 
-                        Call PuntNotReturned(fairCatchZone)
+                        Call pbplog(6375)
+                        Call PuntNotReturned(fairCatchZone, puntChoice)
 
                         Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
 
                         Call DELAY
-    
+
                     End If
 
                     GoTo 700
@@ -4047,9 +8712,13 @@ Sub FOOTBALL ()
             End If
 
             X = 0
+
+            'Normal yards for punter
             ydsGained = ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 3
 
-            If 100 - ydLine <= ((ydsPerPunt(P1, 0) * 2) + 28) Then ydsGained = ydsGained + 100 - ydLine - (31 + ydsPerPunt(P1, 0) * 2)
+            If (100 - ydLine) <= ((ydsPerPunt(P1, 0) * 2) + 28) Then
+                ydsGained = ydsGained + (100 - ydLine) - (31 + ydsPerPunt(P1, 0) * 2)
+            End If
 
             If climate(0) = P1 Then
                 ydsGained = ydsGained - Int(Rnd(1) * 7) + 3 - climate(1)
@@ -4059,7 +8728,7 @@ Sub FOOTBALL ()
 
             Call YARDAGE
 
-            If playerMode = 1 And D = compTeam Or playerMode = 2 Then
+            If playerMode = 2 Or (playerMode = 1 And D = compTeam) Then
 
                 If d100% <= 10 Then
                     puntDefChoice = 1
@@ -4094,6 +8763,7 @@ Sub FOOTBALL ()
 
                     ' *** FAKE PUNT - RUN/PASS ***
                     If puntDefChoice = 2 Then
+
                         pbpString$ = gameTeams$(D) + " IS IN PUNT SAFE SET...FAKE PUNT? (Y/N)"
                         Call PBP
 
@@ -4238,6 +8908,8 @@ Sub FOOTBALL ()
             End Select
 
             PSNAP:
+            Call pbplog(6396)
+
             'Normal punt
             pbpString$ = punter$(P1, 0) + " WAITS FOR THE SNAP"
             Call PBP
@@ -4313,55 +8985,63 @@ Sub FOOTBALL ()
 
                 RN6 = Int(Rnd(1) * 200) + 1
 
-                If puntDefChoice = 1 Then pbpString$ = "THERE'S A HEAVY RUSH!!!": Call PBP
+                If puntDefChoice = 1 Then
 
-                If puntDefChoice = 1 And RN6 >= 72 And RN6 <= 73 Then
-                    'Blocked punt - 0.5% chance
-                    GoTo 3840
-                End If
-
-                If puntDefChoice = 1 And RN6 >= 13 And RN6 <= 14 Then
-                    'Roughing the Kicker - 1% chance
-                    pbpString$ = "THERE'S A FLAG ON THE PLAY!!"
-
-                    Call PBP
-
-                    pbpString$ = "ROUGHING THE KICKER !!!...AUTOMATIC FIRST DOWN !!!"
-
-                    Call PBP
-
-                    gameStatsTeam(D, 11) = gameStatsTeam(D, 11) + 1
-                    gameStatsTeam(D, 12) = gameStatsTeam(D, 12) + 15
-                    gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
-
-                    ydLine = ydLine + 15
-
-                    currDown = 1
-                    ydsToFirst = 10
-                    playSegment = 4
-
-                    GoSub 3900
-
-                    Call DELAY
-
-                    GoTo 700
-                End If
-
-                pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
-                Call PBP
-
-                If puntChoice = 1 Then
                     'Punt away from returner
+                    pbpString$ = "THERE'S A HEAVY RUSH!!!"
+                    Call PBP
 
-                    If d100% <= 10 Then
-                        ydsGained = ydsGained - (Int(Rnd(1) * 11) + 25)
-                        pbpString$ = "HE SHANKS IT!"
-                    Else
-                        ydsGained = ydsGained - (Int(Rnd(1) * 9) + 4)
-                        pbpString$ = "HE KICKS IT TOWARDS THE CORNER"
-                    End If
+                    Select Case RN6
+
+                        Case 1 To 16
+                            'Blocked punt
+                            GoTo 3840
+
+                        Case 17 To 18
+                            'Roughing the Kicker (1% chance)
+                            pbpString$ = "THERE'S A FLAG ON THE PLAY!!"
+
+                            Call PBP
+
+                            pbpString$ = "ROUGHING THE KICKER !!!...AUTOMATIC FIRST DOWN !!!"
+
+                            Call PBP
+
+                            gameStatsTeam(D, 11) = gameStatsTeam(D, 11) + 1
+                            gameStatsTeam(D, 12) = gameStatsTeam(D, 12) + 15
+                            gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
+
+                            ydLine = ydLine + 15
+
+                            currDown = 1
+                            ydsToFirst = 10
+                            playSegment = 4
+
+                            GoSub 3900
+
+                            Call DELAY
+
+                            GoTo 700
+
+                        Case Else
+
+                            pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
+                            Call PBP
+
+                            If d100% <= 10 Then
+                                ydsGained = ydsGained - (Int(Rnd(1) * 11) + 25)
+                                pbpString$ = "HE SHANKS IT!"
+                            Else
+                                ydsGained = ydsGained - (Int(Rnd(1) * 9) + 4)
+                                pbpString$ = "HE KICKS IT TOWARDS THE CORNER"
+                            End If
+
+                    End Select
 
                 Else
+
+                    pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
+                    Call PBP
 
                     If ydsGained < 40 Then
                         pbpString$ = "HE GETS THE PUNT AWAY"
@@ -4375,6 +9055,7 @@ Sub FOOTBALL ()
 
                 pbpString$ = "PUNT BY " + punter$(P1, 0) + " TRAVELS" + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
                 Call PBP
+                Call pbplog(6717)
 
                 gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
@@ -4391,6 +9072,7 @@ Sub FOOTBALL ()
                     'Track touchback
                     gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
+                    Call pbplog(6736)
                     Call Touchback
 
                 Else
@@ -4400,9 +9082,35 @@ Sub FOOTBALL ()
 
                     Call Rolld100(puntChance)
 
+                    Select Case ruleOptType
+
+                        Case 0
+                            'College
+                            If ruleOptColl <= 10 Then
+                                fairCatchLine = 80
+                            Else
+                                fairCatchLine = 75
+                            End If
+
+                        Case Is >= 1
+                            'Pro
+                            If ruleOptPro <= 8 Then
+                                fairCatchLine = 80
+                            Else
+                                fairCatchLine = 75
+                            End If
+
+                    End Select
+
                     If ydsGained + ydLine > 80 Then
                         'Kicks inside the 20
                         gameStatsTeam(P1, 29) = gameStatsTeam(P1, 29) + 1
+                    End If
+
+                    If ydsGained + ydLine > fairCatchLine Then
+                        fairCatchZone = 1
+                    Else
+                        fairCatchZone = 0
                     End If
 
                     If ydsGained > gameStatsTeam(P1, 26) Then
@@ -4411,35 +9119,13 @@ Sub FOOTBALL ()
                     End If
 
                     'See if punt can be returned
-                    If ydsGained + ydLine >= 90 And puntChance >= 5 Or puntDefChoice = 2 Or puntChance > 60 Or puntChoice = 1 And d100% <= 80 Then
-                        ' - Punt travels inside the 10, 95% of the time
+                    If (fairCatchZone = 1 And d100% < 85) Or (ydsGained + ydLine >= 90 And puntChance >= 5) Or puntChance > 55 Or puntDefChoice = 2 Then
+                        ' - 85% of punts inside the fair catch zone
+                        ' - 5% of punts inside the 10
+                        ' - 45% for punts outside the 20
                         ' - Punt Safe formation
-                        ' - 40% chance overall
-                        ' - Normal Punt, 80% Chance
-                        '---> Overall this should end up 56% of the time
-                        fairCatchZone = 0
-
-                        Select Case ruleOptType
-
-                            Case 0
-                                'College
-                                If ruleOptColl <= 10 Then
-                                    fairCatchLine = 80
-                                Else
-                                    fairCatchLine = 75
-                                End If
-
-                            Case Is >= 1
-                                'Pro
-                                If ruleOptPro <= 8 Then
-                                    fairCatchLine = 80
-                                Else
-                                    fairCatchLine = 75
-                                End If
-
-                        End Select
-
-                        Call PuntNotReturned(fairCatchZone)
+                        Call pbplog(6782)
+                        Call PuntNotReturned(fairCatchZone, puntChoice)
 
                         Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
@@ -4448,6 +9134,7 @@ Sub FOOTBALL ()
 
                     Else
 
+                        Call pbplog(6795)
                         Call PuntReturnYards
 
                         If ydsGained + ydLine >= 99.99 Then
@@ -4519,7 +9206,11 @@ Sub FOOTBALL ()
 
                             Call FUMBLE
 
-                            If ballFumbled = 1 Then Call FumblePBP: GoTo 650
+                            If ballFumbled = 1 Then
+                                Call FumblePBP
+                                GoTo 650
+                            End If
+
                         End If
 
                         hangtime = Int(ydsGained / 10)
@@ -4552,8 +9243,8 @@ Sub FOOTBALL ()
             activeKicker(P1) = I1
 
             'FG range is considered up to 67 yards
-            '-- 50 yard line = 67 yard attempt
-            If ydLine < 50 + goalPostAdj Then
+            '-- 48 yard line = 65 yard attempt
+            If ydLine < 48 + goalPostAdj Then
 
                 pbpString$ = "NOT IN FIELD GOAL RANGE"
                 Call PBP
@@ -4590,7 +9281,7 @@ Sub FOOTBALL ()
 
                 If playerMode = 1 And D = compTeam Or playerMode = 2 Then
 
-                    choice = 1
+                    fgDefChoice = 1
 
                 Else
 
@@ -4605,8 +9296,8 @@ Sub FOOTBALL ()
 
                     Do
                         I$ = GetKeyPress$
-                        choice = Val(I$)
-                    Loop Until choice >= 1 And choice <= 2
+                        fgDefChoice = Val(I$)
+                    Loop Until fgDefChoice >= 1 And fgDefChoice <= 2
 
                 End If
 
@@ -4616,7 +9307,7 @@ Sub FOOTBALL ()
                 If I1 = 2 Or I1 = 1 Then
 
                     ' *** FAKE PUNT - RUN/PASS ***
-                    If choice = 2 Then
+                    If fgDefChoice = 2 Then
 
                         pbpString$ = gameTeams$(D) + " IS IN FIELD GOAL SAFE SET...FAKE FIELD GOAL? (Y/N)"
                         Call PBP
@@ -5029,7 +9720,13 @@ Sub FOOTBALL ()
     Call COMPILER
 
     3251 '
-    ydLine = 20
+    If ruleOptPro < 2 And ruleOptType = 1 Then
+        'Kickoff from 40 after Safety (Prior to 1974)
+        ydLine = 40
+    Else
+        ydLine = 20
+    End If
+
     ydsToFirst = 10
     currDown = 1
     playSegment = 5
@@ -6132,7 +10829,7 @@ Sub FOOTBALL ()
     If ydLine >= 97 + goalPostAdj Then
         fgSuccessChance = kickerIdx(P1, activeKicker(P1))
     Else
-        Call FGDIST
+        Call FieldGoalChance
     End If
 
     pbpString$ = kicker$(P1, activeKicker(P1)) + " TROTS ON TO TRY A FIELD GOAL"
@@ -6152,8 +10849,6 @@ Sub FOOTBALL ()
         pbpString$ = "THERE'S A BAD SNAP FROM CENTER!!"
         Call PBP
         ydsGained = (Int(Rnd(1) * 9) + 6) * -1
-
-        ' *** BAD SNAP FROM CENTER ***
 
         Call AddPossessionTime(4, 7)
 
@@ -6216,9 +10911,12 @@ Sub FOOTBALL ()
 
         Call Rolld100(blockChance)
 
-        If (blockChance >= 97 And ydLine >= 68 + goalPostAdj And I2 <> 2) Or (blockChance >= 92 And ydLine < 68 + goalPostAdj And I2 <> 2) Then
+        'Increase FGA
+        gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) + 1
 
-            gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) + 1
+        If fgDefChoice = 1 And ((ydLine >= 68 + goalPostAdj And blockChance >= 97) Or (ydLine < 68 + goalPostAdj And blockChance >= 99)) Then
+            'Blocked FG
+            Call pbplog(10916)
             pbpString$ = "KICK IS BLOCKED!!!"
             Call PBP
 
@@ -6255,7 +10953,9 @@ Sub FOOTBALL ()
 
                     ydsToFirst = 10
 
-                    If ydLine >= 90 Then ydsToFirst = 100 - ydLine
+                    If ydLine >= 90 Then
+                        ydsToFirst = 100 - ydLine
+                    End If
 
                     currDown = 1
 
@@ -6295,10 +10995,9 @@ Sub FOOTBALL ()
 
         Else
 
-            'Increase FG attempt
-            gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) + 1
-
-            pbpString$ = "THE KICK IS UP AND ON ITS WAY"
+            'Field Goal Attempt
+            Call pbplog(10986)
+            pbpString$ = "THE KICK IS UP AND..."
             Call PBP
 
             If climate(0) <> P1 Then
@@ -6309,7 +11008,6 @@ Sub FOOTBALL ()
 
             Call FGATT
 
-            'Where does "I" come from ???
             If fgChance <= fgSuccessChance Then
 
                 'Increase FGM
@@ -6359,8 +11057,12 @@ Sub FOOTBALL ()
                     ydLine = ydLine - 7
                     ydLine = 100 - ydLine
                 Else
-                    If ydLine > 79.99 Or goalPostAdj < 0 Then ydLine = 20
-                    If ydLine > 40 And ydLine <= 79.99 And goalPostAdj = 0 Then ydLine = 100 - ydLine
+                    If ydLine > 79.99 Or goalPostAdj < 0 Then
+                        ydLine = 20
+                    End If
+                    If ydLine > 40 And ydLine <= 79.99 And goalPostAdj = 0 Then
+                        ydLine = 100 - ydLine
+                    End If
                 End If
 
                 Call AddPossessionTime(4, 7)
@@ -6383,6 +11085,8 @@ Sub FOOTBALL ()
 
 
     3840 '
+    '-- We need to track how often punts are blocked
+    Call pbplog(8759)
     gameStatsTeam(P1, 28) = gameStatsTeam(P1, 28) + 1
     pbpString$ = "KICK IS BLOCKED!!!"
 
@@ -6676,9 +11380,9 @@ Sub InitVar ()
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
 
-    Shared gamePK$(), oppName$(), locIndicator$(), gameSite$()
+    Shared tradeLPR$(), oppName$(), locIndicator$(), gameSite$()
     Shared teamIndicator$()
-    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
 
     'Shared eventSettings()
     Shared oppScore(), teamScore(), powerRating()
@@ -6852,10 +11556,10 @@ Sub InitVar ()
     Erase kickReturners
 
 
-    Erase gameAF!, gameAM!
-    Erase gameZ0!, gameZ1!, gameZ2!
-    Erase gameLC!, gameLF!, gameLI!, gameLK!, gameLP!, gameLR!
-    Erase gamePK!
+    Erase gameFGA!, gameFGM!
+    Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
+    Erase gameLRec!, gameLFG!, gameLInt!, gameLKR!, gameLPass!, gameLRush!
+    Erase gameLPR!
 
     Erase nbrPossOT, puntReturners
 
@@ -6873,12 +11577,12 @@ Sub InitVar ()
     Erase qbRushIdx, climate
 
     Erase diskIDs$, gameTeams$
-    Erase gameIR$, gameKR$, gameLC$, gameLR$
-    Erase gamePK$, gamePR$, gameQB$
+    Erase gameIR$, gameKR$, gameLRec$, gameLRush$
+    Erase tradeLPR$, gamePR$, gameQB$
     Erase gameRB$, gameSite$, gameWR$
     Erase locIndicator$, oppName$
     Erase SX$
-    Erase tradeLF$, tradeLI$, tradeLK$, tradeLP$
+    Erase tradeLFG$, tradeLInt$, tradeLKR$, tradeLPass$
 
 
 End Sub
@@ -8594,20 +13298,31 @@ Sub ONSIDE ()
 
     Call AddPossessionTime(4, 7)
 
+    If ruleYrPro >= 8 And ruleOptType <> 0 Then
+        'Pro Football, Years 2018+
+        If teamYears(D) >= 2018 And teamYears(D) <= 2019 Then
+            onsideSuccess = 7
+        Else
+            onsideSuccess = 11
+        End If
+    Else
+        onsideSuccess = 21
+    End If
+
     If Int(ydsGained * 10 + .5) / 10 < 9.95 Then
         pbpString$ = "BALL DID NOT TRAVEL 10 YDS"
         Call PBP
         ydLine = 100 - ydLine
     Else
         I = (Rnd(1) * 100) + 1
-        If I <= 78 Then
-            pbpString$ = gameTeams$(P1) + " RECOVERS"
-            Call PBP
-            ydLine = 100 - ydLine
-        Else
+        If I <= onsideSuccess Then
             pbpString$ = gameTeams$(D) + " RECOVERS !!!"
             Call PBP
             Call CHANGEPOSS
+        Else
+            pbpString$ = gameTeams$(P1) + " RECOVERS"
+            Call PBP
+            ydLine = 100 - ydLine
         End If
     End If
 
@@ -8758,12 +13473,14 @@ Sub QBSNEAK ()
     'Inside Linebacker is blitzing
     If (coverage = 7 Or coverage = 9 Or coverage = 11) Then
 
-        If d100% <= 20 Then
-            '-.3 to .2
-            ydsGained = (Int(Rnd(1) * 6) - 3) / 10
-        Else
+        
+        'QB sneaks succeed 80% of the time
+        If d100% > 80 Then
             '0.3 to 0.9
             ydsGained = (Int(Rnd(1) * 7) + 3) / 10
+        Else
+            '-.3 to .2
+            ydsGained = (Int(Rnd(1) * 6) - 3) / 10
         End If
 
     Else
@@ -10276,117 +14993,120 @@ End Sub
 'that helps set the wind and weather options
 Sub SETWEATHER ()
 
-    If teamRat_GAME(gameLoc, 3) <> 1 Then
+    Call SETSCREEN
 
-        Call SETSCREEN
+    Call OPTIONBOX(9)
 
-        Call OPTIONBOX(9)
+    Print "WEATHER OPTIONS "
+    Locate 12, 14
+    Locate , 14: Print "0 - GOOD"
+    Locate , 14: Print "1 - BAD (RAIN/SNOW)"
+    Locate , 14: Print "2 - TERRIBLE (BLIZZARD/HEAVY RAIN)"
+    Locate , 14: Print "3 - COMPUTER SELECT"
 
-        Print "WEATHER OPTIONS "
-        Locate 12, 14
-        Locate , 14: Print "0 - GOOD"
-        Locate , 14: Print "1 - BAD (RAIN/SNOW)"
-        Locate , 14: Print "2 - TERRIBLE (BLIZZARD/HEAVY RAIN)"
-        Locate , 14: Print "3 - COMPUTER SELECT"
+    If autoPlay = 1 Then
+        'Read weather from schedule options
+        I2 = NG%(20)
+    Else
 
-        If autoPlay = 1 Then
-            'read weather from schedule options
-            I2 = NG%(20)
-        Else
+        Do
+            I$ = GetKeyPress$
+            choice = Val(I$)
+        Loop Until choice >= 1 And choice <= 3 Or I$ = "0"
 
-            Do
-                I$ = GetKeyPress$
-                choice = Val(I$)
-            Loop Until choice >= 1 And choice <= 3 Or I$ = "0"
+    End If
 
-        End If
+    Screen , , 0, 0
 
-        Screen , , 0, 0
+    Select Case choice
 
-        'If choice = 0 Then 200
-
-        If choice = 1 Then
+        Case 1
             climate(4) = -3
             climate(5) = 1
             climate(6) = -10
-        End If
 
-        If choice = 2 Then
+        Case 2
             climate(4) = -6
             climate(5) = 2
             climate(6) = -20
-        End If
 
-        If choice = 3 Then
+        Case 3
 
-            RN1 = Int(Rnd(1) * 22) + 1
+            Call Rolld100(RN1)
 
-            If RN1 = 18 Then
-                climate(4) = -3
-                climate(5) = 1
-                climate(6) = -10
-            End If
+            Select Case RN1
 
-            If RN1 = 7 Then
-                climate(4) = -6
-                climate(5) = 2
-                climate(6) = -20
-            End If
+                Case 20 to 38
+                    'Snow affects 7% of games
+                    'Rain affects 12% of games
+                    climate(4) = -3
+                    climate(5) = 1
+                    climate(6) = -10
 
-        End If
+                Case 7 to 12
+                    'Blizzards affect 1% of games
+                    'Heavy rain affects 5% of games
+                    climate(4) = -6
+                    climate(5) = 2
+                    climate(6) = -20
+ 
+            End Select
 
-        Call OPTIONBOX(9)
+    End Select
 
-        Print "WIND OPTIONS "
-        Locate 12, 14
-        Locate , 14: Print "0 - NONE"
-        Locate , 14: Print "1 - LIGHT TO MODERATE"
-        Locate , 14: Print "2 - STRONG AND GUSTY"
-        Locate , 14: Print "3 - COMPUTER SELECT"
+    Call OPTIONBOX(9)
 
-        If autoPlay = 1 Then
-            choice = NG%(19)
-        Else
-            Do
-                I$ = GetKeyPress$
-                choice = Val(I$)
-            Loop Until choice >= 0 And choice <= 3
-        End If
+    Print "WIND OPTIONS "
+    Locate 12, 14
+    Locate , 14: Print "0 - NONE                        "
+    Locate , 14: Print "1 - LIGHT TO MODERATE (< 15 MPH)"
+    Locate , 14: Print "2 - STRONG AND GUSTY (>= 15 MPH)"
+    Locate , 14: Print "3 - COMPUTER SELECT             "
 
-        Screen , , 0, 0
+    If autoPlay = 1 Then
+        choice = NG%(19)
+    Else
+        Do
+            I$ = GetKeyPress$
+            choice = Val(I$)
+        Loop Until choice >= 0 And choice <= 3
+    End If
 
-        'If choice = 0 Then 299
-        If choice = 1 Then
+    Screen , , 0, 0
+
+    Select Case choice
+
+        Case 1
             climate(1) = -7
             climate(2) = -5
             climate(3) = -10
-        End If
 
-        If choice = 2 Then
+        Case 2
             climate(1) = -15
             climate(2) = -15
             climate(3) = -30
-        End If
 
-        If choice = 3 Then
+        Case 3
 
-            RN1 = Int(Rnd(1) * 22) + 1
+            Call Rolld100(RN1)
+            
+            Select Case RN1
 
-            If RN1 = 14 Then
-                climate(1) = -7
-                climate(2) = -5
-                climate(3) = -10
-            End If
+                Case 1 to 26
+                    'Moderate wind impacts 27% of games
+                    climate(1) = -7
+                    climate(2) = -5
+                    climate(3) = -10
 
-            If RN1 = 3 Then
-                climate(1) = -15
-                climate(2) = -15
-                climate(3) = -30
-            End If
+                Case 45 to 60
+                    'Heavy wind impacts 15% of games
+                    climate(1) = -15
+                    climate(2) = -15
+                    climate(3) = -30
 
-        End If
+            End Select
 
-    End If
+    End Select
 
 End Sub
 
@@ -10458,16 +15178,113 @@ End Sub
 
 
 '----------------------------------------
-'           ComputerOffense Subroutine
+'           fgLimit Function
+'----------------------------------------
+'This function returns the distance at
+'which the average kicker is likely to
+'limit their attempts
+Function fgLimit%
+
+    Dim kickLimit As Integer
+
+    If ruleOptType = 0 Then
+
+        Select Case ruleOptColl
+
+            Case 0 To 2
+                'Up to 1980's
+                kickLimit = 40
+
+            Case 3 To 9
+                '1980's - 2000's
+                kickLimit = 50
+
+            Case 10
+                '2010's
+                kickLimit = 55
+
+            Case Is >= 11
+                '2018+
+                kickLimit = 60
+
+        End Select
+
+    Else
+
+        Select Case ruleOptPro
+
+            Case 0 To 2
+                'Up to 1980's
+                kickLimit = 40
+
+            Case 3 To 5
+                '1980's - 2000's
+                kickLimit = 50
+
+            Case 6 To 7
+                '2010's
+                kickLimit = 55
+
+            Case Is >= 8
+                '2018+
+                kickLimit = 60
+
+        End Select
+
+    End If
+
+    fgLimit% = kickLimit
+
+
+End Function
+
+
+'----------------------------------------
+'       ComputerOffense Subroutine
 '----------------------------------------
 'This subroutine gives the user a menu for
 'selecting their offensive choices.
 Sub ComputerOffense ()
 
-    If endZone = 0 Then
+    'So 50 yarder is attempted from Opp 33 (67)
+    fgAttLine = (117 - fgLimit% + goalPostAdj)
 
-        '4th Quarter
-        'Any down, Less than 35 seconds to go, 0 Timeouts Opponent, Offense leading
+    If endZone = 1 Then
+
+        'We should only be here if going for 2
+        Call Rolld100(RN0)
+
+        Select Case RN0
+
+            'Rollout Pass
+            Case 1 To 25:
+                playCall = 17
+
+                ' Medium Pass
+            Case 26 To 50:
+                playCall = 11
+
+                ' Short Pass
+            Case 51 To 70:
+                playCall = 10
+
+                ' Option
+            Case 71 To 80:
+                playCall = 5
+
+                ' Sweep
+            Case 81 To 90:
+                playCall = 4
+
+                ' Off Tackle
+            Case 91 To 100:
+                playCall = 3
+
+        End Select
+
+    Else
+
+        '4th Qtr, < 35 secs / down to go, No TOs (Def), Offense leading
         If quarter = 4 And gameClock! <= 35 * (4 - currDown) And timeouts(D) = 0 And score(P1, 0) > score(D, 0) Then
 
             playCall = 9
@@ -10476,9 +15293,52 @@ Sub ComputerOffense ()
 
         Else
 
-            'If not inside 2 minute warning and past Own 40 Yd Line
-            If Not (quarter = 2 And gameClock! <= 120 And ydLine > 40 Or quarter >= 4 And gameClock! <= 120) Then
+            If ((quarter = 2 And ydLine > 40) Or quarter >= 4) And gameClock! <= 120 Then
 
+                '2 Min Warning
+                '--------------------
+                'Down by >= 4 (Off)
+                If score(D, 0) - score(P1, 0) > 3 Then
+                    If quarter >= 4 Then 8880
+                    If quarter = 2 Then 8885
+                End If
+
+                'Score Tied or Down
+                If score(D, 0) - score(P1, 0) >= 0 Then 8885
+
+                '2nd Qtr, Past Own 40 Yd Line
+                If ydLine > 40 And quarter = 2 Then 8885
+
+                If d100% <= 60 Then
+                    playCall = 3
+                Else
+                    playCall = 4
+                End If
+
+                'In FG range, < 22 secs to go, 2nd Qtr | 4th Qtr Tie | Overtime
+                If ydLine >= fgAttLine - 3 And gameClock! <= 22 And (quarter = 2 Or quarter > 4 Or (quarter = 4 And score(P1, 0) - score(D, 0) = 0)) Then
+                    'Field Goal
+                    Call pbplog(15308)
+                    playCall = 20
+                End If
+
+                'In LONG FG range, 4th Down, >= 3 Yds to go, Modern Era (FGs uncommon before 1960)
+                If ydLine >= fgAttLine - 3 And ydLine < fgAttLine + 10 And currDown = 4 And ydsToFirst >= 3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                    'Field Goal
+                    Call pbplog(15315)
+                    playCall = 20
+                End If
+
+                'Outside LONG FG range, 4th Down
+                If ydLine < fgAttLine - 3 And currDown = 4 Then
+                    'Punt
+                    Call pbplog(13328)
+                    playCall = 19
+                End If
+
+            Else
+
+                'Regular GamePlay
                 If ruleOptType <> 0 Then
                     leagueRushPct = leagRat_GAME(P1, 7)
                 Else
@@ -10490,146 +15350,145 @@ Sub ComputerOffense ()
                     leagueRushPct = leagRat_GAME(P1, 7) ' - 4
                 End If
 
-                '4th Quarter+,
-                '4th Down, Opponent's side of field, Score = Down by 11 or more
-                If currDown = 4 And quarter >= 4 And ydLine >= 50 And score(D, 0) - score(P1, 0) > 10 Then
+                '4th Down, 3rd Qtr+, Inside opponent's 45, Down by 15 or more (Off)
+                If quarter >= 3 And currDown = 4 And ydLine >= 55 And score(D, 0) - score(P1, 0) > 14 Then
                     GoTo 8833
                 End If
 
-                '3rd Quarter+,
-                '4th Down, Inside opponent's 45, Score = Down by 15 or more
-                If currDown = 4 And quarter >= 3 And ydLine >= 55 And score(D, 0) - score(P1, 0) > 14 Then
+                '4th Down, 4th Qtr+, Inside Opponent's field, Down by 11 or more (Off)
+                If quarter >= 4 And currDown = 4 And ydLine >= 50 And score(D, 0) - score(P1, 0) > 10 Then
                     GoTo 8833
                 End If
 
-                '4th Down, 1 Yd To Go, 3 Pt. Lead, Opponent's 32 to 38, Score Not Tied
-                If currDown = 4 And ydsToFirst <= 1 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) > 0 And ydLine >= 62 + goalPostAdj And ydLine <= 68 + goalPostAdj Then
+                '4th Down, 1 Yd To Go, In LONG FG Range, 3 Pt. Lead (Off)
+                If currDown = 4 And ydsToFirst <= 1 And ydLine >= fgAttLine - 3 And ydLine < fgAttLine + 10 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) > 0 Then
+                    'Go for it!
                     GoTo 8827
                 End If
 
-                '4th Quarter+
+                '--- 4th Down, 2+ Yds to Go, In FG Range, Any Score
+
+                '4th Qtr | OT
                 '---------------
-                '4th Down, Opponent's 32 to 38, Score = 3 Pt. Margin, Pro Rules or College Rules + Team after 1960 = Field Goal
-                If quarter >= 4 And currDown = 4 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) >= -3 And ydLine >= 62 + goalPostAdj And ydLine < 68 + goalPostAdj And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+                '4th Down, In FG Range, <= Score Within 3 Pts, Modern Era (FGs uncommon before 1960)
+                If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) >= -3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                    'Field Goal
+                    Call pbplog(15363)
                     playCall = 20
                     GoTo 8800
                 End If
 
-                '4th Down, Opponent's 32 to 38, Score <= 3 Pt. Lead, Pro Rules or College Rules + Team after 1960 = Field Goal
-                If quarter >= 4 And currDown = 4 And ydLine >= 62 + goalPostAdj And ydLine < 68 + goalPostAdj And score(D, 0) - score(P1, 0) <= 3 And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+                '4th Down, In FG Range, <= 3 Pt. Lead (Def), Modern Era (FGs uncommon before 1960)
+                If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(D, 0) - score(P1, 0) <= 3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                    'Field Goal
+                    Call pbplog(15371)
                     playCall = 20
                     GoTo 8800
                 End If
 
-                '4th Down, <= 2 Yds to Go, Opponent's 25 - 35, Score - Down by 11 or more
-                If quarter >= 4 And ydLine >= 65 + goalPostAdj And ydLine < 75 + goalPostAdj And ydsToFirst <= 2 And score(D, 0) - score(P1, 0) > 10 Then
+                '4th Down, <= 2 Yds to Go, Long FG range, Down by 11+ (Off)
+                If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine + 10 And ydLine < fgAttLine - 3 + goalPostAdj And ydsToFirst <= 2 And score(D, 0) - score(P1, 0) > 10 Then
                     GoTo 8827
                 End If
 
-                '4th Down, <= 2 Yds to Go, Opponent's 25 - 35, Score - Down by 10 or less, 4 Minutes Remaining, Pro Rules or College Rules + Team after 1960 = Field Goal
-                If quarter >= 4 And ydLine >= 65 + goalPostAdj And ydLine < 75 + goalPostAdj And score(D, 0) - score(P1, 0) <= 10 And score(D, 0) - score(P1, 0) > 0 And currDown = 4 And gameClock! < 240 And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+                '4th Down, <5 Minutes, Long FG range, Down by 1-10 (Off), Modern Era (FGs uncommon before 1960)
+                If quarter >= 4 And currDown = 4 And gameClock! < 240 And ydLine >= fgAttLine + 10 And ydLine < fgAttLine - 3 And score(D, 0) - score(P1, 0) <= 10 And score(D, 0) - score(P1, 0) > 0 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                    'Field Goal
+                    Call pbplog(15384)
                     playCall = 20
                     GoTo 8800
                 End If
 
-
-                '4th Quarter Only
+                '4th Qtr Only
                 '---------------
-                '4th Down, More Than 2 Minutes, Score - Down by 4 to 10, Inside Red Zone = Field Goal
-                If currDown = 4 And quarter = 4 And gameClock! > 240 And score(D, 0) - score(P1, 0) >= 4 And score(D, 0) - score(P1, 0) <= 10 And ydLine > 80 + goalPostAdj Then
+                '4th Down, <4 Minutes, Down by 4 to 11 (Off), Inside Red Zone
+                If quarter = 4 And currDown = 4 And gameClock! > 240 And score(D, 0) - score(P1, 0) >= 4 And score(D, 0) - score(P1, 0) <= 11 And ydLine > 80 + goalPostAdj Then
+                    'Field Goal
+                    Call pbplog(15394)
                     playCall = 20
                     GoTo 8800
                 End If
 
                 '4th Down, Down by 4 or More, Inside Red Zone
-                If currDown = 4 And quarter = 4 And score(D, 0) - score(P1, 0) >= 4 And ydLine >= 80 + goalPostAdj Then
+                If quarter = 4 And currDown = 4 And score(D, 0) - score(P1, 0) >= 4 And ydLine >= 80 + goalPostAdj Then
                     GoTo 8833
                 End If
 
-
-                'Any Quarter
+                'Any Qtr
                 '---------------
-                '4th Down, Any Time, <= 2 Yds to Go, Inside Opponent's 40
-                If currDown = 4 And ydLine >= 60 And ydsToFirst <= 2 Then
+                '4th Down, < 3 Yds to Go, Inside Opponent's 40
+                If currDown = 4 And ydsToFirst < 3 And ydLine >= 60 Then
                     GoTo 8827
                 End If
 
-                '4th Down, Any Time, >= 3 Yds To Go, Inside Opponent's 32, Pro Rules or College Rules + Team after 1960 = Field Goal
-                If currDown = 4 And ydLine >= 68 + goalPostAdj And ydsToFirst > 2 And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+                '4th Down, >= 3 Yds To Go, In FG range, Modern Era (FGs uncommon before 1960)
+                If currDown = 4 And ydsToFirst >= 3 And ydLine >= fgAttLine + 12 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                    'Field Goal
+                    '-- Most field goals are done here
+                    Call pbplog(15414)
                     playCall = 20
                     GoTo 8800
                 End If
 
-                '4th Down, Any Time, Outside Opponent's 32 = Punt
-                If currDown = 4 And ydLine < 68 + goalPostAdj Then
+                '4th Down, Outside FG range
+                If currDown = 4 And ydLine < fgAttLine + 3 Then
+                    'Punt
+                    '-- Most punts are done here
                     playCall = 19
                     GoTo 8800
                 End If
 
-                Call Rolld100(RN0)
-
-                '-- Several of these could be triggered
-                '-- during a 2-point conversion
-                'Any Time, Inside Team's Own 8 Yd Line
+                'Inside Team's Own 8 Yd Line
                 If ydLine <= 8 Then
                     GoTo 8827
                 End If
 
-                '2nd Down, Any Time, <=12 Yds To Go
+                '2nd Down, <=12 Yds To Go, Mostly Rushing league era
                 If leagueRushPct > 75 And currDown = 2 And ydsToFirst <= 12 Then
                     GoTo 8827
                 End If
 
-                '3rd Down, Any Time, <= 5 Yds to Go
-                If leagueRushPct > 75 And currDown = 3 And ydsToFirst <= 5 Then
+                '3rd Down, <= 5 Yds to Go, Mostly Rushing league era
+                If currDown = 3 And ydsToFirst <= 5 And leagueRushPct > 75 Then
                     GoTo 8827
                 End If
 
-                '1st or 2nd Down, Any Time
-                If currDown = 1 And leagueRushPct >= 70 Or currDown <= 2 And leagueRushPct >= 80 Then
+                '1st or 2nd Down, Mostly Rushing league era
+                If (currDown = 1 And leagueRushPct >= 70) Or (currDown <= 2 And leagueRushPct >= 80) Then
                     GoTo 8827
                 End If
 
-                '1st Down, Any Time, >= 11 Yds To Go
+                '1st Down, >= 11 Yds To Go
                 If currDown = 1 And ydsToFirst > 10 Then
                     GoTo 8833
                 End If
 
-                '2nd Down, Any Time, >= 11 Yds To Go
+                '2nd Down
                 If currDown = 2 And ydsToFirst > 10 Then
-                    GoTo 8833
+                    If ydsToFirst > 10 Then GoTo 8833
+                    If ydsToFirst < 5 Then GoTo 8827
                 End If
 
-                '2nd Down, Any Time, <= 4 Yds to Go
-                If currDown = 2 And ydsToFirst < 5 Then
-                    GoTo 8827
-                End If
-
-                '3nd Down, Any Time, >= 4 Yds to Go
+                '3nd Down
                 If currDown = 3 And ydsToFirst >= 4 Then
-                    GoTo 8833
+                    If ydsToFirst >= 4 Then GoTo 8833
+                    If ydsToFirst < 2 Then GoTo 8827
                 End If
 
-                '3rd Down, Any Time, 1 Yds to Go
-                '---> this could be triggered during a 2 Pt Conversion
-                If currDown = 3 And ydsToFirst < 2 Then
-                    GoTo 8827
+                '4th Down
+                If currDown = 4 Then
+                    'Inside Red Zone??
+                    'How much time left?
+                    If ydsToFirst >= 4 Then GoTo 8833
+                    If ydsToFirst < 2 Then GoTo 8827
                 End If
 
-                '4th Down, Any Time, >= 4 Yds to Go
-                If currDown = 4 And ydsToFirst >= 4 Then
-                    GoTo 8833
-                End If
-
-                '4th Down, Any Time, 1 Yds To Go
-                If currDown = 4 And ydsToFirst < 2 Then
-                    GoTo 8827
-                End If
-
-                '4th Quarter
+                '4th Qtr
                 '---------------
-                'Less than 8 Minutes in Game
+                '< 8 Minutes in Game
                 'Either team is ahead by 9 or more pts
+                Call Rolld100(RN0)
+
                 If quarter = 4 And gameClock! <= 480 And score(D, 0) - score(P1, 0) >= 9 And RN0 >= leagueRushPct - leagRat_GAME(P1, 7) / 2 Then
                     GoTo 8833
                 End If
@@ -10641,8 +15500,8 @@ Sub ComputerOffense ()
                     GoTo 8833
                 End If
 
-
                 '----- DECISION BRANCH 1 -----
+                '----- RUN | PASS DECIDE -----
                 8827 '
                 If gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3) <> 0 Then
                     'leagueRushPct = Run / Pass %
@@ -10682,7 +15541,9 @@ Sub ComputerOffense ()
 
                     'QB Sneak
                     'Print #11, "Evaluating sneak"
-                    If RN0 <= sneakChance Then playCall = 8
+                    If RN0 <= sneakChance Then
+                        playCall = 8
+                    End If
 
                 Else
 
@@ -10736,9 +15597,8 @@ Sub ComputerOffense ()
 
                 GoTo 8800
 
-
-
                 '----- DECISION BRANCH 2 -----
+                '----- PASSING SCENARIOS -----
                 8833 '
                 Call Rolld100(RN0)
 
@@ -10774,84 +15634,45 @@ Sub ComputerOffense ()
 
                 End Select
 
-                '3rd / 4th Down, Any Time, >= 5 Yds To Go
+                '3rd / 4th Down, >= 5 Yds To Go
                 '----------------------------------------
-                '-- If Draw was selected, change to Long Pass
-                If currDown >= 3 And ydsToFirst >= 5 And playCall = 6 Then
-                    playCall = 12
+                If currDown >= 3 And ydsToFirst >= 5 Then
+                    '-- If Draw was selected, change to Long Pass
+                    If playCall = 6 Then playCall = 12
+
+                    '-- If Short Pass was selected, change to Medium Pass
+                    If playCall = 10 Then playCall = 11
+
+                    '-- If 3-Step Drop or screen was selected, change to Rollout
+                    If (playCall = 13 Or playCall = 9) Then playCall = 17
+
                 End If
 
-                '-- If Short Pass was selected, change to Medium Pass
-                If currDown >= 3 And ydsToFirst >= 5 And playCall = 10 Then
-                    playCall = 11
-                End If
-
-                '-- If 3-Step Drop or screen was selected, change to Rollout
-                If currDown >= 3 And ydsToFirst >= 5 And (playCall = 13 Or playCall = 9) Then
-                    playCall = 17
-                End If
-
-                'Any Down, Any Time, Inside Opponent's 10 or < 7 Yds To Go
+                'Inside Opponent's 10 or < 7 Yds To Go
                 '----------------------------------------
                 '-- If Long Pass was selected, change to Medium Pass
-                If ydLine > 90 And (playCall = 12 Or playCall = 15) Or ydsToFirst < 7 And (playCall = 12 Or playCall = 15) Then
+                If (playCall = 12 Or playCall = 15) And ydLine > 90 Or ydsToFirst < 7 Then
                     playCall = 11
                 End If
 
                 GoTo 8800
 
-            Else
-
-                '2nd / 4th Quarter
-                '2 Min Warning
-                '--------------------
-                'Score - Down by >= 4
-                If score(D, 0) - score(P1, 0) > 3 Then
-                    If quarter >= 4 Then 8880
-                    If quarter = 2 Then 8885
-                End If
-
-                'Score Tied or Down
-                If score(D, 0) - score(P1, 0) >= 0 Then 8885
-
-                '2nd Quarter, Past Own 40 Yd Line
-                If ydLine > 40 And quarter = 2 Then 8885
-
-                playCall = 4
-
-                If d100% <= 60 Then playCall = 3
-
-                '2nd Quarter / Overtime / 4th Quarter and Tied Score
-                'Any down, Inside Opponent's 35, Less than 22 seconds to go = Field Goal
-                If ydLine >= 65 + goalPostAdj And gameClock! <= 22 And quarter = 2 Or ydLine >= 65 + goalPostAdj And gameClock! <= 22 And quarter > 4 Or ydLine >= 65 + goalPostAdj And gameClock! <= 22 And quarter = 4 And score(P1, 0) - score(D, 0) = 0 Then
-                    playCall = 20
-                End If
-
-                '4th Down, Inside Opponent's 35, >= 1 Yard to go, Pro Rules or College Rules + Team after 1960 = Field Goal
-                If ydLine >= 65 + goalPostAdj And currDown = 4 And ydsToFirst >= 2 And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
-                    playCall = 20
-                End If
-
-                '4th Down, Outside Opponents' 35 = Punt
-                If currDown = 4 And ydLine <= 65 + goalPostAdj Then
-                    playCall = 19
-                End If
-
             End If
 
             '----- DECISION MADE -----
             8880 '
-            '2nd Quarter
-            '4th Down, Any Time
+            '2nd Qtr, 4th Down, 2 Min Warning
             If quarter = 2 And currDown = 4 Then
 
-                If ydLine < 65 + goalPostAdj Then
-                    'Outside Opponent's 35 = Punt
+                'Outside FG range
+                If ydLine < fgAttLine - 3 Then
+                    'Punt
                     playCall = 19
                 Else
-                    'Inside Opponent's 35, Pro Rules, or College Rules + Team after 1960 = Field Goal
-                    '--- COMPARE A
-                    If (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+                    'In FG range, Modern Era (FGs uncommon before 1960)
+                    If (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                        'Field Goal
+                        Call pbplog(15661)
                         playCall = 20
                     End If
                 End If
@@ -10860,16 +15681,18 @@ Sub ComputerOffense ()
 
             End If
 
-            'Any Quarter
+            'Any Qtr
             '---------------
-            'Any Down, Less than 22 seconds to go, 0 Timeouts Offense = Pass
+            '< 22 secs to go, No TOs (Off)
             If gameClock! <= 22 And timeouts(P1) = 0 Then
+                'Pass
                 playCall = 12
                 GoTo 8800
             End If
 
-            'Any Down, Less than 12 sceonds to go, 1 or more timeouts Offense = Pass
-            If gameClock! <= 12 And timeouts(P1) <> 0 Then
+            '< 12 secs to go, TOs Remaining (Off)
+            If gameClock! <= 12 And timeouts(P1) > 0 Then
+                'Pass
                 playCall = 12
                 GoTo 8800
             End If
@@ -10879,52 +15702,58 @@ Sub ComputerOffense ()
             '-----
 
             8885 '
-            '2nd / 4th Quarter
-            '4th Down, Any Time, Outside Opponent's 35, Score Tied = Punt
-            If quarter = 2 And currDown = 4 And ydLine < 65 + goalPostAdj Or quarter >= 4 And ydLine < 65 + goalPostAdj And score(P1, 0) = score(D, 0) And currDown = 4 Then
+            '4th Down, 2nd Qtr --OR-- 4th Qtr + Score Tied, Outside FG range
+            If ydLine < fgAttLine - 3 And currDown = 4 And (quarter = 2 Or (quarter >= 4 And score(P1, 0) = score(D, 0))) Then
+                'Punt
                 playCall = 19
                 GoTo 8800
             End If
 
-
-            '2nd Quarter Only
-            '4th Down, Any Time, Inside Opponent's 35, Pro Rules or College Rules + Team after 1960 = FIeld Goal
-            '--- COMPARE B
-            If quarter = 2 And currDown = 4 And ydLine >= 65 + goalPostAdj And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+            '2nd Qtr Only
+            '4th Down, In FG range, Modern Era (FGs uncommon before 1960)
+            If ydLine >= fgAttLine - 3 And quarter = 2 And currDown = 4 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                'Field Goal
+                Call pbplog(15702)
                 playCall = 20
                 GoTo 8800
             End If
 
-
-            'Any Quarter
+            'Any Qtr
             '---------------
-            'Any Down, Less than 37 seconds to go, 0 Timeouts Offense, Outside Opponent's 35 = Pass (???)
-            If gameClock! <= 37 And timeouts(P1) = 0 And ydLine < 65 + goalPostAdj Then
+            'Outside FG range, < 37 secs to go, No TOs (Off)
+            If ydLine < fgAttLine - 3 And gameClock! <= 37 And timeouts(P1) = 0 Then
+                'Pass
                 playCall = 12
                 GoTo 8800
             End If
 
-            'Any Down, Less than 22 seconds to go, 0 Timeouts Offense, Outside opponent's 35 = Pass
-            If gameClock! <= 12 And timeouts(P1) <> 0 And ydLine < 65 + goalPostAdj Then
+            'Outside FG range, < 22 secs to go, TOs Remaining (Off)
+            If ydLine < fgAttLine - 3 And gameClock! <= 12 And timeouts(P1) > 0 Then
+                'Pass
                 playCall = 12
                 GoTo 8800
             End If
 
-            'Any Down, Less than 22 seconds to go, 0 Timeouts Offense, Inside Opponent's 35 = Field Goal
-            If gameClock! <= 22 And timeouts(P1) = 0 And ydLine >= 65 + goalPostAdj Then
+            'In FG range, < 22 secs to go, No TOs (Off)
+            If ydLine < fgAttLine - 3 And gameClock! <= 22 And timeouts(P1) = 0 Then
+                'Field Goal
+                Call pbplog(15726)
                 playCall = 20
                 GoTo 8800
             End If
 
-            'Any Down, Less than 12 seconds to go, 0 Timeouts Offense, Inside Opponent's 35 = Field Goal
-            '--- This is essentially the same as above ???
-            If gameClock! <= 12 And timeouts(P1) <> 0 And ydLine >= 65 + goalPostAdj Then
+            'In FG range, < 12 secs to go, TOs Remaining (Off)
+            If ydLine < fgAttLine - 3 And gameClock! <= 12 And timeouts(P1) > 0 Then
+                'Field Goal
+                Call pbplog(15734)
                 playCall = 20
                 GoTo 8800
             End If
 
-            '4th Down, Any Time, Inside Opponent's 35, Pro Rules or College Rules + Team after 1960 = Field Goal
-            If currDown = 4 And ydLine >= 65 + goalPostAdj And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+            'In FG range, 4th Down, Modern Era (FGs uncommon before 1960)
+            If ydLine >= fgAttLine - 3 And currDown = 4 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                'Field Goal
+                Call pbplog(15742)
                 playCall = 20
                 GoTo 8800
             End If
@@ -10943,7 +15772,7 @@ Sub ComputerOffense ()
                 playCall = 11
             End If
 
-            'In the Red Zone, Score - Down by <3 ---or--- Inside Opponent's 10 and Down by 3
+            'In the Red Zone, Down by < 3  (Off) --OR-- Inside Opponent's 10, Down by 3
             'Random choice of Blast / Dive / Off Tackle / Sweep
             If ydLine > 80 And score(D, 0) - score(P1, 0) < 3 Or ydLine > 90 And score(D, 0) - score(P1, 0) = 3 Then
                 playCall = Int(Rnd(1) * 4) + 1
@@ -10951,13 +15780,10 @@ Sub ComputerOffense ()
 
         End If
 
-
         'Final Checks
         '-----
-
         8800 '
-        'Overtime and 4th Down
-        'Change to Long Pass
+        'Overtime and 4th Down - Change to Long Pass
         If quarter > 4 And NG%(14) = 3 And currDown = 4 Then
 
             'Punt chosen but score tied
@@ -10965,54 +15791,20 @@ Sub ComputerOffense ()
                 playCall = 12
             End If
 
-            'Punt chosen, Score - Ahead by 3 or less
+            'Punt chosen, Ahead by 3 or less (Off)
             '(ie, if we punt and give the team the ball,
             'they could win by a FG; let's go for it
             If playCall = 19 And score(D, 0) - score(P1, 0) <= 3 Then
                 playCall = 12
             End If
 
-            'Punt or FG chosen, Down by 4 or more
+            'Punt or FG chosen, Down by 4 or more (Off)
             '(ie, we have to try and get a 1st down)
             If (playCall = 19 Or playCall = 20) And score(D, 0) - score(P1, 0) > 3 Then
                 playCall = 12
             End If
 
         End If
-
-
-    Else
-
-        'We should only be here if going for 2
-        Call Rolld100(RN0)
-
-        Select Case RN0
-
-            'Rollout Pass
-            Case 1 To 25:
-                playCall = 17
-
-                ' Medium Pass
-            Case 26 To 50:
-                playCall = 11
-
-                ' Short Pass
-            Case 51 To 70:
-                playCall = 10
-
-                ' Option
-            Case 71 To 80:
-                playCall = 5
-
-                ' Sweep
-            Case 81 To 90:
-                playCall = 4
-
-                ' Off Tackle
-            Case 91 To 100:
-                playCall = 3
-
-        End Select
 
     End If
 
@@ -11498,102 +16290,138 @@ End Sub
 'This subroutine factors in for all the
 'possible reasons a kick would not be
 'returned, and handles PBP for each.
-Sub PuntNotReturned (fairCatchPossible)
+Sub PuntNotReturned (fairCatchPossible, puntType)
 
     isTouchback = 0
 
+    'Let's see where the ball landed
     ydLine = ydLine + ydsGained
     ydsToScore = ydLine
 
     Call YARDLINE
 
+    Call pbplog(13905)
+
+    'Calculating yard line for return team
     ydLine = 100 - ydLine
 
     Call AddPossessionTime(4, 7)
 
-    '47% of Punts
-    RN0 = Int(Rnd(1) * 47) + 1
-    RN1 = Int(Rnd(1) * 4) + 1
+    'RN0 = Int(Rnd(1) * 47) + 1
+    Call Rolld100(RN0)
 
-    If RN0 <= 10 Or I1 = 1 Then
-        '10% go out-of-bounds
-        If RN1 < 3 Then
+    If RN0 <= 8 Or puntType = 1 Then
+
+        RN1 = Int(Rnd(1) * 4) + 1
+
+        'Out-of-bounds
+        If RN1 <= 2 Then
             pbpString$ = "THE BALL GOES OUT OF BOUNDS AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
         Else
             pbpString$ = "THE KICK SOARS OUT OF BOUNDS AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
         End If
+
+        Call pbplog(13921)
+
     Else
-        '12% downed, or inside the team's 15
-        If RN0 <= 22 Or ydLineTeam <= 15 Then
 
-            pbpBall = Int(Rnd(1) * 2) + 1
-            downTeam = Int(Rnd(1) * 2)
-            teamName = Int(Rnd(1) * 2) + 1
+        'Downed or inside the team's 15
+        'If ydLineTeam <= 15 And (RN0 >= 10 And RN0 <= 42) Then
+        If ydLineTeam <= 15 Then
 
-            If downTeam = P1 Then
-                If teamName = 1 Then
-                    recoverTeam$ = gameTeams$(P1)
+            Call pbplog(13929)
+
+            If RN0 <= 45 Then
+
+                Call pbplog(13933)
+
+                pbpBall = Int(Rnd(1) * 2) + 1
+                downTeam = Int(Rnd(1) * 2)
+                teamName = Int(Rnd(1) * 2) + 1
+
+                If downTeam = P1 Then
+                    If teamName = 1 Then
+                        recoverTeam$ = gameTeams$(P1)
+                    Else
+                        recoverTeam$ = gameMascots$(P1)
+                    End If
                 Else
-                    recoverTeam$ = gameMascots$(P1)
+                    If teamName = 1 Then
+                        recoverTeam$ = gameTeams$(D)
+                    Else
+                        recoverTeam$ = gameMascots$(D)
+                    End If
                 End If
-            Else
-                If teamName = 1 Then
-                    recoverTeam$ = gameTeams$(D)
-                Else
-                    recoverTeam$ = gameMascots$(D)
-                End If
-            End If
 
-            If pbpBall = 1 Then
-                pbpString$ = "THE BALL ROLLS PAST THE RETURNER!"
+                If pbpBall = 1 Then
+                    pbpString$ = "THE BALL ROLLS PAST THE RETURNER!"
+                    Call PBP
+                End If
+
+                Select Case RN1
+
+                    Case 1
+                        pbpString$ = "IT IS DOWNED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
+
+                    Case 2
+                        pbpString$ = recoverTeam$ + "DOWNS IT AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
+
+                    Case 3
+                        pbpString$ = "THE BALL IS DOWNED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
+
+                    Case 4
+                        pbpString$ = "DOWNED BY" + recoverTeam$ + "ON THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
+
+                End Select
+
                 Call PBP
+
+                fairCatchPossible = 0
+
+            Else
+
+                'Fair catch outside 15
+                fairCatchPossible = 1
+                Call pbplog(13979)
+
             End If
-
-            Select Case RN1
-
-                Case 1
-                    pbpString$ = "IT IS DOWNED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
-
-                Case 2
-                    pbpString$ = recoverTeam$ + "DOWNS IT AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
-
-                Case 3
-                    pbpString$ = "THE BALL IS DOWNED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
-
-                Case 4
-                    pbpString$ = "DOWNED BY" + recoverTeam$ + "ON THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
-
-            End Select
-
-            Call PBP
 
         Else
-            '25% are fair catch
-            If currDown = 4 And fairCatchPossible = 1 Then
-            
-                pbpString$ = "A FAIR CATCH IS CALLED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
-                
-                If (ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11) Then
-                    'New fair catch rules for NCAA/NFL
-                    isTouchback = 1
-                End If
 
-            End If
+            'Outside the 15, outside fair catch
+            Call pbplog(13985)
+
         End If
+
+    End If
+
+    If fairCatchPossible = 1 And currDown = 4 Then
+
+        Call pbplog(13992)
+        pbpString$ = "A FAIR CATCH IS CALLED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
+
+        If (ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11) Then
+            'Newer rules allow touchback on fair catch
+            isTouchback = 1
+        End If
+
+    Else
+
+        'No fair catch
+        Call pbplog(14000)
+
     End If
 
     Call PBP
 
-    If isTouchback = 0 Then
+    If isTouchback = 1 Then
+        'Punt ended up in end zone
+        Call Touchback
+    Else
         'Punt returned
         Call CHANGEPOSS
         currDown = 1
         ydsToFirst = 10
-        
-    Else
-        'Punt ended up in end zone
-        Call Touchback
-
     End If
 
 End Sub
@@ -11842,30 +16670,33 @@ End Sub
 'ulate if a player has fumbled the ball.
 Sub FUMBLE ()
 
-    Call Rolld100(F8)
+    Call Rolld100(fumbleChance)
 
     If revFumble = 1 Then
 
-        F8 = F8 - 10
+        fumbleChance = fumbleChance - 10
         revFumble = 0
 
     Else
 
-        If F% = 1 Then F8 = F8 - 6
-        If F% = 2 Then F8 = F8 + 1
-        If F% = 4 Then F8 = F8 - 2
-        If F% = 5 Then F8 = F8 + 2
+        If F% = 1 Then fumbleChance = fumbleChance - 6
+        If F% = 2 Then fumbleChance = fumbleChance + 1
+        If F% = 4 Then fumbleChance = fumbleChance - 2
+        If F% = 5 Then fumbleChance = fumbleChance + 2
 
-        If playCall = 1 Then F8 = F8 + 2
-        If playCall = 2 Then F8 = F8 - 1
-        If playCall = 5 Then F8 = F8 - 1
+        If playCall = 1 Then fumbleChance = fumbleChance + 2
+        If playCall = 2 Then fumbleChance = fumbleChance - 1
+        If playCall = 5 Then fumbleChance = fumbleChance - 1
 
     End If
 
-    F8 = F8 - climate(5)
+    fumbleChance = fumbleChance - climate(5)
+    
     F% = 0
 
-    If F8 <= leagRat_GAME(P1, 3) + leagRat_GAME(D, 4) Then ballFumbled = 1
+    If fumbleChance <= leagRat_GAME(P1, 3) + leagRat_GAME(D, 4) Then 
+        ballFumbled = 1
+    End If
 
 End Sub
 
@@ -12134,19 +16965,27 @@ Sub PASSBALL (passChance)
         newRandomNum% = 0
 
         For J = 15 To 10 Step -1
-            If recChance <= wrNumRec(P1, J - 10) Then I3 = J
+            If recChance <= wrNumRec(P1, J - 10) Then
+                I3 = J
+            End If
         Next J
 
         For J = 9 To 0 Step -1
-            If recChance <= rbNumRec(P1, J) Then I3 = J
+            If recChance <= rbNumRec(P1, J) Then
+                I3 = J
+            End If
         Next J
 
         If I3 > 9 Then
-            If wdRec$(P1, I3 - 10) = qbacks$(P1, qbNumber(P1)) Then newRandomNum% = 1
+            If wdRec$(P1, I3 - 10) = qbacks$(P1, qbNumber(P1)) Then
+                newRandomNum% = 1
+            End If
         End If
 
         If I3 < 10 Then
-            If rbacks$(P1, I3) = qbacks$(P1, qbNumber(P1)) Then newRandomNum% = 1
+            If rbacks$(P1, I3) = qbacks$(P1, qbNumber(P1)) Then
+                newRandomNum% = 1
+            End If
         End If
 
     Loop Until newRandomNum% = 0
@@ -12160,7 +16999,11 @@ Sub PASSBALL (passChance)
     Call PBP
     Call PASSPBP
 
-    If I3 > 9 Then targetWRName$ = wdRec$(P1, I3 - 10) Else targetWRName$ = rbacks$(P1, I3)
+    If I3 > 9 Then
+        targetWRName$ = wdRec$(P1, I3 - 10)
+    Else
+        targetWRName$ = rbacks$(P1, I3)
+    End If
 
     RN0 = Int(Rnd(1) * 6) + 1
 
@@ -12272,10 +17115,12 @@ Sub AdjustCompPct ()
     If climate(0) <> P1 Then
 
         If (playCall = 11 Or playCall = 14 Or playCall = 16 Or playCall = 17 Or playCall = 18) Then
+            'Medium Pass
             windCmpAdj = climate(2)
         End If
 
         If (playCall = 12 Or playCall = 15) Then
+            'Long Pass
             windCmpAdj = climate(3) + climate(6)
         End If
 
@@ -12558,40 +17403,81 @@ End Sub
 
 
 '----------------------------------------
-'           FGDIST Subroutine
+'       FieldGoalChance Subroutine
 '----------------------------------------
 'This subroutine calculcates the distance
 'for a FG
-Sub FGDIST ()
+Sub FieldGoalChance ()
 
-    I9 = 0
+    windDist = 0
 
     If climate(0) = P1 Then
-        If climate(1) = -7 Then I9 = -7
-        If climate(1) = -15 Then I9 = -15
+
+        If climate(1) = -7 Then
+            windDist = -5
+        End If
+        If climate(1) = -15 Then
+            windDist = -15
+        End If
+
     Else
-        If climate(1) = -7 Then I9 = 7
-        If climate(1) = -15 Then I9 = 15
+        If climate(1) = -7 Then
+            windDist = 7
+        End If
+        If climate(1) = -15 Then
+            windDist = 15
+        End If
+
     End If
+
+    'Increase average FG% chance for newer eras
+    Select Case teamYears(P1)
+
+        Case 1983 To 2007
+            adjFGPct(0) = 95
+            adjFGPct(1) = 81
+            adjFGPct(2) = 62
+            adjFGPct(3) = 49
+            adjFGPct(4) = 43
+
+        Case Is >= 2008
+            adjFGPct(0) = 98
+            adjFGPct(1) = 91
+            adjFGPct(2) = 76
+
+            adjFGPct(3) = 67
+            adjFGPct(4) = 61
+
+    End Select
+
 
     For I = 4 To 0 Step -1:
 
-        If ydLine >= adjF1(I) + goalPostAdj + I9 Then
-            fgSuccessChance = adjF0(I) - ((9 - kickerFGA(P1, activeKicker(P1))) * 5)
+        If ydLine >= adjFGLine(I) + goalPostAdj + windDist Then
+
+            fgSuccessChance = adjFGPct(I) - ((9 - kickerFGA(P1, activeKicker(P1))) * 5)
+
         End If
 
-        If ydLine >= 68 + goalPostAdj And ydLine >= adjF1(I) + goalPostAdj + I9 Then
-            fgSuccessChance = fgSuccessChance + (ydLine - adjF1(I)) + goalPostAdj - 4 + I9
+        'Inside opponent's 32? (Less than 50 yard attempt)
+        If ydLine >= adjFGLine(I) + goalPostAdj + windDist And ydLine >= 68 + goalPostAdj Then
+            'Adjust success chance based on how far it is from the midpoint of distance range
+            'For example, for 30-39 yd attempts, 35 yd is the midpoint
+            'So success for 35 is the average; 34 yd attempt is +1%; 36 yd is -1%
+            fgSuccessChance = fgSuccessChance + (ydLine - adjFGLine(I)) + goalPostAdj - 4 + windDist
         End If
 
     Next I
 
-    'Force there to always be a 5% chance of failure?
     If fgSuccessChance <= 0 Then
+        'Always a 5% chance success
+        'Data backs this up since even the worst league years,
+        'kickers made 5% of kicks over 50+
         fgSuccessChance = 5
     End If
 
     If fgSuccessChance >= 100 Then
+        'Always a 2% chance failure
         fgSuccessChance = 95
     End If
 
@@ -13449,7 +18335,6 @@ Sub KickoffDistance ()
     End If
 
     kickDist = 100 - ydLine - kickYL
-    'Call pbplog(16088)
 
 End Sub
 
@@ -15552,11 +20437,11 @@ Sub COMPILESTATFILES (teamIdx)
 
     Shared gameAttendance&()
 
-    Shared gamePK$(), oppName$()
+    Shared tradeLPR$(), oppName$()
     Shared gameSite$()
     Shared locIndicator$()
 
-    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
 
     'Determine stat file name
     statFile$ = nameStatFile$(gameTeams$(teamIdx))
@@ -15596,16 +20481,16 @@ Sub COMPILESTATFILES (teamIdx)
 
         For J = 0 To 13:
             For K = 0 To 17:
-                Input #1, gameZ2!(J, K)
+                Input #1, gamePlayerStat!(J, K)
             Next
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ0!(L)
+            Input #1, gameTeamStat!(L)
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ1!(L)
+            Input #1, gameOppStat!(L)
         Next
 
         For J = 0 To 9
@@ -15623,48 +20508,48 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For I = 0 To 9:
-            Input #1, gameLR!(teamIdx, I)
-            Input #1, gameLR$(teamIdx, I, 0)
-            Input #1, gameLR$(teamIdx, I, 1)
+            Input #1, gameLRush!(teamIdx, I)
+            Input #1, gameLRush$(teamIdx, I, 0)
+            Input #1, gameLRush$(teamIdx, I, 1)
         Next
 
         For I = 0 To 15:
-            Input #1, gameLC!(teamIdx, I)
-            Input #1, gameLC$(teamIdx, I, 0)
-            Input #1, gameLC$(teamIdx, I, 1)
+            Input #1, gameLRec!(teamIdx, I)
+            Input #1, gameLRec$(teamIdx, I, 0)
+            Input #1, gameLRec$(teamIdx, I, 1)
         Next
 
         For I = 0 To 3:
-            Input #1, gameLP!(teamIdx, I)
-            Input #1, tradeLP$(teamIdx, I, 0)
-            Input #1, tradeLP$(teamIdx, I, 1)
+            Input #1, gameLPass!(teamIdx, I)
+            Input #1, tradeLPass$(teamIdx, I, 0)
+            Input #1, tradeLPass$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gameLK!(teamIdx, I)
-            Input #1, tradeLK$(teamIdx, I, 0)
-            Input #1, tradeLK$(teamIdx, I, 1)
+            Input #1, gameLKR!(teamIdx, I)
+            Input #1, tradeLKR$(teamIdx, I, 0)
+            Input #1, tradeLKR$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gamePK!(teamIdx, I)
-            Input #1, gamePK$(teamIdx, I, 0)
-            Input #1, gamePK$(teamIdx, I, 1)
+            Input #1, gameLPR!(teamIdx, I)
+            Input #1, tradeLPR$(teamIdx, I, 0)
+            Input #1, tradeLPR$(teamIdx, I, 1)
         Next
 
         For I = 0 To 1:
-            Input #1, gameLF!(teamIdx, I)
-            Input #1, tradeLF$(teamIdx, I)
+            Input #1, gameLFG!(teamIdx, I)
+            Input #1, tradeLFG$(teamIdx, I)
             For I1 = 0 To 4:
-                Input #1, gameAM!(teamIdx, I, I1)
-                Input #1, gameAF!(teamIdx, I, I1)
+                Input #1, gameFGM!(teamIdx, I, I1)
+                Input #1, gameFGA!(teamIdx, I, I1)
             Next
         Next
 
         For I = 0 To 9:
-            Input #1, gameLI!(teamIdx, I)
-            Input #1, tradeLI$(teamIdx, I, 0)
-            Input #1, tradeLI$(teamIdx, I, 1)
+            Input #1, gameLInt!(teamIdx, I)
+            Input #1, tradeLInt$(teamIdx, I, 0)
+            Input #1, tradeLInt$(teamIdx, I, 1)
         Next
 
         Close #1
@@ -15672,150 +20557,151 @@ Sub COMPILESTATFILES (teamIdx)
     End If
 
     For I = 0 To 9
-        If runBacks(teamIdx, I) > gameLR!(teamIdx, I) Then
-            gameLR!(teamIdx, I) = runBacks(teamIdx, I)
-            gameLR$(teamIdx, I, 0) = gameRB$(teamIdx, I)
-            gameLR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If runBacks(teamIdx, I) > gameLRush!(teamIdx, I) Then
+            gameLRush!(teamIdx, I) = runBacks(teamIdx, I)
+            gameLRush$(teamIdx, I, 0) = gameRB$(teamIdx, I)
+            gameLRush$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If IR(teamIdx, I) > gameLI!(teamIdx, I) Then
-            gameLI!(teamIdx, I) = IR(teamIdx, I)
-            tradeLI$(teamIdx, I, 0) = gameIR$(teamIdx, I)
-            tradeLI$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If IR(teamIdx, I) > gameLInt!(teamIdx, I) Then
+            gameLInt!(teamIdx, I) = IR(teamIdx, I)
+            tradeLInt$(teamIdx, I, 0) = gameIR$(teamIdx, I)
+            tradeLInt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 15
-        If WR(teamIdx, I) > gameLC!(teamIdx, I) Then
-            gameLC!(teamIdx, I) = WR(teamIdx, I)
-            gameLC$(teamIdx, I, 0) = gameWR$(teamIdx, I)
-            gameLC$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If WR(teamIdx, I) > gameLRec!(teamIdx, I) Then
+            gameLRec!(teamIdx, I) = WR(teamIdx, I)
+            gameLRec$(teamIdx, I, 0) = gameWR$(teamIdx, I)
+            gameLRec$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 3
-        If quarterbacks(teamIdx, I) > gameLP!(teamIdx, I) Then
-            gameLP!(teamIdx, I) = quarterbacks(teamIdx, I)
-            tradeLP$(teamIdx, I, 0) = gameQB$(teamIdx, I)
-            tradeLP$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If quarterbacks(teamIdx, I) > gameLPass!(teamIdx, I) Then
+            gameLPass!(teamIdx, I) = quarterbacks(teamIdx, I)
+            tradeLPass$(teamIdx, I, 0) = gameQB$(teamIdx, I)
+            tradeLPass$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 2
-        If kickReturners(teamIdx, I) > gameLK!(teamIdx, I) Then
-            gameLK!(teamIdx, I) = kickReturners(teamIdx, I)
-            tradeLK$(teamIdx, I, 0) = gameKR$(teamIdx, I)
-            tradeLK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If kickReturners(teamIdx, I) > gameLKR!(teamIdx, I) Then
+            gameLKR!(teamIdx, I) = kickReturners(teamIdx, I)
+            tradeLKR$(teamIdx, I, 0) = gameKR$(teamIdx, I)
+            tradeLKR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If puntReturners(teamIdx, I) > gamePK!(teamIdx, I) Then
-            gamePK!(teamIdx, I) = puntReturners(teamIdx, I)
-            gamePK$(teamIdx, I, 0) = gamePR$(teamIdx, I)
-            gamePK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If puntReturners(teamIdx, I) > gameLPR!(teamIdx, I) Then
+            gameLPR!(teamIdx, I) = puntReturners(teamIdx, I)
+            tradeLPR$(teamIdx, I, 0) = gamePR$(teamIdx, I)
+            tradeLPR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
-    If gameStatsTeam(teamIdx, 26) > gameZ0!(28) Then
-        gameZ0!(28) = gameStatsTeam(teamIdx, 26)
+    If gameStatsTeam(teamIdx, 26) > gameTeamStat!(28) Then
+        gameTeamStat!(28) = gameStatsTeam(teamIdx, 26)
     End If
 
     For I = 0 To 1
 
-        If gameLongFG(teamIdx, I) > gameLF!(teamIdx, I) Then
-            gameLF!(teamIdx, I) = gameLongFG(teamIdx, I)
-            tradeLF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
+        If gameLongFG(teamIdx, I) > gameLFG!(teamIdx, I) Then
+            gameLFG!(teamIdx, I) = gameLongFG(teamIdx, I)
+            tradeLFG$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
         For I1 = 0 To 4
-            gameAM!(teamIdx, I, I1) = gameAM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
-            gameAF!(teamIdx, I, I1) = gameAF!(teamIdx, I, I1) + FA(teamIdx, I, I1)
+            gameFGM!(teamIdx, I, I1) = gameFGM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
+            gameFGA!(teamIdx, I, I1) = gameFGA!(teamIdx, I, I1) + FA(teamIdx, I, I1)
         Next
 
     Next
 
     For J = 0 To 13
+        test3 = gameStatsPlayer(teamIdx, J, 17)
         For K = 0 To 17:
-            gameZ2!(J, K) = gameZ2!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
+            gamePlayerStat!(J, K) = gamePlayerStat!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
         Next
     Next
 
-    gameZ0!(32) = gameZ0!(32) + score(teamIdx, 1)
-    gameZ0!(33) = gameZ0!(33) + score(teamIdx, 2)
-    gameZ0!(34) = gameZ0!(34) + score(teamIdx, 3)
-    gameZ0!(35) = gameZ0!(35) + score(teamIdx, 4)
+    gameTeamStat!(32) = gameTeamStat!(32) + score(teamIdx, 1)
+    gameTeamStat!(33) = gameTeamStat!(33) + score(teamIdx, 2)
+    gameTeamStat!(34) = gameTeamStat!(34) + score(teamIdx, 3)
+    gameTeamStat!(35) = gameTeamStat!(35) + score(teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ0!(36) = gameZ0!(36) + score(teamIdx, K)
+        gameTeamStat!(36) = gameTeamStat!(36) + score(teamIdx, K)
     Next
 
-    gameZ1!(32) = gameZ1!(32) + score(1 - teamIdx, 1)
-    gameZ1!(33) = gameZ1!(33) + score(1 - teamIdx, 2)
-    gameZ1!(34) = gameZ1!(34) + score(1 - teamIdx, 3)
-    gameZ1!(35) = gameZ1!(35) + score(1 - teamIdx, 4)
+    gameOppStat!(32) = gameOppStat!(32) + score(1 - teamIdx, 1)
+    gameOppStat!(33) = gameOppStat!(33) + score(1 - teamIdx, 2)
+    gameOppStat!(34) = gameOppStat!(34) + score(1 - teamIdx, 3)
+    gameOppStat!(35) = gameOppStat!(35) + score(1 - teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ1!(36) = gameZ1!(36) + score(1 - teamIdx, K)
+        gameOppStat!(36) = gameOppStat!(36) + score(1 - teamIdx, K)
     Next
 
     For J = 0 To 3
-        gameZ0!(17) = gameZ0!(17) + gameStatsPlayer(teamIdx, J, 13)
-        gameZ1!(17) = gameZ1!(17) + gameStatsPlayer(1 - teamIdx, J, 13)
+        gameTeamStat!(17) = gameTeamStat!(17) + gameStatsPlayer(teamIdx, J, 13)
+        gameOppStat!(17) = gameOppStat!(17) + gameStatsPlayer(1 - teamIdx, J, 13)
     Next
 
     For J = 0 To 13
-        gameZ0!(15) = gameZ0!(15) + gameStatsPlayer(teamIdx, J, 2)
-        gameZ1!(15) = gameZ1!(15) + gameStatsPlayer(1 - teamIdx, J, 2)
+        gameTeamStat!(15) = gameTeamStat!(15) + gameStatsPlayer(teamIdx, J, 2)
+        gameOppStat!(15) = gameOppStat!(15) + gameStatsPlayer(1 - teamIdx, J, 2)
     Next
 
     For J = 0 To 2
-        gameZ0!(18) = gameZ0!(18) + gameStatsPlayer(teamIdx, J, 16)
-        gameZ1!(18) = gameZ1!(18) + gameStatsPlayer(1 - teamIdx, J, 16)
-        gameZ0!(22) = gameZ0!(22) + gameStatsPlayer(teamIdx, J, 14)
-        gameZ1!(22) = gameZ1!(22) + gameStatsPlayer(1 - teamIdx, J, 14)
-        gameZ0!(23) = gameZ0!(23) + gameStatsPlayer(teamIdx, J, 15)
-        gameZ1!(23) = gameZ1!(23) + gameStatsPlayer(1 - teamIdx, J, 15)
-        gameZ0!(19) = gameZ0!(19) + gameStatsPlayer(teamIdx, J + 3, 16)
-        gameZ1!(18) = gameZ1!(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
-        gameZ0!(24) = gameZ0!(24) + gameStatsPlayer(teamIdx, J + 3, 14)
-        gameZ1!(24) = gameZ1!(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
-        gameZ0!(25) = gameZ0!(25) + gameStatsPlayer(teamIdx, J + 3, 15)
-        gameZ1!(25) = gameZ1!(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
+        gameTeamStat!(18) = gameTeamStat!(18) + gameStatsPlayer(teamIdx, J, 16)
+        gameOppStat!(18) = gameOppStat!(18) + gameStatsPlayer(1 - teamIdx, J, 16)
+        gameTeamStat!(22) = gameTeamStat!(22) + gameStatsPlayer(teamIdx, J, 14)
+        gameOppStat!(22) = gameOppStat!(22) + gameStatsPlayer(1 - teamIdx, J, 14)
+        gameTeamStat!(23) = gameTeamStat!(23) + gameStatsPlayer(teamIdx, J, 15)
+        gameOppStat!(23) = gameOppStat!(23) + gameStatsPlayer(1 - teamIdx, J, 15)
+        gameTeamStat!(19) = gameTeamStat!(19) + gameStatsPlayer(teamIdx, J + 3, 16)
+        gameOppStat!(18) = gameOppStat!(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
+        gameTeamStat!(24) = gameTeamStat!(24) + gameStatsPlayer(teamIdx, J + 3, 14)
+        gameOppStat!(24) = gameOppStat!(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
+        gameTeamStat!(25) = gameTeamStat!(25) + gameStatsPlayer(teamIdx, J + 3, 15)
+        gameOppStat!(25) = gameOppStat!(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
     Next
 
     For J = 0 To 9
-        gameZ0!(20) = gameZ0!(20) + gameInts(teamIdx, J, 2)
-        gameZ1!(20) = gameZ1!(20) + gameInts(1 - teamIdx, J, 2)
-        gameZ0!(26) = gameZ0!(26) + gameInts(teamIdx, J, 0)
-        gameZ1!(26) = gameZ1!(26) + gameInts(1 - teamIdx, J, 0)
-        gameZ0!(27) = gameZ0!(27) + gameInts(teamIdx, J, 1)
-        gameZ1!(27) = gameZ1!(27) + gameInts(1 - teamIdx, J, 1)
+        gameTeamStat!(20) = gameTeamStat!(20) + gameInts(teamIdx, J, 2)
+        gameOppStat!(20) = gameOppStat!(20) + gameInts(1 - teamIdx, J, 2)
+        gameTeamStat!(26) = gameTeamStat!(26) + gameInts(teamIdx, J, 0)
+        gameOppStat!(26) = gameOppStat!(26) + gameInts(1 - teamIdx, J, 0)
+        gameTeamStat!(27) = gameTeamStat!(27) + gameInts(teamIdx, J, 1)
+        gameOppStat!(27) = gameOppStat!(27) + gameInts(1 - teamIdx, J, 1)
     Next
 
-    gameZ0!(21) = gameZ0!(21) + gameStatsTeam(teamIdx, 19)
-    gameZ1!(21) = gameZ1!(21) + gameStatsTeam(1 - teamIdx, 19)
-    gameZ0!(37) = gameZ0!(37) + gameStatsTeam(teamIdx, 35)
-    gameZ1!(37) = gameZ1!(37) + gameStatsTeam(1 - teamIdx, 35)
-    gameZ0!(38) = gameZ0!(38) + gameStatsTeam(teamIdx, 36)
-    gameZ1!(38) = gameZ1!(38) + gameStatsTeam(1 - teamIdx, 36)
-    gameZ0!(30) = gameZ0!(30) + gameStatsTeam(teamIdx, 28)
-    gameZ1!(30) = gameZ1!(30) + gameStatsTeam(1 - teamIdx, 28)
-    gameZ0!(29) = gameZ0!(29) + gameStatsTeam(teamIdx, 27)
-    gameZ1!(29) = gameZ1!(29) + gameStatsTeam(1 - teamIdx, 27)
-    gameZ0!(31) = gameZ0!(31) + gameStatsTeam(teamIdx, 29)
-    gameZ1!(31) = gameZ1!(31) + gameStatsTeam(1 - teamIdx, 29)
+    gameTeamStat!(21) = gameTeamStat!(21) + gameStatsTeam(teamIdx, 19)
+    gameOppStat!(21) = gameOppStat!(21) + gameStatsTeam(1 - teamIdx, 19)
+    gameTeamStat!(37) = gameTeamStat!(37) + gameStatsTeam(teamIdx, 35)
+    gameOppStat!(37) = gameOppStat!(37) + gameStatsTeam(1 - teamIdx, 35)
+    gameTeamStat!(38) = gameTeamStat!(38) + gameStatsTeam(teamIdx, 36)
+    gameOppStat!(38) = gameOppStat!(38) + gameStatsTeam(1 - teamIdx, 36)
+    gameTeamStat!(30) = gameTeamStat!(30) + gameStatsTeam(teamIdx, 28)
+    gameOppStat!(30) = gameOppStat!(30) + gameStatsTeam(1 - teamIdx, 28)
+    gameTeamStat!(29) = gameTeamStat!(29) + gameStatsTeam(teamIdx, 27)
+    gameOppStat!(29) = gameOppStat!(29) + gameStatsTeam(1 - teamIdx, 27)
+    gameTeamStat!(31) = gameTeamStat!(31) + gameStatsTeam(teamIdx, 29)
+    gameOppStat!(31) = gameOppStat!(31) + gameStatsTeam(1 - teamIdx, 29)
 
     For L = 0 To 12:
-        gameZ0!(L) = gameZ0!(L) + gameStatsTeam(teamIdx, L)
+        gameTeamStat!(L) = gameTeamStat!(L) + gameStatsTeam(teamIdx, L)
     Next
 
     For L = 0 To 12:
-        gameZ1!(L) = gameZ1!(L) + gameStatsTeam(1 - teamIdx, L)
+        gameOppStat!(L) = gameOppStat!(L) + gameStatsTeam(1 - teamIdx, L)
     Next
 
-    gameZ0!(13) = gameZ0!(13) + sackStatsTeam(teamIdx, 0)
-    gameZ0!(14) = gameZ0!(14) + sackStatsTeam(teamIdx, 1)
-    gameZ1!(13) = gameZ1!(13) + sackStatsTeam(1 - teamIdx, 0)
-    gameZ1!(14) = gameZ1!(14) + sackStatsTeam(1 - teamIdx, 1)
+    gameTeamStat!(13) = gameTeamStat!(13) + sackStatsTeam(teamIdx, 0)
+    gameTeamStat!(14) = gameTeamStat!(14) + sackStatsTeam(teamIdx, 1)
+    gameOppStat!(13) = gameOppStat!(13) + sackStatsTeam(1 - teamIdx, 0)
+    gameOppStat!(14) = gameOppStat!(14) + sackStatsTeam(1 - teamIdx, 1)
 
     For J = 0 To 9
         For J1 = 0 To 2
@@ -15869,16 +20755,16 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Print #2, gameZ2!(J, K)
+            Print #2, gamePlayerStat!(J, K)
         Next
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ0!(L)
+        Print #2, gameTeamStat!(L)
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ1!(L)
+        Print #2, gameOppStat!(L)
     Next
 
     For J = 0 To 9
@@ -15896,48 +20782,48 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For I = 0 To 9:
-        Print #2, gameLR!(teamIdx, I)
-        Print #2, gameLR$(teamIdx, I, 0)
-        Print #2, gameLR$(teamIdx, I, 1)
+        Print #2, gameLRush!(teamIdx, I)
+        Print #2, gameLRush$(teamIdx, I, 0)
+        Print #2, gameLRush$(teamIdx, I, 1)
     Next
 
     For I = 0 To 15:
-        Print #2, gameLC!(teamIdx, I)
-        Print #2, gameLC$(teamIdx, I, 0)
-        Print #2, gameLC$(teamIdx, I, 1)
+        Print #2, gameLRec!(teamIdx, I)
+        Print #2, gameLRec$(teamIdx, I, 0)
+        Print #2, gameLRec$(teamIdx, I, 1)
     Next
 
     For I = 0 To 3:
-        Print #2, gameLP!(teamIdx, I)
-        Print #2, tradeLP$(teamIdx, I, 0)
-        Print #2, tradeLP$(teamIdx, I, 1)
+        Print #2, gameLPass!(teamIdx, I)
+        Print #2, tradeLPass$(teamIdx, I, 0)
+        Print #2, tradeLPass$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gameLK!(teamIdx, I)
-        Print #2, tradeLK$(teamIdx, I, 0)
-        Print #2, tradeLK$(teamIdx, I, 1)
+        Print #2, gameLKR!(teamIdx, I)
+        Print #2, tradeLKR$(teamIdx, I, 0)
+        Print #2, tradeLKR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gamePK!(teamIdx, I)
-        Print #2, gamePK$(teamIdx, I, 0)
-        Print #2, gamePK$(teamIdx, I, 1)
+        Print #2, gameLPR!(teamIdx, I)
+        Print #2, tradeLPR$(teamIdx, I, 0)
+        Print #2, tradeLPR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
-        Print #2, gameLF!(teamIdx, I)
-        Print #2, tradeLF$(teamIdx, I)
+        Print #2, gameLFG!(teamIdx, I)
+        Print #2, tradeLFG$(teamIdx, I)
         For I1 = 0 To 4:
-            Print #2, gameAM!(teamIdx, I, I1)
-            Print #2, gameAF!(teamIdx, I, I1)
+            Print #2, gameFGM!(teamIdx, I, I1)
+            Print #2, gameFGA!(teamIdx, I, I1)
         Next
     Next
 
     For I = 0 To 9:
-        Print #2, gameLI!(teamIdx, I)
-        Print #2, tradeLI$(teamIdx, I, 0)
-        Print #2, tradeLI$(teamIdx, I, 1)
+        Print #2, gameLInt!(teamIdx, I)
+        Print #2, tradeLInt$(teamIdx, I, 0)
+        Print #2, tradeLInt$(teamIdx, I, 1)
     Next
 
     Close #2
@@ -16050,7 +20936,7 @@ Sub COMPILESTATFILES (teamIdx)
     Erase teamScore
     Erase gameAttendance&
     Erase locIndicator$, oppName$, gameSite$
-    Erase gameZ0!, gameZ1!, gameZ2!
+    Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
 
 End Sub
 
@@ -16067,16 +20953,15 @@ End Sub
 Sub pbplog (lineNumber)
 
 
-    Print #11, "Called from line "; lineNumber
-    Print #11, gameTeams$(0); " vs "; gameTeams$(1)
-    Print #11, "Kickoff from"; ydLine
-    Print #11, "Distance - "; kickDist; "yards"
-    Print #11, "Yardline - "; kickYL
+    'Print #11, "Called from line "; lineNumber
+    Print #11, lineNumber, ydLine, ydsToFirst, fgAttLine, gameClock!, score(P1, 0), score(D, 0)
+    'Print #11, gameTeams$(0); " vs "; gameTeams$(1)
+    'Print #11, "Kickoff!"; ydLine
     'ydsToScore = 100 - ydLine
     'ydLineTeam = ydsToScore - (ydsToScore > 50) * (100 - ydsToScore - ydsToScore)
     'Print #11, downDesc$(currDown); " down and"; ydsToFirst; "at the"; ydLineTeam
     'Print #11, pbpString$
-    Print #11,
+    'Print #11,
 
 End Sub
 
@@ -16417,7 +21302,7 @@ Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx, dataOK)
     If CheckString%(targetTeam$) = 1 Then
     
         dataOK = 0
-        
+
     Else
 
         If Left$(gameMascots$(gameIdx), 1) = " " Or gameMascots$(gameIdx) = "" Then

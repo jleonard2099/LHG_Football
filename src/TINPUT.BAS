@@ -7,7 +7,7 @@ Sub InputTeam ()
 
     Dim A1!(9), B3!(1)
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
     
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -31,26 +31,26 @@ Sub InputTeam ()
         Locate 2: Input " 2. DISK ID "; teamYear$
         Locate 3: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; team$
         Locate 4: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; mascot$
-        Locate 5: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
-        Locate 6: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
-        Locate 7: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
-        Locate 8: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
-        Locate 9: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
-        Locate 10: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
-        Locate 11: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+        Locate 5: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
+        Locate 6: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
+        Locate 7: Input " 7. DEF INT % ADJ "; leagueRatings(2)
+        Locate 8: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
+        Locate 9: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
+        Locate 10: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
+        Locate 11: Input "11. DEF SACK ADJ "; leagueRatings(6)
         Locate 12: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
-        Locate 13: Input "13. TM PENALTY ADJ "; teamRatings%(0)
-        Locate 14: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
-        Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
-        Locate 16: Input "16. POWER RATING "; teamRatings%(4)
-        Locate 17: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
-        Locate 18: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+        Locate 13: Input "13. TM PENALTY ADJ "; teamRatings(0)
+        Locate 14: Input "14. OFF RUN/PASS % "; leagueRatings(7)
+        Locate 15: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
+        Locate 16: Input "16. POWER RATING "; teamRatings(4)
+        Locate 17: Input "17. TEXT COLOR (0-15) "; teamRatings(2)
+        Locate 18: Input "18. BACKGROUND COLOR (0-7) "; teamRatings(1)
 
-        If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+        If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
             Locate 17, 37
             Print "TEAM APPEARANCE: ";
             Locate 18, 37
-            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+            Color teamRatings(2), teamRatings(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
             Color 15, 0
         End If
 
@@ -91,37 +91,37 @@ Sub InputTeam ()
 
                     Case 5
                         Locate 5, 18: Print Space$(10)
-                        Locate 5, 1: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
+                        Locate 5, 1: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
                         Locate 5, 18: Print " "
 
                     Case 6
                         Locate 6, 20: Print Space$(10)
-                        Locate 6, 1: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
+                        Locate 6, 1: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
                         Locate 6, 20: Print " "
 
                     Case 7
                         Locate 7, 19: Print Space$(10)
-                        Locate 7, 1: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
+                        Locate 7, 1: Input " 7. DEF INT % ADJ "; leagueRatings(2)
                         Locate 7, 19: Print " "
 
                     Case 8
                         Locate 8, 19: Print Space$(10)
-                        Locate 8, 1: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
+                        Locate 8, 1: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
                         Locate 8, 19: Print " "
 
                     Case 9
                         Locate 9, 23: Print Space$(10)
-                        Locate 9, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
+                        Locate 9, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
                         Locate 9, 23: Print " "
 
                     Case 10
                         Locate 10, 26: Print Space$(10)
-                        Locate 10, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
+                        Locate 10, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
                         Locate 10, 26: Print " "
 
                     Case 11
                         Locate 11, 18: Print Space$(10)
-                        Locate 11, 1: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+                        Locate 11, 1: Input "11. DEF SACK ADJ "; leagueRatings(6)
                         Locate 11, 18: Print " "
 
                     Case 12
@@ -131,47 +131,47 @@ Sub InputTeam ()
 
                     Case 13
                         Locate 13, 20: Print Space$(10)
-                        Locate 13, 1: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                        Locate 13, 1: Input "13. TM PENALTY ADJ "; teamRatings(0)
                         Locate 13, 20: Print " "
 
                     Case 14
                         Locate 14, 20: Print Space$(10)
-                        Locate 14, 1: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                        Locate 14, 1: Input "14. OFF RUN/PASS % "; leagueRatings(7)
                         Locate 14, 20: Print " "
 
                     Case 15
                         Locate 15, 32: Print Space$(10)
-                        Locate 15, 1: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                        Locate 15, 1: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
                         Locate 15, 32: Print " "
 
                     Case 16
                         Locate 16, 18: Print Space$(10)
-                        Locate 16, 1: Input "16. POWER RATING "; teamRatings%(4)
+                        Locate 16, 1: Input "16. POWER RATING "; teamRatings(4)
                         Locate 16, 18: Print " "
 
                     Case 17
                         Locate 17, 23: Print Space$(10)
-                        Locate 17, 1: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
+                        Locate 17, 1: Input "17. TEXT COLOR (0-15) "; teamRatings(2)
                         Locate 17, 23: Print " "
 
-                        If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                        If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                             Locate 17, 37
                             Print "TEAM APPEARANCE: ";
                             Locate 18, 37
-                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                            Color teamRatings(2), teamRatings(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                             Color 15, 0
                         End If
 
                     Case 18
                         Locate 18, 28: Print Space$(10)
-                        Locate 18, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                        Locate 18, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings(1)
                         Locate 18, 29: Print " "
 
-                        If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                        If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                             Locate 17, 37
                             Print "TEAM APPEARANCE: ";
                             Locate 18, 37
-                            Color teamRatings%(2), teamRatings%(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                            Color teamRatings(2), teamRatings(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
                             Color 15, 0
                         End If
 
@@ -894,8 +894,8 @@ Sub InputTeam ()
         ydsCompAdj = X
 
         If D9 > 0 Then 
-            leagueRatings%(0) = leagueRatings%(0) + D9
-            leagueRatings%(1) = leagueRatings%(1) + D9
+            leagueRatings(0) = leagueRatings(0) + D9
+            leagueRatings(1) = leagueRatings(1) + D9
         End If
 
         Call SaveTeam(team$, mascot$, teamYear$, teamNumber, teamAttendance&)
@@ -928,7 +928,7 @@ Sub SaveTeam (team$, mascot$, teamYear$, teamNumber, teamAttendance&)
 
     Shared mascot$, stadium$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
     
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -993,11 +993,11 @@ Sub SaveTeam (team$, mascot$, teamYear$, teamNumber, teamAttendance&)
     LSet Q$(2) = mascot$
 
     For I = 0 To 7: 
-        LSet Q$(I + 3) = MKI$(leagueRatings%(I))
+        LSet Q$(I + 3) = MKI$(leagueRatings(I))
     Next I
     
     For I = 0 To 4: 
-        LSet Q$(I + 11) = MKI$(teamRatings%(I))
+        LSet Q$(I + 11) = MKI$(teamRatings(I))
     Next I
 
     For I = 0 To 9
@@ -1078,7 +1078,7 @@ Sub SaveTeam (team$, mascot$, teamYear$, teamNumber, teamAttendance&)
     Close #3
 
     'Reset everything
-    Erase leagueRatings%
+    Erase leagueRatings
 
     Erase armRating, compPct, passContrib, qbIntPct
     Erase krRetAvg, krContrib, prRetAvg, prContrib

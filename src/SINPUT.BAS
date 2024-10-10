@@ -8,19 +8,21 @@ Sub EditStats ()
 
     _Title "3-in-1 Football - Stats Input"
 
-    Shared statsGI%(), statsGS%()
+    Shared playerStats!(), teamStats!()
 
-    Shared statsAF!(), statsAM!(), teamStats!(), playerStats!()
-    Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!(), statsPK!()
-    Shared statsZ!(), statsZ1!(), statsZ2!
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!(), statsLPR!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!
+
+    Shared statsGI(), statsGS()
 
     Dim sackStats!(1, 1)
 
     Shared intName$(), sackName$()
-    Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$()
-    Shared lookyPRet$(), lookyPunter$(), lookyKicker$()
+    Shared rbName$(), wrName$(), qbName$(), krName$()
+    Shared prName$(), punterName$(), pkName$()
 
-    Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$(), statsPK$()
+    Shared statsLRec$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$(), statsLPR$()
 
     teamNbr = 0
     Call ChooseTeam(YN$, NTMS, teamNbr, team$)
@@ -44,126 +46,126 @@ Sub EditStats ()
         Input #1, teamName$
 
         For I = 0 To 9:
-            Input #1, lookyRBacks$(I)
+            Input #1, rbName$(I)
         Next I
 
         For I = 0 To 5:
-            Input #1, lookyWdRec$(I)
+            Input #1, wrName$(I)
         Next I
 
         For I = 0 To 3:
-            Input #1, lookyQBacks$(I)
+            Input #1, qbName$(I)
         Next I
 
         For I = 0 To 2:
-            Input #1, lookyKickRet$(I)
+            Input #1, krName$(I)
         Next I
 
         For I = 0 To 2
-            Input #1, lookyPRet$(I)
+            Input #1, prName$(I)
         Next I
 
-        Input #1, lookyPunter$(0)
+        Input #1, punterName$(0)
 
         For I = 0 To 1:
-            Input #1, lookyKicker$(I)
+            Input #1, pkName$(I)
         Next I
 
         For J = 0 To 13
 
             For K = 0 To 17:
-                Input #1, statsZ2!(J, K)
+                Input #1, statsPlayers!(J, K)
             Next K
 
         Next J
 
         For L = 0 To 38:
-            Input #1, statsZ!(L)
+            Input #1, statsTeam!(L)
         Next L
 
         For L = 0 To 38:
-            Input #1, statsZ1!(L)
+            Input #1, statsOpp!(L)
         Next L
 
         For J = 0 To 9:
             Input #1, intName$(J)
             For J1 = 0 To 2
-                Input #1, statsGI%(J, J1)
+                Input #1, statsGI(J, J1)
             Next J1
         Next
 
         For J = 0 To 14:
             Input #1, sackName$(J)
             For J1 = 0 To 1
-                Input #1, statsGS%(J, J1)
+                Input #1, statsGS(J, J1)
             Next J1
         Next
 
         For I = 0 To 9:
-            Input #1, statsLR!(I)
-            Input #1, statsLR$(I, 0)
-            Input #1, statsLR$(I, 1)
+            Input #1, statsLRush!(I)
+            Input #1, statsLRush$(I, 0)
+            Input #1, statsLRush$(I, 1)
         Next
 
         For I = 0 To 15:
-            Input #1, statsLC!(I)
-            Input #1, statsLC$(I, 0)
-            Input #1, statsLC$(I, 1)
+            Input #1, statsLRec!(I)
+            Input #1, statsLRec$(I, 0)
+            Input #1, statsLRec$(I, 1)
         Next
 
         For I = 0 To 3:
-            Input #1, statsLP!(I)
-            Input #1, statsLP$(I, 0)
-            Input #1, statsLP$(I, 1)
+            Input #1, statsLPass!(I)
+            Input #1, statsLPass$(I, 0)
+            Input #1, statsLPass$(I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, statsLK!(I)
-            Input #1, statsLK$(I, 0)
-            Input #1, statsLK$(I, 1)
+            Input #1, statsLKR!(I)
+            Input #1, statsLKR$(I, 0)
+            Input #1, statsLKR$(I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, statsPK!(I)
-            Input #1, statsPK$(I, 0)
-            Input #1, statsPK$(I, 1)
+            Input #1, statsLPR!(I)
+            Input #1, statsLPR$(I, 0)
+            Input #1, statsLPR$(I, 1)
         Next
 
         For I = 0 To 1:
-            Input #1, statsLF!(I)
-            Input #1, statsLF$(I)
+            Input #1, statsLFG!(I)
+            Input #1, statsLFG$(I)
             For I1 = 0 To 4:
-                Input #1, statsAM!(I, I1)
-                Input #1, statsAF!(I, I1)
+                Input #1, statsFGM!(I, I1)
+                Input #1, statsFGA!(I, I1)
             Next
         Next
 
         For I = 0 To 9:
-            Input #1, statsLI!(I)
-            Input #1, statsLI$(I, 0)
-            Input #1, statsLI$(I, 1)
+            Input #1, statsLInt!(I)
+            Input #1, statsLInt$(I, 0)
+            Input #1, statsLInt$(I, 1)
         Next
 
         Close #1
 
         For J = 0 To 13
             For K = 0 To 17:
-                playerStats!(J, K) = statsZ2!(J, K)
+                playerStats!(J, K) = statsPlayers!(J, K)
             Next K
         Next J
 
         For L = 0 To 12:
-            teamStats!(0, L) = statsZ!(L)
+            teamStats!(0, L) = statsTeam!(L)
         Next L
 
         For L = 0 To 12:
-            teamStats!(1, L) = statsZ1!(L)
+            teamStats!(1, L) = statsOpp!(L)
         Next L
 
-        sackStats!(0, 0) = statsZ!(13)
-        sackStats!(0, 1) = statsZ!(14)
-        sackStats!(1, 0) = statsZ1!(13)
-        sackStats!(1, 1) = statsZ1!(14)
+        sackStats!(0, 0) = statsTeam!(13)
+        sackStats!(0, 1) = statsTeam!(14)
+        sackStats!(1, 0) = statsOpp!(13)
+        sackStats!(1, 1) = statsOpp!(14)
 
         '---------------
         ' Team Offense
@@ -418,7 +420,7 @@ Sub EditStats ()
 
             For I1 = 0 To 9:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyRBacks$(I1)
+                Print " "; rbName$(I1)
             Next
 
             Do
@@ -434,7 +436,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyRBacks$(I)
+                Print "1. NAME  "; rbName$(I)
                 Print "2. RUSHING ATTEMPTS "; playerStats!(I, 0)
                 Print "3. RUSHING YARDAGE "; Int(playerStats!(I, 1))
                 Print "4. RUSHING TD'S "; playerStats!(I, 2)
@@ -452,7 +454,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyRBacks$(I1)
+                            Locate 4, 1: Input "1. NAME "; rbName$(I1)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -509,7 +511,7 @@ Sub EditStats ()
 
             For I1 = 0 To 5:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyWdRec$(I1)
+                Print " "; wrName$(I1)
             Next
 
             Do
@@ -525,7 +527,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyWdRec$(I)
+                Print "1. NAME  "; wrName$(I)
                 Print "2. RECEPTIONS "; playerStats!(I, 6)
                 Print "3. RECEIVING YARDAGE "; Int(playerStats!(I, 7))
                 Print "4. RECEIVING TD'S "; playerStats!(I, 8)
@@ -540,7 +542,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyWdRec$(I)
+                            Locate 4, 1: Input "1. NAME "; wrName$(I)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -582,7 +584,7 @@ Sub EditStats ()
 
             For I1 = 0 To 3:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyQBacks$(I1)
+                Print " "; qbName$(I1)
             Next
 
             Do
@@ -598,7 +600,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyQBacks$(I)
+                Print "1. NAME  "; qbName$(I)
                 Print "2. PASSES THROWN "; playerStats!(I, 9)
                 Print "3. PASSES COMPLETED "; playerStats!(I, 10)
                 Print "4. PASSES INTERCEPTED "; playerStats!(I, 11)
@@ -615,7 +617,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyQBacks$(I)
+                            Locate 4, 1: Input "1. NAME "; qbName$(I)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -667,7 +669,7 @@ Sub EditStats ()
 
             For I1 = 0 To 2:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyKickRet$(I1)
+                Print " "; krName$(I1)
             Next
 
             Do
@@ -683,7 +685,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyKickRet$(I)
+                Print "1. NAME  "; krName$(I)
                 Print "2. KICKS RETURNED "; playerStats!(I, 14)
                 Print "3. KICK RETURN YARDAGE "; Int(playerStats!(I, 15))
                 Print "4. KICK RETURN TD'S "; playerStats!(I, 16)
@@ -698,7 +700,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyKickRet$(I)
+                            Locate 4, 1: Input "1. NAME "; krName$(I)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -740,7 +742,7 @@ Sub EditStats ()
 
             For I1 = 3 To 5:
                 Print Using "##"; I1 - 2;
-                Print " "; lookyPRet$(I1 - 3)
+                Print " "; prName$(I1 - 3)
             Next
 
             Do
@@ -756,7 +758,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyPRet$(I - 3)
+                Print "1. NAME  "; prName$(I - 3)
                 Print "2. PUNTS RETURNED "; playerStats!(I, 14)
                 Print "3. PUNT RETURN YARDAGE "; Int(playerStats!(I, 15))
                 Print "4. PUNT RETURN TD'S "; playerStats!(I, 16)
@@ -771,7 +773,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyPRet$(I - 2)
+                            Locate 4, 1: Input "1. NAME "; prName$(I - 2)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -809,7 +811,7 @@ Sub EditStats ()
         Call Title_EDITSTATS(2, X$)
 
         Locate 4, 1
-        Print "1. NAME  "; lookyPunter$(0)
+        Print "1. NAME  "; punterName$(0)
         Print "2. PUNTS "; teamStats!(0, 7)
         Print "3. TOTAL PUNT YARDAGE "; Int(teamStats!(0, 8))
 
@@ -823,7 +825,7 @@ Sub EditStats ()
             Select Case B9
 
                 Case 1
-                    Locate 4, 1: Input "1. NAME "; lookyPunter$(0)
+                    Locate 4, 1: Input "1. NAME "; punterName$(0)
                     Locate 4, 9: Print " "
 
                 Case 2
@@ -856,7 +858,7 @@ Sub EditStats ()
 
             For I1 = 0 To 1:
                 Print Using "##"; I1 + 1;
-                Print " "; lookyKicker$(I1)
+                Print " "; pkName$(I1)
             Next
 
             Do
@@ -872,7 +874,7 @@ Sub EditStats ()
                 Call Title_EDITSTATS(2, X$)
 
                 Locate 4, 1
-                Print "1. NAME  "; lookyKicker$(I)
+                Print "1. NAME  "; pkName$(I)
                 Print "2. FIELD GOALS ATT "; playerStats!(4 + I * 4, 17)
                 Print "3. FIELD GOALS MADE "; playerStats!(3 + I * 4, 17)
                 Print "4. EXTRA POINTS ATT "; playerStats!(6 + I * 4, 17)
@@ -888,7 +890,7 @@ Sub EditStats ()
                     Select Case B9
 
                         Case 1
-                            Locate 4, 1: Input "1. NAME "; lookyKicker$(I)
+                            Locate 4, 1: Input "1. NAME "; pkName$(I)
                             Locate 4, 9: Print " "
 
                         Case 2
@@ -928,22 +930,22 @@ Sub EditStats ()
         '-------------------------
         For J = 0 To 13
             For K = 0 To 17
-                statsZ2!(J, K) = playerStats!(J, K)
+                statsPlayers!(J, K) = playerStats!(J, K)
             Next K
         Next J
 
         For L = 0 To 12:
-            statsZ!(L) = teamStats!(0, L)
+            statsTeam!(L) = teamStats!(0, L)
         Next L
 
         For L = 0 To 12:
-            statsZ1!(L) = teamStats!(1, L)
+            statsOpp!(L) = teamStats!(1, L)
         Next L
 
-        statsZ!(13) = sackStats!(0, 0)
-        statsZ!(14) = sackStats!(0, 1)
-        statsZ1!(13) = sackStats!(1, 0)
-        statsZ1!(14) = sackStats!(1, 1)
+        statsTeam!(13) = sackStats!(0, 0)
+        statsTeam!(14) = sackStats!(0, 1)
+        statsOpp!(13) = sackStats!(1, 0)
+        statsOpp!(14) = sackStats!(1, 1)
         
 
         '---------------
@@ -954,102 +956,102 @@ Sub EditStats ()
         Print #1, teamName$
 
         For I = 0 To 9:
-            Print #1, lookyRBacks$(I)
+            Print #1, rbName$(I)
         Next I
 
         For I = 0 To 5:
-            Print #1, lookyWdRec$(I)
+            Print #1, wrName$(I)
         Next I
 
         For I = 0 To 3:
-            Print #1, lookyQBacks$(I)
+            Print #1, qbName$(I)
         Next I
 
         For I = 0 To 2:
-            Print #1, lookyKickRet$(I)
+            Print #1, krName$(I)
         Next I
 
         For I = 0 To 2:
-            Print #1, lookyPRet$(I)
+            Print #1, prName$(I)
         Next I
 
-        Print #1, lookyPunter$(0)
+        Print #1, punterName$(0)
 
         For I = 0 To 1:
-            Print #1, lookyKicker$(I)
+            Print #1, pkName$(I)
         Next I
 
         For J = 0 To 13
             For K = 0 To 17:
-                Print #1, statsZ2!(J, K)
+                Print #1, statsPlayers!(J, K)
             Next K
         Next J
 
         For L = 0 To 38:
-            Print #1, statsZ!(L)
+            Print #1, statsTeam!(L)
         Next L
 
         For L = 0 To 38:
-            Print #1, statsZ1!(L)
+            Print #1, statsOpp!(L)
         Next L
 
         For J = 0 To 9:
             Print #1, intName$(J)
             For J1 = 0 To 2
-                Print #1, statsGI%(J, J1)
+                Print #1, statsGI(J, J1)
             Next J1
         Next
 
         For J = 0 To 14:
             Print #1, sackName$(J)
             For J1 = 0 To 1
-                Print #1, statsGS%(J, J1)
+                Print #1, statsGS(J, J1)
             Next J1
         Next
 
         For I = 0 To 9:
-            Print #1, statsLR!(I)
-            Print #1, statsLR$(I, 0)
-            Print #1, statsLR$(I, 1)
+            Print #1, statsLRush!(I)
+            Print #1, statsLRush$(I, 0)
+            Print #1, statsLRush$(I, 1)
         Next
 
         For I = 0 To 15:
-            Print #1, statsLC!(I)
-            Print #1, statsLC$(I, 0)
-            Print #1, statsLC$(I, 1)
+            Print #1, statsLRec!(I)
+            Print #1, statsLRec$(I, 0)
+            Print #1, statsLRec$(I, 1)
         Next
 
         For I = 0 To 3:
-            Print #1, statsLP!(I)
-            Print #1, statsLP$(I, 0)
-            Print #1, statsLP$(I, 1)
+            Print #1, statsLPass!(I)
+            Print #1, statsLPass$(I, 0)
+            Print #1, statsLPass$(I, 1)
         Next
 
         For I = 0 To 2:
-            Print #1, statsLK!(I)
-            Print #1, statsLK$(I, 0)
-            Print #1, statsLK$(I, 1)
+            Print #1, statsLKR!(I)
+            Print #1, statsLKR$(I, 0)
+            Print #1, statsLKR$(I, 1)
         Next
 
         For I = 0 To 2:
-            Print #1, statsPK!(I)
-            Print #1, statsPK$(I, 0)
-            Print #1, statsPK$(I, 1)
+            Print #1, statsLPR!(I)
+            Print #1, statsLPR$(I, 0)
+            Print #1, statsLPR$(I, 1)
         Next
 
         For I = 0 To 1:
-            Print #1, statsLF!(I)
-            Print #1, statsLF$(I)
+            Print #1, statsLFG!(I)
+            Print #1, statsLFG$(I)
             For I1 = 0 To 4:
-                Print #1, statsAM!(I, I1)
-                Print #1, statsAF!(I, I1)
+                Print #1, statsFGM!(I, I1)
+                Print #1, statsFGA!(I, I1)
             Next
         Next
 
         For I = 0 To 9:
-            Print #1, statsLI!(I)
-            Print #1, statsLI$(I, 0)
-            Print #1, statsLI$(I, 1)
+            Print #1, statsLInt!(I)
+            Print #1, statsLInt$(I, 0)
+            Print #1, statsLInt$(I, 1)
         Next
 
         Close #1

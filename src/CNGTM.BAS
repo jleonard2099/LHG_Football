@@ -103,7 +103,7 @@ Sub PrintRoster (printDest, destFile$, teamName$)
 
     Shared teamAttendance&
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -124,24 +124,24 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     ' *** PRINT TEAM ROSTER ***
     Print #1, "TEAM ROSTER FOR "; teamName$; " "; mascot$
     Print #1,
-    Print #1, Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
-    Print #1, Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
-    Print #1, Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
-    Print #1, Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
-    Print #1, Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
-    Print #1, Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
-    Print #1, Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
+    Print #1, Using "DEF RUSH ADJ   = ###"; leagueRatings(0);
+    Print #1, Tab(35); Using "SACKED %         = ##"; leagueRatings(5)
+    Print #1, Using "DEF COMP % ADJ = ###"; leagueRatings(1);
+    Print #1, Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings(6)
+    Print #1, Using "DEF INT % ADJ  = ###"; leagueRatings(2);
+    Print #1, Tab(35); Using "RUN/PASS %       = ##"; leagueRatings(7)
+    Print #1, Using "OFF FUMBLE  %  = ###"; leagueRatings(3);
     Print #1, Tab(35); "DEF YDS/COMP ADJ = ";
 
     If YC! < 50 Then Print #1, Using "+#.#"; YC! / 100 * 30
     If YC! > 50 Then Print #1, Using "+#.#"; (100 - YC!) / 100 * -30
 
-    Print #1, Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
-    Print #1, Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
-    Print #1, Using "STAD TYPE      = ###"; teamRatings%(3);
-    Print #1, Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings%(4)
-    Print #1, Using "BACKGRND COLOR = ###"; teamRatings%(1);
-    Print #1, Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
+    Print #1, Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
+    Print #1, Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
+    Print #1, Using "STAD TYPE      = ###"; teamRatings(3);
+    Print #1, Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings(4)
+    Print #1, Using "BACKGRND COLOR = ###"; teamRatings(1);
+    Print #1, Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings(2)
     Print #1,
     Print #1, "RUNNING BACKS-"
     Print #1, "NAME-               RUSH AVG   CX%  REC AVG   CX%"
@@ -273,7 +273,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
     Shared krContrib(), krRetAvg(), prContrib(), prRetAvg(), puntAvg(), pkFGA()
     Shared pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks()
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
@@ -1179,43 +1179,50 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 9 To 0 Step -1:
             If rushContrib(I) <> 0 Then 
-                rushContrib(I) = 100: Exit For
+                rushContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 5 To 0 Step -1:
             If recContrib(I) <> 0 Then 
-                recContrib(I) = 100: Exit For
+                recContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 3 To 0 Step -1:
             If passContrib(I) <> 0 Then 
-                passContrib(I) = 100: Exit For
+                passContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 2 To 0 Step -1:
             If krContrib(I) <> 0 Then 
-                krContrib(I) = 100: Exit For
+                krContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 2 To 0 Step -1:
             If prContrib(I) <> 0 Then 
-                prContrib(I) = 100: Exit For
+                prContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 1 To 0 Step -1:
             If pkFGContrib(I) <> 0 Then 
-                pkFGContrib(I) = 100: Exit For
+                pkFGContrib(I) = 100
+                Exit For
             End If
         Next
 
         For I = 1 To 0 Step -1:
             If pkPATContrib(I) <> 0 Then 
-                pkPATContrib(I) = 100: Exit For
+                pkPATContrib(I) = 100
+                Exit For
             End If
         Next
 
@@ -1246,9 +1253,9 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
     Shared intName$(), sackName$()
     Shared rushAvg(), rbRecAvg(), wrRecAvg(), compPct(), qbIntPct()
     Shared krRetAvg(), prContrib(), prRetAvg(), puntAvg(), pkFGA()
-    Shared pkFGContrib(), leagueRatings%(), pkPAT(), pkPATContrib()
+    Shared pkFGContrib(), leagueRatings(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks()
-    Shared teamRatings%(), armRating()
+    Shared teamRatings(), armRating()
 
     Cls
 
@@ -1262,30 +1269,35 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
     Locate 3: Print " 2. DISK ID   "; teamYear$
     Locate 4: Print " 3. TEAM NAME   "; teamName$
     Locate 5: Print " 4. TEAM NICKNAME   "; mascot$
-    Locate 6: Print " 5. DEF RUSHING ADJ  "; leagueRatings%(0)
-    Locate 7: Print " 6. DEF COMPLETION % ADJ  "; leagueRatings%(1)
-    Locate 8: Print " 7. DEF INTERCEPTION % ADJ  "; leagueRatings%(2)
-    Locate 9: Print " 8. OFF FUMBLE %  "; leagueRatings%(3)
-    Locate 10: Print " 9. DEF FUMBLE %  "; leagueRatings%(4)
-    Locate 11: Print "10. OFF SACK ADJ %  "; leagueRatings%(5)
-    Locate 12: Print "11. DEF SACK ADJ %  "; leagueRatings%(6)
+    Locate 6: Print " 5. DEF RUSHING ADJ  "; leagueRatings(0)
+    Locate 7: Print " 6. DEF COMPLETION % ADJ  "; leagueRatings(1)
+    Locate 8: Print " 7. DEF INTERCEPTION % ADJ  "; leagueRatings(2)
+    Locate 9: Print " 8. OFF FUMBLE %  "; leagueRatings(3)
+    Locate 10: Print " 9. DEF FUMBLE %  "; leagueRatings(4)
+    Locate 11: Print "10. OFF SACK ADJ %  "; leagueRatings(5)
+    Locate 12: Print "11. DEF SACK ADJ %  "; leagueRatings(6)
     Locate 13: Print "12. DEF YDS/COMP ADJ  ";
-    If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
-    If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-    Locate 14: Print "13. TM PENALTY ADJ  "; teamRatings%(0)
-    Locate 15: Print "14. OFF RUN/PASS %  "; leagueRatings%(7)
-    Locate 16: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings%(3)
-    Locate 17: Print "16. POWER INDEX  "; teamRatings%(4)
-    Locate 18: Print "17. TEXT COLOR (0-15)  "; teamRatings%(2)
-    Locate 19: Print "18. BACKGROUND COLOR (0-7)  "; teamRatings%(1)
+    If YC! < 50 Then 
+        Print Using "+#.#"; YC! / 100 * 30
+    End if
+    If YC! > 50 Then 
+        Print Using "+#.#"; (100 - YC!) / 100 * -30
+    End If
+
+    Locate 14: Print "13. TM PENALTY ADJ  "; teamRatings(0)
+    Locate 15: Print "14. OFF RUN/PASS %  "; leagueRatings(7)
+    Locate 16: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings(3)
+    Locate 17: Print "16. POWER INDEX  "; teamRatings(4)
+    Locate 18: Print "17. TEXT COLOR (0-15)  "; teamRatings(2)
+    Locate 19: Print "18. BACKGROUND COLOR (0-7)  "; teamRatings(1)
     Locate 20: Print "19. STADIUM NAME   "; stadium$
     Locate 21: Print "20. AVERAGE ATTENDANCE  "; teamAttendance&
 
-    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
         Locate 22, 1
         Print "TEAM APPEARANCE: ";
-        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+        Color teamRatings(2), teamRatings(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
     End If
 
     Color 15, 0
@@ -1320,37 +1332,37 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
 
                 Case 5
                     Locate 6, 21: Print Space$(10)
-                    Locate 6, 1: Input " 5. DEF RUSHING ADJ "; leagueRatings%(0)
+                    Locate 6, 1: Input " 5. DEF RUSHING ADJ "; leagueRatings(0)
                     Locate 6, 21: Print " "
 
                 Case 6
                     Locate 7, 26: Print Space$(10)
-                    Locate 7, 1: Input " 6. DEF COMPLETION % ADJ "; leagueRatings%(1)
+                    Locate 7, 1: Input " 6. DEF COMPLETION % ADJ "; leagueRatings(1)
                     Locate 7, 26: Print " "
 
                 Case 7
                     Locate 8, 28: Print Space$(10)
-                    Locate 8, 1: Input " 7. DEF INTERCEPTION % ADJ "; leagueRatings%(2)
+                    Locate 8, 1: Input " 7. DEF INTERCEPTION % ADJ "; leagueRatings(2)
                     Locate 8, 28: Print " "
 
                 Case 8
                     Locate 9, 18: Print Space$(10)
-                    Locate 9, 1: Input " 8. OFF FUMBLE % "; leagueRatings%(3)
+                    Locate 9, 1: Input " 8. OFF FUMBLE % "; leagueRatings(3)
                     Locate 9, 18: Print " "
 
                 Case 9
                     Locate 10, 18: Print Space$(10)
-                    Locate 10, 1: Input " 9. DEF FUMBLE % "; leagueRatings%(4)
+                    Locate 10, 1: Input " 9. DEF FUMBLE % "; leagueRatings(4)
                     Locate 10, 18: Print " "
 
                 Case 10
                     Locate 11, 20: Print Space$(10)
-                    Locate 11, 1: Input "10. OFF SACK ADJ % "; leagueRatings%(5)
+                    Locate 11, 1: Input "10. OFF SACK ADJ % "; leagueRatings(5)
                     Locate 11, 20: Print " "
 
                 Case 11
                     Locate 12, 20: Print Space$(10)
-                    Locate 12, 1: Input "11. DEF SACK ADJ % "; leagueRatings%(6)
+                    Locate 12, 1: Input "11. DEF SACK ADJ % "; leagueRatings(6)
                     Locate 12, 20: Print " "
 
                 Case 12
@@ -1362,45 +1374,45 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
 
                 Case 13
                     Locate 14, 20: Print Space$(10)
-                    Locate 14, 1: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 14, 1: Input "13. TM PENALTY ADJ "; teamRatings(0)
                     Locate 14, 20: Print " "
 
                 Case 14
                     Locate 15, 20: Print Space$(10)
-                    Locate 15, 1: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 15, 1: Input "14. OFF RUN/PASS % "; leagueRatings(7)
                     Locate 15, 20: Print " "
 
                 Case 15
                     Locate 16, 35: Print Space$(10)
-                    Locate 16, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 16, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
                     Locate 16, 35: Print " "
 
                 Case 16
                     Locate 17, 17: Print Space$(10)
-                    Locate 17, 1: Input "16. POWER INDEX "; teamRatings%(4)
+                    Locate 17, 1: Input "16. POWER INDEX "; teamRatings(4)
                     Locate 17, 17: Print " "
 
                 Case 17
                     Locate 18, 23: Print Space$(10)
-                    Locate 18, 1: Input "17. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 18, 1: Input "17. TEXT COLOR (0-15) "; teamRatings(2)
                     Locate 18, 23: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color teamRatings(2), teamRatings(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
                 Case 18
                     Locate 20, 28: Print Space$(10)
-                    Locate 19, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 19, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings(1)
                     Locate 19, 28: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 22, 1
                         Print "TEAM APPEARANCE: ";
-                        Color teamRatings%(2), teamRatings%(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color teamRatings(2), teamRatings(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
@@ -1441,7 +1453,7 @@ Sub ViewRoster (team$)
 
     Shared teamAttendance&
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -1460,29 +1472,29 @@ Sub ViewRoster (team$)
 
         Color 11
         Print "TEAM ROSTER FOR ";
-        Color teamRatings%(2), teamRatings%(1)
+        Color teamRatings(2), teamRatings(1)
         Print team$;
 
         Print
         Print
 
-        Color 15: Print Using "DEF RUSH ADJ   = ###"; leagueRatings%(0);
-        Print Tab(35); Using "SACKED %         = ##"; leagueRatings%(5)
-        Print Using "DEF COMP % ADJ = ###"; leagueRatings%(1);
-        Print Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings%(6)
-        Print Using "DEF INT % ADJ  = ###"; leagueRatings%(2);
-        Print Tab(35); Using "RUN/PASS %       = ##"; leagueRatings%(7)
-        Print Using "OFF FUMBLE  %  = ###"; leagueRatings%(3);
+        Color 15: Print Using "DEF RUSH ADJ   = ###"; leagueRatings(0);
+        Print Tab(35); Using "SACKED %         = ##"; leagueRatings(5)
+        Print Using "DEF COMP % ADJ = ###"; leagueRatings(1);
+        Print Tab(35); Using "DEF SACK ADJ     = ##"; leagueRatings(6)
+        Print Using "DEF INT % ADJ  = ###"; leagueRatings(2);
+        Print Tab(35); Using "RUN/PASS %       = ##"; leagueRatings(7)
+        Print Using "OFF FUMBLE  %  = ###"; leagueRatings(3);
         Print Tab(35); "DEF YDS/COMP ADJ = ";
 
         If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
         If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
 
-        Print Using "DEF FUMBLE  %  = ###"; leagueRatings%(4);
-        Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings%(0)
-        Print Using "STAD TYPE      = ###"; teamRatings%(3)
-        Print Using "BACKGRND COLOR = ###"; teamRatings%(1);
-        Print Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings%(2)
+        Print Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
+        Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
+        Print Using "STAD TYPE      = ###"; teamRatings(3)
+        Print Using "BACKGRND COLOR = ###"; teamRatings(1);
+        Print Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings(2)
         Print
         Color 12: Print "RUNNING BACKS-"
         Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
@@ -2038,7 +2050,7 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
 
     Shared teamAttendance&
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -2097,11 +2109,11 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     LSet Q$(2) = mascot$
 
     For I = 0 To 7:
-        LSet Q$(I + 3) = MKI$(leagueRatings%(I))
+        LSet Q$(I + 3) = MKI$(leagueRatings(I))
     Next I
 
     For I = 0 To 4:
-        LSet Q$(I + 11) = MKI$(teamRatings%(I))
+        LSet Q$(I + 11) = MKI$(teamRatings(I))
     Next I
 
     For I = 0 To 9
@@ -2188,6 +2200,7 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     Erase pkFGA, pkFGContrib, pkPAT, pkPATContrib, puntAvg
     Erase rushContrib, rushAvg, rbRecepts, rbRecAvg
     Erase wrRecAvg, recContrib
+
     Erase intName$, sackName$
     Erase krName$, pkName$, prName$, rbName$, wrName$, qbName$
 

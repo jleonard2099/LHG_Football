@@ -129,13 +129,13 @@ Sub MergeFirstYear
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
     Shared carDefInts$(), carDefSacks$()
 
-    Shared statsZ!(), statsZ1!(), statsZ2!()
-    Shared statsLF!(), statsLI!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
+    Shared statsLFG!(), statsLInt!()
     Shared carGameSacks(), carGameInts()
 
-    Shared careerAF!(), careerAM!()
-    Shared careerLC!(), careerLK!(), careerLR!(), careerLP!()
-    Shared careerPK!()
+    Shared careerFGA!(), careerFGM()
+    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
+    Shared careerLPR!()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
@@ -144,9 +144,9 @@ Sub MergeFirstYear
     Shared careerRBS$(), careerWRS$(), careerQBS$()
     Shared careerKRS$(), careerPRS$()
 
-    Shared careerLF$(), careerLI$(), careerLC$()
-    Shared careerLK$(), careerLP$(), careerLR$()
-    Shared careerPK$()
+    Shared careerLFG$(), careerLInt$(), careerLRec$()
+    Shared careerLKR$(), careerLPass$(), careerLRush$()
+    Shared careerLPR$()
 
     NB = -1
     NC = -1
@@ -287,16 +287,16 @@ Sub MergeFirstYear
 
                     For J = 0 To 13
                         For K = 0 To 17:
-                            Input #2, statsZ2!(J, K)
+                            Input #2, statsPlayers!(J, K)
                         Next K
                     Next J
 
                     For L = 0 To 38:
-                        Input #2, statsZ!(L)
+                        Input #2, statsTeam!(L)
                     Next L
 
                     For L = 0 To 38:
-                        Input #2, statsZ1!(L)
+                        Input #2, statsOpp!(L)
                     Next L
 
                     For J = 0 To 9:
@@ -314,48 +314,48 @@ Sub MergeFirstYear
                     Next
 
                     For I = 0 To 9:
-                        Input #2, careerLR!(I)
-                        Input #2, careerLR$(I, 0)
-                        Input #2, careerLR$(I, 1)
+                        Input #2, careerLRush!(I)
+                        Input #2, careerLRush$(I, 0)
+                        Input #2, careerLRush$(I, 1)
                     Next
 
                     For I = 0 To 15:
-                        Input #2, careerLC!(I)
-                        Input #2, careerLC$(I, 0)
-                        Input #2, careerLC$(I, 1)
+                        Input #2, careerLRec!(I)
+                        Input #2, careerLRec$(I, 0)
+                        Input #2, careerLRec$(I, 1)
                     Next
 
                     For I = 0 To 3:
-                        Input #2, careerLP!(I)
-                        Input #2, careerLP$(I, 0)
-                        Input #2, careerLP$(I, 1)
+                        Input #2, careerLPass!(I)
+                        Input #2, careerLPass$(I, 0)
+                        Input #2, careerLPass$(I, 1)
                     Next
 
                     For I = 0 To 2:
-                        Input #2, careerLK!(I)
-                        Input #2, careerLK$(I, 0)
-                        Input #2, careerLK$(I, 1)
+                        Input #2, careerLKR!(I)
+                        Input #2, careerLKR$(I, 0)
+                        Input #2, careerLKR$(I, 1)
                     Next
 
                     For I = 0 To 2:
-                        Input #2, careerPK!(I)
-                        Input #2, careerPK$(I, 0)
-                        Input #2, careerPK$(I, 1)
+                        Input #2, careerLPR!(I)
+                        Input #2, careerLPR$(I, 0)
+                        Input #2, careerLPR$(I, 1)
                     Next
 
                     For I = 0 To 1:
-                        Input #2, statsLF!(I)
-                        Input #2, careerLF$(I)
+                        Input #2, statsLFG!(I)
+                        Input #2, careerLFG$(I)
                         For I1 = 0 To 4:
-                            Input #2, careerAM!(I, I1)
-                            Input #2, careerAF!(I, I1)
+                            Input #2, careerFGM(I, I1)
+                            Input #2, careerFGA!(I, I1)
                         Next
                     Next
 
                     For I = 0 To 9:
-                        Input #2, statsLI!(I)
-                        Input #2, careerLI$(I, 0)
-                        Input #2, careerLI$(I, 1)
+                        Input #2, statsLInt!(I)
+                        Input #2, careerLInt$(I, 0)
+                        Input #2, careerLInt$(I, 1)
                     Next
 
                     Close #2
@@ -371,13 +371,13 @@ Sub MergeFirstYear
                         End If
 
                         For J = 0 To 5
-                            careerRBS!(N, I, J) = statsZ2!(I, J)
+                            careerRBS!(N, I, J) = statsPlayers!(I, J)
                         Next J
 
-                        careerRBS!(N, I, 6) = careerLR!(I)
-                        careerRBS$(N, I, 0) = careerLR$(I, 0)
-                        careerRBS!(N, I, 9) = careerLC!(I)
-                        careerRBS$(N, I, 1) = careerLC$(I, 0)
+                        careerRBS!(N, I, 6) = careerLRush!(I)
+                        careerRBS$(N, I, 0) = careerLRush$(I, 0)
+                        careerRBS!(N, I, 9) = careerLRec!(I)
+                        careerRBS$(N, I, 1) = careerLRec$(I, 0)
                         careerRBS!(N, I, 7) = 1
                         careerRBS!(N, I, 8) = statYear
 
@@ -394,11 +394,11 @@ Sub MergeFirstYear
                         End If
 
                         For J = 6 To 8
-                            careerWRS!(N, I, J - 6) = statsZ2!(I, J)
+                            careerWRS!(N, I, J - 6) = statsPlayers!(I, J)
                         Next J
 
-                        careerWRS!(N, I, 3) = careerLC!(I + 10)
-                        careerWRS$(N, I, 0) = careerLC$(I + 10, 0)
+                        careerWRS!(N, I, 3) = careerLRec!(I + 10)
+                        careerWRS$(N, I, 0) = careerLRec$(I + 10, 0)
                         careerWRS!(N, I, 4) = 1
                         careerWRS!(N, I, 5) = statYear
 
@@ -415,11 +415,11 @@ Sub MergeFirstYear
                         End If
 
                         For J = 9 To 13:
-                            careerQBS!(N, I, J - 9) = statsZ2!(I, J)
+                            careerQBS!(N, I, J - 9) = statsPlayers!(I, J)
                         Next J
 
-                        careerQBS!(N, I, 5) = careerLP!(I)
-                        careerQBS$(N, I, 0) = careerLP$(I, 0)
+                        careerQBS!(N, I, 5) = careerLPass!(I)
+                        careerQBS$(N, I, 0) = careerLPass$(I, 0)
                         careerQBS!(N, I, 6) = 1
                         careerQBS!(N, I, 7) = statYear
 
@@ -436,11 +436,11 @@ Sub MergeFirstYear
                         End If
 
                         For J = 14 To 16:
-                            careerKRS!(N, I, J - 14) = statsZ2!(I, J)
+                            careerKRS!(N, I, J - 14) = statsPlayers!(I, J)
                         Next J
 
-                        careerKRS!(N, I, 3) = careerLK!(I)
-                        careerKRS$(N, I, 0) = careerLK$(I, 0)
+                        careerKRS!(N, I, 3) = careerLKR!(I)
+                        careerKRS$(N, I, 0) = careerLKR$(I, 0)
                         careerKRS!(N, I, 4) = 1
                         careerKRS!(N, I, 5) = statYear
 
@@ -457,11 +457,11 @@ Sub MergeFirstYear
                         End If
 
                         For J = 14 To 16:
-                            careerPRS!(N, I, J - 14) = statsZ2!(I + 3, J)
+                            careerPRS!(N, I, J - 14) = statsPlayers!(I + 3, J)
                         Next J
 
-                        careerPRS!(N, I, 3) = careerPK!(I)
-                        careerPRS$(N, I, 0) = careerPK$(I, 0)
+                        careerPRS!(N, I, 3) = careerLPR!(I)
+                        careerPRS$(N, I, 0) = careerLPR$(I, 0)
                         careerPRS!(N, I, 4) = 1
                         careerPRS!(N, I, 5) = statYear
 
@@ -477,8 +477,8 @@ Sub MergeFirstYear
                             NG = NG + 1
                         End If
 
-                        careerPUS!(N, I, 0) = statsZ!(7)
-                        careerPUS!(N, I, 1) = statsZ!(8)
+                        careerPUS!(N, I, 0) = statsTeam!(7)
+                        careerPUS!(N, I, 1) = statsTeam!(8)
                         careerPUS!(N, I, 2) = 1
                         careerPUS!(N, I, 3) = statYear
                     Next I
@@ -496,19 +496,19 @@ Sub MergeFirstYear
                         If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
 
                             For J = 3 To 6
-                                careerFGS!(N, I, J - 3) = statsZ2!(J, 17)
+                                careerFGS!(N, I, J - 3) = statsPlayers!(J, 17)
                             Next J
 
-                            careerFGS!(N, I, 4) = statsLF!(I)
+                            careerFGS!(N, I, 4) = statsLFG!(I)
                             careerFGS!(N, I, 15) = 1
                             careerFGS!(N, I, 16) = statYear
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerAM!(I, I1)
+                                careerFGS!(N, I, I1 + 5) = careerFGM(I, I1)
                             Next
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 10) = careerAF!(I, I1)
+                                careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
                             Next
 
                         End If
@@ -516,20 +516,20 @@ Sub MergeFirstYear
                         If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
 
                             For J = 7 To 10:
-                                careerFGS!(N, I, J - 7) = statsZ2!(J, 17)
+                                careerFGS!(N, I, J - 7) = statsPlayers!(J, 17)
                             Next J
 
-                            test = statsLF!(I)
-                            careerFGS!(N, I, 4) = statsLF!(I)
+                            test = statsLFG!(I)
+                            careerFGS!(N, I, 4) = statsLFG!(I)
                             careerFGS!(N, I, 15) = 1
                             careerFGS!(N, I, 16) = statYear
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerAM!(I, I1)
+                                careerFGS!(N, I, I1 + 5) = careerFGM(I, I1)
                             Next
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 10) = careerAF!(I, I1)
+                                careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
                             Next
 
                         End If
@@ -1137,21 +1137,21 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
     Shared carGameInts(), carGameSacks()
 
     Shared careerKRS$()
-    Shared careerPK$(), careerPRS$()
+    Shared careerLPR$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
 
-    Shared careerLF$(), careerLI$(), careerLK$()
-    Shared statsLC$(), statsLK$(), statsLP$()
-    Shared statsLR$()
+    Shared careerLFG$(), careerLInt$(), careerLKR$()
+    Shared statsLRec$(), statsLKR$(), statsLPass$()
+    Shared statsLRush$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!(), careerKRS!()
-    Shared careerLC!(), careerLK!(), careerLR!(), careerLP!()
-    Shared careerPK!(), careerPRS!(), careerPUS!()
+    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
+    Shared careerLPR!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
-    Shared statsAF!(), statsAM!()
-    Shared statsLI!(), statsLF!()
-    Shared statsZ!(), statsZ1!(), statsZ2!()
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLInt!(), statsLFG!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
 
     Call LoadCareerFile(careerFile$)
 
@@ -1199,16 +1199,16 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Input #3, statsZ2!(J, K)
+            Input #3, statsPlayers!(J, K)
         Next K
     Next J
 
     For L = 0 To 38:
-        Input #3, statsZ!(L)
+        Input #3, statsTeam!(L)
     Next L
 
     For L = 0 To 38:
-        Input #3, statsZ1!(L)
+        Input #3, statsOpp!(L)
     Next L
 
     For J = 0 To 9:
@@ -1226,82 +1226,98 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
     Next
 
     For I = 0 To 9:
-        Input #3, careerLR!(I)
-        Input #3, statsLR$(I, 0)
-        Input #3, statsLR$(I, 1)
+        Input #3, careerLRush!(I)
+        Input #3, statsLRush$(I, 0)
+        Input #3, statsLRush$(I, 1)
     Next
 
     For I = 0 To 15:
-        Input #3, careerLC!(I)
-        Input #3, statsLC$(I, 0)
-        Input #3, statsLC$(I, 1)
+        Input #3, careerLRec!(I)
+        Input #3, statsLRec$(I, 0)
+        Input #3, statsLRec$(I, 1)
     Next
 
     For I = 0 To 3:
-        Input #3, careerLP!(I)
-        Input #3, statsLP$(I, 0)
-        Input #3, statsLP$(I, 1)
+        Input #3, careerLPass!(I)
+        Input #3, statsLPass$(I, 0)
+        Input #3, statsLPass$(I, 1)
     Next
 
     For I = 0 To 2:
-        Input #3, careerLK!(I)
-        Input #3, statsLK$(I, 0)
-        Input #3, statsLK$(I, 1)
+        Input #3, careerLKR!(I)
+        Input #3, statsLKR$(I, 0)
+        Input #3, statsLKR$(I, 1)
     Next
 
     For I = 0 To 2:
-        Input #3, careerPK!(I)
-        Input #3, careerPK$(I, 0)
-        Input #3, careerPK$(I, 1)
+        Input #3, careerLPR!(I)
+        Input #3, careerLPR$(I, 0)
+        Input #3, careerLPR$(I, 1)
     Next
 
     For I = 0 To 1:
-        Input #3, statsLF!(I)
-        Input #3, careerLF$(I)
+        Input #3, statsLFG!(I)
+        Input #3, careerLFG$(I)
         For I1 = 0 To 4:
-            Input #3, statsAM!(I, I1)
-            Input #3, statsAF!(I, I1)
+            Input #3, statsFGM!(I, I1)
+            Input #3, statsFGA!(I, I1)
         Next
     Next
 
     For I = 0 To 9:
-        Input #3, statsLI!(I)
-        Input #3, careerLI$(I, 0)
-        Input #3, careerLI$(I, 1)
+        Input #3, statsLInt!(I)
+        Input #3, careerLInt$(I, 0)
+        Input #3, careerLInt$(I, 1)
     Next
 
     Close #3
 
     For I = 0 To 9:
-        If Len(rbName$(I)) = 0 Then rbName$(I) = "XXX"
+        If Len(rbName$(I)) = 0 Then 
+            rbName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 5:
-        If Len(wrName$(I)) = 0 Then wrName$(I) = "XXX"
+        If Len(wrName$(I)) = 0 Then 
+            wrName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 3:
-        If Len(qbName$(I)) = 0 Then qbName$(I) = "XXX"
+        If Len(qbName$(I)) = 0 Then 
+            qbName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 2:
-        If Len(krName$(I)) = 0 Then krName$(I) = "XXX"
+        If Len(krName$(I)) = 0 Then 
+            krName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 2:
-        If Len(prName$(I)) = 0 Then prName$(I) = "XXX"
+        If Len(prName$(I)) = 0 Then 
+            prName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 1:
-        If Len(pkName$(I)) = 0 Then pkName$(I) = "XXX"
+        If Len(pkName$(I)) = 0 Then 
+            pkName$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 9:
-        If Len(carDefInts$(I)) = 0 Then carDefInts$(I) = "XXX"
+        If Len(carDefInts$(I)) = 0 Then 
+            carDefInts$(I) = "XXX"
+        End If
     Next
 
     For I = 0 To 14:
-        If Len(carDefSacks$(I)) = 0 Then carDefSacks$(I) = "XXX"
+        If Len(carDefSacks$(I)) = 0 Then 
+            carDefSacks$(I) = "XXX"
+        End If
     Next
 
     '-----
@@ -1332,13 +1348,13 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                 End If
 
                 For K = 0 To 5
-                    careerRBS!(N, J, K) = statsZ2!(I, K)
+                    careerRBS!(N, J, K) = statsPlayers!(I, K)
                 Next K
 
-                careerRBS!(N, J, 6) = careerLR!(I)
-                careerRBS$(N, J, 0) = statsLR$(I, 0)
-                careerRBS!(N, J, 9) = careerLC!(I)
-                careerRBS$(N, J, 1) = statsLC$(I, 0)
+                careerRBS!(N, J, 6) = careerLRush!(I)
+                careerRBS$(N, J, 0) = statsLRush$(I, 0)
+                careerRBS!(N, J, 9) = careerLRec!(I)
+                careerRBS$(N, J, 1) = statsLRec$(I, 0)
                 careerRBS!(N, J, 7) = 1
                 careerRBS!(N, J, 8) = targetYear
 
@@ -1360,13 +1376,13 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                     N = 1
 
                     For K = 0 To 5:
-                        careerRBS!(N, NB, K) = statsZ2!(I, K)
+                        careerRBS!(N, NB, K) = statsPlayers!(I, K)
                     Next
 
-                    careerRBS!(N, NB, 6) = careerLR!(I)
-                    careerRBS$(N, NB, 0) = statsLR$(I, 0)
-                    careerRBS!(N, NB, 9) = careerLC!(I)
-                    careerRBS$(N, NB, 1) = statsLC$(I, 0)
+                    careerRBS!(N, NB, 6) = careerLRush!(I)
+                    careerRBS$(N, NB, 0) = statsLRush$(I, 0)
+                    careerRBS!(N, NB, 9) = careerLRec!(I)
+                    careerRBS$(N, NB, 1) = statsLRec$(I, 0)
                     careerRBS!(N, NB, 7) = 1
                     careerRBS!(N, NB, 8) = targetYear
 
@@ -1406,11 +1422,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                 End If
 
                 For K = 6 To 8
-                    careerWRS!(N, J, K - 6) = statsZ2!(I, K)
+                    careerWRS!(N, J, K - 6) = statsPlayers!(I, K)
                 Next K
 
-                careerWRS!(N, J, 3) = careerLC!(I + 10)
-                careerWRS$(N, J, 0) = statsLC$(I + 10, 0)
+                careerWRS!(N, J, 3) = careerLRec!(I + 10)
+                careerWRS$(N, J, 0) = statsLRec$(I + 10, 0)
                 careerWRS!(N, J, 4) = 1
                 careerWRS!(N, J, 5) = targetYear
 
@@ -1429,11 +1445,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                     N = 1
 
                     For K = 6 To 8:
-                        careerWRS!(N, NC, K - 6) = statsZ2!(I, K)
+                        careerWRS!(N, NC, K - 6) = statsPlayers!(I, K)
                     Next
 
-                    careerWRS!(N, NC, 3) = careerLC!(I + 10)
-                    careerWRS$(N, NC, 0) = statsLC$(I + 10, 0)
+                    careerWRS!(N, NC, 3) = careerLRec!(I + 10)
+                    careerWRS$(N, NC, 0) = statsLRec$(I + 10, 0)
                     careerWRS!(N, NC, 4) = 1
                     careerWRS!(N, NC, 5) = targetYear
 
@@ -1473,11 +1489,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                 End If
 
                 For K = 9 To 13
-                    careerQBS!(N, J, K - 9) = statsZ2!(I, K)
+                    careerQBS!(N, J, K - 9) = statsPlayers!(I, K)
                 Next K
 
-                careerQBS!(N, J, 5) = careerLP!(I)
-                careerQBS$(N, J, 0) = statsLP$(I, 0)
+                careerQBS!(N, J, 5) = careerLPass!(I)
+                careerQBS$(N, J, 0) = statsLPass$(I, 0)
                 careerQBS!(N, J, 6) = 1
                 careerQBS!(N, J, 7) = targetYear
 
@@ -1496,11 +1512,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         N = 1
 
                         For K = 9 To 13:
-                            careerQBS!(N, ND, K - 9) = statsZ2!(I, K)
+                            careerQBS!(N, ND, K - 9) = statsPlayers!(I, K)
                         Next
 
-                        careerQBS!(N, ND, 5) = careerLP!(I)
-                        careerQBS$(N, ND, 0) = statsLP$(I, 0)
+                        careerQBS!(N, ND, 5) = careerLPass!(I)
+                        careerQBS$(N, ND, 0) = statsLPass$(I, 0)
                         careerQBS!(N, ND, 6) = 1
                         careerQBS!(N, ND, 7) = targetYear
 
@@ -1542,11 +1558,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                 End If
 
                 For K = 14 To 16
-                    careerKRS!(N, J, K - 14) = statsZ2!(I, K)
+                    careerKRS!(N, J, K - 14) = statsPlayers!(I, K)
                 Next K
 
-                careerKRS!(N, J, 3) = careerLK!(I)
-                careerKRS$(N, J, 0) = statsLK$(I, 0)
+                careerKRS!(N, J, 3) = careerLKR!(I)
+                careerKRS$(N, J, 0) = statsLKR$(I, 0)
                 careerKRS!(N, J, 4) = 1
                 careerKRS!(N, J, 5) = targetYear
 
@@ -1565,11 +1581,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         N = 1
 
                         For K = 14 To 16:
-                            careerKRS!(N, NE, K - 14) = statsZ2!(I, K)
+                            careerKRS!(N, NE, K - 14) = statsPlayers!(I, K)
                         Next
 
-                        careerKRS!(N, NE, 3) = careerLK!(I)
-                        careerKRS$(N, NE, 0) = statsLK$(I, 0)
+                        careerKRS!(N, NE, 3) = careerLKR!(I)
+                        careerKRS$(N, NE, 0) = statsLKR$(I, 0)
                         careerKRS!(N, NE, 4) = 1
                         careerKRS!(N, NE, 5) = targetYear
 
@@ -1611,11 +1627,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                 End If
 
                 For K = 14 To 16
-                    careerPRS!(N, J, K - 14) = statsZ2!(I + 3, K)
+                    careerPRS!(N, J, K - 14) = statsPlayers!(I + 3, K)
                 Next K
 
-                careerPRS!(N, J, 3) = careerPK!(I)
-                careerPRS$(N, J, 0) = careerPK$(I, 0)
+                careerPRS!(N, J, 3) = careerLPR!(I)
+                careerPRS$(N, J, 0) = careerLPR$(I, 0)
                 careerPRS!(N, J, 4) = 1
                 careerPRS!(N, J, 5) = targetYear
 
@@ -1633,11 +1649,11 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         N = 1
 
                         For K = 14 To 16:
-                            careerPRS!(N, NF, K - 14) = statsZ2!(I + 3, K)
+                            careerPRS!(N, NF, K - 14) = statsPlayers!(I + 3, K)
                         Next
 
-                        careerPRS!(N, NF, 3) = careerPK!(I)
-                        careerPRS$(N, NF, 0) = careerPK$(I, 0)
+                        careerPRS!(N, NF, 3) = careerLPR!(I)
+                        careerPRS$(N, NF, 0) = careerLPR$(I, 0)
                         careerPRS!(N, NF, 4) = 1
                         careerPRS!(N, NF, 5) = targetYear
 
@@ -1672,8 +1688,8 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                     N = N + careerPUS!(Z, J, 2)
                 Next Z
 
-                careerPUS!(N, J, 0) = statsZ!(7)
-                careerPUS!(N, J, 1) = statsZ!(8)
+                careerPUS!(N, J, 0) = statsTeam!(7)
+                careerPUS!(N, J, 1) = statsTeam!(8)
                 careerPUS!(N, J, 2) = 1
                 careerPUS!(N, J, 3) = targetYear
 
@@ -1690,8 +1706,8 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         NG = NG + 1
                         carPunter$(NG) = punterName$(I)
                         N = 1
-                        careerPUS!(N, NG, 0) = statsZ!(7)
-                        careerPUS!(N, NG, 1) = statsZ!(8)
+                        careerPUS!(N, NG, 0) = statsTeam!(7)
+                        careerPUS!(N, NG, 1) = statsTeam!(8)
                         careerPUS!(N, NG, 2) = 1
                         careerPUS!(N, NG, 3) = targetYear
 
@@ -1733,20 +1749,20 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
 
                 If I = 0 Then
                     For K = 3 To 6
-                        careerFGS!(N, J, K - 3) = statsZ2!(K, 17)
+                        careerFGS!(N, J, K - 3) = statsPlayers!(K, 17)
                     Next K
 
-                    test = statsLF!(I)
-                    careerFGS!(N, J, 4) = statsLF!(I)
+                    test = statsLFG!(I)
+                    careerFGS!(N, J, 4) = statsLFG!(I)
                     careerFGS!(N, J, 15) = 1
                     careerFGS!(N, J, 16) = targetYear
 
                     For J1 = 0 To 4:
-                        careerFGS!(N, J, J1 + 5) = statsAM!(I, J1)
+                        careerFGS!(N, J, J1 + 5) = statsFGM!(I, J1)
                     Next
 
                     For J1 = 0 To 4:
-                        careerFGS!(N, J, J1 + 10) = statsAF!(I, J1)
+                        careerFGS!(N, J, J1 + 10) = statsFGA!(I, J1)
                     Next
 
                 Else
@@ -1754,19 +1770,19 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                     If I = 1 Then
 
                         For K = 7 To 10
-                            careerFGS!(N, J, K - 7) = statsZ2!(K, 17)
+                            careerFGS!(N, J, K - 7) = statsPlayers!(K, 17)
                         Next K
 
-                        careerFGS!(N, J, 4) = statsLF!(I)
+                        careerFGS!(N, J, 4) = statsLFG!(I)
                         careerFGS!(N, J, 15) = 1
                         careerFGS!(N, J, 16) = targetYear
 
                         For J1 = 0 To 4:
-                            careerFGS!(N, J, J1 + 5) = statsAM!(I, J1)
+                            careerFGS!(N, J, J1 + 5) = statsFGM!(I, J1)
                         Next
 
                         For J1 = 0 To 4:
-                            careerFGS!(N, J, J1 + 10) = statsAF!(I, J1)
+                            careerFGS!(N, J, J1 + 10) = statsFGA!(I, J1)
                         Next
 
                     End If
@@ -1790,19 +1806,19 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         If I = 0 Then
 
                             For K = 3 To 6:
-                                careerFGS!(N, NH, K - 3) = statsZ2!(K, 17)
+                                careerFGS!(N, NH, K - 3) = statsPlayers!(K, 17)
                             Next K
 
-                            careerFGS!(N, NH, 4) = statsLF!(I)
+                            careerFGS!(N, NH, 4) = statsLFG!(I)
                             careerFGS!(N, NH, 15) = 1
                             careerFGS!(N, NH, 16) = targetYear
 
                             For J1 = 0 To 4:
-                                careerFGS!(N, NH, J1 + 5) = statsAM!(I, J1)
+                                careerFGS!(N, NH, J1 + 5) = statsFGM!(I, J1)
                             Next
 
                             For J1 = 0 To 4:
-                                careerFGS!(N, NH, J1 + 10) = statsAF!(I, J1)
+                                careerFGS!(N, NH, J1 + 10) = statsFGA!(I, J1)
                             Next
 
                             skipLoop% = 1
@@ -1813,19 +1829,19 @@ Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
                         If I = 1 Then
 
                             For K = 7 To 10:
-                                careerFGS!(N, NH, K - 7) = statsZ2!(K, 17)
+                                careerFGS!(N, NH, K - 7) = statsPlayers!(K, 17)
                             Next K
 
-                            careerFGS!(N, NH, 4) = statsLF!(I)
+                            careerFGS!(N, NH, 4) = statsLFG!(I)
                             careerFGS!(N, NH, 15) = 1
                             careerFGS!(N, J, 16) = targetYear
 
                             For J1 = 0 To 4:
-                                careerFGS!(N, NH, J1 + 5) = statsAM!(I, J1)
+                                careerFGS!(N, NH, J1 + 5) = statsFGM!(I, J1)
                             Next
 
                             For J1 = 0 To 4:
-                                careerFGS!(N, NH, J1 + 10) = statsAF!(I, J1)
+                                careerFGS!(N, NH, J1 + 10) = statsFGA!(I, J1)
                             Next
 
                         End If

@@ -146,6 +146,7 @@ Sub NewSchedule (scheduleFile$)
     Shared BS%, NS%
 
     Shared homeScores(), visitorScores()
+
     Shared scheduleAP%(), scheduleNG%()
     Shared scheduleH$(), scheduleV$()
     Shared scheduleQB_V$(), scheduleQB_H$()
@@ -263,14 +264,14 @@ Sub NewSchedule (scheduleFile$)
                         If HR% = 12 Then I$ = "P"
                         If HR% > 12 Then HR% = HR% - 12: I$ = "P"
 
-                        TM$ = Right$(Str$(HR%), 2) + ":"
+                        leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
 
-                        If MIN% < 10 Then TM$ = TM$ + "0" + Right$(Str$(MIN%), 1)
-                        If MIN% >= 10 Then TM$ = TM$ + Right$(Str$(MIN%), 2)
+                        If MIN% < 10 Then leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
+                        If MIN% >= 10 Then leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
 
                         'Time
-                        TM$ = TM$ + I$
-                        Print TM$;
+                        leagLdrTeams$ = leagLdrTeams$ + I$
+                        Print leagLdrTeams$;
 
                         'Visiting Team
                         Locate , 25: Print scheduleV$(X + NS% * 20); " ";
@@ -332,11 +333,11 @@ Sub NewSchedule (scheduleFile$)
                 Next
 
                 DT$ = "10-01-91"
-                TM$ = "07:30P"
-                Call NewGame(V$, QV$, H$, QH$, YN$, DT$, TM$, NTMS, targetGame%)
+                leagLdrTeams$ = "07:30P"
+                Call NewGame(V$, QV$, H$, QH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
 
             Case "E":
-                Call EditGame(DT$, TM$)
+                Call EditGame(DT$, leagLdrTeams$)
 
             Case "B":
                 Do
@@ -514,7 +515,7 @@ End Sub
 'calls the NewGame routine to essentially
 'display the existing parameters and allow
 'them to be modified
-Sub EditGame (DT$, TM$)
+Sub EditGame (DT$, leagLdrTeams$)
 
     Shared scheduleAP%()
     Shared scheduleH$(), scheduleV$()
@@ -544,15 +545,15 @@ Sub EditGame (DT$, TM$)
         I$ = "A"
     End If
 
-    TM$ = Right$(Str$(HR%), 2) + ":"
+    leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
 
     If MIN% < 10 Then
-        TM$ = TM$ + "0" + Right$(Str$(MIN%), 1)
+        leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
     Else
-        TM$ = TM$ + Right$(Str$(MIN%), 2)
+        leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
     End If
 
-    TM$ = TM$ + I$
+    leagLdrTeams$ = leagLdrTeams$ + I$
     DT$ = Right$(Str$(scheduleNG%(targetGame%, 17)), 2) + "/"
     DYMO% = Val(Right$(Str$(scheduleNG%(targetGame%, 16)), 2))
 
@@ -564,7 +565,7 @@ Sub EditGame (DT$, TM$)
 
     DT$ = DT$ + DYMO$ + "/" + Right$(Str$(scheduleNG%(targetGame%, 18)), 2)
 
-    Call NewGame(V$, QBV$, H$, QBH$, YN$, DT$, TM$, NTMS, targetGame%)
+    Call NewGame(V$, QBV$, H$, QBH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
 
 End Sub
 
@@ -574,9 +575,9 @@ End Sub
 'This subroutine gives the user an interface
 'for editing and choosing options for the
 'specified game in the schedule
-Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameIndex%)
+Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS, gameIndex%)
 
-    Shared scheduleNG%(), teamRatings%()
+    Shared scheduleNG%(), teamRatings()
 
     Shared scheduleH$(), scheduleV$()
     Shared scheduleQB_V$(), scheduleQB_H$()
@@ -617,7 +618,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
         Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$
         Locate 6, 2: Color 14
         Print "(5) ";
-        Color 15: Print "GAME TIME (XX:XXP)    "; TM$
+        Color 15: Print "GAME TIME (XX:XXP)    "; leagLdrTeams$
         Locate 7, 2: Color 14
         Print "(6) ";
         Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
@@ -692,7 +693,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
 
                 Case 5:
                     Locate 6, 26: Print "        "
-                    Locate 6, 26: Input TM$
+                    Locate 6, 26: Input leagLdrTeams$
 
                 Case 6:
                     Locate 7, 32: Input displayPause!
@@ -732,10 +733,10 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
 
         Loop Until (setting >= 0 And setting <= 13)
 
-        If visitor$ <> "" And home$ <> "" And TM$ <> "" And DT$ <> "" Then
+        If visitor$ <> "" And home$ <> "" And leagLdrTeams$ <> "" And DT$ <> "" Then
 
-            meridian$ = Right$(TM$, 1)
-            fullTime$ = Left$(TM$, Len(TM$) - 1)
+            meridian$ = Right$(leagLdrTeams$, 1)
+            fullTime$ = Left$(leagLdrTeams$, Len(leagLdrTeams$) - 1)
             MIN% = Val(Right$(fullTime$, 2))
             hourString$ = Left$(fullTime$, Len(fullTime$) - 3)
             HR% = Val(hourString$)
@@ -786,7 +787,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Shared homeScores(), visitorScores()
 
     Shared scheduleAP%()
-    Shared scheduleNG%(), teamRatings%()
+    Shared scheduleNG%(), teamRatings()
     Shared scheduleYN$()
 
     Shared memberIdx()
@@ -920,7 +921,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                     'Change mode of play
                     If scheduleAction% = 5 Then
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 15, 0
                         Print " IS TO BE:"
                         Print
@@ -1348,7 +1349,7 @@ Sub ChangeGlobalSettings ()
     weatherOpt = scheduleNG%(1, 20)
 
     DT$ = "09-01-23"
-    TM$ = "07:30P"
+    leagLdrTeams$ = "07:30P"
 
     Do
         Color 15, 0

@@ -36,9 +36,9 @@ Sub InitVar ()
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
 
-    Shared gamePK$(), oppName$(), locIndicator$(), gameSite$()
+    Shared tradeLPR$(), oppName$(), locIndicator$(), gameSite$()
     Shared teamIndicator$()
-    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
 
     Shared oppScore(), teamScore(), powerRating()
 
@@ -210,10 +210,10 @@ Sub InitVar ()
     Erase kickReturners
 
 
-    Erase gameAF!, gameAM!
-    Erase gameZ0!, gameZ1!, gameZ2!
-    Erase gameLC!, gameLF!, gameLI!, gameLK!, gameLP!, gameLR!
-    Erase gamePK!
+    Erase gameFGA!, gameFGM!
+    Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
+    Erase gameLRec!, gameLFG!, gameLInt!, gameLKR!, gameLPass!, gameLRush!
+    Erase gameLPR!
 
     Erase nbrPossOT, puntReturners
 
@@ -231,12 +231,12 @@ Sub InitVar ()
     Erase qbRushIdx, climate
 
     Erase diskIDs$, gameTeams$
-    Erase gameIR$, gameKR$, gameLC$, gameLR$
-    Erase gamePK$, gamePR$, gameQB$
+    Erase gameIR$, gameKR$, gameLRec$, gameLRush$
+    Erase tradeLPR$, gamePR$, gameQB$
     Erase gameRB$, gameSite$, gameWR$
     Erase locIndicator$, oppName$
     Erase SX$
-    Erase tradeLF$, tradeLI$, tradeLK$, tradeLP$
+    Erase tradeLFG$, tradeLInt$, tradeLKR$, tradeLPass$
 
 
 End Sub
@@ -8874,11 +8874,11 @@ Sub COMPILESTATFILES (teamIdx)
 
     Shared gameAttendance&()
 
-    Shared gamePK$(), oppName$()
+    Shared tradeLPR$(), oppName$()
     Shared gameSite$()
     Shared locIndicator$()
 
-    Shared tradeLF$(), tradeLI$(), tradeLK$(), tradeLP$()
+    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
 
     'Determine stat file name
     statFile$ = nameStatFile$(gameTeams$(teamIdx))
@@ -8918,16 +8918,16 @@ Sub COMPILESTATFILES (teamIdx)
 
         For J = 0 To 13:
             For K = 0 To 17:
-                Input #1, gameZ2!(J, K)
+                Input #1, gamePlayerStat!(J, K)
             Next
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ0!(L)
+            Input #1, gameTeamStat!(L)
         Next
 
         For L = 0 To 38:
-            Input #1, gameZ1!(L)
+            Input #1, gameOppStat!(L)
         Next
 
         For J = 0 To 9
@@ -8945,48 +8945,48 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For I = 0 To 9:
-            Input #1, gameLR!(teamIdx, I)
-            Input #1, gameLR$(teamIdx, I, 0)
-            Input #1, gameLR$(teamIdx, I, 1)
+            Input #1, gameLRush!(teamIdx, I)
+            Input #1, gameLRush$(teamIdx, I, 0)
+            Input #1, gameLRush$(teamIdx, I, 1)
         Next
 
         For I = 0 To 15:
-            Input #1, gameLC!(teamIdx, I)
-            Input #1, gameLC$(teamIdx, I, 0)
-            Input #1, gameLC$(teamIdx, I, 1)
+            Input #1, gameLRec!(teamIdx, I)
+            Input #1, gameLRec$(teamIdx, I, 0)
+            Input #1, gameLRec$(teamIdx, I, 1)
         Next
 
         For I = 0 To 3:
-            Input #1, gameLP!(teamIdx, I)
-            Input #1, tradeLP$(teamIdx, I, 0)
-            Input #1, tradeLP$(teamIdx, I, 1)
+            Input #1, gameLPass!(teamIdx, I)
+            Input #1, tradeLPass$(teamIdx, I, 0)
+            Input #1, tradeLPass$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gameLK!(teamIdx, I)
-            Input #1, tradeLK$(teamIdx, I, 0)
-            Input #1, tradeLK$(teamIdx, I, 1)
+            Input #1, gameLKR!(teamIdx, I)
+            Input #1, tradeLKR$(teamIdx, I, 0)
+            Input #1, tradeLKR$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gamePK!(teamIdx, I)
-            Input #1, gamePK$(teamIdx, I, 0)
-            Input #1, gamePK$(teamIdx, I, 1)
+            Input #1, gameLPR!(teamIdx, I)
+            Input #1, tradeLPR$(teamIdx, I, 0)
+            Input #1, tradeLPR$(teamIdx, I, 1)
         Next
 
         For I = 0 To 1:
-            Input #1, gameLF!(teamIdx, I)
-            Input #1, tradeLF$(teamIdx, I)
+            Input #1, gameLFG!(teamIdx, I)
+            Input #1, tradeLFG$(teamIdx, I)
             For I1 = 0 To 4:
-                Input #1, gameAM!(teamIdx, I, I1)
-                Input #1, gameAF!(teamIdx, I, I1)
+                Input #1, gameFGM!(teamIdx, I, I1)
+                Input #1, gameFGA!(teamIdx, I, I1)
             Next
         Next
 
         For I = 0 To 9:
-            Input #1, gameLI!(teamIdx, I)
-            Input #1, tradeLI$(teamIdx, I, 0)
-            Input #1, tradeLI$(teamIdx, I, 1)
+            Input #1, gameLInt!(teamIdx, I)
+            Input #1, tradeLInt$(teamIdx, I, 0)
+            Input #1, tradeLInt$(teamIdx, I, 1)
         Next
 
         Close #1
@@ -8994,150 +8994,150 @@ Sub COMPILESTATFILES (teamIdx)
     End If
 
     For I = 0 To 9
-        If runBacks(teamIdx, I) > gameLR!(teamIdx, I) Then
-            gameLR!(teamIdx, I) = runBacks(teamIdx, I)
-            gameLR$(teamIdx, I, 0) = gameRB$(teamIdx, I)
-            gameLR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If runBacks(teamIdx, I) > gameLRush!(teamIdx, I) Then
+            gameLRush!(teamIdx, I) = runBacks(teamIdx, I)
+            gameLRush$(teamIdx, I, 0) = gameRB$(teamIdx, I)
+            gameLRush$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If IR(teamIdx, I) > gameLI!(teamIdx, I) Then
-            gameLI!(teamIdx, I) = IR(teamIdx, I)
-            tradeLI$(teamIdx, I, 0) = gameIR$(teamIdx, I)
-            tradeLI$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If IR(teamIdx, I) > gameLInt!(teamIdx, I) Then
+            gameLInt!(teamIdx, I) = IR(teamIdx, I)
+            tradeLInt$(teamIdx, I, 0) = gameIR$(teamIdx, I)
+            tradeLInt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 15
-        If WR(teamIdx, I) > gameLC!(teamIdx, I) Then
-            gameLC!(teamIdx, I) = WR(teamIdx, I)
-            gameLC$(teamIdx, I, 0) = gameWR$(teamIdx, I)
-            gameLC$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If WR(teamIdx, I) > gameLRec!(teamIdx, I) Then
+            gameLRec!(teamIdx, I) = WR(teamIdx, I)
+            gameLRec$(teamIdx, I, 0) = gameWR$(teamIdx, I)
+            gameLRec$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 3
-        If quarterbacks(teamIdx, I) > gameLP!(teamIdx, I) Then
-            gameLP!(teamIdx, I) = quarterbacks(teamIdx, I)
-            tradeLP$(teamIdx, I, 0) = gameQB$(teamIdx, I)
-            tradeLP$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If quarterbacks(teamIdx, I) > gameLPass!(teamIdx, I) Then
+            gameLPass!(teamIdx, I) = quarterbacks(teamIdx, I)
+            tradeLPass$(teamIdx, I, 0) = gameQB$(teamIdx, I)
+            tradeLPass$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 2
-        If kickReturners(teamIdx, I) > gameLK!(teamIdx, I) Then
-            gameLK!(teamIdx, I) = kickReturners(teamIdx, I)
-            tradeLK$(teamIdx, I, 0) = gameKR$(teamIdx, I)
-            tradeLK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If kickReturners(teamIdx, I) > gameLKR!(teamIdx, I) Then
+            gameLKR!(teamIdx, I) = kickReturners(teamIdx, I)
+            tradeLKR$(teamIdx, I, 0) = gameKR$(teamIdx, I)
+            tradeLKR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If puntReturners(teamIdx, I) > gamePK!(teamIdx, I) Then
-            gamePK!(teamIdx, I) = puntReturners(teamIdx, I)
-            gamePK$(teamIdx, I, 0) = gamePR$(teamIdx, I)
-            gamePK$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If puntReturners(teamIdx, I) > gameLPR!(teamIdx, I) Then
+            gameLPR!(teamIdx, I) = puntReturners(teamIdx, I)
+            tradeLPR$(teamIdx, I, 0) = gamePR$(teamIdx, I)
+            tradeLPR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
-    If gameStatsTeam(teamIdx, 26) > gameZ0!(28) Then
-        gameZ0!(28) = gameStatsTeam(teamIdx, 26)
+    If gameStatsTeam(teamIdx, 26) > gameTeamStat!(28) Then
+        gameTeamStat!(28) = gameStatsTeam(teamIdx, 26)
     End If
 
     For I = 0 To 1
 
-        If gameLongFG(teamIdx, I) > gameLF!(teamIdx, I) Then
-            gameLF!(teamIdx, I) = gameLongFG(teamIdx, I)
-            tradeLF$(teamIdx, 1) = gameTeams$(1 - teamIdx)
+        If gameLongFG(teamIdx, I) > gameLFG!(teamIdx, I) Then
+            gameLFG!(teamIdx, I) = gameLongFG(teamIdx, I)
+            tradeLFG$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
         For I1 = 0 To 4
-            gameAM!(teamIdx, I, I1) = gameAM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
-            gameAF!(teamIdx, I, I1) = gameAF!(teamIdx, I, I1) + FA(teamIdx, I, I1)
+            gameFGM!(teamIdx, I, I1) = gameFGM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
+            gameFGA!(teamIdx, I, I1) = gameFGA!(teamIdx, I, I1) + FA(teamIdx, I, I1)
         Next
 
     Next
 
     For J = 0 To 13
         For K = 0 To 17:
-            gameZ2!(J, K) = gameZ2!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
+            gamePlayerStat!(J, K) = gamePlayerStat!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + .5)
         Next
     Next
 
-    gameZ0!(32) = gameZ0!(32) + score(teamIdx, 1)
-    gameZ0!(33) = gameZ0!(33) + score(teamIdx, 2)
-    gameZ0!(34) = gameZ0!(34) + score(teamIdx, 3)
-    gameZ0!(35) = gameZ0!(35) + score(teamIdx, 4)
+    gameTeamStat!(32) = gameTeamStat!(32) + score(teamIdx, 1)
+    gameTeamStat!(33) = gameTeamStat!(33) + score(teamIdx, 2)
+    gameTeamStat!(34) = gameTeamStat!(34) + score(teamIdx, 3)
+    gameTeamStat!(35) = gameTeamStat!(35) + score(teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ0!(36) = gameZ0!(36) + score(teamIdx, K)
+        gameTeamStat!(36) = gameTeamStat!(36) + score(teamIdx, K)
     Next
 
-    gameZ1!(32) = gameZ1!(32) + score(1 - teamIdx, 1)
-    gameZ1!(33) = gameZ1!(33) + score(1 - teamIdx, 2)
-    gameZ1!(34) = gameZ1!(34) + score(1 - teamIdx, 3)
-    gameZ1!(35) = gameZ1!(35) + score(1 - teamIdx, 4)
+    gameOppStat!(32) = gameOppStat!(32) + score(1 - teamIdx, 1)
+    gameOppStat!(33) = gameOppStat!(33) + score(1 - teamIdx, 2)
+    gameOppStat!(34) = gameOppStat!(34) + score(1 - teamIdx, 3)
+    gameOppStat!(35) = gameOppStat!(35) + score(1 - teamIdx, 4)
 
     For K = 5 To periodNbr
-        gameZ1!(36) = gameZ1!(36) + score(1 - teamIdx, K)
+        gameOppStat!(36) = gameOppStat!(36) + score(1 - teamIdx, K)
     Next
 
     For J = 0 To 3
-        gameZ0!(17) = gameZ0!(17) + gameStatsPlayer(teamIdx, J, 13)
-        gameZ1!(17) = gameZ1!(17) + gameStatsPlayer(1 - teamIdx, J, 13)
+        gameTeamStat!(17) = gameTeamStat!(17) + gameStatsPlayer(teamIdx, J, 13)
+        gameOppStat!(17) = gameOppStat!(17) + gameStatsPlayer(1 - teamIdx, J, 13)
     Next
 
     For J = 0 To 13
-        gameZ0!(15) = gameZ0!(15) + gameStatsPlayer(teamIdx, J, 2)
-        gameZ1!(15) = gameZ1!(15) + gameStatsPlayer(1 - teamIdx, J, 2)
+        gameTeamStat!(15) = gameTeamStat!(15) + gameStatsPlayer(teamIdx, J, 2)
+        gameOppStat!(15) = gameOppStat!(15) + gameStatsPlayer(1 - teamIdx, J, 2)
     Next
 
     For J = 0 To 2
-        gameZ0!(18) = gameZ0!(18) + gameStatsPlayer(teamIdx, J, 16)
-        gameZ1!(18) = gameZ1!(18) + gameStatsPlayer(1 - teamIdx, J, 16)
-        gameZ0!(22) = gameZ0!(22) + gameStatsPlayer(teamIdx, J, 14)
-        gameZ1!(22) = gameZ1!(22) + gameStatsPlayer(1 - teamIdx, J, 14)
-        gameZ0!(23) = gameZ0!(23) + gameStatsPlayer(teamIdx, J, 15)
-        gameZ1!(23) = gameZ1!(23) + gameStatsPlayer(1 - teamIdx, J, 15)
-        gameZ0!(19) = gameZ0!(19) + gameStatsPlayer(teamIdx, J + 3, 16)
-        gameZ1!(18) = gameZ1!(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
-        gameZ0!(24) = gameZ0!(24) + gameStatsPlayer(teamIdx, J + 3, 14)
-        gameZ1!(24) = gameZ1!(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
-        gameZ0!(25) = gameZ0!(25) + gameStatsPlayer(teamIdx, J + 3, 15)
-        gameZ1!(25) = gameZ1!(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
+        gameTeamStat!(18) = gameTeamStat!(18) + gameStatsPlayer(teamIdx, J, 16)
+        gameOppStat!(18) = gameOppStat!(18) + gameStatsPlayer(1 - teamIdx, J, 16)
+        gameTeamStat!(22) = gameTeamStat!(22) + gameStatsPlayer(teamIdx, J, 14)
+        gameOppStat!(22) = gameOppStat!(22) + gameStatsPlayer(1 - teamIdx, J, 14)
+        gameTeamStat!(23) = gameTeamStat!(23) + gameStatsPlayer(teamIdx, J, 15)
+        gameOppStat!(23) = gameOppStat!(23) + gameStatsPlayer(1 - teamIdx, J, 15)
+        gameTeamStat!(19) = gameTeamStat!(19) + gameStatsPlayer(teamIdx, J + 3, 16)
+        gameOppStat!(18) = gameOppStat!(19) + gameStatsPlayer(1 - teamIdx, J + 3, 16)
+        gameTeamStat!(24) = gameTeamStat!(24) + gameStatsPlayer(teamIdx, J + 3, 14)
+        gameOppStat!(24) = gameOppStat!(24) + gameStatsPlayer(1 - teamIdx, J + 3, 14)
+        gameTeamStat!(25) = gameTeamStat!(25) + gameStatsPlayer(teamIdx, J + 3, 15)
+        gameOppStat!(25) = gameOppStat!(25) + gameStatsPlayer(1 - teamIdx, J + 3, 15)
     Next
 
     For J = 0 To 9
-        gameZ0!(20) = gameZ0!(20) + gameInts(teamIdx, J, 2)
-        gameZ1!(20) = gameZ1!(20) + gameInts(1 - teamIdx, J, 2)
-        gameZ0!(26) = gameZ0!(26) + gameInts(teamIdx, J, 0)
-        gameZ1!(26) = gameZ1!(26) + gameInts(1 - teamIdx, J, 0)
-        gameZ0!(27) = gameZ0!(27) + gameInts(teamIdx, J, 1)
-        gameZ1!(27) = gameZ1!(27) + gameInts(1 - teamIdx, J, 1)
+        gameTeamStat!(20) = gameTeamStat!(20) + gameInts(teamIdx, J, 2)
+        gameOppStat!(20) = gameOppStat!(20) + gameInts(1 - teamIdx, J, 2)
+        gameTeamStat!(26) = gameTeamStat!(26) + gameInts(teamIdx, J, 0)
+        gameOppStat!(26) = gameOppStat!(26) + gameInts(1 - teamIdx, J, 0)
+        gameTeamStat!(27) = gameTeamStat!(27) + gameInts(teamIdx, J, 1)
+        gameOppStat!(27) = gameOppStat!(27) + gameInts(1 - teamIdx, J, 1)
     Next
 
-    gameZ0!(21) = gameZ0!(21) + gameStatsTeam(teamIdx, 19)
-    gameZ1!(21) = gameZ1!(21) + gameStatsTeam(1 - teamIdx, 19)
-    gameZ0!(37) = gameZ0!(37) + gameStatsTeam(teamIdx, 35)
-    gameZ1!(37) = gameZ1!(37) + gameStatsTeam(1 - teamIdx, 35)
-    gameZ0!(38) = gameZ0!(38) + gameStatsTeam(teamIdx, 36)
-    gameZ1!(38) = gameZ1!(38) + gameStatsTeam(1 - teamIdx, 36)
-    gameZ0!(30) = gameZ0!(30) + gameStatsTeam(teamIdx, 28)
-    gameZ1!(30) = gameZ1!(30) + gameStatsTeam(1 - teamIdx, 28)
-    gameZ0!(29) = gameZ0!(29) + gameStatsTeam(teamIdx, 27)
-    gameZ1!(29) = gameZ1!(29) + gameStatsTeam(1 - teamIdx, 27)
-    gameZ0!(31) = gameZ0!(31) + gameStatsTeam(teamIdx, 29)
-    gameZ1!(31) = gameZ1!(31) + gameStatsTeam(1 - teamIdx, 29)
+    gameTeamStat!(21) = gameTeamStat!(21) + gameStatsTeam(teamIdx, 19)
+    gameOppStat!(21) = gameOppStat!(21) + gameStatsTeam(1 - teamIdx, 19)
+    gameTeamStat!(37) = gameTeamStat!(37) + gameStatsTeam(teamIdx, 35)
+    gameOppStat!(37) = gameOppStat!(37) + gameStatsTeam(1 - teamIdx, 35)
+    gameTeamStat!(38) = gameTeamStat!(38) + gameStatsTeam(teamIdx, 36)
+    gameOppStat!(38) = gameOppStat!(38) + gameStatsTeam(1 - teamIdx, 36)
+    gameTeamStat!(30) = gameTeamStat!(30) + gameStatsTeam(teamIdx, 28)
+    gameOppStat!(30) = gameOppStat!(30) + gameStatsTeam(1 - teamIdx, 28)
+    gameTeamStat!(29) = gameTeamStat!(29) + gameStatsTeam(teamIdx, 27)
+    gameOppStat!(29) = gameOppStat!(29) + gameStatsTeam(1 - teamIdx, 27)
+    gameTeamStat!(31) = gameTeamStat!(31) + gameStatsTeam(teamIdx, 29)
+    gameOppStat!(31) = gameOppStat!(31) + gameStatsTeam(1 - teamIdx, 29)
 
     For L = 0 To 12:
-        gameZ0!(L) = gameZ0!(L) + gameStatsTeam(teamIdx, L)
+        gameTeamStat!(L) = gameTeamStat!(L) + gameStatsTeam(teamIdx, L)
     Next
 
     For L = 0 To 12:
-        gameZ1!(L) = gameZ1!(L) + gameStatsTeam(1 - teamIdx, L)
+        gameOppStat!(L) = gameOppStat!(L) + gameStatsTeam(1 - teamIdx, L)
     Next
 
-    gameZ0!(13) = gameZ0!(13) + sackStatsTeam(teamIdx, 0)
-    gameZ0!(14) = gameZ0!(14) + sackStatsTeam(teamIdx, 1)
-    gameZ1!(13) = gameZ1!(13) + sackStatsTeam(1 - teamIdx, 0)
-    gameZ1!(14) = gameZ1!(14) + sackStatsTeam(1 - teamIdx, 1)
+    gameTeamStat!(13) = gameTeamStat!(13) + sackStatsTeam(teamIdx, 0)
+    gameTeamStat!(14) = gameTeamStat!(14) + sackStatsTeam(teamIdx, 1)
+    gameOppStat!(13) = gameOppStat!(13) + sackStatsTeam(1 - teamIdx, 0)
+    gameOppStat!(14) = gameOppStat!(14) + sackStatsTeam(1 - teamIdx, 1)
 
     For J = 0 To 9
         For J1 = 0 To 2
@@ -9191,16 +9191,16 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Print #2, gameZ2!(J, K)
+            Print #2, gamePlayerStat!(J, K)
         Next
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ0!(L)
+        Print #2, gameTeamStat!(L)
     Next
 
     For L = 0 To 38:
-        Print #2, gameZ1!(L)
+        Print #2, gameOppStat!(L)
     Next
 
     For J = 0 To 9
@@ -9218,48 +9218,48 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For I = 0 To 9:
-        Print #2, gameLR!(teamIdx, I)
-        Print #2, gameLR$(teamIdx, I, 0)
-        Print #2, gameLR$(teamIdx, I, 1)
+        Print #2, gameLRush!(teamIdx, I)
+        Print #2, gameLRush$(teamIdx, I, 0)
+        Print #2, gameLRush$(teamIdx, I, 1)
     Next
 
     For I = 0 To 15:
-        Print #2, gameLC!(teamIdx, I)
-        Print #2, gameLC$(teamIdx, I, 0)
-        Print #2, gameLC$(teamIdx, I, 1)
+        Print #2, gameLRec!(teamIdx, I)
+        Print #2, gameLRec$(teamIdx, I, 0)
+        Print #2, gameLRec$(teamIdx, I, 1)
     Next
 
     For I = 0 To 3:
-        Print #2, gameLP!(teamIdx, I)
-        Print #2, tradeLP$(teamIdx, I, 0)
-        Print #2, tradeLP$(teamIdx, I, 1)
+        Print #2, gameLPass!(teamIdx, I)
+        Print #2, tradeLPass$(teamIdx, I, 0)
+        Print #2, tradeLPass$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gameLK!(teamIdx, I)
-        Print #2, tradeLK$(teamIdx, I, 0)
-        Print #2, tradeLK$(teamIdx, I, 1)
+        Print #2, gameLKR!(teamIdx, I)
+        Print #2, tradeLKR$(teamIdx, I, 0)
+        Print #2, tradeLKR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gamePK!(teamIdx, I)
-        Print #2, gamePK$(teamIdx, I, 0)
-        Print #2, gamePK$(teamIdx, I, 1)
+        Print #2, gameLPR!(teamIdx, I)
+        Print #2, tradeLPR$(teamIdx, I, 0)
+        Print #2, tradeLPR$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
-        Print #2, gameLF!(teamIdx, I)
-        Print #2, tradeLF$(teamIdx, I)
+        Print #2, gameLFG!(teamIdx, I)
+        Print #2, tradeLFG$(teamIdx, I)
         For I1 = 0 To 4:
-            Print #2, gameAM!(teamIdx, I, I1)
-            Print #2, gameAF!(teamIdx, I, I1)
+            Print #2, gameFGM!(teamIdx, I, I1)
+            Print #2, gameFGA!(teamIdx, I, I1)
         Next
     Next
 
     For I = 0 To 9:
-        Print #2, gameLI!(teamIdx, I)
-        Print #2, tradeLI$(teamIdx, I, 0)
-        Print #2, tradeLI$(teamIdx, I, 1)
+        Print #2, gameLInt!(teamIdx, I)
+        Print #2, tradeLInt$(teamIdx, I, 0)
+        Print #2, tradeLInt$(teamIdx, I, 1)
     Next
 
     Close #2
@@ -9372,7 +9372,7 @@ Sub COMPILESTATFILES (teamIdx)
     Erase teamScore
     Erase gameAttendance&
     Erase locIndicator$, oppName$, gameSite$
-    Erase gameZ0!, gameZ1!, gameZ2!
+    Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
 
 End Sub
 

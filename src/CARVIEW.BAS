@@ -1877,7 +1877,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 3 To 20: 
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else

@@ -15,14 +15,14 @@ Function GetQBName$ (targetGame%, teamIndicator)
     Shared armRating()
     Shared passContrib(), compPct(), qbIntPct()
 
-    Shared scheduleNG%(), teamRatings%()
+    Shared scheduleNG%(), teamRatings()
 
     Shared qbName$()
 
     Color 15, 0
     Cls
 
-    Call MenuBox(6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+    Call MenuBox(6, 8, 61, 12, teamRatings(2), teamRatings(1))
     Locate 7, 11
 
     Locate , 31
@@ -78,7 +78,7 @@ Function GetQBName$ (targetGame%, teamIndicator)
         suggestedMobility = GetQBMobility%(qbContrib)
 
         Cls
-        Call MenuBox(6, 8, 61, 12, teamRatings%(2), teamRatings%(1))
+        Call MenuBox(6, 8, 61, 12, teamRatings(2), teamRatings(1))
         Locate 7, 11
 
         Locate 8, 16: Print "ENTER "; qbName$(choice); " MOBILITY RATING (1-9)"
@@ -353,43 +353,43 @@ End Function
 'This routine calculates a QB's rating
 'from the previously loaded stats.
 
-'Source: Expanded Leaders / A3L!
-'Destination: A3L!
+'Source: Expanded Leaders / expLdrQBVal!
+'Destination: expLdrQBVal!
 
 'teamType
 '   0 = College
 '   1 = Pro
 Sub QBRating_Expanded (qbIdx, teamType)
 
-    Shared A3L!()
+    Shared expLdrQBVal!()
 
     Dim FF!(120), II!(120), PP!(120), YY!(120)
 
-    If A3L!(qbIdx, 0) > 0 Then
-        A3L!(qbIdx, 11) = Int(A3L!(qbIdx, 1) / A3L!(qbIdx, 0) * 1000) / 10
+    If expLdrQBVal!(qbIdx, 0) > 0 Then
+        expLdrQBVal!(qbIdx, 11) = Int(expLdrQBVal!(qbIdx, 1) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
     End If
 
-    If A3L!(qbIdx, 0) = 0 Then
-        A3L!(qbIdx, 11) = 0
-        A3L!(qbIdx, 8) = 0
-        A3L!(qbIdx, 10) = 0
-        A3L!(qbIdx, 9) = 0
+    If expLdrQBVal!(qbIdx, 0) = 0 Then
+        expLdrQBVal!(qbIdx, 11) = 0
+        expLdrQBVal!(qbIdx, 8) = 0
+        expLdrQBVal!(qbIdx, 10) = 0
+        expLdrQBVal!(qbIdx, 9) = 0
     Else
         If teamType = 0 Then
             'COL QB RATING
-            A3L!(qbIdx, 12) = Int(A3L!(qbIdx, 3) / A3L!(qbIdx, 0)) * 8.399999 + A3L!(qbIdx, 11) + Int(A3L!(qbIdx, 4) / A3L!(qbIdx, 0) * 1000) / 10 * 3.3 - Int(A3L!(qbIdx, 2) / A3L!(qbIdx, 0) * 1000) / 10 * 2
-            A3L!(qbIdx, 12) = Int(A3L!(qbIdx, 12) * 10) / 10
+            expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 3) / expLdrQBVal!(qbIdx, 0)) * 8.399999 + expLdrQBVal!(qbIdx, 11) + Int(expLdrQBVal!(qbIdx, 4) / expLdrQBVal!(qbIdx, 0) * 1000) / 10 * 3.3 - Int(expLdrQBVal!(qbIdx, 2) / expLdrQBVal!(qbIdx, 0) * 1000) / 10 * 2
+            expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 12) * 10) / 10
         Else
             'PRO QB RATING
-            A3L!(qbIdx, 8) = Int(A3L!(qbIdx, 4) / A3L!(qbIdx, 0) * 1000) / 10
-            A3L!(qbIdx, 10) = Int(A3L!(qbIdx, 3) / A3L!(qbIdx, 0) * 100) / 100
-            A3L!(qbIdx, 9) = Int(A3L!(qbIdx, 2) / A3L!(qbIdx, 0) * 1000) / 10
+            expLdrQBVal!(qbIdx, 8) = Int(expLdrQBVal!(qbIdx, 4) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
+            expLdrQBVal!(qbIdx, 10) = Int(expLdrQBVal!(qbIdx, 3) / expLdrQBVal!(qbIdx, 0) * 100) / 100
+            expLdrQBVal!(qbIdx, 9) = Int(expLdrQBVal!(qbIdx, 2) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
         End If
 
     End If
 
     'Shouldn't this only be for Pro !?!?!?
-    PP!(qbIdx) = A3L!(qbIdx, 11) - 30
+    PP!(qbIdx) = expLdrQBVal!(qbIdx, 11) - 30
 
     If PP!(qbIdx) < 0 Then
         PP!(qbIdx) = 0
@@ -401,48 +401,48 @@ Sub QBRating_Expanded (qbIdx, teamType)
         End If
     End If
 
-    If A3L!(qbIdx, 8) > 11.9 Then
+    If expLdrQBVal!(qbIdx, 8) > 11.9 Then
         FF!(qbIdx) = 2.375
     Else
-        FF!(qbIdx) = A3L!(qbIdx, 8) * .2
+        FF!(qbIdx) = expLdrQBVal!(qbIdx, 8) * .2
     End If
 
-    If A3L!(qbIdx, 9) = 0 Then
+    If expLdrQBVal!(qbIdx, 9) = 0 Then
         II!(qbIdx) = 0
     Else
-        If A3L!(qbIdx, 9) > 9.5 Then
+        If expLdrQBVal!(qbIdx, 9) > 9.5 Then
             II!(qbIdx) = 0
         Else
-            II!(qbIdx) = 2.375 - (.25 * A3L!(qbIdx, 9))
+            II!(qbIdx) = 2.375 - (.25 * expLdrQBVal!(qbIdx, 9))
         End If
     End If
 
-    A3L!(qbIdx, 10) = A3L!(qbIdx, 10) - 3
+    expLdrQBVal!(qbIdx, 10) = expLdrQBVal!(qbIdx, 10) - 3
 
-    If A3L!(qbIdx, 10) < 0 Then
+    If expLdrQBVal!(qbIdx, 10) < 0 Then
         YY!(qbIdx) = 0
     Else
-        If A3L!(qbIdx, 10) > 12.5 Then
+        If expLdrQBVal!(qbIdx, 10) > 12.5 Then
             YY!(qbIdx) = 2.375
         Else
-            D = Int(A3L!(qbIdx, 10) * 100) / 2
-            If D = A3L!(qbIdx, 10) / 2 Then
-                YY!(qbIdx) = A3L!(qbIdx, 10) / 2 * .3 + A3L!(qbIdx, 10) / 2 * .2
+            D = Int(expLdrQBVal!(qbIdx, 10) * 100) / 2
+            If D = expLdrQBVal!(qbIdx, 10) / 2 Then
+                YY!(qbIdx) = expLdrQBVal!(qbIdx, 10) / 2 * .3 + expLdrQBVal!(qbIdx, 10) / 2 * .2
             Else
-                YY!(qbIdx) = A3L!(qbIdx, 10) / 2 * .3 + A3L!(qbIdx, 10) / 2 * .2 + .003
+                YY!(qbIdx) = expLdrQBVal!(qbIdx, 10) / 2 * .3 + expLdrQBVal!(qbIdx, 10) / 2 * .2 + .003
             End If
         End If
     End If
 
-    A3L!(qbIdx, 12) = PP!(qbIdx) + FF!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
+    expLdrQBVal!(qbIdx, 12) = PP!(qbIdx) + FF!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
 
-    If A3L!(qbIdx, 12) > 9.5 Then
-        A3L!(qbIdx, 12) = 158.3
+    If expLdrQBVal!(qbIdx, 12) > 9.5 Then
+        expLdrQBVal!(qbIdx, 12) = 158.3
     Else
-        A3L!(qbIdx, 12) = A3L!(qbIdx, 12) * 50 / 3
+        expLdrQBVal!(qbIdx, 12) = expLdrQBVal!(qbIdx, 12) * 50 / 3
     End If
 
-    A3L!(qbIdx, 12) = Int(A3L!(qbIdx, 12) * 10) / 10
+    expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 12) * 10) / 10
 
 End Sub
 

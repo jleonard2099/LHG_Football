@@ -23,10 +23,10 @@ Sub ALIGN ()
     Shared intName_Road$(), sackName_Road$()
 
     Shared longCatchVal_Align!(), longCatchVal_Road!()
-    Shared longFGVal_Road!(), longFGVal_Align!()
+    Shared longFGVal_Align!(), longFGVal_Road!()
     Shared longPassVal_Align!(), longPassVal_Road!()
     Shared longKRVal_Align!(), longKRVal_Road!()
-    Shared longRunVal_Align!(), longRunVal_Align!()
+    Shared longRunVal_Align!(), longRunVal_Road!()
     Shared longPRVal_Align!(), longPRVal_Road!()
     Shared longIntVal_Align!(), longIntVal_Road!()
     Shared FGA_Align!(), FGA_Road!(), FGM_Align!(), FGM_Road!()
@@ -38,22 +38,22 @@ Sub ALIGN ()
     Shared longPassName_Align$(), longPassName_Road$(), longRunName_Align$(), longRunName_Align$()
     Shared longPRName_Align$(), longPRName_Road$()
 
-    Shared statsLC$(), statsLF$()
-    Shared statsLI$(), statsLK$()
-    Shared statsLP$(), statsLR$()
-    Shared statsPK$()
+    Shared statsLRec$(), statsLFG$()
+    Shared statsLInt$(), statsLKR$()
+    Shared statsLPass$(), statsLRush$()
+    Shared statsLPR$()
 
-    Shared statsAF!(), statsAM!()
-    Shared statsLC!(), statsLF!()
-    Shared statsLP!(), statsLK!() 
-    Shared statsLI!(), statsLR!()
-    Shared statsPK!()
-    Shared statsGI%(), statsGS%()
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLRec!(), statsLFG!()
+    Shared statsLPass!(), statsLKR!() 
+    Shared statsLInt!(), statsLRush!()
+    Shared statsLPR!()
+    Shared statsGI(), statsGS()
 
-    Shared statsZ2!(), statsZ!(), statsZ1!()
-    Shared roadZ2!(), roadZ0!(), roadZ1!()
+    Shared statsPlayers!(), statsTeam!(), statsOpp!()
+    Shared statsPlayers_Road!(), statsTeam_Road!(), statsOpp_Road!()
 
-    Shared teamRatings%()
+    Shared teamRatings()
 
     Do
 
@@ -109,16 +109,16 @@ Sub ALIGN ()
 
                 For J = 0 To 13
                     For K = 0 To 17: 
-                        Input #1, roadZ2!(J, K)
+                        Input #1, statsPlayers_Road!(J, K)
                     Next K
                 Next J
 
                 For L = 0 To 38: 
-                    Input #1, roadZ0!(L)
+                    Input #1, statsTeam_Road!(L)
                 Next L
 
                 For L = 0 To 38: 
-                    Input #1, roadZ1!(L)
+                    Input #1, statsOpp_Road!(L)
                 Next L
 
                 For J = 0 To 9: 
@@ -219,75 +219,75 @@ Sub ALIGN ()
 
                     For J = 0 To 13
                         For K = 0 To 17: 
-                            Input #2, statsZ2!(J, K)
+                            Input #2, statsPlayers!(J, K)
                         Next K
                     Next J
 
                     For L = 0 To 38: 
-                        Input #2, statsZ!(L)
+                        Input #2, statsTeam!(L)
                     Next L
 
                     For L = 0 To 38: 
-                        Input #2, statsZ1!(L)
+                        Input #2, statsOpp!(L)
                     Next L
 
                     For J = 0 To 9: 
                         Input #2, intName$(J)
                         For J1 = 0 To 2: 
-                            Input #2, statsGI%(J, J1)
+                            Input #2, statsGI(J, J1)
                         Next
                     Next
 
                     For J = 0 To 14: 
                         Input #2, sackName$(J)
                         For J1 = 0 To 1: 
-                            Input #2, statsGS%(J, J1)
+                            Input #2, statsGS(J, J1)
                         Next
                     Next
 
                     For I = 0 To 9: 
-                        Input #2, statsLR!(I)
-                        Input #2, statsLR$(I, 0)
-                        Input #2, statsLR$(I, 1)
+                        Input #2, statsLRush!(I)
+                        Input #2, statsLRush$(I, 0)
+                        Input #2, statsLRush$(I, 1)
                     Next
 
                     For I = 0 To 15: 
-                        Input #2, statsLC!(I)
-                        Input #2, statsLC$(I, 0)
-                        Input #2, statsLC$(I, 1)
+                        Input #2, statsLRec!(I)
+                        Input #2, statsLRec$(I, 0)
+                        Input #2, statsLRec$(I, 1)
                     Next
 
                     For I = 0 To 3: 
-                        Input #2, statsLP!(I)
-                        Input #2, statsLP$(I, 0)
-                        Input #2, statsLP$(I, 1)
+                        Input #2, statsLPass!(I)
+                        Input #2, statsLPass$(I, 0)
+                        Input #2, statsLPass$(I, 1)
                     Next
 
                     For I = 0 To 2: 
-                        Input #2, statsLK!(I)
-                        Input #2, statsLK$(I, 0)
-                        Input #2, statsLK$(I, 1)
+                        Input #2, statsLKR!(I)
+                        Input #2, statsLKR$(I, 0)
+                        Input #2, statsLKR$(I, 1)
                     Next
 
                     For I = 0 To 2: 
-                        Input #2, statsPK!(I)
-                        Input #2, statsPK$(I, 0)
-                        Input #2, statsPK$(I, 1)
+                        Input #2, statsLPR!(I)
+                        Input #2, statsLPR$(I, 0)
+                        Input #2, statsLPR$(I, 1)
                     Next
 
                     For I = 0 To 1: 
-                        Input #2, statsLF!(I)
-                        Input #2, statsLF$(I)
+                        Input #2, statsLFG!(I)
+                        Input #2, statsLFG$(I)
                         For I1 = 0 To 4: 
-                            Input #2, statsAM!(I, I1)
-                            Input #2, statsAF!(I, I1)
+                            Input #2, statsFGM!(I, I1)
+                            Input #2, statsFGA!(I, I1)
                         Next
                     Next
 
                     For I = 0 To 9: 
-                        Input #2, statsLI!(I)
-                        Input #2, statsLI$(I, 0)
-                        Input #2, statsLI$(I, 1)
+                        Input #2, statsLInt!(I)
+                        Input #2, statsLInt$(I, 0)
+                        Input #2, statsLInt$(I, 1)
                     Next
 
                     Close #2
@@ -348,8 +348,10 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Shared intName_Road$(), sackName_Road$()
 
     Shared longCatchName_Align$(), longCatchName_Road$(), longFGName_Align$(), longFGName_Road$()
-    Shared statsLK$(), longKRName_Align$(), longKRName_Road$(), longPassName_Align$(), longPassName_Road$(), statsLP$()
-    Shared longRunName_Align$(), longRunName_Align$(), statsLR$(), longPRName_Align$(), statsPK$(), longPRName_Road$()
+    Shared longKRName_Align$(), longKRName_Road$(), longPassName_Align$(), longPassName_Road$()
+    Shared longRunName_Align$(), longRunName_Align$(), longPRName_Align$(), longPRName_Road$()
+    
+    Shared statsLKR$(), statsLPR$(), statsLPass$(), statsLRush$()
 
     Shared longCatchVal_Align!(), longCatchVal_Road!()
     Shared longFGVal_Road!(), longFGVal_Align!()
@@ -361,9 +363,9 @@ Sub AlignStats (pathRoadStats$, statFile$)
     Shared FGA_Align!(), FGA_Road!(), FGM_Align!(), FGM_Road!()
     Shared nbrInt_Align(), nbrInt_Road(), nbrSack_Align(), nbrSack_Road()
 
-    Shared alignZ2!(), roadZ2!()
+    Shared statsPlayers_Align!(), statsPlayers_Road!()
 
-    Shared statsGI%(), statsGS%()
+    Shared statsGI(), statsGS()
 
     Cls
 
@@ -509,7 +511,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
             If rbName$(N) = rbName_Road$(J) Then
 
                 rbName_Align$(N) = rbName_Road$(J)
-                longRunVal_Align!(N) = longRunVal_Align!(J)
+                longRunVal_Align!(N) = longRunVal_Road!(J)
                 longCatchVal_Align!(N) = longCatchVal_Road!(J)
 
                 For I = 0 To 1
@@ -518,7 +520,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 Next
 
                 For K = 0 To 5
-                    alignZ2!(N, K) = roadZ2!(J, K)
+                    statsPlayers_Align!(N, K) = statsPlayers_Road!(J, K)
                 Next K
 
             End If
@@ -540,7 +542,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 qbName_Align$(N) = qbName_Road$(J)
 
                 For K = 0 To 2
-                    alignZ2!(N + 10, K) = roadZ2!(J + 10, K)
+                    statsPlayers_Align!(N + 10, K) = statsPlayers_Road!(J + 10, K)
                 Next K
 
             End If
@@ -564,7 +566,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 longCatchName_Align$(N + 10, 1) = longCatchName_Road$(J + 10, 1)
 
                 For K = 6 To 8
-                    alignZ2!(N, K) = roadZ2!(J, K)
+                    statsPlayers_Align!(N, K) = statsPlayers_Road!(J, K)
                 Next K
 
             End If
@@ -587,7 +589,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 longPassName_Align$(N, 1) = longPassName_Road$(J, 1)
 
                 For K = 9 To 13:
-                    alignZ2!(N, K) = roadZ2!(J, K)
+                    statsPlayers_Align!(N, K) = statsPlayers_Road!(J, K)
                 Next K
 
             End If
@@ -612,7 +614,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 longKRName_Align$(N, 1) = longKRName_Road$(J, 1)
 
                 For K = 14 To 16
-                    alignZ2!(N, K) = roadZ2!(J, K)
+                    statsPlayers_Align!(N, K) = statsPlayers_Road!(J, K)
                 Next K
 
             End If
@@ -637,7 +639,7 @@ Sub AlignStats (pathRoadStats$, statFile$)
                 longPRName_Align$(N, 1) = longPRName_Road$(J, 1)
 
                 For K = 14 To 16:
-                    alignZ2!(N + 3, K) = roadZ2!(J + 3, K)
+                    statsPlayers_Align!(N + 3, K) = statsPlayers_Road!(J + 3, K)
                 Next K
 
             End If
@@ -666,17 +668,17 @@ Sub AlignStats (pathRoadStats$, statFile$)
 
                 If N = J Then
                     For L = 3 To 6: 
-                        alignZ2!(L, 17) = roadZ2!(L, 17)
+                        statsPlayers_Align!(L, 17) = statsPlayers_Road!(L, 17)
                     Next L
                     For L = 7 To 10: 
-                        alignZ2!(L, 17) = roadZ2!(L, 17)
+                        statsPlayers_Align!(L, 17) = statsPlayers_Road!(L, 17)
                     Next L
                 Else
                     For L = 3 To 6: 
-                        alignZ2!(L, 17) = roadZ2!(L + 4, 17)
+                        statsPlayers_Align!(L, 17) = statsPlayers_Road!(L + 4, 17)
                     Next L
                     For L = 7 To 10: 
-                        alignZ2!(L, 17) = roadZ2!(L - 4, 17)
+                        statsPlayers_Align!(L, 17) = statsPlayers_Road!(L - 4, 17)
                     Next L
                 End If
 
@@ -798,17 +800,21 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
     Shared intName$(), sackName$()
 
     'Current name
-    Shared rbName_Align$(), wrName_Align$(), qbName_Align$(), krName_Align$(), prName_Align$(), punterName_Align$(), pkName_Align$()
+    Shared rbName_Align$(), wrName_Align$(), qbName_Align$()
+    Shared krName_Align$(), prName_Align$(), punterName_Align$(), pkName_Align$()
     Shared intName_Align$(), sackName_Align$()
 
     Shared longCatchName_Align$(), longCatchName_Road$(), longFGName_Align$(), longFGName_Road$()
-    Shared longIntName_Align$(), longKRName_Align$(), longPassName_Align$(), longRunName_Align$(), longPRName_Align$()
+    Shared longIntName_Align$(), longKRName_Align$(), longPassName_Align$()
+    Shared longRunName_Align$(), longPRName_Align$()
+
+    Shared FGA_Align!(), FGM_Align!()
     Shared nbrInt_Align(), nbrInt_Road(), nbrSack_Align()
 
-    Shared FGA_Align!(), FGM_Align!(), longCatchVal_Align!(), longIntVal_Align!(), longFGVal_Align!()
+    Shared longCatchVal_Align!(), longIntVal_Align!(), longFGVal_Align!()
     Shared longPassVal_Align!(), longKRVal_Align!(), longRunVal_Align!(), longPRVal_Align!()
 
-    Shared alignZ2!(), roadZ0!(), roadZ1!()
+    Shared statsPlayers_Align!(), statsTeam_Road!(), statsOpp_Road!()
 
     Cls
 
@@ -979,16 +985,16 @@ Sub ReviewAndSaveAlignment (pathRoadStats$, statFile$)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Write #1, alignZ2!(J, K)
+            Write #1, statsPlayers_Align!(J, K)
         Next K
     Next J
 
     For L = 0 To 38: 
-        Write #1, roadZ0!(L)
+        Write #1, statsTeam_Road!(L)
     Next L
 
     For L = 0 To 38: 
-        Write #1, roadZ1!(L)
+        Write #1, statsOpp_Road!(L)
     Next L
 
     For J = 0 To 9:

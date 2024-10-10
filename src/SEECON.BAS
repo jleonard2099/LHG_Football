@@ -28,12 +28,14 @@ End Sub
 'from the file into several arrays
 Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
-    Shared seeL!(), LD!(), LZ!()
-    Shared PTSA!(), PTSF!()
-    Shared seeT!(), compTT!(), seeW!()
+    Shared divLosses!(), divTies!(), divWins!()
+    Shared leaderVal1!(), leaderVal2!()
+    Shared leagPtsAgnst!(), leagPtsFor!()
+    Shared totalTeamVal!()
 
-    Shared seeP$(), seeT$(), TT$()
-    Shared compZ2$(), compZ3$()
+    Shared leagRecText$(), divTeamNames$()
+    Shared leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
     Shared div1Name$, div2Name$
 
@@ -51,24 +53,24 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
     Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To 60
-        Input #2, seeT$(X), seeW!(X), seeL!(X), seeT!(X), PTSF!(X), PTSA!(X)
+        Input #2, divTeamNames$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
-        Input #2, compZ2$(X), compZ3$(X), LD!(X), LZ!(X)
+        Input #2, leaderName$(X), leaderTeam$(X), leaderVal1!(X), leaderVal2!(X)
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Input #2, compTT!(I, I1, I2)
+                Input #2, totalTeamVal!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Input #2, TT$(I, I1)
+            Input #2, totalTeamName$(I, I1)
         Next
     Next
 
@@ -77,33 +79,35 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
     '--- Use an outside loop here for each
     '--- chunk of 15 values of P
 
-    D1 = seeW!(1) - seeL!(1)
+    D1 = divWins!(1) - divLosses!(1)
 
     For P = 1 To 15:
-        If seeT$(P) = "*" Or seeT$(P) = "" Then
-            seeP$(P) = ""
+        If divTeamNames$(P) = "*" Or divTeamNames$(P) = "" Then
+            leagRecText$(P) = ""
         Else
-            seeP$(P) = PadRight$(seeT$(P), 12)
+            leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
-            A = Int(seeW!(P))
+            A = Int(divWins!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
 
-            A = Int(seeL!(P))
+            A = Int(divLosses!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
 
-            A = Int(seeT!(P))
+            A = Int(divTies!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
+            If divWins!(P) + divLosses!(P) > 0 Then 
+                A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+            End If
 
             A = Int(1000 * A + .5)
 
             If A = 1000 Then
-                seeP$(P) = seeP$(P) + "1.000 "
+                leagRecText$(P) = leagRecText$(P) + "1.000 "
             Else
 
                 rightStr$ = Str$(A)
@@ -114,88 +118,92 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
                     rightStr$ = "0" + rightStr$
                 Else
                     rightStr$ = " ." + Right$(rightStr$, 3)
-                    seeP$(P) = seeP$(P) + rightStr$
+                    leagRecText$(P) = leagRecText$(P) + rightStr$
                 End If
             End If
 
-            seeP$(P) = PadRight$(seeP$(P), 30)
+            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
 
-            A = PTSF!(P)
+            A = leagPtsFor!(P)
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + rightStr$
+            leagRecText$(P) = leagRecText$(P) + rightStr$
 
-            A = PTSA!(P)
+            A = leagPtsAgnst!(P)
             rightStr$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + rightStr$
-            'seeP$(P) = seeP$(P)
+            leagRecText$(P) = leagRecText$(P) + rightStr$
+            'leagRecText$(P) = leagRecText$(P)
 
         End If
 
     Next P
 
-    D1 = seeW!(16) - seeL!(16)
+    D1 = divWins!(16) - divLosses!(16)
 
     For P = 16 To 30:
-        If seeT$(P) = "*" Or seeT$(P) = "" Then
-            seeP$(P) = ""
+        If divTeamNames$(P) = "*" Or divTeamNames$(P) = "" Then
+            leagRecText$(P) = ""
         Else
-            seeP$(P) = PadRight$(seeT$(P), 12)
+            leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
-            A = Int(seeW!(P))
+            A = Int(divWins!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
 
-            A = Int(seeL!(P))
+            A = Int(divLosses!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
 
-            A = Int(seeT!(P))
+            A = Int(divTies!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If seeW!(P) + seeL!(P) > 0 Then A = Int(seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
+            If divWins!(P) + divLosses!(P) > 0 Then 
+                A = Int(divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+            End If
 
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 30)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 30)
 
-            A = PTSF!(P)
+            A = leagPtsFor!(P)
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + rightStr$
+            leagRecText$(P) = leagRecText$(P) + rightStr$
 
-            A = PTSA!(P)
+            A = leagPtsAgnst!(P)
             rightStr$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + rightStr$
-            'seeP$(P) = seeP$(P)
+            leagRecText$(P) = leagRecText$(P) + rightStr$
+            'leagRecText$(P) = leagRecText$(P)
         End If
     Next P
 
-    D1 = seeW!(31) - seeL!(31)
+    D1 = divWins!(31) - divLosses!(31)
 
     For P = 31 To 45:
-        If seeT$(P) = "*" Or seeT$(P) = "" Then
-            seeP$(P) = ""
+        If divTeamNames$(P) = "*" Or divTeamNames$(P) = "" Then
+            leagRecText$(P) = ""
         Else
-            seeP$(P) = PadRight$(seeT$(P), 12)
+            leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
-            A = Int(seeW!(P))
+            A = Int(divWins!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
 
-            A = Int(seeL!(P))
+            A = Int(divLosses!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
 
-            A = Int(seeT!(P))
+            A = Int(divTies!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If seeW!(P) + seeL!(P) > 0 Then A = Int((seeW!(P) + .5 * seeT!(P)) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
+            If divWins!(P) + divLosses!(P) > 0 Then 
+                A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+            End If
 
             A = Int(1000 * A + .5)
             If A = 1000 Then
-                seeP$(P) = seeP$(P) + "1.000 "
+                leagRecText$(P) = leagRecText$(P) + "1.000 "
             Else
 
                 rightStr$ = Str$(A)
@@ -206,48 +214,52 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
                     rightStr$ = "0" + rightStr$
                 Else
                     rightStr$ = " ." + Right$(rightStr$, 3)
-                    seeP$(P) = seeP$(P) + rightStr$
+                    leagRecText$(P) = leagRecText$(P) + rightStr$
                 End If
             End If
 
-            seeP$(P) = PadRight$(seeP$(P), 30)
+            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
 
-            A = PTSF!(P)
+            A = leagPtsFor!(P)
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + rightStr$
+            leagRecText$(P) = leagRecText$(P) + rightStr$
 
-            A = PTSA!(P)
+            A = leagPtsAgnst!(P)
             rightStr$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + rightStr$
-            'seeP$(P) = seeP$(P)
+            leagRecText$(P) = leagRecText$(P) + rightStr$
+            'leagRecText$(P) = leagRecText$(P)
         End If
     Next P
 
-    D1 = seeW!(46) - seeL!(46)
+    D1 = divWins!(46) - divLosses!(46)
 
     For P = 46 To 60:
-        If seeT$(P) = "*" Or seeT$(P) = "" Then
-            seeP$(P) = ""
+        If divTeamNames$(P) = "*" Or divTeamNames$(P) = "" Then
+            leagRecText$(P) = ""
         Else
-            seeP$(P) = PadRight$(seeT$(P), 12)
+            leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
-            A = Int(seeW!(P))
+            A = Int(divWins!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 16)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
 
-            A = Int(seeL!(P))
+            A = Int(divLosses!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 20)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
 
-            A = Int(seeT!(P))
+            A = Int(divTies!(P))
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = PadRight$(seeP$(P) + rightStr$, 24)
+            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If seeW!(P) + seeL!(P) > 0 Then A = Int(seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P)) * 1000 + .5) / 1000
+            If divWins!(P) + divLosses!(P) > 0 Then
+                A = Int(divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+            End If
+
             A = Int(1000 * A + .5)
+
             If A = 1000 Then
-                seeP$(P) = seeP$(P) + "1.000 "
+                leagRecText$(P) = leagRecText$(P) + "1.000 "
             Else
 
                 rightStr$ = Str$(A)
@@ -258,20 +270,20 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
                     rightStr$ = "0" + rightStr$
                 Else
                     rightStr$ = " ." + Right$(rightStr$, 3)
-                    seeP$(P) = seeP$(P) + rightStr$
+                    leagRecText$(P) = leagRecText$(P) + rightStr$
                 End If
             End If
 
-            seeP$(P) = PadRight$(seeP$(P), 30)
+            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
 
-            A = PTSF!(P)
+            A = leagPtsFor!(P)
             rightStr$ = Right$("     " + Str$(A), 3)
-            seeP$(P) = seeP$(P) + rightStr$
+            leagRecText$(P) = leagRecText$(P) + rightStr$
 
-            A = PTSA!(P)
+            A = leagPtsAgnst!(P)
             rightStr$ = Right$("     " + Str$(A), 4)
-            seeP$(P) = seeP$(P) + rightStr$
-            'seeP$(P) = seeP$(P)
+            leagRecText$(P) = leagRecText$(P) + rightStr$
+            'leagRecText$(P) = leagRecText$(P)
         End If
     Next P
 
@@ -341,12 +353,14 @@ End Sub
 'user display.
 Sub CollLeaders_Screen (confName$)
 
-    Shared seeL!(), LD!(), LZ!()
-    Shared PTSA!(), PTSF!()
-    Shared seeT!(), compTT!(), seeW!()
+    Shared divLosses!(), divTies!(), divWins!()
+    Shared leaderVal1!(), leaderVal2!()
+    Shared leagPtsAgnst!(), leagPtsFor!()
+    Shared totalTeamVal!()
 
-    Shared seeP$(), seeT$(), TT$()
-    Shared compZ2$(), compZ3$()
+    Shared leagRecText$(), divTeamNames$()
+    Shared leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
     Shared div1Name$, div2Name$
 
@@ -367,27 +381,27 @@ Sub CollLeaders_Screen (confName$)
 
     For P = 1 To 15:
 
-        If seeP$(P) = "" Then
+        If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P + 3 - RT)
-            Print seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
 
-            Print Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
         End If
 
@@ -403,27 +417,27 @@ Sub CollLeaders_Screen (confName$)
 
         For P = 16 To 30
 
-            If seeP$(P) = "" Then
+            If leagRecText$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 12 - RT), 41
-                Print seeT$(P); Tab(54); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
-                If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+                If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                     Print "  .---";
                 Else
-                    If seeL!(P) + seeT!(P) = 0 Then
+                    If divLosses!(P) + divTies!(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If seeW!(P) = 0 Then
+                        If divWins!(P) = 0 Then
                             Print "  .000";
                         Else
-                            Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                            Print Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                         End If
                     End If
                 End If
 
-                Print Tab(71); Using "### ###"; PTSF!(P); PTSA!(P)
+                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
             End If
 
@@ -457,27 +471,27 @@ Sub CollLeaders_Screen (confName$)
 
     For P = 31 To 45
 
-        If seeP$(P) = "" Then
+        If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
             Locate (P - 27 - RT)
-            Print seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
 
-            Print Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
         End If
 
@@ -492,27 +506,27 @@ Sub CollLeaders_Screen (confName$)
         Color 15
 
         For P = 46 To 60
-            If seeP$(P) = "" Then
+            If leagRecText$(P) = "" Then
                 RT = RT + 1
             Else
                 Locate (P - 42 - RT), 41
-                Print seeT$(P); Tab(54); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
+                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
-                If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+                If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                     Print "  .---";
                 Else
-                    If seeL!(P) + seeT!(P) = 0 Then
+                    If divLosses!(P) + divTies!(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If seeW!(P) = 0 Then
+                        If divWins!(P) = 0 Then
                             Print "  .000";
                         Else
-                            Print Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                            Print Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                         End If
                     End If
                 End If
 
-                Print Tab(71); Using "### ###"; PTSF!(P); PTSA!(P)
+                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
             End If
         Next
 
@@ -535,10 +549,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 1 To 20
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.# ####"; LD!(P); LZ!(P)
+            Print Using "##.# ####"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -552,11 +566,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 21 To 40
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##.#  ###"; LD!(P); LZ!(P)
+            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -574,10 +588,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 41 To 50
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -587,11 +601,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 51 To 60
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -601,10 +615,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 81 To 90
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -614,11 +628,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 91 To 100
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -636,10 +650,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 101 To 110
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -649,11 +663,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 111 To 120
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -663,10 +677,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 61 To 70
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -676,11 +690,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 71 To 80
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -698,10 +712,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 121 To 130
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "###.#"; LD!(P)
+            Print Using "###.#"; leaderVal1!(P)
         End If
     Next
 
@@ -711,11 +725,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 131 To 140
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###.#"; LD!(P)
+            Print Using "###.#"; leaderVal1!(P)
         End If
     Next
 
@@ -725,10 +739,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 141 To 150
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -738,11 +752,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 151 To 160
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -760,10 +774,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 161 To 170
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.#  ##"; LD!(P); LZ!(P)
+            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -773,11 +787,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 171 To 180
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##.#  ##"; LD!(P); LZ!(P)
+            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -787,10 +801,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 181 To 190
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.#  ###"; LD!(P); LZ!(P)
+            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -800,11 +814,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 191 To 200
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###"; LD!(P)
+            Print Using "###"; leaderVal1!(P)
         End If
     Next
 
@@ -822,10 +836,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 201 To 210
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "###.#  ##"; LD!(P); LZ!(P)
+            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -835,11 +849,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 211 To 220
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###.#  ##"; LD!(P); LZ!(P)
+            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -849,10 +863,10 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 221 To 230
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##"; LD!(P)
+            Print Using "##"; leaderVal1!(P)
         End If
     Next
 
@@ -862,11 +876,11 @@ Sub CollLeaders_Screen (confName$)
     Color 15
 
     For P = 231 To 240
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##"; LD!(P)
+            Print Using "##"; leaderVal1!(P)
         End If
     Next
 
@@ -886,10 +900,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 1
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -901,11 +915,11 @@ Sub CollLeaders_Screen (confName$)
     CA = 2
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);
+            Print totalTeamName$(CA, P);
             Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -924,10 +938,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 3
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -939,11 +953,11 @@ Sub CollLeaders_Screen (confName$)
     CA = 4
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);
+            Print totalTeamName$(CA, P);
             Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -963,10 +977,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 5
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
     Next
 
@@ -978,11 +992,11 @@ Sub CollLeaders_Screen (confName$)
     CA = 6
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);
+            Print totalTeamName$(CA, P);
             Locate , 55
-            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
     Next
 
@@ -1002,10 +1016,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 7
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1025,10 +1039,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 8
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1048,9 +1062,9 @@ Sub CollLeaders_Screen (confName$)
     CA = 9
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "###    ##.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2)
         End If
     Next
 
@@ -1071,10 +1085,10 @@ Sub CollLeaders_Screen (confName$)
     CA = 10
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 18
-            Print Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
+            Print Using "### ###  ###    ### ###  ###       ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5); totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7)
         End If
     Next
 
@@ -1097,12 +1111,14 @@ End Sub
 'the default printer
 Sub CollLeaders_Report (confName$, printDest, destFile$)
 
-    Shared seeL!(), LD!(), LZ!()
-    Shared PTSA!(), PTSF!()
-    Shared seeT!(), compTT!(), seeW!()
+    Shared divLosses!(), divTies!(), divWins!()
+    Shared leaderVal1!(), leaderVal2!()
+    Shared leagPtsAgnst!(), leagPtsFor!()
+    Shared totalTeamVal!()
 
-    Shared seeP$(), seeT$(), TT$()
-    Shared compZ2$(), compZ3$()
+    Shared leagRecText$(), divTeamNames$()
+    Shared totalTeamName$()
+    Shared leaderName$(), leaderTeam$()
 
     Shared div1Name$, div2Name$
 
@@ -1119,22 +1135,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 1 To 15
 
-        If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+        If leagRecText$(P) <> "" Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
-            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
         End If
 
     Next
@@ -1145,22 +1161,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 16 To 30
 
-        If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+        If leagRecText$(P) <> "" Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
-            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
         End If
 
     Next
@@ -1174,22 +1190,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 31 To 45
 
-        If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+        If leagRecText$(P) <> "" Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
-            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
         End If
 
     Next
@@ -1200,22 +1216,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 46 To 60
 
-        If seeP$(P) <> "" Then
-            Print #1, seeT$(P); Tab(14); Using "##  ##  ##"; seeW!(P); seeL!(P); seeT!(P);
-            If seeW!(P) + seeL!(P) + seeT!(P) = 0 Then
+        If leagRecText$(P) <> "" Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If seeL!(P) + seeT!(P) = 0 Then
+                If divLosses!(P) + divTies!(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If seeW!(P) = 0 Then
+                    If divWins!(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; seeW!(P) / (seeW!(P) + seeL!(P) + seeT!(P));
+                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
-            Print #1, Tab(31); Using "### ###"; PTSF!(P); PTSA!(P)
+            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
         End If
 
     Next
@@ -1225,21 +1241,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.# ####"; LD!(P); LZ!(P);
+            Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 20) = "*" Then
+        If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 20) + ", " + compZ3$(P + 20);
+            Print #1, leaderName$(P + 20) + ", " + leaderTeam$(P + 20);
             Print #1, Tab(68);
-            Print #1, Using "##.# ####"; LD!(P + 20); LZ!(P + 20)
+            Print #1, Using "##.# ####"; leaderVal1!(P + 20); leaderVal2!(P + 20)
         End If
 
     Next
@@ -1248,21 +1264,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1, "RUSHING YARDS TOTAL"; Tab(41); "RECEIVING YARDS TOTAL"
 
     For P = 41 To 50
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1271,21 +1287,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1, "RUSHING ATTEMPTS"; Tab(41); "TOTAL RECEPTIONS"
 
     For P = 81 To 90
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1295,21 +1311,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 101 To 110
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1319,21 +1335,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 61 To 70
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1343,21 +1359,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 121 To 130
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "###.#"; LD!(P);
+            Print #1, Using "###.#"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###.#"; LD!(P + 10)
+            Print #1, Using "###.#"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1367,21 +1383,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 141 To 150
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1391,21 +1407,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 161 To 170
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.#  ##"; LD!(P); LZ!(P);
+            Print #1, Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "##.#  ##"; LD!(P + 10); LZ!(P + 10)
+            Print #1, Using "##.#  ##"; leaderVal1!(P + 10); leaderVal2!(P + 10)
         End If
 
     Next
@@ -1415,21 +1431,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 181 To 190
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.#  ###"; LD!(P); LZ!(P);
+            Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###"; LD!(P + 10)
+            Print #1, Using "###"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1439,21 +1455,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 201 To 210
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "###.#  ###"; LD!(P); LZ!(P);
+            Print #1, Using "###.#  ###"; leaderVal1!(P); leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###.#  ##"; LD!(P + 10); LZ!(P + 10)
+            Print #1, Using "###.#  ##"; leaderVal1!(P + 10); leaderVal2!(P + 10)
         End If
 
     Next
@@ -1463,21 +1479,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 221 To 230
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##"; LD!(P);
+            Print #1, Using "##"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "##"; LD!(P + 10)
+            Print #1, Using "##"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1489,21 +1505,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
         CA = 1
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 2
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
 
     Next
@@ -1515,21 +1531,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
         CA = 3
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 4
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
 
     Next
@@ -1540,9 +1556,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     CA = 7
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1551,9 +1567,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     CA = 8
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1564,21 +1580,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
         CA = 5
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
             Print #1, Tab(41);
         End If
 
         CA = 6
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
 
     Next
@@ -1589,9 +1605,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     CA = 9
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "###    ##.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2)
         End If
     Next
 
@@ -1602,9 +1618,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     CA = 10
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(18);
-            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(18);
+            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5); totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7)
         End If
     Next
 

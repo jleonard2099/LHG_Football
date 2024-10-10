@@ -143,7 +143,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads in the league stats
 'from the .TMS file. It then relies on other
-'routines to calculate the expanded stats,
+'routines to calculate the Expanded stats,
 'write them to a file and present a categ-
 'orized menu to use for reviewing them
 'statType
@@ -156,7 +156,7 @@ Sub ViewExpandedStats (statType)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared TMM$(), TPP$(), memberName$()
+    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
 
     confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
@@ -191,7 +191,7 @@ Sub ViewExpandedStats (statType)
         div2$ = ""
         div3$ = ""
 
-        Erase TMM$, TPP$
+        Erase expLdrTeam$, expLdrPlyrName$
 
         Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #1
 
@@ -234,7 +234,7 @@ End Sub
 '----------------------------------------
 '    UpdateExpandedLeaders Subroutine
 '----------------------------------------
-'This subroutine calculates the expanded
+'This subroutine calculates the Expanded
 'stats from those previously read in to
 'a variety of arrays.
 
@@ -245,27 +245,29 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
-    Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
+    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
+    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
 
-    Shared statsAM!(), statsAF!()
-    Shared statsLC!(), statsLK!(), statsLF!(), statsLI!(), statsLP!(), statsLR!()
-    Shared statsPK!(), lookyTT!(), statsZ!(), statsZ1!(), statsZ2!()
+    Shared statsFGM!(), statsFGA!()
+    Shared statsLRec!(), statsLKR!(), statsLFG!(), statsLInt!(), statsLPass!(), statsLRush!()
+    Shared statsLPR!(), schedStatVal!(), statsTeam!(), statsOpp!(), statsPlayers!()
 
-    Shared statsGI%(), statsGS%()
+    Shared statsGI(), statsGS()
 
-    Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
-    Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
-    Shared A8L$(), A8T$(), A9L$(), A9T$()
-    Shared intName$(), statsLC$(), statsLR$()
-    Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared lookyRBacks$(), lookyWdRec$(), lookyQBacks$(), lookyKickRet$(), lookyPRet$(), lookyPunter$(), lookyKicker$()
-    Shared sackName$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsPK$()
-    Shared QBL$(), lookyTT$()
+    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
+    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
+    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
 
-    Shared TMM$(), TPP$(), memberName$()
+    Shared intName$(), statsLRec$(), statsLRush$()
+    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), expLdrLPR$()
 
-    Shared GMA!(), GMB!(), GMC!()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+    Shared sackName$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLPR$()
+    Shared expLdrQBName$(), schedStatTeam$()
+
+    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
+
+    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared gameCount()
 
     Color 15, 0
@@ -287,7 +289,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     div2$ = ""
     div3$ = ""
 
-    Erase TMM$, TPP$
+    Erase expLdrTeam$, expLdrPlyrName$
 
     If statType = 0 Then
         totalUnits = TEAMS_PER_CONFERENCE
@@ -307,39 +309,39 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
                 Open diskPaths$(1) + teamStatFile$ For Input As #1
 
-                Input #1, statsA$
+                Input #1, teamName$
 
                 'RB Names
                 For I = 0 To 9:
-                    Input #1, lookyRBacks$(I)
+                    Input #1, rbName$(I)
                 Next I
 
                 'WR Names
                 For I = 0 To 5:
-                    Input #1, lookyWdRec$(I)
+                    Input #1, wrName$(I)
                 Next I
 
                 'QB Names
                 For I = 0 To 3:
-                    Input #1, lookyQBacks$(I)
+                    Input #1, qbName$(I)
                 Next I
 
                 'KR Names
                 For I = 0 To 2:
-                    Input #1, lookyKickRet$(I)
+                    Input #1, krName$(I)
                 Next I
 
                 'PR Names
                 For I = 0 To 2:
-                    Input #1, lookyPRet$(I)
+                    Input #1, prName$(I)
                 Next I
 
                 'Punters
-                Input #1, lookyPunter$(0)
+                Input #1, punterName$(0)
 
                 'Place Kickers
                 For I = 0 To 1:
-                    Input #1, lookyKicker$(I)
+                    Input #1, pkName$(I)
                 Next I
 
                 'Leader Values
@@ -347,25 +349,25 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                 'Rushers / Receivers
                 For J = 0 To 13
                     For K = 0 To 17:
-                        Input #1, statsZ2!(J, K)
+                        Input #1, statsPlayers!(J, K)
                     Next K
                 Next J
 
                 'Offensive Team stats
                 For L = 0 To 38:
-                    Input #1, statsZ!(L)
+                    Input #1, statsTeam!(L)
                 Next L
 
                 'Defensive Team stats
                 For L = 0 To 38:
-                    Input #1, statsZ1!(L)
+                    Input #1, statsOpp!(L)
                 Next L
 
                 For J = 0 To 9:
                     'Interception Names
                     Input #1, intName$(J)
                     For J1 = 0 To 2:
-                        Input #1, statsGI%(J, J1)
+                        Input #1, statsGI(J, J1)
                     Next
                 Next
 
@@ -373,52 +375,52 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                     'Sack Names
                     Input #1, sackName$(J)
                     For J1 = 0 To 1:
-                        Input #1, statsGS%(J, J1)
+                        Input #1, statsGS(J, J1)
                     Next
                 Next
 
                 'Longest rush
                 For I = 0 To 9:
-                    Input #1, statsLR!(I)
-                    Input #1, statsLR$(I, 0)
-                    Input #1, statsLR$(I, 1)
+                    Input #1, statsLRush!(I)
+                    Input #1, statsLRush$(I, 0)
+                    Input #1, statsLRush$(I, 1)
                 Next
 
                 'Longest catch
                 For I = 0 To 15:
-                    Input #1, statsLC!(I)
-                    Input #1, statsLC$(I, 0)
-                    Input #1, statsLC$(I, 1)
+                    Input #1, statsLRec!(I)
+                    Input #1, statsLRec$(I, 0)
+                    Input #1, statsLRec$(I, 1)
                 Next
 
                 'Longest pass
                 For I = 0 To 3:
-                    Input #1, statsLP!(I)
-                    Input #1, statsLP$(I, 0)
-                    Input #1, statsLP$(I, 1)
+                    Input #1, statsLPass!(I)
+                    Input #1, statsLPass$(I, 0)
+                    Input #1, statsLPass$(I, 1)
                 Next
 
                 'Longest kick return
                 For I = 0 To 2:
-                    Input #1, statsLK!(I)
-                    Input #1, statsLK$(I, 0)
-                    Input #1, statsLK$(I, 1)
+                    Input #1, statsLKR!(I)
+                    Input #1, statsLKR$(I, 0)
+                    Input #1, statsLKR$(I, 1)
                 Next
 
                 'Longest punt return
                 For I = 0 To 2:
-                    Input #1, statsPK!(I)
-                    Input #1, statsPK$(I, 0)
-                    Input #1, statsPK$(I, 1)
+                    Input #1, statsLPR!(I)
+                    Input #1, statsLPR$(I, 0)
+                    Input #1, statsLPR$(I, 1)
                 Next
 
                 'Longest FG
                 For I = 0 To 1
-                    Input #1, statsLF!(I)
-                    Input #1, statsLF$(I)
+                    Input #1, statsLFG!(I)
+                    Input #1, statsLFG$(I)
                     For I1 = 0 To 4
-                        Input #1, statsAM!(I, I1)
-                        Input #1, statsAF!(I, I1)
+                        Input #1, statsFGM!(I, I1)
+                        Input #1, statsFGA!(I, I1)
                     Next
                 Next
 
@@ -426,9 +428,9 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                 '--> was previously NOT read in
                 '--> is it not even calculated later!!!
                 For I = 0 To 9:
-                    Input #1, statsLI!(I)
-                    Input #1, statsLI$(I, 0)
-                    Input #1, statsLI$(I, 1)
+                    Input #1, statsLInt!(I)
+                    Input #1, statsLInt$(I, 0)
+                    Input #1, statsLInt$(I, 1)
                 Next
 
                 Close #1
@@ -440,132 +442,125 @@ Sub UpdateExpandedLeaders (statType, totalStats)
                 totalStats = totalStats + 1
 
                 For I = 0 To 14
-                    lookyTT!(totalStats, I) = statsZ!(I)
-                    lookyTT$(totalStats, I) = statsA$
+                    schedStatVal!(totalStats, I) = statsTeam!(I)
+                    schedStatTeam$(totalStats, I) = teamName$
                 Next
 
                 For I = 15 To 29
-                    lookyTT!(totalStats, I) = statsZ1!(I - 15)
-                    lookyTT$(totalStats, I) = statsA$
+                    schedStatVal!(totalStats, I) = statsOpp!(I - 15)
+                    schedStatTeam$(totalStats, I) = teamName$
                 Next
 
                 For I = 0 To 9
                     JA = JA + 1
-                    A1L$(JA) = lookyRBacks$(I)
-                    A1T$(JA) = statsA$
-                    LRL$(JA) = statsLR$(I, 0)
-                    LCL$(JA) = statsLC$(I, 0)
-                    'I added the line below based on patterns in this routine
-                    'In original code GMA!() was written to output files,
-                    'but was never assigned a value!!!
-                    GMA!(JA) = nbrGames
+                    expLdrRBName$(JA) = rbName$(I)
+                    expLdrRBTeam$(JA) = teamName$
+                    expLdrLRush$(JA) = statsLRush$(I, 0)
+                    expLdrLRec$(JA) = statsLRec$(I, 0)
+                    expLdrRBGames!(JA) = nbrGames
 
                     For I1 = 0 To 5:
-                        A1L!(JA, I1) = statsZ2!(I, I1)
+                        expLdrRBVal!(JA, I1) = statsPlayers!(I, I1)
                     Next I1
 
-                    A1L!(JA, 6) = statsLR!(I)
-                    A1L!(JA, 7) = statsLC!(I)
+                    expLdrRBVal!(JA, 6) = statsLRush!(I)
+                    expLdrRBVal!(JA, 7) = statsLRec!(I)
                 Next I
 
                 For I = 0 To 5
                     JB = JB + 1
-                    A2L$(JB) = lookyWdRec$(I)
-                    A2T$(JB) = statsA$
-                    LCL$(JB) = statsLC$(I + 10, 0)
-                    GMB!(JB) = nbrGames
+                    expLdrWRName$(JB) = wrName$(I)
+                    expLdrWRTeam$(JB) = teamName$
+                    expLdrLRec$(JB) = statsLRec$(I + 10, 0)
+                    expLdrWRGames!(JB) = nbrGames
 
                     For I1 = 6 To 8:
-                        A2L!(JB, I1 - 6) = statsZ2!(I, I1)
+                        expLdrWRVal!(JB, I1 - 6) = statsPlayers!(I, I1)
                     Next I1
 
-                    A2L!(JB, 3) = statsLC!(I + 10)
+                    expLdrWRVal!(JB, 3) = statsLRec!(I + 10)
                 Next I
 
                 For I = 0 To 3
-
                     JC = JC + 1
-                    QBL$(JC) = lookyQBacks$(I)
-                    A3T$(JC) = statsA$
-                    LPL$(JC) = statsLP$(I, 0)
-                    GMC!(JC) = nbrGames
+                    expLdrQBName$(JC) = qbName$(I)
+                    expLdrQBTeam$(JC) = teamName$
+                    expLdrLPass$(JC) = statsLPass$(I, 0)
+                    expLdrQBGames!(JC) = nbrGames
 
                     For I1 = 9 To 13:
-                        A3L!(JC, I1 - 9) = statsZ2!(I, I1)
+                        expLdrQBVal!(JC, I1 - 9) = statsPlayers!(I, I1)
                     Next I1
 
-                    A3L!(JC, 5) = statsLP!(I)
+                    expLdrQBVal!(JC, 5) = statsLPass!(I)
                     Call QBRating_Expanded(JC, statType)
-                    A3R!(JC, 0) = A3L!(JC, 12)
+                    expLdrQBRat!(JC, 0) = expLdrQBVal!(JC, 12)
 
                 Next I
 
                 For I = 0 To 2
-
                     JD = JD + 1
-                    A4L$(JD) = lookyKickRet$(I)
-                    A4T$(JD) = statsA$
-                    LKL$(JD) = statsLK$(I, 0)
+                    expLdrKRName$(JD) = krName$(I)
+                    expLdrKRTeam$(JD) = teamName$
+                    expLdrLKR$(JD) = statsLKR$(I, 0)
 
                     For I1 = 14 To 16:
-                        A4L!(JD, I1 - 14) = statsZ2!(I, I1)
+                        expLdrKRVal!(JD, I1 - 14) = statsPlayers!(I, I1)
                     Next I1
 
-                    A4L!(JD, 3) = statsLK!(I)
-
+                    expLdrKRVal!(JD, 3) = statsLKR!(I)
                 Next I
 
                 For I = 0 To 2
-
                     JE = JE + 1
-                    A5L$(JE) = lookyPRet$(I)
-                    A5T$(JE) = statsA$
-                    PKL$(JE) = statsPK$(I, 0)
+                    expLdrPRName$(JE) = prName$(I)
+                    expLdrPRTeam$(JE) = teamName$
+                    expLdrLPR$(JE) = statsLPR$(I, 0)
 
                     For I1 = 14 To 16:
-                        A5L!(JE, I1 - 14) = statsZ2!(I + 3, I1)
+                        expLdrPRVal!(JE, I1 - 14) = statsPlayers!(I + 3, I1)
                     Next I1
 
-                    A5L!(JE, 3) = statsPK!(I)
-
+                    expLdrPRVal!(JE, 3) = statsLPR!(I)
                 Next I
 
                 JF = JF + 1
-                A6L$(JF) = lookyPunter$(0)
-                A6T$(JF) = statsA$
-                A6L!(JF, 0) = statsZ!(7)
-                A6L!(JF, 1) = statsZ!(8)
+                expLdrPuntName$(JF) = punterName$(0)
+                expLdrPuntTeam$(JF) = teamName$
+                expLdrPuntVal!(JF, 0) = statsTeam!(7)
+                expLdrPuntVal!(JF, 1) = statsTeam!(8)
+
                 JG = JG + 1
-                A7L$(JG) = lookyKicker$(0)
-                A7T$(JG) = statsA$
+                expLdrKickName$(JG) = pkName$(0)
+                expLdrKickTeam$(JG) = teamName$
 
                 For I = 0 To 3:
-                    A7L!(JG, I) = statsZ2!(I + 3, 17)
+                    expLdrKickVal!(JG, I) = statsPlayers!(I + 3, 17)
                 Next
 
-                A7L!(JG, 4) = statsLF!(0)
+                expLdrKickVal!(JG, 4) = statsLFG!(0)
                 JG = JG + 1
-                A7L$(JG) = lookyKicker$(1)
-                A7T$(JG) = statsA$
+                expLdrKickName$(JG) = pkName$(1)
+                expLdrKickTeam$(JG) = teamName$
 
                 For I = 0 To 3:
-                    A7L!(JG, I) = statsZ2!(I + 7, 17)
+                    expLdrKickVal!(JG, I) = statsPlayers!(I + 7, 17)
                 Next
 
-                A7L!(JG, 4) = statsLF!(1)
+                expLdrKickVal!(JG, 4) = statsLFG!(1)
 
                 For I = 0 To 9
                     JH = JH + 1
-                    A8L$(JH) = intName$(I)
-                    A8T$(JH) = statsA$
-                    A8L!(JH) = statsGI%(I, 0)
+                    expLdrIntName$(JH) = intName$(I)
+                    expLdrIntTeam$(JH) = teamName$
+                    expLdrIntVal!(JH) = statsGI(I, 0)
                 Next
 
                 For I = 0 To 14
                     JI = JI + 1
-                    A9L$(JI) = sackName$(I)
-                    A9T$(JI) = statsA$
-                    A9L!(JI) = statsGS%(I, 0)
+                    expLdrSackName$(JI) = sackName$(I)
+                    expLdrSackTeam$(JI) = teamName$
+                    expLdrSackVal!(JI) = statsGS(I, 0)
                 Next
 
                 JJ = JJ + 1
@@ -584,22 +579,22 @@ End Sub
 '        READLEADER Subroutine
 '----------------------------------------
 'This subroutine reads in the leader files
-'(.LDS) for the expanded standings modules
+'(.LDS) for the Expanded standings modules
 Sub READLEADER (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
-    Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
-    Shared A8L$(), A8T$(), A9L$(), A9T$()
-    Shared LCL$(), LKL$(), LPL$(), LRL$(), lookyTT$()
-    Shared PKL$(), QBL$()
+    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
+    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
+    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
+    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), schedStatTeam$()
+    Shared expLdrLPR$(), expLdrQBName$()
 
-    Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
-    Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
-    Shared lookyTT!()
+    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
+    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
+    Shared schedStatVal!()
 
-    Shared GMA!(), GMB!(), GMC!()
+    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared gameCount()
 
     TMR = 1660
@@ -625,7 +620,7 @@ Sub READLEADER (leaderFile$, totalStats)
         For I = 1 To 30:
 
             For I1 = 0 To 29:
-                Input #1, lookyTT!(I, I1), lookyTT$(I, I1)
+                Input #1, schedStatVal!(I, I1), schedStatTeam$(I, I1)
             Next
 
             Color 14
@@ -636,10 +631,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 300:
 
-            Input #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA!(I)
+            Input #1, expLdrRBName$(I), expLdrRBTeam$(I), expLdrLRush$(I), expLdrLRec$(I), expLdrRBGames!(I)
 
             For I1 = 0 To 7:
-                Input #1, A1L!(I, I1)
+                Input #1, expLdrRBVal!(I, I1)
             Next I1
 
             Color 14
@@ -650,10 +645,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 180:
 
-            Input #1, A2L$(I), A2T$(I), LCL$(I), GMB!(I)
+            Input #1, expLdrWRName$(I), expLdrWRTeam$(I), expLdrLRec$(I), expLdrWRGames!(I)
 
             For I1 = 0 To 3:
-                Input #1, A2L!(I, I1)
+                Input #1, expLdrWRVal!(I, I1)
             Next I1
 
             Color 14
@@ -664,10 +659,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 120:
 
-            Input #1, QBL$(I), A3T$(I), LPL$(I), A3R!(I, 0), GMC!(I)
+            Input #1, expLdrQBName$(I), expLdrQBTeam$(I), expLdrLPass$(I), expLdrQBRat!(I, 0), expLdrQBGames!(I)
 
             For I1 = 0 To 6:
-                Input #1, A3L!(I, I1)
+                Input #1, expLdrQBVal!(I, I1)
             Next I1
 
             Color 14
@@ -678,9 +673,9 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 90:
 
-            Input #1, A4L$(I), A4T$(I), LKL$(I)
+            Input #1, expLdrKRName$(I), expLdrKRTeam$(I), expLdrLKR$(I)
 
-            For I1 = 0 To 3: Input #1, A4L!(I, I1): Next I1
+            For I1 = 0 To 3: Input #1, expLdrKRVal!(I, I1): Next I1
 
             Color 14
             Locate 16, 38
@@ -690,10 +685,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 90:
 
-            Input #1, A5L$(I), A5T$(I), PKL$(I)
+            Input #1, expLdrPRName$(I), expLdrPRTeam$(I), expLdrLPR$(I)
 
             For I1 = 0 To 3:
-                Input #1, A5L!(I, I1)
+                Input #1, expLdrPRVal!(I, I1)
             Next I1
 
             Color 14
@@ -704,10 +699,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 30:
 
-            Input #1, A6L$(I), A6T$(I)
+            Input #1, expLdrPuntName$(I), expLdrPuntTeam$(I)
 
             For I1 = 0 To 1:
-                Input #1, A6L!(I, I1)
+                Input #1, expLdrPuntVal!(I, I1)
             Next I1
 
             Color 14
@@ -718,10 +713,10 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 60:
 
-            Input #1, A7L$(I), A7T$(I)
+            Input #1, expLdrKickName$(I), expLdrKickTeam$(I)
 
             For I1 = 0 To 4:
-                Input #1, A7L!(I, I1)
+                Input #1, expLdrKickVal!(I, I1)
             Next I1
 
             Color 14
@@ -732,7 +727,7 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 300:
 
-            Input #1, A8L$(I), A8T$(I), A8L!(I)
+            Input #1, expLdrIntName$(I), expLdrIntTeam$(I), expLdrIntVal!(I)
 
             Color 14
             Locate 16, 38
@@ -742,7 +737,7 @@ Sub READLEADER (leaderFile$, totalStats)
 
         For I = 1 To 450:
 
-            Input #1, A9L$(I), A9T$(I), A9L!(I)
+            Input #1, expLdrSackName$(I), expLdrSackTeam$(I), expLdrSackVal!(I)
 
             Color 14
             Locate 16, 38
@@ -765,22 +760,22 @@ End Sub
 '        SAVELEADER Subroutine
 '----------------------------------------
 'This subroutine compiles the leader files
-'(.LDS) for the expanded standings modules
+'(.LDS) for the Expanded standings modules
 Sub SAVELEADER (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
-    Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
-    Shared A8L$(), A8T$(), A9L$(), A9T$()
-    Shared LCL$(), LKL$(), LPL$(), LRL$(), lookyTT$()
-    Shared PKL$(), QBL$()
+    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
+    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
+    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
+    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), schedStatTeam$()
+    Shared expLdrLPR$(), expLdrQBName$()
 
-    Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
-    Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
-    Shared lookyTT!()
+    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
+    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
+    Shared schedStatVal!()
 
-    Shared GMA!(), GMB!(), GMC!()
+    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared gameCount()
 
     TMR = 1660
@@ -794,7 +789,7 @@ Sub SAVELEADER (leaderFile$, totalStats)
     For I = 1 To 30:
 
         For I1 = 0 To 29:
-            Write #1, lookyTT!(I, I1), lookyTT$(I, I1)
+            Write #1, schedStatVal!(I, I1), schedStatTeam$(I, I1)
         Next
 
         Color 14
@@ -805,10 +800,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 300:
 
-        Write #1, A1L$(I), A1T$(I), LRL$(I), LCL$(I), GMA!(I)
+        Write #1, expLdrRBName$(I), expLdrRBTeam$(I), expLdrLRush$(I), expLdrLRec$(I), expLdrRBGames!(I)
 
         For I1 = 0 To 7:
-            Write #1, A1L!(I, I1)
+            Write #1, expLdrRBVal!(I, I1)
         Next I1
 
         Color 14
@@ -819,10 +814,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 180:
 
-        Write #1, A2L$(I), A2T$(I), LCL$(I), GMB!(I)
+        Write #1, expLdrWRName$(I), expLdrWRTeam$(I), expLdrLRec$(I), expLdrWRGames!(I)
 
         For I1 = 0 To 3:
-            Write #1, A2L!(I, I1)
+            Write #1, expLdrWRVal!(I, I1)
         Next I1
 
         Color 14
@@ -833,10 +828,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 120:
 
-        Write #1, QBL$(I), A3T$(I), LPL$(I), A3R!(I, 0), GMC!(I)
+        Write #1, expLdrQBName$(I), expLdrQBTeam$(I), expLdrLPass$(I), expLdrQBRat!(I, 0), expLdrQBGames!(I)
 
         For I1 = 0 To 6:
-            Write #1, A3L!(I, I1)
+            Write #1, expLdrQBVal!(I, I1)
         Next I1
 
         Color 14
@@ -847,9 +842,9 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 90:
 
-        Write #1, A4L$(I), A4T$(I), LKL$(I)
+        Write #1, expLdrKRName$(I), expLdrKRTeam$(I), expLdrLKR$(I)
 
-        For I1 = 0 To 3: Write #1, A4L!(I, I1): Next I1
+        For I1 = 0 To 3: Write #1, expLdrKRVal!(I, I1): Next I1
 
         Color 14
         Locate 16, 38
@@ -859,10 +854,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 90:
 
-        Write #1, A5L$(I), A5T$(I), PKL$(I)
+        Write #1, expLdrPRName$(I), expLdrPRTeam$(I), expLdrLPR$(I)
 
         For I1 = 0 To 3:
-            Write #1, A5L!(I, I1)
+            Write #1, expLdrPRVal!(I, I1)
         Next I1
 
         Color 14
@@ -873,10 +868,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 30:
 
-        Write #1, A6L$(I), A6T$(I)
+        Write #1, expLdrPuntName$(I), expLdrPuntTeam$(I)
 
         For I1 = 0 To 1:
-            Write #1, A6L!(I, I1)
+            Write #1, expLdrPuntVal!(I, I1)
         Next I1
 
         Color 14
@@ -887,10 +882,10 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 60:
 
-        Write #1, A7L$(I), A7T$(I)
+        Write #1, expLdrKickName$(I), expLdrKickTeam$(I)
 
         For I1 = 0 To 4:
-            Write #1, A7L!(I, I1)
+            Write #1, expLdrKickVal!(I, I1)
         Next I1
 
         Color 14
@@ -901,7 +896,7 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 300:
 
-        Write #1, A8L$(I), A8T$(I), A8L!(I)
+        Write #1, expLdrIntName$(I), expLdrIntTeam$(I), expLdrIntVal!(I)
 
         Color 14
         Locate 16, 38
@@ -911,7 +906,7 @@ Sub SAVELEADER (leaderFile$, totalStats)
 
     For I = 1 To 450:
 
-        Write #1, A9L$(I), A9T$(I), A9L!(I)
+        Write #1, expLdrSackName$(I), expLdrSackTeam$(I), expLdrSackVal!(I)
 
         Color 14
         Locate 16, 38
@@ -932,7 +927,7 @@ End Sub
 '    ExpandedLeaders_Menu Subroutine
 '----------------------------------------
 'This subroutine presents a categorized
-'menu for viewing expanded leaders. It then
+'menu for viewing Expanded leaders. It then
 'relies on various subroutines for the end
 'user display of those statistics.
 Sub ExpandedLeaders_Menu (totalStats)
@@ -941,16 +936,16 @@ Sub ExpandedLeaders_Menu (totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
-    Shared A1L$(), A1T$(), A2L$(), A2T$(), A3T$(), A4L$(), A4T$()
-    Shared A5L$(), A5T$(), A6L$(), A6T$(), A7L$(), A7T$()
-    Shared A8L$(), A8T$(), A9L$(), A9T$()
-    Shared expCategories$(), lookyTT$()
-    Shared LCL$(), LKL$(), LPL$(), LRL$(), PKL$()
-    Shared QBL$(), TMM$(), TPP$(), TYY$(), memberName$()
+    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
+    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
+    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
+    Shared expCategories$(), schedStatTeam$()
+    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), expLdrLPR$()
+    Shared expLdrQBName$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$(), memberName$()
 
-    Shared A1L!(), A2L!(), A3L!(), A3R!(), A4L!()
-    Shared A5L!(), A6L!(), A7L!(), A8L!(), A9L!()
-    Shared lookyTT!(), TYP!()
+    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
+    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
+    Shared schedStatVal!(), expLdrVal!()
 
     Shared gameCount()
 
@@ -1259,12 +1254,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 0, 1, 3
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
                                     End If
                                 Next I
 
@@ -1275,12 +1270,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 2
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) > gameCount(1) * 10 Then
+                                    If expLdrRBVal!(I, X) > gameCount(1) * 10 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X)
                                     End If
                                 Next I
 
@@ -1294,13 +1289,13 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 PPP = 0
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X)
-                                        TYY$(PPP) = LRL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
+                                        expLdrTD$(PPP) = expLdrLRush$(I)
                                     End If
                                 Next I
 
@@ -1327,22 +1322,22 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 0, 1, 3:
                                 For I = 1 To JA
-                                    If A1L!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
                                     End If
                                 Next I
 
                                 For I = 1 To JB
-                                    If A2L!(I, X1) <> 0 Then
+                                    If expLdrWRVal!(I, X1) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A2L$(I)
-                                        TMM$(PPP) = A2T$(I)
-                                        TYP!(PPP) = A2L!(I, X1)
+                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
+                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrWRVal!(I, X1)
                                     End If
                                 Next I
 
@@ -1354,22 +1349,22 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 PPP = 0
 
                                 For I = 1 To JA
-                                    If A1L!(I, X) >= gameCount(1) * 4 Then
+                                    If expLdrRBVal!(I, X) >= gameCount(1) * 4 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X1) / A1L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X)
                                     End If
                                 Next I
 
                                 For I = 1 To JB
-                                    If A2L!(I, X2) >= gameCount(1) * 4 Then
+                                    If expLdrWRVal!(I, X2) >= gameCount(1) * 4 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A2L$(I)
-                                        TMM$(PPP) = A2T$(I)
-                                        TYP!(PPP) = A2L!(I, X3) / A2L!(I, X2)
+                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
+                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrWRVal!(I, X3) / expLdrWRVal!(I, X2)
                                     End If
                                 Next I
 
@@ -1381,24 +1376,24 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 PPP = 0
 
                                 For I = 1 To JB
-                                    If A2L!(I, 0) <> 0 Then
+                                    If expLdrWRVal!(I, 0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A2L$(I)
-                                        TMM$(PPP) = A2T$(I)
-                                        TYP!(PPP) = A2L!(I, X)
-                                        TYY$(PPP) = LCL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
+                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrWRVal!(I, X)
+                                        expLdrTD$(PPP) = expLdrLRec$(I)
                                     End If
                                 Next I
 
                                 For I = 1 To JA
-                                    If A1L!(I, 4) <> 0 Then
+                                    If expLdrRBVal!(I, 4) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A1L$(I)
-                                        TMM$(PPP) = A1T$(I)
-                                        TYP!(PPP) = A1L!(I, X1)
-                                        TYY$(PPP) = LCL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1)
+                                        expLdrTD$(PPP) = expLdrLRec$(I)
                                     End If
                                 Next I
 
@@ -1431,12 +1426,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 0 To 4:
 
                                 For I = 1 To JC
-                                    If A3L!(I, X) <> 0 Then
+                                    If expLdrQBVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = A3L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrQBVal!(I, X)
                                     End If
                                 Next I
 
@@ -1447,19 +1442,19 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If A3L!(I, X) >= gameCount(1) * 15 Then
+                                    If expLdrQBVal!(I, X) >= gameCount(1) * 15 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
-                                        If A3L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = QBL$(I)
-                                            TMM$(PPP) = A3T$(I)
-                                            TYP!(PPP) = 0
+                                        If expLdrQBVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                            expLdrVal!(PPP) = 0
                                         Else
-                                            TPP$(PPP) = QBL$(I)
-                                            TMM$(PPP) = A3T$(I)
-                                            TYP!(PPP) = (A3L!(I, X1) / A3L!(I, X)) * 100
+                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                            expLdrVal!(PPP) = (expLdrQBVal!(I, X1) / expLdrQBVal!(I, X)) * 100
                                         End If
 
                                     End If
@@ -1471,18 +1466,18 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 6:
 
                                 For I = 1 To JC
-                                    If A3L!(I, X2) >= gameCount(1) * 15 Then
+                                    If expLdrQBVal!(I, X2) >= gameCount(1) * 15 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
-                                        If A3L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = QBL$(I)
-                                            TMM$(PPP) = A3T$(I)
-                                            TYP!(PPP) = A3L!(I, X1) / A3L!(I, X)
+                                        If expLdrQBVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                            expLdrVal!(PPP) = expLdrQBVal!(I, X1) / expLdrQBVal!(I, X)
                                         Else
-                                            TPP$(PPP) = QBL$(I)
-                                            TMM$(PPP) = A3T$(I)
-                                            TYP!(PPP) = 0
+                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                            expLdrVal!(PPP) = 0
                                         End If
                                     End If
                                 Next I
@@ -1494,12 +1489,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If A3L!(I, X) >= gameCount(1) * 15 Then
+                                    If expLdrQBVal!(I, X) >= gameCount(1) * 15 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = A3R!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrQBRat!(I, X)
                                     End If
 
                                 Next I
@@ -1514,13 +1509,13 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If A3L!(I, X) <> 0 Then
+                                    If expLdrQBVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = QBL$(I)
-                                        TMM$(PPP) = A3T$(I)
-                                        TYP!(PPP) = A3L!(I, X)
-                                        TYY$(PPP) = LPL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
+                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
+                                        expLdrVal!(PPP) = expLdrQBVal!(I, X)
+                                        expLdrTD$(PPP) = expLdrLPass$(I)
                                     End If
 
                                 Next I
@@ -1549,12 +1544,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If A4L!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A4L$(I)
-                                        TMM$(PPP) = A4T$(I)
-                                        TYP!(PPP) = A4L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrKRName$(I)
+                                        expLdrTeam$(PPP) = expLdrKRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrKRVal!(I, X)
                                     End If
 
                                 Next I
@@ -1566,17 +1561,17 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If A4L!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X) <> 0 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If A4L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = A4L$(I)
-                                            TMM$(PPP) = A4T$(I)
-                                            TYP!(PPP) = A4L!(I, X1) / A4L!(I, X)
+                                        If expLdrKRVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrKRName$(I)
+                                            expLdrTeam$(PPP) = expLdrKRTeam$(I)
+                                            expLdrVal!(PPP) = expLdrKRVal!(I, X1) / expLdrKRVal!(I, X)
                                         Else
-                                            TPP$(PPP) = A4L$(I)
-                                            TMM$(PPP) = A4T$(I)
+                                            expLdrPlyrName$(PPP) = expLdrKRName$(I)
+                                            expLdrTeam$(PPP) = expLdrKRTeam$(I)
                                             TYP = 0
                                         End If
 
@@ -1591,12 +1586,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If A4L!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A4L$(I)
-                                        TMM$(PPP) = A4T$(I)
-                                        TYP!(PPP) = A4L!(I, X): TYY$(PPP) = LKL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrKRName$(I)
+                                        expLdrTeam$(PPP) = expLdrKRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrKRVal!(I, X): expLdrTD$(PPP) = expLdrLKR$(I)
                                     End If
 
                                 Next I
@@ -1625,12 +1620,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If A5L!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A5L$(I)
-                                        TMM$(PPP) = A5T$(I)
-                                        TYP!(PPP) = A5L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrPRName$(I)
+                                        expLdrTeam$(PPP) = expLdrPRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrPRVal!(I, X)
                                     End If
 
                                 Next I
@@ -1642,16 +1637,16 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If A5L!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If A5L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = A5L$(I)
-                                            TMM$(PPP) = A5T$(I)
-                                            TYP!(PPP) = A5L!(I, X1) / A5L!(I, X)
+                                        If expLdrPRVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrPRName$(I)
+                                            expLdrTeam$(PPP) = expLdrPRTeam$(I)
+                                            expLdrVal!(PPP) = expLdrPRVal!(I, X1) / expLdrPRVal!(I, X)
                                         Else
-                                            TPP$(PPP) = A5L$(I)
-                                            TMM$(PPP) = A5T$(I)
+                                            expLdrPlyrName$(PPP) = expLdrPRName$(I)
+                                            expLdrTeam$(PPP) = expLdrPRTeam$(I)
                                             TYP = 0
                                         End If
                                     End If
@@ -1665,13 +1660,13 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If A5L!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A5L$(I)
-                                        TMM$(PPP) = A5T$(I)
-                                        TYP!(PPP) = A5L!(I, X)
-                                        TYY$(PPP) = PKL$(I)
+                                        expLdrPlyrName$(PPP) = expLdrPRName$(I)
+                                        expLdrTeam$(PPP) = expLdrPRTeam$(I)
+                                        expLdrVal!(PPP) = expLdrPRVal!(I, X)
+                                        expLdrTD$(PPP) = expLdrLPR$(I)
                                     End If
 
                                 Next I
@@ -1694,12 +1689,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JF
 
-                                    If A6L!(I, X) <> 0 Then
+                                    If expLdrPuntVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A6L$(I)
-                                        TMM$(PPP) = A6T$(I)
-                                        TYP!(PPP) = A6L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrPuntName$(I)
+                                        expLdrTeam$(PPP) = expLdrPuntTeam$(I)
+                                        expLdrVal!(PPP) = expLdrPuntVal!(I, X)
                                     End If
 
                                 Next I
@@ -1711,16 +1706,16 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JF
 
-                                    If A6L!(I, X) <> 0 Then
+                                    If expLdrPuntVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If A6L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = A6L$(I)
-                                            TMM$(PPP) = A6T$(I)
-                                            TYP!(PPP) = A6L!(I, X1) / A6L!(I, X)
+                                        If expLdrPuntVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrPuntName$(I)
+                                            expLdrTeam$(PPP) = expLdrPuntTeam$(I)
+                                            expLdrVal!(PPP) = expLdrPuntVal!(I, X1) / expLdrPuntVal!(I, X)
                                         Else
-                                            TPP$(PPP) = A6L$(I)
-                                            TMM$(PPP) = A6T$(I)
+                                            expLdrPlyrName$(PPP) = expLdrPuntName$(I)
+                                            expLdrTeam$(PPP) = expLdrPuntTeam$(I)
                                             TYP = 0
                                         End If
                                     End If
@@ -1753,12 +1748,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JG
 
-                                    If A7L!(I, X) <> 0 Then
+                                    If expLdrKickVal!(I, X) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        TPP$(PPP) = A7L$(I)
-                                        TMM$(PPP) = A7T$(I)
-                                        TYP!(PPP) = A7L!(I, X)
+                                        expLdrPlyrName$(PPP) = expLdrKickName$(I)
+                                        expLdrTeam$(PPP) = expLdrKickTeam$(I)
+                                        expLdrVal!(PPP) = expLdrKickVal!(I, X)
                                     End If
 
                                 Next I
@@ -1770,18 +1765,18 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JG
 
-                                    If A7L!(I, X) <> 0 Then
+                                    If expLdrKickVal!(I, X) <> 0 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
 
-                                        If A7L!(I, X1) <> 0 Then
-                                            TPP$(PPP) = A7L$(I)
-                                            TMM$(PPP) = A7T$(I)
-                                            TYP!(PPP) = (A7L!(I, X) / A7L!(I, X1)) * 100
+                                        If expLdrKickVal!(I, X1) <> 0 Then
+                                            expLdrPlyrName$(PPP) = expLdrKickName$(I)
+                                            expLdrTeam$(PPP) = expLdrKickTeam$(I)
+                                            expLdrVal!(PPP) = (expLdrKickVal!(I, X) / expLdrKickVal!(I, X1)) * 100
                                         Else
-                                            TPP$(PPP) = A7L$(I)
-                                            TMM$(PPP) = A7T$(I)
+                                            expLdrPlyrName$(PPP) = expLdrKickName$(I)
+                                            expLdrTeam$(PPP) = expLdrKickTeam$(I)
                                             TYP = 0
                                         End If
 
@@ -1809,12 +1804,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                         If categoryId = 0 Then
 
                             For I = 1 To JH
-                                If A8L!(I) <> 0 Then
+                                If expLdrIntVal!(I) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A8L$(I)
-                                    TMM$(PPP) = A8T$(I)
-                                    TYP!(PPP) = A8L!(I)
+                                    expLdrPlyrName$(PPP) = expLdrIntName$(I)
+                                    expLdrTeam$(PPP) = expLdrIntTeam$(I)
+                                    expLdrVal!(PPP) = expLdrIntVal!(I)
                                 End If
                             Next I
 
@@ -1822,12 +1817,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         If categoryId = 1 Then
                             For I = 1 To JI
-                                If A9L!(I) <> 0 Then
+                                If expLdrSackVal!(I) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A9L$(I)
-                                    TMM$(PPP) = A9T$(I)
-                                    TYP!(PPP) = A9L!(I)
+                                    expLdrPlyrName$(PPP) = expLdrSackName$(I)
+                                    expLdrTeam$(PPP) = expLdrSackTeam$(I)
+                                    expLdrVal!(PPP) = expLdrSackVal!(I)
                                 End If
                             Next I
 
@@ -1846,24 +1841,24 @@ Sub ExpandedLeaders_Menu (totalStats)
                         XX = 73
 
                         For I = 1 To JA
-                            If A1L!(I, X) + A1L!(I, X1) <> 0 Then
+                            If expLdrRBVal!(I, X) + expLdrRBVal!(I, X1) <> 0 Then
                                 PPP = PPP + 1
                                 Locate 1, 5
                                 Print "CHANGING PLAYER "; PPP
-                                TPP$(PPP) = A1L$(I)
-                                TMM$(PPP) = A1T$(I)
-                                TYP!(PPP) = A1L!(I, X) + A1L!(I, X1)
+                                expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                expLdrVal!(PPP) = expLdrRBVal!(I, X) + expLdrRBVal!(I, X1)
                             End If
                         Next I
 
                         For I = 1 To JB
-                            If A2L!(I, X) <> 0 Then
+                            If expLdrWRVal!(I, X) <> 0 Then
                                 PPP = PPP + 1
                                 Locate 1, 5
                                 Print "CHANGING PLAYER "; PPP
-                                TPP$(PPP) = A2L$(I)
-                                TMM$(PPP) = A2T$(I)
-                                TYP!(PPP) = A2L!(I, X)
+                                expLdrPlyrName$(PPP) = expLdrWRName$(I)
+                                expLdrTeam$(PPP) = expLdrWRTeam$(I)
+                                expLdrVal!(PPP) = expLdrWRVal!(I, X)
                             End If
                         Next I
 
@@ -1900,22 +1895,22 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         If KC = 1 Or KC = 3 Then
                             For I = 1 To JA
-                                If A1L!(I, X) + A1L!(I, X1) <> 0 Then
+                                If expLdrRBVal!(I, X) + expLdrRBVal!(I, X1) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A1L$(I)
-                                    TMM$(PPP) = A1T$(I)
-                                    TYP!(PPP) = (A1L!(I, X) + A1L!(I, X1)) * 6
+                                    expLdrPlyrName$(PPP) = expLdrRBName$(I)
+                                    expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                    expLdrVal!(PPP) = (expLdrRBVal!(I, X) + expLdrRBVal!(I, X1)) * 6
                                 End If
                             Next I
 
                             For I = 1 To JB
-                                If A2L!(I, X) <> 0 Then
+                                If expLdrWRVal!(I, X) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A2L$(I)
-                                    TMM$(PPP) = A2T$(I)
-                                    TYP!(PPP) = A2L!(I, X) * 6
+                                    expLdrPlyrName$(PPP) = expLdrWRName$(I)
+                                    expLdrTeam$(PPP) = expLdrWRTeam$(I)
+                                    expLdrVal!(PPP) = expLdrWRVal!(I, X) * 6
                                 End If
                             Next I
 
@@ -1923,12 +1918,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         If KC <> 1 Then
                             For I = 1 To JG
-                                If A7L!(I, XF) + A7L!(I, XF1) <> 0 Then
+                                If expLdrKickVal!(I, XF) + expLdrKickVal!(I, XF1) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    TPP$(PPP) = A7L$(I)
-                                    TMM$(PPP) = A7T$(I)
-                                    TYP!(PPP) = (A7L!(I, XF) * 3) + A7L!(I, XF1)
+                                    expLdrPlyrName$(PPP) = expLdrKickName$(I)
+                                    expLdrTeam$(PPP) = expLdrKickTeam$(I)
+                                    expLdrVal!(PPP) = (expLdrKickVal!(I, XF) * 3) + expLdrKickVal!(I, XF1)
                                 End If
                             Next I
                         End If
@@ -1973,8 +1968,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Select Case categoryId
                             Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = lookyTT!(I, X)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = schedStatVal!(I, X)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -1982,8 +1977,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 1, 16
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = lookyTT!(I, X) - lookyTT!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = schedStatVal!(I, X) - schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -1991,8 +1986,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 2, 5, 17, 20
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = lookyTT!(I, X) + lookyTT!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = schedStatVal!(I, X) + schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2000,8 +1995,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 3, 18
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = (lookyTT!(I, X2) + lookyTT!(I, X3)) / (lookyTT!(I, X) - lookyTT!(I, X1))
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = (schedStatVal!(I, X2) + schedStatVal!(I, X3)) / (schedStatVal!(I, X) - schedStatVal!(I, X1))
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2009,8 +2004,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 6, 21
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = (lookyTT!(I, X) / lookyTT!(I, X1)) * 100
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = (schedStatVal!(I, X) / schedStatVal!(I, X1)) * 100
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2018,8 +2013,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 10
                                 For I = 1 To totalStats
-                                    TMM$(I) = lookyTT$(I, X)
-                                    TYP!(I) = lookyTT!(I, X2) + lookyTT!(I, X3) - lookyTT!(I, X) - lookyTT!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X)
+                                    expLdrVal!(I) = schedStatVal!(I, X2) + schedStatVal!(I, X3) - schedStatVal!(I, X) - schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2076,7 +2071,7 @@ End Sub
 '----------------------------------------
 'This subroutine prompts the users for the
 'different sort options available in the
-'"expanded" stats menus.
+'"Expanded" stats menus.
 
 'statType
 '   0 = College
@@ -2177,8 +2172,8 @@ End Sub
 'in the chosen stat category
 Sub SortPlayer (stpl, PPP, sortType)
 
-    Shared TYP!()
-    Shared TMM$(), TPP$(), TYY$()
+    Shared expLdrVal!()
+    Shared expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
 
     For I = 2 To PPP
 
@@ -2188,20 +2183,20 @@ Sub SortPlayer (stpl, PPP, sortType)
         For J = PPP To I Step -1
 
             If sortType = 1 Then
-                If TYP!(J - 1) < TYP!(J) Then
-                    Swap TYP!(J - 1), TYP!(J)
-                    Swap TMM$(J - 1), TMM$(J)
-                    Swap TPP$(J - 1), TPP$(J)
-                    Swap TYY$(J - 1), TYY$(J)
+                If expLdrVal!(J - 1) < expLdrVal!(J) Then
+                    Swap expLdrVal!(J - 1), expLdrVal!(J)
+                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
+                    Swap expLdrPlyrName$(J - 1), expLdrPlyrName$(J)
+                    Swap expLdrTD$(J - 1), expLdrTD$(J)
                 End If
             End If
 
             If sortType = 2 Then
-                If TYP!(J - 1) > TYP!(J) Then
-                    Swap TYP!(J - 1), TYP!(J)
-                    Swap TMM$(J - 1), TMM$(J)
-                    Swap TPP$(J - 1), TPP$(J)
-                    Swap TYY$(J - 1), TYY$(J)
+                If expLdrVal!(J - 1) > expLdrVal!(J) Then
+                    Swap expLdrVal!(J - 1), expLdrVal!(J)
+                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
+                    Swap expLdrPlyrName$(J - 1), expLdrPlyrName$(J)
+                    Swap expLdrTD$(J - 1), expLdrTD$(J)
                 End If
             End If
 
@@ -2219,8 +2214,8 @@ End Sub
 'in the chosen stat category
 Sub SortTeam (sortMax, stpl, sortType)
 
-    Shared TYP!()
-    Shared TMM$()
+    Shared expLdrVal!()
+    Shared expLdrTeam$()
 
     For I = 2 To sortMax
 
@@ -2231,16 +2226,16 @@ Sub SortTeam (sortMax, stpl, sortType)
         For J = sortMax To I Step -1
 
             If sortType = 1 Then
-                If TYP!(J - 1) < TYP!(J) Then
-                    Swap TMM$(J - 1), TMM$(J)
-                    Swap TYP!(J - 1), TYP!(J)
+                If expLdrVal!(J - 1) < expLdrVal!(J) Then
+                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
+                    Swap expLdrVal!(J - 1), expLdrVal!(J)
                 End If
             End If
 
             If sortType = 2 Then
-                If TYP!(J - 1) > TYP!(J) Then
-                    Swap TMM$(J - 1), TMM$(J)
-                    Swap TYP!(J - 1), TYP!(J)
+                If expLdrVal!(J - 1) > expLdrVal!(J) Then
+                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
+                    Swap expLdrVal!(J - 1), expLdrVal!(J)
                 End If
             End If
 
@@ -2258,8 +2253,8 @@ End Sub
 'stat categories to the user display
 Sub DisplayLeaders (TVN, maxRecords, categoryId)
 
-    Shared TYP!()
-    Shared expCategories$(), TMM$(), TPP$(), TYY$()
+    Shared expLdrVal!()
+    Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
 
     userExit% = 0
 
@@ -2313,23 +2308,23 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
                 Locate RR + 2, 7
                 Print Using "###"; W;
                 Print " ";
-                Color 3: Print TPP$(W);
-                Print Tab(30); TMM$(W);:
+                Color 3: Print expLdrPlyrName$(W);
+                Print Tab(30); expLdrTeam$(W);:
 
                 Select Case TVN
 
                     Case 1:
-                        Print Tab(58); Using "#####"; TYP!(W)
+                        Print Tab(58); Using "#####"; expLdrVal!(W)
 
                     Case 2:
-                        Print Tab(58); Using "###.##"; TYP!(W)
+                        Print Tab(58); Using "###.##"; expLdrVal!(W)
 
                     Case 3:
-                        Print Tab(58); Using "###.#"; TYP!(W);
-                        Print Tab(63); TYY$(W)
+                        Print Tab(58); Using "###.#"; expLdrVal!(W);
+                        Print Tab(63); expLdrTD$(W)
 
                     Case 4:
-                        Print Tab(58); Using "###.#"; TYP!(W)
+                        Print Tab(58); Using "###.#"; expLdrVal!(W)
 
                 End Select
 
@@ -2383,14 +2378,14 @@ End Sub
 
 
 '----------------------------------------
-'         Leaders_Report Subroutine
+'       Leaders_Report Subroutine
 '----------------------------------------
 'This subroutine displays individual player
 'stat categories to the default printer
 Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
-    Shared TYP!()
-    Shared expCategories$(), TMM$(), TPP$(), TYY$()
+    Shared expLdrVal!()
+    Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
 
     Color 15, 0
     Cls
@@ -2408,23 +2403,23 @@ Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
         Print #1, Using "###"; W;
         Print #1, " ";
-        Print #1, TPP$(W);
-        Print #1, Tab(25); TMM$(W);
+        Print #1, expLdrPlyrName$(W);
+        Print #1, Tab(25); expLdrTeam$(W);
 
         Select Case TVN
 
             Case 1
-                Print #1, Tab(58); Using "#####"; TYP!(W)
+                Print #1, Tab(58); Using "#####"; expLdrVal!(W)
 
             Case 2
-                Print #1, Tab(58); Using "###.##"; TYP!(W)
+                Print #1, Tab(58); Using "###.##"; expLdrVal!(W)
 
             Case 3
-                Print #1, Tab(58); Using "###.#"; TYP!(W);
-                Print #1, Tab(63); TYY$(W)
+                Print #1, Tab(58); Using "###.#"; expLdrVal!(W);
+                Print #1, Tab(63); expLdrTD$(W)
 
             Case 4
-                Print #1, Tab(58); Using "###.#"; TYP!(W)
+                Print #1, Tab(58); Using "###.#"; expLdrVal!(W)
 
         End Select
 
@@ -2457,8 +2452,8 @@ End Sub
 'stat category to the user display
 Sub TeamStatsToReport (categoryId)
 
-    Shared expCategories$(), TMM$()
-    Shared TYP!()
+    Shared expCategories$(), expLdrTeam$()
+    Shared expLdrVal!()
 
     Do
 
@@ -2475,44 +2470,44 @@ Sub TeamStatsToReport (categoryId)
 
         For W = 1 To 15
             If TVN = 1 Then
-                If TMM$(W) <> "" Then
+                If expLdrTeam$(W) <> "" Then
                     Locate W + 3, 7
                     Color 12
                     Print Using "###"; W;: Print " ";
-                    Color 15: Print TMM$(W);
-                    Print Tab(28); Using "#####"; TYP!(W)
+                    Color 15: Print expLdrTeam$(W);
+                    Print Tab(28); Using "#####"; expLdrVal!(W)
                 End If
             End If
 
             If TVN = 2 Then
-                If TMM$(W) <> "" Then
+                If expLdrTeam$(W) <> "" Then
                     Locate W + 3, 7
                     Color 12
                     Print Using "###"; W;: Print " ";
-                    Color 15: Print TMM$(W);
-                    Print Tab(29); Using "##.#"; TYP!(W)
+                    Color 15: Print expLdrTeam$(W);
+                    Print Tab(29); Using "##.#"; expLdrVal!(W)
                 End If
             End If
         Next W
 
         For W = 16 To 30
             If TVN = 1 Then
-                If TMM$(W) <> "" Then
+                If expLdrTeam$(W) <> "" Then
                     Locate W - 12, 42
                     Color 12
                     Print Using "###"; W;: Print " ";
-                    Color 15: Print TMM$(W);
-                    Print Tab(63); Using "#####"; TYP!(W)
+                    Color 15: Print expLdrTeam$(W);
+                    Print Tab(63); Using "#####"; expLdrVal!(W)
                 End If
             End If
 
             If TVN = 2 Then
-                If TMM$(W) <> "" Then
+                If expLdrTeam$(W) <> "" Then
                     Locate W - 12, 42
                     Color 12
                     Print Using "###"; W;: Print " ";
-                    Color 15: Print TMM$(W);
-                    Print Tab(64); Using "##.#"; TYP!(W)
+                    Color 15: Print expLdrTeam$(W);
+                    Print Tab(64); Using "##.#"; expLdrVal!(W)
                 End If
             End If
 

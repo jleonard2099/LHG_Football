@@ -10,9 +10,7 @@
 ' reading in data for the chosen team
 Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
-    Shared teamRatings%()
-
-    'Shared teamNames$()
+    Shared teamRatings()
 
     Shared previousYear$
 
@@ -125,7 +123,7 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
                         YCoord = Int((80 - Len(teamName$)) / 2)
                         Locate 2, YCoord
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$
+                        Color teamRatings(2), teamRatings(1): Print teamName$
 
                         Color 15, 4
                         Locate 3, 32: Print "ANY CHANGE? (Y/N)";
@@ -230,7 +228,7 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 
     Shared mascot$, teamNick$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
     Shared recContrib(), wrRecAvg()
@@ -289,11 +287,11 @@ Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
     mascot$ = RTrim$(Q$(2))
 
     For I = 0 To 7:
-        leagueRatings%(I) = CVI(Q$(I + 3))
+        leagueRatings(I) = CVI(Q$(I + 3))
     Next I
 
     For I = 0 To 4:
-        teamRatings%(I) = CVI(Q$(I + 11))
+        teamRatings(I) = CVI(Q$(I + 11))
     Next I
 
     'Running Backs
@@ -438,7 +436,7 @@ Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 
         Close #2
 
-        If Z$ <> "x" Or teamAttendance& > 100000 Then
+        If Z$ <> "x" Or teamAttendance& > 200000 Then
 
             dataOK = 0
             stadium$ = ""
@@ -725,4 +723,3 @@ Sub ScheduleFilePrompt (scheduleFile$)
 
 
 End Sub
-

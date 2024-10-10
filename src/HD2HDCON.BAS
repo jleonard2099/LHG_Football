@@ -59,28 +59,27 @@ Sub Hd2HdCon_Conf (secondConf)
 
     Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
 
-    Shared awayLosses!(), awayTies!(), awayWins!()
-    Shared awayLosses_2nd!(), awayTies_2nd!(), awayWins_2nd!()
-    Shared awayScoreTeam!(), awayScoreOpp!()
-    Shared awayScoreTeam_2nd!(), awayScoreOpp_2nd!()
-    Shared homeScoreTeam!(), homeScoreOpp!()
-    Shared homeScoreTeam_2nd!(), homeScoreOpp_2nd!()
-    Shared homeLosses!(), homeTies!(), homeWins!()
-    Shared homeLosses_2nd!(), homeTies_2nd!(), homeWins_2nd!()
-    Shared totAwayLosses!(), totAwayTies!(), totAwayWins!()
-    Shared totAwayLosses_2nd!(), totAwayTies_2nd!(), totAwayWins_2nd!()
-    Shared totHomeLosses!(), totHomeTies!(), totHomeWins!()
-    Shared totHomeLosses_2nd!(), totHomeTies_2nd!(), totHomeWins_2nd!()
-    Shared totHomeScoreTeam!(), totHomeScoreOpp!()
-    Shared totHomeScoreTeam_2nd(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreOpp!()
-    Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
+    Shared awayLosses!(), awayLosses_2nd!(), awayTies_2nd!(), awayTies!()
+    Shared awayWins!(), awayWins_2nd!()
+    Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
+
+    Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!()
+    Shared homeWins!(), homeWins_2nd!()
+    Shared homeScoreTeam!(), homeScoreTeam_2nd!(), homeScoreOpp!(), homeScoreOpp_2nd!()
+
+    Shared totAwayLosses!(), totAwayLosses_2nd!(), totHomeTies!(), totHomeTies_2nd!()
+    Shared totAwayWins!(), totAwayWins_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam_2nd!(), totAwayScoreOpp!(), totAwayScoreOpp_2nd!()
+
+    Shared totHomeLosses!(), totHomeLosses_2nd!(), totAwayTies!(), totAwayTies_2nd!()
+    Shared totHomeWins!(), totHomeWins_2nd!()
+    Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
 
     Shared teamScore(), oppScore(), memberIdx()
 
     Dim memberIdx_2nd(30)
 
-    Shared DV$(), DV2$(), locIndicator$(), oppName$()
+    Shared divNames$(), divNames_2nd$(), locIndicator$(), oppName$()
     Shared memberName$(), memberNames_2nd$(), memberYear$(), memberYear_2nd$()
 
     newTeam = 1
@@ -283,7 +282,6 @@ Sub Hd2HdCon_Conf (secondConf)
 
                             End If
 
-
                             If Left$(locIndicator$(I), 1) = "H" And oppName$(I) = memberName$(K) Then
 
                                 If teamScore(I) > oppScore(I) Then
@@ -377,9 +375,9 @@ Sub Hd2HdCon_Conf (secondConf)
 
                 'Generate output
                 If VPP <> 1 Then
-                    Call Hd2HdCon_Report(team$, conf1$, conf2$, DV$(), DV2$(), secondConf, printChoice)
+                    Call Hd2HdCon_Report(team$, conf1$, conf2$, divNames$(), divNames_2nd$(), secondConf, printChoice)
                 Else
-                    Call Hd2HdCon_Screen(team$, conf1$, conf2$, DV$(), DV2$(), secondConf)
+                    Call Hd2HdCon_Screen(team$, conf1$, conf2$, divNames$(), divNames_2nd$(), secondConf)
                 End If
 
                 Cls
@@ -447,26 +445,26 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated
 'comparison values to a report file
-Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, printDest)
+Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, divNames$(), divNames_2nd$(), secondConf, printDest)
 
     Shared div1Name$, div2Name$, div1Name_2$, div2Name_2$
 
-    Shared awayLosses!(), awayTies!(), awayWins!()
-    Shared awayLosses_2nd!(), awayTies_2nd!(), awayWins_2nd!()
-    Shared awayScoreTeam!(), awayScoreOpp!()
-    Shared awayScoreTeam_2nd!(), awayScoreOpp_2nd!()
-    Shared homeScoreTeam!(), homeScoreOpp!()
-    Shared homeScoreTeam_2nd!(), homeScoreOpp_2nd!()
-    Shared homeLosses!(), homeTies!(), homeWins!()
-    Shared homeLosses_2nd!(), homeTies_2nd!(), homeWins_2nd!()
-    Shared totAwayLosses!(), totAwayTies!(), totAwayWins!()
-    Shared totAwayLosses_2nd!(), totAwayTies_2nd!(), totAwayWins_2nd!()
-    Shared totHomeLosses!(), totHomeTies!(), totHomeWins!()
-    Shared totHomeLosses_2nd!(), totHomeTies_2nd!(), totHomeWins_2nd!()
-    Shared totHomeScoreTeam!(), totHomeScoreOpp!()
-    Shared totHomeScoreTeam_2nd(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreOpp!()
-    Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
+    Shared awayLosses!(), awayLosses_2nd!(), awayTies_2nd!(), awayTies!()
+    Shared awayWins!(), awayWins_2nd!()
+    Shared awayScoreTeam!(), awayScoreTeam_2nd!(), awayScoreOpp!(), awayScoreOpp_2nd!()
+
+    Shared homeLosses!(), homeLosses_2nd!(), homeTies!(), homeTies_2nd!()
+    Shared homeWins!(), homeWins_2nd!()
+    Shared homeScoreTeam!(), homeScoreTeam_2nd!(), homeScoreOpp!(), homeScoreOpp_2nd!()
+
+    Shared totAwayLosses!(), totAwayLosses_2nd!(), totHomeTies!(), totHomeTies_2nd!()
+    Shared totAwayWins!(), totAwayWins_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreTeam!(), totAwayScoreOpp!(), totAwayScoreOpp_2nd!()
+
+    Shared totHomeLosses!(), totHomeLosses_2nd!(), totAwayTies!(), totAwayTies_2nd!()
+    Shared totHomeWins!(), totHomeWins_2nd!()
+    Shared totHomeScoreTeam!(), totHomeScoreTeam_2nd(), totHomeScoreOpp!(), totHomeScoreOpp_2nd!()
+
     Shared memberName$(), memberNames_2nd$()
 
     If printDest = 0 Then
@@ -478,8 +476,8 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
     Color 15, 0
     Cls
 
-    DV$(1) = div1Name$
-    DV$(2) = div2Name$
+    divNames$(1) = div1Name$
+    divNames$(2) = div2Name$
 
     Open destFile$ For Output As #1
 
@@ -498,12 +496,12 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
         Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
         Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
 
-        Print #1, conf1$; " "; DV$(RDD)
+        Print #1, conf1$; " "; divNames$(RDD)
 
         DD = ((RDD - 1) * TEAMS_PER_DIV_COL) + 1
         EE = RDD * TEAMS_PER_DIV_COL
 
-        'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+        'If divNames$(RDD) <> "XXX" And divNames$(RDD) <> "" Then
 
         For K = DD To EE
 
@@ -562,12 +560,12 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_CONFERENCE Or DV$(div) = "XXX" Or DV$(div) = ""
+    Loop Until div > DIVS_PER_CONFERENCE Or divNames$(div) = "XXX" Or divNames$(div) = ""
 
     If secondConf = 1 Then
 
-        DV2$(1) = div1Name_2$
-        DV2$(2) = div2Name_2$
+        divNames_2nd$(1) = div1Name_2$
+        divNames_2nd$(2) = div2Name_2$
 
         div = 0
 
@@ -583,12 +581,12 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
             Print #1, Tab(32); "PTA"; Tab(39); "W"; Tab(42); "L"; Tab(45); "T";
             Print #1, Tab(48); "PTF"; Tab(52); "PTA"; Tab(59); "W"; Tab(62); "L";
             Print #1, Tab(65); "T"; Tab(69); "PTF"; Tab(72); "PTA"
-            Print #1, conf2$; " "; DV2$(RDD)
+            Print #1, conf2$; " "; divNames_2nd$(RDD)
 
             DD = ((RDD - 1) * TEAMS_PER_DIV_COL) + 1
             EE = RDD * TEAMS_PER_DIV_COL
 
-            'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+            'If divNames$(RDD) <> "XXX" And divNames$(RDD) <> "" Then
 
             For K = DD To EE
 
@@ -648,7 +646,7 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
             div = div + 1
 
-        Loop Until div > DIVS_PER_CONFERENCE Or DV$(div) = "XXX" Or DV$(div) = ""
+        Loop Until div > DIVS_PER_CONFERENCE Or divNames$(div) = "XXX" Or divNames$(div) = ""
 
     End If
 
@@ -662,9 +660,9 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
     For W = 1 To DIVS_PER_CONFERENCE
 
-        If W <> 2 And DV$(W) <> "" Then
+        If W <> 2 And divNames$(W) <> "" Then
 
-            Print #1, DV$(W);
+            Print #1, divNames$(W);
             Print #1, Tab(17); Using "##"; totHomeWins!(W);
             Print #1, Tab(20); Using "##"; totHomeLosses!(W);
             Print #1, Tab(23); Using "##"; totHomeTies!(W);
@@ -738,8 +736,8 @@ Sub Hd2HdCon_Report (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf, print
 
         For W = 1 To DIVS_PER_CONFERENCE
 
-            If W = 2 Or DV2$(W) <> "" Then
-                Print #1, DV2$(W);
+            If W = 2 Or divNames_2nd$(W) <> "" Then
+                Print #1, divNames_2nd$(W);
                 Print #1, Tab(17); Using "##"; totHomeWins_2nd!(W);
                 Print #1, Tab(20); Using "##"; totHomeLosses_2nd!(W);
                 Print #1, Tab(23); Using "##"; totHomeTies_2nd!(W);
@@ -835,33 +833,37 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated
 'comparison values to the end user display
-Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
+Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, divNames$(), divNames_2nd$(), secondConf)
 
     Shared div1Name$, div2Name$, div1Name_2$, div2Name_2$
 
-    Shared teamRatings%()
+    Shared teamRatings()
 
     Shared awayLosses!(), awayTies!(), awayWins!()
     Shared awayLosses_2nd!(), awayTies_2nd!(), awayWins_2nd!()
     Shared awayScoreTeam!(), awayScoreOpp!()
     Shared awayScoreTeam_2nd!(), awayScoreOpp_2nd!()
-    Shared homeScoreTeam!(), homeScoreOpp!()
-    Shared homeScoreTeam_2nd!(), homeScoreOpp_2nd!()
+
     Shared homeLosses!(), homeTies!(), homeWins!()
     Shared homeLosses_2nd!(), homeTies_2nd!(), homeWins_2nd!()
+    Shared homeScoreTeam!(), homeScoreOpp!()
+    Shared homeScoreTeam_2nd!(), homeScoreOpp_2nd!()
+
     Shared totAwayLosses!(), totAwayTies!(), totAwayWins!()
     Shared totAwayLosses_2nd!(), totAwayTies_2nd!(), totAwayWins_2nd!()
+    Shared totAwayScoreTeam!(), totAwayScoreOpp!()
+    Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
+
     Shared totHomeLosses!(), totHomeTies!(), totHomeWins!()
     Shared totHomeLosses_2nd!(), totHomeTies_2nd!(), totHomeWins_2nd!()
     Shared totHomeScoreTeam!(), totHomeScoreOpp!()
     Shared totHomeScoreTeam_2nd(), totHomeScoreOpp_2nd!()
-    Shared totAwayScoreTeam!(), totAwayScoreOpp!()
-    Shared totAwayScoreTeam_2nd!(), totAwayScoreOpp_2nd!()
-    Shared DV$(), DV2$()
+
+    Shared divNames$(), divNames_2nd$()
     Shared memberName$(), memberNames_2nd$()
 
-    DV$(1) = div1Name$
-    DV$(2) = div2Name$
+    divNames$(1) = div1Name$
+    divNames$(2) = div2Name$
 
     div = 0
 
@@ -872,7 +874,7 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
         Cls
 
         Locate 2, 35
-        Color teamRatings%(2), teamRatings%(1): Print teamName$
+        Color teamRatings(2), teamRatings(1): Print teamName$
         Color 3, 0
 
         Locate 4
@@ -881,14 +883,14 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
         Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
         Color 11
-        Print conf1$; " "; DV$(RDD);
+        Print conf1$; " "; divNames$(RDD);
 
         Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
         DD = ((RDD - 1) * TEAMS_PER_DIV_COL) + 1
         EE = RDD * TEAMS_PER_DIV_COL
 
-        'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+        'If divNames$(RDD) <> "XXX" And divNames$(RDD) <> "" Then
 
         For K = DD To EE
 
@@ -973,13 +975,13 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_CONFERENCE Or DV$(div) = "XXX" Or DV$(div) = ""
+    Loop Until div > DIVS_PER_CONFERENCE Or divNames$(div) = "XXX" Or divNames$(div) = ""
 
     'Second Conference
     If secondConf = 1 Then
 
-        DV2$(1) = div1Name_2$
-        DV2$(2) = div2Name_2$
+        divNames_2nd$(1) = div1Name_2$
+        divNames_2nd$(2) = div2Name_2$
 
         div = 0
 
@@ -990,7 +992,7 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
             Cls
 
             Locate 2, 35
-            Color teamRatings%(2), teamRatings%(1): Print teamName$
+            Color teamRatings(2), teamRatings(1): Print teamName$
 
             Color 3, 0
 
@@ -1000,14 +1002,14 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
             Print Tab(18); "W"; Tab(21); "L"; Tab(24); "T"; Tab(27); "PTF"; Tab(32); "PTA"; Tab(35); Chr$(179); Tab(37); "W"; Tab(40); "L"; Tab(43); "T"; Tab(46); "PTF"; Tab(50); "PTA"; Tab(53); Chr$(179); Tab(55); "W"; Tab(58); "L"; Tab(61); "T"; Tab(64); "PTF"; Tab(68); "PTA"
 
             Color 11
-            Print conf2$; " "; DV2$(RDD);
+            Print conf2$; " "; divNames_2nd$(RDD);
 
             Color 3: Print Tab(35); Chr$(179); Tab(53); Chr$(179)
 
             DD = ((RDD - 1) * TEAMS_PER_DIV_COL) + 1
             EE = RDD * TEAMS_PER_DIV_COL
 
-            'If DV$(RDD) <> "XXX" And DV$(RDD) <> "" Then
+            'If divNames$(RDD) <> "XXX" And divNames$(RDD) <> "" Then
 
             For K = DD To EE
 
@@ -1091,14 +1093,14 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
             div = div + 1
 
-        Loop Until div > DIVS_PER_CONFERENCE Or DV$(div) = "XXX" Or DV$(div) = ""
+        Loop Until div > DIVS_PER_CONFERENCE Or divNames$(div) = "XXX" Or divNames$(div) = ""
 
     End If
 
     Cls
 
     Locate 2, 35
-    Color teamRatings%(2), teamRatings%(1): Print teamName$
+    Color teamRatings(2), teamRatings(1): Print teamName$
     Color 3, 0
 
     Locate 4
@@ -1113,11 +1115,11 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
     For W = 1 To DIVS_PER_CONFERENCE
 
-        If DV$(W) <> "XXX" Then
+        If divNames$(W) <> "XXX" Then
 
             Color 15
             'We have to limit this to 15 because we start stats on column 16
-            Locate , 1: Print Left$(DV$(W), 15);
+            Locate , 1: Print Left$(divNames$(W), 15);
 
             Color 7
             Locate , 17: Print Using "##"; totHomeWins!(W);
@@ -1213,10 +1215,10 @@ Sub Hd2HdCon_Screen (teamName$, conf1$, conf2$, DV$(), DV2$(), secondConf)
 
         For W = 1 To DIVS_PER_CONFERENCE
 
-            If DV2$(W) <> "XXX" And DV2$(W) <> "" Then
+            If divNames_2nd$(W) <> "XXX" And divNames_2nd$(W) <> "" Then
 
                 Color 15
-                Locate , 2: Print DV2$(W);
+                Locate , 2: Print divNames_2nd$(W);
 
                 Color 7
                 Locate , 17: Print Using "##"; totHomeWins_2nd!(W);
