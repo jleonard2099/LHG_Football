@@ -147,7 +147,7 @@ Data 3,3,-3,-3,-6,-6,-6,-6,-3,-3: 'TRAP
 
 Data OFF,5,DEF,5,OFF,10: 'PENALTY INFO
 
-Data 80,88,60,78,40,68,22,62,16,52: 'FIELD GOAL %'s / INTERVALS
+Data 74,88,52,78,33,68,16,62,10,52: 'FIELD GOAL %'s / INTERVALS
 
 Data -3,-4,0,3,-6,-6,0,0,0,0,0: ' INT HITCH
 Data -3,-4,0,-1,-6,-6,0,0,0,0,0: ' INT SP
@@ -440,7 +440,6 @@ rulesType$(4) = "PLAY USING WFL RULES       "
 rulesType$(5) = "PLAY USING WLAF RULES      "
 'rulesType$(6) = "PLAY USING XFL RULES       "
 
-
 ruleYrPro$(0) = "PRE-1962"
 ruleYrPro$(1) = "1962-1973"
 ruleYrPro$(2) = "1974-1977"
@@ -451,8 +450,6 @@ ruleYrPro$(6) = "2011-2015"
 ruleYrPro$(7) = "2016-2017"
 ruleYrPro$(8) = "2018-2022"
 ruleYrPro$(9) = "2023-PRESENT"
-
-
 
 ruleYrColl$(0) = "PRE-1968 "
 ruleYrColl$(1) = "1968-1980"
@@ -466,7 +463,6 @@ ruleYrColl$(8) = "2007"
 ruleYrColl$(9) = "2008-2011"
 ruleYrColl$(10) = "2012-2017"
 ruleYrColl$(11) = "2018-PRESENT"
-
 
 weather$(0) = "GOOD                          "
 weather$(1) = "BAD (RAIN/SNOW)               "
@@ -4192,9 +4188,6 @@ Sub NewSchedule (scheduleFile$)
                 YN$ = scheduleYN$(X + NS% * 20, 0)
                 Call ReadTeam(YN$, team$, T1)
                 Call ReadExtraData(YN$, T1, validData)
-                x$ = YN$
-                y$ = team$
-                z = T1
 
                 If validData = 1 Then
 
@@ -6260,7 +6253,7 @@ Sub FOOTBALL ()
     End If
 
     kickNotReturned = 0
-    Call pbplog(3964)
+    'Call pbplog(3964)
 
     Select Case kickChoice
 
@@ -6295,7 +6288,7 @@ Sub FOOTBALL ()
 
             If kickYL <= fairCatchLine Then
                 fairCatchZone = 1
-                Call pbplog(3998)
+                'Call pbplog(3998)
             End If
 
             If ((ruleOptType > 0 And ruleOptPro >= 8) Or (ruleOptType = 0 And ruleOptColl >= 11)) And fairCatchZone = 1 Then
@@ -6345,7 +6338,7 @@ Sub FOOTBALL ()
 
                 Call PBP
 
-                Call pbplog(4048)
+                'Call pbplog(4048)
 
                 'Touchback will auto-change possession
                 Call CHANGEPOSS
@@ -6360,7 +6353,7 @@ Sub FOOTBALL ()
                     'Kicked out of endzone
                     'Automatic touchback
                     'Touchback will auto-change possession
-                    Call pbplog(4063)
+                    'Call pbplog(4063)
                     Call CHANGEPOSS
                     Call Touchback
                     kickNotReturned = 1
@@ -6540,7 +6533,7 @@ Sub FOOTBALL ()
 
                     Call FUMBLE
 
-                    If ballFumbled = 1 Then 
+                    If ballFumbled = 1 Then
                         Call FumblePBP
                         GoTo 650
                     End If
@@ -6548,7 +6541,7 @@ Sub FOOTBALL ()
                     Call AddPossessionTime(4, 7)
 
                     RN1 = Int(Rnd(1) * 1000) + 1
-                    If RN1 >= 960 - teamRat_GAME(P1, 0) Then 
+                    If RN1 >= 960 - teamRat_GAME(P1, 0) Then
                         Call CLIPPING
                     End If
 
@@ -6564,7 +6557,7 @@ Sub FOOTBALL ()
             Call SQUIB
             Call FUMBLE
 
-            If ballFumbled = 1 Then 
+            If ballFumbled = 1 Then
                 Call FumblePBP
                 GoTo 650
             End If
@@ -6849,7 +6842,7 @@ Sub FOOTBALL ()
 
         End If
 
-        If ydLine >= 90 Then 
+        If ydLine >= 90 Then
             ydsToFirst = 100 - ydLine
         End If
     
@@ -6914,7 +6907,7 @@ Sub FOOTBALL ()
                 'This chooses the call but not the intended player
                 Call ComputerOffense
                 If playCall = 19 Then
-                    Call pbplog(4608)
+                    'Call pbplog(4608)
                 End If
                 chosenPlay = playCall
 
@@ -8635,7 +8628,7 @@ Sub FOOTBALL ()
 
                     gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
-                    Call pbplog(6315)
+                    'Call pbplog(6315)
 
                     If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then
                         'Punt travels to end zone
@@ -8654,7 +8647,7 @@ Sub FOOTBALL ()
                         'Track touchback for punter
                         gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
-                        Call pbplog(6334)
+                        'Call pbplog(6334)
                         Call Touchback
 
                     Else
@@ -8695,7 +8688,7 @@ Sub FOOTBALL ()
                             gameStatsTeam(P1, 26) = ydsGained
                         End If
 
-                        Call pbplog(6375)
+                        'Call pbplog(6375)
                         Call PuntNotReturned(fairCatchZone, puntChoice)
 
                         Call CheckGameClock
@@ -8908,7 +8901,7 @@ Sub FOOTBALL ()
             End Select
 
             PSNAP:
-            Call pbplog(6396)
+            'Call pbplog(6396)
 
             'Normal punt
             pbpString$ = punter$(P1, 0) + " WAITS FOR THE SNAP"
@@ -9055,7 +9048,7 @@ Sub FOOTBALL ()
 
                 pbpString$ = "PUNT BY " + punter$(P1, 0) + " TRAVELS" + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
                 Call PBP
-                Call pbplog(6717)
+                'Call pbplog(6717)
 
                 gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
@@ -9072,7 +9065,7 @@ Sub FOOTBALL ()
                     'Track touchback
                     gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
-                    Call pbplog(6736)
+                    'Call pbplog(6736)
                     Call Touchback
 
                 Else
@@ -9124,7 +9117,7 @@ Sub FOOTBALL ()
                         ' - 5% of punts inside the 10
                         ' - 45% for punts outside the 20
                         ' - Punt Safe formation
-                        Call pbplog(6782)
+                        'Call pbplog(6782)
                         Call PuntNotReturned(fairCatchZone, puntChoice)
 
                         Call CheckGameClock
@@ -9134,7 +9127,7 @@ Sub FOOTBALL ()
 
                     Else
 
-                        Call pbplog(6795)
+                        'Call pbplog(6795)
                         Call PuntReturnYards
 
                         If ydsGained + ydLine >= 99.99 Then
@@ -10916,7 +10909,7 @@ Sub FOOTBALL ()
 
         If fgDefChoice = 1 And ((ydLine >= 68 + goalPostAdj And blockChance >= 97) Or (ydLine < 68 + goalPostAdj And blockChance >= 99)) Then
             'Blocked FG
-            Call pbplog(10916)
+            'Call pbplog(10916)
             pbpString$ = "KICK IS BLOCKED!!!"
             Call PBP
 
@@ -11086,7 +11079,7 @@ Sub FOOTBALL ()
 
     3840 '
     '-- We need to track how often punts are blocked
-    Call pbplog(8759)
+    'Call pbplog(8759)
     gameStatsTeam(P1, 28) = gameStatsTeam(P1, 28) + 1
     pbpString$ = "KICK IS BLOCKED!!!"
 
@@ -15036,14 +15029,14 @@ Sub SETWEATHER ()
 
             Select Case RN1
 
-                Case 20 to 38
+                Case 20 To 38
                     'Snow affects 7% of games
                     'Rain affects 12% of games
                     climate(4) = -3
                     climate(5) = 1
                     climate(6) = -10
 
-                Case 7 to 12
+                Case 7 To 12
                     'Blizzards affect 1% of games
                     'Heavy rain affects 5% of games
                     climate(4) = -6
@@ -15092,13 +15085,13 @@ Sub SETWEATHER ()
             
             Select Case RN1
 
-                Case 1 to 26
+                Case 1 To 26
                     'Moderate wind impacts 27% of games
                     climate(1) = -7
                     climate(2) = -5
                     climate(3) = -10
 
-                Case 45 to 60
+                Case 45 To 60
                     'Heavy wind impacts 15% of games
                     climate(1) = -15
                     climate(2) = -15
@@ -15191,20 +15184,20 @@ Function fgLimit%
 
         Select Case ruleOptColl
 
-            Case 0 To 2
+            Case 0 To 1
                 'Up to 1980's
                 kickLimit = 40
 
-            Case 3 To 9
-                '1980's - 2000's
+            Case 2 To 6
+                '1980's - 1990's
                 kickLimit = 50
 
-            Case 10
-                '2010's
+            Case 7 To 8
+                '2000's
                 kickLimit = 55
 
-            Case Is >= 11
-                '2018+
+            Case 9 To 11
+                '2008+
                 kickLimit = 60
 
         End Select
@@ -15213,20 +15206,20 @@ Function fgLimit%
 
         Select Case ruleOptPro
 
-            Case 0 To 2
-                'Up to 1980's
+            Case 0 To 1
+                'Up to 1970's
                 kickLimit = 40
 
-            Case 3 To 5
-                '1980's - 2000's
+            Case 2 To 3
+                '1980's - 1990's
                 kickLimit = 50
 
-            Case 6 To 7
-                '2010's
+            Case 4
+                '2000's
                 kickLimit = 55
 
-            Case Is >= 8
-                '2018+
+            Case Is >= 5
+                '2008+
                 kickLimit = 60
 
         End Select
@@ -15318,21 +15311,21 @@ Sub ComputerOffense ()
                 'In FG range, < 22 secs to go, 2nd Qtr | 4th Qtr Tie | Overtime
                 If ydLine >= fgAttLine - 3 And gameClock! <= 22 And (quarter = 2 Or quarter > 4 Or (quarter = 4 And score(P1, 0) - score(D, 0) = 0)) Then
                     'Field Goal
-                    Call pbplog(15308)
+                    'Call pbplog(15308)
                     playCall = 20
                 End If
 
-                'In LONG FG range, 4th Down, >= 3 Yds to go, Modern Era (FGs uncommon before 1960)
-                If ydLine >= fgAttLine - 3 And ydLine < fgAttLine + 10 And currDown = 4 And ydsToFirst >= 3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                '4th Down, >= 3 Yds to go, 40+ Yd FG Att, Modern Era (FGs uncommon before 1960)
+                If currDown = 4 And ydsToFirst >= 3 And ydLine >= fgAttLine - 3 And ydLine < 87 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
-                    Call pbplog(15315)
+                    'Call pbplog(15315)
                     playCall = 20
                 End If
 
                 'Outside LONG FG range, 4th Down
                 If ydLine < fgAttLine - 3 And currDown = 4 Then
                     'Punt
-                    Call pbplog(13328)
+                    'Call pbplog(13328)
                     playCall = 19
                 End If
 
@@ -15360,20 +15353,18 @@ Sub ComputerOffense ()
                     GoTo 8833
                 End If
 
-                '4th Down, 1 Yd To Go, In LONG FG Range, 3 Pt. Lead (Off)
-                If currDown = 4 And ydsToFirst <= 1 And ydLine >= fgAttLine - 3 And ydLine < fgAttLine + 10 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) > 0 Then
+                '4th Down, 1 Yd To Go, 40+ Yd FG Att, 3 Pt. Lead (Off)
+                If currDown = 4 And ydsToFirst <= 1 And ydLine >= fgAttLine - 3 And ydLine < 87 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) > 0 Then
                     'Go for it!
                     GoTo 8827
                 End If
-
-                '--- 4th Down, 2+ Yds to Go, In FG Range, Any Score
 
                 '4th Qtr | OT
                 '---------------
                 '4th Down, In FG Range, <= Score Within 3 Pts, Modern Era (FGs uncommon before 1960)
                 If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) >= -3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
-                    Call pbplog(15363)
+                    'Call pbplog(15363)
                     playCall = 20
                     GoTo 8800
                 End If
@@ -15381,7 +15372,7 @@ Sub ComputerOffense ()
                 '4th Down, In FG Range, <= 3 Pt. Lead (Def), Modern Era (FGs uncommon before 1960)
                 If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(D, 0) - score(P1, 0) <= 3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
-                    Call pbplog(15371)
+                    'Call pbplog(15371)
                     playCall = 20
                     GoTo 8800
                 End If
@@ -15394,17 +15385,17 @@ Sub ComputerOffense ()
                 '4th Down, <5 Minutes, Long FG range, Down by 1-10 (Off), Modern Era (FGs uncommon before 1960)
                 If quarter >= 4 And currDown = 4 And gameClock! < 240 And ydLine >= fgAttLine + 10 And ydLine < fgAttLine - 3 And score(D, 0) - score(P1, 0) <= 10 And score(D, 0) - score(P1, 0) > 0 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
-                    Call pbplog(15384)
+                    'Call pbplog(15384)
                     playCall = 20
                     GoTo 8800
                 End If
 
                 '4th Qtr Only
                 '---------------
-                '4th Down, <4 Minutes, Down by 4 to 11 (Off), Inside Red Zone
+                '4th Down, < 4 Minutes, Down by 4 to 11 (Off), Inside Red Zone
                 If quarter = 4 And currDown = 4 And gameClock! > 240 And score(D, 0) - score(P1, 0) >= 4 And score(D, 0) - score(P1, 0) <= 11 And ydLine > 80 + goalPostAdj Then
                     'Field Goal
-                    Call pbplog(15394)
+                    'Call pbplog(15394)
                     playCall = 20
                     GoTo 8800
                 End If
@@ -15421,11 +15412,11 @@ Sub ComputerOffense ()
                     GoTo 8827
                 End If
 
-                '4th Down, >= 3 Yds To Go, In FG range, Modern Era (FGs uncommon before 1960)
-                If currDown = 4 And ydsToFirst >= 3 And ydLine >= fgAttLine + 12 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+                '4th Down, >= 3 Yds To Go, <= 49 Yd Att, Modern Era (FGs uncommon before 1960)
+                If currDown = 4 And ydsToFirst >= 3 And ydLine >= 68 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
                     '-- Most field goals are done here
-                    Call pbplog(15414)
+                    'Call pbplog(15414)
                     playCall = 20
                     GoTo 8800
                 End If
@@ -15672,7 +15663,7 @@ Sub ComputerOffense ()
                     'In FG range, Modern Era (FGs uncommon before 1960)
                     If (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                         'Field Goal
-                        Call pbplog(15661)
+                        'Call pbplog(15661)
                         playCall = 20
                     End If
                 End If
@@ -15713,7 +15704,7 @@ Sub ComputerOffense ()
             '4th Down, In FG range, Modern Era (FGs uncommon before 1960)
             If ydLine >= fgAttLine - 3 And quarter = 2 And currDown = 4 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                 'Field Goal
-                Call pbplog(15702)
+                'Call pbplog(15702)
                 playCall = 20
                 GoTo 8800
             End If
@@ -15737,7 +15728,7 @@ Sub ComputerOffense ()
             'In FG range, < 22 secs to go, No TOs (Off)
             If ydLine < fgAttLine - 3 And gameClock! <= 22 And timeouts(P1) = 0 Then
                 'Field Goal
-                Call pbplog(15726)
+                'Call pbplog(15726)
                 playCall = 20
                 GoTo 8800
             End If
@@ -15745,7 +15736,7 @@ Sub ComputerOffense ()
             'In FG range, < 12 secs to go, TOs Remaining (Off)
             If ydLine < fgAttLine - 3 And gameClock! <= 12 And timeouts(P1) > 0 Then
                 'Field Goal
-                Call pbplog(15734)
+                'Call pbplog(15734)
                 playCall = 20
                 GoTo 8800
             End If
@@ -15753,7 +15744,7 @@ Sub ComputerOffense ()
             'In FG range, 4th Down, Modern Era (FGs uncommon before 1960)
             If ydLine >= fgAttLine - 3 And currDown = 4 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                 'Field Goal
-                Call pbplog(15742)
+                'Call pbplog(15742)
                 playCall = 20
                 GoTo 8800
             End If
@@ -16300,7 +16291,7 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
 
     Call YARDLINE
 
-    Call pbplog(13905)
+    'Call pbplog(13905)
 
     'Calculating yard line for return team
     ydLine = 100 - ydLine
@@ -16321,7 +16312,7 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
             pbpString$ = "THE KICK SOARS OUT OF BOUNDS AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
         End If
 
-        Call pbplog(13921)
+        'Call pbplog(13921)
 
     Else
 
@@ -16329,11 +16320,11 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
         'If ydLineTeam <= 15 And (RN0 >= 10 And RN0 <= 42) Then
         If ydLineTeam <= 15 Then
 
-            Call pbplog(13929)
+            'Call pbplog(13929)
 
             If RN0 <= 45 Then
 
-                Call pbplog(13933)
+                'Call pbplog(13933)
 
                 pbpBall = Int(Rnd(1) * 2) + 1
                 downTeam = Int(Rnd(1) * 2)
@@ -16382,14 +16373,14 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
 
                 'Fair catch outside 15
                 fairCatchPossible = 1
-                Call pbplog(13979)
+                'Call pbplog(13979)
 
             End If
 
         Else
 
             'Outside the 15, outside fair catch
-            Call pbplog(13985)
+            'Call pbplog(13985)
 
         End If
 
@@ -16397,7 +16388,7 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
 
     If fairCatchPossible = 1 And currDown = 4 Then
 
-        Call pbplog(13992)
+        'Call pbplog(13992)
         pbpString$ = "A FAIR CATCH IS CALLED AT THE" + Str$(Int(ydLineTeam)) + " YARD LINE"
 
         If (ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11) Then
@@ -16408,7 +16399,7 @@ Sub PuntNotReturned (fairCatchPossible, puntType)
     Else
 
         'No fair catch
-        Call pbplog(14000)
+        'Call pbplog(14000)
 
     End If
 
@@ -16694,7 +16685,7 @@ Sub FUMBLE ()
     
     F% = 0
 
-    If fumbleChance <= leagRat_GAME(P1, 3) + leagRat_GAME(D, 4) Then 
+    If fumbleChance <= leagRat_GAME(P1, 3) + leagRat_GAME(D, 4) Then
         ballFumbled = 1
     End If
 
@@ -17433,6 +17424,13 @@ Sub FieldGoalChance ()
     'Increase average FG% chance for newer eras
     Select Case teamYears(P1)
 
+        Case 1970 To 1982
+            adjFGPct(0) = 86
+            adjFGPct(1) = 65
+            adjFGPct(2) = 46
+            adjFGPct(3) = 26
+            adjFGPct(4) = 20
+
         Case 1983 To 2007
             adjFGPct(0) = 95
             adjFGPct(1) = 81
@@ -17444,7 +17442,6 @@ Sub FieldGoalChance ()
             adjFGPct(0) = 98
             adjFGPct(1) = 91
             adjFGPct(2) = 76
-
             adjFGPct(3) = 67
             adjFGPct(4) = 61
 
