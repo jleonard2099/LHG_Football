@@ -174,7 +174,7 @@ Function GetQBRushPctGame% (targetQB$, currTeam)
 
     For currRB = 0 To 9
 
-        currContrib = rbrushContrib(currTeam, currRB)
+        currContrib = rbRushContrib(currTeam, currRB)
 
         'Check for QB as a runner
         If rbacks$(currTeam, currRB) = targetQB$ Then

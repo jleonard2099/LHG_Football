@@ -5,7 +5,7 @@
 'steps for entering a new team.
 Sub InputTeam ()
 
-    Dim A1!(9), B3!(1)
+    Dim rushAvgRaw!(9), puntAvgRaw!(1)
 
     Shared leagueRatings(), teamRatings()
     
@@ -222,7 +222,7 @@ Sub InputTeam ()
             If UCase$(rbName$(I)) <> "END" Then
 
                 Locate 6: Input "2. # OF RUSHES "; rushContrib(I)
-                Locate 7: Input "3. RUSHING AVERAGE "; A1!(I)
+                Locate 7: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
                 Locate 8: Input "4. # OF RECEPTIONS "; rbRecepts(I)
                 Locate 9: Input "5. RECEIVING AVERAGE "; rbRecAvg(I)
 
@@ -246,7 +246,7 @@ Sub InputTeam ()
 
                         Case 3
                             Locate 7, 20: Print Space$(10)
-                            Locate 7, 1: Input "3. RUSHING AVERAGE "; A1!(I)
+                            Locate 7, 1: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
                             Locate 7, 20: Print " "
 
                         Case 4
@@ -523,7 +523,7 @@ Sub InputTeam ()
         Color 15
 
         Locate 5: Input "1. NAME"; punterName$(0)
-        Locate 6: Input "2. PUNT AVERAGE"; B3!(0)
+        Locate 6: Input "2. PUNT AVERAGE"; puntAvgRaw!(0)
 
         C1 = 1
 
@@ -542,7 +542,7 @@ Sub InputTeam ()
 
                 Case 2
                     Locate 6, 17: Print Space$(10)
-                    Locate 6, 1: Input "2. PUNT AVERAGE "; B3!(0)
+                    Locate 6, 1: Input "2. PUNT AVERAGE "; puntAvgRaw!(0)
                     Locate 6, 17: Print " "
 
             End Select
@@ -618,11 +618,16 @@ Sub InputTeam ()
 
         Next
 
-        puntAvg(0) = Int((B3!(0) - 28) / 2! + .5)
+        puntAvg(0) = Int((puntAvgRaw!(0) - 28) / 2! + .5)
 
         For I = 0 To 1
+
             pkFGA(I) = Int((pkFGA(I) / 5) + .5) - 5
-            If pkFGA(I) < 1 Then pkFGA(I) = 1
+
+            If pkFGA(I) < 1 Then 
+                pkFGA(I) = 1
+            End If
+
         Next
 
         'Interceptions
@@ -749,7 +754,7 @@ Sub InputTeam ()
         Next I
 
         For I = 0 To 9:
-            rushAvg(I) = Int(A1!(I) / .3 + .5)
+            rushAvg(I) = Int(rushAvgRaw!(I) / .3 + .5)
         Next I
 
         For I = 0 To 9:
@@ -1036,18 +1041,15 @@ Sub SaveTeam (team$, mascot$, teamYear$, teamNumber, teamAttendance&)
 
     LSet Q$(122) = punterName$(0)
     LSet Q$(123) = MKI$(puntAvg(0))
-    
-    LSet Q$(124) = pkName$(0)
-    LSet Q$(125) = MKI$(pkFGA(0))
-    LSet Q$(126) = MKI$(pkFGContrib(0))
-    LSet Q$(127) = MKI$(pkPAT(0))
-    LSet Q$(128) = MKI$(pkPATContrib(0))
-    
-    LSet Q$(129) = pkName$(1)
-    LSet Q$(130) = MKI$(pkFGA(1))
-    LSet Q$(131) = MKI$(pkFGContrib(1))
-    LSet Q$(132) = MKI$(pkPAT(1))
-    LSet Q$(133) = MKI$(pkPATContrib(1))
+
+    For I = 0 To 1
+        LSet Q$(I * 5 + 124) = pkName$(I)
+        LSet Q$(I * 5 + 125) = MKI$(pkFGA(I))
+        LSet Q$(I * 5 + 126) = MKI$(pkFGContrib(I))
+        LSet Q$(I * 5 + 127) = MKI$(pkPAT(I))
+        LSet Q$(I * 5 + 128) = MKI$(pkPATContrib(I))
+    Next I
+
     LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14

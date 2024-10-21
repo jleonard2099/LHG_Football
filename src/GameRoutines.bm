@@ -196,7 +196,7 @@ Sub InitVar ()
     Erase krNumRet, krYdsPerRet, leagRat_GAME
     Erase playerInts, playerSacks, prNumRet, prYdsPerRet, ydsPerPunt
     Erase qbArmRat, qbCompPct, qbNumAtt, qbPctInt
-    Erase rbNumRec, rbrushContrib, rbRushAvg, rbYdsPerC
+    Erase rbNumRec, rbRushContrib, rbRushAvg, rbYdsPerC
     Erase teamInts, teamSacks ', teamRat_GAME
     Erase wrNumRec, wrYdsPerC, ydsPerComp
 
@@ -1119,21 +1119,21 @@ Sub SCOUT ()
         I6 = 0
 
         For I1 = 0 To 9
-            If rbrushContrib(I, I1) <> 0 Then
-                I4 = rbrushContrib(I, I1)
+            If rbRushContrib(I, I1) <> 0 Then
+                I4 = rbRushContrib(I, I1)
                 I5 = 0
             End If
         Next I1
 
         For I1 = 0 To 9
             If I1 = 0 Then
-                K3(I, 0) = K3(I, 0) + rbrushContrib(I, I1) * rbRushAvg(I, I1)
+                K3(I, 0) = K3(I, 0) + rbRushContrib(I, I1) * rbRushAvg(I, I1)
                 I2 = I2 + qbNumAtt(I, I1) * qbCompPct(I, I1)
                 I3 = I3 + qbNumAtt(I, I1) * qbPctInt(I, I1)
             End If
 
-            If I1 > 0 And rbrushContrib(I, I1) <> 0 Then
-                K3(I, 0) = K3(I, 0) + rbRushAvg(I, I1) * (rbrushContrib(I, I1) - I5)
+            If I1 > 0 And rbRushContrib(I, I1) <> 0 Then
+                K3(I, 0) = K3(I, 0) + rbRushAvg(I, I1) * (rbRushContrib(I, I1) - I5)
             End If
 
             If I1 > 0 And I1 < 4 And qbNumAtt(I, I1) <> 0 Then
@@ -1141,8 +1141,8 @@ Sub SCOUT ()
                 I3 = I3 + qbPctInt(I, I1) * (qbNumAtt(I, I1) - I6)
             End If
 
-            If rbrushContrib(I, I1) <> 0 Then
-                I5 = rbrushContrib(I, I1)
+            If rbRushContrib(I, I1) <> 0 Then
+                I5 = rbRushContrib(I, I1)
             End If
 
             If qbNumAtt(I, I1) <> 0 Then
@@ -2584,7 +2584,7 @@ End Sub
 '----------------------------------------
 'This subroutine handles the Play-by-play
 'text for an interceptions
-Sub PBPINT ()
+Sub FumbleRecoverPBP ()
 
     pbpString$ = ""
 
@@ -3506,12 +3506,12 @@ End Sub
 
 
 '----------------------------------------
-'            LGPBP Subroutine
+'            LongGainPBP Subroutine
 '----------------------------------------
 'This subroutine chooses the play-by-play
 'text for the start of a play where any
 'long gain has been calculated.
-Sub LGPBP ()
+Sub LongGainPBP ()
 
     RN0 = Int(Rnd(1) * 20) + 1
 
@@ -3544,11 +3544,11 @@ End Sub
 
 
 '----------------------------------------
-'          RUNTDPBP Subroutine
+'          RunForTD_PBP Subroutine
 '----------------------------------------
 'This subroutine generates the Play-by-Play
 'for a rushing TD.
-Sub RUNTDPBP ()
+Sub RunForTD_PBP ()
 
     RN0 = Int(Rnd(1) * 29) + 1
 
@@ -9692,7 +9692,7 @@ Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx)
 
     For I1 = 0 To 9
         rbacks$(gameIdx, I1) = RTrim$(Q$(I1 * 5 + 16))
-        rbrushContrib(gameIdx, I1) = CVI(Q$(I1 * 5 + 17))
+        rbRushContrib(gameIdx, I1) = CVI(Q$(I1 * 5 + 17))
         rbRushAvg(gameIdx, I1) = CVI(Q$(I1 * 5 + 18))
         rbNumRec(gameIdx, I1) = CVI(Q$(I1 * 5 + 19))
         rbYdsPerC(gameIdx, I1) = CVI(Q$(I1 * 5 + 20))
@@ -9755,11 +9755,11 @@ Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx)
 
     If Left$(gameMascots$(gameIdx), 1) = " " Or gameMascots$(gameIdx) = "" Then gameMascots$(gameIdx) = gameTeams$(gameIdx)
 
-    indRushPct(gameIdx, 0) = rbrushContrib(gameIdx, 0)
+    indRushPct(gameIdx, 0) = rbRushContrib(gameIdx, 0)
 
     For currBack = 9 To 1 Step -1
-        If rbrushContrib(gameIdx, currBack) <> 0 Then
-            indRushPct(gameIdx, currBack) = rbrushContrib(gameIdx, currBack) - rbrushContrib(gameIdx, currBack - 1)
+        If rbRushContrib(gameIdx, currBack) <> 0 Then
+            indRushPct(gameIdx, currBack) = rbRushContrib(gameIdx, currBack) - rbRushContrib(gameIdx, currBack - 1)
         End If
     Next
 

@@ -1211,7 +1211,7 @@ Sub FOOTBALL ()
 
     If RN0 <= 50 Then
 
-        Call PBPINT
+        Call FumbleRecoverPBP
 
         pbpString$ = pbpString$ + gameTeams$(D) + " RECOVERS!!"
         Call PBP
@@ -1464,7 +1464,7 @@ Sub FOOTBALL ()
                                         Call Rolld100(I2)
 
                                         For I = 9 To 0 Step -1:
-                                            If I2 <= rbrushContrib(P1, I) Then
+                                            If I2 <= rbRushContrib(P1, I) Then
                                                 I1 = I
                                             End If
                                         Next I
@@ -1760,7 +1760,7 @@ Sub FOOTBALL ()
                         Print
                     End If
 
-                    If rbrushContrib(P1, KK) = 100 Then GoTo CSELECT
+                    If rbRushContrib(P1, KK) = 100 Then GoTo CSELECT
 
                 Next
 
@@ -1775,7 +1775,7 @@ Sub FOOTBALL ()
                         Print
                     End If
 
-                    If rbrushContrib(P1, KK + 5) = 100 Then GoTo CSELECT
+                    If rbRushContrib(P1, KK + 5) = 100 Then GoTo CSELECT
 
                 Next KK
 
@@ -2223,11 +2223,11 @@ Sub FOOTBALL ()
                 End If
 
                 If ydsGained > 10 And ydLine + ydsGained < 99.94999 Then
-                    Call LGPBP
+                    Call LongGainPBP
                 End If
 
                 If ydLine + ydsGained >= 99.94999 Then
-                    Call RUNTDPBP
+                    Call RunForTD_PBP
                 End If
 
                 startYds = 100 - ydLine
@@ -2309,7 +2309,7 @@ Sub FOOTBALL ()
                 Call Rolld100(I2)
 
                 For I = 9 To 0 Step -1:
-                    If I2 <= rbrushContrib(P1, I) Then
+                    If I2 <= rbRushContrib(P1, I) Then
                         I1 = I
                     End If
                 Next I

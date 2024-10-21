@@ -47,6 +47,7 @@ Sub CNGTM (userChoice)
         If ExitCode% <> 27 And SELECTION% <> 4 Then
 
             teamNbr = 0
+
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
             If teamNbr <> 0 Then
@@ -64,7 +65,7 @@ Sub CNGTM (userChoice)
                             Select Case userKey$
 
                                 Case "F"
-                                    userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                                    userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
                                     If userFile$ <> "" Then
                                         Call PrintRoster(0, userFile$, team$)
                                     End If
@@ -73,7 +74,7 @@ Sub CNGTM (userChoice)
                                     Call PrintRoster(1, "REPORT", team$)
 
                             End Select
-                            
+
                         End If
 
                     Case 3
@@ -84,6 +85,10 @@ Sub CNGTM (userChoice)
             End If
 
         End If
+
+        'Reset "user choice" after first call
+        'We're at the menu now, no purpose in forcing shortcuts
+        userChoice = 0
 
     Loop Until SELECTION% = 4 Or ExitCode% = 27
 
@@ -797,7 +802,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 4, 15: Print Space$(10)
                                 Locate 4: Input "2. PUNTING AVG "; B3!(I1)
                                 Locate 4, 15: Print " "
-                                
+
                                 puntAvg(I1) = Int(((B3!(I1) - 28) / 2) + .5)
 
                         End Select
@@ -1034,12 +1039,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 9:
 
-            If rushContrib(I) <> 0 Then 
+            If rushContrib(I) <> 0 Then
                 rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
                 S1 = rushContrib(I)
             End If
 
-            If rushContrib(I) > 100 Then 
+            If rushContrib(I) > 100 Then
                 rushContrib(I) = 100
             End If
 
@@ -1053,12 +1058,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 9:
 
-            If rbRecepts(I) <> 0 Then 
+            If rbRecepts(I) <> 0 Then
                 rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
                 S3 = rbRecepts(I)
             End If
 
-            If rbRecepts(I) > 100 Then 
+            If rbRecepts(I) > 100 Then
                 rbRecepts(I) = 100
             End If
 
@@ -1066,12 +1071,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 5:
 
-            If recContrib(I) <> 0 Then 
+            If recContrib(I) <> 0 Then
                 recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
                 S3 = recContrib(I)
             End If
 
-            If recContrib(I) > 100 Then 
+            If recContrib(I) > 100 Then
                 recContrib(I) = 100
             End If
 
@@ -1088,12 +1093,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 3:
 
-            If passContrib(I) <> 0 Then 
+            If passContrib(I) <> 0 Then
                 passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
                 S7 = passContrib(I)
             End If
 
-            If passContrib(I) > 100 Then 
+            If passContrib(I) > 100 Then
                 passContrib(I) = 100
             End If
 
@@ -1114,12 +1119,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 2:
 
-            If krContrib(I) <> 0 Then 
+            If krContrib(I) <> 0 Then
                 krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
                 G1 = krContrib(I)
             End If
 
-            If krContrib(I) > 100 Then 
+            If krContrib(I) > 100 Then
                 krContrib(I) = 100
             End If
 
@@ -1127,12 +1132,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 2:
 
-            If prContrib(I) <> 0 Then 
+            If prContrib(I) <> 0 Then
                 prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
                 G4 = prContrib(I)
             End If
 
-            If prContrib(I) > 100 Then 
+            If prContrib(I) > 100 Then
                 prContrib(I) = 100
             End If
 
@@ -1153,12 +1158,12 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 1:
 
-            If pkFGContrib(I) <> 0 Then 
+            If pkFGContrib(I) <> 0 Then
                 pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
                 G1 = pkFGContrib(I)
             End If
 
-            If pkFGContrib(I) > 100 Then 
+            If pkFGContrib(I) > 100 Then
                 pkFGContrib(I) = 100
             End If
 
@@ -1166,61 +1171,61 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         For I = 0 To 1:
 
-            If pkPATContrib(I) <> 0 Then 
+            If pkPATContrib(I) <> 0 Then
                 pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
                 G4 = pkPATContrib(I)
             End If
 
-            If pkPATContrib(I) > 100 Then 
+            If pkPATContrib(I) > 100 Then
                 pkPATContrib(I) = 100
             End If
 
         Next
 
         For I = 9 To 0 Step -1:
-            If rushContrib(I) <> 0 Then 
+            If rushContrib(I) <> 0 Then
                 rushContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 5 To 0 Step -1:
-            If recContrib(I) <> 0 Then 
+            If recContrib(I) <> 0 Then
                 recContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 3 To 0 Step -1:
-            If passContrib(I) <> 0 Then 
+            If passContrib(I) <> 0 Then
                 passContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 2 To 0 Step -1:
-            If krContrib(I) <> 0 Then 
+            If krContrib(I) <> 0 Then
                 krContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 2 To 0 Step -1:
-            If prContrib(I) <> 0 Then 
+            If prContrib(I) <> 0 Then
                 prContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 1 To 0 Step -1:
-            If pkFGContrib(I) <> 0 Then 
+            If pkFGContrib(I) <> 0 Then
                 pkFGContrib(I) = 100
                 Exit For
             End If
         Next
 
         For I = 1 To 0 Step -1:
-            If pkPATContrib(I) <> 0 Then 
+            If pkPATContrib(I) <> 0 Then
                 pkPATContrib(I) = 100
                 Exit For
             End If
@@ -1278,10 +1283,10 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
     Locate 12: Print "11. DEF SACK ADJ %  "; leagueRatings(6)
     Locate 13: Print "12. DEF YDS/COMP ADJ  ";
 
-    If YC! < 50 Then 
+    If YC! < 50 Then
         Print Using "+#.#"; YC! / 100 * 30
-    End if
-    If YC! > 50 Then 
+    End If
+    If YC! > 50 Then
         Print Using "+#.#"; (100 - YC!) / 100 * -30
     End If
 
@@ -1475,6 +1480,7 @@ Sub ViewRoster (team$)
         Color teamRatings(2), teamRatings(1)
         Print team$;
 
+        Color 15, 0
         Print
         Print
 
@@ -1487,8 +1493,12 @@ Sub ViewRoster (team$)
         Print Using "OFF FUMBLE  %  = ###"; leagueRatings(3);
         Print Tab(35); "DEF YDS/COMP ADJ = ";
 
-        If YC! < 50 Then Print Using "+#.#"; YC! / 100 * 30
-        If YC! > 50 Then Print Using "+#.#"; (100 - YC!) / 100 * -30
+        If YC! < 50 Then
+            Print Using "+#.#"; YC! / 100 * 30
+        End If
+        If YC! > 50 Then
+            Print Using "+#.#"; (100 - YC!) / 100 * -30
+        End If
 
         Print Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
         Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
@@ -2209,4 +2219,3 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     Call CSMsgBox("", 0, Pass)
 
 End Sub
-
