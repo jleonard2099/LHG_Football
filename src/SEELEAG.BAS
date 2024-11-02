@@ -614,7 +614,7 @@ Sub ProLeaders_Screen ()
     Cls
 
     Color 14
-    Print "COMPLETION PERCENTAGE"
+    Print "COMPLETION PERCENTAGE (MIN 15 ATT/G)"
     Color 15
 
     For P = 121 To 130
@@ -627,7 +627,7 @@ Sub ProLeaders_Screen ()
 
     Locate 1, 41
     Color 14
-    Print "QUARTERBACK RATING"
+    Print "QUARTERBACK RATING (MIN 15 ATT/G)"
     Color 15
 
     For P = 131 To 140

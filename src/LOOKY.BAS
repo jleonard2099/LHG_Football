@@ -470,17 +470,24 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
             I$ = GetKeyPress$
             ' *** ADD IN CLEAR SCREEN AND TITLE BAR ***
-            Cls
             Color , 0
-            Locate 1, 1: Print Tab(80); " ";
+            Cls
+
+            Locate 1, 1
+            Color 14, 1
+            Print Tab(81);
+
+            header$ = "GAME-BY-GAME REPORT FOR " + teamName$
+            Xcoord = Len(header$)
+            Xcoord = Int((80 - Xcoord) / 2)
             Locate , Xcoord
 
-            Color 14
             Print "GAME-BY-GAME REPORT FOR ";
             Color teamRatings(2), teamRatings(1)
             Print teamName$
 
-            Color 14
+            Color 14, 1
+
             Print "OPPONENT            SCORE  W/L  ATTEND   SITE                         RECORD   "
             Color 15, 0
 

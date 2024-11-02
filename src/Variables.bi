@@ -1,6 +1,8 @@
 
 Dim opSysType$
 
+Dim Shared currGame
+
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
@@ -69,7 +71,7 @@ Dim Shared DT$, leagLdrTeams$
 
 Dim eventSettings(13)
 
-Dim location$(2), modeAbbrev$(3), overtime$(3)
+Dim location$(2), modeAbbrev$(3), overtime$(4)
 Dim playMode$(3)
 Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
@@ -365,6 +367,8 @@ Dim pollLdrTeams$(1200), divTeamNames$(60)
 Dim tickerStart
 Dim actualAttendance&, avgAttendance&
 
+Dim passFakeSuccess(0 To 2)
+
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
 'BW = black & white; as in, set to 1 and the game will lose all color
@@ -373,12 +377,14 @@ Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, CP, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
-Dim Shared fieldSide, firstDownClockOpt
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
+Dim Shared fieldSide, firstDownClockOpt
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
-Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9
+Dim Shared I1, I2, I3, I5, I6, I7, I8, I9
+
+Dim Shared I4 As Single
 
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
@@ -388,6 +394,7 @@ Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushYds
 Dim Shared S6, startYds, tickerGames
 Dim Shared W5, WE, WS, winTeam, yrdLine
+Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock

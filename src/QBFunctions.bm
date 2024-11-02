@@ -45,8 +45,8 @@ Function GetQBName$ (targetGame%, teamIndicator)
                 Locate , 50: Print armRating(currQB)
             Else
                 'Only print extra QB's if they
-                'don't have 100% contribution
-                If passContrib(currQB - 1) < 100 Then
+                'don't have 0% | 100% contribution
+                If passContrib(currQB - 1) < 100 And passContrib(currQB - 1) > 0 Then
                     Print Int(passContrib(currQB)) - passContrib(currQB - 1);
                     Locate , 39: Print compPct(currQB);
                     Locate , 45: Print qbIntPct(currQB);

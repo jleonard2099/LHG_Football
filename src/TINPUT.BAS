@@ -54,8 +54,8 @@ Sub InputTeam ()
             Color 15, 0
         End If
 
-        Locate 19: Input "19. OFF POWER ADJ"; O9
-        Locate 20: Input "20. DEF POWER ADJ"; D9
+        Locate 19: Input "19. OFF POWER ADJ"; offPwrAdj
+        Locate 20: Input "20. DEF POWER ADJ"; defPwrAdj
         Locate 21: Input "21. STADIUM NAME"; stadium$
         Locate 22: Input "22. AVERAGE ATTENDANCE"; teamAttendance&
 
@@ -177,12 +177,12 @@ Sub InputTeam ()
 
                     Case 19
                         Locate 19, 19: Print Space$(10)
-                        Locate 19, 1: Input "19. OFF POWER ADJ "; O9
+                        Locate 19, 1: Input "19. OFF POWER ADJ "; offPwrAdj
                         Locate 19, 19: Print " "
 
                     Case 20
                         Locate 20, 19: Print Space$(10)
-                        Locate 20, 1: Input "20. DEF POWER ADJ "; D9
+                        Locate 20, 1: Input "20. DEF POWER ADJ "; defPwrAdj
                         Locate 20, 19: Print " "
 
                     Case 21
@@ -758,8 +758,8 @@ Sub InputTeam ()
         Next I
 
         For I = 0 To 9:
-            If O9 <> 0 And rushAvg(I) <> 0 Then 
-                rushAvg(I) = rushAvg(I) - O9
+            If offPwrAdj <> 0 And rushAvg(I) <> 0 Then 
+                rushAvg(I) = rushAvg(I) - offPwrAdj
             End If
         Next I
 
@@ -824,7 +824,7 @@ Sub InputTeam ()
         QT = 0
 
         For I = 0 To 3:
-            If O9 <> 0 And compPct(I) <> 0 Then compPct(I) = compPct(I) - O9
+            If offPwrAdj <> 0 And compPct(I) <> 0 Then compPct(I) = compPct(I) - offPwrAdj
         Next I
 
         For I = 0 To 2:
@@ -898,9 +898,11 @@ Sub InputTeam ()
         If X < 0 Then X = 100 + X
         ydsCompAdj = X
 
-        If D9 > 0 Then 
-            leagueRatings(0) = leagueRatings(0) + D9
-            leagueRatings(1) = leagueRatings(1) + D9
+        If defPwrAdj > 0 Then 
+            'DEF Rush Adj
+            leagueRatings(0) = leagueRatings(0) + defPwrAdj
+            'DEF Comp Adj
+            leagueRatings(1) = leagueRatings(1) + defPwrAdj
         End If
 
         Call SaveTeam(team$, mascot$, teamYear$, teamNumber, teamAttendance&)

@@ -3294,7 +3294,7 @@ Sub FOOTBALL ()
 
                         Else
 
-                            Call KickFakeYards(puntDefChoice)
+                            Call PuntFakeRunYards(puntDefChoice)
 
                             If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
                                 'Safety!
@@ -3898,7 +3898,7 @@ Sub FOOTBALL ()
 
                     End If
 
-                    Call FAKERUN(choice)
+                    Call FGFakeRunYards(choice)
 
                     If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
                         'Safety!

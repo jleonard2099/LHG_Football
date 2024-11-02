@@ -5086,11 +5086,11 @@ End Sub
 
 
 '----------------------------------------
-'          KickFakeYards Subroutine
+'          PuntFakeRunYards Subroutine
 '----------------------------------------
 'This subroutine handles yardage gains and
 'Play-by-Play text for a fake play.
-Sub KickFakeYards (choice)
+Sub PuntFakeRunYards (choice)
 
     pbpString$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL"
     Call PBP
@@ -5304,12 +5304,12 @@ End Sub
 
 
 '----------------------------------------
-'           FAKERUN Subroutine
+'           FGFakeRunYards Subroutine
 '----------------------------------------
 'This subroutine handles yardage and the
 'Play-by-Play text for a fake run on a
 'kicking lineup.
-Sub FAKERUN (choice)
+Sub FGFakeRunYards (choice)
 
     pbpString$ = "IT'S A FAKE!!! THE HOLDER IS RUNNING THE BALL"
     Call PBP
