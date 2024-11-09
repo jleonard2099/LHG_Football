@@ -71,7 +71,7 @@ Dim Shared DT$, leagLdrTeams$
 
 Dim eventSettings(13)
 
-Dim location$(2), modeAbbrev$(3), overtime$(4)
+Dim location$(2), modeAbbrev$(3), overtime$(0 To 7)
 Dim playMode$(3)
 Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
@@ -375,10 +375,11 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, CP, currDown ', compOffense
-Dim Shared D, dLine
+'Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
+Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
@@ -389,12 +390,11 @@ Dim Shared I4 As Single
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
 Dim Shared penaltyYds, playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushYds
 Dim Shared S6, startYds, tickerGames
-Dim Shared W5, WE, WS, winTeam, yrdLine
-Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
+'Dim Shared W5, WE, WS, winTeam
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -424,7 +424,7 @@ Dim Shared scoreX0, scoreX1, YC, YF, Z1
 Dim Shared FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%
 
-Dim Shared gameClock!, pbpDelay!, timeElapsed!
+'Dim Shared gameClock!, pbpDelay!, timeElapsed!
 
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
@@ -454,7 +454,7 @@ Dim Shared indRushPct(1, 9), IR(1, 9), K1(50, 6), K3(1, 6)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared leagRat_GAME(1, 7)
-Dim Shared nbrPossOT(1)
+'Dim Shared nbrPossOT(1)
 Dim Shared passCovAdj(3, 10, 11), penaltyYds(2)
 Dim Shared playerInts(1, 9), playerSacks(1, 14)
 Dim Shared prNumRet(1, 2), prYdsPerRet(1, 2), puntReturners(0 To 1, 0 To 2)
@@ -464,7 +464,7 @@ Dim Shared qbRushIdx(1, 3)
 Dim Shared runYdAdj(1, 38)
 Dim Shared runBacks(1, 17), rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
 Dim Shared sackStatsPlayer(1, 14, 1)
-Dim Shared score(0 To 1, 0 To 10), scoreQuarters(50), scoreTimes(50), schedGame(2)
+'Dim Shared score(0 To 1, 0 To 12), scoreQuarters(50), scoreTimes(50), schedGame(2)
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
