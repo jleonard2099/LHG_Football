@@ -932,6 +932,7 @@ End Sub
 'user display of those statistics.
 Sub ExpandedLeaders_Menu (totalStats)
 
+    'Dim X0, X1
     Dim PPP, sortType
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
@@ -1239,11 +1240,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "A":
 
                         Select Case categoryId
-                            Case 0: X = 0: XX = 0
-                            Case 1: X = 1: XX = 1
-                            Case 2: X = 0: X1 = 1: XX = 2
-                            Case 3: X = 2: XX = 3
-                            Case 4: X = 6: XX = 4
+                            Case 0: X0 = 0: XX = 0
+                            Case 1: X0 = 1: XX = 1
+                            Case 2: X0 = 0: X1 = 1: XX = 2
+                            Case 3: X0 = 2: XX = 3
+                            Case 4: X0 = 6: XX = 4
                         End Select
 
                         Cls
@@ -1254,12 +1255,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 0, 1, 3
 
                                 For I = 1 To JA
-                                    If expLdrRBVal!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                         expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
                                     End If
                                 Next I
 
@@ -1270,12 +1271,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 2
 
                                 For I = 1 To JA
-                                    If expLdrRBVal!(I, X) > gameCount(1) * 10 Then
+                                    If expLdrRBVal!(I, X0) > gameCount(1) * 10 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                         expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X0)
                                     End If
                                 Next I
 
@@ -1289,12 +1290,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 PPP = 0
 
                                 For I = 1 To JA
-                                    If expLdrRBVal!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                         expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
                                         expLdrTD$(PPP) = expLdrLRush$(I)
                                     End If
                                 Next I
@@ -1308,11 +1309,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "B":
 
                         Select Case categoryId
-                            Case 0: X = 3: X1 = 0: XX = 5
-                            Case 1: X = 4: X1 = 1: XX = 6
-                            Case 2: X = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
-                            Case 3: X = 5: X1 = 2: XX = 8
-                            Case 4: X = 3: X1 = 7: XX = 9
+                            Case 0: X0 = 3: X1 = 0: XX = 5
+                            Case 1: X0 = 4: X1 = 1: XX = 6
+                            Case 2: X0 = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
+                            Case 3: X0 = 5: X1 = 2: XX = 8
+                            Case 4: X0 = 3: X1 = 7: XX = 9
                         End Select
 
                         Cls
@@ -1322,12 +1323,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 0, 1, 3:
                                 For I = 1 To JA
-                                    If expLdrRBVal!(I, X) <> 0 Then
+                                    If expLdrRBVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                         expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
                                     End If
                                 Next I
 
@@ -1349,12 +1350,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 PPP = 0
 
                                 For I = 1 To JA
-                                    If expLdrRBVal!(I, X) >= gameCount(1) * 4 Then
+                                    If expLdrRBVal!(I, X0) >= gameCount(1) * 4 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                         expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X0)
                                     End If
                                 Next I
 
@@ -1381,7 +1382,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrWRName$(I)
                                         expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrWRVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrWRVal!(I, X0)
                                         expLdrTD$(PPP) = expLdrLRec$(I)
                                     End If
                                 Next I
@@ -1406,15 +1407,15 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         Select Case categoryId
 
-                            Case 0: X = 0: XX = 10
-                            Case 1: X = 1: XX = 11
-                            Case 2: X = 2: XX = 12
-                            Case 3: X = 3: XX = 13
-                            Case 4: X = 4: XX = 14
-                            Case 5: X = 0: X1 = 1: XX = 15
-                            Case 6: X = 1: X1 = 3: X2 = 0: XX = 16
-                            Case 7: X = 0: XX = 17
-                            Case 8: X = 5: XX = 18
+                            Case 0: X0 = 0: XX = 10
+                            Case 1: X0 = 1: XX = 11
+                            Case 2: X0 = 2: XX = 12
+                            Case 3: X0 = 3: XX = 13
+                            Case 4: X0 = 4: XX = 14
+                            Case 5: X0 = 0: X1 = 1: XX = 15
+                            Case 6: X0 = 1: X1 = 3: X2 = 0: XX = 16
+                            Case 7: X0 = 0: XX = 17
+                            Case 8: X0 = 5: XX = 18
 
                         End Select
 
@@ -1426,12 +1427,12 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case 0 To 4:
 
                                 For I = 1 To JC
-                                    If expLdrQBVal!(I, X) <> 0 Then
+                                    If expLdrQBVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                         expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrQBVal!(I, X0)
                                     End If
                                 Next I
 
@@ -1442,7 +1443,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If expLdrQBVal!(I, X) >= gameCount(1) * 15 Then
+                                    If expLdrQBVal!(I, X0) >= gameCount(1) * 15 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
@@ -1454,7 +1455,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                             expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = (expLdrQBVal!(I, X1) / expLdrQBVal!(I, X)) * 100
+                                            expLdrVal!(PPP) = (expLdrQBVal!(I, X1) / expLdrQBVal!(I, X0)) * 100
                                         End If
 
                                     End If
@@ -1473,7 +1474,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                         If expLdrQBVal!(I, X1) <> 0 Then
                                             expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                             expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = expLdrQBVal!(I, X1) / expLdrQBVal!(I, X)
+                                            expLdrVal!(PPP) = expLdrQBVal!(I, X1) / expLdrQBVal!(I, X0)
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                             expLdrTeam$(PPP) = expLdrQBTeam$(I)
@@ -1489,12 +1490,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If expLdrQBVal!(I, X) >= gameCount(1) * 15 Then
+                                    If expLdrQBVal!(I, X0) >= gameCount(1) * 15 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                         expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBRat!(I, X)
+                                        expLdrVal!(PPP) = expLdrQBRat!(I, X0)
                                     End If
 
                                 Next I
@@ -1509,12 +1510,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JC
 
-                                    If expLdrQBVal!(I, X) <> 0 Then
+                                    If expLdrQBVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrQBName$(I)
                                         expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrQBVal!(I, X0)
                                         expLdrTD$(PPP) = expLdrLPass$(I)
                                     End If
 
@@ -1528,11 +1529,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "D":
 
                         Select Case categoryId
-                            Case 0: X = 0: XX = 19
-                            Case 1: X = 1: XX = 20
-                            Case 2: X = 0: X1 = 1: XX = 21
-                            Case 3: X = 2: XX = 22
-                            Case 4: X = 3: XX = 23
+                            Case 0: X0 = 0: XX = 19
+                            Case 1: X0 = 1: XX = 20
+                            Case 2: X0 = 0: X1 = 1: XX = 21
+                            Case 3: X0 = 2: XX = 22
+                            Case 4: X0 = 3: XX = 23
                         End Select
 
                         Cls
@@ -1544,12 +1545,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If expLdrKRVal!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrKRName$(I)
                                         expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKRVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrKRVal!(I, X0)
                                     End If
 
                                 Next I
@@ -1561,18 +1562,17 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If expLdrKRVal!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X0) <> 0 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         If expLdrKRVal!(I, X1) <> 0 Then
                                             expLdrPlyrName$(PPP) = expLdrKRName$(I)
                                             expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                            expLdrVal!(PPP) = expLdrKRVal!(I, X1) / expLdrKRVal!(I, X)
+                                            expLdrVal!(PPP) = expLdrKRVal!(I, X1) / expLdrKRVal!(I, X0)
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrKRName$(I)
                                             expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                            TYP = 0
                                         End If
 
                                     End If
@@ -1586,12 +1586,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JD
 
-                                    If expLdrKRVal!(I, X) <> 0 Then
+                                    If expLdrKRVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrKRName$(I)
                                         expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKRVal!(I, X): expLdrTD$(PPP) = expLdrLKR$(I)
+                                        expLdrVal!(PPP) = expLdrKRVal!(I, X0): expLdrTD$(PPP) = expLdrLKR$(I)
                                     End If
 
                                 Next I
@@ -1604,11 +1604,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "E":
 
                         Select Case categoryId
-                            Case 0: X = 0: XX = 24
-                            Case 1: X = 1: XX = 25
-                            Case 2: X = 0: X1 = 1: XX = 26
-                            Case 3: X = 2: XX = 27
-                            Case 4: X = 3: XX = 28
+                            Case 0: X0 = 0: XX = 24
+                            Case 1: X0 = 1: XX = 25
+                            Case 2: X0 = 0: X1 = 1: XX = 26
+                            Case 3: X0 = 2: XX = 27
+                            Case 4: X0 = 3: XX = 28
                         End Select
 
                         Cls
@@ -1620,12 +1620,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If expLdrPRVal!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrPRName$(I)
                                         expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPRVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrPRVal!(I, X0)
                                     End If
 
                                 Next I
@@ -1637,18 +1637,19 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If expLdrPRVal!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X0) <> 0 Then
+
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         If expLdrPRVal!(I, X1) <> 0 Then
                                             expLdrPlyrName$(PPP) = expLdrPRName$(I)
                                             expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                            expLdrVal!(PPP) = expLdrPRVal!(I, X1) / expLdrPRVal!(I, X)
+                                            expLdrVal!(PPP) = expLdrPRVal!(I, X1) / expLdrPRVal!(I, X0)
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrPRName$(I)
                                             expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                            TYP = 0
                                         End If
+
                                     End If
 
                                 Next I
@@ -1660,12 +1661,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JE
 
-                                    If expLdrPRVal!(I, X) <> 0 Then
+                                    If expLdrPRVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrPRName$(I)
                                         expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPRVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrPRVal!(I, X0)
                                         expLdrTD$(PPP) = expLdrLPR$(I)
                                     End If
 
@@ -1678,9 +1679,9 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "F":
 
                         Select Case categoryId
-                            Case 0: X = 0: XX = 29
-                            Case 1: X = 1: XX = 30
-                            Case 2: X = 0: X1 = 1: XX = 31
+                            Case 0: X0 = 0: XX = 29
+                            Case 1: X0 = 1: XX = 30
+                            Case 2: X0 = 0: X1 = 1: XX = 31
                         End Select
 
                         Select Case categoryId
@@ -1689,12 +1690,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JF
 
-                                    If expLdrPuntVal!(I, X) <> 0 Then
+                                    If expLdrPuntVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrPuntName$(I)
                                         expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPuntVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrPuntVal!(I, X0)
                                     End If
 
                                 Next I
@@ -1706,18 +1707,19 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JF
 
-                                    If expLdrPuntVal!(I, X) <> 0 Then
+                                    If expLdrPuntVal!(I, X0) <> 0 Then
+
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         If expLdrPuntVal!(I, X1) <> 0 Then
                                             expLdrPlyrName$(PPP) = expLdrPuntName$(I)
                                             expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                            expLdrVal!(PPP) = expLdrPuntVal!(I, X1) / expLdrPuntVal!(I, X)
+                                            expLdrVal!(PPP) = expLdrPuntVal!(I, X1) / expLdrPuntVal!(I, X0)
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrPuntName$(I)
                                             expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                            TYP = 0
                                         End If
+
                                     End If
 
                                 Next I
@@ -1730,13 +1732,13 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "G":
 
                         Select Case categoryId
-                            Case 0: X = 0: XX = 32
-                            Case 1: X = 1: XX = 33
-                            Case 2: X = 0: X1 = 1: XX = 34
-                            Case 3: X = 2: XX = 35
-                            Case 4: X = 3: XX = 36
-                            Case 5: X = 2: X1 = 3: XX = 37
-                            Case 6: X = 4: XX = 38
+                            Case 0: X0 = 0: XX = 32
+                            Case 1: X0 = 1: XX = 33
+                            Case 2: X0 = 0: X1 = 1: XX = 34
+                            Case 3: X0 = 2: XX = 35
+                            Case 4: X0 = 3: XX = 36
+                            Case 5: X0 = 2: X1 = 3: XX = 37
+                            Case 6: X0 = 4: XX = 38
                         End Select
 
                         Cls
@@ -1748,12 +1750,12 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JG
 
-                                    If expLdrKickVal!(I, X) <> 0 Then
+                                    If expLdrKickVal!(I, X0) <> 0 Then
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                         expLdrPlyrName$(PPP) = expLdrKickName$(I)
                                         expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKickVal!(I, X)
+                                        expLdrVal!(PPP) = expLdrKickVal!(I, X0)
                                     End If
 
                                 Next I
@@ -1765,7 +1767,7 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                                 For I = 1 To JG
 
-                                    If expLdrKickVal!(I, X) <> 0 Then
+                                    If expLdrKickVal!(I, X0) <> 0 Then
 
                                         PPP = PPP + 1
                                         Locate 1, 5: Print "CHANGING PLAYER "; PPP
@@ -1773,11 +1775,10 @@ Sub ExpandedLeaders_Menu (totalStats)
                                         If expLdrKickVal!(I, X1) <> 0 Then
                                             expLdrPlyrName$(PPP) = expLdrKickName$(I)
                                             expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                            expLdrVal!(PPP) = (expLdrKickVal!(I, X) / expLdrKickVal!(I, X1)) * 100
+                                            expLdrVal!(PPP) = (expLdrKickVal!(I, X0) / expLdrKickVal!(I, X1)) * 100
                                         Else
                                             expLdrPlyrName$(PPP) = expLdrKickName$(I)
                                             expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                            TYP = 0
                                         End If
 
                                     End If
@@ -1792,10 +1793,10 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "H":
 
                         If categoryId = 0 Then
-                            X = 0: XX = 39
+                            X0 = 0: XX = 39
                         End If
                         If categoryId = 1 Then
-                            X = 0: XX = 40
+                            X0 = 0: XX = 40
                         End If
 
                         Cls
@@ -1836,29 +1837,29 @@ Sub ExpandedLeaders_Menu (totalStats)
                         Cls
 
                         PPP = 0
-                        X = 1
+                        X0 = 1
                         X1 = 4
                         XX = 73
 
                         For I = 1 To JA
-                            If expLdrRBVal!(I, X) + expLdrRBVal!(I, X1) <> 0 Then
+                            If expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1) <> 0 Then
                                 PPP = PPP + 1
                                 Locate 1, 5
                                 Print "CHANGING PLAYER "; PPP
                                 expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                 expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                expLdrVal!(PPP) = expLdrRBVal!(I, X) + expLdrRBVal!(I, X1)
+                                expLdrVal!(PPP) = expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1)
                             End If
                         Next I
 
                         For I = 1 To JB
-                            If expLdrWRVal!(I, X) <> 0 Then
+                            If expLdrWRVal!(I, X0) <> 0 Then
                                 PPP = PPP + 1
                                 Locate 1, 5
                                 Print "CHANGING PLAYER "; PPP
                                 expLdrPlyrName$(PPP) = expLdrWRName$(I)
                                 expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                expLdrVal!(PPP) = expLdrWRVal!(I, X)
+                                expLdrVal!(PPP) = expLdrWRVal!(I, X0)
                             End If
                         Next I
 
@@ -1869,7 +1870,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                     Case "J":
                         Select Case categoryId
                             Case 0
-                                X = 2
+                                X0 = 2
                                 X1 = 5
                                 XX = 41
                                 KC = 1
@@ -1881,7 +1882,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 KC = 2
 
                             Case 2
-                                X = 2
+                                X0 = 2
                                 X1 = 5
                                 XF = 0
                                 XF1 = 2
@@ -1895,22 +1896,22 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                         If KC = 1 Or KC = 3 Then
                             For I = 1 To JA
-                                If expLdrRBVal!(I, X) + expLdrRBVal!(I, X1) <> 0 Then
+                                If expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                     expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                     expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                    expLdrVal!(PPP) = (expLdrRBVal!(I, X) + expLdrRBVal!(I, X1)) * 6
+                                    expLdrVal!(PPP) = (expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1)) * 6
                                 End If
                             Next I
 
                             For I = 1 To JB
-                                If expLdrWRVal!(I, X) <> 0 Then
+                                If expLdrWRVal!(I, X0) <> 0 Then
                                     PPP = PPP + 1
                                     Locate 1, 5: Print "CHANGING PLAYER "; PPP
                                     expLdrPlyrName$(PPP) = expLdrWRName$(I)
                                     expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                    expLdrVal!(PPP) = expLdrWRVal!(I, X) * 6
+                                    expLdrVal!(PPP) = expLdrWRVal!(I, X0) * 6
                                 End If
                             Next I
 
@@ -1934,42 +1935,42 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Case "K":
                         Select Case categoryId
-                            Case 0: X = 0: XX = 44
-                            Case 1: X = 1: X1 = 13: XX = 45
-                            Case 2: X = 2: X1 = 14: XX = 46
-                            Case 3: X = 1: X1 = 13: X2 = 2: X3 = 14: XX = 47
-                            Case 4: X = 6: XX = 48
-                            Case 5: X = 2: X1 = 6: XX = 49
-                            Case 6: X = 4: X1 = 3: XX = 50
-                            Case 7: X = 9: XX = 51
-                            Case 8: X = 10: XX = 52
-                            Case 9: X = 5: XX = 53
-                            Case 10: X = 5: X1 = 10: X2 = 20: X3 = 25: XX = 54
-                            Case 11: X = 11: XX = 55
-                            Case 12: X = 12: XX = 56
-                            Case 13: X = 13: XX = 57
-                            Case 14: X = 14: XX = 58
-                            Case 15: X = 15: XX = 59
-                            Case 16: X = 16: X1 = 28: XX = 60
-                            Case 17: X = 17: X1 = 29: XX = 61
-                            Case 18: X = 16: X1 = 28: X2 = 17: X3 = 29: XX = 62
-                            Case 19: X = 21: XX = 63
-                            Case 20: X = 17: X1 = 21: XX = 64
-                            Case 21: X = 19: X1 = 18: XX = 65
-                            Case 22: X = 24: XX = 66
-                            Case 23: X = 25: XX = 67
-                            Case 24: X = 20: XX = 68
-                            Case 25: X = 26: XX = 69
-                            Case 26: X = 27: XX = 70
-                            Case 27: X = 28: XX = 71
-                            Case 28: X = 29: XX = 72
+                            Case 0: X0 = 0: XX = 44
+                            Case 1: X0 = 1: X1 = 13: XX = 45
+                            Case 2: X0 = 2: X1 = 14: XX = 46
+                            Case 3: X0 = 1: X1 = 13: X2 = 2: X3 = 14: XX = 47
+                            Case 4: X0 = 6: XX = 48
+                            Case 5: X0 = 2: X1 = 6: XX = 49
+                            Case 6: X0 = 4: X1 = 3: XX = 50
+                            Case 7: X0 = 9: XX = 51
+                            Case 8: X0 = 10: XX = 52
+                            Case 9: X0 = 5: XX = 53
+                            Case 10: X0 = 5: X1 = 10: X2 = 20: X3 = 25: XX = 54
+                            Case 11: X0 = 11: XX = 55
+                            Case 12: X0 = 12: XX = 56
+                            Case 13: X0 = 13: XX = 57
+                            Case 14: X0 = 14: XX = 58
+                            Case 15: X0 = 15: XX = 59
+                            Case 16: X0 = 16: X1 = 28: XX = 60
+                            Case 17: X0 = 17: X1 = 29: XX = 61
+                            Case 18: X0 = 16: X1 = 28: X2 = 17: X3 = 29: XX = 62
+                            Case 19: X0 = 21: XX = 63
+                            Case 20: X0 = 17: X1 = 21: XX = 64
+                            Case 21: X0 = 19: X1 = 18: XX = 65
+                            Case 22: X0 = 24: XX = 66
+                            Case 23: X0 = 25: XX = 67
+                            Case 24: X0 = 20: XX = 68
+                            Case 25: X0 = 26: XX = 69
+                            Case 26: X0 = 27: XX = 70
+                            Case 27: X0 = 28: XX = 71
+                            Case 28: X0 = 29: XX = 72
                         End Select
 
                         Select Case categoryId
                             Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = schedStatVal!(I, X)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = schedStatVal!(I, X0)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -1977,8 +1978,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 1, 16
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = schedStatVal!(I, X) - schedStatVal!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = schedStatVal!(I, X0) - schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -1986,8 +1987,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 2, 5, 17, 20
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = schedStatVal!(I, X) + schedStatVal!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = schedStatVal!(I, X0) + schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -1995,8 +1996,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 3, 18
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = (schedStatVal!(I, X2) + schedStatVal!(I, X3)) / (schedStatVal!(I, X) - schedStatVal!(I, X1))
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = (schedStatVal!(I, X2) + schedStatVal!(I, X3)) / (schedStatVal!(I, X0) - schedStatVal!(I, X1))
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2004,8 +2005,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 6, 21
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = (schedStatVal!(I, X) / schedStatVal!(I, X1)) * 100
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = (schedStatVal!(I, X0) / schedStatVal!(I, X1)) * 100
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2013,8 +2014,8 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                             Case 10
                                 For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X)
-                                    expLdrVal!(I) = schedStatVal!(I, X2) + schedStatVal!(I, X3) - schedStatVal!(I, X) - schedStatVal!(I, X1)
+                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
+                                    expLdrVal!(I) = schedStatVal!(I, X2) + schedStatVal!(I, X3) - schedStatVal!(I, X0) - schedStatVal!(I, X1)
                                 Next I
 
                                 Call SortTeam(totalStats, stpl, sortType)
@@ -2170,7 +2171,9 @@ End Sub
 '----------------------------------------
 'This subroutine sorts the players involved
 'in the chosen stat category
-Sub SortPlayer (stpl, PPP, sortType)
+'sortType = 1: Low to High
+'sortType = 2: High to Low
+Sub SortPlayer (PPP, stpl, sortType)
 
     Shared expLdrVal!()
     Shared expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
@@ -2212,6 +2215,8 @@ End Sub
 '----------------------------------------
 'This subroutine sorts the teams involved
 'in the chosen stat category
+'sortType = 1: Low to High
+'sortType = 2: High to Low
 Sub SortTeam (sortMax, stpl, sortType)
 
     Shared expLdrVal!()

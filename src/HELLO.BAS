@@ -31,13 +31,11 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim Shared gameClock!, pbpDelay!, timeElapsed!
-Dim Shared D, dLine
 Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared scoreX0, scoreX1, YC, YF, Z1
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared W5, WE, WS, winTeam
 
-Dim Shared score(0 To 1, 0 To 12), scoreQuarters(50), scoreTimes(50), schedGame(2)
-Dim Shared nbrPossOT(1)
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -118,11 +116,6 @@ Data 4-3 PASS RUSH,5-2 PASS RUSH,GOAL LINE
 Data STANDARD ZONE,STANDARD M-M,SHORT ZONE,MAN UNDER,NICKEL,PREVENT
 Data BLITZ (1-ILB),BLITZ (1-OLB),BLITZ (2-ILB),BLITZ (2-OLB),BLITZ ENGAGE
 
-Data BLAST,DIVE,OFF TACKLE,END SWEEP,OPTION RUN
-Data DRAW PLAY,TRAP,3 STEP DROP,SHORT PASS,MED PASS
-Data LONG PASS,SHORT SCREEN,MED-PLAY ACT PASS,LONG-PLAY ACT PASS,SIDELINE PASS
-Data ROLLOUT PASS,BOOTLEG PASS,PUNT,FG ATT,SCOUT REPORT
-
 For I = 0 To 14:
     Read tickerPeriod$(I)
 Next
@@ -133,11 +126,6 @@ Next I
 
 For I = 1 To 11:
     Read passCov$(I)
-Next I
-
-'-- this has been retired in favor of RP$()
-For I = 1 To 20:
-    Read offensePlay$(I)
 Next I
 
 Data 0,3,-6,0,-3,0,0,3,-3,-3: 'BLAST DATA
@@ -413,21 +401,24 @@ Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
 Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
 Data BOOTLEG PASS,CROSS,CURL PASS,DEEP POST,DEEP CORNER
 
-For I = 1 To 29: Read playDesc$(I): Next
+For I = 1 To 29:
+    Read playDesc$(I)
+Next
 
 ' Game options
 'location$(0) = "@ VISITING TEAM"
 location$(1) = "HOME FIELD  "
 location$(2) = "NEUTRAL SITE"
 
-overtime$(0) = "NO OVERTIME                      "
-overtime$(1) = "ONE 15-MINUTE QUARTER            "
-overtime$(2) = "SUDDEN DEATH TO WIN              "
-overtime$(3) = "NCAA DIVISION I-AA (1996-2018)   "
-overtime$(4) = "NCAA DIVISION I-AA (2019-2020)   "
-overtime$(5) = "NCAA DIVISION I-AA (2021+)       "
-overtime$(6) = "SUDDEN DEATH MODIFIED (2012-2016)"
-overtime$(7) = "SUDDEN DEATH MODIFIED (2017+)    "
+overtime$(0) = "NO OVERTIME                    "
+overtime$(1) = "1 QUARTER (1974-2011)          "
+overtime$(2) = "COMPETE TO WIN (1974-2009)     "
+overtime$(3) = "NCAA DIVISION I-AA (1996-2018) "
+overtime$(4) = "NCAA DIVISION I-AA (2019-2020) "
+overtime$(5) = "NCAA DIVISION I-AA (2021+)     "
+overtime$(6) = "MOD. REGULAR SEASON (2012-2016)"
+overtime$(7) = "MOD. REGULAR SEASON (2017+)    "
+overtime$(8) = "MOD. POSTSEASON (2010+)        "
 
 modeAbbrev$(0) = "HH"
 modeAbbrev$(1) = "CV"
@@ -1667,4194 +1658,9 @@ End Sub
 '$Include: 'HD2HDLEAG.BAS'
 '$Include: 'LOOKY.BAS'
 '$Include: 'MERGE.BAS'
-'Include: 'NEWLDR.BAS'
-
-'----------------------------------------
-'           NEWLDR Subroutine
-'----------------------------------------
-'This subroutine provides the user a menu
-'for viewing stats compiled for the new
-'"Expanded" Stats/Standings screens
-Sub NEWLDR (statType)
-
-    _Title "3-in-1 Football - View Stat Leaders"
-
-    ReDim menuChoices$(1 To 3)
-
-    If statType = 1 Then
-        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS"
-        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS  "
-        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU      "
-    Else
-        menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS"
-        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS  "
-        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU              "
-    End If
-
-    Do
-
-        Cls
-        Color 15, 0
-
-        Call TITLE
-
-        SELECTION% = 1
-        Count% = 3
-        Start% = 1
-        ExitCode% = 3
-        FileFGColor = 15: FileBGColor = 1
-        HiLiteFGColor% = 0: HiLiteBGColor% = 7
-        Spacing% = 1
-        Row% = 8
-        menuWidth% = Len(menuChoices$(1))
-        Column% = (80 - menuWidth% - 2) / 2
-
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
-
-        _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
-        _MouseHide
-
-        Color , 0
-
-        If ExitCode% <> 27 Then
-
-            Select Case SELECTION%
-
-                Case 1
-                    Do
-                        confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
-
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReadConferenceStats(confStatFile$, statType)
-                            Call UpdateExpandedLeaders(statType, totalStats)
-                            Call SAVELEADER(confStatFile$, totalStats)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
-
-                Case 2
-                    Do
-                        leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
-
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call READLEADER(leaderFile$, totalStats)
-                            Call ExpandedLeaders_Menu(totalStats)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
-
-            End Select
-
-        End If
-
-    Loop Until SELECTION% = 3 Or ExitCode% = 27
-
-End Sub
-
-
-'----------------------------------------
-'     ReadConferenceStats Subroutine
-'----------------------------------------
-'This subroutine reads in the league stats
-'from the .TMS file and assigns them to
-'variables for use later in the routine.
-
-'statType
-'   0 = College
-'   1 = Pro
-Sub ReadConferenceStats (statFile$, statType)
-
-    Shared memberName$()
-
-    Erase memberName$
-
-    If statType = 0 Then
-        For X = 1 To TEAMS_PER_CONFERENCE
-            memberName$(X) = "XXX"
-        Next
-    Else
-        For X = 1 To TEAMS_PER_LEAGUE
-            memberName$(X) = "XXX"
-        Next
-    End If
-
-    Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
-
-    If statType = 1 Then
-        'Pro
-        Input #1, league$
-        Input #1, div1$
-        Input #1, div2$
-        Input #1, div3$
-    Else
-        'College
-        Input #1, league$
-        Input #1, div1$
-        Input #1, div2$
-    End If
-
-    If statType = 0 Then
-        For X = 1 To TEAMS_PER_CONFERENCE:
-            Input #1, memberName$(X)
-        Next
-    Else
-        For X = 1 To TEAMS_PER_LEAGUE:
-            Input #1, memberName$(X)
-        Next
-    End If
-
-    Close #1
-
-End Sub
-
-
-'----------------------------------------
-'      ViewExpandedStats Subroutine
-'----------------------------------------
-'This subroutine reads in the league stats
-'from the .TMS file. It then relies on other
-'routines to calculate the Expanded stats,
-'write them to a file and present a categ-
-'orized menu to use for reviewing them
-'statType
-'   0 = College
-'   1 = Pro
-' XXXX NO LONGER USED WITH NEW STRUCTURE XXXX
-Sub ViewExpandedStats (statType)
-
-    Dim printOrView
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
-
-    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
-
-    If FileExit% <> 27 Then
-
-        Erase memberName$
-
-        If statType = 0 Then
-            For X = 1 To TEAMS_PER_CONFERENCE
-                memberName$(X) = "XXX"
-            Next
-        Else
-            For X = 1 To TEAMS_PER_LEAGUE
-                memberName$(X) = "XXX"
-            Next
-        End If
-
-        JA = 0
-        JB = 0
-        JC = 0
-        JD = 0
-        JE = 0
-        JF = 0
-        JG = 0
-        JH = 0
-        JI = 0
-        JJ = 0
-        printOrView = 0
-        totalStats = 0
-
-        div1$ = ""
-        div2$ = ""
-        div3$ = ""
-
-        Erase expLdrTeam$, expLdrPlyrName$
-
-        Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #1
-
-        If statType = 1 Then
-            'Pro
-            Input #1, league$
-            Input #1, div1$
-            Input #1, div2$
-            Input #1, div3$
-        Else
-            'College
-            Input #1, league$
-            Input #1, div1$
-            Input #1, div2$
-        End If
-
-        If statType = 0 Then
-            For X = 1 To TEAMS_PER_CONFERENCE:
-                Input #1, memberName$(X)
-            Next
-        Else
-            For X = 1 To TEAMS_PER_LEAGUE:
-                Input #1, memberName$(X)
-            Next
-        End If
-
-        Close #1
-
-        Cls
-
-        Call UpdateExpandedLeaders(statType, totalStats)
-        Call SAVELEADER(confStatFile$, totalStats)
-        Call ExpandedLeaders_Menu(totalStats)
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'    UpdateExpandedLeaders Subroutine
-'----------------------------------------
-'This subroutine calculates the Expanded
-'stats from those previously read in to
-'a variety of arrays.
-
-'statType
-'   0 = College
-'   1 = Pro
-Sub UpdateExpandedLeaders (statType, totalStats)
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
-    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
-
-    Shared statsFGM!(), statsFGA!()
-    Shared statsLRec!(), statsLKR!(), statsLFG!(), statsLInt!(), statsLPass!(), statsLRush!()
-    Shared statsLPR!(), schedStatVal!(), statsTeam!(), statsOpp!(), statsPlayers!()
-
-    Shared statsGI(), statsGS()
-
-    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
-    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
-    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
-
-    Shared intName$(), statsLRec$(), statsLRush$()
-    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), expLdrLPR$()
-
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
-    Shared sackName$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLPR$()
-    Shared expLdrQBName$(), schedStatTeam$()
-
-    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
-
-    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
-    Shared gameCount()
-
-    Color 15, 0
-    Cls
-
-    JA = 0
-    JB = 0
-    JC = 0
-    JD = 0
-    JE = 0
-    JF = 0
-    JG = 0
-    JH = 0
-    JI = 0
-    JJ = 0
-    totalStats = 0
-
-    div1$ = ""
-    div2$ = ""
-    div3$ = ""
-
-    Erase expLdrTeam$, expLdrPlyrName$
-
-    If statType = 0 Then
-        totalUnits = TEAMS_PER_CONFERENCE
-    Else
-        totalUnits = TEAMS_PER_LEAGUE
-    End If
-
-    For ZX = 1 To totalUnits
-
-        teamStatFile$ = memberName$(ZX)
-
-        If teamStatFile$ <> "XXX" And teamStatFile$ <> "*" And teamStatFile$ <> " " Then
-
-            If _FileExists(diskPaths$(1) + teamStatFile$) Then
-
-                Print "CONVERTING STAT FILE OF "; teamStatFile$
-
-                Open diskPaths$(1) + teamStatFile$ For Input As #1
-
-                Input #1, teamName$
-
-                'RB Names
-                For I = 0 To 9:
-                    Input #1, rbName$(I)
-                Next I
-
-                'WR Names
-                For I = 0 To 5:
-                    Input #1, wrName$(I)
-                Next I
-
-                'QB Names
-                For I = 0 To 3:
-                    Input #1, qbName$(I)
-                Next I
-
-                'KR Names
-                For I = 0 To 2:
-                    Input #1, krName$(I)
-                Next I
-
-                'PR Names
-                For I = 0 To 2:
-                    Input #1, prName$(I)
-                Next I
-
-                'Punters
-                Input #1, punterName$(0)
-
-                'Place Kickers
-                For I = 0 To 1:
-                    Input #1, pkName$(I)
-                Next I
-
-                'Leader Values
-                '--------------------
-                'Rushers / Receivers
-                For J = 0 To 13
-                    For K = 0 To 17:
-                        Input #1, statsPlayers!(J, K)
-                    Next K
-                Next J
-
-                'Offensive Team stats
-                For L = 0 To 38:
-                    Input #1, statsTeam!(L)
-                Next L
-
-                'Defensive Team stats
-                For L = 0 To 38:
-                    Input #1, statsOpp!(L)
-                Next L
-
-                For J = 0 To 9:
-                    'Interception Names
-                    Input #1, intName$(J)
-                    For J1 = 0 To 2:
-                        Input #1, statsGI(J, J1)
-                    Next
-                Next
-
-                For J = 0 To 14:
-                    'Sack Names
-                    Input #1, sackName$(J)
-                    For J1 = 0 To 1:
-                        Input #1, statsGS(J, J1)
-                    Next
-                Next
-
-                'Longest rush
-                For I = 0 To 9:
-                    Input #1, statsLRush!(I)
-                    Input #1, statsLRush$(I, 0)
-                    Input #1, statsLRush$(I, 1)
-                Next
-
-                'Longest catch
-                For I = 0 To 15:
-                    Input #1, statsLRec!(I)
-                    Input #1, statsLRec$(I, 0)
-                    Input #1, statsLRec$(I, 1)
-                Next
-
-                'Longest pass
-                For I = 0 To 3:
-                    Input #1, statsLPass!(I)
-                    Input #1, statsLPass$(I, 0)
-                    Input #1, statsLPass$(I, 1)
-                Next
-
-                'Longest kick return
-                For I = 0 To 2:
-                    Input #1, statsLKR!(I)
-                    Input #1, statsLKR$(I, 0)
-                    Input #1, statsLKR$(I, 1)
-                Next
-
-                'Longest punt return
-                For I = 0 To 2:
-                    Input #1, statsLPR!(I)
-                    Input #1, statsLPR$(I, 0)
-                    Input #1, statsLPR$(I, 1)
-                Next
-
-                'Longest FG
-                For I = 0 To 1
-                    Input #1, statsLFG!(I)
-                    Input #1, statsLFG$(I)
-                    For I1 = 0 To 4
-                        Input #1, statsFGM!(I, I1)
-                        Input #1, statsFGA!(I, I1)
-                    Next
-                Next
-
-                'Longest Interception
-                '--> was previously NOT read in
-                '--> is it not even calculated later!!!
-                For I = 0 To 9:
-                    Input #1, statsLInt!(I)
-                    Input #1, statsLInt$(I, 0)
-                    Input #1, statsLInt$(I, 1)
-                Next
-
-                Close #1
-
-                Open diskPaths$(1) + teamStatFile$ + "S" For Input As #2
-                Input #2, nbrGames
-                Close #2
-
-                totalStats = totalStats + 1
-
-                For I = 0 To 14
-                    schedStatVal!(totalStats, I) = statsTeam!(I)
-                    schedStatTeam$(totalStats, I) = teamName$
-                Next
-
-                For I = 15 To 29
-                    schedStatVal!(totalStats, I) = statsOpp!(I - 15)
-                    schedStatTeam$(totalStats, I) = teamName$
-                Next
-
-                For I = 0 To 9
-                    JA = JA + 1
-                    expLdrRBName$(JA) = rbName$(I)
-                    expLdrRBTeam$(JA) = teamName$
-                    expLdrLRush$(JA) = statsLRush$(I, 0)
-                    expLdrLRec$(JA) = statsLRec$(I, 0)
-                    expLdrRBGames!(JA) = nbrGames
-
-                    For I1 = 0 To 5:
-                        expLdrRBVal!(JA, I1) = statsPlayers!(I, I1)
-                    Next I1
-
-                    expLdrRBVal!(JA, 6) = statsLRush!(I)
-                    expLdrRBVal!(JA, 7) = statsLRec!(I)
-                Next I
-
-                For I = 0 To 5
-                    JB = JB + 1
-                    expLdrWRName$(JB) = wrName$(I)
-                    expLdrWRTeam$(JB) = teamName$
-                    expLdrLRec$(JB) = statsLRec$(I + 10, 0)
-                    expLdrWRGames!(JB) = nbrGames
-
-                    For I1 = 6 To 8:
-                        expLdrWRVal!(JB, I1 - 6) = statsPlayers!(I, I1)
-                    Next I1
-
-                    expLdrWRVal!(JB, 3) = statsLRec!(I + 10)
-                Next I
-
-                For I = 0 To 3
-                    JC = JC + 1
-                    expLdrQBName$(JC) = qbName$(I)
-                    expLdrQBTeam$(JC) = teamName$
-                    expLdrLPass$(JC) = statsLPass$(I, 0)
-                    expLdrQBGames!(JC) = nbrGames
-
-                    For I1 = 9 To 13:
-                        expLdrQBVal!(JC, I1 - 9) = statsPlayers!(I, I1)
-                    Next I1
-
-                    expLdrQBVal!(JC, 5) = statsLPass!(I)
-                    Call QBRating_Expanded(JC, statType)
-                    expLdrQBRat!(JC, 0) = expLdrQBVal!(JC, 12)
-
-                Next I
-
-                For I = 0 To 2
-                    JD = JD + 1
-                    expLdrKRName$(JD) = krName$(I)
-                    expLdrKRTeam$(JD) = teamName$
-                    expLdrLKR$(JD) = statsLKR$(I, 0)
-
-                    For I1 = 14 To 16:
-                        expLdrKRVal!(JD, I1 - 14) = statsPlayers!(I, I1)
-                    Next I1
-
-                    expLdrKRVal!(JD, 3) = statsLKR!(I)
-                Next I
-
-                For I = 0 To 2
-                    JE = JE + 1
-                    expLdrPRName$(JE) = prName$(I)
-                    expLdrPRTeam$(JE) = teamName$
-                    expLdrLPR$(JE) = statsLPR$(I, 0)
-
-                    For I1 = 14 To 16:
-                        expLdrPRVal!(JE, I1 - 14) = statsPlayers!(I + 3, I1)
-                    Next I1
-
-                    expLdrPRVal!(JE, 3) = statsLPR!(I)
-                Next I
-
-                JF = JF + 1
-                expLdrPuntName$(JF) = punterName$(0)
-                expLdrPuntTeam$(JF) = teamName$
-                expLdrPuntVal!(JF, 0) = statsTeam!(7)
-                expLdrPuntVal!(JF, 1) = statsTeam!(8)
-
-                JG = JG + 1
-                expLdrKickName$(JG) = pkName$(0)
-                expLdrKickTeam$(JG) = teamName$
-
-                For I = 0 To 3:
-                    expLdrKickVal!(JG, I) = statsPlayers!(I + 3, 17)
-                Next
-
-                expLdrKickVal!(JG, 4) = statsLFG!(0)
-                JG = JG + 1
-                expLdrKickName$(JG) = pkName$(1)
-                expLdrKickTeam$(JG) = teamName$
-
-                For I = 0 To 3:
-                    expLdrKickVal!(JG, I) = statsPlayers!(I + 7, 17)
-                Next
-
-                expLdrKickVal!(JG, 4) = statsLFG!(1)
-
-                For I = 0 To 9
-                    JH = JH + 1
-                    expLdrIntName$(JH) = intName$(I)
-                    expLdrIntTeam$(JH) = teamName$
-                    expLdrIntVal!(JH) = statsGI(I, 0)
-                Next
-
-                For I = 0 To 14
-                    JI = JI + 1
-                    expLdrSackName$(JI) = sackName$(I)
-                    expLdrSackTeam$(JI) = teamName$
-                    expLdrSackVal!(JI) = statsGS(I, 0)
-                Next
-
-                JJ = JJ + 1
-                gameCount(JJ) = nbrGames
-
-            End If
-
-        End If
-
-    Next ZX
-
-End Sub
-
-
-'----------------------------------------
-'        READLEADER Subroutine
-'----------------------------------------
-'This subroutine reads in the leader files
-'(.LDS) for the Expanded standings modules
-Sub READLEADER (leaderFile$, totalStats)
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
-    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
-    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
-    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), schedStatTeam$()
-    Shared expLdrLPR$(), expLdrQBName$()
-
-    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
-    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
-    Shared schedStatVal!()
-
-    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
-    Shared gameCount()
-
-    TMR = 1660
-
-    'Print "READING LEADER FILES . . . . PLEASE WAIT"
-
-    If Not _FileExists(diskPaths$(2) + leaderFile$ + ".LDS") Then
-
-        MsgText$ = "NO COMPILED LEADER FILES WERE FOUND. PRESS ANY KEY TO RETURN TO MAIN MENU"
-        BoxWidth = 20
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
-
-    Else
-
-        Open diskPaths$(2) + leaderFile$ + ".LDS" For Input As #1
-
-        Input #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totalStats, JJ
-
-        For I = 1 To 30:
-
-            For I1 = 0 To 29:
-                Input #1, schedStatVal!(I, I1), schedStatTeam$(I, I1)
-            Next
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next
-
-        For I = 1 To 300:
-
-            Input #1, expLdrRBName$(I), expLdrRBTeam$(I), expLdrLRush$(I), expLdrLRec$(I), expLdrRBGames!(I)
-
-            For I1 = 0 To 7:
-                Input #1, expLdrRBVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 180:
-
-            Input #1, expLdrWRName$(I), expLdrWRTeam$(I), expLdrLRec$(I), expLdrWRGames!(I)
-
-            For I1 = 0 To 3:
-                Input #1, expLdrWRVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 120:
-
-            Input #1, expLdrQBName$(I), expLdrQBTeam$(I), expLdrLPass$(I), expLdrQBRat!(I, 0), expLdrQBGames!(I)
-
-            For I1 = 0 To 6:
-                Input #1, expLdrQBVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 90:
-
-            Input #1, expLdrKRName$(I), expLdrKRTeam$(I), expLdrLKR$(I)
-
-            For I1 = 0 To 3: Input #1, expLdrKRVal!(I, I1): Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 90:
-
-            Input #1, expLdrPRName$(I), expLdrPRTeam$(I), expLdrLPR$(I)
-
-            For I1 = 0 To 3:
-                Input #1, expLdrPRVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 30:
-
-            Input #1, expLdrPuntName$(I), expLdrPuntTeam$(I)
-
-            For I1 = 0 To 1:
-                Input #1, expLdrPuntVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 60:
-
-            Input #1, expLdrKickName$(I), expLdrKickTeam$(I)
-
-            For I1 = 0 To 4:
-                Input #1, expLdrKickVal!(I, I1)
-            Next I1
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 300:
-
-            Input #1, expLdrIntName$(I), expLdrIntTeam$(I), expLdrIntVal!(I)
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 450:
-
-            Input #1, expLdrSackName$(I), expLdrSackTeam$(I), expLdrSackVal!(I)
-
-            Color 14
-            Locate 16, 38
-            TMR = TMR - 1: Print Using "####"; TMR
-
-        Next I
-
-        For I = 1 To 30:
-            Input #1, gameCount(I)
-        Next
-
-        Close #1
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'        SAVELEADER Subroutine
-'----------------------------------------
-'This subroutine compiles the leader files
-'(.LDS) for the Expanded standings modules
-Sub SAVELEADER (leaderFile$, totalStats)
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
-    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
-    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
-    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), schedStatTeam$()
-    Shared expLdrLPR$(), expLdrQBName$()
-
-    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
-    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
-    Shared schedStatVal!()
-
-    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
-    Shared gameCount()
-
-    TMR = 1660
-
-    Print "SAVING LEADER FILES . . . . PLEASE WAIT"
-
-    Open diskPaths$(2) + leaderFile$ + ".LDS" For Output As #1
-
-    Write #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totalStats, JJ
-
-    For I = 1 To 30:
-
-        For I1 = 0 To 29:
-            Write #1, schedStatVal!(I, I1), schedStatTeam$(I, I1)
-        Next
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next
-
-    For I = 1 To 300:
-
-        Write #1, expLdrRBName$(I), expLdrRBTeam$(I), expLdrLRush$(I), expLdrLRec$(I), expLdrRBGames!(I)
-
-        For I1 = 0 To 7:
-            Write #1, expLdrRBVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 180:
-
-        Write #1, expLdrWRName$(I), expLdrWRTeam$(I), expLdrLRec$(I), expLdrWRGames!(I)
-
-        For I1 = 0 To 3:
-            Write #1, expLdrWRVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 120:
-
-        Write #1, expLdrQBName$(I), expLdrQBTeam$(I), expLdrLPass$(I), expLdrQBRat!(I, 0), expLdrQBGames!(I)
-
-        For I1 = 0 To 6:
-            Write #1, expLdrQBVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 90:
-
-        Write #1, expLdrKRName$(I), expLdrKRTeam$(I), expLdrLKR$(I)
-
-        For I1 = 0 To 3: Write #1, expLdrKRVal!(I, I1): Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 90:
-
-        Write #1, expLdrPRName$(I), expLdrPRTeam$(I), expLdrLPR$(I)
-
-        For I1 = 0 To 3:
-            Write #1, expLdrPRVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 30:
-
-        Write #1, expLdrPuntName$(I), expLdrPuntTeam$(I)
-
-        For I1 = 0 To 1:
-            Write #1, expLdrPuntVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 60:
-
-        Write #1, expLdrKickName$(I), expLdrKickTeam$(I)
-
-        For I1 = 0 To 4:
-            Write #1, expLdrKickVal!(I, I1)
-        Next I1
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 300:
-
-        Write #1, expLdrIntName$(I), expLdrIntTeam$(I), expLdrIntVal!(I)
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 450:
-
-        Write #1, expLdrSackName$(I), expLdrSackTeam$(I), expLdrSackVal!(I)
-
-        Color 14
-        Locate 16, 38
-        TMR = TMR - 1: Print Using "####"; TMR
-
-    Next I
-
-    For I = 1 To 30:
-        Write #1, gameCount(I)
-    Next
-
-    Close #1
-
-End Sub
-
-
-'----------------------------------------
-'    ExpandedLeaders_Menu Subroutine
-'----------------------------------------
-'This subroutine presents a categorized
-'menu for viewing Expanded leaders. It then
-'relies on various subroutines for the end
-'user display of those statistics.
-Sub ExpandedLeaders_Menu (totalStats)
-
-    'Dim X0, X1
-    Dim PPP, sortType
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
-    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
-    Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
-    Shared expCategories$(), schedStatTeam$()
-    Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), expLdrLPR$()
-    Shared expLdrQBName$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$(), memberName$()
-
-    Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
-    Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
-    Shared schedStatVal!(), expLdrVal!()
-
-    Shared gameCount()
-
-    Do
-
-        Color 0, 0
-        Cls
-
-        Call ShadowBox(1, 15, 40, 15, 4, 15)
-
-        RR = 0
-        newCategory = 0
-
-        Locate 2, 24
-        Print "LEADER SELECTION MENU"
-        Print
-        Locate , 20: Color 14: Print "(A) ";
-        Color 1: Print "VIEW RUSHING LEADERS"
-        Locate , 20: Color 14: Print "(B) ";
-        Color 1: Print "VIEW RECEIVING LEADERS"
-        Locate , 20: Color 14: Print "(C) ";
-        Color 1: Print "VIEW QUARTERBACK LEADERS"
-        Locate , 20: Color 14: Print "(D) ";
-        Color 1: Print "VIEW KICKOFF RETURN LEADERS"
-        Locate , 20: Color 14: Print "(E) ";
-        Color 1: Print "VIEW PUNT RETURN LEADERS"
-        Locate , 20: Color 14: Print "(F) ";
-        Color 1: Print "VIEW PUNTING LEADERS"
-        Locate , 20: Color 14: Print "(G) ";
-        Color 1: Print "VIEW PLACE KICKING LEADERS"
-        Locate , 20: Color 14: Print "(H) ";
-        Color 1: Print "VIEW INTERCEPTION, SACK LEADERS"
-        Locate , 20: Color 14: Print "(I) ";
-        Color 1: Print "VIEW ALL-PURPOSE LEADERS"
-        Locate , 20: Color 14: Print "(J) ";
-        Color 1: Print "VIEW SCORING LEADERS"
-        Locate , 20: Color 14: Print "(K) ";
-        Color 1: Print "VIEW TEAM TOTALS"
-        Locate , 20: Color 14: Print "(L) ";
-        Color 1: Print "RETURN TO MAIN MENU"
-
-        key$ = GetKeyPress$
-
-        If key$ <> Chr$(27) Then
-
-            Select Case UCase$(key$)
-
-                Case "A":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 8, 0, 4)
-
-                    Do
-                        For I = 0 To 4:
-                            Color 14
-                            Locate I + 3, 24
-                            Print Using "##"; I;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 5
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "B":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 8, 0, 2)
-
-                    Do
-                        For I = 5 To 9:
-                            Color 14
-                            Locate I - 2, 24
-                            Print Using "##"; I - 5;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 5
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "C":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 12, 0, 13)
-
-                    Do
-                        For I = 10 To 18:
-                            Color 14
-                            Locate I - 7, 24
-                            Print Using "##"; I - 10;: Print " ";
-                            Color 15: Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 8
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "D":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 8, 0, 5)
-
-                    Do
-                        For I = 19 To 23:
-                            Color 14
-                            Locate I - 16, 24
-                            Print Using "##"; I - 19;: Print " ";
-                            Color 15
-                            Print expCategories$(I):
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 4
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "E":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 8, 0, 5)
-
-                    Do
-                        For I = 24 To 28:
-                            Color 14
-                            Locate I - 21, 24
-                            Print Using "##"; I - 24;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 4
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "F":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 6, 0, 5)
-
-                    Do
-                        For I = 29 To 31:
-                            Color 14
-                            Locate I - 26, 24
-                            Print Using "##"; I - 29;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 2
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "G":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 10, 0, 10)
-
-                    Do
-                        For I = 32 To 38:
-                            Color 14
-                            Locate I - 29, 24
-                            Print Using "##"; I - 32;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 6
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "H":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 6, 0, 12)
-
-                    Do
-                        For I = 39 To 40:
-                            Color 14
-                            Locate I - 36, 24
-                            Print Using "##"; I - 39;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 1
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "I":
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "J":
-                    ZZ = 1
-
-                    Call MenuBox(2, 22, 36, 6, 0, 13)
-
-                    Do
-                        For I = 41 To 43:
-                            Color 14
-                            Locate I - 38, 24
-                            Print Using "##"; I - 41;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 2
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-                Case "K":
-                    ZZ = 1
-
-                    Call MenuBox(2, 2, 66, 17, 0, 14)
-                    Locate 10, 15
-
-                    Do
-                        For I = 44 To 58:
-                            Color 14
-                            Locate I - 41, 4
-                            Print Using "##"; I - 44;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        For I = 59 To 72:
-                            Color 14
-                            Locate I - 56, 40
-                            Print Using "##"; I - 44;: Print " ";
-                            Color 15
-                            Print expCategories$(I)
-                        Next
-
-                        Print
-                        Print
-                        Locate , 25
-                        Input "SELECT NUMBER TO VIEW"; categoryId
-
-                    Loop Until categoryId <= 28
-
-                    Call SortOptions(printOrView, sortType, newCategory)
-
-            End Select
-
-            If UCase$(key$) <> "I" And UCase$(key$) <> "L" And UCase$(key$) <> "K" Then
-                stpl = 0
-                PPP = 0
-            End If
-
-            If UCase$(key$) <> "L" And newCategory = 0 Then
-
-                Select Case UCase$(key$)
-
-                    Case "A":
-
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 0
-                            Case 1: X0 = 1: XX = 1
-                            Case 2: X0 = 0: X1 = 1: XX = 2
-                            Case 3: X0 = 2: XX = 3
-                            Case 4: X0 = 6: XX = 4
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0, 1, 3
-
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-
-                                TVN = 1
-
-                            Case 2
-
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, X0) > gameCount(1) * 10 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X0)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-
-                                TVN = 2
-
-                            Case 4
-
-                                Cls
-                                PPP = 0
-
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
-                                        expLdrTD$(PPP) = expLdrLRush$(I)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-
-                                TVN = 3
-
-                        End Select
-
-                    Case "B":
-
-                        Select Case categoryId
-                            Case 0: X0 = 3: X1 = 0: XX = 5
-                            Case 1: X0 = 4: X1 = 1: XX = 6
-                            Case 2: X0 = 3: X1 = 4: X2 = 0: X3 = 1: XX = 7
-                            Case 3: X0 = 5: X1 = 2: XX = 8
-                            Case 4: X0 = 3: X1 = 7: XX = 9
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0, 1, 3:
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X0)
-                                    End If
-                                Next I
-
-                                For I = 1 To JB
-                                    If expLdrWRVal!(I, X1) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
-                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrWRVal!(I, X1)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 2:
-                                Cls
-                                PPP = 0
-
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, X0) >= gameCount(1) * 4 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1) / expLdrRBVal!(I, X0)
-                                    End If
-                                Next I
-
-                                For I = 1 To JB
-                                    If expLdrWRVal!(I, X2) >= gameCount(1) * 4 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
-                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrWRVal!(I, X3) / expLdrWRVal!(I, X2)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 2
-
-                            Case 3:
-                                Cls
-                                PPP = 0
-
-                                For I = 1 To JB
-                                    If expLdrWRVal!(I, 0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrWRName$(I)
-                                        expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrWRVal!(I, X0)
-                                        expLdrTD$(PPP) = expLdrLRec$(I)
-                                    End If
-                                Next I
-
-                                For I = 1 To JA
-                                    If expLdrRBVal!(I, 4) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                        expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrRBVal!(I, X1)
-                                        expLdrTD$(PPP) = expLdrLRec$(I)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 3
-
-                        End Select
-
-                    Case "C":
-
-                        Select Case categoryId
-
-                            Case 0: X0 = 0: XX = 10
-                            Case 1: X0 = 1: XX = 11
-                            Case 2: X0 = 2: XX = 12
-                            Case 3: X0 = 3: XX = 13
-                            Case 4: X0 = 4: XX = 14
-                            Case 5: X0 = 0: X1 = 1: XX = 15
-                            Case 6: X0 = 1: X1 = 3: X2 = 0: XX = 16
-                            Case 7: X0 = 0: XX = 17
-                            Case 8: X0 = 5: XX = 18
-
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0 To 4:
-
-                                For I = 1 To JC
-                                    If expLdrQBVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBVal!(I, X0)
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 5:
-
-                                For I = 1 To JC
-
-                                    If expLdrQBVal!(I, X0) >= gameCount(1) * 15 Then
-
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-
-                                        If expLdrQBVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = 0
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = (expLdrQBVal!(I, X1) / expLdrQBVal!(I, X0)) * 100
-                                        End If
-
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 2
-
-                            Case 6:
-
-                                For I = 1 To JC
-                                    If expLdrQBVal!(I, X2) >= gameCount(1) * 15 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-
-                                        If expLdrQBVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = expLdrQBVal!(I, X1) / expLdrQBVal!(I, X0)
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                            expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                            expLdrVal!(PPP) = 0
-                                        End If
-                                    End If
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 4
-
-                            Case 7:
-
-                                For I = 1 To JC
-
-                                    If expLdrQBVal!(I, X0) >= gameCount(1) * 15 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBRat!(I, X0)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 4
-
-                            Case 8:
-
-                                Cls
-                                PPP = 0
-
-                                For I = 1 To JC
-
-                                    If expLdrQBVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrQBName$(I)
-                                        expLdrTeam$(PPP) = expLdrQBTeam$(I)
-                                        expLdrVal!(PPP) = expLdrQBVal!(I, X0)
-                                        expLdrTD$(PPP) = expLdrLPass$(I)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 3
-
-                        End Select
-
-                    Case "D":
-
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 19
-                            Case 1: X0 = 1: XX = 20
-                            Case 2: X0 = 0: X1 = 1: XX = 21
-                            Case 3: X0 = 2: XX = 22
-                            Case 4: X0 = 3: XX = 23
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0, 1, 3:
-
-                                For I = 1 To JD
-
-                                    If expLdrKRVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrKRName$(I)
-                                        expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKRVal!(I, X0)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 2:
-
-                                For I = 1 To JD
-
-                                    If expLdrKRVal!(I, X0) <> 0 Then
-
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If expLdrKRVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrKRName$(I)
-                                            expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                            expLdrVal!(PPP) = expLdrKRVal!(I, X1) / expLdrKRVal!(I, X0)
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrKRName$(I)
-                                            expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                        End If
-
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 2
-
-                            Case 4:
-
-                                For I = 1 To JD
-
-                                    If expLdrKRVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrKRName$(I)
-                                        expLdrTeam$(PPP) = expLdrKRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKRVal!(I, X0): expLdrTD$(PPP) = expLdrLKR$(I)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 3
-
-                        End Select
-
-                    Case "E":
-
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 24
-                            Case 1: X0 = 1: XX = 25
-                            Case 2: X0 = 0: X1 = 1: XX = 26
-                            Case 3: X0 = 2: XX = 27
-                            Case 4: X0 = 3: XX = 28
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0, 1, 3:
-
-                                For I = 1 To JE
-
-                                    If expLdrPRVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrPRName$(I)
-                                        expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPRVal!(I, X0)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 2:
-
-                                For I = 1 To JE
-
-                                    If expLdrPRVal!(I, X0) <> 0 Then
-
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If expLdrPRVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrPRName$(I)
-                                            expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                            expLdrVal!(PPP) = expLdrPRVal!(I, X1) / expLdrPRVal!(I, X0)
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrPRName$(I)
-                                            expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                        End If
-
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 2
-
-                            Case 4:
-
-                                For I = 1 To JE
-
-                                    If expLdrPRVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrPRName$(I)
-                                        expLdrTeam$(PPP) = expLdrPRTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPRVal!(I, X0)
-                                        expLdrTD$(PPP) = expLdrLPR$(I)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-
-                        End Select
-
-                    Case "F":
-
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 29
-                            Case 1: X0 = 1: XX = 30
-                            Case 2: X0 = 0: X1 = 1: XX = 31
-                        End Select
-
-                        Select Case categoryId
-
-                            Case 0, 1:
-
-                                For I = 1 To JF
-
-                                    If expLdrPuntVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrPuntName$(I)
-                                        expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                        expLdrVal!(PPP) = expLdrPuntVal!(I, X0)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 2:
-
-                                For I = 1 To JF
-
-                                    If expLdrPuntVal!(I, X0) <> 0 Then
-
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        If expLdrPuntVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrPuntName$(I)
-                                            expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                            expLdrVal!(PPP) = expLdrPuntVal!(I, X1) / expLdrPuntVal!(I, X0)
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrPuntName$(I)
-                                            expLdrTeam$(PPP) = expLdrPuntTeam$(I)
-                                        End If
-
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 2
-
-                        End Select
-
-                    Case "G":
-
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 32
-                            Case 1: X0 = 1: XX = 33
-                            Case 2: X0 = 0: X1 = 1: XX = 34
-                            Case 3: X0 = 2: XX = 35
-                            Case 4: X0 = 3: XX = 36
-                            Case 5: X0 = 2: X1 = 3: XX = 37
-                            Case 6: X0 = 4: XX = 38
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        Select Case categoryId
-
-                            Case 0, 1, 3, 4, 6
-
-                                For I = 1 To JG
-
-                                    If expLdrKickVal!(I, X0) <> 0 Then
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                        expLdrPlyrName$(PPP) = expLdrKickName$(I)
-                                        expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                        expLdrVal!(PPP) = expLdrKickVal!(I, X0)
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 1
-
-                            Case 2, 5
-
-                                For I = 1 To JG
-
-                                    If expLdrKickVal!(I, X0) <> 0 Then
-
-                                        PPP = PPP + 1
-                                        Locate 1, 5: Print "CHANGING PLAYER "; PPP
-
-                                        If expLdrKickVal!(I, X1) <> 0 Then
-                                            expLdrPlyrName$(PPP) = expLdrKickName$(I)
-                                            expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                            expLdrVal!(PPP) = (expLdrKickVal!(I, X0) / expLdrKickVal!(I, X1)) * 100
-                                        Else
-                                            expLdrPlyrName$(PPP) = expLdrKickName$(I)
-                                            expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                        End If
-
-                                    End If
-
-                                Next I
-
-                                Call SortPlayer(PPP, stpl, sortType)
-                                TVN = 4
-
-                        End Select
-
-                    Case "H":
-
-                        If categoryId = 0 Then
-                            X0 = 0: XX = 39
-                        End If
-                        If categoryId = 1 Then
-                            X0 = 0: XX = 40
-                        End If
-
-                        Cls
-                        PPP = 0
-
-                        If categoryId = 0 Then
-
-                            For I = 1 To JH
-                                If expLdrIntVal!(I) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    expLdrPlyrName$(PPP) = expLdrIntName$(I)
-                                    expLdrTeam$(PPP) = expLdrIntTeam$(I)
-                                    expLdrVal!(PPP) = expLdrIntVal!(I)
-                                End If
-                            Next I
-
-                        End If
-
-                        If categoryId = 1 Then
-                            For I = 1 To JI
-                                If expLdrSackVal!(I) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    expLdrPlyrName$(PPP) = expLdrSackName$(I)
-                                    expLdrTeam$(PPP) = expLdrSackTeam$(I)
-                                    expLdrVal!(PPP) = expLdrSackVal!(I)
-                                End If
-                            Next I
-
-                        End If
-
-                        Call SortPlayer(PPP, stpl, sortType)
-
-                        TVN = 1
-
-                    Case "I":
-                        Cls
-
-                        PPP = 0
-                        X0 = 1
-                        X1 = 4
-                        XX = 73
-
-                        For I = 1 To JA
-                            If expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1) <> 0 Then
-                                PPP = PPP + 1
-                                Locate 1, 5
-                                Print "CHANGING PLAYER "; PPP
-                                expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                expLdrVal!(PPP) = expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1)
-                            End If
-                        Next I
-
-                        For I = 1 To JB
-                            If expLdrWRVal!(I, X0) <> 0 Then
-                                PPP = PPP + 1
-                                Locate 1, 5
-                                Print "CHANGING PLAYER "; PPP
-                                expLdrPlyrName$(PPP) = expLdrWRName$(I)
-                                expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                expLdrVal!(PPP) = expLdrWRVal!(I, X0)
-                            End If
-                        Next I
-
-                        Call SortPlayer(PPP, stpl, sortType)
-
-                        TVN = 1
-
-                    Case "J":
-                        Select Case categoryId
-                            Case 0
-                                X0 = 2
-                                X1 = 5
-                                XX = 41
-                                KC = 1
-
-                            Case 1
-                                XF = 0
-                                XF1 = 2
-                                XX = 42
-                                KC = 2
-
-                            Case 2
-                                X0 = 2
-                                X1 = 5
-                                XF = 0
-                                XF1 = 2
-                                XX = 43
-                                KC = 3
-
-                        End Select
-
-                        Cls
-                        PPP = 0
-
-                        If KC = 1 Or KC = 3 Then
-                            For I = 1 To JA
-                                If expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    expLdrPlyrName$(PPP) = expLdrRBName$(I)
-                                    expLdrTeam$(PPP) = expLdrRBTeam$(I)
-                                    expLdrVal!(PPP) = (expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1)) * 6
-                                End If
-                            Next I
-
-                            For I = 1 To JB
-                                If expLdrWRVal!(I, X0) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    expLdrPlyrName$(PPP) = expLdrWRName$(I)
-                                    expLdrTeam$(PPP) = expLdrWRTeam$(I)
-                                    expLdrVal!(PPP) = expLdrWRVal!(I, X0) * 6
-                                End If
-                            Next I
-
-                        End If
-
-                        If KC <> 1 Then
-                            For I = 1 To JG
-                                If expLdrKickVal!(I, XF) + expLdrKickVal!(I, XF1) <> 0 Then
-                                    PPP = PPP + 1
-                                    Locate 1, 5: Print "CHANGING PLAYER "; PPP
-                                    expLdrPlyrName$(PPP) = expLdrKickName$(I)
-                                    expLdrTeam$(PPP) = expLdrKickTeam$(I)
-                                    expLdrVal!(PPP) = (expLdrKickVal!(I, XF) * 3) + expLdrKickVal!(I, XF1)
-                                End If
-                            Next I
-                        End If
-
-                        Call SortPlayer(PPP, stpl, sortType)
-
-                        TVN = 1
-
-                    Case "K":
-                        Select Case categoryId
-                            Case 0: X0 = 0: XX = 44
-                            Case 1: X0 = 1: X1 = 13: XX = 45
-                            Case 2: X0 = 2: X1 = 14: XX = 46
-                            Case 3: X0 = 1: X1 = 13: X2 = 2: X3 = 14: XX = 47
-                            Case 4: X0 = 6: XX = 48
-                            Case 5: X0 = 2: X1 = 6: XX = 49
-                            Case 6: X0 = 4: X1 = 3: XX = 50
-                            Case 7: X0 = 9: XX = 51
-                            Case 8: X0 = 10: XX = 52
-                            Case 9: X0 = 5: XX = 53
-                            Case 10: X0 = 5: X1 = 10: X2 = 20: X3 = 25: XX = 54
-                            Case 11: X0 = 11: XX = 55
-                            Case 12: X0 = 12: XX = 56
-                            Case 13: X0 = 13: XX = 57
-                            Case 14: X0 = 14: XX = 58
-                            Case 15: X0 = 15: XX = 59
-                            Case 16: X0 = 16: X1 = 28: XX = 60
-                            Case 17: X0 = 17: X1 = 29: XX = 61
-                            Case 18: X0 = 16: X1 = 28: X2 = 17: X3 = 29: XX = 62
-                            Case 19: X0 = 21: XX = 63
-                            Case 20: X0 = 17: X1 = 21: XX = 64
-                            Case 21: X0 = 19: X1 = 18: XX = 65
-                            Case 22: X0 = 24: XX = 66
-                            Case 23: X0 = 25: XX = 67
-                            Case 24: X0 = 20: XX = 68
-                            Case 25: X0 = 26: XX = 69
-                            Case 26: X0 = 27: XX = 70
-                            Case 27: X0 = 28: XX = 71
-                            Case 28: X0 = 29: XX = 72
-                        End Select
-
-                        Select Case categoryId
-                            Case 0, 4, 7 To 9, 11 To 15, 19, 22 To 28
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = schedStatVal!(I, X0)
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 1
-
-                            Case 1, 16
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = schedStatVal!(I, X0) - schedStatVal!(I, X1)
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 1
-
-                            Case 2, 5, 17, 20
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = schedStatVal!(I, X0) + schedStatVal!(I, X1)
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 1
-
-                            Case 3, 18
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = (schedStatVal!(I, X2) + schedStatVal!(I, X3)) / (schedStatVal!(I, X0) - schedStatVal!(I, X1))
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 2
-
-                            Case 6, 21
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = (schedStatVal!(I, X0) / schedStatVal!(I, X1)) * 100
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 2
-
-                            Case 10
-                                For I = 1 To totalStats
-                                    expLdrTeam$(I) = schedStatTeam$(I, X0)
-                                    expLdrVal!(I) = schedStatVal!(I, X2) + schedStatVal!(I, X3) - schedStatVal!(I, X0) - schedStatVal!(I, X1)
-                                Next I
-
-                                Call SortTeam(totalStats, stpl, sortType)
-                                TVN = 1
-
-                        End Select
-
-                End Select
-
-                If UCase$(key$) = "K" Then
-                    maxRecords = totalStats
-                Else
-                    maxRecords = PPP
-                End If
-
-                If printOrView = 1 Then
-                    Call DisplayLeaders(TVN, maxRecords, XX)
-                Else
-                    'printOrView = 2
-                    Call GetListLength(printOrView, LG, maxRecords)
-
-                    userKey$ = GetPrintOptions$
-
-                    If userKey$ <> Chr$(27) Then
-
-                        Select Case userKey$
-
-                            Case "F"
-                                userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
-                                If userFile$ <> "" Then
-                                    Call Leaders_Report(0, userFile$, XX, LG, TVN)
-                                End If
-
-                            Case "P"
-                                Call Leaders_Report(1, "REPORT", XX, LG, TVN)
-
-                        End Select
-
-                    End If
-
-                End If
-
-            End If
-
-        End If
-
-    Loop Until UCase$(key$) = "L" Or key$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
-'         SortOptions Subroutine
-'----------------------------------------
-'This subroutine prompts the users for the
-'different sort options available in the
-'"Expanded" stats menus.
-
-'statType
-'   0 = College
-'   1 = Pro
-
-'sortType
-'   1: Sort HIGH to LOW
-'   2: Sort LOW to HIGH
-Sub SortOptions (printOrView, sortType, reselect)
-
-    Do
-
-        Call MenuBox(8, 8, 57, 6, 15, 1)
-        Locate 10, 15
-
-        Color 3
-
-        Locate , 30: Print "SELECT OPTION:"
-        Locate , 30: Color 15: Print "H";
-        Color 7: Print "IGHEST TO LOWEST"
-        Locate , 30: Color 15: Print "L";
-        Color 7: Print "OWEST TO HIGHEST"
-        Locate , 30: Color 15: Print "R";
-        Color 7: Print "E-SELECT CATEGORY"
-
-        Do
-            I$ = GetKeyPress$
-        Loop Until UCase$(I$) = "H" Or UCase$(I$) = "L" Or UCase$(I$) = "R"
-
-        Select Case UCase$(I$)
-
-            Case "H":
-                Call PrintViewReselect(I2$)
-
-                Select Case UCase$(I2$)
-                    Case "P":
-                        printOrView = 2
-                    Case "V":
-                        printOrView = 1
-                    Case "R":
-                        reselect = 1
-                End Select
-
-                sortType = 1
-
-            Case "L":
-                Call PrintViewReselect(I2$)
-
-                Select Case UCase$(I2$)
-                    Case "P":
-                        printOrView = 2
-                    Case "V":
-                        printOrView = 1
-                    Case "R":
-                        reselect = 1
-                End Select
-
-                sortType = 2
-
-            Case "R", Chr$(27):
-                reselect = 1
-
-        End Select
-
-    Loop Until UCase$(I2$) <> "R" Or UCase$(I$) = "R"
-
-End Sub
-
-
-'----------------------------------------
-'      PrintViewReselect Subroutine
-'----------------------------------------
-'This subroutine presents the end user
-'with a choice to Print or View the exist-
-'ing category, or select a new category
-Sub PrintViewReselect (userOpt$)
-
-    Call MenuBox(9, 15, 40, 4, 15, 0)
-    Locate 10, 10
-
-    Color 12
-    Locate , 30: Print "SELECT OPTION:"
-    Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
-    Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
-    Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
-
-    Do
-        userOpt$ = GetKeyPress$
-    Loop Until UCase$(userOpt$) = "P" Or UCase$(userOpt$) = "V" Or UCase$(userOpt$) = "R"
-
-End Sub
-
-
-'----------------------------------------
-'         SortPlayer Subroutine
-'----------------------------------------
-'This subroutine sorts the players involved
-'in the chosen stat category
-'sortType = 1: Low to High
-'sortType = 2: High to Low
-Sub SortPlayer (PPP, stpl, sortType)
-
-    Shared expLdrVal!()
-    Shared expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
-
-    For I = 2 To PPP
-
-        stpl = stpl + 1
-        Locate 5, 5: Print "sorting player "; stpl
-
-        For J = PPP To I Step -1
-
-            If sortType = 1 Then
-                If expLdrVal!(J - 1) < expLdrVal!(J) Then
-                    Swap expLdrVal!(J - 1), expLdrVal!(J)
-                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
-                    Swap expLdrPlyrName$(J - 1), expLdrPlyrName$(J)
-                    Swap expLdrTD$(J - 1), expLdrTD$(J)
-                End If
-            End If
-
-            If sortType = 2 Then
-                If expLdrVal!(J - 1) > expLdrVal!(J) Then
-                    Swap expLdrVal!(J - 1), expLdrVal!(J)
-                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
-                    Swap expLdrPlyrName$(J - 1), expLdrPlyrName$(J)
-                    Swap expLdrTD$(J - 1), expLdrTD$(J)
-                End If
-            End If
-
-        Next J
-
-    Next I
-
-End Sub
-
-
-'----------------------------------------
-'           SortTeam Subroutine
-'----------------------------------------
-'This subroutine sorts the teams involved
-'in the chosen stat category
-'sortType = 1: Low to High
-'sortType = 2: High to Low
-Sub SortTeam (sortMax, stpl, sortType)
-
-    Shared expLdrVal!()
-    Shared expLdrTeam$()
-
-    For I = 2 To sortMax
-
-        stpl = stpl + 1
-
-        Locate 5, 5: Print "sorting team "; stpl
-
-        For J = sortMax To I Step -1
-
-            If sortType = 1 Then
-                If expLdrVal!(J - 1) < expLdrVal!(J) Then
-                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
-                    Swap expLdrVal!(J - 1), expLdrVal!(J)
-                End If
-            End If
-
-            If sortType = 2 Then
-                If expLdrVal!(J - 1) > expLdrVal!(J) Then
-                    Swap expLdrTeam$(J - 1), expLdrTeam$(J)
-                    Swap expLdrVal!(J - 1), expLdrVal!(J)
-                End If
-            End If
-
-        Next J
-
-    Next I
-
-End Sub
-
-
-'----------------------------------------
-'       DisplayLeaders Subroutine
-'----------------------------------------
-'This subroutine displays individual player
-'stat categories to the user display
-Sub DisplayLeaders (TVN, maxRecords, categoryId)
-
-    Shared expLdrVal!()
-    Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
-
-    userExit% = 0
-
-    Do
-
-        Cls
-
-        Call ShadowBox(1, 5, 67, 18, 15, 1)
-        Color 14
-
-        R = Len(expCategories$(categoryId))
-
-        Locate 2, 11
-        Print "PLAYER             TEAM";
-
-        Locate , 60 - (Int(R) / 2): Print expCategories$(categoryId)
-
-        I$ = ""
-
-        For W = 1 To maxRecords
-
-            RR = RR + 1
-
-            If W <> 1 And (W Mod 16 = 1) Then
-
-                RR = 1
-
-                Color 0, 15
-                Locate 22, 17
-                Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-                Color 1, 0: Print Chr$(220)
-                Locate , 18: Print String$(50, 223)
-
-                I$ = GetKeyPress$
-
-                If I$ = Chr$(27) Then
-                    userExit% = 1
-                Else
-                    For I = 3 To 18:
-                        Color 1, 1
-                        Locate I, 7
-                        Print Space$(66)
-                    Next
-                End If
-
-            End If
-
-            If userExit% <> 1 Then
-
-                Color 15
-                Locate RR + 2, 7
-                Print Using "###"; W;
-                Print " ";
-                Color 3: Print expLdrPlyrName$(W);
-                Print Tab(30); expLdrTeam$(W);:
-
-                Select Case TVN
-
-                    Case 1:
-                        Print Tab(58); Using "#####"; expLdrVal!(W)
-
-                    Case 2:
-                        Print Tab(58); Using "###.##"; expLdrVal!(W)
-
-                    Case 3:
-                        Print Tab(58); Using "###.#"; expLdrVal!(W);
-                        Print Tab(63); expLdrTD$(W)
-
-                    Case 4:
-                        Print Tab(58); Using "###.#"; expLdrVal!(W)
-
-                End Select
-
-            Else
-                Exit For
-            End If
-
-        Next W
-
-        If userExit% <> 1 Then
-
-            Color 0, 15
-            Locate 22, 17
-            Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-            Color 1, 0: Print Chr$(220)
-            Locate , 18: Print String$(50, 223)
-
-            I$ = GetKeyPress$
-
-            If I$ <> Chr$(27) Then
-
-                Color 0, 0
-                Locate 22: Print Space$(69)
-                Locate 23: Print Space$(69)
-
-                Do
-                    Locate 22, 32
-                    Color 0, 15
-                    Print "VIEW AGAIN? (Y/N)";
-
-                    Color 1, 0
-                    Print Chr$(220)
-                    Locate , 33
-                    Print String$(16, 223)
-
-                    I$ = GetKeyPress$
-
-                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                If UCase$(I$) = "Y" Then
-                    RR = 0
-                End If
-
-            End If
-
-        End If
-
-    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
-'       Leaders_Report Subroutine
-'----------------------------------------
-'This subroutine displays individual player
-'stat categories to the default printer
-Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
-
-    Shared expLdrVal!()
-    Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
-
-    Color 15, 0
-    Cls
-
-    Open destFile$ For Output As #1
-
-    Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
-
-    For W = 1 To maxRecords
-
-        If (W <> 1 And W Mod 50 = 1) Then
-            Print #1, Chr$(12)
-            Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
-        End If
-
-        Print #1, Using "###"; W;
-        Print #1, " ";
-        Print #1, expLdrPlyrName$(W);
-        Print #1, Tab(25); expLdrTeam$(W);
-
-        Select Case TVN
-
-            Case 1
-                Print #1, Tab(58); Using "#####"; expLdrVal!(W)
-
-            Case 2
-                Print #1, Tab(58); Using "###.##"; expLdrVal!(W)
-
-            Case 3
-                Print #1, Tab(58); Using "###.#"; expLdrVal!(W);
-                Print #1, Tab(63); expLdrTD$(W)
-
-            Case 4
-                Print #1, Tab(58); Using "###.#"; expLdrVal!(W)
-
-        End Select
-
-    Next W
-
-    If printDest = 1 Then
-
-        Open destFile$ For Input As #2
-
-        Do While Not EOF(2)
-            Line Input #2, X$
-            LPrint X$
-        Loop
-
-        Close #2
-
-        LPrint Chr$(12)
-
-        Kill destFile$
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'       TeamStatsToReport Subroutine
-'----------------------------------------
-'This subroutine displays the chosen team
-'stat category to the user display
-Sub TeamStatsToReport (categoryId)
-
-    Shared expCategories$(), expLdrTeam$()
-    Shared expLdrVal!()
-
-    Do
-
-        Cls
-
-        Call ShadowBox(1, 15, 67, 18, 15, 4)
-        Color 14
-
-        R = Len(expCategories$(categoryId))
-        Locate 2, 40 - (Int(R) / 2): Print expCategories$(categoryId)
-
-        Locate 3, 11
-        Print "TEAM                               TEAM "
-
-        For W = 1 To 15
-            If TVN = 1 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W + 3, 7
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(28); Using "#####"; expLdrVal!(W)
-                End If
-            End If
-
-            If TVN = 2 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W + 3, 7
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(29); Using "##.#"; expLdrVal!(W)
-                End If
-            End If
-        Next W
-
-        For W = 16 To 30
-            If TVN = 1 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W - 12, 42
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(63); Using "#####"; expLdrVal!(W)
-                End If
-            End If
-
-            If TVN = 2 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W - 12, 42
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(64); Using "##.#"; expLdrVal!(W)
-                End If
-            End If
-
-        Next W
-
-        Locate 22, 17
-        Color 0, 15
-        Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-        Color 4, 0: Print Chr$(220)
-        Locate , 18: Print String$(50, 223)
-
-        I$ = GetKeyPress$
-
-        If I$ <> Chr$(27) Then
-
-            Color 0, 0
-            Locate 22: Print Space$(68)
-            Locate 23: Print Space$(68)
-
-            Do
-                Locate 22, 32
-                Color 0, 15
-                Print "VIEW AGAIN? (Y/N)";
-
-                Color 4, 0
-                Print Chr$(220)
-                Locate , 33
-                Print String$(16, 223)
-
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-            If UCase$(I$) = "Y" Then
-                RR = 0
-            End If
-
-        End If
-
-    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
-'        GetListLength Subroutine
-'----------------------------------------
-'This subroutine prompts the user for the
-'maximum number of items to be displayed
-'or returned by the standings view. This
-'helps the user have a custom view of the
-'categories without needing to page through
-'every result.
-Sub GetListLength (printOrView, listLength, maxItems)
-
-    If printOrView <> 1 Then
-        'If printing...
-
-        Do
-            Color , 0
-            Cls
-
-            Print
-            Print
-            Print
-            Print
-            Print
-
-            Call MenuBox(10, 20, 30, 2, 4, 15)
-            Locate 11
-
-            Color 1
-            Locate , 25: Print "MAXIMUM = "; maxItems
-            Locate , 25: Input "ENTER LENGTH OF LIST"; listLength
-
-        Loop Until listLength <= maxItems
-
-    End If
-
-End Sub
-
-
-
+'$Include: 'NEWLDR.BAS'
 '$Include: 'REC.BAS'
-'Include: 'SCHEDULE.BAS'
-
-
-'----------------------------------------
-'          SCHEDULE Subroutine
-'----------------------------------------
-'This subroutine gives the user several
-'options for interfacing with the Scheduler
-'and also user boxscores generated by
-'auto-played games
-Sub SCHEDULE ()
-
-    Dim scheduleFile$
-    ReDim menuChoices$(1 To 8)
-
-    Shared NS%
-
-    Shared scheduleAP%(), scheduleNG%()
-
-    _Title "3-in-1 Football - Scheduler"
-
-    'For I = 1 To 1500
-    '    scheduleNG%(I, 13) = 0
-    'Next
-
-    Do
-
-        Color 7, 0
-        Cls
-
-        Call TITLE_SCHEDULER
-
-        menuChoices$(1) = "ENTER A NEW SCHEDULE              "
-        menuChoices$(2) = "PLAY / EDIT AN EXISTING SCHEDULE  "
-        menuChoices$(3) = "EXTRACT TEAM SCHEDULE             "
-        menuChoices$(4) = "EXTRACT CONFERENCE SCHEDULE       "
-        menuChoices$(5) = "CHANGE TEAM CONTROL FOR A SCHEDULE"
-        menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE "
-        menuChoices$(7) = "BOXSCORE MAINTENANCE / PARAMETERS "
-        menuChoices$(8) = "RETURN TO 3 IN 1 FB MENU          "
-        SELECTION% = 1
-        Count% = 8
-        Start% = 1
-        ExitCode% = 8
-        FileFGColor = 15: FileBGColor = 1
-        HiLiteFGColor% = 0: HiLiteBGColor% = 7
-        Spacing% = 1
-        Row% = 8
-        menuWidth% = Len(menuChoices$(1))
-        Column% = (80 - menuWidth% - 2) / 2
-
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
-
-        _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
-        _MouseHide
-
-        Color , 0
-
-        If ExitCode% <> 27 Then
-
-            'Assign full array sizes for schedule games
-            ReDim homeScores(MAX_SCHEDULE_GAMES)
-            ReDim visitorScores(MAX_SCHEDULE_GAMES)
-            ReDim scheduleH$(MAX_SCHEDULE_GAMES)
-            ReDim scheduleV$(MAX_SCHEDULE_GAMES)
-            ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
-            ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
-
-            scheduleNG%(0, 2) = 1
-            scheduleNG%(0, 3) = 1
-            scheduleNG%(0, 7) = 11
-            scheduleNG%(0, 10) = 3
-            scheduleNG%(0, 11) = 8
-            scheduleNG%(0, 14) = 1
-            scheduleNG%(0, 19) = 3
-            scheduleNG%(0, 20) = 3
-
-            Select Case SELECTION%
-
-                Case 1:
-                    'number of games in schedule
-                    scheduleAP%(0) = 0
-                    NS% = 0
-
-                    scheduleFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
-
-                    If scheduleFile$ <> "" Then
-                        Call NewSchedule(scheduleFile$)
-                    End If
-
-                Case 2 To 6:
-
-                    Do
-
-                        'Have the user pick a schedule
-                        scheduleFile$ = ChooseFile$(diskPaths$(3) + "*.SCD", "SCHEDULE", FileExit%)
-
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-
-                            Call LoadScheduleInfo(scheduleFile$)
-
-                            Cls
-
-                            'Extract / Change / Global
-                            If SELECTION% >= 3 And SELECTION% <= 6 Then
-                                Call ExtractSchedule(SELECTION%, scheduleFile$)
-                                If SELECTION% >= 4 Then Call SaveScheduleFile(scheduleFile$)
-                            Else
-                                'Retrieve / Edit / Play Schedule
-                                Color 15, 0
-                                Call NewSchedule(scheduleFile$)
-                            End If
-
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
-
-                Case 7:
-                    Call BoxscoreMaintenance
-
-                Case 8:
-                    Cls
-
-            End Select
-
-        End If
-
-    Loop Until SELECTION% = 8 Or ExitCode% = 27
-
-    'Free up memory for rest of program
-    ReDim homeScores(1)
-    ReDim visitorScores(1)
-    ReDim scheduleH$(1)
-    ReDim scheduleV$(1)
-
-End Sub
-
-
-'----------------------------------------
-'       NewSchedule SubRoutine
-'----------------------------------------
-'This subroutine facilitates the user
-'creation of a schedule. It provides all
-'options required and displays the schedule
-'while editing
-Sub NewSchedule (scheduleFile$)
-
-    Shared BS%, NS%
-
-    Shared homeScores(), visitorScores()
-    Shared scheduleAP%(), scheduleNG%()
-    Shared scheduleH$(), scheduleV$()
-    Shared scheduleQB_V$(), scheduleQB_H$()
-    Shared scheduleYN$()
-
-    Shared modeAbbrev$()
-    Shared qbName$()
-
-    qbName$(4) = "RANDOM"
-
-    modeAbbrev$(0) = "HH"
-    modeAbbrev$(1) = "C1"
-    modeAbbrev$(2) = "C2"
-    modeAbbrev$(3) = "CC"
-
-    scheduleYN$(0, 0) = ""
-    scheduleYN$(0, 1) = ""
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Locate 23, 1
-        Color , 1: Print Tab(80); " ";
-        Locate 23, 1
-        Color 13: Print "HF";
-        Color 14: Print "-HOME FIELD ADV  ";
-        Color 13: Print "MA";
-        Color 14: Print "-MODE OF PLAY  ";
-        Color 11: Print " G";
-        Color 14: Print "-GOTO GAME";
-        Color 11: Print " B";
-        Color 14: Print "-BOXSCORE OPTIONS"
-
-        Locate 24, 1
-        Color , 1: Print Tab(80); " ";
-        Locate 24, 1
-        Color 11: Print "C";
-        Color 14: Print "-SAVE AND CONTINUE  ";
-        Color 11: Print "A";
-        Color 14: Print "-ADD A GAME  ";
-        Color 11: Print "D";
-        Color 14: Print "-DELETE A GAME  ";
-        Color 11: Print "E";
-        Color 14: Print "-EDIT A GAME  ";
-        Color 11: Print "PGUP  PGDN";
-
-        Locate 25, 1
-        Color , 1: Print Tab(80); " ";
-        Locate 25, 1
-        Color 11: Print "S";
-        Color 14: Print "-SORT GAMES  ";
-        Color 11: Print "P";
-        Color 14: Print "-PLAY GAMES   ";
-        Color 11: Print "X";
-        Color 14: Print "-SAVE AND EXIT  ";
-        Color 11: Print "Q";
-        Color 14: Print "-QUIT  ";
-        Color 11: Print "R";
-        Color 14: Print "-RESET SCORES";
-
-        Locate 1, 1: Print Tab(80); " ";
-        Locate 1, 1: Print scheduleFile$
-        Locate 1, 33
-
-        Color 14: Print "AUTO SCHEDULER"
-
-        Color 15, 0
-
-        Locate 2, 1
-        Color 14
-        Print "GAME  DATE      TIME    VISITING TEAM        HOME TEAM            MA  HF"
-        Color 15
-
-        'Show 20 schedule entries on the screen at once
-        For X = 1 To 20
-
-            Locate X + 2, 1
-
-            If X + NS% * 20 <= scheduleAP%(0) Then
-
-                T1 = scheduleNG%(X + NS% * 20, 0)
-                YN$ = scheduleYN$(X + NS% * 20, 0)
-
-                Call ReadTeam(YN$, team$, T1)
-                Call ReadExtraData(YN$, T1, validData)
-
-                If validData = 1 Then
-
-                    scheduleV$(X + NS% * 20) = team$
-                    scheduleQB_V$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 5))
-
-                    T1 = scheduleNG%(X + NS% * 20, 1)
-                    YN$ = scheduleYN$(X + NS% * 20, 1)
-                    Call ReadTeam(YN$, team$, T1)
-                    Call ReadExtraData(YN$, T1, validData)
-
-                    If validData = 1 Then
-
-                        scheduleH$(X + NS% * 20) = team$
-                        scheduleQB_H$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 8))
-
-                        'Game number
-                        Print Using "####  "; X + NS% * 20;
-
-                        'Date
-                        Print Using "##/##/##"; scheduleNG%(X + NS% * 20, 17); scheduleNG%(X + NS% * 20, 16); scheduleNG%(X + NS% * 20, 18);
-
-                        'Time
-                        Locate , 17
-                        I$ = "A"
-                        HR% = scheduleNG%(X + NS% * 20, 15) / 100
-                        MIN% = scheduleNG%(X + NS% * 20, 15) - HR% * 100
-
-                        If HR% = 12 Then I$ = "P"
-                        If HR% > 12 Then HR% = HR% - 12: I$ = "P"
-
-                        leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
-
-                        If MIN% < 10 Then leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
-                        If MIN% >= 10 Then leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
-
-                        'Time
-                        leagLdrTeams$ = leagLdrTeams$ + I$
-                        Print leagLdrTeams$;
-
-                        'Visiting Team
-                        Locate , 25: Print scheduleV$(X + NS% * 20); " ";
-                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; visitorScores(X + NS% * 20);
-
-                        'Home Team
-                        Locate , 46: Print scheduleH$(X + NS% * 20); " ";
-                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; homeScores(X + NS% * 20);
-
-                        'Mode of Play
-                        Locate , 67: Print modeAbbrev$(scheduleNG%(X + NS% * 20, 10));
-
-                        'Home Field
-                        Locate , 72: If scheduleNG%(X + NS% * 20, 2) = 1 Then Print "Y" Else Print "N"
-
-                    End If
-
-                End If
-
-                If validData = 0 Then
-                    'Invalid team file
-                    Locate 9,
-                    Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA. CHECK THE TEAM FILE FOR ANY ERRORS... PRESS ANY KEY AND TRY ANOTHER SCHEDULE", 40, PASS)
-                    K$ = GetKeyPress$
-                    Call CSMsgBox("", 0, PASS)
-                    Exit Sub
-                End If
-
-            End If
-
-        Next
-
-        I$ = GetKeyPress$
-
-        Select Case UCase$(I$)
-
-            Case "A":
-                ' *** ADD A GAME TO THE SCHEDULE ***
-                V$ = ""
-                H$ = ""
-                QV$ = ""
-                QH$ = ""
-
-                'number of games in schedule
-                scheduleAP%(0) = scheduleAP%(0) + 1
-                targetGame% = scheduleAP%(0)
-
-                BS% = Int((targetGame% - 1) / 20)
-                If NS% < BS% Then NS% = BS%
-
-                For X = 0 To 20
-                    If X <> 13 Then
-                        scheduleNG%(targetGame%, X) = scheduleNG%(targetGame% - 1, X)
-                    End If
-                Next
-
-                For X = 0 To 1:
-                    scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
-                Next
-
-                DT$ = "10-01-91"
-                leagLdrTeams$ = "07:30P"
-                Call NewGame(V$, QV$, H$, QH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
-
-            Case "E":
-                Call EditGame(DT$, leagLdrTeams$)
-
-            Case "B":
-                Do
-                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
-                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-                NS% = Int((targetGame% - 1) / 20)
-
-                'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
-                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
-
-                Call EditBoxscore(boxName$)
-                Color 15, 0
-
-            Case "D":
-                ' *** DELETE A GAME FROM THE SCHEDULE ***
-                Do
-                    Locate 24, 1: Input "ENTER GAME # TO DELETE "; targetGame%
-                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-
-                For X = targetGame% To scheduleAP%(0) - 1
-                    For X1 = 0 To 20
-                        scheduleNG%(X, X1) = scheduleNG%(X + 1, X1)
-                    Next
-
-                    visitorScores(X) = visitorScores(X + 1)
-                    homeScores(X) = homeScores(X + 1)
-
-                    For X1 = 0 To 1
-                        scheduleYN$(X, X1) = scheduleYN$(X + 1, X1)
-                    Next
-                Next
-
-                scheduleAP%(0) = scheduleAP%(0) - 1
-                BS% = Int((scheduleAP%(0) - 1) / 20)
-                If NS% > BS% Then NS% = BS%
-
-            Case "G":
-                'GOTO A SPECIFIC PAGE
-                Do
-                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
-                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-
-                NS% = Int((targetGame% - 1) / 20)
-
-            Case "S":
-                Call SortSchedule
-
-            Case "C", "X":
-                Call SaveScheduleFile(scheduleFile$)
-
-            Case "Q", Chr$(27): '
-
-            Case "P":
-                Call SaveScheduleFile(scheduleFile$)
-
-                ' *** PLAY GAMES ***
-                Color , 0
-                Cls
-
-                Call MenuBox(6, 8, 61, 8, 15, 4)
-
-                Do
-
-                    Locate 8, 12: Print "TOTAL GAMES ="; scheduleAP%(0)
-                    Locate 9, 12: Print "SELECT GAME # TO START AND END WITH": Print
-                    Locate 10, 12: Input "ENTER START GAME #: "; startGame: Print
-                    Locate 11, 12: Input "ENTER END GAME #:"; endGame: Print
-
-                    Do
-                        Locate 13, 12: Print "ANY CHANGE? (Y/N)"
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "N" Or UCase$(I$) = "Y"
-
-                Loop Until UCase$(I$) = "N"
-
-                If startGame <= 0 Then startGame = 1
-                If endGame > scheduleAP%(0) Then endGame = scheduleAP%(0)
-
-                Open "GAME82" For Output As #1
-
-                Print #1, scheduleFile$ + ".SCD"
-                Print #1, startGame 'Start Game
-                Print #1, endGame 'End Game
-                Print #1, 0
-
-                Close #1
-
-                For I = 1 To scheduleAP%(0)
-                    HR% = Int(scheduleNG%(I, 15) / 100)
-                    MIN% = scheduleNG%(I, 15) - HR% * 100
-                    TM% = HR% * 60 + MIN%
-                    scheduleNG%(I, 12) = Int(TM% / 30) - 18
-                Next
-
-                Open "TICKER" For Output As #2
-
-                For I = 1 To 32:
-                    For I1 = 0 To 1:
-                        For I2 = 1 To 14
-                            Print #2, -1
-                        Next
-                    Next
-                Next
-
-                For I = 1 To 32:
-                    For I1 = 0 To 1:
-                        Print #2, "XXX"
-                    Next
-                Next
-
-                For I = startGame To startGame + 31
-                    Print #2, scheduleNG%(I, 12)
-                Next
-
-                Close #2
-
-                'Free up used memory so games can load faster
-                ReDim scheduleNG%(1, 20)
-                ReDim scheduleYN$(1, 1)
-                ReDim homeScores(1)
-                ReDim visitorScores(1)
-                ReDim scheduleH$(1)
-                ReDim scheduleV$(1)
-                ReDim scheduleQB_V$(1)
-                ReDim scheduleQB_H$(1)
-
-                Call FOOTBALL
-
-                'Restore memory so we can populate again
-                ReDim scheduleNG%(MAX_SCHEDULE_GAMES, 20)
-                ReDim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
-                ReDim homeScores(MAX_SCHEDULE_GAMES)
-                ReDim visitorScores(MAX_SCHEDULE_GAMES)
-                ReDim scheduleH$(MAX_SCHEDULE_GAMES)
-                ReDim scheduleV$(MAX_SCHEDULE_GAMES)
-                ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
-                ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
-
-                Call LoadScheduleInfo(scheduleFile$)
-
-            Case "R":
-                ' *** RESET GAMES ***
-                For I = 1 To scheduleAP%(0)
-                    scheduleNG%(I, 13) = 0
-                Next
-
-            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(77)
-                ' *** PAGE DOWN | RIGHT ARROW ***
-                If NS% >= BS% Then
-                    NS% = BS%
-                Else
-                    NS% = NS% + 1
-                End If
-
-            Case Chr$(0) + Chr$(73), Chr$(0) + Chr$(75)
-                ' *** PAGE UP | LEFT ARROW ***
-                If NS% <> 0 Then
-                    NS% = NS% - 1
-                End If
-
-        End Select
-
-    Loop Until UCase$(I$) = "Q" Or UCase$(I$) = "X"
-
-End Sub
-
-
-'----------------------------------------
-'          EditGame SubRoutine
-'----------------------------------------
-'This subroutine gives the user an inter-
-'face for choosing games to edit, then
-'calls the NewGame routine to essentially
-'display the existing parameters and allow
-'them to be modified
-Sub EditGame (DT$, leagLdrTeams$)
-
-    Shared scheduleAP%()
-    Shared scheduleH$(), scheduleV$()
-    Shared scheduleQB_H$(), scheduleQB_V$()
-    Shared scheduleYN$()
-    Shared scheduleNG%()
-
-    ' *** EDIT A GAME ***
-    Do
-        Locate 23, 1: Print "ENTER GAME # TO EDIT        "
-        Locate 23, 1: Input "ENTER GAME # TO EDIT "; targetGame%
-    Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
-
-    V$ = scheduleV$(targetGame%)
-    H$ = scheduleH$(targetGame%)
-    YN$ = scheduleYN$(targetGame%, 0)
-    QV$ = scheduleQB_V$(targetGame%)
-    QH$ = scheduleQB_H$(targetGame%)
-
-    HR% = Int(scheduleNG%(targetGame%, 15) / 100)
-    MIN% = scheduleNG%(targetGame%, 15) - HR% * 100
-
-    If HR% >= 12 Then
-        I$ = "P"
-        If HR% > 12 Then HR% = HR% - 12
-    Else
-        I$ = "A"
-    End If
-
-    leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
-
-    If MIN% < 10 Then
-        leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
-    Else
-        leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
-    End If
-
-    leagLdrTeams$ = leagLdrTeams$ + I$
-    DT$ = Right$(Str$(scheduleNG%(targetGame%, 17)), 2) + "/"
-    DYMO% = Val(Right$(Str$(scheduleNG%(targetGame%, 16)), 2))
-
-    If DYMO% < 10 Then
-        DYMO$ = "0" + Right$(Str$(scheduleNG%(targetGame%, 16)), 1)
-    Else
-        DYMO$ = Right$(Str$(scheduleNG%(targetGame%, 16)), 2)
-    End If
-
-    DT$ = DT$ + DYMO$ + "/" + Right$(Str$(scheduleNG%(targetGame%, 18)), 2)
-
-    Call NewGame(V$, QBV$, H$, QBH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
-
-End Sub
-
-'----------------------------------------
-'           NewGame SubRoutine
-'----------------------------------------
-'This subroutine gives the user an interface
-'for editing and choosing options for the
-'specified game in the schedule
-Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS, gameIndex%)
-
-    Shared scheduleNG%(), teamRatings%()
-
-    Shared scheduleH$(), scheduleV$()
-    Shared scheduleQB_V$(), scheduleQB_H$()
-    Shared scheduleYN$()
-
-    Shared location$(), modeAbbrev$(), overtime$()
-    Shared playMode$(), qbName$()
-    Shared rulesType$(), ruleYrPro$(), ruleYrColl$()
-    Shared weather$(), windSetting$(), yesNoText$()
-
-    Dim displayPause!
-
-    scheduleYN$(0, 0) = ""
-    scheduleYN$(0, 1) = ""
-
-    qbName$(4) = "RANDOM"
-
-    Do
-
-        ' ** Enter New Game **
-        Color 15, 0
-        Cls
-
-        Color 2
-        Print Tab(29); "SELECT OPENING OPTIONS"
-
-        Locate 2, 2: Color 14
-        Print "(1) ";
-        Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
-        Locate 3, 2: Color 14
-        Print "(2) ";
-        Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
-        Locate 4, 2: Color 14
-        Print "(3) ";
-        Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
-        Locate 5, 2: Color 14
-        Print "(4) ";
-        Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$
-        Locate 6, 2: Color 14
-        Print "(5) ";
-        Color 15: Print "GAME TIME (XX:XXP)    "; leagLdrTeams$
-        Locate 7, 2: Color 14
-        Print "(6) ";
-        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
-        Locate 8, 2: Color 14
-        Print "(7) ";
-        Color 15: Print "GAME LOCATION: "; location$(scheduleNG%(gameIndex%, 2))
-        Locate 9, 2: Color 14
-        Print "(8) ";
-        Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
-        Locate 10, 2: Color 14
-        Print "(9) ";
-        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
-        Locate 11, 2: Color 14
-        Print "(A) ";
-        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
-        Locate 12, 2: Color 14
-        Print "(B) ";
-        Color 15: Print "OVERTIME: "; overtime$(scheduleNG%(gameIndex%, 14))
-        Locate 13, 2: Color 14
-        Print "(C) ";
-        Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
-        Locate 14, 2: Color 14
-        Print "(D) ";
-        Color 15: Print "WEATHER: "; weather$(scheduleNG%(gameIndex%, 20))
-        Locate 16, 2: Color 14
-        Print "(0) ";
-        Color 15: Print "ACCEPT SETTINGS"
-
-        Locate 1, 1
-
-        Do
-
-            I$ = GetKeyPress$
-
-            Call LetterToNumber(I$, setting)
-
-            Select Case setting
-
-                Case 1:
-                    scheduleNG%(gameIndex%, 10) = scheduleNG%(gameIndex%, 10) + 1
-                    If scheduleNG%(gameIndex%, 10) > 3 Then scheduleNG%(gameIndex%, 10) = 0
-
-                Case 2, 3:
-
-                    teamNbr = 0
-                    Call ChooseTeam(YN$, NTMS, teamNbr, team$)
-
-                    If teamNbr <> 0 Then
-
-                        Color 15, 0
-                        scheduleNG%(gameIndex%, setting - 2) = teamNbr
-                        scheduleYN$(gameIndex%, setting - 2) = YN$
-
-                        If setting = 2 Then
-                            visitor$ = team$
-                            scheduleV$(gameIndex%) = team$
-                            visitorQB$ = GetQBName$(gameIndex%, setting)
-                            scheduleQB_V$(gameIndex%) = visitorQB$
-                        End If
-
-                        If setting = 3 Then
-                            home$ = team$
-                            scheduleH$(gameIndex%) = team$
-                            homeQB$ = GetQBName$(gameIndex%, setting)
-                            scheduleQB_H$(gameIndex%) = homeQB$
-                        End If
-
-                    End If
-
-                Case 4:
-                    Locate 5, 26: Input DT$
-
-                Case 5:
-                    Locate 6, 26: Print "        "
-                    Locate 6, 26: Input leagLdrTeams$
-
-                Case 6:
-                    Locate 7, 32: Input displayPause!
-                    scheduleNG%(gameIndex%, 4) = displayPause! * 10
-
-                Case 7:
-                    'N = 1 - (scheduleNG%(gameIndex%, 2))
-                    'scheduleNG%(gameIndex%, 2) = N
-                    N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
-                    scheduleNG%(gameIndex%, 2) = N + 1
-
-                Case 8:
-                    scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
-                    If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
-
-                Case 9:
-                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
-                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
-
-                Case 10:
-                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
-                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
-
-                Case 11:
-                    scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
-                    If scheduleNG%(gameIndex%, 14) > 3 Then scheduleNG%(gameIndex%, 14) = 0
-
-                Case 12:
-                    scheduleNG%(gameIndex%, 19) = scheduleNG%(gameIndex%, 19) + 1
-                    If scheduleNG%(gameIndex%, 19) > 3 Then scheduleNG%(gameIndex%, 19) = 0
-
-                Case 13:
-                    scheduleNG%(gameIndex%, 20) = scheduleNG%(gameIndex%, 20) + 1
-                    If scheduleNG%(gameIndex%, 20) > 3 Then scheduleNG%(gameIndex%, 20) = 0
-
-            End Select
-
-        Loop Until (setting >= 0 And setting <= 13)
-
-        If visitor$ <> "" And home$ <> "" And leagLdrTeams$ <> "" And DT$ <> "" Then
-
-            meridian$ = Right$(leagLdrTeams$, 1)
-            fullTime$ = Left$(leagLdrTeams$, Len(leagLdrTeams$) - 1)
-            MIN% = Val(Right$(fullTime$, 2))
-            hourString$ = Left$(fullTime$, Len(fullTime$) - 3)
-            HR% = Val(hourString$)
-
-            If UCase$(meridian$) = "P" And HR% < 12 Then
-                'If user typed in PM, we are storing as military time
-                'We don't check that military time may have been used
-                HR% = HR% + 12
-            End If
-
-            'Gane Time
-            scheduleNG%(gameIndex%, 15) = HR% * 100 + MIN%
-
-            'Month
-            scheduleNG%(gameIndex%, 17) = Val(Left$(DT$, 2))
-
-            'Day
-            scheduleNG%(gameIndex%, 16) = Val(Mid$((DT$), 4, 2))
-
-            'Year
-            scheduleNG%(gameIndex%, 18) = Val(Mid$((DT$), 7, 2))
-
-        End If
-
-    Loop Until setting = 0
-
-End Sub
-
-'----------------------------------------
-'       ExtractSchedule SubRoutine
-'----------------------------------------
-'This is the core subroutine to leverage
-'when mass changes are needing to be made
-'to a schedule. It essentially reads in
-'the existing schedule parameters, prompts
-'the user for the appropriate changes, and
-'then writes the changes back to the orig-
-'inal schedule file.
-Sub ExtractSchedule (scheduleAction%, scheduleFile$)
-    'scheduleAction% = 3: EXTRACT TEAM'S SCHEDULE FROM LEAGUE SCHEDULE
-    'scheduleAction% = 4: EXTRACT CONFERENCE SCHEDULE
-    'scheduleAction% = 5: CHANGE THE MODE OF PLAY FOR A TEAM
-    'scheduleAction% = 6: MAKE GLOBAL CHANGES TO A SCHEDULE
-
-    'EXTRACT A SCHEDULE FROM ANOTHER
-    Dim displayPause!
-
-    Shared homeScores(), visitorScores()
-
-    Shared scheduleAP%()
-    Shared scheduleNG%(), teamRatings%()
-    Shared scheduleYN$()
-
-    Shared memberIdx()
-    Shared memberName$(), memberYear$()
-
-    Select Case scheduleAction%
-
-        Case 6
-            Call ChangeGlobalSettings
-            Call SaveScheduleFile(scheduleFile$)
-            Call NewSchedule(scheduleFile$)
-
-        Case 3, 4, 5
-
-            If scheduleAction% = 3 Or scheduleAction% = 4 Then
-                'Pick name of target file
-                subSchedFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
-            End If
-
-            If scheduleAction% = 4 And subSchedFile$ <> "" Then
-                'Pick conference to extract
-                conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
-
-                If ExitCode% <> 27 And ExitCode% <> 0 Then
-
-                    Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #1
-
-                    Input #1, statType
-
-                    If statType = 0 Then
-
-                        Input #1, LG$
-                        Input #1, X$
-                        Input #1, X$
-
-                        For X = 1 To 30
-                            Input #1, memberName$(X)
-                            Input #1, memberIdx(X)
-                            Input #1, memberYear$(X)
-                        Next
-
-                        numberTeams = 30
-
-                        Close #1
-
-                    End If
-
-                    If statType = 1 Then
-
-                        Input #1, LG$
-
-                        For X = 1 To 30:
-                            Input #1, memberName$(X)
-                            Input #1, memberIdx(X)
-                            Input #1, memberYear$(X)
-                        Next
-
-                        numberTeams = 30
-
-                        Close #1
-
-                    End If
-
-                    For I = 1 To scheduleAP%(0)
-
-                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
-                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
-
-                        For I1 = 1 To numberTeams
-
-                            If memberName$(I1) <> "XXX" Then
-
-                                If memberIdx(I1) = scheduleNG%(I, 0) And memberYear$(I1) = scheduleYN$(I, 0) Or memberIdx(I1) = scheduleNG%(I, 1) And memberYear$(I1) = scheduleYN$(I, 1) Then
-
-                                    Print
-                                    Print "FOUND A MATCH"
-
-                                    Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
-
-                                    fileLength& = LOF(2)
-                                    numberGames = fileLength& / SCHEDULE_SIZE_BYTES
-
-                                    For X = 0 To 20
-                                        Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-                                    Next
-
-                                    Field #2, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-
-                                    For X = 0 To 20:
-                                        LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
-                                    Next
-
-                                    For X = 0 To 1:
-                                        LSet Q$(22 + X) = scheduleYN$(I, X)
-                                    Next
-
-                                    LSet Q$(24) = MKI$(visitorScores(I))
-                                    LSet Q$(25) = MKI$(homeScores(I))
-
-                                    Put #2, numberGames + 1
-
-                                    Close #2
-
-                                    Exit For
-
-                                End If
-
-                            End If 'Done checking for "XXX"
-
-                        Next I1
-
-                    Next I
-
-                End If 'Done checking COUNT
-
-            Else
-
-                If (scheduleAction% = 3 And subSchedFile$ = "") Then
-                    'If user cancelled from name entry
-                    teamNbr = 0
-                Else
-                    teamNbr = 0
-                    Call ChooseTeam(YN$, numberTeams, teamNbr, teamName$)
-                End If
-
-                If teamNbr <> 0 Then
-
-                    Color 15, 0
-                    Cls
-
-                    'Change mode of play
-                    If scheduleAction% = 5 Then
-
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
-                        Color 15, 0
-                        Print " IS TO BE:"
-                        Print
-                        Color 12
-                        Print "(0)";
-                        Color 15
-                        Print " MANUALLY CONTROLLED"
-                        Print
-                        Color 12
-                        Print "(1)";
-                        Color 15
-                        Print " COMPUTER CONTROLLED"
-
-                        Do
-                            C$ = GetKeyPress$
-                            I1 = Val(C$)
-                        Loop Until C$ = "0" Or C$ = "1"
-
-                        Print
-                        Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
-
-                    End If
-
-                    For I = 1 To scheduleAP%(0)
-
-                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
-                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
-
-                        If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
-
-                            'CHANGE SETTINGS FOR A TEAM
-                            If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Then
-                                scheduleNG%(I, 10) = 2
-                            End If
-
-                            If teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
-                                scheduleNG%(I, 10) = 1
-                            End If
-
-                            If (teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1)) And I1 = 1 And scheduleAction% = 5 Then
-                                scheduleNG%(I, 10) = 3
-                            End If
-
-                            scheduleNG%(I, 4) = displayPause! * 10
-
-                            'Extract only
-                            If Not (scheduleAction% = 5) Then
-
-                                Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
-                                fileLength& = LOF(3)
-                                totalGames = fileLength& / SCHEDULE_SIZE_BYTES
-
-                                'Write matching games
-                                Locate 1, 1: Print totalGames + 1; " MATCHES"
-
-                                For X = 0 To 20
-                                    Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-                                Next
-
-                                Field #3, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-
-                                For X = 0 To 20:
-                                    LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
-                                Next
-
-                                For X = 0 To 1:
-                                    LSet Q$(22 + X) = scheduleYN$(I, X)
-                                Next
-
-                                LSet Q$(24) = MKI$(visitorScores(I))
-                                LSet Q$(25) = MKI$(homeScores(I))
-
-                                Put #3, totalGames + 1
-
-                                Close #3
-
-                            End If 'Done checking schedule action
-
-                        End If 'Done checking for matches
-
-                    Next 'Done looping through games
-
-                End If
-
-            End If
-
-    End Select
-
-End Sub
-
-
-'----------------------------------------
-'       EditParameters SubRoutine
-'----------------------------------------
-'This subroutine gives the user an inter-
-'face for editing the parameters by which
-'"Special" boxscores are created / saved.
-Sub EditParameters ()
-
-    Shared eventSettings()
-
-    'Read in existing parameters if there are any
-    If _FileExists("EVENTS.BOX") Then
-
-        Open "EVENTS.BOX" For Input As #1
-
-        For X = 1 To 13
-            Input #1, eventSettings(X)
-        Next
-
-        Close #1
-
-    End If
-
-    Cls
-    Color 14
-
-    Print "PARAMETERS FOR SAVING SPECIAL EVENTS BOXSCORES"
-
-    Color 15
-
-    Print " 1. IF QUARTERS ARE OVER "; eventSettings(1)
-    Print " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
-    Print " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
-    Print " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
-    Print " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
-    Print " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
-    Print " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
-    Print " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
-    Print " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
-    Print "10. KICKER'S FGM MORE THAN "; eventSettings(10)
-
-    C1 = 1
-
-    Do
-
-        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
-        Input B9
-
-        Select Case B9
-
-            Case 1: Locate 2: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
-            Case 2: Locate 3: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
-            Case 3: Locate 4: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
-            Case 4: Locate 5: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
-            Case 5: Locate 6: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
-            Case 6: Locate 7: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
-            Case 7: Locate 8: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
-            Case 8: Locate 9: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
-            Case 9: Locate 10: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
-            Case 10: Locate 11: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
-
-        End Select
-
-    Loop Until B9 = 0 'ENTER also counts as 0
-
-    'Save all changes
-    Open "EVENTS.BOX" For Output As #2
-
-    For X = 1 To 13
-        Print #2, eventSettings(X)
-    Next
-
-    Close #2
-
-End Sub
-
-
-'----------------------------------------
-'    BoxscoreMaintenance SubRoutine
-'----------------------------------------
-'This subroutine gives the user a menu
-'for several of the options available to
-'manage and maintain boxscores.
-Sub BoxscoreMaintenance ()
-
-    ReDim menuChoices$(1 To 6)
-
-    menuChoices$(1) = "SET PARAMETERS TO SAVE SPECIAL EVENTS BOXSCORES  "
-    menuChoices$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
-    menuChoices$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "
-    menuChoices$(4) = "DELETE ALL USER SAVED, & SPECIAL BOXSCORES       "
-    menuChoices$(5) = "DELETE ALL BOXSCORES (SCHEDULE, USER, &  SPECIAL)"
-    menuChoices$(6) = "RETURN TO MAIN AUTO SCHEDULER MENU               "
-    SELECTION% = 1
-    Count% = 6
-    Start% = 1
-    ExitCode% = 6
-    FileFGColor = 15: FileBGColor = 1
-    HiLiteFGColor% = 0: HiLiteBGColor% = 7
-    Spacing% = 1
-    Row% = 8
-    menuWidth% = Len(menuChoices$(1))
-    Column% = (80 - menuWidth% - 2) / 2
-
-    Do
-
-        Color 15, 0
-
-        Call TITLE_SCHEDULER
-
-        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
-
-        _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
-        _MouseHide
-
-        If ExitCode% <> 27 Then
-
-            Select Case SELECTION%
-
-                Case 1:
-                    Call EditParameters
-
-                Case 2:
-                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
-                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
-
-                    If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
-                        boxName$ = diskPaths$(1) + boxscoreFile$
-                        Call EditBoxscore(boxName$ + ".BSS")
-                        'Call EditBoxscore(boxName$ + ".SPC")
-                    End If
-
-                Case 3
-                    Spec$ = diskPaths$(1) + "*.BS"
-                    'Spec$ = diskPaths$(1) + "BOX*."
-                    Call DeleteBoxscores(SELECTION%, Spec$)
-
-                Case 4
-                    Spec$ = diskPaths$(1) + "*.BSS"
-                    'Spec$ = diskPaths$(1) + "*.SPC"
-                    Call DeleteBoxscores(SELECTION%, Spec$)
-
-                Case 5:
-                    Spec$ = diskPaths$(1) + "*.BS"
-                    'Spec$ = diskPaths$(1) + "BOX*."
-                    Call DeleteBoxscores(SELECTION%, Spec$)
-
-                    Spec$ = diskPaths$(1) + "*.BSS"
-                    'Spec$ = diskPaths$(1) + "*.SPC"
-                    Call DeleteBoxscores(SELECTION%, Spec$)
-
-            End Select
-
-        End If
-
-    Loop Until SELECTION% = 6 Or ExitCode% = 27
-
-End Sub
-
-
-'----------------------------------------
-'       SaveScheduleFile SubRoutine
-'----------------------------------------
-'This subroutine writes all scheduled data,
-'as stored in the relevant arrays, back to
-'the target schedule file.
-Sub SaveScheduleFile (saveFile$)
-
-    Shared homeScores(), visitorScores()
-    Shared scheduleAP%(), scheduleNG%()
-    Shared scheduleYN$()
-
-    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
-
-    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
-
-    For X = 0 To 20
-        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-    Next
-
-    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-
-    For I = 1 To scheduleAP%(0)
-
-        For X = 0 To 20:
-            LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
-        Next
-
-        For X = 0 To 1:
-            LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
-        Next
-
-        LSet Q$(24) = MKI$(visitorScores(I))
-        LSet Q$(25) = MKI$(homeScores(I))
-
-        Put #1, I
-
-    Next
-
-    Close #1
-
-End Sub
-
-
-'----------------------------------------
-'       SortSchedule SubRoutine
-'----------------------------------------
-'This subroutine is used to automatically
-'sort all games in the schedule by their
-'date / time.
-Sub SortSchedule ()
-
-    Dim schedDates&(MAX_SCHEDULE_GAMES)
-    Dim D&, M&, Y&
-
-    Shared homeScores(), visitorScores()
-    Shared scheduleAP%(), scheduleNG%()
-    Shared scheduleYN$()
-
-    For I = 1 To scheduleAP%(0)
-        HR% = Int(scheduleNG%(I, 15) / 100)
-        MIN% = scheduleNG%(I, 15) - HR% * 100
-        TM% = HR% * 60 + MIN%
-        scheduleNG%(I, 12) = Int(TM% / 30 - 18)
-        D& = (scheduleNG%(I, 18) - 1)
-        D& = D& * 365
-        M& = (scheduleNG%(I, 17) - 1)
-        M& = M& * 31
-        Y& = scheduleNG%(I, 16)
-        schedDates&(I) = (D& + M& + Y&) * 24 * 60 + TM%
-    Next
-
-    For Z = 1 To scheduleAP%(0) - 1
-
-        For currIdx = Z + 1 To scheduleAP%(0)
-
-            Locate 1, 1: Print Z, currIdx
-
-            If scheduleNG%(Z, 12) > scheduleNG%(currIdx, 12) Then
-
-                For I = 0 To 20:
-                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
-                Next
-
-                For I = 0 To 1:
-                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
-                Next
-
-                Swap schedDates&(Z), schedDates&(currIdx)
-                Swap visitorScores(Z), visitorScores(currIdx)
-                Swap homeScores(Z), homeScores(currIdx)
-
-            End If
-
-        Next currIdx
-
-    Next Z
-
-    For Z = 1 To scheduleAP%(0) - 1
-
-        For currIdx = Z + 1 To scheduleAP%(0)
-
-            If schedDates&(Z) > schedDates&(currIdx) Then
-
-                For I = 0 To 20:
-                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
-                Next
-
-                For I = 0 To 1:
-                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
-                Next
-
-                Swap schedDates&(Z), schedDates&(currIdx)
-                Swap visitorScores(Z), visitorScores(currIdx)
-                Swap homeScores(Z), homeScores(currIdx)
-
-            End If
-
-        Next currIdx
-
-    Next Z
-
-End Sub
-
-
-'----------------------------------------
-'    ChangeGlobalSettings SubRoutine
-'----------------------------------------
-'This subroutine presents the end user a
-'variety of game options that can be changed
-'or applied to all games in the schedule file.
-'These would be game-specific options, as
-'opposed to teams / dates / times.
-Sub ChangeGlobalSettings ()
-
-    Shared scheduleAP%(), scheduleNG%()
-
-    Shared modeAbbrev$()
-    Shared qbName$(), scheduleYN$()
-
-    Shared location$(), overtime$(), playMode$()
-    Shared rulesType$(), ruleYrColl$(), ruleYrPro$()
-    Shared windSetting$(), weather$()
-
-    Dim displayPause!
-
-    scheduleYN$(0, 0) = ""
-    scheduleYN$(0, 1) = ""
-
-    ' GLOBAL SETTINGS FOR A SCHEDULE
-    ' The code below would use default values based on the most recent rules
-    'ruleOptType = 1
-    'ruleOptColl = 11
-    'ruleOptPro = 8
-    'overtimeOpt = 1
-    'windOpt = 3
-    'weatherOpt = 3
-
-    'QB selections
-    qbName$(4) = "RANDOM"
-
-    'This code will assign defaults based on the first game in the schedule.
-    'Usually when I want to change global settings, I want to keep most
-    'settings in the schedule the same.
-    playerOpt = scheduleNG%(1, 10)
-    gameLoc = scheduleNG%(1, 2)
-    ruleOptType = scheduleNG%(1, 3)
-    ruleOptPro = scheduleNG%(1, 11)
-    ruleOptColl = scheduleNG%(1, 7)
-    overtimeOpt = scheduleNG%(1, 14)
-    displayPause! = scheduleNG%(1, 4) / 10
-    windOpt = scheduleNG%(1, 19)
-    weatherOpt = scheduleNG%(1, 20)
-
-    DT$ = "09-01-23"
-    leagLdrTeams$ = "07:30P"
-
-    Do
-        Color 15, 0
-        Cls
-        Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
-
-        Locate 3, 2: Color 14: Print "(1) ";
-        Color 15: Print "GAME PLAY: "; playMode$(playerOpt)
-        Locate 5, 2: Color 14: Print "(2) ";
-        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
-        Locate 6, 2: Color 14: Print "(3) ";
-        Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
-        Locate 7, 2: Color 14: Print "(4) ";
-        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
-        Locate 8, 2: Color 14: Print "(5) ";
-        Color 15: Print "OVERTIME: "; overtime$(overtimeOpt)
-        Locate 9, 2: Color 14: Print "(6) ";
-        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
-        Locate 10, 2: Color 14: Print "(7) ";
-        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
-        Locate 11, 2: Color 14: Print "(8) ";
-        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
-
-        Locate 13, 2: Color 14: Print "(0) ";
-        Color 15: Print "ACCEPT GLOBAL SETTINGS"
-
-        Do
-
-            I$ = GetKeyPress$
-
-            Call LetterToNumber(I$, iVal)
-
-        Loop Until iVal >= 0 And iVal <= 10
-
-        Select Case iVal
-
-            Case 1:
-                playerOpt = playerOpt + 1
-                If playerOpt > 3 Then playerOpt = 0
-
-            Case 2:
-                ruleOptType = ruleOptType + 1
-                If ruleOptType > 5 Then ruleOptType = 0
-
-            Case 3:
-                ruleOptPro = ruleOptPro + 1
-                If ruleOptPro > 9 Then ruleOptPro = 0
-
-            Case 4:
-                ruleOptColl = ruleOptColl + 1
-                If ruleOptColl > 11 Then ruleOptColl = 0
-
-            Case 5:
-                overtimeOpt = overtimeOpt + 1
-                If overtimeOpt > 7 Then overtimeOpt = 0
-
-            Case 6:
-                Locate 9, 32: Input displayPause!
-                'Input "DISPLAY VARIABLE "; displayPause!
-
-            Case 7:
-                windOpt = windOpt + 1
-                If windOpt > 3 Then windOpt = 0
-
-            Case 8:
-                weatherOpt = weatherOpt + 1
-                If weatherOpt > 3 Then weatherOpt = 0
-
-        End Select
-
-    Loop Until iVal = 0
-
-    For I = 1 To scheduleAP%(0)
-        scheduleNG%(I, 2) = gameLoc
-        scheduleNG%(I, 3) = ruleOptType
-        scheduleNG%(I, 4) = displayPause! * 10
-        scheduleNG%(I, 7) = ruleOptColl
-        scheduleNG%(I, 10) = playerOpt
-        scheduleNG%(I, 11) = ruleOptPro
-        scheduleNG%(I, 14) = overtimeOpt
-        scheduleNG%(I, 19) = windOpt
-        scheduleNG%(I, 20) = weatherOpt
-    Next
-
-End Sub
-
-
-'----------------------------------------
-'       DeleteBoxscores Subroutine
-'----------------------------------------
-'This subroutine prompts for confirmation
-'of and proceeds to delete the specified
-'types of boxscores. This is called by
-'BoxScore maintenance routine.
-Sub DeleteBoxscores (fileChoice%, fileSpec$)
-
-    Spec$ = diskPaths$(0) + fileSpec$
-    Count% = FileCount%(Spec$)
-
-    If Count% = 0 Then
-
-        Select Case fileChoice%
-
-            Case 3:
-                MsgText$ = "NO BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
-
-            Case 4:
-                MsgText$ = "NO SPECIAL EVENTS BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
-
-            Case 5:
-                ' Exit Sub
-
-        End Select
-
-        BoxWidth = 24
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
-
-    Else
-
-        ReDim boxFiles$(0 To Count%)
-
-        For X = 1 To Count%
-            boxFiles$(X) = Space$(12)
-        Next
-
-        boxFiles$(0) = fileSpec$
-        Call ReadFile(boxFiles$())
-
-        For X = 1 To Count%
-            Kill (diskPaths$(1) + boxFiles$(X))
-            Locate 12, 34: Print "DELETING "; boxFiles$(X)
-        Next
-
-        MsgText$ = "ALL BOXSCORE FILES HAVE BEEN DELETED. PRESS ANY KEY TO RETURN TO MAIN MENU"
-        BoxWidth = 20
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'      LoadScheduleInfo SubRoutine
-'----------------------------------------
-'This subroutine opens the target SCHEDULE
-'file and reads the data into corresponding
-'arrays for use in the scheduler
-Sub LoadScheduleInfo (targetFile$)
-
-    Shared BS%, NS%
-
-    Shared scheduleAP%(), scheduleNG%()
-    Shared homeScores(), visitorScores()
-    Shared scheduleYN$()
-
-    Open diskPaths$(3) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
-
-    fileLength& = LOF(1)
-    scheduleAP%(0) = fileLength& / SCHEDULE_SIZE_BYTES
-    BS% = Int((scheduleAP%(0) - 1) / 20)
-
-    For X = 0 To 20
-        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
-    Next
-
-    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
-
-    For I = 1 To scheduleAP%(0)
-
-        Get #1, I
-
-        For X = 0 To 20:
-            scheduleNG%(I, X) = CVI(Q$(X + 1))
-        Next
-
-        For X = 0 To 1:
-            scheduleYN$(I, X) = RTrim$(Q$(22 + X))
-        Next
-
-        visitorScores(I) = CVI(Q$(24))
-        homeScores(I) = CVI(Q$(25))
-
-    Next
-
-    Close #1
-
-    NS% = 0
-
-End Sub
-
-
-'----------------------------------------
-'       EditBoxscore SubRoutine
-'----------------------------------------
-'This subroutine is designed to facilitate
-'the user's ability to edit, in-realtime,
-'a boxscore that has been previously created
-'by the game. It is essentially a DOS-based
-'text editing routine, which was written in
-'x86 asm. Therefore, the corresponding code
-'is no longer available or useful. It is
-'recommended that users simply edit their
-'boxscores in their favorite text editor.
-Sub EditBoxscore (boxName$)
-
-    If Not _FileExists(boxName$) Then
-
-        MsgText$ = "BOXSCORE DOES NOT EXIST PRESS ANY KEY TO RETURN TO MAIN MENU"
-        BoxWidth = 24
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
-
-    Else
-
-        Call QBWRITE(boxName$)
-
-    End If
-
-End Sub
-
-
+'$Include: 'SCHEDULE.BAS'
 '$Include: 'SEECON.BAS'
 '$Include: 'SEENATL.BAS'
 '$Include: 'SEELEAG.BAS'
@@ -5906,9 +1712,29 @@ Sub FOOTBALL ()
 
         Open "DEFAULT" For Output As #3
 
-        For I = 1 To 8:
-            Print #3, 0
-        Next
+        'Player option
+        Print #3, 3
+
+        'Rules Type
+        Print #3, 1
+
+        'Home Field
+        Print #3, 1
+
+        'PBP Delay
+        Print #3, 1.2
+
+        'Stop clock on 1st down?
+        Print #3, 0
+
+        'Pro Rules Options
+        Print #3, 9
+
+        'College Rules Options
+        Print #3, 11
+
+        'Overtime setting
+        Print #3, 0
 
         Close #3
 
@@ -6077,7 +1903,7 @@ Sub FOOTBALL ()
             Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
             Locate 9, 2: Color 14
             Print "(8) ";
-            Color 15: Print "OVERTIME: "; overtime$(overtimeOpt)
+            Color 15: Print "SUDDDEN DEATH: "; overtime$(overtimeOpt)
             Locate 10, 2: Color 14
             Print "(9) ";
             Color 15: Print "START GAME"
@@ -6170,7 +1996,7 @@ Sub FOOTBALL ()
 
                     Case 8:
                         overtimeOpt = overtimeOpt + 1
-                        If overtimeOpt > 7 Then overtimeOpt = 0
+                        If overtimeOpt > 8 Then overtimeOpt = 0
 
                     Case 9:
                         '
@@ -6486,6 +2312,7 @@ Sub FOOTBALL ()
 
     '-- Start of a "kickoff" routine
 
+    '** Kickoff Choices **
     330 '
     If ruleOptType > 0 And ruleOptPro < 8 Then
         'Pro rules before 2008
@@ -6494,13 +2321,18 @@ Sub FOOTBALL ()
         Call KOChoices_Defer
     End If
 
-    340 '
+    'Update scoreboard with kicking team
     Call CHANGEPOSS
 
+    '** Ready for Kickoff **
+    340 '
     Call MARKER1
+    Call StatusBoard
+
+    'New possession
+    U3 = 0
 
     scoreX0 = 0
-    U3 = 0
 
     Call CheckGameClock
     If gameClock! = 0 Then GoTo 3360
@@ -6548,8 +2380,10 @@ Sub FOOTBALL ()
 
     If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
+        'Computer Choice
         kickChoice = 0
-        '4th Quarter and team is behind?
+
+        '4th Quarter, 3 Mins Left, Team is behind?
         '-- we need better logic than that
         If gameClock! <= 180 And quarter = 4 And score(P1, 0) - score(D, 0) < 0 Then
             kickChoice = 2
@@ -6563,6 +2397,16 @@ Sub FOOTBALL ()
         Do
             I$ = GetKeyPress$
             kickChoice = Val(I$)
+
+            If kickChoice = 2 And ruleOptType <> 0 And ruleOptPro >= 9 And teamYears(P1) >= 2024 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
+                'Onside kick NOT ALLOWED
+                'Pro Rules Year 2023+, Team Year 2024+, Onside Kick before 4th Quarter
+                pbpString$ = "CAN ONLY USE IN 4TH QUARTER IF YOU ARE BEHIND IN SCORE"
+                Call PBP
+
+                kickChoice = -1
+            End If
+
         Loop Until kickChoice >= 0 And kickChoice <= 2
 
     End If
@@ -6573,7 +2417,7 @@ Sub FOOTBALL ()
 
         Case 0
             'Regular Kickoff
-            
+
             oobRoll = Int(Rnd(1) * 10000) + 1
 
             If oobRoll >= 998 And oobRoll <= 1000 Then
@@ -6581,7 +2425,7 @@ Sub FOOTBALL ()
                 'Kickoff out-of-bounds
                 pbpString$ = "OH NO! THE KICK SAILS OUT-OF-BOUNDS!"
                 Call PBP
-                
+
                 'Swap defense and offense
                 Call CHANGEPOSS
 
@@ -6648,7 +2492,6 @@ Sub FOOTBALL ()
 
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
-
                     Call MOVEBALL
 
                     scoreX1 = 3
@@ -6669,15 +2512,19 @@ Sub FOOTBALL ()
 
                     End If
 
-                    If ydsGained + kickYL <= -.05 Then
+                    returnYL = ydsGained + kickYL
+
+                    If returnYL <= -.05 Then
 
                         'Returner didn't make it out of the endzone
+                        'Kickoff already changed Possession
+                        'Touchback will change it again
                         Call CHANGEPOSS
                         Call Touchback
 
                     Else
 
-                        ydLine = ydsGained + kickYL
+                        ydLine = returnYL
 
                         If ydsGained > kickReturners(P1, I1) Then
                             gameKR$(P1, I1) = ""
@@ -6758,212 +2605,6 @@ Sub FOOTBALL ()
     ' yet for the game's logic.
     '================================================================================
 
-    '----- NOODLE -----
-    'If we can get rid of references
-    'to labels in the main game then
-    'this can be a formal subroutine
-
-    PointsAfterTD:
-
-    If ruleOptType = 4 Then
-        'WFL = No PAT
-        convChoice = 2
-    Else
-
-        If ruleOptType = 1 And ruleOptPro < 4 Then
-
-            'NFL prior to 1994 (2 PT conversion not supported)
-            convChoice = 1
-
-        Else
-
-            If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
-
-                ' College Overtime
-                ' Force 2-point conversion based on year
-                ' 2019-2020 = 3rd OT (Q = 7)
-                ' 2021+ = 2nd OT (Q = 6)
-                If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-
-                    convChoice = 2
-
-                Else
-
-                    pbpString$ = "1-KICK EP 2-GO FOR TWO"
-                    Call PBP
-
-                    ' *** Computer on Offense, or PC vs. PC ***
-
-                    'By default, go for one
-                    convChoice = 1
-
-                    'Determine score deficit
-                    scoreDiff = score(P1, 0) - score(D, 0)
-
-                    ' ***** When to "Go for TWO" *****
-
-                    If ruleOptType = 1 And ruleOptPro >= 4 Then
-                        'NFL, Post 1994 (when 2 pt conversion was implemented)
-                        ' 4th quarter, down by 2 and 2 minutes left
-                        ' 4th quarter, down by 9 and 5 minutes left
-                        ' 4th quarter, down by 6 and 7 minutes left
-                        If quarter = 4 And (scoreDiff = -9 And gameClock! < 600 Or scoreDiff = -2 And gameClock! < 120 Or scoreDiff = -5 And gameClock! < 420) Then convChoice = 2
-
-                    Else
-
-                        'College / AFL / WLAF / USFL
-                        ' Decide based on down / score
-
-                        ' 3rd / 4th quarter, down by 18
-                        ' 4th quarter, down by 16
-                        If (quarter >= 3 And scoreDiff = -18) Or (quarter = 4 And scoreDiff = -16) Then
-                            convChoice = 2
-                        Else
-                            '1) down by 2
-                            '2) ahead by 5 | 12
-                            If scoreDiff = -2 Or scoreDiff = 1 Or scoreDiff = 5 Or scoreDiff = 12 Then
-                                convChoice = 2
-                            Else
-                                'Anytime outside the final 2-min warning
-                                If Not (quarter = 4 And gameClock! > 240 Or quarter < 4) Then
-                                    'down by 1 | 4 | 5 | 8 | 10 | 13
-                                    If scoreDiff = -1 Or scoreDiff = -4 Or scoreDiff = -5 Or scoreDiff = -8 Or scoreDiff = -10 Or scoreDiff = -13 Then
-                                        convChoice = 2
-                                    End If
-                                End If
-
-                            End If
-
-                        End If
-
-                    End If
-
-                End If
-
-            Else
-
-                ' *** Human player on Offense ***
-                pbpString$ = "1-KICK EP 2-GO FOR TWO"
-
-                Do
-                    Call PBP
-                    I$ = GetKeyPress$
-                    convChoice = Val(I$)
-                Loop Until convChoice = 1 Or convChoice = 2
-
-            End If
-
-        End If
-
-    End If
-
-    3702 '
-    If convChoice = 2 Then
-
-        'Since the "down" is not reset after the score,
-        'we should treat the 2-point conversion as a
-        '"1st down" for AI / play selection purposes
-        'D = 1
-
-        ydsGained = 0
-        endZone = 1
-
-        If ruleOptType = 1 And ruleOptPro >= 4 Then
-            '1994 and beyond
-            'NFL rules
-            '2 point conversion from the 2
-            ydLine = 98
-        End If
-
-        If ruleOptType = 0 Then
-            'College rules
-            '2 point conversion from the 3
-            ydLine = 97
-        End If
-
-        'Choose a play for 2-point conversion
-        GoTo 700
-
-    Else
-
-        ' ******************************
-        ' **** POINT AFTER ATTEMPT *****
-        ' ******************************
-        'Adjust distance for goal posts
-        K1(nbrScores, 4) = K1(nbrScores, 4) + 10
-
-        'Determine kicker
-        For J = 1 To 0 Step -1:
-            'Auto-determine target kicker, I1
-            'If RN1 <= kickerPATPct(P1, J) Then I1 = J
-            If d100% <= kickerPATPct(P1, J) Then
-                activeKicker(P1) = J
-            End If
-        Next J
-
-        gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) + 1
-
-        pbpString$ = kicker$(P1, activeKicker(P1)) + " IS ON TO TRY THE EXTRA POINT"
-        Call PBP
-
-        If d100% <= kickerIdx(P1, activeKicker(P1)) Then
-
-            gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) + 1
-
-            pbpString$ = "THE KICK IS UP..."
-            Call PBP
-            Call MADEPAT
-
-            'Increase score
-            score(P1, quarter) = score(P1, quarter) + 1
-            score(P1, 0) = score(P1, 0) + 1
-
-            'Track the attempt for the kicker
-            K1(nbrScores, 6) = activeKicker(P1)
-            K1(nbrScores, 4) = K1(nbrScores, 4) + 1
-
-            Call DisplayField
-
-        Else
-
-            'PAT blocked (9% chance)
-            If d100% <= 9 Then
-
-                pbpString$ = "KICK IS BLOCKED!!"
-                Call PBP
-
-                If isOT = 1 And overtimeOpt >= 6 Then
-                    nbrPossOT(D) = 1
-                End If
-
-                If ruleOptType <> 1 Then
-
-                    'Not NFL
-                    GoTo 6605
-
-                Else
-
-                    If isOT = 1 And overtimeOpt >= 3 Then
-                        'We probably should never reach here
-                        'Pro overtime is sudden death
-                        'We should never do a PAT
-                        GoTo 3364
-                    End If
-
-                End If
-
-            Else
-
-                Call MISSPAT
-
-            End If
-
-        End If
-
-    End If
-
-    Return 'For PointsAfterTD "sub"
-
 
     '----- NOODLE -----
 
@@ -6990,17 +2631,19 @@ Sub FOOTBALL ()
         pbpString$ = pbpString$ + gameTeams$(D) + " RECOVERS!!"
         Call PBP
 
-        currDown = 1
-        ydsToFirst = 10
         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
-        ydLine = 100 - ydLine
 
         'Update possession for certain OT options
         If isOT = 1 And overtimeOpt >= 6 Then
             nbrPossOT(D) = 1
         End If
 
+        currDown = 1
+        ydsToFirst = 10
+        ydLine = 100 - ydLine
+
         Call CHANGEPOSS
+        Call MARKER1
 
         If ruleOptType > 0 Or ruleOptColl >= 7 Then
             'Pro Rules or College after 1991
@@ -7010,21 +2653,26 @@ Sub FOOTBALL ()
             If RN1 > 2 Then
 
                 scoreX1 = 10
-                G1 = Int(Rnd(1) * 48) + 1
 
-                If G1 >= 46 Then
-                    G1 = 100
+                '5% chance of return for TD
+                'This is a bit higher than the 4.75% actual
+                If d100% > 95 Then
+                    fumbRetYards = 100
                 Else
-                    G1 = Int(Rnd(1) * 18)
+                    fumbRetYards = Int(Rnd(1) * 18)
                 End If
 
-                G1 = G1 + (Int(Rnd(1) * 11) - 5) / 10
+                fumbRetYards = fumbRetYards + (Int(Rnd(1) * 11) - 5) / 10
+                fumbRetYdLine! = ydLine + fumbRetYards
+
+                startYds = 100 - ydLine
+                endYds = 100 - fumbRetYdLine!
+                Call MOVEBALL
 
                 pbpString$ = "RETURNED FOR"
 
-                returnYards = G1 + ydLine
+                If fumbRetYdLine! >= 99.99 Then
 
-                If returnYards >= 99.99 Then
                     pbpString$ = pbpString$ + Str$(Int((100 - ydLine) * 10 + .5) / 10) + " YDS "
                     Call PBP
 
@@ -7033,16 +2681,16 @@ Sub FOOTBALL ()
 
                 Else
 
-                    'returnYards < 99.99
-                    pbpString$ = pbpString$ + Str$(Int((G1) * 10 + .5) / 10) + " YDS"
+                    'retYdLine < 99.99
+                    pbpString$ = pbpString$ + Str$(Int((fumbRetYards) * 10 + .5) / 10) + " YDS"
                     Call PBP
 
-                    If returnYards <= .01 Then
+                    If fumbRetYdLine! <= .01 Then
                         'Safety!
                         GoTo 3250
                     End If
 
-                    ydLine = ydLine + G1
+                    ydLine = retYdLine!
 
                 End If
 
@@ -7060,6 +2708,7 @@ Sub FOOTBALL ()
 
     GoSub 3900
 
+    CheckPoss_OT:
     'Change of possession; check OT score / status
     If isOT = 1 And overtimeOpt >= 3 Then
         GoTo 3364
@@ -7077,7 +2726,10 @@ Sub FOOTBALL ()
     W5 = 0
 
     If U3 = 9 Then
+        'Poss End / Kickoff
         U3 = 0
+        Call CHANGEPOSS
+        Call KickoffLine
         GoTo 340
     End If
 
@@ -7086,7 +2738,7 @@ Sub FOOTBALL ()
 
     Do
 
-        Call SCOREBOARD
+        Call StatusBoard
         Call DEFMENU
 
         'Offense Play Selection
@@ -7593,7 +3245,7 @@ Sub FOOTBALL ()
 
     Loop While (timeouts(P1) > 0 And ydLine > 80 And Int(Rnd(1) * 25) + 1 = 16)
 
-    Call SCOREBOARD
+    Call StatusBoard
     Call MARKER1
 
     If playerMode = 1 And D = compTeam Then
@@ -7696,27 +3348,34 @@ Sub FOOTBALL ()
                         End If
                     End If
 
-                    pbpString$ = "HE GAINS" + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
+                    ydsAsInt = Int((ydsGained) * 10 + .5) / 10
+                    If ydsAsInt < 0 Then
+                        pbpString$ = "HE LOSES" + Str$(0 - ydsAsInt) + " YARDS"
+                    Else
+                        pbpString$ = "HE GAINS" + Str$(ydsAsInt) + " YARDS"
+                    End If
+
                     Call PBP
 
                     If endZone = 1 Then
+
                         Call TryForTwoResult
-                        'If part of NCAA overtime "2-pt" conversion
-                        If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                            GoTo 3364
-                        End If
+                        GoTo CheckPoss_2PtConv
+
+                    Else
+
+                        ballFumbled = 1
+
+                        Call COMPILER
+
+                        ydLine = ydLine + ydsGained
+                        ydsToFirst = ydsToFirst - ydsGained
+                        currDown = currDown + 1
+                        If currDown = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
+
+                        GoTo 650
+
                     End If
-
-                    ballFumbled = 1
-
-                    Call COMPILER
-
-                    ydLine = ydLine + ydsGained
-                    ydsToFirst = ydsToFirst - ydsGained
-                    currDown = currDown + 1
-                    If currDown = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
-
-                    GoTo 650
 
                 End If
 
@@ -7727,21 +3386,23 @@ Sub FOOTBALL ()
                     Call QBSNEAK
 
                     If endZone = 1 Then
+
                         Call TryForTwoResult
-                        'If part of NCAA overtime "2-pt" conversion
-                        If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                            GoTo 3364
+                        GoTo CheckPoss_2PtConv
+
+                    Else
+
+                        ydsAsInt = Int((ydsGained + ydLine) * 10 + .5) / 10
+                        If ydsAsInt < .05 Then
+                            'Safety!
+                            GoTo 3250
                         End If
-                    End If
 
-                    If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
-                        'Safety!
-                        GoTo 3250
-                    End If
+                        If ydsAsInt >= 99.9499 Then
+                            'Touchdown!
+                            GoTo 3200
+                        End If
 
-                    If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
-                        'Touchdown!
-                        GoTo 3200
                     End If
 
                     GoTo 3309
@@ -7754,6 +3415,7 @@ Sub FOOTBALL ()
                     pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
                     Call PBP
                     ydsGained = -1.0
+                    playYdLine = Int((ydsGained + ydLine) * 10 + .5) / 10
 
                     GoTo 3546
 
@@ -7789,23 +3451,24 @@ Sub FOOTBALL ()
                     Else
 
                         If endZone = 1 Then
+
                             Call TryForTwoResult
-                            'If part of NCAA overtime "2-pt" conversion
-                            If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                                GoTo 3364
-                            End If
+                            GoTo CheckPoss_2PtConv
+
+                        Else
+
+                            ballFumbled = 1
+
+                            Call COMPILER
+
+                            ydLine = ydLine + ydsGained
+                            ydsToFirst = ydsToFirst - ydsGained
+                            currDown = currDown + 1
+                            If currDown = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
+
+                            GoTo 650
+
                         End If
-
-                        ballFumbled = 1
-
-                        Call COMPILER
-
-                        ydLine = ydLine + ydsGained
-                        ydsToFirst = ydsToFirst - ydsGained
-                        currDown = currDown + 1
-                        If currDown = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
-
-                        GoTo 650
 
                     End If
 
@@ -8030,7 +3693,6 @@ Sub FOOTBALL ()
 
                 startYds = 100 - ydLine
                 endYds = startYds - ydsGained
-
                 Call MOVEBALL
 
                 If ydLine + ydsGained < 99.94999 Then
@@ -8081,24 +3743,26 @@ Sub FOOTBALL ()
                 End If
 
                 If endZone = 1 Then
+
                     ballFumbled = 0
+
                     Call TryForTwoResult
-                    'If part of NCAA overtime "2-pt" conversion
-                    If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                        GoTo 3364
+                    GoTo CheckPoss_2PtConv
+
+                Else
+
+                    If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
+                        ballFumbled = 0
+                        'Safety!
+                        GoTo 3250
                     End If
-                End If
 
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
-                    ballFumbled = 0
-                    'Safety!
-                    GoTo 3250
-                End If
+                    If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then
+                        ballFumbled = 0
+                        'Touchdown!
+                        GoTo 3200
+                    End If
 
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then
-                    ballFumbled = 0
-                    'Touchdown!
-                    GoTo 3200
                 End If
 
                 'Resolve play (penalty / fumble)
@@ -8258,23 +3922,24 @@ Sub FOOTBALL ()
                 playType = 1
 
                 If endZone = 1 Then
+
                     Call TryForTwoResult
-                    'If part of NCAA overtime "2-pt" conversion
-                    If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                        GoTo 3364
-                    End If
-                End If
-
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
-
-                    'Safety!
-                    GoTo 3250
+                    GoTo CheckPoss_2PtConv
 
                 Else
 
-                    'Check for fumble - Sack
-                    fumbPlayType = 1
-                    Call CheckFumble_1
+                    If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
+
+                        'Safety!
+                        GoTo 3250
+
+                    Else
+
+                        'Check for fumble - Sack
+                        fumbPlayType = 1
+                        Call CheckFumble_1
+
+                    End If
 
                 End If
 
@@ -8488,8 +4153,9 @@ Sub FOOTBALL ()
 
                 startYds = 100 - ydLine
                 endYds = startYds - ydsGained
-
                 Call MOVEBALL
+
+                playYdLine = Int((ydsGained + ydLine) * 10 + .5) / 10
 
                 RN0 = Int(Rnd(1) * 2) + 1
 
@@ -8505,7 +4171,11 @@ Sub FOOTBALL ()
                     If playCall = 17 Then
                         pbpString$ = qbacks$(P1, I1) + " TUCKS IT IN AND TAKES OFF!"
                         Call PBP
-                        pbpString$ = "HE PICKS UP ABOUT"
+                        If ydsGained > 0 Then
+                            pbpString$ = "HE PICKS UP ABOUT"
+                        Else
+                            pbpString$ = "HE LOSES ABOUT"
+                        End If
                     Else
                         pbpString$ = qbacks$(P1, I1) + " KEEPS THE BALL AND AND RUNS FOR"
                     End If
@@ -8516,46 +4186,50 @@ Sub FOOTBALL ()
                         pbpString$ = qbacks$(P1, I1) + " IS CHASED FROM THE POCKET"
                     Else
                         pbpString$ = qbacks$(P1, I1) + " CAN'T FIND AN OPEN TARGET"
-                        Call PBP
-                        pbpString$ = "HE SPRINTS AHEAD FOR"
                     End If
 
-                End If
+                    Call PBP
+                    pbpString$ = "HE SPRINTS AHEAD FOR"
 
-                '-- Make sure if rush was for negative yardage, that
-                ' it's recorded / tracked right
+                End If
 
                 3546 '
                 scoreX0 = 4
                 scoreX1 = 9
                 playType = 1
 
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.94999 Then
+                If playYdLine >= 99.94999 Then
                     pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
                 Else
-                    pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + .5) / 10)
-                End If
-
-                pbpString$ = pbpString$ + " YARDS"
-                Call PBP
-
-                If endZone = 1 Then
-                    Call TryForTwoResult
-                    'If part of NCAA overtime "2-pt" conversion
-                    If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                        GoTo 3364
+                    If ydsGained > 0 Then
+                        pbpString$ = pbpString$ + Str$(ydsGained)
+                    Else
+                        pbpString$ = pbpString$ + " A LOSS OF" + Str$(ydsGained)
                     End If
                 End If
 
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
-                    'Safety!
-                    GoTo 3250
-                End If
+                pbpString$ = pbpString$ + " YARDS"
 
-                If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
-                    gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
-                    'Touchdown!
-                    GoTo 3200
+                Call PBP
+
+                If endZone = 1 Then
+
+                    Call TryForTwoResult
+                    GoTo CheckPoss_2PtConv
+
+                Else
+
+                    If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
+                        'Safety!
+                        GoTo 3250
+                    End If
+
+                    If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
+                        gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
+                        'Touchdown!
+                        GoTo 3200
+                    End If
+
                 End If
 
                 'Check for fumble - QB sneak / rollout
@@ -8651,7 +4325,7 @@ Sub FOOTBALL ()
 
                         3586 '
                         'ADDED AFTER REPLAYS OF 5-24-93 <-- ???
-                        'Random # 1 - 3 = 1 And Pro Game = adjust by 1
+                        '1-in-3 Chance And Pro Game = adjust by 1
                         If Int(Rnd(1) * 3) + 1 = 1 And ruleOptType <> 0 Then
                             ydsGained = ydsGained - 1
                         End If
@@ -8684,9 +4358,7 @@ Sub FOOTBALL ()
 
                         If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
 
-                            pbpString$ = "THAT CATCH BY "
-                            Call WHICHRECEIVER
-                            pbpString$ = pbpString$ + " GAINED" + Str$(Int(100 - ydLine)) + " YARDS"
+                            Call ReceiverGainPBP(Str$(Int(100 - ydLine)))
 
                             ydsGained = 100 - ydLine
 
@@ -8706,36 +4378,27 @@ Sub FOOTBALL ()
 
                             If ydsGained < 0 Then
 
-                                pbpString$ = "THAT CATCH BY "
-                                Call WHICHRECEIVER
-                                pbpString$ = pbpString$ + " LOST" + Str$(Int((ydsGained * -1) * 10 + .5) / 10) + " YARDS"
-
-                                If ydsGained > WR(P1, I3) Then
-                                    gameWR$(P1, I3) = ""
-                                    WR(P1, I3) = ydsGained
-                                End If
-
-                                If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
-                                    gameQB$(P1, qbNumber(P1)) = ""
-                                    quarterbacks(P1, qbNumber(P1)) = ydsGained
-                                End If
+                                Call ReceiverLossPBP(Str$(Int((ydsGained * -1) * 10 + .5) / 10))
 
                             Else
 
-                                If Int((ydsGained + ydLine) * 10 + .5) / 10 < 99.9499 Then pbpString$ = "THAT CATCH BY "
+                                If Int((ydsGained + ydLine) * 10 + .5) / 10 < 99.9499 Then
+                                    pbpString$ = "THAT CATCH BY "
+                                End If
+
                                 Call WHICHRECEIVER
                                 pbpString$ = pbpString$ + " GAINED" + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
 
-                                If ydsGained > WR(P1, I3) Then
-                                    gameWR$(P1, I3) = ""
-                                    WR(P1, I3) = ydsGained
-                                End If
+                            End If
 
-                                If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
-                                    gameQB$(P1, qbNumber(P1)) = ""
-                                    quarterbacks(P1, qbNumber(P1)) = ydsGained
-                                End If
+                            If ydsGained > WR(P1, I3) Then
+                                gameWR$(P1, I3) = ""
+                                WR(P1, I3) = ydsGained
+                            End If
 
+                            If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
+                                gameQB$(P1, qbNumber(P1)) = ""
+                                quarterbacks(P1, qbNumber(P1)) = ydsGained
                             End If
 
                         End If
@@ -8743,30 +4406,32 @@ Sub FOOTBALL ()
                         Call PBP
 
                         If endZone = 1 Then
+
                             ballFumbled = 0
+
                             Call TryForTwoResult
-                            'If part of NCAA overtime "2-pt" conversion
-                            If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                                GoTo 3364
+                            GoTo CheckPoss_2PtConv
+
+                        Else
+
+                            If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
+
+                                ballFumbled = 0
+
+                                'Safety!
+                                GoTo 3250
+
                             End If
-                        End If
 
-                        If Int((ydsGained + ydLine) * 10 + .5) / 10 < .05 Then
+                            If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
 
-                            ballFumbled = 0
+                                ballFumbled = 0
+                                gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
 
-                            'Safety!
-                            GoTo 3250
+                                'Touchdown!
+                                GoTo 3200
 
-                        End If
-
-                        If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
-
-                            ballFumbled = 0
-                            gameStatsTeam(P1, 0) = gameStatsTeam(P1, 0) + 1
-
-                            'Touchdown!
-                            GoTo 3200
+                            End If
 
                         End If
 
@@ -8963,12 +4628,7 @@ Sub FOOTBALL ()
 
                     End If
 
-                    'Change of possession; check OT score / status
-                    If isOT = 1 And overtimeOpt >= 3 Then
-                        GoTo 3364
-                    Else
-                        GoTo 700
-                    End If
+                    GoTo CheckPoss_OT
 
                 End If
 
@@ -9215,7 +4875,8 @@ Sub FOOTBALL ()
                 gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
                 gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
-                If ydLine + ydsGained < -9.999 Then
+                fumbRetYdLine! = ydLine + ydsGained
+                If fumbRetYdLine! < -9.999 Then
 
                     'Offensive Safety
                     score(D, quarter) = score(D, quarter) + 2
@@ -9224,18 +4885,27 @@ Sub FOOTBALL ()
 
                 End If
 
-                If ydLine + ydsGained <= .071 And ydLine + ydsGained >= -9.999 Then
+                If fumbRetYdLine! <= .071 And fumbRetYdLine! >= -9.999 Then
+
+                    pbpString$ = "IT'S BLOCKED IN THE END ZONE!"
+                    Call PBP
 
                     If d100% <= 50 Then
+
 
                         'Offensive Safety
                         score(D, quarter) = score(D, quarter) + 2
                         score(D, 0) = score(D, 0) + 2
+                        pbpString$ = "THE OFFENSE RESCUES IT!"
+                        Call PBP
                         GoTo 3251
 
                     Else
 
                         scoreX1 = 10
+                        pbpString$ = "THE DEFENSE SCOOPS IT UP!"
+                        Call PBP
+
                         Call CHANGEPOSS
 
                         'Touchdown!
@@ -9269,6 +4939,8 @@ Sub FOOTBALL ()
                 Else
                     pbpString$ = pbpString$ + Str$(Int(ydLine)) + " YARD LINE"
                 End If
+
+                Call PBP
 
                 playSegment = 5
 
@@ -9530,12 +5202,7 @@ Sub FOOTBALL ()
 
             End If
 
-            'Change of possession; check OT score / status
-            If isOT = 1 And overtimeOpt >= 3 Then
-                GoTo 3364
-            Else
-                GoTo 700
-            End If
+            GoTo CheckPoss_OT
 
         Case 20
 
@@ -9615,24 +5282,24 @@ Sub FOOTBALL ()
                 If fgChoice > 0 Then
 
                     Select Case ydsToFirst
-                    
+
                         Case 1 To 5
                             'Short Yardage
                             passFakeSuccess(1) = 55
                             passFakeSuccess(2) = 30
-                                                
+
                         Case 6 To 15
                             'Medium Yardage
                             passFakeSuccess(1) = 40
                             passFakeSuccess(2) = 20
-                        
+
                         Case Is >= 16
                             'Long Yardage
                             passFakeSuccess(1) = 15
                             passFakeSuccess(2) = 5
 
                     End Select
-                    
+
                     ' *** FAKE FIELD GOAL ***
                     If fgDefChoice = 2 Then
 
@@ -9678,7 +5345,7 @@ Sub FOOTBALL ()
                         passIncomplete = 0
                         passIntercepted = 0
 
-                        Select Case I2
+                        Select Case fgDefChoice
 
                             Case 1
                                 'FG Block
@@ -9695,7 +5362,7 @@ Sub FOOTBALL ()
                                         passIncomplete = 1
 
                                     Case 86 To 91:
-                                        pbpString$ = "THE PASS IS INTERCEPTED!"
+                                        pbpString$ = "THE PASS IS INTERCEPTED"
                                         Call PBP
                                         passIntercepted = 1
 
@@ -9720,7 +5387,7 @@ Sub FOOTBALL ()
                                         GoTo 3309
 
                                     Case 96 To 98:
-                                        pbpString$ = "THE PASS IS INTERCEPTED!"
+                                        pbpString$ = "THE PASS IS INTERCEPTED"
                                         Call PBP
                                         passIntercepted = 1
 
@@ -9752,7 +5419,9 @@ Sub FOOTBALL ()
                                 nbrPossOT(D) = 1
                             End If
 
-                            If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
+                            intRetYdLine = Int((ydsGained + ydLine) * 10 + .5) / 10
+
+                            If intRetYdLine >= 99.9499 Then
 
                                 'Interception in the end zone
                                 pbpString$ = pbpString$ + " IN THE END ZONE"
@@ -9774,6 +5443,8 @@ Sub FOOTBALL ()
                                 currDown = 1
                                 ydLine = 100 - ydsGained - ydLine
                                 ydsToScore = 100 - ydLine
+                                Call MARKER
+                                Call StatusBoard
 
                                 Call YARDLINE
 
@@ -9784,9 +5455,9 @@ Sub FOOTBALL ()
                                 Call YARDAGE
 
                                 scoreX1 = 5
+
                                 startYds = 100 - ydLine
                                 endYds = startYds - ydsGained
-
                                 Call MOVEBALL
 
                                 pbpString$ = "RETURNED FOR"
@@ -9815,12 +5486,7 @@ Sub FOOTBALL ()
 
                             End If
 
-                            'Change of possession; check OT score / status
-                            If isOT = 1 And overtimeOpt >= 3 Then
-                                GoTo 3364
-                            Else
-                                GoTo 700
-                            End If
+                            GoTo CheckPoss_OT
 
                         Else
 
@@ -9974,11 +5640,10 @@ Sub FOOTBALL ()
         Call INCOMPLETE
 
         If endZone = 1 Then
+
             Call TryForTwoResult
-            'If part of NCAA overtime "2-pt" conversion
-            If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
-                GoTo 3364
-            End If
+            GoTo CheckPoss_2PtConv
+
         End If
 
         playSegment = 4
@@ -9997,6 +5662,7 @@ Sub FOOTBALL ()
     'of seeing the team name or the mascot name
     'IE, TOUCHDOWN! 89 SAN FRANCISCO
     '    TOUCHDOWN! 49ERS
+
     If d100% <= 50 Then
         pbpString$ = "T O U C H D O W N !!! " + gameTeams$(P1)
     Else
@@ -10017,43 +5683,156 @@ Sub FOOTBALL ()
         score(P1, 0) = score(P1, 0) + 7
     End If
 
-    Call DisplayField
-
+    Call SETSCREEN
     Call KickoffLine
-    ydsToFirst = 10
     currDown = 1
+    ydsToFirst = 10
 
-    Call SCOREBOARD
+    Call StatusBoard
 
-    'Update possession for certain OT options
     If isOT = 1 And overtimeOpt >= 6 Then
-        nbrPossOT(D) = 1
+        otTDs(P1) = 1
+    End If
+
+    'End possession for Modified Sudden Death
+    If isOT = 1 And (overtimeOpt >= 6) Then
+
+        'Sudden Death Modified; It's over if the other team hasn't scored
+        If (overtimeOpt < 8 And nbrPossOT(D) = 1) Or (overtimeOpt = 8 And nbrPossOT(D) = 1 And otTDs(D) = 0) Then
+            GoTo 3364
+        Else
+            nbrPossOT(D) = 1
+        End If
+
     End If
 
     'Overtime - Evaluate Score / Change Poss
-    If isOT = 1 And (overtimeOpt >= 2 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Then
+    'College / Pro, Sudden Death and Opp Had Poss
+    If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) Or ((overtimeOpt = 6 Or overtimeOpt = 7) And nbrPossOT(D) = 1) Then
         GoTo 3364
     End If
 
-    GoSub PointsAfterTD
+    PointsAfterTD:
+    Call GetPATChoice(convChoice)
 
+    If convChoice = 2 Then
+
+        ydsGained = 0
+        endZone = 1
+
+        If ruleOptType = 1 And ruleOptPro >= 4 Then
+            '1994 and beyond
+            'NFL rules
+            '2 point conversion from the 2
+            ydLine = 98
+        End If
+
+        If ruleOptType = 0 Then
+            'College rules
+            '2 point conversion from the 3
+            ydLine = 97
+        End If
+
+        convChoice = 0
+
+        'Choose a play for 2-point conversion
+        GoTo 700
+
+    Else
+
+        ' ******************************
+        ' **** POINT AFTER ATTEMPT *****
+        ' ******************************
+        'Adjust distance for goal posts
+        K1(nbrScores, 4) = K1(nbrScores, 4) + 10
+
+        'Determine kicker
+        For J = 1 To 0 Step -1:
+            'Auto-determine target kicker, I1
+            'If RN1 <= kickerPATPct(P1, J) Then I1 = J
+            If d100% <= kickerPATPct(P1, J) Then
+                activeKicker(P1) = J
+            End If
+        Next J
+
+        gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) + 1
+
+        pbpString$ = kicker$(P1, activeKicker(P1)) + " IS ON TO TRY THE EXTRA POINT"
+        Call PBP
+
+        If d100% <= kickerIdx(P1, activeKicker(P1)) Then
+
+            gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) + 1
+
+            pbpString$ = "THE KICK IS UP..."
+            Call PBP
+            Call MADEPAT
+
+            'Increase score
+            score(P1, quarter) = score(P1, quarter) + 1
+            score(P1, 0) = score(P1, 0) + 1
+
+            'Track the attempt for the kicker
+            K1(nbrScores, 6) = activeKicker(P1)
+            K1(nbrScores, 4) = K1(nbrScores, 4) + 1
+
+            Call SETSCREEN
+
+        Else
+
+            'PAT blocked (9% chance)
+            If d100% <= 9 Then
+
+                pbpString$ = "KICK IS BLOCKED!!"
+                Call PBP
+
+                If isOT = 1 And overtimeOpt >= 6 Then
+                    nbrPossOT(D) = 1
+                End If
+
+                If ruleOptType <> 1 Then
+
+                    'All but NFL
+                    Call Turnover_PAT
+                    U3 = 9
+                    GoTo CheckPoss_OT
+
+                End If
+
+            Else
+
+                Call MISSPAT
+
+            End If
+
+        End If
+
+    End If
+
+    'Only PAT will make it here
+    If (isOT = 1 And overtimeOpt = 8) Then
+        GoTo 3364
+    End If
+
+    'Change possession to place the *
+    'next to the team on Def when we
+    'update the screen / status board
     Call CHANGEPOSS
+    Call StatusBoard
 
     playSegment = 4
+
     U3 = 9
-
-    ydsToFirst = 10
-
     GoSub 3900
-
     U3 = 0
-
-    Call SCOREBOARD
 
     If playType > 0 And playType < 3 And 100 - ydLine > 10 And ruleOptType <> 0 Then
         gameStatsTeam(D, 0) = gameStatsTeam(D, 0) + 1
     End If
 
+    'Change possession back to where it should be
+    'Off always kicks off to Def
+    Call CHANGEPOSS
     GoTo 340
 
 
@@ -10076,8 +5855,9 @@ Sub FOOTBALL ()
         ydLine = 20
     End If
 
-    ydsToFirst = 10
     currDown = 1
+    ydsToFirst = 10
+
     playSegment = 5
     scoreX1 = 7
 
@@ -10088,24 +5868,31 @@ Sub FOOTBALL ()
         nbrPossOT(D) = 1
     End If
 
+    'Change possession to place the *
+    'next to the team on Def when we
+    'update the screen / status board
     Call CHANGEPOSS
 
     I6 = 99
+
     U3 = 9
-
     GoSub 3900
-
     U3 = 0
+
     pbpString$ = "S A F E T Y  !!!"
 
     Call PBP
 
-    Call DisplayField
+    Call SETSCREEN
 
     'Overtime - Evaluate Score / Change Poss
-    If isOT = 1 And (overtimeOpt >= 2 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Then
+    If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Then
         GoTo 3364
     Else
+        'Change possession back to where it should be
+        'Off always kicks off to Def
+        Call CHANGEPOSS
+        Call KickoffLine
         GoTo 340
     End If
 
@@ -10588,12 +6375,7 @@ Sub FOOTBALL ()
 
     GoSub 3900
 
-    'Change of possession; check OT score / status
-    If isOT = 1 And overtimeOpt >= 3 Then
-        GoTo 3364
-    Else
-        GoTo 700
-    End If
+    GoTo CheckPoss_OT
 
     '----- NOODLE -----
 
@@ -10629,12 +6411,12 @@ Sub FOOTBALL ()
 
     3360 '
     gameClock! = 0
-    Call SCOREBOARD
+    Call StatusBoard
 
     quarter = quarter + 1
 
     If quarter = 3 Or quarter >= 5 Then
-        'If end of half
+        'End of half = new possession
         U3 = 0
     End If
 
@@ -10643,7 +6425,6 @@ Sub FOOTBALL ()
 
     'quarter - 1 = previous quarter
     'We've already incremented it
-
     Select Case quarter - 1
 
         Case 1, 3
@@ -10651,7 +6432,7 @@ Sub FOOTBALL ()
             'End of 1st / 3rd Quarter
             gameClock! = 900
 
-            Call SCOREBOARD
+            Call StatusBoard
             pbpString$ = "END OF QUARTER"
             Call PBP
 
@@ -10662,7 +6443,7 @@ Sub FOOTBALL ()
             'Half Time
             gameClock! = 900
 
-            Call SCOREBOARD
+            Call StatusBoard
             pbpString$ = "HALF TIME"
             Call PBP
 
@@ -10704,26 +6485,41 @@ Sub FOOTBALL ()
             'End of 4th Quarter / Overtime
 
             3364 '
-            'Check if we're configured for overtime
-            'No overtime | Pro Overtime, Score Not Tied | Modified Sudden Death and both teams have possession
-            'College Overtime and Both Team Possessions Or No Possessions, Score Not Tied
-            '-- need to add check for modern NFL overtime
-            If overtimeOpt = 0 Or (overtimeOpt = 2 And score(0, 0) <> score(1, 0)) Or ((overtimeOpt >= 3) And score(0, 0) <> score(1, 0) And (nbrPossOT(0) = 1 And nbrPossOT(1) = 1 Or nbrPossOT(0) = 0 And nbrPossOT(1) = 0)) Then
+            'Check overtime score
+            gameOver = 0
 
-                'Nope!
-                'Leave quarter at 4
+            If isOT = 0 And quarter = 5 And score(0, 0) <> score(1, 0) Then
+
+                'Regular Game, Mot Tied
+                gameOver = 1
+
+            Else
+
+                'Sudden Death, Score Not Tied
+                If ((overtimeOpt = 1 Or overtimeOpt = 2) And score(0, 0) <> score(1, 0)) Then
+                    gameOver = 1
+                End If
+
+                'NCAA | Modified Sudden Death (Reg): Both Teams Have Possession, Not Tied
+                If ((overtimeOpt >= 3 And overtimeOpt <= 7) And score(0, 0) <> score(1, 0) And (nbrPossOT(0) = 1 And nbrPossOT(1) = 1 Or nbrPossOT(0) = 0 And nbrPossOT(1) = 0)) Then
+                    gameOver = 1
+                End If
+
+                'Modified Sudden Death (Postseason): Both Teams Have Possession And At Least 1 Has TD Or Score
+                If overtimeOpt <= 8 And score(0, 0) <> score(1, 0) And ((otTDs(P1) And nbrPossOT(0) = 1 And nbrPossOT(1) = 1) Or (otTDs(P1) = 0 And nbrPossOT(0) = 1 And nbrPossOT(1) = 1)) Then
+                    gameOver = 1
+                End If
+
+                End
+
+            End If
+
+            If gameOver = 1 Then
+
+                'Leave at current quarter
                 If isOT = 0 Then
                     quarter = quarter - 1
                 End If
-
-                gameClock! = 0
-                Call SCOREBOARD
-
-                pbpString$ = "END OF GAME"
-                Call PBP
-                Call GetKeyWhenNoDelay
-
-                gameOver = 1
 
             Else
 
@@ -10731,29 +6527,33 @@ Sub FOOTBALL ()
                 Select Case overtimeOpt
 
                     Case 1
-                        'Overtime with quarters
-                        I$ = "Y"
-
-                        'Play overtime as 1 regular quarter
-                        overtimeOpt = 0
-                        'gameClock! = 900
-
-                    Case 2
-                        'Sudden Death to Win
-                        'That is, first score wins
+                        'Sudden Death 1 Quarter
                         'Overtime with quarters
                         I$ = "Y"
 
                         isOT = 1
-                        'gameClock! = 900
+
+                    Case 2
+                        'Sudden Death to Win
+                        'Overtime with quarters
+                        I$ = "Y"
+
+                        isOT = 1
+
+                        'We have to keep the game clock going
+                        'It isn't perfect but it works
+                        'I've seen the clock down to 2 or 3 mins
+                        'before getting reset
+                        If gameClock! = 0 Then
+                            gameClock! = 900
+                        End If
+
 
                     Case 3 To 5
                         'College Rules
-
                         'Overtime with quarters
                         I$ = "N"
 
-                        '1st Overtime
                         isOT = 1
 
                         '1st and 10 from the 25
@@ -10829,7 +6629,7 @@ Sub FOOTBALL ()
 
                         End If
 
-                        Call DisplayField
+                        Call SETSCREEN
 
                         'College Overtime, 2019+
                         If (quarter >= 9 And overtimeOpt = 4) Or (quarter >= 7 And overtimeOpt = 5) Then
@@ -10841,37 +6641,74 @@ Sub FOOTBALL ()
                         End If
 
                     Case 6, 7
-                        'Sudden Death Modified
-                        'That is, first score wins
+                        'Sudden Death Modified - Regular Season
 
                         'Overtime with quarters
                         isOT = 1
                         I$ = "Y"
 
                         '-- We may be able to skip the below assignment
-                        If score(P1, 0) > score(D, 0) And nbrPossOT(D) = 1 Then
+                        If nbrPossOT(D) = 1 And score(P1, 0) > score(D, 0) Then
                             GoTo 3364
                         End If
 
                         If gameClock! = 0 Then
+                            'End after 1 period
                             I$ = "N"
                         Else
+                            'Keep on playing!
                             If nbrPossOT(0) = 1 Or nbrPossOT(1) = 1 Then
                                 GoTo 700
                             End If
+                        End If
+
+
+                    Case 8
+                        'Sudden Death Modified - Post Season
+
+                        'Overtime with quarters
+                        isOT = 1
+                        I$ = "Y"
+
+                        If gameClock! = 0 Then
+
+                            'More periods!
+                            gameClock! = 900
+
+                        Else
+
+                            'If they've at least had the ball and are ahead
+                            'Then the game is over
+                            If nbrPossOT(D) = 1 And (score(D, 0) > score(P, 0)) Then
+                                GoTo 3364
+                            End If
+
+                            'If opp hasn't scored TD but we have
+                            If otTDs(D) = 0 And otTDs(P1) = 1 Then
+
+                                nbrPossOT(D) = 1
+
+                                If score(D, 0) <> score(P, 0) Then
+
+                                    currDown = 1
+                                    ydsToFirst = 10
+                                    Call KickoffLine
+                                    GoTo 340
+
+                                Else
+
+                                    GoTo 700
+
+                                End If
+
+                            End If
+
                         End If
 
                 End Select
 
                 'Overtime with Quarters
                 If UCase$(I$) = "Y" Then
-
-                    '10 min OT for modern NFL
-                    If overtimeOpt = 7 Then
-                        gameClock! = 600
-                    End If
-
-                    Call SCOREBOARD
 
                     If quarter = 5 Then
 
@@ -10891,7 +6728,7 @@ Sub FOOTBALL ()
                             gameClock! = 900
                         End If
 
-                        Call SCOREBOARD
+                        Call StatusBoard
 
                         Call CoinToss
 
@@ -10901,21 +6738,50 @@ Sub FOOTBALL ()
                         Call KOChoices_NoDefer
 
                         'Update possession
-                        If overtimeOpt >= 2 Then
+                        If overtimeOpt >= 1 Then
                             nbrPossOT(P1) = 1
                         End If
 
+                        Call CHANGEPOSS
+                        Call KickoffLine
                         GoTo 340
 
                     Else
 
-                        'Q > 5 = 2nd / 3rd Overtime, etc.
-                        'Should only be here for College
-                        timeouts(0) = 1
-                        timeouts(1) = 1
+                        'Multiple Quarters
                         isOT = 1
 
-                        GoTo 700
+                        'Sudden Death Postseason
+                        'EVERY Quarter
+                        If overtimeOpt = 2 Then
+                            'Just switch sides of the field
+                            winTeam = 1 - winTeam
+
+                            GoTo 700
+
+                        End If
+
+                        'Mod SD Postseason - "3rd Quarter" OT
+                        If overtimeOpt = 8 And (quarter Mod 4 = 3) Then
+
+                            'Modified Sudden Death
+                            Call CHANGEPOSS
+                            Call HALFSTART
+                            Call SETSCREEN
+                            GoTo 340
+
+                        End If
+
+                        'NCAA - Alternating Possessions
+                        'Each such alternate is an "OT" quarter
+                        If overtimeOpt >= 3 And overtimeOpt <= 5 Then
+
+                            timeouts(0) = 1
+                            timeouts(1) = 1
+
+                            GoTo 700
+
+                        End If
 
                     End If
 
@@ -10924,44 +6790,62 @@ Sub FOOTBALL ()
                     'Since this increases at end of quarter,
                     'we need to decrease
                     quarter = quarter - 1
-                    gameClock! = 0
-                    Call SCOREBOARD
-
-                    pbpString$ = "END OF GAME"
-                    Call PBP
-                    Call GetKeyWhenNoDelay
+                    gameOver = 1
 
                 End If
-
 
             End If
 
     End Select
 
-
     'Check if game is over
-    If gameOver <> 1 Then
+    If gameOver = 1 Then
 
-        'Game not over
-        Call SCOREBOARD
+        gameClock! = 0
+        Call StatusBoard
+
+        pbpString$ = "END OF GAME"
+        Call PBP
+        Call GetKeyWhenNoDelay
+
+    Else
+
+        Call StatusBoard
         Call MARKER1
 
     End If
 
-    '8540
     Call TICKERUPDATE
 
-    If quarter <> 3 Then
-        gameOver = 1
-        Call pbplog(10733)
-        Call EndOfGame
-        Exit Sub
+    850 '
+    Call TICKER
+
+    If halfTime = 1 Then
+
+        halfTime = 0
+
+        If autoPlay <> 1 Then
+            For I3 = 0 To 1:
+                Call CHOOSEQB(I3)
+            Next I3
+        End If
+
+        Randomize Timer
+
+        Call StatusBoard
+
+        GoTo 330
+
     Else
-        GoTo 850
+
+        If gameOver = 1 Then
+            Call EndOfGame
+            Exit Sub
+        Else
+            GoTo 700
+        End If
+
     End If
-
-
-
 
 
     '----- NOODLE -----
@@ -10996,11 +6880,14 @@ Sub FOOTBALL ()
 
     If endZone = 1 Then
 
-        'Intercepted in the end zone
+        'Intercepted - Endzone / 2 Pt Conv
         pbpString$ = pbpString$ + " IN THE END ZONE"
         Call PBP
 
-        GoTo 6605
+        Call Turnover_PAT
+
+        'Goes to a kickoff
+        GoTo CheckPoss_2PtConv
 
     End If
 
@@ -11022,34 +6909,30 @@ Sub FOOTBALL ()
         'Intercepted doesn't leave the endzone
         pbpString$ = pbpString$ + " IN THE END ZONE"
         Call PBP
-
         Call Touchback
 
-        'Change of possession; check OT score / status
-        If isOT = 1 And overtimeOpt >= 3 Then
-            GoTo 3364
-        Else
-            GoTo 700
-        End If
+        GoTo CheckPoss_OT
 
     End If
 
     If ydsGained + ydLine > 49.99 Then
-        pbpString$ = pbpString$ + " AT THE " + Str$(Int(100 - ydsGained - ydLine)) + " YARD LINE"
+        pbpString$ = pbpString$ + " AT THE" + Str$(Int(100 - ydsGained - ydLine)) + "YARD LINE"
     Else
-        pbpString$ = pbpString$ + " AT THE " + Str$(Int(ydsGained + ydLine)) + " YARD LINE"
+        pbpString$ = pbpString$ + " AT THE" + Str$(Int(ydsGained + ydLine)) + "YARD LINE"
     End If
 
     Call PBP
 
-    'Update possession for certain OT options
     Call CHANGEPOSS
 
     currDown = 1
     ydLine = 100 - ydsGained - ydLine
-    ydsToScore = 100 - ydLine
 
+    ydsToScore = 100 - ydLine
+    Call MARKER
     Call YARDLINE
+
+    Call StatusBoard
 
     ydsGained = Int(Rnd(1) * 25) + 1
 
@@ -11060,9 +6943,9 @@ Sub FOOTBALL ()
     Call YARDAGE
 
     scoreX1 = 5
+
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
     pbpString$ = "RETURNED FOR"
@@ -11136,12 +7019,7 @@ Sub FOOTBALL ()
 
         GoSub 3900
 
-        'Change of possession; check OT score / status
-        If isOT = 1 And overtimeOpt >= 3 Then
-            GoTo 3364
-        Else
-            GoTo 700
-        End If
+        GoTo CheckPoss_OT
 
     End If
 
@@ -11355,20 +7233,25 @@ Sub FOOTBALL ()
         '0.5% chance of bad snap - field goal
         pbpString$ = "THERE'S A BAD SNAP FROM CENTER!!"
         Call PBP
-        ydsGained = (Int(Rnd(1) * 9) + 6) * -1
 
         Call AddPossessionTime(4, 7)
 
         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
         gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
-        If ydLine + ydsGained < -9.999 Then
+        ydsGained = (Int(Rnd(1) * 9) + 6) * -1
+        retYdLine! = ydLine + ydsGained
+
+        If retYdLine! < -9.999 Then
             score(D, quarter) = score(D, quarter) + 2
             score(D, 0) = score(D, 0) + 2
             GoTo 3251
         End If
 
-        If ydLine + ydsGained <= .071 And ydLine + ydsGained >= -9.999 Then
+        If retYdLine! <= .071 And retYdLine! >= -9.999 Then
+            'Why 50% chance of safety vs TD?
+            'Difference between Off or Def recovery?
+            'If so, let's add the PBP
 
             If d100% <= 50 Then
 
@@ -11381,50 +7264,52 @@ Sub FOOTBALL ()
             Else
 
                 scoreX1 = 10
+                ydsToScore = ydLine
+
                 Call CHANGEPOSS
+                Call MARKER
+                startYds = 100 - ydLine
+                endYds = retYdLine!
+                Call MOVEBALL
 
                 'Touchdown!
                 GoTo 3200
 
             End If
 
-            'Update possession for certain OT options
-            If isOT = 1 And overtimeOpt >= 6 Then
-                nbrPossOT(D) = 1
-            End If
-
-            Call CHANGEPOSS
-            currDown = 1
-            ydsToFirst = 10
-            ydLine = 100 - ydLine
-
-            If ydsToFirst >= 90 Then
-                ydsToFirst = 100 - ydLine
-            End If
-
-            If d100% <= 50 Then
-                pbpString$ = gameTeams$(P1) + " TAKES OVER ON THE"
-            Else
-                pbpString$ = gameMascots$(P1) + " TAKE OVER ON THE"
-            End If
-
-            If ydLine > 50 Then
-                pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARD LINE"
-            Else
-                pbpString$ = pbpString$ + Str$(Int(ydLine)) + " YARD LINE"
-            End If
-
-            playSegment = 5
-
-            GoSub 3900
-
-            If isOT = 1 And overtimeOpt >= 3 Then
-                GoTo 3364
-            Else
-                GoTo 700
-            End If
-
         End If
+
+        'Update possession for certain OT options
+        If isOT = 1 And overtimeOpt >= 6 Then
+            nbrPossOT(D) = 1
+        End If
+
+        Call CHANGEPOSS
+        currDown = 1
+        ydsToFirst = 10
+        ydLine = 100 - ydLine
+
+        If ydsToFirst >= 90 Then
+            ydsToFirst = 100 - ydLine
+        End If
+
+        If d100% <= 50 Then
+            pbpString$ = gameTeams$(P1) + " TAKES OVER ON THE"
+        Else
+            pbpString$ = gameMascots$(P1) + " TAKE OVER ON THE"
+        End If
+
+        If ydLine > 50 Then
+            pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARD LINE"
+        Else
+            pbpString$ = pbpString$ + Str$(Int(ydLine)) + " YARD LINE"
+        End If
+
+        playSegment = 5
+
+        GoSub 3900
+
+        GoTo CheckPoss_OT
 
     Else
 
@@ -11442,6 +7327,7 @@ Sub FOOTBALL ()
             Call AddPossessionTime(4, 7)
 
             ydsGained = Int(Rnd(1) * 22) * -1
+
             Call YARDAGE
             ydLine = 100 - ydLine - ydsGained
 
@@ -11457,7 +7343,9 @@ Sub FOOTBALL ()
                     nbrPossOT(D) = 1
                 End If
 
+                ydsToScore = 100 - ydLine
                 Call CHANGEPOSS
+                Call MARKER
 
                 If d100% <= 50 Then
                     pbpString$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
@@ -11480,39 +7368,37 @@ Sub FOOTBALL ()
 
                     Call CHANGEPOSS
 
+                    currDown = 1
                     ydsToFirst = 10
 
                     If ydLine >= 90 Then
                         ydsToFirst = 100 - ydLine
                     End If
 
-                    currDown = 1
-
                     Call DELAY
 
                     Call CheckGameClock
                     If gameClock! = 0 Then GoTo 3360
 
-                    'Change of possession; check OT score / status
-                    If isOT = 1 And overtimeOpt >= 3 Then
-                        GoTo 3364
-                    Else
-                        GoTo 700
-                    End If
+                    GoTo CheckPoss_OT
 
                 Else
+
+                    '6% chance of being recovered for a touchdown
 
                     'Update possession for certain OT options
                     If isOT = 1 And overtimeOpt >= 6 Then
                         nbrPossOT(D) = 1
                     End If
 
-                    Call CHANGEPOSS
-
                     ydsGained = 100 - ydLine
+                    ydsToScore = ydsGained
+
+                    Call CHANGEPOSS
+                    Call MARKER
+
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
-
                     Call MOVEBALL
 
                     If d100% <= 50 Then
@@ -11563,32 +7449,53 @@ Sub FOOTBALL ()
                 Call FGMADE
                 Call AddPossessionTime(4, 7)
                 Call ITSGOOD
-                Call DisplayField
+                Call SETSCREEN
 
-                'If the other team (at this point, offense) has possessed the ball,
-                'then it's basically game over
-                If isOT = 1 And (overtimeOpt >= 2 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Then
+                'Opp has possessed the ball; it's game over
+                '(unless the score doesn't align)
+                'If isOT = 1 And score(P1, 0) <> score(D, 0) And ((overtimeOpt >= 1 And overtimeOpt <= 5) Or (overtimeOpt = 6 Or overtimeOpt = 7 And nbrPossOT(D) = 1)) Then
+                If isOT = 1 And score(P1, 0) <> score(D, 0) And (overtimeOpt >= 1 And overtimeOpt <= 5) Then
                     GoTo 3364
                 End If
 
-                'The other team hasn't had the ball;
+                'Opp has NOT possessed the ball;
                 'They're about to get it for a kickoff
-                If isOT = 1 And overtimeOpt >= 6 Then
-                    nbrPossOT(D) = 1
+                If isOT = 1 And (overtimeOpt = 6 Or overtimeOpt = 7) Then
+                    If nbrPossOT(D) = 1 Then
+                        GoTo 3364
+                    Else
+                        nbrPossOT(D) = 1
+                    End If
                 End If
 
-                Call CHANGEPOSS
-                Call SCOREBOARD
+                'Mod Sudden Death Postseason
+                'Opp has possessed the ball or has TD; it's game over
+                If isOT = 1 And (overtimeOpt = 8 And (otTDs(D) = 1 Or (nbrPossOT(0) = 1 And nbrPossOT(1) = 1))) Then
+                    GoTo 3364
+                End If
 
+                'Change possession to place the *
+                'next to the team on Def when we
+                'update the screen / status board
+                Call CHANGEPOSS
                 Call KickoffLine
-                Call SCOREBOARD
+                Call MARKER1
+                Call StatusBoard
 
                 Call CheckGameClock
                 If gameClock! = 0 Then
+                    'End of quarter
                     U3 = 9
                     GoTo 3360
                 End If
 
+                If isOT = 1 And (overtimeOpt = 8) Then
+                    nbrPossOT(P1) = 1
+                End If
+
+                'Change possession back to where it should be
+                'Off always kicks off to Def
+                Call CHANGEPOSS
                 GoTo 340
 
             Else
@@ -11596,6 +7503,12 @@ Sub FOOTBALL ()
                 Call MISSEDFG
                 currDown = 1
                 ydsToFirst = 10
+
+                'The other team hasn't had the ball;
+                'They're about to get it for a kickoff
+                If isOT = 1 And overtimeOpt >= 6 Then
+                    nbrPossOT(P1) = 1
+                End If
 
                 Call CHANGEPOSS
 
@@ -11616,11 +7529,7 @@ Sub FOOTBALL ()
                 Call CheckGameClock
                 If gameClock! = 0 Then GoTo 3360
 
-                'College overtime
-                'If quarter > 4 And (overtimeOpt >= 3 And overtimeOpt <= 5) Then
-                If isOT = 1 And overtimeOpt >= 3 Then
-                    GoTo 3364
-                End If
+                GoTo CheckPoss_OT
 
             End If 'Done checking FG success
 
@@ -11649,17 +7558,26 @@ Sub FOOTBALL ()
     ydLine = 100 - ydLine - ydsGained
 
     If ydLine >= 109.949 Then
+        'Balls goes out of the end zone
+
+        pbpString$ = "THE BALL ROLLS OUT OF THE END ZONE!!"
+        Call PBP
+
         'Safety!
         GoTo 3250
     End If
 
     If ydLine >= 100 Then
-        Call CHANGEPOSS
+        'Ball in the end zone
+        'Defense assumed to recover
+        'Technically, the offense could recover
+        'but that would also result in a safety
+        scoreX1 = 6
 
-        pbpString$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
+        pbpString$ = gameTeams$(D) + " RECOVERS IT IN THE END ZONE!!"
         Call PBP
 
-        scoreX1 = 6
+        Call CHANGEPOSS
 
         'Touchdown!
         GoTo 3200
@@ -11668,17 +7586,24 @@ Sub FOOTBALL ()
 
     If d100% > 60 Then
 
+        '60% chance of it being a touchdown regardless
+        'of the original gain that was calculated
+
+        scoreX1 = 6
+
         Call CHANGEPOSS
+
         ydsGained = 100 - ydLine
+        ydsToScore = ydsGained
+        Call MARKER
+        Call StatusBoard
+
         startYds = 100 - ydLine
         endYds = startYds - ydsGained
-
         Call MOVEBALL
 
         pbpString$ = gameTeams$(P1) + " TAKES THE BALL INTO THE END ZONE!!"
         Call PBP
-
-        scoreX1 = 6
 
         'Touchdown!
         GoTo 3200
@@ -11692,11 +7617,9 @@ Sub FOOTBALL ()
 
         Call CHANGEPOSS
 
-        ydsToFirst = 10
-
-        If ydLine >= 90 Then ydsToFirst = 100 - ydLine
-
         currDown = 1
+        ydsToFirst = 10
+        If ydLine >= 90 Then ydsToFirst = 100 - ydLine
 
         Call DELAY
 
@@ -11704,19 +7627,13 @@ Sub FOOTBALL ()
 
     End If
 
-    'College overtime; possession simply terminated
-    If isOT = 1 And overtimeOpt >= 3 Then
-        GoTo 3364
-    Else
-        GoTo 700
-    End If
-
+    GoTo CheckPoss_OT
 
 
     '----- NOODLE -----
 
 
-    'Pass Intercepted
+    'Punt Fake - Pass Intercepted
 
     3876 '
     scoreX0 = 0
@@ -11732,7 +7649,9 @@ Sub FOOTBALL ()
     ydsGained = Int(Rnd(1) * 10) + 1
     Call YARDAGE
 
-    If overtimeOpt >= 6 Then nbrPossOT(P1) = 1
+    If overtimeOpt >= 6 Then
+        nbrPossOT(P1) = 1
+    End If
 
     If Int((ydsGained + ydLine) * 10 + .5) / 10 >= 99.9499 Then
 
@@ -11762,6 +7681,8 @@ Sub FOOTBALL ()
         ydLine = 100 - ydsGained - ydLine
         ydsToScore = 100 - ydLine
 
+        Call MARKER
+        Call StatusBoard
         Call YARDLINE
 
         ydsGained = Int(Rnd(1) * 25) + 1
@@ -11773,9 +7694,9 @@ Sub FOOTBALL ()
         Call YARDAGE
 
         scoreX1 = 5
+
         startYds = 100 - ydLine
         endYds = startYds - ydsGained
-
         Call MOVEBALL
 
         pbpString$ = "RETURNED FOR"
@@ -11805,115 +7726,22 @@ Sub FOOTBALL ()
 
         Call DELAY
 
+        GoTo CheckPoss_OT
+
     End If 'Done checking for endzone
 
-    'Change of possession; check OT score / status
-    If isOT = 1 And overtimeOpt >= 3 Then
+
+
+    CheckPoss_2PtConv:
+    'NCAA Alternating "2-pt" Conversion | SD Mod PostSeason
+    If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Or (isOT = 1 And overtimeOpt = 8) Then
         GoTo 3364
     Else
-        GoTo 700
+        Call CHANGEPOSS
+        Call KickoffLine
+        GoTo 340
     End If
 
-    '----- NOODLE -----
-
-    'start of a subroutine??
-
-    6605 '
-    Call CHANGEPOSS
-
-    ydLine = 1
-    ydsToScore = 100 - ydLine
-
-    Call YARDLINE
-
-    If d100% <= 18 Then
-        ydsGained = 110
-    Else
-        ydsGained = Int(Rnd(1) * 21) + 50
-    End If
-
-    Call YARDAGE
-
-    scoreX1 = 12
-    startYds = 100 - ydLine
-    endYds = startYds - ydsGained
-
-    Call MOVEBALL
-
-    pbpString$ = "RETURNED FOR"
-
-    If ydsGained + ydLine > 99.99 Then
-
-        pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARDS"
-        Call PBP
-
-        score(P1, quarter) = score(P1, quarter) + 2
-        score(P1, 0) = score(P1, 0) + 2
-
-        pbpString$ = "GOOD FOR 2 POINTS!!"
-        Call PBP
-
-        Call DisplayField
-        Call SCOREUPD
-
-    Else
-
-        pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
-        Call PBP
-
-    End If
-
-    ydLine = ydsGained
-    ydsToScore = 100 - ydLine
-
-    endZone = 0
-    'Call CHANGEPOSS
-
-    '--- end of a subroutine
-
-    'College overtime; possession simply terminated
-    If isOT = 1 And overtimeOpt >= 3 Then
-        GoTo 3364
-    Else
-        GoTo 700
-    End If
-
-    '----- NOODLE -----
-
-    850 '
-    'This could be a small sub
-    'if other places don't need
-    'to go to label 330
-    Call TICKER
-
-    If halfTime = 1 Then
-
-        halfTime = 0
-
-        'PAH
-
-        If autoPlay <> 1 Then
-            For I3 = 0 To 1:
-                Call CHOOSEQB(I3)
-            Next I3
-        End If
-
-        Randomize Timer
-
-        Call SCOREBOARD
-
-        GoTo 330
-
-    Else
-
-        If gameOver = 1 Then
-            Call EndOfGame
-            Exit Sub
-        Else
-            GoTo 700
-        End If
-
-    End If
 
 End Sub
 
@@ -12100,7 +7928,6 @@ Sub InitVar ()
     indRushPct = 0
     PS% = 0
     firstDownClockOpt = 0
-
     gameClock! = 0
     pbpDelay! = 0
     timeElapsed! = 0
@@ -12122,11 +7949,12 @@ Sub InitVar ()
     'Erase wdRec$
     Erase kickerFGA, kickerFGPct, kickerIdx, kickerPATPct
     Erase krNumRet, krYdsPerRet, leagRat_GAME
-    Erase playerInts, playerSacks, prNumRet, prYdsPerRet, ydsPerPunt
+    Erase otTDs
+    Erase playerInts, playerSacks, prNumRet, prYdsPerRet
     Erase qbArmRat, qbCompPct, qbNumAtt, qbPctInt
     Erase rbNumRec, rbRushContrib, rbRushAvg, rbYdsPerC
     Erase teamInts, teamSacks ', teamRat_GAME
-    Erase wrNumRec, wrYdsPerC, ydsPerComp
+    Erase wrNumRec, wrYdsPerC, ydsPerComp, ydsPerPunt
 
 
     Erase defInts, defSacks
@@ -13161,11 +8989,12 @@ Sub SCOUT ()
 
         Next I1
 
-        If I = 0 Then I1 = 1
-        If I = 1 Then I1 = 0
+        I1 = 1 - I
 
-        K3(I, 0) = ((K3(I, 0) * 3) / 100) + ((leagRat_GAME(I1, 0)) * 3): ' HAD (leagRat_GAME()+1)*3
+        'Defensive Ratings
+        K3(I, 0) = ((K3(I, 0) * 3) / 100) + ((leagRat_GAME(I1, 0)) * 3)
         K3(I, 0) = Int(K3(I, 0) + .5) / 10
+
         K3(I, 1) = Int((I2 / 100) + leagRat_GAME(I1, 1) + .5)
         K3(I, 2) = Int((I3 / 100) - leagRat_GAME(I1, 2) + .5)
         K3(I, 4) = (ydsPerPunt(I, 0) * 2) + 28
@@ -13174,8 +9003,12 @@ Sub SCOUT ()
 
         XE = ydsPerComp(I1) / 100
 
-        If XE < .5 Then XD(I1) = Int(XE * 30)
-        If XE > .5 Then XD(I1) = Int(((1 - XE) * 30) * -1)
+        If XE < .5 Then
+            XD(I1) = Int(XE * 30)
+        End If
+        If XE > .5 Then
+            XD(I1) = Int(((1 - XE) * 30) * -1)
+        End If
 
         I4 = I
 
@@ -13356,7 +9189,7 @@ End Sub
 '          SETSCREEN Subroutine
 '----------------------------------------
 'This subroutine essentially draws the
-'football field and scoreboard on a fresh
+'football field and StatusBoard on a fresh
 'graphic screen. It has been gutted to
 'create the DisplayField routine as one
 'that is separate.
@@ -13368,9 +9201,16 @@ Sub SETSCREEN ()
 
     Cls
 
-    Color 15, 1 + BW * 6
+    Call DisplayField
 
-    Print
+End Sub
+
+
+'----------------------------------------
+'          Scoreboard Subroutine
+'----------------------------------------
+' Draws the latest score on the screen
+Sub Scoreboard
 
     'Converted these Chr$ statements so the graphics
     'are preserved in any text editor
@@ -13378,18 +9218,6 @@ Sub SETSCREEN ()
     Print Chr$(219)
     Print Chr$(219)
     Print Chr$(219)
-
-    Call DisplayField
-
-End Sub
-
-
-'----------------------------------------
-'        DisplayField Subroutine
-'----------------------------------------
-'This subroutine draws the football field
-'and scoreboard.
-Sub DisplayField ()
 
     Locate 2, 40
     Color 1 + BW * 6, 0
@@ -13503,8 +9331,24 @@ Sub DisplayField ()
     Locate 2, 80
     Color 0: Print Chr$(223);
 
-    Call YARDLINE
+End Sub
 
+
+'----------------------------------------
+'        DisplayField Subroutine
+'----------------------------------------
+'This subroutine draws the football field
+'and StatusBoard.
+Sub DisplayField ()
+
+    Color 15, 1 + BW * 6
+
+    Print
+
+    Call Scoreboard
+
+    'Display Status (Clock/Down/Yardage)
+    Call YARDLINE
     Call DisplayClockDown
 
     Locate 6, 44
@@ -13513,6 +9357,7 @@ Sub DisplayField ()
 
     Color 15 * (1 - BW), 2 + 5 * BW
 
+    'Display field background
     For I = 7 To 19:
         Locate I, 1
         Print String$(80, 32);
@@ -13942,9 +9787,9 @@ Sub ONSIDE ()
 
     Swap P1, D
 
-    I = (Rnd(1) * 21) + 5
-    ydLine = ydLine + I
-    ydsGained = I
+    okDist = (Rnd(1) * 21) + 5
+    ydLine = ydLine + okDist
+    ydsGained = okDist
 
     Call AddPossessionTime(4, 7)
 
@@ -13967,15 +9812,13 @@ Sub ONSIDE ()
 
     Else
 
-        I = (Rnd(1) * 100) + 1
-
-        If I <= onsideSuccess Then
+        If d100% <= onsideSuccess Then
 
             pbpString$ = gameTeams$(D) + " RECOVERS !!!"
             Call PBP
 
             'Update possession for certain OT options
-            If isOT = 1 And overtimeOpt >= 6 Then
+            If isOT = 1 And (overtimeOpt = 1 Or overtimeOpt = 2 Or overtimeOpt >= 6) Then
                 nbrPossOT(D) = 1
             End If
 
@@ -14013,30 +9856,46 @@ Sub INCOMPLETE ()
 
                 Case 13
                     Select Case RN2
-                        Case 1 To 40: pbpString$ = "BUT THE SCREEN FALLS INCOMPLETE"
-                        Case 41 To 55: pbpString$ = "BUT THE SCREEN IS BROKEN UP"
-                        Case 56 To 60: pbpString$ = "BUT " + targetWRName$ + " CAN'T HANDLE THE PASS"
-                        Case 61 To 100: pbpString$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
+                        Case 1 To 40:
+                            pbpString$ = "BUT THE SCREEN FALLS INCOMPLETE"
+                        Case 41 To 55:
+                            pbpString$ = "BUT THE SCREEN IS BROKEN UP"
+                        Case 56 To 60:
+                            pbpString$ = "BUT " + targetWRName$ + " CAN'T HANDLE THE PASS"
+                        Case 61 To 100:
+                            pbpString$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
                     End Select
 
                 Case 12
                     Select Case RN2
-                        Case 1 To 15: pbpString$ = "BUT THE PASS IS BROKEN UP"
-                        Case 16 To 44: pbpString$ = "BUT THE PASS IS OVERTHROWN"
-                        Case 45 To 74: pbpString$ = "BUT " + targetWRName$ + " CAN'T GET TO THE BALL...INCOMPLETE"
-                        Case 75 To 80: pbpString$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
-                        Case 81 To 100: pbpString$ = "BUT " + targetWRName$ + " IS COVERED...INCOMPLETE"
+                        Case 1 To 15:
+                            pbpString$ = "BUT THE PASS IS BROKEN UP"
+                        Case 16 To 44:
+                            pbpString$ = "BUT THE PASS IS OVERTHROWN"
+                        Case 45 To 74:
+                            pbpString$ = "BUT " + targetWRName$ + " CAN'T GET TO THE BALL...INCOMPLETE"
+                        Case 75 To 80:
+                            pbpString$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
+                        Case 81 To 100:
+                            pbpString$ = "BUT " + targetWRName$ + " IS COVERED...INCOMPLETE"
                     End Select
 
                 Case Else
                     Select Case RN2
-                        Case 1 To 23: pbpString$ = "BUT THE PASS FALLS INCOMPLETE"
-                        Case 24 To 47: pbpString$ = "BUT THE PASS IS THROWN BEHIND " + targetWRName$ + "...INCOMPLETE"
-                        Case 48 To 70: pbpString$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
-                        Case 71 To 75: pbpString$ = targetWRName$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
-                        Case 76 To 81: pbpString$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
-                        Case 82 To 96: pbpString$ = "BUT THE PASS TO " + targetWRName$ + " IS BROKEN UP"
-                        Case 97 To 199: pbpString$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
+                        Case 1 To 23:
+                            pbpString$ = "BUT THE PASS FALLS INCOMPLETE"
+                        Case 24 To 47:
+                            pbpString$ = "BUT THE PASS IS THROWN BEHIND " + targetWRName$ + "...INCOMPLETE"
+                        Case 48 To 70:
+                            pbpString$ = "BUT THE PASS IS OVERTHROWN AND INCOMPLETE"
+                        Case 71 To 75:
+                            pbpString$ = targetWRName$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
+                        Case 76 To 81:
+                            pbpString$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
+                        Case 82 To 96:
+                            pbpString$ = "BUT THE PASS TO " + targetWRName$ + " IS BROKEN UP"
+                        Case 97 To 199:
+                            pbpString$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
                     End Select
 
             End Select
@@ -14046,32 +9905,58 @@ Sub INCOMPLETE ()
             RN2 = Int(Rnd(1) * 26) + 1
 
             Select Case RN2
-                Case 1: pbpString$ = targetWRName$ + " DROPS A PASS RIGHT TO HIM"
-                Case 2: pbpString$ = targetWRName$ + " IS HIT AND CAN'T HANG ON....INCOMPLETE PASS"
-                Case 3: pbpString$ = targetWRName$ + " BROKE THE WRONG WAY...INCOMPLETE"
-                Case 4: pbpString$ = targetWRName$ + " DROPS IT!"
-                Case 5: pbpString$ = "DROPPED BY " + targetWRName$
-                Case 6: pbpString$ = "BUT " + targetWRName$ + " CAN'T REACH IT"
-                Case 7: pbpString$ = targetWRName$ + " CAN'T HAUL IT IN...INCOMPLETE"
-                Case 8: pbpString$ = targetWRName$ + " MISHANDLES IT....INCOMPLETE"
-                Case 9: pbpString$ = targetWRName$ + " JUGGLES IT....INCOMPLETE"
-                Case 10: pbpString$ = targetWRName$ + " CAN'T FIND THE HANDLE....INCOMPLETE"
-                Case 11: pbpString$ = targetWRName$ + " CAN'T PULL IT IN....INCOMPLETE"
-                Case 12: pbpString$ = targetWRName$ + " BOBBLES IT....INCOMPLETE"
-                Case 13: pbpString$ = targetWRName$ + " WAS OUT OF BOUNDS....INCOMPLETE"
-                Case 14: pbpString$ = targetWRName$ + " CAME DOWN OUT OF BOUNDS....INCOMPLETE"
-                Case 15: pbpString$ = "THE PASS IS BROKEN UP"
-                Case 16: pbpString$ = "BUT " + targetWRName$ + " CAN'T HANDLE THE PASS"
-                Case 17: pbpString$ = "BUT THE PASS IS OVERTHROWN"
-                Case 18: pbpString$ = "BUT " + targetWRName$ + " CAN'T GET TO THE BALL...INCOMPLETE"
-                Case 19: pbpString$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
-                Case 20: pbpString$ = "BUT " + targetWRName$ + " IS COVERED...INCOMPLETE"
-                Case 21: pbpString$ = "BUT THE PASS FALLS INCOMPLETE"
-                Case 22: pbpString$ = "BUT THE PASS IS THROWN BEHIND " + targetWRName$ + "...INCOMPLETE"
-                Case 23: pbpString$ = targetWRName$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
-                Case 24: pbpString$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
-                Case 25: pbpString$ = "BUT THE PASS TO " + targetWRName$ + " IS BROKEN UP"
-                Case 26: pbpString$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
+                Case 1:
+                    pbpString$ = targetWRName$ + " DROPS A PASS RIGHT TO HIM"
+                Case 2:
+                    pbpString$ = targetWRName$ + " IS HIT AND CAN'T HANG ON....INCOMPLETE PASS"
+                Case 3:
+                    pbpString$ = targetWRName$ + " BROKE THE WRONG WAY...INCOMPLETE"
+                Case 4:
+                    pbpString$ = targetWRName$ + " DROPS IT!"
+                Case 5:
+                    pbpString$ = "DROPPED BY " + targetWRName$
+                Case 6:
+                    pbpString$ = "BUT " + targetWRName$ + " CAN'T REACH IT"
+                Case 7:
+                    pbpString$ = targetWRName$ + " CAN'T HAUL IT IN...INCOMPLETE"
+                Case 8:
+                    pbpString$ = targetWRName$ + " MISHANDLES IT....INCOMPLETE"
+                Case 9:
+                    pbpString$ = targetWRName$ + " JUGGLES IT....INCOMPLETE"
+                Case 10:
+                    pbpString$ = targetWRName$ + " CAN'T FIND THE HANDLE....INCOMPLETE"
+                Case 11:
+                    pbpString$ = targetWRName$ + " CAN'T PULL IT IN....INCOMPLETE"
+                Case 12:
+                    pbpString$ = targetWRName$ + " BOBBLES IT....INCOMPLETE"
+                Case 13:
+                    pbpString$ = targetWRName$ + " WAS OUT OF BOUNDS....INCOMPLETE"
+                Case 14:
+                    pbpString$ = targetWRName$ + " CAME DOWN OUT OF BOUNDS....INCOMPLETE"
+                Case 15:
+                    pbpString$ = "THE PASS IS BROKEN UP"
+                Case 16:
+                    pbpString$ = "BUT " + targetWRName$ + " CAN'T HANDLE THE PASS"
+                Case 17:
+                    pbpString$ = "BUT THE PASS IS OVERTHROWN"
+                Case 18:
+                    pbpString$ = "BUT " + targetWRName$ + " CAN'T GET TO THE BALL...INCOMPLETE"
+                Case 19:
+                    pbpString$ = "PASS IS ALMOST PICKED OFF!!...INCOMPLETE"
+                Case 20:
+                    pbpString$ = "BUT " + targetWRName$ + " IS COVERED...INCOMPLETE"
+                Case 21:
+                    pbpString$ = "BUT THE PASS FALLS INCOMPLETE"
+                Case 22:
+                    pbpString$ = "BUT THE PASS IS THROWN BEHIND " + targetWRName$ + "...INCOMPLETE"
+                Case 23:
+                    pbpString$ = targetWRName$ + " CAN'T HANDLE THE PASS...INCOMPLETE"
+                Case 24:
+                    pbpString$ = "BUT THE PASS IS BATTED DOWN AT THE LINE OF SCRIMMAGE"
+                Case 25:
+                    pbpString$ = "BUT THE PASS TO " + targetWRName$ + " IS BROKEN UP"
+                Case 26:
+                    pbpString$ = "THE PASS IS BROKEN UP AND ALMOST PICKED OFF!!"
             End Select
 
         End If
@@ -14251,13 +10136,16 @@ End Sub
 '           OVERUSE Subroutine
 '----------------------------------------
 'This subroutine attempts to adjust the
-'opponents response to a play that is
-'being overused.
+'opponents response to a play that is overused.
 Sub OVERUSE ()
 
     If gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3) <> 0 Then
 
-        If (gameStatsTeam(P1, 1) / (gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3))) < (leagRat_GAME(P1, 7) / 100) And K3(P1, 3) >= 18 Then I4 = I4 * .65
+        'If (team rush % < league rush %) and Y/C % > 18
+        If (gameStatsTeam(P1, 1) / (gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3))) < (leagRat_GAME(P1, 7) / 100) And K3(P1, 3) >= 18 Then
+            'Play yardage potential is ~65%)
+            I4 = I4 * .65
+        End If
 
         If I4 <= 0 Then I4 = 1
 
@@ -15138,7 +11026,9 @@ End Sub
 'marker on the field
 Sub MARKER ()
 
-    If P1 Then
+    markerDir = P1
+
+    If markerDir = 1 Then
         J = FindMarkerColumn(ydsToScore) - 3
     Else
         J = FindMarkerColumn(100 - ydsToScore) - 3
@@ -15149,47 +11039,63 @@ Sub MARKER ()
     Color 15 * (1 - BW), 2 + 5 * BW
 
     If J < WS Then
+        'Change in Possession
+        'Arrow goes where team takes over
 
+        'Print / restore yard lines
         Print Left$(markers$, J - 1);
 
-        Color 0: Print Chr$(16 + P1);
+        '10-yard "chains" are not moved / printed
 
+        'Print "ball" possession arrow
+        Color 0: Print Chr$(16 + markerDir);
+
+        'Print / restore yard lines
         Color 15 * (1 - BW): Print Mid$(markers$, J + 1, WS - J - 1);
-
         Color 2 + 5 * BW, 7 * (1 - BW): Print Mid$(markers$, WS, 7);
-
         Color 15 * (1 - BW), 2 + 5 * BW: Print Right$(markers$, 67 - WS);
 
     Else
 
         If J > WE Then
+            'Moving the ball forward
+            'Arrow goes in front of the "chains"
 
+            'Print / restore yard lines
             Print Left$(markers$, WS - 1);
 
+            'Clear "ball" possession arrow
             Color 2 + 5 * BW, 7 * (1 - BW): Print Mid$(markers$, WS, 7);
 
+            'Print / restore yard lines
             Color 15 * (1 - BW), 2 + 5 * BW: Print Mid$(markers$, WE + 1, J - WE - 1);
 
-            Color 0: Print Chr$(16 + P1);
+            'Print "ball" possession arrow
+            Color 0: Print Chr$(16 + markerDir);
 
+            'Print / restore yard lines
             Color 15 * (1 - BW), 2 + 5 * BW: Print Right$(markers$, 73 - J);
 
         Else
+            'Start of a play
+            'Arrow goes at beginning of "chains"
 
+            'Print / restore yard lines
             Print Left$(markers$, WS - 1);
 
+            'Print 10 yard "chains"
             Color 2 + 5 * BW, 7 * (1 - BW): Print Mid$(markers$, WS, J - WS);
 
-            Color BW * 15: Print Chr$(16 + P1);
+            'Print "ball" possession arrow - LEFT
+            Color BW * 15: Print Chr$(16 + markerDir);
 
+            'Print / restore yard lines
             Color 2 + 5 * BW, 7 * (1 - BW): Print Mid$(markers$, J + 1, WE - J);
-
             Color 15 * (1 - BW), 2 + 5 * BW: Print Right$(markers$, 73 - WE);
 
         End If
 
     End If
-
 
 End Sub
 
@@ -15204,10 +11110,12 @@ Sub MARKER1 ()
     ydsToScore = 100 - ydLine
     YF = -ydsToFirst
 
-    If P1 Then
+    If P1 = 1 Then
+        'Home Team on Offense
         WS = FindMarkerColumn(ydsToScore + YF) - 3
         WE = WS + 6
     Else
+        'Visiting Team on Offense
         WE = FindMarkerColumn(100 - ydsToScore - YF) - 3
         WS = WE - 6
     End If
@@ -15331,12 +11239,12 @@ End Sub
 
 
 '----------------------------------------
-'         SCOREBOARD Subroutine
+'         StatusBoard Subroutine
 '----------------------------------------
-'This subroutine updates the scoreboard
+'This subroutine updates the StatusBoard
 'with the latest values for the clock,
 'and possession location.
-Sub SCOREBOARD ()
+Sub StatusBoard ()
 
     Screen , , 0, 0
 
@@ -15359,7 +11267,6 @@ Sub SCOREBOARD ()
         Print "*";: Locate 5 - P1, 3: Print " ";
 
         Call YARDLINE
-
         Call DisplayClockDown
 
     End If
@@ -15415,7 +11322,7 @@ End Sub
 '       DisplayClockDown Subroutine
 '----------------------------------------
 'Outputs current clock time and quarter,
-'as well as down and yardage on the scoreboard
+'as well as down and yardage on the StatusBoard
 Sub DisplayClockDown
 
     Color 15 * (1 - BW), 4 + BW * 3
@@ -15434,14 +11341,15 @@ Sub DisplayClockDown
     If quarter <= 4 Then
         Print Using " TIME: ##.##     QUARTER: #  "; qtrTime!, quarter;
     Else
-        'OVERTIME
-        If ruleOptType > 0 Then
-            'Pro = 1 OT
-            Print Using " TIME: ##.##     QUARTER: OT "; qtrTime!;
+        'Quarter >= 5 (Aka OVERTIME)
+        'Sudden Death To Win, NCAA, Mod SD Postseason
+        If (overtimeOpt >= 2 And overtimeOpt <= 5) Or overtimeOpt = 8 Then
+            'No Time Limit (Don't Track Clock)
+            Print " TIME:  -.--     QUARTER: OT ";
         Else
-            'College = Multiple OT's
-            Print Using " TIME:  -.--     QUARTER: OT#"; quarter - 4;
+            Print Using " TIME: ##.##     QUARTER: OT "; qtrTime!;
         End If
+
     End If
 
     Locate 3, 53: Print ":";
@@ -15608,7 +11516,183 @@ End Sub
 
 
 '----------------------------------------
-'            LongGainPBP Subroutine
+'         Turnover_PAT Subroutine
+'----------------------------------------
+'Handle return of turnover in PAT attempt
+'This could either be one of the two:
+'- An INT in the Endzone (2 Pt Conv)
+'- A blocked kick (PAT)
+Sub Turnover_PAT
+
+    ydLine = 1
+    ydsToScore = 99
+
+    Call CHANGEPOSS
+
+    Call MARKER
+    Call YARDLINE
+
+    If d100% <= 18 Then
+        ydsGained = 110
+    Else
+        ydsGained = Int(Rnd(1) * 21) + 50
+    End If
+
+    Call YARDAGE
+
+    scoreX1 = 12
+
+    startYds = 100 - ydLine
+    endYds = startYds - ydsGained
+    Call MOVEBALL
+
+    pbpString$ = "RETURNED FOR"
+
+    If ydsGained + ydLine > 99.99 Then
+
+        pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARDS"
+        Call PBP
+
+        score(P1, quarter) = score(P1, quarter) + 2
+        score(P1, 0) = score(P1, 0) + 2
+
+        pbpString$ = "GOOD FOR 2 POINTS!!"
+        Call PBP
+
+        Call SETSCREEN
+        Call SCOREUPD
+
+    Else
+
+        pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + .5) / 10) + " YARDS"
+        Call PBP
+
+    End If
+
+    ydLine = ydsGained
+    ydsToScore = 100 - ydLine
+
+    endZone = 0
+
+End Sub
+
+
+'----------------------------------------
+'         GetPATChoice Subroutine
+'----------------------------------------
+'This subroutine handles the computer's
+'choice for a TD conversion, or lets
+'a human user make their choice as applicable.
+Sub GetPATChoice (userChoice)
+
+    'Default value (no choice made)
+    userChoice = 0
+
+    If ruleOptType = 4 Then
+        'WFL = No PAT
+        userChoice = 2
+    Else
+
+        If ruleOptType = 1 And ruleOptPro < 4 Then
+
+            'NFL prior to 1994 (2 PT conversion not supported)
+            userChoice = 1
+
+        Else
+
+            If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+
+                ' College Overtime
+                ' Force 2-point conversion based on year
+                ' 2019-2020 = 3rd OT (Q = 7)
+                ' 2021+ = 2nd OT (Q = 6)
+                If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Then
+
+                    userChoice = 2
+
+                Else
+
+                    pbpString$ = "1-KICK EP 2-GO FOR TWO"
+                    Call PBP
+
+                    ' *** Computer on Offense, or PC vs. PC ***
+
+                    'By default, go for one
+                    userChoice = 1
+
+                    'Determine score deficit
+                    scoreDiff = score(P1, 0) - score(D, 0)
+
+                    ' ***** When to "Go for TWO" *****
+
+                    If ruleOptType = 1 And ruleOptPro >= 4 Then
+                        'NFL, Post 1994 (when 2 pt conversion was implemented)
+                        ' 4th quarter, down by 2 and 2 minutes left
+                        ' 4th quarter, down by 9 and 5 minutes left
+                        ' 4th quarter, down by 6 and 7 minutes left
+                        If quarter = 4 And (scoreDiff = -9 And gameClock! < 600 Or scoreDiff = -2 And gameClock! < 120 Or scoreDiff = -5 And gameClock! < 420) Then
+                            userChoice = 2
+                        End If
+
+                        'Mod Sudden Death, Down by 1
+                        'That is, 1st team scored; a 2-pt conversion is the only way to win
+                        If isOT = 1 And overtimeOpt = 8 And scoreDiff = -1 Then
+                            userChoice = 2
+                        End If
+
+                    Else
+
+                        'College / AFL / WLAF / USFL
+                        ' Decide based on down / score
+
+                        ' 3rd / 4th quarter, down by 18
+                        ' 4th quarter, down by 16
+                        If (quarter >= 3 And scoreDiff = -18) Or (quarter = 4 And scoreDiff = -16) Then
+                            userChoice = 2
+                        Else
+                            '1) down by 2
+                            '2) ahead by 5 | 12
+                            If scoreDiff = -2 Or scoreDiff = 1 Or scoreDiff = 5 Or scoreDiff = 12 Then
+                                userChoice = 2
+                            Else
+                                'Anytime outside the final 2-min warning
+                                If Not (quarter = 4 And gameClock! > 240 Or quarter < 4) Then
+                                    'down by 1 | 4 | 5 | 8 | 10 | 13
+                                    If scoreDiff = -1 Or scoreDiff = -4 Or scoreDiff = -5 Or scoreDiff = -8 Or scoreDiff = -10 Or scoreDiff = -13 Then
+                                        userChoice = 2
+                                    End If
+                                End If
+
+                            End If
+
+                        End If
+
+                    End If
+
+                End If
+
+            Else
+
+                ' *** Human player on Offense ***
+                pbpString$ = "1-KICK EP 2-GO FOR TWO"
+
+                Do
+                    Call PBP
+                    I$ = GetKeyPress$
+                    userChoice = Val(I$)
+                Loop Until userChoice = 1 Or userChoice = 2
+
+            End If
+
+        End If
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'          LongGainPBP Subroutine
 '----------------------------------------
 'This subroutine chooses the play-by-play
 'text for the start of a play where any
@@ -15805,7 +11889,7 @@ Sub SETWEATHER ()
             
             Case 2000 To 2009
                 climate(6) = 8
-                            
+
             Case Is >= 2010
                 climate(6) = 6
 
@@ -16636,6 +12720,12 @@ Sub ComputerOffense ()
                 playCall = 12
             End If
 
+            'Sudden Death Postseason, <= 39 Yd FG
+            'Prefer going for the score
+            If overtimeOpt = 8 And (ydLine >= 78) Then
+                playCall = 12
+            End If
+
         End If
 
         'FG Over 40 yards, heavy winds, kicker accuracy < 80%
@@ -16683,6 +12773,35 @@ Sub MEASUREMENT ()
 
     Call PBP
     Call PBP
+
+End Sub
+
+
+'----------------------------------------
+'       ReceiverGainPBP Subroutine
+'----------------------------------------
+' Generates a PBP string for when a pass
+' play gains yardage
+Sub ReceiverGainPBP (yardString$)
+
+    pbpString$ = "THAT CATCH BY "
+    Call WHICHRECEIVER
+    pbpString$ = pbpString$ + " GAINED " + yardString$ + " YARDS"
+
+End Sub
+
+
+'----------------------------------------
+'       ReceiverLossPBP Subroutine
+'----------------------------------------
+' Generates a PBP string for when a pass
+' play loses yardage
+Sub ReceiverLossPBP (yardString$)
+
+    pbpString$ = "THAT CATCH BY "
+    Call WHICHRECEIVER
+    pbpString$ = pbpString$ + " LOST " + yardString$ + " YARDS"
+
 
 End Sub
 
@@ -16886,7 +13005,7 @@ Sub KOChoices_NoDefer ()
 
     'In all situations here, winTeam is the coin toss winner
 
-    Call SCOREBOARD
+    Call StatusBoard
 
     If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
@@ -16922,7 +13041,7 @@ Sub KOChoices_NoDefer ()
 
         Case 1, 2
 
-            Call SCOREBOARD
+            Call StatusBoard
 
             'Computer Player
             If playerMode = 1 And D = compTeam Or playerMode = 2 Then
@@ -16955,12 +13074,9 @@ Sub KOChoices_NoDefer ()
                 climate(0) = 1 - D
             End If
 
-            'In the 2nd half, winTeam is the one receiving the kick
-            'If we chose to receive, then Label 340 of the code will
-            'swap possession and make us the receiving team.
-            If koChoice = 1 Then
-                'Because we elected to kickoff, that should remain the same.
-                'However, Label 340 of the code will ChangePossession again
+            If koChoice = 2 Then
+                'Because we elected to receive, the opponent
+                'will now become the kicking team
                 Call CHANGEPOSS
             End If
 
@@ -16975,8 +13091,8 @@ Sub KOChoices_NoDefer ()
             End If
 
             Call CHANGEPOSS
-
-            Call SCOREBOARD
+            Call MARKER1
+            Call StatusBoard
 
             If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
@@ -17004,9 +13120,6 @@ Sub KOChoices_NoDefer ()
             Screen , , 0, 0
 
             If defendChoice = 1 Then
-                'Label 340 always changes possession
-                'So here we need to anticipate
-                Call CHANGEPOSS
                 winTeam = 1 - winTeam
             End If
 
@@ -17028,7 +13141,7 @@ Sub KOChoices_Defer ()
 
     Else
 
-        Call SCOREBOARD
+        Call StatusBoard
 
         If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
@@ -17058,7 +13171,7 @@ Sub KOChoices_Defer ()
 
             Case 1, 2
 
-                Call SCOREBOARD
+                Call StatusBoard
 
                 If playerMode = 1 And D = compTeam Or playerMode = 2 Then
 
@@ -17103,7 +13216,7 @@ Sub KOChoices_Defer ()
 
                 Swap P1, D
 
-                Call SCOREBOARD
+                Call StatusBoard
 
                 If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
@@ -17132,7 +13245,6 @@ Sub KOChoices_Defer ()
                 End If
 
             Case 5
-
                 Swap P1, D
                 winTeam = P1
                 Call KOChoices_NoDefer
@@ -17346,7 +13458,6 @@ End Sub
 'punt.
 Sub PuntReturnYards ()
 
-    'Call Rolld100(I3)
     ydLine = ydLine + ydsGained
 
     Call CHANGEPOSS
@@ -17423,6 +13534,7 @@ Sub PuntReturnYards ()
 
     scoreX1 = 4
     Call YARDAGE
+
     Call MARKER
 
     pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetNbr) + " AT THE" + Str$(Int(ydLineTeam))
@@ -17434,7 +13546,6 @@ Sub PuntReturnYards ()
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
 End Sub
@@ -17546,7 +13657,6 @@ Sub PuntFakeRunYards (choice)
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
     pbpString$ = "THE UPBACK GAINED"
@@ -17942,7 +14052,6 @@ Sub FGFakeRunYards (choice)
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
     pbpString$ = "THE HOLDER GAINED"
@@ -19045,8 +15154,8 @@ Sub SQUIB ()
     kickYL = 100 - (ydLine + Int(Rnd(1) * 16) + 29)
     kickYL = kickYL + (Int(Rnd(1) * 11) - 5) / 10
     ydLine = kickYL
-    ydsToScore = 100 - ydLine
 
+    ydsToScore = 100 - ydLine
     Call MARKER
     Call YARDLINE
 
@@ -19057,7 +15166,6 @@ Sub SQUIB ()
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
     ydLine = kickYL + ydsGained
@@ -19386,7 +15494,8 @@ Sub KickoffReturn (kickNotReturned)
 
         Call PBP
 
-        'Touchback will auto-change possession
+        'Kickoff already changed Possession
+        'Touchback will change it again
         Call CHANGEPOSS
         Call Touchback
         kickNotReturned = 1
@@ -19395,9 +15504,9 @@ Sub KickoffReturn (kickNotReturned)
 
         If kickYL <= -9.99 Then
 
-            'Kicked out of endzone
-            'Automatic touchback
-            'Touchback will auto-change possession
+            'Kicked out of endzone - automatic touchback
+            'Kickoff already changed Possession
+            'Touchback will change it again
             Call CHANGEPOSS
             Call Touchback
             kickNotReturned = 1
@@ -19410,8 +15519,8 @@ Sub KickoffReturn (kickNotReturned)
 
                 'Kick taken in end zone
                 ydLine = -(kickYL - 2 * kickYL)
-                ydsToScore = 100 - ydLine
 
+                ydsToScore = 100 - ydLine
                 Call MARKER
                 Call YARDLINE
 
@@ -19443,12 +15552,11 @@ Sub KickoffReturn (kickNotReturned)
 
                 If returnChoice = 1 Then
 
-                    'Received in end zone,
-                    'kneel for touchback
-                    'Touchback will auto-change possession
+                    'Received in end zone, kneel for touchback
+                    'Kickoff already changed Possession
+                    'Touchback will change it again
                     Call CHANGEPOSS
                     Call Touchback
-                    'Print #11, "TOUCHBACK, Kickoff, Downed"
                     kickNotReturned = 1
 
                 Else
@@ -19461,10 +15569,9 @@ Sub KickoffReturn (kickNotReturned)
 
                 'Kick outside end zone - adjust position
                 kickYL = kickYL + (Int(Rnd(1) * 11) - 5) / 10
-
                 ydLine = kickYL
-                ydsToScore = 100 - ydLine
 
+                ydsToScore = 100 - ydLine
                 Call MARKER
                 Call YARDLINE
 
@@ -19894,9 +16001,8 @@ Sub PCPBP ()
     End If
 
     ydsToScore = 100 - ydLine - CP
-
-    Call YARDLINE
     Call MARKER
+    Call YARDLINE
 
     If ydsToScore <= 0 Then
 
@@ -19974,7 +16080,6 @@ Sub PCPBP ()
 
             startYds = 100 - ydLine - CP
             endYds = 100 - ydLine - ydsGained
-
             Call MOVEBALL
 
         End If
@@ -19993,8 +16098,6 @@ End Sub
 'Also calls Play-by-Play and sets the
 'ball position marker.
 Sub Touchback
-
-    Call CHANGEPOSS
 
     Select Case ruleOptType
 
@@ -20056,13 +16159,14 @@ Sub Touchback
 
     End Select
 
-    '1st and 10
+    Call CHANGEPOSS
+
     currDown = 1
     ydsToFirst = 10
 
     pbpString$ = "TOUCHBACK"
-
     Call PBP
+
     Call MARKER
     Call YARDLINE
 
@@ -20167,7 +16271,7 @@ Sub TryForTwoResult ()
             K1(nbrScores, 4) = K1(nbrScores, 4) + 1
             gameStatsTeam(P1, 36) = gameStatsTeam(P1, 36) + 1
 
-            Call DisplayField
+            Call SETSCREEN
 
         End If
 
@@ -20177,7 +16281,6 @@ Sub TryForTwoResult ()
     endZone = 0
 
 End Sub
-
 
 
 '----------------------------------------
@@ -22254,13 +18357,27 @@ Sub COMPILESTATFILES (teamIdx)
 
     End If
 
-    If numberGames < MAX_SCHED_STATS Then numberGames = numberGames + 1
-    If gameLoc = teamIdx Then locIndicator$(numberGames) = "H"
-    If gameLoc <> teamIdx Then locIndicator$(numberGames) = "A"
-    If gameLoc = 2 Then locIndicator$(numberGames) = "X"
-    If gameLoc = teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc <> teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc = 2 And periodNbr > 4 Then locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+    If numberGames < MAX_SCHED_STATS Then
+        numberGames = numberGames + 1
+    End If
+    If gameLoc = teamIdx Then
+        locIndicator$(numberGames) = "H"
+    End If
+    If gameLoc <> teamIdx Then
+        locIndicator$(numberGames) = "A"
+    End If
+    If gameLoc = 2 Then
+        locIndicator$(numberGames) = "X"
+    End If
+    If gameLoc = teamIdx And periodNbr > 4 Then
+        locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
+    End If
+    If gameLoc <> teamIdx And periodNbr > 4 Then
+        locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
+    End If
+    If gameLoc = 2 And periodNbr > 4 Then
+        locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+    End If
 
     teamScore(numberGames) = score(teamIdx, 0)
     oppName$(numberGames) = gameTeams$(1 - teamIdx)
@@ -22329,8 +18446,8 @@ End Sub
 'issues are happening in a game.
 Sub pbplog (lineNumber)
 
-    'Print #11, "Called from line "; lineNumber
-    'Print #11, gameTeams$(0); " vs "; gameTeams$(1)
+    Print #11, "Called from line "; lineNumber
+    Print #11, gameTeams$(0); " vs "; gameTeams$(1)
     'Print #11, lineNumber, ydLine, ydsToFirst, fgAttLine, gameClock!, score(P1, 0), score(D, 0)
     'Print #11, "Kickoff!"; ydLine
     'Print #11, currGame, ballFumbled, climate(5)
@@ -22342,8 +18459,8 @@ Sub pbplog (lineNumber)
     'Print #11, pbpString$
 
     ' Team Name, Rush Att, Pass Att
-    Print #11, gameTeams$(0); ","; leagRat_GAME(0, 7); ","; gameStatsTeam(0, 1); ","; gameStatsTeam(0, 3)
-    Print #11, gameTeams$(1); ","; leagRat_GAME(0, 7); ","; gameStatsTeam(1, 1); ","; gameStatsTeam(1, 3)
+    'Print #11, gameTeams$(0); ","; leagRat_GAME(0, 7); ","; gameStatsTeam(0, 1); ","; gameStatsTeam(0, 3)
+    'Print #11, gameTeams$(1); ","; leagRat_GAME(0, 7); ","; gameStatsTeam(1, 1); ","; gameStatsTeam(1, 3)
     'Print #11,
 
 End Sub

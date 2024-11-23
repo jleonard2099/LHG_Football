@@ -146,7 +146,6 @@ Sub NewSchedule (scheduleFile$)
     Shared BS%, NS%
 
     Shared homeScores(), visitorScores()
-
     Shared scheduleAP%(), scheduleNG%()
     Shared scheduleH$(), scheduleV$()
     Shared scheduleQB_V$(), scheduleQB_H$()
@@ -231,6 +230,7 @@ Sub NewSchedule (scheduleFile$)
 
                 T1 = scheduleNG%(X + NS% * 20, 0)
                 YN$ = scheduleYN$(X + NS% * 20, 0)
+
                 Call ReadTeam(YN$, team$, T1)
                 Call ReadExtraData(YN$, T1, validData)
 
@@ -486,7 +486,7 @@ Sub NewSchedule (scheduleFile$)
                     scheduleNG%(I, 13) = 0
                 Next
 
-            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(73)
+            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(77)
                 ' *** PAGE DOWN | RIGHT ARROW ***
                 If NS% >= BS% Then
                     NS% = BS%
@@ -577,7 +577,7 @@ End Sub
 'specified game in the schedule
 Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS, gameIndex%)
 
-    Shared scheduleNG%(), teamRatings()
+    Shared scheduleNG%(), teamRatings%()
 
     Shared scheduleH$(), scheduleV$()
     Shared scheduleQB_V$(), scheduleQB_H$()
@@ -636,7 +636,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS
         Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
         Locate 12, 2: Color 14
         Print "(B) ";
-        Color 15: Print "OVERTIME: "; overtime$(scheduleNG%(gameIndex%, 14))
+        Color 15: Print "SUDDDEN DEATH: "; overtime$(scheduleNG%(gameIndex%, 14))
         Locate 13, 2: Color 14
         Print "(C) ";
         Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
@@ -719,7 +719,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS
 
                 Case 11:
                     scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
-                    If scheduleNG%(gameIndex%, 14) > 3 Then scheduleNG%(gameIndex%, 14) = 0
+                    If scheduleNG%(gameIndex%, 14) > 8 Then scheduleNG%(gameIndex%, 14) = 0
 
                 Case 12:
                     scheduleNG%(gameIndex%, 19) = scheduleNG%(gameIndex%, 19) + 1
@@ -787,7 +787,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
     Shared homeScores(), visitorScores()
 
     Shared scheduleAP%()
-    Shared scheduleNG%(), teamRatings()
+    Shared scheduleNG%(), teamRatings%()
     Shared scheduleYN$()
 
     Shared memberIdx()
@@ -921,7 +921,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                     'Change mode of play
                     If scheduleAction% = 5 Then
 
-                        Color teamRatings(2), teamRatings(1): Print teamName$;
+                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
                         Color 15, 0
                         Print " IS TO BE:"
                         Print
@@ -1248,51 +1248,51 @@ Sub SortSchedule ()
 
     For Z = 1 To scheduleAP%(0) - 1
 
-        For Z1 = Z + 1 To scheduleAP%(0)
+        For currIdx = Z + 1 To scheduleAP%(0)
 
-            Locate 1, 1: Print Z, Z1
+            Locate 1, 1: Print Z, currIdx
 
-            If scheduleNG%(Z, 12) > scheduleNG%(Z1, 12) Then
+            If scheduleNG%(Z, 12) > scheduleNG%(currIdx, 12) Then
 
                 For I = 0 To 20:
-                    Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
+                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
                 Next
 
                 For I = 0 To 1:
-                    Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
+                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
                 Next
 
-                Swap schedDates&(Z), schedDates&(Z1)
-                Swap visitorScores(Z), visitorScores(Z1)
-                Swap homeScores(Z), homeScores(Z1)
+                Swap schedDates&(Z), schedDates&(currIdx)
+                Swap visitorScores(Z), visitorScores(currIdx)
+                Swap homeScores(Z), homeScores(currIdx)
 
             End If
 
-        Next Z1
+        Next currIdx
 
     Next Z
 
     For Z = 1 To scheduleAP%(0) - 1
 
-        For Z1 = Z + 1 To scheduleAP%(0)
+        For currIdx = Z + 1 To scheduleAP%(0)
 
-            If schedDates&(Z) > schedDates&(Z1) Then
+            If schedDates&(Z) > schedDates&(currIdx) Then
 
                 For I = 0 To 20:
-                    Swap scheduleNG%(Z, I), scheduleNG%(Z1, I)
+                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
                 Next
 
                 For I = 0 To 1:
-                    Swap scheduleYN$(Z, I), scheduleYN$(Z1, I)
+                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
                 Next
 
-                Swap schedDates&(Z), schedDates&(Z1)
-                Swap visitorScores(Z), visitorScores(Z1)
-                Swap homeScores(Z), homeScores(Z1)
+                Swap schedDates&(Z), schedDates&(currIdx)
+                Swap visitorScores(Z), visitorScores(currIdx)
+                Swap homeScores(Z), homeScores(currIdx)
 
             End If
 
-        Next Z1
+        Next currIdx
 
     Next Z
 
@@ -1327,8 +1327,8 @@ Sub ChangeGlobalSettings ()
     ' The code below would use default values based on the most recent rules
     'ruleOptType = 1
     'ruleOptColl = 11
-    'ruleOptPro = 8
-    'overtimeOpt = 1
+    'ruleOptPro = 9
+    'overtimeOpt = 0
     'windOpt = 3
     'weatherOpt = 3
 
@@ -1365,7 +1365,7 @@ Sub ChangeGlobalSettings ()
         Locate 7, 2: Color 14: Print "(4) ";
         Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
         Locate 8, 2: Color 14: Print "(5) ";
-        Color 15: Print "OVERTIME: "; overtime$(overtimeOpt)
+        Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
         Locate 9, 2: Color 14: Print "(6) ";
         Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
         Locate 10, 2: Color 14: Print "(7) ";
@@ -1404,7 +1404,7 @@ Sub ChangeGlobalSettings ()
 
             Case 5:
                 overtimeOpt = overtimeOpt + 1
-                If overtimeOpt > 3 Then overtimeOpt = 0
+                If overtimeOpt > 8 Then overtimeOpt = 0
 
             Case 6:
                 Locate 9, 32: Input displayPause!
