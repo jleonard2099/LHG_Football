@@ -388,11 +388,11 @@ Dim Shared I4 As Single
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
 Dim Shared penaltyYds, playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetNbr
-Dim Shared quarter, qback, qbTakeKnee
+Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushYds
 Dim Shared S6, startYds, tickerGames
-'Dim Shared W5, WE, WS, winTeam
+Dim Shared W5, WE, WS, winTeam
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -415,9 +415,9 @@ Dim Shared S6, startYds, tickerGames
 Dim Shared XD, XE
 
 Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared convChoice, fgAttLine
-'Dim Shared scoreX0, scoreX1, YC, YF, Z1
+Dim Shared scoreX0, scoreX1, YC, YF, Z1
 
 Dim Shared FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%

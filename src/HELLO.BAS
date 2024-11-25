@@ -31,11 +31,7 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim Shared P1, playCall, periodNbr, puntRetNbr
-Dim Shared scoreX0, scoreX1, YC, YF, Z1
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
-Dim Shared W5, WE, WS, winTeam
-
+Dim Shared quarter, qback, qbTakeKnee
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -2316,17 +2312,23 @@ Sub FOOTBALL ()
     330 '
     If ruleOptType > 0 And ruleOptPro < 8 Then
         'Pro rules before 2008
-        Call KOChoices_NoDefer
+        'Not able to defer
+        Call KickoffChoices(0)
     Else
-        Call KOChoices_Defer
+        If quarter = 1 Then
+            Call KickoffChoices(1)
+        Else
+            Call KickoffChoices(0)
+        End If
     End If
 
-    'Update scoreboard with kicking team
-    Call CHANGEPOSS
+    'Call CHANGEPOSS
 
     '** Ready for Kickoff **
     340 '
     Call MARKER1
+
+    'Update scoreboard with kicking team
     Call StatusBoard
 
     'New possession
@@ -2490,6 +2492,9 @@ Sub FOOTBALL ()
 
                     End Select
 
+                    ydsToScore = 100 - ydLine
+                    Call StatusBoard
+
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
                     Call MOVEBALL
@@ -2517,8 +2522,8 @@ Sub FOOTBALL ()
                     If returnYL <= -.05 Then
 
                         'Returner didn't make it out of the endzone
-                        'Kickoff already changed Possession
-                        'Touchback will change it again
+                        'Touchback will change possession so we need
+                        'to offset it here
                         Call CHANGEPOSS
                         Call Touchback
 
@@ -2590,7 +2595,6 @@ Sub FOOTBALL ()
 
     End Select
 
-    '--- End of a "kickoff" routine
 
     GoTo 700
 
@@ -4566,6 +4570,9 @@ Sub FOOTBALL ()
                         'Track punt yards
                         gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + 100 - ydLine
 
+                        'Track touchback for punter
+                        gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
+
                         If 100 - ydLine > gameStatsTeam(P1, 26) Then
                             'Longest punt?
                             gameStatsTeam(P1, 26) = 100 - ydLine
@@ -4575,9 +4582,6 @@ Sub FOOTBALL ()
                         '-- Average is 4.2-4.4 seconds
                         '-- Range is 3.7 - 4.7 seconds
                         Call AddPossessionTime(4, 5)
-
-                        'Track touchback for punter
-                        gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
                         Call Touchback
 
@@ -5028,13 +5032,13 @@ Sub FOOTBALL ()
                     'Track punt yards
                     gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + 100 - ydLine
 
+                    'Track touchback
+                    gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
+
                     'Hangtime of 4 - 5 seconds
                     '-- Average is 4.2-4.4 seconds
                     '-- Range is 3.7 - 4.7 seconds
                     Call AddPossessionTime(4, 5)
-
-                    'Track touchback
-                    gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
                     Call Touchback
 
@@ -6510,8 +6514,6 @@ Sub FOOTBALL ()
                     gameOver = 1
                 End If
 
-                End
-
             End If
 
             If gameOver = 1 Then
@@ -6547,7 +6549,6 @@ Sub FOOTBALL ()
                         If gameClock! = 0 Then
                             gameClock! = 900
                         End If
-
 
                     Case 3 To 5
                         'College Rules
@@ -6647,6 +6648,11 @@ Sub FOOTBALL ()
                         isOT = 1
                         I$ = "Y"
 
+                        'If this is the start of overtime
+                        If nbrPossOT(D) = 0 And nbrPossOT(D) = 0 Then
+                            gameClock! = 900
+                        End If
+
                         '-- We may be able to skip the below assignment
                         If nbrPossOT(D) = 1 And score(P1, 0) > score(D, 0) Then
                             GoTo 3364
@@ -6735,14 +6741,14 @@ Sub FOOTBALL ()
                         P1 = winTeam
                         D = 1 - winTeam
 
-                        Call KOChoices_NoDefer
+                        Call KickoffChoices(0)
 
                         'Update possession
                         If overtimeOpt >= 1 Then
                             nbrPossOT(P1) = 1
                         End If
 
-                        Call CHANGEPOSS
+                        'Call CHANGEPOSS
                         Call KickoffLine
                         GoTo 340
 
@@ -7660,6 +7666,8 @@ Sub FOOTBALL ()
         Call PBP
         Call Touchback
 
+        GoTo CheckPoss_OT
+
     Else
 
         If ydsGained + ydLine > 49.99 Then
@@ -7729,7 +7737,6 @@ Sub FOOTBALL ()
         GoTo CheckPoss_OT
 
     End If 'Done checking for endzone
-
 
 
     CheckPoss_2PtConv:
@@ -9785,8 +9792,6 @@ Sub ONSIDE ()
     pbpString$ = "IT'S AN ONSIDE KICK!!"
     Call PBP
 
-    Swap P1, D
-
     okDist = (Rnd(1) * 21) + 5
     ydLine = ydLine + okDist
     ydsGained = okDist
@@ -9814,21 +9819,24 @@ Sub ONSIDE ()
 
         If d100% <= onsideSuccess Then
 
-            pbpString$ = gameTeams$(D) + " RECOVERS !!!"
+            'Kicking team recoers
+
+            pbpString$ = gameTeams$(P1) + " RECOVERS !!!"
             Call PBP
 
             'Update possession for certain OT options
             If isOT = 1 And (overtimeOpt = 1 Or overtimeOpt = 2 Or overtimeOpt >= 6) Then
-                nbrPossOT(D) = 1
+                nbrPossOT(P1) = 1
             End If
-
-            Call CHANGEPOSS
 
         Else
 
-            pbpString$ = gameTeams$(P1) + " RECOVERS"
+            'Receiving team gets it
+            pbpString$ = gameTeams$(D) + " RECOVERS"
             Call PBP
             ydLine = 100 - ydLine
+
+            Call CHANGEPOSS
 
         End If
 
@@ -12997,17 +13005,16 @@ End Sub
 
 
 '----------------------------------------
-'      KOChoices_NoDefer Subroutine
+'      KickoffChoices Subroutine
 '----------------------------------------
 'This subroutine gives the user choices
 'to handle a pro kick off.
-Sub KOChoices_NoDefer ()
+Sub KickoffChoices (deferOpt)
 
     'In all situations here, winTeam is the coin toss winner
-
     Call StatusBoard
 
-    If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+    If playerMode = 1 And winTeam = compTeam Or playerMode = 2 Then
 
         If overtimeOpt >= 6 Then
             'Modified Sudden Death
@@ -13027,11 +13034,14 @@ Sub KOChoices_NoDefer ()
         Locate , 14: Print "2 - RECEIVE"
         Locate , 14: Print "3 - DEFEND GOAL WITH WIND AT BACK"
         Locate , 14: Print "4 - DEFEND GOAL WITH WIND IN FACE"
+        If deferOpt = 1 Then
+            Locate , 14: Print "5 - DEFER CHOICE TO 2ND HALF"
+        End If
 
         Do
             I$ = GetKeyPress$
             koChoice = Val(I$)
-        Loop Until koChoice >= 1 And koChoice <= 4
+        Loop Until koChoice >= 1 And koChoice <= (4 + deferOpt)
 
     End If
 
@@ -13041,12 +13051,20 @@ Sub KOChoices_NoDefer ()
 
         Case 1, 2
 
-            Call StatusBoard
+            'Kicking team is always P1
+            'Receiving team is always D
+            If koChoice = 1 Then
+                D = 1 - winTeam
+                P1 = winTeam
+            Else
+                D = winTeam
+                P1 = 1 - winTeam
+            End If
 
             'Computer Player
             If playerMode = 1 And D = compTeam Or playerMode = 2 Then
 
-                defendChoice = 1
+                defChoice = 1
 
             Else
 
@@ -13054,56 +13072,42 @@ Sub KOChoices_NoDefer ()
 
                 'winTeam must kickoff
                 'The other team chooses how to defend
-                Print gameTeams$(1 - winTeam); " DO YOU ELECT TO:"
+                Print gameTeams$(1 - P1); " DO YOU ELECT TO:"
                 Locate 12, 14
                 Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
                 Locate , 14: Print "2 - DEFEND GOAL WITH WIND IN FACE"
 
                 Do
                     I$ = GetKeyPress$
-                    defendChoice = Val(I$)
-                Loop Until defendChoice >= 1 And defendChoice <= 2
+                    defChoice = Val(I$)
+                Loop Until defChoice >= 1 And defChoice <= 2
 
             End If
 
             Screen , , 0, 0
 
-            If defendChoice = 1 Then
-                climate(0) = D
+            If defChoice = 1 Then
+                climate(0) = 1 - winTeam
             Else
-                climate(0) = 1 - D
-            End If
-
-            If koChoice = 2 Then
-                'Because we elected to receive, the opponent
-                'will now become the kicking team
-                Call CHANGEPOSS
+                climate(0) = winTeam
             End If
 
         Case 3, 4
 
-            'Choosing to defend -> implies you're receiving
             If koChoice = 3 Then
-                climate(0) = P1
+                'Having the wind in your favor
+                climate(0) = winTeam
             Else
-                'koChoice = 4
-                climate(0) = D
+                'Working against the wind
+                climate(0) = 1 - winTeam
             End If
-
-            Call CHANGEPOSS
-            Call MARKER1
-            Call StatusBoard
 
             If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
-                defendChoice = 2
+                koChoice = 2
 
             Else
 
-
-                'Is this necessary?
-                'Someone has already chosen to Defend
-                '(that implies Receive)
                 Call OPTIONBOX(7)
                 Print gameTeams$(1 - winTeam); " DO YOU ELECT TO:"
                 Locate 12, 14
@@ -13112,146 +13116,28 @@ Sub KOChoices_NoDefer ()
 
                 Do
                     I$ = GetKeyPress$
-                    defendChoice = Val(I$)
-                Loop Until defendChoice >= 1 And defendChoice <= 2
+                    koChoice = Val(I$)
+                Loop Until koChoice >= 1 And koChoice <= 2
 
             End If
 
             Screen , , 0, 0
 
-            If defendChoice = 1 Then
-                winTeam = 1 - winTeam
+            'Kicking team is always P1
+            'Receiving team is always D
+            If koChoice = 1 Then
+                D = winTeam
+                P1 = 1 - winTeam
+            Else
+                D = 1 - winTeam
+                P1 = winTeam
             End If
 
+        Case 5
+            winTeam = 1 - winTeam
+            Call KickoffChoices(0)
+
     End Select
-
-End Sub
-
-
-'----------------------------------------
-'    KOChoices_Defer Subroutine
-'----------------------------------------
-'This subroutine gives the user choices
-'to handle a college kick off.
-Sub KOChoices_Defer ()
-
-    If quarter > 2 Then
-
-        Call KOChoices_NoDefer
-
-    Else
-
-        Call StatusBoard
-
-        If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
-
-            koChoice = 2
-
-        Else
-
-            Call OPTIONBOX(9)
-            Print gameTeams$(P1); " DO YOU ELECT TO:"
-            Locate 12, 14
-            Locate , 14: Print "1 - KICK OFF"
-            Locate , 14: Print "2 - RECEIVE"
-            Locate , 14: Print "3 - DEFEND GOAL WITH WIND AT BACK"
-            Locate , 14: Print "4 - DEFEND GOAL WITH WIND IN FACE"
-            Locate , 14: Print "5 - DEFER CHOICE TO 2ND HALF"
-
-            Do
-                I$ = GetKeyPress$
-                koChoice = Val(I$)
-            Loop Until koChoice >= 1 And koChoice <= 5
-
-        End If
-
-        Screen , , 0, 0
-
-        Select Case koChoice
-
-            Case 1, 2
-
-                Call StatusBoard
-
-                If playerMode = 1 And D = compTeam Or playerMode = 2 Then
-
-                    defendChoice = 1
-
-                Else
-
-                    Call OPTIONBOX(7)
-                    Print gameTeams$(D); " DO YOU ELECT TO:"
-                    Locate 12, 14
-                    Locate , 14: Print "1 - DEFEND GOAL WITH WIND AT BACK"
-                    Locate , 14: Print "2 - DEFEND GOAL WITH WIND IN FACE"
-
-                    Do
-                        I$ = GetKeyPress$
-                        defendChoice = Val(I$)
-                    Loop Until defendChoice >= 1 And defendChoice <= 2
-                End If
-
-                Screen , , 0, 0
-
-                If defendChoice = 1 Then
-                    climate(0) = D
-                Else
-                    'defendChoice = 2
-                    climate(0) = 1 - D
-                End If
-
-                If koChoice = 1 Then
-                    Call CHANGEPOSS
-                    winTeam = 1 - winTeam
-                End If
-
-            Case 3, 4
-
-                If koChoice = 3 Then
-                    climate(0) = P1
-                Else
-                    'koChoice = 4
-                    climate(0) = D
-                End If
-
-                Swap P1, D
-
-                Call StatusBoard
-
-                If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
-
-                    defendChoice = 2
-
-                Else
-
-                    Call OPTIONBOX(7)
-                    Print gameTeams$(P1); " DO YOU ELECT TO:"
-
-                    Locate 12, 14
-                    Locate , 14: Print "1 - KICK OFF"
-                    Locate , 14: Print "2 - RECEIVE"
-
-                    Do
-                        I$ = GetKeyPress$
-                        defendChoice = Val(I$)
-                    Loop Until defendChoice >= 1 And defendChoice <= 2
-
-                End If
-
-                Screen , , 0, 0
-
-                If defendChoice = 1 Then
-                    Call CHANGEPOSS
-                End If
-
-            Case 5
-                Swap P1, D
-                winTeam = P1
-                Call KOChoices_NoDefer
-
-        End Select
-
-    End If
 
 End Sub
 
