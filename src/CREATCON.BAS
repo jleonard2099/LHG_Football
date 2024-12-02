@@ -299,14 +299,15 @@ Sub SaveConferences (confFile$, conference$, div1$, div2$)
 
     Close #1
 
+    Erase memberName$
+
     For X = 1 To 30
 
         If memberName$(X) = "XXX" Then
             memberName$(X) = Chr$(42)
         Else
             teamName$ = memberName$(X)
-            statFile$ = nameStatFile$(teamName$)
-            memberName$(X) = statFile$
+            memberName$(X) = nameStatFile$(teamName$)
         End If
 
     Next X

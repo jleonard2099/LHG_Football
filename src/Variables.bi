@@ -40,7 +40,7 @@ Dim memberConf$(MAX_CONFERENCES)
 Dim memberIdx(40)
 Dim memberName$(40), memberNames_2nd$(40)
 Dim memberYear$(40), memberYear_2nd$(40)
-Dim statFiles$(30), statFilesComp$(60)
+Dim statFilesComp$(60)
 
 '-- For Road Data
 Dim gameAtt_Road!(MAX_SCHED_STATS)
@@ -373,7 +373,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, CP, currDown ', compOffense
-Dim Shared D, dLine
+'Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
@@ -386,10 +386,10 @@ Dim Shared I1, I2, I3, I5, I6, I7, I8, I9
 Dim Shared I4 As Single
 
 Dim Shared isOT, JJ, K3
-Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
-Dim Shared penaltyYds, playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
-'Dim Shared quarter, qback, qbTakeKnee
+'Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
+'Dim Shared penaltyYds, playerMode, playerOpt, playType
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushYds
 Dim Shared S6, startYds, tickerGames
 Dim Shared W5, WE, WS, winTeam
@@ -406,17 +406,12 @@ Dim Shared W5, WE, WS, winTeam
 '8   Assess penalty
 '9   Timeout
 
-
-'These are being used for NEWLDR routine
-'AND the game itself
-'Dim Shared X, X1
-
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
-Dim Shared convChoice, fgAttLine
+'Dim Shared ydsToFirst As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared convChoice, fgAttLine, loseDown
 Dim Shared scoreX0, scoreX1, YC, YF, Z1
 
 Dim Shared FF%, goalLnYdAdj, HB%, intChance
@@ -453,7 +448,7 @@ Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1), otTDs(0 To 1)
-Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2), penaltyYds(2)
+Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2), penaltyYardage(2)
 Dim Shared playerInts(1, 9), playerSacks(1, 14)
 Dim Shared prNumRet(1, 2), prYdsPerRet(1, 2), puntReturners(0 To 1, 0 To 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
@@ -477,13 +472,13 @@ Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-Dim Shared pbpString$, targetWRName$, YN$
+'Dim Shared pbpString$, targetWRName$, YN$
 
 Dim Shared defFormation$(0 To 15), defPlay$(1 To 15), defInts$(1, 9)
 Dim Shared defSacks$(1, 14), downDesc$(0 To 4), direction$(0 To 1)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gadget$(3)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
-Dim Shared passCov$(0 To 11), penaltyDesc$(2), playDesc$(30), playSelect$(9)
+Dim Shared passCov$(0 To 11), penaltyTeam$(2), playDesc$(30), playSelect$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3)
 Dim Shared rbacks$(1, 10), SX$(1 To 33, 0 To 1)
 Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)

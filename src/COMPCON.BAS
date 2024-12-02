@@ -18,7 +18,7 @@ Sub CompileCollege ()
 
     Shared indRecDesc$()
     Shared statFilesComp$(), leaderName$(), leaderTeam$()
-    Shared statFiles$(), teamRecDesc$(), totalTeamName$()
+    Shared memberName$(), teamRecDesc$(), totalTeamName$()
 
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
@@ -116,7 +116,7 @@ Sub CompileCollege ()
         Input #2, div2$
 
         For XW = 1 To 30
-            Input #2, statFiles$(XW)
+            Input #2, memberName$(XW)
         Next
 
         Close #2
@@ -152,17 +152,17 @@ Sub CompileCollege ()
             For XW = 1 To 30
 
                 'Look for * as terminating char
-                If statFiles$(XW) <> Chr$(42) Then
+                If memberName$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsColl%(XW, statFiles$(XW), numberGames)
+                    haveStats = FindStatsColl%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
 
-                        L = Len(statFiles$(XW))
+                        L = Len(memberName$(XW))
                         WT$ = ""
 
                         For X = 1 To L:
-                            A = Asc(Mid$(statFiles$(XW), X, 1))
+                            A = Asc(Mid$(memberName$(XW), X, 1))
                             WT$ = WT$ + Chr$(A)
                         Next X
 
@@ -198,9 +198,9 @@ Sub CompileCollege ()
                         Next X
                         'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
 
-                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + statFiles$(XW)) Then
+                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                            Call ReadStatsLeaders(statFiles$(XW), numberGames, leagLdrTeams$, 0)
+                            Call ReadStatsLeaders(memberName$(XW), numberGames, leagLdrTeams$, 0)
                             Call CalcStatTotalsConf(numberGames, leagLdrTeams$, WT$, finalUpdate$)
                             Call CalcStatLeaders(numberGames, leagLdrTeams$, WT$, finalUpdate$)
 
@@ -233,7 +233,7 @@ Function FindStatsColl% (XW, statFile$, numberGames)
 
     Shared oppScore(), teamScore()
 
-    Shared oppName$(), statFiles$()
+    Shared oppName$(), memberName$()
 
     findFile$ = diskPaths$(1) + statFile$ + "S"
 
@@ -266,7 +266,7 @@ Function FindStatsColl% (XW, statFile$, numberGames)
 
             For EC = 1 To 30
                 'If team stat file = opponent of a conference game?
-                If statName$ = statFiles$(EC) Then
+                If statName$ = memberName$(EC) Then
                     nonConfGame = 1
                     Exit For
                 End If
