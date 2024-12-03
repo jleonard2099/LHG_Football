@@ -9314,12 +9314,27 @@ Sub COMPILESTATFILES (teamIdx)
     End If
 
     If numberGames < MAX_SCHED_STATS Then numberGames = numberGames + 1
-    If gameLoc = teamIdx Then locIndicator$(numberGames) = "H"
-    If gameLoc <> teamIdx Then locIndicator$(numberGames) = "A"
-    If gameLoc = 2 Then locIndicator$(numberGames) = "X"
-    If gameLoc = teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc <> teamIdx And periodNbr > 4 Then locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
-    If gameLoc = 2 And periodNbr > 4 Then locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+
+    If gameLoc = teamIdx Then 
+        If periodNbr > 4 Then 
+            locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
+        Else
+            locIndicator$(numberGames) = "H"
+        End If
+    Else
+        If periodNbr > 4 Then 
+            locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
+        Else
+            locIndicator$(numberGames) = "A"
+        End If
+    End If
+    If gameLoc = 2 Then 
+        If periodNbr > 4 Then 
+            locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+        Else
+            locIndicator$(numberGames) = "X"
+        End If
+    End If
 
     teamScore(numberGames) = score(teamIdx, 0)
     oppName$(numberGames) = gameTeams$(1 - teamIdx)

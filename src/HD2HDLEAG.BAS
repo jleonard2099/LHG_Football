@@ -56,7 +56,8 @@ End Sub
 'the comparisons and presents output options
 Sub Hd2HdPro_League (secondLeague)
 
-    Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+    Shared div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
     Shared awayLosses!(), awayLosses_2nd!(), awayTies_2nd!(), awayTies!()
     Shared awayWins!(), awayWins_2nd!()
@@ -196,6 +197,7 @@ Sub Hd2HdPro_League (secondLeague)
                     Input #2, div1Name$
                     Input #2, div2Name$
                     Input #2, div3Name$
+                    Input #2, div4Name$
 
                     For X = 1 To TEAMS_PER_LEAGUE:
                         Input #2, memberName$(X)
@@ -234,6 +236,7 @@ Sub Hd2HdPro_League (secondLeague)
                         Input #3, div1Name_2$
                         Input #3, div2Name_2$
                         Input #3, div3Name_2$
+                        Input #3, div4Name_2$
 
                         For X = 1 To TEAMS_PER_LEAGUE:
                             Input #3, memberNames_2nd$(X)
@@ -386,8 +389,6 @@ Sub Hd2HdPro_League (secondLeague)
 
                 Call TITLE_UTILS
 
-                'Call MenuBox(8, 23, 39, 5, 15, 1)
-                'Call MenuBox(8, 15, 44, 6, 15, 1)
                 Call MenuBox(8, 17, 40, 6, 15, 1)
 
                 Do
@@ -452,7 +453,7 @@ End Sub
 'comparison values to a report file
 Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, divNames$(), divNames_2nd$(), secondLeague, printDest)
 
-    Shared div1Name$, div2Name$, div3Name$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Shared awayLosses!(), awayLosses_2nd!(), awayTies_2nd!(), awayTies!()
     Shared awayWins!(), awayWins_2nd!()
@@ -484,6 +485,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, divNames$(), divNames_2nd$(), se
     divNames$(1) = div1Name$
     divNames$(2) = div2Name$
     divNames$(3) = div3Name$
+    divNames$(4) = div4Name$
 
     Open destFile$ For Output As #1
 
@@ -573,6 +575,7 @@ Sub Hd2HdPro_Report (teamName$, leag1$, leag2$, divNames$(), divNames_2nd$(), se
         divNames_2nd$(1) = div1Name_2$
         divNames_2nd$(2) = div2Name_2$
         divNames_2nd$(3) = div3Name_2$
+        divNames_2nd$(4) = div4Name_2$
 
         div = 0
 
@@ -844,7 +847,8 @@ End Sub
 'comparison values to the end user display
 Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, divNames$(), divNames_2nd$(), secondLeague)
 
-    Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+    Shared div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
     Shared teamRatings()
 
@@ -870,6 +874,7 @@ Sub Hd2HdPro_Screen (teamName$, leag1$, leag2$, divNames$(), divNames_2nd$(), se
     divNames$(1) = div1Name$
     divNames$(2) = div2Name$
     divNames$(3) = div3Name$
+    divNames$(4) = div4Name$
 
     div = 0
 

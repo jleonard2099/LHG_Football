@@ -36,15 +36,16 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
 
-    Shared div1Name$, div2Name$, div3Name$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
-    Input #1, league$, div1Name$, div2Name$, div3Name$
+    Input #1, league$, div1Name$, div2Name$, div3Name$, div4Name$
     Close #1
 
     div1Name$ = PadRight$(div1Name$, 8)
     div2Name$ = PadRight$(div2Name$, 8)
     div3Name$ = PadRight$(div3Name$, 8)
+    div4Name$ = PadRight$(div4Name$, 8)
 
     Cls
 
@@ -52,7 +53,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Open diskPaths$(2) + leagueFile$ + ".LDR" For Input As #2
 
-    For X = 1 To 30
+    For X = 1 To TEAMS_PER_LEAGUE
         Input #2, leagLdrTeams$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
@@ -322,7 +323,7 @@ Sub ProLeaders_Screen ()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
 
-    Shared div1Name$, div2Name$, div3Name$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Color 15, 0
     Cls
@@ -440,6 +441,46 @@ Sub ProLeaders_Screen ()
 
     RT = 0
 
+    Locate 13, 20
+
+    Color 12
+    Print div4Name$ + " DIVISION"
+
+    Locate 14, 20
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 31 To 40:
+
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 6 - RT), 20
+            Print leagLdrTeams$(P); Tab(33); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+                Print "  .---";
+            Else
+                If divLosses!(P) + divTies!(P) = 0 Then
+                    Print " 1.000";
+                Else
+                    If divWins!(P) = 0 Then
+                        Print "  .000";
+                    Else
+                        Print Using "  .###"; (divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                    End If
+                End If
+            End If
+
+            Print Tab(50); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
+        End If
+
+    Next
+
+    RT = 0
+    
     '-----
     Color 12
     'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
@@ -1026,7 +1067,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
 
-    Shared div1Name$, div2Name$, div3Name$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Color 0, 15
     Cls
@@ -1094,6 +1135,35 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Print #1, "              W   L   T   PCT  PF  PA"
 
     For P = 21 To 30
+
+        If leagRecText$(P) <> "" Then
+
+            Print #1, leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+
+            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+                Print #1, "  .---";
+            Else
+                If divLosses!(P) + divTies!(P) = 0 Then
+                    Print #1, " 1.000";
+                Else
+                    If divWins!(P) = 0 Then
+                        Print #1, "  .000";
+                    Else
+                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                    End If
+                End If
+            End If
+
+            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        End If
+
+    Next
+
+    Print #1,
+    Print #1, div4Name$; " DIVISION"
+    Print #1, "              W   L   T   PCT  PF  PA"
+
+    For P = 31 To 40
 
         If leagRecText$(P) <> "" Then
 

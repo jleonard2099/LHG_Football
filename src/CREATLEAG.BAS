@@ -41,7 +41,7 @@ Sub CREATLEAG ()
 
         If ExitCode% <> 27 Then
 
-            For X = 1 To 30:
+            For X = 1 To TEAMS_PER_LEAGUE:
                 memberName$(X) = "XXX"
             Next
 
@@ -204,7 +204,7 @@ Sub ReviewEditLeague (leagueFile$, league$, div1$, div2$, div3$)
 
             Input #1, league$, div1$, div2$, div3$
 
-            For X = 1 To 30:
+            For X = 1 To TEAMS_PER_LEAGUE:
                 Input #1, memberName$(X)
                 Input #1, memberIdx(X)
                 Input #1, memberYear$(X)
@@ -300,6 +300,8 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
 
     Shared memberName$(), memberYear$()
 
+    Dim statFileNames$(TEAMS_PER_LEAGUE)
+
     Open diskPaths$(2) + leagueFile$ + ".TMI" For Output As #1
 
     Print #1, 1
@@ -309,7 +311,7 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
     Print #1, div2$
     Print #1, div3$
 
-    For X = 1 To 30:
+    For X = 1 To TEAMS_PER_LEAGUE:
         Print #1, memberName$(X)
         Print #1, memberIdx(X)
         Print #1, memberYear$(X)
@@ -319,13 +321,13 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
 
     Erase memberName$
     
-    For X = 1 To 30
+    For X = 1 To TEAMS_PER_LEAGUE
 
         If memberName$(X) = "XXX" Then
-            memberName$(X) = Chr$(42)
+            statFileNames$(X) = Chr$(42)
         Else
             teamName$ = memberName$(X)
-            memberName$(X) = nameStatFile$(teamName$)
+            statFileNames$(X) = nameStatFile$(teamName$)
         End If
 
     Next X
@@ -337,8 +339,8 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
     Write #2, div2$
     Write #2, div3$
 
-    For X = 1 To 30:
-        Write #2, memberName$(X)
+    For X = 1 To TEAMS_PER_LEAGUE:
+        Write #2, statFileNames$(X)
     Next
 
     Close #2

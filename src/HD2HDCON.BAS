@@ -57,7 +57,8 @@ End Sub
 'the comparisons and presents output options
 Sub Hd2HdCon_Conf (secondConf)
 
-    Shared div1Name$, div2Name$, div3Name$, div1Name_2$, div2Name_2$, div3Name_2$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+    Shared div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
     Shared awayLosses!(), awayLosses_2nd!(), awayTies_2nd!(), awayTies!()
     Shared awayWins!(), awayWins_2nd!()
@@ -191,10 +192,12 @@ Sub Hd2HdCon_Conf (secondConf)
                 End If
 
                 If statType = 1 Then
+
                     Input #2, conf1$
                     Input #2, div1Name$
                     Input #2, div2Name$
                     Input #2, div3Name$
+                    Input #2, div4Name$
 
                     For X = 1 To TEAMS_PER_CONFERENCE:
                         Input #2, memberName$(X)
@@ -230,6 +233,7 @@ Sub Hd2HdCon_Conf (secondConf)
                         Input #2, div1Name_2$
                         Input #2, div2Name_2$
                         Input #2, div3Name_2$
+                        Input #2, div4Name_2$
 
                         For X = 1 To TEAMS_PER_CONFERENCE:
                             Input #2, memberNames_2nd$(X)
@@ -384,9 +388,7 @@ Sub Hd2HdCon_Conf (secondConf)
 
                 Call TITLE_UTILS
 
-                'Call MenuBox(8, 23, 39, 5, 15, 1)
                 Call MenuBox(8, 15, 44, 6, 15, 1)
-                'Call MenuBox(8, 17, 40, 6, 15, 1)
 
                 Do
 

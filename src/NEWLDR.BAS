@@ -6,18 +6,35 @@
 '"Expanded" Stats/Standings screens
 Sub NEWLDR (statType)
 
-    _Title "3-in-1 Football - View Stat Leaders"
+    _Title "3-in-1 Football - Expanded Leaders / Standings"
 
-    ReDim menuChoices$(1 To 3)
+    ReDim menuChoices$(1 To 5)
+
+    Dim printOrView
+
+    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+
+    'Needed for Expanded Standings
+    Shared totHomeLosses(), totHomeWins()
+    Shared totTeamLosses(), lastLoseStreak()
+    Shared lastWinStreak()
+    Shared totRoadLosses(), totRoadWins()
+    Shared teamLoseStreak(), teamWinStreak(), teamTotWins()
+
+    Shared expStdLeagName$()
 
     If statType = 1 Then
-        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS"
-        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS  "
-        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU      "
+        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS    "
+        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS      "
+        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS      "
+        menuChoices$(4) = "VIEW / PRINT EXPANDED LEAGUE STANDINGS"
+        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU          "
     Else
-        menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS"
-        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS  "
-        menuChoices$(3) = "RETURN TO LEAGUE LEADER MENU              "
+        menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS  "
+        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS    "
+        menuChoices$(3) = "UPDATE EXPANDED COLLEGE CONFERENCE STANDINGS"
+        menuChoices$(4) = "VIEW / PRINT COLLEGE CONFERENCE STANDINGS   "
+        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU                "
     End If
 
     Do
@@ -28,9 +45,9 @@ Sub NEWLDR (statType)
         Call TITLE
 
         SELECTION% = 1
-        Count% = 3
+        Count% = 5
         Start% = 1
-        ExitCode% = 3
+        ExitCode% = 5
         FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -73,11 +90,95 @@ Sub NEWLDR (statType)
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
 
+                Case 3
+                    Do
+                        leagStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "LEAGUE STATS", FileExit%)
+
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+                            Color 15, 0
+                            Cls
+                            Call ReadConferenceStats(leagStatFile$, statType)
+                            Call UpdateExpandedStandings(leagStatFile$, statType)
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
+
+                Case 4
+                    Do
+                        standingsFile$ = ChooseFile$(diskPaths$(2) + "*.STD", "LEAGUE STANDINGS", FileExit%)
+
+                        wrongFormat% = 0
+
+                        If FileExit% <> 27 And FileExit% <> 0 Then
+
+                            If statType = 1 Then 
+                                TEAM_LIMIT = TEAMS_PER_LEAGUE
+                            Else
+                                TEAM_LIMIT = TEAMS_PER_CONFERENCE
+                            End If
+
+                            Open diskPaths$(2) + standingsFile$ + ".STD" For Input As #2
+
+                            Input #2, fileType
+                            
+                            If fileType = statType Then
+
+                                Input #2, league$, div1Name$, div2Name$, div3Name$, div4Name$
+
+                                For I = 1 To TEAM_LIMIT
+                                    Input #2, teamTotWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), expStdLeagName$(I)
+                                Next
+                                
+                            Else
+                            
+                                Cls
+                                Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
+                                Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
+                                Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+
+                                I$ = GetKeyPress$
+
+                                wrongFormat% = 1
+                            
+                            End If
+
+                            Close #2
+    
+                            If wrongFormat% = 0 Then
+
+                                userKey$ = GetOutputOptions$
+
+                                If userKey$ <> Chr$(27) Then
+
+                                    Select Case userKey$
+
+                                        Case "F"
+                                            userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                                            If userFile$ <> "" Then
+                                                Call NewStandings_Report(0, userFile$, league$, statType)
+                                            End If
+
+                                        Case "P"
+                                            Call NewStandings_Report(1, "REPORT", league$, statType)
+
+                                        Case "S":
+                                            Call NewStandings_Screen(league$, statType)
+
+                                    End Select
+
+                                End If
+                                
+                            End If 'Done checking right file format
+
+                        End If
+
+                    Loop Until FileExit% = 27 Or FileExit% = 0
+
             End Select
 
         End If
 
-    Loop Until SELECTION% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 5 Or ExitCode% = 27
 
 End Sub
 
@@ -96,6 +197,8 @@ Sub ReadConferenceStats (statFile$, statType)
 
     Shared memberName$()
 
+    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+
     Erase memberName$
 
     If statType = 0 Then
@@ -113,14 +216,14 @@ Sub ReadConferenceStats (statFile$, statType)
     If statType = 1 Then
         'Pro
         Input #1, league$
-        Input #1, div1$
-        Input #1, div2$
-        Input #1, div3$
+        Input #1, div1Name$
+        Input #1, div2Name$
+        Input #1, div3Name$
     Else
         'College
         Input #1, league$
-        Input #1, div1$
-        Input #1, div2$
+        Input #1, div1Name$
+        Input #1, div2Name$
     End If
 
     If statType = 0 Then
@@ -158,6 +261,8 @@ Sub ViewExpandedStats (statType)
 
     Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
 
+    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+
     confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
     If FileExit% <> 27 Then
@@ -187,9 +292,9 @@ Sub ViewExpandedStats (statType)
         printOrView = 0
         totalStats = 0
 
-        div1$ = ""
-        div2$ = ""
-        div3$ = ""
+        div1Name$ = ""
+        div2Name$ = ""
+        div3Name$ = ""
 
         Erase expLdrTeam$, expLdrPlyrName$
 
@@ -198,14 +303,15 @@ Sub ViewExpandedStats (statType)
         If statType = 1 Then
             'Pro
             Input #1, league$
-            Input #1, div1$
-            Input #1, div2$
-            Input #1, div3$
+            Input #1, div1Name$
+            Input #1, div2Name$
+            Input #1, div3Name$
+            Input #1, div4Name$
         Else
             'College
             Input #1, league$
-            Input #1, div1$
-            Input #1, div2$
+            Input #1, div1Name$
+            Input #1, div2Name$
         End If
 
         If statType = 0 Then
@@ -285,9 +391,10 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     JJ = 0
     totalStats = 0
 
-    div1$ = ""
-    div2$ = ""
-    div3$ = ""
+    div1Name$ = ""
+    div2Name$ = ""
+    div3Name$ = ""
+    div4Name$ = ""
 
     Erase expLdrTeam$, expLdrPlyrName$
 
@@ -2592,4 +2699,3 @@ Sub GetListLength (printOrView, listLength, maxItems)
     End If
 
 End Sub
-

@@ -178,8 +178,19 @@ Dim expLdrKickVal!(60, 5), expLdrIntVal!(300), expLdrSackVal!(450)
 
 Dim expLdrVal!(480)
 
-'For Expanded Standings
 
+
+'For Expanded Standings
+Dim teamLoseStreak(40), teamWinStreak(40)
+Dim teamTotWins(40)
+
+Dim totHomeLosses(40), totHomeWins(40)
+Dim totRoadLosses(40), totRoadWins(40)
+Dim totNeutralLosses(40), totNeutralWins(40)
+
+Dim totTeamLosses(40), lastLoseStreak(40), lastWinStreak(40)
+
+Dim expStdLeagName$(40)
 
 '----------------------------------------
 ' Used in COMPILE / SEE routines
@@ -296,10 +307,10 @@ Dim tradeYN$(1)
 '----------------------------------------
 '   Used in HD2HD routines
 '----------------------------------------
-Dim div1Name$, div2Name$, div3Name$
-Dim div1Name_2$, div2Name_2$, div3Name_2$
+Dim div1Name$, div2Name$, div3Name$, div4Name$
+Dim div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
-Dim divNames$(3), divNames_2nd$(3)
+Dim divNames$(4), divNames_2nd$(4)
 
 'These are mostly keeping track of quantities (# wins, # losses, etc)
 'so they could probably be INTEGERS.
@@ -373,7 +384,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, CP, currDown ', compOffense
-'Dim Shared D, dLine
+Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
@@ -386,9 +397,9 @@ Dim Shared I1, I2, I3, I5, I6, I7, I8, I9
 Dim Shared I4 As Single
 
 Dim Shared isOT, JJ, K3
-'Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
-'Dim Shared penaltyYds, playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared kickDist, kickYL, playSegment, overtimeOpt, nbrScores
+Dim Shared penaltyYds, playerMode, playerOpt, playType
+Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushYds
 Dim Shared S6, startYds, tickerGames
@@ -409,8 +420,8 @@ Dim Shared W5, WE, WS, winTeam
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-'Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsToFirst As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared convChoice, fgAttLine, loseDown
 Dim Shared scoreX0, scoreX1, YC, YF, Z1
 
@@ -472,7 +483,7 @@ Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-'Dim Shared pbpString$, targetWRName$, YN$
+Dim Shared pbpString$, targetWRName$, YN$
 
 Dim Shared defFormation$(0 To 15), defPlay$(1 To 15), defInts$(1, 9)
 Dim Shared defSacks$(1, 14), downDesc$(0 To 4), direction$(0 To 1)

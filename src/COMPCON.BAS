@@ -17,7 +17,7 @@ Sub CompileCollege ()
     Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
-    Shared statFilesComp$(), leaderName$(), leaderTeam$()
+    Shared leaderName$(), leaderTeam$()
     Shared memberName$(), teamRecDesc$(), totalTeamName$()
 
     'Read in any existing records first
@@ -73,7 +73,7 @@ Sub CompileCollege ()
     Erase leagPtsFor!, leagPtsAgnst!
 
     For X = 1 To 60
-        statFilesComp$(X) = "*"
+        memberName$(X) = "*"
     Next
 
     For X = 1 To 240
@@ -115,7 +115,7 @@ Sub CompileCollege ()
         Input #2, div1$
         Input #2, div2$
 
-        For XW = 1 To 30
+        For XW = 1 To TEAMS_PER_CONFERENCE
             Input #2, memberName$(XW)
         Next
 
@@ -143,13 +143,13 @@ Sub CompileCollege ()
             Input #4, div1$
             Input #4, div2$
 
-            For X = 1 To 30
-                Input #4, statFilesComp$(X)
+            For X = 1 To TEAMS_PER_CONFERENCE
+                Input #4, memberName$(X)
             Next X
 
             Close #4
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_CONFERENCE
 
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
@@ -168,9 +168,9 @@ Sub CompileCollege ()
 
                         nonConfGame = 0
 
-                        For X = 1 To 30
+                        For X = 1 To TEAMS_PER_CONFERENCE
 
-                            If statFilesComp$(X) = WT$ Then
+                            If memberName$(X) = WT$ Then
 
                                 If divWins!(X) = fullWins And divLosses!(X) = fullLosses And divTies!(X) = fullTies Then
 
@@ -189,7 +189,7 @@ Sub CompileCollege ()
 
                                     leagPtsFor!(X + 30) = confPtsFor
                                     leagPtsAgnst!(X + 30) = confPtsAgnst
-                                    statFilesComp$(X + 30) = statFilesComp$(X)
+                                    memberName$(X + 30) = memberName$(X)
 
                                 End If
 
@@ -264,7 +264,7 @@ Function FindStatsColl% (XW, statFile$, numberGames)
             statName$ = nameStatFile$(oppName$(I))
             nonConfGame = 0
 
-            For EC = 1 To 30
+            For EC = 1 To TEAMS_PER_CONFERENCE
                 'If team stat file = opponent of a conference game?
                 If statName$ = memberName$(EC) Then
                     nonConfGame = 1
@@ -440,16 +440,16 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     CA = 3
 
     If UCase$(finalUpdate$) = "Y" And offTotals!(2) / numberGames > teamRecords!(3) Then
-		teamRecords!(3) = offTotals!(2) / numberGames
-		teamRecDesc$(3) = teamName$
+        teamRecords!(3) = offTotals!(2) / numberGames
+        teamRecDesc$(3) = teamName$
     End If
     If offTotals!(2) > teamRecords!(4) Then
-		teamRecords!(4) = offTotals!(2)
-		teamRecDesc$(4) = teamName$
+        teamRecords!(4) = offTotals!(2)
+        teamRecDesc$(4) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And offTotals!(2) / offTotals!(1) > teamRecords!(5) Then
-		teamRecords!(5) = offTotals!(2) / offTotals!(1)
-		teamRecDesc$(5) = teamName$
+        teamRecords!(5) = offTotals!(2) / offTotals!(1)
+        teamRecDesc$(5) = teamName$
     End If
 
     If offTotals!(2) / numberGames > totalTeamVal!(CA, 20, 5) Then
@@ -478,16 +478,16 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     CA = 4
 
     If UCase$(finalUpdate$) = "Y" And defTotals!(2) / numberGames < teamRecords!(29) Then
-		teamRecords!(29) = defTotals!(2) / numberGames
-		teamRecDesc$(29) = teamName$
+        teamRecords!(29) = defTotals!(2) / numberGames
+        teamRecDesc$(29) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And defTotals!(2) < teamRecords!(30) Then
-		teamRecords!(30) = defTotals!(2)
-		teamRecDesc$(30) = teamName$
+        teamRecords!(30) = defTotals!(2)
+        teamRecDesc$(30) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And defTotals!(2) / defTotals!(1) < teamRecords!(31) Then
-		teamRecords!(31) = defTotals!(2) / defTotals!(1)
-		teamRecDesc$(31) = teamName$
+        teamRecords!(31) = defTotals!(2) / defTotals!(1)
+        teamRecDesc$(31) = teamName$
     End If
 
     If defTotals!(2) / numberGames < totalTeamVal!(CA, 20, 5) Then
@@ -523,17 +523,17 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     Next
 
     If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then
-		teamRecords!(13) = PTS / numberGames
-		teamRecDesc$(13) = teamName$
+        teamRecords!(13) = PTS / numberGames
+        teamRecDesc$(13) = teamName$
     End If
     If PTS > teamRecords!(12) Then
-		teamRecords!(12) = PTS
-		teamRecDesc$(12) = teamName$
+        teamRecords!(12) = PTS
+        teamRecDesc$(12) = teamName$
     End If
 
     If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then
-		teamRecords!(14) = (PTS - OPTS) / numberGames
-		teamRecDesc$(14) = teamName$
+        teamRecords!(14) = (PTS - OPTS) / numberGames
+        teamRecDesc$(14) = teamName$
     End If
 
     If PTS / numberGames > totalTeamVal!(CA, 20, 3) Then
@@ -610,28 +610,28 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     CA = 7
 
     If UCase$(finalUpdate$) = "Y" And offTotals!(6) / numberGames > teamRecords!(6) Then
-		teamRecords!(6) = offTotals!(6) / numberGames
-		teamRecDesc$(6) = teamName$
+        teamRecords!(6) = offTotals!(6) / numberGames
+        teamRecDesc$(6) = teamName$
     End If
     If offTotals!(6) > teamRecords!(7) Then
-		teamRecords!(7) = offTotals!(6)
-		teamRecDesc$(7) = teamName$
+        teamRecords!(7) = offTotals!(6)
+        teamRecDesc$(7) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(3) > teamRecords!(8) Then
-		teamRecords!(8) = offTotals!(6) / offTotals!(3)
-		teamRecDesc$(8) = teamName$
+        teamRecords!(8) = offTotals!(6) / offTotals!(3)
+        teamRecDesc$(8) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(4) > teamRecords!(9) Then
-		teamRecords!(9) = offTotals!(6) / offTotals!(4)
-		teamRecDesc$(9) = teamName$
+        teamRecords!(9) = offTotals!(6) / offTotals!(4)
+        teamRecDesc$(9) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And offTotals!(4) / offTotals!(3) > teamRecords!(10) Then
-		teamRecords!(10) = offTotals!(4) / offTotals!(3)
-		teamRecDesc$(10) = teamName$
+        teamRecords!(10) = offTotals!(4) / offTotals!(3)
+        teamRecDesc$(10) = teamName$
     End If
     If UCase$(finalUpdate$) = "Y" And offTotals!(5) / offTotals!(3) < teamRecords!(11) Then
-		teamRecords!(11) = offTotals!(5) / offTotals!(3)
-		teamRecDesc$(11) = teamName$
+        teamRecords!(11) = offTotals!(5) / offTotals!(3)
+        teamRecDesc$(11) = teamName$
     End If
 
     If offTotals!(6) / numberGames > totalTeamVal!(CA, 20, 8) Then
@@ -722,7 +722,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
 
     If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then 
         teamRecords!(15) = offTotals!(8) / offTotals!(7)
-		teamRecDesc$(15) = teamName$
+        teamRecDesc$(15) = teamName$
     End If
 
     If offTotals!(8) / offTotals!(7) > totalTeamVal!(CA, 20, 2) Then
@@ -855,7 +855,7 @@ Sub SortStandingsConference
 
     Shared leagPtsAgnst!(), leagPtsFor!()
 
-    Shared statFilesComp$()
+    Shared memberName$()
 
     'Currently sorts by Conference Record
     '   To sort by Season Record, use Z = 0 to 1
@@ -875,7 +875,7 @@ Sub SortStandingsConference
 
                     If diffX <> diffY Then
                         If Not (divWins!(X) <= divWins!(Y) And divWins!(X) > divLosses!(X)) Or Not (divWins!(X) >= divWins!(Y) And divWins!(X) < divLosses!(X)) Then
-                            Swap statFilesComp$(X), statFilesComp$(Y)
+                            Swap memberName$(X), memberName$(Y)
                             Swap divWins!(X), divWins!(Y)
                             Swap divLosses!(X), divLosses!(Y)
                             Swap divTies!(X), divTies!(Y)
@@ -903,7 +903,7 @@ End Sub
 'and writes the updated stats to the file
 Sub PostLeadersConf (confName$)
 
-    Shared statFilesComp$(), leaderName$(), leaderTeam$()
+    Shared memberName$(), leaderName$(), leaderTeam$()
     Shared totalTeamName$()
 
     Shared totalTeamVal!(), leaderVal!()
@@ -917,7 +917,7 @@ Sub PostLeadersConf (confName$)
     Print "POSTING "; confName$; " CONFERENCE LEADERS"
 
     For X = 1 To 60:
-        Write #1, statFilesComp$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Write #1, memberName$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240

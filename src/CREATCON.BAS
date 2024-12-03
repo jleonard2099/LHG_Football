@@ -41,7 +41,7 @@ Sub CREATCON ()
 
         If ExitCode% <> 27 Then
 
-            For X = 1 To 30
+            For X = 1 To TEAMS_PER_CONFERENCE
                 memberName$(X) = "XXX"
             Next
 
@@ -190,7 +190,7 @@ Sub ReviewEditConference (confFile$, conference$, div1$, div2$)
 
             Input #1, conference$, div1$, div2$
 
-            For X = 1 To 30:
+            For X = 1 To TEAMS_PER_CONFERENCE:
                 Input #1, memberName$(X)
                 Input #1, memberIdx(X)
                 Input #1, memberYear$(X)
@@ -283,6 +283,8 @@ Sub SaveConferences (confFile$, conference$, div1$, div2$)
 
     Shared memberName$(), memberYear$()
 
+    Dim statFileNames$(TEAMS_PER_CONFERENCE)
+
     'Ready to save work
     Open diskPaths$(2) + confFile$ + ".TMI" For Output As #1
 
@@ -291,7 +293,7 @@ Sub SaveConferences (confFile$, conference$, div1$, div2$)
     Print #1, div1$
     Print #1, div2$
 
-    For X = 1 To 30:
+    For X = 1 To TEAMS_PER_CONFERENCE:
         Print #1, memberName$(X)
         Print #1, memberIdx(X)
         Print #1, memberYear$(X)
@@ -301,13 +303,13 @@ Sub SaveConferences (confFile$, conference$, div1$, div2$)
 
     Erase memberName$
 
-    For X = 1 To 30
+    For X = 1 To TEAMS_PER_CONFERENCE
 
         If memberName$(X) = "XXX" Then
-            memberName$(X) = Chr$(42)
+            statFileNames$(X) = Chr$(42)
         Else
             teamName$ = memberName$(X)
-            memberName$(X) = nameStatFile$(teamName$)
+            statFileNames$(X) = nameStatFile$(teamName$)
         End If
 
     Next X
@@ -318,8 +320,8 @@ Sub SaveConferences (confFile$, conference$, div1$, div2$)
     Write #2, div1$
     Write #2, div2$
 
-    For X = 1 To 30:
-        Write #2, memberName$(X)
+    For X = 1 To TEAMS_PER_CONFERENCE:
+        Write #2, statFileNames$(X)
     Next
 
     Close #2

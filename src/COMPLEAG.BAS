@@ -16,7 +16,7 @@ Sub CompileLeague ()
     Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
-    Shared statFilesComp$(), leaderName$(), leaderTeam$()
+    Shared memberName$(), leaderName$(), leaderTeam$()
     Shared memberName$(), teamRecDesc$(), totalTeamName$()
 
     'Read in any existing records first
@@ -68,7 +68,7 @@ Sub CompileLeague ()
     teamRecords!(43) = 999
 
     Erase totalTeamVal!, leaderVal!, statsGeneral!
-    Erase statFilesComp$, leaderTeam$, totalTeamName$
+    Erase memberName$, leaderTeam$, totalTeamName$
 
     For X = 1 To 240
         leaderName$(X) = "*"
@@ -96,16 +96,6 @@ Sub CompileLeague ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
-
-        Input #2, confName$, div1$, div2$, div3$
-
-        For XW = 1 To 30
-            Input #2, memberName$(XW)
-        Next XW
-
-        Close #2
-
         Open diskPaths$(2) + leagueFile$ + ".TMI" For Input As #3
         Input #3, statType
         Close #3
@@ -122,21 +112,22 @@ Sub CompileLeague ()
 
         Else
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #4
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-            Input #4, confName$, div1$, div2$, div3$
+            Input #2, confName$, div1$, div2$, div3$
 
-            For X = 1 To 30
-                Input #4, statFilesComp$(X)
-            Next X
+            For XW = 1 To TEAMS_PER_LEAGUE
+                Input #2, memberName$(XW)
+            Next XW
 
-            Close #4
+            Close #2
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_LEAGUE
 
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
 
+                    testie$ = memberName$(XW)
                     haveStats = FindStatsPro%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
@@ -151,9 +142,9 @@ Sub CompileLeague ()
 
                         nonConfGame = 0
 
-                        For EC = 1 To 30:
+                        For EC = 1 To TEAMS_PER_LEAGUE:
 
-                            If statFilesComp$(EC) = WT$ Then
+                            If memberName$(EC) = WT$ Then
 
                                 If divWins!(EC) = fullWins And divLosses!(EC) = fullLosses And divTies!(EC) = fullTies Then
 
@@ -2344,7 +2335,7 @@ Sub SortStandingsLeague
 
     Shared leagPtsAgnst!(), leagPtsFor!()
 
-    Shared statFilesComp$()
+    Shared memberName$()
 
     'Sort leaders in league
     For Z = 0 To 2
@@ -2363,7 +2354,7 @@ Sub SortStandingsLeague
 
                     If diffX <> diffY Then
                         If Not (divWins!(X) <= divWins!(Y) And divWins!(X) > divLosses!(X)) Or Not (divWins!(X) >= divWins!(Y) And divWins!(X) < divLosses!(X)) Then
-                            Swap statFilesComp$(X), statFilesComp$(Y)
+                            Swap memberName$(X), memberName$(Y)
                             Swap divWins!(X), divWins!(Y)
                             Swap divLosses!(X), divLosses!(Y)
                             Swap divTies!(X), divTies!(Y)
@@ -2391,7 +2382,7 @@ End Sub
 'writes the updated stats to the file
 Sub PostLeadersLeague (leaderFile$)
 
-    Shared statFilesComp$(), leaderName$(), leaderTeam$()
+    Shared memberName$(), leaderName$(), leaderTeam$()
     Shared totalTeamName$()
 
     Shared totalTeamVal!(), leaderVal!()
@@ -2404,8 +2395,8 @@ Sub PostLeadersLeague (leaderFile$)
 
     Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
 
-    For X = 1 To 30:
-        Write #1, statFilesComp$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+    For X = 1 To TEAMS_PER_LEAGUE:
+        Write #1, memberName$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
@@ -2459,3 +2450,4 @@ Sub PostRecordsPro
     Close #2
 
 End Sub
+
