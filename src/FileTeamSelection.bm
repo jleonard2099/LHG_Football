@@ -12,6 +12,8 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
     Shared teamRatings()
 
+    'Shared teamNames$()
+
     Shared previousYear$
 
     Do
@@ -141,7 +143,9 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
     Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
 
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+    If I$ = Chr$(27) Or J$ = Chr$(27) Then
+        chosenIdx = 0
+    End If
 
 End Sub
 
@@ -436,6 +440,8 @@ Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 
         Close #2
 
+        T& = teamAttendance&
+
         If Z$ <> "x" Or teamAttendance& > 200000 Then
 
             dataOK = 0
@@ -479,8 +485,7 @@ Function nameStatFile$ (teamName$)
 
     For XX = 12 To 14
 
-        'If Mid$(teamPrefix$, XX, 3) = " ST" Then
-        If Mid$(teamPrefix$, XX, 2) = " ST" Then
+        If Mid$(teamPrefix$, XX, 2) = "ST" Then
             Mid$(teamPrefix$, 9, 1) = "_"
             Mid$(teamPrefix$, 10, 2) = "ST"
         End If
@@ -724,3 +729,4 @@ Sub ScheduleFilePrompt (scheduleFile$)
 
 
 End Sub
+

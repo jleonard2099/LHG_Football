@@ -37,9 +37,9 @@ Dim memberConf$(MAX_CONFERENCES)
 'TEAMS_PER_CONFERENCE and TEAMS_PER_LEAGUE
 'Ideally we would ReDim each based on these
 'values when needed
-Dim memberIdx(40)
-Dim memberName$(40), memberNames_2nd$(40)
-Dim memberYear$(40), memberYear_2nd$(40)
+'Dim memberIdx(40)
+'Dim memberName$(40), memberNames_2nd$(40)
+'Dim memberYear$(40), memberYear_2nd$(40)
 Dim statFilesComp$(60)
 
 '-- For Road Data

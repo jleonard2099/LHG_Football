@@ -219,6 +219,7 @@ Sub ReadConferenceStats (statFile$, statType)
         Input #1, div1Name$
         Input #1, div2Name$
         Input #1, div3Name$
+        Input #1, div4Name$
     Else
         'College
         Input #1, league$

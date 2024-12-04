@@ -12,7 +12,7 @@ Const TEAMS_PER_DIV_PRO = 10
 Const DIVS_PER_CONFERENCE = 2
 Const TEAMS_PER_CONFERENCE = 30
 Const DIVS_PER_LEAGUE = 3
-Const TEAMS_PER_LEAGUE = 30
+Const TEAMS_PER_LEAGUE = 40
 Const MAX_CAREER_YEARS = 15
 Const MAX_CONFERENCES = 40
 
@@ -31,6 +31,10 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim memberIdx(40)
+Dim memberName$(40), memberNames_2nd$(40)
+Dim memberYear$(40), memberYear_2nd$(40)
+
 
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
@@ -897,742 +901,7 @@ End Sub
 ' For Utils
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
-'Include: 'FileTeamSelection.bm'
-
-
-'----------------------------------------
-'          ChooseTeam Subroutine
-'----------------------------------------
-'Provides dialog for user to select teams
-' from a previously populated team file.
-'The focus of this routine is to accept
-' a disk ID from the user. It then relies
-' on separate subroutines to assist with
-' actually choosing the team, and also
-' reading in data for the chosen team
-Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
-
-    Shared teamRatings()
-
-    'Shared teamNames$()
-
-    Shared previousYear$
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox(6, 8, 61, 7, 15, 4)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER DISK ID: "
-        Print
-        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
-        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
-        Print
-        Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
-
-        I$ = GetKeyPress$
-
-        If I$ <> Chr$(27) Then
-
-            If I$ <> Chr$(13) Then
-
-                Locate 7, 27: Print I$;
-
-                NY$ = ""
-
-                Do Until NY$ = Chr$(13)
-
-                    NY$ = GetKeyPress$
-
-                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
-                        col% = Pos(0)
-                        I$ = Left$(I$, (Len(I$) - 1))
-                        Locate , col% - 1
-                        Print " ";
-                        Locate , col% - 1
-                    Else
-                        I$ = I$ + NY$
-                        Print NY$;
-                    End If
-
-                Loop
-
-                I$ = Left$(I$, (Len(I$) - 1))
-
-                If Not (I$ = "" And yearNumber$ <> "") Then
-
-                    yearNumber$ = RTrim$(I$)
-                    Erase teamNames$
-                    numberTeams = 0
-
-                    Cls
-
-                    If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
-
-                        MsgText$ = "NO TEAMS WERE FOUND MATCHING THAT ID... PRESS ANY KEY TO SELECT ANOTHER ID"
-                        BoxWidth = 20
-                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                        I$ = GetKeyPress$
-                        Call CSMsgBox("", 0, Pass)
-                        Exit Sub
-
-                    Else
-
-                        Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
-
-                        fileLength& = LOF(1)
-
-                        Field #1, 15 As Q$(0)
-
-                        numberTeams = fileLength& / TEAM_SIZE_BYTES
-
-                        For teamIdx = 1 To numberTeams
-                            Get #1, teamIdx
-                            'numberTeams = numberTeams + 1
-                            teamNames$(teamIdx) = Q$(0)
-                            teamIndex%(teamIdx) = teamIdx
-                        Next teamIdx
-
-                        Close #1
-
-                    End If 'Done checking if file exists
-
-                End If 'Done checking for blank year number
-
-                previousYear$ = yearNumber$
-
-            Else
-
-                yearNumber$ = previousYear$
-
-            End If 'Done checking for ENTER key
-
-            'Locate 2, 33
-            'Color 31: Print "LOADING..."
-
-            Do
-
-                Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$, ExitCode%)
-                'teamGender$(gameIdx) = GetTeamGender$(yearNumber$)
-
-                If ExitCode% <> 27 And numberTeams <> 0 And chosenIdx > 0 Then
-
-                    Do
-
-                        YCoord = Int((80 - Len(teamName$)) / 2)
-                        Locate 2, YCoord
-                        Color teamRatings(2), teamRatings(1): Print teamName$
-
-                        Color 15, 4
-                        Locate 3, 32: Print "ANY CHANGE? (Y/N)";
-
-                        J$ = GetKeyPress$
-
-                    Loop Until J$ = Chr$(27) Or UCase$(J$) = "Y" Or UCase$(J$) = "N"
-
-                End If
-
-                'chosenIdx = -1 means there was invalid data
-            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
-
-        End If 'Done checking for ESC
-
-    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
-
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then
-        chosenIdx = 0
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'          SelectTeam Subroutine
-'----------------------------------------
-'Presents selection menu of all teams
-' found in the target "disk" file.
-'The focus of this routine is confirming
-' a team choice. It then relies on
-' another subroutine to read in data
-' from the selected team.
-Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
-
-    ExitCode% = -1
-    validData = 0
-
-    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
-
-        SELECTION% = 1
-        Count% = numberTeams
-        Start% = 1
-        FileFGColor = 15: FileBGColor = 4
-        HiLiteFGColor = 0: HiLiteBGColor = 7
-        Rows = 20
-        Columns% = 4
-        Spacing% = 6
-        Row% = 4
-        Column% = 1
-
-        Color , 4
-        Cls
-        Color 14
-        Locate , 33: Print "TEAM SELECTION"
-        Locate 25, 1
-        Color 14: Print "ESC";
-        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";
-        Color 15: Print "-SELECTS TEAM";
-
-        _MouseShow "DEFAULT"
-        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor, HiLiteBGColor, Rows%, Columns%, Spacing%, Row%, Column%
-        _MouseHide
-
-        If ExitCode% <> 27 Then
-
-            selectedIdx = teamIndex%(SELECTION%)
-
-            'Locate 2, 33
-            'Color 31: Print "LOADING..."
-
-            Call ReadTeam(yearNumber$, teamName$, selectedIdx)
-            Call ReadExtraData(yearNumber$, selectedIdx, validData)
-
-        End If
-
-    End If
-
-    If validData = 0 And ExitCode% <> 27 Then
-
-        selectedIdx = -1
-        Locate 9,
-        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
-        K$ = GetKeyPress$
-        Call CSMsgBox("", 0, PASS)
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'           ReadTeam Subroutine
-'----------------------------------------
-'Reads in all data for the selected team,
-' given it's index in the team file.
-'This routine is highly customized TO
-' the specific game for which it has
-' been included for.
-Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
-
-    Shared ydsCompAdj
-
-    Shared mascot$, teamNick$
-
-    Shared leagueRatings(), teamRatings()
-
-    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared recContrib(), wrRecAvg()
-    Shared passContrib(), compPct(), qbIntPct()
-    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
-    Shared puntAvg()
-    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
-    Shared numInts(), numSacks(), armRating()
-
-    Shared intName$(), krName$()
-    Shared pkName$(), prName$(), punterName$()
-    Shared qbName$(), rbName$()
-    Shared sackName$(), wrName$()
-
-    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
-
-    Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
-
-    Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
-
-    Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
-
-    Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
-
-    Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
-
-    Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
-
-    Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
-
-    Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
-
-    Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
-
-    Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
-
-    Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
-
-    Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
-
-    Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
-
-    Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
-
-    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
-
-    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
-
-    Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
-
-    Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
-
-    Get #1, teamIdx
-
-    targetTeam$ = RTrim$(Q$(1))
-    mascot$ = RTrim$(Q$(2))
-
-    For I = 0 To 7:
-        leagueRatings(I) = CVI(Q$(I + 3))
-    Next I
-
-    For I = 0 To 4:
-        teamRatings(I) = CVI(Q$(I + 11))
-    Next I
-
-    'Running Backs
-    For I = 0 To 9
-        'Name
-        rbName$(I) = Q$(I * 5 + 16)
-        'Rush Att
-        rushContrib(I) = CVI(Q$(I * 5 + 17))
-        'Rush Avg
-        rushAvg(I) = CVI(Q$(I * 5 + 18))
-        'Receptions
-        rbRecepts(I) = CVI(Q$(I * 5 + 19))
-        'Rec Avg
-        rbRecAvg(I) = CVI(Q$(I * 5 + 20))
-    Next I
-
-    'Wide Receivers
-    For I = 0 To 5
-        'Name
-        wrName$(I) = Q$(I * 3 + 66)
-        'Receptions
-        recContrib(I) = CVI(Q$(I * 3 + 67))
-        'Rec Avg
-        wrRecAvg(I) = CVI(Q$(I * 3 + 68))
-    Next I
-
-    'Quarterbacks
-    For I = 0 To 3
-        'Name
-        qbName$(I) = Q$(I * 5 + 84)
-        'Attempts
-        passContrib(I) = CVI(Q$(I * 5 + 85))
-        'Completion %
-        compPct(I) = CVI(Q$(I * 5 + 86))
-        'Interception %
-        qbIntPct(I) = CVI(Q$(I * 5 + 87))
-        'Arm Rating | Yds/Comp Adj
-        armRating(I) = CVI(Q$(I * 5 + 88))
-    Next I
-
-    'Kickoff Returners
-    For I = 0 To 2
-        'Name
-        krName$(I) = Q$(I * 3 + 104)
-        'Returns
-        krContrib(I) = CVI(Q$(I * 3 + 105))
-        'Return Avg
-        krRetAvg(I) = CVI(Q$(I * 3 + 106))
-    Next I
-
-    'Punt Returners
-    For I = 0 To 2
-        'Name
-        prName$(I) = RTrim$(Q$(I * 3 + 113))
-        'Returns
-        prContrib(I) = CVI(Q$(I * 3 + 114))
-        'Return Avg
-        prRetAvg(I) = CVI(Q$(I * 3 + 115))
-    Next I
-
-    'Punter Name
-    punterName$(0) = RTrim$(Q$(122))
-    'Punt Average
-    puntAvg(0) = CVI(Q$(123))
-
-    'Place Kickers
-    For I = 0 To 1
-        'Name
-        pkName$(I) = RTrim$(Q$(I * 5 + 124))
-        'FGA
-        pkFGA(I) = CVI(Q$(I * 5 + 125))
-        'FG%
-        pkFGContrib(I) = CVI(Q$(I * 5 + 126))
-        'PAT
-        pkPAT(I) = CVI(Q$(I * 5 + 127))
-        'PAT %
-        pkPATContrib(I) = CVI(Q$(I * 5 + 128))
-
-    Next I
-
-    ydsCompAdj = CVI(Q$(134))
-
-    'Sacks
-    For I = 0 To 14
-        'Name
-        sackName$(I) = Q$(I * 2 + 135)
-        '# Sacks
-        numSacks(I) = CVI(Q$(I * 2 + 136))
-    Next I
-
-    'Interceptions
-    For I = 0 To 9
-        'Name
-        intName$(I) = Q$(I * 2 + 165)
-        '# Ints
-        numInts(I) = CVI(Q$(I * 2 + 166))
-    Next I
-
-    'Close team file
-    Close #1
-
-End Sub
-
-
-'----------------------------------------
-'        ReadExtraData Subroutine
-'----------------------------------------
-'Reads in extra data for the selected team,
-' given it's index in the team file.
-'This extra file usually includes info.
-' related to stadiums, coaches, etc.
-'This routine is highly customized TO
-' the specific game for which it has
-' been included for.
-Sub ReadExtraData (teamYear$, teamIdx, dataOK)
-
-    Shared teamAttendance&
-
-    Shared stadium$, Z$
-
-    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
-
-        MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
-        BoxWidth = 20
-        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-        Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I$ = GetKeyPress$
-        Call CSMsgBox("", 0, Pass)
-
-    Else
-
-        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #2 Len = DATA_SIZE_BYTES
-
-        Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
-
-        Get #2, teamIdx
-
-        stadium$ = RTrim$(QQ$(1))
-        teamAttendance& = CVL(QQ$(3))
-        Z$ = QQ$(4)
-
-        Close #2
-
-        T& = teamAttendance&
-
-        If Z$ <> "x" Or teamAttendance& > 200000 Then
-
-            dataOK = 0
-            stadium$ = ""
-            teamAttendance& = 0
-
-        Else
-
-            dataOK = 1
-
-        End If
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'         nameStatFile$ Function
-'----------------------------------------
-'Helps create uniquely named file to
-' store a team's stats.
-'
-'There are 2 main changes done in order
-' to accomodate this:
-' 1) Replaces invalid characters with _
-' 2) If "ST" is the name, shortens the
-'    prefix. This helps with college
-'    teams (ARKANSAS vs ARKANSAS ST)
-Function nameStatFile$ (teamName$)
-
-    teamPrefix$ = teamName$
-
-    For XX = 4 To 11
-
-        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then
-            Mid$(teamPrefix$, XX, 1) = "_"
-        End If
-
-    Next XX
-
-    For XX = 12 To 14
-
-        If Mid$(teamPrefix$, XX, 2) = "ST" Then
-            Mid$(teamPrefix$, 9, 1) = "_"
-            Mid$(teamPrefix$, 10, 2) = "ST"
-        End If
-
-    Next XX
-
-    'Length of 'converted' name for file
-    '-- update this if we want to support long files
-    QQ = 8
-
-    For XX = 11 To 4 Step -1
-        If Mid$(teamPrefix$, XX, 1) = "_" Then
-            QQ = XX - 4
-        Else
-            Exit For
-        End If
-    Next XX
-
-    nameStatFile$ = Mid$(teamPrefix$, 4, QQ) + "." + Left$(teamPrefix$, 2)
-
-End Function
-
-
-'----------------------------------------
-'          CheckString Function
-'----------------------------------------
-'This function checks the given string
-'to determine if any characters are not
-'alpha-numeric or printable.
-'Return Values
-'1 = non-printable characters were found
-'0 = all characters in string are alpha-numeric.
-Function CheckString% (targetString$)
-
-    badString = 0
-    stringPosition% = 1
-
-    Do
-
-        test = Asc(Mid$(targetString$, stringPosition%, 1))
-
-        'If it is a non-printable character (corrupt data)
-        If test > 122 Or test < 32 Then
-            stringPosition% = 1
-            badString = 1
-        Else
-            stringPosition% = stringPosition% + 1
-        End If
-
-    Loop Until stringPosition% = Len(targetString$) Or badString = 1
-
-    CheckString% = badString
-
-End Function
-
-
-'----------------------------------------
-'        ChooseFile$ Function
-'----------------------------------------
-'Shows user a file selection menu, based
-' on the file spec parameter passed.
-'
-'fileSpec$ - file specification to load
-'            should include base path.
-'
-' EXAMPLE - C:\Temp\*.tmp
-'
-'fileDesc$ - brief description of the
-'            type of file
-'
-' RETURNS - base name of chosen file
-'            (that is, without extension)
-Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
-
-    descLength = Len(fileDesc$)
-
-    Do
-        'Display list of files...
-
-        Count% = FileCount%(fileSpec$)
-
-        If Count% = 0 Then
-
-            Locate 10, 8
-            zeroCountMsg$ = "NO " + fileDesc$ + " FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU"
-
-            Call CSMsgBox(zeroCountMsg$, 20, Pass)
-            I$ = GetKeyPress$
-            Call CSMsgBox("", 0, Pass)
-
-        Else
-
-            ReDim foundFiles$(0 To Count%)
-
-            'For X = 1 To Count%
-            '8 char's filename + 4 char's (. + ext)
-            'foundFiles$(X) = Space$(12)
-            'Next
-
-            foundFiles$(0) = fileSpec$
-            Call ReadFile(foundFiles$())
-
-            Do
-
-                XCoord = Int((80 - (descLength + 12)) / 2)
-
-                Color , 1
-                Cls
-                Locate , XCoord
-                Color 14
-                Print "SELECT "; fileDesc$; " FILE"
-                Color 15
-                SELECTION% = 1
-                START% = 1
-                FileFGColor = 15: FileBGColor = 1
-                HiLiteFGColor% = 0: HiLiteBGColor% = 7
-                Rows% = 20
-                Columns% = 3
-                Spacing% = 5
-                Row% = 4
-                Column% = 1
-                Locate 25, 1
-                Color 14
-                Print "ENTER";
-                Color 15
-                Print "-SELECTS "; fileDesc$;
-                Color 14
-                Locate , 55
-                Print "HIT ESCAPE KEY TO EXIT";
-                Color 15
-
-                _MouseShow "DEFAULT"
-                MAMenu foundFiles$(), SELECTION%, START%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
-                _MouseHide
-
-                If ExitCode% <> 27 Then
-
-                    Color 15, 1
-                    targetFile$ = RTrim$(foundFiles$(SELECTION%))
-                    XCoord = Int((80 - Len(targetFile$)) / 2)
-                    Locate 2, XCoord
-                    Print targetFile$
-
-                    Do
-                        Locate , 31
-                        Print "ANY CHANGE? (Y/N)";
-                        I$ = GetKeyPress$
-                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    Color 15, 0
-
-                End If
-
-            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
-
-        End If 'Done checking file count
-
-        '...Until we press ESC
-    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
-
-    If ExitCode% <> 27 Then
-        ChooseFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
-    End If
-
-End Function
-
-
-'----------------------------------------
-'     ReportFilePrompt_Pro Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub UserFilePrompt (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox(6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
-
-'----------------------------------------
-'     ScheduleFilePrompt Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the schedule file to be saved
-Sub ScheduleFilePrompt (scheduleFile$)
-
-    Color 15, 0
-    Cls
-
-    Call MenuBox(6, 8, 61, 8, 15, 1)
-
-    Do
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
-        Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
-        Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
-        Locate 7, 40: Input scheduleFile$
-
-        If scheduleFile$ <> "" Then
-
-            Do
-
-                Locate 14, 12
-                Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
-
-        End If
-
-    Loop Until (UCase$(I$) = "N" And scheduleFile$ <> "") Or I$ = Chr$(27)
-
-
-End Sub
-
-
+'$Include: 'FileTeamSelection.bm'
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
 '$Include: 'BLANKCON.BAS'
@@ -1646,37 +915,62 @@ End Sub
 '$Include: 'COMPCON.BAS'
 '$Include: 'COMPLEAG.BAS'
 '$Include: 'COMPNATL.BAS'
+'$Include: 'CONVERT.BAS'
 '$Include: 'CREATCON.BAS'
 '$Include: 'CREATNATL.BAS'
-'Include: 'CREATLEAG.BAS'
+'$Include: 'CREATLEAG.BAS'
+'$Include: 'DRAFT.BAS'
+'$Include: 'HD2HDCON.BAS'
+'$Include: 'HD2HDLEAG.BAS'
+'$Include: 'LOOKY.BAS'
+'$Include: 'MERGE.BAS'
+'$Include: 'NEWLDR.BAS'
+'$Include: 'NEWLDRST.BAS'
+'$Include: 'REC.BAS'
+'Include: 'SCHEDULE.BAS'
 
 
 '----------------------------------------
-'          CREATLEAG Subroutine
+'          SCHEDULE Subroutine
 '----------------------------------------
-'This subroutine provides a menu for the
-'user to choose options related to the
-'creation and editing of leagues
-Sub CREATLEAG ()
+'This subroutine gives the user several
+'options for interfacing with the Scheduler
+'and also user boxscores generated by
+'auto-played games
+Sub SCHEDULE ()
 
-    _Title "3-in-1 Football - Manage Leagues"
+    Dim scheduleFile$
+    ReDim menuChoices$(1 To 8)
 
-    Shared memberName$()
+    Shared NS%
 
-    ReDim menuChoices$(1 To 3)
+    Shared scheduleAP%(), scheduleNG%()
+
+    _Title "3-in-1 Football - Scheduler"
+
+    'For I = 1 To 1500
+    '    scheduleNG%(I, 13) = 0
+    'Next
 
     Do
 
+        Color 7, 0
         Cls
 
-        Call TITLE
-        menuChoices$(1) = "CREATE A LEAGUE       "
-        menuChoices$(2) = "MANAGE LEAGUE MEMBERS "
-        menuChoices$(3) = "RETURN TO LEADERS MENU"
+        Call TITLE_SCHEDULER
+
+        menuChoices$(1) = "ENTER A NEW SCHEDULE              "
+        menuChoices$(2) = "PLAY / EDIT AN EXISTING SCHEDULE  "
+        menuChoices$(3) = "EXTRACT TEAM SCHEDULE             "
+        menuChoices$(4) = "EXTRACT CONFERENCE SCHEDULE       "
+        menuChoices$(5) = "CHANGE TEAM CONTROL FOR A SCHEDULE"
+        menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE "
+        menuChoices$(7) = "BOXSCORE MAINTENANCE / PARAMETERS "
+        menuChoices$(8) = "RETURN TO 3 IN 1 FB MENU          "
         SELECTION% = 1
-        Count% = 3
+        Count% = 8
         Start% = 1
-        ExitCode% = 3
+        ExitCode% = 8
         FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -1694,306 +988,1033 @@ Sub CREATLEAG ()
 
         If ExitCode% <> 27 Then
 
-            For X = 1 To TEAMS_PER_LEAGUE:
-                memberName$(X) = "XXX"
-            Next
+            'Assign full array sizes for schedule games
+            ReDim homeScores(MAX_SCHEDULE_GAMES)
+            ReDim visitorScores(MAX_SCHEDULE_GAMES)
+            ReDim scheduleH$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleV$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
+            ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
 
-            div1$ = ""
-            div2$ = ""
-            div3$ = ""
+            scheduleNG%(0, 2) = 1
+            scheduleNG%(0, 3) = 1
+            scheduleNG%(0, 7) = 11
+            scheduleNG%(0, 10) = 3
+            scheduleNG%(0, 11) = 8
+            scheduleNG%(0, 14) = 1
+            scheduleNG%(0, 19) = 3
+            scheduleNG%(0, 20) = 3
 
             Select Case SELECTION%
 
                 Case 1:
-                    Call DefineLeaguePro(league$, div1$, div2$, div3$)
-                    leagueFile$ = league$
-                    Call ReviewEditLeague(leagueFile$, league$, div1$, div2$, div3$)
+                    'number of games in schedule
+                    scheduleAP%(0) = 0
+                    NS% = 0
 
-                Case 2:
+                    scheduleFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
+
+                    If scheduleFile$ <> "" Then
+                        Call NewSchedule(scheduleFile$)
+                    End If
+
+                Case 2 To 6:
+
                     Do
-                        leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", FileExit%)
+
+                        'Have the user pick a schedule
+                        scheduleFile$ = ChooseFile$(diskPaths$(3) + "*.SCD", "SCHEDULE", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReviewEditLeague(leagueFile$, league$, div1$, div2$, div3$)
+
+                            Call LoadScheduleInfo(scheduleFile$)
+
+                            Cls
+
+                            'Extract / Change / Global
+                            If SELECTION% >= 3 And SELECTION% <= 6 Then
+                                Call ExtractSchedule(SELECTION%, scheduleFile$)
+                                If SELECTION% >= 4 Then Call SaveScheduleFile(scheduleFile$)
+                            Else
+                                'Retrieve / Edit / Play Schedule
+                                Color 15, 0
+                                Call NewSchedule(scheduleFile$)
+                            End If
+
                         End If
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
+
+                Case 7:
+                    Call BoxscoreMaintenance
+
+                Case 8:
+                    Cls
 
             End Select
 
         End If
 
-    Loop Until SELECTION% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 8 Or ExitCode% = 27
+
+    'Free up memory for rest of program
+    ReDim homeScores(1)
+    ReDim visitorScores(1)
+    ReDim scheduleH$(1)
+    ReDim scheduleV$(1)
 
 End Sub
 
 
 '----------------------------------------
-'       DefineLeaguePro Subroutine
+'       NewSchedule SubRoutine
 '----------------------------------------
-'This subroutine assists the user with the
-'input of paramters related to the league's
-'general naming and setup
-Sub DefineLeaguePro (league$, div1$, div2$, div3$)
+'This subroutine facilitates the user
+'creation of a schedule. It provides all
+'options required and displays the schedule
+'while editing
+Sub NewSchedule (scheduleFile$)
 
-    Shared memberName$()
+    Shared BS%, NS%
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_V$(), scheduleQB_H$()
+    Shared scheduleYN$()
+
+    Shared modeAbbrev$()
+    Shared qbName$()
+
+    qbName$(4) = "RANDOM"
+
+    modeAbbrev$(0) = "HH"
+    modeAbbrev$(1) = "C1"
+    modeAbbrev$(2) = "C2"
+    modeAbbrev$(3) = "CC"
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
 
     Do
 
         Color 15, 0
         Cls
 
-        Call MenuBox(6, 8, 61, 7, 15, 1)
+        Locate 23, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 23, 1
+        Color 13: Print "HF";
+        Color 14: Print "-HOME FIELD ADV  ";
+        Color 13: Print "MA";
+        Color 14: Print "-MODE OF PLAY  ";
+        Color 11: Print " G";
+        Color 14: Print "-GOTO GAME";
+        Color 11: Print " B";
+        Color 14: Print "-BOXSCORE OPTIONS"
 
-        Do
+        Locate 24, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 24, 1
+        Color 11: Print "C";
+        Color 14: Print "-SAVE AND CONTINUE  ";
+        Color 11: Print "A";
+        Color 14: Print "-ADD A GAME  ";
+        Color 11: Print "D";
+        Color 14: Print "-DELETE A GAME  ";
+        Color 11: Print "E";
+        Color 14: Print "-EDIT A GAME  ";
+        Color 11: Print "PGUP  PGDN";
 
-            Locate 7, 32
+        Locate 25, 1
+        Color , 1: Print Tab(80); " ";
+        Locate 25, 1
+        Color 11: Print "S";
+        Color 14: Print "-SORT GAMES  ";
+        Color 11: Print "P";
+        Color 14: Print "-PLAY GAMES   ";
+        Color 11: Print "X";
+        Color 14: Print "-SAVE AND EXIT  ";
+        Color 11: Print "Q";
+        Color 14: Print "-QUIT  ";
+        Color 11: Print "R";
+        Color 14: Print "-RESET SCORES";
 
-            Locate , 12: Print "ENTER NAME FOR LEAGUE: ": Print
-            Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
-            Locate , 12: Print "SAMPLE NAMES ARE SEC, SWC, 94-ACC"
-            Locate 7, 37: Input league$
+        Locate 1, 1: Print Tab(80); " ";
+        Locate 1, 1: Print scheduleFile$
+        Locate 1, 33
 
-            If league$ <> "" Then
+        Color 14: Print "AUTO SCHEDULER"
 
-                Do
-                    Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                    I$ = GetKeyPress$
-                Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Color 15, 0
+
+        Locate 2, 1
+        Color 14
+        Print "GAME  DATE      TIME    VISITING TEAM        HOME TEAM            MA  HF"
+        Color 15
+
+        'Show 20 schedule entries on the screen at once
+        For X = 1 To 20
+
+            Locate X + 2, 1
+
+            If X + NS% * 20 <= scheduleAP%(0) Then
+
+                T1 = scheduleNG%(X + NS% * 20, 0)
+                YN$ = scheduleYN$(X + NS% * 20, 0)
+
+                Call ReadTeam(YN$, team$, T1)
+                Call ReadExtraData(YN$, T1, validData)
+
+                If validData = 1 Then
+
+                    scheduleV$(X + NS% * 20) = team$
+                    scheduleQB_V$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 5))
+
+                    T1 = scheduleNG%(X + NS% * 20, 1)
+                    YN$ = scheduleYN$(X + NS% * 20, 1)
+                    Call ReadTeam(YN$, team$, T1)
+                    Call ReadExtraData(YN$, T1, validData)
+
+                    If validData = 1 Then
+
+                        scheduleH$(X + NS% * 20) = team$
+                        scheduleQB_H$(X + NS% * 20) = qbName$(scheduleNG%(X + NS% * 20, 8))
+
+                        'Game number
+                        Print Using "####  "; X + NS% * 20;
+
+                        'Date
+                        Print Using "##/##/##"; scheduleNG%(X + NS% * 20, 17); scheduleNG%(X + NS% * 20, 16); scheduleNG%(X + NS% * 20, 18);
+
+                        'Time
+                        Locate , 17
+                        I$ = "A"
+                        HR% = scheduleNG%(X + NS% * 20, 15) / 100
+                        MIN% = scheduleNG%(X + NS% * 20, 15) - HR% * 100
+
+                        If HR% = 12 Then I$ = "P"
+                        If HR% > 12 Then HR% = HR% - 12: I$ = "P"
+
+                        leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
+
+                        If MIN% < 10 Then leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
+                        If MIN% >= 10 Then leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
+
+                        'Time
+                        leagLdrTeams$ = leagLdrTeams$ + I$
+                        Print leagLdrTeams$;
+
+                        'Visiting Team
+                        Locate , 25: Print scheduleV$(X + NS% * 20); " ";
+                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; visitorScores(X + NS% * 20);
+
+                        'Home Team
+                        Locate , 46: Print scheduleH$(X + NS% * 20); " ";
+                        If scheduleNG%(X + NS% * 20, 13) = 1 Then Print Using "###"; homeScores(X + NS% * 20);
+
+                        'Mode of Play
+                        Locate , 67: Print modeAbbrev$(scheduleNG%(X + NS% * 20, 10));
+
+                        'Home Field
+                        Locate , 72: If scheduleNG%(X + NS% * 20, 2) = 1 Then Print "Y" Else Print "N"
+
+                    End If
+
+                End If
+
+                If validData = 0 Then
+                    'Invalid team file
+                    Locate 9,
+                    Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA. CHECK THE TEAM FILE FOR ANY ERRORS... PRESS ANY KEY AND TRY ANOTHER SCHEDULE", 40, PASS)
+                    K$ = GetKeyPress$
+                    Call CSMsgBox("", 0, PASS)
+                    Exit Sub
+                End If
 
             End If
 
-        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+        Next
 
-    Loop Until UCase$(I$) = "N"
+        I$ = GetKeyPress$
 
-    'Determine Division names
-    'Color 15, 0
-    'Print
-    'Print
-    'Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
-    'Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
-    'Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
+        Select Case UCase$(I$)
 
-    FG = 0
-    BG = 7
+            Case "A":
+                ' *** ADD A GAME TO THE SCHEDULE ***
+                V$ = ""
+                H$ = ""
+                QV$ = ""
+                QH$ = ""
 
-    Cls
-    Color 15, 1
+                'number of games in schedule
+                scheduleAP%(0) = scheduleAP%(0) + 1
+                targetGame% = scheduleAP%(0)
 
-    Locate 5, 1: QPrint "Name for Division 1 ", 14, 1, -1
-    Locate , 21: QPrint PadRight$(div1$, 50), FG, BG, -1
-    Locate 7, 1: QPrint "Name for Division 2 ", 14, 1, -1
-    Locate , 21: QPrint PadRight$(div2$, 50), FG, BG, -1
-    Locate 9, 1: QPrint "Name for Division 3 ", 14, 1, -1
-    Locate , 21: QPrint PadRight$(div3$, 50), FG, BG, -1
+                BS% = Int((targetGame% - 1) / 20)
+                If NS% < BS% Then NS% = BS%
 
-    GetDiv1:
-    Locate 5, 21 'location of beginning of field
-    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
-    Call TextIn(div1$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
-    If XCode = 2 GoTo Done 'all done entering data
+                For X = 0 To 20
+                    If X <> 13 Then
+                        scheduleNG%(targetGame%, X) = scheduleNG%(targetGame% - 1, X)
+                    End If
+                Next
 
-    GetDiv2:
-    Locate 7, 21 'location of beginning of field
-    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
-    Call TextIn(div2$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 GoTo GetDiv1: 'can't back up any more, stay here
-    If XCode = 2 GoTo Done 'all done entering data
+                For X = 0 To 1:
+                    scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
+                Next
 
-    GetDiv3:
-    Locate 9, 21 'location of beginning of field
-    CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
-    Call TextIn(div3$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
-    If XCode = 1 GoTo GetDiv2: 'can't back up any more, stay here
+                DT$ = "10-01-91"
+                leagLdrTeams$ = "07:30P"
+                Call NewGame(V$, QV$, H$, QH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
 
-    Done:
-    Color 14, 1
-    Locate 23, 1
-    Print "Is this okay? (Yes/No) ";
-    X$ = ""
-    Call YesNoB(X$, XCode, FG, BG)
-    Locate , 1
-    ClearEOL 14, 1
-    If XCode = 1 GoTo GetDiv3
-    If X$ = "N" GoTo GetDiv1
-    If X$ <> "Y" GoTo Done 'insist on either Y or N or up-arrow
+            Case "E":
+                Call EditGame(DT$, leagLdrTeams$)
 
+            Case "B":
+                Do
+                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+                NS% = Int((targetGame% - 1) / 20)
+
+                'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
+                boxName$ = diskPaths$(1) + scheduleFile$ + "_GAME" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%))) + ".BS"
+
+                Call EditBoxscore(boxName$)
+                Color 15, 0
+
+            Case "D":
+                ' *** DELETE A GAME FROM THE SCHEDULE ***
+                Do
+                    Locate 24, 1: Input "ENTER GAME # TO DELETE "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
+                For X = targetGame% To scheduleAP%(0) - 1
+                    For X1 = 0 To 20
+                        scheduleNG%(X, X1) = scheduleNG%(X + 1, X1)
+                    Next
+
+                    visitorScores(X) = visitorScores(X + 1)
+                    homeScores(X) = homeScores(X + 1)
+
+                    For X1 = 0 To 1
+                        scheduleYN$(X, X1) = scheduleYN$(X + 1, X1)
+                    Next
+                Next
+
+                scheduleAP%(0) = scheduleAP%(0) - 1
+                BS% = Int((scheduleAP%(0) - 1) / 20)
+                If NS% > BS% Then NS% = BS%
+
+            Case "G":
+                'GOTO A SPECIFIC PAGE
+                Do
+                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
+                NS% = Int((targetGame% - 1) / 20)
+
+            Case "S":
+                Call SortSchedule
+
+            Case "C", "X":
+                Call SaveScheduleFile(scheduleFile$)
+
+            Case "Q", Chr$(27): '
+
+            Case "P":
+                Call SaveScheduleFile(scheduleFile$)
+
+                ' *** PLAY GAMES ***
+                Color , 0
+                Cls
+
+                Call MenuBox(6, 8, 61, 8, 15, 4)
+
+                Do
+
+                    Locate 8, 12: Print "TOTAL GAMES ="; scheduleAP%(0)
+                    Locate 9, 12: Print "SELECT GAME # TO START AND END WITH": Print
+                    Locate 10, 12: Input "ENTER START GAME #: "; startGame: Print
+                    Locate 11, 12: Input "ENTER END GAME #:"; endGame: Print
+
+                    Do
+                        Locate 13, 12: Print "ANY CHANGE? (Y/N)"
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "N" Or UCase$(I$) = "Y"
+
+                Loop Until UCase$(I$) = "N"
+
+                If startGame <= 0 Then startGame = 1
+                If endGame > scheduleAP%(0) Then endGame = scheduleAP%(0)
+
+                Open "GAME82" For Output As #1
+
+                Print #1, scheduleFile$ + ".SCD"
+                Print #1, startGame 'Start Game
+                Print #1, endGame 'End Game
+                Print #1, 0
+
+                Close #1
+
+                For I = 1 To scheduleAP%(0)
+                    HR% = Int(scheduleNG%(I, 15) / 100)
+                    MIN% = scheduleNG%(I, 15) - HR% * 100
+                    TM% = HR% * 60 + MIN%
+                    scheduleNG%(I, 12) = Int(TM% / 30) - 18
+                Next
+
+                Open "TICKER" For Output As #2
+
+                For I = 1 To 32:
+                    For I1 = 0 To 1:
+                        For I2 = 1 To 14
+                            Print #2, -1
+                        Next
+                    Next
+                Next
+
+                For I = 1 To 32:
+                    For I1 = 0 To 1:
+                        Print #2, "XXX"
+                    Next
+                Next
+
+                For I = startGame To startGame + 31
+                    Print #2, scheduleNG%(I, 12)
+                Next
+
+                Close #2
+
+                'Free up used memory so games can load faster
+                ReDim scheduleNG%(1, 20)
+                ReDim scheduleYN$(1, 1)
+                ReDim homeScores(1)
+                ReDim visitorScores(1)
+                ReDim scheduleH$(1)
+                ReDim scheduleV$(1)
+                ReDim scheduleQB_V$(1)
+                ReDim scheduleQB_H$(1)
+
+                Call FOOTBALL
+
+                'Restore memory so we can populate again
+                ReDim scheduleNG%(MAX_SCHEDULE_GAMES, 20)
+                ReDim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
+                ReDim homeScores(MAX_SCHEDULE_GAMES)
+                ReDim visitorScores(MAX_SCHEDULE_GAMES)
+                ReDim scheduleH$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleV$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
+                ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
+
+                Call LoadScheduleInfo(scheduleFile$)
+
+            Case "R":
+                ' *** RESET GAMES ***
+                For I = 1 To scheduleAP%(0)
+                    scheduleNG%(I, 13) = 0
+                Next
+
+            Case Chr$(0) + Chr$(81), Chr$(0) + Chr$(77)
+                ' *** PAGE DOWN | RIGHT ARROW ***
+                If NS% >= BS% Then
+                    NS% = BS%
+                Else
+                    NS% = NS% + 1
+                End If
+
+            Case Chr$(0) + Chr$(73), Chr$(0) + Chr$(75)
+                ' *** PAGE UP | LEFT ARROW ***
+                If NS% <> 0 Then
+                    NS% = NS% - 1
+                End If
+
+        End Select
+
+    Loop Until UCase$(I$) = "Q" Or UCase$(I$) = "X"
 
 End Sub
 
 
 '----------------------------------------
-'      ReviewEditLeague Subroutine
+'          EditGame SubRoutine
 '----------------------------------------
-'This subroutine provides an interface to
-'the user allowing them to choose / clear
-'teams from the league definition.
-Sub ReviewEditLeague (leagueFile$, league$, div1$, div2$, div3$)
+'This subroutine gives the user an inter-
+'face for choosing games to edit, then
+'calls the NewGame routine to essentially
+'display the existing parameters and allow
+'them to be modified
+Sub EditGame (DT$, leagLdrTeams$)
 
-    Shared memberIdx()
+    Shared scheduleAP%()
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_H$(), scheduleQB_V$()
+    Shared scheduleYN$()
+    Shared scheduleNG%()
 
-    Shared memberName$(), memberYear$()
+    ' *** EDIT A GAME ***
+    Do
+        Locate 23, 1: Print "ENTER GAME # TO EDIT        "
+        Locate 23, 1: Input "ENTER GAME # TO EDIT "; targetGame%
+    Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
-    If _FileExists(diskPaths$(2) + leagueFile$ + ".TMI") Then
+    V$ = scheduleV$(targetGame%)
+    H$ = scheduleH$(targetGame%)
+    YN$ = scheduleYN$(targetGame%, 0)
+    QV$ = scheduleQB_V$(targetGame%)
+    QH$ = scheduleQB_H$(targetGame%)
 
-        Open diskPaths$(2) + leagueFile$ + ".TMI" For Input As #1
+    HR% = Int(scheduleNG%(targetGame%, 15) / 100)
+    MIN% = scheduleNG%(targetGame%, 15) - HR% * 100
 
-        Input #1, statType
+    If HR% >= 12 Then
+        I$ = "P"
+        If HR% > 12 Then HR% = HR% - 12
+    Else
+        I$ = "A"
+    End If
 
-        If statType <> 1 Then
+    leagLdrTeams$ = Right$(Str$(HR%), 2) + ":"
 
-            Cls
-            Print "THE FILE YOU TRIED TO OPEN IS IN COLLEGE FORMAT"
-            Print "EITHER TRY AGAIN OR USE THE COLLEGE OPTION TO EDIT"
-            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+    If MIN% < 10 Then
+        leagLdrTeams$ = leagLdrTeams$ + "0" + Right$(Str$(MIN%), 1)
+    Else
+        leagLdrTeams$ = leagLdrTeams$ + Right$(Str$(MIN%), 2)
+    End If
+
+    leagLdrTeams$ = leagLdrTeams$ + I$
+    DT$ = Right$(Str$(scheduleNG%(targetGame%, 17)), 2) + "/"
+    DYMO% = Val(Right$(Str$(scheduleNG%(targetGame%, 16)), 2))
+
+    If DYMO% < 10 Then
+        DYMO$ = "0" + Right$(Str$(scheduleNG%(targetGame%, 16)), 1)
+    Else
+        DYMO$ = Right$(Str$(scheduleNG%(targetGame%, 16)), 2)
+    End If
+
+    DT$ = DT$ + DYMO$ + "/" + Right$(Str$(scheduleNG%(targetGame%, 18)), 2)
+
+    Call NewGame(V$, QBV$, H$, QBH$, YN$, DT$, leagLdrTeams$, NTMS, targetGame%)
+
+End Sub
+
+'----------------------------------------
+'           NewGame SubRoutine
+'----------------------------------------
+'This subroutine gives the user an interface
+'for editing and choosing options for the
+'specified game in the schedule
+Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, leagLdrTeams$, NTMS, gameIndex%)
+
+    Shared scheduleNG%(), teamRatings%()
+
+    Shared scheduleH$(), scheduleV$()
+    Shared scheduleQB_V$(), scheduleQB_H$()
+    Shared scheduleYN$()
+
+    Shared location$(), modeAbbrev$(), overtime$()
+    Shared playMode$(), qbName$()
+    Shared rulesType$(), ruleYrPro$(), ruleYrColl$()
+    Shared weather$(), windSetting$(), yesNoText$()
+
+    Dim displayPause!
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
+
+    qbName$(4) = "RANDOM"
+
+    Do
+
+        ' ** Enter New Game **
+        Color 15, 0
+        Cls
+
+        Color 2
+        Print Tab(29); "SELECT OPENING OPTIONS"
+
+        Locate 2, 2: Color 14
+        Print "(1) ";
+        Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
+        Locate 3, 2: Color 14
+        Print "(2) ";
+        Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
+        Locate 4, 2: Color 14
+        Print "(3) ";
+        Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
+        Locate 5, 2: Color 14
+        Print "(4) ";
+        Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$
+        Locate 6, 2: Color 14
+        Print "(5) ";
+        Color 15: Print "GAME TIME (XX:XXP)    "; leagLdrTeams$
+        Locate 7, 2: Color 14
+        Print "(6) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
+        Locate 8, 2: Color 14
+        Print "(7) ";
+        Color 15: Print "GAME LOCATION: "; location$(scheduleNG%(gameIndex%, 2))
+        Locate 9, 2: Color 14
+        Print "(8) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
+        Locate 10, 2: Color 14
+        Print "(9) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
+        Locate 11, 2: Color 14
+        Print "(A) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
+        Locate 12, 2: Color 14
+        Print "(B) ";
+        Color 15: Print "SUDDDEN DEATH: "; overtime$(scheduleNG%(gameIndex%, 14))
+        Locate 13, 2: Color 14
+        Print "(C) ";
+        Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
+        Locate 14, 2: Color 14
+        Print "(D) ";
+        Color 15: Print "WEATHER: "; weather$(scheduleNG%(gameIndex%, 20))
+        Locate 16, 2: Color 14
+        Print "(0) ";
+        Color 15: Print "ACCEPT SETTINGS"
+
+        Locate 1, 1
+
+        Do
 
             I$ = GetKeyPress$
 
-            wrongFormat% = 1
+            Call LetterToNumber(I$, setting)
 
-        Else
+            Select Case setting
 
-            Input #1, league$, div1$, div2$, div3$
+                Case 1:
+                    scheduleNG%(gameIndex%, 10) = scheduleNG%(gameIndex%, 10) + 1
+                    If scheduleNG%(gameIndex%, 10) > 3 Then scheduleNG%(gameIndex%, 10) = 0
 
-            For X = 1 To TEAMS_PER_LEAGUE:
-                Input #1, memberName$(X)
-                Input #1, memberIdx(X)
-                Input #1, memberYear$(X)
-            Next
+                Case 2, 3:
+
+                    teamNbr = 0
+                    Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+
+                    If teamNbr <> 0 Then
+
+                        Color 15, 0
+                        scheduleNG%(gameIndex%, setting - 2) = teamNbr
+                        scheduleYN$(gameIndex%, setting - 2) = YN$
+
+                        If setting = 2 Then
+                            visitor$ = team$
+                            scheduleV$(gameIndex%) = team$
+                            visitorQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_V$(gameIndex%) = visitorQB$
+                        End If
+
+                        If setting = 3 Then
+                            home$ = team$
+                            scheduleH$(gameIndex%) = team$
+                            homeQB$ = GetQBName$(gameIndex%, setting)
+                            scheduleQB_H$(gameIndex%) = homeQB$
+                        End If
+
+                    End If
+
+                Case 4:
+                    Locate 5, 26: Input DT$
+
+                Case 5:
+                    Locate 6, 26: Print "        "
+                    Locate 6, 26: Input leagLdrTeams$
+
+                Case 6:
+                    Locate 7, 32: Input displayPause!
+                    scheduleNG%(gameIndex%, 4) = displayPause! * 10
+
+                Case 7:
+                    'N = 1 - (scheduleNG%(gameIndex%, 2))
+                    'scheduleNG%(gameIndex%, 2) = N
+                    N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
+                    scheduleNG%(gameIndex%, 2) = N + 1
+
+                Case 8:
+                    scheduleNG%(gameIndex%, 3) = scheduleNG%(gameIndex%, 3) + 1
+                    If scheduleNG%(gameIndex%, 3) > 5 Then scheduleNG%(gameIndex%, 3) = 0
+
+                Case 9:
+                    scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
+                    If scheduleNG%(gameIndex%, 11) > 3 Then scheduleNG%(gameIndex%, 11) = 0
+
+                Case 10:
+                    scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
+                    If scheduleNG%(gameIndex%, 7) > 5 Then scheduleNG%(gameIndex%, 7) = 0
+
+                Case 11:
+                    scheduleNG%(gameIndex%, 14) = scheduleNG%(gameIndex%, 14) + 1
+                    If scheduleNG%(gameIndex%, 14) > 8 Then scheduleNG%(gameIndex%, 14) = 0
+
+                Case 12:
+                    scheduleNG%(gameIndex%, 19) = scheduleNG%(gameIndex%, 19) + 1
+                    If scheduleNG%(gameIndex%, 19) > 3 Then scheduleNG%(gameIndex%, 19) = 0
+
+                Case 13:
+                    scheduleNG%(gameIndex%, 20) = scheduleNG%(gameIndex%, 20) + 1
+                    If scheduleNG%(gameIndex%, 20) > 3 Then scheduleNG%(gameIndex%, 20) = 0
+
+            End Select
+
+        Loop Until (setting >= 0 And setting <= 13)
+
+        If visitor$ <> "" And home$ <> "" And leagLdrTeams$ <> "" And DT$ <> "" Then
+
+            meridian$ = Right$(leagLdrTeams$, 1)
+            fullTime$ = Left$(leagLdrTeams$, Len(leagLdrTeams$) - 1)
+            MIN% = Val(Right$(fullTime$, 2))
+            hourString$ = Left$(fullTime$, Len(fullTime$) - 3)
+            HR% = Val(hourString$)
+
+            If UCase$(meridian$) = "P" And HR% < 12 Then
+                'If user typed in PM, we are storing as military time
+                'We don't check that military time may have been used
+                HR% = HR% + 12
+            End If
+
+            'Gane Time
+            scheduleNG%(gameIndex%, 15) = HR% * 100 + MIN%
+
+            'Month
+            scheduleNG%(gameIndex%, 17) = Val(Left$(DT$, 2))
+
+            'Day
+            scheduleNG%(gameIndex%, 16) = Val(Mid$((DT$), 4, 2))
+
+            'Year
+            scheduleNG%(gameIndex%, 18) = Val(Mid$((DT$), 7, 2))
 
         End If
+
+    Loop Until setting = 0
+
+End Sub
+
+'----------------------------------------
+'       ExtractSchedule SubRoutine
+'----------------------------------------
+'This is the core subroutine to leverage
+'when mass changes are needing to be made
+'to a schedule. It essentially reads in
+'the existing schedule parameters, prompts
+'the user for the appropriate changes, and
+'then writes the changes back to the orig-
+'inal schedule file.
+Sub ExtractSchedule (scheduleAction%, scheduleFile$)
+    'scheduleAction% = 3: EXTRACT TEAM'S SCHEDULE FROM LEAGUE SCHEDULE
+    'scheduleAction% = 4: EXTRACT CONFERENCE SCHEDULE
+    'scheduleAction% = 5: CHANGE THE MODE OF PLAY FOR A TEAM
+    'scheduleAction% = 6: MAKE GLOBAL CHANGES TO A SCHEDULE
+
+    'EXTRACT A SCHEDULE FROM ANOTHER
+    Dim displayPause!
+
+    Shared homeScores(), visitorScores()
+
+    Shared scheduleAP%()
+    Shared scheduleNG%(), teamRatings%()
+    Shared scheduleYN$()
+
+    Shared memberIdx()
+    Shared memberName$(), memberYear$()
+
+    Select Case scheduleAction%
+
+        Case 6
+            Call ChangeGlobalSettings
+            Call SaveScheduleFile(scheduleFile$)
+            Call NewSchedule(scheduleFile$)
+
+        Case 3, 4, 5
+
+            If scheduleAction% = 3 Or scheduleAction% = 4 Then
+                'Pick name of target file
+                subSchedFile$ = _InputBox$("Schedule File Name", "Enter name for schedule file")
+            End If
+
+            If scheduleAction% = 4 And subSchedFile$ <> "" Then
+                'Pick conference to extract
+                conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+
+                If ExitCode% <> 27 And ExitCode% <> 0 Then
+
+                    Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #1
+
+                    Input #1, statType
+
+                    If statType = 0 Then
+
+                        Input #1, LG$
+                        Input #1, X$
+                        Input #1, X$
+
+                        For X = 1 To 30
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
+                        Next
+
+                        numberTeams = 30
+
+                        Close #1
+
+                    End If
+
+                    If statType = 1 Then
+
+                        Input #1, LG$
+
+                        For X = 1 To 30:
+                            Input #1, memberName$(X)
+                            Input #1, memberIdx(X)
+                            Input #1, memberYear$(X)
+                        Next
+
+                        numberTeams = 30
+
+                        Close #1
+
+                    End If
+
+                    For I = 1 To scheduleAP%(0)
+
+                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+
+                        For I1 = 1 To numberTeams
+
+                            If memberName$(I1) <> "XXX" Then
+
+                                If memberIdx(I1) = scheduleNG%(I, 0) And memberYear$(I1) = scheduleYN$(I, 0) Or memberIdx(I1) = scheduleNG%(I, 1) And memberYear$(I1) = scheduleYN$(I, 1) Then
+
+                                    Print
+                                    Print "FOUND A MATCH"
+
+                                    Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
+
+                                    fileLength& = LOF(2)
+                                    numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                    For X = 0 To 20
+                                        Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                    Next
+
+                                    Field #2, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+                                    For X = 0 To 20:
+                                        LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+                                    Next
+
+                                    For X = 0 To 1:
+                                        LSet Q$(22 + X) = scheduleYN$(I, X)
+                                    Next
+
+                                    LSet Q$(24) = MKI$(visitorScores(I))
+                                    LSet Q$(25) = MKI$(homeScores(I))
+
+                                    Put #2, numberGames + 1
+
+                                    Close #2
+
+                                    Exit For
+
+                                End If
+
+                            End If 'Done checking for "XXX"
+
+                        Next I1
+
+                    Next I
+
+                End If 'Done checking COUNT
+
+            Else
+
+                If (scheduleAction% = 3 And subSchedFile$ = "") Then
+                    'If user cancelled from name entry
+                    teamNbr = 0
+                Else
+                    teamNbr = 0
+                    Call ChooseTeam(YN$, numberTeams, teamNbr, teamName$)
+                End If
+
+                If teamNbr <> 0 Then
+
+                    Color 15, 0
+                    Cls
+
+                    'Change mode of play
+                    If scheduleAction% = 5 Then
+
+                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color 15, 0
+                        Print " IS TO BE:"
+                        Print
+                        Color 12
+                        Print "(0)";
+                        Color 15
+                        Print " MANUALLY CONTROLLED"
+                        Print
+                        Color 12
+                        Print "(1)";
+                        Color 15
+                        Print " COMPUTER CONTROLLED"
+
+                        Do
+                            C$ = GetKeyPress$
+                            I1 = Val(C$)
+                        Loop Until C$ = "0" Or C$ = "1"
+
+                        Print
+                        Input "ENTER PLAY-BY-PLAY DELAY FOR THESE GAMES "; displayPause!
+
+                    End If
+
+                    For I = 1 To scheduleAP%(0)
+
+                        scheduleYN$(I, 0) = RTrim$(scheduleYN$(I, 0))
+                        scheduleYN$(I, 1) = RTrim$(scheduleYN$(I, 1))
+
+                        If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
+
+                            'CHANGE SETTINGS FOR A TEAM
+                            If teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Then
+                                scheduleNG%(I, 10) = 2
+                            End If
+
+                            If teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1) Then
+                                scheduleNG%(I, 10) = 1
+                            End If
+
+                            If (teamNbr = scheduleNG%(I, 0) And YN$ = scheduleYN$(I, 0) Or teamNbr = scheduleNG%(I, 1) And YN$ = scheduleYN$(I, 1)) And I1 = 1 And scheduleAction% = 5 Then
+                                scheduleNG%(I, 10) = 3
+                            End If
+
+                            scheduleNG%(I, 4) = displayPause! * 10
+
+                            'Extract only
+                            If Not (scheduleAction% = 5) Then
+
+                                Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
+                                fileLength& = LOF(3)
+                                totalGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                'Write matching games
+                                Locate 1, 1: Print totalGames + 1; " MATCHES"
+
+                                For X = 0 To 20
+                                    Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+                                Next
+
+                                Field #3, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+                                For X = 0 To 20:
+                                    LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+                                Next
+
+                                For X = 0 To 1:
+                                    LSet Q$(22 + X) = scheduleYN$(I, X)
+                                Next
+
+                                LSet Q$(24) = MKI$(visitorScores(I))
+                                LSet Q$(25) = MKI$(homeScores(I))
+
+                                Put #3, totalGames + 1
+
+                                Close #3
+
+                            End If 'Done checking schedule action
+
+                        End If 'Done checking for matches
+
+                    Next 'Done looping through games
+
+                End If
+
+            End If
+
+    End Select
+
+End Sub
+
+
+'----------------------------------------
+'       EditParameters SubRoutine
+'----------------------------------------
+'This subroutine gives the user an inter-
+'face for editing the parameters by which
+'"Special" boxscores are created / saved.
+Sub EditParameters ()
+
+    Shared eventSettings()
+
+    'Read in existing parameters if there are any
+    If _FileExists("EVENTS.BOX") Then
+
+        Open "EVENTS.BOX" For Input As #1
+
+        For X = 1 To 13
+            Input #1, eventSettings(X)
+        Next
 
         Close #1
 
     End If
 
-    If (wrongFormat% <> 1) Then
+    Cls
+    Color 14
 
-        Do
+    Print "PARAMETERS FOR SAVING SPECIAL EVENTS BOXSCORES"
 
-            Color 14, 0
-            Cls
+    Color 15
 
-            Print
-            Print "  "; league$; " LEAGUE"
-            Print
+    Print " 1. IF QUARTERS ARE OVER "; eventSettings(1)
+    Print " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
+    Print " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
+    Print " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
+    Print " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
+    Print " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
+    Print " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
+    Print " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
+    Print " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
+    Print "10. KICKER'S FGM MORE THAN "; eventSettings(10)
 
-            Color 12
-            Print Tab(6); div1$; Tab(30); div2$; Tab(55); div3$: Print
+    C1 = 1
 
-            For I = 1 To 10
+    Do
 
-                Color 2: Print Using "  ##"; I;
-                Color 15: Print " "; Left$(memberName$(I), 20);
+        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
+        Input B9
 
-                Locate , 25
-                Color 2: Print Using "  ##"; I + 10;
-                Color 15: Print " "; Left$(memberName$(I + 10), 20);
+        Select Case B9
 
-                Locate , 50
-                Color 2: Print Using "  ##"; I + 20;
-                Color 15: Print " "; Left$(memberName$(I + 20), 20)
+            Case 1: Locate 2: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
+            Case 2: Locate 3: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
+            Case 3: Locate 4: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
+            Case 4: Locate 5: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
+            Case 5: Locate 6: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
+            Case 6: Locate 7: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
+            Case 7: Locate 8: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
+            Case 8: Locate 9: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
+            Case 9: Locate 10: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
+            Case 10: Locate 11: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
 
-            Next I
+        End Select
 
-            Do
+    Loop Until B9 = 0 'ENTER also counts as 0
 
-                Locate 21, 1
+    'Save all changes
+    Open "EVENTS.BOX" For Output As #2
 
-                Color 14: Print "(1) ";
-                Color 15: Print "ADD A TEAM"
-                Color 14: Print "(2) ";
-                Color 15: Print "REMOVE A TEAM"
-                Color 14: Print "(3) ";
-                Color 15: Print "END AND SAVE LEAGUE"
-
-                I$ = GetKeyPress$
-                choice = Val(I$)
-            Loop Until choice >= 1 And choice <= 3
-
-            If choice <> 3 Then
-
-                Do
-                    Locate 22, 35
-                    Print "TEAM # (1-30) ";
-                    Input B
-                Loop Until B >= 1 And B <= 30
-
-                If choice = 1 Then
-                    'Add team
-                    teamNbr = 0
-                    Call ChooseTeam(memberYear$(B), NTMS, memberIdx(B), memberName$(B))
-                Else
-                    'Remove team
-                    memberName$(B) = "XXX"
-                End If
-
-            End If 'Done checking if ready to save
-
-        Loop Until choice = 3
-
-        Call SaveLeague(leagueFile$, league$, div1$, div2$, div3$)
-
-    End If
-
-End Sub
-
-
-'----------------------------------------
-'        SaveLeague Subroutine
-'----------------------------------------
-'This subroutine writes the league team
-'memberships and definition to each of
-'the corresponding files (.TMI, .TMS)
-Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
-
-    Shared memberIdx()
-
-    Shared memberName$(), memberYear$()
-
-    Dim statFileNames$(TEAMS_PER_LEAGUE)
-
-    Open diskPaths$(2) + leagueFile$ + ".TMI" For Output As #1
-
-    Print #1, 1
-
-    Print #1, league$
-    Print #1, div1$
-    Print #1, div2$
-    Print #1, div3$
-
-    For X = 1 To TEAMS_PER_LEAGUE:
-        Print #1, memberName$(X)
-        Print #1, memberIdx(X)
-        Print #1, memberYear$(X)
-    Next
-
-    Close #1
-
-    'Erase memberName$
-
-    For X = 1 To TEAMS_PER_LEAGUE
-
-        If memberName$(X) = "XXX" Then
-            statFileNames$(X) = Chr$(42)
-        Else
-            teamName$ = memberName$(X)
-            statFileNames$(X) = nameStatFile$(teamName$)
-        End If
-
-    Next X
-
-    Open diskPaths$(2) + leagueFile$ + ".TMS" For Output As #2
-
-    Write #2, league$
-    Write #2, div1$
-    Write #2, div2$
-    Write #2, div3$
-
-    For X = 1 To TEAMS_PER_LEAGUE:
-        Write #2, statFileNames$(X)
+    For X = 1 To 13
+        Print #2, eventSettings(X)
     Next
 
     Close #2
@@ -2001,16 +2022,500 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$)
 End Sub
 
 
+'----------------------------------------
+'    BoxscoreMaintenance SubRoutine
+'----------------------------------------
+'This subroutine gives the user a menu
+'for several of the options available to
+'manage and maintain boxscores.
+Sub BoxscoreMaintenance ()
 
-'$Include: 'DRAFT.BAS'
-'$Include: 'HD2HDCON.BAS'
-'$Include: 'HD2HDLEAG.BAS'
-'$Include: 'LOOKY.BAS'
-'$Include: 'MERGE.BAS'
-'$Include: 'NEWLDR.BAS'
-'$Include: 'NEWLDRST.BAS'
-'$Include: 'REC.BAS'
-'$Include: 'SCHEDULE.BAS'
+    ReDim menuChoices$(1 To 6)
+
+    menuChoices$(1) = "SET PARAMETERS TO SAVE SPECIAL EVENTS BOXSCORES  "
+    menuChoices$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
+    menuChoices$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "
+    menuChoices$(4) = "DELETE ALL USER SAVED, & SPECIAL BOXSCORES       "
+    menuChoices$(5) = "DELETE ALL BOXSCORES (SCHEDULE, USER, &  SPECIAL)"
+    menuChoices$(6) = "RETURN TO MAIN AUTO SCHEDULER MENU               "
+    SELECTION% = 1
+    Count% = 6
+    Start% = 1
+    ExitCode% = 6
+    FileFGColor = 15: FileBGColor = 1
+    HiLiteFGColor% = 0: HiLiteBGColor% = 7
+    Spacing% = 1
+    Row% = 8
+    menuWidth% = Len(menuChoices$(1))
+    Column% = (80 - menuWidth% - 2) / 2
+
+    Do
+
+        Color 15, 0
+
+        Call TITLE_SCHEDULER
+
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
+
+        _MouseShow "DEFAULT"
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        _MouseHide
+
+        If ExitCode% <> 27 Then
+
+            Select Case SELECTION%
+
+                Case 1:
+                    Call EditParameters
+
+                Case 2:
+                    boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.BSS", "BOXSCORE", ExitCode%)
+                    'boxscoreFile$ = ChooseFile$(diskPaths$(1) + "*.SPC", "BOXSCORE", ExitCode%)
+
+                    If ExitCode% <> 27 And ExitCode% <> 0 And boxscoreFile$ <> "" Then
+                        boxName$ = diskPaths$(1) + boxscoreFile$
+                        Call EditBoxscore(boxName$ + ".BSS")
+                        'Call EditBoxscore(boxName$ + ".SPC")
+                    End If
+
+                Case 3
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                Case 4
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                Case 5:
+                    Spec$ = diskPaths$(1) + "*.BS"
+                    'Spec$ = diskPaths$(1) + "BOX*."
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+                    Spec$ = diskPaths$(1) + "*.BSS"
+                    'Spec$ = diskPaths$(1) + "*.SPC"
+                    Call DeleteBoxscores(SELECTION%, Spec$)
+
+            End Select
+
+        End If
+
+    Loop Until SELECTION% = 6 Or ExitCode% = 27
+
+End Sub
+
+
+'----------------------------------------
+'       SaveScheduleFile SubRoutine
+'----------------------------------------
+'This subroutine writes all scheduled data,
+'as stored in the relevant arrays, back to
+'the target schedule file.
+Sub SaveScheduleFile (saveFile$)
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
+
+    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        For X = 0 To 20:
+            LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+        Next
+
+        For X = 0 To 1:
+            LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
+        Next
+
+        LSet Q$(24) = MKI$(visitorScores(I))
+        LSet Q$(25) = MKI$(homeScores(I))
+
+        Put #1, I
+
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       SortSchedule SubRoutine
+'----------------------------------------
+'This subroutine is used to automatically
+'sort all games in the schedule by their
+'date / time.
+Sub SortSchedule ()
+
+    Dim schedDates&(MAX_SCHEDULE_GAMES)
+    Dim D&, M&, Y&
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    For I = 1 To scheduleAP%(0)
+        HR% = Int(scheduleNG%(I, 15) / 100)
+        MIN% = scheduleNG%(I, 15) - HR% * 100
+        TM% = HR% * 60 + MIN%
+        scheduleNG%(I, 12) = Int(TM% / 30 - 18)
+        D& = (scheduleNG%(I, 18) - 1)
+        D& = D& * 365
+        M& = (scheduleNG%(I, 17) - 1)
+        M& = M& * 31
+        Y& = scheduleNG%(I, 16)
+        schedDates&(I) = (D& + M& + Y&) * 24 * 60 + TM%
+    Next
+
+    For Z = 1 To scheduleAP%(0) - 1
+
+        For currIdx = Z + 1 To scheduleAP%(0)
+
+            Locate 1, 1: Print Z, currIdx
+
+            If scheduleNG%(Z, 12) > scheduleNG%(currIdx, 12) Then
+
+                For I = 0 To 20:
+                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
+                Next
+
+                For I = 0 To 1:
+                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
+                Next
+
+                Swap schedDates&(Z), schedDates&(currIdx)
+                Swap visitorScores(Z), visitorScores(currIdx)
+                Swap homeScores(Z), homeScores(currIdx)
+
+            End If
+
+        Next currIdx
+
+    Next Z
+
+    For Z = 1 To scheduleAP%(0) - 1
+
+        For currIdx = Z + 1 To scheduleAP%(0)
+
+            If schedDates&(Z) > schedDates&(currIdx) Then
+
+                For I = 0 To 20:
+                    Swap scheduleNG%(Z, I), scheduleNG%(currIdx, I)
+                Next
+
+                For I = 0 To 1:
+                    Swap scheduleYN$(Z, I), scheduleYN$(currIdx, I)
+                Next
+
+                Swap schedDates&(Z), schedDates&(currIdx)
+                Swap visitorScores(Z), visitorScores(currIdx)
+                Swap homeScores(Z), homeScores(currIdx)
+
+            End If
+
+        Next currIdx
+
+    Next Z
+
+End Sub
+
+
+'----------------------------------------
+'    ChangeGlobalSettings SubRoutine
+'----------------------------------------
+'This subroutine presents the end user a
+'variety of game options that can be changed
+'or applied to all games in the schedule file.
+'These would be game-specific options, as
+'opposed to teams / dates / times.
+Sub ChangeGlobalSettings ()
+
+    Shared scheduleAP%(), scheduleNG%()
+
+    Shared modeAbbrev$()
+    Shared qbName$(), scheduleYN$()
+
+    Shared location$(), overtime$(), playMode$()
+    Shared rulesType$(), ruleYrColl$(), ruleYrPro$()
+    Shared windSetting$(), weather$()
+
+    Dim displayPause!
+
+    scheduleYN$(0, 0) = ""
+    scheduleYN$(0, 1) = ""
+
+    ' GLOBAL SETTINGS FOR A SCHEDULE
+    ' The code below would use default values based on the most recent rules
+    'ruleOptType = 1
+    'ruleOptColl = 11
+    'ruleOptPro = 9
+    'overtimeOpt = 0
+    'windOpt = 3
+    'weatherOpt = 3
+
+    'QB selections
+    qbName$(4) = "RANDOM"
+
+    'This code will assign defaults based on the first game in the schedule.
+    'Usually when I want to change global settings, I want to keep most
+    'settings in the schedule the same.
+    playerOpt = scheduleNG%(1, 10)
+    gameLoc = scheduleNG%(1, 2)
+    ruleOptType = scheduleNG%(1, 3)
+    ruleOptPro = scheduleNG%(1, 11)
+    ruleOptColl = scheduleNG%(1, 7)
+    overtimeOpt = scheduleNG%(1, 14)
+    displayPause! = scheduleNG%(1, 4) / 10
+    windOpt = scheduleNG%(1, 19)
+    weatherOpt = scheduleNG%(1, 20)
+
+    DT$ = "09-01-23"
+    leagLdrTeams$ = "07:30P"
+
+    Do
+        Color 15, 0
+        Cls
+        Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
+
+        Locate 3, 2: Color 14: Print "(1) ";
+        Color 15: Print "GAME PLAY: "; playMode$(playerOpt)
+        Locate 5, 2: Color 14: Print "(2) ";
+        Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
+        Locate 6, 2: Color 14: Print "(3) ";
+        Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
+        Locate 7, 2: Color 14: Print "(4) ";
+        Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
+        Locate 8, 2: Color 14: Print "(5) ";
+        Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
+        Locate 9, 2: Color 14: Print "(6) ";
+        Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#  "; displayPause!
+        Locate 10, 2: Color 14: Print "(7) ";
+        Color 15: Print "WIND OPTION: "; windSetting$(windOpt)
+        Locate 11, 2: Color 14: Print "(8) ";
+        Color 15: Print "WEATHER OPTION: "; weather$(weatherOpt)
+
+        Locate 13, 2: Color 14: Print "(0) ";
+        Color 15: Print "ACCEPT GLOBAL SETTINGS"
+
+        Do
+
+            I$ = GetKeyPress$
+
+            Call LetterToNumber(I$, iVal)
+
+        Loop Until iVal >= 0 And iVal <= 10
+
+        Select Case iVal
+
+            Case 1:
+                playerOpt = playerOpt + 1
+                If playerOpt > 3 Then playerOpt = 0
+
+            Case 2:
+                ruleOptType = ruleOptType + 1
+                If ruleOptType > 5 Then ruleOptType = 0
+
+            Case 3:
+                ruleOptPro = ruleOptPro + 1
+                If ruleOptPro > 9 Then ruleOptPro = 0
+
+            Case 4:
+                ruleOptColl = ruleOptColl + 1
+                If ruleOptColl > 11 Then ruleOptColl = 0
+
+            Case 5:
+                overtimeOpt = overtimeOpt + 1
+                If overtimeOpt > 8 Then overtimeOpt = 0
+
+            Case 6:
+                Locate 9, 32: Input displayPause!
+                'Input "DISPLAY VARIABLE "; displayPause!
+
+            Case 7:
+                windOpt = windOpt + 1
+                If windOpt > 3 Then windOpt = 0
+
+            Case 8:
+                weatherOpt = weatherOpt + 1
+                If weatherOpt > 3 Then weatherOpt = 0
+
+        End Select
+
+    Loop Until iVal = 0
+
+    For I = 1 To scheduleAP%(0)
+        scheduleNG%(I, 2) = gameLoc
+        scheduleNG%(I, 3) = ruleOptType
+        scheduleNG%(I, 4) = displayPause! * 10
+        scheduleNG%(I, 7) = ruleOptColl
+        scheduleNG%(I, 10) = playerOpt
+        scheduleNG%(I, 11) = ruleOptPro
+        scheduleNG%(I, 14) = overtimeOpt
+        scheduleNG%(I, 19) = windOpt
+        scheduleNG%(I, 20) = weatherOpt
+    Next
+
+End Sub
+
+
+'----------------------------------------
+'       DeleteBoxscores Subroutine
+'----------------------------------------
+'This subroutine prompts for confirmation
+'of and proceeds to delete the specified
+'types of boxscores. This is called by
+'BoxScore maintenance routine.
+Sub DeleteBoxscores (fileChoice%, fileSpec$)
+
+    Spec$ = diskPaths$(0) + fileSpec$
+    Count% = FileCount%(Spec$)
+
+    If Count% = 0 Then
+
+        Select Case fileChoice%
+
+            Case 3:
+                MsgText$ = "NO BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
+
+            Case 4:
+                MsgText$ = "NO SPECIAL EVENTS BOXSCORES WERE FOUND PRESS ANY KEY TO RETURN TO MENU"
+
+            Case 5:
+                ' Exit Sub
+
+        End Select
+
+        BoxWidth = 24
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        ReDim boxFiles$(0 To Count%)
+
+        For X = 1 To Count%
+            boxFiles$(X) = Space$(12)
+        Next
+
+        boxFiles$(0) = fileSpec$
+        Call ReadFile(boxFiles$())
+
+        For X = 1 To Count%
+            Kill (diskPaths$(1) + boxFiles$(X))
+            Locate 12, 34: Print "DELETING "; boxFiles$(X)
+        Next
+
+        MsgText$ = "ALL BOXSCORE FILES HAVE BEEN DELETED. PRESS ANY KEY TO RETURN TO MAIN MENU"
+        BoxWidth = 20
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'      LoadScheduleInfo SubRoutine
+'----------------------------------------
+'This subroutine opens the target SCHEDULE
+'file and reads the data into corresponding
+'arrays for use in the scheduler
+Sub LoadScheduleInfo (targetFile$)
+
+    Shared BS%, NS%
+
+    Shared scheduleAP%(), scheduleNG%()
+    Shared homeScores(), visitorScores()
+    Shared scheduleYN$()
+
+    Open diskPaths$(3) + targetFile$ + ".SCD" For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
+    fileLength& = LOF(1)
+    scheduleAP%(0) = fileLength& / SCHEDULE_SIZE_BYTES
+    BS% = Int((scheduleAP%(0) - 1) / 20)
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        Get #1, I
+
+        For X = 0 To 20:
+            scheduleNG%(I, X) = CVI(Q$(X + 1))
+        Next
+
+        For X = 0 To 1:
+            scheduleYN$(I, X) = RTrim$(Q$(22 + X))
+        Next
+
+        visitorScores(I) = CVI(Q$(24))
+        homeScores(I) = CVI(Q$(25))
+
+    Next
+
+    Close #1
+
+    NS% = 0
+
+End Sub
+
+
+'----------------------------------------
+'       EditBoxscore SubRoutine
+'----------------------------------------
+'This subroutine is designed to facilitate
+'the user's ability to edit, in-realtime,
+'a boxscore that has been previously created
+'by the game. It is essentially a DOS-based
+'text editing routine, which was written in
+'x86 asm. Therefore, the corresponding code
+'is no longer available or useful. It is
+'recommended that users simply edit their
+'boxscores in their favorite text editor.
+Sub EditBoxscore (boxName$)
+
+    If Not _FileExists(boxName$) Then
+
+        MsgText$ = "BOXSCORE DOES NOT EXIST PRESS ANY KEY TO RETURN TO MAIN MENU"
+        BoxWidth = 24
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        Call QBWRITE(boxName$)
+
+    End If
+
+End Sub
+
+
+
 '$Include: 'SEECON.BAS'
 '$Include: 'SEENATL.BAS'
 '$Include: 'SEELEAG.BAS'

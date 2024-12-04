@@ -26,7 +26,7 @@ Sub UpdateExpandedStandings (league$, orgType)
     currRecord = 0
 
     '-- Need to update this to handle College or Pro
-    If orgType = 1 Then 
+    If orgType = 1 Then
         TEAM_LIMIT = TEAMS_PER_LEAGUE
     Else
         TEAM_LIMIT = TEAMS_PER_CONFERENCE
@@ -164,7 +164,7 @@ Sub NewStandings_Screen (league$, orgType)
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    If orgType = 1 Then 
+    If orgType = 1 Then
         DIV_LIMIT = 4
     Else
         DIV_LIMIT = 3
@@ -279,7 +279,7 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
     Color 15, 0
     Cls
 
-    If orgType = 1 Then 
+    If orgType = 1 Then
         DIV_LIMIT = 4
     Else
         DIV_LIMIT = 3
@@ -431,3 +431,4 @@ Sub SortStandings (AA, ZZ)
     Next X
 
 End Sub
+

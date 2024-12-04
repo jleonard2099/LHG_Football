@@ -114,7 +114,7 @@ Sub CompileLeague ()
 
             Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-            Input #2, confName$, div1$, div2$, div3$
+            Input #2, confName$, div1$, div2$, div3$, div4$
 
             For XW = 1 To TEAMS_PER_LEAGUE
                 Input #2, memberName$(XW)

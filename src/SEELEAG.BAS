@@ -77,175 +77,65 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Close #2
 
-    D1 = divWins!(1) - divLosses!(1)
+    For NT = 1 To 4
 
-    For P = 1 To 10:
+        AA = ((NT - 1) * 10) + 1
+        ZZ = NT * 10
 
-        If leagLdrTeams$(P) = "*" Or leagLdrTeams$(P) = "" Then
-            leagRecText$(P) = ""
-        Else
+        D1 = divWins!(AA) - divLosses!(AA)
 
-            leagRecText$(P) = PadRight$(leagLdrTeams$(P), 12)
+        For P = AA To ZZ
 
-            rightStr$ = Right$("     " + Str$(Int(divWins!(P))), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
-
-            rightStr$ = Right$("     " + Str$(Int(divLosses!(P))), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
-
-            rightStr$ = Right$("     " + Str$(Int(divTies!(P))), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
-
-            A = 0
-
-            If divWins!(P) + divLosses!(P) > 0 Then 
-                A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
-            End If
-
-            A = Int(1000 * A + .5)
-
-            If A = 1000 Then
-                leagRecText$(P) = leagRecText$(P) + "1.000 "
+            If leagLdrTeams$(P) = "*" Or leagLdrTeams$(P) = "" Then
+                leagRecText$(P) = ""
             Else
-                rightStr$ = Str$(A)
-                L = Len(rightStr$)
-                rightStr$ = Right$(rightStr$, L - 1)
 
-                Do While (Len(rightStr$) < 3)
-                    rightStr$ = "0" + rightStr$
-                Loop
+                leagRecText$(P) = PadRight$(leagLdrTeams$(P), 12)
 
-                leagRecText$(P) = leagRecText$(P) + " ." + Right$(rightStr$, 3)
+                rightStr$ = Right$("     " + Str$(Int(divWins!(P))), 3)
+                leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
+
+                rightStr$ = Right$("     " + Str$(Int(divLosses!(P))), 3)
+                leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
+
+                rightStr$ = Right$("     " + Str$(Int(divTies!(P))), 3)
+                leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
+
+                A = 0
+
+                If divWins!(P) + divLosses!(P) > 0 Then
+                    A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+                End If
+
+                A = Int(1000 * A + .5)
+
+                If A = 1000 Then
+                    leagRecText$(P) = leagRecText$(P) + "1.000 "
+                Else
+                    rightStr$ = Str$(A)
+                    L = Len(rightStr$)
+                    rightStr$ = Right$(rightStr$, L - 1)
+
+                    Do While (Len(rightStr$) < 3)
+                        rightStr$ = "0" + rightStr$
+                    Loop
+
+                    leagRecText$(P) = leagRecText$(P) + " ." + Right$(rightStr$, 3)
+                End If
+
+                leagRecText$(P) = PadRight$(leagRecText$(P), 30)
+                A = leagPtsFor!(P)
+
+                leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 3)
+                A = leagPtsAgnst!(P)
+
+                leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 4)
+
             End If
 
-            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
-            A = leagPtsFor!(P)
+        Next P
 
-            leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 3)
-            A = leagPtsAgnst!(P)
-
-            leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 4)
-
-        End If
-
-    Next P
-
-    D1 = divWins!(11) - divLosses!(11)
-
-    For P = 11 To 20:
-
-        If leagLdrTeams$(P) = "*" Or leagLdrTeams$(P) = "" Then
-            leagRecText$(P) = ""
-        Else
-
-            leagRecText$(P) = PadRight$(leagLdrTeams$(P), 12)
-
-            A = Int(divWins!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
-
-            A = Int(divLosses!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
-
-            A = Int(divTies!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
-
-            A = 0
-
-            If divWins!(P) + divLosses!(P) > 0 Then 
-                A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
-            End If
-
-            A = Int(1000 * A + .5)
-
-            If A = 1000 Then
-                leagRecText$(P) = leagRecText$(P) + "1.000 "
-            Else
-                rightStr$ = Str$(A)
-                L = Len(rightStr$)
-                rightStr$ = Right$(rightStr$, L - 1)
-
-                Do While (Len(rightStr$) < 3)
-                    rightStr$ = "0" + rightStr$
-                Loop
-
-                leagRecText$(P) = leagRecText$(P) + " ." + Right$(rightStr$, 3)
-            End If
-
-            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
-            A = leagPtsFor!(P)
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = leagRecText$(P) + rightStr$
-
-            A = leagPtsAgnst!(P)
-            rightStr$ = Right$("     " + Str$(A), 4)
-            leagRecText$(P) = leagRecText$(P) + rightStr$
-
-            'leagRecText$(P) = leagRecText$(P)
-        End If
-
-    Next P
-
-    D1 = divWins!(21) - divLosses!(21)
-
-    For P = 21 To 30:
-
-        If leagLdrTeams$(P) = "*" Or leagLdrTeams$(P) = "" Then
-            leagRecText$(P) = ""
-        Else
-
-            leagRecText$(P) = PadRight$(leagLdrTeams$(P), 12)
-
-            A = Int(divWins!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
-
-            A = Int(divLosses!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
-
-            A = Int(divTies!(P))
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
-
-            A = 0
-
-            If divWins!(P) + divLosses!(P) > 0 Then 
-                A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
-            End If
-
-            A = Int(1000 * A + .5)
-
-            If A = 1000 Then
-                leagRecText$(P) = leagRecText$(P) + "1.000 "
-            Else
-                rightStr$ = Str$(A)
-                L = Len(rightStr$)
-                rightStr$ = Right$(rightStr$, L - 1)
-
-                Do While (Len(rightStr$) < 3)
-                    rightStr$ = "0" + rightStr$
-                Loop
-
-                leagRecText$(P) = leagRecText$(P) + " ." + Right$(rightStr$, 3)
-            End If
-
-            leagRecText$(P) = PadRight$(leagRecText$(P), 30)
-
-            A = leagPtsFor!(P)
-            rightStr$ = Right$("     " + Str$(A), 3)
-            leagRecText$(P) = leagRecText$(P) + rightStr$
-
-            A = leagPtsAgnst!(P)
-            rightStr$ = Right$("     " + Str$(A), 4)
-            leagRecText$(P) = leagRecText$(P) + rightStr$
-
-            'leagRecText$(P) = leagRecText$(P)
-        End If
-
-    Next P
+    Next NT
 
 End Sub
 
@@ -270,7 +160,7 @@ Sub StatOptions_Pro (league$)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save League Report",_CWD$ + "\Report","*.txt","Text File")
+                    userFile$ = _SaveFileDialog$("Save League Report", _CWD$ + "\Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call ProLeaders_Report(league$, 0, userFile$)
                     End If
@@ -329,7 +219,7 @@ Sub ProLeaders_Screen ()
     Cls
 
     Color 12
-    Print div1Name$; " DIVISION"
+    If div1Name$ <> "" Then Print RTrim$(div1Name$) + " DIVISION"
 
     Color 14
     Print "              W   L   T   PCT  PF  PA"
@@ -366,7 +256,7 @@ Sub ProLeaders_Screen ()
 
     Locate 1, 41
     Color 12
-    Print div2Name$ + " DIVISION"
+    If div2Name$ <> "" Then Print RTrim$(div2Name$) + " DIVISION"
     Color 14
 
     Locate 2, 41
@@ -401,12 +291,12 @@ Sub ProLeaders_Screen ()
 
     RT = 0
 
-    Locate 13, 20
+    Locate 13, 1
 
     Color 12
-    Print div3Name$ + " DIVISION"
+    If div3Name$ <> "" Then Print RTrim$(div3Name$) + " DIVISION"
 
-    Locate 14, 20
+    Locate 14, 1
     Color 14
     Print "              W   L   T   PCT  PF  PA"
     Color 15
@@ -416,8 +306,8 @@ Sub ProLeaders_Screen ()
         If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
-            Locate (P - 6 - RT), 20
-            Print leagLdrTeams$(P); Tab(33); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Locate (P - 6 - RT)
+            Print leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
@@ -433,7 +323,7 @@ Sub ProLeaders_Screen ()
                 End If
             End If
 
-            Print Tab(50); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
         End If
 
@@ -441,12 +331,12 @@ Sub ProLeaders_Screen ()
 
     RT = 0
 
-    Locate 13, 20
+    Locate 13, 41
 
     Color 12
-    Print div4Name$ + " DIVISION"
+    If div4Name$ <> "" Then Print RTrim$(div4Name$) + " DIVISION"
 
-    Locate 14, 20
+    Locate 14, 41
     Color 14
     Print "              W   L   T   PCT  PF  PA"
     Color 15
@@ -456,8 +346,8 @@ Sub ProLeaders_Screen ()
         If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
-            Locate (P - 6 - RT), 20
-            Print leagLdrTeams$(P); Tab(33); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Locate (P - 16 - RT), 41
+            Print leagLdrTeams$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
@@ -473,14 +363,14 @@ Sub ProLeaders_Screen ()
                 End If
             End If
 
-            Print Tab(50); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
         End If
 
     Next
 
     RT = 0
-    
+
     '-----
     Color 12
     'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
