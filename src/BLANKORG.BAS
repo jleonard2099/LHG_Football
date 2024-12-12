@@ -58,6 +58,12 @@ Sub BLANKORG ()
                         End If
                     Next
 
+                    leaderFile$ = diskPaths$(2) + memberConf$(X) + ".LDR"
+                    If _FileExists(leaderFile$) Then Kill leaderFile$
+
+                    standingsFile$ = diskPaths$(2) + memberConf$(X) + ".LDS"
+                    If _FileExists(standingsFile$) Then Kill standingsFile$
+
                 End If 'done checking for XXX
 
             Next

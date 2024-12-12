@@ -142,7 +142,7 @@ Sub DefineLeaguePro (league$, div1$, div2$, div3$, div4$)
     Locate 9, 1: QPrint "Name for Division 3 ", 14, 1, -1
     Locate , 21: QPrint PadRight$(div3$, 50), FG, BG, -1
     Locate 11, 1: QPrint "Name for Division 4 ", 14, 1, -1
-    Locate , 21: QPrint PadRight$(div3$, 50), FG, BG, -1
+    Locate , 21: QPrint PadRight$(div4$, 50), FG, BG, -1
 
     GetDiv1:
     Locate 5, 21 'location of beginning of field
@@ -168,7 +168,7 @@ Sub DefineLeaguePro (league$, div1$, div2$, div3$, div4$)
     GetDiv4:
     Locate 11, 21 'location of beginning of field
     CapsOn = 0: NumOnly = 0: Max = 50 'specify field parameters
-    Call TextIn(div3$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
+    Call TextIn(div4$, Max, NumOnly, CapsOn, XCode, FG, BG) 'get input
     If XCode = 1 GoTo GetDiv3: 'can't back up any more, stay here
 
     Done:
