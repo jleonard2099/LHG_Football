@@ -399,7 +399,7 @@ Dim Shared kickYL!
 
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
-Dim Shared penaltyYds, playerMode, playerOpt, playType
+Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -421,8 +421,8 @@ Dim Shared W5, WE, WS, winTeam
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+'Dim Shared ydsToFirst As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, fgAttLine, impactTeam
 DIm Shared loseDown
@@ -432,7 +432,7 @@ Dim Shared YC, YF, Z1
 Dim Shared FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%
 
-Dim Shared gameClock!, pbpDelay!, timeElapsed!
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
@@ -480,7 +480,7 @@ Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-Dim Shared pbpString$, targetWRName$, YN$
+'Dim Shared pbpString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
