@@ -3284,9 +3284,6 @@ Sub FOOTBALL ()
 
     Call SETSCREEN
 
-    quarter = 5
-    GoTo 3364
-
     '----------------------------------------
     '           START OF GAME
     '----------------------------------------
@@ -3746,7 +3743,7 @@ Sub FOOTBALL ()
         test = 1
     End If
 
-    Call pbplog(3729)
+    'Call pbplog(3729)
 
     Call MARKER1
 
@@ -9451,7 +9448,7 @@ Sub PBP ()
         Call DELAY
     End If
 
-    Call pbplog(9431)
+    'Call pbplog(9431)
 
 End Sub
 
@@ -14434,7 +14431,7 @@ Sub ComputerOffense ()
     End If
 
     '--- Uncomment to see what the play call %'s are
-    Call pbplog(14398)
+    'Call pbplog(14398)
 
 End Sub
 
