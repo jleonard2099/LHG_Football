@@ -30,7 +30,6 @@ Dim statsTeam!(38), statsOpp!(38), statsPlayers!(50, 18)
 'Record / Standings
 
 
-
 ' Conferences / Orgs
 Dim memberConf$(MAX_CONFERENCES)
 'Static values here are so we can cover
@@ -383,7 +382,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 'BW = black & white; as in, set to 1 and the game will lose all color
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
-Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
+'Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
@@ -400,8 +399,8 @@ Dim Shared kickYL!
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
 Dim Shared playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
-Dim Shared quarter, qback, qbTakeKnee
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared S6, startYds, tickerGames
 Dim Shared W5, WE, WS, winTeam
