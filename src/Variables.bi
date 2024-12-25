@@ -1,4 +1,6 @@
-
+'----------------------------------------
+' Used in more than one source file
+'----------------------------------------
 Dim opSysType$
 
 Dim Shared currGame
@@ -382,7 +384,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 'BW = black & white; as in, set to 1 and the game will lose all color
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
-'Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
+Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
@@ -399,11 +401,12 @@ Dim Shared kickYL!
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
 Dim Shared playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetNbr
-'Dim Shared quarter, qback, qbTakeKnee
+Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared quarter, qback, qbTakeKnee
+
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared S6, startYds, tickerGames
-Dim Shared W5, WE, WS, winTeam
+Dim Shared W5, WE, WS, winTeam, yrdLine
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -420,8 +423,8 @@ Dim Shared W5, WE, WS, winTeam
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-'Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsToFirst As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, fgAttLine, impactTeam
 DIm Shared loseDown
@@ -457,7 +460,7 @@ Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1), otTDs(0 To 1)
 Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2)
 Dim Shared playerInts(1, 9), playerSacks(1, 14)
-Dim Shared prNumRet(1, 2), prYdsPerRet(1, 2), puntReturners(0 To 1, 0 To 2)
+Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared qbRushIdx(1, 3)
@@ -479,7 +482,7 @@ Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-'Dim Shared pbpString$, targetWRName$, YN$
+Dim Shared pbpString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
