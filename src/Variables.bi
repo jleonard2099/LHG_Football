@@ -385,7 +385,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-Dim Shared D, dLine
+'Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
@@ -401,7 +401,7 @@ Dim Shared kickYL!
 Dim Shared isOT, JJ, K3
 Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
 Dim Shared playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -434,7 +434,7 @@ Dim Shared YC, YF, Z1
 Dim Shared FF%, goalLnYdAdj, HB%, intChance
 Dim Shared PC%, PS%
 
-Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
@@ -457,7 +457,7 @@ Dim Shared indRushPct(1, 9), IR(1, 9), K1(50, 6), K3(1, 6)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared leagRat_GAME(1, 7)
-Dim Shared nbrPossOT(1), otTDs(0 To 1)
+'Dim Shared nbrPossOT(1), otTDs(0 To 1)
 Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2)
 Dim Shared playerInts(1, 9), playerSacks(1, 14)
 Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
@@ -467,7 +467,7 @@ Dim Shared qbRushIdx(1, 3)
 Dim Shared runYdAdj(1, 38)
 Dim Shared runBacks(1, 17), rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
 Dim Shared sackStatsPlayer(1, 14, 1)
-Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
+'Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
@@ -482,7 +482,7 @@ Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-Dim Shared pbpString$, targetWRName$, YN$
+'Dim Shared pbpString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)

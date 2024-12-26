@@ -121,14 +121,6 @@ Sub DefineLeaguePro (league$, div1$, div2$, div3$, div4$)
 
     Loop Until UCase$(I$) = "N"
 
-    'Determine Division names
-    'Color 15, 0
-    'Print
-    'Print
-    'Locate , 12: Input "ENTER NAME OF DIVISION 1 (ENTER FOR NONE) "; div1$
-    'Locate , 12: Input "ENTER NAME OF DIVISION 2 (ENTER FOR NONE) "; div2$
-    'Locate , 12: Input "ENTER NAME OF DIVISION 3 (ENTER FOR NONE) "; div3$
-
     FG = 0
     BG = 7
 
@@ -370,4 +362,3 @@ Sub SaveLeague (leagueFile$, league$, div1$, div2$, div3$, div4$)
     Close #2
 
 End Sub
-

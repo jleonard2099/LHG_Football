@@ -31,6 +31,15 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared D, dLine
+Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+Dim Shared nbrPossOT(1), otTDs(0 To 1)
+Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
+
+Dim Shared pbpString$, targetWRName$, YN$
+
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1108,6 +1117,7 @@ Sub FOOTBALL ()
 
         'Open "pbplog" + Str$(currGame) For Append As #11
         Open "pbplog" For Append As #11
+
         If Not _FileExists(diskPaths$(3) + scheduleFile$) Then
 
             'Notify user that game won't execute
@@ -1930,10 +1940,6 @@ Sub FOOTBALL ()
 
                     returnYL! = ydsGained + kickYL!
 
-                    '-- REMOVE
-                    outString$ = "Kick taken at " + Str$(Int(kickYL!)) + ", returned to " + Str$(Int(returnYL!))
-                    Print #11, outString$
-
                     If returnYL! <= -.05 Then
 
                         'Returner didn't make it out of the endzone
@@ -2052,9 +2058,7 @@ Sub FOOTBALL ()
 
         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
-        'Assign possession for team
-        'that recovers
-        If isOT = 1 And overtimeOpt >= 6 Then
+        If isOT = 1 And overtimeOpt >= 3 Then
             nbrPossOT(D) = 1
         End If
 
@@ -2108,7 +2112,6 @@ Sub FOOTBALL ()
 
                     If fumbRetYdLine! <= .01 Then
                         'Safety!
-                        Print #11, "Safety from FUMBLE"
                         GoTo 3250
                     End If
 
@@ -2134,7 +2137,6 @@ Sub FOOTBALL ()
     'Change of possession; check OT score / status
     If isOT = 1 And overtimeOpt >= 3 Then
         'Track that offense had the ball
-        nbrPossOT(P1) = 1
         GoTo 3364
     End If
 
@@ -2789,9 +2791,9 @@ Sub FOOTBALL ()
                 Next I
 
                 CheckQBRunner:
-                'If the QB was chosen, we need to go with a pass play.
+                'If the QB was chosen, go with a pass play.
                 'The game handles all QB rushes as scrambles / etc.
-                'Without this in place, rush attempts for a team run
+                'Without this, rush attempts for a team run
                 'way high and pass attempts run too low
                 If rbacks$(P1, I1) = qbacks$(P1, qbNumber(P1)) Then
                     'Basically we're picking a pass play
@@ -2832,7 +2834,6 @@ Sub FOOTBALL ()
                         For currBack = 0 To 9
                             If rbacks$(P1, currBack) = qbacks$(P1, qbNumber(P1)) Then
                                 I1 = currBack
-                                'GoTo 3403
                                 GoTo CheckQBRunner
                             End If
                         Next
@@ -2945,7 +2946,6 @@ Sub FOOTBALL ()
                     playYds! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
                     If playYds! < .05 Then
                         'Safety!
-                        Print #11, "Safety from QB SNEAK"
                         GoTo 3250
                     End If
 
@@ -3001,7 +3001,6 @@ Sub FOOTBALL ()
                     ballFumbled = 0
 
                     'Safety!
-                    Print #11, "Safety from OPTION"
                     GoTo 3250
 
                 Else
@@ -3079,6 +3078,7 @@ Sub FOOTBALL ()
 
                 If rushBase < 1 Then rushBase = 1
 
+                'Artificially adjust
                 rushBase = rushBase + 3
 
                 'rushBase = 1 to 38
@@ -3333,7 +3333,6 @@ Sub FOOTBALL ()
                 If newYdLine! < .05 Then
                     ballFumbled = 0
                     'Safety!
-                    Print #11, "Safety from RUN PLAY"
                     GoTo 3250
                 End If
 
@@ -3414,7 +3413,6 @@ Sub FOOTBALL ()
                     If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
 
                         'Safety!
-                        Print #11, "Safety from SACK"
                         GoTo 3250
 
                     Else
@@ -3586,53 +3584,54 @@ Sub FOOTBALL ()
                     End If
                 Next currBack
 
-                'About 10% of all football plays are outside the average gain
-                specialGain = Int(Rnd(1) * 10) + 1
+                If I6 = 0 And qbMobility(P1) < 2 Then
 
-                If I6 = 0 Or qbMobility(P1) < 2 Then
                     'QB is not a rusher, or mobility is low
                     'Essentially, we're treating these as the expected behavior.
                     '(Low mobility QB's will often have low or negative averages)
                     '(This will translate to larger negatives below)
                     If specialGain < 10 Then
-                        'average gains are 1-5 yds
-                        qbRushMax = 5
+                        'average gains are 5-7 yds
+                        qbRushMin = 2
+                        qbRushMax = 7
                     Else
                         'longer gain
+                        qbRushMin = 3
                         qbRushMax = 16
                     End If
-                Else
-                    'QB is a rusher
-                    If specialGain < 10 Then
-                        'Average gains previously maxed at 7
-                        'Here we use a fraction of the rushing Average
-                        'This is not the real world average, but a
-                        'representation using integers.
-                        '   4.8 = 16 (1.6 * 3 = 4.8)
-                        '   4.2 = 14 (1.4 * 3 = 4.2)
-                        '   3.9 = 13 (1.3 * 3 = 3.9)
-                        '   2.7 = 9 (0.9 * 3 = 2.7)
-                        'So our maximums become:
-                        '   Avg 4.8 = 11
-                        '   Avg 4.2 = 10
-                        '   Avg 3.9 = 9
-                        '   ...
-                        '   Avg 2.7 = 6
-                        'This limits the that even some major
-                        'scrambles yield over 10 yards, but that
-                        'would be the rarity.
-                        qbRushMax = (I6 * 3) / 4
-                    Else
-                        'Here our maximums become:
-                        '   Avg 4.8 = 18
-                        '   Avg 3.9 = 12
-                        '   Avg 2.7 = 4
-                        qbRushMax = 12 + ((I6 - 13) * 2)
-                    End If
 
+                Else
+
+                    'QB is a rusher
+                    Call Rolld100(RN0)
+                    
+                    Select Case RN0
+                    
+                        Case 1 To 35
+                            '0 - 2 yards
+                            qbRushMin = 0
+                            qbRushMax = 3
+                        
+                        Case 36 To 75
+                            '3 - 10 yards
+                            qbRushMin = 2
+                            qbRushMax = (I6 * 3) / 4
+                        
+                        Case 76 To 90
+                            '11 - 20 yards
+                            qbRushMin = 7
+                            qbRushMax = (I6 * 3) / 2
+                        
+                        Case 91 To 100
+                            '20+ yards
+                            qbRushMin = 17
+                            qbRushMax = I6 + 9
+                                    
+                    End Select
+                    
                 End If
 
-                ydsGained = Int(Rnd(1) * qbRushMax)
+                ydsGained = Int(Rnd(1) * qbRushMax) + qbRushMin
                 Call YARDAGE
 
                 startYds = 100 - ydLine
@@ -3704,7 +3703,6 @@ Sub FOOTBALL ()
 
                     If playYdLine! < .05 Then
                         'Safety!
-                        Print #11, "Safety from PASS PLAY / TACKLE"
                         GoTo 3250
                     End If
 
@@ -3916,7 +3914,6 @@ Sub FOOTBALL ()
                                 ballFumbled = 0
 
                                 'Safety!
-                                Print #11, "Safety from PASS PLAY / LOSS"
                                 GoTo 3250
 
                             End If
@@ -4058,7 +4055,6 @@ Sub FOOTBALL ()
                     
                     pbpString$ = "KICK BY " + gameTeams$(P1) + " TRAVELS" + Str$(Int(kickDistYds)) + " YARDS"
                     Call PBP
-                    Print #11, pbpString$
 
                     gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
@@ -4644,7 +4640,6 @@ Sub FOOTBALL ()
 
                         If ydsGained + ydLine <= .01 Then
                             'Safety!
-                            Print #11, "Safety from PUNT RETURN"
                             GoTo 3250
                         End If
 
@@ -4820,7 +4815,6 @@ Sub FOOTBALL ()
 
                         If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
                             'Safety!
-                            Print #11, "Safety from FAKE FG RUN"
                             GoTo 3250
                         End If
 
@@ -5022,7 +5016,6 @@ Sub FOOTBALL ()
 
                                 If catchYdLine! < .05 Then
                                     'Safety!
-                                    Print #11, "Safety from FAKE FG PASS"
                                     GoTo 3250
                                 End If
 
@@ -5180,7 +5173,6 @@ Sub FOOTBALL ()
 
                             If ydLine >= 109.949 Then
                                 'Safety!
-                                Print #11, "Safety from BLOCKED FG"
                                 GoTo 3250
                             End If
 
@@ -5297,6 +5289,7 @@ Sub FOOTBALL ()
                                     score(P1, quarter) = score(P1, quarter) + 3
 
                                     Call FGMADE
+
                                     Call AddPossessionTime(4, 7)
                                     Call ITSGOOD
                                     Call SETSCREEN
@@ -5661,11 +5654,31 @@ Sub FOOTBALL ()
     'End possession for Modified Sudden Death
     If isOT = 1 And (overtimeOpt >= 6) Then
 
-        'Sudden Death Modified; It's over if the other team hasn't scored
-        If (overtimeOpt < 8 And nbrPossOT(D) = 1) Or (overtimeOpt = 8 And nbrPossOT(D) = 1 And otTDs(D) = 0) Then
-            GoTo 3364
-        Else
+        'Mod Sudden Death - DEF would get the ball
+        'However, once leaving this If/Then, the
+        'score will be immediately evaluated
+        'as TD ends the SD
+        If overtimeOpt < 8 And nbrPossOT(D) = 0 Then
             nbrPossOT(D) = 1
+        End If
+
+        'Sudden Death Modified; Other team hasn't scored
+        If overtimeOpt = 8 Then
+
+            If otTDs(D) = 0 Then
+
+                'Defense has already had possession; first TD wins
+                If nbrPossOT(D) = 1 Then
+                    GoTo 3364
+                End If
+
+            Else
+                'otTDs(D) = 1
+                'We just scored but so has other team
+                'We still need our PAT chance
+                GoTo PointsAfterTD
+            End If
+
         End If
 
     End If
@@ -6556,7 +6569,7 @@ Sub FOOTBALL ()
                         I$ = "Y"
 
                         'If this is the start of overtime
-                        If nbrPossOT(D) = 0 And nbrPossOT(D) = 0 Then
+                        If nbrPossOT(0) = 0 And nbrPossOT(1) = 0 Then
                             gameClock! = 900
                         End If
 
@@ -6575,7 +6588,6 @@ Sub FOOTBALL ()
                                 GoTo 700
                             End If
                         End If
-
 
                     Case 8
                         'Sudden Death Modified - Post Season
@@ -6830,10 +6842,6 @@ Sub FOOTBALL ()
         GoTo CheckPoss_OT
 
     End If
-
-    '-- REMOVE
-    outString$ = "Interception at the " + Str$(Int(ydLine)) + ", returned to " + Str$(Int(ydsGained + ydLine))
-    Print #11, outString$
 
     If ydsGained + ydLine <= 1 Then
         pbpString$ = pbpString$ + " AT THE 1 YARD LINE"
@@ -7151,12 +7159,13 @@ Sub FOOTBALL ()
     ydLine = 100 - ydLine - ydsGained
 
     If ydLine >= 109.949 Then
+
         pbpString$ = "THE BALL ROLLS OUT OF THE END ZONE!!"
         Call PBP
 
         'Safety!
-        Print #11, "Safety from BLOCKED PUNT"
         GoTo 3250
+
     End If
 
     If ydLine >= 100 Then
@@ -8914,7 +8923,7 @@ End Sub
 '        DisplayField Subroutine
 '----------------------------------------
 'This subroutine draws the football field
-'and scoreboard.    
+'and scoreboard.
 Sub DisplayField ()
 
     Color 15, 1 + BW * 6
@@ -9637,7 +9646,6 @@ Sub QBSNEAK ()
 
     Else
 
-
         'Use a variable to store each of the 4 values below
         'Then use separate logic (based on rush era) to
         'map dLine values to the variable below
@@ -9662,7 +9670,6 @@ Sub QBSNEAK ()
             End Select
 
         Else
-
 
             Select Case dLine
 
@@ -12936,8 +12943,6 @@ Sub TurnoverOnDowns
 
     playSegment = 5
 
-    Print #11, "Try on 4th down failed to convert"
-
 End Sub
 
 
@@ -13802,10 +13807,6 @@ Sub PuntReturnYards ()
 
     pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetNbr) + " AT THE" + Str$(Int(ydLineTeam))
     Call PBP
-
-    '-- REMOVE
-    outString$ = "Punt taken at " + Str$(Int(ydLine)) + ", returned to " + Str$(Int(ydsGained + ydLine))
-    Print #11, outString$
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
@@ -15228,12 +15229,12 @@ Sub SHORTYARDAGE ()
     Call Rolld100(RN7)
 
     If rushBase <= 30 Then
-        If RN7 <= goalLnYdAdj(rushBase, 1) Then 
+        If RN7 <= goalLnYdAdj(rushBase, 1) Then
             ydsGained = ydsGained + goalLnYdAdj(rushBase, 2)
         End If
     Else
         'rushBase < 30
-        If RN7 <= goalLnYdAdj(30, 1) Then 
+        If RN7 <= goalLnYdAdj(30, 1) Then
             ydsGained = ydsGained + goalLnYdAdj(30, 2)
         End If
     End If
@@ -15862,7 +15863,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
                 'Kickoff already changed Possession
                 'Touchback will change it again
-                Call CHANGEPOSS
+                '--Call CHANGEPOSS
                 Call Touchback
             End If
 
@@ -15879,7 +15880,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
             'Kicked out of endzone - automatic touchback
             'Kickoff already changed Possession
             'Touchback will change it again
-            Call CHANGEPOSS
+            '--Call CHANGEPOSS
             Call Touchback
             kickNotReturned = 1
 
@@ -15927,7 +15928,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                     'Received in end zone, kneel for touchback
                     'Kickoff already changed Possession
                     'Touchback will change it again
-                    Call CHANGEPOSS
+                    '--Call CHANGEPOSS
                     Call Touchback
                     kickNotReturned = 1
 
@@ -18950,20 +18951,8 @@ Sub pbplog (lineNumber)
     'Print #11, gameTeams$(P1), playCall
     'Print #11, penaltyYds!
     'Print #11, gameTeams$(P1)
-    'Print #11, pbpString$
-    If lineNumber = 3729 Then
-        Print #11, gameTeams$(P1); " : "; downDesc$(currDown); " &"; ydsToFirst; "AT THE"; Str$(Int(ydLine + 0.5))
-        Print #11, gameTeams$(P1); " : "; downDesc$(currDown); " &"; ydsToFirst; "AT THE"; ydLine
-    End If
-    If lineNumber = 14398 Then
-        Print #11, "Play call "; playCall
-    End If
-    If lineNumber = 9431 Then
-        Print #11, pbpString$
-    End If
-    If lineNumber = 7409 Then
-        Print #11, "SAFETY!"
-    End If
+    'Print #11, qbacks$(P1, qbNumber(P1)), qbMobility(P1)
+    Print #11, pbpString$
     'Print #11,
 
 End Sub
