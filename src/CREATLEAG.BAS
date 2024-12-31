@@ -18,7 +18,7 @@ Sub CREATLEAG ()
 
         Call TITLE
         menuChoices$(1) = "CREATE A LEAGUE       "
-        menuChoices$(2) = "MANAGE LEAGUE MEMBERS "
+        menuChoices$(2) = "MODIFY LEAGUE MEMBERS "
         menuChoices$(3) = "CONVERT LEAGUE TO 7.0"
         menuChoices$(4) = "RETURN TO LEADERS MENU"
         SELECTION% = 1

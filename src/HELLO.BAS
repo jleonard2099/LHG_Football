@@ -31,9 +31,13 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared ydsToFirst As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+
 Dim Shared D, dLine
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+
 Dim Shared nbrPossOT(1), otTDs(0 To 1)
 Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
 
@@ -1698,6 +1702,10 @@ Sub FOOTBALL ()
 
     Call SETSCREEN
 
+    '-- REMOVE
+    quarter = 5
+    GoTo 3364
+
     '----------------------------------------
     '           START OF GAME
     '----------------------------------------
@@ -2107,7 +2115,12 @@ Sub FOOTBALL ()
                 Else
 
                     'retYdLine < 99.99
-                    pbpString$ = pbpString$ + Str$(Int((fumbRetYards) * 10 + 0.5) / 10) + " YDS"
+                    If Int(fumbRetYards) = 0 Then
+                        pbpString$ = "THEY'LL HAVE TO SORT THIS ONE OUT FROM THE PILE."
+                    Else
+                        pbpString$ = pbpString$ + Str$(Int((fumbRetYards) * 10 + 0.5) / 10) + " YDS"
+                    End If
+
                     Call PBP
 
                     If fumbRetYdLine! <= .01 Then
@@ -2134,9 +2147,10 @@ Sub FOOTBALL ()
     GoSub 3900
 
     CheckPoss_OT:
-    'Change of possession; check OT score / status
-    If isOT = 1 And overtimeOpt >= 3 Then
-        'Track that offense had the ball
+    'Change of possession
+    'College - Setup next possession
+    'Pro - Evaluate score if other team has had the ball
+    If isOT = 1 And (overtimeOpt >= 3 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Or (overtimeOpt = 8 And otTDs(D) = 1) Then
         GoTo 3364
     End If
 
@@ -2218,6 +2232,7 @@ Sub FOOTBALL ()
                         I$ = GetKeyPress$
 
                         If I$ = "8" Then
+                            'Ten minute ticker
                             I$ = "K"
                         End If
 
@@ -2445,12 +2460,13 @@ Sub FOOTBALL ()
                             Call TimeoutCalled(P1, periodOver)
                             Call CheckGameClock
                             If gameClock! = 0 Then GoTo 3360
+                            I$ = "10"
                             'If periodOver = 1 Then GoTo 3360
                         End If
 
                         XX = Val(I$)
 
-                    Loop Until XX >= 0 And XX <= 9
+                    Loop Until XX >= 0 And XX <= 10
 
                     Screen , , 0, 0
 
@@ -2898,10 +2914,14 @@ Sub FOOTBALL ()
 
                 playYds! = Int((ydsGained) * 10 + 0.5) / 10
 
-                If playYds! < 0 Then
-                    pbpString$ = "HE LOSES" + Str$(0 - Int(playYds!)) + " YARDS"
+                If Int(playYds!) = 0 Then
+                    pbpString$ = "HE RECOVERS IT NEAR THE LINE OF SCRIMMAGE"
                 Else
-                    pbpString$ = "HE GAINS" + Str$(Int(playYds!)) + " YARDS"
+                    If playYds! < 0 Then
+                        pbpString$ = "HE LOSES" + Str$(0 - Int(playYds!)) + " YARDS"
+                    Else
+                        pbpString$ = "HE GAINS" + Str$(Int(playYds!)) + " YARDS"
+                    End If
                 End If
 
                 Call PBP
@@ -2943,13 +2963,14 @@ Sub FOOTBALL ()
 
                 Else
 
-                    playYds! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
-                    If playYds! < .05 Then
+                    playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                    If playYdLine! < .05 Then
                         'Safety!
                         GoTo 3250
                     End If
 
-                    If playYds! >= 99.9499 Then
+                    If playYdLine! >= 99.9499 Then
                         'Touchdown!
                         GoTo 3200
                     End If
@@ -3286,33 +3307,39 @@ Sub FOOTBALL ()
 
             End If
 
-            'Print / call PBP for actual yardage
-            If ydsGained < 0 Then
-
-                pbpString$ = rbacks$(P1, I1) + " LOST"
-
-                scoreX0 = 1
-                scoreX1 = 1
-                pbpString$ = pbpString$ + Str$(Int((ydsGained * -1) * 10 + 0.5) / 10)
-
+            If Int(ydsGained) = 0 Then
+                pbpString$ = "HE'LL GAIN JUST A LITTLE BIT"
             Else
+                'Print / call PBP for actual yardage
+                If ydsGained < 0 Then
 
-                Call RUNPBP
+                    pbpString$ = rbacks$(P1, I1) + " LOST"
 
-                scoreX0 = 1
-                scoreX1 = 1
+                    scoreX0 = 1
+                    scoreX1 = 1
+                    pbpString$ = pbpString$ + Str$(Int((ydsGained * -1) * 10 + 0.5) / 10)
 
-                newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
-
-                If newYdLine! >= 99.94999 Then
-                    pbpString$ = pbpString$ + Str$(Int((100 - ydLine) * 10 + 0.5) / 10)
                 Else
-                    pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + 0.5) / 10)
+
+                    Call RUNPBP
+
+                    scoreX0 = 1
+                    scoreX1 = 1
+
+                    newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                    If newYdLine! >= 99.94999 Then
+                        pbpString$ = pbpString$ + Str$(Int((100 - ydLine) * 10 + 0.5) / 10)
+                    Else
+                        pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + 0.5) / 10)
+                    End If
+
                 End If
+
+                pbpString$ = pbpString$ + " YARDS"
 
             End If
 
-            pbpString$ = pbpString$ + " YARDS"
             Call PBP
 
             If isReverse = 1 Then
@@ -3354,11 +3381,11 @@ Sub FOOTBALL ()
             'SACKED
             'Sack chance (based on coverage) + sack ratings
             If compChance < passCovAdj(3, playCall - 8, coverage) + leagRat_GAME(P1, 5) + leagRat_GAME(D, 6) + 1 Then
+                ' *** SACKED ***
 
                 playType = 1
                 W5 = 1
 
-                ' *** SACKED ***
                 If playCall = 12 Or playCall = 15 Then
                     ydsGained = (Int(Rnd(1) * 9) + 5)
                 End If
@@ -3397,7 +3424,6 @@ Sub FOOTBALL ()
 
                 End If
 
-                '3699
                 Call PBP
 
                 scoreX0 = 4
@@ -3410,7 +3436,9 @@ Sub FOOTBALL ()
 
                 Else
 
-                    If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
+                    sackYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                    If sackYdLine! < .05 Then
 
                         'Safety!
                         GoTo 3250
@@ -3456,8 +3484,6 @@ Sub FOOTBALL ()
                 mobileBonus = 0
 
             End If
-
-            Call Rolld100(RN0)
 
             'Short Pass
             If (playCall = 9 Or playCall = 10 Or playCall = 13) Then
@@ -3566,25 +3592,29 @@ Sub FOOTBALL ()
                 scrambleChance = scrambleChance + 15
             End If
 
+            Call Rolld100(scrambleRoll)
+
             'Determine chance of QB scramble
-            If RN0 <= scrambleChance Then
+            '-- Change here
+            'scrambleRoll
+            If scrambleRoll <= scrambleChance Then
                 willScramble = 1
             End If
 
             If willScramble = 1 Then
 
                 'QB RUN
-                I6 = 0
+                qbRushAvg = 0
 
                 For currBack = 0 To 9
                     If rbacks$(P1, currBack) = qbacks$(P1, qbNumber(P1)) Then
                         'Def Rush Adj doesn't apply
-                        I6 = rbRushAvg(P1, currBack)
+                        qbRushAvg = rbRushAvg(P1, currBack)
                         Exit For
                     End If
                 Next currBack
 
-                If I6 = 0 And qbMobility(P1) < 2 Then
+                If qbRushAvg = 0 And qbMobility(P1) < 2 Then
 
                     'QB is not a rusher, or mobility is low
                     'Essentially, we're treating these as the expected behavior.
@@ -3615,20 +3645,20 @@ Sub FOOTBALL ()
                         Case 36 To 75
                             '3 - 10 yards
                             qbRushMin = 2
-                            qbRushMax = (I6 * 3) / 4
-                        
+                            qbRushMax = (qbRushAvg * 3) / 4
+
                         Case 76 To 90
                             '11 - 20 yards
                             qbRushMin = 7
-                            qbRushMax = (I6 * 3) / 2
+                            qbRushMax = (qbRushAvg * 3) / 2
                         
                         Case 91 To 100
                             '20+ yards
                             qbRushMin = 17
-                            qbRushMax = I6 + 9
+                            qbRushMax = qbRushAvg + 9
                                     
                     End Select
-                    
+
                 End If
 
                 ydsGained = Int(Rnd(1) * qbRushMax) + qbRushMin
@@ -3687,7 +3717,12 @@ Sub FOOTBALL ()
                     If ydsGained > 0 Then
                         pbpString$ = pbpString$ + Str$(ydsGained)
                     Else
-                        pbpString$ = pbpString$ + " A LOSS OF" + Str$(ydsGained)
+                        'ydsGained <= 0
+                        If playCall <> 17 Then
+                            pbpString$ = pbpString$ + " A LOSS OF" + Str$(0 - ydsGained)
+                        Else
+                            pbpString$ = pbpString$ + Str$(0 - ydsGained)
+                        End If
                     End If
                 End If
 
@@ -3832,20 +3867,25 @@ Sub FOOTBALL ()
                         scoreX0 = 3
                         scoreX1 = 2
 
-                        If ydsGained + ydLine > 99.9499 Then
-                            ydsGained = 109 - ydLine
+                        If ydLine + ydsGained > 99.9499 Then
+                            'I don't undertand why this is here
+                            'ydsGained = 109 - ydLine
                         End If
+
+                        newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
 
                         'Play-by-Play for Completion %
                         Call PassCompletePBP(passDir, passSide)
 
                         If FF% <> 0 Then FF% = 0
 
+                        'If newYdLine! < 99.9499 Then
                         If ydLine + ydsGained < 99.9499 Then
 
                             'Check for fumble - normal pass
                             fumbPlayType = 0
                             Call CheckFumble_1
+
                             If ballFumbled = 0 Then
                                 'If we're within a foot of the first down
                                 If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then
@@ -3855,13 +3895,13 @@ Sub FOOTBALL ()
 
                         End If
 
-                        newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
-
+                        '...
+                        'Else
                         If newYdLine! >= 99.9499 Then
 
                             'End zone
-                            'Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
-                            Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
+                            Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
+                            'Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
 
                             ydsGained = 100 - ydLine
 
@@ -3877,13 +3917,18 @@ Sub FOOTBALL ()
 
                         Else
 
-                            If ydsGained < 0 Then
-                                'Loss on the play
-                                Call ReceiverLossPBP(Str$(Int((ydsGained * -1) * 10 + 0.5) / 10))
+                            If Int(ydsGained) = 0 Then
+                                pbpString$ = "HE'LL JUST GET TO THE LINE OF SCRIMMAGE"
+                                Call PBP
                             Else
-                                'Gain on the play
-                                'Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
-                                Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
+                                If ydsGained < 0 Then
+                                    'Loss on the play
+                                    Call ReceiverLossPBP(Str$(Int((ydsGained * -1) * 10 + 0.5) / 10))
+                                Else
+                                    'Gain on the play
+                                    Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
+                                    'Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
+                                End If
                             End If
 
                             If ydsGained > WR(P1, I3) Then
@@ -4303,12 +4348,14 @@ Sub FOOTBALL ()
                                 Call PBP
                             End If
 
-                            If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
+                            playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                            If playYdLine! < .05 Then
                                 'Safety!
                                 GoTo 3250
                             End If
 
-                            If Int((ydsGained + ydLine) * 10 + 0.5) / 10 >= 99.9499 Then
+                            If playYdLine! >= 99.9499 Then
                                 'Touchdown!
                                 GoTo 3200
                             End If
@@ -4320,12 +4367,14 @@ Sub FOOTBALL ()
 
                             Call PuntFakeRunYards(puntDefChoice)
 
-                            If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
+                            playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                            If playYdLine! < .05 Then
                                 'Safety!
                                 GoTo 3250
                             End If
 
-                            If Int((ydsGained + ydLine) * 10 + 0.5) / 10 >= 99.9499 Then
+                            If playYdLine! >= 99.9499 Then
                                 'Touchdown!
                                 GoTo 3200
                             End If
@@ -4503,7 +4552,11 @@ Sub FOOTBALL ()
                 Call PBP
 
                 puntDistYds! = Int((ydsGained) * 10 + 0.5) / 10
-                
+
+                If puntDistYds! = 0 Then
+                    test = 1
+                End If
+
                 pbpString$ = "PUNT BY " + punter$(P1, 0) + " TRAVELS" + Str$(Int(puntDistYds)) + " YARDS"
                 Call PBP
 
@@ -4813,12 +4866,14 @@ Sub FOOTBALL ()
                         ' *** FAKE W/RUN ***
                         Call FGFakeRunYards(fgDefChoice)
 
-                        If Int((ydsGained + ydLine) * 10 + 0.5) / 10 < .05 Then
+                        playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+
+                        If playYdLine! < .05 Then
                             'Safety!
                             GoTo 3250
                         End If
 
-                        If Int((ydsGained + ydLine) * 10 + 0.5) / 10 >= 99.9499 Then
+                        If playYdLine! >= 99.9499 Then
                             'Touchdown!
                             GoTo 3200
                         End If
@@ -4919,7 +4974,7 @@ Sub FOOTBALL ()
 
                             If intRetYdLine! >= 99.9499 Then
 
-                                'Interception in the end zone
+                                'Fake FG Pass - Interception in the end zone
                                 pbpString$ = pbpString$ + " IN THE END ZONE"
                                 Call PBP
                                 Call Touchback
@@ -5187,6 +5242,7 @@ Sub FOOTBALL ()
                                 Call CHANGEPOSS
                                 Call MARKER
 
+                                'Block FG - Recover in end zone
                                 If d100% <= 50 Then
                                     pbpString$ = gameTeams$(P1) + " RECOVERS IT IN THE END ZONE!!"
                                 Else
@@ -5294,33 +5350,48 @@ Sub FOOTBALL ()
                                     Call ITSGOOD
                                     Call SETSCREEN
 
-                                    'Opp has possessed the ball; it's game over
-                                    '(unless the score doesn't align)
-                                    'If isOT = 1 And score(P1, 0) <> score(D, 0) And ((overtimeOpt >= 1 And overtimeOpt <= 5) Or (overtimeOpt = 6 Or overtimeOpt = 7 And nbrPossOT(D) = 1)) Then
-                                    If isOT = 1 And score(P1, 0) <> score(D, 0) And (overtimeOpt >= 1 And overtimeOpt <= 5) Then
+                                    '-- REMOVE
+                                    Print #11,
+
+                                    'Overtime Situations
+                                    'College - New Possession
+                                    'Reg SD - Game Over (first score)
+                                    If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) And score(P1, 0) <> score(D, 0) Then
                                         GoTo 3364
                                     End If
 
-                                    'Opp has NOT possessed the ball;
-                                    'They're about to get it for a kickoff
-                                    If isOT = 1 And (overtimeOpt = 6 Or overtimeOpt = 7) Then
+                                    'College
+                                    'Mod SD Reg
+                                    If isOT = 1 And overtimeOpt >= 3 And overtimeOpt <= 7 Then
+
                                         If nbrPossOT(D) = 1 Then
+                                            'Opp has had ball
+                                            'Check score
+                                            GoTo 3364
+                                        Else
+                                            'Opp has NOT possessed the ball;
+                                            'They're about to get it for a kickoff
+                                            nbrPossOT(D) = 1
+                                        End If
+
+                                    End If
+
+                                    'Mod Sudden Death Postseason
+                                    'If opp has had the ball or has TD,
+                                    'then we need to evaluate score
+                                    If isOT = 1 And overtimeOpt = 8 Then
+                                        If nbrPossOT(D) = 1 Or otTDs(D) = 1 Then
                                             GoTo 3364
                                         Else
                                             nbrPossOT(D) = 1
                                         End If
                                     End If
 
-                                    'Mod Sudden Death Postseason
-                                    'Opp has possessed the ball or has TD; it's game over
-                                    If isOT = 1 And (overtimeOpt = 8 And (otTDs(D) = 1 Or (nbrPossOT(0) = 1 And nbrPossOT(1) = 1))) Then
-                                        GoTo 3364
-                                    End If
-
                                     'Change possession to place the *
                                     'next to the team on Def when we
                                     'update the screen / status board
                                     Call CHANGEPOSS
+
                                     Call KickoffLine
                                     Call MARKER1
                                     Call StatusBoard
@@ -5332,13 +5403,10 @@ Sub FOOTBALL ()
                                         GoTo 3360
                                     End If
 
-                                    If isOT = 1 And (overtimeOpt = 8) Then
-                                        nbrPossOT(P1) = 1
-                                    End If
-
                                     'Change possession back to where it should be
                                     'Off always kicks off to Def
                                     Call CHANGEPOSS
+
                                     GoTo 340
 
                                 Else
@@ -5347,12 +5415,44 @@ Sub FOOTBALL ()
                                     currDown = 1
                                     ydsToFirst = 10
 
-                                    'The other team hasn't had the ball;
-                                    'They're about to get it for a kickoff
-                                    If isOT = 1 And overtimeOpt >= 6 Then
-                                        nbrPossOT(P1) = 1
+                                    '-- REMOVE
+                                    Print #11,
+
+                                    If isOT = 1 And overtimeOpt >= 3 Then
+                                        nbrPossOT(D) = 1
                                     End If
 
+                                    'College - New Possession
+                                    'Reg SD - Game Over (first score)
+                                    If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) And score(P1, 0) <> score(D, 0) Then
+                                        GoTo 3364
+                                    End If
+
+                                    'College
+                                    'Mod SD Reg
+                                    If isOT = 1 And overtimeOpt >= 3 And overtimeOpt <= 7 Then
+
+                                        If nbrPossOT(D) = 1 Then
+                                            'Opp has had ball
+                                            'Check score
+                                            GoTo 3364
+                                        Else
+                                            'Opp has NOT possessed the ball;
+                                            'They're about to get it for a kickoff
+                                            nbrPossOT(D) = 1
+                                        End If
+
+                                    End If
+
+                                    'Mod Sudden Death Postseason
+                                    If isOT = 1 And overtimeOpt = 8 Then
+                                        If nbrPossOT(D) = 0 Then
+                                            nbrPossOT(D) = 1
+                                        End If
+                                    End If
+
+                                    'Change possession back to where it should be
+                                    'Off always kicks off to Def
                                     Call CHANGEPOSS
 
                                     If ydLine > 40 And ydLine <= 79.99 And ruleOptType = 1 And ruleOptPro >= 4 Then
@@ -5375,7 +5475,7 @@ Sub FOOTBALL ()
                                     GoTo CheckPoss_OT
 
                                 End If
-                                
+
                             Else
 
                                 'Foul on the play
@@ -5626,6 +5726,10 @@ Sub FOOTBALL ()
     End If
 
     Call PBP
+
+    '-- REMOVE
+    Print #11,
+
     Call SCOREUPD
     Call COMPILER
 
@@ -5639,54 +5743,44 @@ Sub FOOTBALL ()
         score(P1, 0) = score(P1, 0) + 7
     End If
 
-    Call DisplayField
+    Call SETSCREEN
+
     Call KickoffLine
     currDown = 1
     ydsToFirst = 10
 
     Call StatusBoard
 
-    'Pro Overtime
-    If isOT = 1 And overtimeOpt >= 6 Then
-        otTDs(P1) = 1
+    'Overtime - Single Q / Sudden Death
+    If isOT = 1 And (overtimeOpt = 1 Or overtimeOpt = 2) Then
+        GoTo 3364
     End If
 
-    'End possession for Modified Sudden Death
-    If isOT = 1 And (overtimeOpt >= 6) Then
+    'Overtime - College / Mod. Sudden Death
+    If isOT = 1 And (overtimeOpt >= 3) Then
 
-        'Mod Sudden Death - DEF would get the ball
-        'However, once leaving this If/Then, the
-        'score will be immediately evaluated
-        'as TD ends the SD
-        If overtimeOpt < 8 And nbrPossOT(D) = 0 Then
+        otTDs(P1) = 1
+
+        'Mod SD Reg
+        If (overtimeOpt = 6 Or overtimeOpt = 7) Then
+            'Assign other team possession so that
+            'code evaluates score correctly
             nbrPossOT(D) = 1
-        End If
+            'First TD wins
+            'Game over
+            GoTo 3364
 
-        'Sudden Death Modified; Other team hasn't scored
-        If overtimeOpt = 8 Then
+        Else
 
-            If otTDs(D) = 0 Then
-
-                'Defense has already had possession; first TD wins
-                If nbrPossOT(D) = 1 Then
-                    GoTo 3364
-                End If
-
-            Else
-                'otTDs(D) = 1
-                'We just scored but so has other team
-                'We still need our PAT chance
-                GoTo PointsAfterTD
+            'College | Mod SD Post
+            'If Opp has had ball and hasn't scored,
+            'then the game should beover
+            If nbrPossOT(D) = 1 And otTDs(D) = 0 Then
+                GoTo 3364
             End If
 
         End If
 
-    End If
-
-    'Overtime - Evaluate Score / Change Poss
-    'College / Pro, Sudden Death and Opp Had Poss
-    If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) Or ((overtimeOpt = 6 Or overtimeOpt = 7) And nbrPossOT(D) = 1) Then
-        GoTo 3364
     End If
 
     PointsAfterTD:
@@ -5789,11 +5883,18 @@ Sub FOOTBALL ()
 
         End If
 
+        '-- REMOVE
+        Print #11,
+
     End If
 
-    'Only PAT will make it here
-    If (isOT = 1 And overtimeOpt = 8) Then
+    'Overtime - After TD + PAT
+    If isOT = 1 And ((overtimeOpt >= 3 And overtimeOpt <= 5) Or overtimeOpt = 8) Then
+
+        test = 1
+
         GoTo 3364
+
     End If
 
     'Change possession to place the *
@@ -5907,9 +6008,16 @@ Sub FOOTBALL ()
     End If
 
     If currDown > 4 Then
+
+        'Update possession for DEF
+        If isOT = 1 And overtimeOpt >= 6 Then
+            nbrPossOT(D) = 1
+        End If
+
         Call TurnoverOnDowns
         GoSub 3900
         GoTo CheckPoss_OT
+
     End If
 
     RN0 = Int(Rnd(1) * 1000) + 1
@@ -6305,13 +6413,23 @@ Sub FOOTBALL ()
         End If
 
         If Int((ydsToFirst) * 10 + 0.5) / 10 < .05 Then
+
             Call FirstDownAfterPlay
+
         Else
+
             If currDown > 4 Then
+
+                'Update possession for DEF
+                If isOT = 1 And overtimeOpt >= 6 Then
+                    nbrPossOT(D) = 1
+                End If
                 Call TurnoverOnDowns
                 GoSub 3900
                 GoTo CheckPoss_OT
+
             End If
+
         End If
 
     End If
@@ -6484,13 +6602,8 @@ Sub FOOTBALL ()
                         ydsToFirst = 10
                         currDown = 1
 
-                        'Overtime periods are defined by each team having possession
-                        If nbrPossOT(0) = 1 And nbrPossOT(1) = 1 Then
-                            quarter = quarter + 1
-                        End If
-
                         'If nobody has had the ball yet
-                        If (nbrPossOT(0) = 0 And nbrPossOT(1) = 0) Or (nbrPossOT(0) = 1 And nbrPossOT(1) = 1) Then
+                        If quarter = 5 And (nbrPossOT(0) = 0 And nbrPossOT(1) = 0) Then
 
                             timeouts(0) = 1
                             timeouts(1) = 1
@@ -6527,6 +6640,11 @@ Sub FOOTBALL ()
 
                             D = 1 - P1
 
+                        End If
+
+                        'Overtime periods are defined by each team having possession
+                        If nbrPossOT(0) = 1 And nbrPossOT(1) = 1 Then
+                            quarter = quarter + 1
                         End If
 
                         If (nbrPossOT(0) = 0 And nbrPossOT(1) = 0) Or (nbrPossOT(0) = 1 And nbrPossOT(1) = 1) Then
@@ -6603,28 +6721,40 @@ Sub FOOTBALL ()
 
                         Else
 
-                            'If they've at least had the ball and are ahead
+                            'If opponent has had the ball and are ahead
                             'Then the game is over
                             If nbrPossOT(D) = 1 And (score(D, 0) > score(P, 0)) Then
                                 GoTo 3364
                             End If
 
-                            'If opp hasn't scored TD but we have
-                            If otTDs(D) = 0 And otTDs(P1) = 1 Then
+                            'If we have a TD
+                            If otTDs(P1) = 1 Then
 
-                                nbrPossOT(D) = 1
+                                'If opp hasn't had the ball, but we
+                                'just scored, they get a kickoff
+                                If nbrPossOT(D) = 0 And score(P1, 0) <> score(D, 0) Then
 
-                                If score(D, 0) <> score(P, 0) Then
+                                    'They're likely going to get the ball
+                                    nbrPossOT(D) = 1
 
                                     currDown = 1
                                     ydsToFirst = 10
                                     Call KickoffLine
                                     GoTo 340
 
-                                Else
+                                End If
 
+                            Else
+
+                                'Turnover on Downs
+
+                                'We have had the ball, but haven't scored a TD
+                                'If opponent hasn't had the ball,
+                                'they are about to get it
+                                If nbrPossOT(P1) = 1 Then 'And nbrPossOT(D) = 0 Then
+                                    nbrPossOT(D) = 1
+                                    'Call CHANGEPOSS
                                     GoTo 700
-
                                 End If
 
                             End If
@@ -6732,6 +6862,11 @@ Sub FOOTBALL ()
 
         pbpString$ = "END OF GAME"
         Call PBP
+
+        '-- REMOVE
+        Print #11,
+        Print #11,
+        Print #11,
         Call GetKeyWhenNoDelay
 
     Else
@@ -6822,10 +6957,18 @@ Sub FOOTBALL ()
     If FF% <> 0 Then
         FF% = 0
     Else
-        If playCall = 12 Or playCall = 15 Then ydsGained = Int(Rnd(1) * 20) + 21
-        If playCall <> 12 And playCall <> 15 Then ydsGained = Int(Rnd(1) * 10) + 1
-        If playCall = 13 Then ydsGained = ydsGained - 5
-        If playCall = 11 Or playCall = 14 Or playCall = 17 Or playCall = 16 Or playCall = 18 Then ydsGained = ydsGained + 10
+        If playCall = 12 Or playCall = 15 Then
+            ydsGained = Int(Rnd(1) * 20) + 21
+        End If
+        If playCall <> 12 And playCall <> 15 Then
+            ydsGained = Int(Rnd(1) * 10) + 1
+        End If
+        If playCall = 13 Then
+            ydsGained = ydsGained - 5
+        End If
+        If playCall = 11 Or playCall = 14 Or playCall = 17 Or playCall = 16 Or playCall = 18 Then
+            ydsGained = ydsGained + 10
+        End If
     End If
 
     Call YARDAGE
@@ -6839,6 +6982,15 @@ Sub FOOTBALL ()
         Call PBP
 
         Call Touchback
+
+        '-- REMOVE
+        'other team had FG, we get INT'd
+        'in the end zone. should end game
+        'but gets in a loop
+        '?? issue assigning possession ??
+        If score(D, 0) - score(P1, 0) = 3 Then
+            test = 1
+        End If
         GoTo CheckPoss_OT
 
     End If
@@ -7347,7 +7499,10 @@ Sub FOOTBALL ()
 
     CheckPoss_2PtConv:
     'NCAA Alternating "2-pt" Conversion | SD Mod PostSeason
-    If (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Or (isOT = 1 And overtimeOpt = 8) Then
+    '2-pt conversion ends possession
+    'In college, if other team has had the ball then we check the score
+    'If (isOT = 1 And (quarter < 7 And overtimeOpt = 4) Or (quarter < 6 And overtimeOpt >= 3 And overtimeOpt <= 5)) Or (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Or (isOT = 1 And overtimeOpt = 8) Then
+    If (isOT = 1 And nbrPossOT(D) = 1 And overtimeOpt >= 3 And overtimeOpt <= 5) Or (quarter >= 7 And overtimeOpt = 4) Or (quarter >= 6 And overtimeOpt = 5) Or (isOT = 1 And overtimeOpt = 8) Then
         GoTo 3364
     Else
         Call CHANGEPOSS
@@ -7819,7 +7974,7 @@ Sub PBP ()
         Call DELAY
     End If
 
-    '--Call pbplog(9431)
+    Call pbplog(9431)
 
 End Sub
 
@@ -9608,16 +9763,28 @@ Sub QBSNEAK ()
     ' *** QB SNEAK ***
     brotherlyShove = 0
 
-    If qbacks$(P1, qbNumber(P1)) = "J.HURTS" And (gameTeams$(P1) = "22 PHILADELPHIA" Or gameTeams$(P1) = "23 PHILADELPHIA") Then
+    teamName$ = Right$(gameTeams$(P1), Len(gameTeams$(P1)) - 3)
+    
+    If (teamName$ = "PHILADELPHIA" Or teamName$ = "BUFFALO") And (teamYears(P1) >= 2022 And teamYears(P1) <= 2024) Then
 
         brotherlyShove = 1
 
         RN0 = Int(Rnd(1) * 3) + 1
 
-        If RN0 = 1 Then
-            pbpString$ = gameTeams$(P1) + " LINES UP FOR THE BROTHERLY SHOVE!"
-        Else
-            pbpString$ = gameTeams$(P1) + " LINES UP FOR THE TUSH PUSH!"
+        If teamName$ = "PHILADELPHIA" Then
+            If RN0 = 1 Then
+                pbpString$ = gameTeams$(P1) + " LINES UP FOR THE BROTHERLY SHOVE!"
+            Else
+                pbpString$ = gameTeams$(P1) + " LINES UP FOR THE TUSH PUSH!"
+            End If
+        End If
+
+        If teamName$ = "BUFFALO" Then
+            If RN0 = 1 Then
+                pbpString$ = gameTeams$(P1) + " LINES UP FOR THE SNOW PLOW!"
+            Else
+                pbpString$ = gameTeams$(P1) + " LINES UP FOR THE TUSH PUSH!"
+            End If
         End If
 
         Call PBP
@@ -9762,27 +9929,38 @@ Sub QBSNEAK ()
 
     End If
 
-    'Philly "converted" 94% of their attempts
-    'the first year, but about 85% overall
-    If brotherlyShove = 1 And RN4 <= 85 Then
-        '-- should be 1-2 yards, with a heavier
-        '-- distribution towards 2
-        ydsGained = 2
+    'Philly converted 94% of attempts in 2022,
+    'but are about 85% successful overall
+    'Buffalo has converted 77% overall
+    If brotherlyShove = 1 Then
+        If (teamName$ = "PHILADELPHIA" And RN4 <= 85) Or (teamName$ = "BUFFALO" And RN4 <= 77) Then
+            '1.3 - 2.4 yards
+            ydsGained = 1 + (Int(Rnd(1) * 15) + 3) / 10
+        End If
     End If
-
-    pbpString$ = "HE GAINS"
-
-    newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
 
     sneakYds! = Int((ydsGained) * 10 + 0.5) / 10
+    newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
 
-    If newYdLine! >= 99.94999 Then
-        pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
+    If sneakYds! = 0 Then
+        pbpString$ = "HE ONLY MAKES IT TO THE LINE OF SCRIMMAGE"
     Else
-        pbpString$ = pbpString$ + Str$(Int(sneakYds!))
+
+        If sneakYds! < 0 Then
+            pbpString$ = "HE LOSES" + Str$(0 - Int(sneakYds!))
+        Else
+            pbpString$ = "HE GAINS"
+            If newYdLine! >= 99.94999 Then
+                pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
+            Else
+                pbpString$ = pbpString$ + Str$(Int(sneakYds!))
+            End If
+        End If
+
+        pbpString$ = pbpString$ + " YARDS ON THE PLAY"
+
     End If
 
-    pbpString$ = pbpString$ + " YARDS ON THE PLAY"
     Call PBP
 
     I1 = qback
@@ -11437,7 +11615,7 @@ Sub DEFMENU (defEra)
                 End If
 
                 If UCase$(I$) = "T" Then
-                    Call TimeoutCalled(P1, periodOver)
+                    Call TimeoutCalled(D, periodOver)
                     Call CheckGameClock
                     If gameClock! = 0 Then Exit Sub
                     'If periodOver = 1 Then GoTo 3360
@@ -12286,7 +12464,7 @@ Sub ComputerOffense ()
                     playCall = 20
                 End If
 
-                '4th Down, >= 3 Yds to go, 40+ Yd FG Att, Modern Era (FGs uncommon before 1960)
+                '4th Down, >= 3 Yds to go, In FG range, Modern Era (FGs uncommon before 1960)
                 If currDown = 4 And ydsToFirst >= 3 And ydLine >= fgAttLine - 3 And ydLine < 87 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
                     playCall = 20
@@ -12364,7 +12542,7 @@ Sub ComputerOffense ()
                     GoTo 8833
                 End If
 
-                '4th Down, 1 Yd To Go, 40+ Yd FG Att, 3 Pt. Lead (Off)
+                '4th Down, 1 Yd To Go, In FG range, 3 Pt. Lead (Off)
                 If currDown = 4 And ydsToFirst <= 1 And ydLine >= fgAttLine - 3 And ydLine < 87 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) > 0 Then
                     'Go for it!
                     GoTo 8827
@@ -12372,14 +12550,14 @@ Sub ComputerOffense ()
 
                 '4th Qtr | OT
                 '---------------
-                '4th Down, Opponent's 32 to 38, Score = 3 Pt. Margin, Pro Rules or College Rules + Team after 1960 = Field Goal
+                '4th Down, In FG range, Score = 3 Pt. Margin, Pro Rules or College Rules + Team after 1960 = Field Goal
                 If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(P1, 0) - score(D, 0) <= 3 And score(P1, 0) - score(D, 0) >= -3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
                     playCall = 20
                     GoTo 8800
                 End If
 
-                '4th Down, Opponent's 32 to 38, Score <= 3 Pt. Lead, Pro Rules or College Rules + Team after 1960 = Field Goal
+                '4th Down, In FG range, Score <= 3 Pt. Lead, Pro Rules or College Rules + Team after 1960 = Field Goal
                 If quarter >= 4 And currDown = 4 And ydLine >= fgAttLine - 3 And score(D, 0) - score(P1, 0) <= 3 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
                     'Field Goal
                     playCall = 20
@@ -12716,15 +12894,15 @@ Sub ComputerOffense ()
                 GoTo 8800
             End If
 
-            'In FG range, < 22 secs to go, No TOs (Off)
-            If ydLine < fgAttLine - 3 And gameClock! <= 22 And timeouts(P1) = 0 Then
+            'Outside FG range, < 22 secs to go, No TOs (Off)
+            If ydLine >= fgAttLine - 3 And gameClock! <= 22 And timeouts(P1) = 0 Then
                 'Field Goal
                 playCall = 20
                 GoTo 8800
             End If
 
             'In FG range, < 12 secs to go, TOs Remaining (Off)
-            If ydLine < fgAttLine - 3 And gameClock! <= 12 And timeouts(P1) > 0 Then
+            If ydLine >= fgAttLine - 3 And gameClock! <= 12 And timeouts(P1) > 0 Then
                 'Field Goal
                 playCall = 20
                 GoTo 8800
@@ -12738,12 +12916,12 @@ Sub ComputerOffense ()
             End If
 
             8892 '
-            'Sideline pass
-            playCall = 16
-
             '50% random chance of Short/Med/Long Pass
             If d100% < 50 Then
                 playCall = Int(Rnd(1) * 3) + 10
+            Else
+                'Sideline pass
+                playCall = 16
             End If
 
             'Inside Opponent's 10 = Medium Pass
@@ -12771,6 +12949,7 @@ Sub ComputerOffense ()
             playCall = 1
         End If
 
+
         'College | Sudden Death Modified
         '4th Down = Prioritize Score over Punts / FG
         If isOT = 1 And overtimeOpt >= 3 And currDown = 4 Then
@@ -12781,12 +12960,15 @@ Sub ComputerOffense ()
             End If
 
             'Punt chosen, Ahead 3 or less (Off)
-            '(if we're not close enough for FG, and punt,
-            'the team could win by a FG on their possession.
-            'If a turnover on downs won't give the opponent
-            'a 50 yd FG attempt, we should go for it.
-            If playCall = 19 And score(D, 0) - score(P1, 0) <= 3 And ydLine >= 32 Then
-                playCall = 12
+            'Opponent could win by a FG on their possession.
+            If playCall = 19 And score(D, 0) - score(P1, 0) <= 3 Then
+                'If turnover on downs won't give opponent
+                'a 50 yd FG attempt, we should go for it.
+                'In Mod SD, we should go for it because
+                'it is our last possession.
+                If ((overtimeOpt = 1 Or overtimeOpt = 2) And ydLine >= 32) Or (overtimeOpt >= 6) Then
+                    playCall = 12
+                End If
             End If
 
             'Punt or FG chosen, Down by 4 or more (Off)
@@ -12934,10 +13116,9 @@ Sub TurnoverOnDowns
 
     If ydLine > 90 Then ydsToFirst = 100 - ydLine
 
-    'Update possession for DEF
-    If isOT = 1 And overtimeOpt >= 6 Then
-        nbrPossOT(D) = 1
-    End If
+
+    Print #11, "TURNOVER ON DOWNS"
+    Print #11,
 
     Call CHANGEPOSS
 
@@ -13938,7 +14119,12 @@ Sub PuntFakeRunYards (choice)
         pbpString$ = pbpString$ + Str$(fakeYds!)
     End If
 
-    pbpString$ = pbpString$ + " YARDS ON THE FAKE RUN"
+    If fakeYds! = 0 Then
+        pbpString$ = pbpString$ + " NOTHING ON THE RUN"
+    Else
+        pbpString$ = pbpString$ + " YARDS ON THE FAKE RUN"
+    End If
+
     Call PBP
 
 End Sub
@@ -14343,13 +14529,22 @@ Sub FGFakeRunYards (choice)
 
     fakeYds! = Int((ydsGained) * 10 + 0.5) / 10
 
-    If fakeYdLine! >= 99.94999 Then
-        pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
+    If fakeYds! = 0 Then
+
+        pbpString$ = pbpString$ + " NOTHING ON THE FAKE RUN"
+    
     Else
-        pbpString$ = pbpString$ + Str$(fakeYds!)
+
+        If fakeYdLine! >= 99.94999 Then
+            pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
+        Else
+            pbpString$ = pbpString$ + Str$(fakeYds!)
+        End If
+
+        pbpString$ = pbpString$ + " YARDS ON THE FAKE RUN"
+
     End If
 
-    pbpString$ = pbpString$ + " YARDS ON THE FAKE RUN"
     Call PBP
 
 End Sub
