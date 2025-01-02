@@ -30,6 +30,10 @@ Sub Records_Menu (menuChoice)
         menuChoices$(2) = "PRINT SEASON RECORDS "
         menuChoices$(3) = "DELETE SEASON RECORDS"
         menuChoices$(4) = "RETURN TO GAME MENU  "
+        'menuChoices$(4) = "VIEW SINGLE GAME RECORDS "
+        'menuChoices$(5) = "PRINT SINGLE GAME RECORDS"
+        'menuChoices$(6) = "DELETE GAME RECORDS      "
+        'menuChoices$(7) = "RETURN TO GAME MENU      "
         SELECTION% = 1
         Count% = 4
         Start% = 1
@@ -106,6 +110,17 @@ Sub Records_Menu (menuChoice)
                     Case 3:
                         If _FileExists(diskPaths$(1) + recordsFile$) Then
                             Kill diskPaths$(1) + recordsFile$
+                        End If
+
+                    Case 4:
+                        'Call GameRecords(1)
+
+                    Case 5:
+                        'Call GameRecords(2)
+
+                    Case 6:
+                        If _FileExists(diskPaths$(1) + "RECORDS.GAM") Then 
+                            Kill diskPaths$(1) + "RECORDS.GAM"
                         End If
 
                 End Select
