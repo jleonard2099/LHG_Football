@@ -8,7 +8,7 @@ Sub CREATCON ()
 
     _Title "3-in-1 Football - Manage Conferences"
 
-    Shared statsZ1$()
+    Shared memberName$()
 
     ReDim menuChoices$(1 To 4)
 
@@ -17,50 +17,50 @@ Sub CREATCON ()
         Cls
 
         Call TITLE
-        menuChoices$(1) = "CREATE / DEFINE NEW CONFERENCES "
-        menuChoices$(2) = "ADD / REVIEW CONFERENCE MEMBERS "
-        menuChoices$(3) = "RETURN TO STANDINGS/LEADERS MENU"
-        Selection% = 1
+        menuChoices$(1) = "CREATE A CONFERENCE      "
+        menuChoices$(2) = "MANAGE CONFERENCE MEMBERS"
+        menuChoices$(3) = "RETURN TO LEADERS MENU   "
+        SELECTION% = 1
         Count% = 3
         Start% = 1
         ExitCode% = 3
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            For X = 1 To 30
-                statsZ1$(X) = "XXX"
+            For X = 1 To TEAMS_PER_CONFERENCE
+                memberName$(X) = "XXX"
             Next
 
             div1$ = ""
             div2$ = ""
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1:
                     Call DefineConference(conference$, div1$, div2$)
-                    Call ReviewEditConference(conference$, div1$, div2$)
+                    confFile$ = conference$
+                    Call ReviewEditConference(confFile$, conference$, div1$, div2$)
 
                 Case 2:
                     Do
-
-                        conference$ = ChooseFile$(diskPaths$(2) + "*.LIB", "CONFERENCE", FileExit%)
+                        confFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReviewEditConference(conference$, div1$, div2$)
+                            Call ReviewEditConference(confFile$, conference$, div1$, div2$)
                         End If
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
@@ -69,7 +69,7 @@ Sub CREATCON ()
 
         End If
 
-    Loop Until Selection% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 3 Or ExitCode% = 27
 
 End Sub
 
@@ -163,19 +163,19 @@ End Sub
 'This subroutine provides an interface to
 'the user allowing them to choose / clear
 'teams from the conference
-Sub ReviewEditConference (conference$, div1$, div2$)
+Sub ReviewEditConference (confFile$, conference$, div1$, div2$)
 
-    Shared statsZ1%()
+    Shared memberIdx()
 
-    Shared statsZ1$(), statsZ2$()
+    Shared memberName$(), memberYear$()
 
-    If _FileExists(diskPaths$(2) + conference$ + ".LIB") Then
+    If _FileExists(diskPaths$(2) + confFile$ + ".TMI") Then
 
-        Open diskPaths$(2) + conference$ + ".LIB" For Input As #1
+        Open diskPaths$(2) + confFile$ + ".TMI" For Input As #1
 
-        Input #1, LG%
+        Input #1, statType
 
-        If LG% <> 0 Then
+        If statType <> 0 Then
 
             Cls
             Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
@@ -190,10 +190,10 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
             Input #1, conference$, div1$, div2$
 
-            For X = 1 To 30:
-                Input #1, statsZ1$(X)
-                Input #1, statsZ1%(X)
-                Input #1, statsZ2$(X)
+            For X = 1 To TEAMS_PER_CONFERENCE:
+                Input #1, memberName$(X)
+                Input #1, memberIdx(X)
+                Input #1, memberYear$(X)
             Next
 
         End If
@@ -220,11 +220,11 @@ Sub ReviewEditConference (conference$, div1$, div2$)
             For I = 1 To 15
 
                 Color 2: Print Using "  ##"; I;
-                Color 15: Print " "; statsZ1$(I);
+                Color 15: Print " "; Left$(memberName$(I), 25);
 
                 Locate , 50
                 Color 2: Print Using "##"; I + 15;
-                Color 15: Print " "; statsZ1$(I + 15)
+                Color 15: Print " "; Left$(memberName$(I + 15), 25)
 
             Next I
 
@@ -247,24 +247,24 @@ Sub ReviewEditConference (conference$, div1$, div2$)
 
                 Do
                     Locate 22, 35
-                    Print "TEAM # (1-30) ";
+                    Print "SLOT # (1-" + Str$(TEAMS_PER_CONFERENCE) + ") ";
                     Input B
-                Loop Until B >= 1 And B <= 30
+                Loop Until B >= 1 And B <= TEAMS_PER_CONFERENCE
 
                 If choice = 1 Then
                     'Add team
                     teamNbr = 0
-                    Call ChooseTeam(statsZ2$(B), NTMS, statsZ1%(B), statsZ1$(B))
+                    Call ChooseTeam(memberYear$(B), NTMS, memberIdx(B), memberName$(B))
                 Else
                     'Remove team
-                    statsZ1$(B) = "XXX"
+                    memberName$(B) = "XXX"
                 End If
 
             End If 'Done checking if ready to save
 
         Loop Until choice = 3
 
-        Call SaveConferences(conference$, div1$, div2$)
+        Call SaveConferences(confFile$, conference$, div1$, div2$)
 
     End If
 
@@ -276,49 +276,52 @@ End Sub
 '----------------------------------------
 'This subroutine writes the conference's
 'team memberships and definition to 
-'each of the corresponding files (.LIB, .TMS)
-Sub SaveConferences (conference$, div1$, div2$)
+'each of the corresponding files (.TMI, .TMS)
+Sub SaveConferences (confFile$, conference$, div1$, div2$)
 
-    Shared statsZ1%()
+    Shared memberIdx()
 
-    Shared statsZ1$(), statsZ2$()
+    Shared memberName$(), memberYear$()
+
+    Dim statFileNames$(TEAMS_PER_CONFERENCE)
 
     'Ready to save work
-    Open diskPaths$(2) + conference$ + ".LIB" For Output As #1
+    Open diskPaths$(2) + confFile$ + ".TMI" For Output As #1
 
     Print #1, 0
     Print #1, conference$
     Print #1, div1$
     Print #1, div2$
 
-    For X = 1 To 30:
-        Print #1, statsZ1$(X)
-        Print #1, statsZ1%(X)
-        Print #1, statsZ2$(X)
+    For X = 1 To TEAMS_PER_CONFERENCE:
+        Print #1, memberName$(X)
+        Print #1, memberIdx(X)
+        Print #1, memberYear$(X)
     Next
 
     Close #1
 
-    For X = 1 To 30
+    Erase memberName$
 
-        If statsZ1$(X) = "XXX" Then
-            statsZ1$(X) = Chr$(42)
+    For X = 1 To TEAMS_PER_CONFERENCE
+
+        If memberName$(X) = "XXX" Then
+            statFileNames$(X) = Chr$(42)
         Else
-            teamName$ = statsZ1$(X)
-            statFile$ = nameStatFile$(teamName$)
-            statsZ1$(X) = statFile$
+            teamName$ = memberName$(X)
+            statFileNames$(X) = nameStatFile$(teamName$)
         End If
 
     Next X
 
-    Open diskPaths$(2) + conference$ + ".TMS" For Output As #2
+    Open diskPaths$(2) + confFile$ + ".TMS" For Output As #2
 
     Write #2, conference$
     Write #2, div1$
     Write #2, div2$
 
-    For X = 1 To 30:
-        Write #2, statsZ1$(X)
+    For X = 1 To TEAMS_PER_CONFERENCE:
+        Write #2, statFileNames$(X)
     Next
 
     Close #2

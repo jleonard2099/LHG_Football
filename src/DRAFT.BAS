@@ -16,28 +16,28 @@ Sub DRAFT ()
         menuChoices$(1) = "DRAFT A NEW TEAM         "
         menuChoices$(2) = "DRAFT TO AN EXISTING TEAM"
         menuChoices$(3) = "EXIT TO MAIN MENU        "
-        Selection% = 1
+        SELECTION% = 1
         Count% = 3
         Start% = 1
         ExitCode% = 3
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
 
         If ExitCode% <> 27 Then
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1:
 
@@ -66,11 +66,11 @@ Sub DRAFT ()
 
             End Select
 
-            If doneDraft = 1 Then Selection% = 3
+            If doneDraft = 1 Then SELECTION% = 3
 
         End If
 
-    Loop Until Selection% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 3 Or ExitCode% = 27
 
 End Sub
 
@@ -81,42 +81,41 @@ End Sub
 'This subroutine prompts the user for the
 'minimum required parameters to create a
 'new team that players will be drafted to.
-Sub NewTeamParameters (YN$, teamName$, teamIdx)
+Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
     Shared teamAttendance&
 
     Shared teamNick$
 
-    Shared leagueRatings%()
-    Shared teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
     Locate 3: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
-    Locate 4: Input " 2. DISK ID  "; YN$
+    Locate 4: Input " 2. DISK ID "; teamYear$
     Locate 5: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
     Locate 6: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
-    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
-    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
-    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
-    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
-    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
-    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
-    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
+    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
+    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings(2)
+    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
+    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
+    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
+    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings(6)
     Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
-    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0)
-    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
-    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings(0)
+    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings(7)
+    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
     Locate 18: Input "16. STADIUM NAME "; stad$
     Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
-    Locate 20: Input "18. POWER RATING "; teamRatings%(4)
-    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
-    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+    Locate 20: Input "18. POWER RATING "; teamRatings(4)
+    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings(2)
+    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings(1)
 
-    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
         Locate 21, 37
         Print "TEAM APPEARANCE: ";
         Locate 22, 37
-        Color teamRatings%(2), teamRatings%(1)
+        Color teamRatings(2), teamRatings(1)
         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
         Color 15, 0
     End If
@@ -124,7 +123,7 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
     Do
 
         Do
-            Locate 24
+            Locate 23, 25
             Input "# TO CHANGE (0 TO CONTINUE) "; B9
         Loop Until B9 >= 0 And B9 <= 6
 
@@ -133,84 +132,124 @@ Sub NewTeamParameters (YN$, teamName$, teamIdx)
             Select Case B9
 
                 Case 1
-                    Locate 3: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
+                    Locate 3, 35: Print Space$(10)
+                    Locate 3, 1: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamIdx
+                    Locate 3, 35: Print " "
 
                 Case 2
-                    Locate 4: Input " 2. DISK ID  "; YN$
+                    Locate 4, 1: Input " 2. DISK ID "; teamYear$
+                    Locate 4, 13: Print " "
 
                 Case 3
-                    Locate 5: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
+                    Locate 5, 1: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; teamName$
+                    Locate 5, 33: Print " "
 
                 Case 4
-                    Locate 6: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
+                    Locate 6, 1: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; teamNick$
+                    Locate 6, 34: Print " "
 
                 Case 5
-                    Locate 7: Input " 5. DEF RUSH ADJ "; leagueRatings%(0)
+                    Locate 7, 18: Print Space$(10)
+                    Locate 7, 1: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
+                    Locate 7, 18: Print " "
 
                 Case 6
-                    Locate 8: Input " 6. DEF COMP % ADJ "; leagueRatings%(1)
+                    Locate 8, 20: Print Space$(10)
+                    Locate 8, 1: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
+                    Locate 8, 20: Print " "
 
                 Case 7
-                    Locate 9: Input " 7. DEF INT % ADJ "; leagueRatings%(2)
+                    Locate 9, 19: Print Space$(10)
+                    Locate 9, 1: Input " 7. DEF INT % ADJ "; leagueRatings(2)
+                    Locate 9, 19: Print " "
 
                 Case 8
-                    Locate 10: Input " 8. FUM % (AVG=4) "; leagueRatings%(3)
+                    Locate 10, 19: Print Space$(10)
+                    Locate 10, 1: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
+                    Locate 10, 19: Print " "
 
                 Case 9
-                    Locate 11: Input " 9. DEF FUM % (AVG=0) "; leagueRatings%(4)
+                    Locate 11, 23: Print Space$(10)
+                    Locate 11, 1: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
+                    Locate 11, 23: Print " "
 
                 Case 10
-                    Locate 12: Input "10. OFF SACKED % (AVG=8) "; leagueRatings%(5)
+                    Locate 12, 26: Print Space$(10)
+                    Locate 12, 1: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
+                    Locate 12, 26: Print " "
 
                 Case 11
-                    Locate 13: Input "11. DEF SACK ADJ "; leagueRatings%(6)
+                    Locate 13, 18: Print Space$(10)
+                    Locate 13, 1: Input "11. DEF SACK ADJ "; leagueRatings(6)
+                    Locate 13, 18: Print " "
 
                 Case 12
-                    Locate 14: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
+                    Locate 14, 21: Print Space$(10)
+                    Locate 14, 1: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
+                    Locate 14, 21: Print " "
 
                 Case 13
-                    Locate 15: Input "13. TM PENALTY ADJ "; teamRatings%(0)
+                    Locate 15, 20: Print Space$(10)
+                    Locate 15, 1: Input "13. TM PENALTY ADJ "; teamRatings(0)
+                    Locate 15, 20: Print " "
 
                 Case 14
-                    Locate 16: Input "14. OFF RUN/PASS % "; leagueRatings%(7)
+                    Locate 16, 20: Print Space$(10)
+                    Locate 16, 1: Input "14. OFF RUN/PASS % "; leagueRatings(7)
+                    Locate 16, 20: Print " "
 
                 Case 15
-                    Locate 17: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
+                    Locate 17, 35: Print Space$(10)
+                    Locate 17, 1: Input "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
+                    Locate 17, 35: Print " "
 
                 Case 16
-                    Locate 18: Input "16. STADIUM NAME "; stad$
+                    Locate 18, 17: Print Space$(10)
+                    Locate 18, 1: Input "16. STADIUM NAME "; stad$
+                    Locate 18, 17: Print " "
 
                 Case 17
-                    Locate 19: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 19, 23: Print Space$(10)
+                    Locate 19, 1: Input "17. AVERAGE ATTENDANCE "; teamAttendance&
+                    Locate 19, 23: Print " "
 
                 Case 18
-                    Locate 20: Input "18. POWER RATING "; teamRatings%(4)
+                    Locate 20, 18: Print Space$(10)
+                    Locate 20, 1: Input "18. POWER RATING "; teamRatings(4)
+                    Locate 20, 18: Print " "
 
                 Case 19
-                    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings%(2)
+                    Locate 21, 23: Print Space$(10)
+                    Locate 21: Input "19. TEXT COLOR (0-15) "; teamRatings(2)
+                    Locate 21, 23: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1)
+                        Color teamRatings(2), teamRatings(1)
                         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
                 Case 20
-                    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings%(1)
+                    Locate 22, 28: Print Space$(10)
+                    Locate 22: Input "20. BACKGROUND COLOR (0-7) "; teamRatings(1)
+                    Locate 22, 28: Print " "
 
-                    If teamRatings%(1) >= 0 And teamRatings%(2) >= 0 Then
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
                         Locate 21, 37
                         Print "TEAM APPEARANCE: ";
                         Locate 22, 37
-                        Color teamRatings%(2), teamRatings%(1)
+                        Color teamRatings(2), teamRatings(1)
                         Print RTrim$(teamName$) + " " + RTrim$(mascot$)
                         Color 15, 0
                     End If
 
             End Select
+
+            Locate 23, 53
+            Print Space$(10)
 
         End If
 
@@ -228,18 +267,18 @@ End Sub
 'that we will be drafting from. This will,
 'in turn, assign those values to the extra
 'array that is available.
-Sub DraftExistingTeam (YN$, teamIdx)
+Sub DraftExistingTeam (teamYear$, teamIdx)
 
     Shared stadium$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -247,7 +286,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT(), krNumRet_DRAFT()
     Shared krRetAvg_DRAFT(), prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT(), FGA_DRAFT(), FGPct_DRAFT(), leagRat_DRAFT(), PAT_DRAFT(), PATPct_DRAFT()
-    Shared qbArmRat_DRAFT(), numInt_DRAFT(), numSack_DRAFT(), tmRat_DRAFT()
+    Shared qbArmRat_DRAFT(), numInt_DRAFT(), numSack_DRAFT(), teamRat_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
     Shared intNam_DRAFT$(), sackNam_DRAFT$()
@@ -255,16 +294,16 @@ Sub DraftExistingTeam (YN$, teamIdx)
     Shared teamAttendance&
 
     For I = 0 To 7:
-        leagueRatings%(I) = leagRat_DRAFT(I)
+        leagueRatings(I) = leagRat_DRAFT(I)
     Next I
 
     For I = 0 To 4:
-        teamRatings%(I) = tmRat_DRAFT(I)
+        teamRatings(I) = teamRat_DRAFT(I)
     Next I
 
     For I = 0 To 9
         rbName$(I) = rbNam_DRAFT$(I)
-        rushAtt(I) = rbAtt_DRAFT(I)
+        rushContrib(I) = rbAtt_DRAFT(I)
         rushAvg(I) = rbAvg_DRAFT(I)
         rbRecepts(I) = rbRec_DRAFT(I)
         rbRecAvg(I) = rbRecAvg_DRAFT(I)
@@ -272,13 +311,13 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     For I = 0 To 5
         wrName$(I) = wrNam_DRAFT$(I)
-        wrRecept(I) = wrRec_DRAFT(I)
+        recContrib(I) = wrRec_DRAFT(I)
         wrRecAvg(I) = wrAvg_DRAFT(I)
     Next I
 
     For I = 0 To 3
         qbName$(I) = qbNam_DRAFT$(I)
-        passAtt(I) = qbPA_DRAFT(I)
+        passContrib(I) = qbPA_DRAFT(I)
         compPct(I) = qbPCPct_DRAFT(I)
         qbIntPct(I) = qbIntPct_DRAFT(I)
         armRating(I) = qbArmRat_DRAFT(I)
@@ -286,13 +325,13 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     For I = 0 To 2
         krName$(I) = krNam_DRAFT$(I)
-        krRet(I) = krNumRet_DRAFT(I)
+        krContrib(I) = krNumRet_DRAFT(I)
         krRetAvg(I) = krRetAvg_DRAFT(I)
     Next I
 
     For I = 0 To 2
         prName$(I) = prNam_DRAFT$(I)
-        prRet(I) = prRet_DRAFT(I)
+        prContrib(I) = prRet_DRAFT(I)
         prRetAvg(I) = prRetAvg_DRAFT(I)
     Next I
 
@@ -301,14 +340,14 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     pkName$(0) = pkNam_DRAFT$(0)
     pkFGA(0) = FGA_DRAFT(0)
-    pkFGPct(0) = FGPct_DRAFT(0)
+    pkFGContrib(0) = FGPct_DRAFT(0)
     pkPAT(0) = PAT_DRAFT(0)
-    pkPATPct(0) = PATPct_DRAFT(0)
+    pkPATContrib(0) = PATPct_DRAFT(0)
     pkName$(1) = pkNam_DRAFT$(1)
     pkFGA(1) = FGA_DRAFT(1)
-    pkFGPct(1) = FGPct_DRAFT(1)
+    pkFGContrib(1) = FGPct_DRAFT(1)
     pkPAT(1) = PAT_DRAFT(1)
-    pkPATPct(1) = PATPct_DRAFT(1)
+    pkPATContrib(1) = PATPct_DRAFT(1)
 
     For I = 0 To 14
         sackName$(I) = sackNam_DRAFT$(I)
@@ -320,7 +359,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
         numInts(I) = numInt_DRAFT(I)
     Next I
 
-    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$) Then
+    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
 
         stadium$ = ""
         teamAttendance& = 0
@@ -335,7 +374,7 @@ Sub DraftExistingTeam (YN$, teamIdx)
 
     Else
 
-        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + YN$ For Random As #1 Len = DATA_SIZE_BYTES
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = DATA_SIZE_BYTES
 
         Field #1, 15 As X$, 30 As Q$(1), 4 As Q$(3), 1 As Q$(4)
 
@@ -363,15 +402,15 @@ End Sub
 'This subroutine simply prints the ratings
 'and values from the existing team so the
 'end user can review them before proceeding.
-Sub ExistingTeamParameters (YN$, teamName$, teamIdx)
+Sub ExistingTeamParameters (teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
     Shared teamAttendance&
 
     Shared teamNick$, stadium$
 
-    Shared leagueRatings%()
-    Shared teamRatings%()
+    Shared leagueRatings()
+    Shared teamRatings()
 
     Call TITLE
 
@@ -380,26 +419,26 @@ Sub ExistingTeamParameters (YN$, teamName$, teamIdx)
     Next
 
     Locate 1, 1: Color 15, 0
-    Locate 3: Print " 1. ENTER DISK ID FOR THIS TEAM "; YN$
-    Locate 4: Print " 2. TEAM # "; teamIdx
-    Locate 5: Print " 3. TEAM NAME "; teamName$
-    Locate 6: Print " 4. TEAM NICKNAME "; teamNick$
-    Locate 7: Print " 5. DEF RUSH ADJ "; leagueRatings%(0)
-    Locate 8: Print " 6. DEF COMP % ADJ "; leagueRatings%(1)
-    Locate 9: Print " 7. DEF INT % ADJ "; leagueRatings%(2)
-    Locate 10: Print " 8. FUM % "; leagueRatings%(3)
-    Locate 11: Print " 9. DEF FUM % "; leagueRatings%(4)
-    Locate 12: Print "10. OFF SACKED % "; leagueRatings%(5)
-    Locate 13: Print "11. DEF SACK ADJ "; leagueRatings%(6)
-    Locate 14: Print "12. DEF YD/COMP ADJ "; ydsCompAdj
-    Locate 15: Print "13. TM PENALTY ADJ "; teamRatings%(0)
-    Locate 16: Print "14. OFF RUN/PASS % "; leagueRatings%(7)
-    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME) "; teamRatings%(3)
-    Locate 18: Print "16. POWER RATING "; teamRatings%(4)
-    Locate 19: Print "17. TM BACKGROUND COLOR (0-7) "; teamRatings%(1)
-    Locate 20: Print "18. TM TEXT COLOR (0-15) "; teamRatings%(2)
-    Locate 21: Print "19. STADIUM NAME "; stadium$
-    Locate 22: Print "20. AVERAGE ATTENDANCE "; teamAttendance&
+    Locate 3: Print " 1. ENTER DISK ID FOR THIS TEAM   "; teamYear$
+    Locate 4: Print " 2. TEAM #  "; teamIdx
+    Locate 5: Print " 3. TEAM NAME   "; teamName$
+    Locate 6: Print " 4. TEAM NICKNAME   "; teamNick$
+    Locate 7: Print " 5. DEF RUSH ADJ  "; leagueRatings(0)
+    Locate 8: Print " 6. DEF COMP % ADJ  "; leagueRatings(1)
+    Locate 9: Print " 7. DEF INT % ADJ  "; leagueRatings(2)
+    Locate 10: Print " 8. FUM %  "; leagueRatings(3)
+    Locate 11: Print " 9. DEF FUM %  "; leagueRatings(4)
+    Locate 12: Print "10. OFF SACKED %  "; leagueRatings(5)
+    Locate 13: Print "11. DEF SACK ADJ  "; leagueRatings(6)
+    Locate 14: Print "12. DEF YD/COMP ADJ  "; ydsCompAdj
+    Locate 15: Print "13. TM PENALTY ADJ  "; teamRatings(0)
+    Locate 16: Print "14. OFF RUN/PASS %  "; leagueRatings(7)
+    Locate 17: Print "15. TM STADIUM (0-OUTDOOR 1-DOME)  "; teamRatings(3)
+    Locate 18: Print "16. POWER RATING  "; teamRatings(4)
+    Locate 19: Print "17. TM BACKGROUND COLOR (0-7)  "; teamRatings(1)
+    Locate 20: Print "18. TM TEXT COLOR (0-15)  "; teamRatings(2)
+    Locate 21: Print "19. STADIUM NAME   "; stadium$
+    Locate 22: Print "20. AVERAGE ATTENDANCE  "; teamAttendance&
 
 End Sub
 
@@ -413,14 +452,14 @@ End Sub
 'source team will need selected.
 Sub DraftChoices (teamName$)
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -428,7 +467,7 @@ Sub DraftChoices (teamName$)
 
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT(), krNumRet_DRAFT()
     Shared krRetAvg_DRAFT(), prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT(), FGA_DRAFT(), FGPct_DRAFT(), PAT_DRAFT(), PATPct_DRAFT()
-    Shared qbArmRat_DRAFT(), tmRat_DRAFT()
+    Shared qbArmRat_DRAFT(), teamRat_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
 
@@ -441,14 +480,29 @@ Sub DraftChoices (teamName$)
         Next
 
         Locate 5
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "R";: Color 3: Print "UNNING BACKS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "W";: Color 3: Print "IDE RECEIVERS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "Q";: Color 3: Print "UARTERBACKS"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "K";: Color 3: Print "ICKOFF RETURN"
-        Locate , 5: Color 3: Print "DRAFT ";: Color 15: Print "P";: Color 3: Print "UNT RETURN"
-        Locate , 5: Color 3: Print "DRAFT P";: Color 15: Print "U";: Color 3: Print "NTERS"
-        Locate , 5: Color 3: Print "DRAFT PLACE K";: Color 15: Print "I";: Color 3: Print "CKERS"
-        Locate , 5: Color 15: Print "E";: Color 3: Print "ND AND SAVE DRAFT"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "R";: Color 3: Print "UNNING BACKS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "W";: Color 3: Print "IDE RECEIVERS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "Q";: Color 3: Print "UARTERBACKS"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "K";: Color 3: Print "ICKOFF RETURN"
+        Locate , 5
+        Color 3: Print "DRAFT ";
+        Color 15: Print "P";: Color 3: Print "UNT RETURN"
+        Locate , 5
+        Color 3: Print "DRAFT P";
+        Color 15: Print "U";: Color 3: Print "NTERS"
+        Locate , 5
+        Color 3: Print "DRAFT PLACE K";
+        Color 15: Print "I";: Color 3: Print "CKERS"
+        Locate , 5
+        Color 15: Print "E";: Color 3: Print "ND AND SAVE DRAFT"
 
         I$ = GetKeyPress$
 
@@ -471,13 +525,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "RUNNING BACKS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RUN AVG CX% RC AVG CX%";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RUN AVG CX% RC AVG CX%"
 
@@ -485,7 +539,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 9: Locate I + 4, 1
                             Print I; " "; rbName$(I); Tab(19);
-                            Print Using "##.#  ###   ##  ###"; rushAvg(I) * .3; rushAtt(I); rbRecAvg(I) * 3; rbRecepts(I)
+                            Print Using "##.#  ###   ##  ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
                             Locate I + 4, 41
                             Print I; " "; rbNam_DRAFT$(I); Tab(59);
                             Print Using "##.#  ###   ##  ###"; rbAvg_DRAFT(I) * .3; rbAtt_DRAFT(I); rbRecAvg_DRAFT(I) * 3; rbRec_DRAFT(I)
@@ -503,7 +557,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 9
 
                             rbName$(P) = rbNam_DRAFT$(P1)
-                            rushAtt(P) = rbAtt_DRAFT(P1)
+                            rushContrib(P) = rbAtt_DRAFT(P1)
                             rushAvg(P) = rbAvg_DRAFT(P1)
                             rbRecepts(P) = rbRec_DRAFT(P1)
                             rbRecAvg(P) = rbRecAvg_DRAFT(P1)
@@ -531,13 +585,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "WIDE RECEIVERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "REC AVG  CX% ";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "REC AVG  CX%"
 
@@ -545,7 +599,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 5:
                             Locate I + 4, 1: Print I; " "; wrName$(I);
-                            Print Tab(17); Using "  ##    ###"; wrRecAvg(I) * 3; wrRecept(I)
+                            Print Tab(17); Using "  ##    ###"; wrRecAvg(I) * 3; recContrib(I)
                             Locate I + 4, 41
                             Print I; " "; wrNam_DRAFT$(I);
                             Print Tab(57); Using "  ##    ###"; wrAvg_DRAFT(I) * 3; wrRec_DRAFT(I)
@@ -562,7 +616,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 5
 
                             wrName$(P) = wrNam_DRAFT$(P1)
-                            wrRecept(P) = wrRec_DRAFT(P1)
+                            recContrib(P) = wrRec_DRAFT(P1)
                             wrRecAvg(P) = wrAvg_DRAFT(P1)
 
                         End If
@@ -588,12 +642,12 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "QUARTERBACKS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0: Print Tab(17); " C%  I%   ARM  CX% ";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
 
                         Color 7, 0: Print Tab(57); " C%  I%   ARM  CX%"
 
@@ -601,7 +655,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 3: Locate I + 4, 1
                             Print I; " "; qbName$(I);
-                            Print Tab(17); Using "###  ##  ###  ###"; compPct(I); qbIntPct(I); armRating(I); passAtt(I)
+                            Print Tab(17); Using "###  ##  ###  ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
                             Locate I + 4, 41
                             Print I; " "; qbNam_DRAFT$(I);
                             Print Tab(57); Using "###  ##  ###  ###"; qbPCPct_DRAFT(I); qbIntPct_DRAFT(I); qbArmRat_DRAFT(I); qbPA_DRAFT(I)
@@ -620,7 +674,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 3
 
                             qbName$(P) = qbNam_DRAFT$(P1)
-                            passAtt(P) = qbPA_DRAFT(P1)
+                            passContrib(P) = qbPA_DRAFT(P1)
                             compPct(P) = qbPCPct_DRAFT(P1)
                             qbIntPct(P) = qbIntPct_DRAFT(P1)
                             armRating(P) = qbArmRat_DRAFT(P1)
@@ -648,13 +702,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "KICKOFF RETURNERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RET AVG  CX%";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RET AVG  CX%"
 
@@ -662,7 +716,7 @@ Sub DraftChoices (teamName$)
 
                         For I = 0 To 2: Locate I + 4, 1
                             Print I; " "; krName$(I);
-                            Print Tab(17); Using "  ##     ###"; krRetAvg(I) * 3; krRet(I)
+                            Print Tab(17); Using "  ##     ###"; krRetAvg(I) * 3; krContrib(I)
                             Locate I + 4, 41
                             Print I; " "; krNam_DRAFT$(I);
                             Print Tab(57); Using "  ##     ###"; krRetAvg_DRAFT(I) * 3; krNumRet_DRAFT(I)
@@ -681,7 +735,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 2
 
                             krName$(P) = krNam_DRAFT$(P1)
-                            krRet(P) = krNumRet_DRAFT(P1)
+                            krContrib(P) = krNumRet_DRAFT(P1)
                             krRetAvg(P) = krRetAvg_DRAFT(P1)
 
                         End If
@@ -707,13 +761,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PUNT RETURNERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "RET AVG  CX%";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "RET AVG  CX%"
 
@@ -722,7 +776,7 @@ Sub DraftChoices (teamName$)
                         For I = 0 To 2
                             Locate I + 4, 1
                             Print I; " "; prName$(I);
-                            Print Tab(17); Using "  ##    ###"; prRetAvg(I) * 3; prRet(I)
+                            Print Tab(17); Using "  ##    ###"; prRetAvg(I) * 3; prContrib(I)
                             Locate I + 4, 41
                             Print I; " "; prNam_DRAFT$(I);
                             Print Tab(57); Using "  ##    ###"; prRetAvg_DRAFT(I) * 3; prRet_DRAFT(I)
@@ -740,7 +794,7 @@ Sub DraftChoices (teamName$)
                             Loop Until P1 >= 0 And P1 <= 2
 
                             prName$(P) = prNam_DRAFT$(P1)
-                            prRet(P) = prRet_DRAFT(P1)
+                            prContrib(P) = prRet_DRAFT(P1)
                             prRetAvg(P) = prRetAvg_DRAFT(P1)
 
                         End If
@@ -766,13 +820,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PUNTER"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "PUNT AVG";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "PUNT AVG"
 
@@ -820,13 +874,13 @@ Sub DraftChoices (teamName$)
                         Color 15, 0: Print "PLACE KICKERS"
                         Locate 3, 1
 
-                        Color teamRatings%(2), teamRatings%(1): Print teamName$;
+                        Color teamRatings(2), teamRatings(1): Print teamName$;
                         Color 7, 0
                         Print Tab(17); "FG%  CX   EP%  CX";
 
                         Print Tab(41);
 
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print draftTeam$;
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print draftTeam$;
                         Color 7, 0
                         Print Tab(57); "FG%  CX   EP%  CX"
 
@@ -835,7 +889,7 @@ Sub DraftChoices (teamName$)
                         For I = 0 To 1:
                             Locate I + 4, 1
                             Print I; " "; pkName$(I);
-                            Print Tab(17); Using "### ###   ### ###"; pkFGA(I) * 5 + 25; pkFGPct(I); pkPAT(I); pkPATPct(I)
+                            Print Tab(17); Using "### ###   ### ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
                             Locate I + 4, 41
                             Print I; " "; pkNam_DRAFT$(I);
                             Print Tab(57); Using "### ###   ### ###"; FGA_DRAFT(I) * 5 + 25; FGPct_DRAFT(I); PAT_DRAFT(I); PATPct_DRAFT(I)
@@ -854,9 +908,9 @@ Sub DraftChoices (teamName$)
 
                             pkName$(P) = pkNam_DRAFT$(P1)
                             pkFGA(P) = FGA_DRAFT(P1)
-                            pkFGPct(P) = FGPct_DRAFT(P1)
+                            pkFGContrib(P) = FGPct_DRAFT(P1)
                             pkPAT(P) = PAT_DRAFT(P1)
-                            pkPATPct(P) = PATPct_DRAFT(P1)
+                            pkPATContrib(P) = PATPct_DRAFT(P1)
 
                         End If
 
@@ -884,7 +938,7 @@ End Sub
 'This subroutine calculates all the values
 'and stats that need to be swapped and then
 'performs the trading / swapping.
-Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
+Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     Shared ydsCompAdj
 
@@ -892,14 +946,14 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
 
     Shared teamNick$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -911,45 +965,65 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     S3 = 0
 
     For I = 0 To 9:
-        S0 = S0 + rushAtt(I)
+        S0 = S0 + rushContrib(I)
         S2 = S2 + rbRecepts(I)
     Next
 
     S4 = 100 / S0
 
     For I = 0 To 9:
-        If rushAtt(I) <> 0 Then rushAtt(I) = Int(S4 * rushAtt(I) + .5) + S1: S1 = rushAtt(I)
-        If rushAtt(I) > 100 Then rushAtt(I) = 100
+        If rushContrib(I) <> 0 Then 
+            rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
+            S1 = rushContrib(I)
+        End If
+        If rushContrib(I) > 100 Then 
+            rushContrib(I) = 100
+        End If
     Next I
 
     For I = 0 To 5:
-        S2 = S2 + wrRecept(I)
+        S2 = S2 + recContrib(I)
     Next
 
     S5 = 100 / S2
 
     For I = 0 To 9:
-        If rbRecepts(I) <> 0 Then rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3: S3 = rbRecepts(I)
-        If rbRecepts(I) > 100 Then rbRecepts(I) = 100
+        If rbRecepts(I) <> 0 Then 
+            rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
+            S3 = rbRecepts(I)
+        End If
+        If rbRecepts(I) > 100 Then 
+            rbRecepts(I) = 100
+        End If
     Next I
 
     For I = 0 To 5:
-        If wrRecept(I) <> 0 Then wrRecept(I) = Int(S5 * wrRecept(I) + .5) + S3: S3 = wrRecept(I)
-        If wrRecept(I) > 100 Then wrRecept(I) = 100
+        If recContrib(I) <> 0 Then 
+            recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
+            S3 = recContrib(I)
+        End If
+        If recContrib(I) > 100 Then 
+            recContrib(I) = 100
+        End If
     Next I
 
     S6 = 0
     S7 = 0
 
     For I = 0 To 3:
-        S6 = S6 + passAtt(I)
+        S6 = S6 + passContrib(I)
     Next
 
     S8 = 100 / S6
 
     For I = 0 To 3:
-        If passAtt(I) <> 0 Then passAtt(I) = Int(S8 * passAtt(I) + .5) + S7: S7 = passAtt(I)
-        If passAtt(I) > 100 Then passAtt(I) = 100
+        If passContrib(I) <> 0 Then 
+            passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
+            S7 = passContrib(I)
+        End If
+        If passContrib(I) > 100 Then 
+            passContrib(I) = 100
+        End If
     Next
 
     G0 = 0
@@ -958,21 +1032,31 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     G4 = 0
 
     For I = 0 To 2:
-        G0 = G0 + krRet(I)
-        G3 = G3 + prRet(I)
+        G0 = G0 + krContrib(I)
+        G3 = G3 + prContrib(I)
     Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 2:
-        If krRet(I) <> 0 Then krRet(I) = Int(G2 * krRet(I) + .5) + G1: G1 = krRet(I)
-        If krRet(I) > 100 Then krRet(I) = 100
+        If krContrib(I) <> 0 Then 
+            krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
+            G1 = krContrib(I)
+        End If
+        If krContrib(I) > 100 Then 
+            krContrib(I) = 100
+        End If
     Next
 
     For I = 0 To 2:
-        If prRet(I) <> 0 Then prRet(I) = Int(G5 * prRet(I) + .5) + G4: G4 = prRet(I)
-        If prRet(I) > 100 Then prRet(I) = 100
+        If prContrib(I) <> 0 Then 
+            prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
+            G4 = prContrib(I)
+        End If
+        If prContrib(I) > 100 Then 
+            prContrib(I) = 100
+        End If
     Next
 
     G0 = 0
@@ -981,58 +1065,89 @@ Sub DoTheDraft (draftNew, doneDrafting, YN$, teamName$, teamIdx)
     G4 = 0
 
     For I = 0 To 1:
-        G0 = G0 + pkFGPct(I)
-        G3 = G3 + pkPATPct(I)
+        G0 = G0 + pkFGContrib(I)
+        G3 = G3 + pkPATContrib(I)
     Next
 
     G2 = 100 / G0
     G5 = 100 / G3
 
     For I = 0 To 1:
-        If pkFGPct(I) <> 0 Then pkFGPct(I) = Int(G2 * pkFGPct(I) + .5) + G1: G1 = pkFGPct(I)
-        If pkFGPct(I) > 100 Then pkFGPct(I) = 100
+        If pkFGContrib(I) <> 0 Then 
+            pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
+            G1 = pkFGContrib(I)
+        End If
+        If pkFGContrib(I) > 100 Then 
+            pkFGContrib(I) = 100
+        End If
     Next
 
     For I = 0 To 1:
-        If pkPATPct(I) <> 0 Then pkPATPct(I) = Int(G5 * pkPATPct(I) + .5) + G4: G4 = pkPATPct(I)
-        If pkPATPct(I) > 100 Then pkPATPct(I) = 100
+        If pkPATContrib(I) <> 0 Then 
+            pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
+            G4 = pkPATContrib(I)
+        End If
+        If pkPATContrib(I) > 100 Then 
+            pkPATContrib(I) = 100
+        End If
     Next
 
     For I = 9 To 0 Step -1:
-        If rushAtt(I) <> 0 Then rushAtt(I) = 100: Exit For
+        If rushContrib(I) <> 0 Then 
+            rushContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 5 To 0 Step -1:
-        If wrRecept(I) <> 0 Then wrRecept(I) = 100: Exit For
+        If recContrib(I) <> 0 Then 
+            recContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 3 To 0 Step -1:
-        If passAtt(I) <> 0 Then passAtt(I) = 100: Exit For
+        If passContrib(I) <> 0 Then 
+            passContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 2 To 0 Step -1:
-        If krRet(I) <> 0 Then krRet(I) = 100: Exit For
+        If krContrib(I) <> 0 Then 
+            krContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 2 To 0 Step -1:
-
-        If prRet(I) <> 0 Then prRet(I) = 100: Exit For
+        If prContrib(I) <> 0 Then 
+            prContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 1 To 0 Step -1:
-        If pkFGPct(I) <> 0 Then pkFGPct(I) = 100: Exit For
+        If pkFGContrib(I) <> 0 Then 
+            pkFGContrib(I) = 100
+            Exit For
+        End If
     Next
 
     For I = 1 To 0 Step -1:
-        If pkPATPct(I) <> 0 Then pkPATPct(I) = 100: Exit For
+        If pkPATContrib(I) <> 0 Then 
+            pkPATContrib(I) = 100
+            Exit For
+        End If            
     Next
 
     X = Int((ydsCompAdj / .3) + .5)
     If X < 0 Then X = 100 + X
     ydsCompAdj = X
 
-    Call SaveTeamDraft(draftNew, YN$, teamName$, teamIdx)
+    Call SaveTeamDraft(draftNew, teamYear$, teamName$, teamIdx)
 
+    Color 15, 0
     Cls
 
     Call box0 (6, 8, 8, 70, 2, 15, 1)
@@ -1072,14 +1187,14 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     Shared teamNick$, stadium$
 
-    Shared leagueRatings%(), teamRatings%()
+    Shared leagueRatings(), teamRatings()
 
-    Shared rushAtt(), rushAvg(), rbRecepts(), rbRecAvg()
-    Shared wrRecept(), wrRecAvg()
-    Shared passAtt(), compPct(), qbIntPct()
-    Shared krRet(), krRetAvg(), prRet(), prRetAvg()
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
     Shared puntAvg()
-    Shared pkFGA(), pkFGPct(), pkPAT(), pkPATPct()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
     Shared numInts(), numSacks(), armRating()
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$()
@@ -1136,12 +1251,12 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     LSet Q$(1) = teamName$
     LSet Q$(2) = teamNick$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings%(I)): Next
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings%(I)): Next I
+    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings(I)): Next
+    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings(I)): Next I
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)
-        LSet Q$(I * 5 + 17) = MKI$(rushAtt(I))
+        LSet Q$(I * 5 + 17) = MKI$(rushContrib(I))
         LSet Q$(I * 5 + 18) = MKI$(rushAvg(I))
         LSet Q$(I * 5 + 19) = MKI$(rbRecepts(I))
         LSet Q$(I * 5 + 20) = MKI$(rbRecAvg(I))
@@ -1149,13 +1264,13 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     For I = 0 To 5
         LSet Q$(I * 3 + 66) = wrName$(I)
-        LSet Q$(I * 3 + 67) = MKI$(wrRecept(I))
+        LSet Q$(I * 3 + 67) = MKI$(recContrib(I))
         LSet Q$(I * 3 + 68) = MKI$(wrRecAvg(I))
     Next I
 
     For I = 0 To 3
         LSet Q$(I * 5 + 84) = qbName$(I)
-        LSet Q$(I * 5 + 85) = MKI$(passAtt(I))
+        LSet Q$(I * 5 + 85) = MKI$(passContrib(I))
         LSet Q$(I * 5 + 86) = MKI$(compPct(I))
         LSet Q$(I * 5 + 87) = MKI$(qbIntPct(I))
         LSet Q$(I * 5 + 88) = MKI$(armRating(I))
@@ -1163,13 +1278,13 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
 
     For I = 0 To 2
         LSet Q$(I * 3 + 104) = krName$(I)
-        LSet Q$(I * 3 + 105) = MKI$(krRet(I))
+        LSet Q$(I * 3 + 105) = MKI$(krContrib(I))
         LSet Q$(I * 3 + 106) = MKI$(krRetAvg(I))
     Next I
 
     For I = 0 To 2
         LSet Q$(I * 3 + 113) = prName$(I)
-        LSet Q$(I * 3 + 114) = MKI$(prRet(I))
+        LSet Q$(I * 3 + 114) = MKI$(prContrib(I))
         LSet Q$(I * 3 + 115) = MKI$(prRetAvg(I))
     Next I
 
@@ -1179,14 +1294,14 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     LSet Q$(123) = MKI$(puntAvg(0))
     LSet Q$(124) = pkName$(0)
     LSet Q$(125) = MKI$(pkFGA(0))
-    LSet Q$(126) = MKI$(pkFGPct(0))
+    LSet Q$(126) = MKI$(pkFGContrib(0))
     LSet Q$(127) = MKI$(pkPAT(0))
-    LSet Q$(128) = MKI$(pkPATPct(0))
+    LSet Q$(128) = MKI$(pkPATContrib(0))
     LSet Q$(129) = pkName$(1)
     LSet Q$(130) = MKI$(pkFGA(1))
-    LSet Q$(131) = MKI$(pkFGPct(1))
+    LSet Q$(131) = MKI$(pkFGContrib(1))
     LSet Q$(132) = MKI$(pkPAT(1))
-    LSet Q$(133) = MKI$(pkPATPct(1))
+    LSet Q$(133) = MKI$(pkPATContrib(1))
     LSet Q$(134) = MKI$(ydsCompAdj)
 
     For I = 0 To 14
@@ -1226,11 +1341,13 @@ End Sub
 'choosing the team to draft players from
 Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
-    Shared tmRat_DRAFT()
+    Shared teamRat_DRAFT()
 
     Shared previousYear$, teamNick$
 
     Do
+
+        chosenIdx = 0
 
         Color 15, 0
         Cls
@@ -1252,14 +1369,32 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
             If I$ <> Chr$(13) Then
 
-                Locate 7, 27: Print I$
-                Locate 7, 28: Line Input NY$
-                NY$ = I$ + NY$
-                Color 15, 0
+                Locate 7, 27: Print I$;
 
-                If Not (NY$ = "" And yearNumber$ <> "") Then
+                NY$ = ""
 
-                    yearNumber$ = RTrim$(NY$)
+                Do Until NY$ = Chr$(13)
+
+                    NY$ = GetKeyPress$
+
+                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
+                        col% = Pos(0)
+                        I$ = Left$(I$, (Len(I$) - 1))
+                        Locate , col% - 1
+                        Print " ";
+                        Locate , col% - 1
+                    Else
+                        I$ = I$ + NY$
+                        Print NY$;
+                    End If
+
+                Loop
+
+                I$ = Left$(I$, (Len(I$) - 1))
+
+                If Not (I$ = "" And yearNumber$ <> "") Then
+
+                    yearNumber$ = RTrim$(I$)
                     Erase teamNames$
                     numberTeams = 0
 
@@ -1267,8 +1402,8 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                     If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
 
-                        MsgText$ = "NO TEAM FILES WERE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO MAIN MENU"
-                        BoxWidth = 20
+                        MsgText$ = "NO TEAM FILES COULD BE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
+                        BoxWidth = 24
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
                         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
@@ -1318,7 +1453,7 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                     Do
                         Locate 2, 33
-                        Color tmRat_DRAFT(2), tmRat_DRAFT(1): Print teamName$
+                        Color teamRat_DRAFT(2), teamRat_DRAFT(1): Print teamName$
 
                         Color 15, 4
                         Locate 3, 32: Print "ANY CHANGE? (Y/N)";
@@ -1329,13 +1464,13 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
 
                 End If
 
-            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N"
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
 
         End If 'Done checking for ESC
 
     Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
 
-    If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
+    'If I$ = Chr$(27) Or J$ = Chr$(27) Then chosenIdx = 0
 
 End Sub
 
@@ -1347,12 +1482,15 @@ End Sub
 'selecting the team to draft players from
 Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 
-    If numberTeams > 0 Then
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
 
         SELECTION% = 1
         Count% = numberTeams
         Start% = 1
-        FileFGColor% = 15: FileBGColor% = 4
+        FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Rows% = 20
         Columns% = 4
@@ -1365,27 +1503,35 @@ Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
         Color 14
         Locate , 33: Print "TEAM SELECTION"
         Locate 25, 1
-        Color 14: Print "ESC";: Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";: Color 15: Print "-SELECTS TEAM";
+        Color 14: Print "ESC";
+        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
+        Color 14: Print "ENTER";
+        Color 15: Print "-SELECTS TEAM";
 
         _MouseShow "DEFAULT"
-        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
         _MouseHide
 
         If ExitCode% <> 27 Then
 
             selectedIdx = teamIndex%(SELECTION%)
 
-            Locate 2, 33: Color 3
-            Print "LOADING.."
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
 
-            Call ReadSourceTeam(yearNumber$, teamName$, selectedIdx)
-
-        Else
-
-            BO% = 1
+            Call ReadSourceTeam(yearNumber$, teamName$, selectedIdx, validData)
 
         End If
+
+    End If
+
+    If validData = 0 And ExitCode% <> 27 Then
+
+        selectedIdx = -1
+        Locate 9,
+        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
+        K$ = GetKeyPress$
+        Call CSMsgBox("", 0, PASS)
 
     End If
 
@@ -1396,7 +1542,7 @@ End Sub
 '----------------------------------------
 'This subroutine reads team data into
 'arrays for the selected team
-Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
+Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx, dataOK)
 
     Dim C2!(15), C3!(15)
 
@@ -1410,7 +1556,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Shared prRet_DRAFT(), prRetAvg_DRAFT(), puntAvg_DRAFT()
     Shared qbArmRat_DRAFT(), qbPA_DRAFT(), qbPCPct_DRAFT(), qbIntPct_DRAFT()
     Shared rbAtt_DRAFT(), rbAvg_DRAFT(), rbRec_DRAFT(), rbRecAvg_DRAFT()
-    Shared tmRat_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT()
+    Shared teamRat_DRAFT(), wrRec_DRAFT(), wrAvg_DRAFT()
 
     Shared rbNam_DRAFT$(), wrNam_DRAFT$(), qbNam_DRAFT$(), krNam_DRAFT$(), prNam_DRAFT$(), pntNam_DRAFT$(), pkNam_DRAFT$()
     Shared intNam_DRAFT$(), sackNam_DRAFT$()
@@ -1463,7 +1609,7 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Next I
 
     For I = 0 To 4:
-        tmRat_DRAFT(I) = CVI(Q$(I + 11))
+        teamRat_DRAFT(I) = CVI(Q$(I + 11))
     Next I
 
     For I = 0 To 9
@@ -1522,76 +1668,89 @@ Sub ReadSourceTeam (teamYear$, targetTeam$, teamIdx)
     Next I
 
     Close #1
+    
+    If CheckString%(targetTeam$) = 1 then
 
-    Erase C2!, C3!
+        dataOK = 0
+        
+    Else
 
-    U = 0
+        'Get contribution %'s
+        Erase C3!
 
-    For I = 1 To 9
-        If rbAtt_DRAFT(I) = 0 Then
-            U = U + 1
-        Else
-            C3!(I) = rbAtt_DRAFT(I) - rbAtt_DRAFT(I - 1 - U)
-            U = 0
-        End If
-    Next
+        U = 0
 
-    For I = 1 To 9:
-        rbAtt_DRAFT(I) = C3!(I)
-    Next
+        For I = 1 To 9
+            If rbAtt_DRAFT(I) = 0 Then
+                U = U + 1
+            Else
+                C3!(I) = rbAtt_DRAFT(I) - rbAtt_DRAFT(I - 1 - U)
+                U = 0
+            End If
+        Next
 
-    For I = 0 To 5:
-        rbRec_DRAFT(I + 10) = wrRec_DRAFT(I)
-    Next
+        For I = 1 To 9:
+            rbAtt_DRAFT(I) = C3!(I)
+        Next
 
-    U = 0
+        For I = 0 To 5:
+            rbRec_DRAFT(I + 10) = wrRec_DRAFT(I)
+        Next
 
-    For I = 1 To 15
-        If rbRec_DRAFT(I) = 0 Then
-            U = U + 1
-        Else
-            C2!(I) = rbRec_DRAFT(I) - rbRec_DRAFT(I - 1 - U)
-            U = 0
-        End If
-    Next
+        Erase C2!
 
-    For I = 1 To 15:
-        rbRec_DRAFT(I) = C2!(I)
-    Next
+        U = 0
 
-    For I = 0 To 5:
-        wrRec_DRAFT(I) = rbRec_DRAFT(I + 10)
-    Next
+        For I = 1 To 15
+            If rbRec_DRAFT(I) = 0 Then
+                U = U + 1
+            Else
+                C2!(I) = rbRec_DRAFT(I) - rbRec_DRAFT(I - 1 - U)
+                U = 0
+            End If
+        Next
 
-    For I = 3 To 1 Step -1
-        If qbPA_DRAFT(I) <> 0 Then
-            qbPA_DRAFT(I) = qbPA_DRAFT(I) - qbPA_DRAFT(I - 1)
-        End If
-    Next
+        For I = 1 To 15:
+            rbRec_DRAFT(I) = C2!(I)
+        Next
 
-    For I = 2 To 1 Step -1
-        If krNumRet_DRAFT(I) <> 0 Then
-            krNumRet_DRAFT(I) = krNumRet_DRAFT(I) - krNumRet_DRAFT(I - 1)
-        End If
-    Next
+        For I = 0 To 5:
+            wrRec_DRAFT(I) = rbRec_DRAFT(I + 10)
+        Next
 
-    For I = 2 To 1 Step -1
-        If prRet_DRAFT(I) <> 0 Then
-            prRet_DRAFT(I) = prRet_DRAFT(I) - prRet_DRAFT(I - 1)
-        End If
-    Next
+        For I = 3 To 1 Step -1
+            If qbPA_DRAFT(I) <> 0 Then
+                qbPA_DRAFT(I) = qbPA_DRAFT(I) - qbPA_DRAFT(I - 1)
+            End If
+        Next
 
-    For I = 1 To 1 Step -1
-        If FGPct_DRAFT(I) <> 0 Then
-            FGPct_DRAFT(I) = FGPct_DRAFT(I) - FGPct_DRAFT(I - 1)
-        End If
-    Next
+        For I = 2 To 1 Step -1
+            If krNumRet_DRAFT(I) <> 0 Then
+                krNumRet_DRAFT(I) = krNumRet_DRAFT(I) - krNumRet_DRAFT(I - 1)
+            End If
+        Next
 
-    For I = 1 To 1 Step -1
-        If PATPct_DRAFT(I) <> 0 Then
-            PATPct_DRAFT(I) = PATPct_DRAFT(I) - PATPct_DRAFT(I - 1)
-        End If
-    Next
+        For I = 2 To 1 Step -1
+            If prRet_DRAFT(I) <> 0 Then
+                prRet_DRAFT(I) = prRet_DRAFT(I) - prRet_DRAFT(I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If FGPct_DRAFT(I) <> 0 Then
+                FGPct_DRAFT(I) = FGPct_DRAFT(I) - FGPct_DRAFT(I - 1)
+            End If
+        Next
+
+        For I = 1 To 1 Step -1
+            If PATPct_DRAFT(I) <> 0 Then
+                PATPct_DRAFT(I) = PATPct_DRAFT(I) - PATPct_DRAFT(I - 1)
+            End If
+        Next
+        
+        dataOK = 1
+        
+    End If
 
 End Sub
 

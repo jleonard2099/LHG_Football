@@ -8,64 +8,67 @@ Sub BLANKORG ()
 
     _Title "3-in-1 Football - Erase National Stats"
 
-    Dim teamName$(40)
+    Dim statFileNames$(MAX_CONFERENCES)
+    Shared memberConf$()
 
     organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS ORGANIZATION. IF YOU STILL WISH TO ERASE ALL STATS, HIT 'Y' FOR YES"
-        BoxWidth = 27
+        MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS ORGANIZATION. IF YOU STILL WISH TO ERASE ALL STATS, PRESS 'Y' FOR YES"
+        BoxWidth = 31
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
         Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
-        I2$ = GetKeyPress$
+        I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
 
-        If UCase$(I2$) = "Y" Then
+        If UCase$(I$) = "Y" Then
 
             Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #1
 
             Input #1, org$
 
-            For X = 1 To 40
-                Input #1, confName$(X)
+            For X = 1 To MAX_CONFERENCES
+                Input #1, memberConf$(X)
             Next
 
             Close #1
 
-            For X = 1 To 40
+            For X = 1 To MAX_CONFERENCES
 
-                If confName$(X) <> "XXX" Then
-                    Cls
-                    Exit Sub
-                    'Should go back to beginning?
-                End If
+                If memberConf$(X) <> "XXX" Then
+
+                    Open diskPaths$(2) + memberConf$(X) + ".TMS" For Input As #2
+
+                    Input #2, org$, div1$, div2$
+
+                    For XW = 1 To TEAMS_PER_CONFERENCE
+                        Input #2, statFileNames$(XW)
+                    Next
+
+                    Close #2
+
+                    For XW = 1 To TEAMS_PER_CONFERENCE
+                        If statFileNames$(XW) <> Chr$(42) Then
+                            Print "DELETING "; statFileNames$(XW); " STATS"
+                            statFile$ = diskPaths$(1) + statFileNames$(XW)
+                            If _FileExists(statFile$) Then Kill statFile$
+                            If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
+                        End If
+                    Next
+
+                    leaderFile$ = diskPaths$(2) + memberConf$(X) + ".LDR"
+                    If _FileExists(leaderFile$) Then Kill leaderFile$
+
+                    standingsFile$ = diskPaths$(2) + memberConf$(X) + ".LDS"
+                    If _FileExists(standingsFile$) Then Kill standingsFile$
+
+                End If 'done checking for XXX
 
             Next
 
-            Open diskPaths$(2) + confName$(X) + ".TMS" For Input As #2
-
-            Input #2, org$, div1$, div2$
-
-            For XW = 1 To 30
-                Input #2, teamName$(XW)
-            Next
-
-            Close #2
-
-            For XW = 1 To 30
-
-                If teamName$(XW) <> Chr$(42) Then
-                    statFile$ = diskPaths$(1) + teamName$(XW)
-                    Print "DELETING "; teamName$(XW); " STATS"
-                    If _FileExists(statFile$) Then Kill statFile$
-                    If _FileExists(statFile$ + "S") Then Kill statFile$ + "S"
-                End If
-
-            Next
-
-        End If
+        End If 'Done confirming to move forward with deletion
 
     End If 
 

@@ -3,151 +3,243 @@
 '----------------------------------------
 Dim opSysType$
 
+Dim Shared currGame
+
 Dim Shared diskPaths$(0 To 3), Q$(0 To 230), QQ$(0 To 4)
 Dim Shared teamNames$(MAX_TEAMS)
 Dim Shared teamIndex%(MAX_TEAMS)
 
 ' *** Reading Stat Data ***
 ' -------------------------
-Dim oppScore(MAX_SCHED_STATS), powerRating(0 To 1, 1 To MAX_SCHED_STATS)
-Dim teamScore(MAX_SCHED_STATS)
-
 Dim gameAttendance&(MAX_SCHED_STATS)
 
-Dim gamePK$(1, 2, 1)
+Dim oppScore(MAX_SCHED_STATS), teamScore(MAX_SCHED_STATS)
+Dim powerRating(0 To 1, MAX_SCHED_STATS)
+
 Dim gameSite$(MAX_SCHED_STATS), locIndicator$(MAX_SCHED_STATS), oppName$(MAX_SCHED_STATS)
 
-Dim statsZ!(38), statsZ1!(38), statsZ2!(50, 18)
+Dim statsLRec$(0 To 15, 0 To 1), statsLFG$(0 To 1), statsLInt$(0 To 9, 0 To 1)
+Dim statsLKR$(0 To 2, 0 To 1), statsLPass$(0 To 3, 0 To 1), statsLRush$(0 To 9, 0 To 1)
+Dim statsLPR$(0 To 2, 0 To 1)
 
-Dim statsZ1$(40), statsZ2$(40)
+Dim statsFGA!(0 To 1, 0 To 4), statsFGM!(1, 4)
+Dim statsLRec!(0 To 15), statsLFG!(0 To 9), statsLInt!(0 To 9), statsLKR!(0 To 3)
+Dim statsLPass!(0 To 3), statsLRush!(0 To 9), statsLPR!(0 To 2)
+Dim statsGI(0 To 9, 2), statsGS(0 To 14, 0 To 1)
+
+Dim statsTeam!(38), statsOpp!(38), statsPlayers!(50, 18)
+
+'Record / Standings
+
+
+' Conferences / Orgs
+Dim memberConf$(MAX_CONFERENCES)
+'Static values here are so we can cover
+'TEAMS_PER_CONFERENCE and TEAMS_PER_LEAGUE
+'Ideally we would ReDim each based on these
+'values when needed
+Dim memberIdx(40)
+Dim memberName$(40), memberNames_2nd$(40)
+Dim memberYear$(40), memberYear_2nd$(40)
+Dim statFilesComp$(60)
 
 '-- For Road Data
-Dim APR%(1, MAX_SCHED_STATS), ORD%(MAX_SCHED_STATS)
-Dim TR%(MAX_SCHED_STATS)
+Dim gameAtt_Road!(MAX_SCHED_STATS)
 
-Dim CRDR!(MAX_SCHED_STATS)
+Dim oppScore_Road(MAX_SCHED_STATS), teamScore_Road(MAX_SCHED_STATS)
+Dim powerRating_Road(1, MAX_SCHED_STATS)
 
-Dim gameSiteRoad$(MAX_SCHED_STATS)
-Dim HR$(MAX_SCHED_STATS), ORD$(MAX_SCHED_STATS)
+Dim gameSite_Road$(MAX_SCHED_STATS), locIndicator_Road$(MAX_SCHED_STATS), oppName_Road$(MAX_SCHED_STATS)
 
 
 ' *** Schedule Data ***
 ' -------------------------
-Dim homeScores(MAX_GAMES), visitorScores(MAX_GAMES)
-'Dim homeTeam$(MAX_GAMES), visitingTeam$(MAX_GAMES)
-'Dim yearNumber$(MAX_GAMES, 1)
+Dim BS%, NS%
+
+ReDim scheduleAP%(1), scheduleNG%(MAX_SCHEDULE_GAMES, 20)
+ReDim homeScores(MAX_SCHEDULE_GAMES), visitorScores(MAX_SCHEDULE_GAMES)
+
+ReDim scheduleH$(MAX_SCHEDULE_GAMES), scheduleV$(MAX_SCHEDULE_GAMES)
+'ReDim homeTeam$(MAX_SCHEDULE_GAMES), visitingTeam$(MAX_SCHEDULE_GAMES)
+ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES), scheduleQB_H$(MAX_SCHEDULE_GAMES)
+ReDim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
+'ReDim yearNumber$(MAX_SCHEDULE_GAMES, 1)
+
 
 ' *** Game Options ***
 ' -------------------------
-Dim Shared DT$, TM$, TN$
+Dim Shared DT$, leagLdrTeams$
 
-Dim location$(2), modeAbbrev$(3), overtime$(3)
+Dim eventSettings(13)
+
+Dim location$(2), modeAbbrev$(3), overtime$(0 To 8)
 Dim playMode$(3)
-Dim rulesType$(5), ruleYrPro$(3), ruleYrColl$(0 To 5)
+Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 
 
-' *** Miscellaneous Use ***
-' -------------------------
-Dim Shared NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+'----------------------------------------
+' Used in ALIGN / MERGE routines
+'----------------------------------------
+'Different aligned names by position
+Dim rbName_Align$(0 To 9), wrName_Align$(0 To 5), qbName_Align$(0 To 3), krName_Align$(0 To 2), prName_Align$(0 To 2), punterName_Align$(0 To 3), pkName_Align$(0 To 1)
+Dim intName_Align$(9), sackName_Align$(14)
 
+'Different original names by position
+Dim rbName_Road$(0 To 9), wrName_Road$(0 To 5), qbName_Road$(0 To 3), krName_Road$(0 To 2), prName_Road$(0 To 2), punterName_Road$(0 To 1), pkName_Road$(0 To 1)
+Dim intName_Road$(9), sackName_Road$(15)
+
+Dim teamNameAlign$
+
+Dim longCatchName_Align$(0 To 15, 0 To 1), longCatchName_Road$(0 To 15, 0 To 1)
+Dim longFGName_Align$(0 To 1), longFGName_Road$(0 To 1)
+Dim longIntName_Align$(0 To 9, 0 To 1), longIntName_Road$(0 To 9, 0 To 1)
+Dim longKRName_Align$(0 To 2, 0 To 1), longKRName_Road$(0 To 2, 0 To 1)
+Dim longPassName_Align$(0 To 3, 0 To 1), longPassName_Road$(0 To 3, 0 To 1)
+Dim longRunName_Align$(0 To 9, 0 To 1), longRunName_Road$(0 To 9, 0 To 1)
+Dim longPRName_Align$(0 To 2, 0 To 1), longPRName_Road$(0 To 2, 0 To 1)
+
+Dim FGA_Align!(0 To 1, 0 To 4), FGA_Road!(0 To 1, 0 To 4)
+Dim FGM_Align!(1, 4), FGM_Road!(1, 4)
+Dim nbrInt_Align(0 To 9, 2), nbrInt_Road(0 To 9, 2), nbrSack_Align(0 To 15, 1), nbrSack_Road(0 To 15, 1)
+
+Dim longCatchVal_Align!(15), longCatchVal_Road!(15)
+Dim longFGVal_Road!(1), longFGVal_Align!(1)
+Dim longKRVal_Align!(2), longKRVal_Road!(2)
+Dim longIntVal_Align!(0 To 9), longIntVal_Road!(0 To 9)
+Dim longPassVal_Align!(3), longPassVal_Road!(3)
+Dim longRunVal_Align!(0 To 9), longRunVal_Road!(0 To 9)
+Dim longPRVal_Align!(2), longPRVal_Road!(2)
+
+Dim statsTeam_Road!(38), statsOpp_Road!(38)
+Dim statsPlayers_Align!(14, 18), statsPlayers_Road!(14, 18)
+
+
+'----------------------------------------
+' Used in CAREER / LEADER routines
+'----------------------------------------
+Dim TT, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
+
+Dim careerWRR$, careerQBR$, careerKRR$, careerPRR$
+
+Dim carLdrPlyrName$(62, 20), carLdrTDIndic$(62, 20)
+Dim carLdrVal!(62, 20)
+
+Dim carDefInts$(55), carDefSacks$(55)
+
+'S = stats ???
+Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
+Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerWRS$(MAX_CAREER_YEARS, 40, 1)
+
+Dim carRBacks$(50), carWdRec$(40), carQBacks$(20), carKickRet$(15), carPRet$(15), carPunter$(10), carKicker$(10)
+
+Dim careerLRec$(60, 1), careerLFG$(0 To 1), careerLInt$(0 To 9, 0 To 1)
+Dim careerLKR$(15, 1), careerLPass$(20, 1), careerLRush$(50, 1)
+Dim careerLPR$(15, 1)
+
+Dim careerDefRecPlyr$(1), careerFGRecPlyr$(6), careerKRRecPlyr$(4), careerPRRecPlyr$(4), careerPuntRecPlyr$(2)
+Dim careerQBRecPlyr$(8), careerRBRecPlyr$(9), careerRBR$(1), careerWRRecPlyr$(4)
+
+Dim carYear_DF(1), carYear_FG(6), carYear_KRet(4), carYear_PRet(4)
+Dim carYear_Punt(2), carYear_QB(8), carYear_RB(9), carYear_WR(4)
+Dim carGameSacks(55, 1), carGameInts(55, 2)
+
+Dim careerDefRecVal!(1), careerFGRecVal!(6), careerKRRecVal!(4), careerPRRecVal!(4)
+Dim careerPuntRecVal!(2), careerQBRecVal!(8), careerRBRecVal!(9), careerWRRecVal!(4)
+
+Dim careerFGA!(9, 4), careerFGM(9, 4)
+Dim careerLRec!(60), careerLKR!(15), careerLRush!(50), careerLPass!(20)
+Dim careerLPR!(15)
+
+Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
+Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
+Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+
+Dim careerRecPlyr$(6)
+Dim careerRecVal!(6), careerTeamTotal!(50)
+
+' For Expanded Leaders
+Dim expLdrRBName$(300), expLdrRBTeam$(300), expLdrWRName$(180), expLdrWRTeam$(180), expLdrQBTeam$(120)
+Dim expLdrKRName$(90), expLdrKRTeam$(90), expLdrPRName$(90), expLdrPRTeam$(90)
+Dim expLdrPuntName$(30), expLdrPuntTeam$(30), expLdrKickName$(60), expLdrKickTeam$(60)
+Dim expLdrIntName$(300), expLdrIntTeam$(300), expLdrSackName$(450), expLdrSackTeam$(450)
+Dim expLdrQBName$(120)
+
+Dim expLdrLRec$(480), expLdrLKR$(90), expLdrLPass$(120), expLdrLRush$(300), expLdrLPR$(90)
+Dim expLdrTeam$(480), expLdrPlyrName$(480), expLdrTD$(480)
+
+Dim expCategories$(74)
+
+Dim expLdrRBGames!(300), expLdrWRGames!(180), expLdrQBGames!(120)
+
+Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBRat!(120, 1)
+Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
+Dim expLdrKickVal!(60, 5), expLdrIntVal!(300), expLdrSackVal!(450)
+
+Dim expLdrVal!(480)
+
+
+
+'For Expanded Standings
+Dim teamLoseStreak(40), teamWinStreak(40)
+Dim teamTotWins(40)
+
+Dim totHomeLosses(40), totHomeWins(40)
+Dim totRoadLosses(40), totRoadWins(40)
+Dim totNeutralLosses(40), totNeutralWins(40)
+
+Dim totTeamLosses(40), lastLoseStreak(40), lastWinStreak(40)
+
+Dim expStdLeagName$(40)
+
+'----------------------------------------
+' Used in COMPILE / SEE routines
+'----------------------------------------
 Dim Shared confLosses, confTies, confWins
 Dim Shared fullLosses, fullTies, fullWins
-Dim Shared PTSFC, PTSAC
+Dim Shared confPtsFor, confPtsAgnst
 
-Dim AN1$(9), AN2$(5), AN3$(3), AN4$(2), AN5$(2), AN6$(3), AN7$(1)
-Dim AR1$(9), AR2$(5), AR3$(3), AR4$(2), AR5$(2), AR6$(3), AR7$(1)
-Dim AR$(1), DIN$(9), DRI$(9), DSN$(14), DSR$(15)
-Dim LCN$(0 To 15, 0 To 1), LCR$(0 To 15, 0 To 1), LFN$(0 To 1), LFR$(0 To 1)
-Dim LIN$(0 To 9, 0 To 1), LIR$(0 To 9, 0 To 1), LKN$(0 To 2, 0 To 1), LKR$(0 To 2, 0 To 1)
-Dim LPN$(0 To 3, 0 To 1), LPR$(0 To 3, 0 To 1), LRN$(0 To 9, 0 To 1), LRR$(0 To 9, 0 To 1)
-Dim PKN$(0 To 2, 0 To 1), PKR$(0 To 2, 0 To 1)
-
-Dim statsLC$(0 To 15, 0 To 1), statsLF$(0 To 1), statsLI$(0 To 9, 0 To 1)
-Dim statsLK$(0 To 2, 0 To 1), statsLP$(0 To 3, 0 To 1), statsLR$(0 To 9, 0 To 1)
-Dim statsPK$(0 To 2, 1)
-
-Dim GIN%(0 To 9, 2), GIR%(0 To 9, 2), GSN%(0 To 15, 1), GSR%(0 To 15, 1)
-Dim statsGI%(0 To 9, 2), statsGS%(0 To 14, 0 To 1), statsZ1%(40)
-
-Dim AF!(0 To 1, 0 To 4), AM!(1, 4)
-Dim AFN!(0 To 1, 0 To 4), AFR!(0 To 1, 0 To 4)
-Dim AMN!(1, 4), AMR!(1, 4)
-
-Dim gameStatsPlayer!(13, 17)
-
-'--LF! is only 0 to 9 b/c of career behavior
-Dim statsLC!(0 To 15), statsLF!(0 To 9), statsLI!(0 To 9), statsLK!(0 To 3)
-Dim statsLP!(0 To 3), statsLR!(0 To 9), statsPK!(0 To 2)
-
-Dim LCN!(15), LCR!(15), LIN!(0 To 9), LIR!(0 To 9)
-Dim LFR!(1), LFN!(1), LKN!(2), LKR!(2)
-Dim LPN!(3), LPR!(3), LRN!(0 To 9), LRR!(0 To 9)
-Dim PKN!(2), PKR!(2)
-
-Dim ZN2!(14, 18), ZR!(38), ZR1!(38), ZR2!(14, 18)
-
-Dim ratingsQB!(0 To 3, 10)
-
-'----------------------------------------
-' Used in CAREER routines
-'----------------------------------------
-
-Dim carRBacks$(50), carWdRec$(40), carQBacks$(20), carKickRet$(15), carPRet$(15), carPunters$(10), carKicker$(10)
-Dim carDefInts$(55), carDefSacks$(55), carKRS$(15, 15, 1), carPRS$(15, 15, 1)
-Dim careerQBS$(15, 20, 1), careerRBC$(9), careerRBS$(15, 50, 1), careerRC$(6), careerWRS$(15, 40, 1)
-
-Dim viewRBacks$(1, 50), viewWdRec$(1, 40), viewQBacks$(1, 20), viewKickRet$(1, 15), viewPRet$(1, 15), viewPunter$(1, 10), viewKicker$(1, 10)
-Dim viewDefInts$(1, 55), viewDefSacks$(1, 55)
-
-Dim A1C$(50), A2C$(40), A3C$(20), A4C$(15), A5C$(15), A6C$(10), A7C$(10)
-Dim DFC$(1), DIC$(55), DSC$(55)
-Dim FGC$(6), KRC$(4), KRRS$(15, 15, 1)
-Dim PRC$(4), PRRS$(15, 15, 1), PUC$(2)
-Dim QBC$(8), RBR$(1), WRC$(4)
-
-Dim KRS!(15, 15, 6), PRS!(15, 15, 6)
-Dim QBBS!(15, 20, 12), RBBS!(15, 50, 10), WRRS!(15, 40, 6)
-
-Dim DFYR%(1), FGYR%(6), KRYR%(4), PRYR%(4)
-Dim PUYR%(2), QBYR%(8), RBYR%(9), WRYR%(4)
-
-Dim DFFC!(1), FGGC!(6), KRRC!(4), PRRC!(4)
-Dim PUUC!(2), QBBC!(8), RBBC!(9), WRRC!(4)
-
-Dim careerFF!(15, 30), careerII!(15, 30), careerPP!(15, 30), careerYY!(15, 30)
-Dim careerFGS!(15, 10, 17), careerGIS!(15, 55, 3), careerGSS!(15, 55, 3)
-Dim careerKRS!(15, 15, 11), careerPRS!(15, 15, 11), careerPUS!(15, 10, 4)
-Dim careerQBS!(15, 20, 13), careerRBS!(15, 50, 11), careerWRS!(15, 40, 11)
-Dim careerRC!(6), careerTT!(50)
-
-
-'----------------------------------------
-' Used in COMPILER routines
-'----------------------------------------
 Dim fumbGain, puntNum
 Dim puntName$
-Dim Shared findFile$
 
-Dim indRecDesc$(50, 2), compKR$(3), compPK$(2), compPR$(3)
-Dim compQB$(4), compRB$(10), compWR$(16)
-Dim compZ1$(60), compZ2$(1 To 240), compZ3$(1 To 240)
-Dim N2$(240), N3$(240), NT$(10, 20)
-Dim PS$(10), PT$(1200), statFiles$(30)
-Dim TB$(18), teamRecDesc$(50), TT$(10, 20)
+Dim leaderName$(1 To 240), leaderTeam$(1 To 240)
+Dim leaderVal!(1 To 240, 1 To 2)
+Dim leaderAllPurpName$(18)
+Dim leaderAllPurpTDs!(16)
+Dim leaderAllPurpYds!(16)
 
-Dim compPR!(11, 11), compQB!(1 To 11, 1 To 11), compRB!(11, 11)
-Dim compTT!(10, 20, 9), compWR!(16, 13)
-Dim compZ1!(1 To 240, 1 To 2), compZ2!(14, 18)
+Dim compRB$(10), compWR$(16), compQB$(4)
+Dim compKR$(3), compPR$(3), compKicker$(2)
 
-Dim indRecords!(50), DT!(38), EA!(2), EM!(2), EP!(2)
-Dim FA!(2), FG!(2), FM!(2), KR!(11, 11)
-Dim N1!(240, 2), NT!(10, 20, 9)
-Dim O1!(60), O2!(60), O3!(60), OT!(38)
-Dim PT!(1200, 5), PTSA!(60), PTSF!(60)
-Dim TD!(16), TG!(16), TP!(18), teamRecords!(50)
-Dim YD!(16)
+Dim compRB!(11, 11), compWR!(16, 13), compQB!(1 To 11, 1 To 11)
+Dim compKR!(11, 11), compPR!(11, 11)
+Dim compPunts!(16)
+Dim compPAT!(2), compPAM!(2)
+Dim compFGA!(2), compFGM!(2)
+Dim compPAPct!(2), compFGPct!(2)
+
+Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
+Dim indRecords!(0 To 50), teamRecords!(0 To 50)
+
+Dim leagPtsAgnst!(60), leagPtsFor!(60)
+
+Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
+Dim totalTeamName$(10, 20)
+
+Dim natLdrName$(240), natLdrTeam$(240)
+Dim natLdrTotTeam$(10, 20)
+
+Dim natLdrTotVal!(10, 20, 9)
+Dim natLdrVal!(240, 2)
+
+Dim pollTeam$(1200)
+Dim pollRatings!(1200, 5)
+
+Dim statsGeneral!(14, 18)
+
+Dim defTotals!(38), offTotals!(38)
+
 
 '----------------------------------------
 ' Used in DRAFT routines
@@ -160,7 +252,7 @@ Dim leagRat_DRAFT(7), numInt_DRAFT(9), numSack_DRAFT(14)
 Dim prRet_DRAFT(2), prRetAvg_DRAFT(2), puntAvg_DRAFT(2)
 Dim qbArmRat_DRAFT(3), qbPA_DRAFT(3), qbPCPct_DRAFT(3), qbIntPct_DRAFT(3)
 Dim rbAtt_DRAFT(9), rbAvg_DRAFT(9), rbRec_DRAFT(15), rbRecAvg_DRAFT(9)
-Dim tmRat_DRAFT(4), wrRec_DRAFT(5), wrAvg_DRAFT(5)
+Dim teamRat_DRAFT(4), wrRec_DRAFT(5), wrAvg_DRAFT(5)
 
 Dim intNam_DRAFT$(9), krNam_DRAFT$(2)
 Dim prNam_DRAFT$(2), pntNam_DRAFT$(2), pkNam_DRAFT$(1)
@@ -182,62 +274,77 @@ Dim leagRat_TRADE(1, 7), numInt_TRADE(1, 9), numSack_TRADE(1, 14)
 Dim prRet_TRADE(1, 2), prRetAvg_TRADE(1, 2), puntAvg_TRADE(1, 3)
 Dim qbArmRat_TRADE(1, 3), qbPA_TRADE(1, 3), qbPCPct_TRADE(1, 3), qbIntPct_TRADE(1, 3)
 Dim rbAtt_TRADE(1, 9), rbAvg_TRADE(1, 9), rbRec_TRADE(2, 15), rbRecAvg_TRADE(1, 9)
-Dim tmRat_TRADE(1, 4), wrAvg_TRADE(1, 5), wrRec_TRADE(1, 5)
+Dim teamRat_TRADE(1, 4), wrAvg_TRADE(1, 5), wrRec_TRADE(1, 5)
 Dim ydCmpAdj_TRADE!(1), ydsPerComp_TRADE(1)
 
 Dim krNam_TRADE$(2, 3), nicks_TRADE$(1)
 Dim prNam_TRADE$(2, 3), pntNam_TRADE$(2, 3), pkNam_TRADE$(1, 1), puntNam_TRADE$(1)
 Dim qbNam_TRADE$(2, 4), rbNam_TRADE$(2, 9)
-Dim teams_TRADE$(1), wrNam_TRADE$(2, 6)
+Dim intNam_TRADE$(1, 9), sackNam_TRADE$(1, 14)
+Dim tmInfo_TRADE$(1), wrNam_TRADE$(2, 6)
 
 
 ' ** Stats File **
-Dim tradeAF!(1, 1, 4), tradeAM!(1, 1, 4)
-Dim tradeLC!(2, 15), tradeLF!(1, 1), tradeLI!(1, 9)
-Dim tradeLK!(1, 2), tradeLP!(1, 3), tradeLR!(1, 9)
-Dim tradePK!(1, 2), tradeT!(1)
-Dim tradeZ!(1, 38), tradeZ1!(1, 38), tradeZ2!(1, 13, 17)
+Dim teamIndexes(1)
 
-Dim tradeGI%(1, 9, 2), tradeGS%(1, 14, 1)
+Dim tradeFGA!(1, 1, 4), tradeFGM(1, 1, 4)
+Dim tradeGI(1, 9, 2), tradeGS(1, 14, 1)
+Dim tradeLcompFGPct!(1, 1), tradeLKR!(1, 2)
+Dim tradeLInt!(1, 9), tradeLPR!(1, 2)
+Dim tradeLPass!(1, 3), tradeLRec!(2, 15), tradeLRush!(1, 9)
+Dim tradeTeamStat!(1, 38), tradeOppStat!(1, 38), tradePlayerStat!(1, 13, 17)
 
 Dim statNam_TRADE$(1)
-Dim tradeLF$(1, 1), tradeLI$(1, 9, 1)
-Dim tradeLK$(1, 2, 1), tradeLP$(1, 3, 1)
+Dim tradeLFG$(1, 1), tradeLInt$(1, 9, 1)
+Dim tradeLKR$(1, 2, 1), tradeLPass$(1, 3, 1)
+Dim tradeLRec$(1, 15, 1), tradeLRush$(1, 9, 1)
+Dim tradeLPR$(1, 2, 1)
 
-Dim tradeLC$(1, 15, 1), tradeLR$(1, 9, 1)
-Dim tradePK$(1, 2, 1), tradePR$(1, 2)
 Dim tradeQB$(1, 3), tradeRB$(1, 9), tradeWR$(1, 5)
-Dim tradeFG$(1, 1), tradeKR$(1, 2)
+Dim tradeFG$(1, 1), tradeKR$(1, 2), tradePR$(1, 2)
 Dim tradeYN$(1)
 
+
 '----------------------------------------
-'   Used in Head-To-Head routines
+'   Used in HD2HD routines
 '----------------------------------------
-Dim div1$, div2$, div3$, div1_2$, div2_2$, div3_2$
+Dim div1Name$, div2Name$, div3Name$, div4Name$
+Dim div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
+
+Dim divNames$(4), divNames_2nd$(4)
 
 'These are mostly keeping track of quantities (# wins, # losses, etc)
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
-Dim awayLosses!(30), AL2!(30), awayWins!(30), AW2!(30)
+Dim awayLosses!(30), awayLosses_2nd!(30)
+Dim awayTies_2nd!(30), awayTies!(30)
+Dim awayWins!(30), awayWins_2nd!(30)
+Dim awayScoreTeam!(100), awayScoreTeam_2nd!(100)
+Dim awayScoreOpp!(100), awayScoreOpp_2nd!(100)
 
-Dim G1!(100), G12!(100), G2!(100), G22!(100)
-Dim G3!(100), G32!(100), G4!(100), G42!(100)
-Dim HL!(30), HL2!(30), HT!(30), HT2!(30), HW!(30), HW2!(30)
-Dim RT2!(30), RT!(30)
-Dim TAL!(4), TAL2!(4), TAW!(4), TAW2!(4)
-Dim TG1!(4), TG12!(4), TG2!(4), TG22!(4)
-Dim TG3!(4), TG32!(4), TG4!(4), TG42!(4)
-Dim THL!(4), THL2!(4), THW!(4), THW2!(4)
-Dim THT!(4), THT2!(4), TRT!(4), TRT2!(4)
+Dim homeLosses!(30), homeLosses_2nd!(30)
+Dim homeTies!(30), homeTies_2nd!(30)
+Dim homeWins!(30), homeWins_2nd!(30)
+Dim homeScoreTeam!(100), homeScoreTeam_2nd!(100)
+Dim homeScoreOpp!(100), homeScoreOpp_2nd!(100)
 
-Dim DV$(3), DV2$(3), Z12$(30), Z22$(30)
+Dim totHomeLosses!(4), totHomeLosses_2nd!(4)
+Dim totHomeTies!(4), totHomeTies_2nd!(4)
+Dim totHomeWins!(4), totHomeWins_2nd!(4)
+Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd(4)
+Dim totHomeScoreOpp!(4), totHomeScoreOpp_2nd!(4)
+
+Dim totAwayLosses!(4), totAwayLosses_2nd!(4)
+Dim totAwayTies!(4), totAwayTies_2nd!(4)
+Dim totAwayWins!(4), totAwayWins_2nd!(4)
+Dim totAwayScoreTeam!(4), totAwayScoreTeam_2nd!(4)
+Dim totAwayScoreOpp!(4), totAwayScoreOpp_2nd!(4)
 
 
 '----------------------------------------
 ' Used in RECORD routines
 '----------------------------------------
-'   ind recs, team recs
 Dim indRecCategory$(46), teamRecCategory$(43)
 
 
@@ -246,48 +353,24 @@ Dim indRecCategory$(46), teamRecCategory$(43)
 '----------------------------------------
 Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 
-Dim gameCount(30), lookyP%(1)
+Dim gameCount(30), scoreTotals(1)
 
-Dim GMA!(300), GMB!(180), GMC!(120)
+Dim playerStats!(13, 17), sackStats!(1, 1), teamStats!(1, 12)
 
-Dim A1L!(300, 8), A2L!(180, 4), A3L!(120, 13), A3R!(120, 1)
-Dim A4L!(90, 4), A5L!(90, 4), A6L!(30, 2)
-Dim A7L!(60, 5), A8L!(300), A9L!(450)
-Dim teamStats!(1, 12), TYP!(480), lookyTT!(31, 30), sackStats!(1, 1)
+Dim schedStatTeam$(31, 0 To 29)
+Dim schedStatVal!(31, 0 To 29)
 
-Dim A1L$(300), A1T$(300), A2L$(180), A2T$(180), A3T$(120), A4L$(90), A4T$(90)
-Dim A5L$(90), A5T$(90), A6L$(30), A6T$(30), A7L$(60), A7T$(60)
-Dim A8L$(300), A8T$(300), A9L$(450), A9T$(450)
-Dim expCategories$(74)
-
-Dim intNam_TRADE$(1, 9)
-Dim LCL$(480), LKL$(90), LPL$(120), LRL$(300), PKL$(90)
-Dim lookyRBacks$(10), lookyWdRec$(6), lookyQBacks$(4), lookyKickRet$(3), lookyPRet$(3), lookyPunter$(2), lookyKicker$(2)
-Dim lookyTT$(31, 30)
-Dim QBL$(120), sackNam_TRADE$(1, 14)
-Dim TMM$(480), TPP$(480), TYY$(480)
+Dim ratingsQB!(0 To 3, 10)
 
 
 '----------------------------------------
 ' Used in SEExxx routines
 '----------------------------------------
-Dim LD!(240), LZ!(240)
-Dim seeL!(60), seeT!(60), seeW!(60)
+Dim leaderVal1!(240), leaderVal2!(240)
+Dim divLosses!(60), divTies!(60), divWins!(60)
 
-Dim seeP$(60), TM$(60)
-Dim seePR$(1200), seeT$(60)
-
-
-'----------------------------------------
-' Used in SCHEDULE routines
-'----------------------------------------
-Dim BS%, NS%
-
-Dim scheduleAP%(1), scheduleNG%(MAX_GAMES, 20)
-
-Dim scheduleH$(1 To 20), scheduleV$(1 To 20)
-Dim scheduleQB_V$(20), scheduleQB_H$(20)
-Dim scheduleYN$(MAX_GAMES, 1)
+Dim leagRecText$(60), leagLdrTeams$(60)
+Dim pollLdrTeams$(1200), divTeamNames$(60)
 
 
 '----------------------------------------
@@ -299,82 +382,117 @@ Dim actualAttendance&, avgAttendance&
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
 'BW = black & white; as in, set to 1 and the game will lose all color
-Dim Shared autoPlay, ballFumbled, BW
-Dim Shared catchPctSuccess, chosenPlay, coverage, compTeam, CP, currDown ', compOffense
+Dim Shared autoPlay, avgRecYds, ballFumbled, BW
+Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
+Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
-Dim Shared endAllGames, endGame, endYds, endZone, expCompPct
+Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
-Dim Shared gameLoc, goalPostAdj, halfTime
+Dim Shared fieldSide, firstDownClockOpt
+Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
+Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
-Dim Shared I1, I2, I3, I4, I5, I6, I7, I8, I9, I, J
+Dim Shared I1, I3, I5, I6, I7, I8, I9
 
-Dim Shared isOT, JJ, K3, fieldSide, kickYL
-Dim Shared O, overtimeOpt, nbrScores
-Dim Shared penaltyYds, playerMode, playerOpt, playType
+Dim Shared I4 As Single
+Dim Shared kickYL!
+
+Dim Shared isOT, JJ, K3
+Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
+Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
-Dim Shared revFumble, ruleOptColl, ruleOptPro, ruleOptType, rushYds
+
+Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared S6, startYds, tickerGames
 Dim Shared W5, WE, WS, winTeam, yrdLine
 
-'-- There is no indication of X being used in any way!!!
-'-- it seems similar to I/J loop variables
-Dim Shared X, X1
+'playSegment appears to represent a position in the order of a play
+'0   Start clock
+'1   Huddle?
+'2   Snap
+'3   Play in action
+'4   Stop the clock (incomplete pass, first down)
+'5   Possession change (Safety, Defense recover fumble, kick return, etc.)
+'6   End of Play (Whistle)
+'7   ???
+'8   Assess penalty
+'9   Timeout
 
-'The below 2 variables are related to scouting
+'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+'Dim Shared ydsToFirst As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+
+Dim Shared convChoice, fgAttLine, impactTeam
+DIm Shared loseDown
+Dim Shared rushEra, scoreX0, scoreX1
 Dim Shared YC, YF, Z1
 
-Dim Shared BO%, EG%, F%, FF%, goalLnYdAdj, HB%, intChance
-Dim Shared PC%, PS%, R5%
+Dim Shared FF%, goalLnYdAdj, HB%, intChance
+Dim Shared PC%, PS%
 
-Dim Shared gameClock!, pbpDelay!, timeElapsed!
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
-Dim Shared adjF0(4), adjF1(4), AF(1, 1, 0 To 4), AM(1, 1, 0 To 4)
-Dim Shared defInts(1), defSacks(1), defYdAdj(0 To 8, 0 To 10)
+Dim Shared adjFGPct(4), adjFGLine(4)
+Dim Shared brkawayYds(38, 4), climate(6)
+
+Dim Shared gameFGA!(1, 1, 0 To 4), gameFGM!(1, 1, 0 To 4)
+Dim Shared gameLRec!(1, 20), gameLFG!(1, 1), gameLInt!(1, 0 To 9), gameLKR!(1, 0 To 2), gameLPass!(1, 0 To 3), gameLRush!(1, 0 To 9)
+Dim Shared gameLPR!(0 To 1, 0 To 2)
+Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
+
+Dim Shared activeKicker(1)
+Dim Shared defInts(1), defSacks(1)
+Dim Shared defYdAdj(1 To 7, 1 To 12)
+Dim Shared defYdAdjEraA(1 To 7, 1 To 12), defYdAdjEraB(1 To 7, 1 To 12)
 Dim Shared FA(1, 1, 4), FM(1, 1, 4)
-Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), sackStatsPlayer(1, 14, 1), gameStatsTeam(1, 36)
-Dim Shared gameZ0!(0 To 38), gameZ1!(0 To 38), gameZ2!(0 To 13, 0 To 17)
-Dim Shared K1(50, 6), gameStatsPlayer(1, 13, 17), K3(1, 6)
-Dim Shared hasRunFF(1), playerInts(1, 9), IR(1, 9)
+Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
+
+Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
+Dim Shared hasRunFF(1), hasRunRev(1)
+Dim Shared indRushPct(1, 9), IR(1, 9), K1(50, 6), K3(1, 6)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
 Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
-Dim Shared LC(1, 20), leagRat_GAME(1, 7), LF(1, 1), LI(1, 0 To 9), LK(1, 0 To 2), LP(1, 0 To 3), LR(1, 0 To 9)
-Dim Shared nbrPossOT(1), penaltyYds(2), PK(0 To 1, 0 To 2), playerSacks(1, 14)
+Dim Shared leagRat_GAME(1, 7)
+Dim Shared nbrPossOT(1), otTDs(0 To 1)
+
+Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2)
+Dim Shared playerInts(1, 9), playerSacks(1, 14)
 Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
 Dim Shared quarterbacks(1, 3), qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
-Dim Shared runBacks(1, 17), rbRushAtt(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
-Dim Shared score(0 To 1, 0 To 10), scoreQuarters(50), scoreTimes(50), schedGame(2)
-Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), tmRat_GAME(2, 9)
+Dim Shared qbRushIdx(1, 3)
+Dim Shared runYdAdj(1, 38)
+Dim Shared runBacks(1, 17), rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
+Dim Shared sackStatsPlayer(1, 14, 1)
+Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
+Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
+Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
 Dim Shared useRandomQB(1)
 Dim Shared sackStatsTeam(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
-Dim Shared XD(1), ydsPerComp(1), ydsPerPunt(1, 2)
+Dim Shared XD(1), ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
 
-Dim Shared brkawayYds(38, 4), goalLnYdAdj(1 To 30, 1 To 2), HB%(1)
-Dim Shared NG%(20), PC%(1, 9), PS%(2, 21)
-Dim Shared Q7%(1), ydsPerCompPctAdj(50, 2)
-Dim Shared RM%(1, 14), runYdAdj(1, 38), RV%(1)
-Dim Shared passCovAdj(3, 10, 11), S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
-Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
-Dim Shared V4%(1, 3), WX%(6)
+Dim Shared HB%(1), NG%(20), PS%(2, 21)
+Dim Shared RM%(1, 14)
+Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
 Dim Shared pbpString$, targetWRName$, YN$
 
-Dim Shared defFormation$(0 To 15), defPlay$(1 To 15), defInts$(1, 9)
-Dim Shared defSacks$(1, 14), downDesc$(0 To 4), direction$(0 To 1)
+Dim Shared defFormation$(1 To 10)
+Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
+Dim Shared defPlay$(1 To 15)
+Dim Shared defInts$(1, 9), defSacks$(1, 14)
+Dim Shared downDesc$(0 To 4), direction$(0 To 1)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gadget$(3)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
-Dim Shared offensePlay$(50), passCov$(0 To 11)
-Dim Shared penaltyDesc$(2), playDesc$(30), playSelect$(9)
+Dim Shared passCov$(0 To 11), playDesc$(30), playSelect$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3)
 Dim Shared rbacks$(1, 10), SX$(1 To 33, 0 To 1)
 Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
@@ -382,7 +500,5 @@ Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
 'These appear only used to be assigned a "t" value when a TD is implied.
 'They are included in the compiling of stats file
 'I believe they are for tracking records / "longest" plays
-Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLC$(1, 20, 1), gameLR$(1, 9, 1)
+Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLRec$(1, 20, 1), gameLRush$(1, 9, 1)
 Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
-
-

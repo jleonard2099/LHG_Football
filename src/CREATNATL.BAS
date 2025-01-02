@@ -8,7 +8,7 @@ Sub CREATENATL ()
 
     _Title "3-in-1 Football - Manage Organizations"
 
-    Shared statsZ1$()
+    Shared memberConf$()
 
     ReDim menuChoices$(1 To 3)
 
@@ -17,47 +17,48 @@ Sub CREATENATL ()
         Cls
 
         Call TITLE
-        menuChoices$(1) = "CREATE / DEFINE ORG & MEMBERS   "
-        menuChoices$(2) = "ADD / DELETE /REVIEW CONFERENCES"
-        menuChoices$(3) = "RETURN TO STANDINGS/LEADERS MENU"
-        Selection% = 1
+        menuChoices$(1) = "CREATE AN ORGANIZATION     "
+        menuChoices$(2) = "REVIEW ORGANIZATION MEMBERS"
+        menuChoices$(3) = "RETURN TO LEADERS MENU     "
+        SELECTION% = 1
         Count% = 3
         Start% = 1
         ExitCode% = 3
-        FileFGColor% = 15: FileBGColor% = 1
+        FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
         Row% = 8
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor%, FileBGColor%)
+        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
-        MMenuVert menuChoices$(), Selection%, Start%, ExitCode%, FileFGColor%, FileBGColor%, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
+        MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
         _MouseHide
 
         Color , 0
-        I1 = Selection%
+        I1 = SELECTION%
 
         If ExitCode% <> 27 Then
 
             For X = 1 To MAX_CONFERENCES
-                statsZ1$(X) = "XXX"
+                memberConf$(X) = "XXX"
             Next
 
-            Select Case Selection%
+            Select Case SELECTION%
 
                 Case 1:
                     Call DefineNatOrg(organization$)
-                    Call ReviewEditNatOrg(organization$)
+                    orgFile$ = organization$
+                    Call ReviewEditNatOrg(orgFile$, organization$)
 
                 Case 2:
                     Do
-                        organization$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
+                        orgFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReviewEditNatOrg(organization$)
+                            Call ReviewEditNatOrg(orgFile$, organization$)
                         End if
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
@@ -66,7 +67,7 @@ Sub CREATENATL ()
 
         End If
 
-    Loop Until Selection% = 3 Or ExitCode% = 27
+    Loop Until SELECTION% = 3 Or ExitCode% = 27
 
 End Sub
 
@@ -116,18 +117,18 @@ End Sub
 'This subroutine provides an interface to
 'the user allowing them to choose / clear
 'conferences from the org definition.
-Sub ReviewEditNatOrg (organization$)
+Sub ReviewEditNatOrg (orgFile$, organization$)
 
-    Shared statsZ1$()
+    Shared memberConf$()
 
-    If _FileExists(diskPaths$(2) + organization$ + ".CON") Then
+    If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
 
-        Open diskPaths$(2) + organization$ + ".CON" For Input As #1
+        Open diskPaths$(2) + orgFile$ + ".CON" For Input As #1
 
         Input #1, organization$
 
         For X = 1 To MAX_CONFERENCES
-            Input #1, statsZ1$(X)
+            Input #1, memberConf$(X)
         Next
 
         Close #1
@@ -148,19 +149,19 @@ Sub ReviewEditNatOrg (organization$)
         For I = 1 To 10
 
             Color 2: Print Using "## "; I;
-            Color 15: Print statsZ1$(I);
+            Color 15: Print memberConf$(I);
 
             Locate , 21
             Color 2: Print Using "## "; I + 10;
-            Color 15: Print statsZ1$(I + 10);
+            Color 15: Print memberConf$(I + 10);
 
             Locate , 41
             Color 2: Print Using "## "; I + 20;
-            Color 15: Print statsZ1$(I + 20);
+            Color 15: Print memberConf$(I + 20);
 
             Locate , 61
             Color 2: Print Using "## "; I + 30;
-            Color 15: Print statsZ1$(I + 30)
+            Color 15: Print memberConf$(I + 30)
 
         Next I
 
@@ -189,17 +190,17 @@ Sub ReviewEditNatOrg (organization$)
 
             If choice = 1 Then
                 'Add conference
-                statsZ1$(B) = ChooseFile$ (diskPaths$(2) + "*.LIB", "CONFERENCE", ExitCode%)
+                memberConf$(B) = ChooseFile$ (diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
             Else
                 'Remove conference
-                statsZ1$(B) = "XXX"
+                memberConf$(B) = "XXX"
             End If
 
         End If 'Done checking if ready to save
 
     Loop Until choice = 3
 
-    Call SaveNatOrg(organization$)
+    Call SaveNatOrg(orgFile$, organization$)
 
 End Sub
 
@@ -209,16 +210,16 @@ End Sub
 'This subroutine writes the organization's
 'conference memberships and definition to 
 'each of the corresponding files (.CON)
-Sub SaveNatOrg (organization$)
+Sub SaveNatOrg (orgFile$, organization$)
 
-    Shared statsZ1$()
+    Shared memberConf$()
 
-    Open diskPaths$(2) + organization$ + ".CON" For Output As #1
+    Open diskPaths$(2) + orgFile$ + ".CON" For Output As #1
 
     Print #1, organization$
 
     For X = 1 To MAX_CONFERENCES
-        Print #1, statsZ1$(X)
+        Print #1, memberConf$(X)
     Next
 
     Close #1

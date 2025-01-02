@@ -26,47 +26,47 @@ End Sub
 '----------------------------------------
 'This subroutine loads the organization 
 'stats from the file into several arrays
-Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
+Sub LoadLeaderFiles_Natl (confName$, NRT, targetFile$)
 
-    Shared seeL!(), LD!(), LZ!()
-    Shared PT!(), PTSA!(), PTSF!()
-    Shared seeT!(), compTT!(), seeW!()
+    Shared divLosses!(), divTies!(), divWins!()
+    Shared pollRatings!()
+    Shared leaderVal1!(), leaderVal2!()
+    Shared leagPtsAgnst!(), leagPtsFor!()
+    Shared totalTeamVal!()
 
-    Shared seePR$(), seeT$()
-    Shared compZ2$(), compZ3$()
-    Shared TT$()
+    Shared pollLdrTeams$(), divTeamNames$()
+    Shared leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
     Cls
 
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
     Open diskPaths$(2) + targetFile$ + ".CON" For Input As #1
-
-    Input #1, FF$
-
+    Input #1, confName$
     Close #1
 
     Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2
 
     For X = 1 To 60
-        Input #2, seeT$(X), seeW!(X), seeL!(X), seeT!(X), PTSF!(X), PTSA!(X)
+        Input #2, divTeamNames$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
-        Input #2, compZ2$(X), compZ3$(X), LD!(X), LZ!(X)
+        Input #2, leaderName$(X), leaderTeam$(X), leaderVal1!(X), leaderVal2!(X)
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Input #2, compTT!(I, I1, I2)
+                Input #2, totalTeamVal!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Input #2, TT$(I, I1)
+            Input #2, totalTeamName$(I, I1)
         Next
     Next
 
@@ -77,7 +77,7 @@ Sub LoadLeaderFiles_Natl (FF$, NRT, targetFile$)
     Input #3, NRT
 
     For X = 1 To NRT
-        Input #3, seePR$(X), PT!(X, 1), PT!(X, 2), PT!(X, 3), PT!(X, 4), PT!(X, 5)
+        Input #3, pollLdrTeams$(X), pollRatings!(X, 1), pollRatings!(X, 2), pollRatings!(X, 3), pollRatings!(X, 4), pollRatings!(X, 5)
     Next
 
     Close #3
@@ -90,7 +90,7 @@ End Sub
 'This subroutine gives the user various
 'options for viewing the previously loaded
 'stats, and then calls routines for each
-Sub StatOptions_Natl (FF$, NRT)
+Sub StatOptions_Natl (confName$, NRT)
 
     Do
 
@@ -98,39 +98,23 @@ Sub StatOptions_Natl (FF$, NRT)
 
         Call TITLE_STATS
 
-        Call MenuBox (8, 8, 61, 5, 15, 1)
+        userKey$ = GetOutputOptions$
 
-        Do
+        If userKey$ <> Chr$(27) Then
 
-            Locate 10, 32
-            Color 7, 1
-
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "S";: Color 7: Print "CREEN"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "P";: Color 7: Print "RINTER"
-            Locate , 30: Print "STATS TO ";
-            Color 15: Print "F";: Color 7: Print "ILE"
-
-            I$ = GetKeyPress$
-
-            Color 14, 0
-
-        Loop Until UCase$(I$) = "F" Or UCase$(I$) = "P" Or UCase$(I$) = "S"
-
-        If I$ <> Chr$(27) Then
-
-            Select Case UCase$(I$)
+            Select Case userKey$
 
                 Case "F":
-                    Call ReportFilePrompt_Natl(SF$)
-                    Call SavePrintNatLeaders(SF$, FF$, NRT, 1)
+                    userFile$ = _SAVEFILEDIALOG$("Save Organization Report",_CWD$ + "\Report","*.txt","Text File")
+                    If userFile$ <> "" Then
+                        Call NatLeaders_Report(confName$, NRT, 0, userFile$)
+                    End If
 
                 Case "P":
-                    Call SavePrintNatLeaders(SF$, FF$, NRT, 0)
+                    Call NatLeaders_Report(confName$, NRT, 1, "REPORT")
 
                 Case "S":
-                    Call LeaderStatsNat_Screen(FF$, NRT)
+                    Call NatLeaders_Screen(confName$, NRT)
 
             End Select
 
@@ -151,66 +135,31 @@ Sub StatOptions_Natl (FF$, NRT)
 
         End If
 
-    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27)
+    Loop Until UCase$(A$) = "N" Or A$ = Chr$(27) Or userKey$ = Chr$(27)
 
 End Sub
 
 
-'----------------------------------------
-'     ReportFilePrompt_Natl Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub ReportFilePrompt_Natl (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox (6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
 
 '----------------------------------------
-'     LeaderStatsNat_Screen Subroutine
+'     NatLeaders_Screen Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub LeaderStatsNat_Screen (FF$, NRT)
+Sub NatLeaders_Screen (confName$, NRT)
 
-    Shared LD!(), LZ!(), PT!()
-    Shared seeT!(), compTT!()
+    Shared leaderVal1!(), leaderVal2!(), pollRatings!()
+    Shared totalTeamVal!()
 
-    Shared seePR$(), TT$()
-    Shared compZ2$(), compZ3$()
+    Shared pollLdrTeams$(), totalTeamName$()
+    Shared leaderName$(), leaderTeam$()
 
     Color 15, 0
     Cls
 
     Color 12
-    Print FF$ + " OVERALL RANKINGS"
+    Print confName$ + " OVERALL RANKINGS"
 
     Locate , 1
     Color 14
@@ -221,7 +170,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
 
         Print Using "###  "; P;
 
-        Print seePR$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; PT!(P, 1); PT!(P, 2); PT!(P, 3); PT!(P, 4); PT!(P, 5)
+        Print pollLdrTeams$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
 
         If P <> 0 And (P Mod 20 = 0) Then
 
@@ -233,7 +182,7 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
             Cls
 
             Color 12
-            Print FF$ + " OVERALL RANKINGS"
+            Print confName$ + " OVERALL RANKINGS"
 
             Locate , 1
             Color 14
@@ -260,10 +209,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 1 To 20
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.# ####"; LD!(P); LZ!(P)
+            Print Using "##.# ####"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -276,11 +225,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 21 To 40
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##.#  ###"; LD!(P); LZ!(P)
+            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -297,10 +246,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 41 To 50
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -310,11 +259,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 51 To 60
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -324,10 +273,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 81 To 90
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -337,11 +286,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 91 To 100
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -359,10 +308,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 101 To 110
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -372,11 +321,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 111 To 120
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -386,10 +335,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 61 To 70
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -399,11 +348,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 71 To 80
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -421,10 +370,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 121 To 130
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "###.#"; LD!(P)
+            Print Using "###.#"; leaderVal1!(P)
         End If
     Next
 
@@ -434,11 +383,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 131 To 140
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###.#"; LD!(P)
+            Print Using "###.#"; leaderVal1!(P)
         End If
     Next
 
@@ -448,10 +397,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 141 To 150
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -461,11 +410,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 151 To 160
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "####"; LD!(P)
+            Print Using "####"; leaderVal1!(P)
         End If
     Next
 
@@ -483,10 +432,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 161 To 170
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.#  ##"; LD!(P); LZ!(P)
+            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -496,11 +445,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 171 To 180
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##.#  ##"; LD!(P); LZ!(P)
+            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -510,10 +459,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 181 To 190
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##.#  ###"; LD!(P); LZ!(P)
+            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -523,11 +472,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 191 To 200
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###"; LD!(P)
+            Print Using "###"; leaderVal1!(P)
         End If
     Next
 
@@ -545,10 +494,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 201 To 210
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "###.#  ##"; LD!(P); LZ!(P)
+            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -558,11 +507,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 211 To 220
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "###.#  ##"; LD!(P); LZ!(P)
+            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
         End If
     Next
 
@@ -572,10 +521,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 221 To 230
-        If compZ2$(P) <> "*" Then
-            Print compZ2$(P) + ", " + compZ3$(P);
+        If leaderName$(P) <> "*" Then
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 28
-            Print Using "##"; LD!(P)
+            Print Using "##"; leaderVal1!(P)
         End If
     Next
 
@@ -585,11 +534,11 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     Color 15
 
     For P = 231 To 240
-        If compZ2$(P) <> "*" Then
+        If leaderName$(P) <> "*" Then
             Locate , 41
-            Print compZ2$(P) + ", " + compZ3$(P);
+            Print leaderName$(P) + ", " + leaderTeam$(P);
             Locate , 68
-            Print Using "##"; LD!(P)
+            Print Using "##"; leaderVal1!(P)
         End If
     Next
 
@@ -609,9 +558,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 1
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -623,10 +572,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 2
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);: Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print totalTeamName$(CA, P);: Locate , 55
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -646,9 +595,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 3
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -660,10 +609,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 4
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);: Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print totalTeamName$(CA, P);: Locate , 55
+            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
     Next
 
@@ -683,9 +632,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 5
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
     Next
 
@@ -697,10 +646,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 6
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Locate , 41
-            Print TT$(CA, P);: Locate , 55
-            Print Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+            Print totalTeamName$(CA, P);: Locate , 55
+            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
     Next
 
@@ -720,9 +669,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 7
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -742,9 +691,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 8
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 15
+            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -764,10 +713,10 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 9
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);
             Locate , 15
-            Print Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
+            Print Using "###    ##.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2)
         End If
     Next
 
@@ -788,9 +737,9 @@ Sub LeaderStatsNat_Screen (FF$, NRT)
     CA = 10
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print TT$(CA, P);: Locate , 18
-            Print Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print totalTeamName$(CA, P);: Locate , 18
+            Print Using "### ###  ###    ### ###  ###       ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5); totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7)
         End If
     Next
 
@@ -805,35 +754,32 @@ End Sub
 
 
 '----------------------------------------
-'     SavePrintNatLeaders Subroutine
+'     NatLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to a file
 'that is then looped through to send to
 'the default printer
-Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
+Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
-    Shared LZ!(), PT!()
-    Shared seeT!(), compTT!()
+    Shared leaderVal2!(), pollRatings!()
+    Shared totalTeamVal!()
 
-    Shared compZ2$(), compZ3$()
-    Shared seePR$(), TT$()
+    Shared leaderName$(), leaderTeam$()
+    Shared pollLdrTeams$()
+    Shared totalTeamName$()
 
-    Color 0, 15
-    Cls
+	Color 15, 0
+	Cls
 
-    If destination <> 1 Then
-        Open "REPORT" For Output As #1
-    Else
-        Open reportFile$ + ".RPT" For Output As #1
-    End If
+	Open destFile$ For Output As #1
 
-    Print #1, FF$ + " OVERALL RANKINGS"
+    Print #1, confName$ + " OVERALL RANKINGS"
     Print #1, "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
 
     For P = 1 To NRT
         Print #1, Using "###  "; P;
-        Print #1, seePR$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; PT!(P, 1); PT!(P, 2); PT!(P, 3); PT!(P, 4); PT!(P, 5)
+        Print #1, pollLdrTeams$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
     Next
 
     Print #1, Chr$(12)
@@ -842,21 +788,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 1 To 20
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.# ####"; LD!(P); LZ!(P);
+            Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 20) = "*" Then
+        If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 20) + ", " + compZ3$(P + 20);
+            Print #1, leaderName$(P + 20) + ", " + leaderTeam$(P + 20);
             Print #1, Tab(68);
-            Print #1, Using "##.# ####"; LD!(P + 20); LZ!(P + 20)
+            Print #1, Using "##.# ####"; leaderVal1!(P + 20); leaderVal2!(P + 20)
         End If
 
     Next
@@ -866,21 +812,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 41 To 50
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -890,21 +836,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 81 To 90
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -914,21 +860,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 101 To 110
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -938,21 +884,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 61 To 70
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -962,21 +908,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 121 To 130
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "###.#"; LD!(P);
+            Print #1, Using "###.#"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###.#"; LD!(P + 10)
+            Print #1, Using "###.#"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -986,21 +932,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 141 To 150
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "####"; LD!(P);
+            Print #1, Using "####"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "####"; LD!(P + 10)
+            Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1010,21 +956,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 161 To 170
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.#  ##"; LD!(P), LZ!(P);
+            Print #1, Using "##.#  ##"; leaderVal1!(P), leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "##.#  ##"; LD!(P + 10), LZ!(P + 10)
+            Print #1, Using "##.#  ##"; leaderVal1!(P + 10), leaderVal2!(P + 10)
         End If
 
     Next
@@ -1034,21 +980,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 181 To 190
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.#  ###"; LD!(P), LZ!(P);
+            Print #1, Using "##.#  ###"; leaderVal1!(P), leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###"; LD!(P + 10)
+            Print #1, Using "###"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1058,21 +1004,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
     For P = 201 To 210
 
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "###.#  ###"; LD!(P), LZ!(P);
+            Print #1, Using "###.#  ###"; leaderVal1!(P), leaderVal2!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "###.#  ##"; LD!(P + 10), LZ!(P + 10)
+            Print #1, Using "###.#  ##"; leaderVal1!(P + 10), leaderVal2!(P + 10)
         End If
 
     Next
@@ -1081,21 +1027,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     Print #1, "INTERCEPTIONS"; Tab(41); "SACKS"
 
     For P = 221 To 230
-        If compZ2$(P) = "*" Then
+        If leaderName$(P) = "*" Then
             Print #1, Tab(41);
         Else
-            Print #1, compZ2$(P) + ", " + compZ3$(P);
+            Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##"; LD!(P);
+            Print #1, Using "##"; leaderVal1!(P);
             Print #1, Tab(41);
         End If
 
-        If compZ2$(P + 10) = "*" Then
+        If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
-            Print #1, compZ2$(P + 10) + ", " + compZ3$(P + 10);
+            Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "##"; LD!(P + 10)
+            Print #1, Using "##"; leaderVal1!(P + 10)
         End If
 
     Next
@@ -1107,21 +1053,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 1
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 2
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
 
     Next
@@ -1133,21 +1079,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 3
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
             Print #1, Tab(41);
         End If
 
         CA = 4
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "## #### ##### ##.# ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
         End If
 
     Next
@@ -1158,9 +1104,9 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 7
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1170,9 +1116,9 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 8
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5) * 100; compTT!(CA, P, 6); compTT!(CA, P, 7); compTT!(CA, P, 8)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
         End If
     Next
 
@@ -1183,21 +1129,21 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
 
         CA = 5
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1, Tab(41);
         Else
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3);
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
             Print #1, Tab(41);
         End If
 
         CA = 6
 
-        If TT$(CA, P) = "*" Or TT$(CA, P) = "" Then
+        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
             Print #1,
         Else
-            Print #1, TT$(CA, P); Tab(56);
-            Print #1, Using "##   ####   ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3)
+            Print #1, totalTeamName$(CA, P); Tab(56);
+            Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
         End If
 
     Next
@@ -1208,9 +1154,9 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 9
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(15);
-            Print #1, Using "###    ##.#"; compTT!(CA, P, 1); compTT!(CA, P, 2)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(15);
+            Print #1, Using "###    ##.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2)
         End If
     Next
 
@@ -1221,28 +1167,29 @@ Sub SavePrintNatLeaders (reportFile$, FF$, NRT, destination)
     CA = 10
 
     For P = 1 To 20
-        If TT$(CA, P) <> "*" And TT$(CA, P) <> "" Then
-            Print #1, TT$(CA, P); Tab(18);
-            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; compTT!(CA, P, 1); compTT!(CA, P, 2); compTT!(CA, P, 3); compTT!(CA, P, 4); compTT!(CA, P, 5); compTT!(CA, P, 6); compTT!(CA, P, 7)
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
+            Print #1, totalTeamName$(CA, P); Tab(18);
+            Print #1, Using "### ###  ###    ### ###  ###       ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5); totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7)
         End If
     Next
 
     Close #1
 
-    If destination <> 1 Then
+	If printDest = 1 Then
 
-        Open "REPORT" For Input As #2
+		Open destFile$ For Input As #2
 
-        Do While Not EOF(2)
-            Line Input #2, X$
-            LPrint X$
-        Loop
+		Do While Not EOF(2)
+			Line Input #2, X$
+			LPrint X$
+		Loop
 
-        Close #2
+		Close #2
 
-        LPrint Chr$(12)
+		LPrint Chr$(12)
 
-    End If
+		Kill destFile$
+
+	End If
 
 End Sub
-

@@ -1,19 +1,270 @@
 '----------------------------------------
+'          GetQBName$ Function
+'----------------------------------------
+'This subroutine gives the user an over-
+'view of all team QB's and their ratings,
+'then lets them choose the QB to be used
+'in the schedule slot. Only the name and
+'index of the target QB is returned.
+'The name will be printed in the schedule
+'overview and the index will be used to
+'determine which QB to use whenever the
+'generated schedule is run.
+Function GetQBName$ (targetGame%, teamIndicator)
+
+    Shared armRating()
+    Shared passContrib(), compPct(), qbIntPct()
+
+    Shared scheduleNG%(), teamRatings()
+
+    Shared qbName$()
+
+    Color 15, 0
+    Cls
+
+    Call MenuBox(6, 8, 61, 12, teamRatings(2), teamRatings(1))
+    Locate 7, 11
+
+    Locate , 31
+    Print "SELECT QUARTERBACK"
+    Print
+    Locate , 18: Print "# QB NAME      % OF  COMP  INT"
+    Locate , 18: Print "               ATTS  PCT   PCT  ARM"
+
+    For currQB = 0 To 3:
+
+        If qbName$(currQB) <> "XXX" And qbName$(currQB) <> "END" And qbName$(currQB) <> "" Then
+
+            Locate , 18: Print currQB; "- "; qbName$(currQB);
+            Locate , 33
+
+            If currQB = 0 Then
+                Print passContrib(currQB);
+                Locate , 39: Print compPct(currQB);
+                Locate , 45: Print qbIntPct(currQB);
+                Locate , 50: Print armRating(currQB)
+            Else
+                'Only print extra QB's if they
+                'don't have 0% | 100% contribution
+                If passContrib(currQB - 1) < 100 And passContrib(currQB - 1) > 0 Then
+                    Print Int(passContrib(currQB)) - passContrib(currQB - 1);
+                    Locate , 39: Print compPct(currQB);
+                    Locate , 45: Print qbIntPct(currQB);
+                    Locate , 50: Print armRating(currQB)
+                End If
+            End If
+
+        End If
+
+        Locate , 1
+
+    Next currQB
+
+    Locate , 19: Print "4 - COMPUTER SELECT QUARTERBACK"
+    Print
+    Locate , 19: Print "SELECT (0-4) ";
+    Color 15, 0
+
+    Do
+        I$ = GetKeyPress$
+        choice = Val(I$)
+    Loop Until choice >= 0 And choice <= 4
+
+    qbNbr = choice
+
+    If choice <= 3 And scheduleNG%(targetGame%, 3) <> 0 Then
+
+        qbContrib = GetQBRushPct%(qbName$(choice))
+        suggestedMobility = GetQBMobility%(qbContrib)
+
+        Cls
+        Call MenuBox(6, 8, 61, 12, teamRatings(2), teamRatings(1))
+        Locate 7, 11
+
+        Locate 8, 16: Print "ENTER "; qbName$(choice); " MOBILITY RATING (1-9)"
+        Locate , 16: Print "(1-LOW, 9-HIGH)"
+        Print
+        Locate , 16: Print "THIS IS HOW OFTEN HE RUNS OUT OF THE POCKET"
+        Locate , 16: Print "SOME QB'S LIKE MARINO & BRADY ALMOST NEVER DO"
+        Locate , 16: Print "OTHERS LIKE MAHOMES & VICK WILL TAKE OFF"
+        Locate , 16: Print "FOR AN AVERAGE QB, SIMPLY ENTER 5"
+        Print
+        Locate , 16: Print "THIS QB CONTRIBUTED"; qbContrib; "% OF TEAM RUNS"
+        Locate , 16: Print "A SUGGESTED VALUE FOR THEM IS"; suggestedMobility
+
+        Color 15, 0
+
+        Do
+            I$ = GetKeyPress$
+            mobility = Val(I$)
+        Loop Until mobility >= 1 And mobility <= 9
+
+    End If
+
+    'teamIndicator = 2 for Visitor, 3 for Home
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 5) = qbNbr
+    scheduleNG%(targetGame%, (teamIndicator - 2) * 3 + 6) = mobility
+
+    qbName$(4) = "RANDOM"
+
+    GetQBName$ = qbName$(choice)
+
+End Function
+
+
+'----------------------------------------
+'         GetQBRushPct% Function
+'----------------------------------------
+'This function loops through all of the
+'team rushes to calculate the specific %
+'that the designated QB has contributed
+'This function works specifically with
+'the game utilities.
+Function GetQBRushPct% (targetQB$)
+
+    Shared rushContrib()
+
+    Shared rbName$()
+
+    'Determine a suggested mobility rating
+    previousContrib = 0
+
+    'we need a value in case we don't find the QB
+    qbRushContrib = 0
+
+    For currRB = 0 To 9
+
+        currContrib = rushContrib(currRB)
+
+        'Check for QB as a runner
+        If rbName$(currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            qbRushContrib = currContrib - previousContrib
+
+            Exit For
+
+        End If
+
+        If currContrib <> 0 Then previousContrib = currContrib
+
+    Next
+
+    GetQBRushPct% = qbRushContrib
+
+End Function
+
+
+'----------------------------------------
+'    GetQBRushPctGame% Function
+'----------------------------------------
+'This function loops through all of the
+'team rushes to calculate the specific %
+'that the designated QB has contributed
+'This function works specifically with
+'the game's 2-dimensional arrays that
+'store values for each team
+Function GetQBRushPctGame% (targetQB$, currTeam)
+
+    'Determine a suggested mobility rating
+    previousContrib = 0
+
+    'we need a value in case we don't find the QB
+    qbRushContrib = 0
+
+    For currRB = 0 To 9
+
+        currContrib = rbRushContrib(currTeam, currRB)
+
+        'Check for QB as a runner
+        If rbacks$(currTeam, currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            qbRushContrib = currContrib - previousContrib
+
+            Exit For
+
+        End If
+
+        If currContrib <> 0 Then previousContrib = currContrib
+
+    Next
+
+    GetQBRushPctGame% = qbRushContrib
+
+End Function
+
+
+'----------------------------------------
+'        GetQBMobility% Function
+'----------------------------------------
+'This function determines the recommended
+'mobility rating for the quarterback that
+'the user has selected.
+'This rating is based on their contributions
+'to team rushes, but is not necessarily
+'a linear calculation.
+Function GetQBMobility% (qbRushContrib)
+
+    'Suggest a value based on their rushing frequency
+    Select Case qbRushContrib
+
+        Case 0 To 4
+            mobilityRating = 1
+
+        Case 5 To 7
+            mobilityRating = 2
+
+        Case 8 To 10
+            mobilityRating = 3
+
+        Case 11 To 13
+            mobilityRating = 4
+
+        Case 14 To 16
+            mobilityRating = 5
+
+        Case 17 To 19
+            mobilityRating = 6
+
+        Case 20 To 22
+            mobilityRating = 7
+
+        Case 23 To 26
+            mobilityRating = 8
+
+        Case Is >= 27
+            mobilityRating = 9
+
+    End Select
+
+    GetQBMobility% = mobilityRating
+
+End Function
+
+
+'----------------------------------------
 '           QBRating Function
 '----------------------------------------
 'This function calculates the QB rating
 'for the target team / QB combination.
-'I1
+
+'Source: Player stats
+'Destination: ratingsQB!
+
+'qbIdx
 '   index of team's QB (0-3)
+
 'teamType
 '   0 = College
 '   1 = Pro
+
 Function QBRating! (qbIdx, teamType)
 
     Dim II!(3), PP!(3)
-    Dim TT!(3), YY!(3)
+    Dim FF!(3), YY!(3)
 
-    Shared gameStatsPlayer!(), ratingsQB!()
+    Shared playerStats!(), ratingsQB!()
 
     ' ********** CALCULATE QUARTERBACK PASSING EFFICIENCY ****************
     ' * ratingsQB!(1)=PASS ATT, ratingsQB!(2)=COMP, ratingsQB!(3)=INT, ratingsQB!(4)=YDS, ratingsQB!(5)=TD'S     *
@@ -24,15 +275,15 @@ Function QBRating! (qbIdx, teamType)
 
         Case 0:
             ' *** COLLEGE QB RATING ***
-            ratingsQB!(qbIdx, 7) = Int(gameStatsPlayer!(qbIdx, 12) / gameStatsPlayer!(qbIdx, 9)) * 8.399999 + gameStatsPlayer!(qbIdx, 10) / gameStatsPlayer!(qbIdx, 9) * 100 + Int(gameStatsPlayer!(qbIdx, 13) / gameStatsPlayer!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(gameStatsPlayer!(qbIdx, 11) / gameStatsPlayer!(qbIdx, 9) * 1000) / 10 * 2
+            ratingsQB!(qbIdx, 7) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9)) * 8.399999 + playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100 + Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10 * 3.3 - Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10 * 2
             ratingsQB!(qbIdx, 7) = Int(ratingsQB!(qbIdx, 7) * 10) / 10
 
         Case 1: '
             ' *** NFL QB RATING ***
-            ratingsQB!(qbIdx, 8) = Int(gameStatsPlayer!(qbIdx, 13) / gameStatsPlayer!(qbIdx, 9) * 1000) / 10
-            ratingsQB!(qbIdx, 6) = gameStatsPlayer!(qbIdx, 10) / gameStatsPlayer!(qbIdx, 9) * 100
-            ratingsQB!(qbIdx, 10) = Int(gameStatsPlayer!(qbIdx, 12) / gameStatsPlayer!(qbIdx, 9) * 100) / 100
-            ratingsQB!(qbIdx, 9) = Int(gameStatsPlayer!(qbIdx, 11) / gameStatsPlayer!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 8) = Int(playerStats!(qbIdx, 13) / playerStats!(qbIdx, 9) * 1000) / 10
+            ratingsQB!(qbIdx, 6) = playerStats!(qbIdx, 10) / playerStats!(qbIdx, 9) * 100
+            ratingsQB!(qbIdx, 10) = Int(playerStats!(qbIdx, 12) / playerStats!(qbIdx, 9) * 100) / 100
+            ratingsQB!(qbIdx, 9) = Int(playerStats!(qbIdx, 11) / playerStats!(qbIdx, 9) * 1000) / 10
 
             PP!(tmIdx) = ratingsQB!(qbIdx, 6) - 30
 
@@ -47,9 +298,9 @@ Function QBRating! (qbIdx, teamType)
             End If
 
             If ratingsQB!(qbIdx, 8) > 11.9 Then
-                TT!(tmIdx) = 2.375
+                FF!(tmIdx) = 2.375
             Else
-                TT!(tmIdx) = ratingsQB!(qbIdx, 8) * .2
+                FF!(tmIdx) = ratingsQB!(qbIdx, 8) * .2
             End If
 
             If ratingsQB!(qbIdx, 9) = 0 Then
@@ -79,7 +330,7 @@ Function QBRating! (qbIdx, teamType)
                 End If
             End If
 
-            ratingsQB!(qbIdx, 7) = PP!(tmIdx) + TT!(tmIdx) + II!(tmIdx) + YY!(tmIdx)
+            ratingsQB!(qbIdx, 7) = PP!(tmIdx) + FF!(tmIdx) + II!(tmIdx) + YY!(tmIdx)
 
             If ratingsQB!(qbIdx, 7) >= 9.5 Then
                 ratingsQB!(qbIdx, 7) = 158.3
@@ -102,91 +353,191 @@ End Function
 'This routine calculates a QB's rating
 'from the previously loaded stats.
 
+'Source: Expanded Leaders / expLdrQBVal!
+'Destination: expLdrQBVal!
+
 'teamType
 '   0 = College
 '   1 = Pro
-Sub QBRating_Expanded (JC, teamType)
+Sub QBRating_Expanded (qbIdx, teamType)
 
-    Shared A3L!()
+    Shared expLdrQBVal!()
 
     Dim FF!(120), II!(120), PP!(120), YY!(120)
 
-    If A3L!(JC, 0) > 0 Then A3L!(JC, 11) = Int(A3L!(JC, 1) / A3L!(JC, 0) * 1000) / 10
+    If expLdrQBVal!(qbIdx, 0) > 0 Then
+        expLdrQBVal!(qbIdx, 11) = Int(expLdrQBVal!(qbIdx, 1) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
+    End If
 
-    If A3L!(JC, 0) = 0 Then
-        A3L!(JC, 11) = 0
-        A3L!(JC, 8) = 0
-        A3L!(JC, 10) = 0
-        A3L!(JC, 9) = 0
+    If expLdrQBVal!(qbIdx, 0) = 0 Then
+        expLdrQBVal!(qbIdx, 11) = 0
+        expLdrQBVal!(qbIdx, 8) = 0
+        expLdrQBVal!(qbIdx, 10) = 0
+        expLdrQBVal!(qbIdx, 9) = 0
     Else
         If teamType = 0 Then
             'COL QB RATING
-            A3L!(JC, 12) = Int(A3L!(JC, 3) / A3L!(JC, 0)) * 8.399999 + A3L!(JC, 11) + Int(A3L!(JC, 4) / A3L!(JC, 0) * 1000) / 10 * 3.3 - Int(A3L!(JC, 2) / A3L!(JC, 0) * 1000) / 10 * 2
-            A3L!(JC, 12) = Int(A3L!(JC, 12) * 10) / 10
+            expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 3) / expLdrQBVal!(qbIdx, 0)) * 8.399999 + expLdrQBVal!(qbIdx, 11) + Int(expLdrQBVal!(qbIdx, 4) / expLdrQBVal!(qbIdx, 0) * 1000) / 10 * 3.3 - Int(expLdrQBVal!(qbIdx, 2) / expLdrQBVal!(qbIdx, 0) * 1000) / 10 * 2
+            expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 12) * 10) / 10
         Else
             'PRO QB RATING
-            A3L!(JC, 8) = Int(A3L!(JC, 4) / A3L!(JC, 0) * 1000) / 10
-            A3L!(JC, 10) = Int(A3L!(JC, 3) / A3L!(JC, 0) * 100) / 100
-            A3L!(JC, 9) = Int(A3L!(JC, 2) / A3L!(JC, 0) * 1000) / 10
+            expLdrQBVal!(qbIdx, 8) = Int(expLdrQBVal!(qbIdx, 4) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
+            expLdrQBVal!(qbIdx, 10) = Int(expLdrQBVal!(qbIdx, 3) / expLdrQBVal!(qbIdx, 0) * 100) / 100
+            expLdrQBVal!(qbIdx, 9) = Int(expLdrQBVal!(qbIdx, 2) / expLdrQBVal!(qbIdx, 0) * 1000) / 10
         End If
 
     End If
 
     'Shouldn't this only be for Pro !?!?!?
-    PP!(JC) = A3L!(JC, 11) - 30
+    PP!(qbIdx) = expLdrQBVal!(qbIdx, 11) - 30
 
-    If PP!(JC) < 0 Then
-        PP!(JC) = 0
+    If PP!(qbIdx) < 0 Then
+        PP!(qbIdx) = 0
     Else
-        If PP!(JC) > 77.5 Then
-            PP!(JC) = 2.375
+        If PP!(qbIdx) > 77.5 Then
+            PP!(qbIdx) = 2.375
         Else
-            PP!(JC) = PP!(JC) * .05
+            PP!(qbIdx) = PP!(qbIdx) * .05
         End If
     End If
 
-    If A3L!(JC, 8) > 11.9 Then
-        FF!(JC) = 2.375
+    If expLdrQBVal!(qbIdx, 8) > 11.9 Then
+        FF!(qbIdx) = 2.375
     Else
-        FF!(JC) = A3L!(JC, 8) * .2
+        FF!(qbIdx) = expLdrQBVal!(qbIdx, 8) * .2
     End If
 
-    If A3L!(JC, 9) = 0 Then
-        II!(JC) = 0
+    If expLdrQBVal!(qbIdx, 9) = 0 Then
+        II!(qbIdx) = 0
     Else
-        If A3L!(JC, 9) > 9.5 Then
-            II!(JC) = 0
+        If expLdrQBVal!(qbIdx, 9) > 9.5 Then
+            II!(qbIdx) = 0
         Else
-            II!(JC) = 2.375 - (.25 * A3L!(JC, 9))
+            II!(qbIdx) = 2.375 - (.25 * expLdrQBVal!(qbIdx, 9))
         End If
     End If
 
-    A3L!(JC, 10) = A3L!(JC, 10) - 3
+    expLdrQBVal!(qbIdx, 10) = expLdrQBVal!(qbIdx, 10) - 3
 
-    If A3L!(JC, 10) < 0 Then
-        YY!(JC) = 0
+    If expLdrQBVal!(qbIdx, 10) < 0 Then
+        YY!(qbIdx) = 0
     Else
-        If A3L!(JC, 10) > 12.5 Then
-            YY!(JC) = 2.375
+        If expLdrQBVal!(qbIdx, 10) > 12.5 Then
+            YY!(qbIdx) = 2.375
         Else
-            D = Int(A3L!(JC, 10) * 100) / 2
-            If D = A3L!(JC, 10) / 2 Then
-                YY!(JC) = A3L!(JC, 10) / 2 * .3 + A3L!(JC, 10) / 2 * .2
+            D = Int(expLdrQBVal!(qbIdx, 10) * 100) / 2
+            If D = expLdrQBVal!(qbIdx, 10) / 2 Then
+                YY!(qbIdx) = expLdrQBVal!(qbIdx, 10) / 2 * .3 + expLdrQBVal!(qbIdx, 10) / 2 * .2
             Else
-                YY!(JC) = A3L!(JC, 10) / 2 * .3 + A3L!(JC, 10) / 2 * .2 + .003
+                YY!(qbIdx) = expLdrQBVal!(qbIdx, 10) / 2 * .3 + expLdrQBVal!(qbIdx, 10) / 2 * .2 + .003
             End If
         End If
     End If
 
-    A3L!(JC, 12) = PP!(JC) + FF!(JC) + II!(JC) + YY!(JC)
+    expLdrQBVal!(qbIdx, 12) = PP!(qbIdx) + FF!(qbIdx) + II!(qbIdx) + YY!(qbIdx)
 
-    If A3L!(JC, 12) > 9.5 Then
-        A3L!(JC, 12) = 158.3
+    If expLdrQBVal!(qbIdx, 12) > 9.5 Then
+        expLdrQBVal!(qbIdx, 12) = 158.3
     Else
-        A3L!(JC, 12) = A3L!(JC, 12) * 50 / 3
+        expLdrQBVal!(qbIdx, 12) = expLdrQBVal!(qbIdx, 12) * 50 / 3
     End If
 
-    A3L!(JC, 12) = Int(A3L!(JC, 12) * 10) / 10
+    expLdrQBVal!(qbIdx, 12) = Int(expLdrQBVal!(qbIdx, 12) * 10) / 10
+
+End Sub
+
+'----------------------------------------
+'      QBRating_Career Subroutine
+'----------------------------------------
+'This routine calculates a QB's rating
+'from the previously loaded stats.
+
+'Source: Career Leaders / careerQBS!
+'Destination: careerQBS!
+
+'teamType
+'   0 = College
+'   1 = Pro
+Sub QBRating_Career (carYrIdx, ldrIdx, teamType)
+
+    Shared careerQBS!()
+
+    Dim careerFF!(15, 30), careerII!(15, 30), careerPP!(15, 30), careerYY!(15, 30)
+
+    If careerQBS!(carYrIdx, ldrIdx, 0) > 0 Then
+        careerQBS!(carYrIdx, ldrIdx, 11) = Int(careerQBS!(carYrIdx, ldrIdx, 1) / careerQBS!(carYrIdx, ldrIdx, 0) * 1000) / 10
+    End If
+
+    If careerQBS!(carYrIdx, ldrIdx, 0) = 0 Then
+        careerQBS!(carYrIdx, ldrIdx, 11) = 0
+        careerQBS!(carYrIdx, ldrIdx, 8) = 0
+        careerQBS!(carYrIdx, ldrIdx, 10) = 0
+        careerQBS!(carYrIdx, ldrIdx, 9) = 0
+    Else
+        If teamType = 0 Then
+            careerQBS!(carYrIdx, ldrIdx, 12) = Int(careerQBS!(carYrIdx, ldrIdx, 3) / careerQBS!(carYrIdx, ldrIdx, 0)) * 8.399999 + careerQBS!(carYrIdx, ldrIdx, 11) + Int(careerQBS!(carYrIdx, ldrIdx, 4) / careerQBS!(carYrIdx, ldrIdx, 0) * 1000) / 10 * 3.3 - Int(careerQBS!(carYrIdx, ldrIdx, 2) / careerQBS!(carYrIdx, ldrIdx, 0) * 1000) / 10 * 2
+            careerQBS!(carYrIdx, ldrIdx, 12) = Int(careerQBS!(carYrIdx, ldrIdx, 12) * 10) / 10
+        Else
+            careerQBS!(carYrIdx, ldrIdx, 8) = Int(careerQBS!(carYrIdx, ldrIdx, 4) / careerQBS!(carYrIdx, ldrIdx, 0) * 1000) / 10
+            careerQBS!(carYrIdx, ldrIdx, 10) = Int(careerQBS!(carYrIdx, ldrIdx, 3) / careerQBS!(carYrIdx, ldrIdx, 0) * 100) / 100
+            careerQBS!(carYrIdx, ldrIdx, 9) = Int(careerQBS!(carYrIdx, ldrIdx, 2) / careerQBS!(carYrIdx, ldrIdx, 0) * 1000) / 10
+        End If
+    End If
+
+    careerPP!(carYrIdx, ldrIdx) = careerQBS!(carYrIdx, ldrIdx, 11) - 30
+
+    If careerPP!(carYrIdx, ldrIdx) < 0 Then
+        careerPP!(carYrIdx, ldrIdx) = 0
+    Else
+        If careerPP!(carYrIdx, ldrIdx) > 77.5 Then
+            careerPP!(carYrIdx, ldrIdx) = 2.375
+        Else
+            careerPP!(carYrIdx, ldrIdx) = careerPP!(carYrIdx, ldrIdx) * .05
+        End If
+    End If
+
+    If careerQBS!(carYrIdx, ldrIdx, 8) > 11.9 Then
+        careerFF!(carYrIdx, ldrIdx) = 2.375
+    Else
+        careerFF!(carYrIdx, ldrIdx) = careerQBS!(carYrIdx, ldrIdx, 8) * .2
+    End If
+
+    If careerQBS!(carYrIdx, ldrIdx, 9) = 0 Then
+        careerII!(carYrIdx, ldrIdx) = 0
+    Else
+        If careerQBS!(carYrIdx, ldrIdx, 9) > 9.5 Then
+            careerII!(carYrIdx, ldrIdx) = 0
+        Else
+            careerII!(carYrIdx, ldrIdx) = 2.375 - (.25 * careerQBS!(carYrIdx, ldrIdx, 9))
+        End If
+    End If
+
+    careerQBS!(carYrIdx, ldrIdx, 10) = careerQBS!(carYrIdx, ldrIdx, 10) - 3
+
+    If careerQBS!(carYrIdx, ldrIdx, 10) < 0 Then
+        careerYY!(carYrIdx, ldrIdx) = 0
+    Else
+        If careerQBS!(carYrIdx, ldrIdx, 10) > 12.5 Then
+            careerYY!(carYrIdx, ldrIdx) = 2.375
+        Else
+            D = Int(careerQBS!(carYrIdx, ldrIdx, 10) * 100) / 2
+            If D = careerQBS!(carYrIdx, ldrIdx, 10) / 2 Then
+                careerYY!(carYrIdx, ldrIdx) = careerQBS!(carYrIdx, ldrIdx, 10) / 2 * .3 + careerQBS!(carYrIdx, ldrIdx, 10) / 2 * .2
+            Else
+                careerYY!(carYrIdx, ldrIdx) = careerQBS!(carYrIdx, ldrIdx, 10) / 2 * .3 + careerQBS!(carYrIdx, ldrIdx, 10) / 2 * .2 + .003
+            End If
+        End If
+    End If
+
+    careerQBS!(carYrIdx, ldrIdx, 12) = careerPP!(carYrIdx, ldrIdx) + careerFF!(carYrIdx, ldrIdx) + careerII!(carYrIdx, ldrIdx) + careerYY!(carYrIdx, ldrIdx)
+
+    If careerQBS!(carYrIdx, ldrIdx, 12) > 9.5 Then
+        careerQBS!(carYrIdx, ldrIdx, 12) = 158.3
+    Else
+        careerQBS!(carYrIdx, ldrIdx, 12) = careerQBS!(carYrIdx, ldrIdx, 12) * 50 / 3
+    End If
+
+    careerQBS!(carYrIdx, ldrIdx, 12) = Int(careerQBS!(carYrIdx, ldrIdx, 12) * 10) / 10
 
 End Sub
 
@@ -312,4 +663,3 @@ Sub QBRatingColl (qbIdx)
     End If
 
 End Sub
-

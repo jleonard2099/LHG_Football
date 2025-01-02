@@ -10,16 +10,14 @@ Sub CompileLeague ()
 
     _Title "3-in-1 Football - Update League Stats"
 
-    Shared compTT!(), compZ1!(), compZ2!()
-    Shared O1!(), O2!(), O3!()
+    Shared totalTeamVal!(), leaderVal!(), statsGeneral!()
+    Shared divWins!(), divLosses!(), divTies!()
 
     Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared statFiles$(), teamRecDesc$(), TT$()
-
-    Shared div1$, div2$, div3$
+    Shared memberName$(), leaderName$(), leaderTeam$()
+    Shared memberName$(), teamRecDesc$(), totalTeamName$()
 
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.PFB") Then
@@ -39,7 +37,7 @@ Sub CompileLeague ()
         Next
 
         Close #1
-        
+
     Else
 
         Erase indRecords!, teamRecords!
@@ -69,24 +67,24 @@ Sub CompileLeague ()
     teamRecords!(42) = 999
     teamRecords!(43) = 999
 
-    Erase compTT!, compZ1!, compZ2!
-    Erase compZ1$, compZ3$, TT$
+    Erase totalTeamVal!, leaderVal!, statsGeneral!
+    Erase memberName$, leaderTeam$, totalTeamName$
 
     For X = 1 To 240
-        compZ2$(X) = "*"
+        leaderName$(X) = "*"
     Next
 
     For I = 1 To 20
-        compTT!(2, I, 5) = 9999
-        compTT!(4, I, 5) = 9999
-        compTT!(6, I, 3) = 9999
-        compTT!(8, I, 8) = 9999
-        compTT!(10, I, 7) = -99
+        totalTeamVal!(2, I, 5) = 9999
+        totalTeamVal!(4, I, 5) = 9999
+        totalTeamVal!(6, I, 3) = 9999
+        totalTeamVal!(8, I, 8) = 9999
+        totalTeamVal!(10, I, 7) = -99
     Next
 
     C$ = ","
 
-    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.LIB", "LEAGUE", ExitCode%)
+    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
@@ -98,21 +96,11 @@ Sub CompileLeague ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
-
-        Input #2, FF$, div1$, div2$, div3$
-
-        For XW = 1 To 30
-            Input #2, statFiles$(XW)
-        Next XW
-
-        Close #2
-
-        Open diskPaths$(2) + leagueFile$ + ".LIB" For Input As #3
-        Input #3, LG%
+        Open diskPaths$(2) + leagueFile$ + ".TMI" For Input As #3
+        Input #3, statType
         Close #3
 
-        If LG% <> 1 Then
+        If statType <> 1 Then
 
             MsgText$ = "ERROR!! THIS IS NOT A PRO LEAGUE. PRESS ANY KEY TO RETURN TO MAIN MENU"
             BoxWidth = 20
@@ -124,49 +112,50 @@ Sub CompileLeague ()
 
         Else
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #4
+            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
 
-            Input #4, FF$, div1$, div2$, div3$
+            Input #2, confName$, div1$, div2$, div3$, div4$
 
-            For X = 1 To 30
-                Input #4, compZ1$(X)
-            Next X
+            For XW = 1 To TEAMS_PER_LEAGUE
+                Input #2, memberName$(XW)
+            Next XW
 
-            Close #4
+            Close #2
 
-            For XW = 1 To 30
+            For XW = 1 To TEAMS_PER_LEAGUE
 
                 'Look for * as terminating char
-                If statFiles$(XW) <> Chr$(42) Then
+                If memberName$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsPro%(XW, statFiles$(XW), numberGames)
+                    testie$ = memberName$(XW)
+                    haveStats = FindStatsPro%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
 
-                        L = Len(statFiles$(XW))
+                        L = Len(memberName$(XW))
                         WT$ = ""
 
                         For X = 1 To L:
-                            A = Asc(Mid$(statFiles$(XW), X, 1))
+                            A = Asc(Mid$(memberName$(XW), X, 1))
                             WT$ = WT$ + Chr$(A)
                         Next X
 
                         nonConfGame = 0
 
-                        For EC = 1 To 30:
+                        For EC = 1 To TEAMS_PER_LEAGUE:
 
-                            If compZ1$(EC) = WT$ Then
+                            If memberName$(EC) = WT$ Then
 
-                                If O1!(EC) = fullWins And O2!(EC) = fullLosses And O3!(EC) = fullTies Then
+                                If divWins!(EC) = fullWins And divLosses!(EC) = fullLosses And divTies!(EC) = fullTies Then
 
                                     nonConfGame = 1
                                     Exit For
 
                                 Else
 
-                                    O1!(EC) = fullWins
-                                    O2!(EC) = fullLosses
-                                    O3!(EC) = fullTies
+                                    divWins!(EC) = fullWins
+                                    divLosses!(EC) = fullLosses
+                                    divTies!(EC) = fullTies
 
                                 End If
 
@@ -175,11 +164,11 @@ Sub CompileLeague ()
 
                         Next EC
 
-                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + statFiles$(XW)) Then
+                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                            Call ReadStatsLeaders(statFiles$(XW), numberGames, TM$, 1)
-                            Call CalcStatTotalsPro(numberGames, TM$, WT$, finalUpdate$)
-                            Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
+                            Call ReadStatsLeaders(memberName$(XW), numberGames, leagLdrTeams$, 1)
+                            Call CalcStatTotalsPro(numberGames, leagLdrTeams$, WT$, finalUpdate$)
+                            Call CalcStatLeaders(numberGames, leagLdrTeams$, WT$, finalUpdate$)
 
                         End If
 
@@ -209,7 +198,9 @@ Function FindStatsPro% (XW, statFile$, numberGames)
 
     Shared oppScore(), teamScore()
 
-    If Not _FileExists(diskPaths$(1) + statFile$ + "S") Then
+    findFile$ = diskPaths$(1) + statFile$ + "S"
+
+    If Not _FileExists(findFile$) Then
 
         Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
@@ -250,61 +241,71 @@ End Function
 '----------------------------------------
 'This subroutine reads stats in for a
 'single team in the league
-Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
+Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
 
     Shared puntNum
     Shared puntName$
 
-    Shared statsGI%(), statsGS%()
+    Shared statsGI(), statsGS()
 
-    Shared AF!(), AM!()
-    Shared compPR!(), compQB!(), compRB!(), compWR!(), compZ2!()
-    Shared DT!(), EA!(), EM!(), EP!()
-    Shared FA!(), FG!(), FM!(), KR!()
-    Shared OT!()
-    Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
-    Shared statsPK!()
-    Shared TD!(), TG!(), TP!(), YD!()
+    Shared statsFGA!(), statsFGM!()
+    Shared compFGA!(), compFGM!()
+    Shared compKR!(), compPR!(), compQB!(), compRB!(), compWR!()
+    Shared compPAT!(), compPAM!()
+    Shared defTotals!(), compPAPct!()
+    Shared compFGPct!()
+    Shared offTotals!()
 
-    Shared compKR$(), compPK$(), compPR$()
+    Shared statsGeneral!()
+    Shared statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLPR!(), statsLRec!(), statsLRush!()
+
+    Shared leaderAllPurpTDs!(), leaderAllPurpYds!()
+    Shared compPunts!(), totalScoring!()
+
+    Shared compKR$(), compKicker$(), compPR$()
     Shared compQB$(), compRB$(), compWR$()
-    Shared statFiles$(), intName$(), PKR$()
+    Shared memberName$(), intName$()
     Shared sackName$()
-    Shared statsLC$(), statsLF$(), statsLI$()
-    Shared statsLK$(), statsLP$(), statsLR$()
-    Shared TB$()
+    Shared statsLRec$(), statsLFG$(), statsLInt$()
+    Shared statsLKR$(), statsLPR$()
+    Shared statsLPass$(), statsLRush$()
+    Shared leaderAllPurpName$()
 
-    Erase compKR$, compPK$, compPR$, compQB$, compRB$, compWR$
+    Erase compKR$, compKicker$, compPR$, compQB$, compRB$, compWR$
     Erase intName$
 
-    Erase AF!, AM!
-    Erase compZ2!, OT!, DT!
-    Erase statsGI%, statsGS%
+    Erase statsFGA!, statsFGM!
+    Erase statsGeneral!, offTotals!, defTotals!
+    Erase statsGI, statsGS
 
-    Erase statsLC!, statsLF!, statsLI!, statsLK!, statsLP!, statsLR!
-    Erase statsLC$, statsLF$, statsLI$, statsLK$, statsLP$, statsLR$
+    Erase statsLRec!, statsLFG!, statsLInt!, statsLKR!, statsLPass!, statsLRush!
+    Erase statsLRec$, statsLFG$, statsLInt$, statsLKR$, statsLPass$, statsLRush$
 
     Open diskPaths$(1) + statFile$ For Input As #1
 
-    Input #1, TM$
+    Input #1, teamName$
 
-    'Positions
+    'RB Names
     For I = 1 To 10:
         Input #1, compRB$(I)
     Next
 
+    'WR Names
     For I = 1 To 6:
         Input #1, compWR$(I)
     Next
 
+    'QB Names
     For I = 1 To 4:
         Input #1, compQB$(I)
     Next
 
+    'KR Names
     For I = 1 To 3:
         Input #1, compKR$(I)
     Next
 
+    'PR Names
     For I = 1 To 3:
         Input #1, compPR$(I)
     Next I
@@ -312,84 +313,95 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     'Punter
     Input #1, puntName$
 
-    'Kickers
+    'Place Kickers
     For I = 1 To 2:
-        Input #1, compPK$(I)
+        Input #1, compKicker$(I)
     Next
 
     'Rushers / Receivers
     For J = 1 To 14
         For K = 1 To 18
-            Input #1, compZ2!(J, K)
+            Input #1, statsGeneral!(J, K)
         Next K
     Next J
 
+    'Offensive Team stats
     For L = 0 To 38:
-        Input #1, OT!(L)
+        Input #1, offTotals!(L)
     Next L
 
+    'Defensive Team stats
     For L = 0 To 38:
-        Input #1, DT!(L)
+        Input #1, defTotals!(L)
     Next L
 
     For J = 0 To 9:
+        'Interception Names
         Input #1, intName$(J)
         For J1 = 0 To 2
-            Input #1, statsGI%(J, J1)
+            Input #1, statsGI(J, J1)
         Next
     Next
 
     For J = 0 To 14:
+        'Sack Names
         Input #1, sackName$(J)
         For J1 = 0 To 1:
-            Input #1, statsGS%(J, J1)
+            Input #1, statsGS(J, J1)
         Next
     Next
 
+    'Longest rush?
     For I = 0 To 9:
-        Input #1, statsLR!(I)
-        Input #1, statsLR$(I, 0)
-        Input #1, statsLR$(I, 1)
+        Input #1, statsLRush!(I)
+        Input #1, statsLRush$(I, 0)
+        Input #1, statsLRush$(I, 1)
     Next
 
+    'Longest catch?
     For I = 0 To 15:
-        Input #1, statsLC!(I)
-        Input #1, statsLC$(I, 0)
-        Input #1, statsLC$(I, 1)
+        Input #1, statsLRec!(I)
+        Input #1, statsLRec$(I, 0)
+        Input #1, statsLRec$(I, 1)
     Next
 
+    'Longest punt?
     For I = 0 To 3:
-        Input #1, statsLP!(I)
-        Input #1, statsLP$(I, 0)
-        Input #1, statsLP$(I, 1)
+        Input #1, statsLPass!(I)
+        Input #1, statsLPass$(I, 0)
+        Input #1, statsLPass$(I, 1)
     Next
 
+    'Longest kick return
     For I = 0 To 2:
-        Input #1, statsLK!(I)
-        Input #1, statsLK$(I, 0)
-        Input #1, statsLK$(I, 1)
+        Input #1, statsLKR!(I)
+        Input #1, statsLKR$(I, 0)
+        Input #1, statsLKR$(I, 1)
     Next
 
+    'Longest punt return
     For I = 0 To 2:
-        Input #1, statsPK!(I)
-        Input #1, PKR$(I, 0)
-        Input #1, PKR$(I, 1)
+        Input #1, statsLPR!(I)
+        Input #1, statsLPR$(I, 0)
+        Input #1, statsLPR$(I, 1)
     Next
 
+    'Longest field goal
     For I = 0 To 1:
-        Input #1, statsLF!(I)
-        Input #1, statsLF$(I)
-        
+        Input #1, statsLFG!(I)
+        Input #1, statsLFG$(I)
+
         For I1 = 0 To 4
-            Input #1, AM!(I, I1)
-            Input #1, AF!(I, I1)
+            Input #1, statsFGM!(I, I1)
+            Input #1, statsFGA!(I, I1)
         Next
     Next
 
+    'Longest interception
     For I = 0 To 9:
-        Input #1, statsLI!(I)
-        Input #1, statsLI$(I, 0)
-        Input #1, statsLI$(I, 1)
+        Input #1, statsLInt!(I)
+        Input #1, statsLInt$(I, 0)
+        Input #1, statsLInt$(I, 1)
     Next
 
     Close #1
@@ -398,44 +410,48 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     For I = 1 To 10:
         For J = 1 To 6:
-            compRB!(I, J) = compZ2!(I, J)
+            compRB!(I, J) = statsGeneral!(I, J)
         Next
     Next
 
     For I = 1 To 6:
         For J = 1 To 3:
-            compWR!(I, J) = compZ2!(I, J + 6)
+            compWR!(I, J) = statsGeneral!(I, J + 6)
         Next
     Next
 
     For I = 1 To 4:
         For J = 1 To 5:
-            compQB!(I, J) = compZ2!(I, J + 9)
+            compQB!(I, J) = statsGeneral!(I, J + 9)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            KR!(I, J) = compZ2!(I, J + 14)
+            compKR!(I, J) = statsGeneral!(I, J + 14)
         Next
     Next
 
     For I = 1 To 3:
         For J = 1 To 3:
-            compPR!(I, J) = compZ2!(I + 3, J + 14)
+            compPR!(I, J) = statsGeneral!(I + 3, J + 14)
         Next
     Next
 
-    TG!(8) = OT!(7)
-    TG!(9) = OT!(8)
-    FM!(1) = compZ2!(4, 18)
-    FA!(1) = compZ2!(5, 18)
-    EM!(1) = compZ2!(6, 18)
-    EA!(1) = compZ2!(7, 18)
-    FM!(2) = compZ2!(8, 18)
-    FA!(2) = compZ2!(9, 18)
-    EM!(2) = compZ2!(10, 18)
-    EA!(2) = compZ2!(11, 18)
+    compPunts!(8) = offTotals!(7)
+    compPunts!(9) = offTotals!(8)
+
+    compFGM!(1) = statsGeneral!(4, 18)
+    compFGA!(1) = statsGeneral!(5, 18)
+
+    compPAM!(1) = statsGeneral!(6, 18)
+    compPAT!(1) = statsGeneral!(7, 18)
+
+    compFGM!(2) = statsGeneral!(8, 18)
+    compFGA!(2) = statsGeneral!(9, 18)
+
+    compPAM!(2) = statsGeneral!(10, 18)
+    compPAT!(2) = statsGeneral!(11, 18)
 
     For I = 1 To 10:
         compRB!(I, 7) = compRB!(I, 2) + compRB!(I, 5)
@@ -447,42 +463,42 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
     Next
 
     For I = 1 To 10
-        TB$(I) = compRB$(I)
-        YD!(I) = compRB!(I, 7)
-        TD!(I) = compRB!(I, 8)
+        leaderAllPurpName$(I) = compRB$(I)
+        leaderAllPurpYds!(I) = compRB!(I, 7)
+        leaderAllPurpTDs!(I) = compRB!(I, 8)
     Next
 
     For I = 1 To 6
-        TB$(I + 10) = compWR$(I)
-        YD!(I + 10) = compWR!(I, 2)
-        TD!(I + 10) = compWR!(I, 3)
+        leaderAllPurpName$(I + 10) = compWR$(I)
+        leaderAllPurpYds!(I + 10) = compWR!(I, 2)
+        leaderAllPurpTDs!(I + 10) = compWR!(I, 3)
     Next
 
     For I = 1 To 16
         For I1 = 1 To 3
-            If compKR$(I1) = TB$(I) Then
-                YD!(I) = YD!(I) + KR!(I1, 2)
-                TD!(I) = TD!(I) + KR!(I1, 3)
+            If compKR$(I1) = leaderAllPurpName$(I) Then
+                leaderAllPurpYds!(I) = leaderAllPurpYds!(I) + compKR!(I1, 2)
+                leaderAllPurpTDs!(I) = leaderAllPurpTDs!(I) + compKR!(I1, 3)
             End If
         Next
     Next
 
     For I = 1 To 16
         For I1 = 1 To 3
-            If compPR$(I1) = TB$(I) Then
-                YD!(I) = YD!(I) + compPR!(I1, 2)
-                TD!(I) = TD!(I) + compPR!(I1, 3)
+            If compPR$(I1) = leaderAllPurpName$(I) Then
+                leaderAllPurpYds!(I) = leaderAllPurpYds!(I) + compPR!(I1, 2)
+                leaderAllPurpTDs!(I) = leaderAllPurpTDs!(I) + compPR!(I1, 3)
             End If
         Next
     Next
 
     For I = 1 To 16
-        TP!(I) = TD!(I) * 6
+        totalScoring!(I) = leaderAllPurpTDs!(I) * 6
     Next
 
     For I = 1 To 2
-        TB$(16 + I) = compPK$(I)
-        TP!(16 + I) = EM!(I) + FM!(I) * 3
+        leaderAllPurpName$(16 + I) = compKicker$(I)
+        totalScoring!(16 + I) = compPAM!(I) + compFGM!(I) * 3
     Next
 
     For I = 1 To 10:
@@ -517,11 +533,11 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     For I = 1 To 3:
 
-        KR!(I, 4) = 0
-        If KR!(I, 1) > 0 And KR!(I, 1) >= numberGames Then
-            KR!(I, 4) = Int(KR!(I, 2) / KR!(I, 1) * 10) / 10
+        compKR!(I, 4) = 0
+        If compKR!(I, 1) > 0 And compKR!(I, 1) >= numberGames Then
+            compKR!(I, 4) = Int(compKR!(I, 2) / compKR!(I, 1) * 10) / 10
         Else
-            KR!(I, 4) = 0
+            compKR!(I, 4) = 0
         End If
 
     Next
@@ -537,13 +553,19 @@ Sub ReadStatsLeaders (statFile$, numberGames, TM$, proQB)
 
     puntNum = 0
 
-    If TG!(8) > 0 Then puntNum = Int(TG!(9) / TG!(8) * 10) / 10
+    If compPunts!(8) > 0 Then
+        puntNum = Int(compPunts!(9) / compPunts!(8) * 10) / 10
+    End If
 
-    Erase EP!, FG!
+    Erase compPAPct!, compFGPct!
 
     For I = 1 To 2
-        If FA!(I) >= numberGames Then FG!(I) = Int(FM!(I) / FA!(I) * 1000) / 10
-        If EA!(I) >= numberGames Then EP!(I) = Int(EM!(I) / EA!(I) * 1000) / 10
+        If compFGA!(I) >= numberGames Then
+            compFGPct!(I) = Int(compFGM!(I) / compFGA!(I) * 1000) / 10
+        End If
+        If compPAT!(I) >= numberGames Then
+            compPAPct!(I) = Int(compPAM!(I) / compPAT!(I) * 1000) / 10
+        End If
     Next
 
 End Sub
@@ -554,28 +576,39 @@ End Sub
 '----------------------------------------
 'This subroutine compares pre-loaded stats
 'to existing leaders and updates as needed
-Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
+Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 
     Shared fumbGain, puntNum
     Shared puntName$
 
+    Shared compKR$(), compKicker$(), compPR$(), compQB$()
+    Shared compRB$(), compWR$(), leaderName$(), leaderTeam$()
+
     Shared indRecDesc$()
-    Shared compKR$(), compPK$(), compPR$(), compQB$()
-    Shared compRB$(), compWR$(), compZ2$(), compZ3$()
-    Shared intName$(), PKR$(), PS$()
+    Shared intName$()
+
+    Shared leaderAllPurpName$()
+
     Shared sackName$()
-    Shared statsLC$(), statsLF$(), statsLI$(), statsLK$(), statsLP$(), statsLR$()
-    Shared TB$()
+    Shared statsLKR$(), statsLPR$()
+    Shared statsLPass$(), statsLRush$()
 
+    Shared statsLRec$(), statsLFG$(), statsLInt$(), statsLPass$(), statsLRush$()
+    Shared statsLKR$(), statsLPR$()
+
+    Shared compKR!(), compPR!(), compQB!(), compRB!(), compWR!()
+
+    Shared compPAT!(), compPAM!(), compPAPct!()
+    Shared compFGA!(), compFGPct!(), compFGM!()
     Shared indRecords!()
-    Shared compPR!(), compQB!(), compRB!(), compWR!(), compZ1!()
-    Shared EA!(), EM!(), EP!()
-    Shared FA!(), FG!(), FM!(), KR!()
-    Shared statsLC!(), statsLF!(), statsLI!(), statsLK!(), statsLP!(), statsLR!()
-    Shared statsPK!()
-    Shared TG!(), TP!(), YD!()
+    Shared leaderVal!()
 
-    Shared statsGI%(), statsGS%()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsLPR!()
+
+    Shared compPunts!(), totalScoring!(), leaderAllPurpYds!()
+
+    Shared statsGI(), statsGS()
 
     '---------------
     ' Running Backs
@@ -589,52 +622,64 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compRB$(X) <> "OTHERS" Then
 
-            If compRB!(X, 1) > indRecords!(0) Then indRecords!(0) = compRB!(X, 1): indRecDesc$(0, 0) = compRB$(X): indRecDesc$(0, 1) = TM$
-            If compRB!(X, 2) > indRecords!(1) Then indRecords!(1) = compRB!(X, 2): indRecDesc$(1, 0) = compRB$(X): indRecDesc$(1, 1) = TM$
-            If compRB!(X, 3) > indRecords!(2) Then indRecords!(2) = compRB!(X, 3): indRecDesc$(2, 0) = compRB$(X): indRecDesc$(2, 1) = TM$
+            If compRB!(X, 1) > indRecords!(0) Then
+                indRecords!(0) = compRB!(X, 1)
+                indRecDesc$(0, 0) = compRB$(X)
+                indRecDesc$(0, 1) = teamName$
+            End If
+
+            If compRB!(X, 2) > indRecords!(1) Then
+                indRecords!(1) = compRB!(X, 2)
+                indRecDesc$(1, 0) = compRB$(X)
+                indRecDesc$(1, 1) = teamName$
+            End If
+
+            If compRB!(X, 3) > indRecords!(2) Then
+                indRecords!(2) = compRB!(X, 3)
+                indRecDesc$(2, 0) = compRB$(X)
+                indRecDesc$(2, 1) = teamName$
+            End If
 
             If compRB!(X, 9) > indRecords!(3) And UCase$(finalUpdate$) = "Y" And compRB!(X, 1) >= numberGames * 10 Then
                 'Rushing Average
                 indRecords!(3) = compRB!(X, 9)
                 indRecDesc$(3, 0) = compRB$(X)
-                indRecDesc$(3, 1) = TM$
+                indRecDesc$(3, 1) = teamName$
             End If
 
-            If statsLR!(X - 1) > indRecords!(4) Then
+            If statsLRush!(X - 1) > indRecords!(4) Then
                 'Longest Run
-                indRecords!(4) = statsLR!(X - 1)
+                indRecords!(4) = statsLRush!(X - 1)
                 indRecDesc$(4, 0) = compRB$(X)
-                indRecDesc$(4, 1) = TM$
-                indRecDesc$(4, 2) = statsLR$(X - 1, 0)
+                indRecDesc$(4, 1) = teamName$
+                indRecDesc$(4, 2) = statsLRush$(X - 1, 0)
             End If
-
-            PS$(X) = WT$
 
             For Y = 1 To 20:
 
-                If compZ2$(Y) = compRB$(X) And compZ3$(Y) = WT$ Then
+                If leaderName$(Y) = compRB$(X) And leaderTeam$(Y) = WT$ Then
 
-                    compZ1!(Y, 1) = compRB!(X, 9) 'Rush Avg
-                    compZ1!(Y, 2) = compRB!(X, 1) 'Rush Att
+                    leaderVal!(Y, 1) = compRB!(X, 9) 'Rush Avg
+                    leaderVal!(Y, 2) = compRB!(X, 1) 'Rush Att
 
                     'Only include players with 10 ATT / game
-                    If compZ1!(Y, 2) < numberGames * 10 Then
-                        compZ2$(Y) = "*"
-                        compZ3$(Y) = "*"
-                        compZ1!(Y, 1) = 0
-                        compZ1!(Y, 2) = 0
+                    If leaderVal!(Y, 2) < numberGames * 10 Then
+                        leaderName$(Y) = "*"
+                        leaderTeam$(Y) = "*"
+                        leaderVal!(Y, 1) = 0
+                        leaderVal!(Y, 2) = 0
                     End If
 
                     For Y = 1 To 19:
 
                         For Z = Y + 1 To 20:
 
-                            If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                Swap compZ3$(Y), compZ3$(Z)
-                                Swap compZ2$(Y), compZ2$(Z)
+                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                                Swap leaderTeam$(Y), leaderTeam$(Z)
+                                Swap leaderName$(Y), leaderName$(Z)
 
                                 For Z1 = 1 To 2:
-                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                                 Next Z1
 
                             End If
@@ -648,22 +693,22 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compRB!(X, 1) < numberGames * 10 Or compRB!(X, 9) < compZ1!(20, 1)) Then
+            If Not (compRB!(X, 1) < numberGames * 10 Or compRB!(X, 9) < leaderVal!(20, 1)) Then
 
-                compZ2$(20) = compRB$(X)
-                compZ3$(20) = WT$
-                compZ1!(20, 1) = compRB!(X, 9)
-                compZ1!(20, 2) = compRB!(X, 1)
+                leaderName$(20) = compRB$(X)
+                leaderTeam$(20) = WT$
+                leaderVal!(20, 1) = compRB!(X, 9)
+                leaderVal!(20, 2) = compRB!(X, 1)
 
                 For Y = 1 To 19:
 
                     For Z = Y + 1 To 20:
 
-                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            Swap compZ3$(Y), compZ3$(Z)
-                            Swap compZ2$(Y), compZ2$(Z)
+                        If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                            Swap leaderTeam$(Y), leaderTeam$(Z)
+                            Swap leaderName$(Y), leaderName$(Z)
                             For Z1 = 1 To 2
-                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
                         End If
 
@@ -675,25 +720,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             3118 '
             For Z = 41 To 50
-                If compZ2$(Z) = compRB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = Int(compRB!(X, 2))
+                If leaderName$(Z) = compRB$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = Int(compRB!(X, 2))
                     GoTo 3123
                 End If
             Next Z
 
-            If Int(compRB!(X, 2)) > compZ1!(50, 1) Then
+            If Int(compRB!(X, 2)) > leaderVal!(50, 1) Then
 
-                compZ1!(50, 1) = Int(compRB!(X, 2))
-                compZ2$(50) = compRB$(X)
-                compZ3$(50) = WT$
+                leaderVal!(50, 1) = Int(compRB!(X, 2))
+                leaderName$(50) = compRB$(X)
+                leaderTeam$(50) = WT$
 
                 3123 '
                 For Z = 41 To 49:
                     For Z1 = Z + 1 To 50:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -701,25 +746,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 61 To 70
-                If compZ2$(Z) = compRB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compRB!(X, 3)
+                If leaderName$(Z) = compRB$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compRB!(X, 3)
                     GoTo 3155
                 End If
             Next Z
 
-            If compRB!(X, 3) > compZ1!(70, 1) Then
+            If compRB!(X, 3) > leaderVal!(70, 1) Then
 
-                compZ1!(70, 1) = compRB!(X, 3)
-                compZ2$(70) = compRB$(X)
-                compZ3$(70) = WT$
+                leaderVal!(70, 1) = compRB!(X, 3)
+                leaderName$(70) = compRB$(X)
+                leaderTeam$(70) = WT$
 
                 3155 '
                 For Z = 61 To 69:
                     For Z1 = Z + 1 To 70:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -727,25 +772,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 81 To 90
-                If compZ2$(Z) = compRB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compRB!(X, 1)
+                If leaderName$(Z) = compRB$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compRB!(X, 1)
                     GoTo 3525
                 End If
             Next Z
 
-            If compRB!(X, 1) > compZ1!(90, 1) Then
+            If compRB!(X, 1) > leaderVal!(90, 1) Then
 
-                compZ1!(90, 1) = compRB!(X, 1)
-                compZ2$(90) = compRB$(X)
-                compZ3$(90) = WT$
+                leaderVal!(90, 1) = compRB!(X, 1)
+                leaderName$(90) = compRB$(X)
+                leaderTeam$(90) = WT$
 
                 3525 '
                 For Z = 81 To 89:
                     For Z1 = Z + 1 To 90:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -768,49 +813,63 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compWR$(X) <> "OTHERS" Then
 
-            If compWR!(X, 1) > indRecords!(5) Then indRecords!(5) = compWR!(X, 1): indRecDesc$(5, 0) = compWR$(X): indRecDesc$(5, 1) = TM$
-            If compWR!(X, 2) > indRecords!(6) Then indRecords!(6) = compWR!(X, 2): indRecDesc$(6, 0) = compWR$(X): indRecDesc$(6, 1) = TM$
-            If compWR!(X, 3) > indRecords!(7) Then indRecords!(7) = compWR!(X, 3): indRecDesc$(7, 0) = compWR$(X): indRecDesc$(7, 1) = TM$
+            If compWR!(X, 1) > indRecords!(5) Then
+                indRecords!(5) = compWR!(X, 1)
+                indRecDesc$(5, 0) = compWR$(X)
+                indRecDesc$(5, 1) = teamName$
+            End If
+
+            If compWR!(X, 2) > indRecords!(6) Then
+                indRecords!(6) = compWR!(X, 2)
+                indRecDesc$(6, 0) = compWR$(X)
+                indRecDesc$(6, 1) = teamName$
+            End If
+
+            If compWR!(X, 3) > indRecords!(7) Then
+                indRecords!(7) = compWR!(X, 3)
+                indRecDesc$(7, 0) = compWR$(X)
+                indRecDesc$(7, 1) = teamName$
+            End If
 
             'Look for at least 3 catches / game
             If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= numberGames * 3 Then
                 'Receiving Average
                 indRecords!(8) = compWR!(X, 4)
                 indRecDesc$(8, 0) = compWR$(X)
-                indRecDesc$(8, 1) = TM$
+                indRecDesc$(8, 1) = teamName$
             End If
 
-            If statsLC!(X - 1) > indRecords!(9) Then
+            If statsLRec!(X - 1) > indRecords!(9) Then
                 'Longest Catch
-                indRecords!(9) = statsLC!(X - 1)
+                indRecords!(9) = statsLRec!(X - 1)
                 indRecDesc$(9, 0) = compWR$(X)
-                indRecDesc$(9, 1) = TM$
-                indRecDesc$(9, 2) = statsLC$(X - 1, 0)
+                indRecDesc$(9, 1) = teamName$
+                indRecDesc$(9, 2) = statsLRec$(X - 1, 0)
             End If
 
             For Z = 21 To 40:
 
-                If compZ2$(Z) = compWR$(X) And compZ3$(Z) = WT$ Then
+                If leaderName$(Z) = compWR$(X) And leaderTeam$(Z) = WT$ Then
 
-                    compZ1!(Z, 1) = compWR!(X, 4)
-                    compZ1!(Z, 2) = compWR!(X, 1)
+                    leaderVal!(Z, 1) = compWR!(X, 4)
+                    leaderVal!(Z, 2) = compWR!(X, 1)
 
                     'Only include players with 3 RECs / game
-                    If compZ1!(Z, 2) < numberGames * 3 Then
+                    If leaderVal!(Z, 2) < numberGames * 3 Then
 
-                        compZ2$(Z) = "*"
-                        compZ3$(Z) = "*"
-                        compZ1!(Z, 1) = 0
-                        compZ1!(Z, 2) = 0
+                        leaderName$(Z) = "*"
+                        leaderTeam$(Z) = "*"
+                        leaderVal!(Z, 1) = 0
+                        leaderVal!(Z, 2) = 0
                     End If
 
                     For Y = 21 To 39:
                         For Z = Y + 1 To 40:
-                            If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                Swap compZ3$(Y), compZ3$(Z)
-                                Swap compZ2$(Y), compZ2$(Z)
+                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                                Swap leaderTeam$(Y), leaderTeam$(Z)
+                                Swap leaderName$(Y), leaderName$(Z)
                                 For Z1 = 1 To 2:
-                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                                 Next Z1
                             End If
 
@@ -824,21 +883,21 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             Next Z
 
-            If Not ((compWR!(X, 1) < numberGames * 4 Or compWR!(X, 4) < compZ1!(40, 1))) Then
+            If Not ((compWR!(X, 1) < numberGames * 4 Or compWR!(X, 4) < leaderVal!(40, 1))) Then
 
-                compZ2$(40) = compWR$(X)
-                compZ3$(40) = WT$
-                compZ1!(40, 1) = compWR!(X, 4)
-                compZ1!(40, 2) = compWR!(X, 1)
+                leaderName$(40) = compWR$(X)
+                leaderTeam$(40) = WT$
+                leaderVal!(40, 1) = compWR!(X, 4)
+                leaderVal!(40, 2) = compWR!(X, 1)
 
                 For Y = 21 To 39:
                     For Z = Y + 1 To 40:
-                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
+                        If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
 
-                            Swap compZ3$(Y), compZ3$(Z)
-                            Swap compZ2$(Y), compZ2$(Z)
+                            Swap leaderTeam$(Y), leaderTeam$(Z)
+                            Swap leaderName$(Y), leaderName$(Z)
                             For Z1 = 1 To 2:
-                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
 
                         End If
@@ -851,49 +910,49 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             3178 '
             For Z = 51 To 60
-                If compZ2$(Z) = compWR$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = Int(compWR!(X, 2))
+                If leaderName$(Z) = compWR$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = Int(compWR!(X, 2))
                     GoTo 3183
                 End If
             Next Z
 
-            If Int(compWR!(X, 2)) > compZ1!(60, 1) Then
-                compZ1!(60, 1) = Int(compWR!(X, 2))
-                compZ2$(60) = compWR$(X)
-                compZ3$(60) = WT$
+            If Int(compWR!(X, 2)) > leaderVal!(60, 1) Then
+                leaderVal!(60, 1) = Int(compWR!(X, 2))
+                leaderName$(60) = compWR$(X)
+                leaderTeam$(60) = WT$
 
                 3183 '
                 For Z = 51 To 59:
                     For Z1 = Z + 1 To 60:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
             End If
 
             For Z = 91 To 100
-                If compZ2$(Z) = compWR$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compWR!(X, 1)
+                If leaderName$(Z) = compWR$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compWR!(X, 1)
                     GoTo 3215
                 End If
             Next Z
 
-            If compWR!(X, 1) > compZ1!(100, 1) Then
+            If compWR!(X, 1) > leaderVal!(100, 1) Then
 
-                compZ1!(100, 1) = compWR!(X, 1)
-                compZ2$(100) = compWR$(X)
-                compZ3$(100) = WT$
+                leaderVal!(100, 1) = compWR!(X, 1)
+                leaderName$(100) = compWR$(X)
+                leaderTeam$(100) = WT$
 
                 3215 '
                 For Z = 91 To 99:
                     For Z1 = Z + 1 To 100
-                        If compZ1!(Z, 1) <= compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) <= leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -901,25 +960,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 71 To 80
-                If compZ2$(Z) = compWR$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compWR!(X, 3)
+                If leaderName$(Z) = compWR$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compWR!(X, 3)
                     GoTo 3230
                 End If
             Next Z
 
-            If compWR!(X, 3) > compZ1!(80, 1) Then
+            If compWR!(X, 3) > leaderVal!(80, 1) Then
 
-                compZ1!(80, 1) = compWR!(X, 3)
-                compZ2$(80) = compWR$(X)
-                compZ3$(80) = WT$
+                leaderVal!(80, 1) = compWR!(X, 3)
+                leaderName$(80) = compWR$(X)
+                leaderTeam$(80) = WT$
 
                 3230 '
                 For Z = 71 To 79:
                     For Z1 = Z + 1 To 80:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -938,34 +997,48 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
         'Color 14
         Print "CHECKING STATS OF ";
         Color 15
-        Print TB$(X)
+        Print leaderAllPurpName$(X)
 
-        If TB$(X) <> "OTHERS" Then
+        If leaderAllPurpName$(X) <> "OTHERS" Then
 
-            If YD!(X) > indRecords!(18) Then indRecords!(18) = YD!(X): indRecDesc$(18, 0) = TB$(X): indRecDesc$(18, 1) = TM$
-            If TP!(X) > indRecords!(19) Then indRecords!(19) = TP!(X): indRecDesc$(19, 0) = TB$(X): indRecDesc$(19, 1) = TM$
-            If TP!(X) > indRecords!(21) Then indRecords!(21) = TP!(X): indRecDesc$(21, 0) = TB$(X): indRecDesc$(21, 1) = TM$
+            If leaderAllPurpYds!(X) > indRecords!(18) Then
+                indRecords!(18) = leaderAllPurpYds!(X)
+                indRecDesc$(18, 0) = leaderAllPurpName$(X)
+                indRecDesc$(18, 1) = teamName$
+            End If
+
+            If totalScoring!(X) > indRecords!(19) Then
+                indRecords!(19) = totalScoring!(X)
+                indRecDesc$(19, 0) = leaderAllPurpName$(X)
+                indRecDesc$(19, 1) = teamName$
+            End If
+
+            If totalScoring!(X) > indRecords!(21) Then
+                indRecords!(21) = totalScoring!(X)
+                indRecDesc$(21, 0) = leaderAllPurpName$(X)
+                indRecDesc$(21, 1) = teamName$
+            End If
 
             For Z = 101 To 110
-                If compZ2$(Z) = TB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = YD!(X)
+                If leaderName$(Z) = leaderAllPurpName$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = leaderAllPurpYds!(X)
                     GoTo 3245
                 End If
             Next Z
 
-            If YD!(X) > compZ1!(110, 1) Then
+            If leaderAllPurpYds!(X) > leaderVal!(110, 1) Then
 
-                compZ1!(110, 1) = YD!(X)
-                compZ2$(110) = TB$(X)
-                compZ3$(110) = WT$
+                leaderVal!(110, 1) = leaderAllPurpYds!(X)
+                leaderName$(110) = leaderAllPurpName$(X)
+                leaderTeam$(110) = WT$
 
                 3245 '
                 For Z = 101 To 109:
                     For Z1 = Z + 1 To 110:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -973,25 +1046,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 111 To 120
-                If compZ2$(Z) = TB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = TP!(X)
+                If leaderName$(Z) = leaderAllPurpName$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = totalScoring!(X)
                     GoTo 3260
                 End If
             Next Z
 
-            If TP!(X) > compZ1!(120, 1) Then
+            If totalScoring!(X) > leaderVal!(120, 1) Then
 
-                compZ1!(120, 1) = TP!(X)
-                compZ2$(120) = TB$(X)
-                compZ3$(120) = WT$
+                leaderVal!(120, 1) = totalScoring!(X)
+                leaderName$(120) = leaderAllPurpName$(X)
+                leaderTeam$(120) = WT$
 
                 3260 '
                 For Z = 111 To 119:
                     For Z1 = Z + 1 To 120:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -1004,38 +1077,38 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
     For X = 17 To 18
 
-        If TP!(X) > indRecords!(20) Then
-            indRecords!(20) = TP!(X)
-            indRecDesc$(20, 0) = TB$(X)
-            indRecDesc$(20, 1) = TM$
+        If totalScoring!(X) > indRecords!(20) Then
+            indRecords!(20) = totalScoring!(X)
+            indRecDesc$(20, 0) = leaderAllPurpName$(X)
+            indRecDesc$(20, 1) = teamName$
         End If
 
-        If TP!(X) > indRecords!(21) Then
-            indRecords!(21) = TP!(X)
-            indRecDesc$(21, 0) = TB$(X)
-            indRecDesc$(21, 1) = TM$
+        If totalScoring!(X) > indRecords!(21) Then
+            indRecords!(21) = totalScoring!(X)
+            indRecDesc$(21, 0) = leaderAllPurpName$(X)
+            indRecDesc$(21, 1) = teamName$
         End If
 
         For Z = 191 To 200
-            If compZ2$(Z) = TB$(X) And compZ3$(Z) = WT$ Then
-                compZ1!(Z, 1) = TP!(X)
+            If leaderName$(Z) = leaderAllPurpName$(X) And leaderTeam$(Z) = WT$ Then
+                leaderVal!(Z, 1) = totalScoring!(X)
                 GoTo 3505
             End If
         Next Z
 
-        If TP!(X) > compZ1!(200, 1) Then
+        If totalScoring!(X) > leaderVal!(200, 1) Then
 
-            compZ1!(200, 1) = TP!(X)
-            compZ2$(200) = TB$(X)
-            compZ3$(200) = WT$
+            leaderVal!(200, 1) = totalScoring!(X)
+            leaderName$(200) = leaderAllPurpName$(X)
+            leaderTeam$(200) = WT$
 
             3505 '
             For Z = 191 To 199:
                 For Z1 = Z + 1 To 200:
-                    If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                        Swap compZ2$(Z1), compZ2$(Z)
-                        Swap compZ3$(Z1), compZ3$(Z)
-                        Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                    If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                        Swap leaderName$(Z1), leaderName$(Z)
+                        Swap leaderTeam$(Z1), leaderTeam$(Z)
+                        Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                     End If
                 Next Z1
             Next Z
@@ -1059,74 +1132,74 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             If compQB!(X, 1) > indRecords!(10) Then
                 indRecords!(10) = compQB!(X, 1)
                 indRecDesc$(10, 0) = compQB$(X)
-                indRecDesc$(10, 1) = TM$
+                indRecDesc$(10, 1) = teamName$
             End If
 
             If compQB!(X, 2) > indRecords!(11) Then
                 indRecords!(11) = compQB!(X, 2)
                 indRecDesc$(11, 0) = compQB$(X)
-                indRecDesc$(11, 1) = TM$
+                indRecDesc$(11, 1) = teamName$
             End If
 
             If compQB!(X, 5) > indRecords!(12) Then
                 indRecords!(12) = compQB!(X, 5)
                 indRecDesc$(12, 0) = compQB$(X)
-                indRecDesc$(12, 1) = TM$
+                indRecDesc$(12, 1) = teamName$
             End If
 
             If compQB!(X, 3) > indRecords!(13) Then
                 indRecords!(13) = compQB!(X, 3)
                 indRecDesc$(13, 0) = compQB$(X)
-                indRecDesc$(13, 1) = TM$
+                indRecDesc$(13, 1) = teamName$
             End If
 
             If compQB!(X, 4) > indRecords!(14) Then
                 indRecords!(14) = compQB!(X, 4)
                 indRecDesc$(14, 0) = compQB$(X)
-                indRecDesc$(14, 1) = TM$
+                indRecDesc$(14, 1) = teamName$
             End If
 
             If compQB!(X, 6) > indRecords!(15) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames * 15 Then
                 indRecords!(15) = compQB!(X, 6)
                 indRecDesc$(15, 0) = compQB$(X)
-                indRecDesc$(15, 1) = TM$
+                indRecDesc$(15, 1) = teamName$
             End If
 
             If compQB!(X, 7) > indRecords!(16) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= numberGames * 15 Then
                 indRecords!(16) = compQB!(X, 7)
                 indRecDesc$(16, 0) = compQB$(X)
-                indRecDesc$(16, 1) = TM$
+                indRecDesc$(16, 1) = teamName$
             End If
 
-            If statsLP!(X - 1) > indRecords!(17) Then
-                indRecords!(17) = statsLP!(X - 1)
+            If statsLPass!(X - 1) > indRecords!(17) Then
+                indRecords!(17) = statsLPass!(X - 1)
                 indRecDesc$(17, 0) = compQB$(X)
-                indRecDesc$(17, 1) = TM$
-                indRecDesc$(17, 2) = statsLP$(X - 1, 0)
+                indRecDesc$(17, 1) = teamName$
+                indRecDesc$(17, 2) = statsLPass$(X - 1, 0)
             End If
 
             For Y = 121 To 130:
 
-                If compZ2$(Y) = compQB$(X) And compZ3$(Y) = WT$ Then
+                If leaderName$(Y) = compQB$(X) And leaderTeam$(Y) = WT$ Then
 
-                    compZ1!(Y, 1) = compQB!(X, 6)
-                    compZ1!(Y, 2) = compQB!(X, 1)
+                    leaderVal!(Y, 1) = compQB!(X, 6)
+                    leaderVal!(Y, 2) = compQB!(X, 1)
 
-                    If compZ1!(Y, 2) < numberGames * 15 Then
-                        compZ2$(Y) = "*"
-                        compZ3$(Y) = "*"
-                        compZ1!(Y, 1) = 0
-                        compZ1!(Y, 2) = 0
+                    If leaderVal!(Y, 2) < numberGames * 15 Then
+                        leaderName$(Y) = "*"
+                        leaderTeam$(Y) = "*"
+                        leaderVal!(Y, 1) = 0
+                        leaderVal!(Y, 2) = 0
                     End If
 
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
 
-                            If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                                Swap compZ3$(Y), compZ3$(Z)
-                                Swap compZ2$(Y), compZ2$(Z)
+                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                                Swap leaderTeam$(Y), leaderTeam$(Z)
+                                Swap leaderName$(Y), leaderName$(Z)
                                 For Z1 = 1 To 2:
-                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                                 Next Z1
 
                             End If
@@ -1140,23 +1213,23 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < compZ1!(130, 1)) Then
+            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < leaderVal!(130, 1)) Then
 
-                compZ2$(130) = compQB$(X)
-                compZ3$(130) = WT$
-                compZ1!(130, 1) = compQB!(X, 6)
-                compZ1!(130, 2) = compQB!(X, 1)
+                leaderName$(130) = compQB$(X)
+                leaderTeam$(130) = WT$
+                leaderVal!(130, 1) = compQB!(X, 6)
+                leaderVal!(130, 2) = compQB!(X, 1)
 
                 For Y = 121 To 129:
 
                     For Z = Y + 1 To 130:
 
-                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            Swap compZ3$(Y), compZ3$(Z)
-                            Swap compZ2$(Y), compZ2$(Z)
+                        If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                            Swap leaderTeam$(Y), leaderTeam$(Z)
+                            Swap leaderName$(Y), leaderName$(Z)
 
                             For Z1 = 1 To 2:
-                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
 
                         End If
@@ -1170,28 +1243,27 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             3279 '
             For Y = 131 To 140:
 
-                If compZ2$(Y) = compQB$(X) And compZ3$(Y) = WT$ Then
+                If leaderName$(Y) = compQB$(X) And leaderTeam$(Y) = WT$ Then
 
-                    compZ1!(Y, 1) = compQB!(X, 7)
-                    compZ1!(Y, 2) = compQB!(X, 1)
+                    leaderVal!(Y, 1) = compQB!(X, 7)
+                    leaderVal!(Y, 2) = compQB!(X, 1)
 
-                    If compZ1!(Y, 2) < numberGames * 15 Then
-                        compZ2$(Y) = "*"
-                        compZ3$(Y) = "*"
-                        compZ1!(Y, 1) = 0
-                        compZ1!(Y, 2) = 0
+                    If leaderVal!(Y, 2) < numberGames * 15 Then
+                        leaderName$(Y) = "*"
+                        leaderTeam$(Y) = "*"
+                        leaderVal!(Y, 1) = 0
+                        leaderVal!(Y, 2) = 0
                     End If
 
                     For Y = 131 To 139:
                         For Z = Y + 1 To 140:
 
-                            If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-
-                                Swap compZ3$(Y), compZ3$(Z)
-                                Swap compZ2$(Y), compZ2$(Z)
+                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                                Swap leaderTeam$(Y), leaderTeam$(Z)
+                                Swap leaderName$(Y), leaderName$(Z)
 
                                 For Z1 = 1 To 2:
-                                    Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                                 Next Z1
                             End If
 
@@ -1204,21 +1276,22 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < compZ1!(140, 1)) Then
+            If Not (compQB!(X, 1) < numberGames * 15 Or compQB!(X, 6) < leaderVal!(140, 1)) Then
 
-                compZ2$(140) = compQB$(X)
-                compZ3$(140) = WT$
-                compZ1!(140, 1) = compQB!(X, 7)
-                compZ1!(140, 2) = compQB!(X, 1)
+                leaderName$(140) = compQB$(X)
+                leaderTeam$(140) = WT$
+                leaderVal!(140, 1) = compQB!(X, 7)
+                leaderVal!(140, 2) = compQB!(X, 1)
 
                 For Y = 131 To 139:
                     For Z = Y + 1 To 140:
 
-                        If compZ1!(Y, 1) < compZ1!(Z, 1) Then
-                            Swap compZ3$(Y), compZ3$(Z)
-                            Swap compZ2$(Y), compZ2$(Z)
+                        If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
+                            Swap leaderTeam$(Y), leaderTeam$(Z)
+                            Swap leaderName$(Y), leaderName$(Z)
+
                             For Z1 = 1 To 2:
-                                Swap compZ1!(Y, Z1), compZ1!(Z, Z1)
+                                Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
                         End If
 
@@ -1229,26 +1302,26 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
             3287 '
             For Z = 141 To 150
-                If compZ2$(Z) = compQB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = Int(compQB!(X, 4))
+                If leaderName$(Z) = compQB$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = Int(compQB!(X, 4))
                     GoTo 3294
                 End If
             Next Z
 
-            If Int(compQB!(X, 4)) > compZ1!(150, 1) Then
+            If Int(compQB!(X, 4)) > leaderVal!(150, 1) Then
 
-                compZ1!(150, 1) = Int(compQB!(X, 4))
-                compZ2$(150) = compQB$(X)
+                leaderVal!(150, 1) = Int(compQB!(X, 4))
+                leaderName$(150) = compQB$(X)
 
                 3294 '
-                compZ3$(150) = WT$
+                leaderTeam$(150) = WT$
 
                 For Z = 141 To 149:
                     For Z1 = Z + 1 To 150:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -1256,25 +1329,25 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
             End If
 
             For Z = 151 To 160
-                If compZ2$(Z) = compQB$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compQB!(X, 5)
+                If leaderName$(Z) = compQB$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compQB!(X, 5)
                     GoTo 3307
                 End If
             Next Z
 
-            If compQB!(X, 5) > compZ1!(160, 1) Then
+            If compQB!(X, 5) > leaderVal!(160, 1) Then
 
-                compZ1!(160, 1) = compQB!(X, 5)
-                compZ2$(160) = compQB$(X)
-                compZ3$(160) = WT$
+                leaderVal!(160, 1) = compQB!(X, 5)
+                leaderName$(160) = compQB$(X)
+                leaderTeam$(160) = WT$
 
                 3307 '
                 For Z = 151 To 159:
                     For Z1 = Z + 1 To 160:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
                 Next Z
@@ -1297,61 +1370,61 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compKR$(X) <> "OTHERS" Then
 
-            If KR!(X, 1) > indRecords!(22) Then
-                indRecords!(22) = KR!(X, 1)
+            If compKR!(X, 1) > indRecords!(22) Then
+                indRecords!(22) = compKR!(X, 1)
                 indRecDesc$(22, 0) = compKR$(X)
-                indRecDesc$(22, 1) = TM$
+                indRecDesc$(22, 1) = teamName$
             End If
 
-            If KR!(X, 2) > indRecords!(23) Then
-                indRecords!(23) = KR!(X, 2)
+            If compKR!(X, 2) > indRecords!(23) Then
+                indRecords!(23) = compKR!(X, 2)
                 indRecDesc$(23, 0) = compKR$(X)
-                indRecDesc$(23, 1) = TM$
+                indRecDesc$(23, 1) = teamName$
             End If
 
-            If KR!(X, 3) > indRecords!(24) Then
-                indRecords!(24) = KR!(X, 3)
+            If compKR!(X, 3) > indRecords!(24) Then
+                indRecords!(24) = compKR!(X, 3)
                 indRecDesc$(24, 0) = compKR$(X)
-                indRecDesc$(24, 1) = TM$
+                indRecDesc$(24, 1) = teamName$
             End If
 
-            If KR!(X, 4) > indRecords!(25) And UCase$(finalUpdate$) = "Y" And KR!(X, 1) >= numberGames * 1.2 Then
-                indRecords!(25) = KR!(X, 4)
+            If compKR!(X, 4) > indRecords!(25) And UCase$(finalUpdate$) = "Y" And compKR!(X, 1) >= numberGames * 1.2 Then
+                indRecords!(25) = compKR!(X, 4)
                 indRecDesc$(25, 0) = compKR$(X)
-                indRecDesc$(25, 1) = TM$
+                indRecDesc$(25, 1) = teamName$
             End If
 
-            If statsLK!(X - 1) > indRecords!(26) Then
-                indRecords!(26) = statsLK!(X - 1)
+            If statsLKR!(X - 1) > indRecords!(26) Then
+                indRecords!(26) = statsLKR!(X - 1)
                 indRecDesc$(26, 0) = compKR$(X)
-                indRecDesc$(26, 1) = TM$
-                indRecDesc$(26, 2) = statsLK$(X - 1, 0)
+                indRecDesc$(26, 1) = teamName$
+                indRecDesc$(26, 2) = statsLKR$(X - 1, 0)
             End If
 
             For Z = 161 To 170
-                If compZ2$(Z) = compKR$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = KR!(X, 4)
-                    compZ1!(Z, 2) = KR!(X, 1)
+                If leaderName$(Z) = compKR$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compKR!(X, 4)
+                    leaderVal!(Z, 2) = compKR!(X, 1)
                     GoTo 3345
                 End If
             Next Z
 
-            If Not (KR!(X, 1) < numberGames * 1.2 Or KR!(X, 4) <= compZ1!(170, 1)) Then
+            If Not (compKR!(X, 1) < numberGames * 1.2 Or compKR!(X, 4) <= leaderVal!(170, 1)) Then
 
-                compZ1!(170, 1) = KR!(X, 4)
-                compZ2$(170) = compKR$(X)
-                compZ3$(170) = WT$
-                compZ1!(170, 2) = KR!(X, 1)
+                leaderVal!(170, 1) = compKR!(X, 4)
+                leaderName$(170) = compKR$(X)
+                leaderTeam$(170) = WT$
+                leaderVal!(170, 2) = compKR!(X, 1)
 
                 3345 '
                 For Z = 161 To 169:
                     For Z1 = Z + 1 To 170:
 
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
                             For MN = 1 To 2
-                                Swap compZ1!(Z1, MN), compZ1!(Z, MN)
+                                Swap leaderVal!(Z1, MN), leaderVal!(Z, MN)
                             Next MN
                         End If
 
@@ -1376,60 +1449,60 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If compPR$(X) <> "OTHERS" Then
 
-            If compPR!(X, 1) > indRecords!(27) Then 
+            If compPR!(X, 1) > indRecords!(27) Then
                 indRecords!(27) = compPR!(X, 1)
                 indRecDesc$(27, 0) = compPR$(X)
-                indRecDesc$(27, 1) = TM$
+                indRecDesc$(27, 1) = teamName$
             End If
 
-            If compPR!(X, 2) > indRecords!(28) Then 
+            If compPR!(X, 2) > indRecords!(28) Then
                 indRecords!(28) = compPR!(X, 2)
                 indRecDesc$(28, 0) = compPR$(X)
-                indRecDesc$(28, 1) = TM$
+                indRecDesc$(28, 1) = teamName$
             End If
 
-            If compPR!(X, 3) > indRecords!(29) Then 
+            If compPR!(X, 3) > indRecords!(29) Then
                 indRecords!(29) = compPR!(X, 3)
                 indRecDesc$(29, 0) = compPR$(X)
-                indRecDesc$(29, 1) = TM$
+                indRecDesc$(29, 1) = teamName$
             End If
 
-            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames * 1.2 Then 
+            If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= numberGames * 1.2 Then
                 indRecords!(30) = compPR!(X, 4)
                 indRecDesc$(30, 0) = compPR$(X)
-                indRecDesc$(30, 1) = TM$
+                indRecDesc$(30, 1) = teamName$
             End If
 
-            If statsPK!(X - 1) > indRecords!(31) Then 
-                indRecords!(31) = statsPK!(X - 1)
+            If statsLPR!(X - 1) > indRecords!(31) Then
+                indRecords!(31) = statsLPR!(X - 1)
                 indRecDesc$(31, 0) = compPR$(X)
-                indRecDesc$(31, 1) = TM$
-                indRecDesc$(31, 2) = PKR$(X - 1, 0)
+                indRecDesc$(31, 1) = teamName$
+                indRecDesc$(31, 2) = statsLPR$(X - 1, 0)
             End If
 
             For Z = 171 To 180
-                If compZ2$(Z) = compPR$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = compPR!(X, 4)
-                    compZ1!(Z, 2) = compPR!(X, 1)
+                If leaderName$(Z) = compPR$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = compPR!(X, 4)
+                    leaderVal!(Z, 2) = compPR!(X, 1)
                     GoTo 3365
                 End If
             Next Z
 
-            If Not (compPR!(X, 1) < numberGames * 1.2 And compPR!(X, 4) <= compZ1!(180, 1)) Then
+            If Not (compPR!(X, 1) < numberGames * 1.2 And compPR!(X, 4) <= leaderVal!(180, 1)) Then
 
-                compZ1!(180, 1) = compPR!(X, 4)
-                compZ2$(180) = compPR$(X)
-                compZ3$(180) = WT$
-                compZ1!(180, 2) = compPR!(X, 1)
+                leaderVal!(180, 1) = compPR!(X, 4)
+                leaderName$(180) = compPR$(X)
+                leaderTeam$(180) = WT$
+                leaderVal!(180, 2) = compPR!(X, 1)
 
                 3365 '
                 For Z = 171 To 179:
                     For Z1 = Z + 1 To 180:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
                             For MN = 1 To 2
-                                Swap compZ1!(Z1, MN), compZ1!(Z, MN)
+                                Swap leaderVal!(Z1, MN), leaderVal!(Z, MN)
                             Next MN
                         End If
                     Next Z1
@@ -1449,33 +1522,47 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
     Color 15
     Print puntName$
 
-    If TG!(8) > indRecords!(32) Then indRecords!(32) = TG!(8): indRecDesc$(32, 0) = puntName$: indRecDesc$(32, 1) = TM$
-    If TG!(9) > indRecords!(33) Then indRecords!(33) = TG!(9): indRecDesc$(33, 0) = puntName$: indRecDesc$(33, 1) = TM$
-    If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then indRecords!(34) = puntNum: indRecDesc$(34, 0) = puntName$: indRecDesc$(34, 1) = TM$
+    If compPunts!(8) > indRecords!(32) Then
+        indRecords!(32) = compPunts!(8)
+        indRecDesc$(32, 0) = puntName$
+        indRecDesc$(32, 1) = teamName$
+    End If
+
+    If compPunts!(9) > indRecords!(33) Then
+        indRecords!(33) = compPunts!(9)
+        indRecDesc$(33, 0) = puntName$
+        indRecDesc$(33, 1) = teamName$
+    End If
+
+    If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then
+        indRecords!(34) = puntNum
+        indRecDesc$(34, 0) = puntName$
+        indRecDesc$(34, 1) = teamName$
+    End If
 
     For Z = 181 To 190
-        If compZ2$(Z) = puntName$ And compZ3$(Z) = WT$ Then
-            compZ1!(Z, 1) = puntNum
-            compZ1!(Z, 2) = TG!(8)
+        If leaderName$(Z) = puntName$ And leaderTeam$(Z) = WT$ Then
+            leaderVal!(Z, 1) = puntNum
+            leaderVal!(Z, 2) = compPunts!(8)
             GoTo 3382
         End If
     Next Z
 
-    If puntNum > compZ1!(190, 1) Then
+    If puntNum > leaderVal!(190, 1) Then
 
-        compZ1!(190, 1) = puntNum
-        compZ2$(190) = puntName$
-        compZ3$(190) = WT$
-        compZ1!(190, 2) = TG!(8)
+        leaderVal!(190, 1) = puntNum
+        leaderName$(190) = puntName$
+        leaderTeam$(190) = WT$
+        leaderVal!(190, 2) = compPunts!(8)
 
         3382 '
         For Z = 181 To 189:
             For Z1 = Z + 1 To 190:
-                If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                    Swap compZ2$(Z1), compZ2$(Z)
-                    Swap compZ3$(Z1), compZ3$(Z)
+                If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                    Swap leaderName$(Z1), leaderName$(Z)
+                    Swap leaderTeam$(Z1), leaderTeam$(Z)
                     For MN = 1 To 2
-                        Swap compZ1!(Z1, MN), compZ1!(Z, MN)
+                        Swap leaderVal!(Z1, MN), leaderVal!(Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1491,75 +1578,75 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
         'Color 14
         Print "CHECKING STATS OF ";
         Color 15
-        Print compPK$(X)
+        Print compKicker$(X)
 
-        If FM!(X) > indRecords!(35) Then
-            indRecords!(35) = FM!(X)
-            indRecDesc$(35, 0) = compPK$(X)
-            indRecDesc$(35, 1) = TM$
+        If compFGM!(X) > indRecords!(35) Then
+            indRecords!(35) = compFGM!(X)
+            indRecDesc$(35, 0) = compKicker$(X)
+            indRecDesc$(35, 1) = teamName$
         End If
 
-        If FA!(X) > indRecords!(36) Then
-            indRecords!(36) = FA!(X)
-            indRecDesc$(36, 0) = compPK$(X)
-            indRecDesc$(36, 1) = TM$
+        If compFGA!(X) > indRecords!(36) Then
+            indRecords!(36) = compFGA!(X)
+            indRecDesc$(36, 0) = compKicker$(X)
+            indRecDesc$(36, 1) = teamName$
         End If
 
-        If FG!(X) > indRecords!(37) And UCase$(finalUpdate$) = "Y" Then
-            indRecords!(37) = FG!(X)
-            indRecDesc$(37, 0) = compPK$(X)
-            indRecDesc$(37, 1) = TM$
+        If compFGPct!(X) > indRecords!(37) And UCase$(finalUpdate$) = "Y" Then
+            indRecords!(37) = compFGPct!(X)
+            indRecDesc$(37, 0) = compKicker$(X)
+            indRecDesc$(37, 1) = teamName$
         End If
 
-        If statsLF!(X - 1) > indRecords!(38) Then
-            indRecords!(38) = statsLF!(X - 1)
-            indRecDesc$(38, 0) = compPK$(X)
-            indRecDesc$(38, 1) = TM$
-            indRecDesc$(38, 2) = statsLF$(X - 1)
+        If statsLFG!(X - 1) > indRecords!(38) Then
+            indRecords!(38) = statsLFG!(X - 1)
+            indRecDesc$(38, 0) = compKicker$(X)
+            indRecDesc$(38, 1) = teamName$
+            indRecDesc$(38, 2) = statsLFG$(X - 1)
         End If
 
-        If EM!(X) > indRecords!(39) Then
-            indRecords!(39) = EM!(X)
-            indRecDesc$(39, 0) = compPK$(X)
-            indRecDesc$(39, 1) = TM$
+        If compPAM!(X) > indRecords!(39) Then
+            indRecords!(39) = compPAM!(X)
+            indRecDesc$(39, 0) = compKicker$(X)
+            indRecDesc$(39, 1) = teamName$
         End If
 
-        If EA!(X) > indRecords!(40) Then
-            indRecords!(40) = EA!(X)
-            indRecDesc$(40, 0) = compPK$(X)
-            indRecDesc$(40, 1) = TM$
+        If compPAT!(X) > indRecords!(40) Then
+            indRecords!(40) = compPAT!(X)
+            indRecDesc$(40, 0) = compKicker$(X)
+            indRecDesc$(40, 1) = teamName$
         End If
 
-        If EP!(X) > indRecords!(41) And UCase$(finalUpdate$) = "Y" Then
-            indRecords!(41) = EP!(X)
-            indRecDesc$(41, 0) = compPK$(X)
-            indRecDesc$(41, 1) = TM$
+        If compPAPct!(X) > indRecords!(41) And UCase$(finalUpdate$) = "Y" Then
+            indRecords!(41) = compPAPct!(X)
+            indRecDesc$(41, 0) = compKicker$(X)
+            indRecDesc$(41, 1) = teamName$
         End If
 
         For Z = 201 To 210
-            If compZ2$(Z) = compPK$(X) And compZ3$(Z) = WT$ Then
-                compZ1!(Z, 1) = fumbGain
-                compZ1!(Z, 2) = FA!(X)
+            If leaderName$(Z) = compKicker$(X) And leaderTeam$(Z) = WT$ Then
+                leaderVal!(Z, 1) = fumbGain
+                leaderVal!(Z, 2) = compFGA!(X)
                 GoTo 3396
             End If
         Next Z
 
-        If FG!(X) > compZ1!(210, 1) Then
+        If compFGPct!(X) > leaderVal!(210, 1) Then
 
-            compZ1!(210, 1) = FG!(X)
-            compZ2$(210) = compPK$(X)
-            compZ3$(210) = WT$
-            compZ1!(210, 2) = FA!(X)
+            leaderVal!(210, 1) = compFGPct!(X)
+            leaderName$(210) = compKicker$(X)
+            leaderTeam$(210) = WT$
+            leaderVal!(210, 2) = compFGA!(X)
 
             3396 '
             For Z = 201 To 209:
                 For Z1 = Z + 1 To 210:
-                    If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                        Swap compZ2$(Z1), compZ2$(Z)
-                        Swap compZ3$(Z1), compZ3$(Z)
+                    If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                        Swap leaderName$(Z1), leaderName$(Z)
+                        Swap leaderTeam$(Z1), leaderTeam$(Z)
 
                         For MN = 1 To 2
-                            Swap compZ1!(Z1, MN), compZ1!(Z, MN)
+                            Swap leaderVal!(Z1, MN), leaderVal!(Z, MN)
                         Next MN
                     End If
                 Next Z1
@@ -1568,29 +1655,29 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
         End If
 
         For Z = 211 To 220
-            If compZ2$(Z) = compPK$(X) And compZ3$(Z) = WT$ Then
-                compZ1!(Z, 1) = EP!(X)
-                compZ1!(Z, 2) = EA!(X)
+            If leaderName$(Z) = compKicker$(X) And leaderTeam$(Z) = WT$ Then
+                leaderVal!(Z, 1) = compPAPct!(X)
+                leaderVal!(Z, 2) = compPAT!(X)
                 GoTo 3409
             End If
         Next Z
 
-        If EP!(X) > compZ1!(220, 1) Then
+        If compPAPct!(X) > leaderVal!(220, 1) Then
 
-            compZ1!(220, 1) = EP!(X)
-            compZ2$(220) = compPK$(X)
-            compZ3$(220) = WT$
-            compZ1!(220, 2) = EA!(X)
+            leaderVal!(220, 1) = compPAPct!(X)
+            leaderName$(220) = compKicker$(X)
+            leaderTeam$(220) = WT$
+            leaderVal!(220, 2) = compPAT!(X)
 
             3409 '
             For Z = 211 To 219:
                 For Z1 = Z + 1 To 220:
 
-                    If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                        Swap compZ2$(Z1), compZ2$(Z)
-                        Swap compZ3$(Z1), compZ3$(Z)
+                    If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                        Swap leaderName$(Z1), leaderName$(Z)
+                        Swap leaderTeam$(Z1), leaderTeam$(Z)
                         For MN = 1 To 2
-                            Swap compZ1!(Z1, MN), compZ1!(Z, MN)
+                            Swap leaderVal!(Z1, MN), leaderVal!(Z, MN)
                         Next MN
                     End If
 
@@ -1610,40 +1697,54 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If Left$(intName$(X), 1) <> " " And intName$(X) <> "" And intName$(X) <> "END" Then
 
-            If statsGI%(X, 0) > indRecords!(42) Then indRecords!(42) = statsGI%(X, 0): indRecDesc$(42, 0) = intName$(X): indRecDesc$(42, 1) = TM$
-            If statsGI%(X, 1) > indRecords!(43) Then indRecords!(43) = statsGI%(X, 1): indRecDesc$(43, 0) = intName$(X): indRecDesc$(43, 1) = TM$
-            If statsGI%(X, 2) > indRecords!(44) Then indRecords!(44) = statsGI%(X, 2): indRecDesc$(44, 0) = intName$(X): indRecDesc$(44, 1) = TM$
+            If statsGI(X, 0) > indRecords!(42) Then
+                indRecords!(42) = statsGI(X, 0)
+                indRecDesc$(42, 0) = intName$(X)
+                indRecDesc$(42, 1) = teamName$
+            End If
+
+            If statsGI(X, 1) > indRecords!(43) Then
+                indRecords!(43) = statsGI(X, 1)
+                indRecDesc$(43, 0) = intName$(X)
+                indRecDesc$(43, 1) = teamName$
+            End If
+
+            If statsGI(X, 2) > indRecords!(44) Then
+                indRecords!(44) = statsGI(X, 2)
+                indRecDesc$(44, 0) = intName$(X)
+                indRecDesc$(44, 1) = teamName$
+            End If
 
             If X > 0 Then
-                If statsLI!(X - 1) > indRecords!(45) Then
-                    indRecords!(45) = statsLI!(X - 1)
+                If statsLInt!(X - 1) > indRecords!(45) Then
+                    indRecords!(45) = statsLInt!(X - 1)
                     indRecDesc$(45, 0) = intName$(X)
-                    indRecDesc$(45, 1) = TM$
-                    indRecDesc$(45, 2) = statsLI$(X - 1, 0)
+                    indRecDesc$(45, 1) = teamName$
+                    indRecDesc$(45, 2) = statsLInt$(X - 1, 0)
                 End If
             End If
 
             For Z = 221 To 230
-                If compZ2$(Z) = intName$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = statsGI%(X, 0)
+                If leaderName$(Z) = intName$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = statsGI(X, 0)
                     GoTo 3422
                 End If
             Next Z
 
-            If statsGI%(X, 0) > compZ1!(230, 1) Then
+            If statsGI(X, 0) > leaderVal!(230, 1) Then
 
-                compZ1!(230, 1) = statsGI%(X, 0)
-                compZ2$(230) = intName$(X)
-                compZ3$(230) = WT$
+                leaderVal!(230, 1) = statsGI(X, 0)
+                leaderName$(230) = intName$(X)
+                leaderTeam$(230) = WT$
 
                 3422 '
                 For Z = 221 To 229:
                     For Z1 = Z + 1 To 230:
 
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
 
                     Next Z1
@@ -1662,32 +1763,32 @@ Sub CalcStatLeaders (numberGames, TM$, WT$, finalUpdate$)
 
         If Left$(sackName$(X), 1) <> " " And sackName$(X) <> "" And sackName$(X) <> "END" Then
 
-            If statsGS%(X, 0) > indRecords!(46) Then
-                indRecords!(46) = statsGS%(X, 0)
+            If statsGS(X, 0) > indRecords!(46) Then
+                indRecords!(46) = statsGS(X, 0)
                 indRecDesc$(46, 0) = sackName$(X)
-                indRecDesc$(46, 1) = TM$
+                indRecDesc$(46, 1) = teamName$
             End If
 
             For Z = 231 To 240
-                If compZ2$(Z) = sackName$(X) And compZ3$(Z) = WT$ Then
-                    compZ1!(Z, 1) = statsGS%(X, 0)
+                If leaderName$(Z) = sackName$(X) And leaderTeam$(Z) = WT$ Then
+                    leaderVal!(Z, 1) = statsGS(X, 0)
                     GoTo 3434
                 End If
             Next Z
 
-            If statsGS%(X, 0) > compZ1!(240, 1) Then
+            If statsGS(X, 0) > leaderVal!(240, 1) Then
 
-                compZ1!(240, 1) = statsGS%(X, 0)
-                compZ2$(240) = sackName$(X)
-                compZ3$(240) = WT$
+                leaderVal!(240, 1) = statsGS(X, 0)
+                leaderName$(240) = sackName$(X)
+                leaderTeam$(240) = WT$
 
                 3434 '
                 For Z = 231 To 239:
                     For Z1 = Z + 1 To 240:
-                        If compZ1!(Z, 1) < compZ1!(Z1, 1) Then
-                            Swap compZ2$(Z1), compZ2$(Z)
-                            Swap compZ3$(Z1), compZ3$(Z)
-                            Swap compZ1!(Z1, 1), compZ1!(Z, 1)
+                        If leaderVal!(Z, 1) < leaderVal!(Z1, 1) Then
+                            Swap leaderName$(Z1), leaderName$(Z)
+                            Swap leaderTeam$(Z1), leaderTeam$(Z)
+                            Swap leaderVal!(Z1, 1), leaderVal!(Z, 1)
                         End If
                     Next Z1
 
@@ -1708,13 +1809,13 @@ End Sub
 'This subroutine compares all pre-loaded
 'stats to each of the record categories to
 'see if any should be updated
-Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
+Sub CalcStatTotalsPro (numberGames, teamName$, WT$, finalUpdate$)
 
     Shared fumbGain
 
-    Shared compTT!(), DT!(), OT!(), teamRecords!()
+    Shared totalTeamVal!(), defTotals!(), offTotals!(), teamRecords!()
 
-    Shared teamRecDesc$(), TT$()
+    Shared teamRecDesc$(), totalTeamName$()
 
     Shared oppScore(), teamScore()
 
@@ -1724,36 +1825,36 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 1 - TOTAL OFFENSE
     CA = 1
 
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / numberGames > teamRecords!(0) Then
-        teamRecords!(0) = (OT!(6) + OT!(2) + OT!(14)) / numberGames
-        teamRecDesc$(0) = TM$
+    If UCase$(finalUpdate$) = "Y" And (offTotals!(6) + offTotals!(2) + offTotals!(14)) / numberGames > teamRecords!(0) Then
+        teamRecords!(0) = (offTotals!(6) + offTotals!(2) + offTotals!(14)) / numberGames
+        teamRecDesc$(0) = teamName$
     End If
 
-    If OT!(6) + OT!(2) + OT!(14) > teamRecords!(1) Then
-        teamRecords!(1) = OT!(6) + OT!(2) + OT!(14)
-        teamRecDesc$(1) = TM$
+    If offTotals!(6) + offTotals!(2) + offTotals!(14) > teamRecords!(1) Then
+        teamRecords!(1) = offTotals!(6) + offTotals!(2) + offTotals!(14)
+        teamRecDesc$(1) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13)) > teamRecords!(2) Then
-        teamRecords!(2) = (OT!(6) + OT!(2) + OT!(14)) / (OT!(1) + OT!(3) - OT!(13))
-        teamRecDesc$(2) = TM$
+    If UCase$(finalUpdate$) = "Y" And (offTotals!(6) + offTotals!(2) + offTotals!(14)) / (offTotals!(1) + offTotals!(3) - offTotals!(13)) > teamRecords!(2) Then
+        teamRecords!(2) = (offTotals!(6) + offTotals!(2) + offTotals!(14)) / (offTotals!(1) + offTotals!(3) - offTotals!(13))
+        teamRecDesc$(2) = teamName$
     End If
 
-    If (OT!(6) + OT!(2) + OT!(14)) / numberGames > compTT!(CA, 20, 5) Then
+    If (offTotals!(6) + offTotals!(2) + offTotals!(14)) / numberGames > totalTeamVal!(CA, 20, 5) Then
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = OT!(1) + OT!(3) - OT!(13)
-        compTT!(CA, 20, 3) = OT!(6) + OT!(2) + OT!(14)
-        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
-        TT$(CA, 20) = WT$
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = offTotals!(1) + offTotals!(3) - offTotals!(13)
+        totalTeamVal!(CA, 20, 3) = offTotals!(6) + offTotals!(2) + offTotals!(14)
+        totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 5) < compTT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 5) < totalTeamVal!(CA, Z1, 5) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1764,30 +1865,45 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames < teamRecords!(25) Then teamRecords!(25) = (DT!(6) + DT!(2) + DT!(14)) / numberGames: teamRecDesc$(25) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) + DT!(2) + DT!(14) < teamRecords!(26) Then teamRecords!(26) = DT!(6) + DT!(2) + DT!(14): teamRecDesc$(26) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)) < teamRecords!(27) Then teamRecords!(27) = (DT!(6) + DT!(2) + DT!(14)) / (DT!(1) + DT!(3) - DT!(13)): teamRecDesc$(27) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(6) + DT!(2) + DT!(14)) / numberGames > teamRecords!(28) Then teamRecords!(28) = (DT!(6) + DT!(2) + DT!(14)) / numberGames: teamRecDesc$(28) = TM$
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / numberGames < teamRecords!(25) Then
+        teamRecords!(25) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / numberGames
+        teamRecDesc$(25) = teamName$
+    End If
 
-    If (DT!(6) + DT!(2) + DT!(14)) / numberGames < compTT!(CA, 20, 5) Then
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) + defTotals!(2) + defTotals!(14) < teamRecords!(26) Then
+        teamRecords!(26) = defTotals!(6) + defTotals!(2) + defTotals!(14)
+        teamRecDesc$(26) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13)) < teamRecords!(27) Then
+        teamRecords!(27) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13))
+        teamRecDesc$(27) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / numberGames > teamRecords!(28) Then
+        teamRecords!(28) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / numberGames
+        teamRecDesc$(28) = teamName$
+    End If
+
+    If (defTotals!(6) + defTotals!(2) + defTotals!(14)) / numberGames < totalTeamVal!(CA, 20, 5) Then
         'Games
-        compTT!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = numberGames
         'Plays
-        compTT!(CA, 20, 2) = DT!(1) + DT!(3) - DT!(13)
+        totalTeamVal!(CA, 20, 2) = defTotals!(1) + defTotals!(3) - defTotals!(13)
         'Yds
-        compTT!(CA, 20, 3) = DT!(6) + DT!(2) + DT!(14)
+        totalTeamVal!(CA, 20, 3) = defTotals!(6) + defTotals!(2) + defTotals!(14)
         'Avg Yds / Gm
-        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         'Yds / Gm
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
-        TT$(CA, 20) = WT$
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 5) > compTT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 5) > totalTeamVal!(CA, Z1, 5) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1798,25 +1914,36 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 3 - RUSHING OFFENSE
     CA = 3
 
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / numberGames > teamRecords!(3) Then teamRecords!(3) = (OT!(2) + OT!(14)) / numberGames: teamRecDesc$(3) = TM$
-    If OT!(2) + OT!(14) > teamRecords!(4) Then teamRecords!(4) = OT!(2) + OT!(14): teamRecDesc$(4) = TM$
-    If UCase$(finalUpdate$) = "Y" And (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)) > teamRecords!(5) Then teamRecords!(5) = (OT!(2) + OT!(14)) / (OT!(1) - OT!(13)): teamRecDesc$(5) = TM$
+    If UCase$(finalUpdate$) = "Y" And (offTotals!(2) + offTotals!(14)) / numberGames > teamRecords!(3) Then
+        teamRecords!(3) = (offTotals!(2) + offTotals!(14)) / numberGames
+        teamRecDesc$(3) = teamName$
+    End If
 
-    If (OT!(2) + OT!(14)) / numberGames > compTT!(CA, 20, 5) Then
+    If offTotals!(2) + offTotals!(14) > teamRecords!(4) Then
+        teamRecords!(4) = offTotals!(2) + offTotals!(14)
+        teamRecDesc$(4) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = OT!(1) - OT!(13)
-        compTT!(CA, 20, 3) = OT!(2) + OT!(14)
-        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And (offTotals!(2) + offTotals!(14)) / (offTotals!(1) - offTotals!(13)) > teamRecords!(5) Then
+        teamRecords!(5) = (offTotals!(2) + offTotals!(14)) / (offTotals!(1) - offTotals!(13))
+        teamRecDesc$(5) = teamName$
+    End If
+
+    If (offTotals!(2) + offTotals!(14)) / numberGames > totalTeamVal!(CA, 20, 5) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = offTotals!(1) - offTotals!(13)
+        totalTeamVal!(CA, 20, 3) = offTotals!(2) + offTotals!(14)
+        totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 5) < compTT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 5) < totalTeamVal!(CA, Z1, 5) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1827,25 +1954,36 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / numberGames < teamRecords!(29) Then teamRecords!(29) = (DT!(2) + DT!(14)) / numberGames: teamRecDesc$(29) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(2) + DT!(14) < teamRecords!(30) Then teamRecords!(30) = DT!(2) + DT!(14): teamRecDesc$(30) = TM$
-    If UCase$(finalUpdate$) = "Y" And (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)) < teamRecords!(31) Then teamRecords!(31) = (DT!(2) + DT!(14)) / (DT!(1) - DT!(13)): teamRecDesc$(31) = TM$
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(2) + defTotals!(14)) / numberGames < teamRecords!(29) Then
+        teamRecords!(29) = (defTotals!(2) + defTotals!(14)) / numberGames
+        teamRecDesc$(29) = teamName$
+    End If
 
-    If (DT!(2) + DT!(14)) / numberGames < compTT!(CA, 20, 5) Then
+    If UCase$(finalUpdate$) = "Y" And defTotals!(2) + defTotals!(14) < teamRecords!(30) Then
+        teamRecords!(30) = defTotals!(2) + defTotals!(14)
+        teamRecDesc$(30) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = DT!(1) - DT!(13)
-        compTT!(CA, 20, 3) = DT!(2) + DT!(14)
-        compTT!(CA, 20, 4) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13)) < teamRecords!(31) Then
+        teamRecords!(31) = (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13))
+        teamRecDesc$(31) = teamName$
+    End If
+
+    If (defTotals!(2) + defTotals!(14)) / numberGames < totalTeamVal!(CA, 20, 5) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = defTotals!(1) - defTotals!(13)
+        totalTeamVal!(CA, 20, 3) = defTotals!(2) + defTotals!(14)
+        totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 5) > compTT!(CA, Z1, 5) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 5) > totalTeamVal!(CA, Z1, 5) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1863,23 +2001,34 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
         OPTS = OPTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then teamRecords!(13) = PTS / numberGames: teamRecDesc$(13) = TM$
-    If PTS > teamRecords!(12) Then teamRecords!(12) = PTS: teamRecDesc$(12) = TM$
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then teamRecords!(14) = (PTS - OPTS) / numberGames: teamRecDesc$(14) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then
+        teamRecords!(13) = PTS / numberGames
+        teamRecDesc$(13) = teamName$
+    End If
 
-    If PTS / numberGames > compTT!(CA, 20, 3) Then
+    If PTS > teamRecords!(12) Then
+        teamRecords!(12) = PTS
+        teamRecDesc$(12) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = PTS
-        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then
+        teamRecords!(14) = (PTS - OPTS) / numberGames
+        teamRecDesc$(14) = teamName$
+    End If
+
+    If PTS / numberGames > totalTeamVal!(CA, 20, 3) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = PTS
+        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 3) < compTT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 3) < totalTeamVal!(CA, Z1, 3) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1895,24 +2044,39 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then teamRecords!(39) = PTS / numberGames: teamRecDesc$(39) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then teamRecords!(38) = PTS: teamRecDesc$(38) = TM$
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then teamRecords!(41) = PTS / numberGames: teamRecDesc$(41) = TM$
-    If PTS > teamRecords!(40) Then teamRecords!(40) = PTS: teamRecDesc$(40) = TM$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then
+        teamRecords!(39) = PTS / numberGames
+        teamRecDesc$(39) = teamName$
+    End If
 
-    If PTS / numberGames < compTT!(CA, 20, 3) Then
+    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then
+        teamRecords!(38) = PTS
+        teamRecDesc$(38) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = PTS
-        compTT!(CA, 20, 3) = compTT!(CA, 20, 2) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then
+        teamRecords!(41) = PTS / numberGames
+        teamRecDesc$(41) = teamName$
+    End If
+
+    If PTS > teamRecords!(40) Then
+        teamRecords!(40) = PTS
+        teamRecDesc$(40) = teamName$
+    End If
+
+    If PTS / numberGames < totalTeamVal!(CA, 20, 3) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = PTS
+        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 3) > compTT!(CA, Z1, 3) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 3) > totalTeamVal!(CA, Z1, 3) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1923,31 +2087,54 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 7 - PASSING OFFENSE
     CA = 7
 
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / numberGames > teamRecords!(6) Then teamRecords!(6) = OT!(6) / numberGames: teamRecDesc$(6) = TM$
-    If OT!(6) > teamRecords!(7) Then teamRecords!(7) = OT!(6): teamRecDesc$(7) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(3) > teamRecords!(8) Then teamRecords!(8) = OT!(6) / OT!(3): teamRecDesc$(8) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(6) / OT!(4) > teamRecords!(9) Then teamRecords!(9) = OT!(6) / OT!(4): teamRecDesc$(9) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(4) / OT!(3) > teamRecords!(10) Then teamRecords!(10) = OT!(4) / OT!(3): teamRecDesc$(10) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(5) / OT!(3) < teamRecords!(11) Then teamRecords!(11) = OT!(5) / OT!(3): teamRecDesc$(11) = TM$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / numberGames > teamRecords!(6) Then
+        teamRecords!(6) = offTotals!(6) / numberGames
+        teamRecDesc$(6) = teamName$
+    End If
 
-    If OT!(6) / numberGames > compTT!(CA, 20, 8) Then
+    If offTotals!(6) > teamRecords!(7) Then
+        teamRecords!(7) = offTotals!(6)
+        teamRecDesc$(7) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = OT!(3)
-        compTT!(CA, 20, 3) = OT!(4)
-        compTT!(CA, 20, 4) = OT!(5)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 6) = OT!(6)
-        compTT!(CA, 20, 7) = OT!(6) / OT!(3)
-        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(3) > teamRecords!(8) Then
+        teamRecords!(8) = offTotals!(6) / offTotals!(3)
+        teamRecDesc$(8) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(4) > teamRecords!(9) Then
+        teamRecords!(9) = offTotals!(6) / offTotals!(4)
+        teamRecDesc$(9) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(4) / offTotals!(3) > teamRecords!(10) Then
+        teamRecords!(10) = offTotals!(4) / offTotals!(3)
+        teamRecDesc$(10) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(5) / offTotals!(3) < teamRecords!(11) Then
+        teamRecords!(11) = offTotals!(5) / offTotals!(3)
+        teamRecDesc$(11) = teamName$
+    End If
+
+    If offTotals!(6) / numberGames > totalTeamVal!(CA, 20, 8) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = offTotals!(3)
+        totalTeamVal!(CA, 20, 3) = offTotals!(4)
+        totalTeamVal!(CA, 20, 4) = offTotals!(5)
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 6) = offTotals!(6)
+        totalTeamVal!(CA, 20, 7) = offTotals!(6) / offTotals!(3)
+        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 8) < compTT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 8) < totalTeamVal!(CA, Z1, 8) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1958,31 +2145,54 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / numberGames < teamRecords!(32) Then teamRecords!(32) = DT!(6) / numberGames: teamRecDesc$(32) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) < teamRecords!(33) Then teamRecords!(33) = DT!(6): teamRecDesc$(33) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(3) < teamRecords!(34) Then teamRecords!(34) = DT!(6) / DT!(3): teamRecDesc$(34) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(6) / DT!(4) < teamRecords!(35) Then teamRecords!(35) = DT!(6) / DT!(4): teamRecDesc$(35) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(4) / DT!(3) < teamRecords!(36) Then teamRecords!(36) = DT!(4) / DT!(3): teamRecDesc$(36) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(5) / DT!(3) > teamRecords!(37) Then teamRecords!(37) = DT!(5) / DT!(3): teamRecDesc$(37) = TM$
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / numberGames < teamRecords!(32) Then
+        teamRecords!(32) = defTotals!(6) / numberGames
+        teamRecDesc$(32) = teamName$
+    End If
 
-    If DT!(6) / numberGames < compTT!(CA, 20, 8) Then
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) < teamRecords!(33) Then
+        teamRecords!(33) = defTotals!(6)
+        teamRecDesc$(33) = teamName$
+    End If
 
-        compTT!(CA, 20, 1) = numberGames
-        compTT!(CA, 20, 2) = DT!(3)
-        compTT!(CA, 20, 3) = DT!(4)
-        compTT!(CA, 20, 4) = DT!(5)
-        compTT!(CA, 20, 5) = compTT!(CA, 20, 3) / compTT!(CA, 20, 2)
-        compTT!(CA, 20, 6) = DT!(6)
-        compTT!(CA, 20, 7) = DT!(6) / DT!(3)
-        compTT!(CA, 20, 8) = compTT!(CA, 20, 6) / numberGames
-        TT$(CA, 20) = WT$
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / defTotals!(3) < teamRecords!(34) Then
+        teamRecords!(34) = defTotals!(6) / defTotals!(3)
+        teamRecDesc$(34) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / defTotals!(4) < teamRecords!(35) Then
+        teamRecords!(35) = defTotals!(6) / defTotals!(4)
+        teamRecDesc$(35) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(4) / defTotals!(3) < teamRecords!(36) Then
+        teamRecords!(36) = defTotals!(4) / defTotals!(3)
+        teamRecDesc$(36) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(5) / defTotals!(3) > teamRecords!(37) Then
+        teamRecords!(37) = defTotals!(5) / defTotals!(3)
+        teamRecDesc$(37) = teamName$
+    End If
+
+    If defTotals!(6) / numberGames < totalTeamVal!(CA, 20, 8) Then
+
+        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 2) = defTotals!(3)
+        totalTeamVal!(CA, 20, 3) = defTotals!(4)
+        totalTeamVal!(CA, 20, 4) = defTotals!(5)
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+        totalTeamVal!(CA, 20, 6) = defTotals!(6)
+        totalTeamVal!(CA, 20, 7) = defTotals!(6) / defTotals!(3)
+        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 8) > compTT!(CA, Z1, 8) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 8) > totalTeamVal!(CA, Z1, 8) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -1993,20 +2203,20 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'CATEGORY 9 - PUNTING
     CA = 9
 
-    If UCase$(finalUpdate$) = "Y" And OT!(8) / OT!(7) > teamRecords!(15) Then teamRecords!(15) = OT!(8) / OT!(7): teamRecDesc$(15) = TM$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then teamRecords!(15) = offTotals!(8) / offTotals!(7): teamRecDesc$(15) = teamName$
 
-    If OT!(8) / OT!(7) > compTT!(CA, 20, 2) Then
+    If offTotals!(8) / offTotals!(7) > totalTeamVal!(CA, 20, 2) Then
 
-        compTT!(CA, 20, 1) = OT!(7)
-        compTT!(CA, 20, 2) = OT!(8) / OT!(7)
-        TT$(CA, 20) = WT$
+        totalTeamVal!(CA, 20, 1) = offTotals!(7)
+        totalTeamVal!(CA, 20, 2) = offTotals!(8) / offTotals!(7)
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 2) < compTT!(CA, Z1, 2) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 2) < totalTeamVal!(CA, Z1, 2) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -2020,29 +2230,29 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     'IG = Interceptions Gained
     'FL = Fumbles Lost
     'IL = Interceptions Lost
-    fumbGain = OT!(9) - OT!(10) + DT!(10)
-    IG = DT!(5)
-    FL = OT!(10) + DT!(9) - DT!(10)
-    IL = OT!(5)
+    fumbGain = offTotals!(9) - offTotals!(10) + defTotals!(10)
+    IG = defTotals!(5)
+    FL = offTotals!(10) + defTotals!(9) - defTotals!(10)
+    IL = offTotals!(5)
     TM! = (fumbGain + IG - FL - IL) / numberGames
 
-    If TM > compTT!(CA, 20, 7) Then
+    If TM > totalTeamVal!(CA, 20, 7) Then
 
-        compTT!(CA, 20, 1) = fumbGain
-        compTT!(CA, 20, 2) = IG
-        compTT!(CA, 20, 3) = fumbGain + IG
-        compTT!(CA, 20, 4) = FL
-        compTT!(CA, 20, 5) = IL
-        compTT!(CA, 20, 6) = FL + IL
-        compTT!(CA, 20, 7) = TM!
-        TT$(CA, 20) = WT$
+        totalTeamVal!(CA, 20, 1) = fumbGain
+        totalTeamVal!(CA, 20, 2) = IG
+        totalTeamVal!(CA, 20, 3) = fumbGain + IG
+        totalTeamVal!(CA, 20, 4) = FL
+        totalTeamVal!(CA, 20, 5) = IL
+        totalTeamVal!(CA, 20, 6) = FL + IL
+        totalTeamVal!(CA, 20, 7) = TM!
+        totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
-                If compTT!(CA, Z, 7) < compTT!(CA, Z1, 7) Then
-                    Swap TT$(CA, Z1), TT$(CA, Z)
+                If totalTeamVal!(CA, Z, 7) < totalTeamVal!(CA, Z1, 7) Then
+                    Swap totalTeamName$(CA, Z1), totalTeamName$(CA, Z)
                     For MN = 1 To 9
-                        Swap compTT!(CA, Z1, MN), compTT!(CA, Z, MN)
+                        Swap totalTeamVal!(CA, Z1, MN), totalTeamVal!(CA, Z, MN)
                     Next MN
                 End If
             Next Z1
@@ -2051,25 +2261,64 @@ Sub CalcStatTotalsPro (numberGames, TM$, WT$, finalUpdate$)
     End If
 
     'PUNT RETURNS
-    If UCase$(finalUpdate$) = "Y" And OT!(25) / OT!(24) > teamRecords!(16) Then teamRecords!(16) = OT!(25) / OT!(24): teamRecDesc$(16) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(25) / DT!(24) < teamRecords!(42) Then teamRecords!(42) = DT!(25) / DT!(24): teamRecDesc$(42) = TM$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(25) / offTotals!(24) > teamRecords!(16) Then
+        teamRecords!(16) = offTotals!(25) / offTotals!(24)
+        teamRecDesc$(16) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(25) / defTotals!(24) < teamRecords!(42) Then
+        teamRecords!(42) = defTotals!(25) / defTotals!(24)
+        teamRecDesc$(42) = teamName$
+    End If
 
     'KO Return
-    If UCase$(finalUpdate$) = "Y" And OT!(23) / OT!(22) > teamRecords!(17) Then teamRecords!(17) = OT!(23) / OT!(22): teamRecDesc$(17) = TM$
-    If UCase$(finalUpdate$) = "Y" And DT!(23) / DT!(22) < teamRecords!(43) Then teamRecords!(43) = DT!(23) / DT!(22): teamRecDesc$(43) = TM$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(23) / offTotals!(22) > teamRecords!(17) Then
+        teamRecords!(17) = offTotals!(23) / offTotals!(22)
+        teamRecDesc$(17) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(23) / defTotals!(22) < teamRecords!(43) Then
+        teamRecords!(43) = defTotals!(23) / defTotals!(22)
+        teamRecDesc$(43) = teamName$
+    End If
 
     'FIRST DOWNS
-    If OT!(0) > teamRecords!(18) Then teamRecords!(18) = OT!(0): teamRecDesc$(18) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(0) / numberGames > teamRecords!(19) Then teamRecords!(19) = OT!(0) / numberGames: teamRecDesc$(19) = TM$
+    If offTotals!(0) > teamRecords!(18) Then
+        teamRecords!(18) = offTotals!(0)
+        teamRecDesc$(18) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(0) / numberGames > teamRecords!(19) Then
+        teamRecords!(19) = offTotals!(0) / numberGames
+        teamRecDesc$(19) = teamName$
+    End If
 
     'FUMBLES
-    If OT!(9) > teamRecords!(20) Then teamRecords!(20) = OT!(9): teamRecDesc$(20) = TM$
-    If OT!(10) > teamRecords!(21) Then teamRecords!(21) = OT!(10): teamRecDesc$(21) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(10) < teamRecords!(22) Then teamRecords!(22) = OT!(10): teamRecDesc$(22) = TM$
+    If offTotals!(9) > teamRecords!(20) Then
+        teamRecords!(20) = offTotals!(9)
+        teamRecDesc$(20) = teamName$
+    End If
+
+    If offTotals!(10) > teamRecords!(21) Then
+        teamRecords!(21) = offTotals!(10)
+        teamRecDesc$(21) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(10) < teamRecords!(22) Then
+        teamRecords!(22) = offTotals!(10)
+        teamRecDesc$(22) = teamName$
+    End If
 
     'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And OT!(11) / numberGames > teamRecords!(23) Then teamRecords!(23) = OT!(11) / numberGames: teamRecDesc$(23) = TM$
-    If UCase$(finalUpdate$) = "Y" And OT!(12) / numberGames > teamRecords!(24) Then teamRecords!(24) = OT!(12) / numberGames: teamRecDesc$(24) = TM$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(11) / numberGames > teamRecords!(23) Then
+        teamRecords!(23) = offTotals!(11) / numberGames
+        teamRecDesc$(23) = teamName$
+    End If
+
+    If UCase$(finalUpdate$) = "Y" And offTotals!(12) / numberGames > teamRecords!(24) Then
+        teamRecords!(24) = offTotals!(12) / numberGames
+        teamRecDesc$(24) = teamName$
+    End If
 
 End Sub
 
@@ -2078,15 +2327,15 @@ End Sub
 '     SortStandingsLeague Subroutine
 '----------------------------------------
 'This subroutine sorts the leaders in the
-'target league. Currently setup using a 
+'target league. Currently setup using a
 'bubble sort algorithm.
 Sub SortStandingsLeague
 
-    Shared O1!(), O2!(), O3!()
+    Shared divWins!(), divLosses!(), divTies!()
 
-    Shared PTSA!(), PTSF!()
+    Shared leagPtsAgnst!(), leagPtsFor!()
 
-    Shared compZ1$()
+    Shared memberName$()
 
     'Sort leaders in league
     For Z = 0 To 2
@@ -2098,19 +2347,19 @@ Sub SortStandingsLeague
 
             For Y = X + 1 To ZZ:
 
-                diffX = O1!(X) - O2!(X)
-                diffY = O1!(Y) - O2!(Y)
+                diffX = divWins!(X) - divLosses!(X)
+                diffY = divWins!(Y) - divLosses!(Y)
 
                 If diffX <= diffY Then
 
                     If diffX <> diffY Then
-                        If Not (O1!(X) <= O1!(Y) And O1!(X) > O2!(X)) Or Not (O1!(X) >= O1!(Y) And O1!(X) < O2!(X)) Then
-                            Swap compZ1$(X), compZ1$(Y)
-                            Swap O1!(X), O1!(Y)
-                            Swap O2!(X), O2!(Y)
-                            Swap O3!(X), O3!(Y)
-                            Swap PTSF!(X), PTSF!(Y)
-                            Swap PTSA!(X), PTSA!(Y)
+                        If Not (divWins!(X) <= divWins!(Y) And divWins!(X) > divLosses!(X)) Or Not (divWins!(X) >= divWins!(Y) And divWins!(X) < divLosses!(X)) Then
+                            Swap memberName$(X), memberName$(Y)
+                            Swap divWins!(X), divWins!(Y)
+                            Swap divLosses!(X), divLosses!(Y)
+                            Swap divTies!(X), divTies!(Y)
+                            Swap leagPtsFor!(X), leagPtsFor!(Y)
+                            Swap leagPtsAgnst!(X), leagPtsAgnst!(Y)
                         End If
                     End If
 
@@ -2133,12 +2382,12 @@ End Sub
 'writes the updated stats to the file
 Sub PostLeadersLeague (leaderFile$)
 
-    Shared compZ1$(), compZ2$(), compZ3$()
-    Shared TT$()
+    Shared memberName$(), leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
-    Shared compTT!(), compZ1!()
-    Shared O1!(), O2!(), O3!()
-    Shared PTSF!(), PTSA!()
+    Shared totalTeamVal!(), leaderVal!()
+    Shared divWins!(), divLosses!(), divTies!()
+    Shared leagPtsFor!(), leagPtsAgnst!()
 
     Cls
 
@@ -2146,25 +2395,25 @@ Sub PostLeadersLeague (leaderFile$)
 
     Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
 
-    For X = 1 To 30:
-        Write #1, compZ1$(X), O1!(X), O2!(X), O3!(X), PTSF!(X), PTSA!(X)
+    For X = 1 To TEAMS_PER_LEAGUE:
+        Write #1, memberName$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
-        Write #1, compZ2$(X), compZ3$(X), compZ1!(X, 1), compZ1!(X, 2)
+        Write #1, leaderName$(X), leaderTeam$(X), leaderVal!(X, 1), leaderVal!(X, 2)
     Next X
 
     For I = 1 To 10
         For I1 = 1 To 20
             For I2 = 1 To 9
-                Write #1, compTT!(I, I1, I2)
+                Write #1, totalTeamVal!(I, I1, I2)
             Next
         Next
     Next
 
     For I = 1 To 10
         For I1 = 1 To 20
-            Write #1, TT$(I, I1)
+            Write #1, totalTeamName$(I, I1)
         Next
     Next
 
@@ -2174,7 +2423,7 @@ End Sub
 
 
 '----------------------------------------
-'         PostRecordsColl Subroutine
+'        PostRecordsPro Subroutine
 '----------------------------------------
 'This subroutine writes the calculated
 'records to the records file
@@ -2201,3 +2450,4 @@ Sub PostRecordsPro
     Close #2
 
 End Sub
+
