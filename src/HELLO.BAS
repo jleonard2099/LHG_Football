@@ -2027,7 +2027,7 @@ Sub FOOTBALL ()
     gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
     '50-60% chance of offense recovering
-    offRecovChance = Int(Rnd(1) * 10) + 50
+    offRecovChance = Int(Rnd(1) * 11) + 50
 
     If d100% <= offRecovChance Then
 
@@ -2380,12 +2380,12 @@ Sub FOOTBALL ()
 
                                     catchPctSuccess = 5
 
-                                    If (coverage = 1 Or coverage = 3) And HB%(P9) = 0 Then catchPctSuccess = 30
+                                    If (coverage = 1 Or coverage = 3) And HB%(P9) = 0 Then 
+                                        catchPctSuccess = 30
+                                    End If
 
-                                    'Arbitrary 10% chance of interception
-                                    '- GPT suggests 5-10%
-                                    '- Original game was 20%
-                                    intChance = 10
+                                    '5-10% chance of interception
+                                    intChance = Int(Rnd(1) * 6) + 5
                                     ydsGained = Int(Rnd(1) * 71) + 30
                                     catchYds = Int(Rnd(1) * 11) + 30
 
@@ -4062,11 +4062,15 @@ Sub FOOTBALL ()
                     scoreX0 = 0
                     ydsGained = ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 11
 
-                    If climate(0) = P1 Then
-                        ydsGained = ydsGained - Int(Rnd(1) * 7) + 3 - climate(1)
-                    Else
-                        ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
-                    End If
+                    Select Case climate(0)
+
+                        Case P1, 2
+                            ydsGained = ydsGained - Int(Rnd(1) * 7) + 3 - climate(1)
+
+                        Case D
+                            ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
+                            
+                    End Select
 
                     If (coverage > 6 And kickChance >= 60 And kickChance <= 72) Or (coverage <= 6 And kickChance >= 50 And kickChance <= 56) Then
                         'Blocked punt
@@ -4188,11 +4192,15 @@ Sub FOOTBALL ()
                 ydsGained = ydsGained + (100 - ydLine) - (31 + ydsPerPunt(P1, 0) * 2)
             End If
 
-            If climate(0) = P1 Then
-                ydsGained = ydsGained - Int(Rnd(1) * 7) + 3 - climate(1)
-            Else
-                ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
-            End If
+            Select Case climate(0)
+
+                Case P1, 2
+                    ydsGained = ydsGained - Int(Rnd(1) * 7) + 3 - climate(1)
+
+                Case D
+                    ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
+                    
+            End Select
 
             Call YARDAGE
 
@@ -5226,10 +5234,14 @@ Sub FOOTBALL ()
                                 pbpString$ = "THE KICK IS UP AND..."
                                 Call PBP
 
-                                If climate(0) <> P1 Then
-                                    fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - climate(1)
-                                Else
-                                    fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + climate(1)
+                                Select Case climate(0) Then
+                                
+                                    Case D
+                                        fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - climate(1)
+                                        
+                                    Case P1, 2
+                                        fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + climate(1)
+
                                 End If
 
                                 Call FGATT
@@ -6331,7 +6343,6 @@ Sub FOOTBALL ()
     End If
 
 
-
     '--------------------
     ' End Of Quarter
     '--------------------
@@ -6347,7 +6358,15 @@ Sub FOOTBALL ()
         U3 = 0
     End If
 
-    climate(0) = 1 - climate(0)
+    'Crosswind 10-30% chance
+    xwindChance = Int(Rnd(1) * 21) + 10
+
+    If d100% <= xwindChance Then
+        climate(0) = 2
+    Else
+        climate(0) = 1 - climate(0)
+    End If
+
     gameOver = 0
 
     'quarter - 1 = previous quarter
@@ -7540,7 +7559,7 @@ Sub InitVar ()
 
     Erase defInts, defSacks
     'Erase eventSettings
-    Erase FA, FM
+    Erase playerFGA, playerFGM
     Erase sackStatsPlayer, gameStatsTeam, gameStatsPlayer
     Erase gameLongFG
     Erase K1, K3
@@ -8727,11 +8746,16 @@ Sub DISPWEATHER ()
     End If
 
     If climate(1) <> 0 Then
-        If climate(0) = P1 Then
-            Print "+";
-        Else
-            Print "-";
-        End If
+
+        Select Case climate(0)
+            Case P1
+                Print "+";
+            Case D
+                Print "-";
+            Case 2
+                Print "X";
+        End Select
+
     End If
 
     Locate , 40
@@ -12079,19 +12103,19 @@ Sub FGATT ()
     Select Case fgAttYds
 
         Case 1 To 19
-            FA(P1, activeKicker(P1), 0) = FA(P1, activeKicker(P1), 0) + 1
+            playerFGA(P1, activeKicker(P1), 0) = playerFGA(P1, activeKicker(P1), 0) + 1
 
         Case 20 To 29
-            FA(P1, activeKicker(P1), 1) = FA(P1, activeKicker(P1), 1) + 1
+            playerFGA(P1, activeKicker(P1), 1) = playerFGA(P1, activeKicker(P1), 1) + 1
 
         Case 30 To 39
-            FA(P1, activeKicker(P1), 2) = FA(P1, activeKicker(P1), 2) + 1
+            playerFGA(P1, activeKicker(P1), 2) = playerFGA(P1, activeKicker(P1), 2) + 1
 
         Case 40 To 49
-            FA(P1, activeKicker(P1), 3) = FA(P1, activeKicker(P1), 3) + 1
+            playerFGA(P1, activeKicker(P1), 3) = playerFGA(P1, activeKicker(P1), 3) + 1
 
         Case Is >= 50
-            FA(P1, activeKicker(P1), 4) = FA(P1, activeKicker(P1), 4) + 1
+            playerFGA(P1, activeKicker(P1), 4) = playerFGA(P1, activeKicker(P1), 4) + 1
 
     End Select
 
@@ -12113,19 +12137,19 @@ Sub FGMADE ()
     Select Case fgAttYds
 
         Case 1 To 19
-            FM(P1, activeKicker(P1), 0) = FM(P1, activeKicker(P1), 0) + 1
+            playerFGM(P1, activeKicker(P1), 0) = playerFGM(P1, activeKicker(P1), 0) + 1
 
         Case 20 To 29
-            FM(P1, activeKicker(P1), 1) = FM(P1, activeKicker(P1), 1) + 1
+            playerFGM(P1, activeKicker(P1), 1) = playerFGM(P1, activeKicker(P1), 1) + 1
 
         Case 30 To 39
-            FM(P1, activeKicker(P1), 2) = FM(P1, activeKicker(P1), 2) + 1
+            playerFGM(P1, activeKicker(P1), 2) = playerFGM(P1, activeKicker(P1), 2) + 1
 
         Case 40 To 49
-            FM(P1, activeKicker(P1), 3) = FM(P1, activeKicker(P1), 3) + 1
+            playerFGM(P1, activeKicker(P1), 3) = playerFGM(P1, activeKicker(P1), 3) + 1
 
         Case Is >= 50
-            FM(P1, activeKicker(P1), 4) = FM(P1, activeKicker(P1), 4) + 1
+            playerFGM(P1, activeKicker(P1), 4) = playerFGM(P1, activeKicker(P1), 4) + 1
 
     End Select
 
@@ -14976,27 +15000,44 @@ Sub FieldGoalChance ()
 
     windAdj = 0
 
-    If climate(0) = P1 Then
+    Select Case climate(0)
 
-        If climate(1) = -7 Then
-            '5-10% impact
-            windAdj = 0 - Int(Rnd(1) * 5) + 5
-        End If
-        If climate(1) = -15 Then
-            '15-20% impact
-            windAdj = 0 - Int(Rnd(1) * 5) + 15
-        End If
+        Case P1
 
-    Else
+            If climate(1) = -7 Then
+                '5-10% impact
+                windAdj = 0 - Int(Rnd(1) * 5) + 5
+            End If
+            If climate(1) = -15 Then
+                '15-20% impact
+                windAdj = 0 - Int(Rnd(1) * 5) + 15
+            End If
 
-        If climate(1) = -7 Then
-            '5-10% impact
-            windAdj = Int(Rnd(1) * 5) + 5
-        End If
-        If climate(1) = -15 Then
-            '15-20% impact
-            windAdj = Int(Rnd(1) * 5) + 15
-        End If
+        Case D
+
+            If climate(1) = -7 Then
+                '5-10% impact
+                windAdj = Int(Rnd(1) * 5) + 5
+            End If
+            If climate(1) = -15 Then
+                '15-20% impact
+                windAdj = Int(Rnd(1) * 5) + 15
+            End If
+            
+        Case 2
+
+            If climate(1) = -7 Then
+                '5% impact
+                windAdj = -5
+            End If
+            If climate(1) = -15 Then
+                '10% impact
+                windAdj = -10
+            End If
+            '40+ yard field goals impacted more
+            If ydLine <= 77 + goalPostAdj Then
+                windAdj = windAdj - 5
+            End If
 
     End If
 
@@ -16196,13 +16237,17 @@ Sub KickoffDistance ()
 
     'Adjust kick distance if factoring for wind
 
-    If climate(0) = D Then
-        'Wind direction favors return team for 3-6 yards
-        kickYL! = kickYL! - Int(Rnd(1) * 7) + 3 - climate(1)
-    Else
-        'Wind direction favors kicking team for -3 to 3 yards
-        kickYL! = kickYL! + Int(Rnd(1) * 7) - 3 + climate(1)
-    End If
+    Select Case climate(0) Then
+
+        Case D
+            'Wind direction favors return team for 3-6 yards
+            kickYL! = kickYL! - Int(Rnd(1) * 7) + 3 - climate(1)
+
+        Case P1, 2
+            'Wind direction favors kicking team for -3 to 3 yards
+            kickYL! = kickYL! + Int(Rnd(1) * 7) - 3 + climate(1)
+
+    End Select
 
     kickDist = 100 - ydLine - kickYL!
 
@@ -17526,18 +17571,18 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If gameStatsPlayer(I, 4, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), playerFGM(I, 0, 0);
 
                 'FG's 0 - 19
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 0, 0); playerFGM(I, 0, 1);
                 'FG's 20 - 29
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 0, 1); playerFGM(I, 0, 2);
                 'FG's 30 - 39
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 0, 2); playerFGM(I, 0, 3);
                 'FG's 40 - 49
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 0, 3); playerFGM(I, 0, 4);
                 'FG's 50+
-                Print #1, "- ";: Print #1, Using "#"; FA(I, 0, 4)
+                Print #1, "- ";: Print #1, Using "#"; playerFGA(I, 0, 4)
             End If
 
         End If
@@ -17550,18 +17595,18 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If gameStatsPlayer(I, 8, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), playerFGM(I, 1, 0);
 
                 'FG's 0 - 19
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 1, 0); playerFGM(I, 1, 1);
                 'FG's 20 - 29
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 1, 1); playerFGM(I, 1, 2);
                 'FG's 30 - 39
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 1, 2); playerFGM(I, 1, 3);
                 'FG's 40 - 49
-                Print #1, "- ";: Print #1, Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
+                Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 1, 3); playerFGM(I, 1, 4);
                 'FG's 50+
-                Print #1, "- ";: Print #1, Using "#"; FA(I, 1, 4)
+                Print #1, "- ";: Print #1, Using "#"; playerFGA(I, 1, 4)
             End If
 
         End If
@@ -18224,12 +18269,12 @@ Sub STATS2SCREEN ()
                 Print
             Else
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), FM(I, 0, 0);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 0); FM(I, 0, 1);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 1); FM(I, 0, 2);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 2); FM(I, 0, 3);
-                Print "- ";: Print Using "#  #"; FA(I, 0, 3); FM(I, 0, 4);
-                Print "- ";: Print Using "#"; FA(I, 0, 4)
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), playerFGM(I, 0, 0);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 0, 0); playerFGM(I, 0, 1);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 0, 1); playerFGM(I, 0, 2);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 0, 2); playerFGM(I, 0, 3);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 0, 3); playerFGM(I, 0, 4);
+                Print "- ";: Print Using "#"; playerFGA(I, 0, 4)
             End If
 
         End If
@@ -18249,12 +18294,12 @@ Sub STATS2SCREEN ()
             Else
 
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), FM(I, 1, 0);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 0); FM(I, 1, 1);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 1); FM(I, 1, 2);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 2); FM(I, 1, 3);
-                Print "- ";: Print Using "#  #"; FA(I, 1, 3); FM(I, 1, 4);
-                Print "- ";: Print Using "#"; FA(I, 1, 4)
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), playerFGM(I, 1, 0);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 1, 0); playerFGM(I, 1, 1);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 1, 1); playerFGM(I, 1, 2);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 1, 2); playerFGM(I, 1, 3);
+                Print "- ";: Print Using "#  #"; playerFGA(I, 1, 3); playerFGM(I, 1, 4);
+                Print "- ";: Print Using "#"; playerFGA(I, 1, 4)
 
             End If
 
@@ -18614,8 +18659,8 @@ Sub COMPILESTATFILES (teamIdx)
         End If
 
         For I1 = 0 To 4
-            gameFGM!(teamIdx, I, I1) = gameFGM!(teamIdx, I, I1) + FM(teamIdx, I, I1)
-            gameFGA!(teamIdx, I, I1) = gameFGA!(teamIdx, I, I1) + FA(teamIdx, I, I1)
+            gameFGM!(teamIdx, I, I1) = gameFGM!(teamIdx, I, I1) + playerFGM(teamIdx, I, I1)
+            gameFGA!(teamIdx, I, I1) = gameFGA!(teamIdx, I, I1) + playerFGA(teamIdx, I, I1)
         Next
 
     Next
