@@ -5232,10 +5232,10 @@ Sub FOOTBALL ()
                                 Call PBP
 
                                 Select Case climate(0)
-                                
+
                                     Case D
                                         fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - climate(1)
-                                        
+
                                     Case P1, 2
                                         fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + climate(1)
 
@@ -15020,7 +15020,7 @@ Sub FieldGoalChance ()
                 '15-20% impact
                 windAdj = Int(Rnd(1) * 5) + 15
             End If
-            
+
         Case 2
 
             If climate(1) = -7 Then
@@ -15036,7 +15036,7 @@ Sub FieldGoalChance ()
                 windAdj = windAdj - 5
             End If
 
-    End If
+    End Select
 
     'Increase average FG% chance for newer eras
     Select Case teamYears(P1)
@@ -16234,7 +16234,7 @@ Sub KickoffDistance ()
 
     'Adjust kick distance if factoring for wind
 
-    Select Case climate(0) Then
+    Select Case climate(0)
 
         Case D
             'Wind direction favors return team for 3-6 yards
