@@ -31,9 +31,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
-
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -2380,7 +2377,7 @@ Sub FOOTBALL ()
 
                                     catchPctSuccess = 5
 
-                                    If (coverage = 1 Or coverage = 3) And HB%(P9) = 0 Then 
+                                    If (coverage = 1 Or coverage = 3) And HB%(P9) = 0 Then
                                         catchPctSuccess = 30
                                     End If
 
@@ -5234,7 +5231,7 @@ Sub FOOTBALL ()
                                 pbpString$ = "THE KICK IS UP AND..."
                                 Call PBP
 
-                                Select Case climate(0) Then
+                                Select Case climate(0)
                                 
                                     Case D
                                         fgSuccessChance = fgSuccessChance - Int(Rnd(1) * 7) + 3 - climate(1)
@@ -5242,7 +5239,7 @@ Sub FOOTBALL ()
                                     Case P1, 2
                                         fgSuccessChance = fgSuccessChance + Int(Rnd(1) * 7) - 3 + climate(1)
 
-                                End If
+                                End Select
 
                                 Call FGATT
 

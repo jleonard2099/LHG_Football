@@ -423,8 +423,8 @@ Dim Shared W5, WE, WS, winTeam, yrdLine
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-'Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsToFirst As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, fgAttLine, impactTeam
 DIm Shared loseDown
