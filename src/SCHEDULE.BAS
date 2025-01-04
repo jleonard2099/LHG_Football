@@ -8,7 +8,7 @@
 Sub SCHEDULE ()
 
     Dim scheduleFile$
-    ReDim menuChoices$(1 To 8)
+    ReDim menuChoices$(1 To 9)
 
     Shared NS%
 
@@ -34,11 +34,12 @@ Sub SCHEDULE ()
         menuChoices$(5) = "CHANGE TEAM CONTROL FOR A SCHEDULE"
         menuChoices$(6) = "MAKE GLOBAL CHANGES TO A SCHEDULE "
         menuChoices$(7) = "BOXSCORE MAINTENANCE / PARAMETERS "
-        menuChoices$(8) = "RETURN TO 3 IN 1 FB MENU          "
+        menuChoices$(8) = "CONVERT SCHEDULE FILE FROM 6.0    "
+        menuChoices$(9) = "RETURN TO 3 IN 1 FB MENU          "
         SELECTION% = 1
-        Count% = 8
+        Count% = 9
         Start% = 1
-        ExitCode% = 8
+        ExitCode% = 9
         FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -117,13 +118,15 @@ Sub SCHEDULE ()
                     Call BoxscoreMaintenance
 
                 Case 8:
-                    Cls
+                    scheduleFile$ = _OpenFileDialog$("Select schedule file", diskPaths$(3), "*.SCD", "Schedule files")
+                    Call ConvertSched6to7(scheduleFile$, 0)
+                    'Call ConvertAllSched
 
             End Select
 
         End If
 
-    Loop Until SELECTION% = 8 Or ExitCode% = 27
+    Loop Until SELECTION% = 9 Or ExitCode% = 27
 
     'Free up memory for rest of program
     ReDim homeScores(1)

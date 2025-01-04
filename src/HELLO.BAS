@@ -516,8 +516,8 @@ windSetting$(3) = "COMPUTER SELECT  "
 yesNoText$(0) = "NO "
 yesNoText$(1) = "YES"
 
-yesNo$(0) = "Y"
-yesNo$(1) = "N"
+yesNo$(0) = "N"
+yesNo$(1) = "Y"
 
 
 

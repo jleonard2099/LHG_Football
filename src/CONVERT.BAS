@@ -229,6 +229,191 @@ Sub SaveLeagueConverted (leagueFile$, league$, div1$, div2$, div3$, div4$)
 End Sub
 
 
+
+
+'----------------------------------------
+'         ReadSchedOld SubRoutine
+'----------------------------------------
+'This subroutine opens the target SCHEDULE
+'file and reads the data into corresponding
+'arrays for use in the scheduler
+Sub ReadSchedOld (targetFile$)
+
+    Shared BS%, NS%
+
+    Shared scheduleAP%(), scheduleNG%()
+    Shared homeScores(), visitorScores()
+    Shared scheduleYN$()
+
+    Open targetFile$ For Random As #1 Len = (SCHEDULE_SIZE_BYTES - 4)
+
+    fileLength& = LOF(1)
+    scheduleAP%(0) = fileLength& / (SCHEDULE_SIZE_BYTES - 4)
+    BS% = Int((scheduleAP%(0) - 1) / 20)
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), (SCHEDULE_SIZE_BYTES - 4) - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        Get #1, I
+
+        For X = 0 To 20:
+            scheduleNG%(I, X) = CVI(Q$(X + 1))
+        Next
+
+        For X = 0 To 1:
+            scheduleYN$(I, X) = RTrim$(Q$(22 + X))
+        Next
+
+        visitorScores(I) = CVI(Q$(24))
+        homeScores(I) = CVI(Q$(25))
+
+    Next
+
+    Close #1
+
+    NS% = 0
+
+End Sub
+
+
+'----------------------------------------
+'         SaveSchedOld SubRoutine
+'----------------------------------------
+'This subroutine writes all scheduled data,
+'as stored in the relevant arrays, back to
+'the target schedule file.
+Sub SaveSchedOld (saveFile$)
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    If _FileExists(diskPaths$(3) + saveFile$ + ".SCD") Then Kill diskPaths$(3) + saveFile$ + ".SCD"
+
+    Open diskPaths$(3) + saveFile$ + ".SCD" For Random As #1 Len = (SCHEDULE_SIZE_BYTES - 4)
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), (SCHEDULE_SIZE_BYTES - 4) - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 3 As Q$(22), 3 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        For X = 0 To 20:
+            LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+        Next
+
+        For X = 0 To 1:
+            LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
+        Next
+
+        LSet Q$(24) = MKI$(visitorScores(I))
+        LSet Q$(25) = MKI$(homeScores(I))
+
+        Put #1, I
+
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'    SaveSchedFileConverted SubRoutine
+'----------------------------------------
+'This subroutine writes all scheduled data,
+'as stored in the relevant arrays, back to
+'the target schedule file.
+Sub SaveSchedFileConverted (saveFile$, numberGames)
+
+    Shared homeScores(), visitorScores()
+    Shared scheduleAP%(), scheduleNG%()
+    Shared scheduleYN$()
+
+    If _FileExists(saveFile$) Then Kill saveFile$
+
+    Open saveFile$ For Random As #1 Len = SCHEDULE_SIZE_BYTES
+
+    For X = 0 To 20
+        Field #1, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
+    Next
+
+    Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
+
+    For I = 1 To scheduleAP%(0)
+
+        For X = 0 To 20:
+            LSet Q$(X + 1) = MKI$(scheduleNG%(I, X))
+        Next
+
+        For X = 0 To 1:
+            LSet Q$(22 + X) = RTrim$(scheduleYN$(I, X))
+        Next
+
+        LSet Q$(24) = MKI$(visitorScores(I))
+        LSet Q$(25) = MKI$(homeScores(I))
+
+        Put #1, I
+
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       ConvertSched6to7 Subroutine
+'----------------------------------------
+' Reads in existing schedule data.
+' For each game in the schedule, it
+' will migrate to the new format and
+' populate with fixed defaults.
+' From there, the updated data is saved.
+Sub ConvertSched6to7 (targetFile$, silent)
+
+    Shared scheduleNG%()
+
+    newFile$ = targetFile$ + ".NEW"
+
+    If targetFile$ <> "" Then
+
+        Open targetFile$ For Random As #1
+        fileLength& = LOF(1)
+        Close #1
+
+        numberGames = fileLength& / (SCHEDULE_SIZE_BYTES - 4)
+
+        Call ReadSchedOld(targetFile$)
+
+        'Call SaveSchedFileConverted(newFile$, numberGames)
+
+        'Kill targetFile$
+
+        'Call FCopy(newFile$, targetFile$, Buff$, copyErr%)
+
+        'Kill newFile$
+
+        Kill targetFile$
+
+        Call SaveSchedFileConverted(targetFile$, numberGames)
+
+        If silent = 0 Then
+            result& = _MessageBox("Success!", "The schedule file has been converted for use", "ok", "info", 1)
+        End If
+
+    End If
+
+End Sub
+
+
 '----------------------------------------
 '      ConvertLeague4to5 Subroutine
 '----------------------------------------
@@ -339,3 +524,27 @@ Sub ConvertAllLeague ()
     Next X
 
 End Sub
+
+
+'----------------------------------------
+'       ConvertAllSched Subroutine
+'----------------------------------------
+' Quick and dirty script to convert all
+' schedule files in the "Schedule" folder
+Sub ConvertAllSched ()
+
+    fileSpec$ = diskPaths$(3) + "*.SCD"
+
+    Count% = FileCount%(fileSpec$)
+    ReDim foundFiles$(0 To Count%)
+    foundFiles$(0) = fileSpec$
+    Call ReadFile(foundFiles$())
+
+    For X = 1 To Count%
+        target$ = diskPaths$(3) + foundFiles$(X)
+        Print "Converting "; target$
+        Call ConvertSched6to7(target$, 1)
+    Next X
+
+End Sub
+
