@@ -25,7 +25,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Pro (league$, leagueFile$)
+Sub LoadLeaderFiles_Pro (league$, targetFile$)
 
     Shared leagRecText$(), leagLdrTeams$()
     Shared leaderName$(), leaderTeam$()
@@ -38,9 +38,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
-    Input #1, league$, div1Name$, div2Name$, div3Name$, div4Name$
-    Close #1
+    Call ReadConferenceStats (targetFile$, 1)
 
     div1Name$ = PadRight$(div1Name$, 8)
     div2Name$ = PadRight$(div2Name$, 8)
@@ -51,7 +49,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
 
     Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + leagueFile$ + ".LDR" For Input As #2
+    Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To TEAMS_PER_LEAGUE
         Input #2, leagLdrTeams$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
@@ -107,7 +105,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
                     A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
                 End If
 
-                A = Int(1000 * A + .5)
+                A = CInt(1000 * A)
 
                 If A = 1000 Then
                     leagRecText$(P) = leagRecText$(P) + "1.000 "
@@ -138,6 +136,7 @@ Sub LoadLeaderFiles_Pro (league$, leagueFile$)
     Next NT
 
 End Sub
+
 
 '----------------------------------------
 '       StatOptions_Pro Subroutine

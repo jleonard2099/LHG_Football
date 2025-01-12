@@ -618,11 +618,11 @@ Sub InputTeam ()
 
         Next
 
-        puntAvg(0) = Int((puntAvgRaw!(0) - 28) / 2! + .5)
+        puntAvg(0) = CInt((puntAvgRaw!(0) - 28) / 2)
 
         For I = 0 To 1
 
-            pkFGA(I) = Int((pkFGA(I) / 5) + .5) - 5
+            pkFGA(I) = CInt((pkFGA(I) / 5)) - 5
 
             If pkFGA(I) < 1 Then 
                 pkFGA(I) = 1
@@ -745,7 +745,7 @@ Sub InputTeam ()
 
         For I = 0 To 9:
             If rushContrib(I) <> 0 Then 
-                rushContrib(I) = Int(SK * rushContrib(I) + .5) + ST
+                rushContrib(I) = CInt(SK * rushContrib(I)) + ST
                 ST = rushContrib(I)
             End If
             If rushContrib(I) > 100 Then 
@@ -754,7 +754,7 @@ Sub InputTeam ()
         Next I
 
         For I = 0 To 9:
-            rushAvg(I) = Int(rushAvgRaw!(I) / .3 + .5)
+            rushAvg(I) = CInt(rushAvgRaw!(I) / .3)
         Next I
 
         For I = 0 To 9:
@@ -771,7 +771,7 @@ Sub InputTeam ()
 
         For I = 0 To 9:
             If rbRecepts(I) <> 0 Then 
-                rbRecepts(I) = Int(RK * rbRecepts(I) + .5) + RT
+                rbRecepts(I) = CInt(RK * rbRecepts(I)) + RT
                 RT = rbRecepts(I)
                 If rbRecepts(I) > 100 Then 
                     rbRecepts(I) = 100
@@ -781,7 +781,7 @@ Sub InputTeam ()
 
         For I = 0 To 5:
             If recContrib(I) <> 0 Then 
-                recContrib(I) = Int(RK * recContrib(I) + .5) + RT
+                recContrib(I) = CInt(RK * recContrib(I)) + RT
                 RT = recContrib(I)
                 If recContrib(I) > 100 Then 
                     recContrib(I) = 100
@@ -790,11 +790,11 @@ Sub InputTeam ()
         Next I
 
         For I = 0 To 9:
-            rbRecAvg(I) = Int(rbRecAvg(I) / 3 + .5)
+            rbRecAvg(I) = CInt(rbRecAvg(I) / 3)
         Next I
 
         For I = 0 To 5:
-            wrRecAvg(I) = Int(wrRecAvg(I) / 3 + .5)
+            wrRecAvg(I) = CInt(wrRecAvg(I) / 3)
         Next I
 
         PM = 0
@@ -809,7 +809,7 @@ Sub InputTeam ()
         For I = 0 To 3:
 
             If passContrib(I) <> 0 Then
-                passContrib(I) = Int(PK * passContrib(I) + .5) + PT
+                passContrib(I) = CInt(PK * passContrib(I)) + PT
                 PT = passContrib(I)
                 If passContrib(I) > 100 Then 
                     passContrib(I) = 100
@@ -824,14 +824,16 @@ Sub InputTeam ()
         QT = 0
 
         For I = 0 To 3:
-            If offPwrAdj <> 0 And compPct(I) <> 0 Then compPct(I) = compPct(I) - offPwrAdj
+            If offPwrAdj <> 0 And compPct(I) <> 0 Then 
+                compPct(I) = compPct(I) - offPwrAdj
+            End If
         Next I
 
         For I = 0 To 2:
             KM = KM + krContrib(I)
             QM = QM + prContrib(I)
-            krRetAvg(I) = Int(krRetAvg(I) / 3! + .5)
-            prRetAvg(I) = Int(prRetAvg(I) / 3 + .5)
+            krRetAvg(I) = CInt(krRetAvg(I) / 3)
+            prRetAvg(I) = CInt(prRetAvg(I) / 3)
         Next I
 
         KK = 100 / KM
@@ -839,7 +841,7 @@ Sub InputTeam ()
 
         For I = 0 To 2:
             If krContrib(I) <> 0 Then
-                krContrib(I) = Int(KK * krContrib(I) + .5) + KT
+                krContrib(I) = CInt(KK * krContrib(I)) + KT
                 KT = krContrib(I)
                 If krContrib(I) > 100 Then 
                     krContrib(I) = 100
@@ -849,7 +851,7 @@ Sub InputTeam ()
 
         For I = 0 To 2:
             If prContrib(I) <> 0 Then 
-                prContrib(I) = Int(QK * prContrib(I) + .5) + QT
+                prContrib(I) = CInt(QK * prContrib(I)) + QT
             End If
             QT = prContrib(I)
             If prContrib(I) > 100 Then 
@@ -859,9 +861,9 @@ Sub InputTeam ()
 
         PM = 0
         PT = 0
-        pkFGContrib(0) = Int(pkFGContrib(0) / (pkFGContrib(0) + pkFGContrib(1)) * 100 + .5)
+        pkFGContrib(0) = CInt(pkFGContrib(0) / (pkFGContrib(0) + pkFGContrib(1)) * 100)
         pkFGContrib(1) = 100
-        pkPATContrib(0) = Int(pkPATContrib(0) / (pkPATContrib(0) + pkPATContrib(1)) * 100 + .5)
+        pkPATContrib(0) = CInt(pkPATContrib(0) / (pkPATContrib(0) + pkPATContrib(1)) * 100)
         pkPATContrib(1) = 100
 
         For I = 9 To 0 Step -1:
@@ -894,7 +896,7 @@ Sub InputTeam ()
             End If
         Next I
 
-        X = Int((ydsCompAdj / .3) + .5)
+        X = CInt(ydsCompAdj / .3)
         If X < 0 Then X = 100 + X
         ydsCompAdj = X
 

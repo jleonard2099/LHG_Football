@@ -49,16 +49,22 @@ Sub CREATENATL ()
             Select Case SELECTION%
 
                 Case 1:
-                    Call DefineNatOrg(organization$)
-                    orgFile$ = organization$
-                    Call ReviewEditNatOrg(orgFile$, organization$)
+                    Call DefineNatOrg(orgName$)
+                    orgFile$ = orgName$
+                    If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
+                        Call ReadOrganizationFile (orgFile$, orgName$)
+                        Call ReviewEditNatOrg(orgFile$, orgName$)
+                    End If
 
                 Case 2:
                     Do
                         orgFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReviewEditNatOrg(orgFile$, organization$)
+                            If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
+                                Call ReadOrganizationFile (orgFile$, orgName$)
+                                Call ReviewEditNatOrg(orgFile$, orgName$)
+                            End If
                         End if
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
@@ -117,23 +123,9 @@ End Sub
 'This subroutine provides an interface to
 'the user allowing them to choose / clear
 'conferences from the org definition.
-Sub ReviewEditNatOrg (orgFile$, organization$)
+Sub ReviewEditNatOrg (orgFile$, orgName$)
 
     Shared memberConf$()
-
-    If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
-
-        Open diskPaths$(2) + orgFile$ + ".CON" For Input As #1
-
-        Input #1, organization$
-
-        For X = 1 To MAX_CONFERENCES
-            Input #1, memberConf$(X)
-        Next
-
-        Close #1
-
-    End If
 
     Do
 
@@ -141,7 +133,7 @@ Sub ReviewEditNatOrg (orgFile$, organization$)
         Cls
 
         Print
-        Print "  "; organization$
+        Print "  "; orgName$
         Print
 
         Color 12

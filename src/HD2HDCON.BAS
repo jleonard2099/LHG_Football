@@ -108,27 +108,7 @@ Sub Hd2HdCon_Conf (secondConf)
 
                 Else
 
-                    Open diskPaths$(1) + statFile$ + "S" For Input As #1
-
-                    Input #1, nbrGames
-
-                    For I = 1 To MAX_SCHED_STATS:
-                        Input #1, teamScore(I)
-                    Next I
-
-                    For I = 1 To MAX_SCHED_STATS:
-                        Input #1, oppName$(I)
-                    Next I
-
-                    For I = 1 To MAX_SCHED_STATS:
-                        Input #1, oppScore(I)
-                    Next I
-
-                    For I = 1 To MAX_SCHED_STATS:
-                        Input #1, locIndicator$(I)
-                    Next I
-
-                    Close #1
+                    Call ReadScheduleStats (statFile$, I, nbrGames)
 
                     'Check if same conference
                     If sameConf <> 1 Then

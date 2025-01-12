@@ -1669,7 +1669,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 9:
         If rbAtt_TRADE(tradeIdx, I) <> 0 Then
-			rbAtt_TRADE(tradeIdx, I) = Int(S4 * rbAtt_TRADE(tradeIdx, I) + .5) + S1
+			rbAtt_TRADE(tradeIdx, I) = CInt(S4 * rbAtt_TRADE(tradeIdx, I)) + S1
 			S1 = rbAtt_TRADE(tradeIdx, I)
         End If
         If rbAtt_TRADE(tradeIdx, I) > 100 Then
@@ -1685,7 +1685,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 9:
         If rbRec_TRADE(tradeIdx, I) <> 0 Then
-			rbRec_TRADE(tradeIdx, I) = Int(S5 * rbRec_TRADE(tradeIdx, I) + .5) + S3
+			rbRec_TRADE(tradeIdx, I) = CInt(S5 * rbRec_TRADE(tradeIdx, I)) + S3
 			S3 = rbRec_TRADE(tradeIdx, I)
         End If
         If rbRec_TRADE(tradeIdx, I) > 100 Then
@@ -1695,7 +1695,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 5:
         If wrRec_TRADE(tradeIdx, I) <> 0 Then
-			wrRec_TRADE(tradeIdx, I) = Int(S5 * wrRec_TRADE(tradeIdx, I) + .5) + S3
+			wrRec_TRADE(tradeIdx, I) = CInt(S5 * wrRec_TRADE(tradeIdx, I)) + S3
 			S3 = wrRec_TRADE(tradeIdx, I)
         End If
         If wrRec_TRADE(tradeIdx, I) > 100 Then
@@ -1714,7 +1714,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 3:
         If qbPA_TRADE(tradeIdx, I) <> 0 Then
-			qbPA_TRADE(tradeIdx, I) = Int(S8 * qbPA_TRADE(tradeIdx, I) + .5) + S7
+			qbPA_TRADE(tradeIdx, I) = CInt(S8 * qbPA_TRADE(tradeIdx, I)) + S7
 			S7 = qbPA_TRADE(tradeIdx, I)
         End If
         If qbPA_TRADE(tradeIdx, I) > 100 Then
@@ -1737,7 +1737,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 2:
         If krNumRet_TRADE(tradeIdx, I) <> 0 Then
-			krNumRet_TRADE(tradeIdx, I) = Int(G2 * krNumRet_TRADE(tradeIdx, I) + .5) + G1
+			krNumRet_TRADE(tradeIdx, I) = CInt(G2 * krNumRet_TRADE(tradeIdx, I)) + G1
 			G1 = krNumRet_TRADE(tradeIdx, I)
         End If
         If krNumRet_TRADE(tradeIdx, I) > 100 Then
@@ -1747,7 +1747,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 2:
         If prRet_TRADE(tradeIdx, I) <> 0 Then
-			prRet_TRADE(tradeIdx, I) = Int(G5 * prRet_TRADE(tradeIdx, I) + .5) + G4
+			prRet_TRADE(tradeIdx, I) = CInt(G5 * prRet_TRADE(tradeIdx, I)) + G4
 			G4 = prRet_TRADE(tradeIdx, I)
         End If
         If prRet_TRADE(tradeIdx, I) > 100 Then
@@ -1770,7 +1770,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 1:
         If FGPct_TRADE(tradeIdx, I) <> 0 Then
-			FGPct_TRADE(tradeIdx, I) = Int(G2 * FGPct_TRADE(tradeIdx, I) + .5) + G1
+			FGPct_TRADE(tradeIdx, I) = CInt(G2 * FGPct_TRADE(tradeIdx, I)) + G1
 			G1 = FGPct_TRADE(tradeIdx, I)
         End If
         If FGPct_TRADE(tradeIdx, I) > 100 Then
@@ -1780,7 +1780,7 @@ Sub DoTheTrade (tradeIdx)
 
     For I = 0 To 1:
         If PATPct_TRADE(tradeIdx, I) <> 0 Then
-			PATPct_TRADE(tradeIdx, I) = Int(G5 * PATPct_TRADE(tradeIdx, I) + .5) + G4
+			PATPct_TRADE(tradeIdx, I) = CInt(G5 * PATPct_TRADE(tradeIdx, I)) + G4
 			G4 = PATPct_TRADE(tradeIdx, I)
         End If
         If PATPct_TRADE(tradeIdx, I) > 100 Then

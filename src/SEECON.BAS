@@ -13,8 +13,8 @@ Sub SEECON ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Call LoadLeaderFiles_Coll(FF$, leaderFile$)
-        Call StatOptions_Coll(FF$)
+        Call LoadLeaderFiles_Coll(conf$, leaderFile$)
+        Call StatOptions_Coll(conf$)
 
     End If
 
@@ -26,7 +26,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Coll (confName$, targetFile$)
+Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     Shared divLosses!(), divTies!(), divWins!()
     Shared leaderVal1!(), leaderVal2!()
@@ -39,9 +39,7 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
     Shared div1Name$, div2Name$
 
-    Open diskPaths$(2) + targetFile$ + ".TMS" For Input As #1
-    Input #1, confName$, div1Name$, div2Name$
-    Close #1
+    Call ReadConferenceStats (targetFile$, 0)
 
     div1Name$ = PadRight(div1Name$, 8)
     div2Name$ = PadRight(div2Name$, 8)

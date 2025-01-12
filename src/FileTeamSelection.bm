@@ -460,6 +460,432 @@ End Sub
 
 
 '----------------------------------------
+'     ReportFilePrompt_Pro Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the report file to be saved
+Sub UserFilePrompt (reportFile$)
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(6, 8, 61, 7, 15, 1)
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
+
+        If reportFile$ <> "" Then
+
+            Do
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
+
+End Sub
+
+
+'----------------------------------------
+'     ScheduleFilePrompt Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the schedule file to be saved
+Sub ScheduleFilePrompt (scheduleFile$)
+
+    Color 15, 0
+    Cls
+
+    Call MenuBox(6, 8, 61, 8, 15, 1)
+
+    Do
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
+        Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
+        Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
+        Locate 7, 40: Input scheduleFile$
+
+        If scheduleFile$ <> "" Then
+
+            Do
+
+                Locate 14, 12
+                Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+
+        End If
+
+    Loop Until (UCase$(I$) = "N" And scheduleFile$ <> "") Or I$ = Chr$(27)
+
+
+End Sub
+
+
+'----------------------------------------
+'        ReadTeamStats Subroutine
+'----------------------------------------
+'Reads in compiled stats for a given team
+Sub ReadTeamStats (teamName$, statFile$)
+
+    Shared puntName$
+
+    Shared statsGI(), statsGS()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared defTotals!(), offTotals!()
+
+    Shared statsGeneral!()
+    Shared statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLPR!(), statsLRec!(), statsLRush!()
+
+    Shared compKR$(), compKicker$(), compPR$()
+    Shared compQB$(), compRB$(), compWR$()
+    Shared intName$(), sackName$()
+    Shared statsLRec$(), statsLFG$(), statsLInt$()
+    Shared statsLKR$(), statsLPR$()
+    Shared statsLPass$(), statsLRush$()
+
+    Erase compKR$, compKicker$, compPR$, compQB$, compRB$, compWR$
+    Erase intName$
+
+    Erase statsFGA!, statsFGM!
+    Erase statsGeneral!, offTotals!, defTotals!
+    Erase statsGI, statsGS
+
+    Erase statsLRec!, statsLFG!, statsLInt!, statsLKR!, statsLPass!, statsLRush!
+    Erase statsLRec$, statsLFG$, statsLInt$, statsLKR$, statsLPass$, statsLRush$
+
+    Open diskPaths$(1) + statFile$ For Input As #1
+
+    Input #1, teamName$
+
+    'RB Names
+    For I = 1 To 10:
+        Input #1, compRB$(I)
+    Next
+
+    'WR Names
+    For I = 1 To 6:
+        Input #1, compWR$(I)
+    Next
+
+    'QB Names
+    For I = 1 To 4:
+        Input #1, compQB$(I)
+    Next
+
+    'KR Names
+    For I = 1 To 3:
+        Input #1, compKR$(I)
+    Next
+
+    'PR Names
+    For I = 1 To 3:
+        Input #1, compPR$(I)
+    Next I
+
+    'Punter
+    Input #1, puntName$
+
+    'Place Kickers
+    For I = 1 To 2:
+        Input #1, compKicker$(I)
+    Next
+
+    'Rushers / Receivers
+    For J = 1 To 14
+        For K = 1 To 18
+            Input #1, statsGeneral!(J, K)
+        Next K
+    Next J
+
+    'Offensive Team stats
+    For L = 0 To 38:
+        Input #1, offTotals!(L)
+    Next L
+
+    'Defensive Team stats
+    For L = 0 To 38:
+        Input #1, defTotals!(L)
+    Next L
+
+    For J = 0 To 9:
+        'Interception Names
+        Input #1, intName$(J)
+        For J1 = 0 To 2
+            Input #1, statsGI(J, J1)
+        Next
+    Next
+
+    For J = 0 To 14:
+        'Sack Names
+        Input #1, sackName$(J)
+        For J1 = 0 To 1:
+            Input #1, statsGS(J, J1)
+        Next
+    Next
+
+    'Longest rush?
+    For I = 0 To 9:
+        Input #1, statsLRush!(I)
+        Input #1, statsLRush$(I, 0)
+        Input #1, statsLRush$(I, 1)
+    Next
+
+    'Longest catch?
+    For I = 0 To 15:
+        Input #1, statsLRec!(I)
+        Input #1, statsLRec$(I, 0)
+        Input #1, statsLRec$(I, 1)
+    Next
+
+    'Longest punt?
+    For I = 0 To 3:
+        Input #1, statsLPass!(I)
+        Input #1, statsLPass$(I, 0)
+        Input #1, statsLPass$(I, 1)
+    Next
+
+    'Longest kick return
+    For I = 0 To 2:
+        Input #1, statsLKR!(I)
+        Input #1, statsLKR$(I, 0)
+        Input #1, statsLKR$(I, 1)
+    Next
+
+    'Longest punt return
+    For I = 0 To 2:
+        Input #1, statsLPR!(I)
+        Input #1, statsLPR$(I, 0)
+        Input #1, statsLPR$(I, 1)
+    Next
+
+    'Longest field goal
+    For I = 0 To 1:
+        Input #1, statsLFG!(I)
+        Input #1, statsLFG$(I)
+
+        For I1 = 0 To 4
+            Input #1, statsFGM!(I, I1)
+            Input #1, statsFGA!(I, I1)
+        Next
+    Next
+
+    'Longest interception
+    For I = 0 To 9:
+        Input #1, statsLInt!(I)
+        Input #1, statsLInt$(I, 0)
+        Input #1, statsLInt$(I, 1)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'      ReadScheduleStats Subroutine
+'----------------------------------------
+'This subroutine reads in all data from the
+'team's schedule stats file.
+Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
+
+    Shared gameSite$()
+    Shared oppName$(), locIndicator$()
+
+    Shared powerRating(), oppScore(), teamScore()
+
+    Shared gameAttendance&()
+
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
+    findFile$ = diskPaths$(1) + statFile$ + "S"
+
+    Open findFile$ For Input As #1
+
+    Input #1, numberGames
+
+    'Opponent Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, teamScore(I)
+        leagPtsFor!(ptsIdx) = leagPtsFor!(ptsIdx) + teamScore(I)
+    Next I
+
+    'Opponent
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppName$(I)
+    Next I
+
+    'Team Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppScore(I)
+        leagPtsAgnst!(ptsIdx) = leagPtsAgnst!(ptsIdx) + oppScore(I)
+    Next I
+
+    'Home / Away
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, locIndicator$(I)
+    Next I
+
+    'Power Rating
+    For I = 0 To 1
+        For I1 = 1 To MAX_SCHED_STATS
+            Input #1, powerRating(I, I1)
+        Next
+    Next
+
+    'Attendance
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameAttendance&(I)
+    Next I
+
+    'Stadium
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameSite$(I)
+    Next I
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       ReadSeasonRecords Subroutine
+'----------------------------------------
+'Reads in list of team and individual
+'record values from the records file.
+Sub ReadSeasonRecords (recordFile$)
+
+    Shared indRecords!(), teamRecords!()
+    Shared indRecDesc$(), teamRecDesc$()
+
+    Open diskPaths$(1) + recordFile$ For Input As #1
+
+    For I = 0 To 50:
+        Input #1, indRecords!(I)
+        Input #1, indRecDesc$(I, 0)
+        Input #1, indRecDesc$(I, 1)
+        Input #1, indRecDesc$(I, 2)
+    Next
+
+    For I = 0 To 50:
+        Input #1, teamRecords!(I)
+        Input #1, teamRecDesc$(I)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       ReadGameRecords Subroutine
+'----------------------------------------
+'Reads in list of team and individual
+'record values from the records file.
+Sub ReadGameRecords (recordFile$)
+
+End Sub
+
+
+'----------------------------------------
+'     ReadConferenceStats Subroutine
+'----------------------------------------
+'This subroutine reads in the league stats
+'from the .TMS file and assigns them to
+'variables for use later in the routine.
+
+'statType
+'   0 = College
+'   1 = Pro
+Sub ReadConferenceStats (statFile$, statType)
+
+    Shared memberName$()
+
+    Shared leagueName$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+
+    Erase memberName$
+
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE
+            memberName$(X) = "XXX"
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE
+            memberName$(X) = "XXX"
+        Next
+    End If
+
+    Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
+
+    If statType = 1 Then
+        'Pro
+        Input #1, leagueName$
+        Input #1, div1Name$
+        Input #1, div2Name$
+        Input #1, div3Name$
+        Input #1, div4Name$
+    Else
+        'College
+        Input #1, leagueName$
+        Input #1, div1Name$
+        Input #1, div2Name$
+    End If
+
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE:
+            Input #1, memberName$(X)
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE:
+            Input #1, memberName$(X)
+        Next
+    End If
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'     ReadOrganizationFile Subroutine
+'----------------------------------------
+'Reads in list of conferences from a .CON
+'file that represents a national Org.
+Sub ReadOrganizationFile (organizationFile$, organization$)
+
+    Shared memberConf$()
+
+    Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #1
+
+    Input #1, organization$
+
+    For X = 1 To MAX_CONFERENCES
+        Input #1, memberConf$(X)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
 '         nameStatFile$ Function
 '----------------------------------------
 'Helps create uniquely named file to
@@ -651,82 +1077,4 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
     End If
 
 End Function
-
-
-'----------------------------------------
-'     ReportFilePrompt_Pro Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the report file to be saved
-Sub UserFilePrompt (reportFile$)
-
-    Do
-
-        Color 15, 0
-        Cls
-
-        Call MenuBox(6, 8, 61, 7, 15, 1)
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
-        Locate 7, 37: Input reportFile$
-
-        If reportFile$ <> "" Then
-
-            Do
-                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-        End If
-
-    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
-
-End Sub
-
-
-'----------------------------------------
-'     ScheduleFilePrompt Subroutine
-'----------------------------------------
-'This subroutine prompts the user for
-'the name of the schedule file to be saved
-Sub ScheduleFilePrompt (scheduleFile$)
-
-    Color 15, 0
-    Cls
-
-    Call MenuBox(6, 8, 61, 8, 15, 1)
-
-    Do
-
-        Locate 7, 32
-
-        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
-        Print
-        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
-        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
-        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
-        Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
-        Locate 7, 40: Input scheduleFile$
-
-        If scheduleFile$ <> "" Then
-
-            Do
-
-                Locate 14, 12
-                Print "ANY CHANGE? (Y/N) "
-                I$ = GetKeyPress$
-
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
-
-        End If
-
-    Loop Until (UCase$(I$) = "N" And scheduleFile$ <> "") Or I$ = Chr$(27)
-
-
-End Sub
 

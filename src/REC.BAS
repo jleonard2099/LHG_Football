@@ -66,21 +66,7 @@ Sub Records_Menu (menuChoice)
 
             Else
 
-                Open diskPaths$(1) + recordsFile$ For Input As #1
-
-                For I = 0 To 50
-                    Input #1, indRecords!(I)
-                    Input #1, indRecDesc$(I, 0)
-                    Input #1, indRecDesc$(I, 1)
-                    Input #1, indRecDesc$(I, 2)
-                Next
-
-                For I = 0 To 50
-                    Input #1, teamRecords!(I)
-                    Input #1, teamRecDesc$(I)
-                Next
-
-                Close #1
+                Call ReadSeasonRecords (recordsFile$)
 
                 Select Case SELECTION%
 
@@ -97,11 +83,11 @@ Sub Records_Menu (menuChoice)
                                 Case "F"
                                     userFile$ = _SaveFileDialog$("Save Records Report", _CWD$ + "\Records", "*.txt", "Text File")
                                     If userFile$ <> "" Then
-                                        Call PrintSeasonRecords(0, userFile$)
+                                        Call SeasonRecords_Report(0, userFile$)
                                     End If
 
                                 Case "P"
-                                    Call PrintSeasonRecords(1, "RECORDS")
+                                    Call SeasonRecords_Report(1, "RECORDS")
 
                             End Select
 
@@ -501,12 +487,12 @@ Sub ViewSeasonRecords ()
 End Sub
 
 '----------------------------------------
-'       PrintSeasonRecords Subroutine
+'       SeasonRecords_Report Subroutine
 '----------------------------------------
 'This subroutine facilitates formatting
 'of the record data to a file, that is
 'subsequently either saved, or printed.
-Sub PrintSeasonRecords (printDest, destFile$)
+Sub SeasonRecords_Report (printDest, destFile$)
 
     Shared indRecDesc$()
     Shared indRecCategory$(), teamRecCategory$(), teamRecDesc$()

@@ -1,12 +1,19 @@
-Declare Sub ChooseTeam (yearNumber$, numberTeams, teamIdx)
-Declare Sub SelectTeam (selectedIdx)
+Declare Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
+Declare Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
 Declare Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 Declare Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 Declare Sub UserFilePrompt (reportFile$)
+Declare Sub ScheduleFilePrompt (scheduleFile$)
+Declare Sub ReadTeamStats (teamName$, statFile$)
+Declare Sub ReadScheduleStats (statFile$, XW, numberGames)
+Declare Sub ReadGameRecords (recordFile$)
+Declare Sub ReadSeasonRecords (recordFile$)
+Declare Sub ReadConferenceStats (statFile$, statType)
+Declare Sub ReadOrganizationFile (organizationFile$)
 
 Declare Function nameStatFile$ (teamName$)
 Declare Function CheckString% (targetString$)
-Declare Function ChooseFile$(fileSpec$, fileDesc$)
+Declare Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
 
 Const TEAM_SIZE_BYTES = 934
 Const DATA_SIZE_BYTES = 50

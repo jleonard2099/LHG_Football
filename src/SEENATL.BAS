@@ -13,7 +13,7 @@ Sub SEENATL ()
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Call LoadLeaderFiles_Natl(FF$, NRT, organizationFile$)
+        Call LoadLeaderFiles_Natl(organizationFile$, FF$, NRT)
         Call StatOptions_Natl(FF$, NRT)
 
     End If
@@ -26,7 +26,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the organization 
 'stats from the file into several arrays
-Sub LoadLeaderFiles_Natl (confName$, NRT, targetFile$)
+Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
     Shared divLosses!(), divTies!(), divWins!()
     Shared pollRatings!()

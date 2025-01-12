@@ -15,11 +15,12 @@ Sub NEWLDR (statType)
     Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
 
     'Needed for Expanded Standings
-    Shared totHomeLosses(), totHomeWins()
-    Shared totTeamLosses(), lastLoseStreak()
-    Shared lastWinStreak()
-    Shared totRoadLosses(), totRoadWins()
-    Shared teamLoseStreak(), teamWinStreak(), teamTotWins()
+    Shared totHomeLosses(), totHomeWins(), totHomeTies()
+    Shared totRoadLosses(), totRoadWins(), totRoadTies()
+    Shared totNeutralLosses(), totNeutralTies()
+    Shared totTeamLosses(), totTeamWins(), totTeamTies()
+    Shared lastLoseStreak(), lastWinStreak()
+    Shared teamLoseStreak(), teamWinStreak()
 
     Shared expStdLeagName$()
 
@@ -74,7 +75,7 @@ Sub NEWLDR (statType)
                         If FileExit% <> 27 And FileExit% <> 0 Then
                             Call ReadConferenceStats(confStatFile$, statType)
                             Call UpdateExpandedLeaders(statType, totalStats)
-                            Call SAVELEADER(confStatFile$, totalStats)
+                            Call SaveLeaderStdg(confStatFile$, totalStats)
                         End If
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
@@ -84,7 +85,7 @@ Sub NEWLDR (statType)
                         leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call READLEADER(leaderFile$, totalStats)
+                            Call ReadLeaderStdg(leaderFile$, totalStats)
                             Call ExpandedLeaders_Menu(totalStats)
                         End If
 
@@ -111,7 +112,7 @@ Sub NEWLDR (statType)
 
                         If FileExit% <> 27 And FileExit% <> 0 Then
 
-                            If statType = 1 Then 
+                            If statType = 1 Then
                                 TEAM_LIMIT = TEAMS_PER_LEAGUE
                             Else
                                 TEAM_LIMIT = TEAMS_PER_CONFERENCE
@@ -120,17 +121,17 @@ Sub NEWLDR (statType)
                             Open diskPaths$(2) + standingsFile$ + ".STD" For Input As #2
 
                             Input #2, fileType
-                            
+
                             If fileType = statType Then
 
                                 Input #2, league$, div1Name$, div2Name$, div3Name$, div4Name$
 
                                 For I = 1 To TEAM_LIMIT
-                                    Input #2, teamTotWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), expStdLeagName$(I)
+                                    Input #2, totTeamWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totTeamTies(I), expStdLeagName$(I)
                                 Next
-                                
+
                             Else
-                            
+
                                 Cls
                                 Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
                                 Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
@@ -139,11 +140,11 @@ Sub NEWLDR (statType)
                                 I$ = GetKeyPress$
 
                                 wrongFormat% = 1
-                            
+
                             End If
 
                             Close #2
-    
+
                             If wrongFormat% = 0 Then
 
                                 userKey$ = GetOutputOptions$
@@ -167,7 +168,7 @@ Sub NEWLDR (statType)
                                     End Select
 
                                 End If
-                                
+
                             End If 'Done checking right file format
 
                         End If
@@ -179,65 +180,6 @@ Sub NEWLDR (statType)
         End If
 
     Loop Until SELECTION% = 5 Or ExitCode% = 27
-
-End Sub
-
-
-'----------------------------------------
-'     ReadConferenceStats Subroutine
-'----------------------------------------
-'This subroutine reads in the league stats
-'from the .TMS file and assigns them to
-'variables for use later in the routine.
-
-'statType
-'   0 = College
-'   1 = Pro
-Sub ReadConferenceStats (statFile$, statType)
-
-    Shared memberName$()
-
-    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
-
-    Erase memberName$
-
-    If statType = 0 Then
-        For X = 1 To TEAMS_PER_CONFERENCE
-            memberName$(X) = "XXX"
-        Next
-    Else
-        For X = 1 To TEAMS_PER_LEAGUE
-            memberName$(X) = "XXX"
-        Next
-    End If
-
-    Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
-
-    If statType = 1 Then
-        'Pro
-        Input #1, league$
-        Input #1, div1Name$
-        Input #1, div2Name$
-        Input #1, div3Name$
-        Input #1, div4Name$
-    Else
-        'College
-        Input #1, league$
-        Input #1, div1Name$
-        Input #1, div2Name$
-    End If
-
-    If statType = 0 Then
-        For X = 1 To TEAMS_PER_CONFERENCE:
-            Input #1, memberName$(X)
-        Next
-    Else
-        For X = 1 To TEAMS_PER_LEAGUE:
-            Input #1, memberName$(X)
-        Next
-    End If
-
-    Close #1
 
 End Sub
 
@@ -299,38 +241,12 @@ Sub ViewExpandedStats (statType)
 
         Erase expLdrTeam$, expLdrPlyrName$
 
-        Open diskPaths$(2) + confStatFile$ + ".TMS" For Input As #1
-
-        If statType = 1 Then
-            'Pro
-            Input #1, league$
-            Input #1, div1Name$
-            Input #1, div2Name$
-            Input #1, div3Name$
-            Input #1, div4Name$
-        Else
-            'College
-            Input #1, league$
-            Input #1, div1Name$
-            Input #1, div2Name$
-        End If
-
-        If statType = 0 Then
-            For X = 1 To TEAMS_PER_CONFERENCE:
-                Input #1, memberName$(X)
-            Next
-        Else
-            For X = 1 To TEAMS_PER_LEAGUE:
-                Input #1, memberName$(X)
-            Next
-        End If
-
-        Close #1
+        Call ReadConferenceStats(confStatFile$, statType)
 
         Cls
 
         Call UpdateExpandedLeaders(statType, totalStats)
-        Call SAVELEADER(confStatFile$, totalStats)
+        Call SaveLeaderStdg(confStatFile$, totalStats)
         Call ExpandedLeaders_Menu(totalStats)
 
     End If
@@ -684,11 +600,11 @@ End Sub
 
 
 '----------------------------------------
-'        READLEADER Subroutine
+'        ReadLeaderStdg Subroutine
 '----------------------------------------
 'This subroutine reads in the leader files
 '(.LDS) for the Expanded standings modules
-Sub READLEADER (leaderFile$, totalStats)
+Sub ReadLeaderStdg (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -865,11 +781,11 @@ End Sub
 
 
 '----------------------------------------
-'        SAVELEADER Subroutine
+'        SaveLeaderStdg Subroutine
 '----------------------------------------
 'This subroutine compiles the leader files
 '(.LDS) for the Expanded standings modules
-Sub SAVELEADER (leaderFile$, totalStats)
+Sub SaveLeaderStdg (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -1096,7 +1012,9 @@ Sub ExpandedLeaders_Menu (totalStats)
         Locate , 20: Color 14: Print "(L) ";
         Color 1: Print "RETURN TO MAIN MENU"
 
-        key$ = GetKeyPress$
+        Do
+            key$ = GetKeyPress$
+        Loop Until (Asc(UCase$(key$)) >= 65 And Asc(UCase$(key$)) <= 76) Or key$ = Chr$(27)
 
         If key$ <> Chr$(27) Then
 
@@ -1949,6 +1867,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                         X1 = 4
                         XX = 73
 
+                        ' RB's - Rushing + Receiving Yds
                         For I = 1 To JA
                             If expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1) <> 0 Then
                                 PPP = PPP + 1
@@ -1956,11 +1875,28 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 Print "CHANGING PLAYER "; PPP
                                 expLdrPlyrName$(PPP) = expLdrRBName$(I)
                                 expLdrTeam$(PPP) = expLdrRBTeam$(I)
+                                'Add Rushing + Receivng Yards
                                 expLdrVal!(PPP) = expLdrRBVal!(I, X0) + expLdrRBVal!(I, X1)
+
+                                'Look for any KR / PR yards
+                                For I2 = 1 To JD
+                                    If expLdrKRName$(I2) = expLdrRBName$(I) And expLdrKRName$(I2) <> "OTHERS" Then
+                                        expLdrVal!(PPP) = expLdrVal!(PPP) + expLdrKRVal!(I2, X0)
+                                    End If
+                                Next I2
+
+                                For I2 = 1 To JE
+                                    If expLdrPRName$(I2) = expLdrRBName$(I) And expLdrPRName$(I2) <> "OTHERS" Then
+                                        expLdrVal!(PPP) = expLdrVal!(PPP) + expLdrPRVal!(I2, X0)
+                                    End If
+                                Next I2
+
                             End If
                         Next I
 
+                        'WR's - Receiving Yds
                         For I = 1 To JB
+
                             If expLdrWRVal!(I, X0) <> 0 Then
                                 PPP = PPP + 1
                                 Locate 1, 5
@@ -1969,6 +1905,101 @@ Sub ExpandedLeaders_Menu (totalStats)
                                 expLdrTeam$(PPP) = expLdrWRTeam$(I)
                                 expLdrVal!(PPP) = expLdrWRVal!(I, X0)
                             End If
+
+                            'Look for any KR / PR yards
+                            For I2 = 1 To JD
+                                If expLdrKRName$(I2) = expLdrWRName$(I) And expLdrKRName$(I2) <> "OTHERS" Then
+                                    expLdrVal!(PPP) = expLdrVal!(PPP) + expLdrKRVal!(I2, X0)
+                                End If
+                            Next I2
+
+                            For I2 = 1 To JE
+                                If expLdrPRName$(I2) = expLdrWRName$(I) And expLdrPRName$(I2) <> "OTHERS" Then
+                                    expLdrVal!(PPP) = expLdrVal!(PPP) + expLdrPRVal!(I2, X0)
+                                End If
+                            Next I2
+
+                        Next I
+
+                        'KR Yardage
+                        For I = 1 To JD
+
+                            If expLdrKRVal!(I, X0) <> 0 And expLdrKRName$(I) <> "OTHERS" Then
+
+                                'Loop through all RB's / WR's
+                                'Check for the name to match
+                                found = 0
+
+                                For I2 = 1 To JA
+                                    If expLdrKRName$(I) = expLdrRBName$(I2) Then
+                                        'We found a match; skip
+                                        'Was previously added
+                                        found = 1
+                                    End If
+                                Next I2
+
+                                For I2 = 1 To JB
+                                    If expLdrKRName$(I) = expLdrWRName$(I2) Then
+                                        'We found a match; skip
+                                        'Was previously added
+                                        found = 1
+                                    End If
+                                Next I2
+
+                                'If no matching RB / WR, start a new entry
+                                If found = 0 Then
+
+                                    PPP = PPP + 1
+                                    Locate 1, 5
+                                    Print "CHANGING PLAYER "; PPP
+
+                                    expLdrPlyrName$(PPP) = expLdrKRName$(I)
+                                    expLdrTeam$(PPP) = expLdrKRTeam$(I)
+                                    expLdrVal!(PPP) = expLdrKRVal!(I, X0)
+                                End If
+
+                            End If
+
+                        Next I
+
+                        'PR Yardage
+                        For I = 1 To JE
+
+                            If expLdrPRVal!(I, X0) <> 0 And expLdrPRName$(I) <> "OTHERS" Then
+
+                                PPP = PPP + 1
+                                Locate 1, 5
+                                Print "CHANGING PLAYER "; PPP
+
+                                'Now we loop through all RB's / WR's
+                                'Check for the name to match
+                                found = 0
+
+                                For I2 = 1 To JA
+                                    If expLdrPRName$(I) = expLdrRBName$(I2) Then
+                                        'We found a match; skip
+                                        'Was previously added
+                                        found = 1
+                                    End If
+                                Next I2
+
+                                For I2 = 1 To JB
+                                    If expLdrPRName$(I) = expLdrWRName$(I2) Then
+                                        'We found a match; skip
+                                        'Was previously added
+                                        found = 1
+                                    End If
+                                Next I2
+
+                                'If no matching RB / WR, start a new entry
+                                If found = 0 Then
+                                    expLdrPlyrName$(PPP) = expLdrPRName$(I)
+                                    expLdrTeam$(PPP) = expLdrPRTeam$(I)
+                                    expLdrVal!(PPP) = expLdrPRVal!(I, X0)
+                                End If
+
+                            End If
+
                         Next I
 
                         Call SortPlayer(PPP, stpl, sortType)
@@ -2042,6 +2073,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                         TVN = 1
 
                     Case "K":
+
+                        'If any individual leaders have been loaded,
+                        'we need to clear them out
+                        Erase expLdrPlyrName$
+
                         Select Case categoryId
                             Case 0: X0 = 0: XX = 44
                             Case 1: X0 = 1: X1 = 13: XX = 45

@@ -31,6 +31,17 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
+
+Dim expLdrVal!(480)
+Dim expLdrTeam$(480), expLdrPlyrName$(480), expLdrTD$(480)
+Dim expLdrKRName$(90), expLdrKRTeam$(90), expLdrPRName$(90), expLdrPRTeam$(90)
+Dim expLdrRBName$(300), expLdrRBTeam$(300), expLdrWRName$(180), expLdrWRTeam$(180), expLdrQBTeam$(120)
+
+Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBRat!(120, 1)
+Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
+
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -140,19 +151,20 @@ For I = 1 To 7:
     Next J
 Next I
 
-Data 74,88,48,78,26,68,14,62,9,52: 'FIELD GOAL %'s / INTERVALS
+'FIELD GOAL %'s / INTERVALS
+Data 74,88,48,78,26,68,14,62,9,52:
 
-'Below are values for passing adjustments
-Data 0,0,-6,0,0,4,3,3,4,4,4: 'Int % Hitch
-Data -6,0,-6,-4,-4,3,0,0,3,3,4: 'Int % Short Pass
-Data -3,0,0,-6,-6,3,0,0,0,0,3: 'Int % Med Pass
-Data 3,-4,4,0,0,0,-4,-6,-4,-6,-4: 'Int % Long Pass
-Data 0,3,-4,3,3,4,3,3,3,4,4: 'Int % Screen
-Data -6,0,0,-4,-6,3,0,0,0,0,0: 'Int % Med Play Act
-Data 0,-4,3,0,0,0,-6,-4,-6,-4,-6: 'Int % Long Play Act
-Data -6,0,0,-4,0,3,0,0,0,0,0: 'Int % Sideline
-Data 3,3,3,3,0,4,-4,0,0,0,-4: 'Int % Rollout
-Data 3,0,3,0,0,4,0,0,0,0,0: 'Int % Bootleg
+'Values for passing adjustments
+Data 0,3,-4,3,0,3,0,0,0,0,3: ' Int % Hitch
+Data 0,0,-4,0,0,3,0,0,0,0,3: ' Int % Short Pass
+Data -4,0,3,-4,-4,-6,3,3,4,4,4: ' Int % Med Pass
+Data -4,0,4,-4,-4,-6,3,3,4,4,4: ' Int % Long Pass
+Data 3,4,0,4,3,4,0,0,-4,-4,0: ' Int % Screen
+Data -4,0,3,-4,-4,-4,3,3,4,4,4: ' Int % Med Play Act
+Data -4,0,4,-4,-4,-6,4,4,4,4,4: ' Int % Long Play Act
+Data 0,-4,3,-4,-4,-6,3,3,4,4,4: ' Int % Sideline
+Data 3,0,3,0,3,3,0,0,0,0,3: ' Int % Rollout
+Data 3,0,3,0,3,3,0,0,0,0,3: ' Int % Bootleg
 
 Data 31,21,21,11,40,50,8,8,-5,-5,-13: ' Comp% Hitch
 Data 21,11,11,1,30,40,-10,-10,-20,-20,-23: ' Comp% Short Pass
@@ -193,7 +205,7 @@ Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1,X)
 Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' runYdAdj(0,X)
 Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' runYdAdj(1,X)
 
-'brkawayYds
+'Breakaway Yards
 Data 11,-5,11,0
 Data 11,-5,11,0
 Data 11,0,21,0
@@ -1212,7 +1224,7 @@ Sub FOOTBALL ()
             Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
             Locate 9, 2: Color 14
             Print "(8) ";
-            Color 15: Print "SUDDDEN DEATH: "; overtime$(overtimeOpt)
+            Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
             Locate 10, 2: Color 14
             Print "(9) ";
             Color 15: Print "START GAME"
@@ -2960,7 +2972,7 @@ Sub FOOTBALL ()
 
             End If
 
-            '3-Step Drop
+            'Take Knee
             If playCall = 9 Then
 
                 pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
@@ -5968,7 +5980,7 @@ Sub FOOTBALL ()
             Case 21 To 22
                 pbpString$ = pbpString$ + "OFF - CHOP BLOCK -"
                 penaltyYds! = -15
-            
+
             Case 23 To 24
                 If (ruleOptType = 0 And teamYears(impactTeam) >= 1993) Or (ruleOptType = 1 And teamYears(impactTeam) >= 2005) Then
                     'Horse Collar tackle penalty introduced
@@ -6433,12 +6445,16 @@ Sub FOOTBALL ()
 
             If isOT = 0 And quarter = 5 And score(0, 0) <> score(1, 0) Then
 
-                'Regular Game, Mot Tied
+                'Regular Game, Not Tied
                 gameOver = 1
 
             Else
 
                 'Sudden Death, Score Not Tied
+                If (overtimeOpt = 1 And gameClock! = 0) Then
+                    gameOver = 1
+                End If
+ 
                 If ((overtimeOpt = 1 Or overtimeOpt = 2) And score(0, 0) <> score(1, 0)) Then
                     gameOver = 1
                 End If
@@ -12286,8 +12302,10 @@ Sub ComputerOffense ()
     Else
 
         '4th Quarter
-        'Any down, Less than 35 seconds to go, 0 Timeouts Opponent, Offense leading
-        If quarter = 4 And gameClock! <= 35 * (4 - currDown) And timeouts(D) = 0 And score(P1, 0) > score(D, 0) Then
+        'Offense leading, Defense no timeouts,
+        'Under 2 minutes; time left to kneel each down
+        'Teams didn't use victory formation until the 1980s
+        If quarter = 4 And timeouts(D) = 0 And score(P1, 0) > score(D, 0) And gameClock! <= 35 * (4 - currDown) And teamYears(P1) >= 1979 Then
 
             playCall = 9
             playType = 1
@@ -13223,7 +13241,7 @@ Sub PenaltyCharge (teamIdx, ydsCharged!)
     ydsToScore = 100 - ydLine
 
     'Increase team penalty yardage
-    gameStatsTeam(teamIdx, 12) = gameStatsTeam(teamIdx, 12) + statYds
+    gameStatsTeam(teamIdx, 12) = gameStatsTeam(teamIdx, 12) + statYds!
 
     'Increase team penalties
     gameStatsTeam(teamIdx, 11) = gameStatsTeam(teamIdx, 11) + 1
@@ -14931,46 +14949,58 @@ Sub TwoMinMenu (menuChoice)
 
             scoreDiff = score(P1, 0) - score(D, 0)
 
-            'Is it possible for more than one of these to be TRUE at the same time?
-            'If not, consider setting a flag value to then be checked outside the if
-            'That would only give us one Exit Do
+            'If computer is on Defense
             If (playerMode = 1 And D = compTeam Or playerMode = 2) Then
 
+                'In 4th quarter, when DEF is down by 2 TD's, take a timeout
                 If scoreDiff > 0 And scoreDiff <= 14 And timeouts(D) > 0 And quarter = 4 Then
                     menuChoice = 3
+                End If
+                Exit Do
+
+            End If
+
+            If (playerMode = 1 And P1 = compTeam Or playerMode = 2) Then
+
+                If quarter = 2 Then
+
+                    If ydLine > 15 And scoreDiff <= 0 Then
+                        If timeouts(P1) > 0 Then
+                            menuChoice = 2
+                        Else
+                            menuChoice = 4
+                        End If
+                        Exit Do
+                    End If
+
+                    If ydLine > 40 And teamRushPct < 65 And scoreDiff >= 0 Then
+                        If timeouts(P1) > 0 Then
+                            menuChoice = 2
+                        Else
+                            menuChoice = 4
+                        End If
+                        Exit Do
+                    End If
+
                 Else
 
-                    If timeouts(P1) > 0 Then
-                        menuChoice = 2
-                    Else
-                        menuChoice = 4
+                    If scoreDiff <= 0 And scoreDiff >= -14 Then
+                        If timeouts(P1) > 0 Then
+                            menuChoice = 2
+                        Else
+                            menuChoice = 4
+                        End If
+                        Exit Do
                     End If
 
                 End If
+
             End If
 
+            'We should only get here if no other
+            'options were chosen by the above logic
             If playerMode = 2 Then
                 menuChoice = 1
-                Exit Do
-            End If
-
-            If quarter = 2 And ydLine > 15 And (playerMode = 1 And P1 = compTeam Or playerMode = 2) And scoreDiff <= 0 Then
-                If timeouts(P1) > 0 Then
-                    menuChoice = 2
-                Else
-                    menuChoice = 4
-                End If
-                Exit Do
-            End If
-
-            If quarter = 2 And ydLine > 40 And scoreDiff > 0 And teamRushPct < 65 And (playerMode = 1 And P1 = compTeam Or playerMode = 2) And timeouts(P1) > 0 Then
-                menuChoice = 2
-                Exit Do
-            End If
-
-            If quarter = 2 And ydLine > 40 And scoreDiff >= 0 And teamRushPct < 65 And (playerMode = 2 Or playerMode = 1 And P1 = compTeam) Then
-                menuChoice = 4
-                Exit Do
             End If
 
         End If
@@ -14981,7 +15011,6 @@ Sub TwoMinMenu (menuChoice)
         Loop Until menuChoice >= 1 And menuChoice <= 5
 
     Loop Until Not ((menuChoice = 2 Or menuChoice = 4 Or menuChoice = 5) And playerMode = 1 And P1 = compTeam) Or (menuChoice = 3 And playerMode = 1 And D = compTeam)
-    '(menuChoice = 1 Or menuChoice = 3 And Not (playerMode = 1 And P1 = compTeam)) Or (menuChoice <> 3 And Not (playerMode = 1 And D=compTeam))
 
     Color 0, 5 * (1 - BW)
 
@@ -15089,7 +15118,7 @@ Sub FieldGoalChance ()
                 'So success for 35 is the average; 34 yd attempt is +1%; 36 yd is -1%
                 fgSuccessChance = fgSuccessChance + (ydLine - adjFGLine(I)) + goalPostAdj - 4 + windAdj
             End If
-            
+
         End If
 
     Next I
@@ -18600,6 +18629,7 @@ Sub COMPILESTATFILES (teamIdx)
 
     End If
 
+    ' Look for records
     For I = 0 To 9
         If runBacks(teamIdx, I) > gameLRush!(teamIdx, I) Then
             gameLRush!(teamIdx, I) = runBacks(teamIdx, I)
@@ -18664,7 +18694,7 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 13
         For K = 0 To 17:
-            gamePlayerStat!(J, K) = gamePlayerStat!(J, K) + Int(gameStatsPlayer(teamIdx, J, K) + 0.5)
+            gamePlayerStat!(J, K) = gamePlayerStat!(J, K) + CInt(gameStatsPlayer(teamIdx, J, K))
         Next
     Next
 
@@ -18735,9 +18765,6 @@ Sub COMPILESTATFILES (teamIdx)
 
     For L = 0 To 12:
         gameTeamStat!(L) = gameTeamStat!(L) + gameStatsTeam(teamIdx, L)
-    Next
-
-    For L = 0 To 12:
         gameOppStat!(L) = gameOppStat!(L) + gameStatsTeam(1 - teamIdx, L)
     Next
 

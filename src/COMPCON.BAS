@@ -1,4 +1,4 @@
-'----------------------------------------
+    '----------------------------------------
 '        CompileCollege SubRoutine
 '----------------------------------------
 'This subroutine reads in existing records,
@@ -23,21 +23,7 @@ Sub CompileCollege ()
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
 
-        Open diskPaths$(1) + "RECORDS.CFB" For Input As #1
-
-        For I = 0 To 50:
-            Input #1, indRecords!(I)
-            Input #1, indRecDesc$(I, 0)
-            Input #1, indRecDesc$(I, 1)
-            Input #1, indRecDesc$(I, 2)
-        Next
-
-        For I = 0 To 50:
-            Input #1, teamRecords!(I)
-            Input #1, teamRecDesc$(I)
-        Next
-
-        Close #1
+        Call ReadSeasonRecords ("RECORDS.CFB")
 
     Else
 
@@ -70,7 +56,6 @@ Sub CompileCollege ()
 
     Erase totalTeamVal!, leaderVal!
     Erase divWins!, divLosses!, divTies!
-    Erase leagPtsFor!, leagPtsAgnst!
 
     For X = 1 To 60
         memberName$(X) = "*"
@@ -109,18 +94,6 @@ Sub CompileCollege ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #2
-
-        Input #2, confName$
-        Input #2, div1$
-        Input #2, div2$
-
-        For XW = 1 To TEAMS_PER_CONFERENCE
-            Input #2, memberName$(XW)
-        Next
-
-        Close #2
-
         Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #3
         Input #3, statType
         Close #3
@@ -137,17 +110,9 @@ Sub CompileCollege ()
 
         Else
 
-            Open diskPaths$(2) + conferenceFile$ + ".TMS" For Input As #4
+            Call ReadConferenceStats (conferenceFile$, 0)
 
-            Input #4, confName$
-            Input #4, div1$
-            Input #4, div2$
-
-            For X = 1 To TEAMS_PER_CONFERENCE
-                Input #4, memberName$(X)
-            Next X
-
-            Close #4
+            Erase leagPtsAgnst!, leagPtsFor!
 
             For XW = 1 To TEAMS_PER_CONFERENCE
 
@@ -200,9 +165,9 @@ Sub CompileCollege ()
 
                         If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                            Call ReadStatsLeaders(memberName$(XW), numberGames, leagLdrTeams$, 0)
-                            Call CalcStatTotalsConf(numberGames, leagLdrTeams$, WT$, finalUpdate$)
-                            Call CalcStatLeaders(numberGames, leagLdrTeams$, WT$, finalUpdate$)
+                            Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 0)
+                            Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
+                            Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
 
                         End If
 
@@ -747,24 +712,22 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     'CATEGORY 10 - TURNOVER MARGIN
     CA = 10
 
-    'IG = Interceptions Gained
-    'FL = Fumbles Lost
-    'IL = Interceptions Lost
     fumbGain = offTotals!(9) - offTotals!(10) + defTotals!(10)
-    IG = defTotals!(5)
-    FL = offTotals!(10) + defTotals!(9) - defTotals!(10)
-    IL = offTotals!(5)
-    TM! = (fumbGain + IG - FL - IL) / numberGames
+    fumbLost = defTotals!(9) + offTotals!(10) - defTotals!(10)
+    intGain = defTotals!(5)
+    intLost = offTotals!(5)
+    toMargin! = (fumbGain + intGain - fumbLost - intLost) / numberGames
+    'toMargin! = (fumbLost + intLost - fumbGain - intGain) / numberGames
 
-    If TM! > totalTeamVal!(CA, 20, 7) Then
+    If toMargin! > totalTeamVal!(CA, 20, 7) Then
 
         totalTeamVal!(CA, 20, 1) = fumbGain
-        totalTeamVal!(CA, 20, 2) = IG
-        totalTeamVal!(CA, 20, 3) = fumbGain + IG
-        totalTeamVal!(CA, 20, 4) = FL
-        totalTeamVal!(CA, 20, 5) = IL
-        totalTeamVal!(CA, 20, 6) = FL + IL
-        totalTeamVal!(CA, 20, 7) = TM!
+        totalTeamVal!(CA, 20, 2) = intGain
+        totalTeamVal!(CA, 20, 3) = fumbGain + intGain
+        totalTeamVal!(CA, 20, 4) = fumbLost
+        totalTeamVal!(CA, 20, 5) = intLost
+        totalTeamVal!(CA, 20, 6) = fumbLost + intLost
+        totalTeamVal!(CA, 20, 7) = toMargin!
         totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19

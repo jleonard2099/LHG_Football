@@ -463,14 +463,14 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 4: Input "2. RUSHING AVG "; A1!(I1)
                                     Locate 4, 15: Print " "
 
-                                    rushAvg(I1) = Int(A1!(I1) / .3 + .5)
+                                    rushAvg(I1) = CInt(A1!(I1) / .3)
 
                                 Case 3
                                     Locate 5, 17: Print Space$(10)
                                     Locate 5: Input "3. RECEIVING AVG "; A3!(I1)
                                     Locate 5, 17: Print " "
 
-                                    rbRecAvg(I1) = Int(A3!(I1) / 3 + .5)
+                                    rbRecAvg(I1) = CInt(A3!(I1) / 3)
 
                             End Select
 
@@ -534,7 +534,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                                 Case 2
                                     Locate 4, 17: Print Space$(10)
-                                    Locate 4: Input "2. RECEIVING AVG "; A5!(I1): wrRecAvg(I1) = Int(A5!(I1) / 3 + .5)
+                                    Locate 4: Input "2. RECEIVING AVG "; A5!(I1): wrRecAvg(I1) = CInt(A5!(I1) / 3)
                                     Locate 4, 17: Print " "
 
                             End Select
@@ -679,7 +679,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 4: Input "2. RETURN AVG "; B!(I1)
                                 Locate 4, 14: Print " "
 
-                                krRetAvg(I1) = Int(B!(I1) / 3 + .5)
+                                krRetAvg(I1) = CInt(B!(I1) / 3)
 
                         End Select
 
@@ -741,7 +741,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 4: Input "2. RETURN AVG "; B2!(I1)
                                 Locate 4, 14: Print " "
 
-                                prRetAvg(I1) = Int(B2!(I1) / 3 + .5)
+                                prRetAvg(I1) = CInt(B2!(I1) / 3)
 
                         End Select
 
@@ -803,7 +803,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 4: Input "2. PUNTING AVG "; B3!(I1)
                                 Locate 4, 15: Print " "
 
-                                puntAvg(I1) = Int(((B3!(I1) - 28) / 2) + .5)
+                                puntAvg(I1) = CInt(((B3!(I1) - 28) / 2))
 
                         End Select
 
@@ -865,7 +865,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 4: Input "2. FIELD GOAL % "; B4!(I1)
                                 Locate 4, 16: Print " "
 
-                                pkFGA(I1) = Int((B4!(I1) / 5) + .5) - 5
+                                pkFGA(I1) = CInt((B4!(I1) / 5)) - 5
 
                             Case 3
                                 Locate 5, 16: Print Space$(10)
@@ -1040,7 +1040,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 9:
 
             If rushContrib(I) <> 0 Then
-                rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
+                rushContrib(I) = CInt(S4 * rushContrib(I)) + S1
                 S1 = rushContrib(I)
             End If
 
@@ -1059,7 +1059,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 9:
 
             If rbRecepts(I) <> 0 Then
-                rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
+                rbRecepts(I) = CInt(S5 * rbRecepts(I)) + S3
                 S3 = rbRecepts(I)
             End If
 
@@ -1072,7 +1072,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 5:
 
             If recContrib(I) <> 0 Then
-                recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
+                recContrib(I) = CInt(S5 * recContrib(I)) + S3
                 S3 = recContrib(I)
             End If
 
@@ -1094,7 +1094,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 3:
 
             If passContrib(I) <> 0 Then
-                passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
+                passContrib(I) = CInt(S8 * passContrib(I)) + S7
                 S7 = passContrib(I)
             End If
 
@@ -1120,7 +1120,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 2:
 
             If krContrib(I) <> 0 Then
-                krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
+                krContrib(I) = CInt(G2 * krContrib(I)) + G1
                 G1 = krContrib(I)
             End If
 
@@ -1133,7 +1133,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 2:
 
             If prContrib(I) <> 0 Then
-                prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
+                prContrib(I) = CInt(G5 * prContrib(I)) + G4
                 G4 = prContrib(I)
             End If
 
@@ -1159,7 +1159,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 1:
 
             If pkFGContrib(I) <> 0 Then
-                pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
+                pkFGContrib(I) = CInt(G2 * pkFGContrib(I)) + G1
                 G1 = pkFGContrib(I)
             End If
 
@@ -1172,7 +1172,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         For I = 0 To 1:
 
             If pkPATContrib(I) <> 0 Then
-                pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
+                pkPATContrib(I) = CInt(G5 * pkPATContrib(I)) + G4
                 G4 = pkPATContrib(I)
             End If
 

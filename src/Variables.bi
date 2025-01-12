@@ -68,7 +68,7 @@ ReDim scheduleYN$(MAX_SCHEDULE_GAMES, 1)
 
 ' *** Game Options ***
 ' -------------------------
-Dim Shared DT$, leagLdrTeams$
+Dim Shared DT$, TM$
 
 Dim eventSettings(13)
 
@@ -160,36 +160,36 @@ Dim careerRecPlyr$(6)
 Dim careerRecVal!(6), careerTeamTotal!(50)
 
 ' For Expanded Leaders
-Dim expLdrRBName$(300), expLdrRBTeam$(300), expLdrWRName$(180), expLdrWRTeam$(180), expLdrQBTeam$(120)
-Dim expLdrKRName$(90), expLdrKRTeam$(90), expLdrPRName$(90), expLdrPRTeam$(90)
+'Dim expLdrRBName$(300), expLdrRBTeam$(300), expLdrWRName$(180), expLdrWRTeam$(180), expLdrQBTeam$(120)
+'Dim expLdrKRName$(90), expLdrKRTeam$(90), expLdrPRName$(90), expLdrPRTeam$(90)
 Dim expLdrPuntName$(30), expLdrPuntTeam$(30), expLdrKickName$(60), expLdrKickTeam$(60)
 Dim expLdrIntName$(300), expLdrIntTeam$(300), expLdrSackName$(450), expLdrSackTeam$(450)
 Dim expLdrQBName$(120)
 
 Dim expLdrLRec$(480), expLdrLKR$(90), expLdrLPass$(120), expLdrLRush$(300), expLdrLPR$(90)
-Dim expLdrTeam$(480), expLdrPlyrName$(480), expLdrTD$(480)
+'Dim expLdrTeam$(480), expLdrPlyrName$(480), expLdrTD$(480)
 
 Dim expCategories$(74)
 
 Dim expLdrRBGames!(300), expLdrWRGames!(180), expLdrQBGames!(120)
 
-Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBRat!(120, 1)
-Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
+'Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBRat!(120, 1)
+'Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
 Dim expLdrKickVal!(60, 5), expLdrIntVal!(300), expLdrSackVal!(450)
 
-Dim expLdrVal!(480)
+'Dim expLdrVal!(480)
 
 
 
 'For Expanded Standings
 Dim teamLoseStreak(40), teamWinStreak(40)
-Dim teamTotWins(40)
+Dim totTeamLosses(40), totTeamWins(40), totTeamTies(40)
 
-Dim totHomeLosses(40), totHomeWins(40)
-Dim totRoadLosses(40), totRoadWins(40)
-Dim totNeutralLosses(40), totNeutralWins(40)
+Dim totHomeLosses(40), totHomeWins(40), totHomeTies(40)
+Dim totRoadLosses(40), totRoadWins(40), totRoadTies(40)
+Dim totNeutralLosses(40), totNeutralWins(40), totNeutralTies(40)
 
-Dim totTeamLosses(40), lastLoseStreak(40), lastWinStreak(40)
+Dim lastLoseStreak(40), lastWinStreak(40)
 
 Dim expStdLeagName$(40)
 
@@ -308,6 +308,7 @@ Dim tradeYN$(1)
 '----------------------------------------
 '   Used in HD2HD routines
 '----------------------------------------
+Dim leagueName$
 Dim div1Name$, div2Name$, div3Name$, div4Name$
 Dim div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
@@ -351,7 +352,7 @@ Dim indRecCategory$(46), teamRecCategory$(43)
 '----------------------------------------
 ' Used in STAT / INPUT
 '----------------------------------------
-Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
+'Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
 
 Dim gameCount(30), scoreTotals(1)
 

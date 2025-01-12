@@ -8,7 +8,7 @@ Sub BLANKPRO ()
 
     _Title "3-in-1 Football - Erase League Stats"
 
-    Dim statFileNames$(TEAMS_PER_LEAGUE)
+	Shared memberName$()
 
     leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
@@ -24,21 +24,13 @@ Sub BLANKPRO ()
 
         If UCase$(A$) = "Y" Then
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #1
-
-            Input #1, league$, div1$, div2$, div3$
-
-            For XW = 1 To TEAMS_PER_LEAGUE
-                Input #1, statFileNames$(XW)
-            Next
-
-            Close #1
+            Call ReadConferenceStats (leagueFile$, 1)
 
             For XW = 1 To TEAMS_PER_LEAGUE
 
-                If statFileNames$(XW) <> Chr$(42) Then
-                    Print "DELETING "; statFileNames$(XW); " STATS"
-                    statFile$ = diskPaths$(1) + statFileNames$(XW)
+                If memberName$(XW) <> Chr$(42) Then
+                    Print "DELETING "; memberName$(XW); " STATS"
+                    statFile$ = diskPaths$(1) + memberName$(XW)
                     If _FileExists (statFile$) Then Kill statFile$
                     If _FileExists (statFile$ + "R") Then Kill statFile$ + "R"
                     If _FileExists (statFile$ + "S") Then Kill statFile$ + "S"

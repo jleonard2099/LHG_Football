@@ -29,21 +29,7 @@ Sub CompileNatlOrg ()
     'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
 
-        Open diskPaths$(1) + "RECORDS.CFB" For Input As #1
-
-        For I = 0 To 50:
-            Input #1, indRecords!(I)
-            Input #1, indRecDesc$(I, 0)
-            Input #1, indRecDesc$(I, 1)
-            Input #1, indRecDesc$(I, 2)
-        Next
-
-        For I = 0 To 50:
-            Input #1, teamRecords!(I)
-            Input #1, teamRecDesc$(I)
-        Next
-
-        Close #1
+        Call ReadSeasonRecords ("RECORDS.CFB")
 
     Else
 
@@ -110,15 +96,7 @@ Sub CompileNatlOrg ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #2
-
-        Input #2, X$
-
-        For I = 1 To MAX_CONFERENCES
-            Input #2, memberConf$(I)
-        Next
-
-        Close #2
+        Call ReadOrganizationFile(organizationFile$, orgName$)
 
         For currConf = 1 To MAX_CONFERENCES
 
@@ -239,9 +217,9 @@ Sub CompileNatlOrg ()
 
                                     If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                                        Call ReadStatsLeaders(memberName$(XW), numberGames, leagLdrTeams$, 0)
-                                        Call CalcStatTotalsConf(numberGames, leagLdrTeams$, WT$, finalUpdate$)
-                                        Call CalcStatLeaders(numberGames, leagLdrTeams$, WT$, finalUpdate$)
+                                        Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 0)
+                                        Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
+                                        Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
 
                                     End If
 
@@ -1429,53 +1407,5 @@ Sub PostLeadersOrg (organization$, NRT)
     Next
 
     Close #6
-
-End Sub
-
-
-'----------------------------------------
-'      ReadScheduleStats Subroutine
-'----------------------------------------
-'This subroutine reads in all data from the
-'team's schedule stats file.
-Sub ReadScheduleStats (statFile$, XW, numberGames)
-
-    Shared oppName$(), locIndicator$()
-
-    Shared powerRating(), oppScore(), teamScore()
-
-    Shared leagPtsAgnst!(), leagPtsFor!()
-
-    findFile$ = diskPaths$(1) + statFile$ + "S"
-
-    Open findFile$ For Input As #1
-
-    Input #1, numberGames
-
-    For I = 1 to MAX_SCHED_STATS:
-        Input #1, teamScore(I)
-        leagPtsFor!(XW) = leagPtsFor!(XW) + teamScore(I)
-    Next I
-
-    For I = 1 to MAX_SCHED_STATS:
-        Input #1, oppName$(I)
-    Next I
-
-    For I = 1 to MAX_SCHED_STATS:
-        Input #1, oppScore(I)
-        leagPtsAgnst!(XW) = leagPtsAgnst!(XW) + oppScore(I)
-    Next I
-
-    For I = 1 to MAX_SCHED_STATS:
-        Input #1, locIndicator$(I)
-    Next I
-
-    For I = 0 To 1
-        For I1 = 1 to MAX_SCHED_STATS
-            Input #1, powerRating(I, I1)
-        Next
-    Next
-
-    Close #1
 
 End Sub

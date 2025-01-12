@@ -99,48 +99,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared statsLFG$(), statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
     Shared statsLPR$()
 
-    Open diskPaths$(1) + statFile$ + "S" For Input As #1
-
-    Input #1, totalGames%
-
-    'Opponent Score
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, teamScore(I)
-    Next I
-
-    'Opponent
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, oppName$(I)
-    Next I
-
-    'Team Score
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, oppScore(I)
-    Next I
-
-    'Home / Away
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, locIndicator$(I)
-    Next I
-
-    '???
-    For I = 0 To 1
-        For I1 = 1 To MAX_SCHED_STATS
-            Input #1, powerRating(I, I1)
-        Next
-    Next
-
-    'Attendance
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, gameAttendance&(I)
-    Next I
-
-    'Stadium
-    For I = 1 To MAX_SCHED_STATS:
-        Input #1, gameSite$(I)
-    Next I
-
-    Close #1
+    Call ReadScheduleStats (statFile$, I, totalGames%)
 
     'STRENGTH OF SCHEDULE
     SS = 0
@@ -155,14 +114,19 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     teamPower = 0
 
     For I = 1 To totalGames%
+
         pwrRating = teamScore(I) - oppScore(I) + powerRating(1, I)
+
         If Left$(locIndicator$(I), 1) = "H" Then
             pwrRating = pwrRating - 3
         End If
+
         If Left$(locIndicator$(I), 1) = "A" Then
             pwrRating = pwrRating + 3
         End If
+
         teamPower = teamPower + pwrRating
+
     Next
 
     GL = 0
@@ -298,8 +262,6 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
             playerStats!(J, K) = statsPlayers!(J, K)
         Next K
     Next J
-
-    test = playerStats
 
     For M = 0 To 12:
         teamStats!(0, M) = statsTeam!(M)
@@ -526,7 +488,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print teamName$;
     Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsTeam!(32); statsTeam!(33); statsTeam!(34); statsTeam!(35); statsTeam!(32) + statsTeam!(33) + statsTeam!(34) + statsTeam!(35) + statsTeam!(36)
     Print "OPPONENTS";
-    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsOpp!(32); statsOpp!(33); statsOpp!(34); statsOpp!(35); statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsTeam!(36)
+    Locate , 30: Print Using " ###  ###  ###  ###   ###"; statsOpp!(32); statsOpp!(33); statsOpp!(34); statsOpp!(35); statsOpp!(32) + statsOpp!(33) + statsOpp!(34) + statsOpp!(35) + statsOpp!(36)
     Print
 
     Color 14
@@ -1060,7 +1022,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Locate 3, 1
     Color 12
-    Print "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
+    Print "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD  INT  INT%  RATING"
 
     For I1 = 0 To 3
 
@@ -1088,7 +1050,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             End If
 
             'TD / INT / INT %
-            Print Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
+            Print Using " ###.# ### ### ###.#   "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
 
             'QB Rating
             awayTies! = QBRating!(I1, statFormat)

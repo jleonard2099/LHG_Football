@@ -973,7 +973,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 9:
         If rushContrib(I) <> 0 Then 
-            rushContrib(I) = Int(S4 * rushContrib(I) + .5) + S1
+            rushContrib(I) = CInt(S4 * rushContrib(I)) + S1
             S1 = rushContrib(I)
         End If
         If rushContrib(I) > 100 Then 
@@ -989,7 +989,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 9:
         If rbRecepts(I) <> 0 Then 
-            rbRecepts(I) = Int(S5 * rbRecepts(I) + .5) + S3
+            rbRecepts(I) = CInt(S5 * rbRecepts(I)) + S3
             S3 = rbRecepts(I)
         End If
         If rbRecepts(I) > 100 Then 
@@ -999,7 +999,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 5:
         If recContrib(I) <> 0 Then 
-            recContrib(I) = Int(S5 * recContrib(I) + .5) + S3
+            recContrib(I) = CInt(S5 * recContrib(I)) + S3
             S3 = recContrib(I)
         End If
         If recContrib(I) > 100 Then 
@@ -1018,7 +1018,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 3:
         If passContrib(I) <> 0 Then 
-            passContrib(I) = Int(S8 * passContrib(I) + .5) + S7
+            passContrib(I) = CInt(S8 * passContrib(I)) + S7
             S7 = passContrib(I)
         End If
         If passContrib(I) > 100 Then 
@@ -1041,7 +1041,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 2:
         If krContrib(I) <> 0 Then 
-            krContrib(I) = Int(G2 * krContrib(I) + .5) + G1
+            krContrib(I) = CInt(G2 * krContrib(I)) + G1
             G1 = krContrib(I)
         End If
         If krContrib(I) > 100 Then 
@@ -1051,7 +1051,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 2:
         If prContrib(I) <> 0 Then 
-            prContrib(I) = Int(G5 * prContrib(I) + .5) + G4
+            prContrib(I) = CInt(G5 * prContrib(I)) + G4
             G4 = prContrib(I)
         End If
         If prContrib(I) > 100 Then 
@@ -1074,7 +1074,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 1:
         If pkFGContrib(I) <> 0 Then 
-            pkFGContrib(I) = Int(G2 * pkFGContrib(I) + .5) + G1
+            pkFGContrib(I) = CInt(G2 * pkFGContrib(I)) + G1
             G1 = pkFGContrib(I)
         End If
         If pkFGContrib(I) > 100 Then 
@@ -1084,7 +1084,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
 
     For I = 0 To 1:
         If pkPATContrib(I) <> 0 Then 
-            pkPATContrib(I) = Int(G5 * pkPATContrib(I) + .5) + G4
+            pkPATContrib(I) = CInt(G5 * pkPATContrib(I)) + G4
             G4 = pkPATContrib(I)
         End If
         If pkPATContrib(I) > 100 Then 
@@ -1141,7 +1141,7 @@ Sub DoTheDraft (draftNew, doneDrafting, teamYear$, teamName$, teamIdx)
         End If            
     Next
 
-    X = Int((ydsCompAdj / .3) + .5)
+    X = CInt(ydsCompAdj / .3)
     If X < 0 Then X = 100 + X
     ydsCompAdj = X
 
@@ -1203,9 +1203,7 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     teamYear$ = RTrim$(yearNumber$)
 
     Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
-
     fileLength& = LOF(1)
-
     Close #1
 
     If draftNew = 1 Then teamIdx = (fileLength& / TEAM_SIZE_BYTES) + 1
@@ -1251,8 +1249,12 @@ Sub SaveTeamDraft (draftNew, yearNumber$, teamName$, teamIdx)
     LSet Q$(1) = teamName$
     LSet Q$(2) = teamNick$
 
-    For I = 0 To 7: LSet Q$(I + 3) = MKI$(leagueRatings(I)): Next
-    For I = 0 To 4: LSet Q$(I + 11) = MKI$(teamRatings(I)): Next I
+    For I = 0 To 7: 
+        LSet Q$(I + 3) = MKI$(leagueRatings(I))
+    Next
+    For I = 0 To 4: 
+        LSet Q$(I + 11) = MKI$(teamRatings(I))
+    Next I
 
     For I = 0 To 9
         LSet Q$(I * 5 + 16) = rbName$(I)

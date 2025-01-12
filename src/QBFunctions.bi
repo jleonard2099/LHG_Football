@@ -1,0 +1,5 @@
+Declare Function GetQBName$ (targetGame%, teamIndicator)
+Declare Function GetQBRushPct% (targetQB$)
+Declare Function GetQBRushPctGame% (targetQB$, currTeam)
+Declare Function GetQBMobility% (qbRushContrib)
+Declare Function QBRating! (qbIdx, teamType)

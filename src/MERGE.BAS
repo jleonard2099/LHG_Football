@@ -383,6 +383,8 @@ Sub MergeStats ()
 
                         Close #3
 
+                        Call ReadScheduleStats(statFile$, I, nbrGamesCurr)
+
                         Open pathCurrentStats$ + statFile$ + "S" For Input As #4
 
                         Input #4, nbrGamesCurr

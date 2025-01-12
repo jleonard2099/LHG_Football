@@ -10,6 +10,8 @@ Sub CompileLeague ()
 
     _Title "3-in-1 Football - Update League Stats"
 
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
     Shared totalTeamVal!(), leaderVal!(), statsGeneral!()
     Shared divWins!(), divLosses!(), divTies!()
 
@@ -22,21 +24,7 @@ Sub CompileLeague ()
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.PFB") Then
 
-        Open diskPaths$(1) + "RECORDS.PFB" For Input As #1
-
-        For I = 0 To 50:
-            Input #1, indRecords!(I)
-            Input #1, indRecDesc$(I, 0)
-            Input #1, indRecDesc$(I, 1)
-            Input #1, indRecDesc$(I, 2)
-        Next
-
-        For I = 0 To 50:
-            Input #1, teamRecords!(I)
-            Input #1, teamRecDesc$(I)
-        Next
-
-        Close #1
+        Call ReadSeasonRecords("RECORDS.PFB")
 
     Else
 
@@ -112,22 +100,15 @@ Sub CompileLeague ()
 
         Else
 
-            Open diskPaths$(2) + leagueFile$ + ".TMS" For Input As #2
+            Call ReadConferenceStats(leagueFile$, 1)
 
-            Input #2, confName$, div1$, div2$, div3$, div4$
-
-            For XW = 1 To TEAMS_PER_LEAGUE
-                Input #2, memberName$(XW)
-            Next XW
-
-            Close #2
+            Erase leagPtsAgnst!, leagPtsFor!
 
             For XW = 1 To TEAMS_PER_LEAGUE
 
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
 
-                    testie$ = memberName$(XW)
                     haveStats = FindStatsPro%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
@@ -166,9 +147,9 @@ Sub CompileLeague ()
 
                         If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                            Call ReadStatsLeaders(memberName$(XW), numberGames, leagLdrTeams$, 1)
-                            Call CalcStatTotalsPro(numberGames, leagLdrTeams$, WT$, finalUpdate$)
-                            Call CalcStatLeaders(numberGames, leagLdrTeams$, WT$, finalUpdate$)
+                            Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 1)
+                            Call CalcStatTotalsPro(numberGames, TM$, WT$, finalUpdate$)
+                            Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
 
                         End If
 
@@ -215,9 +196,15 @@ Function FindStatsPro% (XW, statFile$, numberGames)
         fullTies = 0
 
         For I = 1 To numberGames
-            If teamScore(I) > oppScore(I) Then fullWins = fullWins + 1
-            If teamScore(I) < oppScore(I) Then fullLosses = fullLosses + 1
-            If teamScore(I) = oppScore(I) Then fullTies = fullTies + 1
+            If teamScore(I) > oppScore(I) Then
+                fullWins = fullWins + 1
+            End If
+            If teamScore(I) < oppScore(I) Then
+                fullLosses = fullLosses + 1
+            End If
+            If teamScore(I) = oppScore(I) Then
+                fullTies = fullTies + 1
+            End If
         Next
 
         Cls
@@ -990,7 +977,7 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
     Next X
 
     '---------------
-    ' All Purpose Yds
+    ' All-Purpose Yds
     '---------------
     For X = 1 To 16
 
@@ -2227,24 +2214,22 @@ Sub CalcStatTotalsPro (numberGames, teamName$, WT$, finalUpdate$)
     'CATEGORY 10 - TURNOVER MARGIN
     CA = 10
 
-    'IG = Interceptions Gained
-    'FL = Fumbles Lost
-    'IL = Interceptions Lost
     fumbGain = offTotals!(9) - offTotals!(10) + defTotals!(10)
-    IG = defTotals!(5)
-    FL = offTotals!(10) + defTotals!(9) - defTotals!(10)
-    IL = offTotals!(5)
-    TM! = (fumbGain + IG - FL - IL) / numberGames
+    fumbLost = defTotals!(9) + offTotals!(10) - defTotals!(10)
+    intGain = defTotals!(5)
+    intLost = offTotals!(5)
+    toMargin! = (fumbGain + intGain - fumbLost - intLost) / numberGames
+    'toMargin! = (fumbLost + intLost - fumbGain - intGain) / numberGames
 
-    If TM > totalTeamVal!(CA, 20, 7) Then
+    If toMargin! > totalTeamVal!(CA, 20, 7) Then
 
         totalTeamVal!(CA, 20, 1) = fumbGain
-        totalTeamVal!(CA, 20, 2) = IG
-        totalTeamVal!(CA, 20, 3) = fumbGain + IG
-        totalTeamVal!(CA, 20, 4) = FL
-        totalTeamVal!(CA, 20, 5) = IL
-        totalTeamVal!(CA, 20, 6) = FL + IL
-        totalTeamVal!(CA, 20, 7) = TM!
+        totalTeamVal!(CA, 20, 2) = intGain
+        totalTeamVal!(CA, 20, 3) = fumbGain + intGain
+        totalTeamVal!(CA, 20, 4) = fumbLost
+        totalTeamVal!(CA, 20, 5) = intLost
+        totalTeamVal!(CA, 20, 6) = fumbLost + intLost
+        totalTeamVal!(CA, 20, 7) = toMargin!
         totalTeamName$(CA, 20) = WT$
 
         For Z = 1 To 19
@@ -2338,7 +2323,7 @@ Sub SortStandingsLeague
     Shared memberName$()
 
     'Sort leaders in league
-    For Z = 0 To 2
+    For Z = 0 To 3
 
         AA = (Z * 10) + 1
         ZZ = (Z * 10) + 10
@@ -2450,4 +2435,5 @@ Sub PostRecordsPro
     Close #2
 
 End Sub
+
 
