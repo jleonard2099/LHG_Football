@@ -74,10 +74,8 @@ This phase will start to identify these as new games, making improvements to the
 **Completed.**
 
 ### Phase 3 ###
-This final phase will involve the following:
-- Updating the games to support modern rules
-- Including support files such as team files, leagues, schedules, etc.
-- Address gameplay bugs as reported by longtime users and playtesters
+This phase will see the games take on updated rules and correct accuracy. All known bugs will be squashed and user files will be prepared to distribute with the game.
+**Completed.**
 
 ### The Future ###
 - Updating code to work with databases instead of flat files.
