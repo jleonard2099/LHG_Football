@@ -231,7 +231,6 @@ End Function
 Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
 
     Shared puntNum
-    Shared puntName$
 
     Shared statsGI(), statsGS()
 
@@ -258,142 +257,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
     Shared statsLPass$(), statsLRush$()
     Shared leaderAllPurpName$()
 
-    Erase compKR$, compKicker$, compPR$, compQB$, compRB$, compWR$
-    Erase intName$
-
-    Erase statsFGA!, statsFGM!
-    Erase statsGeneral!, offTotals!, defTotals!
-    Erase statsGI, statsGS
-
-    Erase statsLRec!, statsLFG!, statsLInt!, statsLKR!, statsLPass!, statsLRush!
-    Erase statsLRec$, statsLFG$, statsLInt$, statsLKR$, statsLPass$, statsLRush$
-
-    Open diskPaths$(1) + statFile$ For Input As #1
-
-    Input #1, teamName$
-
-    'RB Names
-    For I = 1 To 10:
-        Input #1, compRB$(I)
-    Next
-
-    'WR Names
-    For I = 1 To 6:
-        Input #1, compWR$(I)
-    Next
-
-    'QB Names
-    For I = 1 To 4:
-        Input #1, compQB$(I)
-    Next
-
-    'KR Names
-    For I = 1 To 3:
-        Input #1, compKR$(I)
-    Next
-
-    'PR Names
-    For I = 1 To 3:
-        Input #1, compPR$(I)
-    Next I
-
-    'Punter
-    Input #1, puntName$
-
-    'Place Kickers
-    For I = 1 To 2:
-        Input #1, compKicker$(I)
-    Next
-
-    'Rushers / Receivers
-    For J = 1 To 14
-        For K = 1 To 18
-            Input #1, statsGeneral!(J, K)
-        Next K
-    Next J
-
-    'Offensive Team stats
-    For L = 0 To 38:
-        Input #1, offTotals!(L)
-    Next L
-
-    'Defensive Team stats
-    For L = 0 To 38:
-        Input #1, defTotals!(L)
-    Next L
-
-    For J = 0 To 9:
-        'Interception Names
-        Input #1, intName$(J)
-        For J1 = 0 To 2
-            Input #1, statsGI(J, J1)
-        Next
-    Next
-
-    For J = 0 To 14:
-        'Sack Names
-        Input #1, sackName$(J)
-        For J1 = 0 To 1:
-            Input #1, statsGS(J, J1)
-        Next
-    Next
-
-    'Longest rush?
-    For I = 0 To 9:
-        Input #1, statsLRush!(I)
-        Input #1, statsLRush$(I, 0)
-        Input #1, statsLRush$(I, 1)
-    Next
-
-    'Longest catch?
-    For I = 0 To 15:
-        Input #1, statsLRec!(I)
-        Input #1, statsLRec$(I, 0)
-        Input #1, statsLRec$(I, 1)
-    Next
-
-    'Longest punt?
-    For I = 0 To 3:
-        Input #1, statsLPass!(I)
-        Input #1, statsLPass$(I, 0)
-        Input #1, statsLPass$(I, 1)
-    Next
-
-    'Longest kick return
-    For I = 0 To 2:
-        Input #1, statsLKR!(I)
-        Input #1, statsLKR$(I, 0)
-        Input #1, statsLKR$(I, 1)
-    Next
-
-    'Longest punt return
-    For I = 0 To 2:
-        Input #1, statsLPR!(I)
-        Input #1, statsLPR$(I, 0)
-        Input #1, statsLPR$(I, 1)
-    Next
-
-    'Longest field goal
-    For I = 0 To 1:
-        Input #1, statsLFG!(I)
-        Input #1, statsLFG$(I)
-
-        For I1 = 0 To 4
-            Input #1, statsFGM!(I, I1)
-            Input #1, statsFGA!(I, I1)
-        Next
-    Next
-
-    'Longest interception
-    For I = 0 To 9:
-        Input #1, statsLInt!(I)
-        Input #1, statsLInt$(I, 0)
-        Input #1, statsLInt$(I, 1)
-    Next
-
-    Close #1
-
-    '--- Done reading in all data ---
+    Call ReadTeamStatsComp (teamName$, statFile$)
 
     For I = 1 To 10:
         For J = 1 To 6:
@@ -566,7 +430,7 @@ End Sub
 Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 
     Shared fumbGain, puntNum
-    Shared puntName$
+    Shared punterName$()
 
     Shared compKR$(), compKicker$(), compPR$(), compQB$()
     Shared compRB$(), compWR$(), leaderName$(), leaderTeam$()
@@ -1507,28 +1371,28 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
     'Color 14
     Print "CHECKING STATS OF ";
     Color 15
-    Print puntName$
+    Print punterName$(0)
 
     If compPunts!(8) > indRecords!(32) Then
         indRecords!(32) = compPunts!(8)
-        indRecDesc$(32, 0) = puntName$
+        indRecDesc$(32, 0) = punterName$(0)
         indRecDesc$(32, 1) = teamName$
     End If
 
     If compPunts!(9) > indRecords!(33) Then
         indRecords!(33) = compPunts!(9)
-        indRecDesc$(33, 0) = puntName$
+        indRecDesc$(33, 0) = punterName$(0)
         indRecDesc$(33, 1) = teamName$
     End If
 
     If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then
         indRecords!(34) = puntNum
-        indRecDesc$(34, 0) = puntName$
+        indRecDesc$(34, 0) = punterName$(0)
         indRecDesc$(34, 1) = teamName$
     End If
 
     For Z = 181 To 190
-        If leaderName$(Z) = puntName$ And leaderTeam$(Z) = WT$ Then
+        If leaderName$(Z) = punterName$(0) And leaderTeam$(Z) = WT$ Then
             leaderVal!(Z, 1) = puntNum
             leaderVal!(Z, 2) = compPunts!(8)
             GoTo 3382
@@ -1538,7 +1402,7 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
     If puntNum > leaderVal!(190, 1) Then
 
         leaderVal!(190, 1) = puntNum
-        leaderName$(190) = puntName$
+        leaderName$(190) = punterName$(0)
         leaderTeam$(190) = WT$
         leaderVal!(190, 2) = compPunts!(8)
 

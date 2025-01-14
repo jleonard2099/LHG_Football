@@ -83,7 +83,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
 
     Shared gameAttendance&()
 
-    Shared playerStats!(), teamStats!()
+    Shared allPlayerStats!(), allTeamStats!()
     Shared scoreTotals()
 
     Shared statsFGA!(), statsFGM!()
@@ -146,129 +146,20 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     scoreTotals(0) = 0
     scoreTotals(1) = 0
 
-    'Load player stats
-    Open diskPaths$(1) + statFile$ For Input As #2
-
-    'We are passed teamName$ as a variable from the disk routine
-    'However the format of the files for football is such that
-    'it's also contained here.
-    'To be consistent with other games, it needs evaluated
-    'if this belongs here or somewhere else.
-    Input #2, teamName$
-
-    For I = 0 To 9:
-        Input #2, rbName$(I)
-    Next I
-
-    For I = 0 To 5:
-        Input #2, wrName$(I)
-    Next I
-
-    For I = 0 To 3:
-        Input #2, qbName$(I)
-    Next I
-
-    For I = 0 To 2:
-        Input #2, krName$(I)
-    Next I
-
-    For I = 0 To 2:
-        Input #2, prName$(I)
-    Next I
-
-    Input #2, punterName$(0)
-
-    For I = 0 To 1:
-        Input #2, pkName$(I)
-    Next I
+    Call ReadTeamStats (teamName$, statFile$)
 
     For J = 0 To 13
         For K = 0 To 17:
-            Input #2, statsPlayers!(J, K)
-        Next K
-    Next J
-
-    For L = 0 To 38:
-        Input #2, statsTeam!(L)
-    Next L
-
-    For L = 0 To 38:
-        Input #2, statsOpp!(L)
-    Next L
-
-    For J = 0 To 9:
-        Input #2, intName$(J)
-        For J1 = 0 To 2:
-            Input #2, statsGI(J, J1)
-        Next
-    Next
-
-    For J = 0 To 14:
-        Input #2, sackName$(J)
-        For J1 = 0 To 1:
-            Input #2, statsGS(J, J1)
-        Next
-    Next
-
-    For I = 0 To 9:
-        Input #2, statsLRush!(I)
-        Input #2, statsLRush$(I, 0)
-        Input #2, statsLRush$(I, 1)
-    Next
-
-    For I = 0 To 15:
-        Input #2, statsLRec!(I)
-        Input #2, statsLRec$(I, 0)
-        Input #2, statsLRec$(I, 1)
-    Next
-
-    For I = 0 To 3:
-        Input #2, statsLPass!(I)
-        Input #2, statsLPass$(I, 0)
-        Input #2, statsLPass$(I, 1)
-    Next
-
-    For I = 0 To 2:
-        Input #2, statsLKR!(I)
-        Input #2, statsLKR$(I, 0)
-        Input #2, statsLKR$(I, 1)
-    Next
-
-    For I = 0 To 2:
-        Input #2, statsLPR!(I)
-        Input #2, statsLPR$(I, 0)
-        Input #2, statsLPR$(I, 1)
-    Next
-
-    For I = 0 To 1:
-        Input #2, statsLFG!(I)
-        Input #2, statsLFG$(I)
-        For I1 = 0 To 4:
-            Input #2, statsFGM!(I, I1)
-            Input #2, statsFGA!(I, I1)
-        Next
-    Next
-
-    For I = 0 To 9:
-        Input #2, statsLInt!(I)
-        Input #2, statsLInt$(I, 0)
-        Input #2, statsLInt$(I, 1)
-    Next
-
-    Close #2
-
-    For J = 0 To 13
-        For K = 0 To 17:
-            playerStats!(J, K) = statsPlayers!(J, K)
+            allPlayerStats!(J, K) = statsPlayers!(J, K)
         Next K
     Next J
 
     For M = 0 To 12:
-        teamStats!(0, M) = statsTeam!(M)
+        allTeamStats!(0, M) = statsTeam!(M)
     Next M
 
     For M = 0 To 12:
-        teamStats!(1, M) = statsOpp!(M)
+        allTeamStats!(1, M) = statsOpp!(M)
     Next M
 
     sackStats!(0, 0) = statsTeam!(13)
@@ -351,7 +242,7 @@ End Sub
 Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Shared statsFGA!(), statsFGM!()
-    Shared teamStats!(), playerStats!()
+    Shared allTeamStats!(), allPlayerStats!()
     Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
     Shared statsLPR!(), sackStats!(), statsTeam!(), statsOpp!(), statsPlayers!()
 
@@ -552,185 +443,185 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 12: Print "TEAM STATISTICS CATEGORY"; Tab(41); teamName$; Tab(61); "OPPONENT TOTALS"
 
     Color 7
-    Print "FIRST DOWNS"; Tab(45); Using "####"; teamStats!(0, 0);: Print Tab(65); Using "####"; teamStats!(1, 0)
+    Print "FIRST DOWNS"; Tab(45); Using "####"; allTeamStats!(0, 0);: Print Tab(65); Using "####"; allTeamStats!(1, 0)
     Print "RUSHING ATTEMPTS"; Tab(45);
     'Team
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(0, 1);
+        Print Using "####"; allTeamStats!(0, 1);
     Else
-        Print Using "####"; teamStats!(0, 1) - sackStats!(0, 0);
+        Print Using "####"; allTeamStats!(0, 1) - sackStats!(0, 0);
     End If
     Print Tab(65);
     'Opponent
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(1, 1)
+        Print Using "####"; allTeamStats!(1, 1)
     Else
-        Print Using "####"; teamStats!(1, 1) - sackStats!(1, 0)
+        Print Using "####"; allTeamStats!(1, 1) - sackStats!(1, 0)
     End If
 
     Color 15
     Print "NET RUSHING YARDAGE"; Tab(45);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(0, 2);
+        Print Using "####"; allTeamStats!(0, 2);
     Else
-        Print Using "####"; teamStats!(0, 2) + sackStats!(0, 1);
+        Print Using "####"; allTeamStats!(0, 2) + sackStats!(0, 1);
     End If
     Print Tab(65);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(1, 2)
+        Print Using "####"; allTeamStats!(1, 2)
     Else
-        Print Using "####"; teamStats!(1, 2) + sackStats!(1, 1)
+        Print Using "####"; allTeamStats!(1, 2) + sackStats!(1, 1)
     End If
 
     Color 7
     Print "YARDS PER RUSH"; Tab(45);
-    If statFormat = 0 And teamStats!(0, 1) <> 0 Then
-        Print Using "##.#"; teamStats!(0, 2) / teamStats!(0, 1);
+    If statFormat = 0 And allTeamStats!(0, 1) <> 0 Then
+        Print Using "##.#"; allTeamStats!(0, 2) / allTeamStats!(0, 1);
     End If
-    If statFormat <> 0 And teamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
-        Print Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0));
+    If statFormat <> 0 And allTeamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
+        Print Using "##.#"; (allTeamStats!(0, 2) + sackStats!(0, 1)) / (allTeamStats!(0, 1) - sackStats!(0, 0));
     End If
     Print Tab(65);
-    If statFormat = 0 And teamStats!(1, 1) <> 0 Then
-        Print Using "##.#"; teamStats!(1, 2) / teamStats!(1, 1)
+    If statFormat = 0 And allTeamStats!(1, 1) <> 0 Then
+        Print Using "##.#"; allTeamStats!(1, 2) / allTeamStats!(1, 1)
     End If
-    If statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
-        Print Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0))
+    If statFormat <> 0 And allTeamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
+        Print Using "##.#"; (allTeamStats!(1, 2) + sackStats!(1, 1)) / (allTeamStats!(1, 1) - sackStats!(1, 0))
     End If
-    If statFormat = 0 And teamStats!(1, 1) = 0 Or statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) = 0 Then
+    If statFormat = 0 And allTeamStats!(1, 1) = 0 Or statFormat <> 0 And allTeamStats!(1, 1) - sackStats!(1, 0) = 0 Then
         Print
     End If
 
     Print "RUSHING YARDS PER GAME"; Tab(44);
     If statFormat = 0 Then
-        Print Using "###.#"; teamStats!(0, 2) / totalGames%;
+        Print Using "###.#"; allTeamStats!(0, 2) / totalGames%;
     Else
-        Print Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
+        Print Using "###.#"; (allTeamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
     End If
     Print Tab(64);
     If statFormat = 0 Then
-        Print Using "###.#"; teamStats!(1, 2) / totalGames%
+        Print Using "###.#"; allTeamStats!(1, 2) / totalGames%
     Else
-        Print Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
+        Print Using "###.#"; (allTeamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
     End If
 
     Print
-    Print "PASSES ATTEMPTED"; Tab(45); Using "####"; teamStats!(0, 3);
-    Print Tab(65); Using "####"; teamStats!(1, 3)
+    Print "PASSES ATTEMPTED"; Tab(45); Using "####"; allTeamStats!(0, 3);
+    Print Tab(65); Using "####"; allTeamStats!(1, 3)
 
-    Print "PASSES COMPLETED"; Tab(45); Using "####"; teamStats!(0, 4);
-    Print Tab(65); Using "####"; teamStats!(1, 4)
+    Print "PASSES COMPLETED"; Tab(45); Using "####"; allTeamStats!(0, 4);
+    Print Tab(65); Using "####"; allTeamStats!(1, 4)
 
-    Print "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; teamStats!(0, 5);
-    Print Tab(65); Using "####"; teamStats!(1, 5)
+    Print "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; allTeamStats!(0, 5);
+    Print Tab(65); Using "####"; allTeamStats!(1, 5)
 
     Print "PASS COMPLETION PERCENTAGE"; Tab(44);
-    If teamStats!(0, 3) <> 0 Then
-        Print Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    If allTeamStats!(0, 3) <> 0 Then
+        Print Using "###.#"; allTeamStats!(0, 4) / allTeamStats!(0, 3) * 100;
     End If
-    If teamStats!(1, 3) <> 0 Then
-        Print Tab(64); Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100
+    If allTeamStats!(1, 3) <> 0 Then
+        Print Tab(64); Using "###.#"; allTeamStats!(1, 4) / allTeamStats!(1, 3) * 100
     End If
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print
     End If
 
     Color 15
-    Print "NET YARDS PASSING"; Tab(45); Using "####"; teamStats!(0, 6);
-    Print Tab(65); Using "####"; teamStats!(1, 6)
+    Print "NET YARDS PASSING"; Tab(45); Using "####"; allTeamStats!(0, 6);
+    Print Tab(65); Using "####"; allTeamStats!(1, 6)
 
     Color 7
     Print "YARDS PER PASS ATTEMPT"; Tab(45);
-    If teamStats!(0, 3) <> 0 Then
-        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    If allTeamStats!(0, 3) <> 0 Then
+        Print Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 3);
     End If
-    If teamStats!(1, 3) <> 0 Then
-        Print Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3)
+    If allTeamStats!(1, 3) <> 0 Then
+        Print Tab(65); Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 3)
     End If
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print
     End If
 
     Print "YARDS PER PASS COMPLETION"; Tab(45);
-    If teamStats!(0, 4) <> 0 Then
-        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    If allTeamStats!(0, 4) <> 0 Then
+        Print Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
-    If teamStats!(1, 4) <> 0 Then
-        Print Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4)
+    If allTeamStats!(1, 4) <> 0 Then
+        Print Tab(65); Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4)
     End If
-    If teamStats!(1, 4) = 0 Then
+    If allTeamStats!(1, 4) = 0 Then
         Print
     End If
 
-    Print "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; teamStats!(0, 6) / totalGames%;
-    Print Tab(64); Using "###.#"; teamStats!(1, 6) / totalGames%
+    Print "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; allTeamStats!(0, 6) / totalGames%;
+    Print Tab(64); Using "###.#"; allTeamStats!(1, 6) / totalGames%
     Print
 
     Print "TOTAL PLAYS"; Tab(45);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(0, 1) + teamStats!(0, 3);
+        Print Using "####"; allTeamStats!(0, 1) + allTeamStats!(0, 3);
     Else
-        Print Using "####"; teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3);
+        Print Using "####"; allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3);
     End If
     Print Tab(65);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(1, 1) + teamStats!(1, 3)
+        Print Using "####"; allTeamStats!(1, 1) + allTeamStats!(1, 3)
     Else
-        Print Using "####"; teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)
+        Print Using "####"; allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3)
     End If
 
     Print "TOTAL PLAYS PER GAME"; Tab(44);
     If statFormat = 0 Then
-        Print Using "###.#"; (teamStats!(0, 1) + teamStats!(0, 3)) / totalGames%;
+        Print Using "###.#"; (allTeamStats!(0, 1) + allTeamStats!(0, 3)) / totalGames%;
     Else
-        Print Using "###.#"; (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3)) / totalGames%;
+        Print Using "###.#"; (allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3)) / totalGames%;
     End If
     Print Tab(64);
     If statFormat = 0 Then
-        Print Using "###.#"; (teamStats!(1, 1) + teamStats!(1, 3)) / totalGames%
+        Print Using "###.#"; (allTeamStats!(1, 1) + allTeamStats!(1, 3)) / totalGames%
     Else
-        Print Using "###.#"; (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)) / totalGames%
+        Print Using "###.#"; (allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3)) / totalGames%
     End If
 
     Color 15
     Print "TOTAL NET YARDS"; Tab(45);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(0, 2) + teamStats!(0, 6);
+        Print Using "####"; allTeamStats!(0, 2) + allTeamStats!(0, 6);
     Else
-        Print Using "####"; teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6);
+        Print Using "####"; allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6);
     End If
     Print Tab(65);
     If statFormat = 0 Then
-        Print Using "####"; teamStats!(1, 2) + teamStats!(1, 6)
+        Print Using "####"; allTeamStats!(1, 2) + allTeamStats!(1, 6)
     Else
-        Print Using "####"; teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)
+        Print Using "####"; allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)
     End If
 
     Color 7
     Print "YARDS GAINED PER PLAY"; Tab(45);
     If statFormat = 0 Then
-        Print Using "##.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / (teamStats!(0, 1) + teamStats!(0, 3));
+        Print Using "##.#"; (allTeamStats!(0, 2) + allTeamStats!(0, 6)) / (allTeamStats!(0, 1) + allTeamStats!(0, 3));
     Else
-        Print Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3));
+        Print Using "##.#"; (allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6)) / (allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3));
     End If
     Print Tab(64);
     If statFormat = 0 Then
-        Print Using "##.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / (teamStats!(1, 1) + teamStats!(1, 3))
+        Print Using "##.#"; (allTeamStats!(1, 2) + allTeamStats!(1, 6)) / (allTeamStats!(1, 1) + allTeamStats!(1, 3))
     Else
-        Print Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3))
+        Print Using "##.#"; (allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)) / (allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3))
     End If
 
     Print "YARDS GAINED PER GAME"; Tab(44);
     If statFormat = 0 Then
-        Print Using "###.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / totalGames%;
+        Print Using "###.#"; (allTeamStats!(0, 2) + allTeamStats!(0, 6)) / totalGames%;
     Else
-        Print Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / totalGames%;
+        Print Using "###.#"; (allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6)) / totalGames%;
     End If
     Print Tab(64);
     If statFormat = 0 Then
-        Print Using "###.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / totalGames%
+        Print Using "###.#"; (allTeamStats!(1, 2) + allTeamStats!(1, 6)) / totalGames%
     Else
-        Print Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / totalGames%
+        Print Using "###.#"; (allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)) / totalGames%
     End If
 
     Locate 24, 1
@@ -804,45 +695,45 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
 
     Print "PUNTS / TOTAL PUNT YARDAGE"; Tab(41);
-    Print Using "###"; teamStats!(0, 7);: Print "/";: Print Using "####"; teamStats!(0, 8);
-    Print Tab(61); Using "###"; teamStats!(1, 7);: Print "/";: Print Using "####"; teamStats!(1, 8)
+    Print Using "###"; allTeamStats!(0, 7);: Print "/";: Print Using "####"; allTeamStats!(0, 8);
+    Print Tab(61); Using "###"; allTeamStats!(1, 7);: Print "/";: Print Using "####"; allTeamStats!(1, 8)
 
     Print "AVERAGE YARDS PER PUNT"; Tab(45);
-    If teamStats!(0, 7) <> 0 Then
-        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    If allTeamStats!(0, 7) <> 0 Then
+        Print Using "##.#"; allTeamStats!(0, 8) / allTeamStats!(0, 7);
     End If
-    If teamStats!(1, 7) <> 0 Then
-        Print Tab(65); Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7)
+    If allTeamStats!(1, 7) <> 0 Then
+        Print Tab(65); Using "##.#"; allTeamStats!(1, 8) / allTeamStats!(1, 7)
     End If
-    If teamStats!(1, 7) = 0 Then
+    If allTeamStats!(1, 7) = 0 Then
         Print
     End If
 
-    Print "AVERAGE NUMBER OF PUNTS PER GAME"; Tab(45);: Print Using "##.#"; teamStats!(0, 7) / totalGames%;: Print Tab(65); Using "##.#"; teamStats!(1, 7) / totalGames%
+    Print "AVERAGE NUMBER OF PUNTS PER GAME"; Tab(45);: Print Using "##.#"; allTeamStats!(0, 7) / totalGames%;: Print Tab(65); Using "##.#"; allTeamStats!(1, 7) / totalGames%
     Print
 
     Print "FUMBLES / FUMBLES LOST"; Tab(41);
-    Print Using "###"; teamStats!(0, 9);: Print "/";: Print Using "####"; teamStats!(0, 10);
-    Print Tab(61); Using "###"; teamStats!(1, 9);: Print "/";: Print Using "####"; teamStats!(1, 10)
+    Print Using "###"; allTeamStats!(0, 9);: Print "/";: Print Using "####"; allTeamStats!(0, 10);
+    Print Tab(61); Using "###"; allTeamStats!(1, 9);: Print "/";: Print Using "####"; allTeamStats!(1, 10)
 
     Print "PENALTIES / YARDS PENALIZED"; Tab(41);
-    Print Using "###"; teamStats!(0, 11);: Print "/";: Print Using "####"; teamStats!(0, 12);
-    Print Tab(61); Using "###"; teamStats!(1, 11);: Print "/";: Print Using "####"; teamStats!(1, 12)
+    Print Using "###"; allTeamStats!(0, 11);: Print "/";: Print Using "####"; allTeamStats!(0, 12);
+    Print Tab(61); Using "###"; allTeamStats!(1, 11);: Print "/";: Print Using "####"; allTeamStats!(1, 12)
 
     Print "AVERAGE YARDS PER PENALTY"; Tab(45);
-    If teamStats!(0, 11) <> 0 Then
-        Print Using "##.#"; teamStats!(0, 12) / teamStats!(0, 11);
+    If allTeamStats!(0, 11) <> 0 Then
+        Print Using "##.#"; allTeamStats!(0, 12) / allTeamStats!(0, 11);
     End If
-    If teamStats!(1, 11) <> 0 Then
-        Print Tab(65); Using "##.#"; teamStats!(1, 12) / teamStats!(1, 11)
+    If allTeamStats!(1, 11) <> 0 Then
+        Print Tab(65); Using "##.#"; allTeamStats!(1, 12) / allTeamStats!(1, 11)
     End If
-    If teamStats!(1, 11) = 0 Then
+    If allTeamStats!(1, 11) = 0 Then
         Print
     End If
 
     Print "PENALTIES PER GAME / YARDS PER GAME"; Tab(40);
-    Print Using "##.#"; teamStats!(0, 11) / totalGames%;: Print "/";: Print Using "##.#"; teamStats!(0, 12) / totalGames%;
-    Print Tab(60); Using "##.#"; teamStats!(1, 11) / totalGames%;: Print "/";: Print Using "##.#"; teamStats!(1, 12) / totalGames%
+    Print Using "##.#"; allTeamStats!(0, 11) / totalGames%;: Print "/";: Print Using "##.#"; allTeamStats!(0, 12) / totalGames%;
+    Print Tab(60); Using "##.#"; allTeamStats!(1, 11) / totalGames%;: Print "/";: Print Using "##.#"; allTeamStats!(1, 12) / totalGames%
 
     Print "SAFETIES"; Tab(45);: Print Using "####"; statsTeam!(21);: Print Tab(65); Using "####"; statsOpp!(21)
 
@@ -870,12 +761,12 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             For I2 = 0 To 3
 
                 If rbName$(I1) = qbName$(I2) Then
-                    playerStats!(I1, 0) = playerStats!(I1, 0) + playerStats!(I2 + 10, 0)
-                    playerStats!(I1, 1) = playerStats!(I1, 1) + playerStats!(I2 + 10, 1)
-                    playerStats!(I1, 2) = playerStats!(I1, 2) + playerStats!(I2 + 10, 2)
-                    playerStats!(I2 + 10, 0) = 0
-                    playerStats!(I2 + 10, 1) = 0
-                    playerStats!(I2 + 10, 2) = 0
+                    allPlayerStats!(I1, 0) = allPlayerStats!(I1, 0) + allPlayerStats!(I2 + 10, 0)
+                    allPlayerStats!(I1, 1) = allPlayerStats!(I1, 1) + allPlayerStats!(I2 + 10, 1)
+                    allPlayerStats!(I1, 2) = allPlayerStats!(I1, 2) + allPlayerStats!(I2 + 10, 2)
+                    allPlayerStats!(I2 + 10, 0) = 0
+                    allPlayerStats!(I2 + 10, 1) = 0
+                    allPlayerStats!(I2 + 10, 2) = 0
                 End If
 
             Next I2
@@ -889,7 +780,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 13
 
-        If playerStats!(I1, 0) <> 0 Then
+        If allPlayerStats!(I1, 0) <> 0 Then
 
             DM% = DM% + 1
             Color 7
@@ -898,7 +789,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             If I1 <= 9 Then Print rbName$(I1);
             If I1 > 9 Then Print qbName$(I1 - 10);
 
-            Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 0); playerStats!(I1, 1); playerStats!(I1, 1) / playerStats!(I1, 0); playerStats!(I1, 1) / totalGames%; playerStats!(I1, 2);
+            Print Tab(18); Using "####  ####   ##.#      ###.#    ##    "; allPlayerStats!(I1, 0); allPlayerStats!(I1, 1); allPlayerStats!(I1, 1) / allPlayerStats!(I1, 0); allPlayerStats!(I1, 1) / totalGames%; allPlayerStats!(I1, 2);
 
             If I1 > 9 Then
                 Print
@@ -915,16 +806,16 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print teamName$; Tab(18);
 
     If statFormat = 0 Then
-        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1); teamStats!(0, 2); teamStats!(0, 2) / teamStats!(0, 1); teamStats!(0, 2) / totalGames%; statsTeam!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(0, 1); allTeamStats!(0, 2); allTeamStats!(0, 2) / allTeamStats!(0, 1); allTeamStats!(0, 2) / totalGames%; statsTeam!(15)
     Else
-        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1) - sackStats!(0, 0); teamStats!(0, 2) + sackStats!(0, 1); (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0)); (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(0, 1) - sackStats!(0, 0); allTeamStats!(0, 2) + sackStats!(0, 1); (allTeamStats!(0, 2) + sackStats!(0, 1)) / (allTeamStats!(0, 1) - sackStats!(0, 0)); (allTeamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
     End If
 
     Print "OPPONENT TOTALS"; Tab(18);
     If statFormat = 0 Then
-        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1); teamStats!(1, 2); teamStats!(1, 2) / teamStats!(1, 1); teamStats!(1, 2) / totalGames%; statsOpp!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(1, 1); allTeamStats!(1, 2); allTeamStats!(1, 2) / allTeamStats!(1, 1); allTeamStats!(1, 2) / totalGames%; statsOpp!(15)
     Else
-        Print Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1) - sackStats!(1, 0); teamStats!(1, 2) + sackStats!(1, 1); (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0)); (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
+        Print Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(1, 1) - sackStats!(1, 0); allTeamStats!(1, 2) + sackStats!(1, 1); (allTeamStats!(1, 2) + sackStats!(1, 1)) / (allTeamStats!(1, 1) - sackStats!(1, 0)); (allTeamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
     End If
 
     Locate 24, 1
@@ -944,22 +835,22 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 5
 
-        If playerStats!(I1, 6) <> 0 Then
+        If allPlayerStats!(I1, 6) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
             Print wrName$(I1); Tab(18);
-            Print Using "####  ####   "; playerStats!(I1, 6); playerStats!(I1, 7);
+            Print Using "####  ####   "; allPlayerStats!(I1, 6); allPlayerStats!(I1, 7);
 
-            If playerStats!(I1, 6) = 0 Then
+            If allPlayerStats!(I1, 6) = 0 Then
                 Print "  --";
             Else
-                Print Using "##.#"; playerStats!(I1, 7) / playerStats!(I1, 6);
+                Print Using "##.#"; allPlayerStats!(I1, 7) / allPlayerStats!(I1, 6);
             End If
 
-            Print Using "      ###.#    ##    "; playerStats!(I1, 7) / totalGames%; playerStats!(I1, 8);
+            Print Using "      ###.#    ##    "; allPlayerStats!(I1, 7) / totalGames%; allPlayerStats!(I1, 8);
             Print Using "###"; statsLRec!(I1 + 10);: Print statsLRec$(I1 + 10, 0); Tab(64); statsLRec$(I1 + 10, 1)
 
         End If
@@ -968,22 +859,22 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 9
 
-        If playerStats!(I1, 3) <> 0 Then
+        If allPlayerStats!(I1, 3) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
             Print rbName$(I1); Tab(18);
-            Print Using "####  ####   "; playerStats!(I1, 3); playerStats!(I1, 4);
+            Print Using "####  ####   "; allPlayerStats!(I1, 3); allPlayerStats!(I1, 4);
 
-            If playerStats!(I1, 3) = 0 Then
+            If allPlayerStats!(I1, 3) = 0 Then
                 Print "  --";
             Else
-                Print Using "##.#"; playerStats!(I1, 4) / playerStats!(I1, 3);
+                Print Using "##.#"; allPlayerStats!(I1, 4) / allPlayerStats!(I1, 3);
             End If
 
-            Print Using "      ###.#    ##    "; playerStats!(I1, 4) / totalGames%; playerStats!(I1, 5);
+            Print Using "      ###.#    ##    "; allPlayerStats!(I1, 4) / totalGames%; allPlayerStats!(I1, 5);
             Print Using "###"; statsLRec!(I1);: Print statsLRec$(I1, 0); Tab(64); statsLRec$(I1, 1)
 
         End If
@@ -994,22 +885,22 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 14
     Print teamName$; Tab(18);
 
-    Print Using "####  ####   "; teamStats!(0, 4); teamStats!(0, 6);
-    If teamStats!(0, 4) = 0 Then
+    Print Using "####  ####   "; allTeamStats!(0, 4); allTeamStats!(0, 6);
+    If allTeamStats!(0, 4) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+        Print Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
-    Print Using "      ###.#    ##"; teamStats!(0, 6) / totalGames%; statsTeam!(17)
+    Print Using "      ###.#    ##"; allTeamStats!(0, 6) / totalGames%; statsTeam!(17)
 
     Print "OPPONENT TOTALS"; Tab(18);
-    Print Using "####  ####   "; teamStats!(1, 4); teamStats!(1, 6);
-    If teamStats!(1, 4) = 0 Then
+    Print Using "####  ####   "; allTeamStats!(1, 4); allTeamStats!(1, 6);
+    If allTeamStats!(1, 4) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+        Print Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4);
     End If
-    Print Using "      ###.#    ##"; teamStats!(1, 6) / totalGames%; statsOpp!(17)
+    Print Using "      ###.#    ##"; allTeamStats!(1, 6) / totalGames%; statsOpp!(17)
 
     Locate 24, 1
     Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
@@ -1026,31 +917,31 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 0 To 3
 
-        If playerStats!(I1, 9) <> 0 Then
+        If allPlayerStats!(I1, 9) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
             'Att / Comp / Comp % / Yds
-            Print qbName$(I1); Tab(18); Using "####  ### ###.# #### "; playerStats!(I1, 9); playerStats!(I1, 10); playerStats!(I1, 10) / playerStats!(I1, 9) * 100; playerStats!(I1, 12);
+            Print qbName$(I1); Tab(18); Using "####  ### ###.# #### "; allPlayerStats!(I1, 9); allPlayerStats!(I1, 10); allPlayerStats!(I1, 10) / allPlayerStats!(I1, 9) * 100; allPlayerStats!(I1, 12);
 
             'Yds / Att
-            If playerStats!(I1, 9) = 0 Then
+            If allPlayerStats!(I1, 9) = 0 Then
                 Print "   --";
             Else
-                Print Using "##.#"; playerStats!(I1, 12) / playerStats!(I1, 9);
+                Print Using "##.#"; allPlayerStats!(I1, 12) / allPlayerStats!(I1, 9);
             End If
 
             ' Yds / Catch
-            If playerStats!(I1, 10) = 0 Then
+            If allPlayerStats!(I1, 10) = 0 Then
                 Print "   --";
             Else
-                Print Using " ##.#"; playerStats!(I1, 12) / playerStats!(I1, 10);
+                Print Using " ##.#"; allPlayerStats!(I1, 12) / allPlayerStats!(I1, 10);
             End If
 
             'TD / INT / INT %
-            Print Using " ###.# ### ### ###.#   "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
+            Print Using " ###.# ### ### ###.#   "; allPlayerStats!(I1, 12) / totalGames%; allPlayerStats!(I1, 13); allPlayerStats!(I1, 11); allPlayerStats!(I1, 11) / allPlayerStats!(I1, 9) * 100;
 
             'QB Rating
             awayTies! = QBRating!(I1, statFormat)
@@ -1067,79 +958,79 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print teamName$; Tab(18);
 
     'Att / Comp
-    Print Using "####  ### "; teamStats!(0, 3); teamStats!(0, 4);
+    Print Using "####  ### "; allTeamStats!(0, 3); allTeamStats!(0, 4);
 
     'Comp %
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print "   --";
     Else
-        Print Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+        Print Using "###.#"; allTeamStats!(0, 4) / allTeamStats!(0, 3) * 100;
     End If
 
     'Yds
-    Print Using " #### "; teamStats!(0, 6);
+    Print Using " #### "; allTeamStats!(0, 6);
 
     'Yds / Att
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print " --";
     Else
-        Print Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+        Print Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 3);
     End If
 
     'Yds / Catch
-    If teamStats!(0, 4) = 0 Then
+    If allTeamStats!(0, 4) = 0 Then
         Print "   --";
     Else
-        Print Using " ##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+        Print Using " ##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
 
     'Yds / Gm, TD, INT
-    Print Using " ###.# ### ### ###.#     "; teamStats!(0, 6) / totalGames%; statsTeam!(17); teamStats!(0, 5);
+    Print Using " ###.# ### ### ###.#     "; allTeamStats!(0, 6) / totalGames%; statsTeam!(17); allTeamStats!(0, 5);
 
     'INT %
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print "   --"
     Else
-        Print Using "  #.#"; teamStats!(0, 5) / teamStats!(0, 3) * 100
+        Print Using "  #.#"; allTeamStats!(0, 5) / allTeamStats!(0, 3) * 100
     End If
 
     Print "OPPONENT TOTALS"; Tab(18);
 
     'Att / Comp
-    Print Using "####  ### "; teamStats!(1, 3); teamStats!(1, 4);
+    Print Using "####  ### "; allTeamStats!(1, 3); allTeamStats!(1, 4);
 
     'Comp %
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print "   --"
     Else
-        Print Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100;
+        Print Using "###.#"; allTeamStats!(1, 4) / allTeamStats!(1, 3) * 100;
     End If
 
     'Yds
-    Print Using " #### "; teamStats!(1, 6);
+    Print Using " #### "; allTeamStats!(1, 6);
 
     'Yds / Att
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print " --";
     Else
-        Print Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3);
+        Print Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 3);
     End If
 
     'Yds / Catch
-    If teamStats!(1, 4) = 0 Then
+    If allTeamStats!(1, 4) = 0 Then
         Print "   --";
     Else
-        Print Using " ##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+        Print Using " ##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4);
     End If
 
     'Yds / Gm, TD, INT
-    Print Using " ###.# ### ### ###.#     "; teamStats!(1, 6) / totalGames%; statsOpp!(17); teamStats!(1, 5);
+    Print Using " ###.# ### ### ###.#     "; allTeamStats!(1, 6) / totalGames%; statsOpp!(17); allTeamStats!(1, 5);
 
     'INT %
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print "   --"
     Else
-        Print Using "  #.#"; teamStats!(1, 5) / teamStats!(1, 3) * 100
+        Print Using "  #.#"; allTeamStats!(1, 5) / allTeamStats!(1, 3) * 100
     End If
 
     Print
@@ -1149,7 +1040,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "PASSING           LONG PASS    AGAINST"
 
     For I1 = 0 To 3
-        If playerStats!(I1, 9) <> 0 Then
+        If allPlayerStats!(I1, 9) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
@@ -1173,18 +1064,18 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     I = 0
 
     For I1 = 0 To 2
-        If playerStats!(I1, 14) <> 0 Then
+        If allPlayerStats!(I1, 14) <> 0 Then
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
             Print krName$(I1); Tab(18);
-            Print Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
-            If playerStats!(I1, 14) = 0 Then
+            Print Using "####  ####   "; allPlayerStats!(I1, 14); allPlayerStats!(I1, 15);
+            If allPlayerStats!(I1, 14) = 0 Then
                 Print "  --";
             Else
-                Print Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+                Print Using "##.#"; allPlayerStats!(I1, 15) / allPlayerStats!(I1, 14);
             End If
-            Print Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print Using "      ###.#    ##    "; allPlayerStats!(I1, 15) / totalGames%; allPlayerStats!(I1, 16);
             Print Using "###"; statsLKR!(I1);: Print statsLKR$(I1, 0); Tab(64); statsLKR$(I1, 1)
         End If
     Next I1
@@ -1215,22 +1106,22 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     For I1 = 3 To 5
 
-        If playerStats!(I1, 14) <> 0 Then
+        If allPlayerStats!(I1, 14) <> 0 Then
 
             DM% = DM% + 1
             Color 7
             If DM% / 2 = Int(DM% / 2) Then Color 15
 
             Print prName$(I1 - 3); Tab(18);
-            Print Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
+            Print Using "####  ####   "; allPlayerStats!(I1, 14); allPlayerStats!(I1, 15);
 
-            If playerStats!(I1, 14) = 0 Then
+            If allPlayerStats!(I1, 14) = 0 Then
                 Print "  --";
             Else
-                Print Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+                Print Using "##.#"; allPlayerStats!(I1, 15) / allPlayerStats!(I1, 14);
             End If
 
-            Print Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print Using "      ###.#    ##    "; allPlayerStats!(I1, 15) / totalGames%; allPlayerStats!(I1, 16);
             Print Using "###"; statsLPR!(I1 - 3);: Print statsLPR$(I1 - 3, 0); Tab(64); statsLPR$(I1 - 3, 1)
 
         End If
@@ -1266,21 +1157,21 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 12
     Print "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
     Color 15
-    Print punterName$(0); Tab(18); Using "####  ####    "; teamStats!(0, 7); teamStats!(0, 8);
-    If teamStats!(0, 7) = 0 Then
+    Print punterName$(0); Tab(18); Using "####  ####    "; allTeamStats!(0, 7); allTeamStats!(0, 8);
+    If allTeamStats!(0, 7) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+        Print Using "##.#"; allTeamStats!(0, 8) / allTeamStats!(0, 7);
     End If
-    Print Using "    ##.#      ##     ##      ##"; teamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
+    Print Using "    ##.#      ##     ##      ##"; allTeamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
 
-    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; teamStats!(1, 7); teamStats!(1, 8);
-    If teamStats!(1, 7) = 0 Then
+    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; allTeamStats!(1, 7); allTeamStats!(1, 8);
+    If allTeamStats!(1, 7) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7);
+        Print Using "##.#"; allTeamStats!(1, 8) / allTeamStats!(1, 7);
     End If
-    Print Using "    ##.#      ##     ##"; teamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
+    Print Using "    ##.#      ##     ##"; allTeamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
 
     Print
     Print
@@ -1288,20 +1179,20 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 12
     Print "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
     Color 15
-    Print teamName$; Tab(18); Using "####  ####    "; teamStats!(0, 7); teamStats!(0, 8);
-    If teamStats!(0, 7) = 0 Then
+    Print teamName$; Tab(18); Using "####  ####    "; allTeamStats!(0, 7); allTeamStats!(0, 8);
+    If allTeamStats!(0, 7) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+        Print Using "##.#"; allTeamStats!(0, 8) / allTeamStats!(0, 7);
     End If
 
-    Print Using "    ###       ####        ##.#     ##.#"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (teamStats!(0, 8) - statsOpp!(25)) / teamStats!(0, 7)
+    Print Using "    ###       ####        ##.#     ##.#"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (allTeamStats!(0, 8) - statsOpp!(25)) / allTeamStats!(0, 7)
 
-    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; teamStats!(1, 7); teamStats!(1, 8);
-    If teamStats!(1, 7) = 0 Then
+    Print "OPPONENT TOTALS"; Tab(18); Using "####  ####    "; allTeamStats!(1, 7); allTeamStats!(1, 8);
+    If allTeamStats!(1, 7) = 0 Then
         Print "  --";
     Else
-        Print Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7);
+        Print Using "##.#"; allTeamStats!(1, 8) / allTeamStats!(1, 7);
     End If
 
     '                Ret       Yds         Avg      Net Avg
@@ -1310,7 +1201,7 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Else
         oppPuntAvg! = 0
     End If
-    Print Using "    ###       ####        ##.#     ##.#"; statsTeam!(24); statsTeam!(25); oppPuntAvg!; (teamStats!(1, 8) - statsTeam!(25)) / teamStats!(1, 7)
+    Print Using "    ###       ####        ##.#     ##.#"; statsTeam!(24); statsTeam!(25); oppPuntAvg!; (allTeamStats!(1, 8) - statsTeam!(25)) / allTeamStats!(1, 7)
 
     Print
     Print
@@ -1319,27 +1210,27 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
     Color 15
 
-    testFGA = playerStats!(4, 17)
-    testFGM = playerStats!(3, 17)
-    testEPA = playerStats!(6, 17)
-    testEPM = playerStats!(5, 17)
+    testFGA = allPlayerStats!(4, 17)
+    testFGM = allPlayerStats!(3, 17)
+    testEPA = allPlayerStats!(6, 17)
+    testEPM = allPlayerStats!(5, 17)
 
-    If playerStats!(4, 17) <> 0 And playerStats!(6, 17) <> 0 Then
+    If allPlayerStats!(4, 17) <> 0 And allPlayerStats!(6, 17) <> 0 Then
 
         Print pkName$(0);
         Print Tab(16);
 
-        If playerStats!(6, 17) <> 0 Then
+        If allPlayerStats!(6, 17) <> 0 Then
             'Extra Points
-            Print Using "### ### ###.# "; playerStats!(5, 17); playerStats!(6, 17); playerStats!(5, 17) / playerStats!(6, 17) * 100;
+            Print Using "### ### ###.# "; allPlayerStats!(5, 17); allPlayerStats!(6, 17); allPlayerStats!(5, 17) / allPlayerStats!(6, 17) * 100;
         End If
 
         'Field Goals
-        If playerStats!(4, 17) = 0 Then
+        If allPlayerStats!(4, 17) = 0 Then
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
+            Print Using "### ### ###.# ## ##"; allPlayerStats!(3, 17); allPlayerStats!(4, 17); allPlayerStats!(3, 17) / allPlayerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
             Print "-";: Print Using "## ##"; statsFGA!(0, 0); statsFGM!(0, 1);
             Print "-";: Print Using "## ##"; statsFGA!(0, 1); statsFGM!(0, 2);
             Print "-";: Print Using "## ##"; statsFGA!(0, 2); statsFGM!(0, 3);
@@ -1349,19 +1240,19 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     End If
 
-    If playerStats!(8, 17) <> 0 And playerStats!(10, 17) <> 0 Then
+    If allPlayerStats!(8, 17) <> 0 And allPlayerStats!(10, 17) <> 0 Then
 
         Print pkName$(1); Tab(16);
 
-        If playerStats!(10, 17) <> 0 Then
-            Print Using "### ### ###.# "; playerStats!(9, 17); playerStats!(10, 17); playerStats!(9, 17) / playerStats!(10, 17) * 100;
+        If allPlayerStats!(10, 17) <> 0 Then
+            Print Using "### ### ###.# "; allPlayerStats!(9, 17); allPlayerStats!(10, 17); allPlayerStats!(9, 17) / allPlayerStats!(10, 17) * 100;
         End If
 
-        If playerStats!(8, 17) = 0 Then
+        If allPlayerStats!(8, 17) = 0 Then
             Print
         Else
             Print Tab(30);
-            Print Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
+            Print Using "### ### ###.# ## ##"; allPlayerStats!(7, 17); allPlayerStats!(8, 17); allPlayerStats!(7, 17) / allPlayerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
             Print "-";: Print Using "## ##"; statsFGA!(1, 0); statsFGM!(1, 1);
             Print "-";: Print Using "## ##"; statsFGA!(1, 1); statsFGM!(1, 2);
             Print "-";: Print Using "## ##"; statsFGA!(1, 2); statsFGM!(1, 3);
@@ -1454,7 +1345,7 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
     Shared statsLPR!(), sackStats!(), statsTeam!(), statsOpp!(), statsPlayers!()
 
-    Shared playerStats!(), teamStats!()
+    Shared allPlayerStats!(), allTeamStats!()
 
     Shared teamScore(), oppScore(), scoreTotals()
 
@@ -1567,174 +1458,174 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
 
     Print #1, "TEAM STATISTICS CATEGORY"; Tab(41); teamName$; Tab(61); "OPPONENT TOTALS"
 
-    Print #1, "FIRST DOWNS"; Tab(45); Using "####"; teamStats!(0, 0);
-    Print #1, Tab(65); Using "####"; teamStats!(1, 0)
+    Print #1, "FIRST DOWNS"; Tab(45); Using "####"; allTeamStats!(0, 0);
+    Print #1, Tab(65); Using "####"; allTeamStats!(1, 0)
 
     Print #1, "RUSHING ATTEMPTS"; Tab(45);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(0, 1);
+        Print #1, Using "####"; allTeamStats!(0, 1);
     Else
-        Print #1, Using "####"; teamStats!(0, 1) - sackStats!(0, 0);
+        Print #1, Using "####"; allTeamStats!(0, 1) - sackStats!(0, 0);
     End If
     Print #1, Tab(65);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(1, 1)
+        Print #1, Using "####"; allTeamStats!(1, 1)
     Else
-        Print #1, Using "####"; teamStats!(1, 1) - sackStats!(1, 0)
+        Print #1, Using "####"; allTeamStats!(1, 1) - sackStats!(1, 0)
     End If
 
     Print #1, "NET RUSHING YARDAGE"; Tab(45);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(0, 2);
+        Print #1, Using "####"; allTeamStats!(0, 2);
     Else
-        Print #1, Using "####"; teamStats!(0, 2) + sackStats!(0, 1);
+        Print #1, Using "####"; allTeamStats!(0, 2) + sackStats!(0, 1);
     End If
     Print #1, Tab(65);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(1, 2)
+        Print #1, Using "####"; allTeamStats!(1, 2)
     Else
-        Print #1, Using "####"; teamStats!(1, 2) + sackStats!(1, 1)
+        Print #1, Using "####"; allTeamStats!(1, 2) + sackStats!(1, 1)
     End If
 
     Print #1, "YARDS PER RUSH"; Tab(45);
-    If statFormat = 0 And teamStats!(0, 1) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(0, 2) / teamStats!(0, 1);
+    If statFormat = 0 And allTeamStats!(0, 1) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(0, 2) / allTeamStats!(0, 1);
     End If
-    If statFormat <> 0 And teamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
-        Print #1, Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0));
+    If statFormat <> 0 And allTeamStats!(0, 1) - sackStats!(0, 0) <> 0 Then
+        Print #1, Using "##.#"; (allTeamStats!(0, 2) + sackStats!(0, 1)) / (allTeamStats!(0, 1) - sackStats!(0, 0));
     End If
 
     Print #1, Tab(65);
 
-    If statFormat = 0 And teamStats!(1, 1) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(1, 2) / teamStats!(1, 1)
+    If statFormat = 0 And allTeamStats!(1, 1) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(1, 2) / allTeamStats!(1, 1)
     End If
-    If statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
-        Print #1, Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0))
+    If statFormat <> 0 And allTeamStats!(1, 1) - sackStats!(1, 0) <> 0 Then
+        Print #1, Using "##.#"; (allTeamStats!(1, 2) + sackStats!(1, 1)) / (allTeamStats!(1, 1) - sackStats!(1, 0))
     End If
-    If statFormat = 0 And teamStats!(1, 1) = 0 Or statFormat <> 0 And teamStats!(1, 1) - sackStats!(1, 0) = 0 Then
+    If statFormat = 0 And allTeamStats!(1, 1) = 0 Or statFormat <> 0 And allTeamStats!(1, 1) - sackStats!(1, 0) = 0 Then
         Print #1,
     End If
 
     Print #1, "RUSHING YARDS PER GAME"; Tab(44);
 
     If statFormat = 0 Then
-        Print #1, Using "###.#"; teamStats!(0, 2) / totalGames%;
+        Print #1, Using "###.#"; allTeamStats!(0, 2) / totalGames%;
     Else
-        Print #1, Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
+        Print #1, Using "###.#"; (allTeamStats!(0, 2) + sackStats!(0, 1)) / totalGames%;
     End If
     Print #1, Tab(64);
     If statFormat = 0 Then
-        Print #1, Using "###.#"; teamStats!(1, 2) / totalGames%
+        Print #1, Using "###.#"; allTeamStats!(1, 2) / totalGames%
     Else
-        Print #1, Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
+        Print #1, Using "###.#"; (allTeamStats!(1, 2) + sackStats!(1, 1)) / totalGames%
     End If
 
     Print #1,
-    Print #1, "PASSES ATTEMPTED"; Tab(45); Using "####"; teamStats!(0, 3);: Print #1, Tab(65); Using "####"; teamStats!(1, 3)
-    Print #1, "PASSES COMPLETED"; Tab(45); Using "####"; teamStats!(0, 4);: Print #1, Tab(65); Using "####"; teamStats!(1, 4)
-    Print #1, "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; teamStats!(0, 5);: Print #1, Tab(65); Using "####"; teamStats!(1, 5)
+    Print #1, "PASSES ATTEMPTED"; Tab(45); Using "####"; allTeamStats!(0, 3);: Print #1, Tab(65); Using "####"; allTeamStats!(1, 3)
+    Print #1, "PASSES COMPLETED"; Tab(45); Using "####"; allTeamStats!(0, 4);: Print #1, Tab(65); Using "####"; allTeamStats!(1, 4)
+    Print #1, "PASSES HAD INTERCEPTED"; Tab(45); Using "####"; allTeamStats!(0, 5);: Print #1, Tab(65); Using "####"; allTeamStats!(1, 5)
     Print #1, "PASS COMPLETION PERCENTAGE"; Tab(44);
 
-    If teamStats!(0, 3) <> 0 Then
-        Print #1, Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+    If allTeamStats!(0, 3) <> 0 Then
+        Print #1, Using "###.#"; allTeamStats!(0, 4) / allTeamStats!(0, 3) * 100;
     End If
-    If teamStats!(1, 3) <> 0 Then
-        Print #1, Tab(64); Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100
+    If allTeamStats!(1, 3) <> 0 Then
+        Print #1, Tab(64); Using "###.#"; allTeamStats!(1, 4) / allTeamStats!(1, 3) * 100
     Else
         Print #1,
     End If
 
-    Print #1, "NET YARDS PASSING"; Tab(45); Using "####"; teamStats!(0, 6);
-    Print #1, Tab(65); Using "####"; teamStats!(1, 6)
+    Print #1, "NET YARDS PASSING"; Tab(45); Using "####"; allTeamStats!(0, 6);
+    Print #1, Tab(65); Using "####"; allTeamStats!(1, 6)
 
     Print #1, "YARDS PER PASS ATTEMPT"; Tab(45);
-    If teamStats!(0, 3) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+    If allTeamStats!(0, 3) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 3);
     End If
-    If teamStats!(1, 3) <> 0 Then
-        Print #1, Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3)
+    If allTeamStats!(1, 3) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 3)
     Else
         Print #1,
     End If
 
     Print #1, "YARDS PER PASS COMPLETION"; Tab(45);
-    If teamStats!(0, 4) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+    If allTeamStats!(0, 4) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
-    If teamStats!(1, 4) <> 0 Then
-        Print #1, Tab(65); Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4)
+    If allTeamStats!(1, 4) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4)
     Else
         Print #1,
     End If
 
-    Print #1, "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; teamStats!(0, 6) / totalGames%;
-    Print #1, Tab(64); Using "###.#"; teamStats!(1, 6) / totalGames%
+    Print #1, "PASSING YARDS PER GAME"; Tab(44); Using "###.#"; allTeamStats!(0, 6) / totalGames%;
+    Print #1, Tab(64); Using "###.#"; allTeamStats!(1, 6) / totalGames%
     Print #1,
 
     Print #1, "TOTAL PLAYS"; Tab(45);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(0, 1) + teamStats!(0, 3);
+        Print #1, Using "####"; allTeamStats!(0, 1) + allTeamStats!(0, 3);
     Else
-        Print #1, Using "####"; teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3);
+        Print #1, Using "####"; allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3);
     End If
     Print #1, Tab(65);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(1, 1) + teamStats!(1, 3)
+        Print #1, Using "####"; allTeamStats!(1, 1) + allTeamStats!(1, 3)
     Else
-        Print #1, Using "####"; teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)
+        Print #1, Using "####"; allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3)
     End If
 
     Print #1, "TOTAL PLAYS PER GAME"; Tab(44);
     If statFormat = 0 Then
-        Print #1, Using "###.#"; (teamStats!(0, 1) + teamStats!(0, 3)) / totalGames%;
+        Print #1, Using "###.#"; (allTeamStats!(0, 1) + allTeamStats!(0, 3)) / totalGames%;
     Else
-        Print #1, Using "###.#"; (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3)) / totalGames%;
+        Print #1, Using "###.#"; (allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3)) / totalGames%;
     End If
     Print #1, Tab(64);
     If statFormat = 0 Then
-        Print #1, Using "###.#"; (teamStats!(1, 1) + teamStats!(1, 3)) / totalGames%
+        Print #1, Using "###.#"; (allTeamStats!(1, 1) + allTeamStats!(1, 3)) / totalGames%
     Else
-        Print #1, Using "###.#"; (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3)) / totalGames%
+        Print #1, Using "###.#"; (allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3)) / totalGames%
     End If
 
     Print #1, "TOTAL NET YARDS"; Tab(45);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(0, 2) + teamStats!(0, 6);
+        Print #1, Using "####"; allTeamStats!(0, 2) + allTeamStats!(0, 6);
     Else
-        Print #1, Using "####"; teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6);
+        Print #1, Using "####"; allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6);
     End If
     Print #1, Tab(65);
     If statFormat = 0 Then
-        Print #1, Using "####"; teamStats!(1, 2) + teamStats!(1, 6)
+        Print #1, Using "####"; allTeamStats!(1, 2) + allTeamStats!(1, 6)
     Else
-        Print #1, Using "####"; teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)
+        Print #1, Using "####"; allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)
     End If
 
     Print #1, "YARDS GAINED PER PLAY"; Tab(45);
     If statFormat = 0 Then
-        Print #1, Using "##.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / (teamStats!(0, 1) + teamStats!(0, 3));
+        Print #1, Using "##.#"; (allTeamStats!(0, 2) + allTeamStats!(0, 6)) / (allTeamStats!(0, 1) + allTeamStats!(0, 3));
     Else
-        Print #1, Using "##.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / (teamStats!(0, 1) - sackStats!(0, 0) + teamStats!(0, 3));
+        Print #1, Using "##.#"; (allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6)) / (allTeamStats!(0, 1) - sackStats!(0, 0) + allTeamStats!(0, 3));
     End If
     Print #1, Tab(64);
     If statFormat = 0 Then
-        Print #1, Using "##.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / (teamStats!(1, 1) + teamStats!(1, 3))
+        Print #1, Using "##.#"; (allTeamStats!(1, 2) + allTeamStats!(1, 6)) / (allTeamStats!(1, 1) + allTeamStats!(1, 3))
     Else
-        Print #1, Using "##.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / (teamStats!(1, 1) - sackStats!(1, 0) + teamStats!(1, 3))
+        Print #1, Using "##.#"; (allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)) / (allTeamStats!(1, 1) - sackStats!(1, 0) + allTeamStats!(1, 3))
     End If
 
     Print #1, "YARDS GAINED PER GAME"; Tab(44);
     If statFormat = 0 Then
-        Print #1, Using "###.#"; (teamStats!(0, 2) + teamStats!(0, 6)) / totalGames%;
+        Print #1, Using "###.#"; (allTeamStats!(0, 2) + allTeamStats!(0, 6)) / totalGames%;
     Else
-        Print #1, Using "###.#"; (teamStats!(0, 2) + sackStats!(0, 1) + teamStats!(0, 6)) / totalGames%;
+        Print #1, Using "###.#"; (allTeamStats!(0, 2) + sackStats!(0, 1) + allTeamStats!(0, 6)) / totalGames%;
     End If
     Print #1, Tab(64);
     If statFormat = 0 Then
-        Print #1, Using "###.#"; (teamStats!(1, 2) + teamStats!(1, 6)) / totalGames%
+        Print #1, Using "###.#"; (allTeamStats!(1, 2) + allTeamStats!(1, 6)) / totalGames%
     Else
-        Print #1, Using "###.#"; (teamStats!(1, 2) + sackStats!(1, 1) + teamStats!(1, 6)) / totalGames%
+        Print #1, Using "###.#"; (allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)) / totalGames%
     End If
 
     Print #1,
@@ -1795,45 +1686,45 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     Print #1,
 
     Print #1, "PUNTS / TOTAL PUNT YARDAGE"; Tab(41);
-    Print #1, Using "###"; teamStats!(0, 7);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 8);
-    Print #1, Tab(61); Using "###"; teamStats!(1, 7);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 8)
+    Print #1, Using "###"; allTeamStats!(0, 7);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(0, 8);
+    Print #1, Tab(61); Using "###"; allTeamStats!(1, 7);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(1, 8)
 
     Print #1, "AVERAGE YARDS PER PUNT"; Tab(45);
-    If teamStats!(0, 7) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(0, 8) / teamStats!(0, 7);
+    If allTeamStats!(0, 7) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(0, 8) / allTeamStats!(0, 7);
     End If
-    If teamStats!(1, 7) <> 0 Then
-        Print #1, Tab(65); Using "##.#"; teamStats!(1, 8) / teamStats!(1, 7)
+    If allTeamStats!(1, 7) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; allTeamStats!(1, 8) / allTeamStats!(1, 7)
     Else
         Print #1,
     End If
 
     Print #1, "AVERAGE NUMBER OF PUNTS PER GAME"; Tab(45);
-    Print #1, Using "##.#"; teamStats!(0, 7) / totalGames%;
-    Print #1, Tab(65); Using "##.#"; teamStats!(1, 7) / totalGames%
+    Print #1, Using "##.#"; allTeamStats!(0, 7) / totalGames%;
+    Print #1, Tab(65); Using "##.#"; allTeamStats!(1, 7) / totalGames%
     Print #1,
 
     Print #1, "FUMBLES / FUMBLES LOST"; Tab(41);
-    Print #1, Using "###"; teamStats!(0, 9);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 10);
-    Print #1, Tab(61); Using "###"; teamStats!(1, 9);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 10)
+    Print #1, Using "###"; allTeamStats!(0, 9);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(0, 10);
+    Print #1, Tab(61); Using "###"; allTeamStats!(1, 9);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(1, 10)
 
     Print #1, "PENALTIES / YARDS PENALIZED"; Tab(41);
-    Print #1, Using "###"; teamStats!(0, 11);: Print #1, "/";: Print #1, Using "####"; teamStats!(0, 12);
-    Print #1, Tab(61); Using "###"; teamStats!(1, 11);: Print #1, "/";: Print #1, Using "####"; teamStats!(1, 12)
+    Print #1, Using "###"; allTeamStats!(0, 11);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(0, 12);
+    Print #1, Tab(61); Using "###"; allTeamStats!(1, 11);: Print #1, "/";: Print #1, Using "####"; allTeamStats!(1, 12)
 
     Print #1, "AVERAGE YARDS PER PENALTY"; Tab(45);
-    If teamStats!(0, 11) <> 0 Then
-        Print #1, Using "##.#"; teamStats!(0, 12) / teamStats!(0, 11);
+    If allTeamStats!(0, 11) <> 0 Then
+        Print #1, Using "##.#"; allTeamStats!(0, 12) / allTeamStats!(0, 11);
     End If
-    If teamStats!(1, 11) <> 0 Then
-        Print #1, Tab(65); Using "##.#"; teamStats!(1, 12) / teamStats!(1, 11)
+    If allTeamStats!(1, 11) <> 0 Then
+        Print #1, Tab(65); Using "##.#"; allTeamStats!(1, 12) / allTeamStats!(1, 11)
     Else
         Print #1,
     End If
 
     Print #1, "PENALTIES PER GAME / YARDS PER GAME"; Tab(40);
-    Print #1, Using "##.#"; teamStats!(0, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; teamStats!(0, 12) / totalGames%;
-    Print #1, Tab(60); Using "##.#"; teamStats!(1, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; teamStats!(1, 12) / totalGames%
+    Print #1, Using "##.#"; allTeamStats!(0, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; allTeamStats!(0, 12) / totalGames%;
+    Print #1, Tab(60); Using "##.#"; allTeamStats!(1, 11) / totalGames%;: Print #1, "/";: Print #1, Using "##.#"; allTeamStats!(1, 12) / totalGames%
 
     Print #1, "SAFETIES"; Tab(45);
     Print #1, Using "####"; statsTeam!(21);
@@ -1852,12 +1743,12 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
         For I1 = 0 To 9
             For I2 = 0 To 3
                 If rbName$(I1) = qbName$(I2) Then
-                    playerStats!(I1, 0) = playerStats!(I1, 0) + playerStats!(I2 + 10, 0)
-                    playerStats!(I1, 1) = playerStats!(I1, 1) + playerStats!(I2 + 10, 1)
-                    playerStats!(I1, 2) = playerStats!(I1, 2) + playerStats!(I2 + 10, 2)
-                    playerStats!(I2 + 10, 0) = 0
-                    playerStats!(I2 + 10, 1) = 0
-                    playerStats!(I2 + 10, 2) = 0
+                    allPlayerStats!(I1, 0) = allPlayerStats!(I1, 0) + allPlayerStats!(I2 + 10, 0)
+                    allPlayerStats!(I1, 1) = allPlayerStats!(I1, 1) + allPlayerStats!(I2 + 10, 1)
+                    allPlayerStats!(I1, 2) = allPlayerStats!(I1, 2) + allPlayerStats!(I2 + 10, 2)
+                    allPlayerStats!(I2 + 10, 0) = 0
+                    allPlayerStats!(I2 + 10, 1) = 0
+                    allPlayerStats!(I2 + 10, 2) = 0
                 End If
             Next I2
         Next I1
@@ -1867,10 +1758,10 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     End If
 
     For I1 = 0 To 13
-        If playerStats!(I1, 0) <> 0 Then
+        If allPlayerStats!(I1, 0) <> 0 Then
             If I1 <= 9 Then Print #1, rbName$(I1);
             If I1 > 9 Then Print #1, qbName$(I1 - 10);
-            Print #1, Tab(18); Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 0); playerStats!(I1, 1); playerStats!(I1, 1) / playerStats!(I1, 0); playerStats!(I1, 1) / totalGames%; playerStats!(I1, 2);
+            Print #1, Tab(18); Using "####  ####   ##.#      ###.#    ##    "; allPlayerStats!(I1, 0); allPlayerStats!(I1, 1); allPlayerStats!(I1, 1) / allPlayerStats!(I1, 0); allPlayerStats!(I1, 1) / totalGames%; allPlayerStats!(I1, 2);
             If I1 > 9 Then
                 Print #1,
             Else
@@ -1882,16 +1773,16 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
 
     Print #1, teamName$; Tab(18);
     If statFormat = 0 Then
-        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1); teamStats!(0, 2); teamStats!(0, 2) / teamStats!(0, 1); teamStats!(0, 2) / totalGames%; statsTeam!(15)
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(0, 1); allTeamStats!(0, 2); allTeamStats!(0, 2) / allTeamStats!(0, 1); allTeamStats!(0, 2) / totalGames%; statsTeam!(15)
     Else
-        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(0, 1) - sackStats!(0, 0); teamStats!(0, 2) + sackStats!(0, 1); (teamStats!(0, 2) + sackStats!(0, 1)) / (teamStats!(0, 1) - sackStats!(0, 0)); (teamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(0, 1) - sackStats!(0, 0); allTeamStats!(0, 2) + sackStats!(0, 1); (allTeamStats!(0, 2) + sackStats!(0, 1)) / (allTeamStats!(0, 1) - sackStats!(0, 0)); (allTeamStats!(0, 2) + sackStats!(0, 1)) / totalGames%; statsTeam!(15)
     End If
 
     Print #1, "OPPONENT TOTALS"; Tab(18);
     If statFormat = 0 Then
-        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1); teamStats!(1, 2); teamStats!(1, 2) / teamStats!(1, 1); teamStats!(1, 2) / totalGames%; statsOpp!(15)
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(1, 1); allTeamStats!(1, 2); allTeamStats!(1, 2) / allTeamStats!(1, 1); allTeamStats!(1, 2) / totalGames%; statsOpp!(15)
     Else
-        Print #1, Using "####  ####   ##.#      ###.#    ##"; teamStats!(1, 1) - sackStats!(1, 0); teamStats!(1, 2) + sackStats!(1, 1); (teamStats!(1, 2) + sackStats!(1, 1)) / (teamStats!(1, 1) - sackStats!(1, 0)); (teamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
+        Print #1, Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(1, 1) - sackStats!(1, 0); allTeamStats!(1, 2) + sackStats!(1, 1); (allTeamStats!(1, 2) + sackStats!(1, 1)) / (allTeamStats!(1, 1) - sackStats!(1, 0)); (allTeamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
     End If
 
     Print #1,
@@ -1900,60 +1791,60 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     I = 0
 
     For I1 = 0 To 5
-        If playerStats!(I1, 6) <> 0 Then
+        If allPlayerStats!(I1, 6) <> 0 Then
             Print #1, wrName$(I1); Tab(18);
-            Print #1, Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 6); playerStats!(I1, 7); playerStats!(I1, 7) / playerStats!(I1, 6); playerStats!(I1, 7) / totalGames%; playerStats!(I1, 8);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; allPlayerStats!(I1, 6); allPlayerStats!(I1, 7); allPlayerStats!(I1, 7) / allPlayerStats!(I1, 6); allPlayerStats!(I1, 7) / totalGames%; allPlayerStats!(I1, 8);
             Print #1, Using "###"; statsLRec!(I1 + 10);
             Print #1, statsLRec$(I1 + 10, 0); Tab(64); statsLRec$(I1 + 10, 1)
         End If
     Next I1
 
     For I1 = 0 To 9
-        If playerStats!(I1, 3) <> 0 Then
+        If allPlayerStats!(I1, 3) <> 0 Then
             Print #1, rbName$(I1); Tab(18);
-            Print #1, Using "####  ####   ##.#      ###.#    ##    "; playerStats!(I1, 3); playerStats!(I1, 4); playerStats!(I1, 4) / playerStats!(I1, 3); playerStats!(I1, 4) / totalGames%; playerStats!(I1, 5);
+            Print #1, Using "####  ####   ##.#      ###.#    ##    "; allPlayerStats!(I1, 3); allPlayerStats!(I1, 4); allPlayerStats!(I1, 4) / allPlayerStats!(I1, 3); allPlayerStats!(I1, 4) / totalGames%; allPlayerStats!(I1, 5);
             Print #1, Using "###"; statsLRec!(I1);
             Print #1, statsLRec$(I1, 0); Tab(64); statsLRec$(I1, 1)
         End If
     Next I1
 
     Print #1, teamName$; Tab(18);
-    Print #1, Using "####  ####   "; teamStats!(0, 4); teamStats!(0, 6);
+    Print #1, Using "####  ####   "; allTeamStats!(0, 4); allTeamStats!(0, 6);
 
-    If teamStats!(0, 4) = 0 Then
+    If allTeamStats!(0, 4) = 0 Then
         Print #1, "  --";
     Else
-        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+        Print #1, Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
 
-    Print #1, Using "      ###.#    ##"; teamStats!(0, 6) / totalGames%; statsTeam!(17)
+    Print #1, Using "      ###.#    ##"; allTeamStats!(0, 6) / totalGames%; statsTeam!(17)
     Print #1, "OPPONENT TOTALS"; Tab(18);
-    Print #1, Using "####  ####   "; teamStats!(1, 4); teamStats!(1, 6);
+    Print #1, Using "####  ####   "; allTeamStats!(1, 4); allTeamStats!(1, 6);
 
-    If teamStats!(1, 4) = 0 Then
+    If allTeamStats!(1, 4) = 0 Then
         Print #1, "  --";
     Else
-        Print #1, Using "##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+        Print #1, Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4);
     End If
 
-    Print #1, Using "      ###.#    ##"; teamStats!(1, 6) / totalGames%; statsOpp!(17)
+    Print #1, Using "      ###.#    ##"; allTeamStats!(1, 6) / totalGames%; statsOpp!(17)
 
     Print #1,
     Print #1, "PASSING           ATT  COM COM %  YDS  Y/A  Y/C   Y/G  TD   I    I%  EFF RATING"
 
     For I1 = 0 To 3
 
-        If playerStats!(I1, 9) <> 0 Then
+        If allPlayerStats!(I1, 9) <> 0 Then
 
-            Print #1, qbName$(I1); Tab(18); Using "####  ### ###.# #### ##.#"; playerStats!(I1, 9); playerStats!(I1, 10); playerStats!(I1, 10) / playerStats!(I1, 9) * 100; playerStats!(I1, 12); playerStats!(I1, 12) / playerStats!(I1, 9);
+            Print #1, qbName$(I1); Tab(18); Using "####  ### ###.# #### ##.#"; allPlayerStats!(I1, 9); allPlayerStats!(I1, 10); allPlayerStats!(I1, 10) / allPlayerStats!(I1, 9) * 100; allPlayerStats!(I1, 12); allPlayerStats!(I1, 12) / allPlayerStats!(I1, 9);
 
-            If playerStats!(I1, 10) = 0 Then
+            If allPlayerStats!(I1, 10) = 0 Then
                 Print #1, "   --";
             Else
-                Print #1, Using " ##.#"; playerStats!(I1, 12) / playerStats!(I1, 10);
+                Print #1, Using " ##.#"; allPlayerStats!(I1, 12) / allPlayerStats!(I1, 10);
             End If
 
-            Print #1, Using " ###.# ### ### ###.#     "; playerStats!(I1, 12) / totalGames%; playerStats!(I1, 13); playerStats!(I1, 11); playerStats!(I1, 11) / playerStats!(I1, 9) * 100;
+            Print #1, Using " ###.# ### ### ###.#     "; allPlayerStats!(I1, 12) / totalGames%; allPlayerStats!(I1, 13); allPlayerStats!(I1, 11); allPlayerStats!(I1, 11) / allPlayerStats!(I1, 9) * 100;
 
             awayTies! = QBRating!(I1, statFormat)
 
@@ -1964,63 +1855,63 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     Next I1
 
     Print #1, teamName$; Tab(18);
-    Print #1, Using "####  ### "; teamStats!(0, 3); teamStats!(0, 4);
+    Print #1, Using "####  ### "; allTeamStats!(0, 3); allTeamStats!(0, 4);
 
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print #1, "   --";
     Else
-        Print #1, Using "###.#"; teamStats!(0, 4) / teamStats!(0, 3) * 100;
+        Print #1, Using "###.#"; allTeamStats!(0, 4) / allTeamStats!(0, 3) * 100;
     End If
 
-    Print #1, Using "#### "; teamStats!(0, 6);
+    Print #1, Using "#### "; allTeamStats!(0, 6);
 
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print #1, "  --";
     Else
-        Print #1, Using "##.#"; teamStats!(0, 6) / teamStats!(0, 3);
+        Print #1, Using "##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 3);
     End If
-    If teamStats!(0, 4) = 0 Then
+    If allTeamStats!(0, 4) = 0 Then
         Print #1, "   --";
     Else
-        Print #1, Using " ##.#"; teamStats!(0, 6) / teamStats!(0, 4);
+        Print #1, Using " ##.#"; allTeamStats!(0, 6) / allTeamStats!(0, 4);
     End If
 
-    Print #1, Using " ###.# ### ### "; teamStats!(0, 6) / totalGames%; statsTeam!(17); teamStats!(0, 5);
+    Print #1, Using " ###.# ### ### "; allTeamStats!(0, 6) / totalGames%; statsTeam!(17); allTeamStats!(0, 5);
 
-    If teamStats!(0, 3) = 0 Then
+    If allTeamStats!(0, 3) = 0 Then
         Print #1, "   --";
     Else
-        Print #1, Using "###.#     "; teamStats!(0, 5) / teamStats!(0, 3) * 100
+        Print #1, Using "###.#     "; allTeamStats!(0, 5) / allTeamStats!(0, 3) * 100
     End If
 
     Print #1, "OPPONENT TOTALS"; Tab(18);
-    Print #1, Using "####  ### "; teamStats!(1, 3); teamStats!(1, 4);
+    Print #1, Using "####  ### "; allTeamStats!(1, 3); allTeamStats!(1, 4);
 
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print #1, "   --";
     Else
-        Print #1, Using "###.#"; teamStats!(1, 4) / teamStats!(1, 3) * 100;
+        Print #1, Using "###.#"; allTeamStats!(1, 4) / allTeamStats!(1, 3) * 100;
     End If
 
-    Print #1, Using "#### "; teamStats!(1, 6);
+    Print #1, Using "#### "; allTeamStats!(1, 6);
 
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print #1, "  --";
     Else
-        Print #1, Using "##.#"; teamStats!(1, 6) / teamStats!(1, 3);
+        Print #1, Using "##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 3);
     End If
-    If teamStats!(1, 4) = 0 Then
+    If allTeamStats!(1, 4) = 0 Then
         Print #1, "  --";
     Else
-        Print #1, Using " ##.#"; teamStats!(1, 6) / teamStats!(1, 4);
+        Print #1, Using " ##.#"; allTeamStats!(1, 6) / allTeamStats!(1, 4);
     End If
 
-    Print #1, Using " ###.# ### ### "; teamStats!(1, 6) / totalGames%; statsOpp!(17); teamStats!(1, 5);
+    Print #1, Using " ###.# ### ### "; allTeamStats!(1, 6) / totalGames%; statsOpp!(17); allTeamStats!(1, 5);
 
-    If teamStats!(1, 3) = 0 Then
+    If allTeamStats!(1, 3) = 0 Then
         Print #1, "   --"
     Else
-        Print #1, Using "###.#     "; teamStats!(1, 5) / teamStats!(1, 3) * 100
+        Print #1, Using "###.#     "; allTeamStats!(1, 5) / allTeamStats!(1, 3) * 100
     End If
 
     Print #1,
@@ -2028,7 +1919,7 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     Print #1, "PASSING           LONG PASS    AGAINST"
 
     For I1 = 0 To 3
-        If playerStats!(I1, 9) <> 0 Then
+        If allPlayerStats!(I1, 9) <> 0 Then
             Print #1, qbName$(I1); Tab(22); Using "###"; statsLPass!(I1);
             Print #1, statsLPass$(I1, 0); Tab(32); statsLPass$(I1, 1)
         End If
@@ -2040,15 +1931,15 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     I = 0
 
     For I1 = 0 To 2
-        If playerStats!(I1, 14) <> 0 Then
+        If allPlayerStats!(I1, 14) <> 0 Then
             Print #1, krName$(I1); Tab(18);
-            Print #1, Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
-            If playerStats!(I1, 14) = 0 Then
+            Print #1, Using "####  ####   "; allPlayerStats!(I1, 14); allPlayerStats!(I1, 15);
+            If allPlayerStats!(I1, 14) = 0 Then
                 Print #1, "  --";
             Else
-                Print #1, Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+                Print #1, Using "##.#"; allPlayerStats!(I1, 15) / allPlayerStats!(I1, 14);
             End If
-            Print #1, Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print #1, Using "      ###.#    ##    "; allPlayerStats!(I1, 15) / totalGames%; allPlayerStats!(I1, 16);
             Print #1, Using "###"; statsLKR!(I1);: Print #1, statsLKR$(I1, 0); Tab(64); statsLKR$(I1, 1)
         End If
     Next I1
@@ -2077,15 +1968,15 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     I = 0
 
     For I1 = 3 To 5
-        If playerStats!(I1, 14) <> 0 Then
+        If allPlayerStats!(I1, 14) <> 0 Then
             Print #1, prName$(I1 - 3); Tab(18);
-            Print #1, Using "####  ####   "; playerStats!(I1, 14); playerStats!(I1, 15);
-            If playerStats!(I1, 14) = 0 Then
+            Print #1, Using "####  ####   "; allPlayerStats!(I1, 14); allPlayerStats!(I1, 15);
+            If allPlayerStats!(I1, 14) = 0 Then
                 Print #1, "  --";
             Else
-                Print #1, Using "##.#"; playerStats!(I1, 15) / playerStats!(I1, 14);
+                Print #1, Using "##.#"; allPlayerStats!(I1, 15) / allPlayerStats!(I1, 14);
             End If
-            Print #1, Using "      ###.#    ##    "; playerStats!(I1, 15) / totalGames%; playerStats!(I1, 16);
+            Print #1, Using "      ###.#    ##    "; allPlayerStats!(I1, 15) / totalGames%; allPlayerStats!(I1, 16);
             Print #1, Using "###"; statsLPR!(I1 - 3);: Print #1, statsLPR$(I1 - 3, 0); Tab(64); statsLPR$(I1 - 3, 1)
         End If
     Next I1
@@ -2111,30 +2002,30 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
     I = 0
 
     Print #1, "PUNTING           PNT   YDS  YDS/PNT  PNT/GAME  IN-20  BLKD  LONG PNT"
-    Print #1, punterName$(0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; teamStats!(0, 7); teamStats!(0, 8); teamStats!(0, 8) / teamStats!(0, 7); teamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
-    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; teamStats!(1, 7); teamStats!(1, 8); teamStats!(1, 8) / teamStats!(1, 7); teamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
+    Print #1, punterName$(0); Tab(18); Using "####  ####    ##.#    ##.#      ##     ##      ##"; allTeamStats!(0, 7); allTeamStats!(0, 8); allTeamStats!(0, 8) / allTeamStats!(0, 7); allTeamStats!(0, 7) / totalGames%; statsTeam!(31); statsTeam!(30); statsTeam!(28)
+    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ##.#      ##     ##"; allTeamStats!(1, 7); allTeamStats!(1, 8); allTeamStats!(1, 8) / allTeamStats!(1, 7); allTeamStats!(1, 7) / totalGames%; statsOpp!(31); statsOpp!(30)
     Print #1,
     Print #1,
     Print #1,
     Print #1, "NET PUNTING       PNT   YDS  YDS/PNT  OPP RET  OPP RET YDS  OPP AVG  NET AVG"
-    Print #1, teamName$; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; teamStats!(0, 7); teamStats!(0, 8); teamStats!(0, 8) / teamStats!(0, 7); statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (teamStats!(0, 8) - statsOpp!(25)) / teamStats!(0, 7)
-    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; teamStats!(1, 7); teamStats!(1, 8); teamStats!(1, 8) / teamStats!(1, 7); statsTeam!(24); statsTeam!(25); statsTeam!(25) / statsTeam!(24); (teamStats!(1, 8) - statsTeam!(25)) / teamStats!(1, 7)
+    Print #1, teamName$; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; allTeamStats!(0, 7); allTeamStats!(0, 8); allTeamStats!(0, 8) / allTeamStats!(0, 7); statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); (allTeamStats!(0, 8) - statsOpp!(25)) / allTeamStats!(0, 7)
+    Print #1, "OPPONENT TOTALS"; Tab(18); Using "####  ####    ##.#    ###       ####        ##.#     ##.#"; allTeamStats!(1, 7); allTeamStats!(1, 8); allTeamStats!(1, 8) / allTeamStats!(1, 7); statsTeam!(24); statsTeam!(25); statsTeam!(25) / statsTeam!(24); (allTeamStats!(1, 8) - statsTeam!(25)) / allTeamStats!(1, 7)
     Print #1,
     Print #1,
     Print #1,
     Print #1, "KICKING"; Tab(16); "EPM EPA   EP% FGM FGA   FG% LG  0-19 20-29 30-39 40-49  50+"
 
-    If playerStats!(4, 17) <> 0 Or playerStats!(6, 17) <> 0 Then
+    If allPlayerStats!(4, 17) <> 0 Or allPlayerStats!(6, 17) <> 0 Then
         Print #1, pkName$(0);
         Print #1, Tab(16);
-        If playerStats!(6, 17) <> 0 Then
-            Print #1, Using "### ### ###.# "; playerStats!(5, 17); playerStats!(6, 17); playerStats!(5, 17) / playerStats!(6, 17) * 100;
+        If allPlayerStats!(6, 17) <> 0 Then
+            Print #1, Using "### ### ###.# "; allPlayerStats!(5, 17); allPlayerStats!(6, 17); allPlayerStats!(5, 17) / allPlayerStats!(6, 17) * 100;
         End If
-        If playerStats!(4, 17) = 0 Then
+        If allPlayerStats!(4, 17) = 0 Then
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; playerStats!(3, 17); playerStats!(4, 17); playerStats!(3, 17) / playerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
+            Print #1, Using "### ### ###.# ## ##"; allPlayerStats!(3, 17); allPlayerStats!(4, 17); allPlayerStats!(3, 17) / allPlayerStats!(4, 17) * 100; statsLFG!(0); statsFGM!(0, 0);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 0); statsFGM!(0, 1);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 1); statsFGM!(0, 2);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(0, 2); statsFGM!(0, 3);
@@ -2143,16 +2034,16 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
         End If
     End If
 
-    If playerStats!(8, 17) <> 0 Or playerStats!(10, 17) <> 0 Then
+    If allPlayerStats!(8, 17) <> 0 Or allPlayerStats!(10, 17) <> 0 Then
         Print #1, pkName$(1); Tab(16);
-        If playerStats!(10, 17) <> 0 Then
-            Print #1, Using "### ### ###.# "; playerStats!(9, 17); playerStats!(10, 17); playerStats!(9, 17) / playerStats!(10, 17) * 100;
+        If allPlayerStats!(10, 17) <> 0 Then
+            Print #1, Using "### ### ###.# "; allPlayerStats!(9, 17); allPlayerStats!(10, 17); allPlayerStats!(9, 17) / allPlayerStats!(10, 17) * 100;
         End If
-        If playerStats!(8, 17) = 0 Then
+        If allPlayerStats!(8, 17) = 0 Then
             Print #1,
         Else
             Print #1, Tab(30);
-            Print #1, Using "### ### ###.# ## ##"; playerStats!(7, 17); playerStats!(8, 17); playerStats!(7, 17) / playerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
+            Print #1, Using "### ### ###.# ## ##"; allPlayerStats!(7, 17); allPlayerStats!(8, 17); allPlayerStats!(7, 17) / allPlayerStats!(8, 17) * 100; statsLFG!(1); statsFGM!(1, 0);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 0); statsFGM!(1, 1);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 1); statsFGM!(1, 2);
             Print #1, "-";: Print #1, Using "## ##"; statsFGA!(1, 2); statsFGM!(1, 3);

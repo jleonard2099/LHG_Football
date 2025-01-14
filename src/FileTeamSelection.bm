@@ -543,7 +543,142 @@ End Sub
 'Reads in compiled stats for a given team
 Sub ReadTeamStats (teamName$, statFile$)
 
-    Shared puntName$
+    Shared statsGI(), statsGS()
+
+    Shared scoreTotals()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLPR!(), sackStats!()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
+
+    Shared intName$(), sackName$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+
+    Shared statsLFG$(), statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$()
+
+    'Load player stats
+    Open diskPaths$(1) + statFile$ For Input As #2
+
+    'We are passed teamName$ as a variable from the disk routine
+    'However the format of the files for football is such that
+    'it's also contained here.
+    'To be consistent with other games, it needs evaluated
+    'if this belongs here or somewhere else.
+    Input #2, teamName$
+
+    For I = 0 To 9:
+        Input #2, rbName$(I)
+    Next I
+
+    For I = 0 To 5:
+        Input #2, wrName$(I)
+    Next I
+
+    For I = 0 To 3:
+        Input #2, qbName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, krName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, prName$(I)
+    Next I
+
+    Input #2, punterName$(0)
+
+    For I = 0 To 1:
+        Input #2, pkName$(I)
+    Next I
+
+    For J = 0 To 13
+        For K = 0 To 17:
+            Input #2, statsPlayers!(J, K)
+        Next K
+    Next J
+
+    For L = 0 To 38:
+        Input #2, statsTeam!(L)
+    Next L
+
+    For L = 0 To 38:
+        Input #2, statsOpp!(L)
+    Next L
+
+    For J = 0 To 9:
+        Input #2, intName$(J)
+        For J1 = 0 To 2:
+            Input #2, statsGI(J, J1)
+        Next
+    Next
+
+    For J = 0 To 14:
+        Input #2, sackName$(J)
+        For J1 = 0 To 1:
+            Input #2, statsGS(J, J1)
+        Next
+    Next
+
+    For I = 0 To 9:
+        Input #2, statsLRush!(I)
+        Input #2, statsLRush$(I, 0)
+        Input #2, statsLRush$(I, 1)
+    Next
+
+    For I = 0 To 15:
+        Input #2, statsLRec!(I)
+        Input #2, statsLRec$(I, 0)
+        Input #2, statsLRec$(I, 1)
+    Next
+
+    For I = 0 To 3:
+        Input #2, statsLPass!(I)
+        Input #2, statsLPass$(I, 0)
+        Input #2, statsLPass$(I, 1)
+    Next
+
+    For I = 0 To 2:
+        Input #2, statsLKR!(I)
+        Input #2, statsLKR$(I, 0)
+        Input #2, statsLKR$(I, 1)
+    Next
+
+    For I = 0 To 2:
+        Input #2, statsLPR!(I)
+        Input #2, statsLPR$(I, 0)
+        Input #2, statsLPR$(I, 1)
+    Next
+
+    For I = 0 To 1:
+        Input #2, statsLFG!(I)
+        Input #2, statsLFG$(I)
+        For I1 = 0 To 4:
+            Input #2, statsFGM!(I, I1)
+            Input #2, statsFGA!(I, I1)
+        Next
+    Next
+
+    For I = 0 To 9:
+        Input #2, statsLInt!(I)
+        Input #2, statsLInt$(I, 0)
+        Input #2, statsLInt$(I, 1)
+    Next
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
+'      ReadTeamStatsComp Subroutine
+'----------------------------------------
+'Reads in compiled stats for a given team
+Sub ReadTeamStatsComp (teamName$, statFile$)
+
+    Shared punterName$()
 
     Shared statsGI(), statsGS()
 
@@ -600,7 +735,7 @@ Sub ReadTeamStats (teamName$, statFile$)
     Next I
 
     'Punter
-    Input #1, puntName$
+    Input #1, punterName$(0)
 
     'Place Kickers
     For I = 1 To 2:

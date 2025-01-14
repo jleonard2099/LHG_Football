@@ -4,6 +4,8 @@ Declare Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
 Declare Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 Declare Sub UserFilePrompt (reportFile$)
 Declare Sub ScheduleFilePrompt (scheduleFile$)
+
+Declare Sub ReadTeamStatsComp (teamName$, statFile$)
 Declare Sub ReadTeamStats (teamName$, statFile$)
 Declare Sub ReadScheduleStats (statFile$, XW, numberGames)
 Declare Sub ReadGameRecords (recordFile$)

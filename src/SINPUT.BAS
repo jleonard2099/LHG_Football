@@ -8,11 +8,11 @@ Sub EditStats ()
 
     _Title "3-in-1 Football - Stats Input"
 
-    Shared playerStats!(), teamStats!()
+    Shared allPlayerStats!(), allTeamStats!()
 
     Shared statsFGA!(), statsFGM!()
     Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!(), statsLPR!()
-    Shared statsTeam!(), statsOpp!(), statsPlayers!
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
 
     Shared statsGI(), statsGS()
 
@@ -41,125 +41,20 @@ Sub EditStats ()
 
     Else
 
-        Open diskPaths$(1) + statFile$ For Input As #1
-
-        Input #1, teamName$
-
-        For I = 0 To 9:
-            Input #1, rbName$(I)
-        Next I
-
-        For I = 0 To 5:
-            Input #1, wrName$(I)
-        Next I
-
-        For I = 0 To 3:
-            Input #1, qbName$(I)
-        Next I
-
-        For I = 0 To 2:
-            Input #1, krName$(I)
-        Next I
-
-        For I = 0 To 2
-            Input #1, prName$(I)
-        Next I
-
-        Input #1, punterName$(0)
-
-        For I = 0 To 1:
-            Input #1, pkName$(I)
-        Next I
-
-        For J = 0 To 13
-
-            For K = 0 To 17:
-                Input #1, statsPlayers!(J, K)
-            Next K
-
-        Next J
-
-        For L = 0 To 38:
-            Input #1, statsTeam!(L)
-        Next L
-
-        For L = 0 To 38:
-            Input #1, statsOpp!(L)
-        Next L
-
-        For J = 0 To 9:
-            Input #1, intName$(J)
-            For J1 = 0 To 2
-                Input #1, statsGI(J, J1)
-            Next J1
-        Next
-
-        For J = 0 To 14:
-            Input #1, sackName$(J)
-            For J1 = 0 To 1
-                Input #1, statsGS(J, J1)
-            Next J1
-        Next
-
-        For I = 0 To 9:
-            Input #1, statsLRush!(I)
-            Input #1, statsLRush$(I, 0)
-            Input #1, statsLRush$(I, 1)
-        Next
-
-        For I = 0 To 15:
-            Input #1, statsLRec!(I)
-            Input #1, statsLRec$(I, 0)
-            Input #1, statsLRec$(I, 1)
-        Next
-
-        For I = 0 To 3:
-            Input #1, statsLPass!(I)
-            Input #1, statsLPass$(I, 0)
-            Input #1, statsLPass$(I, 1)
-        Next
-
-        For I = 0 To 2:
-            Input #1, statsLKR!(I)
-            Input #1, statsLKR$(I, 0)
-            Input #1, statsLKR$(I, 1)
-        Next
-
-        For I = 0 To 2:
-            Input #1, statsLPR!(I)
-            Input #1, statsLPR$(I, 0)
-            Input #1, statsLPR$(I, 1)
-        Next
-
-        For I = 0 To 1:
-            Input #1, statsLFG!(I)
-            Input #1, statsLFG$(I)
-            For I1 = 0 To 4:
-                Input #1, statsFGM!(I, I1)
-                Input #1, statsFGA!(I, I1)
-            Next
-        Next
-
-        For I = 0 To 9:
-            Input #1, statsLInt!(I)
-            Input #1, statsLInt$(I, 0)
-            Input #1, statsLInt$(I, 1)
-        Next
-
-        Close #1
+        Call ReadTeamStats (teamName$, statFile$)
 
         For J = 0 To 13
             For K = 0 To 17:
-                playerStats!(J, K) = statsPlayers!(J, K)
+                allPlayerStats!(J, K) = statsPlayers!(J, K)
             Next K
         Next J
 
         For L = 0 To 12:
-            teamStats!(0, L) = statsTeam!(L)
+            allTeamStats!(0, L) = statsTeam!(L)
         Next L
 
         For L = 0 To 12:
-            teamStats!(1, L) = statsOpp!(L)
+            allTeamStats!(1, L) = statsOpp!(L)
         Next L
 
         sackStats!(0, 0) = statsTeam!(13)
@@ -179,19 +74,19 @@ Sub EditStats ()
         Locate 4, 1
 
         Print "1. STAT FILE NAME  "; statFile$
-        Print "2. TM 1ST DOWNS "; teamStats!(0, 0)
-        Print "3. TM RUSH ATT "; teamStats!(0, 1)
-        Print "4. TM RUSH YDS "; Int(teamStats!(0, 2))
-        Print "5. TM PASS ATT "; teamStats!(0, 3)
-        Print "6. TM PASS COM "; teamStats!(0, 4)
-        Print "7. TM PASS INT "; teamStats!(0, 5)
-        Print "8. TM PASS YDS "; Int(teamStats!(0, 6))
-        Print "9. TM PUNTS "; teamStats!(0, 7)
-        Print "10. TM TOTAL PUNT YDS "; Int(teamStats!(0, 8))
-        Print "11. TM FUMBLES "; teamStats!(0, 9)
-        Print "12. TM FUM LOST "; teamStats!(0, 10)
-        Print "13. TM PENALTIES "; teamStats!(0, 11)
-        Print "14. TM PENALTY YDS "; Int(teamStats!(0, 12))
+        Print "2. TM 1ST DOWNS "; allTeamStats!(0, 0)
+        Print "3. TM RUSH ATT "; allTeamStats!(0, 1)
+        Print "4. TM RUSH YDS "; Int(allTeamStats!(0, 2))
+        Print "5. TM PASS ATT "; allTeamStats!(0, 3)
+        Print "6. TM PASS COM "; allTeamStats!(0, 4)
+        Print "7. TM PASS INT "; allTeamStats!(0, 5)
+        Print "8. TM PASS YDS "; Int(allTeamStats!(0, 6))
+        Print "9. TM PUNTS "; allTeamStats!(0, 7)
+        Print "10. TM TOTAL PUNT YDS "; Int(allTeamStats!(0, 8))
+        Print "11. TM FUMBLES "; allTeamStats!(0, 9)
+        Print "12. TM FUM LOST "; allTeamStats!(0, 10)
+        Print "13. TM PENALTIES "; allTeamStats!(0, 11)
+        Print "14. TM PENALTY YDS "; Int(allTeamStats!(0, 12))
         Print "15. TM TIMES SACKED "; sackStats!(0, 0)
         Print "16. TM YARDS LOST FROM SACKS "; Int(sackStats!(0, 1))
 
@@ -210,67 +105,67 @@ Sub EditStats ()
 
                 Case 2
                     Locate 5, 18: Print Space$(10)
-                    Locate 5, 1: Input " 2. TM 1ST DOWNS "; teamStats!(0, 0)
+                    Locate 5, 1: Input " 2. TM 1ST DOWNS "; allTeamStats!(0, 0)
                     Locate 5, 18: Print " "
 
                 Case 3
                     Locate 6, 17: Print Space$(10)
-                    Locate 6, 1: Input " 3. TM RUSH ATT "; teamStats!(0, 1)
+                    Locate 6, 1: Input " 3. TM RUSH ATT "; allTeamStats!(0, 1)
                     Locate 6, 17: Print " "
 
                 Case 4
                     Locate 7, 17: Print Space$(10)
-                    Locate 7, 1: Input " 4. TM RUSH YDS "; teamStats!(0, 2)
+                    Locate 7, 1: Input " 4. TM RUSH YDS "; allTeamStats!(0, 2)
                     Locate 7, 17: Print " "
 
                 Case 5
                     Locate 8, 17: Print Space$(10)
-                    Locate 8, 1: Input " 5. TM PASS ATT "; teamStats!(0, 3)
+                    Locate 8, 1: Input " 5. TM PASS ATT "; allTeamStats!(0, 3)
                     Locate 8, 17: Print " "
 
                 Case 6
                     Locate 9, 17: Print Space$(10)
-                    Locate 9, 1: Input " 6. TM PASS COM "; teamStats!(0, 4)
+                    Locate 9, 1: Input " 6. TM PASS COM "; allTeamStats!(0, 4)
                     Locate 9, 17: Print " "
 
                 Case 7
                     Locate 10, 17: Print Space$(10)
-                    Locate 10, 1: Input " 7. TM PASS INT "; teamStats!(0, 5)
+                    Locate 10, 1: Input " 7. TM PASS INT "; allTeamStats!(0, 5)
                     Locate 10, 17: Print " "
 
                 Case 8
                     Locate 11, 17: Print Space$(10)
-                    Locate 11, 1: Input " 8. TM PASS YDS "; teamStats!(0, 6)
+                    Locate 11, 1: Input " 8. TM PASS YDS "; allTeamStats!(0, 6)
                     Locate 11, 17: Print " "
 
                 Case 9
                     Locate 12, 14: Print Space$(10)
-                    Locate 12, 1: Input " 9. TM PUNTS "; teamStats!(0, 7)
+                    Locate 12, 1: Input " 9. TM PUNTS "; allTeamStats!(0, 7)
                     Locate 12, 14: Print " "
 
                 Case 10
                     Locate 13, 23: Print Space$(10)
-                    Locate 13, 1: Input "10. TM TOTAL PUNT YDS "; teamStats!(0, 8)
+                    Locate 13, 1: Input "10. TM TOTAL PUNT YDS "; allTeamStats!(0, 8)
                     Locate 13, 23: Print " "
 
                 Case 11
                     Locate 14, 16: Print Space$(10)
-                    Locate 14, 1: Input "11. TM FUMBLES "; teamStats!(0, 9)
+                    Locate 14, 1: Input "11. TM FUMBLES "; allTeamStats!(0, 9)
                     Locate 14, 16: Print " "
 
                 Case 12
                     Locate 15, 17: Print Space$(10)
-                    Locate 15, 1: Input "12. TM FUM LOST "; teamStats!(0, 10)
+                    Locate 15, 1: Input "12. TM FUM LOST "; allTeamStats!(0, 10)
                     Locate 15, 17: Print " "
 
                 Case 13
                     Locate 16, 18: Print Space$(10)
-                    Locate 16, 1: Input "13. TM PENALTIES "; teamStats!(0, 11)
+                    Locate 16, 1: Input "13. TM PENALTIES "; allTeamStats!(0, 11)
                     Locate 16, 18: Print " "
 
                 Case 14
                     Locate 17, 20: Print Space$(10)
-                    Locate 17, 1: Input "14. TM PENALTY YDS "; teamStats!(0, 12)
+                    Locate 17, 1: Input "14. TM PENALTY YDS "; allTeamStats!(0, 12)
                     Locate 17, 20: Print " "
 
                 Case 15
@@ -300,19 +195,19 @@ Sub EditStats ()
         Call TITLE_STAT_HEADER(X$)
 
         Locate 4, 1
-        Print "1. TM 1ST DOWNS "; teamStats!(1, 0)
-        Print "2. TM RUSH ATT "; teamStats!(1, 1)
-        Print "3. TM RUSH YDS "; Int(teamStats!(1, 2))
-        Print "4. TM PASS ATT "; teamStats!(1, 3)
-        Print "5. TM PASS COM "; teamStats!(1, 4)
-        Print "6. TM PASS INT "; teamStats!(1, 5)
-        Print "7. TM PASS YDS "; Int(teamStats!(1, 6))
-        Print "8. TM PUNTS "; teamStats!(1, 7)
-        Print "9. TM TOTAL PUNT YDS "; Int(teamStats!(1, 8))
-        Print "10. TM FUMBLES "; teamStats!(1, 9)
-        Print "11. TM FUM LOST "; teamStats!(1, 10)
-        Print "12. TM PENALTIES "; teamStats!(1, 11)
-        Print "13. TM PENALTY YDS "; Int(teamStats!(1, 12))
+        Print "1. TM 1ST DOWNS "; allTeamStats!(1, 0)
+        Print "2. TM RUSH ATT "; allTeamStats!(1, 1)
+        Print "3. TM RUSH YDS "; Int(allTeamStats!(1, 2))
+        Print "4. TM PASS ATT "; allTeamStats!(1, 3)
+        Print "5. TM PASS COM "; allTeamStats!(1, 4)
+        Print "6. TM PASS INT "; allTeamStats!(1, 5)
+        Print "7. TM PASS YDS "; Int(allTeamStats!(1, 6))
+        Print "8. TM PUNTS "; allTeamStats!(1, 7)
+        Print "9. TM TOTAL PUNT YDS "; Int(allTeamStats!(1, 8))
+        Print "10. TM FUMBLES "; allTeamStats!(1, 9)
+        Print "11. TM FUM LOST "; allTeamStats!(1, 10)
+        Print "12. TM PENALTIES "; allTeamStats!(1, 11)
+        Print "13. TM PENALTY YDS "; Int(allTeamStats!(1, 12))
         Print "14. TM TIMES SACKED "; sackStats!(1, 0)
         Print "15. TM YARDS LOST FROM SACKS "; Int(sackStats!(1, 1))
 
@@ -327,67 +222,67 @@ Sub EditStats ()
 
                 Case 1
                     Locate 4, 18: Print Space$(10)
-                    Locate 4, 1: Input " 1. TM 1ST DOWNS "; teamStats!(1, 0)
+                    Locate 4, 1: Input " 1. TM 1ST DOWNS "; allTeamStats!(1, 0)
                     Locate 4, 18: Print " "
 
                 Case 2
                     Locate 5, 17: Print Space$(10)
-                    Locate 5, 1: Input " 2. TM RUSH ATT "; teamStats!(1, 1)
+                    Locate 5, 1: Input " 2. TM RUSH ATT "; allTeamStats!(1, 1)
                     Locate 5, 17: Print " "
 
                 Case 3
                     Locate 6, 17: Print Space$(10)
-                    Locate 6, 1: Input " 3. TM RUSH YDS "; teamStats!(1, 2)
+                    Locate 6, 1: Input " 3. TM RUSH YDS "; allTeamStats!(1, 2)
                     Locate 6, 17: Print " "
 
                 Case 4
                     Locate 7, 17: Print Space$(10)
-                    Locate 7, 1: Input " 4. TM PASS ATT "; teamStats!(1, 3)
+                    Locate 7, 1: Input " 4. TM PASS ATT "; allTeamStats!(1, 3)
                     Locate 7, 17: Print " "
 
                 Case 5
                     Locate 8, 17: Print Space$(10)
-                    Locate 8, 1: Input " 5. TM PASS COM "; teamStats!(1, 4)
+                    Locate 8, 1: Input " 5. TM PASS COM "; allTeamStats!(1, 4)
                     Locate 8, 17: Print " "
 
                 Case 6
                     Locate 9, 17: Print Space$(10)
-                    Locate 9, 1: Input " 6. TM PASS INT "; teamStats!(1, 5)
+                    Locate 9, 1: Input " 6. TM PASS INT "; allTeamStats!(1, 5)
                     Locate 9, 17: Print " "
 
                 Case 7
                     Locate 10, 17: Print Space$(10)
-                    Locate 10, 1: Input " 7. TM PASS YDS "; teamStats!(1, 6)
+                    Locate 10, 1: Input " 7. TM PASS YDS "; allTeamStats!(1, 6)
                     Locate 10, 17: Print " "
 
                 Case 8
                     Locate 11, 14: Print Space$(10)
-                    Locate 11, 1: Input " 8. TM PUNTS "; teamStats!(1, 7)
+                    Locate 11, 1: Input " 8. TM PUNTS "; allTeamStats!(1, 7)
                     Locate 11, 14: Print " "
 
                 Case 9
                     Locate 12, 23: Print Space$(10)
-                    Locate 12, 1: Input " 9. TM TOTAL PUNT YDS "; teamStats!(1, 8)
+                    Locate 12, 1: Input " 9. TM TOTAL PUNT YDS "; allTeamStats!(1, 8)
                     Locate 12, 23: Print " "
 
                 Case 10
                     Locate 13, 16: Print Space$(10)
-                    Locate 13, 1: Input "10. TM FUMBLES "; teamStats!(1, 9)
+                    Locate 13, 1: Input "10. TM FUMBLES "; allTeamStats!(1, 9)
                     Locate 13, 16: Print " "
 
                 Case 11
                     Locate 14, 17: Print Space$(10)
-                    Locate 14, 1: Input "11. TM FUM LOST "; teamStats!(1, 10)
+                    Locate 14, 1: Input "11. TM FUM LOST "; allTeamStats!(1, 10)
                     Locate 14, 17: Print " "
 
                 Case 12
                     Locate 15, 18: Print Space$(10)
-                    Locate 15, 1: Input "12. TM PENALTIES "; teamStats!(1, 11)
+                    Locate 15, 1: Input "12. TM PENALTIES "; allTeamStats!(1, 11)
                     Locate 15, 18: Print " "
 
                 Case 13
                     Locate 16, 20: Print Space$(10)
-                    Locate 16, 1: Input "13. TM PENALTY YDS "; teamStats!(1, 12)
+                    Locate 16, 1: Input "13. TM PENALTY YDS "; allTeamStats!(1, 12)
                     Locate 16, 20: Print " "
 
                 Case 14
@@ -437,12 +332,12 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; rbName$(I)
-                Print "2. RUSHING ATTEMPTS "; playerStats!(I, 0)
-                Print "3. RUSHING YARDAGE "; Int(playerStats!(I, 1))
-                Print "4. RUSHING TD'S "; playerStats!(I, 2)
-                Print "5. RECEPTIONS "; playerStats!(I, 3)
-                Print "6. RECEIVING YARDAGE "; Int(playerStats!(I, 4))
-                Print "7. RECEIVING TD'S "; playerStats!(I, 5)
+                Print "2. RUSHING ATTEMPTS "; allPlayerStats!(I, 0)
+                Print "3. RUSHING YARDAGE "; Int(allPlayerStats!(I, 1))
+                Print "4. RUSHING TD'S "; allPlayerStats!(I, 2)
+                Print "5. RECEPTIONS "; allPlayerStats!(I, 3)
+                Print "6. RECEIVING YARDAGE "; Int(allPlayerStats!(I, 4))
+                Print "7. RECEIVING TD'S "; allPlayerStats!(I, 5)
 
                 Do
 
@@ -459,32 +354,32 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 21: Print Space$(10)
-                            Locate 5, 1: Input "2. RUSHING ATTEMPTS "; playerStats!(I, 0)
+                            Locate 5, 1: Input "2. RUSHING ATTEMPTS "; allPlayerStats!(I, 0)
                             Locate 5, 21: Print " "
 
                         Case 3
                             Locate 6, 20: Print Space$(10)
-                            Locate 6, 1: Input "3. RUSHING YARDAGE "; playerStats!(I, 1)
+                            Locate 6, 1: Input "3. RUSHING YARDAGE "; allPlayerStats!(I, 1)
                             Locate 6, 20: Print " "
 
                         Case 4
                             Locate 7, 17: Print Space$(10)
-                            Locate 7, 1: Input "4. RUSHING TD'S "; playerStats!(I, 2)
+                            Locate 7, 1: Input "4. RUSHING TD'S "; allPlayerStats!(I, 2)
                             Locate 7, 17: Print " "
 
                         Case 5
                             Locate 8, 15: Print Space$(10)
-                            Locate 8, 1: Input "5. RECEPTIONS "; playerStats!(I, 3)
+                            Locate 8, 1: Input "5. RECEPTIONS "; allPlayerStats!(I, 3)
                             Locate 8, 15: Print " "
 
                         Case 6
                             Locate 9, 22: Print Space$(10)
-                            Locate 9, 1: Input "6. RECEIVING YARDAGE "; playerStats!(I, 4)
+                            Locate 9, 1: Input "6. RECEIVING YARDAGE "; allPlayerStats!(I, 4)
                             Locate 9, 22: Print " "
 
                         Case 7
                             Locate 10, 19: Print Space$(10)
-                            Locate 10, 1: Input "7. RECEIVING TD'S "; playerStats!(I, 5)
+                            Locate 10, 1: Input "7. RECEIVING TD'S "; allPlayerStats!(I, 5)
                             Locate 10, 19: Print " "
 
                     End Select
@@ -528,9 +423,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; wrName$(I)
-                Print "2. RECEPTIONS "; playerStats!(I, 6)
-                Print "3. RECEIVING YARDAGE "; Int(playerStats!(I, 7))
-                Print "4. RECEIVING TD'S "; playerStats!(I, 8)
+                Print "2. RECEPTIONS "; allPlayerStats!(I, 6)
+                Print "3. RECEIVING YARDAGE "; Int(allPlayerStats!(I, 7))
+                Print "4. RECEIVING TD'S "; allPlayerStats!(I, 8)
 
                 Do
 
@@ -547,17 +442,17 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 15: Print Space$(10)
-                            Locate 5, 1: Input "2. RECEPTIONS "; playerStats!(I, 6)
+                            Locate 5, 1: Input "2. RECEPTIONS "; allPlayerStats!(I, 6)
                             Locate 5, 15: Print " "
 
                         Case 3
                             Locate 6, 22: Print Space$(10)
-                            Locate 6, 1: Input "3. RECEIVING YARDAGE "; playerStats!(I, 7)
+                            Locate 6, 1: Input "3. RECEIVING YARDAGE "; allPlayerStats!(I, 7)
                             Locate 6, 22: Print " "
 
                         Case 4
                             Locate 7, 19: Print Space$(10)
-                            Locate 7, 1: Input "4. RECEIVING TD'S "; playerStats!(I, 8)
+                            Locate 7, 1: Input "4. RECEIVING TD'S "; allPlayerStats!(I, 8)
                             Locate 7, 19: Print " "
 
                     End Select
@@ -601,11 +496,11 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; qbName$(I)
-                Print "2. PASSES THROWN "; playerStats!(I, 9)
-                Print "3. PASSES COMPLETED "; playerStats!(I, 10)
-                Print "4. PASSES INTERCEPTED "; playerStats!(I, 11)
-                Print "5. TOTAL PASSING YARDS "; Int(playerStats!(I, 12))
-                Print "6. TOUCHDOWN PASSES "; playerStats!(I, 13)
+                Print "2. PASSES THROWN "; allPlayerStats!(I, 9)
+                Print "3. PASSES COMPLETED "; allPlayerStats!(I, 10)
+                Print "4. PASSES INTERCEPTED "; allPlayerStats!(I, 11)
+                Print "5. TOTAL PASSING YARDS "; Int(allPlayerStats!(I, 12))
+                Print "6. TOUCHDOWN PASSES "; allPlayerStats!(I, 13)
 
                 Do
 
@@ -622,27 +517,27 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 18: Print Space$(10)
-                            Locate 5, 1: Input "2. PASSES THROWN "; playerStats!(I, 9)
+                            Locate 5, 1: Input "2. PASSES THROWN "; allPlayerStats!(I, 9)
                             Locate 5, 18: Print " "
 
                         Case 3
                             Locate 6, 21: Print Space$(10)
-                            Locate 6, 1: Input "3. PASSES COMPLETED "; playerStats!(I, 10)
+                            Locate 6, 1: Input "3. PASSES COMPLETED "; allPlayerStats!(I, 10)
                             Locate 6, 21: Print " "
 
                         Case 4
                             Locate 7, 23: Print Space$(10)
-                            Locate 7, 1: Input "4. PASSES INTERCEPTED "; playerStats!(I, 11)
+                            Locate 7, 1: Input "4. PASSES INTERCEPTED "; allPlayerStats!(I, 11)
                             Locate 7, 23: Print " "
 
                         Case 5
                             Locate 8, 24: Print Space$(10)
-                            Locate 8, 1: Input "5. TOTAL PASSING YARDS "; playerStats!(I, 12)
+                            Locate 8, 1: Input "5. TOTAL PASSING YARDS "; allPlayerStats!(I, 12)
                             Locate 8, 24: Print " "
 
                         Case 6
                             Locate 9, 21: Print Space$(10)
-                            Locate 9, 1: Input "6. TOUCHDOWN PASSES "; playerStats!(I, 13)
+                            Locate 9, 1: Input "6. TOUCHDOWN PASSES "; allPlayerStats!(I, 13)
                             Locate 9, 21: Print " "
 
                     End Select
@@ -686,9 +581,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; krName$(I)
-                Print "2. KICKS RETURNED "; playerStats!(I, 14)
-                Print "3. KICK RETURN YARDAGE "; Int(playerStats!(I, 15))
-                Print "4. KICK RETURN TD'S "; playerStats!(I, 16)
+                Print "2. KICKS RETURNED "; allPlayerStats!(I, 14)
+                Print "3. KICK RETURN YARDAGE "; Int(allPlayerStats!(I, 15))
+                Print "4. KICK RETURN TD'S "; allPlayerStats!(I, 16)
 
                 Do
 
@@ -705,17 +600,17 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 19: Print Space$(10)
-                            Locate 5, 1: Input "2. KICKS RETURNED"; playerStats!(I, 14)
+                            Locate 5, 1: Input "2. KICKS RETURNED"; allPlayerStats!(I, 14)
                             Locate 5, 19: Print " "
 
                         Case 3
                             Locate 6, 24: Print Space$(10)
-                            Locate 6, 1: Input "3. KICK RETURN YARDAGE"; playerStats!(I, 15)
+                            Locate 6, 1: Input "3. KICK RETURN YARDAGE"; allPlayerStats!(I, 15)
                             Locate 6, 24: Print " "
 
                         Case 4
                             Locate 7, 21: Print Space$(10)
-                            Locate 7, 1: Input "4. KICK RETURN TD'S "; playerStats!(I, 16)
+                            Locate 7, 1: Input "4. KICK RETURN TD'S "; allPlayerStats!(I, 16)
                             Locate 7, 21: Print " "
 
                     End Select
@@ -759,9 +654,9 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; prName$(I - 3)
-                Print "2. PUNTS RETURNED "; playerStats!(I, 14)
-                Print "3. PUNT RETURN YARDAGE "; Int(playerStats!(I, 15))
-                Print "4. PUNT RETURN TD'S "; playerStats!(I, 16)
+                Print "2. PUNTS RETURNED "; allPlayerStats!(I, 14)
+                Print "3. PUNT RETURN YARDAGE "; Int(allPlayerStats!(I, 15))
+                Print "4. PUNT RETURN TD'S "; allPlayerStats!(I, 16)
 
                 Do
 
@@ -778,17 +673,17 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 19: Print Space$(10)
-                            Locate 5, 1: Input "2. PUNTS RETURNED "; playerStats!(I, 14)
+                            Locate 5, 1: Input "2. PUNTS RETURNED "; allPlayerStats!(I, 14)
                             Locate 5, 19: Print " "
 
                         Case 3
                             Locate 6, 24: Print Space$(10)
-                            Locate 6, 1: Input "3. PUNT RETURN YARDAGE "; playerStats!(I, 15)
+                            Locate 6, 1: Input "3. PUNT RETURN YARDAGE "; allPlayerStats!(I, 15)
                             Locate 6, 24: Print " "
 
                         Case 4
                             Locate 7, 21: Print Space$(10)
-                            Locate 7, 1: Input "4. PUNT RETURN TD'S "; playerStats!(I, 16)
+                            Locate 7, 1: Input "4. PUNT RETURN TD'S "; allPlayerStats!(I, 16)
                             Locate 7, 21: Print " "
 
                     End Select
@@ -812,8 +707,8 @@ Sub EditStats ()
 
         Locate 4, 1
         Print "1. NAME  "; punterName$(0)
-        Print "2. PUNTS "; teamStats!(0, 7)
-        Print "3. TOTAL PUNT YARDAGE "; Int(teamStats!(0, 8))
+        Print "2. PUNTS "; allTeamStats!(0, 7)
+        Print "3. TOTAL PUNT YARDAGE "; Int(allTeamStats!(0, 8))
 
         Do
 
@@ -830,12 +725,12 @@ Sub EditStats ()
 
                 Case 2
                     Locate 5, 10: Print Space$(10)
-                    Locate 5, 1: Input "2. PUNTS "; teamStats!(0, 7)
+                    Locate 5, 1: Input "2. PUNTS "; allTeamStats!(0, 7)
                     Locate 5, 10: Print " "
 
                 Case 3
                     Locate 6, 23: Print Space$(10)
-                    Locate 6, 1: Input "3. TOTAL PUNT YARDAGE "; teamStats!(0, 8)
+                    Locate 6, 1: Input "3. TOTAL PUNT YARDAGE "; allTeamStats!(0, 8)
                     Locate 6, 23: Print " "
 
             End Select
@@ -875,10 +770,10 @@ Sub EditStats ()
 
                 Locate 4, 1
                 Print "1. NAME  "; pkName$(I)
-                Print "2. FIELD GOALS ATT "; playerStats!(4 + I * 4, 17)
-                Print "3. FIELD GOALS MADE "; playerStats!(3 + I * 4, 17)
-                Print "4. EXTRA POINTS ATT "; playerStats!(6 + I * 4, 17)
-                Print "5. EXTRA POINTS MADE "; playerStats!(5 + I * 4, 17)
+                Print "2. FIELD GOALS ATT "; allPlayerStats!(4 + I * 4, 17)
+                Print "3. FIELD GOALS MADE "; allPlayerStats!(3 + I * 4, 17)
+                Print "4. EXTRA POINTS ATT "; allPlayerStats!(6 + I * 4, 17)
+                Print "5. EXTRA POINTS MADE "; allPlayerStats!(5 + I * 4, 17)
 
                 Do
 
@@ -895,22 +790,22 @@ Sub EditStats ()
 
                         Case 2
                             Locate 5, 20: Print Space$(10)
-                            Locate 5, 1: Input "2. FIELD GOALS ATT "; playerStats!(4 + I * 4, 17)
+                            Locate 5, 1: Input "2. FIELD GOALS ATT "; allPlayerStats!(4 + I * 4, 17)
                             Locate 5, 20: Print " "
 
                         Case 3
                             Locate 6, 21: Print Space$(10)
-                            Locate 6, 1: Input "3. FIELD GOALS MADE "; playerStats!(3 + I * 4, 17)
+                            Locate 6, 1: Input "3. FIELD GOALS MADE "; allPlayerStats!(3 + I * 4, 17)
                             Locate 6, 21: Print " "
 
                         Case 4
                             Locate 7, 21: Print Space$(10)
-                            Locate 7, 1: Input "4. EXTRA POINTS ATT "; playerStats!(6 + I * 4, 17)
+                            Locate 7, 1: Input "4. EXTRA POINTS ATT "; allPlayerStats!(6 + I * 4, 17)
                             Locate 7, 21: Print " "
 
                         Case 5
                             Locate 7, 22: Print Space$(10)
-                            Locate 8, 1: Input "5. EXTRA POINTS MADE "; playerStats!(5 + I * 4, 17)
+                            Locate 8, 1: Input "5. EXTRA POINTS MADE "; allPlayerStats!(5 + I * 4, 17)
                             Locate 7, 22: Print " "
 
                     End Select
@@ -930,16 +825,16 @@ Sub EditStats ()
         '-------------------------
         For J = 0 To 13
             For K = 0 To 17
-                statsPlayers!(J, K) = playerStats!(J, K)
+                statsPlayers!(J, K) = allPlayerStats!(J, K)
             Next K
         Next J
 
         For L = 0 To 12:
-            statsTeam!(L) = teamStats!(0, L)
+            statsTeam!(L) = allTeamStats!(0, L)
         Next L
 
         For L = 0 To 12:
-            statsOpp!(L) = teamStats!(1, L)
+            statsOpp!(L) = allTeamStats!(1, L)
         Next L
 
         statsTeam!(13) = sackStats!(0, 0)

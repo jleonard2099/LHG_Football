@@ -5,7 +5,7 @@
 'for a league, then calculates the standings
 'for that league and writes a  corresponding
 '.STD file.
-Sub UpdateExpandedStandings (league$, orgType)
+Sub UpdateExpandedStandings (orgType)
 
     Shared totHomeLosses(), totHomeWins(), totHomeTies()
     Shared totRoadLosses(), totRoadWins(), totRoadTies()
@@ -20,7 +20,7 @@ Sub UpdateExpandedStandings (league$, orgType)
     Shared locIndicator$(), oppName$()
     Shared memberName$(), expStdLeagName$()
 
-    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$, leagueName$
 
     If orgType = 1 Then
         TEAM_LIMIT = TEAMS_PER_LEAGUE
@@ -142,11 +142,11 @@ Sub UpdateExpandedStandings (league$, orgType)
 
     Next KK
 
-    Open diskPaths$(2) + league$ + ".STD" For Output As #3
+    Open diskPaths$(2) + leagueName$ + ".STD" For Output As #3
 
     Write #3, orgType
 
-    Write #3, league$, div1Name$, div2Name$, div3Name$, div4Name$
+    Write #3, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
     For I = 1 To TEAM_LIMIT
         Write #3, totTeamWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totHomeTies(I), totRoadTies(I), totTeamTies(I), expStdLeagName$(I)

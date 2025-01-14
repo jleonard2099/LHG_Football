@@ -356,7 +356,7 @@ Dim indRecCategory$(46), teamRecCategory$(43)
 
 Dim gameCount(30), scoreTotals(1)
 
-Dim playerStats!(13, 17), sackStats!(1, 1), teamStats!(1, 12)
+Dim allPlayerStats!(13, 17), allTeamStats!(1, 12), sackStats!(1, 1)
 
 Dim schedStatTeam$(31, 0 To 29)
 Dim schedStatVal!(31, 0 To 29)

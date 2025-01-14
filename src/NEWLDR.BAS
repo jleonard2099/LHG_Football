@@ -99,7 +99,7 @@ Sub NEWLDR (statType)
                             Color 15, 0
                             Cls
                             Call ReadConferenceStats(leagStatFile$, statType)
-                            Call UpdateExpandedStandings(leagStatFile$, statType)
+                            Call UpdateExpandedStandings(statType)
                         End If
 
                     Loop Until FileExit% = 27 Or FileExit% = 0
@@ -124,7 +124,7 @@ Sub NEWLDR (statType)
 
                             If fileType = statType Then
 
-                                Input #2, league$, div1Name$, div2Name$, div3Name$, div4Name$
+                                Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
                                 For I = 1 To TEAM_LIMIT
                                     Input #2, totTeamWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totTeamTies(I), expStdLeagName$(I)
@@ -156,14 +156,14 @@ Sub NEWLDR (statType)
                                         Case "F"
                                             userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
                                             If userFile$ <> "" Then
-                                                Call NewStandings_Report(0, userFile$, league$, statType)
+                                                Call NewStandings_Report(0, userFile$, leagueName$, statType)
                                             End If
 
                                         Case "P"
-                                            Call NewStandings_Report(1, "REPORT", league$, statType)
+                                            Call NewStandings_Report(1, "REPORT", leagueName$, statType)
 
                                         Case "S":
-                                            Call NewStandings_Screen(league$, statType)
+                                            Call NewStandings_Screen(leagueName$, statType)
 
                                     End Select
 

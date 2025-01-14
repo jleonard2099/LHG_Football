@@ -1127,7 +1127,7 @@ End Sub
 'stats, adds the team's stats to them,
 'then overwrites the career file with the
 'new values.
-Sub AddCareerYear (statYear, finalUpdate, careerFile$, statFile$)
+Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
 
     Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
 
