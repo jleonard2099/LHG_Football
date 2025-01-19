@@ -31,17 +31,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim JA, JB, JC, JD, JE, JF, JG, JH, JI
-
-Dim expLdrVal!(480)
-Dim expLdrTeam$(480), expLdrPlyrName$(480), expLdrTD$(480)
-Dim expLdrKRName$(90), expLdrKRTeam$(90), expLdrPRName$(90), expLdrPRTeam$(90)
-Dim expLdrRBName$(300), expLdrRBTeam$(300), expLdrWRName$(180), expLdrWRTeam$(180), expLdrQBTeam$(120)
-
-Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBRat!(120, 1)
-Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
-
-
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1704,6 +1693,9 @@ Sub FOOTBALL ()
 
     'quarter = 5
     'GoTo 3364
+    If autoPlay <> 1 And playerMode <> 2 Then
+        'whistle& = _SndOpen("whistle.mp3")
+    End If
 
     '----------------------------------------
     '           START OF GAME
@@ -6272,6 +6264,10 @@ Sub FOOTBALL ()
     isOffHolding = 0
 
     HANDLEPENALTY:
+    If autoPlay <> 1 Or playerMode <> 2 And whistle& Then
+        '_SndPlay whistle&
+    End If
+
     penAccepted = 0
 
     'Choice for Penalty
@@ -14611,7 +14607,7 @@ Sub PASSBALL (direction, fieldSide)
     Do
 
         Call Rolld100(recChance)
-        newRandomNum% = 0
+        qbChosen = 0
 
         For J = 15 To 10 Step -1
             If recChance <= wrNumRec(P1, J - 10) Then
@@ -14625,19 +14621,20 @@ Sub PASSBALL (direction, fieldSide)
             End If
         Next J
 
+        'Look to see if a QB was chosen
         If I3 > 9 Then
             If wdRec$(P1, I3 - 10) = qbacks$(P1, qbNumber(P1)) Then
-                newRandomNum% = 1
+                qbChosen = 1
             End If
         End If
 
         If I3 < 10 Then
             If rbacks$(P1, I3) = qbacks$(P1, qbNumber(P1)) Then
-                newRandomNum% = 1
+                qbChosen = 1
             End If
         End If
 
-    Loop Until newRandomNum% = 0
+    Loop Until qbChosen = 0
 
     Call DisplayDefense
 
