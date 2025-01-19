@@ -53,8 +53,8 @@ Sub LoadStatsForTrade (tradeIdx)
     Shared puntNam_TRADE$(), statNam_TRADE$()
 
     Shared tradeFG$(), tradeKR$()
-    Shared tradeLRec$(), tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$(), tradeLRush$()
-    Shared tradeLPR$(), tradePR$()
+    Shared recLongRecTxt$(), recLongFGTxt$(), recLongIntTxt$(), recLongKRTxt$(), recLongPassTxt$(), recLongRushTxt$()
+    Shared recLongPRTxt$(), tradePR$()
     Shared tradeQB$(), tradeRB$(), tradeWR$()
 
     Shared tradeFGA!(), tradeFGM()
@@ -153,41 +153,41 @@ Sub LoadStatsForTrade (tradeIdx)
             For I = 0 To 9: 
                 Input #1, tradeLRush!(tradeIdx, I)
                 For J1 = 0 To 1: 
-                    Input #1, tradeLRush$(tradeIdx, I, J1)
+                    Input #1, recLongRushTxt$(tradeIdx, I, J1)
                 Next
             Next
             
             For I = 0 To 15: 
                 Input #1, tradeLRec!(tradeIdx, I)
                 For J1 = 0 To 1: 
-                    Input #1, tradeLRec$(tradeIdx, I, J1)
+                    Input #1, recLongRecTxt$(tradeIdx, I, J1)
                 Next
             Next
             
             For I = 0 To 3: 
                 Input #1, tradeLPass!(tradeIdx, I)
                 For J1 = 0 To 1: 
-                    Input #1, tradeLPass$(tradeIdx, I, J1)
+                    Input #1, recLongPassTxt$(tradeIdx, I, J1)
                 Next
             Next
             
             For I = 0 To 2: 
                 Input #1, tradeLKR!(tradeIdx, I)
                 For J1 = 0 To 1: 
-                    Input #1, tradeLKR$(tradeIdx, I, J1)
+                    Input #1, recLongKRTxt$(tradeIdx, I, J1)
                 Next
             Next
             
             For I = 0 To 2: 
                 Input #1, tradeLPR!(tradeIdx, I)
                 For J1 = 0 To 1: 
-                    Input #1, tradeLPR$(tradeIdx, I, J1)
+                    Input #1, recLongPRTxt$(tradeIdx, I, J1)
                 Next
             Next
             
             For I = 0 To 1: 
                 Input #1, tradeLcompFGPct!(tradeIdx, I)
-                Input #1, tradeLFG$(tradeIdx, I)
+                Input #1, recLongFGTxt$(tradeIdx, I)
                 For I1 = 0 To 4: 
                     Input #1, tradeFGM(tradeIdx, I, I1)
                     Input #1, tradeFGA!(tradeIdx, I, I1)
@@ -196,8 +196,8 @@ Sub LoadStatsForTrade (tradeIdx)
             
             For I = 0 To 9: 
                 Input #1, tradeLInt!(tradeIdx, I)
-                Input #1, tradeLInt$(tradeIdx, I, 0)
-                Input #1, tradeLInt$(tradeIdx, I, 1)
+                Input #1, recLongIntTxt$(tradeIdx, I, 0)
+                Input #1, recLongIntTxt$(tradeIdx, I, 1)
             Next
 
             Close #1
@@ -325,7 +325,7 @@ Sub TradeRBs (W1)
     Shared tradeLRec!(), tradeLRush!(), tradePlayerStat!()
 
     Shared rbNam_TRADE$(), tmInfo_TRADE$()
-    Shared tradeLRec$(), tradeLRush$(), tradeRB$()
+    Shared recLongRecTxt$(), recLongRushTxt$(), tradeRB$()
 
     Call TITLE
 
@@ -441,11 +441,11 @@ Sub TradeRBs (W1)
     Swap rbNam_TRADE$(0, I), rbNam_TRADE$(1, I1)
     Swap rbAtt_TRADE(0, I), rbAtt_TRADE(1, I1)
     Swap tradeLRush!(0, I), tradeLRush!(1, I1)
-    Swap tradeLRush$(0, I, 0), tradeLRush$(1, I1, 0)
-    Swap tradeLRush$(0, I, 1), tradeLRush$(1, I1, 1)
+    Swap recLongRushTxt$(0, I, 0), recLongRushTxt$(1, I1, 0)
+    Swap recLongRushTxt$(0, I, 1), recLongRushTxt$(1, I1, 1)
     Swap tradeLRec!(0, I), tradeLRec!(1, I1)
-    Swap tradeLRec$(0, I, 0), tradeLRec$(1, I1, 0)
-    Swap tradeLRec$(0, I, 1), tradeLRec$(1, I1, 1)
+    Swap recLongRecTxt$(0, I, 0), recLongRecTxt$(1, I1, 0)
+    Swap recLongRecTxt$(0, I, 1), recLongRecTxt$(1, I1, 1)
     Swap rbAvg_TRADE(0, I), rbAvg_TRADE(1, I1)
     Swap rbRec_TRADE(0, I), rbRec_TRADE(1, I1)
     Swap rbRecAvg_TRADE(0, I), rbRecAvg_TRADE(1, I1)
@@ -541,7 +541,7 @@ Sub TradeWRs (W1)
     Shared tradeLRec!(), tradePlayerStat!()
 
     Shared tmInfo_TRADE$(), wrNam_TRADE$()
-    Shared tradeLRec$(), tradeWR$()
+    Shared recLongRecTxt$(), tradeWR$()
 
     Call TITLE
 
@@ -635,8 +635,8 @@ Sub TradeWRs (W1)
 
     Swap wrNam_TRADE$(0, I), wrNam_TRADE$(1, I1)
     Swap tradeLRec!(0, I + 10), tradeLRec!(1, I1 + 10)
-    Swap tradeLRec$(0, I + 10, 0), tradeLRec$(1, I1 + 10, 0)
-    Swap tradeLRec$(0, I + 10, 1), tradeLRec$(1, I1 + 10, 1)
+    Swap recLongRecTxt$(0, I + 10, 0), recLongRecTxt$(1, I1 + 10, 0)
+    Swap recLongRecTxt$(0, I + 10, 1), recLongRecTxt$(1, I1 + 10, 1)
     Swap wrRec_TRADE(0, I), wrRec_TRADE(1, I1)
     Swap wrAvg_TRADE(0, I), wrAvg_TRADE(1, I1)
     Swap tradeWR$(0, I), tradeWR$(1, I1)
@@ -711,7 +711,7 @@ Sub TradeQBs (W1)
     Shared tradeLPass!(), tradePlayerStat!()
 
     Shared qbNam_TRADE$(), tmInfo_TRADE$()
-    Shared tradeLPass$(), tradeQB$()
+    Shared recLongPassTxt$(), tradeQB$()
 
     Call TITLE
 
@@ -822,8 +822,8 @@ Sub TradeQBs (W1)
 
     Swap qbNam_TRADE$(0, I), qbNam_TRADE$(1, I1)
     Swap tradeLPass!(0, I), tradeLPass!(1, I1)
-    Swap tradeLPass$(0, I, 0), tradeLPass$(1, I1, 0)
-    Swap tradeLPass$(0, I, 1), tradeLPass$(1, I1, 1)
+    Swap recLongPassTxt$(0, I, 0), recLongPassTxt$(1, I1, 0)
+    Swap recLongPassTxt$(0, I, 1), recLongPassTxt$(1, I1, 1)
     Swap qbPA_TRADE(0, I), qbPA_TRADE(1, I1)
     Swap qbPCPct_TRADE(0, I), qbPCPct_TRADE(1, I1)
     Swap qbIntPct_TRADE(0, I), qbIntPct_TRADE(1, I1)
@@ -923,7 +923,7 @@ Sub TradeKRs (W1)
     Shared tradeLKR!(), tradePlayerStat!()
 
     Shared krNam_TRADE$(), tmInfo_TRADE$()
-    Shared tradeKR$(), tradeLKR$()
+    Shared tradeKR$(), recLongKRTxt$()
 
     Call TITLE
 
@@ -1019,8 +1019,8 @@ Sub TradeKRs (W1)
     Swap krNam_TRADE$(0, I), krNam_TRADE$(1, I1)
     Swap krNumRet_TRADE(0, I), krNumRet_TRADE(1, I1)
     Swap tradeLKR!(0, I), tradeLKR!(1, I1)
-    Swap tradeLKR$(0, I, 0), tradeLKR$(1, I1, 0)
-    Swap tradeLKR$(0, I, 1), tradeLKR$(1, I1, 1)
+    Swap recLongKRTxt$(0, I, 0), recLongKRTxt$(1, I1, 0)
+    Swap recLongKRTxt$(0, I, 1), recLongKRTxt$(1, I1, 1)
     Swap krRetAvg_TRADE(0, I), krRetAvg_TRADE(1, I1)
     Swap tradeKR$(0, I), tradeKR$(1, I1)
 
@@ -1095,7 +1095,7 @@ Sub TradePRs (W1)
     Shared tradeLPR!(), tradePlayerStat!()
 
     Shared prNam_TRADE$(), tmInfo_TRADE$()
-    Shared tradeLPR$(), tradePR$()
+    Shared recLongPRTxt$(), tradePR$()
 
     Call TITLE
 
@@ -1189,8 +1189,8 @@ Sub TradePRs (W1)
 
     Swap prNam_TRADE$(0, I), prNam_TRADE$(1, I1)
     Swap tradeLPR!(0, I), tradeLPR!(1, I1)
-    Swap tradeLPR$(0, I, 0), tradeLPR$(1, I1, 0)
-    Swap tradeLPR$(0, I, 1), tradeLPR$(1, I1, 1)
+    Swap recLongPRTxt$(0, I, 0), recLongPRTxt$(1, I1, 0)
+    Swap recLongPRTxt$(0, I, 1), recLongPRTxt$(1, I1, 1)
     Swap prRet_TRADE(0, I), prRet_TRADE(1, I1)
     Swap prRetAvg_TRADE(0, I), prRetAvg_TRADE(1, I1)
     Swap tradePR$(0, I), tradePR$(1, I1)
@@ -1976,8 +1976,8 @@ Sub SaveTrades ()
     Shared tmInfo_TRADE$(), nicks_TRADE$()
 
     Shared tradeFG$(), tradeKR$()
-    Shared tradeLRec$(), tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$(), tradeLRush$()
-    Shared tradeLPR$(), tradePR$()
+    Shared recLongRecTxt$(), recLongFGTxt$(), recLongIntTxt$(), recLongKRTxt$(), recLongPassTxt$(), recLongRushTxt$()
+    Shared recLongPRTxt$(), tradePR$()
     Shared tradeQB$(), tradeRB$(), tradeWR$()
 
     Shared tradeFGA!(), tradeFGM()
@@ -2067,41 +2067,41 @@ Sub SaveTrades ()
             For I = 0 To 9: 
                 Print #1, tradeLRush!(saveIdx, I)
                 For J1 = 0 To 1: 
-                    Print #1, tradeLRush$(saveIdx, I, J1)
+                    Print #1, recLongRushTxt$(saveIdx, I, J1)
                 Next
             Next
 
             For I = 0 To 15: 
                 Print #1, tradeLRec!(saveIdx, I)
                 For J1 = 0 To 1: 
-                    Print #1, tradeLRec$(saveIdx, I, J1)
+                    Print #1, recLongRecTxt$(saveIdx, I, J1)
                 Next
             Next
 
             For I = 0 To 3: 
                 Print #1, tradeLPass!(saveIdx, I)
                 For J1 = 0 To 1: 
-                    Print #1, tradeLPass$(saveIdx, I, J1)
+                    Print #1, recLongPassTxt$(saveIdx, I, J1)
                 Next
             Next
 
             For I = 0 To 2: 
                 Print #1, tradeLKR!(saveIdx, I)
                 For J1 = 0 To 1: 
-                    Print #1, tradeLKR$(saveIdx, I, J1)
+                    Print #1, recLongKRTxt$(saveIdx, I, J1)
                 Next
             Next
 
             For I = 0 To 2: 
                 Print #1, tradeLPR!(saveIdx, I)
                 For J1 = 0 To 1: 
-                    Print #1, tradeLPR$(saveIdx, I, J1)
+                    Print #1, recLongPRTxt$(saveIdx, I, J1)
                 Next
             Next
 
             For I = 0 To 1: 
                 Print #1, tradeLcompFGPct!(saveIdx, I)
-                Print #1, tradeLFG$(saveIdx, I)
+                Print #1, recLongFGTxt$(saveIdx, I)
                 For I1 = 0 To 4: 
                     Print #1, tradeFGM(saveIdx, I, I1)
                     Print #1, tradeFGA!(saveIdx, I, I1)
@@ -2110,8 +2110,8 @@ Sub SaveTrades ()
 
             For I = 0 To 9: 
                 Print #1, tradeLInt!(saveIdx, I)
-                Print #1, tradeLInt$(saveIdx, I, 0)
-                Print #1, tradeLInt$(saveIdx, I, 1)
+                Print #1, recLongIntTxt$(saveIdx, I, 0)
+                Print #1, recLongIntTxt$(saveIdx, I, 1)
             Next
 
             Close #1

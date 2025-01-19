@@ -1017,10 +1017,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
         Call CheckContributions
 
-        '-- Why do we make this converstion and lose accuracy?
-        '-- We lose accuracy here!!!
-        '-- To change it means updating routines for team files,
-        '-- and updating every team file to accomodate
         YC% = YC!
 
         'Convert individual contribution %'s

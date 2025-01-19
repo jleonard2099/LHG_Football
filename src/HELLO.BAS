@@ -199,8 +199,8 @@ Data -4,-4,-2,-2,2,-6,0,0,3,3,13: ' Sack Sideline
 Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' Sack Rollout
 Data -6,-6,-4,-4,-8,-8,3,13,3,23,23: ' Sack Bootleg
 
-Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' RM%(0,X)
-Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' RM%(1,X)
+Data 0,0,1,4,11,21,31,49,62,74,81,85,88,90,92: ' brkawayMod(0,X)
+Data 3,5,8,10,15,23,32,47,58,68,75,80,85,88,92: ' brkawayMod(1,X)
 
 Data 69,80,77,61,62,77,64,45,36,69,49,11,2,15,48,45,31,21,29,78,55,48,65,70,58,61,78,70,68,65,70,63,65,70,76,81,87,79: ' runYdAdj(0,X)
 Data -4,-3,-3,-3,-3,-2,-2,-2,-2,-1,-1,-1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,6,6,6,6,6,6,7: ' runYdAdj(1,X)
@@ -250,58 +250,59 @@ Data 72,-5,83,-4,75,-4,68,-4,80,-3,70,-3,60,-3,75,-2,60,-2,45,-2,60,-1
 Data 30,-1,100,0,30,1,60,1,45,2,60,2,75,2,60,3,70,3,80,3,68,4,75,4,83,4
 Data 72,5,78,5,84,5,90,5,96,5,96,5
 
-Data 28,89,99,100,0,0,0,0,0,0,0,0,0,0: 'HITCH 1
-Data 10,53,96,97,98,99,100,0,0,0,0,0,0,0: 'HITCH 2
-Data 2,37,83,96,97,98,99,100,0,0,0,0,0,0: ' HITCH 3
-Data 2,32,71,92,94,96,97,98,99,100,0,0,0,0: ' HITCH 4
-Data 2,22,59,92,93,94,100,0,0,0,0,0,0,0: ' HITCH 5
-Data 2,12,63,88,90,92,93,94,95,96,97,98,99,100: ' HITCH 6
-Data 2,6,38,86,88,90,92,94,95,96,97,98,99,100: ' HITCH 7
-Data 2,6,25,74,82,90,92,94,95,96,97,98,99,100: ' HITCH 8
-Data 2,6,25,69,77,85,87,90,92,95,97,98,99,100: ' HITCH 9
-Data 2,6,25,66,74,82,84,87,89,92,94,96,98,100: ' HITCH 10
-Data 34,72,98,99,100,0,0,0,0,0,0,0,0,0: ' SCREEN 1
-Data 14,54,97,98,99,100,0,0,0,0,0,0,0,0: ' SCREEN 2
-Data 10,55,80,95,96,97,98,99,100,0,0,0,0,0: ' SCREEN 3
-Data 10,51,75,91,93,95,96,97,98,99,100,0,0,0: ' SCREEN 4
-Data 10,30,70,90,92,94,95,96,97,98,99,100,0,0: ' SCREEN 5
-Data 10,35,71,86,88,90,92,94,95,96,97,98,99,100: ' SCREEN 6
-Data 10,32,68,83,85,87,89,91,93,95,96,98,99,100: ' SCREEN 7
-Data 10,29,65,80,82,85,87,89,91,93,95,97,99,100: ' SCREEN 8
-Data 10,21,57,72,77,82,86,89,91,93,95,97,99,100: ' SCREEN 9
-Data 10,13,49,64,72,79,85,89,91,93,95,97,99,100: ' SCREEN 10
-Data 0,97,99,100,0,0,0,0,0,0,0,0,0,0: ' SP 1
-Data 0,45,96,98,99,100,0,0,0,0,0,0,0,0: ' SP 2
-Data 0,10,82,97,98,99,100,0,0,0,0,0,0,0: ' SP 3
-Data 0,0,63,94,95,96,97,98,99,100,0,0,0,0: ' SP 4
-Data 0,0,45,91,93,95,96,97,98,99,100,0,0,0: ' SP 5
-Data 0,0,45,80,86,92,94,95,96,97,98,99,100,0: ' SP 6
-Data 0,0,40,70,80,90,93,94,95,96,97,98,99,100: ' SP 7
-Data 0,0,40,65,75,85,88,90,93,94,96,98,99,100: ' SP 8
-Data 0,0,30,51,66,81,88,90,92,94,96,98,99,100: ' SP 9
-Data 0,0,20,37,57,77,88,90,92,94,96,98,99,100: ' SP 10
-Data 17,77,94,99,100,0,0,0,0,0,0,0,0,0: ' MP 1
-Data 6,35,76,96,97,98,99,100,0,0,0,0,0,0: ' MP 2
-Data 0,0,52,92,96,98,100,0,0,0,0,0,0,0: ' MP 3
-Data 0,0,40,80,87,93,95,97,99,100,0,0,0,0: ' MP 4
-Data 0,0,4,69,81,89,94,96,98,100,0,0,0,0: ' MP 5
-Data 0,0,5,58,70,78,83,87,91,95,98,100,0,0: ' MP 6
-Data 0,0,0,41,57,70,78,83,88,92,95,98,100,0: ' MP 7
-Data 0,0,0,19,36,51,66,78,88,92,94,96,98,100: ' MP 8
-Data 0,0,0,13,26,43,61,76,86,90,93,96,98,100: ' MP 9
-Data 0,0,0,11,22,33,51,66,76,82,87,92,96,100: ' MP 10
-Data 1,56,98,100,0,0,0,0,0,0,0,0,0,0: ' LP 1
-Data 0,0,53,95,96,100,0,0,0,0,0,0,0,0: ' LP 2
-Data 0,0,0,67,87,97,98,99,100,0,0,0,0,0: ' LP 3
-Data 0,0,0,13,65,97,98,99,100,0,0,0,0,0: ' LP 4
-Data 0,0,0,0,32,64,96,97,98,99,100,0,0,0: ' LP 5
-Data 0,0,0,0,12,40,82,86,90,93,96,98,100,0: ' LP 6
-Data 0,0,0,0,0,26,69,75,81,86,91,94,97,100: ' LP 7
-Data 0,0,0,0,0,0,17,40,64,72,80,88,94,100: ' LP 8
-Data 0,0,0,0,0,0,6,29,54,64,74,84,92,100: ' LP 9
-Data 0,0,0,0,0,0,3,23,44,56,68,80,90,100: ' LP 10
+'Blitz Coverage Adj
+Data 28,89,99,100,0,0,0,0,0,0,0,0,0,0: 'Hitch 1
+Data 10,53,96,97,98,99,100,0,0,0,0,0,0,0: 'Hitch 2
+Data 2,37,83,96,97,98,99,100,0,0,0,0,0,0: ' Hitch 3
+Data 2,32,71,92,94,96,97,98,99,100,0,0,0,0: ' Hitch 4
+Data 2,22,59,92,93,94,100,0,0,0,0,0,0,0: ' Hitch 5
+Data 2,12,63,88,90,92,93,94,95,96,97,98,99,100: ' Hitch 6
+Data 2,6,38,86,88,90,92,94,95,96,97,98,99,100: ' Hitch 7
+Data 2,6,25,74,82,90,92,94,95,96,97,98,99,100: ' Hitch 8
+Data 2,6,25,69,77,85,87,90,92,95,97,98,99,100: ' Hitch 9
+Data 2,6,25,66,74,82,84,87,89,92,94,96,98,100: ' Hitch 10
+Data 34,72,98,99,100,0,0,0,0,0,0,0,0,0: ' Screen 1
+Data 14,54,97,98,99,100,0,0,0,0,0,0,0,0: ' Screen 2
+Data 10,55,80,95,96,97,98,99,100,0,0,0,0,0: ' Screen 3
+Data 10,51,75,91,93,95,96,97,98,99,100,0,0,0: ' Screen 4
+Data 10,30,70,90,92,94,95,96,97,98,99,100,0,0: ' Screen 5
+Data 10,35,71,86,88,90,92,94,95,96,97,98,99,100: ' Screen 6
+Data 10,32,68,83,85,87,89,91,93,95,96,98,99,100: ' Screen 7
+Data 10,29,65,80,82,85,87,89,91,93,95,97,99,100: ' Screen 8
+Data 10,21,57,72,77,82,86,89,91,93,95,97,99,100: ' Screen 9
+Data 10,13,49,64,72,79,85,89,91,93,95,97,99,100: ' Screen 10
+Data 0,97,99,100,0,0,0,0,0,0,0,0,0,0: ' Short Pass 1
+Data 0,45,96,98,99,100,0,0,0,0,0,0,0,0: ' Short Pass 2
+Data 0,10,82,97,98,99,100,0,0,0,0,0,0,0: ' Short Pass 3
+Data 0,0,63,94,95,96,97,98,99,100,0,0,0,0: ' Short Pass 4
+Data 0,0,45,91,93,95,96,97,98,99,100,0,0,0: ' Short Pass 5
+Data 0,0,45,80,86,92,94,95,96,97,98,99,100,0: ' Short Pass 6
+Data 0,0,40,70,80,90,93,94,95,96,97,98,99,100: ' Short Pass 7
+Data 0,0,40,65,75,85,88,90,93,94,96,98,99,100: ' Short Pass 8
+Data 0,0,30,51,66,81,88,90,92,94,96,98,99,100: ' Short Pass 9
+Data 0,0,20,37,57,77,88,90,92,94,96,98,99,100: ' Short Pass 10
+Data 17,77,94,99,100,0,0,0,0,0,0,0,0,0: ' Med Pass 1
+Data 6,35,76,96,97,98,99,100,0,0,0,0,0,0: ' Med Pass 2
+Data 0,0,52,92,96,98,100,0,0,0,0,0,0,0: ' Med Pass 3
+Data 0,0,40,80,87,93,95,97,99,100,0,0,0,0: ' Med Pass 4
+Data 0,0,4,69,81,89,94,96,98,100,0,0,0,0: ' Med Pass 5
+Data 0,0,5,58,70,78,83,87,91,95,98,100,0,0: ' Med Pass 6
+Data 0,0,0,41,57,70,78,83,88,92,95,98,100,0: ' Med Pass 7
+Data 0,0,0,19,36,51,66,78,88,92,94,96,98,100: ' Med Pass 8
+Data 0,0,0,13,26,43,61,76,86,90,93,96,98,100: ' Med Pass 9
+Data 0,0,0,11,22,33,51,66,76,82,87,92,96,100: ' Med Pass 10
+Data 1,56,98,100,0,0,0,0,0,0,0,0,0,0: ' Long Pass 1
+Data 0,0,53,95,96,100,0,0,0,0,0,0,0,0: ' Long Pass 2
+Data 0,0,0,67,87,97,98,99,100,0,0,0,0,0: ' Long Pass 3
+Data 0,0,0,13,65,97,98,99,100,0,0,0,0,0: ' Long Pass 4
+Data 0,0,0,0,32,64,96,97,98,99,100,0,0,0: ' Long Pass 5
+Data 0,0,0,0,12,40,82,86,90,93,96,98,100,0: ' Long Pass 6
+Data 0,0,0,0,0,26,69,75,81,86,91,94,97,100: ' Long Pass 7
+Data 0,0,0,0,0,0,17,40,64,72,80,88,94,100: ' Long Pass 8
+Data 0,0,0,0,0,0,6,29,54,64,74,84,92,100: ' Long Pass 9
+Data 0,0,0,0,0,0,3,23,44,56,68,80,90,100: ' Long Pass 10
 
-
+'playActAdj
 Data 0,10,20,30,40,50,60,70,80,90,50,55,60,65,70,75,80,85,90,95,100
 Data 0,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2
 
@@ -341,7 +342,7 @@ Next I
 For I = 0 To 1:
     For J = 0 To 14:
         'Run yard adjustments?
-        Read RM%(I, J)
+        Read brkawayMod(I, J)
     Next
 Next
 
@@ -376,7 +377,7 @@ For I = 1 To 5:
         For J = 1 To 14:
             'What type of passing adjustment is this?
             'It doesn't cover all types of pass plays
-            Read S2%(I, I1, J)
+            Read blitzCovAdj(I, I1, J)
         Next
     Next
 Next
@@ -384,7 +385,7 @@ Next
 For I = 1 To 2:
     For J = 1 To 21:
         'Play Action pass adjustment???
-        Read PS%(I, J)
+        Read playActAdj(I, J)
     Next
 Next
 
@@ -1148,7 +1149,7 @@ Sub FOOTBALL ()
             Get #7, schedGame(0) + schedGame(2)
 
             For X = 0 To 20:
-                NG%(X) = CVI(Q$(X + 1))
+                schedOptions(X) = CVI(Q$(X + 1))
             Next
 
             For X = 0 To 1:
@@ -1628,22 +1629,22 @@ Sub FOOTBALL ()
             'Autoamtic determine QB
             Erase activeKicker
 
-            qbNumber(0) = NG%(5)
+            qbNumber(0) = schedOptions(5)
 
             If qbNumber(0) = 4 Then
                 useRandomQB(0) = 1
                 qbNumber(0) = 0
             Else
-                qbMobility(0) = NG%(6)
+                qbMobility(0) = schedOptions(6)
             End If
 
-            qbNumber(1) = NG%(8)
+            qbNumber(1) = schedOptions(8)
 
             If qbNumber(1) = 4 Then
                 useRandomQB(1) = 1
                 qbNumber(1) = 0
             Else
-                qbMobility(1) = NG%(9)
+                qbMobility(1) = schedOptions(9)
             End If
 
             For I = 0 To 3
@@ -1929,9 +1930,9 @@ Sub FOOTBALL ()
                         gameStatsPlayer(P1, I1, 15) = gameStatsPlayer(P1, I1, 15) + 100 - kickYL!
                         gameStatsPlayer(P1, I1, 16) = gameStatsPlayer(P1, I1, 16) + 1
 
-                        If 100 - kickYL! > kickReturners(P1, I1) Then
-                            gameKR$(P1, I1) = "t"
-                            kickReturners(P1, I1) = 100 - kickYL!
+                        If 100 - kickYL! > gameLongKRYds(P1, I1) Then
+                            gameLongKRTD$(P1, I1) = "t"
+                            gameLongKRYds(P1, I1) = 100 - kickYL!
                         End If
 
                         'Touchdown!
@@ -1951,9 +1952,9 @@ Sub FOOTBALL ()
 
                         ydLine = returnYL!
 
-                        If ydsGained > kickReturners(P1, I1) Then
-                            gameKR$(P1, I1) = ""
-                            kickReturners(P1, I1) = ydsGained
+                        If ydsGained > gameLongKRYds(P1, I1) Then
+                            gameLongKRTD$(P1, I1) = ""
+                            gameLongKRYds(P1, I1) = ydsGained
                         End If
 
                         gameStatsPlayer(P1, I1, 15) = gameStatsPlayer(P1, I1, 15) + ydsGained
@@ -2033,6 +2034,7 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     650 '
+    'Team Fumbles
     gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
 
     '50-60% chance of offense recovering
@@ -2055,6 +2057,7 @@ Sub FOOTBALL ()
         pbpString$ = pbpString$ + gameTeams$(D) + " RECOVERS!!"
         Call PBP
 
+        'Team Fumbles Lost
         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
         If isOT = 1 And overtimeOpt >= 3 Then
@@ -2087,7 +2090,7 @@ Sub FOOTBALL ()
                 End If
 
                 fumbRetYards = fumbRetYards + (Int(Rnd(1) * 11) - 5) / 10
-                fumbRetYdLine! = Int((ydLine + fumbRetYards) * 10 + 0.5) / 10
+                fumbRetYdLine! = CInt((ydLine + fumbRetYards) * 10) / 10
 
                 startYds = 100 - ydLine
                 endYds = 100 - fumbRetYdLine!
@@ -2097,7 +2100,7 @@ Sub FOOTBALL ()
 
                 If fumbRetYdLine! >= 99.99 Then
 
-                    pbpString$ = pbpString$ + Str$(Int((100 - ydLine) * 10 + 0.5) / 10) + " YDS "
+                    pbpString$ = pbpString$ + Str$(CInt((100 - ydLine) * 10) / 10) + " YDS "
                     Call PBP
 
                     'Touchdown!
@@ -2109,7 +2112,7 @@ Sub FOOTBALL ()
                     If Int(fumbRetYards) = 0 Then
                         pbpString$ = "THEY'LL HAVE TO SORT THIS ONE OUT FROM THE PILE."
                     Else
-                        pbpString$ = pbpString$ + Str$(Int((fumbRetYards) * 10 + 0.5) / 10) + " YDS"
+                        pbpString$ = pbpString$ + Str$(CInt((fumbRetYards) * 10) / 10) + " YDS"
                     End If
 
                     Call PBP
@@ -2274,7 +2277,7 @@ Sub FOOTBALL ()
                                         If d100% <= intChance Then
 
                                             ydsGained = catchYds
-                                            FF% = 2
+                                            fleaFlicker = 2
                                             'Intercepted!
                                             GoTo 3552
 
@@ -2284,7 +2287,7 @@ Sub FOOTBALL ()
                                             I3 = I3 + 10
 
                                             If d100% <= catchPctSuccess Then
-                                                FF% = 2
+                                                fleaFlicker = 2
                                                 GoTo 3586
                                             Else
                                                 ydsGained = 0
@@ -2371,7 +2374,7 @@ Sub FOOTBALL ()
 
                                 Case 3
                                     ' *** HB PASS ***
-                                    HB% = 1
+                                    halfbackPass = 1
 
                                     Call FRAMEOPTION(11, P1)
                                     Print "SELECT PASSER":
@@ -2389,7 +2392,9 @@ Sub FOOTBALL ()
 
                                     catchPctSuccess = 5
 
-                                    If (coverage = 1 Or coverage = 3) And HB%(P9) = 0 Then
+                                    If (coverage = 1 Or coverage = 3) And hasRunRBPass(P9) = 0 Then
+                                        'Increase success if they haven't tried
+                                        'the play before
                                         catchPctSuccess = 30
                                     End If
 
@@ -2398,7 +2403,7 @@ Sub FOOTBALL ()
                                     ydsGained = Int(Rnd(1) * 71) + 30
                                     catchYds = Int(Rnd(1) * 11) + 30
 
-                                    HB%(P9) = 1
+                                    hasRunRBPass(P9) = 1
 
                                     pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND HANDS OFF TO " + rbacks$(P1, I1)
                                     Call PBP
@@ -2419,8 +2424,8 @@ Sub FOOTBALL ()
                                         If d100% <= intChance Then
                                             'Interception
                                             ydsGained = catchYds
-                                            FF% = 1
-                                            HB% = 0
+                                            fleaFlicker = 1
+                                            halfbackPass = 0
                                             'Intercepted!
                                             GoTo 3552
                                         Else
@@ -2428,7 +2433,7 @@ Sub FOOTBALL ()
                                             I3 = I3 + 10
 
                                             If d100% <= catchPctSuccess Then
-                                                FF% = 1
+                                                fleaFlicker = 1
                                                 GoTo 3586
                                             Else
                                                 ydsGained = 0
@@ -2901,7 +2906,7 @@ Sub FOOTBALL ()
                     End If
                 End If
 
-                playYds! = Int((ydsGained) * 10 + 0.5) / 10
+                playYds! = CInt((ydsGained) * 10) / 10
 
                 If Int(playYds!) = 0 Then
                     pbpString$ = "HE RECOVERS IT NEAR THE LINE OF SCRIMMAGE"
@@ -2952,7 +2957,7 @@ Sub FOOTBALL ()
 
                 Else
 
-                    playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                    playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                     If playYdLine! < .05 Then
                         'Safety!
@@ -2978,7 +2983,7 @@ Sub FOOTBALL ()
                 pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND KNEELS DOWN FOR "
                 Call PBP
                 ydsGained = -1.0
-                playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                 GoTo 3546
 
@@ -3001,10 +3006,10 @@ Sub FOOTBALL ()
                 scoreX1 = 9
                 I1 = qbNumber(P1)
 
-                pbpString$ = "HE LOSES" + Str$(Int((ydsGained * -1) * 10 + 0.5) / 10) + " YARDS"
+                pbpString$ = "HE LOSES" + Str$(CInt((ydsGained * -1) * 10) / 10) + " YARDS"
                 Call PBP
 
-                returnYL! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                returnYL! = CInt((ydsGained + ydLine) * 10) / 10
 
                 If returnYL! < .05 Then
 
@@ -3064,16 +3069,18 @@ Sub FOOTBALL ()
 
                 End Select
 
-                S6 = 0
+                overuseAdj = 0
 
+                '  Rush Att + Pass Att
                 If gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3) <> 0 Then
+                    'If rush % > team average
                     If (gameStatsTeam(P1, 1) / (gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3))) > (leagRat_GAME(P1, 7) / 100) And K3(P1, 0) - (leagRat_GAME(D, 0) * .3) > 4.5 And (leagRat_GAME(D, 0) * .3) > 4.5 And leagRat_GAME(P1, 7) < 50 Then
-                        S6 = Int(((K3(P1, 0) - 3.6) / .3) + 0.5) * -1
+                        overuseAdj = CInt(((K3(P1, 0) - 3.6) / .3)) * -1
                     End If
                 End If
 
                 rushBase = rushBase + defYdAdj(playCall, dLine)
-                rushBase = rushBase + S6
+                rushBase = rushBase + overuseAdj
 
                 'Home Field Advantage - Rushing Yds
                 If P1 = gameLoc Then
@@ -3213,14 +3220,16 @@ Sub FOOTBALL ()
                                     I5 = 0
                                 End If
 
+                                'This is a % chance of reducing
+                                'the yardage ???
                                 For I6 = 0 To 14:
-                                    If RN5 <= RM%(I5, I6) Then
+                                    If RN5 <= brkawayMod(I5, I6) Then
                                         ydsGained = I6 - 5
                                         Exit For
                                     End If
                                 Next I6
 
-                                'runYdAdj(0, X) = chance for smaller gain)
+                                'runYdAdj(0, X) = chance for smaller gain
                                 If d100% <= runYdAdj(0, rushBase) Then
                                     'runYdAdj(1, X) = small gain amount
                                     ydsGained = ydsGained + runYdAdj(1, rushBase)
@@ -3306,7 +3315,7 @@ Sub FOOTBALL ()
 
                     scoreX0 = 1
                     scoreX1 = 1
-                    pbpString$ = pbpString$ + Str$(Int((ydsGained * -1) * 10 + 0.5) / 10)
+                    pbpString$ = pbpString$ + Str$(CInt((ydsGained * -1) * 10) / 10)
 
                 Else
 
@@ -3314,13 +3323,12 @@ Sub FOOTBALL ()
 
                     scoreX0 = 1
                     scoreX1 = 1
-
-                    newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                    newYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                     If newYdLine! >= 99.94999 Then
-                        pbpString$ = pbpString$ + Str$(Int((100 - ydLine) * 10 + 0.5) / 10)
+                        pbpString$ = pbpString$ + Str$(CInt((100 - ydLine) * 10) / 10)
                     Else
-                        pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + 0.5) / 10)
+                        pbpString$ = pbpString$ + Str$(CInt((ydsGained) * 10) / 10)
                     End If
 
                 End If
@@ -3344,7 +3352,7 @@ Sub FOOTBALL ()
 
             Else
 
-                newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                newYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                 If newYdLine! < .05 Then
                     ballFumbled = 0
@@ -3429,7 +3437,7 @@ Sub FOOTBALL ()
 
                 Else
 
-                    sackYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                    sackYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                     If sackYdLine! < .05 Then
 
@@ -3696,7 +3704,7 @@ Sub FOOTBALL ()
                 End If
 
                 3546 '
-                playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                 scoreX0 = 4
                 scoreX1 = 9
@@ -3774,7 +3782,7 @@ Sub FOOTBALL ()
                 If passChance > (100 - intChance) Then
 
                     'Intercepted!
-                    FF% = 0
+                    fleaFlicker = 0
                     GoTo 3552
 
                 Else
@@ -3822,12 +3830,12 @@ Sub FOOTBALL ()
 
                             'Short Pass
                             If playCall = 9 Or playCall = 10 Or playCall = 13 Then
-                                I4 = I4 * ((((expCompPct + S6) * K3(P1, 3)) / (expCompPct + S6 + 18)) / K3(P1, 3))
+                                I4 = I4 * ((((expCompPct + overuseAdj) * K3(P1, 3)) / (expCompPct + overuseAdj + 18)) / K3(P1, 3))
                             End If
 
                             'Long Pass
                             If playCall = 12 Or playCall = 15 Then
-                                I4 = I4 * ((((expCompPct + S6) * K3(P1, 3)) / (expCompPct + S6 - 18)) / K3(P1, 3))
+                                I4 = I4 * ((((expCompPct + overuseAdj) * K3(P1, 3)) / (expCompPct + overuseAdj - 18)) / K3(P1, 3))
                             End If
 
                             'At this point I'm lost but playCall is the pass play type
@@ -3867,12 +3875,12 @@ Sub FOOTBALL ()
                             'ydsGained = 109 - ydLine
                         End If
 
-                        newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                        newYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                         'Play-by-Play for Completion %
                         Call PassCompletePBP(passDir, passSide)
 
-                        If FF% <> 0 Then FF% = 0
+                        If fleaFlicker <> 0 Then fleaFlicker = 0
 
                         'If newYdLine! < 99.9499 Then
                         If ydLine + ydsGained < 99.9499 Then
@@ -3895,19 +3903,20 @@ Sub FOOTBALL ()
                         If newYdLine! >= 99.9499 Then
 
                             'End zone
-                            Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
-                            'Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
+                            Call PassYardagePBP(Str$(CInt((ydsGained) * 10) / 10))
 
                             ydsGained = 100 - ydLine
 
-                            If ydsGained > WR(P1, I3) Then
-                                gameWR$(P1, I3) = "t"
-                                WR(P1, I3) = ydsGained
+                            'Longest catch
+                            If ydsGained > gameLongRec(P1, I3) Then
+                                gameLongRecTD$(P1, I3) = "t"
+                                gameLongRec(P1, I3) = ydsGained
                             End If
 
-                            If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
-                                gameQB$(P1, qbNumber(P1)) = "t"
-                                quarterbacks(P1, qbNumber(P1)) = ydsGained
+                            'Longest pass?
+                            If ydsGained > gameLongPassYds(P1, qbNumber(P1)) Then
+                                gameLongPassTD$(P1, qbNumber(P1)) = "t"
+                                gameLongPassYds(P1, qbNumber(P1)) = ydsGained
                             End If
 
                         Else
@@ -3918,22 +3927,23 @@ Sub FOOTBALL ()
                             Else
                                 If ydsGained < 0 Then
                                     'Loss on the play
-                                    Call ReceiverLossPBP(Str$(Int((ydsGained * -1) * 10 + 0.5) / 10))
+                                    Call ReceiverLossPBP(Str$(CInt((ydsGained * -1) * 10) / 10))
                                 Else
                                     'Gain on the play
-                                    Call PassYardagePBP(Str$(Int((ydsGained) * 10 + 0.5) / 10))
-                                    'Call PassYardagePBP(Str$(Int(ydsGained + 0.5)))
+                                    Call PassYardagePBP(Str$(CInt((ydsGained) * 10) / 10))
                                 End If
                             End If
 
-                            If ydsGained > WR(P1, I3) Then
-                                gameWR$(P1, I3) = ""
-                                WR(P1, I3) = ydsGained
+                            'Longest catch?
+                            If ydsGained > gameLongRec(P1, I3) Then
+                                gameLongRecTD$(P1, I3) = ""
+                                gameLongRec(P1, I3) = ydsGained
                             End If
 
-                            If ydsGained > quarterbacks(P1, qbNumber(P1)) Then
-                                gameQB$(P1, qbNumber(P1)) = ""
-                                quarterbacks(P1, qbNumber(P1)) = ydsGained
+                            'Longest pass?
+                            If ydsGained > gameLongPassYds(P1, qbNumber(P1)) Then
+                                gameLongPassTD$(P1, qbNumber(P1)) = ""
+                                gameLongPassYds(P1, qbNumber(P1)) = ydsGained
                             End If
 
                         End If
@@ -3947,7 +3957,7 @@ Sub FOOTBALL ()
 
                         Else
 
-                            newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                            newYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                             If newYdLine! < .05 Then
 
@@ -4094,14 +4104,15 @@ Sub FOOTBALL ()
                     Call YARDAGE
                     'Gets us a value for ydLineTeam
 
-                    kickDistYds = Int((ydsGained) * 10 + 0.5) / 10
+                    kickDistYds = CInt((ydsGained) * 10) / 10
 
                     pbpString$ = "KICK BY " + gameTeams$(P1) + " TRAVELS" + Str$(Int(kickDistYds)) + " YARDS"
                     Call PBP
 
+                    'Punt Att
                     gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
-                    puntYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                    puntYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                     If puntYdLine! >= 99.94999 Then
 
@@ -4341,15 +4352,15 @@ Sub FOOTBALL ()
 
                             pbpString$ = "PASS IS COMPLETE FOR"
 
-                            If Int((ydsGained + ydLine) * 10 + 0.5) / 10 >= 99.9499 Then
+                            If CInt((ydsGained + ydLine) * 10) / 10 >= 99.9499 Then
                                 pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARDS"
                                 Call PBP
                             Else
-                                pbpString$ = pbpString$ + Str$(Int((ydsGained) * 10 + 0.5) / 10) + " YARDS"
+                                pbpString$ = pbpString$ + Str$(CInt((ydsGained) * 10) / 10) + " YARDS"
                                 Call PBP
                             End If
 
-                            playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                            playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                             If playYdLine! < .05 Then
                                 'Safety!
@@ -4368,7 +4379,7 @@ Sub FOOTBALL ()
 
                             Call PuntFakeRunYards(puntDefChoice)
 
-                            playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                            playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                             If playYdLine! < .05 Then
                                 'Safety!
@@ -4419,11 +4430,12 @@ Sub FOOTBALL ()
 
                 Call AddPossessionTime(4, 7)
 
-                'Recorded as a fumble
-                gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
+                'Team Fumble
                 gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
+                'Team Fumbles lost
+                gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
-                fumbRetYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                fumbRetYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                 If fumbRetYdLine! < -9.999 Then
 
@@ -4551,14 +4563,15 @@ Sub FOOTBALL ()
 
                 Call PBP
 
-                puntDistYds! = Int((ydsGained) * 10 + 0.5) / 10
+                puntDistYds! = CInt((ydsGained) * 10) / 10
 
                 pbpString$ = "PUNT BY " + punter$(P1, 0) + " TRAVELS" + Str$(Int(puntDistYds!)) + " YARDS"
                 Call PBP
 
+                'Punt Att
                 gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
-                puntYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                puntYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                 If puntYdLine! >= 99.94999 Then
 
@@ -4667,9 +4680,9 @@ Sub FOOTBALL ()
 
                             returnGain = 100 - ydLine
 
-                            If returnGain > puntReturners(P1, puntRetNbr) Then
-                                gamePR$(P1, puntRetNbr) = "t"
-                                puntReturners(P1, puntRetNbr) = returnGain
+                            If returnGain > gameLongPRYds(P1, puntRetNbr) Then
+                                gameLongPRTD$(P1, puntRetNbr) = "t"
+                                gameLongPRYds(P1, puntRetNbr) = returnGain
                             End If
 
                             I1 = puntRetNbr
@@ -4682,9 +4695,9 @@ Sub FOOTBALL ()
                         gameStatsPlayer(P1, puntRetNbr + 3, 14) = gameStatsPlayer(P1, puntRetNbr + 3, 14) + 1
                         gameStatsPlayer(P1, puntRetNbr + 3, 15) = gameStatsPlayer(P1, puntRetNbr + 3, 15) + ydsGained
 
-                        If ydsGained > puntReturners(P1, puntRetNbr) Then
-                            gamePR$(P1, puntRetNbr) = ""
-                            puntReturners(P1, puntRetNbr) = ydsGained
+                        If ydsGained > gameLongPRYds(P1, puntRetNbr) Then
+                            gameLongPRTD$(P1, puntRetNbr) = ""
+                            gameLongPRYds(P1, puntRetNbr) = ydsGained
                         End If
 
                         If ydsGained + ydLine <= .01 Then
@@ -4862,7 +4875,7 @@ Sub FOOTBALL ()
                         ' *** FAKE W/RUN ***
                         Call FGFakeRunYards(fgDefChoice)
 
-                        playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                        playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                         If playYdLine! < .05 Then
                             'Safety!
@@ -4953,16 +4966,20 @@ Sub FOOTBALL ()
 
                             scoreX0 = 0
 
-                            'Track Pass Att, QB Int
+                            'Team Pass Att
                             gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
+                            'Team Int
                             gameStatsTeam(P1, 5) = gameStatsTeam(P1, 5) + 1
-                            If FF% <> 1 Then
+
+                            If fleaFlicker <> 1 Then
+                                'QB Pass Att
                                 gameStatsPlayer(P1, I1, 9) = gameStatsPlayer(P1, I1, 9) + 1
+                                'QB Interceptions
                                 gameStatsPlayer(P1, I1, 11) = gameStatsPlayer(P1, I1, 11) + 1
                             End If
 
                             'Record INT's for Defense
-                            gameInts(D, Z1, 0) = gameInts(D, Z1, 0) + 1
+                            gameInts(D, defPlayer, 0) = gameInts(D, defPlayer, 0) + 1
 
                             'Update possession for DEF (interception)
                             If isOT = 1 And overtimeOpt >= 6 Then
@@ -4979,8 +4996,8 @@ Sub FOOTBALL ()
 
                                 pbpString$ = "PASS IS COMPLETE FOR"
 
-                                catchYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
-                                catchYds! = Int((ydsGained) * 10 + 0.5) / 10
+                                catchYdLine! = CInt((ydsGained + ydLine) * 10) / 10
+                                catchYds! = CInt((ydsGained) * 10) / 10
 
                                 If catchYdLine! >= 99.9499 Then
                                     pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARDS"
@@ -5032,7 +5049,7 @@ Sub FOOTBALL ()
 
                     Call PBP
                     
-                    pbpString$ = "THIS WILL BE A" + Str$(Int(117 + goalPostAdj - ydLine + 0.5)) + " YARD ATTEMPT"
+                    pbpString$ = "THIS WILL BE A" + Str$(CInt(117 + goalPostAdj - ydLine)) + " YARD ATTEMPT"
                     Call PBP
 
                     If RN9 < 50 Then
@@ -5050,12 +5067,14 @@ Sub FOOTBALL ()
                         Call PBP
 
                         Call AddPossessionTime(4, 7)
-
-                        gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
+                        
+                        'Team Fumbles
                         gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
+                        'Team Fumbles Lost
+                        gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
                         ydsGained = (Int(Rnd(1) * 9) + 6) * -1
-                        retYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+                        retYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
                         If ydLine + ydsGained < -9.999 Then
                             score(D, quarter) = score(D, quarter) + 2
@@ -5494,9 +5513,9 @@ Sub FOOTBALL ()
                         pbpString$ = pbpString$ + " AT THE"
 
                         If penaltyYds! + ydLine < 50 Then
-                            pbpString$ = pbpString$ + Str$(Int(penaltyYds! + ydLine + 0.5))
+                            pbpString$ = pbpString$ + Str$(CInt(penaltyYds! + ydLine))
                         Else
-                            pbpString$ = pbpString$ + Str$(Int(100 - ydLine - penaltyYds! + 0.5))
+                            pbpString$ = pbpString$ + Str$(CInt(100 - ydLine - penaltyYds!))
                         End If
 
                         pbpString$ = pbpString$ + " YD LINE ***"
@@ -5825,6 +5844,7 @@ Sub FOOTBALL ()
     Call StatusBoard
 
     If playType > 0 And playType < 3 And 100 - ydLine > 10 And ruleOptType <> 0 Then
+        'First Downs
         gameStatsTeam(D, 0) = gameStatsTeam(D, 0) + 1
     End If
 
@@ -5842,6 +5862,7 @@ Sub FOOTBALL ()
     ' *** SAFETY ***
     score(D, quarter) = score(D, quarter) + 2
     score(D, 0) = score(D, 0) + 2
+    
     gameStatsTeam(D, 19) = gameStatsTeam(D, 19) + 1
 
     Call COMPILER
@@ -5898,7 +5919,7 @@ Sub FOOTBALL ()
     '----- NOODLE -----
 
     3303 '
-    If Int(ydsToFirst * 10 + 0.5) / 10 < .05 Then
+    If CInt(ydsToFirst * 10) / 10 < .05 Then
         Call FirstDownAfterPlay
         '-- should we skip assessing penalties?
         '-- would it happen? if on OFF, then it
@@ -6287,7 +6308,7 @@ Sub FOOTBALL ()
             'Penalty on Offense
             Call PenaltyCharge(P1, penaltyYds!)
 
-            If Int(ydsToFirst * 10 + 0.5) / 10 < .05 Then
+            If CInt(ydsToFirst * 10) / 10 < .05 Then
                 Call FirstDownAfterPlay
             End If
 
@@ -6319,7 +6340,7 @@ Sub FOOTBALL ()
             playSegment = 1
         End If
 
-        If Int((ydsToFirst) * 10 + 0.5) / 10 < .05 Then
+        If CInt((ydsToFirst) * 10) / 10 < .05 Then
 
             Call FirstDownAfterPlay
 
@@ -6829,7 +6850,7 @@ Sub FOOTBALL ()
 
     If defInts(1 - P1) > 0 Then
         Call QBTHROW
-        Call FINDINT(Z1)
+        Call FINDINT(defPlayer)
         pbpString$ = "PASS IS INTERCEPTED BY " + defTeam$
     Else
         pbpString$ = "PASS IS INTERCEPTED"
@@ -6838,14 +6859,17 @@ Sub FOOTBALL ()
     scoreX0 = 0
 
     'Record INT's for Defense
-    gameInts(1 - P1, Z1, 0) = gameInts(1 - P1, Z1, 0) + 1
+    gameInts(1 - P1, defPlayer, 0) = gameInts(1 - P1, defPlayer, 0) + 1
 
-    'Track INT's for team
+    'Team Pass Att
     gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
+    'Team Pass INT
     gameStatsTeam(P1, 5) = gameStatsTeam(P1, 5) + 1
 
-    If FF% <> 1 Then
+    If fleaFlicker <> 1 Then
+        'QB Pass Att
         gameStatsPlayer(P1, I1, 9) = gameStatsPlayer(P1, I1, 9) + 1
+        'QB Pass INT
         gameStatsPlayer(P1, I1, 11) = gameStatsPlayer(P1, I1, 11) + 1
     End If
 
@@ -6869,8 +6893,8 @@ Sub FOOTBALL ()
 
     Call AddPossessionTime(5, 8)
 
-    If FF% <> 0 Then
-        FF% = 0
+    If fleaFlicker <> 0 Then
+        fleaFlicker = 0
     Else
         If playCall = 12 Or playCall = 15 Then
             ydsGained = Int(Rnd(1) * 20) + 21
@@ -6993,12 +7017,14 @@ Sub FOOTBALL ()
                         pbpString$ = "HE STEPS BACK AND THROWS IT OUT OF BOUNDS"
                         Call PBP
 
-                        'Increase pass attempts
+                        'Increase pass attempts (team + player)
                         gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
                         gameStatsPlayer(P1, qbNumber(P1), 9) = gameStatsPlayer(P1, qbNumber(P1), 9) + 1
 
                         currDown = currDown + 1
-                        If currDown = 3 Then thirdDownAtt(P1) = thirdDownAtt(P1) + 1
+                        If currDown = 3 Then 
+                            thirdDownAtt(P1) = thirdDownAtt(P1) + 1
+                        End If
 
                         Call AddPossessionTime(7, 10)
                         Call CheckGameClock
@@ -7170,10 +7196,14 @@ Sub FOOTBALL ()
     3876 '
     scoreX0 = 0
 
-    'Track attempt and interception
+    'Team Pass Att
     gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
+    'Team Pass INT
     gameStatsTeam(P1, 5) = gameStatsTeam(P1, 5) + 1
+
+    'QB Pass Att
     gameStatsPlayer(P1, I1, 9) = gameStatsPlayer(P1, I1, 9) + 1
+    'QB Pass INT
     gameStatsPlayer(P1, I1, 11) = gameStatsPlayer(P1, I1, 11) + 1
 
     'Update possession for DEF (interception)
@@ -7212,7 +7242,7 @@ Sub FOOTBALL ()
     Call YARDAGE
 
     'Spot of the interception
-    intYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+    intYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
     If intYdLine! >= 99.9499 Then
 
@@ -7304,12 +7334,12 @@ Sub FOOTBALL ()
             pbpString$ = pbpString$ + Str$(Int(100 - ydLine)) + " YARDS"
 
             'Record INT Yds, TDs
-            gameInts(P1, Z1, 1) = gameInts(P1, Z1, 1) + 100 - ydLine
-            gameInts(P1, Z1, 2) = gameInts(P1, Z1, 2) + 1
+            gameInts(P1, defPlayer, 1) = gameInts(P1, defPlayer, 1) + 100 - ydLine
+            gameInts(P1, defPlayer, 2) = gameInts(P1, defPlayer, 2) + 1
 
-            If 100 - ydLine > IR(P1, Z1) Then
-                gameIR$(P1, Z1) = "t"
-                IR(P1, Z1) = 100 - ydLine
+            If 100 - ydLine > gameLongInt(P1, defPlayer) Then
+                gameLongIntTD$(P1, defPlayer) = "t"
+                gameLongInt(P1, defPlayer) = 100 - ydLine
             End If
 
             Call PBP
@@ -7319,7 +7349,7 @@ Sub FOOTBALL ()
 
         Else
 
-            returnYds! = Int((ydsGained) * 10 + 0.5) / 10
+            returnYds! = CInt((ydsGained) * 10) / 10
 
             pbpString$ = pbpString$ + Str$(Int(returnYds!)) + " YARDS"
             Call PBP
@@ -7334,11 +7364,11 @@ Sub FOOTBALL ()
             End If
 
             'Record INT Yds
-            gameInts(P1, Z1, 1) = gameInts(P1, Z1, 1) + ydsGained
+            gameInts(P1, defPlayer, 1) = gameInts(P1, defPlayer, 1) + ydsGained
 
-            If ydsGained > IR(P1, Z1) Then
-                gameIR$(P1, Z1) = ""
-                IR(P1, Z1) = ydsGained
+            If ydsGained > gameLongInt(P1, defPlayer) Then
+                gameLongIntTD$(P1, defPlayer) = ""
+                gameLongInt(P1, defPlayer) = ydsGained
             End If
 
             fumbPlayType = 5
@@ -7427,10 +7457,12 @@ Sub InitVar ()
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
 
-    Shared tradeLPR$(), oppName$(), locIndicator$(), gameSite$()
+    Shared recLongFGTxt$(), recLongIntTxt$(), recLongKRTxt$()
+    Shared recLongPassTxt$(), recLongPRTxt$()
+    Shared recLongRecTxt$(), recLongRushTxt$()
+    
+    Shared oppName$(), locIndicator$(), gameSite$()
     Shared teamIndicator$()
-    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
-
     'Shared eventSettings()
     Shared oppScore(), teamScore(), powerRating()
 
@@ -7468,82 +7500,77 @@ Sub InitVar ()
     autoPlay = 0
     autoFirst = 0
     ballFumbled = 0
+    catchPctSuccess = 0
+    catchYds = 0
+    checkFumbRev = 0
+    chosenPlay = 0
+    compTeam = 0
+    coverage = 0
+    currDown = 0
+    dLine = 1
+    endAllGames = 0
+    endYds = 0
+    endZone = 0
+    expCompPct = 0
+    ffPctSuccess = 0
+    fgAttYds = 0
+    fieldSide = 0
+    firstDownClockOpt = 0
+    fleaFlicker = 0
+    fumbPlayType = 0
+    gameClock! = 0
+    gameLoc = 0
+    gameOver = 0
+    gameOver = 0
+    goalLnYdAdj = 0
+    goalPostAdj = 0
+    halfTime = 0
+    halfbackPass = 0
+    indRushPct = 0
+    intChance = 0
+    isOT = 0
+    kickYL! = 0
+    nbrScores = 0
+    overtimeOpt = 0
+    overuseAdj = 0
+    pbpDelay! = 0
+    periodNbr = 0
+    playCall = 0
+    playSegment = 0
+    playType = 0
+    playerMode = 0
+    playerOpt = 0
+    puntRetNbr = 0
+    qbTakeKnee = 0
+    qback = 0
+    quarter = 0
+    ruleOptColl = 0
+    ruleOptPro = 0
+    ruleOptType = 0
+    rushYds = 0
+    scoreX0 = 0
+    scoreX1 = 0
+    startYds = 0
+    tickerGames = 0
+    timeElapsed! = 0
+    winTeam = 0
+    ydLine = 0
+    ydLineTeam = 0
+    ydsGained = 0
+    ydsToFirst = 0
+    ydsToScore = 0
 
     'Set this to 1 for a black/white experience
     BW = 0
 
-    catchPctSuccess = 0
-    chosenPlay = 0
-    catchYds = 0
-    compTeam = 0
-    currDown = 0
     D = 0
-    dLine = 1
-    coverage = 0
-    endAllGames = 0
-    gameOver = 0
-    endYds = 0
-    endZone = 0
-    expCompPct = 0
-    fgAttYds = 0
-    ffPctSuccess = 0
-    gameLoc = 0
-    goalPostAdj = 0
-    halfTime = 0
-
-    isOT = 0
-    JJ = 0
-    K3 = 0
-    fieldSide = 0
-    kickYL! = 0
-    playSegment = 0
-    overtimeOpt = 0
-    nbrScores = 0
-    playerMode = 0
-    playerOpt = 0
     P1 = 0
-    playCall = 0
-    periodNbr = 0
-    puntRetNbr = 0
-    quarter = 0
-    qback = 0
-    qbTakeKnee = 0
-    checkFumbRev = 0
-    ruleOptColl = 0
-    ruleOptPro = 0
-    ruleOptType = 0
-    playType = 0
-    rushYds = 0
-    S6 = 0
-    startYds = 0
-    tickerGames = 0
     W5 = 0
     WE = 0
     WS = 0
-    winTeam = 0
-    scoreX0 = 0
-    scoreX1 = 0
     XD = 0
     XE = 0
-    ydsToFirst = 0
-    YC = 0
     YF = 0
-    ydsGained = 0
-    ydLine = 0
-    ydLineTeam = 0
-    ydsToScore = 0
-    gameOver = 0
-    fumbPlayType = 0
-    FF% = 0
-    goalLnYdAdj = 0
-    HB% = 0
-    intChance = 0
-    indRushPct = 0
-    PS% = 0
-    firstDownClockOpt = 0
-    gameClock! = 0
-    pbpDelay! = 0
-    timeElapsed! = 0
 
     actualAttendance& = 0
     avgAttendance& = 0
@@ -7560,6 +7587,8 @@ Sub InitVar ()
     'Erase kicker$, kickRet$
     'Erase pret$, punter$, qbacks$, rbacks$
     'Erase wdRec$
+    Erase activeKicker, climate
+    Erase hasRunRBPass, hasRunRev, indRushPct
     Erase kickerFGA, kickerFGPct, kickerIdx, kickerPATPct
     Erase krNumRet, krYdsPerRet, leagRat_GAME
     Erase otTDs
@@ -7569,45 +7598,45 @@ Sub InitVar ()
     Erase teamInts, teamSacks ', teamRat_GAME
     Erase wrNumRec, wrYdsPerC, ydsPerComp, ydsPerPunt
 
-
     Erase defInts, defSacks
     'Erase eventSettings
     Erase playerFGA, playerFGM
-    Erase sackStatsPlayer, gameStatsTeam, gameStatsPlayer
-    Erase gameLongFG
+    Erase sackStatsOpp, gameStatsTeam, gameStatsPlayer
     Erase K1, K3
-    Erase gameInts, hasRunFF, playerInts, IR
-    Erase kickReturners
-
-
     Erase gameFGA!, gameFGM!
+    Erase gameInts, hasRunFF, playerInts
+    Erase gameLongFGAtt, gameLongInt, gameLongKRYds
+    Erase gameLongPassYds, gameLongPRYds
+    Erase gameLongRec, gameLongRunYds
     Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
-    Erase gameLRec!, gameLFG!, gameLInt!, gameLKR!, gameLPass!, gameLRush!
-    Erase gameLPR!
-
-    Erase nbrPossOT, puntReturners
-
+    
+    Erase nbrPossOT
     Erase oppScore, powerRating, teamScore
+    Erase qbNumber, qbMobility
 
-    Erase quarterbacks, qbNumber, qbMobility, runBacks
-    Erase score, scoreQuarters, scoreTimes, schedGame
+    Erase passCovAdj, ST%, SX%
+    Erase qbRushIdx
+    Erase recLongRec!, recLongFG!, recLongInt!, recLongKR!, recLongPass!, recLongRush!
+    Erase recLongPR!
+
+    Erase sackStatsTeam, score, scoreQuarters, scoreTimes
+    Erase schedGame, schedOptions
     Erase teamIdx_GAME, timeouts, timePoss
-    Erase totalInts, totalSacks
-    Erase useRandomQB, sackStatsTeam, WR, XD
-
-    Erase HB%, NG%, indRushPct
-    Erase activeKicker, hasRunRev, passCovAdj, ST%, SX%
     Erase teamYears, thirdDownAtt, thirdDownFail
-    Erase qbRushIdx, climate
+    Erase totalInts, totalSacks
+    Erase useRandomQB, XD
 
     Erase diskIDs$, gameTeams$
-    Erase gameIR$, gameKR$, gameLRec$, gameLRush$
-    Erase tradeLPR$, gamePR$, gameQB$
-    Erase gameRB$, gameSite$, gameWR$
+    Erase gameSite$
+    Erase gameLongIntTD$, gameLongKRTD$
+    Erase gameLongPRTD$, gameLongPassTD$
+    Erase gameLongRecTD$, gameLongRunTD$
     Erase locIndicator$, oppName$
     Erase SX$
-    Erase tradeLFG$, tradeLInt$, tradeLKR$, tradeLPass$
 
+    Erase recLongFGTxt$, recLongIntTxt$, recLongKRTxt$
+    Erase recLongRecTxt$, recLongRushTxt$
+    Erase recLongPassTxt$, recLongPRTxt$
 
 End Sub
 
@@ -7623,12 +7652,12 @@ Sub AUTOSETUP (validTeam)
 
     For tgtTeam = 0 To 1
 
-        tgtId = NG%(tgtTeam)
+        tgtId = schedOptions(tgtTeam)
         tgtYear$ = RTrim$(diskIDs$(tgtTeam))
 
         Call ReadGameTeam(tgtYear$, gameTeams$(tgtTeam), tgtId, tgtTeam, validTeam)
 
-        teamIdx_GAME(tgtTeam) = NG%(tgtTeam)
+        teamIdx_GAME(tgtTeam) = schedOptions(tgtTeam)
 
         If tgtId = 0 Then
             validTeam = 0
@@ -7639,14 +7668,14 @@ Sub AUTOSETUP (validTeam)
     If validTeam = 1 Then
 
         'Assign settings from schedule / etc.
-        gameLoc = NG%(2)
-        ruleOptType = NG%(3)
-        pbpDelay! = NG%(4) / 10
-        ruleOptColl = NG%(7)
-        playerOpt = NG%(10)
-        ruleOptPro = NG%(11)
-        tickerStart = NG%(12)
-        overtimeOpt = NG%(14)
+        gameLoc = schedOptions(2)
+        ruleOptType = schedOptions(3)
+        pbpDelay! = schedOptions(4) / 10
+        ruleOptColl = schedOptions(7)
+        playerOpt = schedOptions(10)
+        ruleOptPro = schedOptions(11)
+        tickerStart = schedOptions(12)
+        overtimeOpt = schedOptions(14)
 
         'Pro Rules, pre-1974
         If ruleOptType > 0 And ruleOptPro < 1 Then
@@ -8493,10 +8522,10 @@ Sub TickerSchedule ()
 
     Field #1, 42 As X$, 5 As Q$(22), 5 As Q$(23), 2 As Q$(24), 2 As Q$(25)
 
-    NG%(13) = 1
+    schedOptions(13) = 1
 
     For X = 0 To 20:
-        LSet Q$(X + 1) = MKI$(NG%(X))
+        LSet Q$(X + 1) = MKI$(schedOptions(X))
     Next
 
     For X = 0 To 1:
@@ -8607,10 +8636,10 @@ Sub SCOUT ()
 
         'Defensive Ratings
         K3(scoutTeam, 0) = ((K3(scoutTeam, 0) * 3) / 100) + ((leagRat_GAME(I1, 0)) * 3)
-        K3(scoutTeam, 0) = Int(K3(scoutTeam, 0) + 0.5) / 10
+        K3(scoutTeam, 0) = CInt(K3(scoutTeam, 0)) / 10
 
-        K3(scoutTeam, 1) = Int((I2 / 100) + leagRat_GAME(I1, 1) + 0.5)
-        K3(scoutTeam, 2) = Int((I3 / 100) - leagRat_GAME(I1, 2) + 0.5)
+        K3(scoutTeam, 1) = CInt((I2 / 100) + leagRat_GAME(I1, 1))
+        K3(scoutTeam, 2) = CInt((I3 / 100) - leagRat_GAME(I1, 2))
         K3(scoutTeam, 4) = (ydsPerPunt(scoutTeam, 0) * 2) + 28
         K3(scoutTeam, 5) = (kickerFGA(scoutTeam, activeKicker(scoutTeam)) * 5) + 25
         K3(scoutTeam, 6) = kickerIdx(scoutTeam, activeKicker(scoutTeam))
@@ -9424,7 +9453,7 @@ Sub ONSIDE ()
         onsideSuccess = 21
     End If
 
-    If Int(ydsGained * 10 + 0.5) / 10 < 9.95 Then
+    If CInt(ydsGained * 10) / 10 < 9.95 Then
 
         pbpString$ = "BALL DID NOT TRAVEL 10 YDS"
         Call PBP
@@ -9487,7 +9516,7 @@ Sub INCOMPLETE ()
 
             'Uses players with INTs as names for the work
             If defInts(1 - P1) > 0 Then
-                Call FINDINT(Z1)
+                Call FINDINT(defPlayer)
                 pbpString$ = pbpString$ + " BY " + defTeam$
             End If
 
@@ -9814,8 +9843,8 @@ Sub QBSNEAK ()
         End If
     End If
 
-    sneakYds! = Int((ydsGained) * 10 + 0.5) / 10
-    newYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+    sneakYds! = CInt((ydsGained) * 10) / 10
+    newYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
     If sneakYds! = 0 Then
         pbpString$ = "HE ONLY MAKES IT TO THE LINE OF SCRIMMAGE"
@@ -9854,6 +9883,7 @@ End Sub
 'it more than normal
 Sub OffPlayOveruse ()
 
+    '  Team Rush Att + Team Pass Att
     If gameStatsTeam(P1, 1) + gameStatsTeam(P1, 3) <> 0 Then
 
         'If (team rush % < league rush %) and Y/C % > 18
@@ -9890,36 +9920,46 @@ End Sub
 'pass will be completed.
 Sub BLITZ ()
 
+    Shared blitzCovAdj(), playActAdj()
+
     Call Rolld100(RN5)
     XE = ydsPerComp(D) / 100
 
     If XE <= 0.5 Then
-        XE = Int(XE * 100 + 0.5)
-        If XE > 21 Then XE = 21
-        If XE < 1 Then XE = 1
-        If RN5 <= PS%(1, XE) Then I4 = I4 + PS%(2, XE)
+        XE = CInt(XE * 100)
     Else
-        XE = Int((1 - XE) * 100 + 0.5)
-        If XE > 21 Then XE = 21
-        If XE < 1 Then XE = 1
-        If RN5 <= PS%(1, XE) Then I4 = I4 - PS%(2, XE)
+        XE = CInt((1 - XE) * 100)
+    End If
+
+    If XE > 21 Then XE = 21
+    If XE < 1 Then XE = 1
+
+    If RN5 <= playActAdj(1, XE) Then 
+        I4 = I4 + playActAdj(2, XE)
     End If
 
     Call Rolld100(RN0)
-    If qbArmRat(P1, qbNumber(P1)) > 20 Then qbArmRat(P1, qbNumber(P1)) = 20
-    If qbArmRat(P1, qbNumber(P1)) < -20 Then qbArmRat(P1, qbNumber(P1)) = -20
 
-    QX = qbArmRat(P1, qbNumber(P1))
+    If qbArmRat(P1, qbNumber(P1)) > 20 Then 
+        qbArmRat(P1, qbNumber(P1)) = 20
+    End If
+    If qbArmRat(P1, qbNumber(P1)) < -20 Then 
+        qbArmRat(P1, qbNumber(P1)) = -20
+    End If
 
-    If QX <> 0 Then
+    currQBArmRat = qbArmRat(P1, qbNumber(P1))
 
-        If QX < 0 Then QX = QX * -1
+    If currQBArmRat <> 0 Then
 
-        If RN0 <= ydsPerCompPctAdj(QX, 1) Then
+        If currQBArmRat < 0 Then 
+            currQBArmRat = currQBArmRat * -1
+        End If
+
+        If RN0 <= ydsPerCompPctAdj(currQBArmRat, 1) Then
             If qbArmRat(P1, qbNumber(P1)) > 0 Then
-                I4 = I4 + ydsPerCompPctAdj(QX, 2)
+                I4 = I4 + ydsPerCompPctAdj(currQBArmRat, 2)
             Else
-                I4 = I4 - ydsPerCompPctAdj(QX, 2)
+                I4 = I4 - ydsPerCompPctAdj(currQBArmRat, 2)
             End If
         End If
 
@@ -10077,7 +10117,7 @@ Sub BLITZ ()
         Call Rolld100(RN9)
 
         For I = 1 To 14
-            If RN9 <= S2%(I7, I4, I) Then Exit For
+            If RN9 <= blitzCovAdj(I7, I4, I) Then Exit For
         Next I
 
         'This calculates shorter gains after
@@ -11408,7 +11448,7 @@ Sub DisplayClockDown
     Print Tab(60);
 
     If ydsToFirst >= 0.7 Then
-        Print Using " TO GO: ##"; Int(ydsToFirst + 0.5);
+        Print Using " TO GO: ##"; CInt(ydsToFirst);
     Else
         Print " TO GO: INCHES";
     End If
@@ -11422,7 +11462,7 @@ Sub DisplayClockDown
         Print "OPP";
     End If
 
-    Print Using " ## YD LINE "; Int(ydLineTeam + 0.5);
+    Print Using " ## YD LINE "; CInt(ydLineTeam);
     Print Tab(80); " ";
 
 End Sub
@@ -11646,7 +11686,7 @@ Sub Turnover_PAT
 
     Else
 
-        convYds! = Int((ydsGained) * 10 + 0.5) / 10
+        convYds! = CInt((ydsGained) * 10) / 10
 
         pbpString$ = pbpString$ + Str$(Int(convYds)) + " YARDS"
         Call PBP
@@ -11879,7 +11919,7 @@ Sub SETWEATHER ()
 
     If autoPlay = 1 Then
         'Read weather from schedule options
-        choice = NG%(20)
+        choice = schedOptions(20)
     Else
 
         Do
@@ -11994,7 +12034,7 @@ Sub SETWEATHER ()
     Locate , 14: Print "3 - COMPUTER SELECT             "
 
     If autoPlay = 1 Then
-        choice = NG%(19)
+        choice = schedOptions(19)
     Else
         Do
             I$ = GetKeyPress$
@@ -12111,7 +12151,7 @@ End Sub
 'the current kicker.
 Sub FGATT ()
 
-    fgAttYds = Int(117 + goalPostAdj - ydLine + 0.5)
+    fgAttYds = CInt(117 + goalPostAdj - ydLine)
 
     Select Case fgAttYds
 
@@ -12143,8 +12183,8 @@ End Sub
 'the current kicker.
 Sub FGMADE ()
 
-    If fgAttYds > gameLongFG(P1, activeKicker(P1)) Then
-        gameLongFG(P1, activeKicker(P1)) = fgAttYds
+    If fgAttYds > gameLongFGAtt(P1, activeKicker(P1)) Then
+        gameLongFGAtt(P1, activeKicker(P1)) = fgAttYds
     End If
 
     Select Case fgAttYds
@@ -12263,7 +12303,7 @@ Sub ComputerOffense ()
         'them in the passing section,
         'we need to reduce the frequency
         'that teams will call a rush
-        '-- teamRushPct = Int((teamRushPct * 0.85) + 0.5)
+        '-- teamRushPct = CInt((teamRushPct * 0.85))
     End If
 
     If endZone = 1 Then
@@ -13214,7 +13254,7 @@ Sub PenaltyCharge (teamIdx, ydsCharged!)
     If ydLine + ydsCharged! > 100 Then
 
         'Half the distance to the goal
-        statYds! = Int(100 - ydLine + 0.5) / 2
+        statYds! = CInt(100 - ydLine) / 2
         ydsCharged! = statYds!
 
     Else
@@ -13222,7 +13262,7 @@ Sub PenaltyCharge (teamIdx, ydsCharged!)
         If ydLine + ydsCharged! < 1 Then
 
             'Half the distance to the goal
-            statYds! = 0 - Int(ydLine + 0.5) / 2
+            statYds! = 0 - CInt(ydLine) / 2
             ydsCharged! = statYds!
 
         Else
@@ -13240,11 +13280,11 @@ Sub PenaltyCharge (teamIdx, ydsCharged!)
 
     ydsToScore = 100 - ydLine
 
-    'Increase team penalty yardage
-    gameStatsTeam(teamIdx, 12) = gameStatsTeam(teamIdx, 12) + statYds!
-
     'Increase team penalties
     gameStatsTeam(teamIdx, 11) = gameStatsTeam(teamIdx, 11) + 1
+
+    'Increase team penalty yardage
+    gameStatsTeam(teamIdx, 12) = gameStatsTeam(teamIdx, 12) + statYds!
 
 End Sub
 
@@ -13730,7 +13770,10 @@ Sub TAKESAFETY ()
     Call AddPossessionTime(4, 7)
 
     ydsGained = (ydLine * -1) - 1
+    
+    'Rush Att
     gameStatsTeam(P1, 1) = gameStatsTeam(P1, 1) + 1
+    'Rush Yds
     gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + ydsGained
 
     pbpString$ = punter$(P1, 0) + " IS HEADED OUT OF THE END ZONE"
@@ -13749,7 +13792,7 @@ End Sub
 'something related to interceptions.
 'Perhaps the player to associate with
 'an interception attempt?
-Sub FINDINT (lastPlayerIdx)
+Sub FINDINT (defPlayIdx)
 
     M5 = 0
     RN0 = Int(Rnd(1) * teamInts(1 - P1)) + 1
@@ -13766,7 +13809,7 @@ Sub FINDINT (lastPlayerIdx)
 
     Next
 
-    lastPlayerIdx = currIdx
+    defPlayIdx = currIdx
 
 End Sub
 
@@ -13993,9 +14036,9 @@ Sub PuntFakeRunYards (choice)
     scoreX0 = 10
     scoreX1 = 11
 
-    fakeYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+    fakeYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
-    fakeYds! = Int((ydsGained) * 10 + 0.5) / 10
+    fakeYds! = CInt((ydsGained) * 10) / 10
 
     If fakeYdLine! >= 99.94999 Then
         pbpString$ = pbpString$ + Str$(Int(100 - ydLine))
@@ -14409,9 +14452,9 @@ Sub FGFakeRunYards (choice)
     scoreX0 = 10
     scoreX1 = 11
 
-    fakeYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+    fakeYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
-    fakeYds! = Int((ydsGained) * 10 + 0.5) / 10
+    fakeYds! = CInt((ydsGained) * 10) / 10
 
     If fakeYds! = 0 Then
 
@@ -14536,7 +14579,7 @@ End Sub
 'going to and where they might be.
 Sub PASSBALL (direction, fieldSide)
 
-    S6 = 0
+    overuseAdj = 0
 
     Call QBLINE
 
@@ -14562,6 +14605,9 @@ Sub PASSBALL (direction, fieldSide)
         I1 = qbNumber(P1)
     End If
 
+    'Determine target WR
+    '-- tweak this based on type of play?
+    '-- for instance, screen plays more likely to go to RB
     Do
 
         Call Rolld100(recChance)
@@ -14764,7 +14810,7 @@ Sub SCOREUPD ()
     K1(nbrScores, 2) = I1
 
     If scoreX1 = 5 Or scoreX1 = 12 Then
-        K1(nbrScores, 2) = Z1
+        K1(nbrScores, 2) = defPlayer
     End If
 
     K1(nbrScores, 3) = I3
@@ -14779,7 +14825,12 @@ End Sub
 '----------------------------------------
 '          COMPILER Subroutine
 '----------------------------------------
-' ...explanation...
+'This subroutine is used to increase team
+'and player stats. It appears to be code
+'that was not used fully but in transition
+'It seems to be designed to simply let YOU
+'send the right parameters and it will do
+'the work to increase pass att, yards, etc.
 Sub COMPILER ()
 
     If scoreX0 >= 1 And scoreX0 <= 4 Then
@@ -14787,10 +14838,10 @@ Sub COMPILER ()
         Select Case scoreX0
 
             Case 1, 4
-                'Increase team rush attempts
+                'Team Rush Att
                 gameStatsTeam(P1, 1) = gameStatsTeam(P1, 1) + 1
 
-                'Increase team rush yards
+                'Team Rush Yds
                 If ydsGained + ydLine < 99.95 Then
                     gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + ydsGained
                 Else
@@ -14798,17 +14849,18 @@ Sub COMPILER ()
                 End If
 
             Case 2
-                'Increase team pass attempts
+                'Team Pass Att
                 gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
 
             Case 3
-                'Increase team pass attempts + completions
+                'Team Pass Att
                 gameStatsTeam(P1, 3) = gameStatsTeam(P1, 3) + 1
+                'Team Pass Comp
                 gameStatsTeam(P1, 4) = gameStatsTeam(P1, 4) + 1
 
-                'Increase team passing yards
+                'Team Pass Yds
                 '-- Do we never substract passing yards for a sack?
-                '-- Or does that happen elsewuere?
+                '-- Or does that happen elsewhere?
                 If ydsGained + ydLine < 99.95 Then
                     gameStatsTeam(P1, 6) = gameStatsTeam(P1, 6) + ydsGained
                 Else
@@ -14822,43 +14874,51 @@ Sub COMPILER ()
 
             Case 1
 
-                'Increase player rush attempt
+                'RB Rush Att
                 gameStatsPlayer(P1, I1, 0) = gameStatsPlayer(P1, I1, 0) + 1
 
-                'Inrease player rush yards and scores
                 If ydsGained + ydLine >= 99.95 Then
+                    'RB Rush Yards
                     gameStatsPlayer(P1, I1, 1) = gameStatsPlayer(P1, I1, 1) + 100 - ydLine
+                    'RB Rush TDs
                     gameStatsPlayer(P1, I1, 2) = gameStatsPlayer(P1, I1, 2) + 1
                     BG = 100 - ydLine
-                    If BG > runBacks(P1, I1) Then
-                        gameRB$(P1, I1) = "t"
-                        runBacks(P1, I1) = BG
+                    If BG > gameLongRunYds(P1, I1) Then
+                        gameLongRunTD$(P1, I1) = "t"
+                        gameLongRunYds(P1, I1) = BG
                     End If
                 Else
+                    'RB Rush Yards
                     gameStatsPlayer(P1, I1, 1) = gameStatsPlayer(P1, I1, 1) + ydsGained
-                    If ydsGained > runBacks(P1, I1) Then
-                        gameRB$(P1, I1) = ""
-                        runBacks(P1, I1) = ydsGained
+                    If ydsGained > gameLongRunYds(P1, I1) Then
+                        gameLongRunTD$(P1, I1) = ""
+                        gameLongRunYds(P1, I1) = ydsGained
                     End If
                 End If
 
             Case 2
 
-                If HB% = 0 Then
+                If halfbackPass = 0 Then
+                    'Pass Att
                     gameStatsPlayer(P1, I1, 9) = gameStatsPlayer(P1, I1, 9) + 1
                 End If
 
             Case 3
 
-                If HB% <> 1 Then
+                If halfbackPass <> 1 Then
 
+                    'Pass Att
                     gameStatsPlayer(P1, I1, 9) = gameStatsPlayer(P1, I1, 9) + 1
+                    'Pass Comp
                     gameStatsPlayer(P1, I1, 10) = gameStatsPlayer(P1, I1, 10) + 1
 
                     If ydsGained + ydLine >= 99.95 Then
+                        'Pass Yards
                         gameStatsPlayer(P1, I1, 12) = gameStatsPlayer(P1, I1, 12) + 100 - ydLine
+                        'Pass TDs
                         gameStatsPlayer(P1, I1, 13) = gameStatsPlayer(P1, I1, 13) + 1
                     Else
+                        'Pass Yards
                         gameStatsPlayer(P1, I1, 12) = gameStatsPlayer(P1, I1, 12) + ydsGained
                     End If
 
@@ -14867,23 +14927,31 @@ Sub COMPILER ()
                 If I3 > 9 Then
 
                     If ydsGained + ydLine >= 99.95 Then
+                        'WR Rec Yds
                         gameStatsPlayer(P1, I3 - 10, 7) = gameStatsPlayer(P1, I3 - 10, 7) + 100 - ydLine
+                        'WR Rec TDs
                         gameStatsPlayer(P1, I3 - 10, 8) = gameStatsPlayer(P1, I3 - 10, 8) + 1
                     Else
+                        'WR Rec Yds
                         gameStatsPlayer(P1, I3 - 10, 7) = gameStatsPlayer(P1, I3 - 10, 7) + ydsGained
                     End If
 
+                    'WR Recepts
                     gameStatsPlayer(P1, I3 - 10, 6) = gameStatsPlayer(P1, I3 - 10, 6) + 1
 
                 Else
 
                     If ydsGained + ydLine >= 99.95 Then
+                        'RB Rec Yds
                         gameStatsPlayer(P1, I3, 4) = gameStatsPlayer(P1, I3, 4) + 100 - ydLine
+                        'RB Rec TDs
                         gameStatsPlayer(P1, I3, 5) = gameStatsPlayer(P1, I3, 5) + 1
                     Else
+                        'RB Rec Yds
                         gameStatsPlayer(P1, I3, 4) = gameStatsPlayer(P1, I3, 4) + ydsGained
                     End If
 
+                    'RB Recepts
                     gameStatsPlayer(P1, I3, 3) = gameStatsPlayer(P1, I3, 3) + 1
 
                 End If
@@ -14891,30 +14959,38 @@ Sub COMPILER ()
             Case 4
 
                 If W5 = 0 Or W5 = 1 And ruleOptType = 0 Then
+                    'Rush Att
                     gameStatsPlayer(P1, qbNumber(P1) + 10, 0) = gameStatsPlayer(P1, qbNumber(P1) + 10, 0) + 1
                 End If
 
                 If W5 = 0 And ydsGained + ydLine < 99.95 Or W5 = 1 And ruleOptType = 0 And ydsGained + ydLine < 99.95 Then
+                    'Rush Yards
                     gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + ydsGained
                 End If
 
                 If W5 = 0 And ydsGained + ydLine >= 99.95 Or W5 = 1 And ruleOptType = 0 And ydsGained + ydLine >= 99.95 Then
+                    'Rush Yds
                     gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + 100 - ydLine
+                    'Rush TDs
                     gameStatsPlayer(P1, qbNumber(P1) + 10, 2) = gameStatsPlayer(P1, qbNumber(P1) + 10, 2) + 1
                 End If
 
                 If W5 = 1 Then
+                    'Team Sacks 
                     sackStatsTeam(P1, 0) = sackStatsTeam(P1, 0) + 1
+                    'Team Sack Yds
                     sackStatsTeam(P1, 1) = sackStatsTeam(P1, 1) + ydsGained * -1
-                    sackStatsPlayer(1 - P1, Z1, 0) = sackStatsPlayer(1 - P1, Z1, 0) + 1
-                    sackStatsPlayer(1 - P1, Z1, 1) = sackStatsPlayer(1 - P1, Z1, 1) + ydsGained * -1
+                    'Opp Sacks
+                    sackStatsOpp(D, defPlayer, 0) = sackStatsOpp(D, defPlayer, 0) + 1
+                    'Opp Sack Yds
+                    sackStatsOpp(D, defPlayer, 1) = sackStatsOpp(D, defPlayer, 1) + ydsGained * -1
                 End If
 
         End Select
 
     End If
 
-    If HB% = 1 Then HB% = 0
+    If halfbackPass = 1 Then halfbackPass = 0
     scoreX0 = 0
 
 End Sub
@@ -15383,12 +15459,12 @@ Sub PASSPBP ()
                     RN1 = Int(Rnd(1) * teamSacks(D)) + 1
 
                     'Determine player for sacks based on contribution
-                    For Z1 = 0 To 14
+                    For defPlayer = 0 To 14
 
-                        M5 = M5 + playerSacks(D, Z1)
+                        M5 = M5 + playerSacks(D, defPlayer)
 
                         If RN1 <= M5 Then
-                            defTeam$ = defSacks$(D, Z1)
+                            defTeam$ = defSacks$(D, defPlayer)
                             Exit For
 
                         End If
@@ -15494,7 +15570,7 @@ Sub SACK ()
     pbpString$ = "BUT HE WON'T BE ABLE TO GET A PASS OFF!"
     Call PBP
 
-    If HB% = 1 Then
+    If halfbackPass = 1 Then
         pbpString$ = rbacks$(P1, I1)
     Else
         pbpString$ = qbacks$(P1, I1)
@@ -15518,7 +15594,7 @@ Sub SACK ()
         Case 12: pbpString$ = pbpString$ + " IS WRAPPED UP"
     End Select
 
-    pbpString$ = pbpString$ + " FOR A" + Str$(Int(ydsGained + 0.5)) + " YARD LOSS"
+    pbpString$ = pbpString$ + " FOR A" + Str$(CInt(ydsGained)) + " YARD LOSS"
 
 End Sub
 
@@ -15596,7 +15672,7 @@ Sub SQUIB ()
     Call MARKER
     Call YARDLINE
 
-    pbpString$ = "KICK TAKEN BY AN UPMAN AT THE" + Str$(Int(kickYL! + 0.5)) + " YD LINE "
+    pbpString$ = "KICK TAKEN BY AN UPMAN AT THE" + Str$(CInt(kickYL!)) + " YD LINE "
     Call PBP
 
     ydsGained = Int(Rnd(1) * 7) + 9
@@ -15994,7 +16070,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 Call MARKER
                 Call YARDLINE
 
-                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + Str$(Int((kickYL! - 2 * kickYL!) + 0.5)) + " YDS DEEP IN THE END ZONE"
+                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + Str$(CInt((kickYL! - 2 * kickYL!))) + " YDS DEEP IN THE END ZONE"
 
                 Call PBP
 
@@ -16042,7 +16118,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 Call MARKER
                 Call YARDLINE
 
-                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + " AT THE" + Str$(Int(kickYL! + 0.5)) + " YD LINE "
+                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + " AT THE" + Str$(CInt(kickYL!)) + " YD LINE "
                 Call PBP
 
             End If
@@ -16449,9 +16525,8 @@ Sub PassCompletePBP (direction, fieldSide)
 
     Call QBTHROW
 
-    If FF% = 0 Then
-        'Adjust Comp % based on ???
-
+    If fleaFlicker = 0 Then
+        'Adjust Comp %
         Select Case playCall
 
             Case 9, 10
@@ -16593,7 +16668,7 @@ Sub PassCompletePBP (direction, fieldSide)
 
         End Select
 
-        If FF% <> 0 Then pbpString$ = targetWRName$ + " MAKES A GREAT CATCH"
+        If fleaFlicker <> 0 Then pbpString$ = targetWRName$ + " MAKES A GREAT CATCH"
 
         If ydLineTeam <= 1 Then
             yardLineString$ = Str$(1)
@@ -16666,7 +16741,7 @@ Sub PassYardagePBP (yardString$)
             pbpString$ = "THAT CATCH BY "
             Call WHICHRECEIVER
 
-            playYdLine! = Int((ydsGained + ydLine) * 10 + 0.5) / 10
+            playYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
             If playYdLine! >= 99.9499 Then
                 pbpString$ = pbpString$ + " GAINED" + Str$(Int(100 - ydLine)) + " YARDS"
@@ -17323,7 +17398,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If scoreQuarters(I) > 4 Then Print #1, "OF OT"; scoreQuarters(I) - 4; "-";
 
             '# of yards for score
-            If K1(I, 0) <> 7 Then Print #1, Int(K1(I, 5) + 0.5);
+            If K1(I, 0) <> 7 Then Print #1, CInt(K1(I, 5));
 
             tryPAT = 1
 
@@ -17403,26 +17478,26 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     Print #1, Tab(14);
 
     If ruleOptType = 0 Then
-        Print #1, gameStatsTeam(0, 1); "-"; Int(gameStatsTeam(0, 2) + 0.5); Tab(29); "RUSHING YDS"; Tab(48); gameStatsTeam(1, 1); "-"; Int(gameStatsTeam(1, 2) + 0.5)
+        Print #1, gameStatsTeam(0, 1); "-"; CInt(gameStatsTeam(0, 2)); Tab(29); "RUSHING YDS"; Tab(48); gameStatsTeam(1, 1); "-"; CInt(gameStatsTeam(1, 2))
     Else
-        Print #1, gameStatsTeam(0, 1) - sackStatsTeam(0, 0); "-"; Int(gameStatsTeam(0, 2) + sackStatsTeam(0, 1) + 0.5); Tab(29); "RUSHING YDS"; Tab(48); gameStatsTeam(1, 1) - sackStatsTeam(1, 0); "-"; Int(gameStatsTeam(1, 2) + sackStatsTeam(1, 1) + 0.5)
+        Print #1, gameStatsTeam(0, 1) - sackStatsTeam(0, 0); "-"; CInt(gameStatsTeam(0, 2) + sackStatsTeam(0, 1)); Tab(29); "RUSHING YDS"; Tab(48); gameStatsTeam(1, 1) - sackStatsTeam(1, 0); "-"; CInt(gameStatsTeam(1, 2) + sackStatsTeam(1, 1))
     End If
 
-    Print #1, Tab(16); Int(gameStatsTeam(0, 6) + 0.5); Tab(29); "PASSING YDS"; Tab(51); Int(gameStatsTeam(1, 6) + 0.5)
+    Print #1, Tab(16); CInt(gameStatsTeam(0, 6)); Tab(29); "PASSING YDS"; Tab(51); CInt(gameStatsTeam(1, 6))
 
-    Print #1, Tab(16); Int(gameStatsTeam(0, 6) + 0.5) + Int(gameStatsTeam(0, 2) + 0.5); Tab(30); "TOTAL YDS"; Tab(51); Int(gameStatsTeam(1, 6) + 0.5) + Int(gameStatsTeam(1, 2) + 0.5)
+    Print #1, Tab(16); CInt(gameStatsTeam(0, 6)) + CInt(gameStatsTeam(0, 2)); Tab(30); "TOTAL YDS"; Tab(51); CInt(gameStatsTeam(1, 6)) + CInt(gameStatsTeam(1, 2))
 
     Print #1, Tab(13); gameStatsTeam(0, 4); "-"; gameStatsTeam(0, 3); "-"; gameStatsTeam(0, 5); Tab(31); "PASSES"; Tab(47); gameStatsTeam(1, 4); "-"; gameStatsTeam(1, 3); "-"; gameStatsTeam(1, 5)
 
     If gameStatsTeam(0, 7) <> 0 And gameStatsTeam(1, 7) <> 0 Then
-        Print #1, Tab(15); gameStatsTeam(0, 7); "-"; Int((gameStatsTeam(0, 8) / gameStatsTeam(0, 7)) * 10 + 0.5) / 10; Tab(32); "PUNTS"; Tab(49); gameStatsTeam(1, 7); "-"; Int((gameStatsTeam(1, 8) / gameStatsTeam(1, 7)) * 10 + 0.5) / 10
+        Print #1, Tab(15); gameStatsTeam(0, 7); "-"; CInt((gameStatsTeam(0, 8) / gameStatsTeam(0, 7)) * 10) / 10; Tab(32); "PUNTS"; Tab(49); gameStatsTeam(1, 7); "-"; CInt((gameStatsTeam(1, 8) / gameStatsTeam(1, 7)) * 10) / 10
     End If
 
     Print #1, Tab(15); gameStatsTeam(0, 9); "-"; gameStatsTeam(0, 10); Tab(31); "FUM/LOST"; Tab(50); gameStatsTeam(1, 9); "-"; gameStatsTeam(1, 10)
 
-    Print #1, Tab(15); gameStatsTeam(0, 11); "-"; Int(gameStatsTeam(0, 12) + 0.5); Tab(31); "PENALTIES"; Tab(50); gameStatsTeam(1, 11); "-"; Int(gameStatsTeam(1, 12) + 0.5)
+    Print #1, Tab(15); gameStatsTeam(0, 11); "-"; CInt(gameStatsTeam(0, 12)); Tab(31); "PENALTIES"; Tab(50); gameStatsTeam(1, 11); "-"; CInt(gameStatsTeam(1, 12))
 
-    Print #1, Tab(15); sackStatsTeam(0, 0); "-"; Int(sackStatsTeam(0, 1) + 0.5); Tab(32); "SACKED"; Tab(50); sackStatsTeam(1, 0); "-"; Int(sackStatsTeam(1, 1) + 0.5)
+    Print #1, Tab(15); sackStatsTeam(0, 0); "-"; Int(sackStatsTeam(0, 1)); Tab(32); "SACKED"; Tab(50); sackStatsTeam(1, 0); "-"; CInt(sackStatsTeam(1, 1))
 
     Print #1, Tab(16);
     Print #1, Using "##"; Int(timePoss(0) / 60);
@@ -17457,11 +17532,11 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
                     Print #1, qbacks$(I, I1 - 10);
                 End If
 
-                Print #1, Tab(18); Using "###  #### ###.#  "; gameStatsPlayer(I, I1, 0), Int(gameStatsPlayer(I, I1, 1) + 0.5), Int(gameStatsPlayer(I, I1, 1) + 0.5) / gameStatsPlayer(I, I1, 0);
+                Print #1, Tab(18); Using "###  #### ###.#  "; gameStatsPlayer(I, I1, 0), CInt(gameStatsPlayer(I, I1, 1)), CInt(gameStatsPlayer(I, I1, 1)) / gameStatsPlayer(I, I1, 0);
 
                 If I1 <= 9 Then
                     'Long   TD
-                    Print #1, Using "###   ##"; runBacks(I, I1), gameStatsPlayer(I, I1, 2)
+                    Print #1, Using "###   ##"; gameLongRunYds(I, I1), gameStatsPlayer(I, I1, 2)
                 Else
                     'TD
                     Print #1, Using "      ##"; gameStatsPlayer(I, I1, 2)
@@ -17484,7 +17559,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
 
             If gameStatsPlayer(I, I1, 6) <> 0 Then
                 Print #1, wdRec$(I, I1); Tab(19);
-                Print #1, Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 6), Int(gameStatsPlayer(I, I1, 7) + 0.5), Int(gameStatsPlayer(I, I1, 7) + 0.5) / gameStatsPlayer(I, I1, 6), WR(I, I1 + 10), gameStatsPlayer(I, I1, 8)
+                Print #1, Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 6), CInt(gameStatsPlayer(I, I1, 7)), CInt(gameStatsPlayer(I, I1, 7)) / gameStatsPlayer(I, I1, 6), gameLongRec(I, I1 + 10), gameStatsPlayer(I, I1, 8)
             End If
 
         Next I1
@@ -17493,7 +17568,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
 
             If gameStatsPlayer(I, I1, 3) <> 0 Then
                 Print #1, rbacks$(I, I1); Tab(19);
-                Print #1, Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 3), Int(gameStatsPlayer(I, I1, 4) + 0.5), Int(gameStatsPlayer(I, I1, 4) + 0.5) / gameStatsPlayer(I, I1, 3), WR(I, I1), gameStatsPlayer(I, I1, 5)
+                Print #1, Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 3), CInt(gameStatsPlayer(I, I1, 4)), CInt(gameStatsPlayer(I, I1, 4)) / gameStatsPlayer(I, I1, 3), gameLongRec(I, I1), gameStatsPlayer(I, I1, 5)
             End If
 
         Next I1
@@ -17513,18 +17588,19 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If gameStatsPlayer(I, I1, 9) <> 0 Then
 
                 Print #1, qbacks$(I, I1); Tab(19);
-                Print #1, Using "###  ### ###.#  ### ##.# "; gameStatsPlayer(I, I1, 9), gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 10) / gameStatsPlayer(I, I1, 9) * 100, Int(gameStatsPlayer(I, I1, 12) + 0.5), Int(gameStatsPlayer(I, I1, 12) + 0.5) / gameStatsPlayer(I, I1, 9);
+                Print #1, Using "###  ### ###.#  ### ##.# "; gameStatsPlayer(I, I1, 9), gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 10) / gameStatsPlayer(I, I1, 9) * 100, CInt(gameStatsPlayer(I, I1, 12)), CInt(gameStatsPlayer(I, I1, 12)) / gameStatsPlayer(I, I1, 9);
 
                 If gameStatsPlayer(I, I1, 10) <> 0 Then
                     'Y/C, TD
-                    Print #1, Using "##.#  ##"; Int(gameStatsPlayer(I, I1, 12) + 0.5) / gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 13);
+                    Print #1, Using "##.#  ##"; CInt(gameStatsPlayer(I, I1, 12)) / gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 13);
                 Else
                     'TDs
                     Print #1, Using "      ##"; gameStatsPlayer(I, I1, 13);
                 End If
 
                 'TD%, Ints, Int%, Longest
-                Print #1, Using "###.# ## ###.# ###"; gameStatsPlayer(I, I1, 13) / gameStatsPlayer(I, I1, 9) * 100, gameStatsPlayer(I, I1, 11), gameStatsPlayer(I, I1, 11) / gameStatsPlayer(I, I1, 9) * 100, quarterbacks(I, I1)
+                Print #1, Using "###.# ## ###.# ###"; gameStatsPlayer(I, I1, 13) / gameStatsPlayer(I, I1, 9) * 100, gameStatsPlayer(I, I1, 11), gameStatsPlayer(I, I1, 11) / gameStatsPlayer(I, I1, 9) * 100, gameLongPassYds(I, I1)
+
             End If
 
         Next I1
@@ -17542,7 +17618,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         For I1 = 0 To 2
             If gameStatsPlayer(I, I1, 14) <> 0 Then
                 Print #1, kickRet$(I, I1); Tab(19);
-                Print #1, Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + 0.5), Int(gameStatsPlayer(I, I1, 15) + 0.5) / gameStatsPlayer(I, I1, 14), kickReturners(I, I1), gameStatsPlayer(I, I1, 16)
+                Print #1, Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), CInt(gameStatsPlayer(I, I1, 15)), CInt(gameStatsPlayer(I, I1, 15)) / gameStatsPlayer(I, I1, 14), gameLongKRYds(I, I1), gameStatsPlayer(I, I1, 16)
             End If
         Next I1
 
@@ -17560,7 +17636,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         For I1 = 3 To 5
             If gameStatsPlayer(I, I1, 14) <> 0 Then
                 Print #1, pret$(I, I1 - 3); Tab(19);
-                Print #1, Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + 0.5), Int(gameStatsPlayer(I, I1, 15) + 0.5) / gameStatsPlayer(I, I1, 14), puntReturners(I, I1 - 3), gameStatsPlayer(I, I1, 16)
+                Print #1, Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), CInt(gameStatsPlayer(I, I1, 15)), CInt(gameStatsPlayer(I, I1, 15)) / gameStatsPlayer(I, I1, 14), gameLongPRYds(I, I1 - 3), gameStatsPlayer(I, I1, 16)
             End If
         Next I1
 
@@ -17597,7 +17673,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If gameStatsPlayer(I, 4, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), playerFGM(I, 0, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFGAtt(I, 0), playerFGM(I, 0, 0);
 
                 'FG's 0 - 19
                 Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 0, 0); playerFGM(I, 0, 1);
@@ -17621,7 +17697,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             If gameStatsPlayer(I, 8, 17) = 0 Then
                 Print #1,
             Else
-                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), playerFGM(I, 1, 0);
+                Print #1, Tab(33); Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFGAtt(I, 1), playerFGM(I, 1, 0);
 
                 'FG's 0 - 19
                 Print #1, "- ";: Print #1, Using "#  #"; playerFGA(I, 1, 0); playerFGM(I, 1, 1);
@@ -17652,7 +17728,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         For I1 = 0 To 9
             If gameInts(I, I1, 0) <> 0 Then
                 Print #1, defInts$(I, I1); Tab(16);
-                Print #1, Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), Int(gameInts(I, I1, 1) + 0.5), Int(gameInts(I, I1, 1) + 0.5) / gameInts(I, I1, 0), IR(I, I1), gameInts(I, I1, 2)
+                Print #1, Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), CInt(gameInts(I, I1, 1)), CInt(gameInts(I, I1, 1)) / gameInts(I, I1, 0), gameLongInt(I, I1), gameInts(I, I1, 2)
             End If
         Next I1
 
@@ -17666,9 +17742,9 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         Print #1, gameTeams$(I); Tab(19);
         Print #1, "NO.   YDS LOST"
         For I1 = 0 To 14
-            If sackStatsPlayer(I, I1, 0) <> 0 Then
+            If sackStatsOpp(I, I1, 0) <> 0 Then
                 Print #1, defSacks$(I, I1); Tab(19);
-                Print #1, Using " ##       ##"; sackStatsPlayer(I, I1, 0), Int(sackStatsPlayer(I, I1, 1) + 0.5)
+                Print #1, Using " ##       ##"; sackStatsOpp(I, I1, 0), CInt(sackStatsOpp(I, I1, 1))
             End If
         Next I1
         Locate , 1: Print #1,
@@ -17850,7 +17926,7 @@ Sub ScoreSummary
             If scoreQuarters(I) = 4 Then Print "OF 4TH -";
             If scoreQuarters(I) = 5 Then Print "OF OVERTIME -";
 
-            If K1(I, 0) <> 7 Then Print Int(K1(I, 5) + 0.5);
+            If K1(I, 0) <> 7 Then Print CInt(K1(I, 5));
 
             tryPAT = 1
 
@@ -17969,22 +18045,22 @@ Sub STATS2SCREEN ()
     Locate , 55: Print gameStatsTeam(1, 0)
 
     If ruleOptType = 0 Then
-        Locate , 18: Print gameStatsTeam(0, 1); "-"; Int(gameStatsTeam(0, 2) + 0.5);
+        Locate , 18: Print gameStatsTeam(0, 1); "-"; CInt(gameStatsTeam(0, 2));
         Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print gameStatsTeam(1, 1); "-"; Int(gameStatsTeam(1, 2) + 0.5)
+        Locate , 53: Print gameStatsTeam(1, 1); "-"; CInt(gameStatsTeam(1, 2))
     Else
-        Locate , 18: Print gameStatsTeam(0, 1) - sackStatsTeam(0, 0); "-"; Int(gameStatsTeam(0, 2) + sackStatsTeam(0, 1) + 0.5);
+        Locate , 18: Print gameStatsTeam(0, 1) - sackStatsTeam(0, 0); "-"; CInt(gameStatsTeam(0, 2) + sackStatsTeam(0, 1));
         Locate , 34: Print "RUSHING YDS";
-        Locate , 53: Print gameStatsTeam(1, 1) - sackStatsTeam(1, 0); "-"; Int(gameStatsTeam(1, 2) + sackStatsTeam(1, 1) + 0.5)
+        Locate , 53: Print gameStatsTeam(1, 1) - sackStatsTeam(1, 0); "-"; CInt(gameStatsTeam(1, 2) + sackStatsTeam(1, 1))
     End If
 
-    Locate , 20: Print Int(gameStatsTeam(0, 6) + 0.5);
+    Locate , 20: Print CInt(gameStatsTeam(0, 6));
     Locate , 34: Print "PASSING YDS";
-    Locate , 55: Print Int(gameStatsTeam(1, 6) + 0.5)
+    Locate , 55: Print CInt(gameStatsTeam(1, 6))
 
     Locate , 35: Print "TOTAL YDS";
-    Locate , 20: Print Int(gameStatsTeam(0, 6) + 0.5) + Int(gameStatsTeam(0, 2) + 0.5);
-    Locate , 55: Print Int(gameStatsTeam(1, 6) + 0.5) + Int(gameStatsTeam(1, 2) + 0.5)
+    Locate , 20: Print CInt(gameStatsTeam(0, 6)) + CInt(gameStatsTeam(0, 2));
+    Locate , 55: Print CInt(gameStatsTeam(1, 6)) + CInt(gameStatsTeam(1, 2))
 
     Locate , 37: Print "PASSES";
     Locate , 16: Print gameStatsTeam(0, 4); "-"; gameStatsTeam(0, 3); "-"; gameStatsTeam(0, 5);
@@ -17993,8 +18069,8 @@ Sub STATS2SCREEN ()
     If gameStatsTeam(0, 7) <> 0 And gameStatsTeam(1, 7) <> 0 Then
         Locate , 38: Print "PUNTS";
         'was 15 / 50
-        Locate , 17: Print gameStatsTeam(0, 7); "-"; Int((gameStatsTeam(0, 8) / gameStatsTeam(0, 7)) * 10 + 0.5) / 10;
-        Locate , 52: Print gameStatsTeam(1, 7); "-"; Int((gameStatsTeam(1, 8) / gameStatsTeam(1, 7)) * 10 + 0.5) / 10
+        Locate , 17: Print gameStatsTeam(0, 7); "-"; CInt((gameStatsTeam(0, 8) / gameStatsTeam(0, 7)) * 10) / 10;
+        Locate , 52: Print gameStatsTeam(1, 7); "-"; CInt((gameStatsTeam(1, 8) / gameStatsTeam(1, 7)) * 10) / 10
     End If
 
     Locate , 36: Print "FUM/LOST";
@@ -18002,12 +18078,12 @@ Sub STATS2SCREEN ()
     Locate , 53: Print gameStatsTeam(1, 9); "-"; gameStatsTeam(1, 10)
 
     Locate , 35: Print "PENALTIES";
-    Locate , 18: Print gameStatsTeam(0, 11); "-"; Int(gameStatsTeam(0, 12) + 0.5);
-    Locate , 53: Print gameStatsTeam(1, 11); "-"; Int(gameStatsTeam(1, 12) + 0.5)
+    Locate , 18: Print gameStatsTeam(0, 11); "-"; CInt(gameStatsTeam(0, 12));
+    Locate , 53: Print gameStatsTeam(1, 11); "-"; CInt(gameStatsTeam(1, 12))
 
     Locate , 37: Print "SACKED";
-    Locate , 18: Print sackStatsTeam(0, 0); "-"; Int(sackStatsTeam(0, 1) + 0.5);
-    Locate , 53: Print sackStatsTeam(1, 0); "-"; Int(sackStatsTeam(1, 1) + 0.5)
+    Locate , 18: Print sackStatsTeam(0, 0); "-"; CInt(sackStatsTeam(0, 1));
+    Locate , 53: Print sackStatsTeam(1, 0); "-"; CInt(sackStatsTeam(1, 1))
 
     Locate , 18: Print Using "##"; Int(timePoss(0) / 60);
     Print ":";
@@ -18052,10 +18128,10 @@ Sub STATS2SCREEN ()
                     Print qbacks$(I, I1 - 10);
                 End If
 
-                Locate , 35: Print Using "###  #### ###.#  "; gameStatsPlayer(I, I1, 0), Int(gameStatsPlayer(I, I1, 1) + 0.5), Int(gameStatsPlayer(I, I1, 1) + 0.5) / gameStatsPlayer(I, I1, 0);
+                Locate , 35: Print Using "###  #### ###.#  "; gameStatsPlayer(I, I1, 0), CInt(gameStatsPlayer(I, I1, 1)), CInt(gameStatsPlayer(I, I1, 1)) / gameStatsPlayer(I, I1, 0);
 
                 If I1 <= 9 Then
-                    Print Using "###   ##"; runBacks(I, I1), gameStatsPlayer(I, I1, 2)
+                    Print Using "###   ##"; gameLongRunYds(I, I1), gameStatsPlayer(I, I1, 2)
                 Else
                     Print Using "      ##"; gameStatsPlayer(I, I1, 2)
                 End If
@@ -18090,7 +18166,7 @@ Sub STATS2SCREEN ()
             If gameStatsPlayer(I, I1, 6) <> 0 Then
                 Locate , 18
                 Print wdRec$(I, I1);
-                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 6), Int(gameStatsPlayer(I, I1, 7) + 0.5), Int(gameStatsPlayer(I, I1, 7) + 0.5) / gameStatsPlayer(I, I1, 6), WR(I, I1 + 10), gameStatsPlayer(I, I1, 8)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 6), CInt(gameStatsPlayer(I, I1, 7)), CInt(gameStatsPlayer(I, I1, 7)) / gameStatsPlayer(I, I1, 6), gameLongRec(I, I1 + 10), gameStatsPlayer(I, I1, 8)
                 nbrPlayers = nbrPlayers + 1
             End If
 
@@ -18121,7 +18197,7 @@ Sub STATS2SCREEN ()
             If gameStatsPlayer(I, I1, 3) <> 0 Then
                 Locate , 18
                 Print rbacks$(I, I1);
-                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 3), Int(gameStatsPlayer(I, I1, 4) + 0.5), Int(gameStatsPlayer(I, I1, 4) + 0.5) / gameStatsPlayer(I, I1, 3), WR(I, I1), gameStatsPlayer(I, I1, 5)
+                Locate , 36: Print Using "##    ###   ##.#  ###    ##"; gameStatsPlayer(I, I1, 3), CInt(gameStatsPlayer(I, I1, 4)), CInt(gameStatsPlayer(I, I1, 4)) / gameStatsPlayer(I, I1, 3), gameLongRec(I, I1), gameStatsPlayer(I, I1, 5)
                 nbrPlayers = nbrPlayers + 1
             End If
 
@@ -18171,17 +18247,17 @@ Sub STATS2SCREEN ()
 
                 Locate , 6
                 Print qbacks$(I, I1);
-                Locate , 22: Print Using "###  ### ###.#  ### ##.# "; gameStatsPlayer(I, I1, 9), gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 10) / gameStatsPlayer(I, I1, 9) * 100, Int(gameStatsPlayer(I, I1, 12) + 0.5), Int(gameStatsPlayer(I, I1, 12) + 0.5) / gameStatsPlayer(I, I1, 9);
+                Locate , 22: Print Using "###  ### ###.#  ### ##.# "; gameStatsPlayer(I, I1, 9), gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 10) / gameStatsPlayer(I, I1, 9) * 100, CInt(gameStatsPlayer(I, I1, 12)), CInt(gameStatsPlayer(I, I1, 12)) / gameStatsPlayer(I, I1, 9);
 
                 If gameStatsPlayer(I, I1, 10) <> 0 Then
                     'Y/C, TD
-                    Print Using "##.#  ##"; Int(gameStatsPlayer(I, I1, 12) + 0.5) / gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 13);
+                    Print Using "##.#  ##"; CInt(gameStatsPlayer(I, I1, 12)) / gameStatsPlayer(I, I1, 10), gameStatsPlayer(I, I1, 13);
                 Else
                     Print Using "      ##"; gameStatsPlayer(I, I1, 13);
                 End If
 
                 '             TD%, I, I%,   LG
-                Print Using "###.# ## ###.# ###"; gameStatsPlayer(I, I1, 13) / gameStatsPlayer(I, I1, 9) * 100, gameStatsPlayer(I, I1, 11), gameStatsPlayer(I, I1, 11) / gameStatsPlayer(I, I1, 9) * 100, quarterbacks(I, I1)
+                Print Using "###.# ## ###.# ###"; gameStatsPlayer(I, I1, 13) / gameStatsPlayer(I, I1, 9) * 100, gameStatsPlayer(I, I1, 11), gameStatsPlayer(I, I1, 11) / gameStatsPlayer(I, I1, 9) * 100, gameLongPassYds(I, I1)
 
             End If
 
@@ -18213,7 +18289,7 @@ Sub STATS2SCREEN ()
                 Locate , 20
                 Print kickRet$(I, I1);
                 Locate , 36
-                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + 0.5), Int(gameStatsPlayer(I, I1, 15) + 0.5) / gameStatsPlayer(I, I1, 14), kickReturners(I, I1), gameStatsPlayer(I, I1, 16)
+                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), CInt(gameStatsPlayer(I, I1, 15)), CInt(gameStatsPlayer(I, I1, 15)) / gameStatsPlayer(I, I1, 14), gameLongKRYds(I, I1), gameStatsPlayer(I, I1, 16)
 
             End If
 
@@ -18238,7 +18314,7 @@ Sub STATS2SCREEN ()
                 Locate , 20
                 Print pret$(I, I1 - 3);
                 Locate , 36
-                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), Int(gameStatsPlayer(I, I1, 15) + 0.5), Int(gameStatsPlayer(I, I1, 15) + 0.5) / gameStatsPlayer(I, I1, 14), puntReturners(I, I1 - 3), gameStatsPlayer(I, I1, 16)
+                Print Using "##  ####  ##.#  ###  ##"; gameStatsPlayer(I, I1, 14), CInt(gameStatsPlayer(I, I1, 15)), CInt(gameStatsPlayer(I, I1, 15)) / gameStatsPlayer(I, I1, 14), gameLongPRYds(I, I1 - 3), gameStatsPlayer(I, I1, 16)
             End If
         Next I1
 
@@ -18295,7 +18371,7 @@ Sub STATS2SCREEN ()
                 Print
             Else
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFG(I, 0), playerFGM(I, 0, 0);
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFGAtt(I, 0), playerFGM(I, 0, 0);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 0); playerFGM(I, 0, 1);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 1); playerFGM(I, 0, 2);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 2); playerFGM(I, 0, 3);
@@ -18320,7 +18396,7 @@ Sub STATS2SCREEN ()
             Else
 
                 Locate , 32
-                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFG(I, 1), playerFGM(I, 1, 0);
+                Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFGAtt(I, 1), playerFGM(I, 1, 0);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 0); playerFGM(I, 1, 1);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 1); playerFGM(I, 1, 2);
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 2); playerFGM(I, 1, 3);
@@ -18355,7 +18431,7 @@ Sub STATS2SCREEN ()
         For I1 = 0 To 9
             If gameInts(I, I1, 0) <> 0 Then
                 Locate , 20: Print defInts$(I, I1);
-                Locate , 36: Print Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), Int(gameInts(I, I1, 1) + 0.5), Int(gameInts(I, I1, 1) + 0.5) / gameInts(I, I1, 0), IR(I, I1), gameInts(I, I1, 2)
+                Locate , 36: Print Using "##  ####  ##.#  ###  ##"; gameInts(I, I1, 0), CInt(gameInts(I, I1, 1)), CInt(gameInts(I, I1, 1)) / gameInts(I, I1, 0), gameLongInt(I, I1), gameInts(I, I1, 2)
             End If
         Next I1
 
@@ -18381,9 +18457,9 @@ Sub STATS2SCREEN ()
         Print "NO.   YDS LOST"
 
         For I1 = 0 To 14
-            If sackStatsPlayer(I, I1, 0) <> 0 Then
+            If sackStatsOpp(I, I1, 0) <> 0 Then
                 Locate , 25: Print defSacks$(I, I1);
-                Locate , 41: Print Using " ##       ##"; sackStatsPlayer(I, I1, 0), Int(sackStatsPlayer(I, I1, 1) + 0.5)
+                Locate , 41: Print Using " ##       ##"; sackStatsOpp(I, I1, 0), CInt(sackStatsOpp(I, I1, 1))
             End If
         Next I1
 
@@ -18510,11 +18586,12 @@ Sub COMPILESTATFILES (teamIdx)
 
     Shared gameAttendance&()
 
-    Shared tradeLPR$(), oppName$()
     Shared gameSite$()
-    Shared locIndicator$()
+    Shared locIndicator$(), oppName$()
 
-    Shared tradeLFG$(), tradeLInt$(), tradeLKR$(), tradeLPass$()
+    Shared recLongRecTxt$(), recLongRushTxt$()
+    Shared recLongFGTxt$(), recLongIntTxt$(), recLongKRTxt$()
+    Shared recLongPassTxt$(), recLongPRTxt$()
 
     'Determine stat file name
     statFile$ = nameStatFile$(gameTeams$(teamIdx))
@@ -18581,38 +18658,38 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For I = 0 To 9:
-            Input #1, gameLRush!(teamIdx, I)
-            Input #1, gameLRush$(teamIdx, I, 0)
-            Input #1, gameLRush$(teamIdx, I, 1)
+            Input #1, recLongRush!(teamIdx, I)
+            Input #1, recLongRushTxt$(teamIdx, I, 0)
+            Input #1, recLongRushTxt$(teamIdx, I, 1)
         Next
 
         For I = 0 To 15:
-            Input #1, gameLRec!(teamIdx, I)
-            Input #1, gameLRec$(teamIdx, I, 0)
-            Input #1, gameLRec$(teamIdx, I, 1)
+            Input #1, recLongRec!(teamIdx, I)
+            Input #1, recLongRecTxt$(teamIdx, I, 0)
+            Input #1, recLongRecTxt$(teamIdx, I, 1)
         Next
 
         For I = 0 To 3:
-            Input #1, gameLPass!(teamIdx, I)
-            Input #1, tradeLPass$(teamIdx, I, 0)
-            Input #1, tradeLPass$(teamIdx, I, 1)
+            Input #1, recLongPass!(teamIdx, I)
+            Input #1, recLongPassTxt$(teamIdx, I, 0)
+            Input #1, recLongPassTxt$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gameLKR!(teamIdx, I)
-            Input #1, tradeLKR$(teamIdx, I, 0)
-            Input #1, tradeLKR$(teamIdx, I, 1)
+            Input #1, recLongKR!(teamIdx, I)
+            Input #1, recLongKRTxt$(teamIdx, I, 0)
+            Input #1, recLongKRTxt$(teamIdx, I, 1)
         Next
 
         For I = 0 To 2:
-            Input #1, gameLPR!(teamIdx, I)
-            Input #1, tradeLPR$(teamIdx, I, 0)
-            Input #1, tradeLPR$(teamIdx, I, 1)
+            Input #1, recLongPR!(teamIdx, I)
+            Input #1, recLongPRTxt$(teamIdx, I, 0)
+            Input #1, recLongPRTxt$(teamIdx, I, 1)
         Next
 
         For I = 0 To 1:
-            Input #1, gameLFG!(teamIdx, I)
-            Input #1, tradeLFG$(teamIdx, I)
+            Input #1, recLongFG!(teamIdx, I)
+            Input #1, recLongFGTxt$(teamIdx, I)
             For I1 = 0 To 4:
                 Input #1, gameFGM!(teamIdx, I, I1)
                 Input #1, gameFGA!(teamIdx, I, I1)
@@ -18620,9 +18697,9 @@ Sub COMPILESTATFILES (teamIdx)
         Next
 
         For I = 0 To 9:
-            Input #1, gameLInt!(teamIdx, I)
-            Input #1, tradeLInt$(teamIdx, I, 0)
-            Input #1, tradeLInt$(teamIdx, I, 1)
+            Input #1, recLongInt!(teamIdx, I)
+            Input #1, recLongIntTxt$(teamIdx, I, 0)
+            Input #1, recLongIntTxt$(teamIdx, I, 1)
         Next
 
         Close #1
@@ -18631,46 +18708,46 @@ Sub COMPILESTATFILES (teamIdx)
 
     ' Look for records
     For I = 0 To 9
-        If runBacks(teamIdx, I) > gameLRush!(teamIdx, I) Then
-            gameLRush!(teamIdx, I) = runBacks(teamIdx, I)
-            gameLRush$(teamIdx, I, 0) = gameRB$(teamIdx, I)
-            gameLRush$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongRunYds(teamIdx, I) > recLongRush!(teamIdx, I) Then
+            recLongRush!(teamIdx, I) = gameLongRunYds(teamIdx, I)
+            recLongRushTxt$(teamIdx, I, 0) = gameLongRunTD$(teamIdx, I)
+            recLongRushTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If IR(teamIdx, I) > gameLInt!(teamIdx, I) Then
-            gameLInt!(teamIdx, I) = IR(teamIdx, I)
-            tradeLInt$(teamIdx, I, 0) = gameIR$(teamIdx, I)
-            tradeLInt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongInt(teamIdx, I) > recLongInt!(teamIdx, I) Then
+            recLongInt!(teamIdx, I) = gameLongInt(teamIdx, I)
+            recLongIntTxt$(teamIdx, I, 0) = gameLongIntTD$(teamIdx, I)
+            recLongIntTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 15
-        If WR(teamIdx, I) > gameLRec!(teamIdx, I) Then
-            gameLRec!(teamIdx, I) = WR(teamIdx, I)
-            gameLRec$(teamIdx, I, 0) = gameWR$(teamIdx, I)
-            gameLRec$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongRec(teamIdx, I) > recLongRec!(teamIdx, I) Then
+            recLongRec!(teamIdx, I) = gameLongRec(teamIdx, I)
+            recLongRecTxt$(teamIdx, I, 0) = gameLongRecTD$(teamIdx, I)
+            recLongRecTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 3
-        If quarterbacks(teamIdx, I) > gameLPass!(teamIdx, I) Then
-            gameLPass!(teamIdx, I) = quarterbacks(teamIdx, I)
-            tradeLPass$(teamIdx, I, 0) = gameQB$(teamIdx, I)
-            tradeLPass$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongPassYds(teamIdx, I) > recLongPass!(teamIdx, I) Then
+            recLongPass!(teamIdx, I) = gameLongPassYds(teamIdx, I)
+            recLongPassTxt$(teamIdx, I, 0) = gameLongPassTD$(teamIdx, I)
+            recLongPassTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
     For I = 0 To 2
-        If kickReturners(teamIdx, I) > gameLKR!(teamIdx, I) Then
-            gameLKR!(teamIdx, I) = kickReturners(teamIdx, I)
-            tradeLKR$(teamIdx, I, 0) = gameKR$(teamIdx, I)
-            tradeLKR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongKRYds(teamIdx, I) > recLongKR!(teamIdx, I) Then
+            recLongKR!(teamIdx, I) = gameLongKRYds(teamIdx, I)
+            recLongKRTxt$(teamIdx, I, 0) = gameLongKRTD$(teamIdx, I)
+            recLongKRTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
 
-        If puntReturners(teamIdx, I) > gameLPR!(teamIdx, I) Then
-            gameLPR!(teamIdx, I) = puntReturners(teamIdx, I)
-            tradeLPR$(teamIdx, I, 0) = gamePR$(teamIdx, I)
-            tradeLPR$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
+        If gameLongPRYds(teamIdx, I) > recLongPR!(teamIdx, I) Then
+            recLongPR!(teamIdx, I) = gameLongPRYds(teamIdx, I)
+            recLongPRTxt$(teamIdx, I, 0) = gameLongPRTD$(teamIdx, I)
+            recLongPRTxt$(teamIdx, I, 1) = gameTeams$(1 - teamIdx)
         End If
     Next
 
@@ -18680,9 +18757,9 @@ Sub COMPILESTATFILES (teamIdx)
 
     For I = 0 To 1
 
-        If gameLongFG(teamIdx, I) > gameLFG!(teamIdx, I) Then
-            gameLFG!(teamIdx, I) = gameLongFG(teamIdx, I)
-            tradeLFG$(teamIdx, 1) = gameTeams$(1 - teamIdx)
+        If gameLongFGAtt(teamIdx, I) > recLongFG!(teamIdx, I) Then
+            recLongFG!(teamIdx, I) = gameLongFGAtt(teamIdx, I)
+            recLongFGTxt$(teamIdx, 1) = gameTeams$(1 - teamIdx)
         End If
 
         For I1 = 0 To 4
@@ -18781,7 +18858,7 @@ Sub COMPILESTATFILES (teamIdx)
 
     For J = 0 To 14
         For J1 = 0 To 1
-            totalSacks(teamIdx, J, J1) = totalSacks(teamIdx, J, J1) + sackStatsPlayer(teamIdx, J, J1)
+            totalSacks(teamIdx, J, J1) = totalSacks(teamIdx, J, J1) + sackStatsOpp(teamIdx, J, J1)
         Next
     Next
 
@@ -18852,38 +18929,38 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For I = 0 To 9:
-        Print #2, gameLRush!(teamIdx, I)
-        Print #2, gameLRush$(teamIdx, I, 0)
-        Print #2, gameLRush$(teamIdx, I, 1)
+        Print #2, recLongRush!(teamIdx, I)
+        Print #2, recLongRushTxt$(teamIdx, I, 0)
+        Print #2, recLongRushTxt$(teamIdx, I, 1)
     Next
 
     For I = 0 To 15:
-        Print #2, gameLRec!(teamIdx, I)
-        Print #2, gameLRec$(teamIdx, I, 0)
-        Print #2, gameLRec$(teamIdx, I, 1)
+        Print #2, recLongRec!(teamIdx, I)
+        Print #2, recLongRecTxt$(teamIdx, I, 0)
+        Print #2, recLongRecTxt$(teamIdx, I, 1)
     Next
 
     For I = 0 To 3:
-        Print #2, gameLPass!(teamIdx, I)
-        Print #2, tradeLPass$(teamIdx, I, 0)
-        Print #2, tradeLPass$(teamIdx, I, 1)
+        Print #2, recLongPass!(teamIdx, I)
+        Print #2, recLongPassTxt$(teamIdx, I, 0)
+        Print #2, recLongPassTxt$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gameLKR!(teamIdx, I)
-        Print #2, tradeLKR$(teamIdx, I, 0)
-        Print #2, tradeLKR$(teamIdx, I, 1)
+        Print #2, recLongKR!(teamIdx, I)
+        Print #2, recLongKRTxt$(teamIdx, I, 0)
+        Print #2, recLongKRTxt$(teamIdx, I, 1)
     Next
 
     For I = 0 To 2:
-        Print #2, gameLPR!(teamIdx, I)
-        Print #2, tradeLPR$(teamIdx, I, 0)
-        Print #2, tradeLPR$(teamIdx, I, 1)
+        Print #2, recLongPR!(teamIdx, I)
+        Print #2, recLongPRTxt$(teamIdx, I, 0)
+        Print #2, recLongPRTxt$(teamIdx, I, 1)
     Next
 
     For I = 0 To 1:
-        Print #2, gameLFG!(teamIdx, I)
-        Print #2, tradeLFG$(teamIdx, I)
+        Print #2, recLongFG!(teamIdx, I)
+        Print #2, recLongFGTxt$(teamIdx, I)
         For I1 = 0 To 4:
             Print #2, gameFGM!(teamIdx, I, I1)
             Print #2, gameFGA!(teamIdx, I, I1)
@@ -18891,9 +18968,9 @@ Sub COMPILESTATFILES (teamIdx)
     Next
 
     For I = 0 To 9:
-        Print #2, gameLInt!(teamIdx, I)
-        Print #2, tradeLInt$(teamIdx, I, 0)
-        Print #2, tradeLInt$(teamIdx, I, 1)
+        Print #2, recLongInt!(teamIdx, I)
+        Print #2, recLongIntTxt$(teamIdx, I, 0)
+        Print #2, recLongIntTxt$(teamIdx, I, 1)
     Next
 
     Close #2

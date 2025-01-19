@@ -294,11 +294,12 @@ Dim tradeLInt!(1, 9), tradeLPR!(1, 2)
 Dim tradeLPass!(1, 3), tradeLRec!(2, 15), tradeLRush!(1, 9)
 Dim tradeTeamStat!(1, 38), tradeOppStat!(1, 38), tradePlayerStat!(1, 13, 17)
 
+Dim recLongFGTxt$(1, 1), recLongIntTxt$(1, 9, 1)
+Dim recLongKRTxt$(1, 2, 1), recLongPassTxt$(1, 3, 1)
+Dim recLongRecTxt$(1, 15, 1), recLongRushTxt$(1, 9, 1)
+Dim recLongPRTxt$(1, 2, 1)
+
 Dim statNam_TRADE$(1)
-Dim tradeLFG$(1, 1), tradeLInt$(1, 9, 1)
-Dim tradeLKR$(1, 2, 1), tradeLPass$(1, 3, 1)
-Dim tradeLRec$(1, 15, 1), tradeLRush$(1, 9, 1)
-Dim tradeLPR$(1, 2, 1)
 
 Dim tradeQB$(1, 3), tradeRB$(1, 9), tradeWR$(1, 5)
 Dim tradeFG$(1, 1), tradeKR$(1, 2), tradePR$(1, 2)
@@ -378,7 +379,11 @@ Dim pollLdrTeams$(1200), divTeamNames$(60)
 ' Used in Game Routines
 '----------------------------------------
 Dim tickerStart
+
 Dim actualAttendance&, avgAttendance&
+
+Dim blitzCovAdj(5, 10, 14)
+Dim playActAdj(2, 21)
 
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
@@ -399,15 +404,17 @@ Dim Shared I1, I3, I5, I6, I7, I8, I9
 Dim Shared I4 As Single
 Dim Shared kickYL!
 
-Dim Shared isOT, JJ, K3
-Dim Shared kickDist, playSegment, overtimeOpt, nbrScores
+Dim Shared isOT, kickDist
+Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared S6, startYds, tickerGames
-Dim Shared W5, WE, WS, winTeam, yrdLine
+Dim Shared startYds, tickerGames
+'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
+Dim Shared W5
+Dim Shared WE, WS, winTeam, yrdLine
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -427,13 +434,11 @@ Dim Shared XD, XE
 Dim Shared ydsToFirst As Single
 Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
-Dim Shared convChoice, fgAttLine, impactTeam
-DIm Shared loseDown
+Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
+Dim Shared goalLnYdAdj, halfbackPass, impactTeam
+DIm Shared intChance, loseDown
 Dim Shared rushEra, scoreX0, scoreX1
-Dim Shared YC, YF, Z1
-
-Dim Shared FF%, goalLnYdAdj, HB%, intChance
-Dim Shared PC%, PS%
+Dim Shared YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
@@ -441,43 +446,46 @@ Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
 
 Dim Shared gameFGA!(1, 1, 0 To 4), gameFGM!(1, 1, 0 To 4)
-Dim Shared gameLRec!(1, 20), gameLFG!(1, 1), gameLInt!(1, 0 To 9), gameLKR!(1, 0 To 2), gameLPass!(1, 0 To 3), gameLRush!(1, 0 To 9)
-Dim Shared gameLPR!(0 To 1, 0 To 2)
+Dim Shared recLongRec!(1, 20), recLongFG!(1, 1), recLongInt!(1, 0 To 9), recLongKR!(1, 0 To 2), recLongPass!(1, 0 To 3), recLongRush!(1, 0 To 9)
+Dim Shared recLongPR!(0 To 1, 0 To 2)
 Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
 
 Dim Shared activeKicker(1)
+Dim Shared brkawayMod(1, 14)
 Dim Shared defInts(1), defSacks(1)
 Dim Shared defYdAdj(1 To 7, 1 To 12)
 Dim Shared defYdAdjEraA(1 To 7, 1 To 12), defYdAdjEraB(1 To 7, 1 To 12)
-Dim Shared gameInts(1, 9, 2), gameLongFG(1, 1), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
+Dim Shared gameInts(1, 9, 2), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
+Dim Shared gameLongFGAtt(1, 1), gameLongKRYds(0 To 1, 0 To 2)
+Dim Shared gameLongInt(1, 9), gameLongPassYds(1, 3), gameLongPRYds(0 To 1, 0 To 2)
+Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
-Dim Shared hasRunFF(1), hasRunRev(1)
-Dim Shared indRushPct(1, 9), IR(1, 9), K1(50, 6), K3(1, 6)
+Dim Shared hasRunRBPass(1), hasRunFF(1), hasRunRev(1)
+Dim Shared indRushPct(1, 9), K1(50, 6), K3(1, 6)
 Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
-Dim Shared kickReturners(0 To 1, 0 To 2), krNumRet(1, 2), krYdsPerRet(1, 2)
+Dim Shared krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1), otTDs(0 To 1)
 Dim Shared passCovAdj(3, 10, 11), passFakeSuccess(0 To 2)
 Dim Shared playerFGA(1, 1, 4), playerFGM(1, 1, 4)
 Dim Shared playerInts(1, 9), playerSacks(1, 14)
-Dim Shared puntReturners(0 To 1, 0 To 2), prNumRet(1, 2), prYdsPerRet(1, 2)
-Dim Shared quarterbacks(1, 3), qbNumber(1)
+Dim Shared prNumRet(1, 2), prYdsPerRet(1, 2)
+Dim Shared qbNumber(1)
 Dim Shared qbArmRat(1, 3), qbMobility(1), qbNumAtt(1, 9), qbCompPct(1, 9), qbPctInt(1, 9)
 Dim Shared qbRushIdx(1, 3)
 Dim Shared runYdAdj(1, 38)
-Dim Shared runBacks(1, 17), rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
-Dim Shared sackStatsPlayer(1, 14, 1)
+Dim Shared rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
+Dim Shared sackStatsOpp(1, 14, 1)
 Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)
 Dim Shared useRandomQB(1)
-Dim Shared sackStatsTeam(1, 1), WR(1, 20), wrNumRec(1, 9), wrYdsPerC(1, 9)
-Dim Shared XD(1), ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
+Dim Shared sackStatsTeam(1, 1), schedOptions(20)
+Dim Shared wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1)
+Dim Shared ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
 
-Dim Shared HB%(1), NG%(20), PS%(2, 21)
-Dim Shared RM%(1, 14)
-Dim Shared S2%(5, 10, 14), ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
+Dim Shared ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 
 Dim scheduleFile$
 
@@ -488,16 +496,13 @@ Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
 Dim Shared defPlay$(1 To 15)
 Dim Shared defInts$(1, 9), defSacks$(1, 14)
-Dim Shared downDesc$(0 To 4), direction$(0 To 1)
+Dim Shared direction$(0 To 1), diskIDs$(0 To 1), downDesc$(0 To 4)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gadget$(3)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
 Dim Shared passCov$(0 To 11), playDesc$(30), playSelect$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3)
 Dim Shared rbacks$(1, 10), SX$(1 To 33, 0 To 1)
-Dim Shared diskIDs$(0 To 1), tickerPeriod$(14), wdRec$(1, 5)
+Dim Shared tickerPeriod$(14), wdRec$(1, 5)
 
-'These appear only used to be assigned a "t" value when a TD is implied.
-'They are included in the compiling of stats file
-'I believe they are for tracking records / "longest" plays
-Dim Shared gameIR$(1, 9), gameKR$(1, 2), gameLRec$(1, 20, 1), gameLRush$(1, 9, 1)
-Dim Shared gamePR$(1, 2), gameRB$(1, 17), gameQB$(1, 3), gameWR$(1, 20)
+Dim Shared gameLongIntTD$(1, 9), gameLongKRTD$(1, 2), gameLongPRTD$(1, 2)
+Dim Shared gameLongRunTD$(1, 17), gameLongPassTD$(1, 3), gameLongRecTD$(1, 20)

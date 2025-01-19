@@ -917,7 +917,7 @@ Sub ReadSeasonRecords (recordFile$)
         Input #1, indRecDesc$(I, 1)
         Input #1, indRecDesc$(I, 2)
     Next
-
+    
     For I = 0 To 50:
         Input #1, teamRecords!(I)
         Input #1, teamRecDesc$(I)
