@@ -182,6 +182,6 @@ Declare Sub ViewRoster (team$)
 Declare Sub ViewSeasonRecords ()
 Declare Sub ViewStatsSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 
-Declare Function FindStatsColl% (XW, statFile$, numberGames)
+Declare Function FindStatsCon% (XW, statFile$, numberGames)
 Declare Function FindStatsNat% (XW, statFile$, numberGames, NRT)
-Declare Function FindStatsPro% (XW, statFile$, numberGames)
+Declare Function FindStatsLeague% (XW, statFile$, numberGames)

@@ -12,12 +12,13 @@ Sub NEWLDR (statType)
 
     Dim printOrView
 
-    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+    Shared leagueName$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     'Needed for Expanded Standings
     Shared totHomeLosses(), totHomeWins(), totHomeTies()
     Shared totRoadLosses(), totRoadWins(), totRoadTies()
-    Shared totNeutralLosses(), totNeutralTies()
+    Shared totNeutralLosses(), totNeutralWins(), totNeutralTies()
     Shared totTeamLosses(), totTeamWins(), totTeamTies()
     Shared lastLoseStreak(), lastWinStreak()
     Shared teamLoseStreak(), teamWinStreak()
@@ -127,7 +128,7 @@ Sub NEWLDR (statType)
                                 Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
                                 For I = 1 To TEAM_LIMIT
-                                    Input #2, totTeamWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totTeamTies(I), expStdLeagName$(I)
+                                    Input #2, totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), expStdLeagName$(I)
                                 Next
 
                             Else

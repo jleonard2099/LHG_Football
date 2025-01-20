@@ -149,7 +149,7 @@ Sub UpdateExpandedStandings (orgType)
     Write #3, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
     For I = 1 To TEAM_LIMIT
-        Write #3, totTeamWins(I), totHomeWins(I), totRoadWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totHomeTies(I), totRoadTies(I), totTeamTies(I), expStdLeagName$(I)
+        Write #3, totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), expStdLeagName$(I)
     Next
 
     Close #3
@@ -432,6 +432,9 @@ Sub SortStandings (AA, ZZ)
                         Swap totTeamTies(X), totTeamTies(Y)
                         Swap totHomeTies(X), totHomeTies(Y)
                         Swap totRoadTies(X), totRoadTies(Y)
+                        Swap totNeutralLosses(X), totNeutralLosses(Y)
+                        Swap totNeutralWins(X), totNeutralWins(Y)
+                        Swap totNeutralTies(X), totNeutralTies(Y)
                         Swap teamWinStreak(X), teamWinStreak(Y)
                         Swap teamLoseStreak(X), teamLoseStreak(Y)
 

@@ -102,6 +102,7 @@ Sub CompileLeague ()
 
             Call ReadConferenceStats(leagueFile$, 1)
 
+            Erase divWins!, divLosses!, divTies!
             Erase leagPtsAgnst!, leagPtsFor!
 
             For XW = 1 To TEAMS_PER_LEAGUE
@@ -109,18 +110,11 @@ Sub CompileLeague ()
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsPro%(XW, memberName$(XW), numberGames)
+                    haveStats = FindStatsLeague%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
 
-                        L = Len(memberName$(XW))
-                        WT$ = ""
-
-                        For X = 1 To L:
-                            A = Asc(Mid$(memberName$(XW), X, 1))
-                            WT$ = WT$ + Chr$(A)
-                        Next X
-
+                        WT$ = memberName$(XW)
                         nonConfGame = 0
 
                         For EC = 1 To TEAMS_PER_LEAGUE:
@@ -170,12 +164,12 @@ Sub CompileLeague ()
 End Sub
 
 '----------------------------------------
-'         FindStatsPro Function
+'         FindStatsLeague Function
 '----------------------------------------
 'Looks for schedule stats for a specified
 'team in the league and loads them if
 'found, notifying the user
-Function FindStatsPro% (XW, statFile$, numberGames)
+Function FindStatsLeague% (XW, statFile$, numberGames)
 
     Shared oppScore(), teamScore()
 
@@ -185,7 +179,7 @@ Function FindStatsPro% (XW, statFile$, numberGames)
 
         Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
-        FindStatsPro% = 0
+        FindStatsLeague% = 0
 
     Else
 
@@ -216,7 +210,7 @@ Function FindStatsPro% (XW, statFile$, numberGames)
         Color 15
         Print " STATS            "
 
-        FindStatsPro% = 1
+        FindStatsLeague% = 1
 
     End If
 
@@ -257,7 +251,7 @@ Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
     Shared statsLPass$(), statsLRush$()
     Shared leaderAllPurpName$()
 
-    Call ReadTeamStatsComp (teamName$, statFile$)
+    Call ReadTeamStatsComp(teamName$, statFile$)
 
     For I = 1 To 10:
         For J = 1 To 6:
@@ -2299,5 +2293,4 @@ Sub PostRecordsPro
     Close #2
 
 End Sub
-
 

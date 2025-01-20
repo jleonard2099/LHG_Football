@@ -112,6 +112,7 @@ Sub CompileCollege ()
 
             Call ReadConferenceStats (conferenceFile$, 0)
 
+            Erase divWins!, divLosses!, divTies!
             Erase leagPtsAgnst!, leagPtsFor!
 
             For XW = 1 To TEAMS_PER_CONFERENCE
@@ -119,18 +120,11 @@ Sub CompileCollege ()
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsColl%(XW, memberName$(XW), numberGames)
+                    haveStats = FindStatsCon%(XW, memberName$(XW), numberGames)
 
                     If (haveStats) Then
 
-                        L = Len(memberName$(XW))
-                        WT$ = ""
-
-                        For X = 1 To L:
-                            A = Asc(Mid$(memberName$(XW), X, 1))
-                            WT$ = WT$ + Chr$(A)
-                        Next X
-
+                        WT$ = memberName$(XW)
                         nonConfGame = 0
 
                         For X = 1 To TEAMS_PER_CONFERENCE
@@ -189,12 +183,12 @@ End Sub
 
 
 '----------------------------------------
-'         FindStatsColl Function
+'         FindStatsCon Function
 '----------------------------------------
 'Looks for schedule stats for a specified
 'team in the conference and loads them if
 'found, notifying the user
-Function FindStatsColl% (XW, statFile$, numberGames)
+Function FindStatsCon% (XW, statFile$, numberGames)
 
     Shared oppScore(), teamScore()
 
@@ -206,7 +200,7 @@ Function FindStatsColl% (XW, statFile$, numberGames)
 
         Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
-        FindStatsColl% = 0
+        FindStatsCon% = 0
 
     Else
 
@@ -289,7 +283,7 @@ Function FindStatsColl% (XW, statFile$, numberGames)
         Color 15
         Print " STATS            "
 
-        FindStatsColl% = 1
+        FindStatsCon% = 1
 
     End If
 
