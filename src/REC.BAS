@@ -255,6 +255,7 @@ Sub ViewSeasonRecords ()
     'FG%
     Locate , 4
     Print indRecCategory$(37); Tab(28); indRecDesc$(37, 0); Tab(42); indRecDesc$(37, 1); Tab(61); Using "###.#"; indRecords!(37)
+
     'Longest FG
     Locate , 4
     Print indRecCategory$(38); Tab(28); indRecDesc$(38, 0); Tab(42); indRecDesc$(38, 1); Tab(62); Using " ###"; indRecords!(38);: Print indRecDesc$(38, 2)

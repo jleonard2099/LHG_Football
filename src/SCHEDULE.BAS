@@ -816,42 +816,14 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                 If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-                    Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #1
-
-                    Input #1, statType
+                    Call ReadConferenceIndex(conferenceFile$, statType)
 
                     If statType = 0 Then
-
-                        Input #1, LG$
-                        Input #1, X$
-                        Input #1, X$
-
-                        For X = 1 To 30
-                            Input #1, memberName$(X)
-                            Input #1, memberIdx(X)
-                            Input #1, memberYear$(X)
-                        Next
-
-                        numberTeams = 30
-
-                        Close #1
-
+                        numberTeams = TEAMS_PER_CONFERENCE
                     End If
 
                     If statType = 1 Then
-
-                        Input #1, LG$
-
-                        For X = 1 To 30:
-                            Input #1, memberName$(X)
-                            Input #1, memberIdx(X)
-                            Input #1, memberYear$(X)
-                        Next
-
-                        numberTeams = 30
-
-                        Close #1
-
+                        numberTeams = TEAMS_PER_LEAGUE
                     End If
 
                     For I = 1 To scheduleAP%(0)

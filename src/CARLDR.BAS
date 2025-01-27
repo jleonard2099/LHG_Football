@@ -77,7 +77,7 @@ Sub UpdateCareerLeaders ()
     Shared TT, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared intName$(), sackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -310,7 +310,7 @@ Sub UpdateCareerLeaders ()
             '# Players
             For I = 0 To 54:
 
-                If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" And carDefInts$(I) <> "END" Then
+                If intName$(I) <> "" And intName$(I) <> "XXX" And intName$(I) <> "END" Then
 
                     '# Stats
                     For J = 0 To 2
@@ -335,7 +335,7 @@ Sub UpdateCareerLeaders ()
             '# Players
             For I = 0 To 54:
 
-                If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" And carDefSacks$(I) <> "END" Then
+                If sackName$(I) <> "" And sackName$(I) <> "XXX" And sackName$(I) <> "END" Then
 
                     '# Stats
                     For J = 0 To 2
@@ -1142,7 +1142,7 @@ Sub UpdateCareerLeaders ()
             If carLdrGIS!(K, 0) > carLdrVal!(59, 19) Then
 
                 carLdrVal!(59, 19) = carLdrGIS!(K, 0)
-                carLdrPlyrName$(59, 19) = carDefInts$(K)
+                carLdrPlyrName$(59, 19) = intName$(K)
 
                 For I = 1 To 20
                     For J = 20 To I Step -1
@@ -1163,7 +1163,7 @@ Sub UpdateCareerLeaders ()
             If carLdrGSS!(K, 0) > carLdrVal!(60, 19) Then
 
                 carLdrVal!(60, 19) = carLdrGSS!(K, 0)
-                carLdrPlyrName$(60, 19) = carDefSacks$(K)
+                carLdrPlyrName$(60, 19) = sackName$(K)
 
                 For I = 1 To 20
                     For J = 20 To I Step -1

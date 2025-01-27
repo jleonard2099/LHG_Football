@@ -54,7 +54,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
     Shared TT
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared intName$(), sackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -825,7 +825,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
     For I = 0 To 54
 
-        If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" Then
+        If intName$(I) <> "" And intName$(I) <> "XXX" Then
 
             VV = 0
 
@@ -834,7 +834,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Next
 
             'Name
-            Print #1, Left$(carDefInts$(I), 13);
+            Print #1, Left$(intName$(I), 13);
 
             For V = 1 To VV
                 'Year
@@ -863,7 +863,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
     For I = 0 To 54
 
-        If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" Then
+        If sackName$(I) <> "" And sackName$(I) <> "XXX" Then
 
             VV = 0
 
@@ -872,7 +872,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Next
 
             'Name
-            Print #1, Left$(carDefSacks$(I), 13);
+            Print #1, Left$(sackName$(I), 13);
 
             For V = 1 To VV
                 'Year
@@ -932,7 +932,7 @@ Sub CareerStats_Screen (careerFile$)
     _Title "3-in-1 Football - View Careers"
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared intName$(), sackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -1180,21 +1180,21 @@ Sub CareerStats_Screen (careerFile$)
                     Locate I + 2
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefInts$(I), 12)
+                    Color 7: Print Left$(intName$(I), 12)
                 Next
 
                 For I = 19 To 36:
                     Locate I - 17, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefInts$(I), 12)
+                    Color 7: Print Left$(intName$(I), 12)
                 Next
 
                 For I = 37 To 54:
                     Locate I - 35, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefInts$(I), 12)
+                    Color 7: Print Left$(intName$(I), 12)
                 Next
 
                 Print
@@ -1212,21 +1212,21 @@ Sub CareerStats_Screen (careerFile$)
                     Locate I + 2
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefSacks$(I), 12)
+                    Color 7: Print Left$(sackName$(I), 12)
                 Next
 
                 For I = 19 To 36:
                     Locate I - 17, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefSacks$(I), 12)
+                    Color 7: Print Left$(sackName$(I), 12)
                 Next
 
                 For I = 37 To 54:
                     Locate I - 35, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(carDefSacks$(I), 12)
+                    Color 7: Print Left$(sackName$(I), 12)
                 Next
 
                 Print
@@ -1276,7 +1276,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
     Shared careerRecVal!()
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared intName$(), sackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -2283,10 +2283,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" Then
+                    If intName$(I) <> "" And intName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carDefInts$(I), 13);
+                        Locate 3: Print Left$(intName$(I), 13);
 
                         VV = 0
 
@@ -2358,10 +2358,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" Then
+                    If sackName$(I) <> "" And sackName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carDefSacks$(I), 13);
+                        Locate 3: Print Left$(sackName$(I), 13);
 
                         VV = 0
 

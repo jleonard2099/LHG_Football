@@ -1,3 +1,4 @@
+
 '----------------------------------------
 '           SEECON Subroutine
 '----------------------------------------
@@ -26,7 +27,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Coll (targetFile$, confName$)
+Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
     Shared divLosses!(), divTies!(), divWins!()
     Shared leaderVal1!(), leaderVal2!()
@@ -39,7 +40,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     Shared div1Name$, div2Name$
 
-    Call ReadConferenceStats (targetFile$, 0)
+    Call ReadConferenceStats(targetFile$, 0)
 
     div1Name$ = PadRight(div1Name$, 8)
     div2Name$ = PadRight(div2Name$, 8)
@@ -98,7 +99,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
             leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If divWins!(P) + divLosses!(P) > 0 Then 
+            If divWins!(P) + divLosses!(P) > 0 Then
                 A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
             End If
 
@@ -156,7 +157,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
             leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If divWins!(P) + divLosses!(P) > 0 Then 
+            If divWins!(P) + divLosses!(P) > 0 Then
                 A = Int(divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
             End If
 
@@ -195,7 +196,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
             leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
             A = 0
-            If divWins!(P) + divLosses!(P) > 0 Then 
+            If divWins!(P) + divLosses!(P) > 0 Then
                 A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
             End If
 
@@ -308,7 +309,7 @@ Sub StatOptions_Coll (confName$)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save Conference Report",_CWD$ + "\Report","*.txt","Text File")
+                    userFile$ = _SaveFileDialog$("Save Conference Report", _CWD$ + "\Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call CollLeaders_Report(confName$, 0, userFile$)
                     End If
@@ -366,7 +367,8 @@ Sub CollLeaders_Screen (confName$)
     Cls
 
     Color 12
-    Print confName$ + " OVERALL RECORD"
+    Locate , 33
+    Print confName$ + "OVERALL RECORD"
 
     If div1Name$ <> "" Then Print div1Name$; " DIVISION"
     Locate 2, 41
@@ -455,7 +457,8 @@ Sub CollLeaders_Screen (confName$)
     Cls
 
     Color 12
-    Print confName$ + " CONFERENCE RECORD"
+    Locate , 33
+    Print confName$ + "CONFERENCE RECORD"
 
     If div1Name$ <> "" Then Print div1Name$; " DIVISION"
 
@@ -1120,10 +1123,10 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Shared div1Name$, div2Name$
 
-	Color 15, 0
-	Cls
+    Color 15, 0
+    Cls
 
-	Open destFile$ For Output As #1
+    Open destFile$ For Output As #1
 
     Print #1, confName$ + " OVERALL RECORD"
 
@@ -1624,22 +1627,21 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Close #1
 
-	If printDest = 1 Then
+    If printDest = 1 Then
 
-		Open destFile$ For Input As #2
+        Open destFile$ For Input As #2
 
-		Do While Not EOF(2)
-			Line Input #2, X$
-			LPrint X$
-		Loop
+        Do While Not EOF(2)
+            Line Input #2, X$
+            LPrint X$
+        Loop
 
-		Close #2
+        Close #2
 
-		LPrint Chr$(12)
+        LPrint Chr$(12)
 
-		Kill destFile$
+        Kill destFile$
 
-	End If
+    End If
 
 End Sub
-

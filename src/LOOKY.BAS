@@ -99,7 +99,7 @@ Sub LoadTeamStats (statFile$, teamName$, totalGames%, teamPower, SS)
     Shared statsLFG$(), statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
     Shared statsLPR$()
 
-    Call ReadScheduleStats (statFile$, I, totalGames%)
+    Call ReadScheduleStats (statFile$, null, totalGames%)
 
     'STRENGTH OF SCHEDULE
     SS = 0

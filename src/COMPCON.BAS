@@ -1,4 +1,4 @@
-    '----------------------------------------
+'----------------------------------------
 '        CompileCollege SubRoutine
 '----------------------------------------
 'This subroutine reads in existing records,
@@ -10,9 +10,10 @@ Sub CompileCollege ()
 
     _Title "3-in-1 Football - Update Conference Stats"
 
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
     Shared totalTeamVal!(), leaderVal!(), statsGeneral!()
     Shared divWins!(), divLosses!(), divTies!()
-    Shared leagPtsAgnst!(), leagPtsFor!()
 
     Shared indRecords!(), teamRecords!()
 
@@ -23,7 +24,7 @@ Sub CompileCollege ()
     'Read in any existing records first
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
 
-        Call ReadSeasonRecords ("RECORDS.CFB")
+        Call ReadSeasonRecords("RECORDS.CFB")
 
     Else
 
@@ -54,8 +55,8 @@ Sub CompileCollege ()
     teamRecords!(42) = 999
     teamRecords!(43) = 999
 
-    Erase totalTeamVal!, leaderVal!
-    Erase divWins!, divLosses!, divTies!
+    Erase totalTeamVal!, leaderVal!, statsGeneral!
+    Erase memberName$, leaderTeam$, totalTeamName$
 
     For X = 1 To 60
         memberName$(X) = "*"
@@ -110,7 +111,7 @@ Sub CompileCollege ()
 
         Else
 
-            Call ReadConferenceStats (conferenceFile$, 0)
+            Call ReadConferenceStats(conferenceFile$, 0)
 
             Erase divWins!, divLosses!, divTies!
             Erase leagPtsAgnst!, leagPtsFor!
@@ -155,7 +156,6 @@ Sub CompileCollege ()
                             End If
 
                         Next X
-                        'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
 
                         If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
@@ -352,19 +352,22 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames < teamRecords!(25) Then 
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames < teamRecords!(25) Then
         teamRecords!(25) = (defTotals!(6) + defTotals!(2)) / numberGames
         teamRecDesc$(25) = teamName$
     End If
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) + defTotals!(2) < teamRecords!(26) Then 
+
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) + defTotals!(2) < teamRecords!(26) Then
         teamRecords!(26) = defTotals!(6) + defTotals!(2)
         teamRecDesc$(26) = teamName$
     End If
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / (defTotals!(1) + defTotals!(3)) < teamRecords!(27) Then 
+
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / (defTotals!(1) + defTotals!(3)) < teamRecords!(27) Then
         teamRecords!(27) = (defTotals!(6) + defTotals!(2)) / (defTotals!(1) + defTotals!(3))
         teamRecDesc$(27) = teamName$
     End If
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames > teamRecords!(28) Then 
+
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames > teamRecords!(28) Then
         teamRecords!(28) = (defTotals!(6) + defTotals!(2)) / numberGames
         teamRecDesc$(28) = teamName$
     End If
@@ -402,10 +405,12 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         teamRecords!(3) = offTotals!(2) / numberGames
         teamRecDesc$(3) = teamName$
     End If
+
     If offTotals!(2) > teamRecords!(4) Then
         teamRecords!(4) = offTotals!(2)
         teamRecDesc$(4) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And offTotals!(2) / offTotals!(1) > teamRecords!(5) Then
         teamRecords!(5) = offTotals!(2) / offTotals!(1)
         teamRecDesc$(5) = teamName$
@@ -440,10 +445,12 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         teamRecords!(29) = defTotals!(2) / numberGames
         teamRecDesc$(29) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And defTotals!(2) < teamRecords!(30) Then
         teamRecords!(30) = defTotals!(2)
         teamRecDesc$(30) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And defTotals!(2) / defTotals!(1) < teamRecords!(31) Then
         teamRecords!(31) = defTotals!(2) / defTotals!(1)
         teamRecDesc$(31) = teamName$
@@ -485,6 +492,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         teamRecords!(13) = PTS / numberGames
         teamRecDesc$(13) = teamName$
     End If
+
     If PTS > teamRecords!(12) Then
         teamRecords!(12) = PTS
         teamRecDesc$(12) = teamName$
@@ -572,22 +580,27 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         teamRecords!(6) = offTotals!(6) / numberGames
         teamRecDesc$(6) = teamName$
     End If
+
     If offTotals!(6) > teamRecords!(7) Then
         teamRecords!(7) = offTotals!(6)
         teamRecDesc$(7) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(3) > teamRecords!(8) Then
         teamRecords!(8) = offTotals!(6) / offTotals!(3)
         teamRecDesc$(8) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(4) > teamRecords!(9) Then
         teamRecords!(9) = offTotals!(6) / offTotals!(4)
         teamRecDesc$(9) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And offTotals!(4) / offTotals!(3) > teamRecords!(10) Then
         teamRecords!(10) = offTotals!(4) / offTotals!(3)
         teamRecDesc$(10) = teamName$
     End If
+
     If UCase$(finalUpdate$) = "Y" And offTotals!(5) / offTotals!(3) < teamRecords!(11) Then
         teamRecords!(11) = offTotals!(5) / offTotals!(3)
         teamRecDesc$(11) = teamName$
@@ -679,7 +692,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
     'CATEGORY 9 - PUNTING
     CA = 9
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then 
+    If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then
         teamRecords!(15) = offTotals!(8) / offTotals!(7)
         teamRecDesc$(15) = teamName$
     End If

@@ -126,27 +126,34 @@ Sub MergeFirstYear
 
     Shared TT, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
-    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
-
-    Shared statsTeam!(), statsOpp!(), statsPlayers!()
-    Shared statsLFG!(), statsLInt!()
-    Shared carGameSacks(), carGameInts()
-
-    Shared careerFGA!(), careerFGM()
-    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
-    Shared careerLPR!()
-
     Shared careerFGS!(), careerGIS!(), careerGSS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
+    Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
     Shared careerRBS$(), careerWRS$(), careerQBS$()
     Shared careerKRS$(), careerPRS$()
 
-    Shared careerLFG$(), careerLInt$(), careerLRec$()
+    Shared careerLRec$(), careerLFG$(), careerLInt$()
     Shared careerLKR$(), careerLPass$(), careerLRush$()
     Shared careerLPR$()
+
+    Shared carGameSacks(), carGameInts()
+    Shared careerFGA!(), careerFGM!()
+    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
+    Shared careerLPR!()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared statsGI(), statsGS()
+    Shared statsLFG!(), statsLInt!()
+    Shared statsLKR!(), statsLPass!()
+    Shared statsLPR!(), statsLRec!(), statsLRush!()
+    Shared statsOpp!(), statsPlayers!(), statsTeam!()
+
+    Shared carIntName$(), carSackName$()
+    Shared statsLFG$(), statsLInt$(), statsLRec$()
+    Shared statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$()
 
     NB = -1
     NC = -1
@@ -250,11 +257,10 @@ Sub MergeFirstYear
                     Print "MERGING AND UPDATING CAREER STATS . . . . PLEASE WAIT"
 
                     Open diskPaths$(1) + statFile$ + "S" For Input As #1
-
-                    Input #1, GAMES
-
+                    Input #1, nbrGames
                     Close #1
 
+                    '-- These have to be unique from regular stats
                     Open diskPaths$(1) + statFile$ For Input As #2
 
                     Input #2, temp$
@@ -285,6 +291,7 @@ Sub MergeFirstYear
                         Input #2, carKicker$(I)
                     Next I
 
+                    '-- These DO NOT have to be unique from regular stats
                     For J = 0 To 13
                         For K = 0 To 17:
                             Input #2, statsPlayers!(J, K)
@@ -300,14 +307,14 @@ Sub MergeFirstYear
                     Next L
 
                     For J = 0 To 9:
-                        Input #2, carDefInts$(J)
+                        Input #2, carIntName$(J)
                         For J1 = 0 To 2:
                             Input #2, carGameInts(J, J1)
                         Next
                     Next
 
                     For J = 0 To 14:
-                        Input #2, carDefSacks$(J)
+                        Input #2, carSackName$(J)
                         For J1 = 0 To 1:
                             Input #2, carGameSacks(J, J1)
                         Next
@@ -347,7 +354,7 @@ Sub MergeFirstYear
                         Input #2, statsLFG!(I)
                         Input #2, careerLFG$(I)
                         For I1 = 0 To 4:
-                            Input #2, careerFGM(I, I1)
+                            Input #2, careerFGM!(I, I1)
                             Input #2, careerFGA!(I, I1)
                         Next
                     Next
@@ -504,7 +511,7 @@ Sub MergeFirstYear
                             careerFGS!(N, I, 16) = statYear
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerFGM(I, I1)
+                                careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
                             Next
 
                             For I1 = 0 To 4:
@@ -525,7 +532,7 @@ Sub MergeFirstYear
                             careerFGS!(N, I, 16) = statYear
 
                             For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerFGM(I, I1)
+                                careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
                             Next
 
                             For I1 = 0 To 4:
@@ -540,8 +547,8 @@ Sub MergeFirstYear
 
                         N = 1
 
-                        If carDefInts$(I) = "END" Or carDefInts$(I) = "XXX" Or carDefInts$(I) = "" Then
-                            carDefInts$(I) = ""
+                        If carIntName$(I) = "END" Or carIntName$(I) = "XXX" Or carIntName$(I) = "" Then
+                            carIntName$(I) = ""
                         Else
                             NJ = NJ + 1
                         End If
@@ -555,8 +562,8 @@ Sub MergeFirstYear
 
                         N = 1
 
-                        If carDefSacks$(I) = "END" Or carDefSacks$(I) = "XXX" Or carDefSacks$(I) = "" Then
-                            carDefSacks$(I) = ""
+                        If carSackName$(I) = "END" Or carSackName$(I) = "XXX" Or carSackName$(I) = "" Then
+                            carSackName$(I) = ""
                         Else
                             NK = NK + 1
                         End If
@@ -1113,7 +1120,7 @@ Sub MergeAddYear (selectedFile$, statFile$)
             doPostLeaders = 0
         End If
 
-        Call AddCareerYear(statYear, doPostLeaders, selectedFile$, statFile$)
+        Call AddCareerYear(targetYear, doPostLeaders, selectedFile$, statFile$)
 
     End If ' Done checking for year to add
 
@@ -1129,29 +1136,39 @@ End Sub
 'new values.
 Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
 
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPunter$(), carPRet$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared carIntName$(), carSackName$()
 
-    Shared carGameInts(), carGameSacks()
+    Shared careerLRec$(), careerLFG$(), careerLInt$()
+    Shared careerLKR$(), careerLPass$(), careerLRush$()
+    Shared careerLPR$()
+
+    Shared carGameSacks(), carGameInts()
+    Shared careerFGA!(), careerFGM!()
+    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
+    Shared careerLPR!()
 
     Shared careerKRS$()
-    Shared careerLPR$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
-
-    Shared careerLFG$(), careerLInt$(), careerLKR$()
-    Shared statsLRec$(), statsLKR$(), statsLPass$()
-    Shared statsLRush$()
+    Shared careerPRS$()
 
     Shared careerFGS!(), careerGIS!(), careerGSS!(), careerKRS!()
-    Shared careerLRec!(), careerLKR!(), careerLRush!(), careerLPass!()
-    Shared careerLPR!(), careerPRS!(), careerPUS!()
+    Shared careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
+    Shared intName$(), sackName$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+    Shared statsLFG$(), statsLInt$(), statsLKR$()
+    Shared statsLRec$(), statsLKR$(), statsLPass$()
+    Shared statsLPR$(), statsLRush$()
+
     Shared statsFGA!(), statsFGM!()
-    Shared statsLInt!(), statsLFG!()
-    Shared statsTeam!(), statsOpp!(), statsPlayers!()
+    Shared statsGI(), statsGS()
+    Shared statsLFG!(), statsLInt!()
+    Shared statsLKR!(), statsLPass!()
+    Shared statsLPR!(), statsLRec!(), statsLRush!()
+    Shared statsOpp!(), statsPlayers!(), statsTeam!()
 
     Call LoadCareerFile(careerFile$)
 
@@ -1164,159 +1181,56 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
     Print "LOADING STATS FILE . . . . PLEASE WAIT"
 
     Open diskPaths$(1) + statFile$ + "S" For Input As #2
-    Input #2, GAMES
+    Input #2, nbrGames
     Close #2
 
-    Open diskPaths$(1) + statFile$ For Input As #3
-
-    Input #3, temp$
+    Call ReadTeamStats(temp$, statFile$)
 
     For I = 0 To 9:
-        Input #3, rbName$(I)
-    Next I
-
-    For I = 0 To 5:
-        Input #3, wrName$(I)
-    Next I
-
-    For I = 0 To 3:
-        Input #3, qbName$(I)
-    Next I
-
-    For I = 0 To 2:
-        Input #3, krName$(I)
-    Next I
-
-    For I = 0 To 2:
-        Input #3, prName$(I)
-    Next I
-
-    Input #3, punterName$(0)
-
-    For I = 0 To 1:
-        Input #3, pkName$(I)
-    Next I
-
-    For J = 0 To 13
-        For K = 0 To 17:
-            Input #3, statsPlayers!(J, K)
-        Next K
-    Next J
-
-    For L = 0 To 38:
-        Input #3, statsTeam!(L)
-    Next L
-
-    For L = 0 To 38:
-        Input #3, statsOpp!(L)
-    Next L
-
-    For J = 0 To 9:
-        Input #3, carDefInts$(J)
-        For J1 = 0 To 2:
-            Input #3, carGameInts(J, J1)
-        Next
-    Next
-
-    For J = 0 To 14:
-        Input #3, carDefSacks$(J)
-        For J1 = 0 To 1:
-            Input #3, carGameSacks(J, J1)
-        Next
-    Next
-
-    For I = 0 To 9:
-        Input #3, careerLRush!(I)
-        Input #3, statsLRush$(I, 0)
-        Input #3, statsLRush$(I, 1)
-    Next
-
-    For I = 0 To 15:
-        Input #3, careerLRec!(I)
-        Input #3, statsLRec$(I, 0)
-        Input #3, statsLRec$(I, 1)
-    Next
-
-    For I = 0 To 3:
-        Input #3, careerLPass!(I)
-        Input #3, statsLPass$(I, 0)
-        Input #3, statsLPass$(I, 1)
-    Next
-
-    For I = 0 To 2:
-        Input #3, careerLKR!(I)
-        Input #3, statsLKR$(I, 0)
-        Input #3, statsLKR$(I, 1)
-    Next
-
-    For I = 0 To 2:
-        Input #3, careerLPR!(I)
-        Input #3, careerLPR$(I, 0)
-        Input #3, careerLPR$(I, 1)
-    Next
-
-    For I = 0 To 1:
-        Input #3, statsLFG!(I)
-        Input #3, careerLFG$(I)
-        For I1 = 0 To 4:
-            Input #3, statsFGM!(I, I1)
-            Input #3, statsFGA!(I, I1)
-        Next
-    Next
-
-    For I = 0 To 9:
-        Input #3, statsLInt!(I)
-        Input #3, careerLInt$(I, 0)
-        Input #3, careerLInt$(I, 1)
-    Next
-
-    Close #3
-
-    For I = 0 To 9:
-        If Len(rbName$(I)) = 0 Then 
+        If Len(rbName$(I)) = 0 Then
             rbName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 5:
-        If Len(wrName$(I)) = 0 Then 
+        If Len(wrName$(I)) = 0 Then
             wrName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 3:
-        If Len(qbName$(I)) = 0 Then 
+        If Len(qbName$(I)) = 0 Then
             qbName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 2:
-        If Len(krName$(I)) = 0 Then 
+        If Len(krName$(I)) = 0 Then
             krName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 2:
-        If Len(prName$(I)) = 0 Then 
+        If Len(prName$(I)) = 0 Then
             prName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 1:
-        If Len(pkName$(I)) = 0 Then 
+        If Len(pkName$(I)) = 0 Then
             pkName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 9:
-        If Len(carDefInts$(I)) = 0 Then 
-            carDefInts$(I) = "XXX"
+        If Len(intName$(I)) = 0 Then
+            intName$(I) = "XXX"
         End If
     Next
 
     For I = 0 To 14:
-        If Len(carDefSacks$(I)) = 0 Then 
-            carDefSacks$(I) = "XXX"
+        If Len(sackName$(I)) = 0 Then
+            sackName$(I) = "XXX"
         End If
     Next
 
@@ -1351,9 +1265,9 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     careerRBS!(N, J, K) = statsPlayers!(I, K)
                 Next K
 
-                careerRBS!(N, J, 6) = careerLRush!(I)
+                careerRBS!(N, J, 6) = statsLRush!(I)
                 careerRBS$(N, J, 0) = statsLRush$(I, 0)
-                careerRBS!(N, J, 9) = careerLRec!(I)
+                careerRBS!(N, J, 9) = statsLRec!(I)
                 careerRBS$(N, J, 1) = statsLRec$(I, 0)
                 careerRBS!(N, J, 7) = 1
                 careerRBS!(N, J, 8) = targetYear
@@ -1379,9 +1293,9 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                         careerRBS!(N, NB, K) = statsPlayers!(I, K)
                     Next
 
-                    careerRBS!(N, NB, 6) = careerLRush!(I)
+                    careerRBS!(N, NB, 6) = statsLRush!(I)
                     careerRBS$(N, NB, 0) = statsLRush$(I, 0)
-                    careerRBS!(N, NB, 9) = careerLRec!(I)
+                    careerRBS!(N, NB, 9) = statsLRec!(I)
                     careerRBS$(N, NB, 1) = statsLRec$(I, 0)
                     careerRBS!(N, NB, 7) = 1
                     careerRBS!(N, NB, 8) = targetYear
@@ -1425,7 +1339,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     careerWRS!(N, J, K - 6) = statsPlayers!(I, K)
                 Next K
 
-                careerWRS!(N, J, 3) = careerLRec!(I + 10)
+                careerWRS!(N, J, 3) = statsLRec!(I + 10)
                 careerWRS$(N, J, 0) = statsLRec$(I + 10, 0)
                 careerWRS!(N, J, 4) = 1
                 careerWRS!(N, J, 5) = targetYear
@@ -1448,7 +1362,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                         careerWRS!(N, NC, K - 6) = statsPlayers!(I, K)
                     Next
 
-                    careerWRS!(N, NC, 3) = careerLRec!(I + 10)
+                    careerWRS!(N, NC, 3) = statsLRec!(I + 10)
                     careerWRS$(N, NC, 0) = statsLRec$(I + 10, 0)
                     careerWRS!(N, NC, 4) = 1
                     careerWRS!(N, NC, 5) = targetYear
@@ -1492,7 +1406,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     careerQBS!(N, J, K - 9) = statsPlayers!(I, K)
                 Next K
 
-                careerQBS!(N, J, 5) = careerLPass!(I)
+                careerQBS!(N, J, 5) = statsLPass!(I)
                 careerQBS$(N, J, 0) = statsLPass$(I, 0)
                 careerQBS!(N, J, 6) = 1
                 careerQBS!(N, J, 7) = targetYear
@@ -1515,7 +1429,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                             careerQBS!(N, ND, K - 9) = statsPlayers!(I, K)
                         Next
 
-                        careerQBS!(N, ND, 5) = careerLPass!(I)
+                        careerQBS!(N, ND, 5) = statsLPass!(I)
                         careerQBS$(N, ND, 0) = statsLPass$(I, 0)
                         careerQBS!(N, ND, 6) = 1
                         careerQBS!(N, ND, 7) = targetYear
@@ -1561,7 +1475,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     careerKRS!(N, J, K - 14) = statsPlayers!(I, K)
                 Next K
 
-                careerKRS!(N, J, 3) = careerLKR!(I)
+                careerKRS!(N, J, 3) = statsLKR!(I)
                 careerKRS$(N, J, 0) = statsLKR$(I, 0)
                 careerKRS!(N, J, 4) = 1
                 careerKRS!(N, J, 5) = targetYear
@@ -1584,7 +1498,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                             careerKRS!(N, NE, K - 14) = statsPlayers!(I, K)
                         Next
 
-                        careerKRS!(N, NE, 3) = careerLKR!(I)
+                        careerKRS!(N, NE, 3) = statsLKR!(I)
                         careerKRS$(N, NE, 0) = statsLKR$(I, 0)
                         careerKRS!(N, NE, 4) = 1
                         careerKRS!(N, NE, 5) = targetYear
@@ -1630,8 +1544,8 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     careerPRS!(N, J, K - 14) = statsPlayers!(I + 3, K)
                 Next K
 
-                careerPRS!(N, J, 3) = careerLPR!(I)
-                careerPRS$(N, J, 0) = careerLPR$(I, 0)
+                careerPRS!(N, J, 3) = statsLPR!(I)
+                careerPRS$(N, J, 0) = statsLPR$(I, 0)
                 careerPRS!(N, J, 4) = 1
                 careerPRS!(N, J, 5) = targetYear
 
@@ -1652,8 +1566,8 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                             careerPRS!(N, NF, K - 14) = statsPlayers!(I + 3, K)
                         Next
 
-                        careerPRS!(N, NF, 3) = careerLPR!(I)
-                        careerPRS$(N, NF, 0) = careerLPR$(I, 0)
+                        careerPRS!(N, NF, 3) = statsLPR!(I)
+                        careerPRS$(N, NF, 0) = statsLPR$(I, 0)
                         careerPRS!(N, NF, 4) = 1
                         careerPRS!(N, NF, 5) = targetYear
 
@@ -1752,7 +1666,6 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                         careerFGS!(N, J, K - 3) = statsPlayers!(K, 17)
                     Next K
 
-                    test = statsLFG!(I)
                     careerFGS!(N, J, 4) = statsLFG!(I)
                     careerFGS!(N, J, 15) = 1
                     careerFGS!(N, J, 16) = targetYear
@@ -1867,7 +1780,8 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 54
 
-            If carDefInts$(I) = carDefInts$(J) Then
+            If intName$(I) = carIntName$(J) Then
+
                 For W = 1 To MAX_CAREER_YEARS:
                     If careerGIS!(W, J, 2) = targetYear Then
                         CHK = CHK + 1
@@ -1883,7 +1797,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     N = N + 1
                 End If
 
-                careerGIS!(N, J, 0) = carGameInts(I, 0)
+                careerGIS!(N, J, 0) = statsGI(I, 0)
                 careerGIS!(N, J, 1) = 1
                 careerGIS!(N, J, 2) = targetYear
                 Exit For
@@ -1893,12 +1807,12 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                 RR = RR + 1
                 If RR = 10 Then
 
-                    If carDefInts$(I) <> "END" And carDefInts$(I) <> "XXX" And Left$(carDefInts$(I), 1) <> " " Then
+                    If intName$(I) <> "END" And intName$(I) <> "XXX" And Left$(intName$(I), 1) <> " " Then
 
                         NJ = NJ + 1
-                        carDefInts$(NJ) = carDefInts$(I)
+                        carIntName$(NJ) = intName$(I)
                         N = 1
-                        careerGIS!(N, NJ, 0) = carGameInts(I, 0)
+                        careerGIS!(N, NJ, 0) = statsGI(I, 0)
                         careerGIS!(N, NJ, 1) = 1
                         careerGIS!(N, NJ, 2) = targetYear
 
@@ -1920,7 +1834,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
 
         For J = 0 To 54
 
-            If carDefSacks$(I) = carDefSacks$(J) Then
+            If sackName$(I) = carSackName$(J) Then
 
                 For W = 1 To MAX_CAREER_YEARS:
 
@@ -1939,7 +1853,7 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
                     N = N + 1
                 End If
 
-                careerGSS!(N, J, 0) = carGameSacks(I, 0)
+                careerGSS!(N, J, 0) = statsGS(I, 0)
                 careerGSS!(N, J, 1) = 1
                 careerGSS!(N, J, 2) = targetYear
 
@@ -1951,12 +1865,12 @@ Sub AddCareerYear (targetYear, finalUpdate, careerFile$, statFile$)
 
                 If RR = 15 Then
 
-                    If carDefSacks$(I) <> "END" And carDefSacks$(I) <> "XXX" And Left$(carDefSacks$(I), 1) <> " " Then
+                    If sackName$(I) <> "END" And sackName$(I) <> "XXX" And Left$(sackName$(I), 1) <> " " Then
 
                         NK = NK + 1
-                        carDefSacks$(NK) = carDefSacks$(I)
+                        carSackName$(NK) = sackName$(I)
                         N = 1
-                        careerGSS!(N, NK, 0) = carGameSacks(I, 0)
+                        careerGSS!(N, NK, 0) = statsGS(I, 0)
                         careerGSS!(N, NK, 1) = 1
                         careerGSS!(N, NK, 2) = targetYear
 
@@ -1989,9 +1903,8 @@ Sub LoadCareerFile (loadFile$)
     Shared TT, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared carIntName$(), carSackName$()
 
-    'S = Stats
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
 
@@ -2060,14 +1973,14 @@ Sub LoadCareerFile (loadFile$)
     Next
 
     For I = 0 To 54
-        Input #1, carDefInts$(I)
+        Input #1, carIntName$(I)
         Locate 21, 38
         Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54
-        Input #1, carDefSacks$(I)
+        Input #1, carSackName$(I)
         Locate 21, 38
         Color 5
         TMR = TMR - 1: Print Using "####"; TMR
@@ -2287,7 +2200,7 @@ Sub SaveCareerFile (saveFile$)
     Shared TT, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared carIntName$(), carSackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -2356,14 +2269,14 @@ Sub SaveCareerFile (saveFile$)
     Next
 
     For I = 0 To 54:
-        Write #3, carDefInts$(I)
+        Write #3, carIntName$(I)
         Locate 21, 38
         Color 5
         TMR = TMR - 1: Print Using "####"; TMR
     Next
 
     For I = 0 To 54:
-        Write #3, carDefSacks$(I)
+        Write #3, carSackName$(I)
         Locate 21, 38
         Color 5
         TMR = TMR - 1: Print Using "####"; TMR
@@ -2654,7 +2567,7 @@ Sub UpdateCareerRecords (careerFile$)
     Shared TT
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared carIntName$(), carSackName$()
 
     Shared careerDefRecPlyr$(), careerFGRecPlyr$(), careerKRRecPlyr$()
     Shared careerPRRecPlyr$(), careerPuntRecPlyr$(), careerQBRecPlyr$()
@@ -2676,12 +2589,8 @@ Sub UpdateCareerRecords (careerFile$)
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
     If _FileExists(diskPaths$(2) + careerFile$ + ".CLD") Then
-
-        Call LoadCareerLeaders(recordFile$)
-
+        Call LoadCareerLeaders(careerFile$)
     End If
-
-    '-----
 
     For I = 0 To 49
 
@@ -2707,7 +2616,7 @@ Sub UpdateCareerRecords (careerFile$)
 
                     If careerRBS!(J, I, 0) <> 0 Then
 
-                        If careerRBS!(J, I, 1) / careerRBS!(J, I, 0) > careerRBRecVal!(2) And careerRBS!(J, I, 0) >= GAMES * 10 Then
+                        If careerRBS!(J, I, 1) / careerRBS!(J, I, 0) > careerRBRecVal!(2) And careerRBS!(J, I, 0) >= nbrGames * 10 Then
                             careerRBRecVal!(2) = careerRBS!(J, I, 1) / careerRBS!(J, I, 0)
                             careerRBRecPlyr$(2) = carRBacks$(I)
                             carYear_RB(2) = careerRBS!(J, I, 8)
@@ -2734,7 +2643,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerRBS!(J, I, 3) <> 0 Then
-                        If careerRBS!(J, I, 4) / careerRBS!(J, I, 3) > careerRBRecVal!(6) And careerRBS!(J, I, 3) >= GAMES * 3 Then
+                        If careerRBS!(J, I, 4) / careerRBS!(J, I, 3) > careerRBRecVal!(6) And careerRBS!(J, I, 3) >= nbrGames * 3 Then
                             careerRBRecVal!(6) = careerRBS!(J, I, 4) / careerRBS!(J, I, 3)
                             careerRBRecPlyr$(6) = carRBacks$(I)
                             carYear_RB(6) = careerRBS!(J, I, 8)
@@ -2794,7 +2703,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerWRS!(J, I, 0) <> 0 Then
-                        If careerWRS!(J, I, 1) / careerWRS!(J, I, 0) > careerWRRecVal!(2) And careerWRS!(J, I, 0) >= GAMES * 3 Then
+                        If careerWRS!(J, I, 1) / careerWRS!(J, I, 0) > careerWRRecVal!(2) And careerWRS!(J, I, 0) >= nbrGames * 3 Then
                             careerWRRecVal!(2) = careerWRS!(J, I, 1) / careerWRS!(J, I, 0)
                             careerWRRecPlyr$(2) = carWdRec$(I)
                             carYear_WR(2) = careerWRS!(J, I, 5)
@@ -2864,7 +2773,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerQBS!(J, I, 0) <> 0 Then
-                        If careerQBS!(J, I, 1) / careerQBS!(J, I, 0) > careerQBRecVal!(5) And careerQBS!(J, I, 0) >= GAMES * 15 Then
+                        If careerQBS!(J, I, 1) / careerQBS!(J, I, 0) > careerQBRecVal!(5) And careerQBS!(J, I, 0) >= nbrGames * 15 Then
                             careerQBRecVal!(5) = careerQBS!(J, I, 1) / careerQBS!(J, I, 0)
                             careerQBRecPlyr$(5) = carQBacks$(I)
                             carYear_QB(5) = careerQBS!(J, I, 7)
@@ -2872,7 +2781,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerQBS!(J, I, 1) <> 0 Then
-                        If careerQBS!(J, I, 3) / careerQBS!(J, I, 1) > careerQBRecVal!(6) And careerQBS!(J, I, 0) >= GAMES * 15 Then
+                        If careerQBS!(J, I, 3) / careerQBS!(J, I, 1) > careerQBRecVal!(6) And careerQBS!(J, I, 0) >= nbrGames * 15 Then
                             careerQBRecVal!(6) = careerQBS!(J, I, 3) / careerQBS!(J, I, 1)
                             careerQBRecPlyr$(6) = carQBacks$(I): carYear_QB(6) = careerQBS!(J, I, 7)
                         End If
@@ -2924,7 +2833,7 @@ Sub UpdateCareerRecords (careerFile$)
                 End If
 
                 If careerKRS!(J, I, 0) <> 0 Then
-                    If careerKRS!(J, I, 1) / careerKRS!(J, I, 0) > careerKRRecVal!(2) And careerKRS!(J, I, 0) >= GAMES * 1.2 Then
+                    If careerKRS!(J, I, 1) / careerKRS!(J, I, 0) > careerKRRecVal!(2) And careerKRS!(J, I, 0) >= nbrGames * 1.2 Then
                         careerKRRecVal!(2) = careerKRS!(J, I, 1) / careerKRS!(J, I, 0)
                         careerKRRecPlyr$(2) = carKickRet$(I)
                         carYear_KRet(2) = careerKRS!(J, I, 5)
@@ -2973,7 +2882,7 @@ Sub UpdateCareerRecords (careerFile$)
                 End If
 
                 If careerPRS!(J, I, 0) <> 0 Then
-                    If careerPRS!(J, I, 1) / careerPRS!(J, I, 0) > careerPRRecVal!(2) And careerPRS!(J, I, 0) >= GAMES * 1.2 Then
+                    If careerPRS!(J, I, 1) / careerPRS!(J, I, 0) > careerPRRecVal!(2) And careerPRS!(J, I, 0) >= nbrGames * 1.2 Then
                         careerPRRecVal!(2) = careerPRS!(J, I, 1) / careerPRS!(J, I, 0)
                         careerPRRecPlyr$(2) = carPRet$(I)
                         carYear_PRet(2) = careerPRS!(J, I, 5)
@@ -3060,7 +2969,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerFGS!(J, I, 1) <> 0 Then
-                        If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > careerFGRecVal!(2) And careerFGS!(J, I, 1) >= GAMES Then
+                        If careerFGS!(J, I, 0) / careerFGS!(J, I, 1) > careerFGRecVal!(2) And careerFGS!(J, I, 1) >= nbrGames Then
                             careerFGRecVal!(2) = careerFGS!(J, I, 0) / careerFGS!(J, I, 1)
                             careerFGRecPlyr$(2) = carKicker$(I)
                             carYear_FG(2) = careerFGS!(J, I, 16)
@@ -3080,7 +2989,7 @@ Sub UpdateCareerRecords (careerFile$)
                     End If
 
                     If careerFGS!(J, I, 2) <> 0 Then
-                        If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > careerFGRecVal!(5) And careerFGS!(J, I, 3) >= GAMES Then
+                        If careerFGS!(J, I, 2) / careerFGS!(J, I, 3) > careerFGRecVal!(5) And careerFGS!(J, I, 3) >= nbrGames Then
                             careerFGRecVal!(5) = careerFGS!(J, I, 2) / careerFGS!(J, I, 3)
                             careerFGRecPlyr$(5) = carKicker$(I)
                             carYear_FG(5) = careerFGS!(J, I, 16)
@@ -3105,14 +3014,14 @@ Sub UpdateCareerRecords (careerFile$)
 
     For I = 0 To 54
 
-        If carDefInts$(I) <> "" And carDefInts$(I) <> "XXX" And carDefInts$(I) <> "END" Then
+        If carIntName$(I) <> "" And carIntName$(I) <> "XXX" And carIntName$(I) <> "END" Then
 
             For J = 1 To MAX_CAREER_YEARS
                 If careerGIS!(J, I, 2) = 0 Then Exit For
 
                 If careerGIS!(J, I, 0) > careerDefRecVal!(0) Then
                     careerDefRecVal!(0) = careerGIS!(J, I, 0)
-                    careerDefRecPlyr$(0) = carDefInts$(I)
+                    careerDefRecPlyr$(0) = carIntName$(I)
                     carYear_FG(0) = careerGIS!(J, I, 2)
                 End If
             Next J
@@ -3125,14 +3034,14 @@ Sub UpdateCareerRecords (careerFile$)
 
     For I = 0 To 54
 
-        If carDefSacks$(I) <> "" And carDefSacks$(I) <> "XXX" And carDefSacks$(I) <> "END" Then
+        If carSackName$(I) <> "" And carSackName$(I) <> "XXX" And carSackName$(I) <> "END" Then
 
             For J = 1 To MAX_CAREER_YEARS
                 If careerGSS!(J, I, 2) = 0 Then Exit For
 
                 If careerGSS!(J, I, 0) > careerDefRecVal!(1) Then
                     careerDefRecVal!(1) = careerGSS!(J, I, 0)
-                    careerDefRecPlyr$(1) = carDefSacks$(I)
+                    careerDefRecPlyr$(1) = carSackName$(I)
                     carYear_FG(1) = careerGSS!(J, I, 2)
                 End If
 

@@ -12,7 +12,7 @@ Sub CAREDIT ()
     _Title "3-in-1 Football - Edit Career Files"
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared carDefInts$(), carDefSacks$()
+    Shared intName$(), sackName$()
     
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -583,21 +583,21 @@ Sub CAREDIT ()
                         Locate I + 2
                         Color 11: Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefInts$(I), 12)
+                        Color 7: Print Left$(intName$(I), 12)
                     Next
 
                     For I = 18 To 35:
                         Locate I - 16, 20
                         Color 11: Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefInts$(I), 12)
+                        Color 7: Print Left$(intName$(I), 12)
                     Next
 
                     For I = 36 To 54:
                         Locate I - 34, 40
                         Color 11: Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefInts$(I), 12)
+                        Color 7: Print Left$(intName$(I), 12)
                     Next
 
                     Do
@@ -616,7 +616,7 @@ Sub CAREDIT ()
                                 Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
                                 For I = B9 To 8: 
-                                    carDefInts$(I) = carDefInts$(I + 1)
+                                    intName$(I) = intName$(I + 1)
                                 Next
 
                                 UPP = (54 - B9) * 15
@@ -639,7 +639,7 @@ Sub CAREDIT ()
 
                         If exitFlag% <> 1 Then
 
-                            carDefInts$(54) = ""
+                            intName$(54) = ""
 
                             For J = 1 To MAX_CAREER_YEARS:
                                 For I1 = 0 To 2:
@@ -661,21 +661,21 @@ Sub CAREDIT ()
                         Locate I + 2
                         Color 11: Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefSacks$(I), 12)
+                        Color 7: Print Left$(sackName$(I), 12)
                     Next
 
                     For I = 18 To 35: 
                         Locate I - 16, 20: Color 11
                         Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefSacks$(I), 12)
+                        Color 7: Print Left$(sackName$(I), 12)
                     Next
 
                     For I = 36 To 54: 
                         Locate I - 34, 40: Color 11
                         Print Using "##"; I;
                         Print " ";
-                        Color 7: Print Left$(carDefSacks$(I), 12)
+                        Color 7: Print Left$(sackName$(I), 12)
                     Next
 
                     Do
@@ -695,7 +695,7 @@ Sub CAREDIT ()
                                 Locate 5, 15: Print "CHANGING INTERCEPTION FILE . . . . . PLEASE WAIT"
 
                                 For I = B9 To 8: 
-                                    carDefSacks$(I) = carDefSacks$(I + 1)
+                                    sackName$(I) = sackName$(I + 1)
                                 Next
 
                                 UPP = (54 - B9) * 15
@@ -722,7 +722,7 @@ Sub CAREDIT ()
 
                         If exitFlag% <> 1 Then
 
-                            carDefSacks$(54) = ""
+                            sackName$(54) = ""
 
                             For J = 1 To MAX_CAREER_YEARS: 
                                 For I1 = 0 To 2: 
@@ -2019,13 +2019,13 @@ End Sub
 'stats associated with the team's INT's
 Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
 
-    Shared carDefInts$()
+    Shared intName$()
     Shared careerGIS!(), careerTeamTotal!()
 
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print careercarDefInts$(B9);
+    Color 12: Print careerintName$(B9);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2033,7 +2033,7 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carDefInts$(B9);
+    Color 12: Print intName$(B9);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -2076,7 +2076,7 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
                     VV = VV + careerGIS!(I, B9, 1)
                 Next
 
-                Print #1, Left$(carDefInts$(B9), 13);
+                Print #1, Left$(intName$(B9), 13);
 
                 For V = 1 To VV
                     Print #1, Tab(20); careerGIS!(V, B9, 2);
@@ -2131,13 +2131,13 @@ End Sub
 'stats associated with the team's sacks
 Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
 
-    Shared carDefSacks$()
+    Shared sackName$()
     Shared careerGSS!(), careerTeamTotal!()
 
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carDefSacks$(B9);
+    Color 12: Print sackName$(B9);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2145,7 +2145,7 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carDefSacks$(B9);
+    Color 12: Print sackName$(B9);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -2188,7 +2188,7 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
                     VV = VV + careerGSS!(I, B9, 1)
                 Next
 
-                Print #1, Left$(carDefSacks$(B9), 13);
+                Print #1, Left$(sackName$(B9), 13);
 
                 For V = 1 To VV
                     Print #1, Tab(20); careerGSS!(V, B9, 2);

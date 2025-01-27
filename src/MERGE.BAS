@@ -30,7 +30,7 @@ Sub MERGE ()
         menuWidth% = Len(menuChoices$(1))
         Column% = (80 - menuWidth% - 2) / 2
 
-        Call box0(Row%-1, Column%-1, Row%+Count%, Column%+menuWidth%, 2, FileFGColor, FileBGColor)
+        Call box0(Row% - 1, Column% - 1, Row% + Count%, Column% + menuWidth%, 2, FileFGColor, FileBGColor)
 
         _MouseShow "DEFAULT"
         MMenuVert menuChoices$(), SELECTION%, Start%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Count%, Row%, Column%
@@ -134,7 +134,7 @@ Sub MergeStats ()
 
                     Open pathRoadStats$ + statFile$ For Input As #1
 
-                    Input #1, B$
+                    Input #1, team$
 
                     For I = 0 To 9: 
                         Input #1, rbName_Road$(I)
@@ -278,144 +278,48 @@ Sub MergeStats ()
 
                     If _FileExists(pathCurrentStats$ + statFile$) Then
 
-                        Open pathCurrentStats$ + statFile$ For Input As #3
-
-                        Input #3, B$
-
-                        For I = 0 To 9: 
-                            Input #3, rbName$(I)
-                        Next I
-                        
-                        For I = 0 To 5: 
-                            Input #3, wrName$(I)
-                        Next I
-                        
-                        For I = 0 To 3: 
-                            Input #3, qbName$(I)
-                        Next I
-                        
-                        For I = 0 To 2: 
-                            Input #3, krName$(I)
-                        Next I
-                        
-                        For I = 0 To 2: 
-                            Input #3, prName$(I)
-                        Next I
-
-                        Input #3, punterName$(0)
-
-                        For I = 0 To 1: 
-                            Input #3, pkName$(I)
-                        Next I
-
-                        For J = 0 To 13
-                            For K = 0 To 17: 
-                                Input #3, statsPlayers!(J, K)
-                            Next K
-                        Next J
-
-                        For L = 0 To 38: 
-                            Input #3, statsTeam!(L)
-                        Next L
-
-                        For L = 0 To 38: 
-                            Input #3, statsOpp!(L)
-                        Next L
-
-                        For J = 0 To 9: 
-                            Input #3, intName$(J)
-                            For J1 = 0 To 2: 
-                                Input #3, statsGI(J, J1)
-                            Next
-                        Next
-
-                        For J = 0 To 14: 
-                            Input #3, sackName$(J)
-                            For J1 = 0 To 1: 
-                                Input #3, statsGS(J, J1)
-                            Next
-                        Next
-
-                        For I = 0 To 9: 
-                            Input #3, statsLRush!(I)
-                            Input #3, statsLRush$(I, 0)
-                            Input #3, statsLRush$(I, 1)
-                        Next
-
-                        For I = 0 To 15: 
-                            Input #3, statsLRec!(I)
-                            Input #3, statsLRec$(I, 0)
-                            Input #3, statsLRec$(I, 1)
-                        Next
-
-                        For I = 0 To 3: 
-                            Input #3, statsLPass!(I)
-                            Input #3, statsLPass$(I, 0)
-                            Input #3, statsLPass$(I, 1)
-                        Next
-
-                        For I = 0 To 2: 
-                            Input #3, statsLKR!(I)
-                            Input #3, statsLKR$(I, 0)
-                            Input #3, statsLKR$(I, 1)
-                        Next
-
-                        For I = 0 To 2: 
-                            Input #3, statsLPR!(I)
-                            Input #3, statsLPR$(I, 0)
-                            Input #3, statsLPR$(I, 1)
-                        Next
-
-                        For I = 0 To 1: 
-                            Input #3, statsLFG!(I)
-                            Input #3, statsLFG$(I)
-                            For I1 = 0 To 4: 
-                                Input #3, statsFGM!(I, I1)
-                                Input #3, statsFGA!(I, I1)
-                            Next
-                        Next
-
-                        For I = 0 To 9: 
-                            Input #3, statsLInt!(I)
-                            Input #3, statsLInt$(I, 0)
-                            Input #3, statsLInt$(I, 1)
-                        Next
-
-                        Close #3
-
-                        Call ReadScheduleStats(statFile$, I, nbrGamesCurr)
+                        Call ReadTeamStats (team$, statFile$)
 
                         Open pathCurrentStats$ + statFile$ + "S" For Input As #4
 
                         Input #4, nbrGamesCurr
 
-                        For I = 1 To MAX_SCHED_STATS: 
+                        'Opponent Score
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, teamScore(I)
+                            leagPtsFor!(ptsIdx) = leagPtsFor!(ptsIdx) + teamScore(I)
                         Next I
 
-                        For I = 1 To MAX_SCHED_STATS: 
+                        'Opponent
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, oppName$(I)
                         Next I
 
-                        For I = 1 To MAX_SCHED_STATS: 
+                        'Team Score
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, oppScore(I)
+                            leagPtsAgnst!(ptsIdx) = leagPtsAgnst!(ptsIdx) + oppScore(I)
                         Next I
 
-                        For I = 1 To MAX_SCHED_STATS: 
+                        'Home / Away
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, locIndicator$(I)
                         Next I
 
+                        'Power Rating
                         For I = 0 To 1
-                            For I1 = 1 To MAX_SCHED_STATS: 
+                            For I1 = 1 To MAX_SCHED_STATS
                                 Input #4, powerRating(I, I1)
                             Next
                         Next
 
-                        For I = 1 To MAX_SCHED_STATS: 
+                        'Attendance
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, gameAttendance&(I)
                         Next I
-                        
-                        For I = 1 To MAX_SCHED_STATS: 
+
+                        'Stadium
+                        For I = 1 To MAX_SCHED_STATS:
                             Input #4, gameSite$(I)
                         Next I
 
@@ -463,7 +367,7 @@ Sub MergeStats ()
 
                         If SEQ = 0 Then
 
-                            Call DoTheMerge(pathCurrentStats$, statFile$, B$, nbrGamesCurr, nbrGamesRoad)
+                            Call DoTheMerge(pathCurrentStats$, statFile$, team$, nbrGamesCurr, nbrGamesRoad)
 
                             For J = 13 To 23
                                 Locate J
@@ -547,7 +451,7 @@ End Sub
 'values together from each file and then
 'overwrites the current file with the
 'newly aggregated results.
-Sub DoTheMerge (pathCurrentStats$, statFile$, B$, nbrGamesCurr, nbrGamesRoad)
+Sub DoTheMerge (pathCurrentStats$, statFile$, team$, nbrGamesCurr, nbrGamesRoad)
 
     Shared rbName$(), rbName_Road$(), wrName$(), wrName_Road$()
     Shared qbName$(), qbName_Road$(), krName$(), krName_Road$()
@@ -705,7 +609,7 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, B$, nbrGamesCurr, nbrGamesRoad)
 
     Open pathCurrentStats$ + statFile$ For Output As #1
 
-    Print #1, B$
+    Print #1, team$
 
     For I = 0 To 9: 
         Print #1, rbName$(I)

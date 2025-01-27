@@ -7,12 +7,12 @@
 '.STD file.
 Sub UpdateExpandedStandings (orgType)
 
-    Shared totHomeLosses(), totHomeWins(), totHomeTies()
-    Shared totRoadLosses(), totRoadWins(), totRoadTies()
-    Shared totNeutralLosses(), totNeutralWins(), totNeutralTies()
-    Shared totTeamLosses(), totTeamWins(), totTeamTies()
     Shared lastLoseStreak(), lastWinStreak()
     Shared teamLoseStreak(), teamWinStreak()
+    Shared totHomeLosses(), totHomeWins(), totHomeTies()
+    Shared totNeutralLosses(), totNeutralWins(), totNeutralTies()
+    Shared totRoadLosses(), totRoadWins(), totRoadTies()
+    Shared totTeamLosses(), totTeamWins(), totTeamTies()
 
     Shared teamScore(), oppScore()
     Shared gameAttendance&()
@@ -36,10 +36,10 @@ Sub UpdateExpandedStandings (orgType)
     Erase gameAttendance&
     Erase locIndicator$, oppName$
 
-    Erase totHomeLosses, totHomeWins, totHomeTies
-    Erase totRoadLosses, totRoadWins, totRoadTies
-    Erase totNeutralLosses, totNeutralWins, totNeutralTies
     Erase lastWinStreak, lastLoseStreak, teamWinStreak, teamLoseStreak
+    Erase totHomeLosses, totHomeWins, totHomeTies
+    Erase totNeutralLosses, totNeutralWins, totNeutralTies
+    Erase totRoadLosses, totRoadWins, totRoadTies
     Erase totTeamLosses, totTeamWins, totTeamTies
 
     currRecord = 0
@@ -112,9 +112,21 @@ Sub UpdateExpandedStandings (orgType)
                     End If
 
                     If teamScore(I) = oppScore(I) Then
+
                         totTeamTies(currRecord) = totTeamTies(currRecord) + 1
                         lastLoseStreak(currRecord) = 0
                         lastWinStreak(currRecord) = 0
+
+                        If locIndicator$(I) = "A" Then
+                            totRoadTies(currRecord) = totRoadTies(currRecord) + 1
+                        End If
+                        If locIndicator$(I) = "H" Then
+                            totHomeTies(currRecord) = totHomeTies(currRecord) + 1
+                        End If
+                        If locIndicator$(I) = "X" Then
+                            totNeutralTies(currRecord) = totNeutralTies(currRecord) + 1
+                        End If
+
                     End If
 
                     If lastWinStreak(currRecord) > teamWinStreak(currRecord) Then
@@ -122,16 +134,6 @@ Sub UpdateExpandedStandings (orgType)
                     End If
                     If lastLoseStreak(currRecord) > teamLoseStreak(currRecord) Then
                         teamLoseStreak(currRecord) = lastLoseStreak(currRecord)
-                    End If
-
-                    If locIndicator$(I) = "A" Then
-                        totRoadTies(currRecord) = totRoadTies(currRecord) + 1
-                    End If
-                    If locIndicator$(I) = "H" Then
-                        totHomeTies(currRecord) = totHomeTies(currRecord) + 1
-                    End If
-                    If locIndicator$(I) = "X" Then
-                        totNeutralTies(currRecord) = totNeutralTies(currRecord) + 1
                     End If
 
                 Next I
@@ -149,7 +151,7 @@ Sub UpdateExpandedStandings (orgType)
     Write #3, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
     For I = 1 To TEAM_LIMIT
-        Write #3, totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), expStdLeagName$(I)
+        Write #3, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
     Next
 
     Close #3
@@ -212,7 +214,7 @@ Sub NewStandings_Screen (league$, orgType)
 
         End Select
 
-        Print Tab(20); "G  W  L  T  PCT  GB  LS  WS   W-L-T  W-L-T  W-L-T"
+        Print Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
 
         For I = AA To ZZ
 
@@ -249,10 +251,11 @@ Sub NewStandings_Screen (league$, orgType)
                     Print Tab(36); Using "##.#"; calcGB!;
                 End If
 
+                ' Win Streak
                 Print Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
 
                 ' Records: Home / Road / Neutral
-                Print Tab(50); Using "#"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totRoadWins(I); Tab(59); totRoadLosses(I); Tab(61); totRoadTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralWins(I); Tab(68); totNeutralTies(I)
+                Print Tab(50); Using "#"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totRoadWins(I); Tab(59); totRoadLosses(I); Tab(61); totRoadTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
 
             End If
 
@@ -325,7 +328,7 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
 
         End Select
 
-        Print #1, Tab(20); "G  W  L  T  PCT  GB  LS  WS   W-L-T  W-L-T  W-L-T"
+        Print #1, Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
 
         For I = AA To ZZ
 
@@ -357,8 +360,11 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
                     Print #1, Tab(36); Using "##.#"; ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2;
                 End If
 
+                ' Win Streak
                 Print #1, Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
-                Print #1, Tab(50); Using "##"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totRoadWins(I); Tab(59); totRoadLosses(I); Tab(61); totRoadTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralWins(I); Tab(68); totNeutralTies(I)
+
+                ' Records: Home / Road / Neutral
+                Print #1, Tab(50); Using "##"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totRoadWins(I); Tab(59); totRoadLosses(I); Tab(61); totRoadTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
 
             End If
 
@@ -426,14 +432,14 @@ Sub SortStandings (AA, ZZ)
                         Swap totTeamWins(X), totTeamWins(Y)
                         Swap totHomeWins(X), totHomeWins(Y)
                         Swap totRoadWins(X), totRoadWins(Y)
+                        Swap totNeutralWins(X), totNeutralWins(Y)
                         Swap totTeamLosses(X), totTeamLosses(Y)
                         Swap totHomeLosses(X), totHomeLosses(Y)
                         Swap totRoadLosses(X), totRoadLosses(Y)
+                        Swap totNeutralLosses(X), totNeutralLosses(Y)
                         Swap totTeamTies(X), totTeamTies(Y)
                         Swap totHomeTies(X), totHomeTies(Y)
                         Swap totRoadTies(X), totRoadTies(Y)
-                        Swap totNeutralLosses(X), totNeutralLosses(Y)
-                        Swap totNeutralWins(X), totNeutralWins(Y)
                         Swap totNeutralTies(X), totNeutralTies(Y)
                         Swap teamWinStreak(X), teamWinStreak(Y)
                         Swap teamLoseStreak(X), teamLoseStreak(Y)

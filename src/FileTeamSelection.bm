@@ -561,11 +561,6 @@ Sub ReadTeamStats (teamName$, statFile$)
     'Load player stats
     Open diskPaths$(1) + statFile$ For Input As #2
 
-    'We are passed teamName$ as a variable from the disk routine
-    'However the format of the files for football is such that
-    'it's also contained here.
-    'To be consistent with other games, it needs evaluated
-    'if this belongs here or somewhere else.
     Input #2, teamName$
 
     For I = 0 To 9:
@@ -594,20 +589,26 @@ Sub ReadTeamStats (teamName$, statFile$)
         Input #2, pkName$(I)
     Next I
 
+    'Leader Values
+    '--------------------
+    'Rushers / Receivers
     For J = 0 To 13
         For K = 0 To 17:
             Input #2, statsPlayers!(J, K)
         Next K
     Next J
 
+    'Offensive Team stats
     For L = 0 To 38:
         Input #2, statsTeam!(L)
     Next L
 
+    'Defensive Team stats
     For L = 0 To 38:
         Input #2, statsOpp!(L)
     Next L
 
+    'Interceptions
     For J = 0 To 9:
         Input #2, intName$(J)
         For J1 = 0 To 2:
@@ -615,6 +616,7 @@ Sub ReadTeamStats (teamName$, statFile$)
         Next
     Next
 
+    'Sacks
     For J = 0 To 14:
         Input #2, sackName$(J)
         For J1 = 0 To 1:
@@ -622,36 +624,42 @@ Sub ReadTeamStats (teamName$, statFile$)
         Next
     Next
 
+    'Longest rush
     For I = 0 To 9:
         Input #2, statsLRush!(I)
         Input #2, statsLRush$(I, 0)
         Input #2, statsLRush$(I, 1)
     Next
 
+    'Longest Catch
     For I = 0 To 15:
         Input #2, statsLRec!(I)
         Input #2, statsLRec$(I, 0)
         Input #2, statsLRec$(I, 1)
     Next
 
+    'Longest Pass
     For I = 0 To 3:
         Input #2, statsLPass!(I)
         Input #2, statsLPass$(I, 0)
         Input #2, statsLPass$(I, 1)
     Next
 
+    'Longest KR
     For I = 0 To 2:
         Input #2, statsLKR!(I)
         Input #2, statsLKR$(I, 0)
         Input #2, statsLKR$(I, 1)
     Next
 
+    'Longest PR
     For I = 0 To 2:
         Input #2, statsLPR!(I)
         Input #2, statsLPR$(I, 0)
         Input #2, statsLPR$(I, 1)
     Next
 
+    'Longest FG
     For I = 0 To 1:
         Input #2, statsLFG!(I)
         Input #2, statsLFG$(I)
@@ -661,6 +669,7 @@ Sub ReadTeamStats (teamName$, statFile$)
         Next
     Next
 
+    'Longest INT Return
     For I = 0 To 9:
         Input #2, statsLInt!(I)
         Input #2, statsLInt$(I, 0)
@@ -698,8 +707,9 @@ Sub ReadTeamStatsComp (teamName$, statFile$)
     Erase compKR$, compKicker$, compPR$, compQB$, compRB$, compWR$
     Erase intName$
 
+    Erase offTotals!, defTotals!
     Erase statsFGA!, statsFGM!
-    Erase statsGeneral!, offTotals!, defTotals!
+    Erase statsGeneral!
     Erase statsGI, statsGS
 
     Erase statsLRec!, statsLFG!, statsLInt!, statsLKR!, statsLPass!, statsLRush!
@@ -712,11 +722,12 @@ Sub ReadTeamStatsComp (teamName$, statFile$)
     'RB Names
     For I = 1 To 10:
         Input #1, compRB$(I)
+        compWR$(I) = compRB$(I)
     Next
 
     'WR Names
     For I = 1 To 6:
-        Input #1, compWR$(I)
+        Input #1, compWR$(I + 10)
     Next
 
     'QB Names
@@ -851,6 +862,12 @@ Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
 
     findFile$ = diskPaths$(1) + statFile$ + "S"
 
+    Erase gameSite$, oppName$, locIndicator$
+    Erase powerRating, oppScore, teamScore
+    Erase gameAttendance&
+    leagPtsAgnst!(ptsIdx) = 0
+    leagPtsFor!(ptsIdx) = 0
+
     Open findFile$ For Input As #1
 
     Input #1, numberGames
@@ -908,6 +925,9 @@ Sub ReadSeasonRecords (recordFile$)
 
     Shared indRecords!(), teamRecords!()
     Shared indRecDesc$(), teamRecDesc$()
+    
+    Erase indRecords!, teamRecords!
+    Erase indRecDesc$, teamRecDesc$
 
     Open diskPaths$(1) + recordFile$ For Input As #1
 
@@ -917,7 +937,7 @@ Sub ReadSeasonRecords (recordFile$)
         Input #1, indRecDesc$(I, 1)
         Input #1, indRecDesc$(I, 2)
     Next
-    
+
     For I = 0 To 50:
         Input #1, teamRecords!(I)
         Input #1, teamRecDesc$(I)
@@ -939,11 +959,64 @@ End Sub
 
 
 '----------------------------------------
+'     ReadConferenceIndex Subroutine
+'----------------------------------------
+'This subroutine reads in the team file
+'indexes from the .TMI file and assigns them
+'to variables for use later.
+Sub ReadConferenceIndex (indexFile$, fileType)
+
+    Shared memberIdx()
+    Shared memberName$(), memberYear$()
+
+    Shared leagueName$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+
+    Open diskPaths$(2) + indexFile$ + ".TMI" For Input As #2
+
+    Input #2, fileType
+
+    If fileType = 0 Then
+
+        Input #2, leagueName$
+        Input #2, div1Name$
+        Input #2, div2Name$
+
+        For X = 1 To TEAMS_PER_CONFERENCE:
+            Input #2, memberName$(X)
+            Input #2, memberIdx(X)
+            Input #2, memberYear$(X)
+        Next
+
+    End If
+
+    If fileType = 1 Then
+
+        Input #2, leagueName$
+        Input #2, div1Name$
+        Input #2, div2Name$
+        Input #2, div3Name$
+        Input #2, div4Name$
+
+        For X = 1 To TEAMS_PER_LEAGUE:
+            Input #2, memberName$(X)
+            Input #2, memberIdx(X)
+            Input #2, memberYear$(X)
+        Next
+
+    End If
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
 '     ReadConferenceStats Subroutine
 '----------------------------------------
-'This subroutine reads in the league stats
-'from the .TMS file and assigns them to
-'variables for use later in the routine.
+'This subroutine reads in the stat file
+'names from the .TMS file and assigns them
+'to variables for use later.
 
 'statType
 '   0 = College
@@ -953,7 +1026,7 @@ Sub ReadConferenceStats (statFile$, statType)
     Shared memberName$()
 
     Shared leagueName$
-    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Erase memberName$
 
@@ -1212,4 +1285,3 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
     End If
 
 End Function
-

@@ -1,3 +1,4 @@
+
 '----------------------------------------
 '        CompileLeague SubRoutine
 '----------------------------------------
@@ -18,7 +19,7 @@ Sub CompileLeague ()
     Shared indRecords!(), teamRecords!()
 
     Shared indRecDesc$()
-    Shared memberName$(), leaderName$(), leaderTeam$()
+    Shared leaderName$(), leaderTeam$()
     Shared memberName$(), teamRecDesc$(), totalTeamName$()
 
     'Read in any existing records first
@@ -58,8 +59,18 @@ Sub CompileLeague ()
     Erase totalTeamVal!, leaderVal!, statsGeneral!
     Erase memberName$, leaderTeam$, totalTeamName$
 
+    For X = 1 To 60
+        memberName$(X) = "*"
+    Next
+
     For X = 1 To 240
         leaderName$(X) = "*"
+    Next
+
+    For I = 1 To 10
+        For I1 = 1 To 20
+            totalTeamName$(I, I1) = "*"
+        Next
     Next
 
     For I = 1 To 20
@@ -117,27 +128,27 @@ Sub CompileLeague ()
                         WT$ = memberName$(XW)
                         nonConfGame = 0
 
-                        For EC = 1 To TEAMS_PER_LEAGUE:
+                        For X = 1 To TEAMS_PER_LEAGUE:
 
-                            If memberName$(EC) = WT$ Then
+                            If memberName$(X) = WT$ Then
 
-                                If divWins!(EC) = fullWins And divLosses!(EC) = fullLosses And divTies!(EC) = fullTies Then
+                                If divWins!(X) = fullWins And divLosses!(X) = fullLosses And divTies!(X) = fullTies Then
 
                                     nonConfGame = 1
                                     Exit For
 
                                 Else
 
-                                    divWins!(EC) = fullWins
-                                    divLosses!(EC) = fullLosses
-                                    divTies!(EC) = fullTies
+                                    divWins!(X) = fullWins
+                                    divLosses!(X) = fullLosses
+                                    divTies!(X) = fullTies
 
                                 End If
 
                             End If
-                            'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
+                            'alternatively, use a Do / Until loop; nonConfGame = 1 or X = 30
 
-                        Next EC
+                        Next X
 
                         If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
@@ -163,8 +174,9 @@ Sub CompileLeague ()
 
 End Sub
 
+
 '----------------------------------------
-'         FindStatsLeague Function
+'        FindStatsLeague Function
 '----------------------------------------
 'Looks for schedule stats for a specified
 'team in the league and loads them if
@@ -190,6 +202,7 @@ Function FindStatsLeague% (XW, statFile$, numberGames)
         fullTies = 0
 
         For I = 1 To numberGames
+
             If teamScore(I) > oppScore(I) Then
                 fullWins = fullWins + 1
             End If
@@ -199,6 +212,7 @@ Function FindStatsLeague% (XW, statFile$, numberGames)
             If teamScore(I) = oppScore(I) Then
                 fullTies = fullTies + 1
             End If
+
         Next
 
         Cls
@@ -224,7 +238,7 @@ End Function
 'single team in the league
 Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
 
-    Shared puntNum
+    Shared puntAvg_COMP!
 
     Shared statsGI(), statsGS()
 
@@ -301,10 +315,13 @@ Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
     For I = 1 To 10:
         compRB!(I, 7) = compRB!(I, 2) + compRB!(I, 5)
         compRB!(I, 8) = compRB!(I, 3) + compRB!(I, 6)
-        compWR$(I + 6) = compRB$(I)
-        compWR!(I + 6, 2) = compRB!(I, 5)
-        compWR!(I + 6, 1) = compRB!(I, 4)
-        compWR!(I + 6, 3) = compRB!(I, 6)
+        compWR$(I) = compRB$(I)
+        compWR!(I, 2) = compRB!(I, 5)
+        compWR!(I, 1) = compRB!(I, 4)
+        compWR!(I, 3) = compRB!(I, 6)
+        'compWR!(I + 6, 2) = compRB!(I, 5)
+        'compWR!(I + 6, 1) = compRB!(I, 4)
+        'compWR!(I + 6, 3) = compRB!(I, 6)
     Next
 
     For I = 1 To 10
@@ -396,10 +413,10 @@ Sub ReadStatsLeaders (statFile$, numberGames, teamName$, proQB)
         End If
     Next
 
-    puntNum = 0
+    puntAvg_COMP! = 0
 
     If compPunts!(8) > 0 Then
-        puntNum = Int(compPunts!(9) / compPunts!(8) * 10) / 10
+        puntAvg_COMP! = Int(compPunts!(9) / compPunts!(8) * 10) / 10
     End If
 
     Erase compPAPct!, compFGPct!
@@ -423,7 +440,7 @@ End Sub
 'to existing leaders and updates as needed
 Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 
-    Shared fumbGain, puntNum
+    Shared fumbGain, puntAvg_COMP!
     Shared punterName$()
 
     Shared compKR$(), compKicker$(), compPR$(), compQB$()
@@ -684,6 +701,10 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
                 indRecDesc$(8, 1) = teamName$
             End If
 
+            If compWR$(X) = "HENSON" Or compWR$(X) = "MYERS" Then
+                test0 = 0
+            End If
+
             If statsLRec!(X - 1) > indRecords!(9) Then
                 'Longest Catch
                 indRecords!(9) = statsLRec!(X - 1)
@@ -701,7 +722,6 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 
                     'Only include players with 3 RECs / game
                     If leaderVal!(Z, 2) < numberGames * 3 Then
-
                         leaderName$(Z) = "*"
                         leaderTeam$(Z) = "*"
                         leaderVal!(Z, 1) = 0
@@ -728,7 +748,7 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 
             Next Z
 
-            If Not ((compWR!(X, 1) < numberGames * 4 Or compWR!(X, 4) < leaderVal!(40, 1))) Then
+            If Not ((compWR!(X, 1) < numberGames * 3 Or compWR!(X, 4) < leaderVal!(40, 1))) Then
 
                 leaderName$(40) = compWR$(X)
                 leaderTeam$(40) = WT$
@@ -1379,23 +1399,23 @@ Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
         indRecDesc$(33, 1) = teamName$
     End If
 
-    If puntNum > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then
-        indRecords!(34) = puntNum
+    If puntAvg_COMP! > indRecords!(34) And UCase$(finalUpdate$) = "Y" Then
+        indRecords!(34) = puntAvg_COMP!
         indRecDesc$(34, 0) = punterName$(0)
         indRecDesc$(34, 1) = teamName$
     End If
 
     For Z = 181 To 190
         If leaderName$(Z) = punterName$(0) And leaderTeam$(Z) = WT$ Then
-            leaderVal!(Z, 1) = puntNum
+            leaderVal!(Z, 1) = puntAvg_COMP!
             leaderVal!(Z, 2) = compPunts!(8)
             GoTo 3382
         End If
     Next Z
 
-    If puntNum > leaderVal!(190, 1) Then
+    If puntAvg_COMP! > leaderVal!(190, 1) Then
 
-        leaderVal!(190, 1) = puntNum
+        leaderVal!(190, 1) = puntAvg_COMP!
         leaderName$(190) = punterName$(0)
         leaderTeam$(190) = WT$
         leaderVal!(190, 2) = compPunts!(8)
@@ -2293,4 +2313,3 @@ Sub PostRecordsPro
     Close #2
 
 End Sub
-

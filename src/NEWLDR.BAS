@@ -16,12 +16,12 @@ Sub NEWLDR (statType)
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     'Needed for Expanded Standings
+    Shared lastLoseStreak(), lastWinStreak()
+    Shared teamLoseStreak(), teamWinStreak()
     Shared totHomeLosses(), totHomeWins(), totHomeTies()
     Shared totRoadLosses(), totRoadWins(), totRoadTies()
     Shared totNeutralLosses(), totNeutralWins(), totNeutralTies()
     Shared totTeamLosses(), totTeamWins(), totTeamTies()
-    Shared lastLoseStreak(), lastWinStreak()
-    Shared teamLoseStreak(), teamWinStreak()
 
     Shared expStdLeagName$()
 
@@ -128,7 +128,7 @@ Sub NEWLDR (statType)
                                 Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
                                 For I = 1 To TEAM_LIMIT
-                                    Input #2, totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), expStdLeagName$(I)
+                                    Input #2, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
                                 Next
 
                             Else
@@ -267,6 +267,8 @@ End Sub
 '   1 = Pro
 Sub UpdateExpandedLeaders (statType, totalStats)
 
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
     Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
@@ -278,21 +280,34 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
     Shared statsGI(), statsGS()
 
-    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$(), expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
-    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$(), expLdrKickName$(), expLdrKickTeam$()
+    Shared expLdrRBName$(), expLdrRBTeam$(), expLdrWRName$(), expLdrWRTeam$()
+    Shared expLdrQBTeam$(), expLdrKRName$(), expLdrKRTeam$()
+    Shared expLdrPRName$(), expLdrPRTeam$(), expLdrPuntName$(), expLdrPuntTeam$()
+    Shared expLdrKickName$(), expLdrKickTeam$()
     Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
-
-    Shared intName$(), statsLRec$(), statsLRush$()
     Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), expLdrLPR$()
-
-    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
-    Shared sackName$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLPR$()
-    Shared expLdrQBName$(), schedStatTeam$()
-
-    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
+    Shared expLdrQBName$()
+    Shared expLdrTeam$(), expLdrPlyrName$()
 
     Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
+
+    Shared memberName$(), intName$()
+
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+    Shared schedStatTeam$()
+
+    Shared sackName$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLPR$()
+    Shared statsLRec$(), statsLRush$()
     Shared gameCount()
+
+    Erase expLdrRBName$, expLdrRBTeam$, expLdrWRName$, expLdrWRTeam$
+    Erase expLdrQBTeam$, expLdrKRName$, expLdrKRTeam$
+    Erase expLdrPRName$, expLdrPRTeam$, expLdrPuntName$, expLdrPuntTeam$
+    Erase expLdrKickName$, expLdrKickTeam$
+    Erase expLdrIntName$, expLdrIntTeam$, expLdrSackName$, expLdrSackTeam$
+    Erase expLdrLRec$, expLdrLKR$, expLdrLPass$, expLdrLRush$, expLdrLPR$
+    Erase expLdrQBName$
+    Erase expLdrTeam$, expLdrPlyrName$
 
     Color 15, 0
     Cls
@@ -314,13 +329,14 @@ Sub UpdateExpandedLeaders (statType, totalStats)
     div3Name$ = ""
     div4Name$ = ""
 
-    Erase expLdrTeam$, expLdrPlyrName$
-
     If statType = 0 Then
         totalUnits = TEAMS_PER_CONFERENCE
     Else
         totalUnits = TEAMS_PER_LEAGUE
     End If
+
+    Erase schedStatVal!
+    Erase schedStatTeam$
 
     For ZX = 1 To totalUnits
 
@@ -332,133 +348,7 @@ Sub UpdateExpandedLeaders (statType, totalStats)
 
                 Print "CONVERTING STAT FILE OF "; teamStatFile$
 
-                Open diskPaths$(1) + teamStatFile$ For Input As #1
-
-                Input #1, teamName$
-
-                'RB Names
-                For I = 0 To 9:
-                    Input #1, rbName$(I)
-                Next I
-
-                'WR Names
-                For I = 0 To 5:
-                    Input #1, wrName$(I)
-                Next I
-
-                'QB Names
-                For I = 0 To 3:
-                    Input #1, qbName$(I)
-                Next I
-
-                'KR Names
-                For I = 0 To 2:
-                    Input #1, krName$(I)
-                Next I
-
-                'PR Names
-                For I = 0 To 2:
-                    Input #1, prName$(I)
-                Next I
-
-                'Punters
-                Input #1, punterName$(0)
-
-                'Place Kickers
-                For I = 0 To 1:
-                    Input #1, pkName$(I)
-                Next I
-
-                'Leader Values
-                '--------------------
-                'Rushers / Receivers
-                For J = 0 To 13
-                    For K = 0 To 17:
-                        Input #1, statsPlayers!(J, K)
-                    Next K
-                Next J
-
-                'Offensive Team stats
-                For L = 0 To 38:
-                    Input #1, statsTeam!(L)
-                Next L
-
-                'Defensive Team stats
-                For L = 0 To 38:
-                    Input #1, statsOpp!(L)
-                Next L
-
-                For J = 0 To 9:
-                    'Interception Names
-                    Input #1, intName$(J)
-                    For J1 = 0 To 2:
-                        Input #1, statsGI(J, J1)
-                    Next
-                Next
-
-                For J = 0 To 14:
-                    'Sack Names
-                    Input #1, sackName$(J)
-                    For J1 = 0 To 1:
-                        Input #1, statsGS(J, J1)
-                    Next
-                Next
-
-                'Longest rush
-                For I = 0 To 9:
-                    Input #1, statsLRush!(I)
-                    Input #1, statsLRush$(I, 0)
-                    Input #1, statsLRush$(I, 1)
-                Next
-
-                'Longest catch
-                For I = 0 To 15:
-                    Input #1, statsLRec!(I)
-                    Input #1, statsLRec$(I, 0)
-                    Input #1, statsLRec$(I, 1)
-                Next
-
-                'Longest pass
-                For I = 0 To 3:
-                    Input #1, statsLPass!(I)
-                    Input #1, statsLPass$(I, 0)
-                    Input #1, statsLPass$(I, 1)
-                Next
-
-                'Longest kick return
-                For I = 0 To 2:
-                    Input #1, statsLKR!(I)
-                    Input #1, statsLKR$(I, 0)
-                    Input #1, statsLKR$(I, 1)
-                Next
-
-                'Longest punt return
-                For I = 0 To 2:
-                    Input #1, statsLPR!(I)
-                    Input #1, statsLPR$(I, 0)
-                    Input #1, statsLPR$(I, 1)
-                Next
-
-                'Longest FG
-                For I = 0 To 1
-                    Input #1, statsLFG!(I)
-                    Input #1, statsLFG$(I)
-                    For I1 = 0 To 4
-                        Input #1, statsFGM!(I, I1)
-                        Input #1, statsFGA!(I, I1)
-                    Next
-                Next
-
-                'Longest Interception
-                '--> was previously NOT read in
-                '--> is it not even calculated later!!!
-                For I = 0 To 9:
-                    Input #1, statsLInt!(I)
-                    Input #1, statsLInt$(I, 0)
-                    Input #1, statsLInt$(I, 1)
-                Next
-
-                Close #1
+                Call ReadTeamStats(teamName$, teamStatFile$)
 
                 Open diskPaths$(1) + teamStatFile$ + "S" For Input As #2
                 Input #2, nbrGames
@@ -614,17 +504,25 @@ Sub ReadLeaderStdg (leaderFile$, totalStats)
     Shared expLdrIntName$(), expLdrIntTeam$(), expLdrSackName$(), expLdrSackTeam$()
     Shared expLdrLRec$(), expLdrLKR$(), expLdrLPass$(), expLdrLRush$(), schedStatTeam$()
     Shared expLdrLPR$(), expLdrQBName$()
-
     Shared expLdrRBVal!(), expLdrWRVal!(), expLdrQBVal!(), expLdrQBRat!(), expLdrKRVal!()
+    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared expLdrPRVal!(), expLdrPuntVal!(), expLdrKickVal!(), expLdrIntVal!(), expLdrSackVal!()
+
     Shared schedStatVal!()
 
-    Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared gameCount()
 
     TMR = 1660
 
     'Print "READING LEADER FILES . . . . PLEASE WAIT"
+    Erase expLdrRBName$, expLdrRBTeam$, expLdrWRName$, expLdrWRTeam$, expLdrQBTeam$, expLdrKRName$, expLdrKRTeam$
+    Erase expLdrPRName$, expLdrPRTeam$, expLdrPuntName$, expLdrPuntTeam$, expLdrKickName$, expLdrKickTeam$
+    Erase expLdrIntName$, expLdrIntTeam$, expLdrSackName$, expLdrSackTeam$
+    Erase expLdrLRec$, expLdrLKR$, expLdrLPass$, expLdrLRush$, schedStatTeam$
+    Erase expLdrLPR$, expLdrQBName$
+    Erase expLdrRBVal!, expLdrWRVal!, expLdrQBVal!, expLdrQBRat!, expLdrKRVal!
+    Erase expLdrRBGames!, expLdrWRGames!, expLdrQBGames!
+    Erase expLdrPRVal!, expLdrPuntVal!, expLdrKickVal!, expLdrIntVal!, expLdrSackVal!
 
     If Not _FileExists(diskPaths$(2) + leaderFile$ + ".LDS") Then
 

@@ -39,7 +39,7 @@ Dim memberConf$(MAX_CONFERENCES)
 'Ideally we would ReDim each based on these
 'values when needed
 Dim memberIdx(40)
-Dim memberName$(40), memberNames_2nd$(40)
+Dim memberName$(60), memberNames_2nd$(60)
 Dim memberYear$(40), memberYear_2nd$(40)
 Dim statFilesComp$(60)
 
@@ -126,31 +126,29 @@ Dim careerWRR$, careerQBR$, careerKRR$, careerPRR$
 Dim carLdrPlyrName$(62, 20), carLdrTDIndic$(62, 20)
 Dim carLdrVal!(62, 20)
 
-Dim carDefInts$(55), carDefSacks$(55)
-
-'S = stats ???
-Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
-Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerWRS$(MAX_CAREER_YEARS, 40, 1)
-
 Dim carRBacks$(50), carWdRec$(40), carQBacks$(20), carKickRet$(15), carPRet$(15), carPunter$(10), carKicker$(10)
+Dim carIntName$(55), carSackName$(55)
 
 Dim careerLRec$(60, 1), careerLFG$(0 To 1), careerLInt$(0 To 9, 0 To 1)
 Dim careerLKR$(15, 1), careerLPass$(20, 1), careerLRush$(50, 1)
 Dim careerLPR$(15, 1)
+
+Dim carGameSacks(55, 1), carGameInts(55, 2)
+Dim careerFGA!(9, 4), careerFGM!(9, 4)
+Dim careerLRec!(60), careerLKR!(15), careerLRush!(50), careerLPass!(20)
+Dim careerLPR!(15)
+
+Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
+Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerWRS$(MAX_CAREER_YEARS, 40, 1)
 
 Dim careerDefRecPlyr$(1), careerFGRecPlyr$(6), careerKRRecPlyr$(4), careerPRRecPlyr$(4), careerPuntRecPlyr$(2)
 Dim careerQBRecPlyr$(8), careerRBRecPlyr$(9), careerRBR$(1), careerWRRecPlyr$(4)
 
 Dim carYear_DF(1), carYear_FG(6), carYear_KRet(4), carYear_PRet(4)
 Dim carYear_Punt(2), carYear_QB(8), carYear_RB(9), carYear_WR(4)
-Dim carGameSacks(55, 1), carGameInts(55, 2)
 
 Dim careerDefRecVal!(1), careerFGRecVal!(6), careerKRRecVal!(4), careerPRRecVal!(4)
 Dim careerPuntRecVal!(2), careerQBRecVal!(8), careerRBRecVal!(9), careerWRRecVal!(4)
-
-Dim careerFGA!(9, 4), careerFGM(9, 4)
-Dim careerLRec!(60), careerLKR!(15), careerLRush!(50), careerLPass!(20)
-Dim careerLPR!(15)
 
 Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
 Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
@@ -200,7 +198,7 @@ Dim Shared confLosses, confTies, confWins
 Dim Shared fullLosses, fullTies, fullWins
 Dim Shared confPtsFor, confPtsAgnst
 
-Dim fumbGain, puntNum
+Dim fumbGain, puntAvg_COMP!
 Dim puntName$
 
 Dim leaderName$(1 To 240), leaderTeam$(1 To 240)
@@ -209,8 +207,8 @@ Dim leaderAllPurpName$(18)
 Dim leaderAllPurpTDs!(16)
 Dim leaderAllPurpYds!(16)
 
-Dim compRB$(10), compWR$(16), compQB$(4)
-Dim compKR$(3), compPR$(3), compKicker$(2)
+'Dim compRB$(10), compWR$(16), compQB$(4)
+'Dim compKR$(3), compPR$(3), compKicker$(2)
 
 Dim compRB!(11, 11), compWR!(16, 13), compQB!(1 To 11, 1 To 11)
 Dim compKR!(11, 11), compPR!(11, 11)
@@ -219,13 +217,13 @@ Dim compPAT!(2), compPAM!(2)
 Dim compFGA!(2), compFGM!(2)
 Dim compPAPct!(2), compFGPct!(2)
 
-Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
-Dim indRecords!(0 To 50), teamRecords!(0 To 50)
+'Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
+'Dim indRecords!(0 To 50), teamRecords!(0 To 50)
 
 Dim leagPtsAgnst!(60), leagPtsFor!(60)
 
-Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
-Dim totalTeamName$(10, 20)
+'Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
+'Dim totalTeamName$(10, 20)
 
 Dim natLdrName$(240), natLdrTeam$(240)
 Dim natLdrTotTeam$(10, 20)
@@ -238,7 +236,7 @@ Dim pollRatings!(1200, 5)
 
 Dim statsGeneral!(14, 18)
 
-Dim defTotals!(38), offTotals!(38)
+'Dim defTotals!(38), offTotals!(38)
 
 
 '----------------------------------------
@@ -309,18 +307,18 @@ Dim tradeYN$(1)
 '----------------------------------------
 '   Used in HD2HD routines
 '----------------------------------------
-Dim leagueName$
+Dim leagueName$, leagueName_2$
 Dim div1Name$, div2Name$, div3Name$, div4Name$
 Dim div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
-Dim divNames$(4), divNames_2nd$(4)
+Dim divisionNames$(4), divisionNames_2nd$(4)
 
 'These are mostly keeping track of quantities (# wins, # losses, etc)
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
 Dim awayLosses!(30), awayLosses_2nd!(30)
-Dim awayTies_2nd!(30), awayTies!(30)
+Dim awayTies!(30), awayTies_2nd!(30)
 Dim awayWins!(30), awayWins_2nd!(30)
 Dim awayScoreTeam!(100), awayScoreTeam_2nd!(100)
 Dim awayScoreOpp!(100), awayScoreOpp_2nd!(100)
@@ -334,7 +332,7 @@ Dim homeScoreOpp!(100), homeScoreOpp_2nd!(100)
 Dim totHomeLosses!(4), totHomeLosses_2nd!(4)
 Dim totHomeTies!(4), totHomeTies_2nd!(4)
 Dim totHomeWins!(4), totHomeWins_2nd!(4)
-Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd(4)
+Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd!(4)
 Dim totHomeScoreOpp!(4), totHomeScoreOpp_2nd!(4)
 
 Dim totAwayLosses!(4), totAwayLosses_2nd!(4)
@@ -458,7 +456,7 @@ Dim Shared defYdAdjEraA(1 To 7, 1 To 12), defYdAdjEraB(1 To 7, 1 To 12)
 Dim Shared gameInts(1, 9, 2), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
 Dim Shared gameLongFGAtt(1, 1), gameLongKRYds(0 To 1, 0 To 2)
 Dim Shared gameLongInt(1, 9), gameLongPassYds(1, 3), gameLongPRYds(0 To 1, 0 To 2)
-Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
+'Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
 Dim Shared hasRunRBPass(1), hasRunFF(1), hasRunRev(1)
 Dim Shared indRushPct(1, 9), K1(50, 6), K3(1, 6)
