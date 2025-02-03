@@ -1,3 +1,4 @@
+
 '----------------------------------------
 '        CompileCollege SubRoutine
 '----------------------------------------
@@ -125,12 +126,12 @@ Sub CompileCollege ()
 
                     If (haveStats) Then
 
-                        WT$ = memberName$(XW)
+                        statName$ = memberName$(XW)
                         nonConfGame = 0
 
                         For X = 1 To TEAMS_PER_CONFERENCE
 
-                            If memberName$(X) = WT$ Then
+                            If memberName$(X) = statName$ Then
 
                                 If divWins!(X) = fullWins And divLosses!(X) = fullLosses And divTies!(X) = fullTies Then
 
@@ -160,8 +161,8 @@ Sub CompileCollege ()
                         If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
                             Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 0)
-                            Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
-                            Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
+                            Call CalcStatTotalsConf(numberGames, TM$, statName$, finalUpdate$)
+                            Call CalcStatLeaders(numberGames, TM$, statName$, finalUpdate$)
 
                         End If
 
@@ -296,7 +297,7 @@ End Function
 'This subroutine compares all pre-loaded
 'stats to each of the record categories to
 'see if any should be updated
-Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
+Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
 
     Shared fumbGain
 
@@ -334,7 +335,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 3) = offTotals!(6) + offTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -383,7 +384,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         'Yds / Gm
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -423,7 +424,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 3) = offTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -463,7 +464,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 3) = defTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -508,7 +509,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 1) = numberGames
         totalTeamVal!(CA, 20, 2) = PTS
         totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -556,7 +557,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 1) = numberGames
         totalTeamVal!(CA, 20, 2) = PTS
         totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
 
@@ -616,7 +617,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 6) = offTotals!(6)
         totalTeamVal!(CA, 20, 7) = offTotals!(6) / offTotals!(3)
         totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -674,7 +675,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 6) = defTotals!(6)
         totalTeamVal!(CA, 20, 7) = defTotals!(6) / defTotals!(3)
         totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -701,7 +702,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
 
         totalTeamVal!(CA, 20, 1) = offTotals!(7)
         totalTeamVal!(CA, 20, 2) = offTotals!(8) / offTotals!(7)
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -735,7 +736,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
         totalTeamVal!(CA, 20, 5) = intLost
         totalTeamVal!(CA, 20, 6) = fumbLost + intLost
         totalTeamVal!(CA, 20, 7) = toMargin!
-        totalTeamName$(CA, 20) = WT$
+        totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
             For Z1 = Z + 1 To 20
@@ -827,12 +828,45 @@ Sub SortStandingsConference
 
     Shared memberName$()
 
-    'Currently sorts by Conference Record
-    '   To sort by Season Record, use Z = 0 to 1
+    'Sort Overall Record
+    For Z = 0 To 1
+
+        AA = (Z * TEAMS_PER_DIV_COL) + 1
+        ZZ = (Z * TEAMS_PER_DIV_COL) + TEAMS_PER_DIV_COL
+
+        For X = AA To ZZ - 1:
+
+            For Y = X + 1 To ZZ:
+
+                diffX = divWins!(X) - divLosses!(X)
+                diffY = divWins!(Y) - divLosses!(Y)
+
+                If diffX <= diffY Then
+
+                    If diffX <> diffY Then
+                        If Not (divWins!(X) <= divWins!(Y) And divWins!(X) > divLosses!(X)) Or Not (divWins!(X) >= divWins!(Y) And divWins!(X) < divLosses!(X)) Then
+                            Swap memberName$(X), memberName$(Y)
+                            Swap divWins!(X), divWins!(Y)
+                            Swap divLosses!(X), divLosses!(Y)
+                            Swap divTies!(X), divTies!(Y)
+                            Swap leagPtsFor!(X), leagPtsFor!(Y)
+                            Swap leagPtsAgnst!(X), leagPtsAgnst!(Y)
+                        End If
+                    End If
+
+                End If
+
+            Next Y
+
+        Next X
+
+    Next Z
+
+    'Sort Conference Record
     For Z = 2 To 3
 
-        AA = (Z * 15) + 1
-        ZZ = (Z * 15) + 15
+        AA = (Z * TEAMS_PER_DIV_COL) + 1
+        ZZ = (Z * TEAMS_PER_DIV_COL) + TEAMS_PER_DIV_COL
 
         For X = AA To ZZ - 1:
 

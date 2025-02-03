@@ -31,19 +31,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-
-Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
-Dim indRecords!(0 To 50), teamRecords!(0 To 50)
-
-Dim defTotals!(38), offTotals!(38)
-Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
-Dim totalTeamName$(10, 20)
-
-Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
-
-Dim compRB$(10), compWR$(16), compQB$(4)
-Dim compKR$(3), compPR$(3), compKicker$(2)
-
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 

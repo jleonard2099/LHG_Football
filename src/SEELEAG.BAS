@@ -20,6 +20,7 @@ Sub SEELEAG ()
 
 End Sub
 
+
 '----------------------------------------
 '     LoadLeaderFiles_Pro Subroutine
 '----------------------------------------
@@ -27,14 +28,14 @@ End Sub
 'from the file into several arrays
 Sub LoadLeaderFiles_Pro (league$, targetFile$)
 
-    Shared leagRecText$(), leagLdrTeams$()
-    Shared leaderName$(), leaderTeam$()
-    Shared totalTeamName$()
-
     Shared divLosses!(), divTies!(), divWins!()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
+
+    Shared leagRecText$(), divTeamNames$()
+    Shared leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
@@ -52,7 +53,7 @@ Sub LoadLeaderFiles_Pro (league$, targetFile$)
     Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To TEAMS_PER_LEAGUE
-        Input #2, leagLdrTeams$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Input #2, divTeamNames$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
@@ -75,20 +76,19 @@ Sub LoadLeaderFiles_Pro (league$, targetFile$)
 
     Close #2
 
-    For NT = 1 To 4
+    For NT = 1 To DIVS_PER_LEAGUE
 
-        AA = ((NT - 1) * 10) + 1
-        ZZ = NT * 10
+        AA = ((NT - 1) * TEAMS_PER_DIV_PRO) + 1
+        ZZ = NT * TEAMS_PER_DIV_PRO
 
         D1 = divWins!(AA) - divLosses!(AA)
 
         For P = AA To ZZ
 
-            If leagLdrTeams$(P) = "*" Or leagLdrTeams$(P) = "" Then
+            If divTeamNames$(P) = "*" Or divTeamNames$(P) = "" Then
                 leagRecText$(P) = ""
             Else
-
-                leagRecText$(P) = PadRight$(leagLdrTeams$(P), 12)
+                leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
                 rightStr$ = Right$("     " + Str$(Int(divWins!(P))), 3)
                 leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
@@ -119,14 +119,15 @@ Sub LoadLeaderFiles_Pro (league$, targetFile$)
                     Loop
 
                     leagRecText$(P) = leagRecText$(P) + " ." + Right$(rightStr$, 3)
+
                 End If
 
                 leagRecText$(P) = PadRight$(leagRecText$(P), 30)
+
                 A = leagPtsFor!(P)
-
                 leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 3)
-                A = leagPtsAgnst!(P)
 
+                A = leagPtsAgnst!(P)
                 leagRecText$(P) = leagRecText$(P) + Right$("     " + Str$(A), 4)
 
             End If
@@ -194,7 +195,6 @@ Sub StatOptions_Pro (league$)
 End Sub
 
 
-
 '----------------------------------------
 '     ProLeaders_Screen Subroutine
 '----------------------------------------
@@ -203,14 +203,14 @@ End Sub
 'user display.
 Sub ProLeaders_Screen ()
 
-    Shared leagRecText$(), leagLdrTeams$()
-    Shared leaderName$(), leaderTeam$()
-    Shared totalTeamName$()
-
     Shared divLosses!(), divTies!(), divWins!()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
+
+    Shared leagRecText$(), divTeamNames$()
+    Shared leaderName$(), leaderTeam$()
+    Shared totalTeamName$()
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
@@ -230,8 +230,9 @@ Sub ProLeaders_Screen ()
             RT = RT + 1
         Else
             Locate (P + 2 - RT)
-            Print leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
+            'Win %
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
@@ -241,7 +242,8 @@ Sub ProLeaders_Screen ()
                     If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (divWins!(P) + divTies!(P) * .5) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
@@ -268,8 +270,9 @@ Sub ProLeaders_Screen ()
             RT = RT + 1
         Else
             Locate (P - 8 - RT), 41
-            Print leagLdrTeams$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
+            'Win %
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
@@ -279,7 +282,8 @@ Sub ProLeaders_Screen ()
                     If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
@@ -306,8 +310,9 @@ Sub ProLeaders_Screen ()
             RT = RT + 1
         Else
             Locate (P - 6 - RT)
-            Print leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
+            'Win %
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
@@ -317,7 +322,8 @@ Sub ProLeaders_Screen ()
                     If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
@@ -346,8 +352,9 @@ Sub ProLeaders_Screen ()
             RT = RT + 1
         Else
             Locate (P - 16 - RT), 41
-            Print leagLdrTeams$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
+            'Win %
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print "  .---";
             Else
@@ -357,7 +364,8 @@ Sub ProLeaders_Screen ()
                     If divWins!(P) = 0 Then
                         Print "  .000";
                     Else
-                        Print Using "  .###"; (divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
                     End If
                 End If
             End If
@@ -947,7 +955,7 @@ End Sub
 'the default printer
 Sub ProLeaders_Report (league$, printDest, destFile$)
 
-    Shared leagRecText$(), leagLdrTeams$()
+    Shared leagRecText$(), divTeamNames$()
     Shared leaderName$(), leaderTeam$()
     Shared totalTeamName$()
 
@@ -970,7 +978,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     For P = 1 To 10
 
         If leagRecText$(P) <> "" Then
-            Print #1, leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
@@ -998,7 +1006,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     For P = 11 To 20
 
         If leagRecText$(P) <> "" Then
-            Print #1, leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
@@ -1027,7 +1035,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
         If leagRecText$(P) <> "" Then
 
-            Print #1, leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";
@@ -1056,7 +1064,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
         If leagRecText$(P) <> "" Then
 
-            Print #1, leagLdrTeams$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
 
             If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
                 Print #1, "  .---";

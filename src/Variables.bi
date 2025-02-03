@@ -199,7 +199,6 @@ Dim Shared fullLosses, fullTies, fullWins
 Dim Shared confPtsFor, confPtsAgnst
 
 Dim fumbGain, puntAvg_COMP!
-Dim puntName$
 
 Dim leaderName$(1 To 240), leaderTeam$(1 To 240)
 Dim leaderVal!(1 To 240, 1 To 2)
@@ -207,8 +206,8 @@ Dim leaderAllPurpName$(18)
 Dim leaderAllPurpTDs!(16)
 Dim leaderAllPurpYds!(16)
 
-'Dim compRB$(10), compWR$(16), compQB$(4)
-'Dim compKR$(3), compPR$(3), compKicker$(2)
+Dim compRB$(10), compWR$(16), compQB$(4)
+Dim compKR$(3), compPR$(3), compKicker$(2)
 
 Dim compRB!(11, 11), compWR!(16, 13), compQB!(1 To 11, 1 To 11)
 Dim compKR!(11, 11), compPR!(11, 11)
@@ -217,13 +216,13 @@ Dim compPAT!(2), compPAM!(2)
 Dim compFGA!(2), compFGM!(2)
 Dim compPAPct!(2), compFGPct!(2)
 
-'Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
-'Dim indRecords!(0 To 50), teamRecords!(0 To 50)
+Dim indRecDesc$(0 To 50, 0 To 2), teamRecDesc$(0 To 50)
+Dim indRecords!(0 To 50), teamRecords!(0 To 50)
 
 Dim leagPtsAgnst!(60), leagPtsFor!(60)
 
-'Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
-'Dim totalTeamName$(10, 20)
+Dim totalScoring!(18), totalTeamVal!(10, 20, 9)
+Dim totalTeamName$(10, 20)
 
 Dim natLdrName$(240), natLdrTeam$(240)
 Dim natLdrTotTeam$(10, 20)
@@ -236,7 +235,7 @@ Dim pollRatings!(1200, 5)
 
 Dim statsGeneral!(14, 18)
 
-'Dim defTotals!(38), offTotals!(38)
+Dim defTotals!(38), offTotals!(38)
 
 
 '----------------------------------------
@@ -369,8 +368,8 @@ Dim ratingsQB!(0 To 3, 10)
 Dim leaderVal1!(240), leaderVal2!(240)
 Dim divLosses!(60), divTies!(60), divWins!(60)
 
-Dim leagRecText$(60), leagLdrTeams$(60)
-Dim pollLdrTeams$(1200), divTeamNames$(60)
+Dim divTeamNames$(60), leagRecText$(60)
+Dim pollLdrTeams$(1200)
 
 
 '----------------------------------------
@@ -397,7 +396,7 @@ Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
 'These all seem to only be used for loops, but it is difficult to confirm
-Dim Shared I1, I3, I5, I6, I7, I8, I9
+Dim Shared I1, I3, I5, I6, I7, I8
 
 Dim Shared I4 As Single
 Dim Shared kickYL!
@@ -412,7 +411,7 @@ Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared startYds, tickerGames
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
-Dim Shared WE, WS, winTeam, yrdLine
+Dim Shared WE, WS, winTeam
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -456,7 +455,7 @@ Dim Shared defYdAdjEraA(1 To 7, 1 To 12), defYdAdjEraB(1 To 7, 1 To 12)
 Dim Shared gameInts(1, 9, 2), gameStatsPlayer(1, 13, 17), gameStatsTeam(1, 36)
 Dim Shared gameLongFGAtt(1, 1), gameLongKRYds(0 To 1, 0 To 2)
 Dim Shared gameLongInt(1, 9), gameLongPassYds(1, 3), gameLongPRYds(0 To 1, 0 To 2)
-'Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
+Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
 Dim Shared hasRunRBPass(1), hasRunFF(1), hasRunRev(1)
 Dim Shared indRushPct(1, 9), K1(50, 6), K3(1, 6)

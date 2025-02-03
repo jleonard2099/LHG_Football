@@ -722,7 +722,6 @@ Sub ReadTeamStatsComp (teamName$, statFile$)
     'RB Names
     For I = 1 To 10:
         Input #1, compRB$(I)
-        compWR$(I) = compRB$(I)
     Next
 
     'WR Names
@@ -852,9 +851,9 @@ End Sub
 Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
 
     Shared gameSite$()
-    Shared oppName$(), locIndicator$()
+    Shared locIndicator$(), oppName$()
 
-    Shared powerRating(), oppScore(), teamScore()
+    Shared oppScore(), powerRating(), teamScore()
 
     Shared gameAttendance&()
 
@@ -917,7 +916,7 @@ End Sub
 
 
 '----------------------------------------
-'       ReadSeasonRecords Subroutine
+'      ReadSeasonRecords Subroutine
 '----------------------------------------
 'Reads in list of team and individual
 'record values from the records file.
@@ -925,7 +924,7 @@ Sub ReadSeasonRecords (recordFile$)
 
     Shared indRecords!(), teamRecords!()
     Shared indRecDesc$(), teamRecDesc$()
-    
+
     Erase indRecords!, teamRecords!
     Erase indRecDesc$, teamRecDesc$
 
@@ -1285,3 +1284,5 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
     End If
 
 End Function
+
+

@@ -235,7 +235,8 @@ Sub NewStandings_Screen (league$, orgType)
                         Print " .000";
                     Else
                         If totTeamWins(I) + totTeamLosses(I) <> 0 Then
-                            winPCT! = totTeamWins(I) / (totTeamWins(I) + totTeamLosses(I))
+                            'Ties count as 1/2 win
+                            winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
                             Print Using " .###"; winPCT!;
                         Else
                             Print " .000";
@@ -271,7 +272,7 @@ End Sub
 
 
 '----------------------------------------
-'       NewStandings_Report Subroutine
+'     NewStandings_Report Subroutine
 '----------------------------------------
 'This subroutine sorts the expanded league
 'standings and outputs them to the default
@@ -347,7 +348,8 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
                         If totTeamWins(I) + totTeamLosses(I) = 0 Then
                             Print #1, " .000";
                         Else
-                            winPCT! = totTeamWins(I) / (totTeamWins(I) + totTeamLosses(I))
+                            'Ties count as 1/2 win
+                            winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
                             Print #1, Using " .###"; winPCT!;
                         End If
                     End If
