@@ -28,7 +28,7 @@ End Sub
 'from the file into several arrays
 Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
-    Shared divLosses!(), divTies!(), divWins!()
+    Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
@@ -51,7 +51,7 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
     Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
 
     For X = 1 To (2 * TEAMS_PER_CONFERENCE)
-        Input #2, divTeamNames$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Input #2, divTeamNames$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240
@@ -79,7 +79,7 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
         AA = ((NT - 1) * TEAMS_PER_DIV_COL) + 1
         ZZ = NT * TEAMS_PER_DIV_COL
 
-        D1 = divWins!(AA) - divLosses!(AA)
+        D1 = divWins(AA) - divLosses(AA)
 
         For P = AA To ZZ
 
@@ -88,19 +88,19 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
             Else
                 leagRecText$(P) = PadRight$(divTeamNames$(P), 12)
 
-                rightStr$ = Right$("     " + Str$(Int(divWins!(P))), 3)
+                rightStr$ = Right$("     " + Str$(Int(divWins(P))), 3)
                 leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 16)
 
-                rightStr$ = Right$("     " + Str$(Int(divLosses!(P))), 3)
+                rightStr$ = Right$("     " + Str$(Int(divLosses(P))), 3)
                 leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 20)
 
-                rightStr$ = Right$("     " + Str$(Int(divTies!(P))), 3)
+                rightStr$ = Right$("     " + Str$(Int(divTies(P))), 3)
                 leagRecText$(P) = PadRight$(leagRecText$(P) + rightStr$, 24)
 
                 A = 0
 
-                If divWins!(P) + divLosses!(P) > 0 Then
-                    A = Int((divWins!(P) + .5 * divTies!(P)) / (divWins!(P) + divLosses!(P) + divTies!(P)) * 1000 + .5) / 1000
+                If divWins(P) + divLosses(P) > 0 Then
+                    A = Int((divWins(P) + .5 * divTies(P)) / (divWins(P) + divLosses(P) + divTies(P)) * 1000 + .5) / 1000
                 End If
 
                 A = CInt(1000 * A)
@@ -200,7 +200,7 @@ End Sub
 'user display.
 Sub CollLeaders_Screen (confName$)
 
-    Shared divLosses!(), divTies!(), divWins!()
+    Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
@@ -234,20 +234,20 @@ Sub CollLeaders_Screen (confName$)
             RT = RT + 1
         Else
             Locate (P + 3 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
             'Win %
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print "  .000";
                     Else
                         'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If
@@ -272,20 +272,20 @@ Sub CollLeaders_Screen (confName$)
                 RT = RT + 1
             Else
                 Locate (P - 12 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
                 'Win %
-                If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                     Print "  .---";
                 Else
-                    If divLosses!(P) + divTies!(P) = 0 Then
+                    If divLosses(P) + divTies(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If divWins!(P) = 0 Then
+                        If divWins(P) = 0 Then
                             Print "  .000";
                         Else
                             'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                         End If
                     End If
                 End If
@@ -327,20 +327,20 @@ Sub CollLeaders_Screen (confName$)
             RT = RT + 1
         Else
             Locate (P - 27 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
             'Win %
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print "  .000";
                     Else
                         'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If
@@ -364,20 +364,20 @@ Sub CollLeaders_Screen (confName$)
                 RT = RT + 1
             Else
                 Locate (P - 42 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
+                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
                 'Win %
-                If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                     Print "  .---";
                 Else
-                    If divLosses!(P) + divTies!(P) = 0 Then
+                    If divLosses(P) + divTies(P) = 0 Then
                         Print " 1.000";
                     Else
-                        If divWins!(P) = 0 Then
+                        If divWins(P) = 0 Then
                             Print "  .000";
                         Else
                             'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins!(P) + (divTies!(P) * .5)) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                         End If
                     End If
                 End If
@@ -967,7 +967,7 @@ End Sub
 'the default printer
 Sub CollLeaders_Report (confName$, printDest, destFile$)
 
-    Shared divLosses!(), divTies!(), divWins!()
+    Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
@@ -992,17 +992,17 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     For P = 1 To 15
 
         If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If
@@ -1018,17 +1018,17 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     For P = 16 To 30
 
         If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If
@@ -1047,17 +1047,17 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     For P = 31 To 45
 
         If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If
@@ -1073,17 +1073,17 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     For P = 46 To 60
 
         If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins!(P); divLosses!(P); divTies!(P);
-            If divWins!(P) + divLosses!(P) + divTies!(P) = 0 Then
+            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
                 Print #1, "  .---";
             Else
-                If divLosses!(P) + divTies!(P) = 0 Then
+                If divLosses(P) + divTies(P) = 0 Then
                     Print #1, " 1.000";
                 Else
-                    If divWins!(P) = 0 Then
+                    If divWins(P) = 0 Then
                         Print #1, "  .000";
                     Else
-                        Print #1, Using "  .###"; divWins!(P) / (divWins!(P) + divLosses!(P) + divTies!(P));
+                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
             End If

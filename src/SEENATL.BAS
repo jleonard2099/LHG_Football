@@ -28,7 +28,7 @@ End Sub
 'stats from the file into several arrays
 Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
-    Shared divLosses!(), divTies!(), divWins!()
+    Shared divLosses(), divTies(), divWins()
     Shared pollRatings!()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
@@ -49,7 +49,7 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
     Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2
 
     For X = 1 To 60
-        Input #2, divTeamNames$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Input #2, divTeamNames$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240

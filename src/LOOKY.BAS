@@ -944,8 +944,8 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
             Print Using " ###.# ### ### ###.#   "; allPlayerStats!(I1, 12) / totalGames%; allPlayerStats!(I1, 13); allPlayerStats!(I1, 11); allPlayerStats!(I1, 11) / allPlayerStats!(I1, 9) * 100;
 
             'QB Rating
-            awayTies! = QBRating!(I1, statFormat)
-            Print Using "###.#"; awayTies!
+            awayTies = QBRating!(I1, statFormat)
+            Print Using "###.#"; awayTies
 
         End If
 
@@ -1846,9 +1846,9 @@ Sub StatsToReport (printDest, destFile$, teamName$, totalGames%, statFormat, tea
 
             Print #1, Using " ###.# ### ### ###.#     "; allPlayerStats!(I1, 12) / totalGames%; allPlayerStats!(I1, 13); allPlayerStats!(I1, 11); allPlayerStats!(I1, 11) / allPlayerStats!(I1, 9) * 100;
 
-            awayTies! = QBRating!(I1, statFormat)
+            awayTies = QBRating!(I1, statFormat)
 
-            Print #1, Using "###.#"; awayTies!
+            Print #1, Using "###.#"; awayTies
 
         End If
 

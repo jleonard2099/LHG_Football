@@ -13,7 +13,7 @@ Sub CompileLeague ()
     Shared leagPtsAgnst!(), leagPtsFor!()
 
     Shared totalTeamVal!(), leaderVal!(), statsGeneral!()
-    Shared divWins!(), divLosses!(), divTies!()
+    Shared divWins(), divLosses(), divTies()
 
     Shared indRecords!(), teamRecords!()
 
@@ -113,7 +113,7 @@ Sub CompileLeague ()
 
             Call ReadConferenceStats(leagueFile$, 1)
 
-            Erase divWins!, divLosses!, divTies!
+            Erase divWins, divLosses, divTies
             Erase leagPtsAgnst!, leagPtsFor!
 
             For XW = 1 To TEAMS_PER_LEAGUE
@@ -132,16 +132,16 @@ Sub CompileLeague ()
 
                             If memberName$(X) = statName$ Then
 
-                                If divWins!(X) = fullWins And divLosses!(X) = fullLosses And divTies!(X) = fullTies Then
+                                If divWins(X) = fullWins And divLosses(X) = fullLosses And divTies(X) = fullTies Then
 
                                     nonConfGame = 1
                                     Exit For
 
                                 Else
 
-                                    divWins!(X) = fullWins
-                                    divLosses!(X) = fullLosses
-                                    divTies!(X) = fullTies
+                                    divWins(X) = fullWins
+                                    divLosses(X) = fullLosses
+                                    divTies(X) = fullTies
 
                                 End If
 
@@ -2192,7 +2192,7 @@ End Sub
 'bubble sort algorithm.
 Sub SortStandingsLeague
 
-    Shared divWins!(), divLosses!(), divTies!()
+    Shared divWins(), divLosses(), divTies()
 
     Shared leagPtsAgnst!(), leagPtsFor!()
 
@@ -2208,17 +2208,17 @@ Sub SortStandingsLeague
 
             For Y = X + 1 To ZZ:
 
-                diffX = divWins!(X) - divLosses!(X)
-                diffY = divWins!(Y) - divLosses!(Y)
+                diffX = divWins(X) - divLosses(X)
+                diffY = divWins(Y) - divLosses(Y)
 
                 If diffX <= diffY Then
 
                     If diffX <> diffY Then
-                        If Not (divWins!(X) <= divWins!(Y) And divWins!(X) > divLosses!(X)) Or Not (divWins!(X) >= divWins!(Y) And divWins!(X) < divLosses!(X)) Then
+                        If Not (divWins(X) <= divWins(Y) And divWins(X) > divLosses(X)) Or Not (divWins(X) >= divWins(Y) And divWins(X) < divLosses(X)) Then
                             Swap memberName$(X), memberName$(Y)
-                            Swap divWins!(X), divWins!(Y)
-                            Swap divLosses!(X), divLosses!(Y)
-                            Swap divTies!(X), divTies!(Y)
+                            Swap divWins(X), divWins(Y)
+                            Swap divLosses(X), divLosses(Y)
+                            Swap divTies(X), divTies(Y)
                             Swap leagPtsFor!(X), leagPtsFor!(Y)
                             Swap leagPtsAgnst!(X), leagPtsAgnst!(Y)
                         End If
@@ -2247,7 +2247,7 @@ Sub PostLeadersLeague (leaderFile$)
     Shared totalTeamName$()
 
     Shared totalTeamVal!(), leaderVal!()
-    Shared divWins!(), divLosses!(), divTies!()
+    Shared divWins(), divLosses(), divTies()
     Shared leagPtsFor!(), leagPtsAgnst!()
 
     Cls
@@ -2257,7 +2257,7 @@ Sub PostLeadersLeague (leaderFile$)
     Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
 
     For X = 1 To TEAMS_PER_LEAGUE:
-        Write #1, memberName$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Write #1, memberName$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240

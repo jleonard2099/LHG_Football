@@ -12,8 +12,6 @@ Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
 
     Shared teamRatings()
 
-    'Shared teamNames$()
-
     Shared previousYear$
 
     Do
@@ -911,6 +909,61 @@ Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
     Next I
 
     Close #1
+
+End Sub
+
+
+'----------------------------------------
+'      SaveScheduleStats Subroutine
+'----------------------------------------
+'This subroutine writes in all data to the
+'team's schedule stats file.
+Sub SaveScheduleStats (saveFile$, numberGames)
+
+    Shared gameSite$()
+    Shared locIndicator$(), oppName$()
+
+    Shared oppScore(), powerRating(), teamScore()
+
+    Shared gameAttendance&()
+
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
+    Open diskPaths$(1) + saveFile$ + "S" For Output As #2
+
+    Print #2, numberGames
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, teamScore(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, oppName$(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, oppScore(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, locIndicator$(I)
+    Next
+
+    For I = 0 To 1
+        For I1 = 1 To MAX_SCHED_STATS
+            Print #2, powerRating(I, I1)
+        Next
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, gameAttendance&(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, gameSite$(I)
+    Next
+
+    Close #2
 
 End Sub
 

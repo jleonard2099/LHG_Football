@@ -1417,15 +1417,16 @@ Sub FOOTBALL ()
     '   2 = PC vs. PC
 
     For I = 0 To 1:
-        'If disk ID has alpha-char, or
-        'we only have 2 digits, then
-        'use the year from the team data
-        If CheckString%(diskIDs$(I)) = 1 Or Len(diskIDs$(I)) <= 2 Then
+        'If disk ID has alpha-char, or is only 3 characters,
+        'then assume the year is the first 2 chars
+        If CheckString%(diskIDs$(I)) = 1 Or Len(diskIDs$(I)) <= 3 Then
             teamYears(I) = GetTeamYear%(Left$(gameTeams$(I), 2))
         Else
-            'Just use the disk ID since we should have 4 digits
+            'If we have 4 or more characters,
+            'then Val will return the first 4 digits
             teamYears(I) = Val(RTrim$(diskIDs$(I)))
         End If
+
     Next I
 
     'If (leagRat_GAME(P1, 7)/100 > 65)
@@ -1501,6 +1502,7 @@ Sub FOOTBALL ()
             Next
 
     End Select
+
 
     'Determine attendance
     ' ** In the future, we could break this up
@@ -19035,42 +19037,7 @@ Sub COMPILESTATFILES (teamIdx)
     powerRating(0, numberGames) = teamRat_GAME(teamIdx, 4)
     powerRating(1, numberGames) = teamRat_GAME(1 - teamIdx, 4)
 
-    'Write stats to new file
-    Open diskPaths$(1) + statFile$ + "S" For Output As #4
-
-    Print #4, numberGames
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, teamScore(I)
-    Next
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, oppName$(I)
-    Next
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, oppScore(I)
-    Next
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, locIndicator$(I)
-    Next
-
-    For I = 0 To 1
-        For I1 = 1 To MAX_SCHED_STATS
-            Print #4, powerRating(I, I1)
-        Next
-    Next
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, gameAttendance&(I)
-    Next
-
-    For I = 1 To MAX_SCHED_STATS:
-        Print #4, gameSite$(I)
-    Next
-
-    Close #4
+    Call SaveScheduleStats(statFile$, numberGames)
 
     Erase oppScore, powerRating
     Erase teamScore

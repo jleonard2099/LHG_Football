@@ -14,7 +14,7 @@ Sub CompileNatlOrg ()
 
     Shared indRecords!(), totalTeamVal!(), leaderVal!()
     Shared natLdrVal!(), natLdrTotVal!()
-    Shared divWins!(), divLosses!(), divTies!(), offTotals!()
+    Shared divWins(), divLosses(), divTies(), offTotals!()
     Shared pollRatings!(), leagPtsAgnst!(), leagPtsFor!(), teamRecords!()
 
     Shared statFilesComp$(), leaderName$(), leaderTeam$()
@@ -106,7 +106,7 @@ Sub CompileNatlOrg ()
                 Cls
 
                 Erase totalTeamVal!, leaderVal!
-                Erase divWins!, divLosses!, divTies!
+                Erase divWins, divLosses, divTies
                 Erase leagPtsFor!, leagPtsAgnst!
 
                 For X = 1 To 60
@@ -189,20 +189,20 @@ Sub CompileNatlOrg ()
 
                                         If statFilesComp$(X) = WT$ Then
 
-                                            If divWins!(X) = fullWins And divLosses!(X) = fullLosses And divTies!(X) = fullTies Then
+                                            If divWins(X) = fullWins And divLosses(X) = fullLosses And divTies(X) = fullTies Then
 
                                                 nonConfGame = 1
                                                 Exit For
 
                                             Else
 
-                                                divWins!(X) = fullWins
-                                                divLosses!(X) = fullLosses
-                                                divTies!(X) = fullTies
+                                                divWins(X) = fullWins
+                                                divLosses(X) = fullLosses
+                                                divTies(X) = fullTies
 
-                                                divWins!(X + 30) = confWins
-                                                divLosses!(X + 30) = confLosses
-                                                divTies!(X + 30) = confTies
+                                                divWins(X + 30) = confWins
+                                                divLosses(X + 30) = confLosses
+                                                divTies(X + 30) = confTies
 
                                                 leagPtsFor!(X + 30) = confPtsFor
                                                 leagPtsAgnst!(X + 30) = confPtsAgnst
@@ -1352,7 +1352,7 @@ Sub PostLeadersOrg (organization$, NRT)
     Shared pollTeam$()
 
     Shared natLdrVal!(), natLdrTotVal!()
-    Shared divWins!(), divLosses!(), divTies!()
+    Shared divWins(), divLosses(), divTies()
     Shared leagPtsAgnst!(), leagPtsFor!(), pollRatings!()
 
     Cls
@@ -1362,7 +1362,7 @@ Sub PostLeadersOrg (organization$, NRT)
     Print "POSTING "; organization$; " LEADERS"
 
     For X = 1 To 60:
-        Write #1, statFilesComp$(X), divWins!(X), divLosses!(X), divTies!(X), leagPtsFor!(X), leagPtsAgnst!(X)
+        Write #1, statFilesComp$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
     Next
 
     For X = 1 To 240

@@ -19,7 +19,7 @@ Sub NEWLDR (statType)
     Shared lastLoseStreak(), lastWinStreak()
     Shared teamLoseStreak(), teamWinStreak()
     Shared totHomeLosses(), totHomeWins(), totHomeTies()
-    Shared totRoadLosses(), totRoadWins(), totRoadTies()
+    Shared totAwayLosses(), totAwayWins(), totAwayTies()
     Shared totNeutralLosses(), totNeutralWins(), totNeutralTies()
     Shared totTeamLosses(), totTeamWins(), totTeamTies()
 
@@ -128,7 +128,7 @@ Sub NEWLDR (statType)
                                 Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
                                 For I = 1 To TEAM_LIMIT
-                                    Input #2, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totRoadWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totRoadLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totRoadTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
+                                    Input #2, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totAwayWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totAwayLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totAwayTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
                                 Next
 
                             Else

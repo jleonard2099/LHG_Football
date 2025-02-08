@@ -181,13 +181,10 @@ Dim expLdrVal!(480)
 
 'For Expanded Standings
 Dim teamLoseStreak(40), teamWinStreak(40)
+Dim lastLoseStreak(40), lastWinStreak(40)
+Dim totNeutralLosses(40), totNeutralWins(40), totNeutralTies(40)
 Dim totTeamLosses(40), totTeamWins(40), totTeamTies(40)
 
-Dim totHomeLosses(40), totHomeWins(40), totHomeTies(40)
-Dim totRoadLosses(40), totRoadWins(40), totRoadTies(40)
-Dim totNeutralLosses(40), totNeutralWins(40), totNeutralTies(40)
-
-Dim lastLoseStreak(40), lastWinStreak(40)
 
 Dim expStdLeagName$(40)
 
@@ -316,29 +313,29 @@ Dim divisionNames$(4), divisionNames_2nd$(4)
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
-Dim awayLosses!(30), awayLosses_2nd!(30)
-Dim awayTies!(30), awayTies_2nd!(30)
-Dim awayWins!(30), awayWins_2nd!(30)
+Dim awayLosses(30), awayLosses_2nd!(30)
+Dim awayTies(30), awayTies_2nd!(30)
+Dim awayWins(30), awayWins_2nd!(30)
 Dim awayScoreTeam!(100), awayScoreTeam_2nd!(100)
 Dim awayScoreOpp!(100), awayScoreOpp_2nd!(100)
 
-Dim homeLosses!(30), homeLosses_2nd!(30)
-Dim homeTies!(30), homeTies_2nd!(30)
-Dim homeWins!(30), homeWins_2nd!(30)
+Dim homeLosses(30), homeLosses_2nd!(30)
+Dim homeTies(30), homeTies_2nd!(30)
+Dim homeWins(30), homeWins_2nd!(30)
 Dim homeScoreTeam!(100), homeScoreTeam_2nd!(100)
 Dim homeScoreOpp!(100), homeScoreOpp_2nd!(100)
 
-Dim totHomeLosses!(4), totHomeLosses_2nd!(4)
-Dim totHomeTies!(4), totHomeTies_2nd!(4)
-Dim totHomeWins!(4), totHomeWins_2nd!(4)
-Dim totHomeScoreTeam!(4), totHomeScoreTeam_2nd!(4)
-Dim totHomeScoreOpp!(4), totHomeScoreOpp_2nd!(4)
+Dim totHomeLosses(40), totHomeLosses_2nd!(40)
+Dim totHomeTies(40), totHomeTies_2nd!(40)
+Dim totHomeWins(40), totHomeWins_2nd!(40)
+Dim totHomeScoreTeam!(40), totHomeScoreTeam_2nd!(40)
+Dim totHomeScoreOpp!(40), totHomeScoreOpp_2nd!(40)
 
-Dim totAwayLosses!(4), totAwayLosses_2nd!(4)
-Dim totAwayTies!(4), totAwayTies_2nd!(4)
-Dim totAwayWins!(4), totAwayWins_2nd!(4)
-Dim totAwayScoreTeam!(4), totAwayScoreTeam_2nd!(4)
-Dim totAwayScoreOpp!(4), totAwayScoreOpp_2nd!(4)
+Dim totAwayLosses(40), totAwayLosses_2nd!(40)
+Dim totAwayTies(40), totAwayTies_2nd!(40)
+Dim totAwayWins(40), totAwayWins_2nd!(40)
+Dim totAwayScoreTeam!(40), totAwayScoreTeam_2nd!(40)
+Dim totAwayScoreOpp!(40), totAwayScoreOpp_2nd!(40)
 
 
 '----------------------------------------
@@ -366,7 +363,7 @@ Dim ratingsQB!(0 To 3, 10)
 ' Used in SEExxx routines
 '----------------------------------------
 Dim leaderVal1!(240), leaderVal2!(240)
-Dim divLosses!(60), divTies!(60), divWins!(60)
+Dim divLosses(60), divTies(60), divWins(60)
 
 Dim divTeamNames$(60), leagRecText$(60)
 Dim pollLdrTeams$(1200)
@@ -433,7 +430,7 @@ Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToSco
 
 Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam
-DIm Shared intChance, loseDown
+Dim Shared intChance, loseDown
 Dim Shared rushEra, scoreX0, scoreX1
 Dim Shared YF
 

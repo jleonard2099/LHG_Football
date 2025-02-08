@@ -497,12 +497,12 @@ Sub NewSchedule (scheduleFile$)
 
                     T1 = scheduleNG%(X, 0)
                     YN$ = scheduleYN$(X, 0)
-                    Call ReadTeam(YN$, team$, T1, validData)
+                    Call ReadTeam(YN$, team$, T1)
                     scheduleV$(X) = team$
 
                     T1 = scheduleNG%(X, 1)
                     YN$ = scheduleYN$(X, 1)
-                    Call ReadTeam(YN$, team$, T1, validData)
+                    Call ReadTeam(YN$, team$, T1)
                     scheduleH$(X) = team$
 
                     'Game number
