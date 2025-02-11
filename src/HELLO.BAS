@@ -773,18 +773,18 @@ Sub Replay_Menu ()
 
         Call TITLE
 
-        ReDim menuChoices$(1 To 4)
+        ReDim menuChoices$(1 To 5)
 
         menuChoices$(1) = "VIEW / PRINT COMPILED STATS     "
         menuChoices$(2) = "TEAM CAREER OPTIONS             "
         'menuChoices$(3) = "COMPARE REPLAY STATS TO ACTUAL  "
-        'menuChoices$(4) = "MODIFY REPLAY STATS             "
-        menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES"
-        menuChoices$(4) = "RETURN TO MAIN MENU             "
+        menuChoices$(3) = "MODIFY REPLAY STATS             "
+        menuChoices$(4) = "MERGE SEPARATE STATISTICAL FILES"
+        menuChoices$(5) = "RETURN TO MAIN MENU             "
         SELECTION% = 1
-        Count% = 4
+        Count% = 5
         Start% = 1
-        ExitCode% = 4
+        ExitCode% = 5
         FileFGColor = 15: FileBGColor = 1
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
         Spacing% = 1
@@ -809,18 +809,21 @@ Sub Replay_Menu ()
 
                 Case 2:
                     Call CAREER
-
-                Case 3:
-                    Call MERGE
+                    
+                Case 3
+                    Call EditStats
 
                 Case 4:
+                    Call MERGE
+
+                Case 5:
                     '
 
             End Select
 
         End If
 
-    Loop Until SELECTION% = 4 Or ExitCode% = 27
+    Loop Until SELECTION% = 5 Or ExitCode% = 27
 
 End Sub
 
@@ -17355,12 +17358,18 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     Print #1,
 
     Print #1, Tab(20); "Q1 Q2 Q3 Q4 ";
-    If quarter > 4 Then
-        For I1 = 5 To quarter
-            Print #1, "OT ";
-        Next
+    
+    If quarter = 5 Then
+        Print #1, "OT ";
+    Else
+        If quarter > 5 Then
+            For X = 5 To quarter
+                'OT1, OT2, OT3
+                Print #1, Using "OT# "; (X - 4);
+            Next X
+        End If
     End If
-
+    
     Print #1, "- GAME"
 
     'Score summary

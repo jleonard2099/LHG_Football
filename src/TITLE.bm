@@ -161,7 +161,7 @@ Sub TITLE_SCHEDULER ()
 End Sub
 
 '----------------------------------------
-'      TITLE_STATS Subroutine
+'         TITLE_STATS Subroutine
 '----------------------------------------
 ' Displays window title / game copyright
 Sub TITLE_STATS ()

@@ -42,7 +42,7 @@ Sub EditStats ()
 
             Select Case SELECTION%
 
-                Case 1, 2: 
+                Case 1, 2:
                     Call EditStatsSchedules(SELECTION%)
 
             End Select
@@ -118,7 +118,7 @@ Sub ModifyTeamStats (statFile$)
 
     Shared statsLRec$(), statsLFG$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$(), statsLPR$()
 
-    Call ReadTeamStats (teamName$, statFile$)
+    Call ReadTeamStats(teamName$, statFile$)
 
     '---------------
     ' Calcuations
@@ -922,7 +922,7 @@ Sub ModifyTeamStats (statFile$)
     statsTeam!(14) = sackStats!(0, 1)
     statsOpp!(13) = sackStats!(1, 0)
     statsOpp!(14) = sackStats!(1, 1)
-    
+
 
     '---------------
     ' Save Edits
@@ -1039,8 +1039,8 @@ End Sub
 '       ChangeScheduleStats Subroutine
 '----------------------------------------
 'This subroutine inputs stats from the
-'chosen Stat Schedule file and then gives 
-'the user an interface for modifying the 
+'chosen Stat Schedule file and then gives
+'the user an interface for modifying the
 'schedule results.
 Sub ChangeScheduleStats (teamName$)
 
@@ -1053,9 +1053,7 @@ Sub ChangeScheduleStats (teamName$)
 
     Shared leagPtsAgnst!(), leagPtsFor!()
 
-    statsFile$ = diskPaths$(1) + teamName$ + "S"
-
-    If Not _FileExists(statsFile$) Then
+    If Not _FileExists(diskPaths$(1) + teamName$ + "S") Then
 
         MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
         BoxWidth = 24
@@ -1067,55 +1065,74 @@ Sub ChangeScheduleStats (teamName$)
 
     Else
 
-        Call ReadScheduleStats (statsFile$, null, nbrGames)
-
-        Cls
+        Call ReadScheduleStats(teamName$, null, nbrGames)
 
         Do
 
-            Locate 1, 1: Print "1. SCORE FOR  "; teamName$; " "; homeScore
-            Locate 2, 1: Print "2. OPPONENT'S NAME  "; oppTeam$
-            Locate 3, 1: Print "3. OPPONENT'S SCORE "; oppPts
-            Locate 4, 1: Print "4. (H)OME, (A)WAY OR (X)NEUTRAL  "; homeOrAway$
+            Color 15, 0
+            Cls
+
+            X$ = "TEAM SCHEDULE STATS"
+            Call TITLE_STAT_HEADER(X$)
+
+            homeScore = 0
+            oppTeam$ = ""
+            oppPts = 0
+            homeOrAway$ = ""
+            attendance& = 0
+            site$ = ""
 
             Do
-                Locate 9, 1: Print "ENTER # TO CHANGE (1-7) OR 0 TO CONTINUE"
-                J$ = GetKeyPress$
-                D = Val(J$)
+
+                Locate 2, 1: Print "1. SCORE FOR "; teamName$; "  "; homeScore
+                Locate 3, 1: Print "2. OPPONENT'S NAME  "; oppTeam$
+                Locate 4, 1: Print "3. OPPONENT'S SCORE  "; oppPts
+                Locate 5, 1: Print "4. (H)OME, (A)WAY OR (N)EUTRAL  "; homeOrAway$
+                Locate 6, 1: Print "5. ATTENDANCE  "; attendance&
+                Locate 7, 1: Print "6. GAME SITE  "; site$
+
+                Do
+                    Locate 9, 1: Print "ENTER # TO CHANGE (1-4) OR 0 TO CONTINUE"
+                    J$ = GetKeyPress$
+                    D = Val(J$)
+                Loop Until D >= 0 And D <= 6
 
                 Select Case D
 
                     Case 1:
-                        Locate 1, 1: Input "1. SCORE FOR"; teamName$
-                        Locate 1, 13: Print " "
+                        Locate 2, 1: Print "1. SCORE FOR "; teamName$; " ";
+                        Input homeScore
+                        Locate 2, 13 + Len(teamName$): Print " "
 
                     Case 2:
-                        Locate 2, 1: Input "2. OPPONENT'S NAME"; oppTeam$
-                        Locate 2, 19: Print " "
+                        Locate 3, 1: Input "2. OPPONENT'S NAME"; oppTeam$
+                        Locate 3, 20: Print " "
 
                     Case 3:
-                        Locate 3, 20: Print Space$(10)
-                        Locate 3, 1: Input "3. OPPONENT'S SCORE"; oppPts
-                        Locate 3, 20: Print " "
+                        Locate 4, 21: Print Space$(10)
+                        Locate 4, 1: Input "3. OPPONENT'S SCORE "; oppPts
+                        Locate 4, 21: Print " "
 
                     Case 4:
                         Do
-                            Locate 4, 1: Input "4. (H)OME, (A)WAY OR (X)NEUTRAL"; homeOrAway$
-                            Locate 4, 32: Print " "
-                        Loop Until homeOrAway$ = "A" Or homeOrAway$ = "H" Or homeOrAway$ = "X"
+                            Locate 5, 1: Input "4. (H)OME, (A)WAY OR (N)EUTRAL"; homeOrAway$
+                            Locate 5, 31: Print " "
+                        Loop Until homeOrAway$ = "A" Or homeOrAway$ = "H" Or homeOrAway$ = "N"
 
                     Case 5:
-                        Locate 5, 1: Input "5. ATTENDANCE"; attendance&
-                        Locate 5, 14: Print " "
+                        Locate 6, 15: Print Space$(10)
+                        Locate 6, 1: Input "5. ATTENDANCE "; attendance&
+                        Locate 6, 15: Print " "
 
                     Case 6:
-                        Locate 6, 1: Input "6. SITE"; site$
-                        Locate 6, 8: Print " "
+                        Locate 7, 1: Input "6. GAME SITE"; site$
+                        Locate 7, 13: Print " "
 
                 End Select
 
-            Loop Until D >= 0 And D <= 6
+            Loop Until D = 0
 
+            If homeOrAway$ = "N" Then homeOrAway$ = "X"
             nbrGames = nbrGames + 1
             teamScore(nbrGames) = homeScore
             oppName$(nbrGames) = oppTeam$
@@ -1125,13 +1142,14 @@ Sub ChangeScheduleStats (teamName$)
             gameSite$(nbrGames) = site$
 
             Do
+                Locate 11, 1
                 Print "ADD ANOTHER GAME? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
         Loop Until UCase$(I$) = "N"
 
-        Call SaveScheduleStats (statsFile$, nbrGames)
+        Call SaveScheduleStats(teamName$, nbrGames)
 
         Cls
 
