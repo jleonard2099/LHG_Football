@@ -13466,6 +13466,7 @@ Sub TimeoutCalled (teamIdx, periodOver)
 
     pbpString$ = "TIME OUT " + gameTeams$(teamIdx) + " - THEY HAVE" + Str$(timeouts(teamIdx) - 1) + " REMAINING"
     Call PBP
+
     timeouts(teamIdx) = timeouts(teamIdx) - 1
     playSegment = 9
 
@@ -19016,27 +19017,30 @@ Sub COMPILESTATFILES (teamIdx)
         numberGames = numberGames + 1
     End If
 
-    If gameLoc = teamIdx Then
-        If periodNbr > 4 Then
-            locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
-        Else
-            locIndicator$(numberGames) = "H"
-        End If
-    Else
-        If periodNbr > 4 Then
-            locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
-        Else
-            locIndicator$(numberGames) = "A"
-        End If
-    End If
+    Select Case gameLoc
 
-    If gameLoc = 2 Then
-        If periodNbr > 4 Then
-            locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
-        Else
-            locIndicator$(numberGames) = "X"
-        End If
-    End If
+        Case 2
+            If periodNbr > 4 Then
+                locIndicator$(numberGames) = "X-" + Str$(periodNbr - 4) + " OT"
+            Else
+                locIndicator$(numberGames) = "X"
+            End If
+
+        Case teamIdx
+            If periodNbr > 4 Then
+                locIndicator$(numberGames) = "H-" + Str$(periodNbr - 4) + " OT"
+            Else
+                locIndicator$(numberGames) = "H"
+            End If
+
+        Case (1 -teamIdx)
+            If periodNbr > 4 Then
+                locIndicator$(numberGames) = "A-" + Str$(periodNbr - 4) + " OT"
+            Else
+                locIndicator$(numberGames) = "A"
+            End If
+
+    End Select
 
     teamScore(numberGames) = score(teamIdx, 0)
     oppName$(numberGames) = gameTeams$(1 - teamIdx)

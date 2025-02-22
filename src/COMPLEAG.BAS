@@ -699,10 +699,6 @@ Sub CalcStatLeaders (numberGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(8, 1) = teamName$
             End If
 
-            If compWR$(X) = "HENSON" Or compWR$(X) = "MYERS" Then
-                test0 = 0
-            End If
-
             If statsLRec!(X - 1) > indRecords!(9) Then
                 'Longest Catch
                 indRecords!(9) = statsLRec!(X - 1)
