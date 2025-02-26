@@ -385,7 +385,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-Dim Shared D, dLine
+'Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
@@ -400,8 +400,8 @@ Dim Shared kickYL!
 
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
-Dim Shared playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared playerMode, playerOpt, playType
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -425,8 +425,8 @@ Dim Shared WE, WS, winTeam
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+'Dim Shared ydsToFirst As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam
