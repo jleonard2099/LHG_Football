@@ -122,12 +122,12 @@ Sub CompileCollege ()
                 'Look for * as terminating char
                 If memberName$(XW) <> Chr$(42) Then
 
-                    haveStats = FindStatsCon%(XW, memberName$(XW), numberGames)
+                    haveStats = FindStatsCon%(XW, memberName$(XW), totalGames)
 
                     If (haveStats) Then
 
                         statName$ = memberName$(XW)
-                        nonConfGame = 0
+                        sameTeam = 0
 
                         For X = 1 To TEAMS_PER_CONFERENCE
 
@@ -135,7 +135,7 @@ Sub CompileCollege ()
 
                                 If divWins(X) = fullWins And divLosses(X) = fullLosses And divTies(X) = fullTies Then
 
-                                    nonConfGame = 1
+                                    sameTeam = 1
                                     Exit For
 
                                 Else
@@ -158,11 +158,11 @@ Sub CompileCollege ()
 
                         Next X
 
-                        If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
+                        If sameTeam = 0 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                            Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 0)
-                            Call CalcStatTotalsConf(numberGames, TM$, statName$, finalUpdate$)
-                            Call CalcStatLeaders(numberGames, TM$, statName$, finalUpdate$)
+                            Call ReadStatsLeaders(memberName$(XW), totalGames, TM$, 0)
+                            Call CalcStatTotalsConf(totalGames, TM$, statName$, finalUpdate$)
+                            Call CalcStatLeaders(totalGames, TM$, statName$, finalUpdate$)
 
                         End If
 
@@ -189,7 +189,7 @@ End Sub
 'Looks for schedule stats for a specified
 'team in the conference and loads them if
 'found, notifying the user
-Function FindStatsCon% (XW, statFile$, numberGames)
+Function FindStatsCon% (XW, statFile$, totalGames)
 
     Shared oppScore(), teamScore()
 
@@ -205,7 +205,7 @@ Function FindStatsCon% (XW, statFile$, numberGames)
 
     Else
 
-        Call ReadScheduleStats(statFile$, XW, numberGames)
+        Call ReadScheduleStats(statFile$, XW, totalGames)
 
         confWins = 0
         confLosses = 0
@@ -219,35 +219,21 @@ Function FindStatsCon% (XW, statFile$, numberGames)
         confPtsFor = 0
 
         'RATINGS
-        For I = 1 To numberGames
+        For I = 1 To totalGames
 
             statName$ = nameStatFile$(oppName$(I))
-            nonConfGame = 0
+            confGame = 0
 
             For EC = 1 To TEAMS_PER_CONFERENCE
-                'If team stat file = opponent of a conference game?
+                'If team stats are conference opponent
                 If statName$ = memberName$(EC) Then
-                    nonConfGame = 1
+                    confGame = 1
                     Exit For
                 End If
 
             Next EC
 
-            If nonConfGame <> 1 Then
-
-                If teamScore(I) > oppScore(I) Then
-                    fullWins = fullWins + 1
-                End If
-
-                If teamScore(I) < oppScore(I) Then
-                    fullLosses = fullLosses + 1
-                End If
-
-                If teamScore(I) = oppScore(I) Then
-                    fullTies = fullTies + 1
-                End If
-
-            Else
+            If confGame = 1 Then
 
                 If teamScore(I) > oppScore(I) Then
                     fullWins = fullWins + 1
@@ -266,6 +252,20 @@ Function FindStatsCon% (XW, statFile$, numberGames)
 
                 confPtsFor = confPtsFor + teamScore(I)
                 confPtsAgnst = confPtsAgnst + oppScore(I)
+
+            Else
+
+                If teamScore(I) > oppScore(I) Then
+                    fullWins = fullWins + 1
+                End If
+
+                If teamScore(I) < oppScore(I) Then
+                    fullLosses = fullLosses + 1
+                End If
+
+                If teamScore(I) = oppScore(I) Then
+                    fullTies = fullTies + 1
+                End If
 
             End If
 
@@ -297,7 +297,7 @@ End Function
 'This subroutine compares all pre-loaded
 'stats to each of the record categories to
 'see if any should be updated
-Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
+Sub CalcStatTotalsConf (totalGames, teamName$, statName$, finalUpdate$)
 
     Shared fumbGain
 
@@ -313,8 +313,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 1 - TOTAL OFFENSE
     CA = 1
 
-    If UCase$(finalUpdate$) = "Y" And (offTotals!(6) + offTotals!(2)) / numberGames > teamRecords!(0) Then
-        teamRecords!(0) = (offTotals!(6) + offTotals!(2)) / numberGames
+    If UCase$(finalUpdate$) = "Y" And (offTotals!(6) + offTotals!(2)) / totalGames > teamRecords!(0) Then
+        teamRecords!(0) = (offTotals!(6) + offTotals!(2)) / totalGames
         teamRecDesc$(0) = teamName$
     End If
 
@@ -328,13 +328,13 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(2) = teamName$
     End If
 
-    If (offTotals!(6) + offTotals!(2)) / numberGames > totalTeamVal!(CA, 20, 5) Then
+    If (offTotals!(6) + offTotals!(2)) / totalGames > totalTeamVal!(CA, 20, 5) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = offTotals!(1) + offTotals!(3)
         totalTeamVal!(CA, 20, 3) = offTotals!(6) + offTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
-        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -353,8 +353,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames < teamRecords!(25) Then
-        teamRecords!(25) = (defTotals!(6) + defTotals!(2)) / numberGames
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / totalGames < teamRecords!(25) Then
+        teamRecords!(25) = (defTotals!(6) + defTotals!(2)) / totalGames
         teamRecDesc$(25) = teamName$
     End If
 
@@ -368,14 +368,14 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(27) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / numberGames > teamRecords!(28) Then
-        teamRecords!(28) = (defTotals!(6) + defTotals!(2)) / numberGames
+    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2)) / totalGames > teamRecords!(28) Then
+        teamRecords!(28) = (defTotals!(6) + defTotals!(2)) / totalGames
         teamRecDesc$(28) = teamName$
     End If
 
-    If (defTotals!(6) + defTotals!(2)) / numberGames < totalTeamVal!(CA, 20, 5) Then
+    If (defTotals!(6) + defTotals!(2)) / totalGames < totalTeamVal!(CA, 20, 5) Then
         'Games
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         'Plays
         totalTeamVal!(CA, 20, 2) = defTotals!(1) + defTotals!(3)
         'Yds
@@ -383,7 +383,7 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         'Avg Yds / Gm
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         'Yds / Gm
-        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -402,8 +402,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 3 - RUSHING OFFENSE
     CA = 3
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(2) / numberGames > teamRecords!(3) Then
-        teamRecords!(3) = offTotals!(2) / numberGames
+    If UCase$(finalUpdate$) = "Y" And offTotals!(2) / totalGames > teamRecords!(3) Then
+        teamRecords!(3) = offTotals!(2) / totalGames
         teamRecDesc$(3) = teamName$
     End If
 
@@ -417,13 +417,13 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(5) = teamName$
     End If
 
-    If offTotals!(2) / numberGames > totalTeamVal!(CA, 20, 5) Then
+    If offTotals!(2) / totalGames > totalTeamVal!(CA, 20, 5) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = offTotals!(1)
         totalTeamVal!(CA, 20, 3) = offTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
-        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -442,8 +442,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(2) / numberGames < teamRecords!(29) Then
-        teamRecords!(29) = defTotals!(2) / numberGames
+    If UCase$(finalUpdate$) = "Y" And defTotals!(2) / totalGames < teamRecords!(29) Then
+        teamRecords!(29) = defTotals!(2) / totalGames
         teamRecDesc$(29) = teamName$
     End If
 
@@ -457,13 +457,13 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(31) = teamName$
     End If
 
-    If defTotals!(2) / numberGames < totalTeamVal!(CA, 20, 5) Then
+    If defTotals!(2) / totalGames < totalTeamVal!(CA, 20, 5) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = defTotals!(1)
         totalTeamVal!(CA, 20, 3) = defTotals!(2)
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
-        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / numberGames
+        totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -484,13 +484,13 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     PTS = 0
     OPTS = 0
 
-    For I = 1 To numberGames
+    For I = 1 To totalGames
         PTS = PTS + teamScore(I)
         OPTS = OPTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(13) Then
-        teamRecords!(13) = PTS / numberGames
+    If UCase$(finalUpdate$) = "Y" And PTS / totalGames > teamRecords!(13) Then
+        teamRecords!(13) = PTS / totalGames
         teamRecDesc$(13) = teamName$
     End If
 
@@ -499,16 +499,16 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(12) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / numberGames > teamRecords!(14) Then
-        teamRecords!(14) = (PTS - OPTS) / numberGames
+    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / totalGames > teamRecords!(14) Then
+        teamRecords!(14) = (PTS - OPTS) / totalGames
         teamRecDesc$(14) = teamName$
     End If
 
-    If PTS / numberGames > totalTeamVal!(CA, 20, 3) Then
+    If PTS / totalGames > totalTeamVal!(CA, 20, 3) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = PTS
-        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
+        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -528,12 +528,12 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     CA = 6
     PTS = 0
 
-    For I = 1 To numberGames
+    For I = 1 To totalGames
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames < teamRecords!(39) Then
-        teamRecords!(39) = PTS / numberGames
+    If UCase$(finalUpdate$) = "Y" And PTS / totalGames < teamRecords!(39) Then
+        teamRecords!(39) = PTS / totalGames
         teamRecDesc$(39) = teamName$
     End If
 
@@ -542,8 +542,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(38) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And PTS / numberGames > teamRecords!(41) Then
-        teamRecords!(41) = PTS / numberGames
+    If UCase$(finalUpdate$) = "Y" And PTS / totalGames > teamRecords!(41) Then
+        teamRecords!(41) = PTS / totalGames
         teamRecDesc$(41) = teamName$
     End If
 
@@ -552,11 +552,11 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(40) = teamName$
     End If
 
-    If PTS / numberGames < totalTeamVal!(CA, 20, 3) Then
+    If PTS / totalGames < totalTeamVal!(CA, 20, 3) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = PTS
-        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / numberGames
+        totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -577,8 +577,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 7 - PASSING OFFENSE
     CA = 7
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / numberGames > teamRecords!(6) Then
-        teamRecords!(6) = offTotals!(6) / numberGames
+    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / totalGames > teamRecords!(6) Then
+        teamRecords!(6) = offTotals!(6) / totalGames
         teamRecDesc$(6) = teamName$
     End If
 
@@ -607,16 +607,16 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(11) = teamName$
     End If
 
-    If offTotals!(6) / numberGames > totalTeamVal!(CA, 20, 8) Then
+    If offTotals!(6) / totalGames > totalTeamVal!(CA, 20, 8) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = offTotals!(3)
         totalTeamVal!(CA, 20, 3) = offTotals!(4)
         totalTeamVal!(CA, 20, 4) = offTotals!(5)
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         totalTeamVal!(CA, 20, 6) = offTotals!(6)
         totalTeamVal!(CA, 20, 7) = offTotals!(6) / offTotals!(3)
-        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
+        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -635,8 +635,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / numberGames < teamRecords!(32) Then
-        teamRecords!(32) = defTotals!(6) / numberGames
+    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / totalGames < teamRecords!(32) Then
+        teamRecords!(32) = defTotals!(6) / totalGames
         teamRecDesc$(32) = teamName$
     End If
 
@@ -665,16 +665,16 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(37) = teamName$
     End If
 
-    If defTotals!(6) / numberGames < totalTeamVal!(CA, 20, 8) Then
+    If defTotals!(6) / totalGames < totalTeamVal!(CA, 20, 8) Then
 
-        totalTeamVal!(CA, 20, 1) = numberGames
+        totalTeamVal!(CA, 20, 1) = totalGames
         totalTeamVal!(CA, 20, 2) = defTotals!(3)
         totalTeamVal!(CA, 20, 3) = defTotals!(4)
         totalTeamVal!(CA, 20, 4) = defTotals!(5)
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
         totalTeamVal!(CA, 20, 6) = defTotals!(6)
         totalTeamVal!(CA, 20, 7) = defTotals!(6) / defTotals!(3)
-        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / numberGames
+        totalTeamVal!(CA, 20, 8) = totalTeamVal!(CA, 20, 6) / totalGames
         totalTeamName$(CA, 20) = statName$
 
         For Z = 1 To 19
@@ -724,8 +724,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     fumbLost = defTotals!(9) + offTotals!(10) - defTotals!(10)
     intGain = defTotals!(5)
     intLost = offTotals!(5)
-    toMargin! = (fumbGain + intGain - fumbLost - intLost) / numberGames
-    'toMargin! = (fumbLost + intLost - fumbGain - intGain) / numberGames
+    toMargin! = (fumbGain + intGain - fumbLost - intLost) / totalGames
+    'toMargin! = (fumbLost + intLost - fumbGain - intGain) / totalGames
 
     If toMargin! > totalTeamVal!(CA, 20, 7) Then
 
@@ -779,8 +779,8 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(18) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(0) / numberGames > teamRecords!(19) Then
-        teamRecords!(19) = offTotals!(0) / numberGames
+    If UCase$(finalUpdate$) = "Y" And offTotals!(0) / totalGames > teamRecords!(19) Then
+        teamRecords!(19) = offTotals!(0) / totalGames
         teamRecDesc$(19) = teamName$
     End If
 
@@ -801,13 +801,13 @@ Sub CalcStatTotalsConf (numberGames, teamName$, statName$, finalUpdate$)
     End If
 
     'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And offTotals!(11) / numberGames > teamRecords!(23) Then
-        teamRecords!(23) = offTotals!(11) / numberGames
+    If UCase$(finalUpdate$) = "Y" And offTotals!(11) / totalGames > teamRecords!(23) Then
+        teamRecords!(23) = offTotals!(11) / totalGames
         teamRecDesc$(23) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(12) / numberGames > teamRecords!(24) Then
-        teamRecords!(24) = offTotals!(12) / numberGames
+    If UCase$(finalUpdate$) = "Y" And offTotals!(12) / totalGames > teamRecords!(24) Then
+        teamRecords!(24) = offTotals!(12) / totalGames
         teamRecDesc$(24) = teamName$
     End If
 

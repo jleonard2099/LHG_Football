@@ -171,7 +171,7 @@ Sub CompileNatlOrg ()
                             'Look for * as terminating char
                             If memberName$(XW) <> Chr$(42) Then
 
-                                haveStats = FindStatsNat%(XW, memberName$(XW), numberGames, NRT)
+                                haveStats = FindStatsNat%(XW, memberName$(XW), totalGames, NRT)
 
                                 If (haveStats) Then
 
@@ -183,7 +183,7 @@ Sub CompileNatlOrg ()
                                         WT$ = WT$ + Chr$(A)
                                     Next X
 
-                                    nonConfGame = 0
+                                    sameTeam = 0
 
                                     For X = 1 To 30
 
@@ -191,7 +191,7 @@ Sub CompileNatlOrg ()
 
                                             If divWins(X) = fullWins And divLosses(X) = fullLosses And divTies(X) = fullTies Then
 
-                                                nonConfGame = 1
+                                                sameTeam = 1
                                                 Exit For
 
                                             Else
@@ -213,13 +213,13 @@ Sub CompileNatlOrg ()
                                         End If
 
                                     Next X
-                                    'alternatively, use a Do / Until loop; nonConfGame = 1 or EC = 30
+                                    'alternatively, use a Do / Until loop; sameTeam = 1 or EC = 30
 
-                                    If nonConfGame <> 1 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
+                                    If sameTeam = 0 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
-                                        Call ReadStatsLeaders(memberName$(XW), numberGames, TM$, 0)
-                                        Call CalcStatTotalsConf(numberGames, TM$, WT$, finalUpdate$)
-                                        Call CalcStatLeaders(numberGames, TM$, WT$, finalUpdate$)
+                                        Call ReadStatsLeaders(memberName$(XW), totalGames, TM$, 0)
+                                        Call CalcStatTotalsConf(totalGames, TM$, WT$, finalUpdate$)
+                                        Call CalcStatLeaders(totalGames, TM$, WT$, finalUpdate$)
 
                                     End If
 
@@ -256,7 +256,7 @@ End Sub
 'Looks for schedule stats for a specified
 'team in the organization and loads them if
 'found, notifying the user
-Function FindStatsNat% (XW, statFile$, numberGames, NRT)
+Function FindStatsNat% (XW, statFile$, totalGames, NRT)
 
     Shared powerRating(), oppScore(), teamScore()
 
@@ -275,7 +275,7 @@ Function FindStatsNat% (XW, statFile$, numberGames, NRT)
 
     Else
 
-        Call ReadScheduleStats(statFile$, XW, numberGames)
+        Call ReadScheduleStats(statFile$, XW, totalGames)
 
         confWins = 0
         confLosses = 0
@@ -289,36 +289,22 @@ Function FindStatsNat% (XW, statFile$, numberGames, NRT)
         confPtsFor = 0
 
         'RATINGS
-        For I = 1 To numberGames
+        For I = 1 To totalGames
 
             statName$ = nameStatFile$(oppName$(I))
-            nonConfGame = 0
+            confGame = 0
 
             For EC = 1 To 30
                 'If team stat file = opponent of a conference game?
                 If statName$ = memberName$(EC) Then
-                    nonConfGame = 1
+                    confGame = 1
                     Exit For
                 End If
 
             Next EC
 
-            If nonConfGame <> 1 Then
+            If confGame = 1 Then
                 
-                If teamScore(I) > oppScore(I) Then 
-                    fullWins = fullWins + 1
-                End If
-                
-                If teamScore(I) < oppScore(I) Then 
-                    fullLosses = fullLosses + 1
-                End If
-                
-                If teamScore(I) = oppScore(I) Then 
-                    fullTies = fullTies + 1
-                End If
-            
-            Else
-
                 If teamScore(I) > oppScore(I) Then 
                     fullWins = fullWins + 1
                     confWins = confWins + 1
@@ -337,6 +323,20 @@ Function FindStatsNat% (XW, statFile$, numberGames, NRT)
                 confPtsFor = confPtsFor + teamScore(I)
                 confPtsAgnst = confPtsAgnst + oppScore(I)
 
+            Else
+
+                If teamScore(I) > oppScore(I) Then 
+                    fullWins = fullWins + 1
+                End If
+                
+                If teamScore(I) < oppScore(I) Then 
+                    fullLosses = fullLosses + 1
+                End If
+                
+                If teamScore(I) = oppScore(I) Then 
+                    fullTies = fullTies + 1
+                End If
+            
             End If
 
             EC = 0
@@ -347,17 +347,17 @@ Function FindStatsNat% (XW, statFile$, numberGames, NRT)
         teamPower = 0
         SS = 0
 
-        For I = 1 To numberGames
+        For I = 1 To totalGames
             SS = powerRating(1, I) + SS
         Next
 
-        SS = SS / numberGames
+        SS = SS / totalGames
 
         'INDIVIDUAL GAME POWER RATINGS
         GL = 0
         teamPower = 0
 
-        For I = 1 To numberGames
+        For I = 1 To totalGames
             RAT = teamScore(I) - oppScore(I) + powerRating(1, I)
             If Left$(locIndicator$(I), 1) = "H" Then 
                 RAT = RAT - 3
@@ -368,12 +368,12 @@ Function FindStatsNat% (XW, statFile$, numberGames, NRT)
             teamPower = teamPower + RAT
         Next
 
-        If numberGames <= 4 Then
-            GL = 5 - numberGames
+        If totalGames <= 4 Then
+            GL = 5 - totalGames
             teamPower = teamPower + GL * powerRating(0, 1)
         End If
 
-        teamPower = teamPower / (numberGames + GL)
+        teamPower = teamPower / (totalGames + GL)
         NRT = NRT + 1
         pollTeam$(NRT) = statFile$
         pollRatings!(NRT, 1) = teamPower

@@ -434,7 +434,7 @@ Dim Shared intChance, loseDown
 Dim Shared rushEra, scoreX0, scoreX1
 Dim Shared YF
 
-Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)

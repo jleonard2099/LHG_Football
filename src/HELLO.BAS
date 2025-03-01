@@ -1,7 +1,7 @@
 $Debug
 $Color:32
 
-Const GAME_VERSION$ = "7.1"
+Const GAME_VERSION$ = "7.15"
 Const MAX_SCHEDULE_GAMES = 1500
 Const MAX_TOURNAMENT_GAMES = 200
 Const MAX_TEAMS = 1000
@@ -31,6 +31,7 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared D, dLine
 
@@ -3340,6 +3341,10 @@ Sub FOOTBALL ()
                     If newYdLine! >= 99.94999 Then
                         pbpString$ = pbpString$ + Str$(CInt((100 - ydLine) * 10) / 10)
                     Else
+                        If ydsGained - Int(ydsGained) > 0.800000 Then
+                            'test1 = CInt((ydsGained) * 10)
+                            'test2 = test1 / 10
+                        End If
                         pbpString$ = pbpString$ + Str$(CInt((ydsGained) * 10) / 10)
                     End If
 
@@ -4056,8 +4061,15 @@ Sub FOOTBALL ()
 
             If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
 
-                'Computer will always punt normal
-                puntChoice = 0
+                'Punt away from return man if:
+                'Wind is not AGAINST us AND
+                '  Average >= 10   --OR--
+                '  Team is close to midfield
+                If climate(0) <> D And ((prYdsPerRet(D, puntRetNbr) * 3) >= 12 Or ydLine >= 50) Then
+                    puntChoice = 1
+                Else
+                    puntChoice = 0
+                End If
 
             Else
 
@@ -4107,7 +4119,7 @@ Sub FOOTBALL ()
 
                         Case D
                             ydsGained = ydsGained + Int(Rnd(1) * 7) - 3 + climate(1)
-                            
+
                     End Select
 
                     If (coverage > 6 And kickChance >= 60 And kickChance <= 72) Or (coverage <= 6 And kickChance >= 50 And kickChance <= 56) Then
@@ -4538,7 +4550,6 @@ Sub FOOTBALL ()
 
                 If puntDefChoice = 1 Then
 
-                    'Punt away from returner
                     pbpString$ = "THERE'S A HEAVY RUSH!!!"
                     Call PBP
                     
@@ -4554,31 +4565,30 @@ Sub FOOTBALL ()
                             
                             GoTo HANDLEPENALTY
 
-                        Case Else
-                            pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
-                            Call PBP
-
-                            If d100% <= 10 Then
-                                ydsGained = ydsGained - (Int(Rnd(1) * 11) + 25)
-                                pbpString$ = "HE SHANKS IT!"
-                            Else
-                                ydsGained = ydsGained - (Int(Rnd(1) * 9) + 4)
-                                pbpString$ = "HE KICKS IT TOWARDS THE CORNER"
-                            End If
-
                     End Select
 
-                Else
+                End If
 
-                    pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
-                    Call PBP
+                pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
+                Call PBP
 
-                    If ydsGained < 40 Then
-                        pbpString$ = "HE GETS THE PUNT AWAY"
+                If puntChoice = 1 Then
+                    'Punt away from the return man
+                    '-- should this do more???
+                    If d100% <= 10 Then
+                        ydsGained = ydsGained - (Int(Rnd(1) * 11) + 25)
+                        pbpString$ = "HE SHANKS IT!"
                     Else
-                        Call PUNTPBP
+                        ydsGained = ydsGained - (Int(Rnd(1) * 9) + 4)
+                        pbpString$ = "HE KICKS IT TOWARDS THE CORNER"
                     End If
 
+                End If
+
+                If ydsGained < 40 Then
+                    pbpString$ = "HE GETS THE PUNT AWAY"
+                Else
+                    Call PUNTPBP
                 End If
 
                 Call PBP
@@ -4671,11 +4681,13 @@ Sub FOOTBALL ()
                     End If
 
                     'See if punt can be returned
-                    If (fairCatchZone = 1 And d100% < 85) Or (ydsGained + ydLine >= 90 And puntChance <= 5) Or (ydsGained + ydLine < fairCatchLine And puntChance > 55) Or puntDefChoice = 2 Then
+                    If (puntChoice = 1 And d100% < 50) Or (fairCatchZone = 1 And d100% < 75) Or (ydsGained + ydLine >= 90 And puntChance <= 5) Or (ydsGained + ydLine < fairCatchLine And puntChance > 65) Or puntDefChoice = 2 Then
                         ' ** DO NOT RETURN:
-                        ' - 85% of punts inside the fair catch zone
+                        ' - 50% of pnnts away from return man
+                        ' - 75% of punts inside the fair catch zone
+                        ' --- this was 85
                         ' - 5% of punts inside the 10
-                        ' - 45% of punts outside fair catch zone
+                        ' - 35% of punts outside fair catch zone
                         ' - Punt Safe formation
                         Call PuntNotReturned(fairCatchZone, puntChoice, penOnPlay)
 
@@ -6967,7 +6979,7 @@ Sub FOOTBALL ()
         'Pro Rules or College, 2024+
         If ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(impactTeam) >= 2024) Then
 
-            If gameClock! > 120.01 And quarter <> 1 And quarter <> 3 And Not (gameClock! > 159.99 And playSegment = 0) And Not (gameClock! > 147 And playSegment = 1) And Not (gameClock! > 142 And playSegment = 2) And Not (gameClock! > 137 And playSegment = 3) And Not (gameClock! > 126 And playSegment = 4) And Not (gameClock! > 128 And playSegment = 5) And Not (gameClock! > 130 And playSegment = 6) And Not (gameClock! > 132 And playSegment = 7) Then
+            If gameClock! > 120.01 And (quarter = 2 Or quarter >= 4) And Not (gameClock! > 159.99 And playSegment = 0) And Not (gameClock! > 147 And playSegment = 1) And Not (gameClock! > 142 And playSegment = 2) And Not (gameClock! > 137 And playSegment = 3) And Not (gameClock! > 126 And playSegment = 4) And Not (gameClock! > 128 And playSegment = 5) And Not (gameClock! > 130 And playSegment = 6) And Not (gameClock! > 132 And playSegment = 7) Then
 
                 pbpString$ = "* * * T W O   M I N U T E   W A R N I N G * * *"
                 Call PBP
@@ -6984,17 +6996,20 @@ Sub FOOTBALL ()
 
             End If
 
+            Call DisplayClockDown
+
         End If
 
-        If (gameClock! <= 120 And quarter = 2) Or (gameClock! <= 120 And quarter >= 4) Then
+        If gameClock! <= 120 And (quarter = 2 Or quarter >= 4) Then
 
             If playSegment < 4 Then
 
                 Call CheckGameClock
                 If gameClock! = 0 Then GoTo 3360
-                Call TwoMinMenu(I1)
+                choice = 0
+                Call TwoMinMenu(choice)
 
-                Select Case I1
+                Select Case choice
 
                     Case 1:
                         pbpString$ = "HUDDLE"
@@ -7020,7 +7035,6 @@ Sub FOOTBALL ()
                         End If
 
                     Case 3
-
                         If timeouts(D) = 0 Then
                             'If no timeouts
                             pbpString$ = "HUDDLE"
@@ -7066,8 +7080,6 @@ Sub FOOTBALL ()
                         Call AddPossessionTime(7, 10)
                         Call CheckGameClock
                         If gameClock! = 0 Then GoTo 3360
-
-                        Return 'aka Exit Sub
 
                 End Select
 
@@ -12389,7 +12401,7 @@ Sub ComputerOffense ()
 
         '4th Quarter
         'Offense leading, Defense no timeouts,
-        'Under 2 minutes; time left to kneel each down
+        'Under 2 minutes; time left to take knee each down
         'Teams didn't use victory formation until the 1980s
         If quarter = 4 And timeouts(D) = 0 And score(P1, 0) > score(D, 0) And gameClock! <= 35 * (4 - currDown) And teamYears(P1) >= 1979 Then
 
@@ -13676,6 +13688,8 @@ Sub PuntNotReturned (fairCatchPossible, puntType, isPenalty)
 
     RN1 = Int(Rnd(1) * 4) + 1
 
+    '8% of regular punts  --OR--
+    'Punt away from return man
     If RN0 <= 8 Or puntType = 1 Then
 
         'Out-of-bounds
@@ -13787,8 +13801,9 @@ Sub PuntNotReturned (fairCatchPossible, puntType, isPenalty)
 
         pbpString$ = "A FAIR CATCH IS CALLED AT THE" + yardLineString$ + " YARD LINE"
 
-        If (ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11) Then
-            'Newer rules allow touchback on fair catch
+        If (ruleOptType = 0 And ruleOptColl >= 11) Then
+            '(ruleOptType > 0 And ruleOptPro >= 9)
+            'Newer NCAA rules reward touchback on fair catch
             isTouchback = 1
         End If
 
@@ -14011,7 +14026,7 @@ Sub PuntFakeRunYards (choice)
             successRate(0) = 55
             successRate(1) = 75
             successRate(2) = 45
-                                
+
         Case 6 To 15
             'Medium Yardage
             successRate(0) = 45
@@ -14816,10 +14831,10 @@ Sub AdjustCompPct ()
     'Adjust for pass type
     passTypeCmpAdj = passCovAdj(1, playCall - 8, coverage)
 
-    'Adjust for wind direction NOT in team's favor
     windCmpAdj = 0
 
-    If climate(0) <> P1 Then
+    'Wind direction NOT in offense's favor
+    If climate(0) = D Then
 
         If (playCall = 11 Or playCall = 14 Or playCall = 16 Or playCall = 17 Or playCall = 18) Then
             'Medium Pass
@@ -15071,13 +15086,16 @@ Sub TwoMinMenu (menuChoice)
 
     teamRushPct = leagRat_GAME(P1, 7)
 
-    If pbpDelay > 0 Then
+    'If Not (playerMode = 2 And pbpDelay > 0) Then
+    If pbpDelay! > 0 Then
 
-        Call OPTIONBOX(7)
+        Call OPTIONBOX(6)
 
         Locate 9, 14: Print "1 - HUDDLE"
-        Locate , 14: Print "2 - TIME OUT "; gameTeams$(P1); " "; timeouts(P1)
-        Locate , 14: Print "3 - TIME OUT "; gameTeams$(D); " "; timeouts(D):
+        Locate , 14: Print "2 - TIME OUT "; gameTeams$(P1); " ";
+        Locate , 43: Print timeouts(P1)
+        Locate , 14: Print "3 - TIME OUT "; gameTeams$(D); " ";
+        Locate , 43: Print timeouts(D)
         Locate , 14: Print "4 - HURRY UP OFFENSE"
         Locate , 14: Print "5 - THROW AWAY PASS"
 
@@ -15085,37 +15103,53 @@ Sub TwoMinMenu (menuChoice)
 
     Do
 
+        'We'll get here even at 2 minutes
+        'So we need to check if < 2 mins before
+        'we take any timeouts
         If playerMode > 0 Then
 
             scoreDiff = score(P1, 0) - score(D, 0)
 
             'If computer is on Defense
-            If (playerMode = 1 And D = compTeam Or playerMode = 2) Then
+            If (D = compTeam Or playerMode = 2) Then
 
-                'In 4th quarter, when DEF is down by 2 TD's, take a timeout
-                If scoreDiff > 0 And scoreDiff <= 14 And timeouts(D) > 0 And quarter = 4 Then
+                'If DEF is behind, take a timeout
+                '-- UPDATE to only be after the clock isn't stopped
+                'playSegment <> 4
+                If scoreDiff > 0 And timeouts(D) > 0 And gameClock! < 120 Then
                     menuChoice = 3
                 End If
-                Exit Do
 
             End If
 
-            If (playerMode = 1 And P1 = compTeam Or playerMode = 2) Then
+            'Defense gets priority for TO
+            'This is because we're only checking
+            'When they are behind.
+            If (P1 = compTeam Or playerMode = 2) And menuChoice <> 3 Then
+                'If computer is on Offense
 
                 If quarter = 2 Then
 
-                    If ydLine > 15 And scoreDiff <= 0 Then
+                    '2nd quarter
+
+                    'Offense is ahead
+                    'Outside the 40 and modern era (not mostly rushing)
+                    'No NEED to score, but it will help try.
+                    'Since it takes a few plays, timeout will help get there
+                    If scoreDiff >= 0 And ydLine > 40 And teamRushPct < 65 Then
                         If timeouts(P1) > 0 Then
-                            menuChoice = 2
+                            If gameClock! < 120 Then menuChoice = 2
                         Else
                             menuChoice = 4
                         End If
                         Exit Do
                     End If
 
-                    If ydLine > 40 And teamRushPct < 65 And scoreDiff >= 0 Then
+                    'Offense is behind and outside the 15
+                    '(which would be easy field goal range or med/long pass)
+                    If scoreDiff <= 0 And ydLine > 15 Then
                         If timeouts(P1) > 0 Then
-                            menuChoice = 2
+                            If gameClock! < 120 Then menuChoice = 2
                         Else
                             menuChoice = 4
                         End If
@@ -15124,9 +15158,15 @@ Sub TwoMinMenu (menuChoice)
 
                 Else
 
+                    '4th quarter
+
+                    'Offense is behind by 2 scores
+                    'They NEED to score fast
+                    '-- UPDATE to only be if clock isn't stopped
+                    'playSegment <> 4
                     If scoreDiff <= 0 And scoreDiff >= -14 Then
                         If timeouts(P1) > 0 Then
-                            menuChoice = 2
+                            If gameClock! < 120 Then menuChoice = 2
                         Else
                             menuChoice = 4
                         End If
@@ -15137,18 +15177,15 @@ Sub TwoMinMenu (menuChoice)
 
             End If
 
-            'We should only get here if no other
-            'options were chosen by the above logic
-            If playerMode = 2 Then
-                menuChoice = 1
-            End If
-
         End If
 
-        Do
-            I$ = GetKeyPress$
-            menuChoice = Val(I$)
-        Loop Until menuChoice >= 1 And menuChoice <= 5
+        'Check that the computer didn't already call timeout)
+        If playerMode = 0 Or (playerMode = 1 And (menuChoice <> 2 And menuChoice <> 3)) Then
+            Do
+                I$ = GetKeyPress$
+                menuChoice = Val(I$)
+            Loop Until menuChoice >= 1 And menuChoice <= 5
+        End If
 
     Loop Until Not ((menuChoice = 2 Or menuChoice = 4 Or menuChoice = 5) And playerMode = 1 And P1 = compTeam) Or (menuChoice = 3 And playerMode = 1 And D = compTeam)
 
@@ -17978,7 +18015,7 @@ Sub ScoreSummary
         For I = 1 To nbrScores
 
             Locate , 1
-            Print gameTeams$(K1(I, 1)); "-";
+            Print gameTeams$(K1(I, 1)); " - ";
 
             TI = scoreTimes(I)
             TI = TI + TI * (TI < 0)
@@ -19539,27 +19576,28 @@ End Sub
 'should be started.
 Sub EndOfGame
 
+    'Close #11
     Call POSTGAME
 
-    If autoPlay <> 1 Then
+    Cls
 
-        Cls
+    ' Prompt to play another game
+    If autoPlay <> 1 Then
 
         'Using Home Team's color for the box
         Call TEAMBOX(1, 1)
 
-        Do
-            pbpString$ = "PLAY ANOTHER GAME? (Y/N)"
-            Locate 7, (80 - Len(pbpString$)) / 2
-            Print pbpString$
+        pbpString$ = "PLAY ANOTHER GAME? (Y/N)"
+        Locate 7, (80 - Len(pbpString$)) / 2
+        Print pbpString$
 
-            Color 15, 0
+        Color 15, 0
+
+        Do
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
     End If
-
-    'Close #11
 
     If UCase$(I$) = "Y" Or (autoPlay = 1 And endAllGames <> 1) Then
         Cls
