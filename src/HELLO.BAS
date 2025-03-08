@@ -2774,9 +2774,7 @@ Sub FOOTBALL ()
         End Select
 
         playSegment = 8
-        Call pbplog(13249)
 
-        'If unhandled = 0 Then GoTo HANDLEPENALTY
         GoTo HANDLEPENALTY
 
     End If
@@ -13806,12 +13804,6 @@ Sub PuntNotReturned (fairCatchPossible, puntType, isPenalty)
 
         pbpString$ = "A FAIR CATCH IS CALLED AT THE" + yardLineString$ + " YARD LINE"
 
-        If (ruleOptType = 0 And ruleOptColl >= 11) Then
-            '(ruleOptType > 0 And ruleOptPro >= 9)
-            'Newer NCAA rules reward touchback on fair catch
-            isTouchback = 1
-        End If
-
     End If
 
     Call PBP
@@ -16068,17 +16060,20 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         fairCatchZone = 1
     End If
 
-    'Even though a fair catch is possible inside the 5, most returners would not do it
-    If ((ruleOptType > 0 And ruleOptPro >= 8) Or (ruleOptType = 0 And ruleOptColl >= 11)) And fairCatchZone = 1 And kickYL! > 5 Then
+    'Newer rules - fair catch allowed
+    If ((ruleOptType > 0 And ruleOptPro >= 8) Or (ruleOptType = 0 And ruleOptColl >= 11)) And fairCatchZone = 1 Then
 
-        'Newer rules - fair Catch Allowed
         fcChance = 0
 
         Select Case ruleOptType
 
             Case 0
                 'College, 2018+
-                If ruleOptColl >= 11 Then
+                'Touchback rewarded
+                'Take it if inside the 20
+                If kickYL! <= 20 Then
+                    fcChance = 7
+                Else
                     If teamYears(D) >= 2018 And teamYears <= 2020 Then
                         fcChance = 27
                     Else
@@ -16088,11 +16083,26 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
             Case Is >= 1
                 'Pro, 2018+
+
+                '-- These may need adjusted
                 If ruleOptPro = 8 Then
                     fcChance = 12
-                End If
-                If ruleOptPro = 9 Then
-                    fcChance = 18
+                Else
+                    'Pro, 2023+
+                    'When touchback isn't rewarded, fair catch is not likely inside the 5
+                    If kickYL! <= 5 And teamYears(impactTeam) = 2023 Then
+                        fcChance = 0
+                    Else
+                        If kickYL! <= 20 And teamYears(impactTeam) >= 2024 Then
+                            'Touchback rewarded
+                            'Take it if inside the 20
+                            fcChance = 7
+                        Else
+                            fcChance = 18
+                        End If
+
+                    End If
+
                 End If
 
         End Select
@@ -16107,7 +16117,6 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
         ydsToScore = 100 - kickYL!
         Call YARDLINE
-
 
         If kickYL! < .01 Then
 
@@ -16140,8 +16149,8 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         End If
 
         If kickYL! <= 0 Then
-            'Kick in end zone
 
+            'Kick in end zone
             If isPenalty = 1 Then
                 'FC Interf. in End Zone is equivalent to Touchback
                 'Actual penalty will be handled later
@@ -16152,7 +16161,13 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
         Else
 
-            ydLine = kickYL!
+            'Newer NFL / NCAA rules reward touchback on fair catch
+            'For the NFL, ruleOpt 9 is for 2023 but the rule was approved in summer 2023 for 2024 season
+            If kickYL! <= fairCatchLine And ((ruleOptType = 0 And ruleOptColl >= 11) Or (ruleOptType > 0 And ruleOptPro >= 9 And teamYears(impactTeam) >= 2024)) Then
+                Call Touchback
+            Else
+                ydLine = kickYL!
+            End If
 
         End If
 
@@ -16178,7 +16193,6 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 Call YARDLINE
 
                 pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + Str$(CInt((kickYL! - 2 * kickYL!))) + " YDS DEEP IN THE END ZONE"
-
                 Call PBP
 
                 'Computer is receiving?
@@ -16238,6 +16252,8 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         'No return = No yards
         'Important for calculating penalties
         ydsGained = 0
+    Else
+        Call pbplog(16151)
     End If
 
 End Sub
