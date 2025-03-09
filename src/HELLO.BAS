@@ -1113,7 +1113,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open "pbplog" + Str$(currGame) For Append As #11
-        Open "pbplog" For Append As #11
+        'Open "pbplog" For Append As #11
 
         If Not _FileExists(diskPaths$(3) + scheduleFile$) Then
 
@@ -1157,7 +1157,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Open "pbplog" For Append As #11
+        'Open "pbplog" For Append As #11
 
     End If
 
@@ -16252,8 +16252,6 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         'No return = No yards
         'Important for calculating penalties
         ydsGained = 0
-    Else
-        Call pbplog(16151)
     End If
 
 End Sub
@@ -19588,7 +19586,7 @@ End Sub
 'should be started.
 Sub EndOfGame
 
-    Close #11
+    'Close #11
     Call POSTGAME
 
     Cls
