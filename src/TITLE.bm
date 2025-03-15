@@ -13,7 +13,7 @@ Sub TITLE_CAREER ()
     Locate , 25
     Print "3 IN 1 FOOTBALL: CAREER STATS"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -46,7 +46,7 @@ Sub Title_EDITSTATS (titleType, subtitle$)
         Print subtitle$
     End If
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -94,7 +94,7 @@ Sub TITLE_LEADERS
     Locate , 28
     Print "3 IN 1 FOOTBALL LEADERS"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -120,7 +120,7 @@ Sub TITLE_MERGE ()
     Locate , 29
     Print "3 IN 1 FOOTBALL: MERGE"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -149,7 +149,7 @@ Sub TITLE_SCHEDULER ()
     Locate , 33
     Print "AUTO SCHEDULER"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -201,7 +201,7 @@ Sub TITLE_STAT_HEADER (header$)
     Locate , Int(80 - Len(header$)) / 2
     Print header$
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -230,7 +230,7 @@ Sub TITLE_TOURN ()
     Locate , 22
     Print "3 IN 1 FOOTBALL TOURNAMENT SCHEDULER"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -260,7 +260,7 @@ Sub TITLE_UTILS ()
     Locate , 27
     Print "3 IN 1 FOOTBALL UTILITIES"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -292,7 +292,7 @@ Sub TITLE ()
     Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
 
     'Footer
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
 
     Color 12, 1

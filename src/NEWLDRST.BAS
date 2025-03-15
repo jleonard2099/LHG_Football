@@ -263,7 +263,7 @@ Sub NewStandings_Screen (league$, orgType)
         Next
 
         Color 14
-        Locate 24, 1: Print "HIT ANY KEY TO CONTINUE";
+        Locate LAST_LINE, 1: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
     Next NT

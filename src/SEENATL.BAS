@@ -175,7 +175,7 @@ Sub NatLeaders_Screen (confName$, NRT)
         If P <> 0 And (P Mod 20 = 0) Then
 
             Color 12
-            'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+            'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
             Color 15
             QK$ = GetKeyPress$
 
@@ -195,7 +195,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -235,7 +235,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -296,7 +296,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -358,7 +358,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -420,7 +420,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -482,7 +482,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -544,7 +544,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -581,7 +581,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -618,7 +618,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -655,7 +655,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -677,7 +677,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -699,7 +699,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -722,7 +722,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -745,7 +745,7 @@ Sub NatLeaders_Screen (confName$, NRT)
 
     '-----
     Color 12
-    'Locate 24: Print "HIT ANY KEY TO CONTINUE!";
+    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
     Color 15
     QK$ = GetKeyPress$
     '-----

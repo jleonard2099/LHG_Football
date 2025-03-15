@@ -2,22 +2,24 @@ $Debug
 $Color:32
 
 Const GAME_VERSION$ = "7.15"
-Const MAX_SCHEDULE_GAMES = 1500
-Const MAX_TOURNAMENT_GAMES = 200
-Const MAX_TEAMS = 1000
 Const MAX_FILES = 10240
-'optimium = 1048576 (but slows code)
-Const TEAMS_PER_DIV_COL = 15
-Const TEAMS_PER_DIV_PRO = 10
-Const DIVS_PER_CONFERENCE = 2
-Const TEAMS_PER_CONFERENCE = 30
-
-Const DIVS_PER_LEAGUE = 4
-Const TEAMS_PER_LEAGUE = 40
 Const MAX_CAREER_YEARS = 15
 Const MAX_CONFERENCES = 40
 Const MAX_SCHED_STATS = 120
+Const MAX_SCHEDULE_GAMES = 1500
+Const MAX_TOURNAMENT_GAMES = 200
+Const MAX_TEAMS = 1000
+'optimium = 1048576 (but slows code)
+Const TEAMS_PER_DIV_COL = 15
+Const DIVS_PER_CONFERENCE = 2
+Const TEAMS_PER_CONFERENCE = 30
+
+Const TEAMS_PER_DIV_PRO = 10
+Const DIVS_PER_LEAGUE = 4
+Const TEAMS_PER_LEAGUE = 40
+
 Const SCHEDULE_SIZE_BYTES = 56
+Const LAST_LINE = 24
 
 DefInt A-Z
 
@@ -31,7 +33,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim Shared test0
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1263,9 +1264,9 @@ Sub FOOTBALL ()
 
                 Call LetterToNumber(I$, setting)
 
-            Loop Until setting >= 0 And setting <= 10 Or I$ = Chr$(27) Or UCase$(I$) = "Q"
+            Loop Until setting >= 0 And setting <= 10 Or I$ = Chr$(27) Or UCase$(I$) = Chr$(17) Or UCase$(I$) = "Q"
 
-            If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
+            If I$ <> Chr$(27) And UCase$(I$) <> "Q" And UCase$(I$) <> Chr$(17) Then
 
                 Select Case setting
 
@@ -1348,9 +1349,9 @@ Sub FOOTBALL ()
 
             End If
 
-        Loop Until (setting = 9 And gameTeams$(0) <> "" And gameTeams$(1) <> "") Or I$ = Chr$(27) Or UCase$(I$) = "Q"
+        Loop Until (setting = 9 And gameTeams$(0) <> "" And gameTeams$(1) <> "") Or I$ = Chr$(27) Or I$ = Chr$(17) Or UCase$(I$) = "Q"
 
-        If I$ <> Chr$(27) And UCase$(I$) <> "Q" Then
+        If I$ <> Chr$(27) And UCase$(I$) <> Chr$(17) And UCase$(I$) <> "Q" Then
 
             'TICKER PROMPT
             Cls
@@ -2235,7 +2236,7 @@ Sub FOOTBALL ()
                             I$ = "K"
                         End If
 
-                        If UCase$(I$) = "Q" Then
+                        If UCase$(I$) = Chr$(17) Then
                             'System
                             Exit Sub
                         End If
@@ -7492,7 +7493,7 @@ Sub INFO ()
     Color 14
     Print "GAME OPTIONS MENU"
 
-    Locate 24, 1
+    Locate LAST_LINE, 1
     Print Tab(80); " ";
     Locate , 1
     Print "    LANCE HAFFNER / JASON LEONARD  1986-2024"; Tab(70); Left$(Time$, 5);
@@ -7772,6 +7773,11 @@ Sub LetterToNumber (promptVal$, J)
         Case "F": J = 15
         Case "G": J = 16
         Case "H": J = 17
+        Case "I": J = 18
+        Case "J": J = 19
+        Case "K": J = 20
+        Case "L": J = 21
+        Case "M": J = 22
 
     End Select
 
@@ -7918,7 +7924,7 @@ Sub PBP ()
         Call OPTIONS
     End If
 
-    If UCase$(M$) = "Q" Then
+    If UCase$(M$) = Chr$(17) Then
         Cls
         End
     End If
@@ -11579,7 +11585,7 @@ Sub DEFMENU (defEra)
             Do
                 I$ = GetKeyPress$
 
-                If UCase$(I$) = "Q" Then
+                If UCase$(I$) = Chr$(17) Then
                     Cls
                     End
                 End If
@@ -17105,7 +17111,7 @@ Sub OPTIONS ()
 
         Do
             Color 7, 0
-            'Locate 24, 1: Print "HIT ANY KEY TO CONTINUE";
+            'Locate LAST_LINE, 1: Print "HIT ANY KEY TO CONTINUE";
             I$ = GetKeyPress$
             I = Val(I$)
         Loop Until I >= 0 And I <= 2
@@ -17952,7 +17958,7 @@ Sub BOX2SCREEN ()
     Call ScoreSummary
 
     If Not (autoPlay = 1 And playerMode = 2) Then
-        Locate 24, 27
+        Locate LAST_LINE, 27
         Color 14
         Print "PRESS ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
@@ -18117,7 +18123,7 @@ Sub ScoreSummary
             End If
 
             If Not (autoPlay = 1 And playerMode = 2) And scoreLines >= maxScoreLines Then
-                Locate 24, 20
+                Locate LAST_LINE, 20
                 Color 14
                 Print "PRESS ANY KEY FOR MORE SCORE INFORMATION";
                 Call GetKeyWhenNoDelay
@@ -18151,7 +18157,7 @@ Sub STATS2SCREEN ()
     Cls
 
     Call OPTIONBOX(15)
-    Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+    Locate LAST_LINE, 27: Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 10, 32
 
@@ -18228,7 +18234,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18274,7 +18280,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18303,7 +18309,7 @@ Sub STATS2SCREEN ()
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
-                Locate 24, 27
+                Locate LAST_LINE, 27
                 Print "PRESS ANY KEY TO CONTINUE";
 
                 Locate 2, 32
@@ -18334,7 +18340,7 @@ Sub STATS2SCREEN ()
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
-                Locate 24, 27: Print "PRESS ANY KEY TO CONTINUE";
+                Locate LAST_LINE, 27: Print "PRESS ANY KEY TO CONTINUE";
 
                 Locate 2, 32: Print "RECEIVING STATISTICS"
                 Print
@@ -18355,7 +18361,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18397,7 +18403,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 25
@@ -18451,7 +18457,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 29
@@ -18541,7 +18547,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 35
@@ -18569,7 +18575,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate 24, 27
+    Locate LAST_LINE, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 39
