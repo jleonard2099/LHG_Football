@@ -192,28 +192,30 @@ Sub NewStandings_Screen (league$, orgType)
 
         Cls
 
-        Color 11
-        Locate 1, 35: Print league$
-        Color 14
-        Locate 2: Print Tab(20); "                              HOME   ROAD   NEUTRAL"
-        Locate 3
-
         Select Case NT
 
             Case 1
-                Print div1Name$;
+                targetDiv$ = div1Name$
 
             Case 2
-                Print div2Name$;
+                targetDiv$ = div2Name$
 
             Case 3
-                Print div3Name$;
+                targetDiv$ = div3Name$
 
             Case 4
-                Print div4Name$;
+                targetDiv$ = div4Name$
 
         End Select
 
+        'If NT > 1 And targetDiv$ <> ""
+
+        Color 11
+        Locate 2, 35: Print league$
+        Color 14
+        Locate 4: Print Tab(20); "                              HOME   ROAD   NEUTRAL"
+
+        Print RTrim$(targetDiv$)
         Print Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
 
         For I = AA To ZZ
@@ -263,8 +265,10 @@ Sub NewStandings_Screen (league$, orgType)
         Next
 
         Color 14
-        Locate LAST_LINE, 1: Print "HIT ANY KEY TO CONTINUE";
+        Locate LAST_ROW - 1: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
+            
+        'End If
 
     Next NT
 

@@ -13,7 +13,7 @@ Sub TITLE_CAREER ()
     Locate , 25
     Print "3 IN 1 FOOTBALL: CAREER STATS"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -46,7 +46,7 @@ Sub Title_EDITSTATS (titleType, subtitle$)
         Print subtitle$
     End If
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -94,7 +94,7 @@ Sub TITLE_LEADERS
     Locate , 28
     Print "3 IN 1 FOOTBALL LEADERS"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -120,7 +120,7 @@ Sub TITLE_MERGE ()
     Locate , 29
     Print "3 IN 1 FOOTBALL: MERGE"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -149,7 +149,7 @@ Sub TITLE_SCHEDULER ()
     Locate , 33
     Print "AUTO SCHEDULER"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -174,7 +174,7 @@ Sub TITLE_STATS ()
     Locate , 27
     Print "3 IN 1 FOOTBALL STATISTICS"
 
-    Locate 25, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -201,7 +201,7 @@ Sub TITLE_STAT_HEADER (header$)
     Locate , Int(80 - Len(header$)) / 2
     Print header$
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -230,16 +230,16 @@ Sub TITLE_TOURN ()
     Locate , 22
     Print "3 IN 1 FOOTBALL TOURNAMENT SCHEDULER"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
-    Print "    LANCE HAFFNER/SHANNON LYNN 1987-2024";
+    Print "    LANCE HAFFNER/SHANNON LYNN 1987-2025";
 
     Color 15, 0
     Locate 3, 1
     Print "        PROGRAMMED BY LANCE HAFFNER, SHANNON LYNN AND JASON LEONARD"
-    Print "            FOR TECHNICAL SUPPORT, CONTACT support@LHGames.net"
+    Print "            FOR TECHNICAL SUPPORT, CONTACT support@lhgames.net"
 
     Color 10
 
@@ -260,7 +260,7 @@ Sub TITLE_UTILS ()
     Locate , 27
     Print "3 IN 1 FOOTBALL UTILITIES"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
     Locate , 1
@@ -292,19 +292,20 @@ Sub TITLE ()
     Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
 
     'Footer
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
 
-    Color 12, 1
     Locate , 1
-    Print "    LANCE HAFFNER 1984-2024"; Tab(70); Left$(Time$, 5);
+    Print "    LANCE HAFFNER/SHANNON LYNN/JASON LEONARD 1984-2025"; Tab(75); Left$(Time$, 5);
 
     'Contact
     Color 15, 0
     Locate 3, 1
     Print "           PROGRAMMED BY LANCE HAFFNER, SHANNON LYNN AND JASON LEONARD"
-    Print "               FOR TECHNICAL SUPPORT, CONTACT support@LHGames.net"
-    Print "          LANCE HAFFNER GAMES ON THE INTERNET AT https://www.LHGames.net"
+    Print "               FOR TECHNICAL SUPPORT, CONTACT support@lhgames.net"
+
+    Locate LAST_ROW - 2
+    Print "              LH GAMES ON THE INTERNET AT https://www.lhgames.net";
 
     Color 10
 

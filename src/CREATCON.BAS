@@ -147,7 +147,7 @@ Sub DefineConference ()
 
     Done:
     Color 14, 1
-    Locate 23, 1
+    Locate LAST_ROW - 2, 1
     Print "Is this okay? (Yes/No) ";
     X$ = ""
     Call YesNoB(X$, XCode, FG, BG)
@@ -183,7 +183,7 @@ Sub ReviewEditConference (confFile$)
         Cls
         Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
         Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
-        Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+        Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
 
         I$ = GetKeyPress$
 

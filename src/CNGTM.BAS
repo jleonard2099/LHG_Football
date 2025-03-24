@@ -1515,7 +1515,7 @@ Sub ViewRoster (team$)
             End If
         Next
 
-        Locate 23
+        Locate LAST_ROW - 2
         Color 15: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
@@ -1560,7 +1560,7 @@ Sub ViewRoster (team$)
             End If
         Next
 
-        Locate 23
+        Locate LAST_ROW - 2
         Color 15: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
@@ -1640,7 +1640,7 @@ Sub CheckContributions
     Print "THE NEXT SCREENS WILL CYCLE THROUGH THE  TEAM ROSTER SHOWING THE  % OF PLAYING"
     Print "TIME EACH PLAYER IS CURRENTLY ALLOTTED. TOTAL CONTRIBUTION FOR EACH POSITION"
     Print "MUST TOTAL 100%"
-    Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+    Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     '-----
@@ -1684,9 +1684,9 @@ Sub CheckContributions
             Else
                 If BC% <> 100 Then
                     Locate 19: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
 
                 End If
 
@@ -1751,9 +1751,9 @@ Sub CheckContributions
 
                 If BC% <> 100 Then
                     Locate 23: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If
@@ -1804,9 +1804,9 @@ Sub CheckContributions
             Else
                 If BC% <> 100 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If
@@ -1861,9 +1861,9 @@ Sub CheckContributions
 
                 If BC% <> 100 Then
                     Locate 12: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If
@@ -1918,9 +1918,9 @@ Sub CheckContributions
 
                 If BC% <> 100 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If
@@ -1974,9 +1974,9 @@ Sub CheckContributions
 
                 If BC% <> 100 Then
                     Locate 12: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If
@@ -2029,9 +2029,9 @@ Sub CheckContributions
 
                 If BC% <> 100 Then
                     Locate 12: Print "TOTAL IS NOT 100%!"
-                    Locate LAST_LINE, 1: Print "PRESS ANY KEY TO CONTINUE";
+                    Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
-                    Locate LAST_LINE, 1: Print Space$(25);
+                    Locate 24, 1: Print Space$(25);
                 End If
 
             End If

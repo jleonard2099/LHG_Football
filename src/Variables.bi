@@ -74,7 +74,7 @@ Dim eventSettings(13)
 
 Dim location$(2), modeAbbrev$(3), overtime$(0 To 8)
 Dim playMode$(3)
-Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
+Dim rulesType$(6), ruleYrPro$(0 To 10), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 
@@ -405,7 +405,7 @@ Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared startYds, tickerGames
+Dim Shared sndOpt, startYds, tickerGames
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
 Dim Shared WE, WS, winTeam

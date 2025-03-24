@@ -4,7 +4,7 @@
 'This subroutine lets the user choose a
 'conference stat file to view, then calls
 'other routines to both load the Stats
-'and then provide options for display
+'and then provide options for displayINTER
 Sub SEECON ()
 
     _Title "3-in-1 Football - View Conference Stats"
@@ -166,14 +166,15 @@ Sub StatOptions_Coll (confName$)
                     Call CollLeaders_Report(confName$, 1, "REPORT")
 
                 Case "S":
-                    Call CollLeaders_Screen(confName$)
+                    Call CollegeStdgs_Screen(confName$)
+                    Call Leaders_Screen                        
 
             End Select
 
             Color 15, 0
             Cls
 
-            Call box0(6, 8, 11, 70, 2, 15, 1)
+            Call box0(6, 18, 10, 62, 2, 15, 1)
 
             Do
                 Color 15, 1
@@ -193,12 +194,12 @@ End Sub
 
 
 '----------------------------------------
-'    CollLeaders_Screen Subroutine
+'    CollegeStdgs_Screen Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to the end
 'user display.
-Sub CollLeaders_Screen (confName$)
+Sub CollegeStdgs_Screen (confName$)
 
     Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
@@ -216,14 +217,13 @@ Sub CollLeaders_Screen (confName$)
     Cls
     Color 12
 
-    Locate , 33
+    Locate 2, 33
     Print confName$ + "OVERALL RECORD"
 
-    If div1Name$ <> "" Then Print div1Name$; " DIVISION"
-    Locate 2, 41
-    If div2Name$ <> "" Then Print div2Name$; " DIVISION"
+    Color 2
+    Locate 4, 1
+    Print RTrim$(div1Name$); " DIVISION"
 
-    Locate , 1
     Color 14
     Print "              W   L   T   PCT  PF  PA"
     Color 15
@@ -233,7 +233,7 @@ Sub CollLeaders_Screen (confName$)
         If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
-            Locate (P + 3 - RT)
+            Locate (P + 5 - RT)
             Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
             'Win %
@@ -260,49 +260,55 @@ Sub CollLeaders_Screen (confName$)
 
     RT = 0
 
-    If div2Name$ <> "" Then
+    'If RTrim$(div2Name$) <> "" Then
 
-        Locate 3, 41
-        Color 14: Print "              W   L   T   PCT  PF  PA"
-        Color 15
+    Locate 4, 41
 
-        For P = 16 To 30
+    Color 2
+    Print RTrim$(div2Name$); " DIVISION"
 
-            If leagRecText$(P) = "" Then
-                RT = RT + 1
+    Locate , 41
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 16 To 30
+
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 10 - RT), 41
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
             Else
-                Locate (P - 12 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-                'Win %
-                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                    Print "  .---";
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
                 Else
-                    If divLosses(P) + divTies(P) = 0 Then
-                        Print " 1.000";
+                    If divWins(P) = 0 Then
+                        Print "  .000";
                     Else
-                        If divWins(P) = 0 Then
-                            Print "  .000";
-                        Else
-                            'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                        End If
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
-
-                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
             End If
 
-        Next
+            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
-        RT = 0
+        End If
 
-    End If
+    Next
+
+    RT = 0
+
+    'End If
 
     '-----
     Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
+    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
     Color 15
     QK$ = GetKeyPress$
     '-----
@@ -310,15 +316,15 @@ Sub CollLeaders_Screen (confName$)
     Cls
 
     Color 12
-    Locate , 33
+    Locate 2, 33
     Print confName$ + "CONFERENCE RECORD"
 
-    If div1Name$ <> "" Then Print div1Name$; " DIVISION"
-    Locate 2, 41
-    If div2Name$ <> "" Then Print div2Name$; " DIVISION"
+    Locate 4, 1
+    Color 2
+    Print RTrim$(div1Name$); " DIVISION"
 
-    Locate , 1
-    Color 14: Print "              W   L   T   PCT  PF  PA"
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
     Color 15
 
     For P = 31 To 45
@@ -326,7 +332,7 @@ Sub CollLeaders_Screen (confName$)
         If leagRecText$(P) = "" Then
             RT = RT + 1
         Else
-            Locate (P - 27 - RT)
+            Locate (P - 25 - RT)
             Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
             'Win %
@@ -353,604 +359,51 @@ Sub CollLeaders_Screen (confName$)
 
     RT = 0
 
-    If div2Name$ <> "" Then
+    'If RTrim$(div2Name$) <> "" Then
 
-        Locate 3, 41
-        Color 14: Print "              W   L   T   PCT  PF  PA"
-        Color 15
+    Locate 4, 41
+    Color 2
+    Print RTrim$(div2Name$); " DIVISION"
 
-        For P = 46 To 60
-            If leagRecText$(P) = "" Then
-                RT = RT + 1
+    Locate , 41
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 46 To 60
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 40 - RT), 41
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
             Else
-                Locate (P - 42 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-                'Win %
-                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                    Print "  .---";
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
                 Else
-                    If divLosses(P) + divTies(P) = 0 Then
-                        Print " 1.000";
+                    If divWins(P) = 0 Then
+                        Print "  .000";
                     Else
-                        If divWins(P) = 0 Then
-                            Print "  .000";
-                        Else
-                            'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                        End If
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
                     End If
                 End If
-
-                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
             End If
-        Next
 
-        RT = 0
-    End If
+            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        End If
+    Next
+
+    RT = 0
+
+    'End If
 
     '-----
     Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "RUSHING LEADERS (MIN 10 ATT/G)"
-    Color 12
-    Print "                            AVG  ATT"
-    Color 15
-
-    For P = 1 To 20
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "##.# ####"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "RECEIVING LEADERS (MIN 3 REC/G)"
-
-    Locate 2, 41
-    Color 12
-    Print "                            AVG  REC"
-    Color 15
-
-    For P = 21 To 40
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "RUSHING YARDS TOTAL"
-    Color 15
-
-    For P = 41 To 50
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "RECEIVING YARDS TOTAL"
-    Color 15
-
-    For P = 51 To 60
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13
-    Color 14
-    Print "RUSHING ATTEMPTS"
-    Color 15
-
-    For P = 81 To 90
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13, 41
-    Color 14
-    Print "TOTAL RECEPTIONS"
-    Color 15
-
-    For P = 91 To 100
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "ALL PURPOSE YARDAGE"
-    Color 15
-
-    For P = 101 To 110
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "SCORING NON-KICKERS"
-    Color 15
-
-    For P = 111 To 120
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13
-    Color 14
-    Print "RUSHING TOUCHDOWNS"
-    Color 15
-
-    For P = 61 To 70
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13, 41
-    Color 14
-    Print "RECEIVING TOUCHDOWNS"
-    Color 15
-
-    For P = 71 To 80
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "COMPLETION PERCENTAGE"
-    Color 15
-
-    For P = 121 To 130
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "###.#"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "QUARTERBACK RATING"
-    Color 15
-
-    For P = 131 To 140
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "###.#"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13
-    Color 14
-    Print "PASSING YARDAGE"
-    Color 15
-
-    For P = 141 To 150
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13, 41
-    Color 14
-    Print "PASSING TOUCHDOWNS"
-    Color 15
-
-    For P = 151 To 160
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "####"; leaderVal1!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "KO RETURN AVERAGE                 #"
-    Color 15
-
-    For P = 161 To 170
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "PUNT RETURN AVERAGE               #"
-    Color 15
-
-    For P = 171 To 180
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 13
-    Color 14
-    Print "PUNTING AVERAGE"
-    Color 15
-
-    For P = 181 To 190
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 13, 41
-    Color 14
-    Print "SCORING (KICKERS)"
-    Color 15
-
-    For P = 191 To 200
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "###"; leaderVal1!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "FIELD GOAL %                     FGA"
-    Color 15
-
-    For P = 201 To 210
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "EXTRA POINT %                    EPA"
-    Color 15
-
-    For P = 211 To 220
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "###.#  ##"; leaderVal1!(P); leaderVal2!(P)
-        End If
-    Next
-
-    Locate 13
-    Color 14
-    Print "INTERCEPTIONS"
-    Color 15
-
-    For P = 221 To 230
-        If leaderName$(P) <> "*" Then
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 28
-            Print Using "##"; leaderVal1!(P)
-        End If
-    Next
-
-    Locate 13, 41
-    Color 14
-    Print "SACKS"
-    Color 15
-
-    For P = 231 To 240
-        If leaderName$(P) <> "*" Then
-            Locate , 41
-            Print leaderName$(P) + ", " + leaderTeam$(P);
-            Locate , 68
-            Print Using "##"; leaderVal1!(P)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"
-    Color 15
-
-    CA = 1
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "TOTAL DEFENSE  G PLAYS  YDS  AVG YDS/G"
-    Color 15
-
-    CA = 2
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Locate , 41
-            Print totalTeamName$(CA, P);
-            Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-    Color 14
-    Print "RUSHING OFF    G PLAYS  YDS  AVG YDS/G"
-    Color 15
-
-    CA = 3
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 15
-            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "RUSHING DEF    G PLAYS  YDS  AVG YDS/G"
-    Color 15
-
-    CA = 4
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Locate , 41
-            Print totalTeamName$(CA, P);
-            Locate , 55
-            Print Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "SCORING OFF    G  POINTS    AVG"
-    Color 15
-
-    CA = 5
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 15
-            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
-        End If
-    Next
-
-    Locate 1, 41
-    Color 14
-    Print "SCORING DEF    G  POINTS    AVG"
-    Color 15
-
-    CA = 6
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Locate , 41
-            Print totalTeamName$(CA, P);
-            Locate , 55
-            Print Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
-    Color 15
-
-    CA = 7
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "PASSING DEF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
-    Color 15
-
-    CA = 8
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 15
-            Print Using "##  ####  ####  ###  ###.#  #####   ##.#     ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5) * 100; totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7); totalTeamVal!(CA, P, 8)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "PUNTING        NO     AVG"
-    Color 15
-
-    CA = 9
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);: Locate , 15
-            Print Using "###    ##.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 14
-    Print "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
-    Print "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
-    Color 15
-
-    CA = 10
-
-    For P = 1 To 20
-        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
-            Print totalTeamName$(CA, P);
-            Locate , 18
-            Print Using "### ###  ###    ### ###  ###       ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5); totalTeamVal!(CA, P, 6); totalTeamVal!(CA, P, 7)
-        End If
-    Next
-
-    '-----
-    Color 12
-    'Locate LAST_LINE: Print "HIT ANY KEY TO CONTINUE!";
+    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
     Color 15
     QK$ = GetKeyPress$
     '-----

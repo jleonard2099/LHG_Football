@@ -28,7 +28,7 @@ Sub ReadLeagueOld (leagueFile$, league$, div1$, div2$, div3$, wrongFormat%)
             Cls
             Print "THE FILE YOU TRIED TO OPEN IS IN COLLEGE FORMAT"
             Print "EITHER TRY AGAIN OR USE THE COLLEGE OPTION TO EDIT"
-            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+            Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
 
             I$ = GetKeyPress$
 
@@ -141,7 +141,7 @@ Sub ReadLeagueNew (leagueFile$, league$, div1$, div2$, div3$, div4$, wrongFormat
             Cls
             Print "THE FILE YOU TRIED TO OPEN IS IN COLLEGE FORMAT"
             Print "EITHER TRY AGAIN OR USE THE COLLEGE OPTION TO EDIT"
-            Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+            Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
 
             I$ = GetKeyPress$
 
@@ -434,7 +434,7 @@ Sub ConvertLeague4to5 (targetFile$, silent)
             MsgText$ = "ERROR!! THIS IS NOT A PRO LEAGUE. PRESS ANY KEY TO RETURN TO MAIN MENU"
             BoxWidth = 20
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
@@ -476,7 +476,7 @@ Sub ConvertLeague5to4 (targetFile$, silent)
             MsgText$ = "ERROR!! THIS IS NOT A PRO LEAGUE. PRESS ANY KEY TO RETURN TO MAIN MENU"
             BoxWidth = 20
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
