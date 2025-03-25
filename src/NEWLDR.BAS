@@ -2364,7 +2364,6 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
                 If expLdrPlyrName$(W) <> "" Then
 
                     Print Using "### "; W;
-
                     Color 3: Print expLdrPlyrName$(W);
                     Print Tab(30); expLdrTeam$(W);:
 
@@ -2452,17 +2451,16 @@ Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
     Open destFile$ For Output As #1
 
-    Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
-
     For W = 1 To maxRecords
 
-        If (W <> 1 And W Mod 50 = 1) Then
+        If (W - 1) Mod 50 = 0 Then
             Print #1, Chr$(12)
             Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
+            Print #1, "     ------                  ----                     ";
+            Print #1, String$(Len(expCategories$(categoryID)),45)
         End If
 
-        Print #1, Using "###"; W;
-        Print #1, " ";
+        Print #1, Using "### "; W;
         Print #1, expLdrPlyrName$(W);
         Print #1, Tab(25); expLdrTeam$(W);
 
@@ -2522,12 +2520,6 @@ Sub GetListLength (printOrView, listLength, maxItems)
         Do
             Color , 0
             Cls
-
-            Print
-            Print
-            Print
-            Print
-            Print
 
             Call MenuBox(10, 20, 30, 2, 4, 15)
             Locate 11

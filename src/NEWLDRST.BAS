@@ -212,6 +212,7 @@ Sub NewStandings_Screen (league$, orgType)
 
         Color 11
         Locate 2, 35: Print league$
+
         Color 14
         Locate 4: Print Tab(20); "                              HOME   ROAD   NEUTRAL"
 
@@ -314,26 +315,28 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
 
         Call SortStandings(AA, ZZ)
 
-        Print #1, league$
-        Print #1, Tab(20); "                              HOME   ROAD   NEUTRAL"
-
         Select Case NT
 
             Case 1
-                Print #1, div1Name$;
+                targetDiv$ = div1Name$
 
             Case 2
-                Print #1, div2Name$;
+                targetDiv$ = div2Name$
 
             Case 3
-                Print #1, div3Name$;
+                targetDiv$ = div3Name$
 
             Case 4
-                Print #1, div4Name$;
+                targetDiv$ = div4Name$
 
         End Select
 
+        Print #1, league$
+        Print #1, Tab(20); "                              HOME   ROAD   NEUTRAL"
+
+        Print #1, RTrim$(targetDiv$);
         Print #1, Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
+        Print #1, String$(69,45)
 
         For I = AA To ZZ
 
