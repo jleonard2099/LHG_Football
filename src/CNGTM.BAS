@@ -144,12 +144,13 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Print #1, Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
     Print #1, Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
     Print #1, Using "STAD TYPE      = ###"; teamRatings(3);
-    Print #1, Tab(35); Using "GEOGRAPH REGION  = ##"; teamRatings(4)
-    Print #1, Using "BACKGRND COLOR = ###"; teamRatings(1);
-    Print #1, Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings(2)
+    Print #1, Tab(35); Using "POWER INDEX  = ##"; teamRatings(4)
     Print #1,
-    Print #1, "RUNNING BACKS-"
-    Print #1, "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+    Print #1, Using "TEXT COLOR = ##"; teamRatings(2)
+    Print #1, Using "BACKGROUND COLOR = ##"; teamRatings(1)
+    Print #1,
+    Print #1, "RUNNING BACKS"
+    Print #1, "NAME               RUSH AVG   CX%  REC AVG   CX%"
 
     For I = 0 To 9:
 
@@ -161,8 +162,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "WIDE RECEIVERS-"
-    Print #1, "NAME-              REC AVG     CX%"
+    Print #1, "WIDE RECEIVERS"
+    Print #1, "NAME              REC AVG     CX%"
 
     For I = 0 To 5:
 
@@ -174,8 +175,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "QUARTERBACKS-                     YDS/CMP"
-    Print #1, "NAME-               COMP%   INT%    ADJ     CX%"
+    Print #1, "QUARTERBACKS                      YDS/CMP"
+    Print #1, "NAME               COMP%   INT%    ADJ     CX%"
 
     For I = 0 To 3:
 
@@ -187,8 +188,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "KICKOFF RETURNMEN-"
-    Print #1, "NAME-              RET AVG     CX%"
+    Print #1, "KICKOFF RETURNMEN"
+    Print #1, "NAME              RET AVG     CX%"
 
     For I = 0 To 2:
 
@@ -200,8 +201,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "PUNT RETURNMEN-"
-    Print #1, "NAME-              RET AVG     CX%"
+    Print #1, "PUNT RETURNMEN"
+    Print #1, "NAME              RET AVG     CX%"
 
     For I = 0 To 2:
 
@@ -213,8 +214,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "PLACE KICKERS-"
-    Print #1, "NAME-                FG%  CX%   EP%  CX%"
+    Print #1, "PLACE KICKERS"
+    Print #1, "NAME                FG%  CX%   EP%  CX%"
 
     For I = 0 To 1:
 
@@ -226,10 +227,32 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Next
 
     Print #1,
-    Print #1, "PUNTER-"
-    Print #1, "NAME-              AVG"
+    Print #1, "PUNTER"
+    Print #1, "NAME              AVG"
     Print #1, punterName$(0); Tab(21);
     Print #1, Using "##"; puntAvg(0) * 2 + 28
+
+    Print #1,
+    Print #1, "SACKS"
+    Print #1, "NAME               SACKS"
+
+    For I = 0 To 14:
+        If Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
+            Print #1, sackName$(I); Tab(21);
+            Print #1, Using "###"; numSacks(I)
+        End If
+    Next
+
+    Print #1,
+    Print #1, "INTERCEPTIONS"
+    Print #1, "NAME               INT'S"
+    For I = 0 To 9:
+        If Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
+            Print #1, intName$(I); Tab(21);
+            Print #1, Using "###"; numInts(I)
+        End If
+    Next
+
 
     If printDest = 1 Then
 
@@ -459,16 +482,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 3, 8: Print " "
 
                                 Case 2
-                                    Locate 4, 15: Print Space$(10)
+                                    Locate 4, 16: Print Space$(10)
                                     Locate 4: Input "2. RUSHING AVG "; A1!(I1)
-                                    Locate 4, 15: Print " "
+                                    Locate 4, 16: Print " "
 
                                     rushAvg(I1) = CInt(A1!(I1) / .3)
 
                                 Case 3
-                                    Locate 5, 17: Print Space$(10)
+                                    Locate 5, 18: Print Space$(10)
                                     Locate 5: Input "3. RECEIVING AVG "; A3!(I1)
-                                    Locate 5, 17: Print " "
+                                    Locate 5, 18: Print " "
 
                                     rbRecAvg(I1) = CInt(A3!(I1) / 3)
 
@@ -533,9 +556,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 3, 8: Print " "
 
                                 Case 2
-                                    Locate 4, 17: Print Space$(10)
+                                    Locate 4, 18: Print Space$(10)
                                     Locate 4: Input "2. RECEIVING AVG "; A5!(I1): wrRecAvg(I1) = CInt(A5!(I1) / 3)
-                                    Locate 4, 17: Print " "
+                                    Locate 4, 18: Print " "
 
                             End Select
 
@@ -601,19 +624,19 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 3, 8: Print " "
 
                                 Case 2
-                                    Locate 4, 16: Print Space$(10)
+                                    Locate 4, 17: Print Space$(10)
                                     Locate 4: Input "2. COMPLETION % "; compPct(I1)
-                                    Locate 4, 16: Print " "
+                                    Locate 4, 17: Print " "
 
                                 Case 3
-                                    Locate 5, 18: Print Space$(10)
+                                    Locate 5, 19: Print Space$(10)
                                     Locate 5: Input "3. INTERCEPTION % "; qbIntPct(I1)
-                                    Locate 5, 18: Print " "
+                                    Locate 5, 19: Print " "
 
                                 Case 4
-                                    Locate 6, 16: Print Space$(10)
+                                    Locate 6, 17: Print Space$(10)
                                     Locate 6: Input "4. YDS/COMP ADJ "; armRating(I1)
-                                    Locate 6, 16: Print " "
+                                    Locate 6, 17: Print " "
 
                             End Select
 
@@ -675,9 +698,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4, 14: Print Space$(10)
+                                Locate 4, 15: Print Space$(10)
                                 Locate 4: Input "2. RETURN AVG "; B!(I1)
-                                Locate 4, 14: Print " "
+                                Locate 4, 15: Print " "
 
                                 krRetAvg(I1) = CInt(B!(I1) / 3)
 
@@ -737,9 +760,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4, 14: Print Space$(10)
+                                Locate 4, 15: Print Space$(10)
                                 Locate 4: Input "2. RETURN AVG "; B2!(I1)
-                                Locate 4, 14: Print " "
+                                Locate 4, 15: Print " "
 
                                 prRetAvg(I1) = CInt(B2!(I1) / 3)
 
@@ -799,9 +822,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4, 15: Print Space$(10)
+                                Locate 4, 16: Print Space$(10)
                                 Locate 4: Input "2. PUNTING AVG "; B3!(I1)
-                                Locate 4, 15: Print " "
+                                Locate 4, 16: Print " "
 
                                 puntAvg(I1) = CInt(((B3!(I1) - 28) / 2))
 
@@ -861,16 +884,16 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4, 16: Print Space$(10)
+                                Locate 4, 17: Print Space$(10)
                                 Locate 4: Input "2. FIELD GOAL % "; B4!(I1)
-                                Locate 4, 16: Print " "
+                                Locate 4, 17: Print " "
 
                                 pkFGA(I1) = CInt((B4!(I1) / 5)) - 5
 
                             Case 3
-                                Locate 5, 16: Print Space$(10)
+                                Locate 5, 17: Print Space$(10)
                                 Locate 5: Input "3. EXTRA POINT % "; pkPAT(I1)
-                                Locate 5, 16: Print " "
+                                Locate 5, 17: Print " "
 
                         End Select
 
@@ -929,9 +952,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                             Locate 3, 8: Print " "
 
                         Case 2
-                            Locate 4, 9: Print Space$(10)
+                            Locate 4, 10: Print Space$(10)
                             Locate 4: Input "2. SACKS "; numSacks(I1)
-                            Locate 4, 9: Print " "
+                            Locate 4, 10: Print " "
 
                     End Select
 
@@ -989,9 +1012,9 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 3, 8: Print " "
 
                             Case 2
-                                Locate 4, 17: Print Space$(10)
+                                Locate 4, 18: Print Space$(10)
                                 Locate 4: Input "2. INTERCEPTIONS "; numInts(I1)
-                                Locate 4, 17: Print " "
+                                Locate 4, 18: Print " "
 
                         End Select
 
@@ -1472,6 +1495,7 @@ Sub ViewRoster (team$)
         Cls
 
         Color 11
+        Locate 2, 1
         Print "TEAM ROSTER FOR ";
         Color teamRatings(2), teamRatings(1)
         Print team$;
@@ -1499,11 +1523,13 @@ Sub ViewRoster (team$)
         Print Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
         Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
         Print Using "STAD TYPE      = ###"; teamRatings(3)
-        Print Using "BACKGRND COLOR = ###"; teamRatings(1);
-        Print Tab(35); Using "FOREGRND COLOR   = ##"; teamRatings(2)
         Print
-        Color 12: Print "RUNNING BACKS-"
-        Color 14: Print "NAME-               RUSH AVG   CX%  REC AVG   CX%"
+        Print Using "FOREGROUND COLOR = ##"; teamRatings(2)
+        Print Using "BACKGROUND COLOR = ##"; teamRatings(1)
+
+        Print
+        Color 12: Print "RUNNING BACKS"
+        Color 14: Print "NAME               RUSH AVG   CX%  REC AVG   CX%"
 
         For I = 0 To 9:
             If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
@@ -1520,8 +1546,9 @@ Sub ViewRoster (team$)
         I$ = GetKeyPress$
 
         Cls
-        Color 12: Print "WIDE RECEIVERS-"
-        Color 14: Print "NAME-              REC AVG     CX%"
+        Locate 2, 1
+        Color 12: Print "WIDE RECEIVERS"
+        Color 14: Print "NAME              REC AVG     CX%"
 
         For I = 0 To 5:
             If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
@@ -1534,8 +1561,9 @@ Sub ViewRoster (team$)
         Next
 
         Print
-        Color 12: Print "QUARTERBACKS-                     YDS/CMP"
-        Color 14: Print "NAME-               COMP%   INT%    ADJ     CX%"
+        Color 12: Print "QUARTERBACKS";
+        Color 14: Print "YDS/CMP"
+        Print "NAME               COMP%   INT%    ADJ     CX%"
         For I = 0 To 3:
             If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
                 Color 3
@@ -1546,9 +1574,15 @@ Sub ViewRoster (team$)
             End If
         Next
 
-        Print
-        Color 12: Print "KICKOFF RETURNMEN-"
-        Color 14: Print "NAME-              RET AVG     CX%"
+        Locate LAST_ROW - 2
+        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        I$ = GetKeyPress$
+
+        Cls
+
+        Locate 2, 1
+        Color 12: Print "KICKOFF RETURNMEN"
+        Color 14: Print "NAME              RET AVG     CX%"
 
         For I = 0 To 2:
             If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
@@ -1560,13 +1594,9 @@ Sub ViewRoster (team$)
             End If
         Next
 
-        Locate LAST_ROW - 2
-        Color 15: Print "HIT ANY KEY TO CONTINUE";
-        I$ = GetKeyPress$
-
-        Cls
-        Color 12: Print "PUNT RETURNMEN-"
-        Color 14: Print "NAME-              RET AVG     CX%"
+        Print
+        Color 12: Print "PUNT RETURNMEN"
+        Color 14: Print "NAME              RET AVG     CX%"
 
         For I = 0 To 2:
             If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
@@ -1578,9 +1608,16 @@ Sub ViewRoster (team$)
             End If
         Next
 
+        'Locate LAST_ROW - 2
+        'Color 15: Print "HIT ANY KEY TO CONTINUE";
+        'I$ = GetKeyPress$
+
+        'Cls
+
+        'Locate 2, 1
         Print
-        Color 12: Print "PLACE KICKERS-"
-        Color 14: Print "NAME-                FG%  CX%   EP%  CX%"
+        Color 12: Print "PLACE KICKERS"
+        Color 14: Print "NAME                FG%  CX%   EP%  CX%"
 
         For I = 0 To 1:
             If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
@@ -1593,11 +1630,45 @@ Sub ViewRoster (team$)
         Next
 
         Print
-        Color 12: Print "PUNTER-"
-        Color 14: Print "NAME-              AVG"
+        Color 12: Print "PUNTER"
+        Color 14: Print "NAME              AVG"
         Color 3: Print punterName$(0);
         Color 15
         Locate , 21: Print Using "##"; puntAvg(0) * 2 + 28
+
+        Locate LAST_ROW - 2
+        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        I$ = GetKeyPress$
+
+        Cls
+
+        Locate 2, 1
+        Color 12: Print "SACKS"
+        Color 14
+        Print "NAME               SACKS"
+        For I = 0 To 14:
+            If Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
+                Color 3
+                Print sackName$(I);
+                Color 15
+                Locate , 21
+                Print Using "###"; numSacks(I)
+            End If
+        Next
+
+        Print
+        Color 12: Print "INTERCEPTIONS"
+        Color 14
+        Print "NAME               INT'S"
+        For I = 0 To 9:
+            If Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
+                Color 3
+                Print intName$(I);
+                Color 15
+                Locate , 21
+                Print Using "###"; numInts(I)
+            End If
+        Next
 
         Do
             Locate 23
@@ -2215,3 +2286,4 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     Call CSMsgBox("", 0, Pass)
 
 End Sub
+

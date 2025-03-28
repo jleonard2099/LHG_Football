@@ -815,7 +815,7 @@ Sub Replay_Menu ()
 
                 Case 2:
                     Call CAREER
-                    
+
                 Case 3
                     Call EditStats
 
