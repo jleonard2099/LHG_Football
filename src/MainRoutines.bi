@@ -175,7 +175,7 @@ Declare Sub UpdateExpandedLeaders (statType, totalStats)
 Declare Sub UpdateExpandedStandings (orgType)
 Declare Sub ViewCareerLeaders ()
 Declare Sub ViewExpandedStats (statType)
-Declare Sub ViewRoster (team$)
+Declare Sub ViewRoster (targetTeam$)
 Declare Sub ViewSeasonRecords ()
 Declare Sub ViewStatsSummary (teamName$, totalGames%, statFormat, teamPower, SS)
 

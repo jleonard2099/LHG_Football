@@ -58,6 +58,7 @@ Sub CNGTM (userChoice)
                         Call EditTeam(team$, YN$, teamNbr)
 
                     Case 2
+                        Call AdjustContrib
                         userKey$ = GetPrintOptions$
 
                         If userKey$ <> Chr$(27) Then
@@ -78,6 +79,7 @@ Sub CNGTM (userChoice)
                         End If
 
                     Case 3
+                        Call AdjustContrib
                         Call ViewRoster(team$)
 
                 End Select
@@ -100,7 +102,7 @@ End Sub
 '----------------------------------------
 'This subroutine formats and outputs the
 'team roster to the user's display
-Sub PrintRoster (printDest, destFile$, teamName$)
+Sub PrintRoster (printDest, destFile$, targetTeam$)
 
     Shared mascot$, stadium$
 
@@ -126,8 +128,11 @@ Sub PrintRoster (printDest, destFile$, teamName$)
 
     Open destFile$ For Output As #1
 
+    XCoord = (60 - 16 - Len(targetTeam$)) / 2
+
     ' *** PRINT TEAM ROSTER ***
-    Print #1, "TEAM ROSTER FOR "; teamName$; " "; mascot$
+    Print #1,
+    Print #1, Tab(XCoord); "TEAM ROSTER FOR "; targetTeam$; " "; mascot$
     Print #1,
     Print #1, Using "DEF RUSH ADJ   = ###"; leagueRatings(0);
     Print #1, Tab(35); Using "SACKED %         = ##"; leagueRatings(5)
@@ -138,25 +143,37 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Print #1, Using "OFF FUMBLE  %  = ###"; leagueRatings(3);
     Print #1, Tab(35); "DEF YDS/COMP ADJ = ";
 
-    If YC! < 50 Then Print #1, Using "+#.#"; YC! / 100 * 30
-    If YC! > 50 Then Print #1, Using "+#.#"; (100 - YC!) / 100 * -30
+    If YC! < 50 Then
+        Print #1, Using "+#.#"; YC! / 100 * 30
+    End If
+    If YC! > 50 Then
+        Print #1, Using "+#.#"; (100 - YC!) / 100 * -30
+    End If
 
     Print #1, Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
     Print #1, Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
-    Print #1, Using "STAD TYPE      = ###"; teamRatings(3);
-    Print #1, Tab(35); Using "POWER INDEX  = ##"; teamRatings(4)
-    Print #1,
-    Print #1, Using "TEXT COLOR = ##"; teamRatings(2)
+
+    Print #1, "STADIUM TYPE   =  ";
+    If teamRatings(3) = 0 Then
+        Print #1, "OUTDOOR";
+    Else
+        Print #1, "DOME";
+    End If
+    Print #1, Tab(35); Using "POWER INDEX      = ##"; teamRatings(4)
+
+    Print #1, 
+    Print #1, Using "TEXT COLOR       = ##"; teamRatings(2)
     Print #1, Using "BACKGROUND COLOR = ##"; teamRatings(1)
+
     Print #1,
     Print #1, "RUNNING BACKS"
-    Print #1, "NAME               RUSH AVG   CX%  REC AVG   CX%"
+    Print #1, "NAME              RUSH AVG   CX%  REC AVG   CX%"
 
     For I = 0 To 9:
 
-        If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
-            Print #1, rbName$(I); Tab(23);
-            Print #1, Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
+        If Left$(rbName$(I), 1) <> "" And Left$(rbName$(I), 3) <> "END" Then
+            Print #1, rbName$(I); Tab(20);
+            Print #1, Using "##.#     ###     ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
         End If
 
     Next
@@ -167,22 +184,22 @@ Sub PrintRoster (printDest, destFile$, teamName$)
 
     For I = 0 To 5:
 
-        If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
-            Print #1, wrName$(I); Tab(23);
+        If Left$(wrName$(I), 1) <> "" And Left$(wrName$(I), 3) <> "END" Then
+            Print #1, wrName$(I); Tab(21);
             Print #1, Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
         End If
 
     Next
 
     Print #1,
-    Print #1, "QUARTERBACKS                      YDS/CMP"
-    Print #1, "NAME               COMP%   INT%    ADJ     CX%"
+    Print #1, "QUARTERBACKS"; Tab(34); "YDS/CMP"
+    Print #1, "NAME              COMP%   INT%     ADJ    CX%"
 
     For I = 0 To 3:
 
-        If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
-            Print #1, qbName$(I); Tab(21);
-            Print #1, Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
+        If Left$(qbName$(I), 1) <> "" And Left$(qbName$(I), 3) <> "END" Then
+            Print #1, qbName$(I); Tab(19);
+            Print #1, Using "###     ##      ###    ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
         End If
 
     Next
@@ -193,8 +210,8 @@ Sub PrintRoster (printDest, destFile$, teamName$)
 
     For I = 0 To 2:
 
-        If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
-            Print #1, krName$(I); Tab(23);
+        If Left$(krName$(I), 1) <> "" And Left$(krName$(I), 3) <> "END" Then
+            Print #1, krName$(I); Tab(21);
             Print #1, Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
         End If
 
@@ -206,22 +223,22 @@ Sub PrintRoster (printDest, destFile$, teamName$)
 
     For I = 0 To 2:
 
-        If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
-            Print #1, prName$(I); Tab(23);
-            Print #1, Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
+        If Left$(prName$(I), 1) <> "" And Left$(prName$(I), 3) <> "END" Then
+            Print #1, prName$(I); Tab(21);
+            Print #1, Using "##        ###"; prRetAvg(I) * 3; prContrib(I)
         End If
 
     Next
 
     Print #1,
     Print #1, "PLACE KICKERS"
-    Print #1, "NAME                FG%  CX%   EP%  CX%"
+    Print #1, "NAME              FG%  CX%   EP%  CX%"
 
     For I = 0 To 1:
 
-        If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
-            Print #1, pkName$(I); Tab(21);
-            Print #1, Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
+        If Left$(pkName$(I), 1) <> "" And Left$(pkName$(I), 3) <> "END" Then
+            Print #1, pkName$(I); Tab(18);
+            Print #1, Using "###   ###  ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
         End If
 
     Next
@@ -229,30 +246,29 @@ Sub PrintRoster (printDest, destFile$, teamName$)
     Print #1,
     Print #1, "PUNTER"
     Print #1, "NAME              AVG"
-    Print #1, punterName$(0); Tab(21);
+    Print #1, punterName$(0); Tab(19);
     Print #1, Using "##"; puntAvg(0) * 2 + 28
 
     Print #1,
     Print #1, "SACKS"
-    Print #1, "NAME               SACKS"
+    Print #1, "NAME              SACKS"
 
     For I = 0 To 14:
-        If Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
-            Print #1, sackName$(I); Tab(21);
+        If sackName$(I) <> "" And Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
+            Print #1, sackName$(I); Tab(19);
             Print #1, Using "###"; numSacks(I)
         End If
     Next
 
     Print #1,
     Print #1, "INTERCEPTIONS"
-    Print #1, "NAME               INT'S"
+    Print #1, "NAME              INT'S"
     For I = 0 To 9:
-        If Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
-            Print #1, intName$(I); Tab(21);
+        If intName$(I) <> "" And Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
+            Print #1, intName$(I); Tab(19);
             Print #1, Using "###"; numInts(I)
         End If
     Next
-
 
     If printDest = 1 Then
 
@@ -305,80 +321,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
     Dim A1!(9), A3!(9), A5!(9)
     Dim B!(9), B2!(1), B3!(2), B4!(2)
-    Dim contrib2(0 To 15), contrib3(0 To 15)
-
-    'Calculate contribution %s for each individual
-    '-- this should technically be done each time
-    '-- this is called because of the Dim ????
-    'Erase contrib2, contrib3
-
-    U = 0
-
-    For I = 1 To 9
-        If rushContrib(I) = 0 Then
-            U = U + 1
-        Else
-            contrib3(I) = rushContrib(I) - rushContrib(I - 1 - U)
-            U = 0
-        End If
-    Next
-
-    For I = 1 To 9:
-        rushContrib(I) = contrib3(I)
-    Next
-
-    For I = 0 To 5:
-        rbRecepts(I + 10) = recContrib(I)
-    Next
-
-    U = 0
-
-    For I = 1 To 15
-        If rbRecepts(I) = 0 Then
-            U = U + 1
-        Else
-            contrib2(I) = rbRecepts(I) - rbRecepts(I - 1 - U)
-            U = 0
-        End If
-    Next
-
-    For I = 1 To 15:
-        rbRecepts(I) = contrib2(I)
-    Next
-
-    For I = 0 To 5:
-        recContrib(I) = rbRecepts(I + 10)
-    Next
-
-    For I = 3 To 1 Step -1
-        If passContrib(I) <> 0 Then
-            passContrib(I) = passContrib(I) - passContrib(I - 1)
-        End If
-    Next
-
-    For I = 2 To 1 Step -1
-        If krContrib(I) <> 0 Then
-            krContrib(I) = krContrib(I) - krContrib(I - 1)
-        End If
-    Next
-
-    For I = 2 To 1 Step -1
-        If prContrib(I) <> 0 Then
-            prContrib(I) = prContrib(I) - prContrib(I - 1)
-        End If
-    Next
-
-    For I = 1 To 1 Step -1
-        If pkFGContrib(I) <> 0 Then
-            pkFGContrib(I) = pkFGContrib(I) - pkFGContrib(I - 1)
-        End If
-    Next
-
-    For I = 1 To 1 Step -1
-        If pkPATContrib(I) <> 0 Then
-            pkPATContrib(I) = pkPATContrib(I) - pkPATContrib(I - 1)
-        End If
-    Next
+    
+    Call AdjustContrib
 
     'Present menu
     Do
@@ -1469,7 +1413,7 @@ End Sub
 '----------------------------------------
 'This subroutine formats and outputs the
 'team roster to the user's display
-Sub ViewRoster (team$)
+Sub ViewRoster (targetTeam$)
 
     Shared mascot$, stadium$
 
@@ -1495,15 +1439,16 @@ Sub ViewRoster (team$)
         Cls
 
         Color 11
-        Locate 2, 1
+
+        XCoord = (60 - 16 - Len(targetTeam$)) / 2
+        Locate 2, XCoord
         Print "TEAM ROSTER FOR ";
         Color teamRatings(2), teamRatings(1)
-        Print team$;
+        Print targetTeam$;
 
         Color 15, 0
-        Print
-        Print
 
+        Locate 4, 1
         Color 15: Print Using "DEF RUSH ADJ   = ###"; leagueRatings(0);
         Print Tab(35); Using "SACKED %         = ##"; leagueRatings(5)
         Print Using "DEF COMP % ADJ = ###"; leagueRatings(1);
@@ -1522,27 +1467,36 @@ Sub ViewRoster (team$)
 
         Print Using "DEF FUMBLE  %  = ###"; leagueRatings(4);
         Print Tab(35); Using "PENALTY ADJ      = ##"; teamRatings(0)
-        Print Using "STAD TYPE      = ###"; teamRatings(3)
+
+        Print "STADIUM TYPE   =  ";
+        If teamRatings(3) = 0 Then
+            Print "OUTDOOR";
+        Else
+            Print "DOME";
+        End If
+        Print Tab(35); Using "POWER INDEX      = ##"; teamRatings(4)
+
         Print
-        Print Using "FOREGROUND COLOR = ##"; teamRatings(2)
+        Print Using "TEXT COLOR       = ##"; teamRatings(2)
         Print Using "BACKGROUND COLOR = ##"; teamRatings(1)
 
         Print
         Color 12: Print "RUNNING BACKS"
-        Color 14: Print "NAME               RUSH AVG   CX%  REC AVG   CX%"
+        Color 14: Print "NAME              RUSH AVG   CX%  REC AVG   CX%"
 
         For I = 0 To 9:
-            If Left$(rbName$(I), 1) <> " " And Left$(rbName$(I), 3) <> "END" Then
+            If Left$(rbName$(I), 1) <> "" And Left$(rbName$(I), 3) <> "END" Then
                 Color 3
                 Print rbName$(I);
                 Color 15
-                Locate , 23
-                Print Using "##.#     ###    ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
+                Locate , 20
+                Print Using "##.#     ###     ##     ###"; rushAvg(I) * .3; rushContrib(I); rbRecAvg(I) * 3; rbRecepts(I)
             End If
         Next
 
-        Locate LAST_ROW - 2
-        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        Color 14
+        Locate LAST_ROW - 2, 18
+        Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
         Cls
@@ -1551,31 +1505,32 @@ Sub ViewRoster (team$)
         Color 14: Print "NAME              REC AVG     CX%"
 
         For I = 0 To 5:
-            If Left$(wrName$(I), 1) <> " " And Left$(wrName$(I), 3) <> "END" Then
+            If Left$(wrName$(I), 1) <> "" And Left$(wrName$(I), 3) <> "END" Then
                 Color 3
                 Print wrName$(I);
                 Color 15
-                Locate , 23
+                Locate , 21
                 Print Using "##       ###"; wrRecAvg(I) * 3; recContrib(I)
             End If
         Next
 
         Print
         Color 12: Print "QUARTERBACKS";
-        Color 14: Print "YDS/CMP"
-        Print "NAME               COMP%   INT%    ADJ     CX%"
+        Color 14: Print Tab(34); "YDS/CMP"
+        Print "NAME              COMP%   INT%     ADJ    CX%"
         For I = 0 To 3:
-            If Left$(qbName$(I), 1) <> " " And Left$(qbName$(I), 3) <> "END" Then
+            If Left$(qbName$(I), 1) <> "" And Left$(qbName$(I), 3) <> "END" Then
                 Color 3
                 Print qbName$(I);
                 Color 15
-                Locate , 21
-                Print Using "###     ##     ###      ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
+                Locate , 19
+                Print Using "###     ##      ###    ###"; compPct(I); qbIntPct(I); armRating(I); passContrib(I)
             End If
         Next
 
-        Locate LAST_ROW - 2
-        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        Locate LAST_ROW - 2, 28
+        Color 14
+        Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
         Cls
@@ -1585,11 +1540,11 @@ Sub ViewRoster (team$)
         Color 14: Print "NAME              RET AVG     CX%"
 
         For I = 0 To 2:
-            If Left$(krName$(I), 1) <> " " And Left$(krName$(I), 3) <> "END" Then
+            If Left$(krName$(I), 1) <> "" And Left$(krName$(I), 3) <> "END" Then
                 Color 3
                 Print krName$(I);
                 Color 15
-                Locate , 23
+                Locate , 21
                 Print Using "##       ###"; krRetAvg(I) * 3; krContrib(I)
             End If
         Next
@@ -1599,33 +1554,26 @@ Sub ViewRoster (team$)
         Color 14: Print "NAME              RET AVG     CX%"
 
         For I = 0 To 2:
-            If Left$(prName$(I), 1) <> " " And Left$(prName$(I), 3) <> "END" Then
+            If Left$(prName$(I), 1) <> "" And Left$(prName$(I), 3) <> "END" Then
                 Color 3
                 Print prName$(I);
                 Color 15
-                Locate , 23
+                Locate , 22
                 Print Using "##       ###"; prRetAvg(I) * 3; prContrib(I)
             End If
         Next
 
-        'Locate LAST_ROW - 2
-        'Color 15: Print "HIT ANY KEY TO CONTINUE";
-        'I$ = GetKeyPress$
-
-        'Cls
-
-        'Locate 2, 1
         Print
         Color 12: Print "PLACE KICKERS"
-        Color 14: Print "NAME                FG%  CX%   EP%  CX%"
+        Color 14: Print "NAME              FG%  CX%   EP%  CX%"
 
         For I = 0 To 1:
-            If Left$(pkName$(I), 1) <> " " And Left$(pkName$(I), 3) <> "END" Then
+            If Left$(pkName$(I), 1) <> "" And Left$(pkName$(I), 3) <> "END" Then
                 Color 3
                 Print pkName$(I);
                 Color 15
-                Locate , 21
-                Print Using "###   ###   ###  ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
+                Locate , 19
+                Print Using "###  ###  ###   ###"; pkFGA(I) * 5 + 25; pkFGContrib(I); pkPAT(I); pkPATContrib(I)
             End If
         Next
 
@@ -1634,10 +1582,11 @@ Sub ViewRoster (team$)
         Color 14: Print "NAME              AVG"
         Color 3: Print punterName$(0);
         Color 15
-        Locate , 21: Print Using "##"; puntAvg(0) * 2 + 28
+        Locate , 20: Print Using "##"; puntAvg(0) * 2 + 28
 
-        Locate LAST_ROW - 2
-        Color 15: Print "HIT ANY KEY TO CONTINUE";
+        Locate LAST_ROW - 2, 28
+        Color 14
+        Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
 
         Cls
@@ -1645,13 +1594,13 @@ Sub ViewRoster (team$)
         Locate 2, 1
         Color 12: Print "SACKS"
         Color 14
-        Print "NAME               SACKS"
+        Print "NAME              SACKS"
         For I = 0 To 14:
-            If Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
+            If sackName$(I) <> "" And Left$(sackName$(I), 1) <> " " And Left$(sackName$(I), 3) <> "END" Then
                 Color 3
                 Print sackName$(I);
                 Color 15
-                Locate , 21
+                Locate , 19
                 Print Using "###"; numSacks(I)
             End If
         Next
@@ -1659,20 +1608,20 @@ Sub ViewRoster (team$)
         Print
         Color 12: Print "INTERCEPTIONS"
         Color 14
-        Print "NAME               INT'S"
+        Print "NAME              INT'S"
         For I = 0 To 9:
-            If Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
+            If intName$(I) <> "" And Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
                 Color 3
                 Print intName$(I);
                 Color 15
-                Locate , 21
+                Locate , 19
                 Print Using "###"; numInts(I)
             End If
         Next
 
         Do
-            Locate 23
-            Color 15
+            Locate 23, 31
+            Color 14
             Print "VIEW AGAIN? (Y/N)"
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
@@ -1718,16 +1667,17 @@ Sub CheckContributions
 
     Cls
     U$ = "RUNNING BACK CONTRIBUTION RATINGS"
-    Locate 1, 40 - Len(U$) / 2
+    Locate 2, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 9:
@@ -1741,7 +1691,7 @@ Sub CheckContributions
         Print "11  PROCEED TO RECEIVERS"
 
         Do
-            Locate 17
+            Locate 19
             Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 11
 
@@ -1754,7 +1704,7 @@ Sub CheckContributions
                 Locate I1 + 4, 24: Input rushContrib(I1)
             Else
                 If BC% <> 100 Then
-                    Locate 19: Print "TOTAL IS NOT 100%!"
+                    Locate 20: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -1771,16 +1721,17 @@ Sub CheckContributions
 
     Cls
     U$ = "RECEIVING CONTRIBUTION RATINGS"
-    Locate 1, 40 - Len(U$) / 2
+    Locate 2, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 9:
@@ -1799,7 +1750,7 @@ Sub CheckContributions
         Print "17  PROCEED TO QUARTERBACKS"
 
         Do
-            Locate 22: Input "ENTER #: "; B9
+            Locate 24: Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 17
 
         If B9 <> 0 Then
@@ -1821,7 +1772,7 @@ Sub CheckContributions
             Else
 
                 If BC% <> 100 Then
-                    Locate 23: Print "TOTAL IS NOT 100%!"
+                    Locate 25: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -1837,16 +1788,17 @@ Sub CheckContributions
 
     Cls
     U$ = "QUARTERBACK CONTRIBUTION RATINGS"
-    Locate 1, 40 - Len(U$) / 2
+    Locate 2, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 3:
@@ -1860,7 +1812,7 @@ Sub CheckContributions
         Print " 5  PROCEED TO KO RETURNMEN"
 
         Do
-            Locate 11: Input "ENTER #: "; B9
+            Locate 13: Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 5
 
         If B9 <> 0 Then
@@ -1874,7 +1826,7 @@ Sub CheckContributions
                 Input passContrib(I1)
             Else
                 If BC% <> 100 Then
-                    Locate 13: Print "TOTAL IS NOT 100%!"
+                    Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -1892,14 +1844,15 @@ Sub CheckContributions
     U$ = "KICK-OFF RETURN CONTRIBUTION RATINGS"
     Locate 1, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 2
@@ -1913,7 +1866,7 @@ Sub CheckContributions
         Print " 4  PROCEED TO PUNT RETURNMEN"
 
         Do
-            Locate 10
+            Locate 12
             Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 4
 
@@ -1931,7 +1884,7 @@ Sub CheckContributions
             Else
 
                 If BC% <> 100 Then
-                    Locate 12: Print "TOTAL IS NOT 100%!"
+                    Locate 13: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -1950,14 +1903,15 @@ Sub CheckContributions
     U$ = "PUNT RETURN CONTRIBUTION RATINGS"
     Locate 1, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 2:
@@ -1971,7 +1925,7 @@ Sub CheckContributions
         Print " 4  PROCEED TO FG KICKERS"
 
         Do
-            Locate 11: Input "ENTER #: "; B9
+            Locate 13: Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 4
 
         If B9 <> 0 Then
@@ -1988,7 +1942,7 @@ Sub CheckContributions
             Else
 
                 If BC% <> 100 Then
-                    Locate 13: Print "TOTAL IS NOT 100%!"
+                    Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -2006,14 +1960,15 @@ Sub CheckContributions
     U$ = "FIELD GOAL CONTRIBUTION RATINGS"
     Locate 1, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 1:
@@ -2027,7 +1982,7 @@ Sub CheckContributions
         Print " 3  PROCEED TO PAT/EP KICKERS"
 
         Do
-            Locate 10: Input "ENTER #: "; B9
+            Locate 12: Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 3
 
         If B9 <> 0 Then
@@ -2044,7 +1999,7 @@ Sub CheckContributions
             Else
 
                 If BC% <> 100 Then
-                    Locate 12: Print "TOTAL IS NOT 100%!"
+                    Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -2062,14 +2017,15 @@ Sub CheckContributions
     U$ = "PAT/EXTRA POINT CONTRIBUTION RATINGS"
     Locate 1, 40 - Len(U$) / 2
     Color 14: Print U$
-    Print
+
+    Locate 4, 1
     Color 12
     Print "   NAME"; Tab(20); "CONTRIBUTION"
     Color 15
 
     Do
 
-        Locate 4, 1
+        Locate 5, 1
         BC% = 0
 
         For I = 0 To 1
@@ -2082,7 +2038,7 @@ Sub CheckContributions
         Print " 3  PROCEED"
 
         Do
-            Locate 10: Input "ENTER #: "; B9
+            Locate 12: Input "ENTER #: "; B9
         Loop Until B9 >= 0 And B9 <= 3
 
         If B9 <> 0 Then
@@ -2099,7 +2055,7 @@ Sub CheckContributions
             Else
 
                 If BC% <> 100 Then
-                    Locate 12: Print "TOTAL IS NOT 100%!"
+                    Locate 13: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
                     Locate 24, 1: Print Space$(25);
@@ -2110,6 +2066,92 @@ Sub CheckContributions
         End If
 
     Loop Until (B9 = 0 Or B9 = 3) And BC% = 100
+
+End Sub
+
+
+'----------------------------------------
+'       AdjustContrib Subroutine
+'----------------------------------------
+'This routine updates the hardcode values
+'for player contribution (up to 100) and
+'turns them into values as a % of 100
+Sub AdjustContrib
+
+	Shared krContrib()
+    Shared pkFGContrib(), pkPATContrib(), prContrib()
+    Shared rbRecepts(), recContrib(), rushContrib()
+    Shared passContrib()
+
+    Dim contrib2(0 To 15), contrib3(0 To 15)
+
+    U = 0
+
+    For I = 1 To 9
+        If rushContrib(I) = 0 Then
+            U = U + 1
+        Else
+            contrib3(I) = rushContrib(I) - rushContrib(I - 1 - U)
+            U = 0
+        End If
+    Next
+
+    For I = 1 To 9:
+        rushContrib(I) = contrib3(I)
+    Next
+
+    For I = 0 To 5:
+        rbRecepts(I + 10) = recContrib(I)
+    Next
+
+    U = 0
+
+    For I = 1 To 15
+        If rbRecepts(I) = 0 Then
+            U = U + 1
+        Else
+            contrib2(I) = rbRecepts(I) - rbRecepts(I - 1 - U)
+            U = 0
+        End If
+    Next
+
+    For I = 1 To 15:
+        rbRecepts(I) = contrib2(I)
+    Next
+
+    For I = 0 To 5:
+        recContrib(I) = rbRecepts(I + 10)
+    Next
+
+    For I = 3 To 1 Step -1
+        If passContrib(I) <> 0 Then
+            passContrib(I) = passContrib(I) - passContrib(I - 1)
+        End If
+    Next
+
+    For I = 2 To 1 Step -1
+        If krContrib(I) <> 0 Then
+            krContrib(I) = krContrib(I) - krContrib(I - 1)
+        End If
+    Next
+
+    For I = 2 To 1 Step -1
+        If prContrib(I) <> 0 Then
+            prContrib(I) = prContrib(I) - prContrib(I - 1)
+        End If
+    Next
+
+    For I = 1 To 1 Step -1
+        If pkFGContrib(I) <> 0 Then
+            pkFGContrib(I) = pkFGContrib(I) - pkFGContrib(I - 1)
+        End If
+    Next
+
+    For I = 1 To 1 Step -1
+        If pkPATContrib(I) <> 0 Then
+            pkPATContrib(I) = pkPATContrib(I) - pkPATContrib(I - 1)
+        End If
+    Next
 
 End Sub
 
@@ -2244,6 +2286,7 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     For I = 0 To 14
         LSet Q$(I * 2 + 135) = sackName$(I)
         LSet Q$(I * 2 + 136) = MKI$(numSacks(I))
+
     Next I
 
     For I = 0 To 9
@@ -2286,4 +2329,3 @@ Sub SaveChangedTeam (team$, teamYear$, teamNbr, YC%)
     Call CSMsgBox("", 0, Pass)
 
 End Sub
-
