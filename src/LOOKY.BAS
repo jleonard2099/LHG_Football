@@ -430,8 +430,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Color 15: Print Using "NEUTRAL         ##    #####,###   ###,###"; ND&; NT&; NA&
     Color 15: Print Using "TOTAL           ##    #####,###   ###,###"; TD&; TT&; TA&
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -624,8 +625,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         Print Using "###.#"; (allTeamStats!(1, 2) + sackStats!(1, 1) + allTeamStats!(1, 6)) / totalGames%
     End If
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -741,8 +743,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print Using "###"; sackStats!(0, 0);: Print "/";: Print Using "####"; sackStats!(0, 1);
     Print Tab(61); Using "###"; sackStats!(1, 0);: Print "/";: Print Using "####"; sackStats!(1, 1)
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -818,8 +821,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         Print Using "####  ####   ##.#      ###.#    ##"; allTeamStats!(1, 1) - sackStats!(1, 0); allTeamStats!(1, 2) + sackStats!(1, 1); (allTeamStats!(1, 2) + sackStats!(1, 1)) / (allTeamStats!(1, 1) - sackStats!(1, 0)); (allTeamStats!(1, 2) + sackStats!(1, 1)) / totalGames%; statsOpp!(15)
     End If
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -902,8 +906,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     End If
     Print Using "      ###.#    ##"; allTeamStats!(1, 6) / totalGames%; statsOpp!(17)
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -1048,8 +1053,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     Next
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -1144,8 +1150,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         Print Using "####  ####   ##.#      ###.#    ##"; statsOpp!(24); statsOpp!(25); statsOpp!(25) / statsOpp!(24); statsOpp!(25) / totalGames%; statsOpp!(19)
     End If
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -1265,8 +1272,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
     Print
 
     NOONE:
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -1307,8 +1315,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
 
     Next I1
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Color , 0
@@ -1328,8 +1337,9 @@ Sub StatsToScreen (teamName$, totalGames%, statFormat, teamPower, SS)
         End If
     Next
 
-    Locate 24, 1
-    Color 15, 0: Print Space$(27); "PRESS ANY KEY TO CONTINUE"; Space$(28);
+    Color 15
+    Locate LAST_ROW - 2, 27
+    Print "PRESS ANY KEY TO CONTINUE"
     I$ = GetKeyPress
 
 End Sub

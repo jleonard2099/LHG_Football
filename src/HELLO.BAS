@@ -34,6 +34,11 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim carGameSacks(55, 1), carGameInts(55, 2)
+Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
+Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
+Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -709,8 +714,8 @@ Sub TeamMgt_Menu ()
 
         menuChoices$(1) = "INPUT A NEW TEAM          "
         menuChoices$(2) = "EDIT AN EXISTING TEAM     "
-        menuChoices$(3) = "PRINT TEAM ROSTER / REPORT"
-        menuChoices$(4) = "VIEW TEAM ROSTER / REPORT "
+        menuChoices$(3) = "PRINT TEAM ROSTER         "
+        menuChoices$(4) = "VIEW TEAM ROSTER          "
         menuChoices$(5) = "DRAFT PLAYERS             "
         menuChoices$(6) = "TRADE PLAYERS             "
         menuChoices$(7) = "RETURN TO MAIN MENU       "
@@ -782,10 +787,10 @@ Sub Replay_Menu ()
         ReDim menuChoices$(1 To 5)
 
         menuChoices$(1) = "VIEW / PRINT COMPILED STATS     "
-        menuChoices$(2) = "TEAM CAREER OPTIONS             "
-        'menuChoices$(3) = "COMPARE REPLAY STATS TO ACTUAL  "
-        menuChoices$(3) = "MODIFY REPLAY STATS             "
-        menuChoices$(4) = "MERGE SEPARATE STATISTICAL FILES"
+        'menuChoices$(2) = "COMPARE REPLAY STATS TO ACTUAL  "
+        menuChoices$(2) = "MODIFY REPLAY STATS             "
+        menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES"
+        menuChoices$(4) = "TEAM CAREER OPTIONS             "
         menuChoices$(5) = "RETURN TO MAIN MENU             "
         SELECTION% = 1
         Count% = 5
@@ -814,13 +819,13 @@ Sub Replay_Menu ()
                     Call LOOKY
 
                 Case 2:
-                    Call CAREER
-
-                Case 3
                     Call EditStats
 
-                Case 4:
+                Case 3
                     Call MERGE
+
+                Case 4:
+                    Call CAREER
 
                 Case 5:
                     '
