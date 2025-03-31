@@ -56,7 +56,7 @@ End Sub
 
 
 '----------------------------------------
-'       UpdateCareerLeaders Subroutine
+'     UpdateCareerLeaders Subroutine
 '----------------------------------------
 'This routine reads in the current stats,
 'calculates the latest values (based on
@@ -68,7 +68,7 @@ Sub UpdateCareerLeaders ()
     'Arrays to store leader data we generate
     Dim carLdrRBS!(50, 10), carLdrWRS!(40, 6), carLdrQBS!(20, 13)
     Dim carLdrKRS!(15, 6), carLdrPRS!(15, 6), carLdrPUS!(10, 4)
-    Dim carLdrFGS!(10, 17), carLdrGIS!(0 To 54, 0 To 2), carLdrGSS!(55, 3)
+    Dim carLdrFGS!(10, 17), carLdrGIS!(0 To 54, 0 To 2), carLdrGSS!(0 to 54, 0 to 2)
 
     Dim carLdrKRS$(15), carLdrPRS$(15)
     Dim carLdrQBS$(20), carLdrRBS$(50), carLdrWRS$(40)
@@ -1273,8 +1273,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Open destFile$ For Output As #1
 
     Print #1, Tab(5); "RUSH ATTEMPTS"; Tab(34); "RUSH YARDS"; Tab(62); "RUSH AVERAGE"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(0, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(0, I);
         Print #1, Tab(18); Using "#,###"; carLdrVal!(0, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(1, I);
         Print #1, Tab(47); Using "##,###"; carLdrVal!(1, I);
@@ -1286,8 +1288,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "RUSH TOUCHDOWNS"; Tab(34); "RECEPTIONS (BACKS)"; Tab(62); "RECEIVING YARDS (BACKS)"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(3, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(3, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(3, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(4, I);
         Print #1, Tab(47); Using "#,###"; carLdrVal!(4, I);
@@ -1299,8 +1303,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "RECEIVING AVERAGE (BACKS)"; Tab(34); "RECEIVING TOUCHDOWNS (BACKS)"; Tab(62); "LONGEST RECEPTION (BACKS)"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(6, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(6, I);
         Print #1, Tab(18); Using "###.#"; carLdrVal!(6, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(7, I);
         Print #1, Tab(47); Using "###"; carLdrVal!(7, I);
@@ -1313,8 +1319,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "LONGEST RUN"; Tab(34); "RECEPTIONS"; Tab(62); "RECEIVING YARDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(8, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(8, I);
         Print #1, Tab(18); Using "####"; carLdrVal!(8, I);
         Print #1, carLdrTDIndic$(8, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(10, I);
@@ -1327,8 +1335,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "RECEIVING AVERAGE"; Tab(34); "RECEIVING TOUCHDOWNS"; Tab(62); "LONGEST RECEPTION"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(12, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(12, I);
         Print #1, Tab(18); Using "###.#"; carLdrVal!(12, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(13, I);
         Print #1, Tab(47); Using "###"; carLdrVal!(13, I);
@@ -1341,8 +1351,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "PASS COMPLETIONS"; Tab(34); "PASS ATTEMPTS"; Tab(62); "COMPLETION %"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(15, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(15, I);
         Print #1, Tab(18); Using "##,###"; carLdrVal!(15, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(16, I);
         Print #1, Tab(47); Using "##,###"; carLdrVal!(16, I);
@@ -1354,8 +1366,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "PASSING YARDS"; Tab(34); "YARDS / COMPLETION"; Tab(62); "PASSING TOUCHDOWNS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(19, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(19, I);
         Print #1, Tab(18); Using "##,###"; carLdrVal!(19, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(21, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(21, I);
@@ -1367,8 +1381,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "PASSING INTERCEPTIONS"; Tab(34); "QUARTERBACK RATING"; Tab(62); "LONGEST PASS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(18, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(18, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(18, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(22, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(22, I);
@@ -1381,8 +1397,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "KICK RETURN ATTEMPTS"; Tab(34); "KICK RETURN YARDS"; Tab(62); "KICK RETURN AVERAGE"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(24, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(24, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(24, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(25, I);
         Print #1, Tab(47); Using "##,###"; carLdrVal!(25, I);
@@ -1394,8 +1412,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "KICK RETURN TOUCHDOWNS"; Tab(34); "LONGEST KICK RETURN"; Tab(62); "PUNT RETURN ATTEMPTS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(27, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(27, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(27, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(28, I);
         Print #1, Tab(47); Using "###"; carLdrVal!(28, I); carLdrTDIndic$(28, I);
@@ -1407,8 +1427,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "PUNT RETURN YARDS"; Tab(34); "PUNT RETURN AVERAGE"; Tab(62); "PUNT RETURN TOUCHDOWNS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(30, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(30, I);
         Print #1, Tab(18); Using "##,###"; carLdrVal!(30, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(31, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(31, I);
@@ -1420,8 +1442,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "LONGEST PUNT RETURN"; Tab(34); "PUNT ATTEMPTS"; Tab(62); "PUNT YARDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(33, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(33, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(33, I);
         Print #1, carLdrTDIndic$(33, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(34, I);
@@ -1434,8 +1458,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "PUNT AVERAGE"; Tab(34); "EXTRA POINTS MADE"; Tab(62); "EXTRA POINT ATTEMPTS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(36, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(36, I);
         Print #1, Tab(18); Using "###.#"; carLdrVal!(36, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(37, I);
         Print #1, Tab(47); Using "#,###"; carLdrVal!(37, I);
@@ -1447,8 +1473,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "EXTRA POINT %"; Tab(34); "FIELD GOALS MADE"; Tab(62); "FIELD GOALS ATTEMPTED"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(39, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(39, I);
         Print #1, Tab(18); Using "###.#"; carLdrVal!(39, I) * 100;
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(40, I);
         Print #1, Tab(47); Using "#,###"; carLdrVal!(40, I);
@@ -1460,8 +1488,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL %"; Tab(34); "LONGEST FIELD GOAL"; Tab(62); "FIELD GOALS MADE 0-19 YDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(42, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(42, I);
         Print #1, Tab(18); Using "###.#"; carLdrVal!(42, I) * 100;
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(43, I);
         Print #1, Tab(47); Using "##,###"; carLdrVal!(43, I);
@@ -1473,8 +1503,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL ATTEMPTS 0-19 YDS"; Tab(34); "FIELD GOAL % 0-19 YDS"; Tab(62); "FIELD GOALS MADE 20-29 YDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(45, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(45, I);
         Print #1, Tab(18); Using "####"; carLdrVal!(45, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(46, I);
         Print #1, Tab(47); Using "####"; carLdrVal!(46, I) * 100;
@@ -1486,8 +1518,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL ATTEMPTS 20-29 YDS"; Tab(34); "FIELD GOAL % 20-29 YDS"; Tab(62); "FIELD GOALS MADE 30-39 YDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(48, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(48, I);
         Print #1, Tab(18); Using "#,###"; carLdrVal!(48, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(49, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(49, I) * 100;
@@ -1499,8 +1533,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL ATTEMPTS 30-39 YDS"; Tab(34); "FIELD GOAL % 30-39 YDS"; Tab(62); "FIELD GOALS MADE 40-49 YDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(51, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(51, I);
         Print #1, Tab(18); Using "#,###"; carLdrVal!(51, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(52, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(52, I) * 100;
@@ -1512,8 +1548,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL ATTEMPTS 40-49 YDS"; Tab(34); "FIELD GOAL % 40-49 YDS"; Tab(62); "FIELD GOALS MADE 50+ YDS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(54, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(54, I);
         Print #1, Tab(18); Using "#,###"; carLdrVal!(54, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(55, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(55, I) * 100;
@@ -1525,8 +1563,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "FIELD GOAL ATTEMPTS 50+ YDS"; Tab(34); "FIELD GOAL % 50+ YDS"; Tab(62); "INTERCEPTIONS"
+
     For I = 0 To 19
-        Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(57, I);
+        Print #1, Using "##"; I + 1;: Print #1, ". ";
+        Print #1, carLdrPlyrName$(57, I);
         Print #1, Tab(18); Using "#,###"; carLdrVal!(57, I);
         Print #1, Tab(28); Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(58, I);
         Print #1, Tab(47); Using "###.#"; carLdrVal!(58, I) * 100;
@@ -1538,6 +1578,7 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Print #1,
 
     Print #1, Tab(5); "SACKS"
+
     For I = 0 To 19
         Print #1, Using "##"; I + 1;: Print #1, ". ";: Print #1, carLdrPlyrName$(60, I);
         Print #1, Tab(18); Using "###"; carLdrVal!(60, I);
@@ -1585,10 +1626,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RUSH ATTEMPTS"; Tab(44); "RUSH YARDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(0, I);
         Print Tab(20); Using "#,###"; carLdrVal!(0, I);
@@ -1600,17 +1643,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(1, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RUSH AVERAGE"; Tab(44); "RUSH TOUCHDOWNS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(2, I);
         Print Tab(20); Using "###.#"; carLdrVal!(2, I);
@@ -1622,17 +1667,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(3, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RECEPTIONS (BACKS)"; Tab(44); "RECEIVING YARDS (BACKS)"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(4, I);
         Print Tab(20); Using "#,###"; carLdrVal!(4, I);
@@ -1644,17 +1691,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(5, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RECEIVING AVERAGE (BACKS)"; Tab(44); "RECEIVING TOUCHDOWNS (BACKS)"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(6, I);
         Print Tab(20); Using "###.#"; carLdrVal!(6, I);
@@ -1666,17 +1715,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(7, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "LONGEST RECEPTION (BACKS)"; Tab(44); "LONGEST RUN"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(9, I);
         Print Tab(20); Using "###"; carLdrVal!(9, I);
@@ -1690,7 +1741,7 @@ Sub ViewCareerLeaders ()
         Print carLdrTDIndic$(8, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -1700,10 +1751,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RECEPTIONS"; Tab(44); "RECEIVING YARDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(10, I);
         Print Tab(20); Using "#,###"; carLdrVal!(10, I);
@@ -1715,17 +1768,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(11, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "RECEIVING AVERAGE"; Tab(44); "RECEIVING TOUCHDOWNS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(12, I);
         Print Tab(20); Using "###.#"; carLdrVal!(12, I);
@@ -1737,24 +1792,26 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(13, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "LONGEST RECEPTION"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(14, I);
         Print Tab(20); Using "###"; carLdrVal!(14, I);
         Print carLdrTDIndic$(14, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -1764,10 +1821,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PASS COMPLETIONS"; Tab(44); "PASS ATTEMPTS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(15, I);
         Print Tab(20); Using "##,###"; carLdrVal!(15, I);
@@ -1779,33 +1838,37 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(16, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "COMPLETION %"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(17, I);
         Print Tab(20); Using "###.#"; carLdrVal!(17, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PASSING YARDS"; Tab(44); "YARDS / COMPLETION"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(19, I);
         Print Tab(20); Using "##,###"; carLdrVal!(19, I);
@@ -1817,17 +1880,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###.#"; carLdrVal!(21, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PASSING TOUCHDOWNS"; Tab(44); "PASS INTERCEPTIONS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(20, I);
         Print Tab(20); Using "#,###"; carLdrVal!(20, I);
@@ -1839,17 +1904,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(18, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "QUARTERBACK RATING"; Tab(44); "LONGEST PASS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(22, I);
         Print Tab(20); Using "###.#"; carLdrVal!(22, I);
@@ -1862,7 +1929,7 @@ Sub ViewCareerLeaders ()
         Print carLdrTDIndic$(23, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -1872,10 +1939,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "KICK RETURN ATTEMPTS"; Tab(44); "KICK RETURN YARDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(24, I);
         Print Tab(20); Using "###"; carLdrVal!(24, I);
@@ -1887,17 +1956,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(25, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "KICK RETURN AVERAGE"; Tab(44); "KICK RETURN TOUCHDOWNS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(26, I);
         Print Tab(20); Using "###.#"; carLdrVal!(26, I);
@@ -1909,24 +1980,26 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(27, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "LONGEST KICK RETURN"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(28, I);
         Print Tab(20); Using "###"; carLdrVal!(28, I);
         Print carLdrTDIndic$(28, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -1936,10 +2009,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PUNT RETURN ATTEMPTS"; Tab(44); "PUNT RETURN YARDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(29, I);
         Print Tab(20); Using "###"; carLdrVal!(29, I);
@@ -1951,17 +2026,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(30, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PUNT RETURN AVERAGE"; Tab(44); "PUNT RETURN TOUCHDOWNS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(31, I);
         Print Tab(20); Using "###.#"; carLdrVal!(31, I);
@@ -1973,24 +2050,26 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(32, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "LONGEST PUNT RETURN"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(33, I);
         Print Tab(20); Using "###"; carLdrVal!(33, I);
         Print carLdrTDIndic$(33, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -2000,10 +2079,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PUNT ATTEMPTS"; Tab(44); "PUNT YARDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(34, I);
         Print Tab(20); Using "#,###"; carLdrVal!(34, I);
@@ -2015,23 +2096,25 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(35, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "PUNT AVERAGE"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(36, I);
         Print Tab(20); Using "###.#"; carLdrVal!(36, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -2041,10 +2124,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "EXTRA POINTS MADE"; Tab(44); "EXTRA POINT ATTEMPTS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(37, I);
         Print Tab(20); Using "#,###"; carLdrVal!(37, I);
@@ -2056,34 +2141,38 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(38, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "EXTRA POINT %"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(39, I);
         Print Tab(20); Using "###.#"; carLdrVal!(39, I) * 100
 
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE"; Tab(44); "FIELD GOALS ATTEMPTED"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(40, I);
         Print Tab(20); Using "#,###"; carLdrVal!(40, I);
@@ -2095,17 +2184,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(41, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL %"; Tab(44); "LONGEST FIELD GOAL"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(42, I);
         Print Tab(20); Using "###.#"; carLdrVal!(42, I) * 100;
@@ -2117,17 +2208,19 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "##,###"; carLdrVal!(43, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 0-19 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 0-19 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(44, I);
         Print Tab(20); Using "#,###"; carLdrVal!(44, I);
@@ -2139,33 +2232,37 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(45, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL % 0-19 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(46, I);
         Print Tab(20); Using "###.#"; carLdrVal!(46, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 20-29 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 20-29 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(47, I);
         Print Tab(20); Using "#,###"; carLdrVal!(47, I);
@@ -2177,33 +2274,37 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(48, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL % 20-29 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(49, I);
         Print Tab(20); Using "###.#"; carLdrVal!(49, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 30-39 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 30-39 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(50, I);
         Print Tab(20); Using "#,###"; carLdrVal!(50, I);
@@ -2215,33 +2316,37 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(51, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL % 30-39 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(52, I);
         Print Tab(20); Using "###.#"; carLdrVal!(52, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 40-49 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 40-49 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(53, I);
         Print Tab(20); Using "#,###"; carLdrVal!(53, I);
@@ -2253,33 +2358,37 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(54, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL % 40-49 YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(55, I);
         Print Tab(20); Using "###.#"; carLdrVal!(55, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 50+ YDS"; Tab(44); "FIELD GOAL ATTEMPTS 50+ YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(56, I);
         Print Tab(20); Using "#,###"; carLdrVal!(56, I);
@@ -2291,23 +2400,25 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "#,###"; carLdrVal!(57, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "FIELD GOAL % 50+ YDS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(58, I);
         Print Tab(20); Using "###.#"; carLdrVal!(58, I) * 100
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
@@ -2316,10 +2427,12 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 2, 1
     Print Tab(5); "INTERCEPTIONS"; Tab(44); "SACKS"
+
     For I = 0 To 19
         Color 3
-        Locate I + 2: Print Using "##"; I + 1;
+        Locate I + 3: Print Using "##"; I + 1;
         Print ". ";
         Color 15: Print carLdrPlyrName$(59, I);
         Print Tab(20); Using "###"; carLdrVal!(59, I);
@@ -2331,7 +2444,7 @@ Sub ViewCareerLeaders ()
         Print Tab(60); Using "###"; carLdrVal!(60, I)
     Next I
 
-    Locate 23, 22
+    Locate LAST_ROW - 2, 22
     Color 14: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 

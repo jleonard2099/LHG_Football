@@ -19,7 +19,8 @@ Const DIVS_PER_LEAGUE = 4
 Const TEAMS_PER_LEAGUE = 40
 
 Const SCHEDULE_SIZE_BYTES = 56
-Const LAST_LINE = 24
+Const LAST_COL = 80
+Const LAST_ROW = 30
 
 DefInt A-Z
 
@@ -33,6 +34,11 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim carGameSacks(55, 1), carGameInts(55, 2)
+Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
+Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
+Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -492,7 +498,8 @@ ruleYrPro$(5) = "2008-2010"
 ruleYrPro$(6) = "2011-2015"
 ruleYrPro$(7) = "2016-2017"
 ruleYrPro$(8) = "2018-2022"
-ruleYrPro$(9) = "2023-PRESENT"
+ruleYrPro$(9) = "2023"
+ruleYrPro$(10) = "2024"
 
 ruleYrColl$(0) = "PRE-1968 "
 ruleYrColl$(1) = "1968-1980"
@@ -587,6 +594,8 @@ Close #3
 
 'Run main menu
 SELECTION% = 1
+
+Screen _NewImage(640, 480, 256)
 
 Do
 
@@ -705,8 +714,8 @@ Sub TeamMgt_Menu ()
 
         menuChoices$(1) = "INPUT A NEW TEAM          "
         menuChoices$(2) = "EDIT AN EXISTING TEAM     "
-        menuChoices$(3) = "PRINT TEAM ROSTER / REPORT"
-        menuChoices$(4) = "VIEW TEAM ROSTER / REPORT "
+        menuChoices$(3) = "PRINT TEAM ROSTER         "
+        menuChoices$(4) = "VIEW TEAM ROSTER          "
         menuChoices$(5) = "DRAFT PLAYERS             "
         menuChoices$(6) = "TRADE PLAYERS             "
         menuChoices$(7) = "RETURN TO MAIN MENU       "
@@ -778,10 +787,10 @@ Sub Replay_Menu ()
         ReDim menuChoices$(1 To 5)
 
         menuChoices$(1) = "VIEW / PRINT COMPILED STATS     "
-        menuChoices$(2) = "TEAM CAREER OPTIONS             "
-        'menuChoices$(3) = "COMPARE REPLAY STATS TO ACTUAL  "
-        menuChoices$(3) = "MODIFY REPLAY STATS             "
-        menuChoices$(4) = "MERGE SEPARATE STATISTICAL FILES"
+        'menuChoices$(2) = "COMPARE REPLAY STATS TO ACTUAL  "
+        menuChoices$(2) = "MODIFY REPLAY STATS             "
+        menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES"
+        menuChoices$(4) = "TEAM CAREER OPTIONS             "
         menuChoices$(5) = "RETURN TO MAIN MENU             "
         SELECTION% = 1
         Count% = 5
@@ -810,13 +819,13 @@ Sub Replay_Menu ()
                     Call LOOKY
 
                 Case 2:
-                    Call CAREER
-                    
-                Case 3
                     Call EditStats
 
-                Case 4:
+                Case 3
                     Call MERGE
+
+                Case 4:
+                    Call CAREER
 
                 Case 5:
                     '
@@ -977,8 +986,8 @@ End Sub
 '$Include: 'REC.BAS'
 '$Include: 'SCHEDULE.BAS'
 '$Include: 'SEECON.BAS'
-'$Include: 'SEENATL.BAS'
 '$Include: 'SEELEAG.BAS'
+'$Include: 'SEENATL.BAS'
 '$Include: 'SINPUT.BAS'
 '$Include: 'TINPUT.BAS'
 '$Include: 'TRADE.BAS'
@@ -1008,7 +1017,7 @@ Sub FOOTBALL ()
     Shared location$(), overtime$()
     Shared playMode$()
     Shared rulesType$(), ruleYrPro$(), ruleYrColl$()
-
+    Shared yesNoText$()
 
     Color 7, 0
     Cls
@@ -1051,6 +1060,9 @@ Sub FOOTBALL ()
         'Overtime setting
         Print #3, 0
 
+        'Sound option
+        Print #3, 1
+
         Close #3
 
     End If
@@ -1064,6 +1076,9 @@ Sub FOOTBALL ()
     Input #4, ruleOptPro
     Input #4, ruleOptColl
     Input #4, overtimeOpt 'Overtime setting
+    If Not EOF(4) Then
+        Input #4, sndOpt
+    End If
     Close #4
 
     If _FileExists("TICKER") Then
@@ -1122,7 +1137,7 @@ Sub FOOTBALL ()
             MsgText$ = "CAN'T FIND OR LOAD TARGET SCHEDULE.  PRESS ANY KEY TO RETURN TO MENU"
             BoxWidth = 18
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, PASS)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, PASS)
@@ -1173,7 +1188,7 @@ Sub FOOTBALL ()
             MsgText$ = "ATTEMPTED TO LOAD AN INVALID TEAM. PRESS ANY KEY TO RETURN TO MENU"
             BoxWidth = 18
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, PASS)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, PASS)
@@ -1194,54 +1209,46 @@ Sub FOOTBALL ()
             Color 2
             Print Tab(29); "SELECT OPENING OPTIONS"
 
-            Locate 2, 2: Color 14
+            Locate 3, 2: Color 14
             Print "(1) ";
             Color 15: Print playMode$(playerOpt)
-            Locate 3, 2: Color 14
+            Locate 4, 2: Color 14
             Print "(2) ";
             Color 15: Print "VISITING TEAM: ";
             Color teamRat_GAME(0, 2), teamRat_GAME(0, 1): Print gameTeams$(0)
-            Locate 4, 2: Color 14, 0
+            Locate 5, 2: Color 14, 0
             Print "(3) ";
             Color 15: Print "HOME TEAM: ";
             Color teamRat_GAME(1, 2), teamRat_GAME(1, 1): Print gameTeams$(1)
-            Locate 5, 2: Color 14, 0
+            Locate 6, 2: Color 14, 0
             Print "(4) ";
             Color 15: Print "GAME LOCATION: "; location$(gameLoc)
-            Locate 6, 2: Color 14
+            Locate 7, 2: Color 14
             Print "(5) ";
             Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
-            Locate 7, 2: Color 14
+            Locate 8, 2: Color 14
             Print "(6) ";
             Color 15: Print "PRO RULES: "; ruleYrPro$(ruleOptPro)
-            Locate 8, 2: Color 14
+            Locate 9, 2: Color 14
             Print "(7) ";
             Color 15: Print "COLLEGE RULES: "; ruleYrColl$(ruleOptColl)
-            Locate 9, 2: Color 14
+            Locate 10, 2: Color 14
             Print "(8) ";
             Color 15: Print "SUDDEN DEATH: "; overtime$(overtimeOpt)
-            Locate 10, 2: Color 14
+            Locate 11, 2: Color 14
             Print "(9) ";
             Color 15: Print "START GAME"
-            Locate 11, 2: Color 14
+            Locate 12, 2: Color 14
             Print "(0) ";
             Color 15: Print "SAVE SETTINGS"
-            Locate 12, 2: Color 14
+            Locate 13, 2: Color 14
             Print "(A) ";
             Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; pbpDelay!
-
-            'Locate 14, 2: Print "NOTES: CLOCK IS STOPPED AFTER A 1ST DOWN IN COLLEGE BEGINNING IN 1968"
-            'Locate , 2: Print "       HOLDING IS A 15 YARD PENALTY FOR COLLEGE PRE-1981 AND PRO PRE-1974"
-            'Locate , 2: Print "       1991-PRESENT, COLLEGE HOLDING MARKED FROM POINT OF INFRACTION"
-            'Locate , 2: Print "       1974-77, PRO HOLDING ON A RUN IS 10 YDS AND 15 ON A PASS"
-            'Locate , 2: Print "       1978-1994, ALL PRO HOLDING PENALTIES ARE 10 YARDS"
-            'Locate , 2: Print "       PRE-1974, IN THE PROS, GOAL POSTS WERE ON THE GOAL LINE, THE BALL WAS"
-            'Locate , 2: Print "       PLACED ON THE 20 AFTER MISSED FIELD GOALS, KICKOFFS WERE FROM THE 40"
-            'Locate , 2: Print "       1992-PRESENT, COLLEGE RULES ALLOW ADVANCEMENT OF A FUMBLE"
-            'Locate , 2: Print "       PRE-1984, IN COLLEGE PASS INTERFERENCE AT SPOT OF INFRACTION"
-            'Locate , 2: Print "       PRO 1994-, KO FROM 35 TO 30, 2-PT CONVERSION, MISSED FG @ POINT OF KICK"
-
             Locate 14, 2: Color 14
+            Print "(B) ";
+            Color 15: Print "SOUND ENABLED: "; yesNoText$(sndOpt)
+
+            Locate 16, 2: Color 14
             Print "NOTE:: "
             Color 15
 
@@ -1254,7 +1261,8 @@ Sub FOOTBALL ()
             Locate , 3: Print "        2017+, 10 MINUTE OT, 2 TOs, EACH TEAM POSSESS + FIRST SCORE WINS"
             Locate , 3: Print "        HOLDING: PRE-1974, 15 YDS; 1974-77, 10 YDS RUN / 15 YDS PASS;"
             Locate , 3: Print "                  1978+, 10 YDS ON ALL";
-            Locate , 3: Print "        KO: PRE-1974, 40 YL; 1974-1993, 35 YL; 1994-2010, 30 YL; 2011+, 35 YL"
+            Locate , 3: Print "        KO: PRE-1974 @ 40 YL; 1974-1993 @ 35 YL";
+            Locate , 3: Print "            1994-2010 @ 30 YL; 2011+ @ 35 YL"
 
             Do
 
@@ -1264,7 +1272,7 @@ Sub FOOTBALL ()
 
                 Call LetterToNumber(I$, setting)
 
-            Loop Until setting >= 0 And setting <= 10 Or I$ = Chr$(27) Or UCase$(I$) = Chr$(17) Or UCase$(I$) = "Q"
+            Loop Until setting >= 0 And setting <= 11 Or I$ = Chr$(27) Or UCase$(I$) = Chr$(17) Or UCase$(I$) = "Q"
 
             If I$ <> Chr$(27) And UCase$(I$) <> "Q" And UCase$(I$) <> Chr$(17) Then
 
@@ -1272,14 +1280,15 @@ Sub FOOTBALL ()
 
                     Case 0:
                         Open "DEFAULT" For Output As #8
-                        Print #8, playerOpt '
-                        Print #8, ruleOptType '
+                        Print #8, playerOpt
+                        Print #8, ruleOptType
                         Print #8, gameLoc ' Home Field advantage
-                        Print #8, pbpDelay! '
-                        Print #8, firstDownClockOpt '
-                        Print #8, ruleOptPro '
-                        Print #8, ruleOptColl '
-                        Print #8, overtimeOpt 'overtime setting
+                        Print #8, pbpDelay!
+                        Print #8, firstDownClockOpt
+                        Print #8, ruleOptPro
+                        Print #8, ruleOptColl
+                        Print #8, overtimeOpt
+                        Print #8, sndOpt
                         Close #8
 
                     Case 1
@@ -1304,7 +1313,7 @@ Sub FOOTBALL ()
 
                     Case 6:
                         ruleOptPro = ruleOptPro + 1
-                        If ruleOptPro > 9 Then ruleOptPro = 0
+                        If ruleOptPro > 10 Then ruleOptPro = 0
 
                     Case 7
                         ruleOptColl = ruleOptColl + 1
@@ -1319,9 +1328,12 @@ Sub FOOTBALL ()
 
                     Case 10
                         Do
-                            Locate 12, 32
+                            Locate 13, 32
                             Input pbpDelay!
                         Loop Until pbpDelay! >= 0
+
+                    Case 11
+                        sndOpt = 1 - sndOpt
 
                 End Select
 
@@ -1952,7 +1964,7 @@ Sub FOOTBALL ()
 
                         'Returner didn't make it out of the endzone
                         'P1 = Return Team
-                        Call Touchback
+                        Call Touchback(1)
 
                     Else
 
@@ -2263,7 +2275,10 @@ Sub FOOTBALL ()
 
                             Screen , , 0, 0
 
-                            If I$ = Chr$(27) Then GoTo 3118
+
+                            If I$ = Chr$(27) Then
+                                GoTo 3118
+                            End If
 
                             Select Case G2
 
@@ -4156,7 +4171,7 @@ Sub FOOTBALL ()
                         '-- Range is 3.7 - 4.7 seconds
                         Call AddPossessionTime(4, 5)
                         Call CHANGEPOSS
-                        Call Touchback
+                        Call Touchback(0)
 
                     Else
 
@@ -4607,7 +4622,7 @@ Sub FOOTBALL ()
                     '-- Range is 3.7 - 4.7 seconds
                     Call AddPossessionTime(4, 5)
                     Call CHANGEPOSS
-                    Call Touchback
+                    Call Touchback(0)
 
                 Else
 
@@ -4868,7 +4883,7 @@ Sub FOOTBALL ()
 
                 End If
 
-                Screen , , 0, 0
+                'Screen , , 0, 0
 
                 'Fake Field Goal Was Chosen
                 If fgChoice > 0 Then
@@ -7303,7 +7318,7 @@ Sub FOOTBALL ()
         pbpString$ = pbpString$ + " IN THE END ZONE"
         Call PBP
         Call CHANGEPOSS
-        Call Touchback
+        Call Touchback(0)
 
     Else
 
@@ -7493,10 +7508,10 @@ Sub INFO ()
     Color 14
     Print "GAME OPTIONS MENU"
 
-    Locate LAST_LINE, 1
+    Locate LAST_ROW, 1
     Print Tab(80); " ";
     Locate , 1
-    Print "    LANCE HAFFNER / JASON LEONARD  1986-2024"; Tab(70); Left$(Time$, 5);
+    Print "    LANCE HAFFNER / JASON LEONARD  1986-2025"; Tab(70); Left$(Time$, 5);
     Locate 3, 1
     Color , 0
 
@@ -7607,6 +7622,7 @@ Sub InitVar ()
     rushYds = 0
     scoreX0 = 0
     scoreX1 = 0
+    sndOpt = 1
     startYds = 0
     tickerGames = 0
     timeElapsed! = 0
@@ -7826,7 +7842,7 @@ End Sub
 Sub FRAMEOPTION (boxHeight, teamIdx)
 
     PCopy 0, 1
-    Screen , , 1, 1
+    'Screen , , 1, 1
 
     Locate 8, 8
     Color teamRat_GAME(teamIdx, 2), teamRat_GAME(teamIdx, 1)
@@ -8475,7 +8491,8 @@ Sub TICKER ()
 
     End If
 
-    Screen , , 0, 0
+    'Screen , , 0, 0
+    Cls
 
 End Sub
 
@@ -8811,7 +8828,7 @@ End Sub
 'care to center the text as well.
 Sub PLACEPBP ()
 
-    pbpString$ = Left$(pbpString$, 76)
+    pbpString$ = Left$(pbpString$, 74)
 
     Color 14 - 7 * BW, 1 - BW
 
@@ -8901,9 +8918,9 @@ End Sub
 'that is separate.
 Sub SETSCREEN ()
 
-    Screen , , 0, 0
+    'Screen , , 0, 0
 
-    Color 0, 0, 0
+    Color 0, 0
 
     Cls
 
@@ -10411,7 +10428,7 @@ Sub COMPCHEAT (defEra)
                                 Else
                                     dLine = 6 '6-2 Outside Stunt
                                 End If
-                                
+
                         End Select
 
                     Case 2
@@ -11403,7 +11420,7 @@ End Sub
 'and possession location.
 Sub StatusBoard ()
 
-    Screen , , 0, 0
+    'Screen , , 0, 0
 
     If Screen(2, 1) <> 219 Then
 
@@ -11996,7 +12013,7 @@ Sub SETWEATHER ()
 
     End If
 
-    Screen , , 0, 0
+    'Screen , , 0, 0
 
     'Figure out which team to favor
     'for trends happening over decades.
@@ -12109,7 +12126,7 @@ Sub SETWEATHER ()
         Loop Until choice >= 0 And choice <= 3
     End If
 
-    Screen , , 0, 0
+    'Screen , , 0, 0
 
     Select Case choice
 
@@ -12173,7 +12190,7 @@ Sub SETWEATHER ()
     End If
 
     If strongWind = 1 Then
-    
+
         'Strong Wind
         'Distance impacted by 10-15 yards
         climate(1) = 0 - Int(Rnd(1) * 5) + 10
@@ -13820,7 +13837,7 @@ Sub PuntNotReturned (fairCatchPossible, puntType, isPenalty)
 
         If isTouchback = 1 Then
             'Punt ended up in end zone
-            Call Touchback
+            Call Touchback(1)
         Else
             'Ball downed instead
             currDown = 1
@@ -16162,7 +16179,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 'Actual penalty will be handled later
                 ydLine = fairCatchLine
             Else
-                Call Touchback
+                Call Touchback(1)
             End If
 
         Else
@@ -16170,7 +16187,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
             'Newer NFL / NCAA rules reward touchback on fair catch
             'For the NFL, ruleOpt 9 is for 2023 but the rule was approved in summer 2023 for 2024 season
             If kickYL! <= fairCatchLine And ((ruleOptType = 0 And ruleOptColl >= 11) Or (ruleOptType > 0 And ruleOptPro >= 9 And teamYears(impactTeam) >= 2024)) Then
-                Call Touchback
+                Call Touchback(0)
             Else
                 ydLine = kickYL!
             End If
@@ -16182,7 +16199,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         If kickYL! <= -9.99 Then
 
             'Kicked out of endzone - automatic touchback
-            Call Touchback
+            Call Touchback(1)
             kickNotReturned = 1
 
         Else
@@ -16226,7 +16243,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 If returnChoice = 1 Then
 
                     'Received in end zone, kneel for touchback
-                    Call Touchback
+                    Call Touchback(1)
                     kickNotReturned = 1
 
                 Else
@@ -16890,7 +16907,7 @@ End Sub
 'update the variables for down, YARDLINE
 'Also calls Play-by-Play and sets the
 'ball position marker.
-Sub Touchback
+Sub Touchback (endZone)
 
     Call CHANGEPOSS
 
@@ -16928,10 +16945,20 @@ Sub Touchback
                     ydLine = 20
                     ydsToScore = 80
 
-                Case Is >= 8
-                    '2018-PRESENT
+                Case 8 To 9
+                    '2018 - 2023
                     ydLine = 25
                     ydsToScore = 75
+
+                Case Is >= 10
+                    '2024 - Present
+                    If endZone = 1 Then
+                        ydLine = 30
+                    Else
+                        ydLine = 25
+                    End If
+
+                    ydsToScore = 100 - ydLine
 
             End Select
 
@@ -17111,7 +17138,6 @@ Sub OPTIONS ()
 
         Do
             Color 7, 0
-            'Locate LAST_LINE, 1: Print "HIT ANY KEY TO CONTINUE";
             I$ = GetKeyPress$
             I = Val(I$)
         Loop Until I >= 0 And I <= 2
@@ -17958,7 +17984,7 @@ Sub BOX2SCREEN ()
     Call ScoreSummary
 
     If Not (autoPlay = 1 And playerMode = 2) Then
-        Locate LAST_LINE, 27
+        Locate LAST_ROW, 27
         Color 14
         Print "PRESS ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
@@ -18123,7 +18149,7 @@ Sub ScoreSummary
             End If
 
             If Not (autoPlay = 1 And playerMode = 2) And scoreLines >= maxScoreLines Then
-                Locate LAST_LINE, 20
+                Locate LAST_ROW, 20
                 Color 14
                 Print "PRESS ANY KEY FOR MORE SCORE INFORMATION";
                 Call GetKeyWhenNoDelay
@@ -18157,7 +18183,7 @@ Sub STATS2SCREEN ()
     Cls
 
     Call OPTIONBOX(15)
-    Locate LAST_LINE, 27: Print "PRESS ANY KEY TO CONTINUE";
+    Locate LAST_ROW, 27: Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 10, 32
 
@@ -18234,7 +18260,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18280,7 +18306,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18309,7 +18335,7 @@ Sub STATS2SCREEN ()
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
-                Locate LAST_LINE, 27
+                Locate LAST_ROW, 27
                 Print "PRESS ANY KEY TO CONTINUE";
 
                 Locate 2, 32
@@ -18340,7 +18366,7 @@ Sub STATS2SCREEN ()
                 Call GetKeyWhenNoDelay
 
                 Call FRAMESTATS(22)
-                Locate LAST_LINE, 27: Print "PRESS ANY KEY TO CONTINUE";
+                Locate LAST_ROW, 27: Print "PRESS ANY KEY TO CONTINUE";
 
                 Locate 2, 32: Print "RECEIVING STATISTICS"
                 Print
@@ -18361,7 +18387,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 32
@@ -18403,7 +18429,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 25
@@ -18457,7 +18483,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 29
@@ -18547,7 +18573,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 35
@@ -18575,7 +18601,7 @@ Sub STATS2SCREEN ()
     Call GetKeyWhenNoDelay
 
     Call FRAMESTATS(22)
-    Locate LAST_LINE, 27
+    Locate LAST_ROW, 27
     Print "PRESS ANY KEY TO CONTINUE";
 
     Locate 2, 39
@@ -19265,7 +19291,7 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
                         MsgText$ = "NO TEAMS WERE FOUND MATCHING THAT ID... PRESS ANY KEY TO SELECT ANOTHER ID"
                         BoxWidth = 20
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
                         I$ = GetKeyPress$
                         Call CSMsgBox("", 0, Pass)
@@ -19357,21 +19383,27 @@ Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%,
         Start% = 1
         FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor = 0: HiLiteBGColor = 7
-        Rows = 20
+        Rows% = LAST_ROW - 6
         Columns% = 4
         Spacing% = 6
-        Row% = 4
+        Row% = 5
         Column% = 1
 
         Color , 4
         Cls
+
         Color 14
         Locate , 33: Print "TEAM SELECTION"
-        Locate 25, 1
-        Color 14: Print "ESC";
-        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";
+        Locate LAST_ROW, 1
+        Color 14
+        Print Tab(3); "PG DN";
+        Print Tab(18); "ENTER";
         Color 15: Print "-SELECTS TEAM";
+        Color 14
+        Print Tab(39); "ESC";
+        Color 15: Print "-SELECT NEW ID";
+        Color 14
+        Print Tab(72); "PG UP";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor, HiLiteBGColor, Rows%, Columns%, Spacing%, Row%, Column%

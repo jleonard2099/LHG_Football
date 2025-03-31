@@ -172,9 +172,9 @@ Sub NewSchedule (scheduleFile$)
         Color 15, 0
         Cls
 
-        Locate 23, 1
+        Locate LAST_ROW - 2, 1
         Color , 1: Print Tab(80); " ";
-        Locate 23, 1
+        Locate LAST_ROW - 2, 1
         Color 13: Print "HF";
         Color 14: Print "-HOME FIELD ADV  ";
         Color 13: Print "MA";
@@ -184,9 +184,9 @@ Sub NewSchedule (scheduleFile$)
         Color 11: Print " B";
         Color 14: Print "-BOXSCORE OPTIONS"
 
-        Locate LAST_LINE, 1
+        Locate LAST_ROW - 1, 1
         Color , 1: Print Tab(80); " ";
-        Locate LAST_LINE, 1
+        Locate LAST_ROW - 1, 1
         Color 11: Print "C";
         Color 14: Print "-SAVE AND CONTINUE  ";
         Color 11: Print "A";
@@ -197,9 +197,9 @@ Sub NewSchedule (scheduleFile$)
         Color 14: Print "-EDIT A GAME  ";
         Color 11: Print "PGUP  PGDN";
 
-        Locate 25, 1
+        Locate LAST_ROW, 1
         Color , 1: Print Tab(80); " ";
-        Locate 25, 1
+        Locate LAST_ROW, 1
         Color 11: Print "S";
         Color 14: Print "-SORT GAMES  ";
         Color 11: Print "P";
@@ -344,8 +344,8 @@ Sub NewSchedule (scheduleFile$)
 
             Case "B":
                 Do
-                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                    Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO GO TO "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
                 NS% = Int((targetGame% - 1) / 20)
 
@@ -358,7 +358,7 @@ Sub NewSchedule (scheduleFile$)
             Case "D":
                 ' *** DELETE A GAME FROM THE SCHEDULE ***
                 Do
-                    Locate LAST_LINE, 1: Input "ENTER GAME # TO DELETE "; targetGame%
+                    Locate 24, 1: Input "ENTER GAME # TO DELETE "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
                 For X = targetGame% To scheduleAP%(0) - 1
@@ -381,8 +381,8 @@ Sub NewSchedule (scheduleFile$)
             Case "G":
                 'GOTO A SPECIFIC PAGE
                 Do
-                    Locate 23, 1: Print "ENTER GAME # TO GO TO        "
-                    Locate 23, 1: Input "ENTER GAME # TO GO TO "; targetGame%
+                    Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO GO TO        "
+                    Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO GO TO "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
                 NS% = Int((targetGame% - 1) / 20)
@@ -588,8 +588,8 @@ Sub EditGame (DT$, TM$)
 
     ' *** EDIT A GAME ***
     Do
-        Locate 23, 1: Print "ENTER GAME # TO EDIT        "
-        Locate 23, 1: Input "ENTER GAME # TO EDIT "; targetGame%
+        Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO EDIT        "
+        Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO EDIT "; targetGame%
     Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
     V$ = scheduleV$(targetGame%)
@@ -1093,7 +1093,7 @@ Sub EditParameters ()
 
     Do
 
-        Locate 23, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
+        Locate LAST_ROW - 2, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
         Input B9
 
         Select Case B9
@@ -1139,7 +1139,7 @@ Sub BoxscoreMaintenance ()
     menuChoices$(2) = "ACCESS USER SAVED AND SPECIAL EVENTS BOXSCORES   "
     menuChoices$(3) = "DELETE ALL SCHEDULE GENERATED BOXSCORES          "
     menuChoices$(4) = "DELETE ALL USER SAVED, & SPECIAL BOXSCORES       "
-    menuChoices$(5) = "DELETE ALL BOXSCORES (SCHEDULE, USER, &  SPECIAL)"
+    menuChoices$(5) = "DELETE ALL BOXSCORES (SCHEDULE, USER, & SPECIAL)"
     menuChoices$(6) = "RETURN TO MAIN AUTO SCHEDULER MENU               "
     SELECTION% = 1
     Count% = 6
@@ -1501,7 +1501,7 @@ Sub DeleteBoxscores (fileChoice%, fileSpec$)
 
         BoxWidth = 24
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
@@ -1525,7 +1525,7 @@ Sub DeleteBoxscores (fileChoice%, fileSpec$)
         MsgText$ = "ALL BOXSCORE FILES HAVE BEEN DELETED. PRESS ANY KEY TO RETURN TO MAIN MENU"
         BoxWidth = 20
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
@@ -1604,7 +1604,7 @@ Sub EditBoxscore (boxName$)
         MsgText$ = "BOXSCORE DOES NOT EXIST PRESS ANY KEY TO RETURN TO MAIN MENU"
         BoxWidth = 24
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)

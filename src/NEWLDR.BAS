@@ -136,7 +136,7 @@ Sub NEWLDR (statType)
                                 Cls
                                 Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
                                 Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
-                                Locate 23, 1: Print "PRESS ANY KEY TO CONTINUE"
+                                Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
 
                                 I$ = GetKeyPress$
 
@@ -529,7 +529,7 @@ Sub ReadLeaderStdg (leaderFile$, totalStats)
         MsgText$ = "NO COMPILED LEADER FILES WERE FOUND. PRESS ANY KEY TO RETURN TO MAIN MENU"
         BoxWidth = 20
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
@@ -878,7 +878,7 @@ Sub ExpandedLeaders_Menu (totalStats)
         Color 0, 0
         Cls
 
-        Call ShadowBox(1, 15, 40, 15, 4, 15)
+        Call ShadowBox(1, 15, 40, 15, 4, 7)
 
         RR = 0
         newCategory = 0
@@ -1127,18 +1127,16 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                     Do
                         For I = 44 To 58:
-                            Color 14
+                            Color 0
                             Locate I - 41, 4
                             Print Using "##"; I - 44;: Print " ";
-                            Color 15
                             Print expCategories$(I)
                         Next
 
                         For I = 59 To 72:
-                            Color 14
+                            Color 0
                             Locate I - 56, 40
                             Print Using "##"; I - 44;: Print " ";
-                            Color 15
                             Print expCategories$(I)
                         Next
 
@@ -2198,9 +2196,12 @@ Sub PrintViewReselect (userOpt$)
 
     Color 12
     Locate , 30: Print "SELECT OPTION:"
-    Locate , 30: Color 14: Print "P";: Color 7: Print "RINT"
-    Locate , 30: Color 14: Print "V";: Color 7: Print "IEW"
-    Locate , 30: Color 14: Print "R";: Color 7: Print "E-SELECT OPTION"
+    Locate , 30: Color 14: Print "P";
+    Color 7: Print "RINT"
+    Locate , 30: Color 14: Print "V";
+    Color 7: Print "IEW"
+    Locate , 30: Color 14: Print "R";
+    Color 7: Print "E-SELECT OPTION"
 
     Do
         userOpt$ = GetKeyPress$
@@ -2308,17 +2309,10 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
 
     Do
 
+        Color 14
         Cls
 
-        Call ShadowBox(1, 5, 67, 18, 15, 1)
-        Color 14
-
-        R = Len(expCategories$(categoryId))
-
-        Locate 2, 11
-        Print "PLAYER             TEAM";
-
-        Locate , 60 - (Int(R) / 2): Print expCategories$(categoryId)
+        Call ShadowBox(1, 5, 67, 23, 7, 1)
 
         I$ = ""
 
@@ -2326,27 +2320,40 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
 
             RR = RR + 1
 
-            If W <> 1 And (W Mod 16 = 1) Then
+            ' Every 22 records ? new page (but skip prompt on the first page)
+            If (W - 1) Mod 22 = 0 Then
 
-                RR = 1
+                If W > 1 Then
 
-                Color 0, 15
-                Locate 22, 17
-                Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-                Color 1, 0: Print Chr$(220)
-                Locate , 18: Print String$(50, 223)
+                    Color 15, 1
+                    Locate LAST_ROW - 2, 17: Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
+                    Color 7, 0: Print Chr$(220)
+                    Locate , 18
+                    Print String$(50, 223);
 
-                I$ = GetKeyPress$
+                    I$ = GetKeyPress$
 
-                If I$ = Chr$(27) Then
-                    userExit% = 1
-                Else
-                    For I = 3 To 18:
+                    If I$ = Chr$(27) Then
+                        userExit% = 1
+                        Exit For
+                    End If
+
+                    For I = 3 To 24:
                         Color 1, 1
                         Locate I, 7
                         Print Space$(66)
                     Next
+
+                    RR = 1
+                    Color 7, 1
+
                 End If
+
+                ' Print page header
+                Locate 2, 11
+                Print "PLAYER             TEAM";
+
+                Locate , 60 - (Int(Len(expCategories$(categoryId))) / 2): Print expCategories$(categoryId)
 
             End If
 
@@ -2354,62 +2361,66 @@ Sub DisplayLeaders (TVN, maxRecords, categoryId)
 
                 Color 15
                 Locate RR + 2, 7
-                Print Using "###"; W;
-                Print " ";
-                Color 3: Print expLdrPlyrName$(W);
-                Print Tab(30); expLdrTeam$(W);:
+                If expLdrPlyrName$(W) <> "" Then
 
-                Select Case TVN
+                    Print Using "### "; W;
+                    Color 3: Print expLdrPlyrName$(W);
+                    Print Tab(30); expLdrTeam$(W);:
 
-                    Case 1:
-                        Print Tab(58); Using "#####"; expLdrVal!(W)
+                    Select Case TVN
 
-                    Case 2:
-                        Print Tab(58); Using "###.##"; expLdrVal!(W)
+                        Case 1:
+                            Print Tab(58); Using "#####"; expLdrVal!(W)
 
-                    Case 3:
-                        Print Tab(58); Using "###.#"; expLdrVal!(W);
-                        Print Tab(63); expLdrTD$(W)
+                        Case 2:
+                            Print Tab(58); Using "###.##"; expLdrVal!(W)
 
-                    Case 4:
-                        Print Tab(58); Using "###.#"; expLdrVal!(W)
+                        Case 3:
+                            Print Tab(58); Using "###.#"; expLdrVal!(W);
+                            Print Tab(63); expLdrTD$(W)
 
-                End Select
+                        Case 4:
+                            Print Tab(58); Using "###.#"; expLdrVal!(W)
+
+                    End Select
+
+                End If
 
             Else
-                Exit For
+                Exit Do
             End If
 
         Next W
 
         If userExit% <> 1 Then
 
-            Color 0, 15
-            Locate 22, 17
+            Color 15, 1
+            Locate LAST_ROW - 2, 17
             Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-            Color 1, 0: Print Chr$(220)
-            Locate , 18: Print String$(50, 223)
+
+            Color 7, 0: Print Chr$(220)
+            Locate , 18
+            Print String$(50, 223);
 
             I$ = GetKeyPress$
 
             If I$ <> Chr$(27) Then
 
                 Color 0, 0
-                Locate 22: Print Space$(69)
-                Locate 23: Print Space$(69)
+                Locate LAST_ROW - 2, 17: Print Space$(51);
+                Locate LAST_ROW - 1, 18: Print Space$(51);
+
+                Locate LAST_ROW - 2, 32
+                Color 15, 1
+                Print "VIEW AGAIN? (Y/N)";
+
+                Color 7, 0
+                Print Chr$(220)
+                Locate , 33
+                Print String$(17, 223);
 
                 Do
-                    Locate 22, 32
-                    Color 0, 15
-                    Print "VIEW AGAIN? (Y/N)";
-
-                    Color 1, 0
-                    Print Chr$(220)
-                    Locate , 33
-                    Print String$(16, 223)
-
                     I$ = GetKeyPress$
-
                 Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
                 If UCase$(I$) = "Y" Then
@@ -2440,17 +2451,16 @@ Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
     Open destFile$ For Output As #1
 
-    Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
-
     For W = 1 To maxRecords
 
-        If (W <> 1 And W Mod 50 = 1) Then
+        If (W - 1) Mod 50 = 0 Then
             Print #1, Chr$(12)
             Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
+            Print #1, "     ------                  ----                     ";
+            Print #1, String$(Len(expCategories$(categoryID)),45)
         End If
 
-        Print #1, Using "###"; W;
-        Print #1, " ";
+        Print #1, Using "### "; W;
         Print #1, expLdrPlyrName$(W);
         Print #1, Tab(25); expLdrTeam$(W);
 
@@ -2494,112 +2504,6 @@ End Sub
 
 
 '----------------------------------------
-'       TeamStatsToReport Subroutine
-'----------------------------------------
-'This subroutine displays the chosen team
-'stat category to the user display
-Sub TeamStatsToReport (categoryId)
-
-    Shared expCategories$(), expLdrTeam$()
-    Shared expLdrVal!()
-
-    Do
-
-        Cls
-
-        Call ShadowBox(1, 15, 67, 18, 15, 4)
-        Color 14
-
-        R = Len(expCategories$(categoryId))
-        Locate 2, 40 - (Int(R) / 2): Print expCategories$(categoryId)
-
-        Locate 3, 11
-        Print "TEAM                               TEAM "
-
-        For W = 1 To 15
-            If TVN = 1 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W + 3, 7
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(28); Using "#####"; expLdrVal!(W)
-                End If
-            End If
-
-            If TVN = 2 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W + 3, 7
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(29); Using "##.#"; expLdrVal!(W)
-                End If
-            End If
-        Next W
-
-        For W = 16 To 30
-            If TVN = 1 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W - 12, 42
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(63); Using "#####"; expLdrVal!(W)
-                End If
-            End If
-
-            If TVN = 2 Then
-                If expLdrTeam$(W) <> "" Then
-                    Locate W - 12, 42
-                    Color 12
-                    Print Using "###"; W;: Print " ";
-                    Color 15: Print expLdrTeam$(W);
-                    Print Tab(64); Using "##.#"; expLdrVal!(W)
-                End If
-            End If
-
-        Next W
-
-        Locate 22, 17
-        Color 0, 15
-        Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)";
-        Color 4, 0: Print Chr$(220)
-        Locate , 18: Print String$(50, 223)
-
-        I$ = GetKeyPress$
-
-        If I$ <> Chr$(27) Then
-
-            Color 0, 0
-            Locate 22: Print Space$(68)
-            Locate 23: Print Space$(68)
-
-            Do
-                Locate 22, 32
-                Color 0, 15
-                Print "VIEW AGAIN? (Y/N)";
-
-                Color 4, 0
-                Print Chr$(220)
-                Locate , 33
-                Print String$(16, 223)
-
-                I$ = GetKeyPress$
-            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-            If UCase$(I$) = "Y" Then
-                RR = 0
-            End If
-
-        End If
-
-    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
 '        GetListLength Subroutine
 '----------------------------------------
 'This subroutine prompts the user for the
@@ -2617,12 +2521,6 @@ Sub GetListLength (printOrView, listLength, maxItems)
             Color , 0
             Cls
 
-            Print
-            Print
-            Print
-            Print
-            Print
-
             Call MenuBox(10, 20, 30, 2, 4, 15)
             Locate 11
 
@@ -2635,3 +2533,4 @@ Sub GetListLength (printOrView, listLength, maxItems)
     End If
 
 End Sub
+

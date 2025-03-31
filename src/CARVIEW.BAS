@@ -949,50 +949,61 @@ Sub CareerStats_Screen (careerFile$)
         Color 15, 0
         Cls
 
+        Locate 4, 10
         Color 7: Print "VIEW ";
         Color 12: Print "R";
         Color 7: Print "UNNING BACKS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 12: Print "W";
         Color 7: Print "IDE RECEIVERS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 12: Print "Q";
         Color 7: Print "UARTERBACKS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 7: Print "KI";
         Color 12: Print "C";
         Color 7: Print "K RETURNERS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 7: Print "P";
         Color 12: Print "U";
         Color 7: Print "NT RETURNERS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 12: Print "P";
         Color 7: Print "UNTERS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 12: Print "K";
         Color 7: Print "ICKERS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 12: Print "I";
         Color 7: Print "NTERCEPTIONS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 7: Print "DE";
         Color 12: Print "F";
         Color 7: Print "ENSIVE SACKS"
 
+        Locate , 10
         Color 7: Print "VIEW ";
         Color 7: Print "R";
         Color 12: Print "O";
         Color 7: Print "STER IN SEQUENCE"
 
+        Locate , 10
         Color 12: Print "E";
         Color 7: Print "XIT TO MAIN MENU."
 

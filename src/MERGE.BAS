@@ -108,10 +108,14 @@ Sub MergeStats ()
 
     Do
 
-        Call GetMergePaths(pathCurrentStats$, pathRoadStats$, I$)
+        'Call GetMergePaths(pathCurrentStats$, pathRoadStats$, I$)
+        pathCurrentStats$ = diskPaths$(1)
+        pathRoadStats$ = _SelectFolderDialog$("Select folder with ROAD stats", diskPaths$(1))
 
-        If UCase$(I$) = "N" And I$ <> Chr$(27) Then
+        'If UCase$(I$) = "N" And I$ <> Chr$(27) Then
+        If pathRoadStats$ <> "" Then
 
+            pathRoadStats$ =  pathRoadStats$ + "\"
             teamNbr = 0
             Call ChooseTeam(YN$, NTMS, teamNbr, team$)
             statFile$ = nameStatFile$(team$)
@@ -119,12 +123,22 @@ Sub MergeStats ()
             Color 15, 0
             Cls
 
-            Locate 10, 15: Print "ROAD STATS ARE ON DRIVE "; pathRoadStats$
-            Locate , 15: Print "MASTER STATS ARE ON DRIVE "; pathCurrentStats$
-            Locate , 15: Print "TEAM TO MERGE STATS FOR IS "; team$
+            Color 14
+            Locate 8, 15: Print "EXISTING STATS ARE IN: "
+            Color 15
+            Print Tab(15); pathRoadStats$
+            Color 14
+            Locate 11, 15: Print "ROAD STATS ARE LOCATED AT:"
+            Color 15
+            Print Tab(15); pathCurrentStats$
+            Color 14
+            Locate 14, 15: Print "TEAM TO MERGE STATS FOR IS: "
+            Color 15
+            Print Tab(15); team$
 
             Do
-                Locate 14, 15: Print "ANY CHANGE? (Y/N)"
+                Locate 17, 15: Print "ANY CHANGE? "
+                Color 15: Print Tab(15); "(Y/N)"
                 J$ = GetKeyPress$
             Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N"
 
@@ -393,53 +407,34 @@ Sub MergeStats ()
 
                     Else
 
-                        Cls
-                        Color 7
-                        Locate 2, 10: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
-                        Print
-                        Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
+                        badFile = 1
 
-                        Do
-                            Locate , 10
-                            Print "TRY AGAIN? (Y/N) "
-                            I$ = GetKeyPress$
-                        Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                        If UCase$(I$) = "Y" Then
-                            Print
-                            Print "HIT ENTER TO RE-ENTER INFORMATION"
-                            I$ = GetKeyPress$
-                        End If
-
-                    End If 'Done check if home file exists
+                    End If 'Done checking if home file exists
 
                 Else
 
+                    badFile = 1
+
+                End If 'Done checking if road file exists
+
+                If badFile = 1 Then
+
                     Cls
-                    Locate 2, 10
-                    Color 7: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
-                    Print
-                    Locate , 10: Line Input "HIT ENTER TO RE-ENTER INFORMATION"; DUMMY$
+                    Color 7
+                    Locate 2, 10: Print "NON-EXISTANT PATH OR INCORRECT FILE NAME!!!!"
 
                     Do
                         Locate , 10
                         Print "TRY AGAIN? (Y/N) "
                         I$ = GetKeyPress$
                     Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
-
-                    If UCase$(I$) = "Y" Then
-                        Print
-                        Print "HIT ENTER TO RE-ENTER INFORMATION"
-                        I$ = GetKeyPress$
-                    End If
-
-                End If 'Done checking if road file exists
+                End If
 
             End If 'Done checking if ready to proceed
 
         End If 'Done checking for ESC
 
-    Loop Until DUMMY$ <> "" Or UCase$(J$) = "N" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+    Loop Until DUMMY$ <> "" Or (UCase$(J$) = "N" And badFile = 0) Or UCase$(I$) = "N" Or I$ = Chr$(27)
 
 End Sub
 
@@ -748,8 +743,13 @@ Sub DoTheMerge (pathCurrentStats$, statFile$, team$, nbrGamesCurr, nbrGamesRoad)
 
     Y = 0
 
-    Color 12
-    Locate 20, 20: Print "RESULTS SUCCESSFULLY MERGED!!"
+    MsgText$ = "SUCCESSFULLY MERGED ALL STAT FILES!! PRESS ANY KEY TO RETURN TO MENU"
+    BoxWidth = 20
+    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+    Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+    Call CSMsgBox(MsgText$, BoxWidth, PASS)
+    I$ = GetKeyPress$
+    Call CSMsgBox("", 0, PASS)
 
 End Sub
 

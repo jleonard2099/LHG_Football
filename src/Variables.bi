@@ -74,7 +74,7 @@ Dim eventSettings(13)
 
 Dim location$(2), modeAbbrev$(3), overtime$(0 To 8)
 Dim playMode$(3)
-Dim rulesType$(6), ruleYrPro$(0 To 9), ruleYrColl$(0 To 11)
+Dim rulesType$(6), ruleYrPro$(0 To 10), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 
@@ -133,7 +133,7 @@ Dim careerLRec$(60, 1), careerLFG$(0 To 1), careerLInt$(0 To 9, 0 To 1)
 Dim careerLKR$(15, 1), careerLPass$(20, 1), careerLRush$(50, 1)
 Dim careerLPR$(15, 1)
 
-Dim carGameSacks(55, 1), carGameInts(55, 2)
+'Dim carGameSacks(55, 1), carGameInts(55, 2)
 Dim careerFGA!(9, 4), careerFGM!(9, 4)
 Dim careerLRec!(60), careerLKR!(15), careerLRush!(50), careerLPass!(20)
 Dim careerLPR!(15)
@@ -150,9 +150,9 @@ Dim carYear_Punt(2), carYear_QB(8), carYear_RB(9), carYear_WR(4)
 Dim careerDefRecVal!(1), careerFGRecVal!(6), careerKRRecVal!(4), careerPRRecVal!(4)
 Dim careerPuntRecVal!(2), careerQBRecVal!(8), careerRBRecVal!(9), careerWRRecVal!(4)
 
-Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
-Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
-Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+'Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
+'Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
+'Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
 
 Dim careerRecPlyr$(6)
 Dim careerRecVal!(6), careerTeamTotal!(50)
@@ -405,7 +405,7 @@ Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared startYds, tickerGames
+Dim Shared sndOpt, startYds, tickerGames
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
 Dim Shared WE, WS, winTeam

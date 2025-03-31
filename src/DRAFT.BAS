@@ -123,7 +123,7 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
     Do
 
         Do
-            Locate 23, 25
+            Locate LAST_ROW - 2, 25
             Input "# TO CHANGE (0 TO CONTINUE) "; B9
         Loop Until B9 >= 0 And B9 <= 6
 
@@ -248,7 +248,7 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
 
             End Select
 
-            Locate 23, 53
+            Locate LAST_ROW - 2, 53
             Print Space$(10)
 
         End If
@@ -367,7 +367,7 @@ Sub DraftExistingTeam (teamYear$, teamIdx)
         MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
         BoxWidth = 20
         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
         Call CSMsgBox(MsgText$, BoxWidth, Pass)
         I$ = GetKeyPress$
         Call CSMsgBox("", 0, Pass)
@@ -846,7 +846,7 @@ Sub DraftChoices (teamName$)
                         Loop Until P >= 0 And P <= 1
 
                         If P <> 1 Then
-                            Locate 20, 1: Print "HIT ANY KEY TO CONTINUE"
+                            Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE"
                             I$ = GetKeyPress$
 
                             punterName$(0) = pntNam_DRAFT$(0)
@@ -1407,7 +1407,7 @@ Sub ChooseDraftTeam (yearNumber$, numberTeams, teamIdx, teamName$)
                         MsgText$ = "NO TEAM FILES COULD BE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                         BoxWidth = 24
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
                         I$ = GetKeyPress$
                         Call CSMsgBox("", 0, Pass)
@@ -1494,21 +1494,27 @@ Sub SelectDraftTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%
         Start% = 1
         FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
-        Rows% = 20
+        Rows% = LAST_ROW - 6
         Columns% = 4
         Spacing% = 6
-        Row% = 4
+        Row% = 5
         Column% = 1
 
         Color , 4
         Cls
+
         Color 14
         Locate , 33: Print "TEAM SELECTION"
-        Locate 25, 1
-        Color 14: Print "ESC";
-        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";
+        Locate LAST_ROW, 1
+        Color 14
+        Print Tab(3); "PG DN";
+        Print Tab(18); "ENTER";
         Color 15: Print "-SELECTS TEAM";
+        Color 14
+        Print Tab(39); "ESC";
+        Color 15: Print "-SELECT NEW ID";
+        Color 14
+        Print Tab(72); "PG UP";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%

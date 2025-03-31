@@ -104,7 +104,7 @@ Sub Hd2HdCon_Conf (secondConf)
                     MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                     BoxWidth = 24
                     BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                     Call CSMsgBox(MsgText$, BoxWidth, Pass)
                     J$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
@@ -987,7 +987,7 @@ Sub Hd2HdCon_Screen (teamName$, conf2$, divisionNames$(), divisionNames_2nd$(), 
             Locate , 68: Print Using "###"; totHomeScoreOpp!(RDD) + totAwayScoreOpp!(RDD)
 
             Color 14
-            Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+            Locate LAST_ROW - 2, 5: Print "HIT ANY KEY TO CONTINUE"
 
             I$ = GetKeyPress$
 
@@ -1120,7 +1120,7 @@ Sub Hd2HdCon_Screen (teamName$, conf2$, divisionNames$(), divisionNames_2nd$(), 
                 Locate , 68: Print Using "###"; totHomeScoreOpp_2nd!(RDD) + totAwayScoreOpp_2nd!(RDD)
 
                 Color 14
-                Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+                Locate LAST_ROW - 2, 5: Print "HIT ANY KEY TO CONTINUE"
                 I$ = GetKeyPress$
 
             End If
@@ -1370,7 +1370,7 @@ Sub Hd2HdCon_Screen (teamName$, conf2$, divisionNames$(), divisionNames_2nd$(), 
     End If
 
     Color 14
-    Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
+    Locate LAST_ROW - 2, 5: Print "HIT ANY KEY TO CONTINUE"
 
     I$ = GetKeyPress$
 

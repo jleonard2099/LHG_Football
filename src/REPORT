@@ -1,0 +1,73 @@
+TEAM ROSTER FOR 20 ABILENE CHR WILDCATS
+
+DEF RUSH ADJ   =   5              SACKED %         =  7
+DEF COMP % ADJ =   8              DEF SACK ADJ     = -2
+DEF INT % ADJ  =   2              RUN/PASS %       = 48
+OFF FUMBLE  %  =   3              DEF YDS/COMP ADJ = +0.0
+DEF FUMBLE  %  =  -2              PENALTY ADJ      =  4
+STAD TYPE      =   0              POWER INDEX  = 40
+BACKGROUND COLOR =  5
+FOREGROUND COLOR = 15
+
+RUNNING BACKS
+NAME               RUSH AVG   CX%  REC AVG   CX%
+T.WHITE                2.4      29     3       3
+J.DOBBINS              4.5      52     9       5
+L.McCONNELL           14.4      55     9      34
+D.LEWIS                0.9      58     9      48
+J.BROOKS-WES           5.4      61     6      53
+R.McKNIGHT             1.2      64     9      54
+K.CLARK                3.6      65    15      75
+OTHERS                 0.3      69     0       0
+P.MANSELL              0.9      94     0       0
+S.EARLE                1.5     100     0       0
+
+WIDE RECEIVERS
+NAME              REC AVG     CX%
+B.HOHENSTEIN          15        85
+T.WILLIAMS            21        90
+R.LUTZ                12        95
+D.NEECE               12       100
+DA.JOHNSON             3       100
+B.HARMON               3       100
+
+QUARTERBACKS                      YDS/CMP
+NAME               COMP%   INT%    ADJ     CX%
+P.MANSELL            59      2       2       82
+S.EARLE              61      0     -10       98
+S.DAVIS              47      0     -14       99
+OTHERS                0      0       0      100
+
+KICKOFF RETURNMEN
+NAME              RET AVG     CX%
+J.BROOKS-WES          18        68
+DA.JOHNSON            18        91
+OTHERS                 6       100
+
+PUNT RETURNMEN
+NAME              RET AVG     CX%
+J.BROOKS-WES           9       100
+                       0         0
+                       0         0
+
+PLACE KICKERS
+NAME                FG%  CX%   EP%  CX%
+B.ZEPEDA             75   100    92   86
+OTHERS               30   100    50  100
+
+PUNTER
+NAME              AVG
+L.BURKE             40
+
+SACKS
+NAME               SACKS
+J.PAUP                2
+J.GIBBENS             2
+T.ANDERSON            1
+K.JOHNSON             1
+J.JAMES               1
+W.MORGAN              0
+
+INTERCEPTIONS
+NAME               INT'S
+J.GIBBENS             1

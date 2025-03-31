@@ -208,7 +208,7 @@ Sub LoadStatsForTrade (tradeIdx)
             MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
             BoxWidth = 24
             BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-            Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+            Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
             Call CSMsgBox(MsgText$, BoxWidth, Pass)
             I$ = GetKeyPress$
             Call CSMsgBox("", 0, Pass)
@@ -369,7 +369,7 @@ Sub TradeRBs (W1)
         Print rbNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
+            Locate LAST_ROW - 2, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -435,7 +435,7 @@ Sub TradeRBs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 5); tradePlayerStat!(1, I1, 5)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap rbNam_TRADE$(0, I), rbNam_TRADE$(1, I1)
@@ -521,7 +521,7 @@ Sub TradeRBs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 5); tradePlayerStat!(1, I1, 5)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -585,7 +585,7 @@ Sub TradeWRs (W1)
         Print wrNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
+            Locate LAST_ROW - 2, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -630,7 +630,7 @@ Sub TradeWRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 8); tradePlayerStat!(1, I1, 8)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap wrNam_TRADE$(0, I), wrNam_TRADE$(1, I1)
@@ -691,7 +691,7 @@ Sub TradeWRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 8); tradePlayerStat!(1, I1, 8)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -758,7 +758,7 @@ Sub TradeQBs (W1)
         Print qbNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
+            Locate LAST_ROW - 2, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -817,7 +817,7 @@ Sub TradeQBs (W1)
     End If
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap qbNam_TRADE$(0, I), qbNam_TRADE$(1, I1)
@@ -903,7 +903,7 @@ Sub TradeQBs (W1)
     End If
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -969,7 +969,7 @@ Sub TradeKRs (W1)
         Print krNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
+            Locate LAST_ROW - 2, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1013,7 +1013,7 @@ Sub TradeKRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 16); tradePlayerStat!(1, I1, 16)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap krNam_TRADE$(0, I), krNam_TRADE$(1, I1)
@@ -1073,7 +1073,7 @@ Sub TradeKRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I, 16); tradePlayerStat!(1, I1, 16)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -1141,7 +1141,7 @@ Sub TradePRs (W1)
         Print prNam_TRADE$(1, I1)
 
         Do
-            Locate 23, 1: Print "ANY CHANGE? (Y/N) ";
+            Locate LAST_ROW - 2, 1: Print "ANY CHANGE? (Y/N) ";
             I$ = GetKeyPress$
         Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -1184,7 +1184,7 @@ Sub TradePRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I + 3, 16); tradePlayerStat!(1, I1 + 3, 16)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap prNam_TRADE$(0, I), prNam_TRADE$(1, I1)
@@ -1243,7 +1243,7 @@ Sub TradePRs (W1)
     Locate , 5: Print Using "      TDS     ##                                TDS     ##"; tradePlayerStat!(0, I + 3, 16); tradePlayerStat!(1, I1 + 3, 16)
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -1328,7 +1328,7 @@ Sub TradePunters (W1)
             End If
 
             Color 15
-            Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+            Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
             J$ = GetKeyPress$
 
             Swap pntNam_TRADE$(0, 0), pntNam_TRADE$(1, 0)
@@ -1380,7 +1380,7 @@ Sub TradePunters (W1)
     Loop Until UCase$(I$) = "N"
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     J$ = GetKeyPress$
 
 End Sub
@@ -1508,7 +1508,7 @@ Sub TradeKickers (W1)
     End If
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO TRADE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO TRADE";
     I$ = GetKeyPress$
 
     Swap pkNam_TRADE$(0, I), pkNam_TRADE$(1, I1)
@@ -1591,7 +1591,7 @@ Sub TradeKickers (W1)
     End If
 
     Color 15
-    Locate 23, 1: Print "HIT ANY KEY TO CONTINUE";
+    Locate LAST_ROW - 2, 1: Print "HIT ANY KEY TO CONTINUE";
     I$ = GetKeyPress$
 
 End Sub
@@ -2200,7 +2200,7 @@ Sub ChooseTradeTeam (yearNumber$, numberTeams, chosenIdx, teamName$, tradeIdx)
                         MsgText$ = "NO TEAM FILES COULD BE FOUND MATCHING THIS ID. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                         BoxWidth = 24
                         BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                        Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                         Call CSMsgBox(MsgText$, BoxWidth, Pass)
                         I$ = GetKeyPress$
                         Call CSMsgBox("", 0, Pass)
@@ -2287,21 +2287,27 @@ Sub SelectTradeTeam (numberTeams, yearNumber$, selectedIdx, ExitCode%, tradeIdx)
         Start% = 1
         FileFGColor = 15: FileBGColor = 4
         HiLiteFGColor% = 0: HiLiteBGColor% = 7
-        Rows% = 20
+        Rows% = LAST_ROW - 6
         Columns% = 4
         Spacing% = 6
-        Row% = 4
+        Row% = 5
         Column% = 1
 
         Color , 4
         Cls
+
         Color 14
-        Locate , 33: Print "TEAM"; tradeIdx; "SELECTION"
-        Locate 25, 1
-        Color 14: Print "ESC";
-        Color 15: Print "-SELECT NEW ID  PGDN  PGUP  ";
-        Color 14: Print "ENTER";
+        Locate , 33: Print "TEAM SELECTION"
+        Locate LAST_ROW, 1
+        Color 14
+        Print Tab(3); "PG DN";
+        Print Tab(18); "ENTER";
         Color 15: Print "-SELECTS TEAM";
+        Color 14
+        Print Tab(39); "ESC";
+        Color 15: Print "-SELECT NEW ID";
+        Color 14
+        Print Tab(72); "PG UP";
 
         _MouseShow "DEFAULT"
         MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%

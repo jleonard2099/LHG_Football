@@ -245,7 +245,7 @@ Sub MergeFirstYear
                     MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                     BoxWidth = 24
                     BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                    Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                    Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                     Call CSMsgBox(MsgText$, BoxWidth, Pass)
                     I$ = GetKeyPress$
                     Call CSMsgBox("", 0, Pass)
@@ -638,131 +638,199 @@ Sub ReviewCareerRecords ()
                     Call CareerRecords_Report(1, "CAREER")
 
                 Case "S"
-
-                    Do
-                        Cls
-                        Color 15, 0
-
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Print
-
-                        Color 3: Print "RUSHING ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; careerRBRecVal!(0);: Print Tab(50); careerRBRecPlyr$(0);: Print Tab(64); carYear_RB(0)
-                        Color 3: Print "RUSHING YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerRBRecVal!(1);: Print Tab(50); careerRBRecPlyr$(1);: Print Tab(64); carYear_RB(1)
-                        Color 3: Print "RUSHING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerRBRecVal!(2);: Print Tab(50); careerRBRecPlyr$(2);: Print Tab(64); carYear_RB(2)
-                        Color 3: Print "RUSHING TOUCHDOWNS";
-                        Color 7: Print Tab(33); Using "###"; careerRBRecVal!(3);: Print Tab(50); careerRBRecPlyr$(3);: Print Tab(64); carYear_RB(3)
-                        Color 3: Print "LONGEST RUN";
-                        Color 7: Print Tab(33); Using "###"; careerRBRecVal!(8);: Print Tab(36); careerRBR$(0);: Print Tab(50); careerRBRecPlyr$(8);: Print Tab(64); carYear_RB(8)
-                        Color 3: Print "RECEPTIONS (BACKS)";
-                        Color 7: Print Tab(32); Using "####"; careerRBRecVal!(4);: Print Tab(50); careerRBRecPlyr$(4);: Print Tab(64); carYear_RB(4)
-                        Color 3: Print "RECEIVING YARDS (BACKS)";
-                        Color 7: Print Tab(32); Using "####"; careerRBRecVal!(5);: Print Tab(50); careerRBRecPlyr$(5);: Print Tab(64); carYear_RB(5)
-                        Color 3: Print "RECEIVING AVERAGE (BACKS)";
-                        Color 7: Print Tab(32); Using "##.#"; careerRBRecVal!(6);: Print Tab(50); careerRBRecPlyr$(6);: Print Tab(64); carYear_RB(6)
-                        Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";
-                        Color 7: Print Tab(32); Using " ###"; careerRBRecVal!(7);: Print Tab(50); careerRBRecPlyr$(7);: Print Tab(64); carYear_RB(7)
-                        Color 3: Print "LONGEST RECEPTION (BACKS)";
-                        Color 7: Print Tab(33); Using "###"; careerRBRecVal!(9);: Print Tab(37); careerRBR$(1);: Print Tab(50); careerRBRecPlyr$(9);: Print Tab(64); carYear_RB(9)
-                        Color 3: Print "RECEPTIONS";
-                        Color 7: Print Tab(32); Using "####"; careerWRRecVal!(0);: Print Tab(50); careerWRRecPlyr$(0);: Print Tab(64); carYear_WR(0)
-                        Color 3: Print "RECEIVING YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerWRRecVal!(1);: Print Tab(50); careerWRRecPlyr$(1);: Print Tab(64); carYear_WR(1)
-                        Color 3: Print "RECEIVING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerWRRecVal!(2);: Print Tab(50); careerWRRecPlyr$(2);: Print Tab(64); carYear_WR(2)
-                        Color 3: Print "RECEIVING TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; careerWRRecVal!(3);: Print Tab(50); careerWRRecPlyr$(3);: Print Tab(64); carYear_WR(3)
-                        Color 3: Print "LONGEST RECEPTION";
-                        Color 7: Print Tab(32); Using " ###"; careerWRRecVal!(4);: Print Tab(36); careerWRR$;: Print Tab(50); careerWRRecPlyr$(4);: Print Tab(64); carYear_WR(4)
-                        Color 3: Print "COMPLETIONS";
-                        Color 7: Print Tab(32); Using "####"; careerQBRecVal!(0);: Print Tab(50); careerQBRecPlyr$(0);: Print Tab(64); carYear_QB(0)
-                        Color 3: Print "ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; careerQBRecVal!(1);: Print Tab(50); careerQBRecPlyr$(1);: Print Tab(64); carYear_QB(1)
-                        Color 3: Print "INTERCEPTIONS";
-                        Color 7: Print Tab(32); Using "####"; careerQBRecVal!(2);: Print Tab(50); careerQBRecPlyr$(2);: Print Tab(64); carYear_QB(2)
-
-                        Color 15
-                        Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
-                        I$ = GetKeyPress$
-
-                        Cls
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Color 3: Print "TOUCHDOWNS";
-                        Color 7: Print Tab(31); Using " ####"; careerQBRecVal!(3);: Print Tab(50); careerQBRecPlyr$(3);: Print Tab(64); carYear_QB(3)
-                        Color 3: Print "PASSING YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerQBRecVal!(4);: Print Tab(50); careerQBRecPlyr$(4);: Print Tab(64); carYear_QB(4)
-                        Color 3: Print "COMPLETION PERCENTAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerQBRecVal!(5) * 100;: Print Tab(50); careerQBRecPlyr$(5);: Print Tab(64); carYear_QB(5)
-                        Color 3: Print "YARDS PER COMPLETION";
-                        Color 7: Print Tab(32); Using "##.#"; careerQBRecVal!(6);: Print Tab(50); careerQBRecPlyr$(6);: Print Tab(64); carYear_QB(6)
-                        Color 3: Print "QUARTERBACK RATING";
-                        Color 7: Print Tab(31); Using "###.#"; careerQBRecVal!(7);: Print Tab(50); careerQBRecPlyr$(7);: Print Tab(64); carYear_QB(7)
-                        Color 3: Print "LONGEST PASS";
-                        Color 7: Print Tab(32); Using " ###"; careerQBRecVal!(8);: Print Tab(36); careerQBR$;: Print Tab(50); careerQBRecPlyr$(8);: Print Tab(64); carYear_QB(8)
-                        Color 3: Print "KICK RETURN ATTEMPTS";
-                        Color 7: Print Tab(33); Using "###"; careerKRRecVal!(0);: Print Tab(50); careerKRRecPlyr$(0);: Print Tab(64); carYear_KRet(0)
-                        Color 3: Print "KICK RETURN YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerKRRecVal!(1);: Print Tab(50); careerKRRecPlyr$(1);: Print Tab(64); carYear_KRet(1)
-                        Color 3: Print "KICK RETURN AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerKRRecVal!(2);: Print Tab(50); careerKRRecPlyr$(2);: Print Tab(64); carYear_KRet(2)
-                        Color 3: Print "KICK RETURN TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; careerKRRecVal!(3);: Print Tab(50); careerKRRecPlyr$(3);: Print Tab(64); carYear_KRet(3)
-                        Color 3: Print "LONGEST KICK RETURN";
-                        Color 7: Print Tab(32); Using " ###"; careerKRRecVal!(4);: Print Tab(36); careerKRR$;: Print Tab(50); careerKRRecPlyr$(4);: Print Tab(64); carYear_KRet(4)
-                        Color 3: Print "PUNT RETURN ATTEMPTS";
-                        Color 7: Print Tab(33); Using "###"; careerPRRecVal!(0);: Print Tab(50); careerPRRecPlyr$(0);: Print Tab(64); carYear_PRet(0)
-                        Color 3: Print "PUNT RETURN YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerPRRecVal!(1);: Print Tab(50); careerPRRecPlyr$(1);: Print Tab(64); carYear_PRet(1)
-                        Color 3: Print "PUNT RETURN AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerPRRecVal!(2);: Print Tab(50); careerPRRecPlyr$(2);: Print Tab(64); carYear_PRet(2)
-                        Color 3: Print "PUNT RETURN TOUCHDOWNS";
-                        Color 7: Print Tab(32); Using " ###"; careerPRRecVal!(3);: Print Tab(50); careerPRRecPlyr$(3);: Print Tab(64); carYear_PRet(3)
-                        Color 3: Print "LONGEST PUNT RETURN";
-                        Color 7: Print Tab(32); Using " ###"; careerPRRecVal!(4);: Print Tab(36); careerPRR$;: Print Tab(50); careerPRRecPlyr$(4);: Print Tab(64); carYear_PRet(4)
-                        Color 3: Print "PUNT ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; careerPuntRecVal!(0);: Print Tab(50); careerPuntRecPlyr$(0);: Print Tab(64); carYear_Punt(0)
-                        Color 3: Print "PUNTING YARDS";
-                        Color 7: Print Tab(32); Using "####"; careerPuntRecVal!(1);: Print Tab(50); careerPuntRecPlyr$(1);: Print Tab(64); carYear_Punt(1)
-
-                        Color 15
-                        Locate 23, 5: Print "HIT ANY KEY TO CONTINUE"
-                        I$ = GetKeyPress$
-
-                        Cls
-                        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
-                        Color 3: Print "PUNTING AVERAGE";
-                        Color 7: Print Tab(32); Using "##.#"; careerPuntRecVal!(2);: Print Tab(50); careerPuntRecPlyr$(2);: Print Tab(64); carYear_Punt(2)
-                        Color 3: Print "FIELD GOAL ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; careerFGRecVal!(0);: Print Tab(50); careerFGRecPlyr$(0);: Print Tab(64); carYear_FG(0)
-                        Color 3: Print "FIELD GOALS MADE";
-                        Color 7: Print Tab(32); Using "####"; careerFGRecVal!(1);: Print Tab(50); careerFGRecPlyr$(1);: Print Tab(64); carYear_FG(1)
-                        Color 3: Print "FIELD GOAL PERCENTAGE";
-                        Color 7: Print Tab(31); Using "###.#"; careerFGRecVal!(2) * 100;: Print Tab(50); careerFGRecPlyr$(2);: Print Tab(64); carYear_FG(2)
-                        Color 3: Print "LONGEST FIELD GOAL MADE";
-                        Color 7: Print Tab(34); Using "##"; careerFGRecVal!(6);: Print Tab(50); careerFGRecPlyr$(6);: Print Tab(64); carYear_FG(6)
-                        Color 3: Print "EXTRA POINT ATTEMPTS";
-                        Color 7: Print Tab(32); Using "####"; careerFGRecVal!(3);: Print Tab(50); careerFGRecPlyr$(3);: Print Tab(64); carYear_FG(3)
-                        Color 3: Print "EXTRA POINTS MADE";
-                        Color 7: Print Tab(32); Using "####"; careerFGRecVal!(4);: Print Tab(50); careerFGRecPlyr$(4);: Print Tab(64); carYear_FG(4)
-                        Color 3: Print "EXTRA POINT PERCENTAGE";
-                        Color 7: Print Tab(31); Using "###.#"; careerFGRecVal!(5) * 100;: Print Tab(50); careerFGRecPlyr$(5);: Print Tab(64); carYear_FG(5)
-
-                        Color 15
-
-                        Do
-                            Locate 22: Print "VIEW AGAIN? (Y/N)"
-                            I$ = GetKeyPress$
-                        Loop Until UCase$(I$) = "N" Or UCase$(I$) = "Y" Or I$ = Chr$(27)
-
-                    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
+                    Call CareerRecords_Screen
 
             End Select
 
         End If
 
     End If 'Done checking for ESC
+
+End Sub
+
+
+'----------------------------------------
+'    CareerRecords_Report Subroutine
+'----------------------------------------
+'This routine formats career records for
+'output to the screen
+Sub CareerRecords_Screen
+
+    Shared careerDefRecPlyr$(), careerFGRecPlyr$(), careerKRRecPlyr$()
+    Shared careerPRRecPlyr$(), careerPuntRecPlyr$(), careerQBRecPlyr$()
+    Shared careerRBRecPlyr$(), careerRBR$(), careerWRRecPlyr$()
+
+    Shared careerDefRecVal!(), careerFGRecVal!(), careerKRRecVal!()
+    Shared careerPRRecVal!(), careerPuntRecVal!(), careerQBRecVal!()
+    Shared careerRBRecVal!(), careerRBS!(), careerWRRecVal!()
+
+    Shared carYear_DF(), carYear_FG(), carYear_KRet()
+    Shared carYear_PRet(), carYear_Punt(), carYear_QB()
+    Shared carYear_RB(), carYear_WR()
+
+    Do
+
+        Cls
+        Color 15, 0
+
+        Locate 2, 1
+        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+
+        Locate 4, 1
+        Color 3: Print "RUSHING ATTEMPTS";
+        Color 15: Print Tab(32); Using "####"; careerRBRecVal!(0);
+        Print Tab(50); careerRBRecPlyr$(0);: Print Tab(64); carYear_RB(0)
+        Color 3: Print "RUSHING YARDS";
+        Color 15: Print Tab(32); Using "####"; careerRBRecVal!(1);
+        Print Tab(50); careerRBRecPlyr$(1);: Print Tab(64); carYear_RB(1)
+        Color 3: Print "RUSHING AVERAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerRBRecVal!(2);
+        Print Tab(50); careerRBRecPlyr$(2);: Print Tab(64); carYear_RB(2)
+        Color 3: Print "RUSHING TOUCHDOWNS";
+        Color 15: Print Tab(33); Using "###"; careerRBRecVal!(3);
+        Print Tab(50); careerRBRecPlyr$(3);: Print Tab(64); carYear_RB(3)
+        Color 3: Print "LONGEST RUN";
+        Color 15: Print Tab(33); Using "###"; careerRBRecVal!(8);: Print Tab(36); careerRBR$(0);
+        Print Tab(50); careerRBRecPlyr$(8);: Print Tab(64); carYear_RB(8)
+        Color 3: Print "RECEPTIONS (BACKS)";
+        Color 15: Print Tab(32); Using "####"; careerRBRecVal!(4);
+        Print Tab(50); careerRBRecPlyr$(4);: Print Tab(64); carYear_RB(4)
+        Color 3: Print "RECEIVING YARDS (BACKS)";
+        Color 15: Print Tab(32); Using "####"; careerRBRecVal!(5);
+        Print Tab(50); careerRBRecPlyr$(5);: Print Tab(64); carYear_RB(5)
+        Color 3: Print "RECEIVING AVERAGE (BACKS)";
+        Color 15: Print Tab(32); Using "##.#"; careerRBRecVal!(6);
+        Print Tab(50); careerRBRecPlyr$(6);: Print Tab(64); carYear_RB(6)
+        Color 3: Print "RECEIVING TOUCHDOWNS (BACKS)";
+        Color 15: Print Tab(32); Using " ###"; careerRBRecVal!(7);
+        Print Tab(50); careerRBRecPlyr$(7);: Print Tab(64); carYear_RB(7)
+        Color 3: Print "LONGEST RECEPTION (BACKS)";
+        Color 15: Print Tab(33); Using "###"; careerRBRecVal!(9);: Print Tab(37); careerRBR$(1);
+        Print Tab(50); careerRBRecPlyr$(9);: Print Tab(64); carYear_RB(9)
+        Color 3: Print "RECEPTIONS";
+        Color 15: Print Tab(32); Using "####"; careerWRRecVal!(0);
+        Print Tab(50); careerWRRecPlyr$(0);: Print Tab(64); carYear_WR(0)
+        Color 3: Print "RECEIVING YARDS";
+        Color 15: Print Tab(32); Using "####"; careerWRRecVal!(1);
+        Print Tab(50); careerWRRecPlyr$(1);: Print Tab(64); carYear_WR(1)
+        Color 3: Print "RECEIVING AVERAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerWRRecVal!(2);
+        Print Tab(50); careerWRRecPlyr$(2);: Print Tab(64); carYear_WR(2)
+        Color 3: Print "RECEIVING TOUCHDOWNS";
+        Color 15: Print Tab(32); Using " ###"; careerWRRecVal!(3);
+        Print Tab(50); careerWRRecPlyr$(3);: Print Tab(64); carYear_WR(3)
+        Color 3: Print "LONGEST RECEPTION";
+        Color 15: Print Tab(32); Using " ###"; careerWRRecVal!(4);: Print Tab(36); careerWRR$;
+        Print Tab(50); careerWRRecPlyr$(4);: Print Tab(64); carYear_WR(4)
+        Color 3: Print "COMPLETIONS";
+        Color 15: Print Tab(32); Using "####"; careerQBRecVal!(0);
+        Print Tab(50); careerQBRecPlyr$(0);: Print Tab(64); carYear_QB(0)
+        Color 3: Print "ATTEMPTS";
+        Color 15: Print Tab(32); Using "####"; careerQBRecVal!(1);
+        Print Tab(50); careerQBRecPlyr$(1);: Print Tab(64); carYear_QB(1)
+        Color 3: Print "INTERCEPTIONS";
+        Color 15: Print Tab(32); Using "####"; careerQBRecVal!(2);
+        Print Tab(50); careerQBRecPlyr$(2);: Print Tab(64); carYear_QB(2)
+        Color 3: Print "TOUCHDOWNS";
+        Color 15: Print Tab(31); Using " ####"; careerQBRecVal!(3);
+        Print Tab(50); careerQBRecPlyr$(3);: Print Tab(64); carYear_QB(3)
+        Color 3: Print "PASSING YARDS";
+        Color 15: Print Tab(32); Using "####"; careerQBRecVal!(4);
+        Print Tab(50); careerQBRecPlyr$(4);: Print Tab(64); carYear_QB(4)
+        Color 3: Print "COMPLETION PERCENTAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerQBRecVal!(5) * 100;
+        Print Tab(50); careerQBRecPlyr$(5);: Print Tab(64); carYear_QB(5)
+        Color 3: Print "YARDS PER COMPLETION";
+        Color 15: Print Tab(32); Using "##.#"; careerQBRecVal!(6);
+        Print Tab(50); careerQBRecPlyr$(6);: Print Tab(64); carYear_QB(6)
+        Color 3: Print "QUARTERBACK RATING";
+        Color 15: Print Tab(31); Using "###.#"; careerQBRecVal!(7);
+        Print Tab(50); careerQBRecPlyr$(7);: Print Tab(64); carYear_QB(7)
+        Color 3: Print "LONGEST PASS";
+        Color 15: Print Tab(32); Using " ###"; careerQBRecVal!(8);: Print Tab(36); careerQBR$;
+        Print Tab(50); careerQBRecPlyr$(8);: Print Tab(64); carYear_QB(8)
+
+        Color 15
+        Locate LAST_ROW - 1, 28: Print "HIT ANY KEY TO CONTINUE";
+        I$ = GetKeyPress$
+
+        Cls
+
+        Locate 2, 1
+        Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
+
+        Locate 4, 1
+        Color 3: Print "KICK RETURN ATTEMPTS";
+        Color 15: Print Tab(33); Using "###"; careerKRRecVal!(0);
+        Print Tab(50); careerKRRecPlyr$(0);: Print Tab(64); carYear_KRet(0)
+        Color 3: Print "KICK RETURN YARDS";
+        Color 15: Print Tab(32); Using "####"; careerKRRecVal!(1);
+        Print Tab(50); careerKRRecPlyr$(1);: Print Tab(64); carYear_KRet(1)
+        Color 3: Print "KICK RETURN AVERAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerKRRecVal!(2);
+        Print Tab(50); careerKRRecPlyr$(2);: Print Tab(64); carYear_KRet(2)
+        Color 3: Print "KICK RETURN TOUCHDOWNS";
+        Color 15: Print Tab(32); Using " ###"; careerKRRecVal!(3);
+        Print Tab(50); careerKRRecPlyr$(3);: Print Tab(64); carYear_KRet(3)
+        Color 3: Print "LONGEST KICK RETURN";
+        Color 15: Print Tab(32); Using " ###"; careerKRRecVal!(4);: Print Tab(36); careerKRR$;
+        Print Tab(50); careerKRRecPlyr$(4);: Print Tab(64); carYear_KRet(4)
+        Color 3: Print "PUNT RETURN ATTEMPTS";
+        Color 15: Print Tab(33); Using "###"; careerPRRecVal!(0);
+        Print Tab(50); careerPRRecPlyr$(0);: Print Tab(64); carYear_PRet(0)
+        Color 3: Print "PUNT RETURN YARDS";
+        Color 15: Print Tab(32); Using "####"; careerPRRecVal!(1);
+        Print Tab(50); careerPRRecPlyr$(1);: Print Tab(64); carYear_PRet(1)
+        Color 3: Print "PUNT RETURN AVERAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerPRRecVal!(2);
+        Print Tab(50); careerPRRecPlyr$(2);: Print Tab(64); carYear_PRet(2)
+        Color 3: Print "PUNT RETURN TOUCHDOWNS";
+        Color 15: Print Tab(32); Using " ###"; careerPRRecVal!(3);
+        Print Tab(50); careerPRRecPlyr$(3);: Print Tab(64); carYear_PRet(3)
+        Color 3: Print "LONGEST PUNT RETURN";
+        Color 15: Print Tab(32); Using " ###"; careerPRRecVal!(4);: Print Tab(36); careerPRR$;
+        Print Tab(50); careerPRRecPlyr$(4);: Print Tab(64); carYear_PRet(4)
+        Color 3: Print "PUNT ATTEMPTS";
+        Color 15: Print Tab(32); Using "####"; careerPuntRecVal!(0);
+        Print Tab(50); careerPuntRecPlyr$(0);: Print Tab(64); carYear_Punt(0)
+        Color 3: Print "PUNTING YARDS";
+        Color 15: Print Tab(32); Using "####"; careerPuntRecVal!(1);
+        Print Tab(50); careerPuntRecPlyr$(1);: Print Tab(64); carYear_Punt(1)
+        Color 3: Print "PUNTING AVERAGE";
+        Color 15: Print Tab(32); Using "##.#"; careerPuntRecVal!(2);
+        Print Tab(50); careerPuntRecPlyr$(2);: Print Tab(64); carYear_Punt(2)
+        Color 3: Print "FIELD GOAL ATTEMPTS";
+        Color 15: Print Tab(32); Using "####"; careerFGRecVal!(0);
+        Print Tab(50); careerFGRecPlyr$(0);: Print Tab(64); carYear_FG(0)
+        Color 3: Print "FIELD GOALS MADE";
+        Color 15: Print Tab(32); Using "####"; careerFGRecVal!(1);
+        Print Tab(50); careerFGRecPlyr$(1);: Print Tab(64); carYear_FG(1)
+        Color 3: Print "FIELD GOAL PERCENTAGE";
+        Color 15: Print Tab(31); Using "###.#"; careerFGRecVal!(2) * 100;
+        Print Tab(50); careerFGRecPlyr$(2);: Print Tab(64); carYear_FG(2)
+        Color 3: Print "LONGEST FIELD GOAL MADE";
+        Color 15: Print Tab(34); Using "##"; careerFGRecVal!(6);
+        Print Tab(50); careerFGRecPlyr$(6);: Print Tab(64); carYear_FG(6)
+        Color 3: Print "EXTRA POINT ATTEMPTS";
+        Color 15: Print Tab(32); Using "####"; careerFGRecVal!(3);
+        Print Tab(50); careerFGRecPlyr$(3);: Print Tab(64); carYear_FG(3)
+        Color 3: Print "EXTRA POINTS MADE";
+        Color 15: Print Tab(32); Using "####"; careerFGRecVal!(4);
+        Print Tab(50); careerFGRecPlyr$(4);: Print Tab(64); carYear_FG(4)
+        Color 3: Print "EXTRA POINT PERCENTAGE";
+        Color 15: Print Tab(31); Using "###.#"; careerFGRecVal!(5) * 100;
+        Print Tab(50); careerFGRecPlyr$(5);: Print Tab(64); carYear_FG(5)
+
+        Color 15
+
+        Do
+            Color 14
+            Locate LAST_ROW - 1, 31: Print "VIEW AGAIN? (Y/N)";
+            I$ = GetKeyPress$
+            Color 15
+        Loop Until UCase$(I$) = "N" Or UCase$(I$) = "Y" Or I$ = Chr$(27)
+
+    Loop Until UCase$(I$) = "N" Or I$ = Chr$(27)
 
 End Sub
 
@@ -795,6 +863,7 @@ Sub CareerRecords_Report (printDest, destFile$)
 
     Open destFile$ For Output As #1
 
+    Print #1,
     Print #1, Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
     Print #1,
     Print #1, "RUSHING ATTEMPTS";
@@ -1070,7 +1139,7 @@ Sub MergeCareerFiles ()
                 MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
                 BoxWidth = 24
                 BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                Locate ((25 - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
                 Call CSMsgBox(MsgText$, BoxWidth, Pass)
                 I$ = GetKeyPress$
                 Call CSMsgBox("", 0, Pass)
@@ -3100,3 +3169,4 @@ Sub UpdateCareerRecords (careerFile$)
     Close #2
 
 End Sub
+
