@@ -2,6 +2,7 @@
 ' Used in more than one source file
 '----------------------------------------
 Dim opSysType$
+Dim Shared dirSeparator$
 
 Dim Shared currGame
 

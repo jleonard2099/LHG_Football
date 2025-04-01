@@ -71,6 +71,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
     Open destFile$ For Output As #1
 
+    Print #1, 
     Print #1, careerName$
     Print #1, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
 
@@ -1014,25 +1015,28 @@ Sub CareerStats_Screen (careerFile$)
         Select Case UCase$(I$)
 
             Case "R"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 16:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carRBacks$(I), 12)
                 Next
 
                 For I = 17 To 33:
-                    Locate I - 15, 20
+                    Locate I - 13, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carRBacks$(I), 12)
                 Next
 
                 For I = 34 To 49:
-                    Locate I - 32, 40
+                    Locate I - 30, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carRBacks$(I), 12)
@@ -1047,18 +1051,21 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 1, escPressed%, careerFile$)
 
             Case "W"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 19:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carWdRec$(I), 12)
                 Next
 
                 For I = 20 To 39:
-                    Locate I - 18, 20
+                    Locate I - 16, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carWdRec$(I), 12)
@@ -1073,18 +1080,21 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 2, escPressed%, careerFile$)
 
             Case "Q"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 9:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carQBacks$(I), 12)
                 Next
 
                 For I = 10 To 19:
-                    Locate I - 8, 20
+                    Locate I - 6, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carQBacks$(I), 12)
@@ -1098,18 +1108,21 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 3, escPressed%, careerFile$)
 
             Case "C"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 7:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carKickRet$(I), 12)
                 Next
 
                 For I = 8 To 14:
-                    Locate I - 6, 20
+                    Locate I - 4, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carKickRet$(I), 12)
@@ -1123,18 +1136,21 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 4, escPressed%, careerFile$)
 
             Case "U"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 7:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carPRet$(I), 12)
                 Next
 
                 For I = 8 To 14:
-                    Locate I - 6, 20
+                    Locate I - 4, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carPRet$(I), 12)
@@ -1148,11 +1164,14 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 5, escPressed%, careerFile$)
 
             Case "P"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 9:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carPunter$(I), 12)
@@ -1166,11 +1185,14 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 6, escPressed%, careerFile$)
 
             Case "K"
+
                 Cls
+                Locate 2, 1
+
                 Color 12: Print careerFile$
 
                 For I = 0 To 9:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(carKicker$(I), 12)
@@ -1184,25 +1206,28 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 7, escPressed%, careerFile$)
 
             Case "I"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 18:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(intName$(I), 12)
                 Next
 
                 For I = 19 To 36:
-                    Locate I - 17, 20
+                    Locate I - 15, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(intName$(I), 12)
                 Next
 
                 For I = 37 To 54:
-                    Locate I - 35, 40
+                    Locate I - 33, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(intName$(I), 12)
@@ -1216,25 +1241,28 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
 
             Case "F"
+
                 Cls
+
+                Locate 2, 1
                 Color 12: Print careerFile$
 
                 For I = 0 To 18:
-                    Locate I + 2
+                    Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(sackName$(I), 12)
                 Next
 
                 For I = 19 To 36:
-                    Locate I - 17, 20
+                    Locate I - 15, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(sackName$(I), 12)
                 Next
 
                 For I = 37 To 54:
-                    Locate I - 35, 40
+                    Locate I - 33, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
                     Color 7: Print Left$(sackName$(I), 12)
@@ -1248,6 +1276,7 @@ Sub CareerStats_Screen (careerFile$)
                 Call CareerPrintCategory(RT, B9, 9, escPressed%, careerFile$)
 
             Case "O"
+
                 RT = 1
                 Cls
 
@@ -1299,14 +1328,19 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
     Do
 
+        Cls
+
+        Color 11
+        Locate 2, 1
+        Print careerFile$
+        Color 12
+
         Select Case categoryID%
 
             Case 1
 
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2: Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
+                Locate 4, 1
+                Print "RUSHER         YEAR  ATT.  YARDS AVG. TDS   REC. YARDS  AVG. TDS RUN-LONGEST-REC"
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -1316,7 +1350,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carRBacks$(I) <> "" And carRBacks$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carRBacks$(I), 13);
+                        Locate 5: Print Left$(carRBacks$(I), 13);
 
                         VV = 0
 
@@ -1442,6 +1476,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1464,12 +1499,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 2
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2: Print "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
+                Locate 4, 1
+                Print "RECEIVER        YEAR    REC.   YARDS    AVG.  TD  LONGEST REC."
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -1479,7 +1510,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carWdRec$(I) <> "" And carWdRec$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carWdRec$(I), 13);
+                        Locate 5: Print Left$(carWdRec$(I), 13);
 
                         VV = 0
 
@@ -1558,6 +1589,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1579,12 +1611,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 3
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2: Print "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"
+                Locate 4, 1
+                Print "QUARTERBACK  YEAR  COMP. ATT. INT TDS YARDS  PCT. YD/COMP RATING LONG.PASS"
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -1594,7 +1622,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carQBacks$(I) <> "" And carQBacks$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carQBacks$(I), 12);
+                        Locate 5: Print Left$(carQBacks$(I), 12);
 
                         VV = 0
 
@@ -1766,6 +1794,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1786,12 +1815,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 4
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
 
                 If RT = 1 Then start% = 0
@@ -1802,7 +1826,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carKickRet$(I) <> "" And carKickRet$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carKickRet$(I), 13);
+                        Locate 5: Print Left$(carKickRet$(I), 13);
 
                         VV = 0
 
@@ -1881,6 +1905,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1902,12 +1927,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 5
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST RET."
 
                 If RT = 1 Then start% = 0
@@ -1918,7 +1938,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carPRet$(I) <> "" And carPRet$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carPRet$(I), 13);
+                        Locate 5: Print Left$(carPRet$(I), 13);
 
                         VV = 0
 
@@ -1997,6 +2017,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2017,12 +2038,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 6
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "PUNTERS           YEAR     ATT.     YARDS      AVG."
 
                 If RT = 1 Then start% = 0
@@ -2032,7 +2048,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                     If carPunter$(I) <> "" And carPunter$(I) <> "XXX" Then
 
-                        Locate 3: Color 15: Print Left$(carPunter$(I), 13);
+                        Locate 5: Color 15: Print Left$(carPunter$(I), 13);
 
                         VV = 0
 
@@ -2092,6 +2108,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2112,12 +2129,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 7
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50+"
 
                 If RT = 1 Then start% = 0
@@ -2128,7 +2140,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If carKicker$(I) <> "" And carKicker$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(carKicker$(I), 13);
+                        Locate 5: Print Left$(carKicker$(I), 13);
 
                         VV = 0
 
@@ -2260,6 +2272,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2281,12 +2294,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 8
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "INTERCEPTORS        YEAR     INTERCEPTIONS"
 
                 If RT = 1 Then start% = 0
@@ -2297,7 +2305,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If intName$(I) <> "" And intName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(intName$(I), 13);
+                        Locate 5: Print Left$(intName$(I), 13);
 
                         VV = 0
 
@@ -2336,6 +2344,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2356,12 +2365,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
             Case 9
 
-                Cls
-
-                Color 11
-                Locate 1: Print careerFile$
-                Color 12
-                Locate 2
+                Locate 4, 1
                 Print "DEFENSIVE SACKS     YEAR        SACKS"
 
                 If RT = 1 Then start% = 0
@@ -2372,7 +2376,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                     If sackName$(I) <> "" And sackName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 3: Print Left$(sackName$(I), 13);
+                        Locate 5: Print Left$(sackName$(I), 13);
 
                         VV = 0
 
@@ -2405,6 +2409,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print
                         Print
                         Color 14
+                        Locate , 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
