@@ -7,9 +7,9 @@
 'saving the file.
 Sub CAREDIT ()
 
-    Shared TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
-
     _Title "3-in-1 Football - Edit Career Files"
+
+    Shared TN$, NB, NC, ND, NE, NF, NG, NH, NI, NJ, NK
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
     Shared intName$(), sackName$()
@@ -24,11 +24,11 @@ Sub CAREDIT ()
     Color 15, 0
     Cls
 
-    careerFile$ = ChooseFile$ (diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+    careerFile$ = ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Call LoadCareerFile (careerFile$)
+		Call LoadCareerFile (diskPaths$(1) + careerFile$ + ".CAR")
 
         Do
 
@@ -735,8 +735,7 @@ Sub CAREDIT ()
                     End If
 
                 Case "D"
-
-                    Call SaveCareerFile(careerFile$)
+                    Call SaveCareerFile(diskPaths$(1) + careerFile$ + ".CAR")
 
                 Case "E","X"
                     '

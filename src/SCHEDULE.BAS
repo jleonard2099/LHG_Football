@@ -586,17 +586,39 @@ Sub EditGame (DT$, TM$)
     Shared scheduleYN$()
     Shared scheduleNG%()
 
+    Shared NS%
+
     ' *** EDIT A GAME ***
     Do
         Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO EDIT        "
         Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO EDIT "; targetGame%
     Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
 
-    V$ = scheduleV$(targetGame%)
-    H$ = scheduleH$(targetGame%)
+    NS% = Int((targetGame% - 1) / 20)
+
+    T1 = scheduleNG%(targetGame%, 0)
     YN$ = scheduleYN$(targetGame%, 0)
-    QBV$ = scheduleQB_V$(targetGame%)
-    QBH$ = scheduleQB_H$(targetGame%)
+    Call ReadTeam(YN$, team$, T1)
+    Call ReadExtraData(YN$, T1, validData)
+
+    If validData = 1 Then
+
+        V$ = team$
+        QBV$ = scheduleQB_V$(targetGame%)
+
+        T1 = scheduleNG%(targetGame%, 1)
+        YN$ = scheduleYN$(targetGame%, 1)
+        Call ReadTeam(YN$, team$, T1)
+        Call ReadExtraData(YN$, T1, validData)
+
+        If validData = 1 Then
+
+            H$ = team$
+            QBH$ = scheduleQB_H$(targetGame%)
+
+        End If
+
+    End If
 
     HR% = Int(scheduleNG%(targetGame%, 15) / 100)
     MIN% = scheduleNG%(targetGame%, 15) - HR% * 100

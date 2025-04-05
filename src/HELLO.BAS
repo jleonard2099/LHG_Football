@@ -34,10 +34,7 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim carGameSacks(55, 1), carGameInts(55, 2)
-Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
-Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
-Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
 
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
@@ -788,7 +785,7 @@ Sub Replay_Menu ()
 
         ReDim menuChoices$(1 To 5)
 
-        menuChoices$(1) = "VIEW / PRINT COMPILED STATS     "
+        menuChoices$(1) = "REVIEW COMPILED STATS           "
         'menuChoices$(2) = "COMPARE REPLAY STATS TO ACTUAL  "
         menuChoices$(2) = "MODIFY REPLAY STATS             "
         menuChoices$(3) = "MERGE SEPARATE STATISTICAL FILES"

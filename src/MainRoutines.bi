@@ -17,7 +17,7 @@ Declare Sub CalcStatLeaders (numberGames, teamName$, WT$, finalUpdate$)
 Declare Sub CalcStatTotalsConf (numberGames, teamName$, WT$, finalUpdate$)
 Declare Sub CalcStatTotalsPro (numberGames, teamName$, WT$, finalUpdate$)
 Declare Sub CareerLeaderOptions ()
-Declare Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
+Declare Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerFile$)
 Declare Sub CareerRecords_Report (printDest, destFile$)
 Declare Sub CareerRecords_Screen
 Declare Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)

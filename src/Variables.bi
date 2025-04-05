@@ -134,12 +134,12 @@ Dim careerLRec$(60, 1), careerLFG$(0 To 1), careerLInt$(0 To 9, 0 To 1)
 Dim careerLKR$(15, 1), careerLPass$(20, 1), careerLRush$(50, 1)
 Dim careerLPR$(15, 1)
 
-'Dim carGameSacks(55, 1), carGameInts(55, 2)
+Dim carGameSacks(55, 1), carGameInts(55, 2)
 Dim careerFGA!(9, 4), careerFGM!(9, 4)
 Dim careerLRec!(60), careerLKR!(15), careerLRush!(50), careerLPass!(20)
 Dim careerLPR!(15)
 
-Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
+'Dim careerKRS$(MAX_CAREER_YEARS, 15, 1), careerPRS$(MAX_CAREER_YEARS, 15, 1)
 Dim careerQBS$(MAX_CAREER_YEARS, 20, 1), careerRBS$(MAX_CAREER_YEARS, 50, 1), careerWRS$(MAX_CAREER_YEARS, 40, 1)
 
 Dim careerDefRecPlyr$(1), careerFGRecPlyr$(6), careerKRRecPlyr$(4), careerPRRecPlyr$(4), careerPuntRecPlyr$(2)
@@ -151,9 +151,9 @@ Dim carYear_Punt(2), carYear_QB(8), carYear_RB(9), carYear_WR(4)
 Dim careerDefRecVal!(1), careerFGRecVal!(6), careerKRRecVal!(4), careerPRRecVal!(4)
 Dim careerPuntRecVal!(2), careerQBRecVal!(8), careerRBRecVal!(9), careerWRRecVal!(4)
 
-'Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
-'Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
-'Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
+Dim careerFGS!(MAX_CAREER_YEARS, 10, 17), careerGIS!(MAX_CAREER_YEARS, 55, 3), careerGSS!(MAX_CAREER_YEARS, 55, 3)
+Dim careerKRS!(MAX_CAREER_YEARS, 15, 11), careerPRS!(MAX_CAREER_YEARS, 15, 11), careerPUS!(MAX_CAREER_YEARS, 10, 4)
+Dim careerQBS!(MAX_CAREER_YEARS, 20, 13), careerRBS!(MAX_CAREER_YEARS, 50, 11), careerWRS!(MAX_CAREER_YEARS, 40, 11)
 
 Dim careerRecPlyr$(6)
 Dim careerRecVal!(6), careerTeamTotal!(50)

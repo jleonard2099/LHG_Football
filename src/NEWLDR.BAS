@@ -26,16 +26,16 @@ Sub NEWLDR (statType)
     Shared expStdLeagName$()
 
     If statType = 1 Then
-        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS    "
-        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS      "
-        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS      "
-        menuChoices$(4) = "VIEW / PRINT EXPANDED LEAGUE STANDINGS"
-        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU          "
+        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS"
+        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS  "
+        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS  "
+        menuChoices$(4) = "REVIEW EXPANDED LEAGUE STANDINGS  "
+        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU      "
     Else
         menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS  "
         menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS    "
         menuChoices$(3) = "UPDATE EXPANDED COLLEGE CONFERENCE STANDINGS"
-        menuChoices$(4) = "VIEW / PRINT COLLEGE CONFERENCE STANDINGS   "
+        menuChoices$(4) = "REVIEW COLLEGE CONFERENCE STANDINGS         "
         menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU                "
     End If
 

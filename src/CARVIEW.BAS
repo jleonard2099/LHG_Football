@@ -8,20 +8,20 @@ Sub CARVIEW ()
 
     _Title "3-in-1 Football - Print Career Files"
 
-    careerFile$ = ChooseFile$ (diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+    careerFile$ = ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-        Call LoadCareerFile (careerFile$)
+        Call LoadCareerFile(diskPaths$(1) + careerFile$ + ".CAR")
 
         userKey$ = GetOutputOptions$
 
         If userKey$ <> Chr$(27) Then
-            
+
             Select Case userKey$
 
                 Case "F"
-                    userFile$ = _SAVEFILEDIALOG$("Save Career Report",_CWD$ + "\Career","*.txt","Text File")
+                    userFile$ = _SaveFileDialog$("Save Career Report", _CWD$ + "\Career", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call CareerStats_Report(0, userFile$, careerFile$)
                     End If
@@ -30,7 +30,7 @@ Sub CARVIEW ()
                     Call CareerStats_Report(1, "CAREER", careerFile$)
 
                 Case "S"
-                    Call CareerStats_Screen (careerFile$)
+                    Call CareerStats_Screen(careerFile$)
 
             End Select
 
@@ -59,7 +59,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
     Shared careerRecPlyr$()
-    
+
     Shared careerGIS!(), careerGSS!()
     Shared careerFGS!(), careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
@@ -71,7 +71,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
     Open destFile$ For Output As #1
 
-    Print #1, 
+    Print #1,
     Print #1, careerName$
     Print #1, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
 
@@ -81,7 +81,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerRBS!(Z, I, 7)
             Next
 
@@ -98,10 +98,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(30); Using "####"; careerRBS!(V, I, 1);
 
                 'Rush Average
-                If careerRBS!(V, I, 1) = 0 Or careerRBS!(V, I, 1) = 0 Then 
+                If careerRBS!(V, I, 1) = 0 Or careerRBS!(V, I, 1) = 0 Then
                     Print #1, Tab(37); " 0.0";
                 End If
-                If careerRBS!(V, I, 0) > 0 Then 
+                If careerRBS!(V, I, 0) > 0 Then
                     Print #1, Tab(37); Using "##.#"; careerRBS!(V, I, 1) / careerRBS!(V, I, 0);
                 End If
 
@@ -113,10 +113,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(54); Using "####"; careerRBS!(V, I, 4);
 
                 'Rec Avg
-                If careerRBS!(V, I, 4) = 0 Or careerRBS!(V, I, 3) = 0 Then 
+                If careerRBS!(V, I, 4) = 0 Or careerRBS!(V, I, 3) = 0 Then
                     Print #1, Tab(59); " 0.0";
                 End If
-                If careerRBS!(V, I, 3) > 0 Then 
+                If careerRBS!(V, I, 3) > 0 Then
                     Print #1, Tab(59); Using "##.#"; careerRBS!(V, I, 4) / careerRBS!(V, I, 3);
                 End If
 
@@ -162,21 +162,21 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(22); Using "####"; TT1;
             Print #1, Tab(29); Using "#####"; TT2;
 
-            If TT1 = 0 Or TT2 = 0 Then 
+            If TT1 = 0 Or TT2 = 0 Then
                 Print #1, Tab(37); " 0.0";
             End If
-            If TT1 > 0 Then 
+            If TT1 > 0 Then
                 Print #1, Tab(37); Using "##.#"; TT2 / TT1;
-            End if
+            End If
 
             Print #1, Tab(44); Using "###"; TT3;
             Print #1, Tab(49); Using "####"; TT4;
             Print #1, Tab(53); Using "#####"; TT5;
 
-            If TT4 = 0 Or TT5 = 0 Then 
+            If TT4 = 0 Or TT5 = 0 Then
                 Print #1, Tab(59); " 0.0";
             End If
-            If TT4 > 0 Then 
+            If TT4 > 0 Then
                 Print #1, Tab(59); Using "##.#"; TT5 / TT4;
             End If
 
@@ -209,7 +209,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerWRS!(Z, I, 4)
             Next
 
@@ -226,10 +226,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(40); Using "####"; careerWRS!(V, I, 1);
 
                 'Average
-                If careerWRS!(V, I, 0) = 0 Or careerWRS!(V, I, 1) = 0 Then 
+                If careerWRS!(V, I, 0) = 0 Or careerWRS!(V, I, 1) = 0 Then
                     Print #1, Tab(49); " 0.0";
                 End If
-                If careerWRS!(V, I, 0) > 0 Then 
+                If careerWRS!(V, I, 0) > 0 Then
                     Print #1, Tab(49); Using "##.#"; careerWRS!(V, I, 1) / careerWRS!(V, I, 0);
                 End If
 
@@ -261,10 +261,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(28); Using "####"; TT7;
             Print #1, Tab(39); Using "#####"; TT8;
 
-            If TT7 = 0 Or TT8 = 0 Then 
+            If TT7 = 0 Or TT8 = 0 Then
                 Print #1, Tab(49); " 0.0";
             End If
-            If TT7 > 0 Then 
+            If TT7 > 0 Then
                 Print #1, Tab(49); Using "##.#"; TT8 / TT7;
             End If
 
@@ -285,14 +285,14 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
     Print #1,
     Print #1, careerName$
     Print #1, "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG"
-    
+
     For I = 0 To 19
 
         If carQBacks$(I) <> "" And carQBacks$(I) <> "XXX" Then
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerQBS!(Z, I, 6)
             Next
 
@@ -314,13 +314,13 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 'Pass Yds
                 Print #1, Tab(49); Using "####"; careerQBS!(V, I, 3);
 
-                If careerQBS!(V, I, 1) = 0 Or careerQBS!(V, I, 0) = 0 Then 
+                If careerQBS!(V, I, 1) = 0 Or careerQBS!(V, I, 0) = 0 Then
                     'Comp Pct
                     Print #1, Tab(56); "  0.0";
                     'Yds / Comp
                     Print #1, Tab(61); "  0.0";
-                End if
-                If careerQBS!(V, I, 1) > 0 Then 
+                End If
+                If careerQBS!(V, I, 1) > 0 Then
                     'Comp Pct
                     Print #1, Tab(52); Using "###.#"; careerQBS!(V, I, 1) / careerQBS!(V, I, 0);
                     'Yds / Comp
@@ -363,20 +363,20 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(41); Using "####"; TT13;
             Print #1, Tab(48); Using "#####"; TT14;
 
-            If TT10 = 0 Or TT11 = 0 Then 
+            If TT10 = 0 Or TT11 = 0 Then
                 Print #1, Tab(56); " 00";
             End If
-            If TT10 > 0 Then 
+            If TT10 > 0 Then
                 Print #1, Tab(56); Using "##"; (TT10 / TT11) * 100;
             End If
-            If TT11 = 0 Then 
+            If TT11 = 0 Then
                 Print #1, Tab(63); " 0.0";
             End If
-            If TT10 > 0 Then 
+            If TT10 > 0 Then
                 Print #1, Tab(63); Using "##.#"; TT14 / TT10;
             End If
 
-            If TT11 > 0 Then 
+            If TT11 > 0 Then
                 TT30 = Int(TT10 / TT11 * 1000) / 10
             End If
             If TT11 = 0 Then
@@ -471,7 +471,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerKRS!(Z, I, 4)
             Next
 
@@ -488,10 +488,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(42); Using "####"; careerKRS!(V, I, 1);
 
                 'Average
-                If careerKRS!(V, I, 0) = 0 Or careerKRS!(V, I, 1) = 0 Then 
+                If careerKRS!(V, I, 0) = 0 Or careerKRS!(V, I, 1) = 0 Then
                     Print #1, Tab(52); " 00";
                 End If
-                If careerKRS!(V, I, 0) > 0 Then 
+                If careerKRS!(V, I, 0) > 0 Then
                     Print #1, Tab(52); Using "##.#"; careerKRS!(V, I, 1) / careerKRS!(V, I, 0);
                 End If
 
@@ -523,10 +523,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(32); Using "###"; TT15;
             Print #1, Tab(41); Using "#####"; TT16;
 
-            If TT15 = 0 Or TT16 = 0 Then 
+            If TT15 = 0 Or TT16 = 0 Then
                 Print #1, Tab(52); " 00";
             End If
-            If TT15 > 0 Then 
+            If TT15 > 0 Then
                 Print #1, Tab(52); Using "##.#"; TT16 / TT15;
             End If
 
@@ -552,7 +552,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerPRS!(Z, I, 4)
             Next
 
@@ -568,10 +568,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(42); Using "####"; careerPRS!(V, I, 1);
 
                 'Ret Avg
-                If careerPRS!(V, I, 0) = 0 Or careerPRS!(V, I, 1) = 0 Then 
+                If careerPRS!(V, I, 0) = 0 Or careerPRS!(V, I, 1) = 0 Then
                     Print #1, Tab(52); " 00";
                 End If
-                If careerPRS!(V, I, 0) > 0 Then 
+                If careerPRS!(V, I, 0) > 0 Then
                     Print #1, Tab(52); Using "##.#"; careerPRS!(V, I, 1) / careerPRS!(V, I, 0);
                 End If
 
@@ -602,10 +602,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(32); Using "###"; TT18;
             Print #1, Tab(41); Using "#####"; TT19;
 
-            If TT18 = 0 Or TT19 = 0 Then 
+            If TT18 = 0 Or TT19 = 0 Then
                 Print #1, Tab(52); " 00";
             End If
-            If TT18 > 0 Then 
+            If TT18 > 0 Then
                 Print #1, Tab(52); Using "##.#"; TT19 / TT18;
             End If
 
@@ -630,7 +630,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerPUS!(Z, I, 2)
             Next
 
@@ -647,10 +647,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(38); Using "####"; careerPUS!(V, I, 1);
 
                 'Average
-                If careerPUS!(V, I, 0) = 0 Or careerPUS!(V, I, 1) = 0 Then 
+                If careerPUS!(V, I, 0) = 0 Or careerPUS!(V, I, 1) = 0 Then
                     Print #1, Tab(47); " 00.0"
                 End If
-                If careerPUS!(V, I, 0) > 0 Then 
+                If careerPUS!(V, I, 0) > 0 Then
                     Print #1, Tab(47); Using "###.#"; careerPUS!(V, I, 1) / careerPUS!(V, I, 0)
                 End If
 
@@ -666,10 +666,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(27); Using "####"; TT21;
             Print #1, Tab(37); Using "#####"; TT22;
 
-            If TT21 = 0 Or TT22 = 0 Then 
+            If TT21 = 0 Or TT22 = 0 Then
                 Print #1, Tab(47); " 00"
             End If
-            If TT21 > 0 Then 
+            If TT21 > 0 Then
                 Print #1, Tab(47); Using "##.#"; TT22 / TT21
             End If
 
@@ -684,7 +684,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
     Print #1,
     Print #1, careerName$
-    Print #1, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50+"
+    Print #1, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49  50+"
 
     For I = 0 To 9
 
@@ -692,7 +692,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerFGS!(Z, I, 15)
             Next
 
@@ -709,10 +709,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(23); Using "###"; careerFGS!(V, I, 2);
 
                 'EP %
-                If careerFGS!(V, I, 2) = 0 Or careerFGS!(V, I, 3) = 0 Then 
+                If careerFGS!(V, I, 2) = 0 Or careerFGS!(V, I, 3) = 0 Then
                     Print #1, Tab(27); "  0";
                 End If
-                If careerFGS!(V, I, 2) > 0 Then 
+                If careerFGS!(V, I, 2) > 0 Then
                     Print #1, Tab(27); Using "###"; (careerFGS!(V, I, 2) / careerFGS!(V, I, 3)) * 100;
                 End If
 
@@ -722,10 +722,10 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
                 Print #1, Tab(36); Using "###"; careerFGS!(V, I, 0);
 
                 'FG %
-                If careerFGS!(V, I, 0) = 0 Or careerFGS!(V, I, 1) = 0 Then 
+                If careerFGS!(V, I, 0) = 0 Or careerFGS!(V, I, 1) = 0 Then
                     Print #1, Tab(40); "  0";
                 End If
-                If careerFGS!(V, I, 0) > 0 Then 
+                If careerFGS!(V, I, 0) > 0 Then
                     Print #1, Tab(40); Using "###"; (careerFGS!(V, I, 0) / careerFGS!(V, I, 1)) * 100;
                 End If
 
@@ -783,20 +783,20 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
             Print #1, Tab(19); Using "###"; careerTeamTotal!(35);
             Print #1, Tab(23); Using "###"; careerTeamTotal!(34);
 
-            If careerTeamTotal!(34) = 0 Or careerTeamTotal!(35) = 0 Then 
+            If careerTeamTotal!(34) = 0 Or careerTeamTotal!(35) = 0 Then
                 Print #1, Tab(27); "  0";
             End If
-            If careerTeamTotal!(34) > 0 Then 
+            If careerTeamTotal!(34) > 0 Then
                 Print #1, Tab(27); Using "###"; (careerTeamTotal!(34) / careerTeamTotal!(35)) * 100;
             End If
 
             Print #1, Tab(32); Using "###"; careerTeamTotal!(24);
             Print #1, Tab(36); Using "###"; careerTeamTotal!(23);
 
-            If careerTeamTotal!(23) = 0 Or careerTeamTotal!(24) = 0 Then 
+            If careerTeamTotal!(23) = 0 Or careerTeamTotal!(24) = 0 Then
                 Print #1, Tab(40); "  0";
             End If
-            If careerTeamTotal!(23) > 0 Then 
+            If careerTeamTotal!(23) > 0 Then
                 Print #1, Tab(40); Using "###"; (careerTeamTotal!(23) / careerTeamTotal!(24)) * 100;
             End If
 
@@ -830,7 +830,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerGIS!(Z, I, 1)
             Next
 
@@ -868,7 +868,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
 
             VV = 0
 
-            For Z = 1 To MAX_CAREER_YEARS: 
+            For Z = 1 To MAX_CAREER_YEARS:
                 VV = VV + careerGSS!(Z, I, 1)
             Next
 
@@ -910,7 +910,7 @@ Sub CareerStats_Report (printDest, destFile$, careerName$)
         Close #2
 
         LPrint Chr$(12)
-        
+
         Kill destFile$
 
     End If
@@ -933,7 +933,7 @@ Sub CareerStats_Screen (careerFile$)
     _Title "3-in-1 Football - View Careers"
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared intName$(), sackName$()
+    Shared carIntName$(), carSackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -1048,7 +1048,7 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 1, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 1, escPressed%, careerFile$)
 
             Case "W"
 
@@ -1077,7 +1077,7 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 2, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 2, escPressed%, careerFile$)
 
             Case "Q"
 
@@ -1101,11 +1101,12 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 Print
+                Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 3, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 3, escPressed%, careerFile$)
 
             Case "C"
 
@@ -1129,11 +1130,12 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 Print
+                Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 4, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 4, escPressed%, careerFile$)
 
             Case "U"
 
@@ -1157,11 +1159,12 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 Print
+                Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 5, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 5, escPressed%, careerFile$)
 
             Case "P"
 
@@ -1178,11 +1181,12 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 Print
+                Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 6, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 6, escPressed%, careerFile$)
 
             Case "K"
 
@@ -1199,11 +1203,12 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 Print
+                Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 7, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 7, escPressed%, careerFile$)
 
             Case "I"
 
@@ -1216,29 +1221,30 @@ Sub CareerStats_Screen (careerFile$)
                     Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(intName$(I), 12)
+                    Color 7: Print Left$(carIntName$(I), 12)
                 Next
 
                 For I = 19 To 36:
                     Locate I - 15, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(intName$(I), 12)
+                    Color 7: Print Left$(carIntName$(I), 12)
                 Next
 
                 For I = 37 To 54:
                     Locate I - 33, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(intName$(I), 12)
+                    Color 7: Print Left$(carIntName$(I), 12)
                 Next
 
+                Print
                 Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 8, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 8, escPressed%, careerFile$)
 
             Case "F"
 
@@ -1251,29 +1257,30 @@ Sub CareerStats_Screen (careerFile$)
                     Locate I + 4
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(sackName$(I), 12)
+                    Color 7: Print Left$(carSackName$(I), 12)
                 Next
 
                 For I = 19 To 36:
                     Locate I - 15, 20
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(sackName$(I), 12)
+                    Color 7: Print Left$(carSackName$(I), 12)
                 Next
 
                 For I = 37 To 54:
                     Locate I - 33, 40
                     Color 11: Print Using "##"; I;
                     Print " ";
-                    Color 7: Print Left$(sackName$(I), 12)
+                    Color 7: Print Left$(carSackName$(I), 12)
                 Next
 
+                Print
                 Print
                 Color 15: Input "ENTER NUMBER OF PLAYER TO VIEW"; B9
                 RT = 2
                 Cls
 
-                Call CareerPrintCategory(RT, B9, 9, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 9, escPressed%, careerFile$)
 
             Case "O"
 
@@ -1285,7 +1292,7 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 For category% = 1 To 9:
-                    Call CareerPrintCategory(RT, B9, category%, escPressed%, careerFile$)
+                    Call CareerCategory_Screen(RT, B9, category%, escPressed%, careerFile$)
                     If escPressed% = 1 Then Exit For
                 Next
 
@@ -1302,13 +1309,14 @@ Sub CareerStats_Screen (careerFile$)
 
 End Sub
 
+
 '----------------------------------------
-'    CareerPrintCategory Subroutine
+'    CareerCategory_Screen Subroutine
 '----------------------------------------
 'Depending on the stat category chosen,
 'formats the corresponding career stats
 'and outputs them to the user display
-Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
+Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerFile$)
 
     Shared TT
 
@@ -1316,7 +1324,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
     Shared careerRecVal!()
 
     Shared carRBacks$(), carWdRec$(), carQBacks$(), carKickRet$(), carPRet$(), carPunter$(), carKicker$()
-    Shared intName$(), sackName$()
+    Shared carIntName$(), carSackName$()
 
     Shared careerKRS$(), careerPRS$()
     Shared careerQBS$(), careerRBS$(), careerWRS$()
@@ -1404,12 +1412,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         Next V
 
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerRBS!(Z, I, 7)
-                        Next
-
                         For V = 1 To VV
                             careerTeamTotal!(1) = careerTeamTotal!(1) + careerRBS!(V, I, 0)
                             careerTeamTotal!(2) = careerTeamTotal!(2) + careerRBS!(V, I, 1)
@@ -1468,15 +1470,14 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print Tab(67); Using "##"; careerRecVal!(1);
                         Print Tab(69); careerRecPlyr$(1);
                         Print Tab(77); Using "##"; careerRecVal!(2);
-                        Print Tab(79); careerRecPlyr$(2);
+                        Print Tab(79); careerRecPlyr$(2)
 
-                        For J = 1 To 6: careerTeamTotal!(J) = 0: Next
+                        For J = 1 To 6:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1484,7 +1485,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(90, " ")
                             Next
                         Else
@@ -1543,12 +1545,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             Print Tab(56); careerWRS$(V, I, 0)
                         Next V
 
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerWRS!(Z, I, 4)
-                        Next
-
                         For V = 1 To VV
                             careerTeamTotal!(7) = careerTeamTotal!(7) + careerWRS!(V, I, 0)
                             careerTeamTotal!(8) = careerTeamTotal!(8) + careerWRS!(V, I, 1)
@@ -1583,13 +1579,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print Tab(54); Using "##"; careerRecVal!(2);
                         Print Tab(56); careerRecPlyr$(2)
 
-                        For J = 7 To 9: careerTeamTotal!(J) = 0: Next
+                        For J = 7 To 9:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1597,7 +1592,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20:
+                            For T = 5 To 22:
                                 Locate T
                                 Print String$(76, " ")
                             Next
@@ -1667,14 +1662,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                             'Longest Pass
                             Print Tab(70); Using "##"; careerQBS!(V, I, 5);
-                            Print Tab(72); careerQBS$(V, I, 0)
+                            Print careerQBS$(V, I, 0)
                         Next V
-
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerQBS!(Z, I, 6)
-                        Next
 
                         For V = 1 To VV
                             careerTeamTotal!(10) = careerTeamTotal!(10) + careerQBS!(V, I, 1)
@@ -1786,15 +1775,14 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         Print Tab(60); Using "###.#"; careerTeamTotal!(31);
                         Print Tab(70); Using "##"; careerRecVal!(3);
-                        Print Tab(72); careerRecPlyr$(3)
+                        Print careerRecPlyr$(3)
 
-                        For J = 10 To 14: careerTeamTotal!(J) = 0: Next
+                        For J = 10 To 14:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1802,7 +1790,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else
@@ -1854,15 +1843,9 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             '# TDs
                             Print Tab(62); Using "##"; careerKRS!(V, I, 2);
                             'Longest
-                            Print Tab(70); Using "##"; careerKRS!(V, I, 3);
-                            Print Tab(72); careerKRS$(V, I, 0)
+                            Print Tab(70); Using "###"; careerKRS!(V, I, 3);
+                            Print careerKRS$(V, I, 0)
                         Next V
-
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerKRS!(Z, I, 4)
-                        Next
 
                         For V = 1 To VV
                             careerTeamTotal!(15) = careerTeamTotal!(15) + careerKRS!(V, I, 0)
@@ -1897,15 +1880,14 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         Print Tab(61); Using "###"; careerTeamTotal!(17);
                         Print Tab(70); Using "##"; careerRecVal!(4);
-                        Print Tab(72); careerRecPlyr$(4)
+                        Print careerRecPlyr$(4)
 
-                        For J = 15 To 17: careerTeamTotal!(J) = 0: Next
+                        For J = 15 To 17:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -1913,7 +1895,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: 
+                            For T = 5 To 22:
                                 Locate T
                                 Print String$(76, " ")
                             Next
@@ -1966,15 +1948,9 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             'TDs
                             Print Tab(62); Using "##"; careerPRS!(V, I, 2);
                             'Longest
-                            Print Tab(70); Using "##"; careerPRS!(V, I, 3);
-                            Print Tab(72); careerPRS$(V, I, 0)
+                            Print Tab(70); Using "###"; careerPRS!(V, I, 3);
+                            Print careerPRS$(V, I, 0)
                         Next V
-
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerPRS!(Z, I, 4)
-                        Next
 
                         For V = 1 To VV
                             careerTeamTotal!(18) = careerTeamTotal!(18) + careerPRS!(V, I, 0)
@@ -2009,15 +1985,14 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         Print Tab(61); Using "###"; careerTeamTotal!(20);
                         Print Tab(70); Using "##"; careerRecVal!(5);
-                        Print Tab(72); careerRecPlyr$(5)
+                        Print careerRecPlyr$(5)
 
-                        For J = 18 To 20: careerTeamTotal!(J) = 0: Next
+                        For J = 18 To 20:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2025,7 +2000,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else
@@ -2074,12 +2050,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             End If
                         Next V
 
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerPUS!(Z, I, 2)
-                        Next
-
                         For V = 1 To VV
                             careerTeamTotal!(21) = careerTeamTotal!(21) + careerPUS!(V, I, 0)
                             careerTeamTotal!(22) = careerTeamTotal!(22) + careerPUS!(V, I, 1)
@@ -2104,11 +2074,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             careerTeamTotal!(J) = 0
                         Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2116,7 +2083,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else
@@ -2130,7 +2098,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
             Case 7
 
                 Locate 4, 1
-                Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50+"
+                Print "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49  50+"
 
                 If RT = 1 Then start% = 0
                 If RT = 2 Then start% = B9
@@ -2198,12 +2166,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             Print Tab(76); Using "##"; careerFGS!(V, I, 14)
                         Next V
 
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerFGS!(Z, I, 15)
-                        Next
-
                         For V = 1 To VV
                             careerTeamTotal!(23) = careerTeamTotal!(23) + careerFGS!(V, I, 0)
                             careerTeamTotal!(24) = careerTeamTotal!(24) + careerFGS!(V, I, 1)
@@ -2266,13 +2228,12 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Print Tab(73); Using "##"; careerTeamTotal!(40);: Print "-";
                         Print Tab(76); Using "##"; careerTeamTotal!(45)
 
-                        For J = 23 To 45: careerTeamTotal!(J) = 0: Next
+                        For J = 23 To 45:
+                            careerTeamTotal!(J) = 0
+                        Next
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2280,7 +2241,7 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20:
+                            For T = 5 To 22:
                                 Locate T
                                 Print String$(90, " ")
                             Next
@@ -2302,10 +2263,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If intName$(I) <> "" And intName$(I) <> "XXX" Then
+                    If carIntName$(I) <> "" And carIntName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 5: Print Left$(intName$(I), 13);
+                        Locate 5: Print Left$(carIntName$(I), 13);
 
                         VV = 0
 
@@ -2321,12 +2282,6 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                             Print Tab(34); Using "###"; careerGIS!(V, I, 0);
                         Next V
 
-                        VV = 0
-
-                        For Z = 1 To MAX_CAREER_YEARS:
-                            VV = VV + careerGIS!(Z, I, 1)
-                        Next
-
                         For V = 1 To VV
                             careerTeamTotal!(32) = careerTeamTotal!(32) + careerGIS!(V, I, 0)
                         Next V
@@ -2340,11 +2295,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         careerTeamTotal!(32) = 0
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2352,7 +2304,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else
@@ -2373,10 +2326,10 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                 For I = start% To 54
 
-                    If sackName$(I) <> "" And sackName$(I) <> "XXX" Then
+                    If carSackName$(I) <> "" And carSackName$(I) <> "XXX" Then
 
                         Color 15
-                        Locate 5: Print Left$(sackName$(I), 13);
+                        Locate 5: Print Left$(carSackName$(I), 13);
 
                         VV = 0
 
@@ -2405,11 +2358,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
 
                         careerTeamTotal!(33) = 0
 
-                        Print
-                        Print
-                        Print
                         Color 14
-                        Locate , 16
+                        Locate 9 + VV, 16
                         Print "HIT ENTER TO CONTINUE OR ESC TO GO TO MAIN MENU"
 
                         Do
@@ -2417,7 +2367,8 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
                         Loop Until I$ = Chr$(13) Or I$ = Chr$(27)
 
                         If I$ = Chr$(13) Then
-                            For T = 3 To 20: Locate T
+                            For T = 5 To 22:
+                                Locate T
                                 Print String$(76, " ")
                             Next
                         Else
@@ -2431,13 +2382,16 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
         End Select
 
         If escPressed% = 0 Then
-            Cls
 
             Color 14
 
             Do
-                Locate 5, 20
-                Print "VIEW AGAIN? (Y/N)"
+
+                Locate 9 + VV, 16
+                Print Space$(47)
+
+                Locate 9 + VV, 20
+                Print "VIEW AGAIN? (Y/N)";
                 I$ = GetKeyPress$
             Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
 
@@ -2446,3 +2400,4 @@ Sub CareerPrintCategory (RT, B9, categoryID%, escPressed%, careerFile$)
     Loop Until UCase$(I$) = "N" Or escPressed% = 1 Or targetFile$ <> ""
 
 End Sub
+
