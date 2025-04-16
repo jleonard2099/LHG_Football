@@ -1,3 +1,8 @@
+Declare Sub QBRating_Expanded (qbIdx, teamType)
+Declare Sub QBRating_Career (carYrIdx, ldrIdx, teamType)
+Declare Sub QBRatingPro (qbIdx)
+Declare Sub QBRatingColl (qbIdx)
+
 Declare Function GetQBName$ (targetGame%, teamIndicator)
 Declare Function GetQBRushPct% (targetQB$)
 Declare Function GetQBRushPctGame% (targetQB$, currTeam)

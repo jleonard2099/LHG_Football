@@ -9,12 +9,13 @@ Sub SEENATL ()
 
     _Title "3-in-1 Football - View Org Stats"
 
-    organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
+    leaderFile$ = _OpenFileDialog$("Choose Organization Stats file", diskPaths$(2), "*.NLD", "Organization Stats files")
+    'ChooseFile$ (diskPaths$(2) + "*.NLD", "LEADER", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leaderFile$ <> "" Then
 
-        Call LoadLeaderFiles_Natl(organizationFile$, FF$, NRT)
-        Call StatOptions_Natl(FF$, NRT)
+        Call LoadLeaderFiles_Natl(leaderFile$, FF$, NRT)
+        Call StatOptions_Natl(GetFileBaseName$(leaderFile$), NRT)
 
     End If
 
@@ -24,7 +25,7 @@ End Sub
 '----------------------------------------
 '     LoadLeaderFiles_Natl Subroutine
 '----------------------------------------
-'This subroutine loads the organization 
+'This subroutine loads the organization
 'stats from the file into several arrays
 Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
@@ -40,13 +41,14 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
     Cls
 
-    Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+    Locate 9, 6
+    Print "PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + targetFile$ + ".CON" For Input As #1
+    Open diskPaths$(2) + GetFileBaseName$(targetFile$) + ".CON" For Input As #1
     Input #1, confName$
     Close #1
 
-    Open diskPaths$(2) + targetFile$ + ".NLD" For Input As #2
+    Open targetFile$ For Input As #2
 
     For X = 1 To 60
         Input #2, divTeamNames$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
@@ -72,7 +74,7 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
     Close #2
 
-    Open diskPaths$(2) + targetFile$ + ".POL" For Input As #3
+    Open diskPaths$(2) + GetFileBaseName$(targetFile$) + ".POL" For Input As #3
 
     Input #3, NRT
 
@@ -105,7 +107,7 @@ Sub StatOptions_Natl (confName$, NRT)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SAVEFILEDIALOG$("Save Organization Report",_CWD$ + "\Report","*.txt","Text File")
+                    userFile$ = _SaveFileDialog$("Save Organization Report", _CWD$ + "\Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call NatLeaders_Report(confName$, NRT, 0, userFile$)
                     End If
@@ -152,7 +154,7 @@ Sub NatlStdgs_Screen (confName$, NRT)
 
     Shared pollRatings!()
     Shared pollLdrTeams$()
-    
+
     Color 15, 0
     Cls
 
@@ -169,7 +171,6 @@ Sub NatlStdgs_Screen (confName$, NRT)
     For P = 1 To NRT
 
         Print Using "###  "; P;
-
         Print pollLdrTeams$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
 
         If P <> 0 And (P Mod 20 = 0) Then
@@ -187,7 +188,7 @@ Sub NatlStdgs_Screen (confName$, NRT)
 
             Locate 4, 1
             Color 14
-            Print "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
+            Print Tab(21); "RATING     W    L    T   STRENGTH OF SCHEDULE"
             Color 15
 
         End If
@@ -200,12 +201,12 @@ Sub NatlStdgs_Screen (confName$, NRT)
     Color 15
     QK$ = GetKeyPress$
     '-----
-    
+
 End Sub
 
 
 '----------------------------------------
-'        Leaders_Screen Subroutine
+'     Leaders_Screen Subroutine
 '----------------------------------------
 Sub Leaders_Screen ()
 
@@ -1234,3 +1235,4 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     End If
 
 End Sub
+

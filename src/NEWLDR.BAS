@@ -512,7 +512,8 @@ Sub ReadLeaderStdg (leaderFile$, totalStats)
 
     Shared gameCount()
 
-    TMR = 1660
+    TMR = 30 + 300 + 180 + 120 + 90 + 90 + 30 + 60 + 450
+    '1660
 
     'Print "READING LEADER FILES . . . . PLEASE WAIT"
     Erase expLdrRBName$, expLdrRBTeam$, expLdrWRName$, expLdrWRTeam$, expLdrQBTeam$, expLdrKRName$, expLdrKRTeam$
@@ -701,7 +702,8 @@ Sub SaveLeaderStdg (leaderFile$, totalStats)
     Shared expLdrRBGames!(), expLdrWRGames!(), expLdrQBGames!()
     Shared gameCount()
 
-    TMR = 1660
+    TMR = 30 + 300 + 180 + 120 + 90 + 90 + 30 + 60 + 450
+    '1660
 
     Print "SAVING LEADER FILES . . . . PLEASE WAIT"
 
@@ -2073,7 +2075,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                 End If
 
                 If printOrView = 1 Then
-                    Call DisplayLeaders(TVN, maxRecords, XX)
+                    Call NewLeaders_Screen(TVN, maxRecords, XX)
                 Else
                     'printOrView = 2
                     Call GetListLength(printOrView, LG, maxRecords)
@@ -2087,11 +2089,11 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Case "F"
                                 userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
                                 If userFile$ <> "" Then
-                                    Call Leaders_Report(0, userFile$, XX, LG, TVN)
+                                    Call NewLeaders_Report(0, userFile$, XX, LG, TVN)
                                 End If
 
                             Case "P"
-                                Call Leaders_Report(1, "REPORT", XX, LG, TVN)
+                                Call NewLeaders_Report(1, "REPORT", XX, LG, TVN)
 
                         End Select
 
@@ -2296,11 +2298,11 @@ End Sub
 
 
 '----------------------------------------
-'       DisplayLeaders Subroutine
+'       NewLeaders_Screen Subroutine
 '----------------------------------------
 'This subroutine displays individual player
 'stat categories to the user display
-Sub DisplayLeaders (TVN, maxRecords, categoryId)
+Sub NewLeaders_Screen (TVN, maxRecords, categoryId)
 
     Shared expLdrVal!()
     Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()
@@ -2437,11 +2439,11 @@ End Sub
 
 
 '----------------------------------------
-'       Leaders_Report Subroutine
+'       NewLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine displays individual player
 'stat categories to the default printer
-Sub Leaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
+Sub NewLeaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
 
     Shared expLdrVal!()
     Shared expCategories$(), expLdrTeam$(), expLdrPlyrName$(), expLdrTD$()

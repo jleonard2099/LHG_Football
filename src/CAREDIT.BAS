@@ -24,11 +24,12 @@ Sub CAREDIT ()
     Color 15, 0
     Cls
 
-    careerFile$ = ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+    careerFile$ = _OpenFileDialog$("Choose Career Record file", diskPaths$(1), "*.CAR", "Career Record files")
+    'ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
     If ExitCode% <> 27 And ExitCode% <> 0 Then
 
-		Call LoadCareerFile (diskPaths$(1) + careerFile$ + ".CAR")
+		Call LoadCareerFile (careerFile$)
 
         Do
 
@@ -82,13 +83,15 @@ Sub CAREDIT ()
 
             J$ = GetKeyPress$
 
+            careerName$ = (GetFileBaseName$(careerFile$))
+
             Select Case UCase$(J$)
 
                 Case "R"
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 16:
                         Locate I + 2
@@ -120,7 +123,7 @@ Sub CAREDIT ()
 
                         If B9 <> 50 Then
 
-                            Call CareerStatsRB_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsRB_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -172,7 +175,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 19:
                         Locate I + 2
@@ -197,7 +200,7 @@ Sub CAREDIT ()
 
                         If B9 <> 39 Then
 
-                            Call CareerStatsWR_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsWR_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -244,7 +247,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 9:
                         Locate I + 2
@@ -269,7 +272,7 @@ Sub CAREDIT ()
 
                         If B9 <> 19 Then
                         
-                            Call CareerStatsQB_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsQB_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -318,7 +321,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 14: 
                         Locate I + 2
@@ -336,7 +339,7 @@ Sub CAREDIT ()
 
                         If B9 <> 14 Then
 
-                            Call CareerStatsKR_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsKR_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -382,7 +385,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 14: 
                         Locate I + 2
@@ -400,7 +403,7 @@ Sub CAREDIT ()
 
                         If B9 <> 14 Then
 
-                            Call CareerStatsPR_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsPR_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -447,7 +450,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 9:
                         Locate I + 2
@@ -465,7 +468,7 @@ Sub CAREDIT ()
 
                         If B9 <> 9 Then
 
-                            Call CareerStatsP_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsP_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -514,7 +517,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 9:
                         Locate I + 2
@@ -532,7 +535,7 @@ Sub CAREDIT ()
 
                         If B9 <> 9 Then
 
-                            Call CareerStatsK_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsK_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -577,7 +580,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 17:
                         Locate I + 2
@@ -609,7 +612,7 @@ Sub CAREDIT ()
 
                         If B9 <> 54 Then
 
-                            Call CareerStatsINT_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsINT_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
                                 Cls
@@ -655,7 +658,7 @@ Sub CAREDIT ()
 
                     Cls
 
-                    Color 12: Print careerFile$
+                    Color 12: Print careerName$
 
                     For I = 0 To 17: 
                         Locate I + 2
@@ -687,7 +690,7 @@ Sub CAREDIT ()
 
                         If B9 <> 54 Then
 
-                            Call CareerStatsSACK_Report(exitFlag%, B9, careerFile$)
+                            Call CareerStatsSACK_Report(exitFlag%, careerName$, B9)
 
                             If exitFlag% <> 1 Then
 
@@ -735,7 +738,7 @@ Sub CAREDIT ()
                     End If
 
                 Case "D"
-                    Call SaveCareerFile(diskPaths$(1) + careerFile$ + ".CAR")
+                    Call SaveCareerFile (careerFile$)
 
                 Case "E","X"
                     '
@@ -754,7 +757,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's RB's
-Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsRB_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carRBacks$(), careerRBS$(), careerRecPlyr$()
     Shared careerRBS!(), careerRecVal!()
@@ -763,7 +766,7 @@ Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carRBacks$(B9);
+    Color 12: Print carRBacks$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -771,7 +774,7 @@ Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carRBacks$(B9);
+    Color 12: Print carRBacks$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -805,56 +808,56 @@ Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "RUSHER         YEAR   ATT   YARDS AVERAGE  TDS   REC  YDS  AVG  TDS RUN-LONG-REC"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS: 
-                    VV = VV + careerRBS!(I, B9, 7)
+                    VV = VV + careerRBS!(I, playerIdx, 7)
                 Next
 
                 'Name
-                Print #1, Left$(carRBacks$(B9), 13);
+                Print #1, Left$(carRBacks$(playerIdx), 13);
 
                 For V = 1 To VV
 
                     'Year
-                    Print #1, Tab(15); careerRBS!(V, B9, 8);
+                    Print #1, Tab(15); careerRBS!(V, playerIdx, 8);
                     'Att
-                    Print #1, Tab(23); Using "###"; careerRBS!(V, B9, 0);
+                    Print #1, Tab(23); Using "###"; careerRBS!(V, playerIdx, 0);
                     'Yards
-                    Print #1, Tab(30); Using "####"; careerRBS!(V, B9, 1);
+                    Print #1, Tab(30); Using "####"; careerRBS!(V, playerIdx, 1);
 
                     'Average
-                    If careerRBS!(V, B9, 1) = 0 Or careerRBS!(V, B9, 0) = 0 Then 
+                    If careerRBS!(V, playerIdx, 1) = 0 Or careerRBS!(V, playerIdx, 0) = 0 Then 
                         Print #1, Tab(37); " 0.0";
                     End If
-                    If careerRBS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(37); Using "##.#"; careerRBS!(V, B9, 1) / careerRBS!(V, B9, 0);
+                    If careerRBS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(37); Using "##.#"; careerRBS!(V, playerIdx, 1) / careerRBS!(V, playerIdx, 0);
                     End If
 
                     'TDs
-                    Print #1, Tab(44); Using "###"; careerRBS!(V, B9, 2);
+                    Print #1, Tab(44); Using "###"; careerRBS!(V, playerIdx, 2);
                     'Rec
-                    Print #1, Tab(50); Using "###"; careerRBS!(V, B9, 3);
+                    Print #1, Tab(50); Using "###"; careerRBS!(V, playerIdx, 3);
                     'Rec Yds
-                    Print #1, Tab(54); Using "####"; careerRBS!(V, B9, 4);
+                    Print #1, Tab(54); Using "####"; careerRBS!(V, playerIdx, 4);
 
                     'Rec Avg
-                    If careerRBS!(V, B9, 4) = 0 Or careerRBS!(V, B9, 3) = 0 Then 
+                    If careerRBS!(V, playerIdx, 4) = 0 Or careerRBS!(V, playerIdx, 3) = 0 Then 
                         Print #1, Tab(59); " 0.0";
                     End If
-                    If careerRBS!(V, B9, 3) > 0 Then 
-                        Print #1, Tab(59); Using "##.#"; careerRBS!(V, B9, 4) / careerRBS!(V, B9, 3);
+                    If careerRBS!(V, playerIdx, 3) > 0 Then 
+                        Print #1, Tab(59); Using "##.#"; careerRBS!(V, playerIdx, 4) / careerRBS!(V, playerIdx, 3);
                     End If
 
                     'Rec TDs
-                    Print #1, Tab(65); Using "##"; careerRBS!(V, B9, 5);
+                    Print #1, Tab(65); Using "##"; careerRBS!(V, playerIdx, 5);
                     'Longest Run
-                    Print #1, Tab(71); Using "##"; careerRBS!(V, B9, 6);: Print #1, careerRBS$(V, B9, 0);
+                    Print #1, Tab(71); Using "##"; careerRBS!(V, playerIdx, 6);: Print #1, careerRBS$(V, playerIdx, 0);
                     'Longest Rec
-                    Print #1, Tab(77); Using "##"; careerRBS!(V, B9, 9);: Print #1, careerRBS$(V, B9, 1)
+                    Print #1, Tab(77); Using "##"; careerRBS!(V, playerIdx, 9);: Print #1, careerRBS$(V, playerIdx, 1)
 
                 Next V
 
@@ -865,20 +868,20 @@ Sub CareerStatsRB_Report (exitFlag%, B9, careerFile$)
 
                 For V = 1 To VV
 
-                    TT1 = TT1 + careerRBS!(V, B9, 0)
-                    TT2 = TT2 + careerRBS!(V, B9, 1)
-                    TT3 = TT3 + careerRBS!(V, B9, 2)
-                    TT4 = TT4 + careerRBS!(V, B9, 3)
-                    TT5 = TT5 + careerRBS!(V, B9, 4)
-                    TT6 = TT6 + careerRBS!(V, B9, 5)
+                    TT1 = TT1 + careerRBS!(V, playerIdx, 0)
+                    TT2 = TT2 + careerRBS!(V, playerIdx, 1)
+                    TT3 = TT3 + careerRBS!(V, playerIdx, 2)
+                    TT4 = TT4 + careerRBS!(V, playerIdx, 3)
+                    TT5 = TT5 + careerRBS!(V, playerIdx, 4)
+                    TT6 = TT6 + careerRBS!(V, playerIdx, 5)
 
-                    If careerRBS!(V, B9, 6) > careerRecVal!(0) Then
-                        careerRecVal!(0) = careerRBS!(V, B9, 6)
-                        careerRecPlyr$(0) = careerRBS$(V, B9, 0)
+                    If careerRBS!(V, playerIdx, 6) > careerRecVal!(0) Then
+                        careerRecVal!(0) = careerRBS!(V, playerIdx, 6)
+                        careerRecPlyr$(0) = careerRBS$(V, playerIdx, 0)
                     Else
-                        If careerRBS!(V, B9, 9) > careerRecVal!(1) Then
-                            careerRecVal!(1) = careerRBS!(V, B9, 9)
-                            careerRecPlyr$(1) = careerRBS$(V, B9, 1)
+                        If careerRBS!(V, playerIdx, 9) > careerRecVal!(1) Then
+                            careerRecVal!(1) = careerRBS!(V, playerIdx, 9)
+                            careerRecPlyr$(1) = careerRBS$(V, playerIdx, 1)
                         End If
                     End If
 
@@ -955,7 +958,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's WR's
-Sub CareerStatsWR_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsWR_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carWdRec$(), careerWRS$(), careerRecPlyr$()
     Shared careerWRS!(), careerRecVal!()
@@ -963,14 +966,14 @@ Sub CareerStatsWR_Report (exitFlag%, B9, careerFile$)
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carWdRec$(B9);
+    Color 12: Print carWdRec$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carWdRec$(B9);
+    Color 12: Print carWdRec$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1004,43 +1007,43 @@ Sub CareerStatsWR_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "RECEIVER        YEAR        REC.      YARDS      AVG.     TD  LONGEST REC."
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerWRS!(I, B9, 4)
+                    VV = VV + careerWRS!(I, playerIdx, 4)
                 Next
 
-                Print #1, Left$(carWdRec$(B9), 13);
+                Print #1, Left$(carWdRec$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(16); careerWRS!(V, B9, 5);
-                    Print #1, Tab(29); "###"; careerWRS!(V, B9, 0);
-                    Print #1, Tab(40); "####"; careerWRS!(V, B9, 1);
-                    If careerWRS!(V, B9, 0) = 0 Or careerWRS!(V, B9, 1) = 0 Then 
+                    Print #1, Tab(16); careerWRS!(V, playerIdx, 5);
+                    Print #1, Tab(29); "###"; careerWRS!(V, playerIdx, 0);
+                    Print #1, Tab(40); "####"; careerWRS!(V, playerIdx, 1);
+                    If careerWRS!(V, playerIdx, 0) = 0 Or careerWRS!(V, playerIdx, 1) = 0 Then 
                         Print #1, Tab(49); " 0.0";
                     End If
-                    If careerWRS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(49); "##.#"; careerWRS!(V, B9, 1) / careerWRS!(V, B9, 0);
+                    If careerWRS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(49); "##.#"; careerWRS!(V, playerIdx, 1) / careerWRS!(V, playerIdx, 0);
                     End If
-                    Print #1, Tab(59); "##"; careerWRS!(V, B9, 2);
-                    Print #1, Tab(67); "##"; careerWRS!(V, B9, 3);
-                    Print #1, careerWRS$(V, B9, 0)
+                    Print #1, Tab(59); "##"; careerWRS!(V, playerIdx, 2);
+                    Print #1, Tab(67); "##"; careerWRS!(V, playerIdx, 3);
+                    Print #1, careerWRS$(V, playerIdx, 0)
                 Next V
 
                 careerRecVal!(0) = 0
                 careerRecPlyr$(0) = ""
 
                 For V = 1 To VV
-                    TT7 = TT7 + careerWRS!(V, B9, 0)
-                    TT8 = TT8 + careerWRS!(V, B9, 1)
-                    TT9 = TT9 + careerWRS!(V, B9, 2)
+                    TT7 = TT7 + careerWRS!(V, playerIdx, 0)
+                    TT8 = TT8 + careerWRS!(V, playerIdx, 1)
+                    TT9 = TT9 + careerWRS!(V, playerIdx, 2)
 
-                    If careerWRS!(V, B9, 3) > careerRecVal!(0) Then
-                        careerRecVal!(0) = careerWRS!(V, B9, 3)
-                        careerRecPlyr$(0) = careerWRS$(V, B9, 0)
+                    If careerWRS!(V, playerIdx, 3) > careerRecVal!(0) Then
+                        careerRecVal!(0) = careerWRS!(V, playerIdx, 3)
+                        careerRecPlyr$(0) = careerWRS$(V, playerIdx, 0)
                     End If
 
                 Next V
@@ -1099,7 +1102,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's QB's
-Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsQB_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carQBacks$(), careerQBS$(), careerRecPlyr$()
     Shared careerQBS!(), careerRecVal!()
@@ -1111,7 +1114,7 @@ Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carQBacks$(B9);
+    Color 12: Print carQBacks$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1119,7 +1122,7 @@ Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carQBacks$(B9);
+    Color 12: Print carQBacks$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1153,109 +1156,109 @@ Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "QUARTERBACK  YEAR  COMP.    ATT.    INT  TDS   YARDS  PCT. YD/COMP  RATING  LONG.PASS"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerQBS!(I, B9, 6)
+                    VV = VV + careerQBS!(I, playerIdx, 6)
                 Next
 
-                Print #1, Left$(carQBacks$(B9), 13);
+                Print #1, Left$(carQBacks$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(13); careerQBS!(V, B9, 7);
-                    Print #1, Tab(21); "###"; careerQBS!(V, B9, 1);
-                    Print #1, Tab(29); "###"; careerQBS!(V, B9, 0);
-                    Print #1, Tab(38); "##"; careerQBS!(V, B9, 2);
-                    Print #1, Tab(43); "##"; careerQBS!(V, B9, 4);
-                    Print #1, Tab(49); "####"; careerQBS!(V, B9, 3);
+                    Print #1, Tab(13); careerQBS!(V, playerIdx, 7);
+                    Print #1, Tab(21); "###"; careerQBS!(V, playerIdx, 1);
+                    Print #1, Tab(29); "###"; careerQBS!(V, playerIdx, 0);
+                    Print #1, Tab(38); "##"; careerQBS!(V, playerIdx, 2);
+                    Print #1, Tab(43); "##"; careerQBS!(V, playerIdx, 4);
+                    Print #1, Tab(49); "####"; careerQBS!(V, playerIdx, 3);
 
-                    If careerQBS!(V, B9, 1) = 0 Or careerQBS!(V, B9, 0) = 0 Then 
+                    If careerQBS!(V, playerIdx, 1) = 0 Or careerQBS!(V, playerIdx, 0) = 0 Then 
                         Print #1, Tab(56); " 00";
                     End If
-                    If careerQBS!(V, B9, 1) > 0 Then 
-                        Print #1, Tab(56); "##"; (careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0)) * 100;
+                    If careerQBS!(V, playerIdx, 1) > 0 Then 
+                        Print #1, Tab(56); "##"; (careerQBS!(V, playerIdx, 1) / careerQBS!(V, playerIdx, 0)) * 100;
                     End If
-                    If careerQBS!(V, B9, 0) = 0 Then 
+                    If careerQBS!(V, playerIdx, 0) = 0 Then 
                         Print #1, Tab(63); " 0.0";
                     End If
-                    If careerQBS!(V, B9, 1) > 0 Then 
-                        Print #1, Tab(63); "##.#"; careerQBS!(V, B9, 3) / careerQBS!(V, B9, 1);
+                    If careerQBS!(V, playerIdx, 1) > 0 Then 
+                        Print #1, Tab(63); "##.#"; careerQBS!(V, playerIdx, 3) / careerQBS!(V, playerIdx, 1);
                     End If
 
-                    If careerQBS!(V, B9, 0) > 0 Then 
-                        careerQBS!(V, B9, 11) = Int(careerQBS!(V, B9, 1) / careerQBS!(V, B9, 0) * 1000) / 10
+                    If careerQBS!(V, playerIdx, 0) > 0 Then 
+                        careerQBS!(V, playerIdx, 11) = Int(careerQBS!(V, playerIdx, 1) / careerQBS!(V, playerIdx, 0) * 1000) / 10
                     End If
 
-                    If careerQBS!(V, B9, 0) = 0 Then
-                        careerQBS!(V, B9, 11) = 0
-                        careerQBS!(V, B9, 8) = 0
-                        careerQBS!(V, B9, 10) = 0
-                        careerQBS!(V, B9, 9) = 0
+                    If careerQBS!(V, playerIdx, 0) = 0 Then
+                        careerQBS!(V, playerIdx, 11) = 0
+                        careerQBS!(V, playerIdx, 8) = 0
+                        careerQBS!(V, playerIdx, 10) = 0
+                        careerQBS!(V, playerIdx, 9) = 0
                     Else
-                        careerQBS!(V, B9, 8) = Int(careerQBS!(V, B9, 4) / careerQBS!(V, B9, 0) * 1000) / 10
-                        careerQBS!(V, B9, 10) = Int(careerQBS!(V, B9, 3) / careerQBS!(V, B9, 0) * 100) / 100
-                        careerQBS!(V, B9, 9) = Int(careerQBS!(V, B9, 2) / careerQBS!(V, B9, 0) * 1000) / 10
+                        careerQBS!(V, playerIdx, 8) = Int(careerQBS!(V, playerIdx, 4) / careerQBS!(V, playerIdx, 0) * 1000) / 10
+                        careerQBS!(V, playerIdx, 10) = Int(careerQBS!(V, playerIdx, 3) / careerQBS!(V, playerIdx, 0) * 100) / 100
+                        careerQBS!(V, playerIdx, 9) = Int(careerQBS!(V, playerIdx, 2) / careerQBS!(V, playerIdx, 0) * 1000) / 10
                     End If
 
-                    careerPP(V, B9) = careerQBS!(V, B9, 11) - 30
-                    If careerPP(V, B9) < 0 Then
-                        careerPP(V, B9) = 0
+                    careerPP(V, playerIdx) = careerQBS!(V, playerIdx, 11) - 30
+                    If careerPP(V, playerIdx) < 0 Then
+                        careerPP(V, playerIdx) = 0
                     Else
-                        If careerPP(V, B9) > 77.5 Then
-                            careerPP(V, B9) = 2.375
+                        If careerPP(V, playerIdx) > 77.5 Then
+                            careerPP(V, playerIdx) = 2.375
                         Else
-                            careerPP(V, B9) = careerPP(V, B9) * .05
+                            careerPP(V, playerIdx) = careerPP(V, playerIdx) * .05
                         End If
                     End If
 
-                    If careerQBS!(V, B9, 8) > 11.9 Then
-                        careerFF!(V, B9) = 2.375
+                    If careerQBS!(V, playerIdx, 8) > 11.9 Then
+                        careerFF!(V, playerIdx) = 2.375
                     Else
-                        careerFF!(V, B9) = careerQBS!(V, B9, 8) * .2
+                        careerFF!(V, playerIdx) = careerQBS!(V, playerIdx, 8) * .2
                     End If
 
-                    If careerQBS!(V, B9, 9) = 0 Then
-                        careerII(V, B9) = 0
+                    If careerQBS!(V, playerIdx, 9) = 0 Then
+                        careerII(V, playerIdx) = 0
                     Else
-                        If careerQBS!(V, B9, 9) > 9.5 Then
-                            careerII(V, B9) = 0
+                        If careerQBS!(V, playerIdx, 9) > 9.5 Then
+                            careerII(V, playerIdx) = 0
                         Else
-                            careerII(V, B9) = 2.375 - (.25 * careerQBS!(V, B9, 9))
+                            careerII(V, playerIdx) = 2.375 - (.25 * careerQBS!(V, playerIdx, 9))
                         End If
                     End If
 
-                    careerQBS!(V, B9, 10) = careerQBS!(V, B9, 10) - 3
+                    careerQBS!(V, playerIdx, 10) = careerQBS!(V, playerIdx, 10) - 3
 
-                    If careerQBS!(V, B9, 10) < 0 Then
-                        careerYY(V, B9) = 0
+                    If careerQBS!(V, playerIdx, 10) < 0 Then
+                        careerYY(V, playerIdx) = 0
                     Else
-                        If careerQBS!(V, B9, 10) > 12.5 Then
-                            careerYY(V, B9) = 2.375
+                        If careerQBS!(V, playerIdx, 10) > 12.5 Then
+                            careerYY(V, playerIdx) = 2.375
                         Else
-                            D = Int(careerQBS!(V, B9, 10) * 100) / 2
-                            If D = careerQBS!(V, B9, 10) / 2 Then
-                                careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2
+                            D = Int(careerQBS!(V, playerIdx, 10) * 100) / 2
+                            If D = careerQBS!(V, playerIdx, 10) / 2 Then
+                                careerYY(V, playerIdx) = careerQBS!(V, playerIdx, 10) / 2 * .3 + careerQBS!(V, playerIdx, 10) / 2 * .2
                             Else
-                                careerYY(V, B9) = careerQBS!(V, B9, 10) / 2 * .3 + careerQBS!(V, B9, 10) / 2 * .2 + .003
+                                careerYY(V, playerIdx) = careerQBS!(V, playerIdx, 10) / 2 * .3 + careerQBS!(V, playerIdx, 10) / 2 * .2 + .003
                             End If
                         End If
                     End If
 
-                    careerQBS!(V, B9, 12) = careerPP(V, B9) + careerFF!(V, B9) + careerII(V, B9) + careerYY(V, B9)
+                    careerQBS!(V, playerIdx, 12) = careerPP(V, playerIdx) + careerFF!(V, playerIdx) + careerII(V, playerIdx) + careerYY(V, playerIdx)
 
-                    If careerQBS!(V, B9, 12) > 9.5 Then
-                        careerQBS!(V, B9, 12) = 158.3
+                    If careerQBS!(V, playerIdx, 12) > 9.5 Then
+                        careerQBS!(V, playerIdx, 12) = 158.3
                     Else
-                        careerQBS!(V, B9, 12) = careerQBS!(V, B9, 12) * 50 / 3
+                        careerQBS!(V, playerIdx, 12) = careerQBS!(V, playerIdx, 12) * 50 / 3
                     End If
 
-                    careerQBS!(V, B9, 12) = Int(careerQBS!(V, B9, 12) * 10) / 10
+                    careerQBS!(V, playerIdx, 12) = Int(careerQBS!(V, playerIdx, 12) * 10) / 10
 
-                    Print #1, Tab(70); "###.#"; careerQBS!(V, B9, 12);
-                    Print #1, Tab(80); "##"; careerQBS!(V, B9, 5);: Print #1, careerQBS$(V, B9, 0)
+                    Print #1, Tab(70); "###.#"; careerQBS!(V, playerIdx, 12);
+                    Print #1, Tab(80); "##"; careerQBS!(V, playerIdx, 5);: Print #1, careerQBS$(V, playerIdx, 0)
 
                 Next V
 
@@ -1263,15 +1266,15 @@ Sub CareerStatsQB_Report (exitFlag%, B9, careerFile$)
                 careerRecPlyr$(0) = ""
 
                 For V = 1 To VV
-                    TT10 = TT10 + careerQBS!(V, B9, 1)
-                    TT11 = TT11 + careerQBS!(V, B9, 0)
-                    TT12 = TT12 + careerQBS!(V, B9, 2)
-                    TT13 = TT13 + careerQBS!(V, B9, 4)
-                    TT14 = TT14 + careerQBS!(V, B9, 3)
+                    TT10 = TT10 + careerQBS!(V, playerIdx, 1)
+                    TT11 = TT11 + careerQBS!(V, playerIdx, 0)
+                    TT12 = TT12 + careerQBS!(V, playerIdx, 2)
+                    TT13 = TT13 + careerQBS!(V, playerIdx, 4)
+                    TT14 = TT14 + careerQBS!(V, playerIdx, 3)
 
-                    If careerQBS!(V, B9, 5) > careerRecVal!(O) Then
-                        careerRecVal!(0) = careerQBS!(V, B9, 5)
-                        careerRecPlyr$(0) = careerQBS$(V, B9, 0)
+                    If careerQBS!(V, playerIdx, 5) > careerRecVal!(O) Then
+                        careerRecVal!(0) = careerQBS!(V, playerIdx, 5)
+                        careerRecPlyr$(0) = careerQBS$(V, playerIdx, 0)
                     End If
 
                 Next V
@@ -1409,7 +1412,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's KR's
-Sub CareerStatsKR_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsKR_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carKickRet$(), careerKRS$(), careerRecPlyr$()
     Shared careerKRS!(), careerRecVal!()
@@ -1418,7 +1421,7 @@ Sub CareerStatsKR_Report (exitFlag%, B9, careerFile$)
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carKickRet$(B9);
+    Color 12: Print carKickRet$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1426,7 +1429,7 @@ Sub CareerStatsKR_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carKickRet$(B9);
+    Color 12: Print carKickRet$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1460,45 +1463,45 @@ Sub CareerStatsKR_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "KICK RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerKRS!(I, B9, 4)
+                    VV = VV + careerKRS!(I, playerIdx, 4)
                 Next
 
-                Print #1, Left$(carKickRet$(B9), 13);
+                Print #1, Left$(carKickRet$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(22); careerKRS!(V, B9, 5);
-                    Print #1, Tab(32); "###"; careerKRS!(V, B9, 0);
-                    Print #1, Tab(42); "####"; careerKRS!(V, B9, 1);
+                    Print #1, Tab(22); careerKRS!(V, playerIdx, 5);
+                    Print #1, Tab(32); "###"; careerKRS!(V, playerIdx, 0);
+                    Print #1, Tab(42); "####"; careerKRS!(V, playerIdx, 1);
 
-                    If careerKRS!(V, B9, 0) = 0 Or careerKRS!(V, B9, 1) = 0 Then 
+                    If careerKRS!(V, playerIdx, 0) = 0 Or careerKRS!(V, playerIdx, 1) = 0 Then 
                         Print #1, Tab(52); " 00";
                     End If
-                    If careerKRS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(52); "##.#"; careerKRS!(V, B9, 1) / careerKRS!(V, B9, 0);
+                    If careerKRS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(52); "##.#"; careerKRS!(V, playerIdx, 1) / careerKRS!(V, playerIdx, 0);
                     End If
 
-                    Print #1, Tab(62); "##"; careerKRS!(V, B9, 2);
-                    Print #1, Tab(68); "##"; careerKRS!(V, B9, 3);
-                    Print #1, careerKRS$(V, B9, 0)
+                    Print #1, Tab(62); "##"; careerKRS!(V, playerIdx, 2);
+                    Print #1, Tab(68); "##"; careerKRS!(V, playerIdx, 3);
+                    Print #1, careerKRS$(V, playerIdx, 0)
                 Next V
 
                 careerRecVal!(0) = 0
                 careerRecPlyr$(0) = ""
 
                 For V = 1 To VV
-                    TT15 = TT15 + careerKRS!(V, B9, 0)
-                    TT16 = TT16 + careerKRS!(V, B9, 1)
-                    TT17 = TT17 + careerKRS!(V, B9, 2)
+                    TT15 = TT15 + careerKRS!(V, playerIdx, 0)
+                    TT16 = TT16 + careerKRS!(V, playerIdx, 1)
+                    TT17 = TT17 + careerKRS!(V, playerIdx, 2)
 
-                    If careerKRS!(V, B9, 3) > careerRecVal!(0) Then
-                        careerRecVal!(0) = careerKRS!(V, B9, 3)
-                        careerRecPlyr$(0) = careerKRS$(V, B9, 0)
+                    If careerKRS!(V, playerIdx, 3) > careerRecVal!(0) Then
+                        careerRecVal!(0) = careerKRS!(V, playerIdx, 3)
+                        careerRecPlyr$(0) = careerKRS$(V, playerIdx, 0)
                     End If
 
                 Next V
@@ -1556,7 +1559,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's PR's
-Sub CareerStatsPR_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsPR_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carPRet$(), careerPRS$(), careerRecPlyr$()
     Shared careerPRS!(), careerRecVal!()
@@ -1565,7 +1568,7 @@ Sub CareerStatsPR_Report (exitFlag%, B9, careerFile$)
 
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carPRet$(B9);
+    Color 12: Print carPRet$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1573,7 +1576,7 @@ Sub CareerStatsPR_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carPRet$(B9);
+    Color 12: Print carPRet$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1607,41 +1610,41 @@ Sub CareerStatsPR_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "PUNT RETURNERS        YEAR     ATT.     YARDS      AVG.     TDS  LONGEST"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerPRS!(I, B9, 4)
+                    VV = VV + careerPRS!(I, playerIdx, 4)
                 Next
 
-                Print #1, Left$(carPRet$(B9), 13);
+                Print #1, Left$(carPRet$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(22); careerPRS!(V, B9, 5);
-                    Print #1, Tab(32); "###"; careerPRS!(V, B9, 0);
-                    Print #1, Tab(42); "####"; careerPRS!(V, B9, 1);
-                    If careerPRS!(V, B9, 0) = 0 Or careerPRS!(V, B9, 1) = 0 Then 
+                    Print #1, Tab(22); careerPRS!(V, playerIdx, 5);
+                    Print #1, Tab(32); "###"; careerPRS!(V, playerIdx, 0);
+                    Print #1, Tab(42); "####"; careerPRS!(V, playerIdx, 1);
+                    If careerPRS!(V, playerIdx, 0) = 0 Or careerPRS!(V, playerIdx, 1) = 0 Then 
                         Print #1, Tab(52); " 00";
                     End If
-                    If careerPRS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(52); "##.#"; careerPRS!(V, B9, 1) / careerPRS!(V, B9, 0);
+                    If careerPRS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(52); "##.#"; careerPRS!(V, playerIdx, 1) / careerPRS!(V, playerIdx, 0);
                     End If
-                    Print #1, Tab(62); "##"; careerPRS!(V, B9, 2);
-                    Print #1, Tab(68); "##"; careerPRS!(V, B9, 3);
-                    Print #1, careerPRS$(V, B9, 0)
+                    Print #1, Tab(62); "##"; careerPRS!(V, playerIdx, 2);
+                    Print #1, Tab(68); "##"; careerPRS!(V, playerIdx, 3);
+                    Print #1, careerPRS$(V, playerIdx, 0)
                 Next V
 
                 careerRecVal!(0) = 0
                 careerRecPlyr$(0) = ""
 
                 For V = 1 To VV
-                    TT18 = TT18 + careerPRS!(V, B9, 0)
-                    TT19 = TT19 + careerPRS!(V, B9, 1)
-                    TT20 = TT20 + careerPRS!(V, B9, 2)
-                    If careerPRS!(V, B9, 3) > careerRecVal!(0) Then
-                        careerRecVal!(0) = careerPRS!(V, B9, 3): careerRecPlyr$(0) = careerPRS$(V, B9, 0)
+                    TT18 = TT18 + careerPRS!(V, playerIdx, 0)
+                    TT19 = TT19 + careerPRS!(V, playerIdx, 1)
+                    TT20 = TT20 + careerPRS!(V, playerIdx, 2)
+                    If careerPRS!(V, playerIdx, 3) > careerRecVal!(0) Then
+                        careerRecVal!(0) = careerPRS!(V, playerIdx, 3): careerRecPlyr$(0) = careerPRS$(V, playerIdx, 0)
                     End If
                 Next V
 
@@ -1698,7 +1701,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's Punter
-Sub CareerStatsP_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsP_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carPunter$(), careerRecPlyr$()
     Shared careerPUS!(), careerRecVal!()
@@ -1708,14 +1711,14 @@ Sub CareerStatsP_Report (exitFlag%, B9, careerFile$)
     Locate 5, 20: Color 15
 
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carPunter$(B9);
+    Color 12: Print carPunter$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
     Print
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carPunter$(B9);
+    Color 12: Print carPunter$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1749,32 +1752,32 @@ Sub CareerStatsP_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "PUNTERS           YEAR     ATT.     YARDS      AVG."
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerPUS!(I, B9, 2)
+                    VV = VV + careerPUS!(I, playerIdx, 2)
                 Next
 
-                Print #1, Left$(carPunter$(B9), 13);
+                Print #1, Left$(carPunter$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(18); careerPUS!(V, B9, 3);
-                    Print #1, Tab(28); "###"; careerPUS!(V, B9, 0);
-                    Print #1, Tab(38); "####"; careerPUS!(V, B9, 1);
-                    If careerPUS!(V, B9, 0) = 0 Or careerPUS!(V, B9, 1) = 0 Then 
+                    Print #1, Tab(18); careerPUS!(V, playerIdx, 3);
+                    Print #1, Tab(28); "###"; careerPUS!(V, playerIdx, 0);
+                    Print #1, Tab(38); "####"; careerPUS!(V, playerIdx, 1);
+                    If careerPUS!(V, playerIdx, 0) = 0 Or careerPUS!(V, playerIdx, 1) = 0 Then 
                         Print #1, Tab(47); "00.0"
                     End If
-                    If careerPUS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(47); "##.#"; careerPUS!(V, B9, 1) / careerPUS!(V, B9, 0)
+                    If careerPUS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(47); "##.#"; careerPUS!(V, playerIdx, 1) / careerPUS!(V, playerIdx, 0)
                     End If
                 Next V
 
                 For V = 1 To VV
-                    TT21 = TT21 + careerPUS!(V, B9, 0)
-                    TT22 = TT22 + careerPUS!(V, B9, 1)
+                    TT21 = TT21 + careerPUS!(V, playerIdx, 0)
+                    TT22 = TT22 + careerPUS!(V, playerIdx, 1)
                 Next V
 
                 Print #1, "TOTALS";
@@ -1824,7 +1827,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's Kickers
-Sub CareerStatsK_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsK_Report (exitFlag%, careerName$, playerIdx)
 
     Shared carKicker$(), careerRecPlyr$()
     Shared careerFGS!(), careerRecVal!(), careerTeamTotal!()
@@ -1833,7 +1836,7 @@ Sub CareerStatsK_Report (exitFlag%, B9, careerFile$)
     
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print carKicker$(B9);
+    Color 12: Print carKicker$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -1841,7 +1844,7 @@ Sub CareerStatsK_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print carKicker$(B9);
+    Color 12: Print carKicker$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -1875,74 +1878,74 @@ Sub CareerStatsK_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Locate 2: Print #1, "KICKERS      YEAR EPA EPM PCT. FGA FGM PCT. LFG  0-19 20-29 30-39 40-49 50+"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerFGS!(I, B9, 15)
+                    VV = VV + careerFGS!(I, playerIdx, 15)
                 Next
 
-                Print #1, Left$(carKicker$(B9), 13);
+                Print #1, Left$(carKicker$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(13); careerFGS!(V, B9, 16);
-                    Print #1, Tab(19); "###"; careerFGS!(V, B9, 3);
-                    Print #1, Tab(23); "###"; careerFGS!(V, B9, 2);
+                    Print #1, Tab(13); careerFGS!(V, playerIdx, 16);
+                    Print #1, Tab(19); "###"; careerFGS!(V, playerIdx, 3);
+                    Print #1, Tab(23); "###"; careerFGS!(V, playerIdx, 2);
 
-                    If careerFGS!(V, B9, 2) = 0 Or careerFGS!(V, B9, 3) = 0 Then 
+                    If careerFGS!(V, playerIdx, 2) = 0 Or careerFGS!(V, playerIdx, 3) = 0 Then 
                         Print #1, Tab(27); "  0";
                     End If
-                    If careerFGS!(V, B9, 2) > 0 Then 
-                        Print #1, Tab(27); "###"; (careerFGS!(V, B9, 2) / careerFGS!(V, B9, 3)) * 100;
+                    If careerFGS!(V, playerIdx, 2) > 0 Then 
+                        Print #1, Tab(27); "###"; (careerFGS!(V, playerIdx, 2) / careerFGS!(V, playerIdx, 3)) * 100;
                     End If
 
-                    Print #1, Tab(32); "###"; careerFGS!(V, B9, 1);
-                    Print #1, Tab(36); "###"; careerFGS!(V, B9, 0);
+                    Print #1, Tab(32); "###"; careerFGS!(V, playerIdx, 1);
+                    Print #1, Tab(36); "###"; careerFGS!(V, playerIdx, 0);
 
-                    If careerFGS!(V, B9, 0) = 0 Or careerFGS!(V, B9, 1) = 0 Then 
+                    If careerFGS!(V, playerIdx, 0) = 0 Or careerFGS!(V, playerIdx, 1) = 0 Then 
                         Print #1, Tab(40); "  0";
                     End If
-                    If careerFGS!(V, B9, 0) > 0 Then 
-                        Print #1, Tab(40); "###"; (careerFGS!(V, B9, 0) / careerFGS!(V, B9, 1)) * 100;
+                    If careerFGS!(V, playerIdx, 0) > 0 Then 
+                        Print #1, Tab(40); "###"; (careerFGS!(V, playerIdx, 0) / careerFGS!(V, playerIdx, 1)) * 100;
                     End If
 
-                    Print #1, Tab(46); "##"; careerFGS!(V, B9, 4);
-                    Print #1, Tab(49); "##"; careerFGS!(V, B9, 5);: Print #1, "-";
-                    Print #1, Tab(52); "##"; careerFGS!(V, B9, 10);
-                    Print #1, Tab(55); "##"; careerFGS!(V, B9, 6);: Print #1, "-";
-                    Print #1, Tab(58); "##"; careerFGS!(V, B9, 11);
-                    Print #1, Tab(61); "##"; careerFGS!(V, B9, 7);: Print #1, "-";
-                    Print #1, Tab(64); "##"; careerFGS!(V, B9, 12);
-                    Print #1, Tab(67); "##"; careerFGS!(V, B9, 8);: Print #1, "-";
-                    Print #1, Tab(70); "##"; careerFGS!(V, B9, 13);
-                    Print #1, Tab(73); "##"; careerFGS!(V, B9, 9);: Print #1, "-";
-                    Print #1, Tab(76); "##"; careerFGS!(V, B9, 14)
+                    Print #1, Tab(46); "##"; careerFGS!(V, playerIdx, 4);
+                    Print #1, Tab(49); "##"; careerFGS!(V, playerIdx, 5);: Print #1, "-";
+                    Print #1, Tab(52); "##"; careerFGS!(V, playerIdx, 10);
+                    Print #1, Tab(55); "##"; careerFGS!(V, playerIdx, 6);: Print #1, "-";
+                    Print #1, Tab(58); "##"; careerFGS!(V, playerIdx, 11);
+                    Print #1, Tab(61); "##"; careerFGS!(V, playerIdx, 7);: Print #1, "-";
+                    Print #1, Tab(64); "##"; careerFGS!(V, playerIdx, 12);
+                    Print #1, Tab(67); "##"; careerFGS!(V, playerIdx, 8);: Print #1, "-";
+                    Print #1, Tab(70); "##"; careerFGS!(V, playerIdx, 13);
+                    Print #1, Tab(73); "##"; careerFGS!(V, playerIdx, 9);: Print #1, "-";
+                    Print #1, Tab(76); "##"; careerFGS!(V, playerIdx, 14)
                 Next V
 
                 For V = 1 To VV
-                    careerTeamTotal!(23) = careerTeamTotal!(23) + careerFGS!(V, B9, 0)
-                    careerTeamTotal!(24) = careerTeamTotal!(24) + careerFGS!(V, B9, 1)
-                    careerTeamTotal!(34) = careerTeamTotal!(34) + careerFGS!(V, B9, 2)
-                    careerTeamTotal!(35) = careerTeamTotal!(35) + careerFGS!(V, B9, 3)
-                    careerTeamTotal!(36) = careerTeamTotal!(36) + careerFGS!(V, B9, 5)
-                    careerTeamTotal!(37) = careerTeamTotal!(37) + careerFGS!(V, B9, 6)
-                    careerTeamTotal!(38) = careerTeamTotal!(38) + careerFGS!(V, B9, 7)
-                    careerTeamTotal!(39) = careerTeamTotal!(39) + careerFGS!(V, B9, 8)
-                    careerTeamTotal!(40) = careerTeamTotal!(40) + careerFGS!(V, B9, 9)
-                    careerTeamTotal!(41) = careerTeamTotal!(41) + careerFGS!(V, B9, 10)
-                    careerTeamTotal!(42) = careerTeamTotal!(42) + careerFGS!(V, B9, 11)
-                    careerTeamTotal!(43) = careerTeamTotal!(43) + careerFGS!(V, B9, 12)
-                    careerTeamTotal!(44) = careerTeamTotal!(44) + careerFGS!(V, B9, 13)
-                    careerTeamTotal!(45) = careerTeamTotal!(45) + careerFGS!(V, B9, 14)
+                    careerTeamTotal!(23) = careerTeamTotal!(23) + careerFGS!(V, playerIdx, 0)
+                    careerTeamTotal!(24) = careerTeamTotal!(24) + careerFGS!(V, playerIdx, 1)
+                    careerTeamTotal!(34) = careerTeamTotal!(34) + careerFGS!(V, playerIdx, 2)
+                    careerTeamTotal!(35) = careerTeamTotal!(35) + careerFGS!(V, playerIdx, 3)
+                    careerTeamTotal!(36) = careerTeamTotal!(36) + careerFGS!(V, playerIdx, 5)
+                    careerTeamTotal!(37) = careerTeamTotal!(37) + careerFGS!(V, playerIdx, 6)
+                    careerTeamTotal!(38) = careerTeamTotal!(38) + careerFGS!(V, playerIdx, 7)
+                    careerTeamTotal!(39) = careerTeamTotal!(39) + careerFGS!(V, playerIdx, 8)
+                    careerTeamTotal!(40) = careerTeamTotal!(40) + careerFGS!(V, playerIdx, 9)
+                    careerTeamTotal!(41) = careerTeamTotal!(41) + careerFGS!(V, playerIdx, 10)
+                    careerTeamTotal!(42) = careerTeamTotal!(42) + careerFGS!(V, playerIdx, 11)
+                    careerTeamTotal!(43) = careerTeamTotal!(43) + careerFGS!(V, playerIdx, 12)
+                    careerTeamTotal!(44) = careerTeamTotal!(44) + careerFGS!(V, playerIdx, 13)
+                    careerTeamTotal!(45) = careerTeamTotal!(45) + careerFGS!(V, playerIdx, 14)
                 Next V
 
                 careerRecVal!(0) = 0
 
                 For V = 1 To VV
-                    If careerFGS!(V, B9, 4) >= careerRecVal!(0) Then
-                        careerRecVal!(0) = careerFGS!(V, B9, 4)
+                    If careerFGS!(V, playerIdx, 4) >= careerRecVal!(0) Then
+                        careerRecVal!(0) = careerFGS!(V, playerIdx, 4)
                     End If
                 Next
 
@@ -2016,7 +2019,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's INT's
-Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsINT_Report (exitFlag%, careerName$, playerIdx)
 
     Shared intName$()
     Shared careerGIS!(), careerTeamTotal!()
@@ -2024,7 +2027,7 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print careerintName$(B9);
+    Color 12: Print careerintName$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2032,7 +2035,7 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print intName$(B9);
+    Color 12: Print intName$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -2066,26 +2069,26 @@ Sub CareerStatsINT_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "INTERCEPTORS        YEAR     INTERCEPTIONS"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerGIS!(I, B9, 1)
+                    VV = VV + careerGIS!(I, playerIdx, 1)
                 Next
 
-                Print #1, Left$(intName$(B9), 13);
+                Print #1, Left$(intName$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(20); careerGIS!(V, B9, 2);
-                    Print #1, Tab(34); "###"; careerGIS!(V, B9, 0)
+                    Print #1, Tab(20); careerGIS!(V, playerIdx, 2);
+                    Print #1, Tab(34); "###"; careerGIS!(V, playerIdx, 0)
                 Next V
 
                 careerTeamTotal!(32) = 0
 
                 For V = 1 To VV
-                    careerTeamTotal!(32) = careerTeamTotal!(32) + careerGIS!(V, B9, 0)
+                    careerTeamTotal!(32) = careerTeamTotal!(32) + careerGIS!(V, playerIdx, 0)
                 Next V
 
                 Print #1, "TOTALS";
@@ -2128,7 +2131,7 @@ End Sub
 '----------------------------------------
 'This routine formats and prints career 
 'stats associated with the team's sacks
-Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
+Sub CareerStatsSACK_Report (exitFlag%, careerName$, playerIdx)
 
     Shared sackName$()
     Shared careerGSS!(), careerTeamTotal!()
@@ -2136,7 +2139,7 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
     Cls
     Locate 5, 20: Color 15
     Print "PRINT CAREER STATS OF ";
-    Color 12: Print sackName$(B9);
+    Color 12: Print sackName$(playerIdx);
     Color 15: Print " BEFORE "
     Locate , 20: Print "DELETING THEM (Y/N)"
 
@@ -2144,7 +2147,7 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
     Color 14: Locate , 20
     Print "IF YOU DO NOT WISH TO PRINT/DELETE THE STATS"
     Locate , 20: Print "OF ";
-    Color 12: Print sackName$(B9);
+    Color 12: Print sackName$(playerIdx);
     Color 14: Print " HIT 'E', 'X' or 'Esc'"
 
     Do
@@ -2178,26 +2181,26 @@ Sub CareerStatsSACK_Report (exitFlag%, B9, careerFile$)
 
                 Open destFile$ For Output As #1
 
-                Print #1, careerFile$
+                Print #1, careerName$
                 Print #1, "SACKERS             YEAR     INTERCEPTIONS"
 
                 VV = 0
 
                 For I = 1 To MAX_CAREER_YEARS 
-                    VV = VV + careerGSS!(I, B9, 1)
+                    VV = VV + careerGSS!(I, playerIdx, 1)
                 Next
 
-                Print #1, Left$(sackName$(B9), 13);
+                Print #1, Left$(sackName$(playerIdx), 13);
 
                 For V = 1 To VV
-                    Print #1, Tab(20); careerGSS!(V, B9, 2);
-                    Print #1, Tab(34); "###"; careerGSS!(V, B9, 0)
+                    Print #1, Tab(20); careerGSS!(V, playerIdx, 2);
+                    Print #1, Tab(34); "###"; careerGSS!(V, playerIdx, 0)
                 Next V
 
                 careerTeamTotal!(33) = 0
 
                 For V = 1 To VV
-                    careerTeamTotal!(33) = careerTeamTotal!(33) + careerGSS!(V, B9, 0)
+                    careerTeamTotal!(33) = careerTeamTotal!(33) + careerGSS!(V, playerIdx, 0)
                 Next V
 
                 Print #1, "TOTALS";

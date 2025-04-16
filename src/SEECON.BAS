@@ -4,16 +4,17 @@
 'This subroutine lets the user choose a
 'conference stat file to view, then calls
 'other routines to both load the Stats
-'and then provide options for displayINTER
+'and then provide options for display
 Sub SEECON ()
 
     _Title "3-in-1 Football - View Conference Stats"
 
-    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
+    leaderFile$ = _OpenFileDialog$("Choose Conference Stats file", diskPaths$(2), "*.LDR", "Conference Stats files")
+    'ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leaderFile$ <> "" Then
 
-        Call LoadLeaderFiles_Coll(conf$, leaderFile$)
+        Call LoadLeaderFiles_Coll(leaderFile$, conf$)
         Call StatOptions_Coll(conf$)
 
     End If
@@ -26,7 +27,7 @@ End Sub
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Coll (confName$, targetFile$)
+Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
@@ -46,9 +47,10 @@ Sub LoadLeaderFiles_Coll (confName$, targetFile$)
 
     Cls
 
-    Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+    Locate 9, 6
+    Print "PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
+    Open targetFile$ For Input As #2
 
     For X = 1 To (2 * TEAMS_PER_CONFERENCE)
         Input #2, divTeamNames$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
@@ -189,224 +191,6 @@ Sub StatOptions_Coll (confName$)
         End If
 
     Loop Until UCase$(A$) = "N" Or A$ = Chr$(27) Or userKey$ = Chr$(27)
-
-End Sub
-
-
-'----------------------------------------
-'    CollegeStdgs_Screen Subroutine
-'----------------------------------------
-'This subroutine formats the previously
-'loaded stats and outputs them to the end
-'user display.
-Sub CollegeStdgs_Screen (confName$)
-
-    Shared divLosses(), divTies(), divWins()
-    Shared leaderVal1!(), leaderVal2!()
-    Shared leagPtsAgnst!(), leagPtsFor!()
-    Shared totalTeamVal!()
-
-    Shared leagRecText$(), divTeamNames$()
-    Shared leaderName$(), leaderTeam$()
-    Shared totalTeamName$()
-
-    Shared div1Name$, div2Name$
-
-    Color 15, 0
-
-    Cls
-    Color 12
-
-    Locate 2, 33
-    Print confName$ + "OVERALL RECORD"
-
-    Color 2
-    Locate 4, 1
-    Print RTrim$(div1Name$); " DIVISION"
-
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 1 To 15:
-
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P + 5 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
-        End If
-
-    Next
-
-    RT = 0
-
-    'If RTrim$(div2Name$) <> "" Then
-
-    Locate 4, 41
-
-    Color 2
-    Print RTrim$(div2Name$); " DIVISION"
-
-    Locate , 41
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 16 To 30
-
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 10 - RT), 41
-            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
-        End If
-
-    Next
-
-    RT = 0
-
-    'End If
-
-    '-----
-    Color 12
-    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
-
-    Cls
-
-    Color 12
-    Locate 2, 33
-    Print confName$ + "CONFERENCE RECORD"
-
-    Locate 4, 1
-    Color 2
-    Print RTrim$(div1Name$); " DIVISION"
-
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 31 To 45
-
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 25 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
-        End If
-
-    Next
-
-    RT = 0
-
-    'If RTrim$(div2Name$) <> "" Then
-
-    Locate 4, 41
-    Color 2
-    Print RTrim$(div2Name$); " DIVISION"
-
-    Locate , 41
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 46 To 60
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 40 - RT), 41
-            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-    Next
-
-    RT = 0
-
-    'End If
-
-    '-----
-    Color 12
-    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
-    Color 15
-    QK$ = GetKeyPress$
-    '-----
 
 End Sub
 
@@ -951,5 +735,219 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         Kill destFile$
 
     End If
+
+End Sub
+
+
+'----------------------------------------
+'    CollegeStdgs_Screen Subroutine
+'----------------------------------------
+'This subroutine formats the previously
+'loaded stats and outputs them to the end
+'user display.
+Sub CollegeStdgs_Screen (confName$)
+
+    Shared divLosses(), divTies(), divWins()
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
+    Shared leagRecText$(), divTeamNames$()
+
+    Shared div1Name$, div2Name$
+
+    Color 15, 0
+
+    Cls
+    Color 12
+
+    Locate 2, 33
+    Print confName$ + "OVERALL RECORD"
+
+    Color 2
+    Locate 4, 1
+    Print RTrim$(div1Name$); " DIVISION"
+
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 1 To 15:
+
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P + 5 - RT)
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
+            Else
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
+                Else
+                    If divWins(P) = 0 Then
+                        Print "  .000";
+                    Else
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                    End If
+                End If
+            End If
+
+            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
+        End If
+
+    Next
+
+    RT = 0
+
+    'If RTrim$(div2Name$) <> "" Then
+
+    Locate 4, 41
+
+    Color 2
+    Print RTrim$(div2Name$); " DIVISION"
+
+    Locate , 41
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 16 To 30
+
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 10 - RT), 41
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
+            Else
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
+                Else
+                    If divWins(P) = 0 Then
+                        Print "  .000";
+                    Else
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                    End If
+                End If
+            End If
+
+            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
+        End If
+
+    Next
+
+    RT = 0
+
+    'End If
+
+    '-----
+    Color 12
+    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
+    Color 15
+    QK$ = GetKeyPress$
+    '-----
+
+    Cls
+
+    Color 12
+    Locate 2, 33
+    Print confName$ + "CONFERENCE RECORD"
+
+    Locate 4, 1
+    Color 2
+    Print RTrim$(div1Name$); " DIVISION"
+
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 31 To 45
+
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 25 - RT)
+            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
+            Else
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
+                Else
+                    If divWins(P) = 0 Then
+                        Print "  .000";
+                    Else
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                    End If
+                End If
+            End If
+
+            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
+        End If
+
+    Next
+
+    RT = 0
+
+    'If RTrim$(div2Name$) <> "" Then
+
+    Locate 4, 41
+    Color 2
+    Print RTrim$(div2Name$); " DIVISION"
+
+    Locate , 41
+    Color 14
+    Print "              W   L   T   PCT  PF  PA"
+    Color 15
+
+    For P = 46 To 60
+        If leagRecText$(P) = "" Then
+            RT = RT + 1
+        Else
+            Locate (P - 40 - RT), 41
+            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+            'Win %
+            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                Print "  .---";
+            Else
+                If divLosses(P) + divTies(P) = 0 Then
+                    Print " 1.000";
+                Else
+                    If divWins(P) = 0 Then
+                        Print "  .000";
+                    Else
+                        'Ties count as 1/2 win
+                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                    End If
+                End If
+            End If
+
+            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        End If
+    Next
+
+    RT = 0
+
+    'End If
+
+    '-----
+    Color 12
+    Locate LAST_ROW - 1, 28: Print "(HIT ANY KEY TO CONTINUE)";
+    Color 15
+    QK$ = GetKeyPress$
+    '-----
 
 End Sub

@@ -9,9 +9,10 @@ Sub SEELEAG ()
 
     _Title "3-in-1 Football - View League Stats"
 
-    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
+    leaderFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.LDR", "League Stats files")
+    'ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leaderFile$ <> "" Then
 
         Call LoadLeaderFiles_Pro(league$, leaderFile$)
         Call StatOptions_Pro(league$)
@@ -48,9 +49,10 @@ Sub LoadLeaderFiles_Pro (league$, targetFile$)
 
     Cls
 
-    Locate 9, 1: Print "      PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
+    Locate 9, 6
+    Print "PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + targetFile$ + ".LDR" For Input As #2
+    Open targetFile$ For Input As #2
 
     For X = 1 To TEAMS_PER_LEAGUE
         Input #2, divTeamNames$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)
@@ -145,7 +147,7 @@ End Sub
 'This subroutine gives the user various
 'options for viewing the previously loaded
 'stats, and then calls routines for each
-Sub StatOptions_Pro (league$)
+Sub StatOptions_Pro (careerName$)
 
     Do
 
@@ -162,15 +164,15 @@ Sub StatOptions_Pro (league$)
                 Case "F":
                     userFile$ = _SaveFileDialog$("Save League Report", _CWD$ + "\Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
-                        Call ProLeaders_Report(league$, 0, userFile$)
+                        Call ProLeaders_Report(careerName$, 0, userFile$)
                     End If
 
                 Case "P":
-                    Call ProLeaders_Report(league$, 1, "REPORT")
+                    Call ProLeaders_Report(careerName$, 1, "REPORT")
 
                 Case "S":
                     Call LeagStdgs_Screen
-                    Call Leaders_Screen                        
+                    Call Leaders_Screen
 
             End Select
 
@@ -951,3 +953,5 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     End If
 
 End Sub
+
+

@@ -6,13 +6,14 @@
 'for viewing / printing the results
 Sub CARVIEW ()
 
-    _Title "3-in-1 Football - Print Career Files"
+    _Title "3-in-1 Football - View Careers"
 
-    careerFile$ = ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+    careerFile$ = _OpenFileDialog$("Choose Career Leader file", diskPaths$(1), "*.CAR", "Career Leader files")
+    'ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If careerFile$ <> "" Then
 
-        Call LoadCareerFile(diskPaths$(1) + careerFile$ + ".CAR")
+        Call LoadCareerFile(careerFile$)
 
         userKey$ = GetOutputOptions$
 
@@ -23,14 +24,14 @@ Sub CARVIEW ()
                 Case "F"
                     userFile$ = _SaveFileDialog$("Save Career Report", _CWD$ + "\Career", "*.txt", "Text File")
                     If userFile$ <> "" Then
-                        Call CareerStats_Report(0, userFile$, careerFile$)
+                        Call CareerStats_Report(GetFileBaseName$(careerFile$), 0, userFile$)
                     End If
 
                 Case "P"
-                    Call CareerStats_Report(1, "CAREER", careerFile$)
+                    Call CareerStats_Report(GetFileBaseName$(careerFile$), 1, "CAREER")
 
                 Case "S"
-                    Call CareerStats_Screen(careerFile$)
+                    Call CareerStats_Screen(GetFileBaseName$(careerFile$))
 
             End Select
 
@@ -49,7 +50,7 @@ End Sub
 'This subroutine facilitates formatting
 'of the record data to a file, that is
 'subsequently either saved, or printed.
-Sub CareerStats_Report (printDest, destFile$, careerName$)
+Sub CareerStats_Report (careerName$, printDest, destFile$)
 
     Shared TT
 
@@ -928,7 +929,7 @@ End Sub
 'position categories in football.
 'A separate routine is called to display
 'the chosen options to the user screen.
-Sub CareerStats_Screen (careerFile$)
+Sub CareerStats_Screen (careerName$)
 
     _Title "3-in-1 Football - View Careers"
 
@@ -1019,7 +1020,7 @@ Sub CareerStats_Screen (careerFile$)
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 16:
                     Locate I + 4
@@ -1048,14 +1049,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 1, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 1, escPressed%, careerName$)
 
             Case "W"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 19:
                     Locate I + 4
@@ -1077,14 +1078,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 2, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 2, escPressed%, careerName$)
 
             Case "Q"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1106,14 +1107,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 3, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 3, escPressed%, careerName$)
 
             Case "C"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 7:
                     Locate I + 4
@@ -1135,14 +1136,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 4, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 4, escPressed%, careerName$)
 
             Case "U"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 7:
                     Locate I + 4
@@ -1164,14 +1165,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 5, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 5, escPressed%, careerName$)
 
             Case "P"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1186,14 +1187,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 6, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 6, escPressed%, careerName$)
 
             Case "K"
 
                 Cls
                 Locate 2, 1
 
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1208,14 +1209,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 7, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 7, escPressed%, careerName$)
 
             Case "I"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 18:
                     Locate I + 4
@@ -1244,14 +1245,14 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 8, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 8, escPressed%, careerName$)
 
             Case "F"
 
                 Cls
 
                 Locate 2, 1
-                Color 12: Print careerFile$
+                Color 12: Print careerName$
 
                 For I = 0 To 18:
                     Locate I + 4
@@ -1280,7 +1281,7 @@ Sub CareerStats_Screen (careerFile$)
                 RT = 2
                 Cls
 
-                Call CareerCategory_Screen(RT, B9, 9, escPressed%, careerFile$)
+                Call CareerCategory_Screen(RT, B9, 9, escPressed%, careerName$)
 
             Case "O"
 
@@ -1292,7 +1293,7 @@ Sub CareerStats_Screen (careerFile$)
                 Next
 
                 For category% = 1 To 9:
-                    Call CareerCategory_Screen(RT, B9, category%, escPressed%, careerFile$)
+                    Call CareerCategory_Screen(RT, B9, category%, escPressed%, careerName$)
                     If escPressed% = 1 Then Exit For
                 Next
 
@@ -1316,7 +1317,7 @@ End Sub
 'Depending on the stat category chosen,
 'formats the corresponding career stats
 'and outputs them to the user display
-Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerFile$)
+Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerName$)
 
     Shared TT
 
@@ -1340,7 +1341,7 @@ Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerFile$)
 
         Color 11
         Locate 2, 1
-        Print careerFile$
+        Print careerName$
         Color 12
 
         Select Case categoryID%

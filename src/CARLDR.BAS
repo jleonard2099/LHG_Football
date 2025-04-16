@@ -97,11 +97,11 @@ Sub UpdateCareerLeaders ()
     Erase carLdrPlyrName$, carLdrTDIndic$
     Erase carLdrVal!
 
-    careerFile$ = ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
+    careerFile$ = _OpenFileDialog$("Choose Career file", diskPaths$(1), "*.CAR", "Career Career files")
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If careerFile$ <> "" Then
 
-        Call LoadCareerFile(diskPaths$(1) + careerFile$ + ".CAR")
+        Call LoadCareerFile(careerFile$)
 
         Color 14
 
@@ -1181,7 +1181,7 @@ Sub UpdateCareerLeaders ()
         ' ##########
 
         'Save leaders
-        Open diskPaths$(2) + careerFile$ + ".TCL" For Output As #1
+        Open diskPaths$(2) + GetFileBaseName$(careerFile$) + ".TCL" For Output As #1
 
         For I = 0 To 62:
             For I1 = 0 To 19:
@@ -1210,14 +1210,14 @@ Sub CareerLeaderOptions ()
 
     Cls
 
-    leaderFile$ = ChooseFile$(diskPaths$(2) + "*.TCL", "LEADER", ExitCode%)
+    leaderFile$ = _OpenFileDialog$("Choose Career Leader file", diskPaths$(2), "*.TCL", "Career Leader files")
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leaderFile$ <> "" Then
 
         Color 15, 0
         Cls
 
-        Open diskPaths$(2) + leaderFile$ + ".TCL" For Input As #1
+        Open leaderFile$ For Input As #1
 
         For I = 0 To 62:
             For I1 = 0 To 19:
@@ -1236,14 +1236,14 @@ Sub CareerLeaderOptions ()
                 Case "F"
                     userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
-                        Call PrintCareerLeaders(0, userFile$)
+                        Call CareerLeaders_Report (GetFileBaseName$(userFile$), 0, userFile$)
                     End If
 
                 Case "P"
-                    Call PrintCareerLeaders(1, "REPORT")
+                    Call CareerLeaders_Report (GetFileBaseName$(leaderFile$), 1, "REPORT")
 
                 Case "S"
-                    Call ViewCareerLeaders
+                    Call CareerLeaders_Screen (GetFileBaseName$(leaderFile$))
 
             End Select
 
@@ -1256,12 +1256,12 @@ End Sub
 
 
 '----------------------------------------
-'       PrintCareerLeaders Subroutine
+'    CareerLeaders_Report Subroutine
 '----------------------------------------
 'This routine sends formatted career stats
 '(loaded from the .TCL file) to the user's
 'default printer
-Sub PrintCareerLeaders (printDest, destFile$)
+Sub CareerLeaders_Report (careerName$, printDest, destFile$)
 
     Shared carLdrPlyrName$()
     Shared carLdrVal!()
@@ -1271,6 +1271,10 @@ Sub PrintCareerLeaders (printDest, destFile$)
     Cls
 
     Open destFile$ For Output As #1
+
+    Print #1, Tab(80 - Int(Len(careerName$) / 2))
+    Print #1, careerName$
+    Print #1, 
 
     Print #1, Tab(5); "RUSH ATTEMPTS"; Tab(34); "RUSH YARDS"; Tab(62); "RUSH AVERAGE"
 
@@ -1608,12 +1612,12 @@ End Sub
 
 
 '----------------------------------------
-'      ViewCareerLeaders Subroutine
+'    CareerLeaders_Screen Subroutine
 '----------------------------------------
 'This routine displays formatted career
 'stats (loaded from the .TCL file) to the
 'primary screen
-Sub ViewCareerLeaders ()
+Sub CareerLeaders_Screen (careerName$)
 
     Shared carLdrPlyrName$()
     Shared carLdrVal!()
@@ -1621,11 +1625,13 @@ Sub ViewCareerLeaders ()
 
     Color 15, 0
 
-    '--- Rushing Leader Values ---
-
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
+    '--- Rushing Leader Values ---
     Locate 2, 1
     Print Tab(5); "RUSH ATTEMPTS"; Tab(44); "RUSH YARDS"
 
@@ -1649,6 +1655,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "RUSH AVERAGE"; Tab(44); "RUSH TOUCHDOWNS"
@@ -1674,6 +1683,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "RECEPTIONS (BACKS)"; Tab(44); "RECEIVING YARDS (BACKS)"
 
@@ -1698,6 +1710,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "RECEIVING AVERAGE (BACKS)"; Tab(44); "RECEIVING TOUCHDOWNS (BACKS)"
 
@@ -1721,6 +1736,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "LONGEST RECEPTION (BACKS)"; Tab(44); "LONGEST RUN"
@@ -1751,6 +1769,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "RECEPTIONS"; Tab(44); "RECEIVING YARDS"
 
@@ -1774,6 +1795,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "RECEIVING AVERAGE"; Tab(44); "RECEIVING TOUCHDOWNS"
@@ -1799,6 +1823,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "LONGEST RECEPTION"
 
@@ -1820,6 +1847,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "PASS COMPLETIONS"; Tab(44); "PASS ATTEMPTS"
@@ -1845,6 +1875,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "COMPLETION %"
 
@@ -1862,6 +1895,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "PASSING YARDS"; Tab(44); "YARDS / COMPLETION"
@@ -1887,6 +1923,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "PASSING TOUCHDOWNS"; Tab(44); "PASS INTERCEPTIONS"
 
@@ -1910,6 +1949,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "QUARTERBACK RATING"; Tab(44); "LONGEST PASS"
@@ -1939,6 +1981,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "KICK RETURN ATTEMPTS"; Tab(44); "KICK RETURN YARDS"
 
@@ -1962,6 +2007,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "KICK RETURN AVERAGE"; Tab(44); "KICK RETURN TOUCHDOWNS"
@@ -1987,6 +2035,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "LONGEST KICK RETURN"
 
@@ -2008,6 +2059,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "PUNT RETURN ATTEMPTS"; Tab(44); "PUNT RETURN YARDS"
@@ -2033,6 +2087,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "PUNT RETURN AVERAGE"; Tab(44); "PUNT RETURN TOUCHDOWNS"
 
@@ -2057,6 +2114,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "LONGEST PUNT RETURN"
 
@@ -2078,6 +2138,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "PUNT ATTEMPTS"; Tab(44); "PUNT YARDS"
@@ -2103,6 +2166,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "PUNT AVERAGE"
 
@@ -2123,6 +2189,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "EXTRA POINTS MADE"; Tab(44); "EXTRA POINT ATTEMPTS"
@@ -2148,6 +2217,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "EXTRA POINT %"
 
@@ -2166,6 +2238,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE"; Tab(44); "FIELD GOALS ATTEMPTED"
@@ -2191,6 +2266,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL %"; Tab(44); "LONGEST FIELD GOAL"
 
@@ -2214,6 +2292,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 0-19 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 0-19 YDS"
@@ -2239,6 +2320,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL % 0-19 YDS"
 
@@ -2256,6 +2340,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 20-29 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 20-29 YDS"
@@ -2281,6 +2368,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL % 20-29 YDS"
 
@@ -2298,6 +2388,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 30-39 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 30-39 YDS"
@@ -2323,6 +2416,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL % 30-39 YDS"
 
@@ -2340,6 +2436,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 40-49 YDS"; Tab(44); "FIELD GOAL ATTEMPTS 40-49 YDS"
@@ -2365,6 +2464,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL % 40-49 YDS"
 
@@ -2382,6 +2484,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "FIELD GOALS MADE 50+ YDS"; Tab(44); "FIELD GOAL ATTEMPTS 50+ YDS"
@@ -2407,6 +2512,9 @@ Sub ViewCareerLeaders ()
     Cls
     Color 12
 
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
+
     Locate 2, 1
     Print Tab(5); "FIELD GOAL % 50+ YDS"
 
@@ -2426,6 +2534,9 @@ Sub ViewCareerLeaders ()
 
     Cls
     Color 12
+
+    Locate 1, 80 - Int(Len(careerName$) / 2)
+    Print careerName$
 
     Locate 2, 1
     Print Tab(5); "INTERCEPTIONS"; Tab(44); "SACKS"
