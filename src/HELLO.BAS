@@ -13203,7 +13203,7 @@ Sub PenaltyOnPunt (autoFD)
         Case 61 To 94
             pbpString$ = "*** PENALTY - INELIG. DOWNFLD. KICK - OFF - 15 YDS ***"
             penaltyYds! = -15
-                                        
+
         Case 95 To 100
             pbpString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - OFF - 5 YDS ***"
             penaltyYds! = -5

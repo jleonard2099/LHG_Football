@@ -9,7 +9,7 @@ Sub SEELEAG ()
 
     _Title "3-in-1 Football - View League Stats"
 
-    leaderFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.LDR", "League Stats files")
+    leaderFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.LDR", "League Stats files [.LDR]")
     'ChooseFile$(diskPaths$(2) + "*.LDR", "LEADER", ExitCode%)
 
     If leaderFile$ <> "" Then

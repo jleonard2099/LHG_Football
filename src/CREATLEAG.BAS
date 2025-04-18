@@ -76,7 +76,7 @@ Sub CREATLEAG ()
                     Loop Until FileExit% = 27 Or FileExit% = 0
 
                 Case 3:
-                    userFile$ = _OpenFileDialog$("Select league file", diskPaths$(2), "*.TMI", "League files")
+                    userFile$ = _OpenFileDialog$("Select league file", diskPaths$(2), "*.TMI", "League files [.TMI]")
                     Call ConvertLeague4to5(userFile$, 0)
                     'Call ConvertAllLeague
 

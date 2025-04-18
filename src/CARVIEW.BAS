@@ -8,7 +8,7 @@ Sub CARVIEW ()
 
     _Title "3-in-1 Football - View Careers"
 
-    careerFile$ = _OpenFileDialog$("Choose Career Leader file", diskPaths$(1), "*.CAR", "Career Leader files")
+    careerFile$ = _OpenFileDialog$("Choose Career Leader file", diskPaths$(1), "*.CAR", "Career Leader files [.CAR]")
     'ChooseFile$(diskPaths$(1) + "*.CAR", "CAREER", ExitCode%)
 
     If careerFile$ <> "" Then
@@ -1019,8 +1019,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 16:
                     Locate I + 4
@@ -1055,8 +1056,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 19:
                     Locate I + 4
@@ -1084,8 +1086,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1113,8 +1116,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 7:
                     Locate I + 4
@@ -1142,8 +1146,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 7:
                     Locate I + 4
@@ -1171,8 +1176,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1192,9 +1198,10 @@ Sub CareerStats_Screen (careerName$)
             Case "K"
 
                 Cls
-                Locate 2, 1
+                Locate 2, (80 - Len(careerName$)) / 2
 
-                Color 12: Print careerName$
+                Color 11
+                Print careerName$
 
                 For I = 0 To 9:
                     Locate I + 4
@@ -1215,8 +1222,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 18:
                     Locate I + 4
@@ -1251,8 +1259,9 @@ Sub CareerStats_Screen (careerName$)
 
                 Cls
 
-                Locate 2, 1
-                Color 12: Print careerName$
+                Locate 2, (80 - Len(careerName$)) / 2
+                Color 11
+                Print careerName$
 
                 For I = 0 To 18:
                     Locate I + 4
@@ -1339,9 +1348,10 @@ Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerName$)
 
         Cls
 
+        Locate 2, (80 - Len(careerName$)) / 2
         Color 11
-        Locate 2, 1
         Print careerName$
+
         Color 12
 
         Select Case categoryID%

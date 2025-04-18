@@ -178,23 +178,23 @@ Sub MergeFirstYear ()
         Cls
 
         'careerFile$ = _InputBox$("Career File", "Enter name for Career stats file")
-        careerFile$ = _SAVEFILEDIALOG$("Save Career File", "", "*.CAR", "Career files")
+        careerFile$ = _SaveFileDialog$("Save Career File", diskPaths$(1), "*.CAR", "Career files [.CAR]")
 
         Do
 
             Color 15, 0
             Cls
 
-            Call MenuBox(8, 8, 61, 6, 15, 1)
+            Call MenuBox(8, 8, 61, 5, 15, 1)
 
             Locate 10, 15
 
-            Locate , 30
+            Locate , 31
             Color 3: Print "COMPILE STATS FOR:"
-            Locate , 30
+            Locate , 34
             Color 15: Print "C";
             Color 7: Print "OLLEGE TEAM"
-            Locate , 30
+            Locate , 34
             Color 15: Print "P";
             Color 7: Print "RO TEAM"
 
@@ -601,7 +601,7 @@ End Sub
 'formats the results for them as directed.
 Sub ReviewCareerRecords ()
 
-    recordFile$ = _OpenFileDialog$("Choose Career Record file", diskPaths$(2), "*.CLD", "Career Record files")
+    recordFile$ = _OpenFileDialog$("Choose Career Record file", diskPaths$(2), "*.CLD", "Career Record files [.CLD]")
 
     If recordFile$ <> "" Then
 
@@ -665,7 +665,7 @@ Sub CareerRecords_Report (careerName$, printDest, destFile$)
 
     Open destFile$ For Output As #1
 
-    Print #1, Tab(80 - Int(Len(careerName$) / 2))
+    Print #1, Tab((80 - Len(careerName$)) / 2)
     Print #1, careerName$
     Print #1,
 
@@ -896,12 +896,12 @@ Sub CareerRecords_Screen (careerName$)
     Do
 
         Cls
-        Color 15, 0
+        Color 14, 0
 
-        Locate 1, 80 - Int(Len(careerName$) / 2)
+        Locate 1, (80 - Len(careerName$)) / 2
         Print careerName$
 
-        Locate 2, 1
+        Locate 3, 1
         Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
 
         Locate 4, 1
@@ -984,10 +984,10 @@ Sub CareerRecords_Screen (careerName$)
 
         Cls
 
-        Locate 1, 80 - Int(Len(careerName$) / 2)
+        Locate 1, (80 - Len(careerName$)) / 2
         Print careerName$
 
-        Locate 2, 1
+        Locate 3, 1
         Color 12: Print Tab(10); "CATEGORY"; Tab(30); "RECORD"; Tab(50); "PLAYER"; Tab(65); "YEAR"
 
         Locate 4, 1
@@ -1123,7 +1123,7 @@ Sub MergeCareerFiles ()
 
     If UCase$(I$) = "Y" Then
 
-        careerFile$ = _OpenFileDialog$("Choose Career file", diskPaths$(1), "*.CAR", "Career Career files")
+        careerFile$ = _OpenFileDialog$("Choose Career file", diskPaths$(1), "*.CAR", "Career Career files [.CAR]")
 
         If careerFile$ <> "" Then
 

@@ -9,7 +9,7 @@ Sub SEENATL ()
 
     _Title "3-in-1 Football - View Org Stats"
 
-    leaderFile$ = _OpenFileDialog$("Choose Organization Stats file", diskPaths$(2), "*.NLD", "Organization Stats files")
+    leaderFile$ = _OpenFileDialog$("Choose Organization Stats file", diskPaths$(2), "*.NLD", "Organization Stats files [.NLD]")
     'ChooseFile$ (diskPaths$(2) + "*.NLD", "LEADER", ExitCode%)
 
     If leaderFile$ <> "" Then
