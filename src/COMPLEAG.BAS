@@ -83,9 +83,10 @@ Sub CompileLeague ()
 
     C$ = ","
 
-    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+    leagueFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.TMS", "League Stats files [.TMS]")
+    'ChooseFile$(diskPaths$(2) + "*.TMS", "LEAGUE", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leagueFile$ <> "" Then
 
         Do
             Color 15, 0
@@ -95,7 +96,7 @@ Sub CompileLeague ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + leagueFile$ + ".TMI" For Input As #3
+        Open diskPaths$(2) + GetFileBaseName$(leagueFile$) + ".TMI" For Input As #3
         Input #3, statType
         Close #3
 
@@ -165,7 +166,7 @@ Sub CompileLeague ()
             Next XW
 
             Call SortStandingsLeague
-            Call PostLeadersLeague(leagueFile$)
+            Call PostLeadersLeague(GetFileBaseName$(leagueFile$))
             Call PostRecordsPro
 
         End If 'Done checking file type
@@ -2252,11 +2253,12 @@ Sub PostLeadersLeague (leaderFile$)
     Shared divWins(), divLosses(), divTies()
     Shared leagPtsFor!(), leagPtsAgnst!()
 
+    Color 15, 0
     Cls
 
-    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #1
+    Print "    POSTING NEW "; leaderFile$; " LEADERS"
 
-    Print "POSTING "; leaderFile$; " LEAGUE LEADERS"
+    Open diskPaths$(2) + leaderFile$ + ".LDR" For Output As #1
 
     For X = 1 To TEAMS_PER_LEAGUE:
         Write #1, memberName$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)

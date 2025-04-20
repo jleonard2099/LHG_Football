@@ -1,6 +1,7 @@
 '----------------------------------------
 ' Used in more than one source file
 '----------------------------------------
+Dim Shared menu&
 Dim opSysType$
 Dim Shared dirSeparator$
 
@@ -28,7 +29,7 @@ Dim statsLRec!(0 To 15), statsLFG!(0 To 9), statsLInt!(0 To 9), statsLKR!(0 To 3
 Dim statsLPass!(0 To 3), statsLRush!(0 To 9), statsLPR!(0 To 2)
 Dim statsGI(0 To 9, 2), statsGS(0 To 14, 0 To 1)
 
-Dim statsTeam!(38), statsOpp!(38), statsPlayers!(50, 18)
+'Dim statsTeam!(38), statsOpp!(38), statsPlayers!(50, 18)
 
 'Record / Standings
 
@@ -176,7 +177,7 @@ Dim expLdrRBVal!(300, 8), expLdrWRVal!(180, 4), expLdrQBVal!(120, 13), expLdrQBR
 Dim expLdrKRVal!(90, 4), expLdrPRVal!(90, 4), expLdrPuntVal!(30, 2)
 Dim expLdrKickVal!(60, 5), expLdrIntVal!(300), expLdrSackVal!(450)
 
-Dim expLdrVal!(480)
+'Dim expLdrVal!(480)
 
 
 

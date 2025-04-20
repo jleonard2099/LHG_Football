@@ -71,7 +71,7 @@ Sub TITLE_HEADER ()
     Print Tab(80); " ";
 
     Locate , 29
-    Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
+    Print "3 IN 1 FOOTBALL v" + GAME_VERSION$
 
     Locate 3, 1
     Color 2, 0
@@ -288,7 +288,7 @@ Sub TITLE ()
 
     Color 12
     Locate , 29
-    Print "3 IN 1 FOOTBALL V" + GAME_VERSION$
+    Print "3 IN 1 FOOTBALL v" + GAME_VERSION$
 
     'Footer
     Locate LAST_ROW, 1

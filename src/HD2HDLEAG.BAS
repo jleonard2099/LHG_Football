@@ -118,10 +118,12 @@ Sub Hd2HdPro_League (secondLeague)
                     'Check if same league
                     If sameLeague <> 1 Then
 
-                        leag1$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+                        leagFile1$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                        'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
                         If secondLeague <> 0 Then
-                            leag2$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+                            leagFile2$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                            'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
                         End If
 
                     End If
@@ -158,11 +160,11 @@ Sub Hd2HdPro_League (secondLeague)
 
                 End Select
 
-                Call ReadConferenceIndex(leag1$, statType)
+                Call ReadConferenceIndex(leagFile1$, statType)
 
                 If secondLeague = 1 Then
 
-                    Open diskPaths$(2) + leag2$ + ".TMI" For Input As #3
+                    Open leagFile2$ For Input As #3
 
                     Input #3, statType
 

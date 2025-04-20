@@ -14,8 +14,8 @@ Sub SEELEAG ()
 
     If leaderFile$ <> "" Then
 
-        Call LoadLeaderFiles_Pro(league$, leaderFile$)
-        Call StatOptions_Pro(league$)
+        Call LoadLeaderFiles_League(league$, leaderFile$)
+        Call StatOptions_League(league$)
 
     End If
 
@@ -23,11 +23,11 @@ End Sub
 
 
 '----------------------------------------
-'     LoadLeaderFiles_Pro Subroutine
+'     LoadLeaderFiles_League Subroutine
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
-Sub LoadLeaderFiles_Pro (league$, targetFile$)
+Sub LoadLeaderFiles_League (league$, targetFile$)
 
     Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
@@ -142,12 +142,12 @@ End Sub
 
 
 '----------------------------------------
-'       StatOptions_Pro Subroutine
+'       StatOptions_League Subroutine
 '----------------------------------------
 'This subroutine gives the user various
 'options for viewing the previously loaded
 'stats, and then calls routines for each
-Sub StatOptions_Pro (careerName$)
+Sub StatOptions_League (careerName$)
 
     Do
 

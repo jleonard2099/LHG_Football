@@ -14,6 +14,7 @@ Sub CREATENATL ()
 
     Do
 
+        Color 15, 0
         Cls
 
         Call TITLE
@@ -38,7 +39,6 @@ Sub CREATENATL ()
         _MouseHide
 
         Color , 0
-        I1 = SELECTION%
 
         If ExitCode% <> 27 Then
 
@@ -50,24 +50,22 @@ Sub CREATENATL ()
 
                 Case 1:
                     Call DefineNatOrg(orgName$)
-                    orgFile$ = orgName$
-                    If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
-                        Call ReadOrganizationFile (orgFile$, orgName$)
+
+                    If orgName$ <> "" Then
+                        orgFile$ = diskPaths$(2) + orgName$ + ".CON"
                         Call ReviewEditNatOrg(orgFile$, orgName$)
                     End If
 
                 Case 2:
-                    Do
-                        orgFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
+                    orgFile$ = _OpenFileDialog$("Choose Organization file", diskPaths$(2), "*.CON", "Organization files [.CON]")
+                    'ChooseFile$(diskPaths$(2) + "*.CON", "ORGANIZATION", FileExit%)
 
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            If _FileExists(diskPaths$(2) + orgFile$ + ".CON") Then
-                                Call ReadOrganizationFile (orgFile$, orgName$)
-                                Call ReviewEditNatOrg(orgFile$, orgName$)
-                            End If
-                        End if
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                    If orgFile$ <> "" Then
+                        If _FileExists(orgFile$) Then
+                            Call ReadOrganizationFile (orgFile$, orgName$)
+                            Call ReviewEditNatOrg(orgFile$, orgName$)
+                        End If
+                    End If
 
             End Select
 
@@ -93,6 +91,7 @@ Sub DefineNatOrg (organization$)
         Call MenuBox (6, 8, 61, 7, 15, 1)
 
         Do
+
             Locate 7, 32
 
             Locate , 12: Print "ENTER NAME FOR ORGANIZATION: "
@@ -141,19 +140,19 @@ Sub ReviewEditNatOrg (orgFile$, orgName$)
         For I = 1 To 10
 
             Color 2: Print Using "## "; I;
-            Color 15: Print memberConf$(I);
+            Color 15: Print Left$(memberConf$(I), 17);
 
             Locate , 21
             Color 2: Print Using "## "; I + 10;
-            Color 15: Print memberConf$(I + 10);
+            Color 15: Print Left$(memberConf$(I + 10), 17);
 
             Locate , 41
             Color 2: Print Using "## "; I + 20;
-            Color 15: Print memberConf$(I + 20);
+            Color 15: Print Left$(memberConf$(I + 20), 17);
 
             Locate , 61
             Color 2: Print Using "## "; I + 30;
-            Color 15: Print memberConf$(I + 30)
+            Color 15: Print Left$(memberConf$(I + 30), 17)
 
         Next I
 
@@ -177,24 +176,27 @@ Sub ReviewEditNatOrg (orgFile$, orgName$)
             Do
                 Locate 22, 35
                 Print "SLOT # (1-40) ";
-                Input B
-            Loop Until B >= 1 And B <= 40
+                Input conferenceIndex
+            Loop Until conferenceIndex >= 1 And conferenceIndex <= MAX_CONFERENCES
 
             If choice = 1 Then
                 'Add conference
-                memberConf$(B) = ChooseFile$ (diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+                targetFile$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                memberConf$(conferenceIndex) = GetFileBaseName$(targetFile$)
+                'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
             Else
                 'Remove conference
-                memberConf$(B) = "XXX"
+                memberConf$(conferenceIndex) = "XXX"
             End If
 
         End If 'Done checking if ready to save
 
     Loop Until choice = 3
 
-    Call SaveNatOrg(orgFile$, organization$)
+    Call SaveNatOrg(orgFile$, orgName$)
 
 End Sub
+
 
 '----------------------------------------
 '        SaveNatOrg Subroutine
@@ -202,18 +204,20 @@ End Sub
 'This subroutine writes the organization's
 'conference memberships and definition to 
 'each of the corresponding files (.CON)
-Sub SaveNatOrg (orgFile$, organization$)
+Sub SaveNatOrg (orgFile$, orgName$)
 
     Shared memberConf$()
 
-    Open diskPaths$(2) + orgFile$ + ".CON" For Output As #1
+    Open orgFile$ For Output As #1
 
-    Print #1, organization$
+    Print #1, orgName$
 
     For X = 1 To MAX_CONFERENCES
         Print #1, memberConf$(X)
     Next
 
     Close #1
+
+    Cls
 
 End Sub

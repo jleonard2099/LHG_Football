@@ -381,7 +381,7 @@ Sub ConvertSched6to7 (targetFile$, silent)
 
     Shared scheduleNG%()
 
-    newFile$ = targetFile$ + ".NEW"
+    newFile$ = GetFileBaseName$(targetFile$) + ".NEW"
 
     If targetFile$ <> "" Then
 
@@ -391,7 +391,7 @@ Sub ConvertSched6to7 (targetFile$, silent)
 
         numberGames = fileLength& / (SCHEDULE_SIZE_BYTES - 4)
 
-        Call ReadSchedOld(targetFile$)
+        Call ReadSchedOld(GetFileBaseName$(targetFile$))
 
         'Call SaveSchedFileConverted(newFile$, numberGames)
 

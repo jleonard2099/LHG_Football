@@ -11,9 +11,10 @@ Sub BLANKORG ()
     Shared memberConf$()
 	Shared memberName$()
 
-    organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
+    organizationFile$ = _OpenFileDialog$("Choose Organization file", diskPaths$(2), "*.CON", "Organization files [.CON]")
+    'ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If organizationFile$ <> "" Then
 
         MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS ORGANIZATION. IF YOU STILL WISH TO ERASE ALL STATS, PRESS 'Y' FOR YES"
         BoxWidth = 31
@@ -25,13 +26,13 @@ Sub BLANKORG ()
 
         If UCase$(I$) = "Y" Then
 
-            Call ReadOrganizationFile(organizationFile$, orgName$)
+            Call ReadOrganizationFile (organizationFile$, orgName$)
 
             For X = 1 To MAX_CONFERENCES
 
                 If memberConf$(X) <> "XXX" Then
 
-                    Call ReadConferenceStats (leagueFile$, 0)
+                    Call ReadConferenceStats (diskPaths$(2) + memberConf$(X) + ".TMS", 0)
 
                     For XW = 1 To TEAMS_PER_CONFERENCE
                         If memberName$(XW) <> Chr$(42) Then

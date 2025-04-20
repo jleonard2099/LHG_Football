@@ -10,9 +10,10 @@ Sub BLANKPRO ()
 
 	Shared memberName$()
 
-    leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
+	leagueFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.TMS", "League Stats files [.TMS]")
+    'ChooseFile$ (diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If leagueFile$ <> "" Then
 
         MsgText$ = "WARNING!!! THIS WILL ERASE ALL COMPILED STATS FOR THIS LEAGUE. IF YOU STILL WISH TO ERASE ALL STATS, PRESS 'Y' FOR YES"
         BoxWidth = 31
@@ -39,10 +40,12 @@ Sub BLANKPRO ()
 
             Next
 
-            leaderFile$ = diskPaths$(2) + leagueFile$ + ".LDR"
+            baseFile$ = GetFileBaseName$(leagueFile$)
+
+            leaderFile$ = diskPaths$(2) + baseFile$ + ".LDR"
             If _FileExists(leaderFile$) Then Kill leaderFile$
 
-            standingsFile$ = diskPaths$(2) + leagueFile$ + ".LDS"
+            standingsFile$ = diskPaths$(2) + baseFile$ + ".LDS"
             If _FileExists(standingsFile$) Then Kill standingsFile$
 
         End If 'Done confirming to move forward with deletion

@@ -65,15 +65,12 @@ Sub CREATLEAG ()
                     Call ReviewEditLeague(leagueName$)
 
                 Case 2:
-                    Do
+                    leagueFile$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                    'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", FileExit%)
 
-                        leagueFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", FileExit%)
-
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReviewEditLeague(leagueFile$)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                    If leagueFile$ <> "" Then
+                        Call ReviewEditLeague(leagueFile$)
+                    End If
 
                 Case 3:
                     userFile$ = _OpenFileDialog$("Select league file", diskPaths$(2), "*.TMI", "League files [.TMI]")
@@ -202,7 +199,7 @@ Sub ReviewEditLeague (leagueFile$)
     Shared leagueName$
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    If _FileExists(diskPaths$(2) + leagueFile$ + ".TMI") Then
+    If _FileExists (leagueFile$) Then
         Call ReadConferenceIndex (leagueFile$, statType)
     End If
 

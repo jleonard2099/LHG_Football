@@ -84,9 +84,9 @@ Sub CompileCollege ()
 
     C$ = ","
 
-    conferenceFile$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+    conferenceFile$ = _OpenFileDialog$("Choose Conference Stats file", diskPaths$(2), "*.TMS", "Conference Stats files [.TMS]")
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If conferenceFile$ <> "" Then
 
         Do
             Color 15, 0
@@ -96,7 +96,7 @@ Sub CompileCollege ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + conferenceFile$ + ".TMI" For Input As #3
+        Open diskPaths$(2) + GetFileBaseName$(conferenceFile$) + ".TMI" For Input As #3
         Input #3, statType
         Close #3
 

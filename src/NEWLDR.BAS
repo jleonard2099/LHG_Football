@@ -26,17 +26,17 @@ Sub NEWLDR (statType)
     Shared expStdLeagName$()
 
     If statType = 1 Then
-        menuChoices$(1) = "UPDATE EXPANDED PRO LEAGUE LEADERS"
-        menuChoices$(2) = "VIEW EXPANDED PRO LEAGUE LEADERS  "
-        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS  "
-        menuChoices$(4) = "REVIEW EXPANDED LEAGUE STANDINGS  "
-        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU      "
+        menuChoices$(1) = "UPDATE EXPANDED LEAGUE LEADERS  "
+        menuChoices$(2) = "VIEW EXPANDED LEAGUE LEADERS    "
+        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS"
+        menuChoices$(4) = "VIEW EXPANDED LEAGUE STANDINGS  "
+        menuChoices$(5) = "RETURN TO LEAGUE LEADERS MENU   "
     Else
-        menuChoices$(1) = "UPDATE EXPANDED COLLEGE CONFERENCE LEADERS  "
-        menuChoices$(2) = "VIEW EXPANDED COLLEGE CONFERENCE LEADERS    "
-        menuChoices$(3) = "UPDATE EXPANDED COLLEGE CONFERENCE STANDINGS"
-        menuChoices$(4) = "REVIEW COLLEGE CONFERENCE STANDINGS         "
-        menuChoices$(5) = "RETURN TO LEAGUE LEADER MENU                "
+        menuChoices$(1) = "UPDATE EXPANDED LEAGUE LEADERS  "
+        menuChoices$(2) = "VIEW EXPANDED LEAGUE LEADERS    "
+        menuChoices$(3) = "UPDATE EXPANDED LEAGUE STANDINGS"
+        menuChoices$(4) = "VIEW EXPANDED LEAGUE STANDINGS  "
+        menuChoices$(5) = "RETURN TO LEAGUE LEADERS MENU   "
     End If
 
     Do
@@ -70,187 +70,109 @@ Sub NEWLDR (statType)
             Select Case SELECTION%
 
                 Case 1
-                    Do
-                        confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
+                    confStatFile$ = _OpenFileDialog$("Choose Conference Definition file", diskPaths$(2), "*.TMS", "Conference Definition files [.TMS]")
+                    'ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReadConferenceStats(confStatFile$, statType)
-                            Call UpdateExpandedLeaders(statType, totalStats)
-                            Call SaveLeaderStdg(confStatFile$, totalStats)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                    If confStatFile$ <> "" Then
+                        Call ReadConferenceStats(confStatFile$, statType)
+                        Call UpdateExpandedLeaders(statType, totalStats)
+                        Call SaveExpandedLeaders(GetFileBaseName$(confStatFile$), totalStats)
+                    End If
 
                 Case 2
-                    Do
-                        leaderFile$ = ChooseFile$(diskPaths$(2) + "*.LDS", "LEAGUE LEADERS", FileExit%)
+                    leaderFile$ = _OpenFileDialog$("Choose Expanded Leaders file", diskPaths$(2), "*.LDS", "Expanded Leader files [.LDS]")
+                    'ChooseFile$(diskPaths$(2) + "*.LDS", "CONFERENCE LEADERS", FileExit%)
 
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Call ReadLeaderStdg(leaderFile$, totalStats)
-                            Call ExpandedLeaders_Menu(totalStats)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                    If leaderFile$ <> "" Then
+                        Call ReadExpandedLeaders(leaderFile$, totalStats)
+                        Call ExpandedLeaders_Menu(totalStats)
+                    End If
 
                 Case 3
-                    Do
-                        leagStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "LEAGUE STATS", FileExit%)
+                    confStatFile$ = _OpenFileDialog$("Choose Conference Definition file", diskPaths$(2), "*.TMS", "Conference Definition files [.TMS]")
+                    'ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
-                        If FileExit% <> 27 And FileExit% <> 0 Then
-                            Color 15, 0
-                            Cls
-                            Call ReadConferenceStats(leagStatFile$, statType)
-                            Call UpdateExpandedStandings(statType)
-                        End If
-
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                    If confStatFile$ <> "" Then
+                        Color 15, 0
+                        Cls
+                        Call ReadConferenceStats(confStatFile$, statType)
+                        Call UpdateExpandedStandings(statType)
+                    End If
 
                 Case 4
-                    Do
-                        standingsFile$ = ChooseFile$(diskPaths$(2) + "*.STD", "LEAGUE STANDINGS", FileExit%)
+                    standingsFile$ = _OpenFileDialog$("Choose Expanded Standings file", diskPaths$(2), "*.STD", "Expanded Standings files [.STD]")
+                    'ChooseFile$(diskPaths$(2) + "*.STD", "CONFERENCE STANDINGS", FileExit%)
 
-                        wrongFormat% = 0
+                    wrongFormat% = 0
 
-                        If FileExit% <> 27 And FileExit% <> 0 Then
+                    If standingsFile$ <> "" Then
 
-                            If statType = 1 Then
-                                TEAM_LIMIT = TEAMS_PER_LEAGUE
-                            Else
-                                TEAM_LIMIT = TEAMS_PER_CONFERENCE
-                            End If
+                        If statType = 1 Then
+                            TEAM_LIMIT = TEAMS_PER_LEAGUE
+                        Else
+                            TEAM_LIMIT = TEAMS_PER_CONFERENCE
+                        End If
 
-                            Open diskPaths$(2) + standingsFile$ + ".STD" For Input As #2
+                        Open standingsFile$ For Input As #2
 
-                            Input #2, fileType
+                        Input #2, fileType
 
-                            If fileType = statType Then
+                        If fileType = statType Then
 
-                                Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
+                            Input #2, leagueName$, div1Name$, div2Name$, div3Name$, div4Name$
 
-                                For I = 1 To TEAM_LIMIT
-                                    Input #2, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totAwayWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totAwayLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totAwayTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
-                                Next
+                            For I = 1 To TEAM_LIMIT
+                                Input #2, expStdLeagName$(I), totTeamWins(I), totHomeWins(I), totAwayWins(I), totNeutralWins(I), totTeamLosses(I), totHomeLosses(I), totAwayLosses(I), totNeutralLosses(I), totTeamTies(I), totHomeTies(I), totAwayTies(I), totNeutralTies(I), teamWinStreak(I), teamLoseStreak(I)
+                            Next
 
-                            Else
+                        Else
 
-                                Cls
-                                Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
-                                Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
-                                Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
+                            Cls
+                            Print "THE FILE YOU TRIED TO OPEN IS NOT COLLEGE FORMAT"
+                            Print "EITHER TRY AGAIN OR USE THE PRO OPTION TO EDIT"
+                            Locate LAST_ROW - 2, 1: Print "PRESS ANY KEY TO CONTINUE"
 
-                                I$ = GetKeyPress$
+                            I$ = GetKeyPress$
 
-                                wrongFormat% = 1
-
-                            End If
-
-                            Close #2
-
-                            If wrongFormat% = 0 Then
-
-                                userKey$ = GetOutputOptions$
-
-                                If userKey$ <> Chr$(27) Then
-
-                                    Select Case userKey$
-
-                                        Case "F"
-                                            userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
-                                            If userFile$ <> "" Then
-                                                Call NewStandings_Report(0, userFile$, leagueName$, statType)
-                                            End If
-
-                                        Case "P"
-                                            Call NewStandings_Report(1, "REPORT", leagueName$, statType)
-
-                                        Case "S":
-                                            Call NewStandings_Screen(leagueName$, statType)
-
-                                    End Select
-
-                                End If
-
-                            End If 'Done checking right file format
+                            wrongFormat% = 1
 
                         End If
 
-                    Loop Until FileExit% = 27 Or FileExit% = 0
+                        Close #2
+
+                        If wrongFormat% = 0 Then
+
+                            userKey$ = GetOutputOptions$
+
+                            If userKey$ <> Chr$(27) Then
+
+                                Select Case userKey$
+
+                                    Case "F"
+                                        userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                                        If userFile$ <> "" Then
+                                            Call NewStandings_Report(0, userFile$, leagueName$, statType)
+                                        End If
+
+                                    Case "P"
+                                        Call NewStandings_Report(1, "REPORT", leagueName$, statType)
+
+                                    Case "S":
+                                        Call NewStandings_Screen(leagueName$, statType)
+
+                                End Select
+
+                            End If
+
+                        End If 'Done checking right file format
+
+                    End If
 
             End Select
 
         End If
 
     Loop Until SELECTION% = 5 Or ExitCode% = 27
-
-End Sub
-
-
-'----------------------------------------
-'      ViewExpandedStats Subroutine
-'----------------------------------------
-'This subroutine reads in the league stats
-'from the .TMS file. It then relies on other
-'routines to calculate the Expanded stats,
-'write them to a file and present a categ-
-'orized menu to use for reviewing them
-'statType
-'   0 = College
-'   1 = Pro
-' XXXX NO LONGER USED WITH NEW STRUCTURE XXXX
-Sub ViewExpandedStats (statType)
-
-    Dim printOrView
-
-    Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
-
-    Shared expLdrTeam$(), expLdrPlyrName$(), memberName$()
-
-    Shared div1Name$, div2Name$, div3Name$, div4Name$, league$
-
-    confStatFile$ = ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
-
-    If FileExit% <> 27 Then
-
-        Erase memberName$
-
-        If statType = 0 Then
-            For X = 1 To TEAMS_PER_CONFERENCE
-                memberName$(X) = "XXX"
-            Next
-        Else
-            For X = 1 To TEAMS_PER_LEAGUE
-                memberName$(X) = "XXX"
-            Next
-        End If
-
-        JA = 0
-        JB = 0
-        JC = 0
-        JD = 0
-        JE = 0
-        JF = 0
-        JG = 0
-        JH = 0
-        JI = 0
-        JJ = 0
-        printOrView = 0
-        totalStats = 0
-
-        div1Name$ = ""
-        div2Name$ = ""
-        div3Name$ = ""
-
-        Erase expLdrTeam$, expLdrPlyrName$
-
-        Call ReadConferenceStats(confStatFile$, statType)
-
-        Cls
-
-        Call UpdateExpandedLeaders(statType, totalStats)
-        Call SaveLeaderStdg(confStatFile$, totalStats)
-        Call ExpandedLeaders_Menu(totalStats)
-
-    End If
 
 End Sub
 
@@ -491,11 +413,11 @@ End Sub
 
 
 '----------------------------------------
-'        ReadLeaderStdg Subroutine
+'     ReadExpandedLeaders Subroutine
 '----------------------------------------
 'This subroutine reads in the leader files
 '(.LDS) for the Expanded standings modules
-Sub ReadLeaderStdg (leaderFile$, totalStats)
+Sub ReadExpandedLeaders (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -525,7 +447,7 @@ Sub ReadLeaderStdg (leaderFile$, totalStats)
     Erase expLdrRBGames!, expLdrWRGames!, expLdrQBGames!
     Erase expLdrPRVal!, expLdrPuntVal!, expLdrKickVal!, expLdrIntVal!, expLdrSackVal!
 
-    If Not _FileExists(diskPaths$(2) + leaderFile$ + ".LDS") Then
+    If Not _FileExists(leaderFile$) Then
 
         MsgText$ = "NO COMPILED LEADER FILES WERE FOUND. PRESS ANY KEY TO RETURN TO MAIN MENU"
         BoxWidth = 20
@@ -537,7 +459,7 @@ Sub ReadLeaderStdg (leaderFile$, totalStats)
 
     Else
 
-        Open diskPaths$(2) + leaderFile$ + ".LDS" For Input As #1
+        Open leaderFile$ For Input As #1
 
         Input #1, JA, JB, JC, JD, JE, JF, JG, JH, JI, totalStats, JJ
 
@@ -681,11 +603,11 @@ End Sub
 
 
 '----------------------------------------
-'        SaveLeaderStdg Subroutine
+'     SaveExpandedLeaders Subroutine
 '----------------------------------------
 'This subroutine compiles the leader files
 '(.LDS) for the Expanded standings modules
-Sub SaveLeaderStdg (leaderFile$, totalStats)
+Sub SaveExpandedLeaders (leaderFile$, totalStats)
 
     Shared JA, JB, JC, JD, JE, JF, JG, JH, JI, JJ
 
@@ -2070,32 +1992,33 @@ Sub ExpandedLeaders_Menu (totalStats)
 
                 If UCase$(key$) = "K" Then
                     maxRecords = totalStats
+                    Call DisplayTeamView(printOrView, TVN, maxRecords, categoryId)
                 Else
                     maxRecords = PPP
-                End If
+                    If printOrView = 1 Then
+                        Call NewLeaders_Screen(TVN, maxRecords, XX)
+                    Else
+                        'printOrView = 2
+                        Call GetListLength(printOrView, LG, maxRecords)
 
-                If printOrView = 1 Then
-                    Call NewLeaders_Screen(TVN, maxRecords, XX)
-                Else
-                    'printOrView = 2
-                    Call GetListLength(printOrView, LG, maxRecords)
+                        userKey$ = GetPrintOptions$
 
-                    userKey$ = GetPrintOptions$
+                        If userKey$ <> Chr$(27) Then
 
-                    If userKey$ <> Chr$(27) Then
+                            Select Case userKey$
 
-                        Select Case userKey$
+                                Case "F"
+                                    userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                                    If userFile$ <> "" Then
+                                        Call NewLeaders_Report(0, userFile$, XX, LG, TVN)
+                                    End If
 
-                            Case "F"
-                                userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
-                                If userFile$ <> "" Then
-                                    Call NewLeaders_Report(0, userFile$, XX, LG, TVN)
-                                End If
+                                Case "P"
+                                    Call NewLeaders_Report(1, "REPORT", XX, LG, TVN)
 
-                            Case "P"
-                                Call NewLeaders_Report(1, "REPORT", XX, LG, TVN)
+                            End Select
 
-                        End Select
+                        End If
 
                     End If
 
@@ -2439,6 +2362,184 @@ End Sub
 
 
 '----------------------------------------
+'       DisplayTeamView Subroutine
+'----------------------------------------
+'This subroutine displays the chosen team
+'stat category to the user display
+Sub DisplayTeamView (printOrView, TVN, maxRecords, categoryId)
+
+    Shared expLdrVal!()
+    Shared expLdrTeam$(), expCategories$()
+
+    'expCategories$(44-72)
+
+    userExit% = 0
+
+    Select Case printOrView
+
+        Case 1:
+
+            Do
+
+                Color 14, 0
+                Cls
+
+                For W = 1 To maxRecords
+
+                    ' Every 25 records ? new page (but skip prompt on the first page)
+                    If (W - 1) Mod 25 = 0 Then
+
+                        If W > 1 Then
+
+                            Color 14
+                            Locate LAST_ROW - 2: Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)"
+                            Color 15
+
+                            I$ = GetKeyPress$
+
+                            If I$ = Chr$(27) Then
+                                userExit% = 1
+                                Exit For
+                            End If
+
+                            Color 14, 0
+                            Cls
+
+                        End If
+
+                        ' Print page header
+                        Locate 2, 1
+                        Print "     TEAM                     "; expCategories$(categoryId)
+
+                    End If
+
+                    If userExit% <> 1 Then
+
+                        Color 12
+                        Print Using "### "; W;
+                        Color 3: Print expLdrTeam$(W);
+                        Color 15
+
+                        Select Case TVN
+
+                            Case 1:
+                                Print Tab(32); Using "#####"; expLdrVal!(W)
+
+                            Case 2:
+                                Print Tab(33); Using ".###"; expLdrVal!(W)
+
+                            Case 3:
+                                Print Tab(33); Using "###.#"; expLdrVal!(W)
+
+                        End Select
+
+                    Else
+
+                        Exit Do
+
+                    End If
+
+                Next W
+
+                If userExit% <> 1 Then
+
+                    Color 14
+                    Locate LAST_ROW - 1, 15: Print "HIT ENTER TO CONTINUE (ESC TO RETURN TO MAIN MENU)"
+                    Color 15
+
+                    I$ = GetKeyPress$
+
+                    If I$ <> Chr$(27) Then
+
+                        Color 14
+                        Locate LAST_ROW - 1, 15
+                        Print Space$(50);
+                        Locate LAST_ROW - 1, 32
+                        Print "VIEW AGAIN? (Y/N)";
+
+                        Do
+                            A$ = GetKeyPress$
+                        Loop Until UCase$(A$) = "Y" Or UCase$(A$) = "N"
+
+                    Else
+                        I$ = "N"
+                    End If
+
+                End If
+
+            Loop Until UCase$(I$) = "N" Or I$ = Chr$(27) Or UCase$(A$) = "N"
+
+        Case 2:
+            userKey$ = GetPrintOptions$
+
+            If userKey$ <> Chr$(27) Then
+
+                Select Case userKey$
+
+                    Case "F"
+                        userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                        If userFile$ <> "" Then
+                            printDest = 0
+                        End If
+
+                    Case "P"
+                        printDest = 1
+                        userFile$ = "REPORT"
+
+                End Select
+
+                Color 15, 0
+                Cls
+
+                Open destFile$ For Output As #1
+
+                Print #1, "     TEAM                     "; expTeamCategory$(categoryId)
+
+                For W = 1 To maxRecords
+
+                    Print #1, Using "### "; W;
+                    Print #1, expLdrTeam$(W);
+
+                    Select Case TVN
+
+                        Case 1:
+                            Print #1, Tab(32); Using "#####"; expLdrVal!(W)
+
+                        Case 2:
+                            Print #1, Tab(33); Using ".###"; expLdrVal!(W)
+
+                        Case 3:
+                            Print #1, Tab(33); Using "###.#"; expLdrVal!(W)
+
+                    End Select
+
+                Next W
+
+                If printDest = 1 Then
+
+                    Open destFile$ For Input As #2
+
+                    Do While Not EOF(2)
+                        Line Input #2, X$
+                        LPrint X$
+                    Loop
+
+                    Close #2
+
+                    LPrint Chr$(12)
+
+                    Kill destFile$
+
+                End If
+
+            End If
+
+    End Select
+
+End Sub
+
+
+'----------------------------------------
 '       NewLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine displays individual player
@@ -2459,7 +2560,7 @@ Sub NewLeaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
             Print #1, Chr$(12)
             Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
             Print #1, "     ------                  ----                     ";
-            Print #1, String$(Len(expCategories$(categoryID)),45)
+            Print #1, String$(Len(expCategories$(categoryId)), 45)
         End If
 
         Print #1, Using "### "; W;
@@ -2535,4 +2636,3 @@ Sub GetListLength (printOrView, listLength, maxItems)
     End If
 
 End Sub
-

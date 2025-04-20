@@ -212,11 +212,10 @@ Sub NewStandings_Screen (league$, orgType)
 
         Color 11
         Locate 2, 35: Print league$
+        Print RTrim$(targetDiv$)
 
         Color 14
-        Locate 4: Print Tab(20); "                              HOME   ROAD   NEUTRAL"
-
-        Print RTrim$(targetDiv$)
+        Locate 4: Print Tab(50); "HOME   ROAD   NEUTRAL"
         Print Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
 
         For I = AA To ZZ
@@ -266,7 +265,7 @@ Sub NewStandings_Screen (league$, orgType)
         Next
 
         Color 14
-        Locate LAST_ROW - 1: Print "HIT ANY KEY TO CONTINUE";
+        Locate LAST_ROW - 1, 28: Print "HIT ANY KEY TO CONTINUE";
         I$ = GetKeyPress$
             
         'End If

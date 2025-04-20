@@ -116,10 +116,12 @@ Sub Hd2HdCon_Conf (secondConf)
                     'Check if same conference
                     If sameConf <> 1 Then
 
-                        conf1$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+                        confFile1$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                        'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
 
                         If secondConf <> 0 Then
-                            conf2$ = ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
+                            confFile2$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
+                            'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
                         End If
 
                     End If
@@ -156,11 +158,11 @@ Sub Hd2HdCon_Conf (secondConf)
 
                 End Select
 
-                Call ReadConferenceIndex (conf1$, statType)
+                Call ReadConferenceIndex (conf1File$, statType)
 
                 If secondConf = 1 Then
 
-                    Open diskPaths$(2) + conf2$ + ".TMI" For Input As #2
+                    Open confFile2$ For Input As #2
 
                     Input #2, statType
 

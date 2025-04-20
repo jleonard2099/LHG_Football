@@ -84,9 +84,10 @@ Sub CompileNatlOrg ()
 
     C$ = ","
 
-    organizationFile$ = ChooseFile$ (diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
+    organizationFile$ = _OpenFileDialog$("Choose Organization file", diskPaths$(2), "*.CON", "Organization files [.CON]")
+    'ChooseFile$(diskPaths$(2) + "*.CON", "ORGANIZATION", ExitCode%)
 
-    If ExitCode% <> 27 And ExitCode% <> 0 Then
+    If organizationFile$ <> "" Then
 
         Do
             Color 15, 0
@@ -242,7 +243,7 @@ Sub CompileNatlOrg ()
         Next currConf
 
         'All conferences are done; post org leaders
-        Call PostLeadersOrg(organizationFile$, NRT)
+        Call PostLeadersOrg(GetFileBaseName$(organizationFile$), NRT)
         Call PostRecordsColl
 
     End If 'Done checking ESC
@@ -269,7 +270,6 @@ Function FindStatsNat% (XW, statFile$, totalGames, NRT)
 
     If Not _FileExists(findFile$) Then
 
-        Locate , 1
         Print "NO STATS FOUND FOR "; statFile$
         FindStatsNat% = 0
 
@@ -1359,7 +1359,7 @@ Sub PostLeadersOrg (organization$, NRT)
 
     Open diskPaths$(2) + organization$ + ".NLD" For Output As #1
 
-    Print "POSTING "; organization$; " LEADERS"
+    Print "    POSTING NEW "; organization$; " LEADERS"
 
     For X = 1 To 60:
         Write #1, statFilesComp$(X), divWins(X), divLosses(X), divTies(X), leagPtsFor!(X), leagPtsAgnst!(X)

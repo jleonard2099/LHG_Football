@@ -214,10 +214,13 @@ Sub MergeFirstYear ()
 
             statFile$ = nameStatFile$(team$)
 
-            Do
+            Color 15, 0
+            Cls
 
-                Color 15, 0
-                Cls
+            statYear = Val(YN$)
+            Locate 8, 53: Print targetYear
+
+            Do
 
                 Locate 8, 22: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
                 Locate 9, 22: Print "ANY CHANGE? (Y/N)"
@@ -574,11 +577,11 @@ Sub MergeFirstYear ()
 
                     Next I
 
-                    If doPostLeaders = 1 Then 
+                    If doPostLeaders = 1 Then
                         Call UpdateCareerRecords(diskPaths$(2) + GetFileBaseName$(careerFile$) + ".CLD")
                     End If
 
-                    Call SaveCareerFile (careerFile$)
+                    Call SaveCareerFile(careerFile$)
 
                 End If 'Done checking for stat file
 
@@ -1143,7 +1146,7 @@ Sub MergeCareerFiles ()
 
             Else
 
-                Call MergeAddYear(careerFile$, statFile$)
+                Call MergeAddYear(careerFile$, statFile$, YN$)
 
             End If
 
@@ -1160,10 +1163,13 @@ End Sub
 'This routine actually prompts the user
 'for parameters for the team / year to
 'be updated.
-Sub MergeAddYear (selectedFile$, statFile$)
+Sub MergeAddYear (selectedFile$, statFile$, yearNumber$)
 
     Color 15, 0
     Cls
+
+    targetYear = Val(yearNumber$)
+    Locate 8, 53: Print targetYear
 
     Do
         Locate 8, 22: Input "ENTER YEAR TO ADD (EX. - 1961)"; targetYear
@@ -1294,8 +1300,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
         End If
     Next
 
-    '-----
 
+    '---------------
+    ' Rushers
+    '---------------
     For I = 0 To 9
 
         RR = 0
@@ -1369,8 +1377,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Wide Receivers
+    '---------------
     For I = 0 To 5
 
         RR = 0
@@ -1437,8 +1447,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Quarterbacks
+    '---------------
     For I = 0 To 3
 
         RR = 0
@@ -1506,8 +1518,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Kick Returners
+    '---------------
     For I = 0 To 2
 
         RR = 0
@@ -1575,8 +1589,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Punt Returners
+    '---------------
     For I = 0 To 2
 
         RR = 0
@@ -1643,8 +1659,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Punters
+    '---------------
     For I = 0 To 0
 
         RR = 0
@@ -1697,9 +1715,9 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
-    skipLoop% = 0
-
+    '---------------
+    ' Place Kickers
+    '---------------
     For I = 0 To 1
 
         RR = 0
@@ -1715,6 +1733,8 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
                     End If
                 Next W
 
+                N = 0
+
                 For Z = 1 To MAX_CAREER_YEARS
                     N = N + careerFGS!(Z, J, 15)
                 Next Z
@@ -1724,45 +1744,30 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
                 End If
 
                 If I = 0 Then
+
                     For K = 3 To 6
                         careerFGS!(N, J, K - 3) = statsPlayers!(K, 17)
                     Next K
 
-                    careerFGS!(N, J, 4) = statsLFG!(I)
-                    careerFGS!(N, J, 15) = 1
-                    careerFGS!(N, J, 16) = targetYear
-
-                    For J1 = 0 To 4:
-                        careerFGS!(N, J, J1 + 5) = statsFGM!(I, J1)
-                    Next
-
-                    For J1 = 0 To 4:
-                        careerFGS!(N, J, J1 + 10) = statsFGA!(I, J1)
-                    Next
-
                 Else
 
-                    If I = 1 Then
-
-                        For K = 7 To 10
-                            careerFGS!(N, J, K - 7) = statsPlayers!(K, 17)
-                        Next K
-
-                        careerFGS!(N, J, 4) = statsLFG!(I)
-                        careerFGS!(N, J, 15) = 1
-                        careerFGS!(N, J, 16) = targetYear
-
-                        For J1 = 0 To 4:
-                            careerFGS!(N, J, J1 + 5) = statsFGM!(I, J1)
-                        Next
-
-                        For J1 = 0 To 4:
-                            careerFGS!(N, J, J1 + 10) = statsFGA!(I, J1)
-                        Next
-
-                    End If
+                    For K = 7 To 10
+                        careerFGS!(N, J, K - 7) = statsPlayers!(K, 17)
+                    Next K
 
                 End If
+
+                careerFGS!(N, J, 4) = statsLFG!(I)
+                careerFGS!(N, J, 15) = 1
+                careerFGS!(N, J, 16) = targetYear
+
+                For J1 = 0 To 4:
+                    careerFGS!(N, J, J1 + 5) = statsFGM!(I, J1)
+                Next
+
+                For J1 = 0 To 4:
+                    careerFGS!(N, J, J1 + 10) = statsFGA!(I, J1)
+                Next
 
                 Exit For
 
@@ -1796,12 +1801,9 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
                                 careerFGS!(N, NH, J1 + 10) = statsFGA!(I, J1)
                             Next
 
-                            skipLoop% = 1
                             Exit For
 
-                        End If
-
-                        If I = 1 Then
+                        Else
 
                             For K = 7 To 10:
                                 careerFGS!(N, NH, K - 7) = statsPlayers!(K, 17)
@@ -1829,12 +1831,12 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
         Next J
 
-        If skipLoop% = 1 Then Exit For
-
     Next I
 
-    '-----
 
+    '---------------
+    'Interceptions
+    '---------------
     For I = 0 To 9
 
         RR = 0
@@ -1887,8 +1889,10 @@ Sub AddCareerYear (targetYear, doPostLeaders, careerFile$, statFile$)
 
     Next I
 
-    '-----
 
+    '---------------
+    ' Sacks
+    '---------------
     For I = 0 To 14
 
         RR = 0
@@ -3154,4 +3158,3 @@ Sub UpdateCareerRecords (careerRecordFile$)
     Close #1
 
 End Sub
-

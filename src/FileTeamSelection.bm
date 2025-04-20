@@ -864,7 +864,7 @@ Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
 
     Shared leagPtsAgnst!(), leagPtsFor!()
 
-    findFile$ = diskPaths$(1) + statFile$ + "S"
+    baseFile$ = diskPaths$(1) + statFile$ + "S"
 
     Erase gameSite$, oppName$, locIndicator$
     Erase powerRating, oppScore, teamScore
@@ -872,7 +872,7 @@ Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
     leagPtsAgnst!(ptsIdx) = 0
     leagPtsFor!(ptsIdx) = 0
 
-    Open findFile$ For Input As #1
+    Open baseFile$ For Input As #1
 
     Input #1, numberGames
 
@@ -1099,7 +1099,7 @@ Sub ReadConferenceStats (statFile$, statType)
         Next
     End If
 
-    Open diskPaths$(2) + statFile$ + ".TMS" For Input As #1
+    Open statFile$ For Input As #1
 
     If statType = 1 Then
         'Pro
