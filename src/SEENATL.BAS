@@ -35,7 +35,7 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
 
-    Shared pollLdrTeams$(), divTeamNames$()
+    Shared pollTeam$(), divTeamNames$()
     Shared leaderName$(), leaderTeam$()
     Shared totalTeamName$()
 
@@ -79,7 +79,7 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
     Input #3, NRT
 
     For X = 1 To NRT
-        Input #3, pollLdrTeams$(X), pollRatings!(X, 1), pollRatings!(X, 2), pollRatings!(X, 3), pollRatings!(X, 4), pollRatings!(X, 5)
+        Input #3, pollTeam$(X), pollRatings!(X, 1), pollRatings!(X, 2), pollRatings!(X, 3), pollRatings!(X, 4), pollRatings!(X, 5)
     Next
 
     Close #3
@@ -153,7 +153,7 @@ End Sub
 Sub NatlStdgs_Screen (confName$, NRT)
 
     Shared pollRatings!()
-    Shared pollLdrTeams$()
+    Shared pollTeam$()
 
     Color 15, 0
     Cls
@@ -171,7 +171,7 @@ Sub NatlStdgs_Screen (confName$, NRT)
     For P = 1 To NRT
 
         Print Using "###  "; P;
-        Print pollLdrTeams$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
+        Print pollTeam$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
 
         If P <> 0 And (P Mod 20 = 0) Then
 
@@ -808,7 +808,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     Shared totalTeamVal!()
 
     Shared leaderName$(), leaderTeam$()
-    Shared pollLdrTeams$()
+    Shared pollTeam$()
     Shared totalTeamName$()
 
     Color 15, 0
@@ -821,7 +821,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
     For P = 1 To NRT
         Print #1, Using "###  "; P;
-        Print #1, pollLdrTeams$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
+        Print #1, pollTeam$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
     Next
 
     Print #1, Chr$(12)

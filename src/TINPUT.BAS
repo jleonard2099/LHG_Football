@@ -33,23 +33,41 @@ Sub InputTeam ()
         Color 15
 
         Locate 4: Input " 1. TEAM # (BLANK TO AUTO-ASSIGN) "; teamNumber
+        Locate 4, 35: Print " "
         Locate 5: Input " 2. DISK ID "; teamYear$
+        Locate 5, 13: Print " "
         Locate 6: Input " 3. TEAM NAME (IE, 94 ARKANSAS) "; team$
+        Locate 6, 33: Print " "
         Locate 7: Input " 4. TEAM NICKNAME (IE, PANTHERS) "; mascot$
+        Locate 7, 34: Print " "
         Locate 8: Input " 5. DEF RUSH ADJ "; leagueRatings(0)
+        Locate 8, 18: Print " "
         Locate 9: Input " 6. DEF COMP % ADJ "; leagueRatings(1)
+        Locate 9, 20: Print " "
         Locate 10: Input " 7. DEF INT % ADJ "; leagueRatings(2)
+        Locate 10, 19: Print " "
         Locate 11: Input " 8. FUM % (AVG=4) "; leagueRatings(3)
+        Locate 11, 19: Print " "
         Locate 12: Input " 9. DEF FUM % (AVG=0) "; leagueRatings(4)
+        Locate 12, 23: Print " "
         Locate 13: Input "10. OFF SACKED % (AVG=8) "; leagueRatings(5)
+        Locate 13, 26: Print " "
         Locate 14: Input "11. DEF SACK ADJ "; leagueRatings(6)
+        Locate 14, 18: Print " "
         Locate 15: Input "12. DEF YD/COMP ADJ "; ydsCompAdj
+        Locate 15, 21: Print " "
         Locate 16: Input "13. TM PENALTY ADJ "; teamRatings(0)
+        Locate 16, 20: Print " "
         Locate 17: Input "14. OFF RUN/PASS % "; leagueRatings(7)
+        Locate 17, 20: Print " "
         Locate 18: Input "15. STADIUM (0-OUTDOOR 1-DOME) "; teamRatings(3)
+        Locate 18, 32: Print " "
         Locate 19: Input "16. POWER RATING "; teamRatings(4)
+        Locate 19, 18: Print " "
         Locate 20: Input "17. TEXT COLOR (0-15) "; teamRatings(2)
+        Locate 20, 23: Print " "
         Locate 21: Input "18. BACKGROUND COLOR (0-7) "; teamRatings(1)
+        Locate 21, 28: Print " "
 
         If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
             Locate 20, 37
@@ -60,9 +78,13 @@ Sub InputTeam ()
         End If
 
         Locate 22: Input "19. OFF POWER ADJ"; offPwrAdj
+        Locate 22, 18: Print " "
         Locate 23: Input "20. DEF POWER ADJ"; defPwrAdj
-        Locate 24: Input "21. STADIUM NAME"; stadium$
+        Locate 23, 18: Print " "
+        Locate 24: Input "21. STADIUM NAME "; stadium$
+        Locate 24, 18: Print " "
         Locate 25: Input "22. AVERAGE ATTENDANCE"; teamAttendance&
+        Locate 25, 23: Print " "
 
         Color 15, 0
 
@@ -170,7 +192,7 @@ Sub InputTeam ()
                         End If
 
                     Case 18
-                        Locate 21, 28: Print Space$(9)
+                        Locate 21, 29: Print Space$(10)
                         Locate 21, 1: Input "18. BACKGROUND COLOR (0-7) "; teamRatings(1)
                         Locate 21, 29: Print " "
 
@@ -220,22 +242,27 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "RUNNING BACKS - "; I + 1
+            Locate 4: Print "RUNNING BACKS - "; I + 1
             Color 15
 
-            Locate 5, 1: Input "1. NAME (END TO STOP) "; rbName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; rbName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(rbName$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF RUSHES "; rushContrib(I)
-                Locate 7: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
-                Locate 8: Input "4. # OF RECEPTIONS "; rbRecepts(I)
-                Locate 9: Input "5. RECEIVING AVERAGE "; rbRecAvg(I)
+                Locate 7: Input "2. # OF RUSHES "; rushContrib(I)
+                Locate 7, 16: Print " "
+                Locate 8: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
+                Locate 8, 20: Print " "
+                Locate 9: Input "4. # OF RECEPTIONS "; rbRecepts(I)
+                Locate 9, 20: Print " "
+                Locate 10: Input "5. RECEIVING AVERAGE "; rbRecAvg(I)
+                Locate 10, 22: Print " "
 
                 Do
 
@@ -249,28 +276,28 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; rbName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; rbName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 16: Print Space$(10)
-                            Locate 6, 1: Input "2. # OF RUSHES "; rushContrib(I)
-                            Locate 6, 16: Print " "
+                            Locate 7, 16: Print Space$(10)
+                            Locate 7, 1: Input "2. # OF RUSHES "; rushContrib(I)
+                            Locate 7, 16: Print " "
 
                         Case 3
-                            Locate 7, 20: Print Space$(10)
-                            Locate 7, 1: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
-                            Locate 7, 20: Print " "
-
-                        Case 4
                             Locate 8, 20: Print Space$(10)
-                            Locate 8, 1: Input "4. # OF RECEPTIONS "; rbRecepts(I)
+                            Locate 8, 1: Input "3. RUSHING AVERAGE "; rushAvgRaw!(I)
                             Locate 8, 20: Print " "
 
+                        Case 4
+                            Locate 9, 20: Print Space$(10)
+                            Locate 9, 1: Input "4. # OF RECEPTIONS "; rbRecepts(I)
+                            Locate 9, 20: Print " "
+
                         Case 5
-                            Locate 9, 22: Print Space$(10)
-                            Locate 9, 1: Input "5. RECEIVING AVERAGE "; rbRecAvg(I)
-                            Locate 9, 22: Print " "
+                            Locate 10, 22: Print Space$(10)
+                            Locate 10, 1: Input "5. RECEIVING AVERAGE "; rbRecAvg(I)
+                            Locate 10, 22: Print " "
 
                     End Select
 
@@ -295,20 +322,23 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "WIDE RECEIVERS/TIGHT ENDS - "; I + 1
+            Locate 4: Print "WIDE RECEIVERS/TIGHT ENDS - "; I + 1
             Color 15
 
-            Locate 5, 1: Input "1. NAME (END TO STOP) "; wrName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; wrName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(wrName$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF RECEPTIONS "; recContrib(I)
-                Locate 7: Input "3. RECEIVING AVERAGE "; wrRecAvg(I)
+                Locate 7: Input "2. # OF RECEPTIONS "; recContrib(I)
+                Locate 7, 20: Print " "
+                Locate 8: Input "3. RECEIVING AVERAGE "; wrRecAvg(I)
+                Locate 8, 22: Print " "
 
                 Do
 
@@ -322,18 +352,18 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; wrName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; wrName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 20: Print Space$(10)
-                            Locate 6, 1: Input "2. # OF RECEPTIONS "; recContrib(I)
-                            Locate 6, 20: Print " "
+                            Locate 7, 20: Print Space$(10)
+                            Locate 7, 1: Input "2. # OF RECEPTIONS "; recContrib(I)
+                            Locate 7, 20: Print " "
 
                         Case 3
-                            Locate 7, 22: Print Space$(10)
-                            Locate 7, 1: Input "3. RECEIVING AVERAGE "; wrRecAvg(I)
-                            Locate 7, 22: Print " "
+                            Locate 8, 22: Print Space$(10)
+                            Locate 8, 1: Input "3. RECEIVING AVERAGE "; wrRecAvg(I)
+                            Locate 8, 22: Print " "
 
                     End Select
 
@@ -358,22 +388,27 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "QUARTERBACKS - "; I + 1
+            Locate 4: Print "QUARTERBACKS - "; I + 1
             Color 15
 
-            Locate 5, 1: Input "1. NAME (END TO STOP) "; qbName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; qbName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(qbName$(I)) <> "END" Then
 
-                Locate 6: Input "2. PASSES ATTEMPTED"; passContrib(I)
-                Locate 7: Input "3. COMPLETION %"; compPct(I)
-                Locate 8: Input "4. INTERCEPTION %"; qbIntPct(I)
-                Locate 9: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING)"; armRating(I)
+                Locate 7: Input "2. PASSES ATTEMPTED "; passContrib(I)
+                Locate 7, 21: Print " "
+                Locate 8: Input "3. COMPLETION % "; compPct(I)
+                Locate 8, 17: Print " "
+                Locate 9: Input "4. INTERCEPTION % "; qbIntPct(I)
+                Locate 9, 19: Print " "
+                Locate 10: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+                Locate 10, 45: Print " "
 
                 Do
 
@@ -387,28 +422,28 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; qbName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; qbName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 21: Print Space$(10)
-                            Locate 6, 1: Input "2. PASSES ATTEMPTED "; passContrib(I)
-                            Locate 6, 21: Print " "
+                            Locate 7, 21: Print Space$(10)
+                            Locate 7, 1: Input "2. PASSES ATTEMPTED "; passContrib(I)
+                            Locate 7, 21: Print " "
 
                         Case 3
-                            Locate 7, 17: Print Space$(10)
-                            Locate 7, 1: Input "3. COMPLETION % "; compPct(I)
-                            Locate 7, 17: Print " "
+                            Locate 8, 17: Print Space$(10)
+                            Locate 8, 1: Input "3. COMPLETION % "; compPct(I)
+                            Locate 8, 17: Print " "
 
                         Case 4
-                            Locate 8, 19: Print Space$(10)
-                            Locate 8, 1: Input "4. INTERCEPTION % "; qbIntPct(I)
-                            Locate 8, 19: Print " "
+                            Locate 9, 19: Print Space$(10)
+                            Locate 9, 1: Input "4. INTERCEPTION % "; qbIntPct(I)
+                            Locate 9, 19: Print " "
 
                         Case 5
-                            Locate 9, 45: Print Space$(10)
-                            Locate 9, 1: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
-                            Locate 9, 45: Print " "
+                            Locate 10, 45: Print Space$(10)
+                            Locate 10, 1: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+                            Locate 10, 45: Print " "
 
                     End Select
 
@@ -433,20 +468,23 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "KICKOFF RETURNMEN - "; I + 1
+            Locate 4: Print "KICKOFF RETURNMEN - "; I + 1
             Color 15
 
-            Locate 5: Input "1. NAME (END TO STOP)"; krName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; krName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(krName$(I)) <> "END" Then
 
-                Locate 6: Input "2. KICKOFFS RETURNED "; krContrib(I)
-                Locate 7: Input "3. RETURN AVERAGE "; krRetAvg(I)
+                Locate 7: Input "2. KICKOFFS RETURNED "; krContrib(I)
+                Locate 7, 22: Print " "
+                Locate 8: Input "3. RETURN AVERAGE "; krRetAvg(I)
+                Locate 8, 19: Print " "
 
                 Do
 
@@ -460,18 +498,18 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; krName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; krName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 22: Print Space$(10)
-                            Locate 6, 1: Input "2. KICKOFFS RETURNED "; krContrib(I)
-                            Locate 6, 22: Print " "
+                            Locate 7, 22: Print Space$(10)
+                            Locate 7, 1: Input "2. KICKOFFS RETURNED "; krContrib(I)
+                            Locate 7, 22: Print " "
 
                         Case 3
-                            Locate 7, 19: Print Space$(10)
-                            Locate 7, 1: Input "3. RETURN AVERAGE "; krRetAvg(I)
-                            Locate 7, 19: Print " "
+                            Locate 8, 19: Print Space$(10)
+                            Locate 8, 1: Input "3. RETURN AVERAGE "; krRetAvg(I)
+                            Locate 8, 19: Print " "
 
                     End Select
 
@@ -495,20 +533,23 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "PUNT RETURNMEN - "; I + 1
+            Locate 4: Print "PUNT RETURNMEN - "; I + 1
             Color 15
 
-            Locate 5: Input "1. NAME (END TO STOP)"; prName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; prName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(prName$(I)) <> "END" Then
 
-                Locate 6: Input "2. PUNTS RETURNED "; prContrib(I)
-                Locate 7: Input "3. PUNT RETURN AVERAGE "; prRetAvg(I)
+                Locate 7: Input "2. PUNTS RETURNED "; prContrib(I)
+                Locate 7, 19: Print " "
+                Locate 8: Input "3. PUNT RETURN AVERAGE "; prRetAvg(I)
+                Locate 8, 24: Print " "
 
                 Do
 
@@ -522,18 +563,18 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; prName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; prName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 19: Print Space$(10)
-                            Locate 6, 1: Input "2. PUNTS RETURNED "; prContrib(I)
-                            Locate 6, 19: Print " "
+                            Locate 7, 19: Print Space$(10)
+                            Locate 7, 1: Input "2. PUNTS RETURNED "; prContrib(I)
+                            Locate 7, 19: Print " "
 
                         Case 3
-                            Locate 7, 24: Print Space$(10)
-                            Locate 7, 1: Input "3. PUNT RETURN AVERAGE "; prRetAvg(I)
-                            Locate 7, 24: Print " "
+                            Locate 8, 24: Print Space$(10)
+                            Locate 8, 1: Input "3. PUNT RETURN AVERAGE "; prRetAvg(I)
+                            Locate 8, 24: Print " "
 
                     End Select
 
@@ -555,16 +596,19 @@ Sub InputTeam ()
         'Punters
         Cls
 
-        Locate 1, 1
+        Locate 2, 1
         Color 12
         Print "ENTER PLAYERS"
 
         Color 14
-        Locate 3: Print "PUNTER"
+        Locate 4: Print "PUNTER"
         Color 15
 
-        Locate 5: Input "1. NAME"; punterName$(0)
-        Locate 6: Input "2. PUNT AVERAGE"; puntAvgRaw!(0)
+        Locate 6, 1: Input "1. NAME "; punterName$(0)
+        Locate 6, 9: Print " "
+
+        Locate 7: Input "2. PUNT AVERAGE "; puntAvgRaw!(0)
+        Locate 7, 17: Print " "
 
         C1 = 1
 
@@ -580,13 +624,13 @@ Sub InputTeam ()
             Select Case B9
 
                 Case 1
-                    Locate 5, 1: Input "1. NAME "; punterName$(0)
-                    Locate 5, 9: Print " "
+                    Locate 6, 1: Input "1. NAME (END TO STOP) "; punterName$(0)
+                    Locate 6, 23: Print " "
 
                 Case 2
-                    Locate 6, 17: Print Space$(10)
-                    Locate 6, 1: Input "2. PUNT AVERAGE "; puntAvgRaw!(0)
-                    Locate 6, 17: Print " "
+                    Locate 7, 17: Print Space$(10)
+                    Locate 7, 1: Input "2. PUNT AVERAGE "; puntAvgRaw!(0)
+                    Locate 7, 17: Print " "
 
             End Select
 
@@ -602,22 +646,27 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "PLACE KICKER -"; I + 1
+            Locate 4: Print "PLACE KICKER -"; I + 1
             Color 15
 
-            Locate 5: Input "1. NAME (END TO STOP) "; pkName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; pkName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(pkName$(I)) <> "END" Then
 
-                Locate 6: Input "2. FGA "; pkFGContrib(I)
-                Locate 7: Input "3. FG% "; pkFGA(I)
-                Locate 8: Input "4. PAT ATTEMPTED "; pkPATContrib(I)
-                Locate 9: Input "5. PAT% "; pkPAT(I)
+                Locate 7: Input "2. FGA "; pkFGContrib(I)
+                Locate 7, 8: Print " "
+                Locate 8: Input "3. FG% "; pkFGA(I)
+                Locate 8, 8: Print " "
+                Locate 9: Input "4. PAT ATTEMPTED "; pkPATContrib(I)
+                Locate 9, 18: Print " "
+                Locate 10: Input "5. PAT% "; pkPAT(I)
+                Locate 10, 9: Print " "
 
                 Do
 
@@ -631,28 +680,28 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; pkName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; pkName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 8: Print Space$(10)
-                            Locate 6, 1: Input "2. FGA "; pkFGContrib(I)
-                            Locate 6, 8: Print " "
-
-                        Case 3
                             Locate 7, 8: Print Space$(10)
-                            Locate 7, 1: Input "3. FG% "; pkFGA(I)
+                            Locate 7, 1: Input "2. FGA "; pkFGContrib(I)
                             Locate 7, 8: Print " "
 
+                        Case 3
+                            Locate 8, 8: Print Space$(10)
+                            Locate 8, 1: Input "3. FG% "; pkFGA(I)
+                            Locate 8, 8: Print " "
+
                         Case 4
-                            Locate 8, 18: Print Space$(10)
-                            Locate 8, 1: Input "4. PAT ATTEMPTED "; pkPATContrib(I)
-                            Locate 8, 18: Print " "
+                            Locate 9, 18: Print Space$(10)
+                            Locate 9, 1: Input "4. PAT ATTEMPTED "; pkPATContrib(I)
+                            Locate 9, 18: Print " "
 
                         Case 5
-                            Locate 9, 9: Print Space$(10)
-                            Locate 9, 1: Input "5. PAT% "; pkPAT(I)
-                            Locate 9, 9: Print " "
+                            Locate 10, 9: Print Space$(10)
+                            Locate 10, 1: Input "5. PAT% "; pkPAT(I)
+                            Locate 10, 9: Print " "
 
                     End Select
 
@@ -688,19 +737,21 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "PLAYERS WITH INTERCEPTIONS -"; I + 1
+            Locate 4: Print "PLAYERS WITH INTERCEPTIONS -"; I + 1
             Color 15
 
-            Locate 5: Input "1. NAME (END TO STOP)"; intName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; intName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(intName$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF INTERCEPTIONS"; numInts(I)
+                Locate 7: Input "2. # OF INTERCEPTIONS"; numInts(I)
+                Locate 7, 22: Print " "
 
                 Do
 
@@ -714,13 +765,13 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; intName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; intName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 23: Print Space$(10)
-                            Locate 6, 1: Input "2. # OF INTERCEPTIONS "; numInts(I)
-                            Locate 6, 23: Print " "
+                            Locate 7, 23: Print Space$(10)
+                            Locate 7, 1: Input "2. # OF INTERCEPTIONS "; numInts(I)
+                            Locate 7, 23: Print " "
 
                     End Select
 
@@ -744,19 +795,21 @@ Sub InputTeam ()
 
             Cls
 
-            Locate 1, 1
+            Locate 2, 1
             Color 12
             Print "ENTER PLAYERS"
 
             Color 14
-            Locate 3: Print "PLAYERS WITH SACKS -"; I + 1
+            Locate 4: Print "PLAYERS WITH SACKS -"; I + 1
             Color 15
 
-            Locate 5: Input "1. NAME (END TO STOP)"; sackName$(I)
+            Locate 6, 1: Input "1. NAME (END TO STOP) "; sackName$(I)
+            Locate 6, 23: Print " "
 
             If UCase$(sackName$(I)) <> "END" Then
 
-                Locate 6: Input "2. # OF SACKS"; numSacks(I)
+                Locate 7: Input "2. # OF SACKS"; numSacks(I)
+                Locate 7, 14: Print " "
 
                 Do
 
@@ -770,13 +823,13 @@ Sub InputTeam ()
                     Select Case B9
 
                         Case 1
-                            Locate 5, 1: Input "1. NAME "; sackName$(I)
-                            Locate 5, 9: Print " "
+                            Locate 6, 1: Input "1. NAME (END TO STOP) "; sackName$(I)
+                            Locate 6, 23: Print " "
 
                         Case 2
-                            Locate 6, 15: Print Space$(10)
-                            Locate 6, 1: Input "2. # OF SACKS "; numSacks(I)
-                            Locate 6, 15: Print " "
+                            Locate 7, 15: Print Space$(10)
+                            Locate 7, 1: Input "2. # OF SACKS "; numSacks(I)
+                            Locate 7, 15: Print " "
 
                     End Select
 

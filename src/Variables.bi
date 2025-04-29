@@ -368,7 +368,6 @@ Dim leaderVal1!(240), leaderVal2!(240)
 Dim divLosses(60), divTies(60), divWins(60)
 
 Dim divTeamNames$(60), leagRecText$(60)
-Dim pollLdrTeams$(1200)
 
 
 '----------------------------------------
