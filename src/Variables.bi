@@ -380,6 +380,8 @@ Dim actualAttendance&, avgAttendance&
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
 
+' Shared / Global
+Dim Shared earlyExit
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
 'BW = black & white; as in, set to 1 and the game will lose all color
