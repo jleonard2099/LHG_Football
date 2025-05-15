@@ -174,6 +174,8 @@ Sub ModifyTeamStats (statFile$)
     Do
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; B9
         Loop Until B9 >= 0 And B9 <= 16
@@ -261,9 +263,6 @@ Sub ModifyTeamStats (statFile$)
 
         End Select
 
-        Locate 20, 29
-        Print Space$(10)
-
     Loop Until B9 = 0
 
 
@@ -295,6 +294,8 @@ Sub ModifyTeamStats (statFile$)
     Do
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; B9
         Loop Until B9 >= 0 And B9 <= 15
@@ -378,9 +379,6 @@ Sub ModifyTeamStats (statFile$)
 
         End Select
 
-        Locate 20, 29
-        Print Space$(10)
-
     Loop Until B9 = 0
 
 
@@ -399,6 +397,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 10
@@ -464,9 +464,6 @@ Sub ModifyTeamStats (statFile$)
 
                 End Select
 
-                Locate 20, 29
-                Print Space$(10)
-
             Loop Until B9 = 0
 
         End If
@@ -489,6 +486,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 6
@@ -536,9 +535,6 @@ Sub ModifyTeamStats (statFile$)
 
                 End Select
 
-                Locate 20, 29
-                Print Space$(10)
-
             Loop Until B9 = 0
 
         End If
@@ -561,6 +557,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 4
@@ -620,9 +618,6 @@ Sub ModifyTeamStats (statFile$)
 
                 End Select
 
-                Locate 20, 29
-                Print Space$(10)
-
             Loop Until B9 = 0
 
         End If
@@ -645,6 +640,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 3
@@ -692,9 +689,6 @@ Sub ModifyTeamStats (statFile$)
 
                 End Select
 
-                Locate 20, 29
-                Print Space$(10)
-
             Loop Until B9 = 0
 
         End If
@@ -717,6 +711,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 3
@@ -764,9 +760,6 @@ Sub ModifyTeamStats (statFile$)
 
                 End Select
 
-                Locate 20, 29
-                Print Space$(10)
-
             Loop Until B9 = 0
 
         End If
@@ -789,6 +782,8 @@ Sub ModifyTeamStats (statFile$)
     Do
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; B9
         Loop Until B9 >= 0 And B9 <= 3
@@ -811,9 +806,6 @@ Sub ModifyTeamStats (statFile$)
 
         End Select
 
-        Locate 20, 29
-        Print Space$(10)
-
     Loop Until B9 = 0
 
 
@@ -832,6 +824,8 @@ Sub ModifyTeamStats (statFile$)
         Next
 
         Do
+            Locate 20, 29
+            Print Space$(10)
             Locate 20, 1
             Input "# TO CHANGE (0 TO CONTINUE)"; I
         Loop Until I >= 0 And I <= 2
@@ -884,9 +878,6 @@ Sub ModifyTeamStats (statFile$)
                         Locate 7, 21: Print " "
 
                 End Select
-
-                Locate 20, 29
-                Print Space$(10)
 
             Loop Until B9 = 0
 

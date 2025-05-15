@@ -69,7 +69,7 @@ Sub CREATLEAG ()
                     'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", FileExit%)
 
                     If leagueFile$ <> "" Then
-                        Call ReviewEditLeague(leagueFile$)
+                        Call ReviewEditLeague(GetFileBaseName$(leagueFile$))
                     End If
 
                 Case 3:
@@ -199,8 +199,10 @@ Sub ReviewEditLeague (leagueFile$)
     Shared leagueName$
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    If _FileExists (leagueFile$) Then
-        Call ReadConferenceIndex (leagueFile$, statType)
+    targetFile$ = diskPaths$(2) + leagueFile$ + ".TMI"
+    
+    If _FileExists (targetFile$) Then
+        Call ReadConferenceIndex (targetFile$, statType)
     End If
 
     If statType <> 1 Then

@@ -91,6 +91,8 @@ Sub InputTeam ()
         Do
 
             Do
+                Locate 27, 53
+                Print Space$(10)
                 Locate 27, 25
                 Color 11
                 Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -114,9 +116,25 @@ Sub InputTeam ()
                         Locate 6, 1: Input " 3. TEAM NAME (IE. 94 ARKANSAS) "; team$
                         Locate 6, 33: Print " "
 
+                        If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
+                            Locate 20, 37
+                            Print "TEAM APPEARANCE: ";
+                            Locate 21, 37
+                            Color teamRatings(2), teamRatings(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                            Color 15, 0
+                        End If
+
                     Case 4
                         Locate 7, 1: Input " 4. TEAM NICKNAME (IE. PANTHERS) "; mascot$
                         Locate 7, 34: Print " "
+
+                        If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
+                            Locate 20, 37
+                            Print "TEAM APPEARANCE: ";
+                            Locate 21, 37
+                            Color teamRatings(2), teamRatings(1): Print RTrim$(team$) + " " + RTrim$(mascot$)
+                            Color 15, 0
+                        End If
 
                     Case 5
                         Locate 8, 18: Print Space$(10)
@@ -225,9 +243,6 @@ Sub InputTeam ()
 
                 End Select
 
-                Locate 27, 53
-                Print Space$(10)
-
             End If
 
         Loop Until B9 = 0
@@ -267,6 +282,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -300,9 +317,6 @@ Sub InputTeam ()
                             Locate 10, 22: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -343,6 +357,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -366,9 +382,6 @@ Sub InputTeam ()
                             Locate 8, 22: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -413,6 +426,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -446,9 +461,6 @@ Sub InputTeam ()
                             Locate 10, 45: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -489,6 +501,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -512,9 +526,6 @@ Sub InputTeam ()
                             Locate 8, 19: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -554,6 +565,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -577,9 +590,6 @@ Sub InputTeam ()
                             Locate 8, 24: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -615,6 +625,8 @@ Sub InputTeam ()
         Do
 
             Do
+                Locate 22, 29
+                Print Space$(10)
                 Locate 22, 1
                 Color 11
                 Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -633,9 +645,6 @@ Sub InputTeam ()
                     Locate 7, 17: Print " "
 
             End Select
-
-            Locate 22, 29
-            Print Space$(10)
 
         Loop Until B9 = 0
 
@@ -671,6 +680,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE) "; B9
@@ -704,9 +715,6 @@ Sub InputTeam ()
                             Locate 10, 9: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -756,6 +764,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE)"; B9
@@ -774,9 +784,6 @@ Sub InputTeam ()
                             Locate 7, 23: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 
@@ -814,6 +821,8 @@ Sub InputTeam ()
                 Do
 
                     Do
+                        Locate 22, 29
+                        Print Space$(10)
                         Locate 22, 1
                         Color 11
                         Input "# TO CHANGE (0 TO CONTINUE)"; B9
@@ -832,9 +841,6 @@ Sub InputTeam ()
                             Locate 7, 15: Print " "
 
                     End Select
-
-                    Locate 22, 29
-                    Print Space$(10)
 
                 Loop Until B9 = 0
 

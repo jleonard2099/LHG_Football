@@ -123,6 +123,8 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
     Do
 
         Do
+            Locate LAST_ROW - 2, 53
+            Print Space$(10)
             Locate LAST_ROW - 2, 25
             Input "# TO CHANGE (0 TO CONTINUE) "; B9
         Loop Until B9 >= 0 And B9 <= 6
@@ -247,9 +249,6 @@ Sub NewTeamParameters (teamYear$, teamName$, teamIdx)
                     End If
 
             End Select
-
-            Locate LAST_ROW - 2, 53
-            Print Space$(10)
 
         End If
 

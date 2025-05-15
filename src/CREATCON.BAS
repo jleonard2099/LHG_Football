@@ -171,8 +171,10 @@ Sub ReviewEditConference (confFile$)
     Shared leagueName$
     Shared div1Name$, div2Name$
 
-    If _FileExists(confFile$) Then
-        Call ReadConferenceIndex (confFile$, null)
+    targetFile$ = diskPaths$(2) + confFile$ + ".TMI"
+
+    If _FileExists (targetFile$) Then
+        Call ReadConferenceIndex (targetFile$, null)
     End If
 
     If statType <> 0 Then

@@ -417,6 +417,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 8, 45: Print Space$(10)
                                 Locate 8, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO RB SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 3
@@ -442,8 +443,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     rbRecAvg(I1) = CInt(A3!(I1) / 3)
 
                             End Select
-
-                            Locate 8, 45: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -493,6 +492,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 7, 45: Print Space$(10)
                                 Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO WR SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
@@ -511,8 +511,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                             End Select
 
                         Loop Until C9 = 0
-
-                        Locate 7, 45: Print Space$(10)
 
                     End If
 
@@ -563,6 +561,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 9, 45: Print Space$(10)
                                 Locate 9, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO QB SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 4
@@ -589,8 +588,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 7, 17: Print " "
 
                             End Select
-
-                            Locate 9, 45: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -641,6 +638,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 7, 47: Print Space$(10)
                                 Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO KOR SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
@@ -659,8 +657,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     krRetAvg(I1) = CInt(B!(I1) / 3)
 
                             End Select
-
-                            Locate 7, 47: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -709,6 +705,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 7, 45: Print Space$(10)
                                 Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO PR SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
@@ -727,8 +724,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     prRetAvg(I1) = CInt(usrRetAvg / 3)
 
                             End Select
-
-                            Locate 7, 45: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -778,6 +773,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 7, 50: Print Space$(10)
                                 Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO PUNTER SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
@@ -796,8 +792,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     puntAvg(I1) = CInt(((B3!(I1) - 28) / 2))
 
                             End Select
-
-                            Locate 7, 50: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -847,6 +841,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 8, 45: Print Space$(10)
                                 Locate 8, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO PK SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 3
@@ -869,8 +864,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 6, 18: Print " "
 
                             End Select
-
-                            Locate 8, 45: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -920,6 +913,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                     Do
 
                         Do
+                            Locate 7, 49: Print Space$(10)
                             Locate 7, 1
                             Input "ENTER # TO CHANGE (0-RETURN TO SACKS SELECTION) "; C9
                         Loop Until C9 >= 0 And C9 <= 2
@@ -936,8 +930,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                 Locate 5, 10: Print " "
 
                         End Select
-
-                        Locate 7, 49: Print Space$(10)
 
                     Loop Until C9 = 0
 
@@ -985,6 +977,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Do
 
                             Do
+                                Locate 7, 47: Print Space$(10)
                                 Locate 7, 1
                                 Input "ENTER # TO CHANGE (0-RETURN TO INT SELECTION) "; C9
                             Loop Until C9 >= 0 And C9 <= 2
@@ -1001,8 +994,6 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                                     Locate 5, 18: Print " "
 
                             End Select
-
-                            Locate 7, 47: Print Space$(10)
 
                         Loop Until C9 = 0
 
@@ -1316,6 +1307,8 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
     Do
 
         Do
+            Locate 26, 61
+            Print Space$(10)
             Locate 26, 15
             Input "ENTER # TO CHANGE (0-RETURN TO POSITION MENU) "; B9
         Loop Until B9 >= 0 And B9 <= 20
@@ -1339,10 +1332,24 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
                     Locate 5, 1: Input " 3. TEAM NAME "; teamName$
                     Locate 5, 15: Print " "
 
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
+                        Locate 24, 1
+                        Print "TEAM APPEARANCE: ";
+                        Color teamRatings(2), teamRatings(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color 15, 0
+                    End If
+
                 Case 4
                     Locate 6, 19: Print Space$(20)
                     Locate 6, 1: Input " 4. TEAM NICKNAME "; mascot$
                     Locate 6, 19: Print " "
+
+                    If teamRatings(1) >= 0 And teamRatings(2) >= 0 Then
+                        Locate 24, 1
+                        Print "TEAM APPEARANCE: ";
+                        Color teamRatings(2), teamRatings(1): Print RTrim$(teamName$) + " " + RTrim$(mascot$)
+                        Color 15, 0
+                    End If
 
                 Case 5
                     Locate 7, 21: Print Space$(10)
@@ -1443,9 +1450,6 @@ Sub ChangeTeamRatings (teamName$, teamYear$, teamNbr)
             End Select
 
         End If
-
-        Locate 26, 61
-        Print Space$(10)
 
     Loop Until B9 = 0
 
