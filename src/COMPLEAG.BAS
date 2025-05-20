@@ -471,14 +471,14 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
     Shared statsGI(), statsGS()
 
-    '---------------
-    ' Running Backs
-    '---------------
-    
     minRushAtt = totalGames * 10
     minRecept = totalGames * 3
     minComp = totalGames * 15
     minReturns = totalGames * 1.2
+    
+    '---------------
+    ' Running Backs
+    '---------------
     
     For X = 1 To 10
 
@@ -529,7 +529,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compRB!(X, 9) 'Rush Avg
                     leaderVal!(Y, 2) = compRB!(X, 1) 'Rush Att
 
-                    'Only include players with 10 ATT / game
                     If leaderVal!(Y, 2) < minRushAtt Then
                         leaderName$(Y) = "*"
                         leaderTeam$(Y) = "*"
@@ -560,7 +559,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
-            If Not (compRB!(X, 1) < minRushAtt Or compRB!(X, 9) < leaderVal!(20, 1)) Then
+            If compRB!(X, 9) >= leaderVal!(20, 1) And compRB!(X, 1) => minRushAtt Then
 
                 leaderName$(20) = compRB$(X)
                 leaderTeam$(20) = statName$
@@ -698,7 +697,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(7, 1) = teamName$
             End If
 
-            'Look for at least 3 catches / game
             If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= minRecept Then
                 'Receiving Average
                 indRecords!(8) = compWR!(X, 4)
@@ -749,7 +747,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Z
 
-            If Not ((compWR!(X, 1) < minRecept Or compWR!(X, 4) < leaderVal!(40, 1))) Then
+            If compWR!(X, 4) >= leaderVal!(40, 1) And compWR!(X, 1) >= minRecept  Then
 
                 leaderName$(40) = compWR$(X)
                 leaderTeam$(40) = statName$
@@ -1079,7 +1077,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < minComp Or compQB!(X, 6) < leaderVal!(130, 1)) Then
+            If compQB!(X, 1) >= leaderVal!(130, 1) And compQB!(X, 1) >= minComp  Then
 
                 leaderName$(130) = compQB$(X)
                 leaderTeam$(130) = statName$
@@ -1142,7 +1140,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
-            If Not (compQB!(X, 1) < minComp Or compQB!(X, 6) < leaderVal!(140, 1)) Then
+            If compQB!(X, 6) >= leaderVal!(140, 1) And compQB!(X, 1) >= minComp  Then
 
                 leaderName$(140) = compQB$(X)
                 leaderTeam$(140) = statName$
@@ -1275,7 +1273,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 End If
             Next Z
 
-            If Not (compKR!(X, 1) < minReturns Or compKR!(X, 4) <= leaderVal!(170, 1)) Then
+            If compKR!(X, 4) >= leaderVal!(170, 1) And compKR!(X, 1) >= minReturns Then
 
                 leaderVal!(170, 1) = compKR!(X, 4)
                 leaderName$(170) = compKR$(X)
@@ -1354,7 +1352,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 End If
             Next Z
 
-            If Not (compPR!(X, 1) < minReturns And compPR!(X, 4) <= leaderVal!(180, 1)) Then
+            If compPR!(X, 4) >= leaderVal!(180, 1) And compPR!(X, 1) >= minReturns Then
 
                 leaderVal!(180, 1) = compPR!(X, 4)
                 leaderName$(180) = compPR$(X)

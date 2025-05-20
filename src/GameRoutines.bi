@@ -11,7 +11,7 @@ Declare Sub CoinToss
 Declare Sub PBP ()
 Declare Sub TICKER ()
 Declare Sub TICKERUPDATE ()
-Declare Sub TickerSchedule ()
+Declare Sub UpdateSchedule ()
 Declare Sub SCOUT ()
 Declare Sub HALFSTART ()
 Declare Sub CHOOSEKICKER (currTeam)

@@ -390,7 +390,7 @@ Sub Leaders_Screen ()
 
     Locate 2, 1
     Color 14
-    Print "COMPLETION PERCENTAGE"
+    Print "COMPLETION PERCENTAGE (MIN 15 COMP/GAME)"
     Color 15
 
     For P = 121 To 130
@@ -403,7 +403,7 @@ Sub Leaders_Screen ()
 
     Locate 2, 41
     Color 14
-    Print "QUARTERBACK RATING"
+    Print "QUARTERBACK RATING  (MIN 15 COMP/GAME)"
     Color 15
 
     For P = 131 To 140
@@ -946,7 +946,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     Next
 
     Print #1,
-    Print #1, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
+    Print #1, "COMPLETION PERCENTAGE (MIN 15 COMP/GAME)"; Tab(41); "QUARTERBACK RATING (MIN 15 COMP/GAME)"
 
     For P = 121 To 130
 

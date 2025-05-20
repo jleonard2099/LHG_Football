@@ -176,19 +176,12 @@ Sub CompileNatlOrg ()
 
                                 If (haveStats) Then
 
-                                    L = Len(memberName$(XW))
-                                    WT$ = ""
-
-                                    For X = 1 To L
-                                        A = Asc(Mid$(memberName$(XW), X, 1))
-                                        WT$ = WT$ + Chr$(A)
-                                    Next X
-
+                                    statName$ = memberName$(XW)
                                     sameTeam = 0
 
                                     For X = 1 To 30
 
-                                        If statFilesComp$(X) = WT$ Then
+                                        If statFilesComp$(X) = statName$ Then
 
                                             If divWins(X) = fullWins And divLosses(X) = fullLosses And divTies(X) = fullTies Then
 
@@ -219,8 +212,8 @@ Sub CompileNatlOrg ()
                                     If sameTeam = 0 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
                                         Call ReadStatsLeaders(memberName$(XW), totalGames, TM$, 0)
-                                        Call CalcStatTotalsConf(totalGames, TM$, WT$, finalUpdate$)
-                                        Call CalcStatLeaders(totalGames, TM$, WT$, finalUpdate$)
+                                        Call CalcStatTotalsConf(totalGames, TM$, statName$, finalUpdate$)
+                                        Call CalcStatLeaders(totalGames, TM$, statName$, finalUpdate$)
 
                                     End If
 
@@ -232,7 +225,11 @@ Sub CompileNatlOrg ()
 
                         Call SortStandingsLeague
                         Call PostLeadersConf(memberConf$(currConf))
-                        Call SortLeadersNat
+
+                        Cls
+                        Print "CHECKING "; memberConf$(currConf); " STATS AGAINST NATIONAL LEADERS"
+                        
+                        Call CalcStatLeadersNat (totalGames)
 
                     End If 'Done checking for valid conference
 
@@ -401,11 +398,12 @@ End Function
 
 
 '----------------------------------------
-'       SortLeadersNat Subroutine
+'       CalcStatLeadersNat Subroutine
 '----------------------------------------
-'This subroutine sorts the leaders in the
-'target organization
-Sub SortLeadersNat ()
+'This subroutine both posts the leaders 
+'to the National data arrays, and also
+'sorts the players in those leaders
+Sub CalcStatLeadersNat (totalGames)
 
     Shared totalTeamVal!(), leaderVal!()
     Shared natLdrVal!(), natLdrTotVal!()
@@ -413,12 +411,17 @@ Sub SortLeadersNat ()
     Shared leaderName$(), leaderTeam$()
     Shared natLdrName$(), natLdrTeam$(), natLdrTotTeam$(), totalTeamName$()
 
+    minRushAtt = totalGames * 10
+    minRecept = totalGames * 3
+    minComp = totalGames * 15
+    minReturns = totalGames * 1.2
+
     ' RUSHING AVERAGE
     For X = 1 To 20
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(20, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(20, 1) And leaderVal!(X, 1) >= minRushAtt Then
 
                 natLdrVal!(20, 1) = leaderVal!(X, 1)
                 natLdrVal!(20, 2) = leaderVal!(X, 2)
@@ -448,7 +451,7 @@ Sub SortLeadersNat ()
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(40, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(40, 1) And leaderVal!(X, 1) >= minRecept Then
 
                 natLdrVal!(40, 1) = leaderVal!(X, 1)
                 natLdrVal!(40, 2) = leaderVal!(X, 2)
@@ -703,7 +706,7 @@ Sub SortLeadersNat ()
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(130, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(130, 1) And leaderVal!(X, 1) >= minComp Then
 
                 natLdrVal!(130, 1) = leaderVal!(X, 1)
                 natLdrVal!(130, 2) = leaderVal!(X, 2)
@@ -731,7 +734,7 @@ Sub SortLeadersNat ()
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(140, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(140, 1) And leaderVal!(X, 1) >= minComp Then
 
                 natLdrVal!(140, 1) = leaderVal!(X, 1)
                 natLdrVal!(140, 2) = leaderVal!(X, 2)
@@ -815,7 +818,7 @@ Sub SortLeadersNat ()
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(170, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(170, 1) And leaderVal!(X, 1) >= minReturns Then
 
                 natLdrVal!(170, 1) = leaderVal!(X, 1)
                 natLdrVal!(170, 2) = leaderVal!(X, 2)
@@ -843,7 +846,7 @@ Sub SortLeadersNat ()
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(180, 1) Then
+            If leaderVal!(X, 1) >= natLdrVal!(180, 1) And leaderVal!(X, 1) >= minReturns Then
 
                 natLdrVal!(180, 1) = leaderVal!(X, 1)
                 natLdrVal!(180, 2) = leaderVal!(X, 2)

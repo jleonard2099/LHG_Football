@@ -448,7 +448,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Next
 
     Print #1,
-    Print #1, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
+    Print #1, "COMPLETION PERCENTAGE (MIN 15 COMP/GAME)"; Tab(41); "QUARTERBACK RATING (MIN 15 COMP/GAME)"
 
     For P = 121 To 130
 
