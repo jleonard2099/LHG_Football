@@ -220,7 +220,8 @@ Sub Leaders_Screen ()
 
     Locate 2, 1
     Color 14
-    Print "RUSHING LEADERS (MIN 10 ATT/G)"
+    'Print "RUSHING LEADERS (MIN 10 ATT/G)"
+    Print "RUSHING LEADERS"
 
     Color 12
     Print "                            AVG  ATT"
@@ -236,8 +237,8 @@ Sub Leaders_Screen ()
 
     Locate 2, 41
     Color 14
-    Print "RECEIVING LEADERS (MIN 3 REC/G)"
-
+    'Print "RECEIVING LEADERS (MIN 3 REC/G)"
+    Print "RECEIVING LEADERS"
     Locate , 41
     Color 12
     Print "                            AVG  REC"
@@ -390,7 +391,8 @@ Sub Leaders_Screen ()
 
     Locate 2, 1
     Color 14
-    Print "COMPLETION PERCENTAGE (MIN 15 COMP/GAME)"
+    Print "COMPLETION PERCENTAGE"
+    'Print "COMPLETION % (MIN 15 COMP/GAME)"
     Color 15
 
     For P = 121 To 130
@@ -403,7 +405,8 @@ Sub Leaders_Screen ()
 
     Locate 2, 41
     Color 14
-    Print "QUARTERBACK RATING  (MIN 15 COMP/GAME)"
+    'Print "QUARTERBACK RATING  (MIN 15 COMP/GAME)"
+    Print "QUARTERBACK RATING"
     Color 15
 
     For P = 131 To 140
@@ -825,7 +828,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     Next
 
     Print #1, Chr$(12)
-    Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 3 REC/G)"
+    Print #1, "RUSHING LEADERS"; Tab(41); "RECEIVING LEADERS"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
@@ -946,7 +949,8 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     Next
 
     Print #1,
-    Print #1, "COMPLETION PERCENTAGE (MIN 15 COMP/GAME)"; Tab(41); "QUARTERBACK RATING (MIN 15 COMP/GAME)"
+    'Print #1, "COMPLETION % (MIN 15 COMP/GAME)"; Tab(41); "QUARTERBACK RATING (MIN 15 COMP/GAME)"
+    Print #1, "COMPLETION PERCENTAGE"; Tab(41); "QUARTERBACK RATING"
 
     For P = 121 To 130
 

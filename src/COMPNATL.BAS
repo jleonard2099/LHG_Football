@@ -29,7 +29,7 @@ Sub CompileNatlOrg ()
     'Read in any existing records
     If _FileExists(diskPaths$(1) + "RECORDS.CFB") Then
 
-        Call ReadSeasonRecords ("RECORDS.CFB")
+        Call ReadSeasonRecords("RECORDS.CFB")
 
     Else
 
@@ -162,7 +162,7 @@ Sub CompileNatlOrg ()
 
                         For XW = 1 To 30
                             Input #3, memberName$(XW)
-                            statFilesComp$(X) = memberName$(XW)
+                            statFilesComp$(XW) = memberName$(XW)
                         Next
 
                         Close #3
@@ -228,8 +228,10 @@ Sub CompileNatlOrg ()
 
                         Cls
                         Print "CHECKING "; memberConf$(currConf); " STATS AGAINST NATIONAL LEADERS"
-                        
-                        Call CalcStatLeadersNat (totalGames)
+
+                        Call CalcStatLeadersNat(totalGames)
+
+                        'Call PostRecordsColl
 
                     End If 'Done checking for valid conference
 
@@ -301,18 +303,18 @@ Function FindStatsNat% (XW, statFile$, totalGames, NRT)
             Next EC
 
             If confGame = 1 Then
-                
-                If teamScore(I) > oppScore(I) Then 
+
+                If teamScore(I) > oppScore(I) Then
                     fullWins = fullWins + 1
                     confWins = confWins + 1
                 End If
 
-                If teamScore(I) < oppScore(I) Then 
+                If teamScore(I) < oppScore(I) Then
                     fullLosses = fullLosses + 1
                     confLosses = confLosses + 1
                 End If
 
-                If teamScore(I) = oppScore(I) Then 
+                If teamScore(I) = oppScore(I) Then
                     fullTies = fullTies + 1
                     confTies = confTies + 1
                 End If
@@ -322,18 +324,18 @@ Function FindStatsNat% (XW, statFile$, totalGames, NRT)
 
             Else
 
-                If teamScore(I) > oppScore(I) Then 
+                If teamScore(I) > oppScore(I) Then
                     fullWins = fullWins + 1
                 End If
-                
-                If teamScore(I) < oppScore(I) Then 
+
+                If teamScore(I) < oppScore(I) Then
                     fullLosses = fullLosses + 1
                 End If
-                
-                If teamScore(I) = oppScore(I) Then 
+
+                If teamScore(I) = oppScore(I) Then
                     fullTies = fullTies + 1
                 End If
-            
+
             End If
 
             EC = 0
@@ -356,10 +358,10 @@ Function FindStatsNat% (XW, statFile$, totalGames, NRT)
 
         For I = 1 To totalGames
             RAT = teamScore(I) - oppScore(I) + powerRating(1, I)
-            If Left$(locIndicator$(I), 1) = "H" Then 
+            If Left$(locIndicator$(I), 1) = "H" Then
                 RAT = RAT - 3
             End If
-            If Left$(locIndicator$(I), 1) = "A" Then 
+            If Left$(locIndicator$(I), 1) = "A" Then
                 RAT = RAT + 3
             End If
             teamPower = teamPower + RAT
@@ -400,7 +402,7 @@ End Function
 '----------------------------------------
 '       CalcStatLeadersNat Subroutine
 '----------------------------------------
-'This subroutine both posts the leaders 
+'This subroutine both posts the leaders
 'to the National data arrays, and also
 'sorts the players in those leaders
 Sub CalcStatLeadersNat (totalGames)
@@ -421,7 +423,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(20, 1) And leaderVal!(X, 1) >= minRushAtt Then
+            'If leaderVal!(X, 1) >= natLdrVal!(20, 1) And leaderVal!(X, 1) >= minRushAtt Then
+            If leaderVal!(X, 1) >= natLdrVal!(20, 1) Then
 
                 natLdrVal!(20, 1) = leaderVal!(X, 1)
                 natLdrVal!(20, 2) = leaderVal!(X, 2)
@@ -451,7 +454,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(40, 1) And leaderVal!(X, 1) >= minRecept Then
+            'If leaderVal!(X, 1) >= natLdrVal!(40, 1) And leaderVal!(X, 1) >= minRecept Then
+            If leaderVal!(X, 1) >= natLdrVal!(40, 1) Then
 
                 natLdrVal!(40, 1) = leaderVal!(X, 1)
                 natLdrVal!(40, 2) = leaderVal!(X, 2)
@@ -706,7 +710,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(130, 1) And leaderVal!(X, 1) >= minComp Then
+            'If leaderVal!(X, 1) >= natLdrVal!(130, 1) And leaderVal!(X, 1) >= minComp Then
+            If leaderVal!(X, 1) >= natLdrVal!(130, 1) Then
 
                 natLdrVal!(130, 1) = leaderVal!(X, 1)
                 natLdrVal!(130, 2) = leaderVal!(X, 2)
@@ -734,7 +739,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(140, 1) And leaderVal!(X, 1) >= minComp Then
+            'If leaderVal!(X, 1) >= natLdrVal!(140, 1) And leaderVal!(X, 1) >= minComp Then
+            If leaderVal!(X, 1) >= natLdrVal!(140, 1) Then
 
                 natLdrVal!(140, 1) = leaderVal!(X, 1)
                 natLdrVal!(140, 2) = leaderVal!(X, 2)
@@ -818,7 +824,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(170, 1) And leaderVal!(X, 1) >= minReturns Then
+            'If leaderVal!(X, 1) >= natLdrVal!(170, 1) And leaderVal!(X, 1) >= minReturns Then
+            If leaderVal!(X, 1) >= natLdrVal!(170, 1) Then
 
                 natLdrVal!(170, 1) = leaderVal!(X, 1)
                 natLdrVal!(170, 2) = leaderVal!(X, 2)
@@ -846,7 +853,8 @@ Sub CalcStatLeadersNat (totalGames)
 
         If leaderName$(X) <> "*" And leaderName$(X) <> "" Then
 
-            If leaderVal!(X, 1) >= natLdrVal!(180, 1) And leaderVal!(X, 1) >= minReturns Then
+            'If leaderVal!(X, 1) >= natLdrVal!(180, 1) And leaderVal!(X, 1) >= minReturns Then
+            If leaderVal!(X, 1) >= natLdrVal!(180, 1) Then
 
                 natLdrVal!(180, 1) = leaderVal!(X, 1)
                 natLdrVal!(180, 2) = leaderVal!(X, 2)

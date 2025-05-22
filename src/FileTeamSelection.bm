@@ -1139,7 +1139,7 @@ Sub ReadOrganizationFile (organizationFile$, organization$)
 
     Shared memberConf$()
 
-    Open diskPaths$(2) + organizationFile$ + ".CON" For Input As #1
+    Open organizationFile$ For Input As #1
 
     Input #1, organization$
 
