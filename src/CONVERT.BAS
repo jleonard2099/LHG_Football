@@ -397,7 +397,7 @@ Sub ConvertSched6to7 (targetFile$, silent)
 
         'Kill targetFile$
 
-        'Call FCopy(newFile$, targetFile$, Buff$, copyErr%)
+        'result$ = CopyFile$(newFile$, targetFile$)
 
         'Kill newFile$
 
@@ -445,7 +445,7 @@ Sub ConvertLeague4to5 (targetFile$, silent)
 
             Kill targetFile$
 
-            Call FCopy(newFile$, targetFile$, Buff$, copyErr%)
+            result$ = CopyFile$(newFile$, targetFile$)
 
             Kill newFile$
 
@@ -488,7 +488,7 @@ Sub ConvertLeague5to4 (targetFile$, silent)
             'Is this all accurate ???
             Kill targetFile$
 
-            Call FCopy(oldFile$, targetFile$, Buff$, copyErr%)
+            result$ = CopyFile$(oldFile$, targetFile$)
 
             Kill oldFile$
 
