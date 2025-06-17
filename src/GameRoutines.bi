@@ -108,7 +108,7 @@ Declare Sub QBTHROW ()
 Declare Sub RUNPBP ()
 Declare Sub PassCompletePBP (direction, fieldSide)
 Declare Sub PassYardagePBP (yardString$)
-Declare Sub Touchback
+Declare Sub Touchback (endZone)
 Declare Sub AddPossessionTime (minSeconds, maxSeconds)
 Declare Sub FumblePBP ()
 Declare Sub TryForTwoResult ()
@@ -132,8 +132,9 @@ Declare Sub GetKeyWhenNoDelay ()
 Declare Sub EndOfGame
 
 Declare Function d100% ()
-Declare Function fgLimit%
-Declare Function FindMarkerColumn (X)
-Declare Function GetSneakChance%
-Declare Function GetTeamYear% (yearFromName$)
 Declare Function TickerTime% (timeInterval, X)
+Declare Function fgLimit%
+Declare Function GetSneakChance%
+Declare Function FindMarkerColumn (X)
+Declare Function GetTeamYear% (yearFromName$)
+Declare Function yardsToDecimalStr$ (sourceYds!)
