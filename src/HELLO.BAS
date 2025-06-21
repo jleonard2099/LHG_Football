@@ -22,6 +22,7 @@ Const SCHEDULE_SIZE_BYTES = 56
 Const LAST_COL = 80
 Const LAST_ROW = 30
 Const SCHED_ENTRIES_PER_SCREEN = 25
+Const MAX_PBP_LINES = 6
 
 DefInt A-Z
 
@@ -35,8 +36,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim expLdrVal!(480)
-Dim statsTeam!(38), statsOpp!(38), statsPlayers!(50, 18)
 
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
@@ -8040,29 +8039,99 @@ Sub TICKER ()
         Color 15
 
         If tickerGames = 0 Then
+
             Locate 10, 28: Print "NO OTHER GAMES SCHEDULED"
+
         Else
-            If quarter = 1 And gameClock! < 900 And gameClock! >= 600 Then timeInterval = 1
-            If quarter = 1 And gameClock! < 600 And gameClock! >= 300 Then timeInterval = 2
-            If quarter = 1 And gameClock! < 300 Then timeInterval = 3
 
-            If quarter = 2 And gameClock! < 900 And gameClock! >= 600 Then timeInterval = 4
-            If quarter = 2 And gameClock! < 600 And gameClock! >= 300 Then timeInterval = 5
-            If quarter = 2 And gameClock! < 300 Then timeInterval = 6
+            If quarter = 1 then
 
-            If quarter = 3 And gameClock! < 900 And gameClock! >= 600 Then timeInterval = 9
-            If quarter = 3 And gameClock! < 600 And gameClock! >= 300 Then timeInterval = 10
-            If quarter = 3 And gameClock! < 300 Then timeInterval = 11
+                Select Case gameClock!
 
-            If quarter = 4 And gameClock! < 900 And gameClock! >= 600 Then timeInterval = 12
-            If quarter = 4 And gameClock! < 600 And gameClock! >= 300 Then timeInterval = 13
-            If quarter = 4 And gameClock! < 300 Then timeInterval = 14
+                    Case 600 to 899
+                        timeInterval = 1
+                        
+                    Case 300 to 599
+                        timeInterval = 2
 
-            If quarter = 5 And gameClock! < 900 And gameClock! >= 600 Then timeInterval = 15
-            If quarter = 5 And gameClock! < 600 And gameClock! >= 300 Then timeInterval = 16
-            If quarter = 5 And gameClock! < 300 Then timeInterval = 17
+                    Case Is < 300 
+                        timeInterval = 3
 
-            If halfTime = 1 Then timeInterval = 8
+                End Select
+                
+            End If
+
+            If quarter = 2 then
+
+                Select Case gameClock!
+
+                    Case 600 to 899
+                        timeInterval = 4
+                        
+                    Case 300 to 599
+                        timeInterval = 5
+
+                    Case Is < 300 
+                        timeInterval = 6
+
+                End Select
+                
+            End If
+
+            If quarter = 3 then
+
+                Select Case gameClock!
+
+                    Case 600 to 899
+                        timeInterval = 9
+                        
+                    Case 300 to 599
+                        timeInterval = 10
+
+                    Case Is < 300 
+                        timeInterval = 11
+
+                End Select
+                
+            End If
+
+            If quarter = 4 then
+
+                Select Case gameClock!
+
+                    Case 600 to 899
+                        timeInterval = 12
+                        
+                    Case 300 to 599
+                        timeInterval = 13
+
+                    Case Is < 300 
+                        timeInterval = 14
+
+                End Select
+                
+            End If
+
+            If quarter = 5 then
+
+                Select Case gameClock!
+
+                    Case 600 to 899
+                        timeInterval = 15
+                        
+                    Case 300 to 599
+                        timeInterval = 16
+
+                    Case Is < 300 
+                        timeInterval = 17
+
+                End Select
+                
+            End If
+
+            If halfTime = 1 Then
+                timeInterval = 8
+            End If
 
             If Left$(SX$(1, 0), 3) <> "XXX" Then
                 Locate 2, 1
@@ -8548,22 +8617,65 @@ Sub TICKERUPDATE ()
     'Should this be <= 31???
     If autoPlay = 1 And schedGame(2) <= 32 Then
 
-        If quarter = 1 And gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 1) = -1 Then SX%(schedGame(2) + 1, 0, 1) = score(0, 0): SX%(schedGame(2) + 1, 1, 1) = score(1, 0)
-        If quarter = 1 And gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 2) = -1 Then SX%(schedGame(2) + 1, 0, 2) = score(0, 0): SX%(schedGame(2) + 1, 1, 2) = score(1, 0)
+        If quarter = 1 Then 
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 1) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 1) = score(0, 0): SX%(schedGame(2) + 1, 1, 1) = score(1, 0)
+            End If
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 2) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 2) = score(0, 0): SX%(schedGame(2) + 1, 1, 2) = score(1, 0)
+            End If
+        End If
 
-        If quarter = 2 And gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 4) = -1 Then SX%(schedGame(2) + 1, 0, 4) = score(0, 0): SX%(schedGame(2) + 1, 1, 4) = score(1, 0)
-        If quarter = 2 And gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 5) = -1 Then SX%(schedGame(2) + 1, 0, 5) = score(0, 0): SX%(schedGame(2) + 1, 1, 5) = score(1, 0)
+        If quarter = 2 Then 
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 4) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 4) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 4) = score(1, 0)
+            End If
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 5) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 5) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 5) = score(1, 0)
+            End If
+        End If
 
-        If quarter > 2 And SX%(schedGame(2) + 1, 0, 3) = -1 Then SX%(schedGame(2) + 1, 0, 3) = score(0, 1): SX%(schedGame(2) + 1, 1, 3) = score(1, 1)
-        If quarter > 2 And SX%(schedGame(2) + 1, 0, 6) = -1 Then For I2 = 6 To 8: SX%(schedGame(2) + 1, 0, I2) = score(0, 2) + score(0, 1): SX%(schedGame(2) + 1, 1, I2) = score(1, 2) + score(1, 1): Next
+        If quarter > 2 Then 
+            If SX%(schedGame(2) + 1, 0, 3) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 3) = score(0, 1)
+                SX%(schedGame(2) + 1, 1, 3) = score(1, 1)
+            End If
+            If SX%(schedGame(2) + 1, 0, 6) = -1 Then 
+                For I2 = 6 To 8: 
+                    SX%(schedGame(2) + 1, 0, I2) = score(0, 2) + score(0, 1)
+                    SX%(schedGame(2) + 1, 1, I2) = score(1, 2) + score(1, 1)
+                Next
+            End If
+        End If
 
-        If quarter = 3 And gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 9) = -1 Then SX%(schedGame(2) + 1, 0, 9) = score(0, 0): SX%(schedGame(2) + 1, 1, 9) = score(1, 0)
-        If quarter = 3 And gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 10) = -1 Then SX%(schedGame(2) + 1, 0, 10) = score(0, 0): SX%(schedGame(2) + 1, 1, 10) = score(1, 0)
+        If quarter = 3 Then 
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 9) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 9) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 9) = score(1, 0)
+            End If
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 10) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 10) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 10) = score(1, 0)
+            End If
+        End If
 
-        If quarter > 3 And SX%(schedGame(2) + 1, 0, 11) = -1 Then SX%(schedGame(2) + 1, 0, 11) = score(0, 3) + score(0, 2) + score(0, 1): SX%(schedGame(2) + 1, 1, 11) = score(1, 3) + score(1, 2) + score(1, 1)
+        If quarter > 3 And SX%(schedGame(2) + 1, 0, 11) = -1 Then 
+            SX%(schedGame(2) + 1, 0, 11) = score(0, 3) + score(0, 2) + score(0, 1)
+            SX%(schedGame(2) + 1, 1, 11) = score(1, 3) + score(1, 2) + score(1, 1)
+        End If
 
-        If quarter = 4 And gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 12) = -1 Then SX%(schedGame(2) + 1, 0, 12) = score(0, 0): SX%(schedGame(2) + 1, 1, 12) = score(1, 0)
-        If quarter = 4 And gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 13) = -1 Then SX%(schedGame(2) + 1, 0, 13) = score(0, 0): SX%(schedGame(2) + 1, 1, 13) = score(1, 0)
+        If quarter = 4 Then 
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 12) = -1 Then 
+                SX%(schedGame(2) + 1, 0, 12) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 12) = score(1, 0)
+            End If
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 13) = -1 Then
+                SX%(schedGame(2) + 1, 0, 13) = score(0, 0)
+                SX%(schedGame(2) + 1, 1, 13) = score(1, 0)
+            End If
+        End If
 
         SX%(schedGame(2) + 1, 0, 14) = score(0, 0)
         SX%(schedGame(2) + 1, 1, 14) = score(1, 0)
