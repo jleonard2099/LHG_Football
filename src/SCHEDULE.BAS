@@ -1402,7 +1402,6 @@ Sub ChangeGlobalSettings ()
     'Usually when I want to change global settings, I want to keep most
     'settings in the schedule the same.
     playerOpt = scheduleNG%(1, 10)
-    gameLoc = scheduleNG%(1, 2)
     ruleOptType = scheduleNG%(1, 3)
     ruleOptPro = scheduleNG%(1, 11)
     ruleOptColl = scheduleNG%(1, 7)
@@ -1486,7 +1485,6 @@ Sub ChangeGlobalSettings ()
     Loop Until iVal = 0
 
     For I = 1 To scheduleAP%(0)
-        scheduleNG%(I, 2) = gameLoc
         scheduleNG%(I, 3) = ruleOptType
         scheduleNG%(I, 4) = displayPause! * 10
         scheduleNG%(I, 7) = ruleOptColl

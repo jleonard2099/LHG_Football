@@ -528,8 +528,6 @@ yesNoText$(1) = "YES"
 yesNo$(0) = "N"
 yesNo$(1) = "Y"
 
-
-
 '----------------------------------------
 '               MAIN CODE
 '----------------------------------------
@@ -1424,7 +1422,10 @@ Sub FOOTBALL ()
 
 
     'If we've run into issues so far...
-    If earlyExit = 1 Then Exit Sub
+    If earlyExit = 1 Then 
+        'Close #11
+        Exit Sub
+    End If
 
 
     '----------------------------------------
@@ -3678,14 +3679,14 @@ Sub FOOTBALL ()
 
                     'QB is a rusher
                     Call Rolld100(RN0)
-                    
+
                     Select Case RN0
-                    
+
                         Case 1 To 35
                             '0 - 2 yards
                             qbRushMin = 0
                             qbRushMax = 3
-                        
+
                         Case 36 To 75
                             '3 - 10 yards
                             qbRushMin = 2
@@ -3695,12 +3696,12 @@ Sub FOOTBALL ()
                             '11 - 20 yards
                             qbRushMin = 7
                             qbRushMax = (qbRushAvg * 3) / 2
-                        
+
                         Case 91 To 100
                             '20+ yards
                             qbRushMin = 17
                             qbRushMax = qbRushAvg + 9
-                                    
+
                     End Select
 
                 End If
@@ -4577,7 +4578,7 @@ Sub FOOTBALL ()
 
                     pbpString$ = "THERE'S A HEAVY RUSH!!!"
                     Call PBP
-                    
+
                     Select Case RN6
 
                         Case 1 To 16
@@ -4587,7 +4588,7 @@ Sub FOOTBALL ()
                         Case 17 To 18
                             'Penalty! (1% chance)
                             Call PenaltyOnPunt(autoFirst)
-                            
+
                             GoTo HANDLEPENALTY
 
                     End Select
@@ -5116,7 +5117,7 @@ Sub FOOTBALL ()
                     End If
 
                     Call PBP
-                    
+
                     pbpString$ = "THIS WILL BE A" + Str$(CInt(117 + goalPostAdj - ydLine)) + " YARD ATTEMPT"
                     Call PBP
 
@@ -5135,7 +5136,7 @@ Sub FOOTBALL ()
                         Call PBP
 
                         Call AddPossessionTime(4, 7)
-                        
+
                         'Team Fumbles
                         gameStatsTeam(P1, 9) = gameStatsTeam(P1, 9) + 1
                         'Team Fumbles Lost
@@ -5621,7 +5622,7 @@ Sub FOOTBALL ()
             Case 51
 
                 If teamYears(impactTeam) >= 1982 Then
-            
+
                     pbpString$ = "*** PENALTY - OFF - ILLEGAL TOUCH PASS - 5 YDS ***"
                     Call PBP
 
@@ -5632,7 +5633,7 @@ Sub FOOTBALL ()
                     If ruleOptType > 0 Then
                         loseDown = 1
                     End If
-                    
+
                 Else
 
                     pbpString$ = "*** PENALTY - OFF - INELIGIBLE MAN DOWNFIELD - 5 YDS ***"
@@ -5640,7 +5641,7 @@ Sub FOOTBALL ()
 
                     '-5 yard penalty
                     penaltyYds! = -5
-                
+
                 End If
 
             Case 52 To 56
@@ -6061,7 +6062,7 @@ Sub FOOTBALL ()
             Case 10 To 16
                 pbpString$ = pbpString$ + "OFF - UNNECESSARY ROUGH. -"
                 penaltyYds! = -15
-            
+
             Case 17 To 20
                 pbpString$ = pbpString$ + "OFF - UNSPORTS. CONDUCT -"
                 penaltyYds! = -15
@@ -6080,11 +6081,11 @@ Sub FOOTBALL ()
                 End If
 
                 penaltyYds! = 15
-            
+
             Case 25 To 36
                 pbpString$ = pbpString$ + "DEF - ILLEGAL USE HANDS -"
                 penaltyYds! = 15
-            
+
             Case 37 To 42
                 pbpString$ = pbpString$ + "DEF - PERSONAL FOUL -"
                 penaltyYds! = 15
@@ -7378,15 +7379,15 @@ Sub FOOTBALL ()
         ydsToEndZone = 100 - ydLine
 
         Select Case RN1
-        
+
             Case 1 To 35 - gainAdj
                 'No Return
                 ydsGained = 0
-                
+
             Case 35 - gainAdj To 50 - gainAdj
                 '1 - 9 yards
                 ydsGained = Int(Rnd(1) * 9) + 1
-            
+
             Case 50 - gainAdj To 75
                 '10 - 19 yards
                 ydsGained = Int(Rnd(1) * 9) + 10
@@ -7403,7 +7404,7 @@ Sub FOOTBALL ()
                 'in enough making it there.
                 inside10 = ydsToEndZone - 10 - (Int(Rnd(1) * 6) + 5)
                 ydsGained = Int(Rnd(1) * inside10) + 20
-        
+
         End Select
 
         Call YARDAGE
@@ -7504,11 +7505,7 @@ Sub FOOTBALL ()
 
 End Sub
 
-
-
 'INCLUDE: 'GameRoutines.bm'
-
-
 
 '----------------------------------------
 '            INFO Subroutine
@@ -7551,7 +7548,7 @@ Sub InitVar ()
     Shared recLongFGTxt$(), recLongIntTxt$(), recLongKRTxt$()
     Shared recLongPassTxt$(), recLongPRTxt$()
     Shared recLongRecTxt$(), recLongRushTxt$()
-    
+
     Shared oppName$(), locIndicator$(), gameSite$()
     Shared teamIndicator$()
     'Shared eventSettings()
@@ -7701,7 +7698,7 @@ Sub InitVar ()
     Erase gameLongPassYds, gameLongPRYds
     Erase gameLongRec, gameLongRunYds
     Erase gameTeamStat!, gameOppStat!, gamePlayerStat!
-    
+
     Erase nbrPossOT
     Erase oppScore, powerRating, teamScore
     Erase qbNumber, qbMobility
@@ -7991,42 +7988,56 @@ Sub TICKER ()
 
         If halfTime = 1 Then
 
-            If ruleOptType = 0 Then
-                If d100% <= 50 Then
-                    Locate , 23: Print "PRUDENTIAL AT THE HALF SCOREBOARD"
-                Else
-                    Locate , 28: Print "RED MAN HALFTIME REPORT"
-                End If
-            Else
-                If d100% <= 50 Then
+        If halfTime = 1 Then
+
+            Select Case RN0
+
+                Case 1 to 20:
+                    'ESPN
+                    Locate , 28: Print "ALLSTATE HALFTIME REPORT"
+
+                Case 21 to 40:
+                    'NBC
+                    'Previously, "Prudential Halftime"
+                    Locate , 28: Print "XFINITY HALFTIME REPORT"
+
+                Case 41 to 60:
+                    'NBC - Sunday Night
                     Locate , 29: Print "TOYOTA HALFTIME REPORT"
-                Else
-                    Locate , 29: Print "HONDA HALFTIME REPORT"
-                End If
-            End If
+
+                Case 61 to 80:
+                    'ABC
+                    Locate , 31: Print "KIA HALFTIME REPORT"
+
+                Case 81 to 100:
+                    'CBS/Fox
+                    Locate , 28: Print "VERIZON HALFTIME REPORT"
+ 
+           End Select
 
         Else
 
             If gameOver = 1 Then
 
-                If ruleOptType = 0 Then
+                Select Case RN0
 
-                    Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
+                    Case 1 to 25
+                        'ABC
+                        Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
 
-                Else
-                    Select Case RN0
-                        Case 1 To 33:
-                            Locate , 27: Print "USA TODAY FINAL SCOREBOARD"
+                    Case 26 To 50:
+                        'Fox / CBS
+                        Locate , 27: Print "STATE FARM FINAL SCOREBOARD"
 
-                        Case 34 To 67:
-                            Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
+                    Case 51 To 75:
+                        'NBC
+                        Locate , 24: Print "FEDERAL EXPRESS FINAL SCOREBOARD"
 
-                        Case 67 To 100:
-                            Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
+                    Case 76 To 100:
+                        'ESPN
+                        Locate , 23: Print "ESPN SPORTSCENTER FINAL SCOREBOARD"
 
-                    End Select
-
-                End If
+                End Select
 
             Else
 
@@ -8050,7 +8061,7 @@ Sub TICKER ()
 
                     Case 600 to 899
                         timeInterval = 1
-                        
+
                     Case 300 to 599
                         timeInterval = 2
 
@@ -8058,7 +8069,7 @@ Sub TICKER ()
                         timeInterval = 3
 
                 End Select
-                
+
             End If
 
             If quarter = 2 then
@@ -8067,7 +8078,7 @@ Sub TICKER ()
 
                     Case 600 to 899
                         timeInterval = 4
-                        
+
                     Case 300 to 599
                         timeInterval = 5
 
@@ -8075,7 +8086,7 @@ Sub TICKER ()
                         timeInterval = 6
 
                 End Select
-                
+
             End If
 
             If quarter = 3 then
@@ -8084,7 +8095,7 @@ Sub TICKER ()
 
                     Case 600 to 899
                         timeInterval = 9
-                        
+
                     Case 300 to 599
                         timeInterval = 10
 
@@ -8092,7 +8103,7 @@ Sub TICKER ()
                         timeInterval = 11
 
                 End Select
-                
+
             End If
 
             If quarter = 4 then
@@ -8101,7 +8112,7 @@ Sub TICKER ()
 
                     Case 600 to 899
                         timeInterval = 12
-                        
+
                     Case 300 to 599
                         timeInterval = 13
 
@@ -8109,7 +8120,7 @@ Sub TICKER ()
                         timeInterval = 14
 
                 End Select
-                
+
             End If
 
             If quarter = 5 then
@@ -8118,7 +8129,7 @@ Sub TICKER ()
 
                     Case 600 to 899
                         timeInterval = 15
-                        
+
                     Case 300 to 599
                         timeInterval = 16
 
@@ -8126,7 +8137,7 @@ Sub TICKER ()
                         timeInterval = 17
 
                 End Select
-                
+
             End If
 
             If halfTime = 1 Then
@@ -9743,7 +9754,7 @@ Sub INCOMPLETE ()
                 Case 3: pbpString$ = "HE HAS TO THROW IT AWAY"
                 Case 4: pbpString$ = "THIS ONE WILL GO NOWHERE"
             End Select
-               
+
         Case 21 To 100
 
             Call QBTHROW
@@ -9881,7 +9892,7 @@ Sub QBSNEAK ()
     brotherlyShove = 0
 
     teamName$ = Right$(gameTeams$(P1), Len(gameTeams$(P1)) - 3)
-    
+
     If (teamName$ = "PHILADELPHIA" Or teamName$ = "BUFFALO") And (teamYears(P1) >= 2022 And teamYears(P1) <= 2024) Then
 
         brotherlyShove = 1
@@ -10119,8 +10130,6 @@ End Sub
 'effectiveness of a play if the defense
 'has been overusing a particular formation.
 Sub DefPlayOveruse ()
-
-
 
 End Sub
 
@@ -10499,7 +10508,7 @@ Sub COMPCHEAT (defEra)
             Case 1, 2, 6, 8
                 'Shot runs up middle / QB sneak
                 Select Case rushEra
-                
+
                     Case 1
 
                         Select Case defEra
@@ -10513,19 +10522,19 @@ Sub COMPCHEAT (defEra)
                                 Else
                                     dLine = 4 '6-2 Base
                                 End If
-                                
+
                         End Select
 
                     Case 2
 
                         Select Case defEra
-                        
+
                             Case 1
                                 dLine = 4 '6-2 Base
-                            
+
                             Case 2
                                 dLine = 8 '5-2 Pinch
-                                
+
                             Case 3
                                 If (leagRat_GAME(P1, 7) / 100 > 65) Then
                                     dLine = 4 '6-2 Base
@@ -10534,28 +10543,28 @@ Sub COMPCHEAT (defEra)
                                 End If
 
                         End Select
-                        
+
                     Case 0
                         If d100% <= 50 Then
                             dLine = 3 '4-3 Pinch
                         Else
                             dLine = 4 '5-2 Pinch
                         End If
-                        
+
                 End Select
 
 
             Case 3, 4, 5, 7
                 'Wider runs / off tackle
                 Select Case rushEra
-                
+
                     Case 1
 
                         Select Case defEra
 
                             Case 1
                                 dLine = 2 '7-2 Outside Stunt
-                            
+
                             Case 2, 3
                                 If ydLine > 70 Then
                                     dLine = 2 '7-2 Outside Stunt
@@ -10567,19 +10576,19 @@ Sub COMPCHEAT (defEra)
 
                     Case 2
                         Select Case defEra
-                        
+
                             Case 1
                                 dLine = 6 '6-2 Outside Stunt
-                            
+
                             Case 2
                                 dLine = 10 '5-2 Outside Stunt
 
                         End Select
-                        
+
                     Case 0
                         'dLine = 2   '5-2 Read
                         dLine = 3 '4-3 Pinch
-                        
+
                 End Select
 
             Case 9, 10, 13
@@ -11184,11 +11193,11 @@ Sub HISTDEFENSE (defEra)
     'Map choices from modern defense era
     'to best equivalents for historic era
     Select Case dLine
-        
+
         Case 1 To 4
             'Read / Pinch
             Select Case rushEra
-            
+
                 Case 1
 
                     Select Case defEra
@@ -11239,22 +11248,22 @@ Sub HISTDEFENSE (defEra)
 
                         Case 1
                             dLine = 2
-                        
+
                         Case 2, 3
                             If ydLine > 70 Then
                                 dLine = 2
                             Else
                                 dLine = 5
                             End If
-                            
+
                         Case 3
                             dLine = 9
-                            
+
                     End Select
 
                 Case 2
                     Select Case defEra
-                    
+
                         Case 1, 2
                             dLine = 5
 
@@ -11268,36 +11277,36 @@ Sub HISTDEFENSE (defEra)
                     End Select
 
             End Select
-        
+
         Case 9, 10
             'Outside Stunt
             Select Case rushEra
-            
+
                 Case 1
 
                     Select Case defEra
 
                         Case 1
                             dLine = 3
-                        
+
                         Case 2, 3
                             If ydLine > 70 Then
                                 dLine = 3
                             Else
                                 dLine = 6
                             End If
-                            
+
                     End Select
 
                 Case 2
                     Select Case defEra
-                    
+
                         Case 1
                             dLine = 3
-                        
+
                         Case 2
                             dLine = 10
-                                        
+
                         Case 3
                             If (leagRat_GAME(P1, 7) / 100 > 65) Then
                                 dLine = 3
@@ -12331,19 +12340,19 @@ Sub SETWEATHER ()
         climate(4) = -1
         climate(5) = 12
         Select Case teamYears(impactTeam)
-        
+
             Case Is <= 1989
                 climate(6) = 6
-            
+
             Case 1990 To 1999
                 climate(6) = 5
 
             Case 2000 To 2009
                 climate(6) = 4
-                            
+
             Case Is >= 2010
                 climate(6) = 3
-            
+
         End Select
 
     End If
@@ -12353,13 +12362,13 @@ Sub SETWEATHER ()
         climate(4) = -2
         climate(5) = 2
         Select Case teamYears(impactTeam)
-        
+
             Case Is <= 1989
                 climate(6) = 11
-            
+
             Case 1990 To 1999
                 climate(6) = 9
-            
+
             Case 2000 To 2009
                 climate(6) = 8
 
@@ -12367,7 +12376,7 @@ Sub SETWEATHER ()
                 climate(6) = 6
 
         End Select
-    
+
     End If
 
     Call OPTIONBOX(9)
@@ -12424,32 +12433,32 @@ Sub SETWEATHER ()
     End Select
 
     If lightWind = 1 Then
-    
+
         'Light Wind
         'Distance impacted by 5-10 yards
         climate(1) = 0 - Int(Rnd(1) * 5) + 5
 
         Select Case teamYears(impactTeam)
-        
+
             Case Is <= 1989
                 climate(2) = -3
                 '5%-8%
                 climate(3) = 0 - Int(Rnd(1) * 4) + 5
-            
+
             Case 1990 To 1999
                 climate(2) = -3
                 '5%-7%
                 climate(3) = 0 - Int(Rnd(1) * 3) + 5
-            
+
             Case 2000 To 2009
                 climate(2) = -3
                 '4%-6%
                 climate(3) = -5
-                            
+
             Case Is >= 2010
                 climate(2) = -2
                 climate(3) = -4
-            
+
         End Select
 
     End If
@@ -12460,31 +12469,31 @@ Sub SETWEATHER ()
         'Distance impacted by 10-15 yards
         climate(1) = 0 - Int(Rnd(1) * 5) + 10
         Select Case teamYears(impactTeam)
-        
+
             Case Is <= 1989
                 '7%-10%
                 climate(2) = 0 - Int(Rnd(1) * 4) + 7
                 '15%-20%
                 climate(3) = 0 - Int(Rnd(1) * 6) + 15
-            
+
             Case 1990 To 1999
                 '6%-8%%
                 climate(2) = -7
                 '12%-18%
                 climate(3) = 0 - Int(Rnd(1) * 7) + 12
-            
+
             Case 2000 To 2009
                 '5%-7%
                 climate(2) = 0 - Int(Rnd(1) * 3) + 5
                 '10-15%
                 climate(3) = 0 - Int(Rnd(1) * 6) + 10
-                            
+
             Case Is >= 2010
                 '4%-6%
                 climate(2) = -5
                 '8%-12%
                 climate(3) = 0 - Int(Rnd(1) * 5) + 8
-            
+
         End Select
 
     End If
@@ -13422,13 +13431,13 @@ Sub PenaltyOnKickoff ()
         Case 1 To 52
             pbpString$ = "*** PENALTY - ILLEGAL BLOCK - OFF - 15 YDS ***"
             penaltyYds! = -15
-        
+
         Case 53 To 100
             pbpString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - OFF - 5 YDS ***"
             penaltyYds! = -5
 
     End Select
-    
+
     Call PBP
 
     playSegment = 4
@@ -13457,7 +13466,7 @@ Sub PenaltyOnPunt (autoFD)
             pbpString$ = "*** PENALTY - LEVERAGE - DEF - 15 YDS / 1ST D! ***"
             penaltyYds! = 15
             autoFD = 1
-        
+
         Case 8 To 20
             pbpString$ = "*** PENALTY - ILLEGAL BLOCK - DEF - 15 YDS / 1ST D! ***"
             penaltyYds! = 15
@@ -13477,7 +13486,7 @@ Sub PenaltyOnPunt (autoFD)
             penaltyYds! = -5
 
     End Select
-    
+
     Call PBP
 
     playSegment = 4
@@ -14299,13 +14308,13 @@ Sub PuntFakeRunYards (choice)
     '0 - SET UP PUNT RETURN"
     '1 - GO FOR THE BLOCK"
     '2 - CALL PUNT-SAFE"
-    
+
     'Short: 1-5 Yards
     'Medium: 6-15 Yards
     'Long: 16+ Yards
 
     Select Case ydsToFirst
-    
+
         Case 1 To 5
             'Short Yardage
             successRate(0) = 55
@@ -14317,13 +14326,13 @@ Sub PuntFakeRunYards (choice)
             successRate(0) = 45
             successRate(1) = 55
             successRate(2) = 35
-        
+
         Case Is >= 16
             'Long Yardage
             successRate(0) = 20
             successRate(1) = 25
             successRate(2) = 15
-    
+
     End Select
 
     pbpString$ = "IT'S A FAKE!!! THE UPBACK IS RUNNING THE BALL"
@@ -14822,7 +14831,7 @@ Sub FGFakeRunYards (choice)
     If fakeYds! = 0 Then
 
         pbpString$ = pbpString$ + " NOTHING ON THE FAKE RUN"
-    
+
     Else
 
         If fakeYdLine! >= 99.94999 Then
@@ -17104,8 +17113,6 @@ Sub PassCompletePBP (direction, fieldSide)
 
 End Sub
 
-
-
 '----------------------------------------
 '       PassYardagePBP Subroutine
 '----------------------------------------
@@ -17754,7 +17761,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     Print #1,
 
     Print #1, Tab(20); "Q1 Q2 Q3 Q4 ";
-    
+
     If quarter = 5 Then
         Print #1, "OT ";
     Else
@@ -17765,7 +17772,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
             Next X
         End If
     End If
-    
+
     Print #1, "- GAME"
 
     'Score summary
