@@ -17470,92 +17470,93 @@ Sub EVENTS (specialCount, specialStat)
 
         checkSpecial% = 0
 
-        If quarter > eventSettings(1) Then
+        'Score / period conditions for special box score
+        If quarter > eventSettings(1) Or _ 
+            score(0, 0) > eventSettings(2) Or _ 
+            score(1, 0) > eventSettings(2) Or _ 
+            score(0, 0) < eventSettings(3) Or _
+            score(1, 0) < eventSettings(3) Then
             checkSpecial% = 1
         Else
 
-            If score(1, 0) > eventSettings(2) Or score(0, 0) > eventSettings(2) Or score(1, 0) < eventSettings(3) Or score(0, 0) < eventSettings(3) Then
-                checkSpecial% = 1
-            Else
+            I = 0
+            Do While I <= 1 And checkSpecial% = 0
 
-                For I = 0 To 1
+                I1 = 0
+                Do While I1 <= 9 And checkSpecial% = 0
 
-                    For I1 = 0 To 9
+                    'Player Stat conditions for special box score
+                    If gameStatsPlayer(I, I1, 1) > eventSettings(4) Or _ 
+                        gameStatsPlayer(I, I1, 2) > eventSettings(5) Or _ 
+                        gameStatsPlayer(I, I1, 4) > eventSettings(6) Or _
+                        gameStatsPlayer(I, I1, 5) > eventSettings(7) Then
+                        checkSpecial% = 1
+                    Else
+                        I1 = I1 + 1
+                    End If
 
-                        '--Combine into multiple Or
-                        If gameStatsPlayer(I, I1, 1) > eventSettings(4) Then
+                Loop
+
+            Loop
+
+            If checkSpecial% <> 1 Then
+
+                I = 0
+                Do While I <= 1 And checkSpecial% = 0
+
+                    I1 = 0
+                    Do While I1 <= 5 And checkSpecial% = 0
+
+                        'Player Stat conditions for special box score
+                        If gameStatsPlayer(I, I1, 7) > eventSettings(6) Or _
+                            gameStatsPlayer(I, I1, 8) > eventSettings(7) Then
                             checkSpecial% = 1
                         Else
-                            If gameStatsPlayer(I, I1, 2) > eventSettings(5) Then
-                                checkSpecial% = 1
-                            Else
-                                If gameStatsPlayer(I, I1, 4) > eventSettings(6) Then
-                                    checkSpecial% = 1
-                                Else
-                                    If gameStatsPlayer(I, I1, 5) > eventSettings(7) Then
-                                        checkSpecial% = 1
-                                    End If
-                                End If
-                            End If
+                            I1 = I1 + 1
                         End If
 
-                        If checkSpecial% = 1 Then Exit For
+                    Loop
 
-                    Next
+                Loop
 
-                Next
+            End If
 
-                If checkSpecial% <> 1 Then
+            If checkSpecial% <> 1 Then
 
-                    For I = 0 To 1
+                I = 0
+                Do While I <= 1 And checkSpecial% = 0
 
-                        For I1 = 0 To 5
+                    I1 = 0
+                    Do While I1 <= 3 And checkSpecial% = 0
 
-                            If gameStatsPlayer(I, I1, 7) > eventSettings(6) Then
-                                checkSpecial% = 1
-                            Else
-                                If gameStatsPlayer(I, I1, 8) > eventSettings(7) Then
-                                    checkSpecial% = 1
-                                End If
-                            End If
-
-                            If checkSpecial% = 1 Then Exit For
-
-                        Next
-
-                    Next
-
-                End If
-
-                If checkSpecial% <> 1 Then
-
-                    For I = 0 To 1
-                        For I1 = 0 To 3
-                            If gameStatsPlayer(I, I1, 12) > eventSettings(8) Then
-                                checkSpecial% = 1
-                            Else
-                                If gameStatsPlayer(I, I1, 13) > eventSettings(9) Then
-                                    checkSpecial% = 1
-                                End If
-                            End If
-                        Next
-                    Next
-
-                End If
-
-                If checkSpecial% <> 1 Then
-
-                    For I = 0 To 1
-                        If gameStatsPlayer(I, 3, 17) > eventSettings(10) Then
+                        'Player Stat conditions for special box score
+                        If gameStatsPlayer(I, I1, 12) > eventSettings(8) Or _
+                            gameStatsPlayer(I, I1, 13) > eventSettings(9) Then
                             checkSpecial% = 1
                         Else
-                            If gameStatsPlayer(I, 7, 17) > eventSettings(10) Then
-                                checkSpecial% = 1
-                            End If
+                            I1 = I1 + 1
                         End If
-                    Next
 
-                End If
+                    Loop
+
+                Loop
+
+            End If
+
+            If checkSpecial% <> 1 Then
+
+                I = 0
+                Do While I <= 1 And checkSpecial% = 0
+
+                    'Stat conditions for special box score
+                    If gameStatsPlayer(I, 3, 17) > eventSettings(10) Or _ 
+                        gameStatsPlayer(I, 7, 17) > eventSettings(10)Then
+                        checkSpecial% = 1
+                    Else
+                        I1 = I1 + 1
+                    End If
+
+                Loop
 
             End If
 
