@@ -1026,7 +1026,7 @@ Sub FOOTBALL ()
 
     Shared actualAttendance&, avgAttendance&
 
-    _Title "3-in-1 Football v" + GAME_VERSION$ + " - GRIDIRON!"
+    _Title "3-in-1 Football v" + GAME_VERSION$ + " - GAME TIME!"
 
     Shared scheduleFile$
     Shared tickerStart
@@ -19921,6 +19921,7 @@ Sub EndOfGame
 
     If UCase$(I$) = "Y" Or (autoPlay = 1 And endAllGames <> 1) Then
         Cls
+        Locate LAST_ROW / 2, 33
         Print "PLEASE WAIT ..."
     End If
 
