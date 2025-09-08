@@ -351,6 +351,7 @@ Sub NewSchedule (scheduleFile$)
                     Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO GO TO        "
                     Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO GO TO "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
+
                 NS% = Int((targetGame% - 1) / SCHED_ENTRIES_PER_SCREEN)
 
                 'boxName$ = diskPaths$(1) + "BOX" + Mid$(Str$(targetGame%), 2, Len(Str$(targetGame%)))
@@ -412,7 +413,9 @@ Sub NewSchedule (scheduleFile$)
 
                     Locate 8, 12: Print "TOTAL GAMES ="; scheduleAP%(0)
                     Locate 9, 12: Print "SELECT GAME # TO START AND END WITH": Print
-                    Locate 10, 12: Input "ENTER START GAME #: "; startGame: Print
+                    Locate 10, 33: Print Space$(10)
+                    Locate 10, 12: Input "ENTER START GAME #:"; startGame: Print
+                    Locate 11, 31: Print Space$(10)
                     Locate 11, 12: Input "ENTER END GAME #:"; endGame: Print
 
                     Do
