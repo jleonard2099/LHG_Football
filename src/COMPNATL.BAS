@@ -212,7 +212,7 @@ Sub CompileNatlOrg ()
                                     If sameTeam = 0 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
                                         Call ReadStatsLeaders(memberName$(XW), totalGames, TM$, 0)
-                                        Call CalcStatTotalsConf(totalGames, TM$, statName$, finalUpdate$)
+                                        Call CalcRecordsConf(totalGames, TM$, statName$, finalUpdate$)
                                         Call CalcStatLeaders(totalGames, TM$, statName$, finalUpdate$)
 
                                     End If

@@ -154,7 +154,7 @@ Sub CompileLeague ()
                         If sameTeam = 0 And _FileExists(diskPaths$(1) + memberName$(XW)) Then
 
                             Call ReadStatsLeaders(memberName$(XW), totalGames, TM$, 1)
-                            Call CalcStatTotalsPro(totalGames, TM$, statName$, finalUpdate$)
+                            Call CalcRecordsPro(totalGames, TM$, statName$, finalUpdate$)
                             Call CalcStatLeaders(totalGames, TM$, statName$, finalUpdate$)
 
                         End If
@@ -1668,12 +1668,12 @@ End Sub
 
 
 '----------------------------------------
-'     CalcStatTotalsPro Subroutine
+'     CalcRecordsPro Subroutine
 '----------------------------------------
 'This subroutine compares all pre-loaded
 'stats to each of the record categories to
 'see if any should be updated
-Sub CalcStatTotalsPro (totalGames, teamName$, statName$, finalUpdate$)
+Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
 
     Shared fumbGain
 
