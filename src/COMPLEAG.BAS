@@ -55,7 +55,8 @@ Sub CompileLeague ()
     teamRecords!(42) = 999
     teamRecords!(43) = 999
 
-    Erase totalTeamVal!, leaderVal!, statsGeneral!
+    Erase totalTeamVal!
+    'Erase leaderVal!, statsGeneral!
     Erase memberName$, leaderTeam$, totalTeamName$
 
     For X = 1 To 60
@@ -80,8 +81,6 @@ Sub CompileLeague ()
         totalTeamVal!(8, I, 8) = 9999
         totalTeamVal!(10, I, 7) = -99
     Next
-
-    C$ = ","
 
     leagueFile$ = _OpenFileDialog$("Choose League Stats file", diskPaths$(2), "*.TMS", "League Stats files [.TMS]")
     'ChooseFile$(diskPaths$(2) + "*.TMS", "LEAGUE", ExitCode%)
@@ -1729,35 +1728,44 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 2 - TOTAL DEFENSE
     CA = 2
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames < teamRecords!(25) Then
-        teamRecords!(25) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames
-        teamRecDesc$(25) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then 
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) + defTotals!(2) + defTotals!(14) < teamRecords!(26) Then
-        teamRecords!(26) = defTotals!(6) + defTotals!(2) + defTotals!(14)
-        teamRecDesc$(26) = teamName$
-    End If
+        If (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames < teamRecords!(25) Then
+            teamRecords!(25) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames
+            teamRecDesc$(25) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13)) < teamRecords!(27) Then
-        teamRecords!(27) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13))
-        teamRecDesc$(27) = teamName$
-    End If
+        If defTotals!(6) + defTotals!(2) + defTotals!(14) < teamRecords!(26) Then
+            teamRecords!(26) = defTotals!(6) + defTotals!(2) + defTotals!(14)
+            teamRecDesc$(26) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames > teamRecords!(28) Then
-        teamRecords!(28) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames
-        teamRecDesc$(28) = teamName$
+        If (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13)) < teamRecords!(27) Then
+            teamRecords!(27) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / (defTotals!(1) + defTotals!(3) - defTotals!(13))
+            teamRecDesc$(27) = teamName$
+        End If
+
+        If (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames > teamRecords!(28) Then
+            teamRecords!(28) = (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames
+            teamRecDesc$(28) = teamName$
+        End If
+
     End If
 
     If (defTotals!(6) + defTotals!(2) + defTotals!(14)) / totalGames < totalTeamVal!(CA, 20, 5) Then
+
         'Games
         totalTeamVal!(CA, 20, 1) = totalGames
+
         'Plays
         totalTeamVal!(CA, 20, 2) = defTotals!(1) + defTotals!(3) - defTotals!(13)
+
         'Yds
         totalTeamVal!(CA, 20, 3) = defTotals!(6) + defTotals!(2) + defTotals!(14)
+
         'Avg Yds / Gm
         totalTeamVal!(CA, 20, 4) = totalTeamVal!(CA, 20, 3) / totalTeamVal!(CA, 20, 2)
+
         'Yds / Gm
         totalTeamVal!(CA, 20, 5) = totalTeamVal!(CA, 20, 3) / totalGames
         totalTeamName$(CA, 20) = statName$
@@ -1818,21 +1826,25 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 4 - RUSHING DEFENSE
     CA = 4
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(2) + defTotals!(14)) / totalGames < teamRecords!(29) Then
-        teamRecords!(29) = (defTotals!(2) + defTotals!(14)) / totalGames
-        teamRecDesc$(29) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then 
+        
+        If (defTotals!(2) + defTotals!(14)) / totalGames < teamRecords!(29) Then
+            teamRecords!(29) = (defTotals!(2) + defTotals!(14)) / totalGames
+            teamRecDesc$(29) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(2) + defTotals!(14) < teamRecords!(30) Then
-        teamRecords!(30) = defTotals!(2) + defTotals!(14)
-        teamRecDesc$(30) = teamName$
-    End If
+        If defTotals!(2) + defTotals!(14) < teamRecords!(30) Then
+            teamRecords!(30) = defTotals!(2) + defTotals!(14)
+            teamRecDesc$(30) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13)) < teamRecords!(31) Then
-        teamRecords!(31) = (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13))
-        teamRecDesc$(31) = teamName$
-    End If
+        If (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13)) < teamRecords!(31) Then
+            teamRecords!(31) = (defTotals!(2) + defTotals!(14)) / (defTotals!(1) - defTotals!(13))
+            teamRecDesc$(31) = teamName$
+        End If
 
+    End If
+    
     If (defTotals!(2) + defTotals!(14)) / totalGames < totalTeamVal!(CA, 20, 5) Then
 
         totalTeamVal!(CA, 20, 1) = totalGames
@@ -1908,19 +1920,23 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
         PTS = PTS + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / totalGames < teamRecords!(39) Then
-        teamRecords!(39) = PTS / totalGames
-        teamRecDesc$(39) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then
 
-    If UCase$(finalUpdate$) = "Y" And PTS < teamRecords!(38) Then
-        teamRecords!(38) = PTS
-        teamRecDesc$(38) = teamName$
-    End If
+        If PTS / totalGames < teamRecords!(39) Then
+            teamRecords!(39) = PTS / totalGames
+            teamRecDesc$(39) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And PTS / totalGames > teamRecords!(41) Then
-        teamRecords!(41) = PTS / totalGames
-        teamRecDesc$(41) = teamName$
+        If PTS < teamRecords!(38) Then
+            teamRecords!(38) = PTS
+            teamRecDesc$(38) = teamName$
+        End If
+
+        If PTS / totalGames > teamRecords!(41) Then
+            teamRecords!(41) = PTS / totalGames
+            teamRecDesc$(41) = teamName$
+        End If
+
     End If
 
     If PTS > teamRecords!(40) Then
@@ -1961,24 +1977,28 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
         teamRecDesc$(7) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(3) > teamRecords!(8) Then
-        teamRecords!(8) = offTotals!(6) / offTotals!(3)
-        teamRecDesc$(8) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" then
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(6) / offTotals!(4) > teamRecords!(9) Then
-        teamRecords!(9) = offTotals!(6) / offTotals!(4)
-        teamRecDesc$(9) = teamName$
-    End If
+        If offTotals!(6) / offTotals!(3) > teamRecords!(8) Then
+            teamRecords!(8) = offTotals!(6) / offTotals!(3)
+            teamRecDesc$(8) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(4) / offTotals!(3) > teamRecords!(10) Then
-        teamRecords!(10) = offTotals!(4) / offTotals!(3)
-        teamRecDesc$(10) = teamName$
-    End If
+        If offTotals!(6) / offTotals!(4) > teamRecords!(9) Then
+            teamRecords!(9) = offTotals!(6) / offTotals!(4)
+            teamRecDesc$(9) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(5) / offTotals!(3) < teamRecords!(11) Then
-        teamRecords!(11) = offTotals!(5) / offTotals!(3)
-        teamRecDesc$(11) = teamName$
+        If offTotals!(4) / offTotals!(3) > teamRecords!(10) Then
+            teamRecords!(10) = offTotals!(4) / offTotals!(3)
+            teamRecDesc$(10) = teamName$
+        End If
+
+        If offTotals!(5) / offTotals!(3) < teamRecords!(11) Then
+            teamRecords!(11) = offTotals!(5) / offTotals!(3)
+            teamRecDesc$(11) = teamName$
+        End If
+
     End If
 
     If offTotals!(6) / totalGames > totalTeamVal!(CA, 20, 8) Then
@@ -2009,34 +2029,38 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 8 - PASSING DEFENSE
     CA = 8
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / totalGames < teamRecords!(32) Then
-        teamRecords!(32) = defTotals!(6) / totalGames
-        teamRecDesc$(32) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" then
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) < teamRecords!(33) Then
-        teamRecords!(33) = defTotals!(6)
-        teamRecDesc$(33) = teamName$
-    End If
+        If defTotals!(6) / totalGames < teamRecords!(32) Then
+            teamRecords!(32) = defTotals!(6) / totalGames
+            teamRecDesc$(32) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / defTotals!(3) < teamRecords!(34) Then
-        teamRecords!(34) = defTotals!(6) / defTotals!(3)
-        teamRecDesc$(34) = teamName$
-    End If
+        If defTotals!(6) < teamRecords!(33) Then
+            teamRecords!(33) = defTotals!(6)
+            teamRecDesc$(33) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(6) / defTotals!(4) < teamRecords!(35) Then
-        teamRecords!(35) = defTotals!(6) / defTotals!(4)
-        teamRecDesc$(35) = teamName$
-    End If
+        If defTotals!(6) / defTotals!(3) < teamRecords!(34) Then
+            teamRecords!(34) = defTotals!(6) / defTotals!(3)
+            teamRecDesc$(34) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(4) / defTotals!(3) < teamRecords!(36) Then
-        teamRecords!(36) = defTotals!(4) / defTotals!(3)
-        teamRecDesc$(36) = teamName$
-    End If
+        If defTotals!(6) / defTotals!(4) < teamRecords!(35) Then
+            teamRecords!(35) = defTotals!(6) / defTotals!(4)
+            teamRecDesc$(35) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(5) / defTotals!(3) > teamRecords!(37) Then
-        teamRecords!(37) = defTotals!(5) / defTotals!(3)
-        teamRecDesc$(37) = teamName$
+        If defTotals!(4) / defTotals!(3) < teamRecords!(36) Then
+            teamRecords!(36) = defTotals!(4) / defTotals!(3)
+            teamRecDesc$(36) = teamName$
+        End If
+
+        If defTotals!(5) / defTotals!(3) > teamRecords!(37) Then
+            teamRecords!(37) = defTotals!(5) / defTotals!(3)
+            teamRecDesc$(37) = teamName$
+        End If
+
     End If
 
     If defTotals!(6) / totalGames < totalTeamVal!(CA, 20, 8) Then
@@ -2067,7 +2091,10 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     'CATEGORY 9 - PUNTING
     CA = 9
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then teamRecords!(15) = offTotals!(8) / offTotals!(7): teamRecDesc$(15) = teamName$
+    If UCase$(finalUpdate$) = "Y" And offTotals!(8) / offTotals!(7) > teamRecords!(15) Then 
+        teamRecords!(15) = offTotals!(8) / offTotals!(7)
+        teamRecDesc$(15) = teamName$
+    End If
 
     If offTotals!(8) / offTotals!(7) > totalTeamVal!(CA, 20, 2) Then
 
@@ -2123,25 +2150,33 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     End If
 
     'PUNT RETURNS
-    If UCase$(finalUpdate$) = "Y" And offTotals!(25) / offTotals!(24) > teamRecords!(16) Then
-        teamRecords!(16) = offTotals!(25) / offTotals!(24)
-        teamRecDesc$(16) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then 
+    
+        If offTotals!(25) / offTotals!(24) > teamRecords!(16) Then
+            teamRecords!(16) = offTotals!(25) / offTotals!(24)
+            teamRecDesc$(16) = teamName$
+        End If
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(25) / defTotals!(24) < teamRecords!(42) Then
-        teamRecords!(42) = defTotals!(25) / defTotals!(24)
-        teamRecDesc$(42) = teamName$
-    End If
+        If defTotals!(25) / defTotals!(24) < teamRecords!(42) Then
+            teamRecords!(42) = defTotals!(25) / defTotals!(24)
+            teamRecDesc$(42) = teamName$
+        End If
 
+    End If
+    
     'KO Return
-    If UCase$(finalUpdate$) = "Y" And offTotals!(23) / offTotals!(22) > teamRecords!(17) Then
-        teamRecords!(17) = offTotals!(23) / offTotals!(22)
-        teamRecDesc$(17) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then 
 
-    If UCase$(finalUpdate$) = "Y" And defTotals!(23) / defTotals!(22) < teamRecords!(43) Then
-        teamRecords!(43) = defTotals!(23) / defTotals!(22)
-        teamRecDesc$(43) = teamName$
+        If offTotals!(23) / offTotals!(22) > teamRecords!(17) Then
+            teamRecords!(17) = offTotals!(23) / offTotals!(22)
+            teamRecDesc$(17) = teamName$
+        End If
+
+        If defTotals!(23) / defTotals!(22) < teamRecords!(43) Then
+            teamRecords!(43) = defTotals!(23) / defTotals!(22)
+            teamRecDesc$(43) = teamName$
+        End If
+
     End If
 
     'FIRST DOWNS
@@ -2172,16 +2207,20 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
     End If
 
     'PENALTIES
-    If UCase$(finalUpdate$) = "Y" And offTotals!(11) / totalGames > teamRecords!(23) Then
-        teamRecords!(23) = offTotals!(11) / totalGames
-        teamRecDesc$(23) = teamName$
-    End If
+    If UCase$(finalUpdate$) = "Y" Then 
 
-    If UCase$(finalUpdate$) = "Y" And offTotals!(12) / totalGames > teamRecords!(24) Then
-        teamRecords!(24) = offTotals!(12) / totalGames
-        teamRecDesc$(24) = teamName$
-    End If
+        If offTotals!(11) / totalGames > teamRecords!(23) Then
+            teamRecords!(23) = offTotals!(11) / totalGames
+            teamRecDesc$(23) = teamName$
+        End If
 
+        If offTotals!(12) / totalGames > teamRecords!(24) Then
+            teamRecords!(24) = offTotals!(12) / totalGames
+            teamRecDesc$(24) = teamName$
+        End If
+
+    End If
+    
 End Sub
 
 

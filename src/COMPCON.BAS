@@ -1,4 +1,4 @@
-'----------------------------------------
+33'----------------------------------------
 '        CompileCollege SubRoutine
 '----------------------------------------
 'This subroutine reads in existing records,
@@ -80,8 +80,6 @@ Sub CompileCollege ()
         totalTeamVal!(8, I, 8) = 9999
         totalTeamVal!(10, I, 7) = -99
     Next
-
-    C$ = ","
 
     conferenceFile$ = _OpenFileDialog$("Choose Conference Stats file", diskPaths$(2), "*.TMS", "Conference Stats files [.TMS]")
 

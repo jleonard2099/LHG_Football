@@ -6347,10 +6347,6 @@ Sub FOOTBALL ()
 
     penAccepted = 0
 
-    If playSegment = 8 Then
-        test1 = 1
-    End If
-
     'Choice for Penalty
     Call PenaltyChoice(penAccepted, autoFirst)
 
@@ -13314,10 +13310,6 @@ Sub MEASUREMENT ()
             pbpString$ = "THE OFFICIAL SIGNALS FIRST DOWN!"
 
     End Select
-
-    'If pbpString$ = "THE OFFICIAL SIGNALS FOR A MEASUREMENT" Then
-    '    test! = measure!
-    'End If
 
     Call PBP
 
