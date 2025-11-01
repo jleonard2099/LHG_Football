@@ -3,7 +3,7 @@
 '----------------------------------------
 Dim Shared menu&
 Dim opSysType$
-Dim Shared dirSeparator$
+Dim Shared dirSeparator$, cfgPath$
 
 Dim Shared currGame
 
@@ -387,7 +387,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-Dim Shared D, dLine
+'Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
 Dim Shared fieldSide, firstDownClockOpt
@@ -403,7 +403,7 @@ Dim Shared kickYL!
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase

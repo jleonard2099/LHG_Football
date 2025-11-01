@@ -428,7 +428,7 @@ Sub NewSchedule (scheduleFile$)
                 If startGame <= 0 Then startGame = 1
                 If endGame > scheduleAP%(0) Then endGame = scheduleAP%(0)
 
-                Open "GAME82" For Output As #1
+                Open cfgPath$ + "GAME82" For Output As #1
                 Print #1, scheduleFile$
                 Print #1, startGame 'Start Game
                 Print #1, endGame 'End Game
@@ -442,7 +442,7 @@ Sub NewSchedule (scheduleFile$)
                     scheduleNG%(I, 12) = Int(TM% / 30) - 18
                 Next
 
-                Open "TICKER" For Output As #2
+                Open cfgPath$ + "TICKER" For Output As #2
 
                 For I = 1 To 32:
                     For I1 = 0 To 1:
@@ -498,7 +498,7 @@ Sub NewSchedule (scheduleFile$)
 
             Case "Z"
                 'Export to text file
-                Open "schedule" For Append As #15
+                Open cfgPath$ + "schedule" For Append As #15
 
                 For X = 1 To scheduleAP%(0)
 
@@ -693,49 +693,51 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
         Color 15, 0
         Cls
 
+        Locate 2
         Color 2
         Print Tab(29); "SELECT OPENING OPTIONS"
 
-        Locate 2, 2: Color 14
+        Locate 4, 2: Color 14
         Print "(1) ";
         Color 15: Print playMode$(scheduleNG%(gameIndex%, 10))
-        Locate 3, 2: Color 14
+        Locate 5, 2: Color 14
         Print "(2) ";
         Color 15: Print "VISITING TEAM / QB: "; visitor$; " / "; visitorQB$
-        Locate 4, 2: Color 14
+        Locate 6, 2: Color 14
         Print "(3) ";
         Color 15: Print "HOME TEAM / QB: "; home$; " / "; homeQB$
-        Locate 5, 2: Color 14
+        Locate 7, 2: Color 14
         Print "(4) ";
         Color 15: Print "GAME DATE (XX-XX-XX)  "; DT$
-        Locate 6, 2: Color 14
+        Locate 8, 2: Color 14
         Print "(5) ";
         Color 15: Print "GAME TIME (XX:XXP)    "; TM$
-        Locate 7, 2: Color 14
+        Locate 9, 2: Color 14
         Print "(6) ";
         Color 15: Print Using "PLAY-BY-PLAY DELAY (SECS): ##.#"; scheduleNG%(gameIndex%, 4) / 10
-        Locate 8, 2: Color 14
+        Locate 10, 2: Color 14
         Print "(7) ";
         Color 15: Print "GAME LOCATION: "; location$(scheduleNG%(gameIndex%, 2))
-        Locate 9, 2: Color 14
+        Locate 11, 2: Color 14
         Print "(8) ";
         Color 15: Print "TYPE OF GAME: "; rulesType$(scheduleNG%(gameIndex%, 3))
-        Locate 10, 2: Color 14
+        Locate 12, 2: Color 14
         Print "(9) ";
         Color 15: Print "PRO RULES: "; ruleYrPro$(scheduleNG%(gameIndex%, 11))
-        Locate 11, 2: Color 14
+        Locate 13, 2: Color 14
         Print "(A) ";
         Color 15: Print "COLLEGE RULES: "; ruleYrColl$(scheduleNG%(gameIndex%, 7))
-        Locate 12, 2: Color 14
+        Locate 14, 2: Color 14
         Print "(B) ";
         Color 15: Print "SUDDEN DEATH: "; overtime$(scheduleNG%(gameIndex%, 14))
-        Locate 13, 2: Color 14
+        Locate 15, 2: Color 14
         Print "(C) ";
         Color 15: Print "WIND: "; windSetting$(scheduleNG%(gameIndex%, 19))
-        Locate 14, 2: Color 14
+        Locate 16, 2: Color 14
         Print "(D) ";
         Color 15: Print "WEATHER: "; weather$(scheduleNG%(gameIndex%, 20))
-        Locate 16, 2: Color 14
+
+        Locate 18, 2: Color 14
         Print "(0) ";
         Color 15: Print "ACCEPT SETTINGS"
 
@@ -788,12 +790,10 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
                     Locate 6, 26: Input TM$
 
                 Case 6:
-                    Locate 7, 32: Input displayPause!
+                    Locate 9, 32: Input displayPause!
                     scheduleNG%(gameIndex%, 4) = displayPause! * 10
 
                 Case 7:
-                    'N = 1 - (scheduleNG%(gameIndex%, 2))
-                    'scheduleNG%(gameIndex%, 2) = N
                     N = 1 - (scheduleNG%(gameIndex%, 2) - 1)
                     scheduleNG%(gameIndex%, 2) = N + 1
 
@@ -1092,7 +1092,7 @@ Sub EditParameters ()
     'Read in existing parameters if there are any
     If _FileExists("EVENTS.BOX") Then
 
-        Open "EVENTS.BOX" For Input As #1
+        Open cfgPath$ + "EVENTS.BOX" For Input As #1
 
         For X = 1 To 13
             Input #1, eventSettings(X)
@@ -1145,7 +1145,7 @@ Sub EditParameters ()
     Loop Until B9 = 0 'ENTER also counts as 0
 
     'Save all changes
-    Open "EVENTS.BOX" For Output As #2
+    Open cfgPath$ + "EVENTS.BOX" For Output As #2
 
     For X = 1 To 13
         Print #2, eventSettings(X)
@@ -1439,11 +1439,14 @@ Sub ChangeGlobalSettings ()
     TM$ = "07:30P"
 
     Do
+
         Color 15, 0
         Cls
+
+        Locate 2
         Print Tab(30); "GLOBAL SETTINGS FOR SCHEDULE"
 
-        Locate 3, 2: Color 14: Print "(1) ";
+        Locate 4, 2: Color 14: Print "(1) ";
         Color 15: Print "GAME PLAY: "; playMode$(playerOpt)
         Locate 5, 2: Color 14: Print "(2) ";
         Color 15: Print "TYPE OF GAME: "; rulesType$(ruleOptType)
@@ -1495,7 +1498,6 @@ Sub ChangeGlobalSettings ()
 
             Case 6:
                 Locate 9, 32: Input displayPause!
-                'Input "DISPLAY VARIABLE "; displayPause!
 
             Case 7:
                 windOpt = windOpt + 1
@@ -1663,6 +1665,7 @@ Sub EditBoxscore (boxName$)
     Else
 
         Call QBWRITE(boxName$)
+        Screen menu&
 
     End If
 

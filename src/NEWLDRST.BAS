@@ -30,17 +30,17 @@ Sub UpdateExpandedStandings (orgType)
 
     TMR = TEAM_LIMIT
 
-    Erase expStdLeagName$
-
-    Erase teamScore, oppScore
-    Erase gameAttendance&
-    Erase locIndicator$, oppName$
-
     Erase lastWinStreak, lastLoseStreak, teamWinStreak, teamLoseStreak
     Erase totHomeLosses, totHomeWins, totHomeTies
     Erase totNeutralLosses, totNeutralWins, totNeutralTies
     Erase totAwayLosses, totAwayWins, totAwayTies
     Erase totTeamLosses, totTeamWins, totTeamTies
+
+    Erase expStdLeagName$
+    Erase locIndicator$, oppName$
+
+    Erase teamScore, oppScore
+    Erase gameAttendance&
 
     currRecord = 0
 
@@ -81,7 +81,7 @@ Sub UpdateExpandedStandings (orgType)
                         lastWinStreak(currRecord) = lastWinStreak(currRecord) + 1
                         lastLoseStreak(currRecord) = 0
 
-                        If locIndicator$(I) = "A" Then
+                        If (Left$(locIndicator$(I), 1) = "V" Or Left$(locIndicator$(I), 1) = "A") Then
                             totAwayWins(currRecord) = totAwayWins(currRecord) + 1
                         End If
                         If locIndicator$(I) = "H" Then
@@ -99,7 +99,7 @@ Sub UpdateExpandedStandings (orgType)
                         lastLoseStreak(currRecord) = lastLoseStreak(currRecord) + 1
                         lastWinStreak(currRecord) = 0
 
-                        If locIndicator$(I) = "A" Then
+                        If (Left$(locIndicator$(I), 1) = "V" Or Left$(locIndicator$(I), 1) = "A") Then
                             totAwayLosses(currRecord) = totAwayLosses(currRecord) + 1
                         End If
                         If locIndicator$(I) = "H" Then
@@ -208,67 +208,68 @@ Sub NewStandings_Screen (league$, orgType)
 
         End Select
 
-        'If NT > 1 And targetDiv$ <> ""
+        If targetDiv$ <> "" Or (targetDiv$ = "" And expStdLeagName$(AA) <> "") Then
+        'If targetDiv$ <> "" Then
 
-        Color 11
-        Locate 2, 35: Print league$
-        Print RTrim$(targetDiv$)
+            Color 11
+            Locate 2, 35: Print league$
+            Print RTrim$(targetDiv$)
 
-        Color 14
-        Locate 4: Print Tab(50); "HOME   ROAD   NEUTRAL"
-        Print Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
+            Color 14
+            Locate 4: Print Tab(50); "HOME   ROAD   NEUTRAL"
+            Print Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
 
-        For I = AA To ZZ
+            For I = AA To ZZ
 
-            If expStdLeagName$(I) <> "" And expStdLeagName$(I) <> "*" Then
+                If expStdLeagName$(I) <> "" And expStdLeagName$(I) <> "*" Then
 
-                Color 3
-                Print expStdLeagName$(I);
-                Color 15
+                    Color 3
+                    Print expStdLeagName$(I);
+                    Color 15
 
-                'G / W / L
-                Print Tab(19); Using "## ## ## ##"; totTeamWins(I) + totTeamLosses(I) + totTeamTies(I); totTeamWins(I); totTeamLosses(I); totTeamTies(I);
+                    'G / W / L
+                    Print Tab(19); Using "## ## ## ##"; totTeamWins(I) + totTeamLosses(I) + totTeamTies(I); totTeamWins(I); totTeamLosses(I); totTeamTies(I);
 
-                ' PCT
-                If totTeamLosses(I) = 0 And totTeamLosses(I) + totTeamWins(I) <> 0 Then
-                    Print "1.000";
-                Else
-                    If totTeamWins(I) = 0 Then
-                        Print " .000";
+                    ' PCT
+                    If totTeamLosses(I) = 0 And totTeamLosses(I) + totTeamWins(I) <> 0 Then
+                        Print "1.000";
                     Else
-                        If totTeamWins(I) + totTeamLosses(I) <> 0 Then
-                            'Ties count as 1/2 win
-                            winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
-                            Print Using " .###"; winPCT!;
-                        Else
+                        If totTeamWins(I) = 0 Then
                             Print " .000";
+                        Else
+                            If totTeamWins(I) + totTeamLosses(I) <> 0 Then
+                                'Ties count as 1/2 win
+                                winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
+                                Print Using " .###"; winPCT!;
+                            Else
+                                Print " .000";
+                            End If
                         End If
                     End If
+
+                    ' GB
+                    calcGB! = ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2
+                    If calcGB! = 0 Then
+                        Print Tab(36); " ---";
+                    Else
+                        Print Tab(36); Using "##.#"; calcGB!;
+                    End If
+
+                    ' Win Streak
+                    Print Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
+
+                    ' Records: Home / Road / Neutral
+                    Print Tab(50); Using "#"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totAwayWins(I); Tab(59); totAwayLosses(I); Tab(61); totAwayTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
+
                 End If
 
-                ' GB
-                calcGB! = ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2
-                If calcGB! = 0 Then
-                    Print Tab(36); " ---";
-                Else
-                    Print Tab(36); Using "##.#"; calcGB!;
-                End If
+            Next
 
-                ' Win Streak
-                Print Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
-
-                ' Records: Home / Road / Neutral
-                Print Tab(50); Using "#"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totAwayWins(I); Tab(59); totAwayLosses(I); Tab(61); totAwayTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
-
-            End If
-
-        Next
-
-        Color 14
-        Locate LAST_ROW - 1, 28: Print "HIT ANY KEY TO CONTINUE";
-        I$ = GetKeyPress$
+            Color 14
+            Locate LAST_ROW - 1, 28: Print "HIT ANY KEY TO CONTINUE";
+            I$ = GetKeyPress$
             
-        'End If
+        End If
 
     Next NT
 
@@ -330,56 +331,61 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
 
         End Select
 
-        Print #1, league$
-        Print #1, Tab(20); "                              HOME   ROAD   NEUTRAL"
+        If targetDiv$ <> "" Or (targetDiv$ = "" And expStdLeagName$(AA) <> "") Then
+        'If targetDiv$ <> "" Then
 
-        Print #1, RTrim$(targetDiv$);
-        Print #1, Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
-        Print #1, String$(69,45)
+            Print #1, league$
+            Print #1, Tab(20); "                              HOME   ROAD   NEUTRAL"
 
-        For I = AA To ZZ
+            Print #1, RTrim$(targetDiv$);
+            Print #1, Tab(20); "G  W  L  T  PCT  GB  WS  LS   W-L-T  W-L-T  W-L-T"
+            Print #1, String$(69,45)
 
-            If expStdLeagName$(I) <> "" And expStdLeagName$(I) <> "*" Then
+            For I = AA To ZZ
 
-                Print #1, expStdLeagName$(I);
-                Print #1, Tab(19); Using "## ## ##"; totTeamWins(I) + totTeamLosses(I) + totTeamTies(I); totTeamWins(I); totTeamLosses(I); totTeamTies(I);
+                If expStdLeagName$(I) <> "" And expStdLeagName$(I) <> "*" Then
 
-                'PCT
-                If totTeamLosses(I) = 0 And totTeamLosses(I) + totTeamWins(I) <> 0 Then
-                    Print #1, "1.000";
-                Else
-                    If totTeamWins(I) = 0 Then
-                        Print #1, " .000";
+                    Print #1, expStdLeagName$(I);
+                    Print #1, Tab(19); Using "## ## ##"; totTeamWins(I) + totTeamLosses(I) + totTeamTies(I); totTeamWins(I); totTeamLosses(I); totTeamTies(I);
+
+                    'PCT
+                    If totTeamLosses(I) = 0 And totTeamLosses(I) + totTeamWins(I) <> 0 Then
+                        Print #1, "1.000";
                     Else
-                        If totTeamWins(I) + totTeamLosses(I) = 0 Then
+                        If totTeamWins(I) = 0 Then
                             Print #1, " .000";
                         Else
-                            'Ties count as 1/2 win
-                            winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
-                            Print #1, Using " .###"; winPCT!;
+                            If totTeamWins(I) + totTeamLosses(I) = 0 Then
+                                Print #1, " .000";
+                            Else
+                                'Ties count as 1/2 win
+                                winPCT! = (totTeamWins(I) + (totTeamTies(I) * 0.5)) / (totTeamWins(I) + totTeamLosses(I) + totTeamTies(I))
+                                Print #1, Using " .###"; winPCT!;
+                            End If
                         End If
                     End If
+
+                    'Games Behind
+                    If ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2 = 0 Then
+                        Print #1, Tab(36); " ---";
+                    Else
+                        Print #1, Tab(36); Using "##.#"; ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2;
+                    End If
+
+                    ' Win Streak
+                    Print #1, Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
+
+                    ' Records: Home / Road / Neutral
+                    Print #1, Tab(50); Using "##"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totAwayWins(I); Tab(59); totAwayLosses(I); Tab(61); totAwayTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
+
                 End If
 
-                'Games Behind
-                If ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2 = 0 Then
-                    Print #1, Tab(36); " ---";
-                Else
-                    Print #1, Tab(36); Using "##.#"; ((totTeamWins(AA) - totTeamWins(I)) + (totTeamLosses(I) - totTeamLosses(AA))) / 2;
-                End If
+            Next
 
-                ' Win Streak
-                Print #1, Tab(41); Using "##"; teamWinStreak(I); Tab(45); teamLoseStreak(I);
-
-                ' Records: Home / Road / Neutral
-                Print #1, Tab(50); Using "##"; totHomeWins(I); Tab(52); totHomeLosses(I); Tab(54); totHomeTies(I); Tab(57); totAwayWins(I); Tab(59); totAwayLosses(I); Tab(61); totAwayTies(I); Tab(64); totNeutralWins(I); Tab(66); totNeutralLosses(I); Tab(68); totNeutralTies(I)
-
-            End If
-
-        Next
-
-        Print #1,
-        Print #1,
+            Print #1,
+            Print #1,
+            
+        End If
 
     Next NT
 

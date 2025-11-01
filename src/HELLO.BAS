@@ -36,6 +36,8 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared D, dLine
+Dim Shared P1, playCall, periodNbr, puntRetNbr
 
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
@@ -536,8 +538,8 @@ $ExeIcon:'./lhg_3in1fb.ico'
 _Icon
 _AllowFullScreen
 
-If _FileExists("errlog") Then
-    Kill "errlog"
+If _FileExists(cfgPath$ + "errlog") Then
+    Kill cfgPath$ + "errlog"
 End If
 
 opSysType$ = Left$(_OS$, InStr(2, _OS$, "[") - 1)
@@ -551,34 +553,51 @@ End Select
 
 'Default new folders to current path
 For I = 0 To 3
-
     diskPaths$(I) = _CWD$ + dirSeparator$
-
 Next
 
-'Read-in existing DEV.BAS
-If _FileExists("DEV.BAS") Then
+' Test if we can write locally
+CanWriteLocally = 0 ' Assume FALSE
+On Error GoTo WriteTestFailed
+Open "WRITETEST.TMP" For Output As #1
+Close #1
+Kill "WRITETEST.TMP"
+CanWriteLocally = 1 ' SUCCESS - TRUE
+WriteTestFailed:
+On Error GoTo 0
 
-    Open "DEV.BAS" For Input As #1
+' Determine base path for config files
+If (CanWriteLocally = 1) Or dirSeparator$ = "/" Then
+    ' Can write locally - use local folders (portable/Mac/Linux scenario)
+    cfgPath$ = _CWD$
+Else
+    ' Can't write locally - use AppData (Windows restricted scenario)
+    cfgPath$ = Environ$("LOCALAPPDATA") + "\LH Games\3-in-1 Football\"
+End If
+
+'Read-in existing DEV.BAS
+If _FileExists(cfgPath$ + "DEV.BAS") Then
+
+    Open cfgPath$ + "DEV.BAS" For Input As #1
 
     'DEV.BAS will not have the "Schedule" folder configured
-    For I = 0 To 2
+    For I = 0 To 3
         Input #1, diskPaths$(I)
     Next
 
     Close #1
 
-    Kill "DEV.BAS"
+    Kill cfgPath$ + "DEV.BAS"
 
 End If
 
-'Write FOLDERS.CFG
-If Not _FileExists("FOLDERS.CFG") Then
+If Not _FileExists(cfgPath$ + "FOLDERS.CFG") Then
 
-    Open "FOLDERS.CFG" For Output As #2
+    ' Create FOLDERS.CFG file
+    Open cfgPath$ + "FOLDERS.CFG" For Output As #2
 
     For I = 0 To 3
-        Print #2, diskPaths$(I)
+        Print #2, Left$(diskPaths$(I), Len(diskPaths$(I)) - 1)
     Next
 
     Close #2
@@ -586,13 +605,17 @@ If Not _FileExists("FOLDERS.CFG") Then
 End If
 
 'Read in path values
-Open "FOLDERS.CFG" For Input As #3
+Open cfgPath$ + "FOLDERS.CFG" For Input As #3
 
 For I = 0 To 3
     Input #3, diskPaths$(I)
 Next
 
 Close #3
+
+'If _FileExists(cfgPath$ + "errlog") Then
+'    Kill cfgPath$ + "errlog"
+'End If
 
 'Run main menu
 SELECTION% = 1
@@ -613,18 +636,18 @@ System
 
 Errhandler:
 
-Open "errlog" For Append As #10
-'Print #10, "An error occurred. Please contact support with the following information:"
+Open cfgPath$ + "errlog" For Append As #10
+Print #10, "An error occurred. Please contact support with the following information:"
 Print #10, "Error #"; Err; "on program file line"; _ErrorLine
 
 If _InclErrorLine Then
     Print #10, "    in module "; _InclErrorFile$; " line "; _InclErrorLine
 End If
 
-'If _FileExists("GAME82") Then
-'Print #10, "Schedule game # "; Using "###"; schedGame(0) + schedGame(2)
-'Print #10, gameTeams$(0) + " vs. " + gameTeams$(1)
-'End If
+If _FileExists(cfgPath$ + "GAME82") Then
+    Print #10, "Schedule game # "; Using "####"; schedGame(0) + schedGame(2)
+    Print #10, gameTeams$(0) + " vs. " + gameTeams$(1)
+End If
 Print #10,
 Close #10
 Resume Next ' moves program to code following the error.
@@ -1049,9 +1072,9 @@ Sub FOOTBALL ()
     '----------------------------------------
     '         DETERMINE GAME OPTIONS
     '----------------------------------------
-    If Not _FileExists("DEFAULT") Then
+    If Not _FileExists(cfgPath$ + "DEFAULT") Then
 
-        Open "DEFAULT" For Output As #3
+        Open cfgPath$ + "DEFAULT" For Output As #3
 
         'Player option
         Print #3, 3
@@ -1084,7 +1107,7 @@ Sub FOOTBALL ()
 
     End If
 
-    Open "DEFAULT" For Input As #4
+    Open cfgPath$ + "DEFAULT" For Input As #4
     Input #4, playerOpt
     Input #4, ruleOptType
     Input #4, gameLoc ' Home Field Advantage
@@ -1098,9 +1121,9 @@ Sub FOOTBALL ()
     End If
     Close #4
 
-    If _FileExists("TICKER") Then
+    If _FileExists(cfgPath$ + "TICKER") Then
 
-        Open "TICKER" For Input As #5
+        Open cfgPath$ + "TICKER" For Input As #5
 
         For I = 1 To 32:
             For I1 = 0 To 1:
@@ -1131,9 +1154,9 @@ Sub FOOTBALL ()
     End If
 
     'Load game in-progress, if there is one
-    If _FileExists("GAME82") Then
+    If _FileExists(cfgPath$ + "GAME82") Then
 
-        Open "GAME82" For Input As #6
+        Open cfgPath$ + "GAME82" For Input As #6
 
         Input #6, scheduleFile$
 
@@ -1145,8 +1168,8 @@ Sub FOOTBALL ()
 
         currGame = schedGame(0) + schedGame(2)
 
-        'Open "pbplog" + Str$(currGame) For Append As #11
-        'Open "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" + Str$(currGame) For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
         If Not _FileExists(scheduleFile$) Then
 
@@ -1190,7 +1213,7 @@ Sub FOOTBALL ()
 
     Else
 
-        'Open "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
     End If
 
@@ -1296,7 +1319,7 @@ Sub FOOTBALL ()
                 Select Case setting
 
                     Case 0:
-                        Open "DEFAULT" For Output As #8
+                        Open cfgPath$ + "DEFAULT" For Output As #8
                         Print #8, playerOpt
                         Print #8, ruleOptType
                         Print #8, gameLoc ' Home Field advantage
@@ -1422,7 +1445,7 @@ Sub FOOTBALL ()
 
 
     'If we've run into issues so far...
-    If earlyExit = 1 Then 
+    If earlyExit = 1 Then
         'Close #11
         Exit Sub
     End If
@@ -1600,9 +1623,6 @@ Sub FOOTBALL ()
                     margin = avgAttendance& * .05
                 End If
                 actualAttendance& = avgAttendance& + Int(Rnd(1) * margin * 2) - margin
-
-                'Average attendance +/- 5,000
-                'actualAttendance& = avgAttendance& + Int(Rnd(1) * 10000) - 5000
             End If
 
         End If
@@ -2698,7 +2718,8 @@ Sub FOOTBALL ()
 
         ResolvePlay:
         'Computer Offense - Long Pass Inside Opp 15 --> Change to Medium Pass
-        If ((playerMode = 1 And P1 = compTeam Or playerMode = 2) And (playCall = 12 Or playCall = 15) And ydLine >= 85) Then
+        If ((playerMode = 1 And P1 = compTeam Or playerMode = 2) And _ 
+            (playCall = 12 Or playCall = 15) And ydLine >= 85) Then
             playCall = 11
         End If
 
@@ -2848,7 +2869,8 @@ Sub FOOTBALL ()
                 'The game handles all QB rushes as scrambles / etc.
                 'Without this, rush attempts for a team run
                 'way high and pass attempts run too low
-                If (playerMode = 2 Or (playerMode = 1 And P1 = compTeam)) And rbacks$(P1, I1) = qbacks$(P1, qbNumber(P1)) Then
+                If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 And _ 
+                    rbacks$(P1, I1) = qbacks$(P1, qbNumber(P1)) Then
                     'Basically we're picking a pass play
                     'Chances here are based on calculations of
                     'how often the AI would call these types
@@ -2947,6 +2969,9 @@ Sub FOOTBALL ()
                     If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then
                         Call MEASUREMENT
                     End If
+                Else
+                    'Touchdown is only worth yards left on the field
+                    ydsGained = ydsToScore
                 End If
 
                 playYds! = CInt((ydsGained) * 10) / 10
@@ -3345,7 +3370,9 @@ Sub FOOTBALL ()
                         Call MEASUREMENT
                     End If
                 End If
-
+            Else
+                'Touchdown is only worth yards left on the field
+                ydsGained = ydsToScore
             End If
 
             If Int(ydsGained) = 0 Then
@@ -3950,10 +3977,10 @@ Sub FOOTBALL ()
                         'Else
                         If newYdLine! >= 99.9499 Then
 
+                            ydsGained = 100 - ydLine
+
                             'End zone
                             Call PassYardagePBP(yardsToDecimalStr$(ydsGained))
-
-                            ydsGained = 100 - ydLine
 
                             'Longest catch
                             If ydsGained > gameLongRec(P1, I3) Then
@@ -4085,8 +4112,7 @@ Sub FOOTBALL ()
             pbpString$ = pret$(D, puntRetNbr) + " (" + LTrim$(Str$(Int(prYdsPerRet(D, puntRetNbr) * 3))) + " AVG) IS DEEP TO RECEIVE"
             Call PBP
 
-            If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
-
+            If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
                 'Punt away from return man if:
                 'Wind is not AGAINST us AND
                 '  Average >= 10   --OR--
@@ -4855,7 +4881,7 @@ Sub FOOTBALL ()
             Else
 
                 ' *** FIELD GOAL DECISION ***
-                If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+                If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
 
                     fgChoice = 0
 
@@ -4881,7 +4907,7 @@ Sub FOOTBALL ()
 
                 Call Rolld100(RN0)
 
-                If playerMode = 1 And D = compTeam Or playerMode = 2 Then
+                If (playerMode = 1 And D = compTeam) Or playerMode = 2 Then
 
                     fgDefChoice = 1
 
@@ -6624,7 +6650,7 @@ Sub FOOTBALL ()
 
                             Call CoinToss
 
-                            If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+                            If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
 
                                 otChoice = 2
 
@@ -7789,25 +7815,20 @@ End Sub
 'key is desired for a choice.
 Sub LetterToNumber (promptVal$, J)
 
-    J = Val(promptVal$)
+    char$ = UCase$(promptVal$)
+    code% = Asc(char$)
 
-    Select Case UCase$(promptVal$)
-
-        Case "A": J = 10
-        Case "B": J = 11
-        Case "C": J = 12
-        Case "D": J = 13
-        Case "E": J = 14
-        Case "F": J = 15
-        Case "G": J = 16
-        Case "H": J = 17
-        Case "I": J = 18
-        Case "J": J = 19
-        Case "K": J = 20
-        Case "L": J = 21
-        Case "M": J = 22
-
-    End Select
+    ' Digits 0-9
+    If code% >= 48 And code% <= 57 Then
+        J = code% - 48
+        ' Letters A-Z
+    ElseIf code% >= 65 And code% <= 90 Then
+        ' A=10, B=11, ..., M=22
+        J = code% - 55
+    Else
+        ' default / invalid input
+        J = 0
+    End If
 
 End Sub
 
@@ -7854,7 +7875,7 @@ End Sub
 Sub FRAMEOPTION (boxHeight, teamIdx)
 
     PCopy 0, 1
-    'Screen , , 1, 1
+    Screen , , 1, 1
 
     Locate 8, 8
     Color teamRat_GAME(teamIdx, 2), teamRat_GAME(teamIdx, 1)
@@ -7984,32 +8005,30 @@ Sub TICKER ()
 
         If halfTime = 1 Then
 
-        If halfTime = 1 Then
-
             Select Case RN0
 
-                Case 1 to 20:
+                Case 1 To 20:
                     'ESPN
                     Locate , 28: Print "ALLSTATE HALFTIME REPORT"
 
-                Case 21 to 40:
+                Case 21 To 40:
                     'NBC
                     'Previously, "Prudential Halftime"
                     Locate , 28: Print "XFINITY HALFTIME REPORT"
 
-                Case 41 to 60:
+                Case 41 To 60:
                     'NBC - Sunday Night
                     Locate , 29: Print "TOYOTA HALFTIME REPORT"
 
-                Case 61 to 80:
+                Case 61 To 80:
                     'ABC
                     Locate , 31: Print "KIA HALFTIME REPORT"
 
-                Case 81 to 100:
+                Case 81 To 100:
                     'CBS/Fox
                     Locate , 28: Print "VERIZON HALFTIME REPORT"
  
-           End Select
+            End Select
 
         Else
 
@@ -8017,7 +8036,7 @@ Sub TICKER ()
 
                 Select Case RN0
 
-                    Case 1 to 25
+                    Case 1 To 25
                         'ABC
                         Locate , 27: Print "CHEVROLET FINAL SCOREBOARD"
 
@@ -8051,85 +8070,85 @@ Sub TICKER ()
 
         Else
 
-            If quarter = 1 then
+            If quarter = 1 Then
 
                 Select Case gameClock!
 
-                    Case 600 to 899
+                    Case 600 To 899
                         timeInterval = 1
 
-                    Case 300 to 599
+                    Case 300 To 599
                         timeInterval = 2
 
-                    Case Is < 300 
+                    Case Is < 300
                         timeInterval = 3
 
                 End Select
 
             End If
 
-            If quarter = 2 then
+            If quarter = 2 Then
 
                 Select Case gameClock!
 
-                    Case 600 to 899
+                    Case 600 To 899
                         timeInterval = 4
 
-                    Case 300 to 599
+                    Case 300 To 599
                         timeInterval = 5
 
-                    Case Is < 300 
+                    Case Is < 300
                         timeInterval = 6
 
                 End Select
 
             End If
 
-            If quarter = 3 then
+            If quarter = 3 Then
 
                 Select Case gameClock!
 
-                    Case 600 to 899
+                    Case 600 To 899
                         timeInterval = 9
 
-                    Case 300 to 599
+                    Case 300 To 599
                         timeInterval = 10
 
-                    Case Is < 300 
+                    Case Is < 300
                         timeInterval = 11
 
                 End Select
 
             End If
 
-            If quarter = 4 then
+            If quarter = 4 Then
 
                 Select Case gameClock!
 
-                    Case 600 to 899
+                    Case 600 To 899
                         timeInterval = 12
 
-                    Case 300 to 599
+                    Case 300 To 599
                         timeInterval = 13
 
-                    Case Is < 300 
+                    Case Is < 300
                         timeInterval = 14
 
                 End Select
 
             End If
 
-            If quarter = 5 then
+            If quarter = 5 Then
 
                 Select Case gameClock!
 
-                    Case 600 to 899
+                    Case 600 To 899
                         timeInterval = 15
 
-                    Case 300 to 599
+                    Case 300 To 599
                         timeInterval = 16
 
-                    Case Is < 300 
+                    Case Is < 300
                         timeInterval = 17
 
                 End Select
@@ -8624,57 +8643,57 @@ Sub TICKERUPDATE ()
     'Should this be <= 31???
     If autoPlay = 1 And schedGame(2) <= 32 Then
 
-        If quarter = 1 Then 
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 1) = -1 Then 
+        If quarter = 1 Then
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 1) = -1 Then
                 SX%(schedGame(2) + 1, 0, 1) = score(0, 0): SX%(schedGame(2) + 1, 1, 1) = score(1, 0)
             End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 2) = -1 Then 
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 2) = -1 Then
                 SX%(schedGame(2) + 1, 0, 2) = score(0, 0): SX%(schedGame(2) + 1, 1, 2) = score(1, 0)
             End If
         End If
 
-        If quarter = 2 Then 
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 4) = -1 Then 
+        If quarter = 2 Then
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 4) = -1 Then
                 SX%(schedGame(2) + 1, 0, 4) = score(0, 0)
                 SX%(schedGame(2) + 1, 1, 4) = score(1, 0)
             End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 5) = -1 Then 
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 5) = -1 Then
                 SX%(schedGame(2) + 1, 0, 5) = score(0, 0)
                 SX%(schedGame(2) + 1, 1, 5) = score(1, 0)
             End If
         End If
 
-        If quarter > 2 Then 
-            If SX%(schedGame(2) + 1, 0, 3) = -1 Then 
+        If quarter > 2 Then
+            If SX%(schedGame(2) + 1, 0, 3) = -1 Then
                 SX%(schedGame(2) + 1, 0, 3) = score(0, 1)
                 SX%(schedGame(2) + 1, 1, 3) = score(1, 1)
             End If
-            If SX%(schedGame(2) + 1, 0, 6) = -1 Then 
-                For I2 = 6 To 8: 
+            If SX%(schedGame(2) + 1, 0, 6) = -1 Then
+                For I2 = 6 To 8:
                     SX%(schedGame(2) + 1, 0, I2) = score(0, 2) + score(0, 1)
                     SX%(schedGame(2) + 1, 1, I2) = score(1, 2) + score(1, 1)
                 Next
             End If
         End If
 
-        If quarter = 3 Then 
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 9) = -1 Then 
+        If quarter = 3 Then
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 9) = -1 Then
                 SX%(schedGame(2) + 1, 0, 9) = score(0, 0)
                 SX%(schedGame(2) + 1, 1, 9) = score(1, 0)
             End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 10) = -1 Then 
+            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 10) = -1 Then
                 SX%(schedGame(2) + 1, 0, 10) = score(0, 0)
                 SX%(schedGame(2) + 1, 1, 10) = score(1, 0)
             End If
         End If
 
-        If quarter > 3 And SX%(schedGame(2) + 1, 0, 11) = -1 Then 
+        If quarter > 3 And SX%(schedGame(2) + 1, 0, 11) = -1 Then
             SX%(schedGame(2) + 1, 0, 11) = score(0, 3) + score(0, 2) + score(0, 1)
             SX%(schedGame(2) + 1, 1, 11) = score(1, 3) + score(1, 2) + score(1, 1)
         End If
 
-        If quarter = 4 Then 
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 12) = -1 Then 
+        If quarter = 4 Then
+            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 12) = -1 Then
                 SX%(schedGame(2) + 1, 0, 12) = score(0, 0)
                 SX%(schedGame(2) + 1, 1, 12) = score(1, 0)
             End If
@@ -8710,7 +8729,7 @@ Sub UpdateSchedule ()
             SX$(schedGame(2) + 1, X) = gameTeams$(X)
         Next
 
-        Open "TICKER" For Output As #1
+        Open cfgPath$ + "TICKER" For Output As #1
 
         For I = 1 To 32:
             For I1 = 0 To 1:
@@ -11829,7 +11848,7 @@ End Sub
 'selecting their defensive choices.
 Sub DEFMENU (defEra)
 
-    If playerMode = 1 And D = compTeam Or playerMode = 2 Then
+    If (playerMode = 1 And D = compTeam) Or playerMode = 2 Then
         'Computer on Defense or PC vs PC
 
         Call COMPDEFENSE(defEra)
@@ -12148,6 +12167,11 @@ Sub GetPATChoice (userChoice)
                     End If
 
                 End If
+
+
+                '-- REMOVE THIS
+                userChoice = 2
+
 
             Else
 
@@ -13823,7 +13847,7 @@ Sub KickoffChoices (deferOpt)
     'In all situations here, winTeam is the coin toss winner
     Call StatusBoard
 
-    If playerMode = 1 And winTeam = compTeam Or playerMode = 2 Then
+    If (playerMode = 1 And winTeam = compTeam) Or playerMode = 2 Then
 
         If overtimeOpt >= 6 Then
             'Modified Sudden Death
@@ -13871,7 +13895,7 @@ Sub KickoffChoices (deferOpt)
             End If
 
             'Computer Player
-            If playerMode = 1 And D = compTeam Or playerMode = 2 Then
+            If (playerMode = 1 And D = compTeam) Or playerMode = 2 Then
 
                 defChoice = 1
 
@@ -13911,7 +13935,7 @@ Sub KickoffChoices (deferOpt)
                 climate(0) = 1 - winTeam
             End If
 
-            If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+            If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
 
                 koChoice = 2
 
@@ -16486,7 +16510,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
                 'Computer is receiving?
                 'Return it within first 2 yards of endzone
-                If playerMode = 1 And P1 = compTeam Or playerMode = 2 Then
+                If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
 
                     If kickYL! < -2 Then
                         returnChoice = 1
@@ -17450,9 +17474,9 @@ Sub EVENTS (specialCount, specialStat)
     Shared eventSettings()
 
     'Read in existing parameters if there are any
-    If _FileExists("EVENTS.BOX") Then
+    If _FileExists(cfgPath$ + "EVENTS.BOX") Then
 
-        Open "EVENTS.BOX" For Input As #1
+        Open cfgPath$ + "EVENTS.BOX" For Input As #1
 
         For X = 1 To 13
             Input #1, eventSettings(X)
@@ -17618,6 +17642,8 @@ Sub POSTGAME ()
         Color 15, 0
         Cls
 
+        Locate 2
+
         Color 14: Print "(0) ";
         Color 15: Print "STATS TO SCREEN"
         Print
@@ -17629,7 +17655,7 @@ Sub POSTGAME ()
         Color 14: Print "(2) ";
         Color 15: Print "STATS TO TEXT FILE"
 
-        If autoPlay = 1 And playerMode = 2 Then
+        If (autoPlay = 1 And playerMode = 2) Then
             choice = 2
         Else
             Do
@@ -17715,14 +17741,16 @@ Sub BOXOPTIONS (outputChoice)
             Else
                 'File = prompt | auto-create
                 If autoPlay <> 1 Then
-                    Cls
-                    Print "ENTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
-                    Input boxName$
-                    boxName$ = boxName$ + ".BSS"
+                    boxName$ = _SAVEFILEDIALOG$("Save Boxscore File", diskPaths$(1) + "\Boxscore","*.BSS","Special Boxscore File")
+
+                    'Cls
+                    'Print "ENTER FILENAME FOR BOXSCORE (NO SPACES OR PERIODS)";
+                    'Input boxName$
+                    'boxName$ = boxName$ + ".BSS"
                 Else
                     'ScheduleName_GameXXX.BS
-                    baseFile$ = GetFileBaseName$(scheduleFile$)
-                    boxName$ = baseFile$ + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
+                    'baseFile$ = GetFileBaseName$(scheduleFile$)
+                    boxName$ = scheduleFile$ + "_GAME" + Mid$(Str$(schedGame(0) + schedGame(2)), 2, Len(Str$(schedGame(0) + schedGame(2)))) + ".BS"
                 End If
 
             End If
@@ -17752,9 +17780,9 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     Shared actualAttendance&
 
     If hasSpecial = 1 Then
-        Open (diskPaths$(1) + boxName$) For Append As #1
+        Open (boxName$) For Append As #1
     Else
-        Open (diskPaths$(1) + boxName$) For Output As #1
+        Open (boxName$) For Output As #1
     End If
 
     If gameLoc = 2 Then
@@ -18191,7 +18219,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
 
     If printChoice = 1 Then
 
-        Open diskPaths$(1) + boxName$ For Input As #2
+        Open boxName$ For Input As #2
 
         Do
             Line Input #2, X$
@@ -18200,7 +18228,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
 
         Close #2
 
-        Kill "TEMPBOX"
+        Kill boxName$
 
     End If
 
@@ -18236,18 +18264,17 @@ Sub BOX2SCREEN ()
     Shared actualAttendance&
 
     Color 15, 0
+
     Cls
 
     Color 14
     Locate 2, 1
+    Print "SITE: ";
+    Color 15
 
     If gameLoc = 2 Then
-        Print "SITE: ";
-        Color 15
         Print "NEUTRAL"
     Else
-        Print "SITE: ";
-        Color 15
         Print gameStadium$
     End If
 
@@ -18943,16 +18970,16 @@ Sub SAVESTATS ()
 
         ' Update schedule, ticker, etc.
         'If autoPlay = 1 Then
-        If _FileExists("GAME82") Then
+        If _FileExists(cfgPath$ + "GAME82") Then
 
             Call UpdateSchedule
 
             If schedGame(1) < schedGame(0) + schedGame(2) Then
-                Kill "GAME82"
+                Kill cfgPath$ + "GAME82"
                 endAllGames = 1
             Else
 
-                Open "GAME82" For Output As #1
+                Open cfgPath$ + "GAME82" For Output As #1
 
                 Print #1, scheduleFile$
 
