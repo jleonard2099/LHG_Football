@@ -38,7 +38,8 @@ Declare Sub COMPCHEAT (defEra)
 Declare Sub FumbleRecoverPBP ()
 Declare Sub CheckGameClock ()
 Declare Sub GetDefensiveEra (defEra)
-Declare Sub COMPDEFENSE (defEra)
+Declare Sub ComputerDefense (defEra)
+Declare Sub TwoMinDefense (scoreDiff)
 Declare Sub HISTDEFENSE (defEra)
 Declare Sub MARKER ()
 Declare Sub MARKER1 ()
@@ -56,6 +57,16 @@ Declare Sub SETWEATHER ()
 Declare Sub FGATT ()
 Declare Sub FGMADE ()
 Declare Sub ComputerOffense ()
+Declare Sub Offense_PreventSafety ()
+Declare Sub Offense_ShortYardage ()
+Declare Sub Offense_LongYardage ()
+Declare Sub AdjustForSituation ()
+Declare Sub AdjustForRedZone()
+Declare Sub AdjustForPreventDefense()
+Declare Sub AdjustForWeather()
+Declare Sub AdjustForEra(teamYear)
+Declare Sub AdjustPassPlayForSequencing()
+Declare Sub UpdatePlayHistory(playCallExecuted As Integer, yardsGained As Integer)
 Declare Sub MEASUREMENT ()
 Declare Sub ReceiverLossPBP (yardString$)
 Declare Sub WHICHRECEIVER
@@ -133,8 +144,11 @@ Declare Sub EndOfGame
 
 Declare Function d100% ()
 Declare Function TickerTime% (timeInterval, X)
+Declare Function fatigueLevel%
 Declare Function fgLimit%
+Declare Function GetPlaySequencingModifier() As Integer
 Declare Function GetSneakChance%
 Declare Function FindMarkerColumn (X)
 Declare Function GetTeamYear% (yearFromName$)
+Declare Function ShouldUseQuickPassing() As Boolean
 Declare Function yardsToDecimalStr$ (sourceYds!)

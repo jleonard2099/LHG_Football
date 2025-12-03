@@ -359,6 +359,10 @@ Dim schedStatVal!(31, 0 To 29)
 
 Dim ratingsQB!(0 To 3, 10)
 
+Dim HD&, AD&, ND&, TD&
+Dim HT&, CT&, NT&, TT&
+Dim HA&, AA&, NA&, TA&
+
 
 '----------------------------------------
 ' Used in SEExxx routines
@@ -387,10 +391,10 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
 Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-'Dim Shared D, dLine
+Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
-Dim Shared fieldSide, firstDownClockOpt
+Dim Shared firstDownClockOpt
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 
@@ -403,7 +407,7 @@ Dim Shared kickYL!
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -431,8 +435,8 @@ Dim Shared ydsToFirst As Single
 Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
-Dim Shared goalLnYdAdj, halfbackPass, impactTeam
-Dim Shared intChance, loseDown
+Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
+Dim Shared lastPlayType, last2PlayType, last3PlayTypem, lastPlayYards, loseDown
 Dim Shared rushEra, scoreX0, scoreX1
 Dim Shared YF
 
@@ -442,9 +446,9 @@ Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
 
 Dim Shared gameFGA!(1, 1, 0 To 4), gameFGM!(1, 1, 0 To 4)
+Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
 Dim Shared recLongRec!(1, 20), recLongFG!(1, 1), recLongInt!(1, 0 To 9), recLongKR!(1, 0 To 2), recLongPass!(1, 0 To 3), recLongRush!(1, 0 To 9)
 Dim Shared recLongPR!(0 To 1, 0 To 2)
-Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
 
 Dim Shared activeKicker(1)
 Dim Shared brkawayMod(1, 14)
