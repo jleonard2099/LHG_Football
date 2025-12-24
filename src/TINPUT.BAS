@@ -636,8 +636,8 @@ Sub InputTeam ()
             Select Case B9
 
                 Case 1
-                    Locate 6, 1: Input "1. NAME (END TO STOP) "; punterName$(0)
-                    Locate 6, 23: Print " "
+                    Locate 6, 1: Input "1. NAME "; punterName$(0)
+                    Locate 6, 9: Print " "
 
                 Case 2
                     Locate 7, 17: Print Space$(10)

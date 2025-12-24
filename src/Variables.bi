@@ -389,7 +389,8 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
 'BW = black & white; as in, set to 1 and the game will lose all color
 Dim Shared autoPlay, avgRecYds, ballFumbled, BW
-Dim Shared catchPctSuccess, checkFumbRev, chosenPlay
+Dim Shared catchPctSuccess, chainStart, chainEnd
+Dim Shared checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
@@ -414,7 +415,7 @@ Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared sndOpt, startYds, tickerGames
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
-Dim Shared WE, WS, winTeam
+Dim Shared winTeam
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -437,10 +438,12 @@ Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToSco
 Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
 Dim Shared lastPlayType, last2PlayType, last3PlayTypem, lastPlayYards, loseDown
-Dim Shared rushEra, scoreX0, scoreX1
+Dim Shared nbrLines, rushEra, scoreX0, scoreX1
 Dim Shared YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+
+Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(38, 4), climate(6)
@@ -506,3 +509,4 @@ Dim Shared tickerPeriod$(14), wdRec$(1, 5)
 
 Dim Shared gameLongIntTD$(1, 9), gameLongKRTD$(1, 2), gameLongPRTD$(1, 2)
 Dim Shared gameLongRunTD$(1, 17), gameLongPassTD$(1, 3), gameLongRecTD$(1, 20)
+

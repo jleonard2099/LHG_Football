@@ -209,7 +209,6 @@ Sub NewStandings_Screen (league$, orgType)
         End Select
 
         If targetDiv$ <> "" Or (targetDiv$ = "" And expStdLeagName$(AA) <> "") Then
-        'If targetDiv$ <> "" Then
 
             Color 11
             Locate 2, 35: Print league$
@@ -332,9 +331,9 @@ Sub NewStandings_Report (printDest, destFile$, league$, orgType)
         End Select
 
         If targetDiv$ <> "" Or (targetDiv$ = "" And expStdLeagName$(AA) <> "") Then
-        'If targetDiv$ <> "" Then
 
             Print #1, league$
+            Print #1, 
             Print #1, Tab(20); "                              HOME   ROAD   NEUTRAL"
 
             Print #1, RTrim$(targetDiv$);
