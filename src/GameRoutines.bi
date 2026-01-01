@@ -77,7 +77,7 @@ Declare Sub PenaltyOnPunt (autoFD)
 Declare Sub PenaltyOnPuntReturn(autoFD)
 Declare Sub PenaltyChoice (decision, autoFD)
 Declare Sub PenaltyCharge (teamIdx, ydsCharged!)
-Declare Sub PenaltyPre-Snap (flagOnPlay)
+Declare Sub PenaltyPreSnap (flagOnPlay)
 Declare Sub FirstDownAfterPlay
 Declare Sub CHOOSEQB (currTeam)
 Declare Sub TimeoutCalled (teamIdx, periodOver)

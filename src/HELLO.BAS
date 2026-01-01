@@ -2811,7 +2811,7 @@ Sub FOOTBALL ()
 
     If penaltyOnPlay = 1 Then 
         
-        Call PenaltyPre-Snap (penaltyOnPlay)
+        Call PenaltyPreSnap (penaltyOnPlay)
         playSegment = 8
         GoTo HANDLEPENALTY
 
@@ -15191,27 +15191,27 @@ Sub PenaltyOnPuntReturn (autoFD)
     Select Case puntPenalty
 
         Case 1 To 41
-			'Holding - Return team
+            'Holding - Return team
             pbpString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 15 YDS! ***"
             penaltyYds! = -15
 
         Case 42 To 44
-			'Holding - Kicking team
+            'Holding - Kicking team
             pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 5 YDS / 1ST D! ***"
             penaltyYds! = -5
             autoFD = 1
 
         Case 45 To 100
-			'Illegal Block (Kicking team)
-			pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - ILLEGAL BLOCK ON THE RETURN - 10 YDS ***"
-			penaltyYds! = 10
+            'Illegal Block (Kicking team)
+            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - ILLEGAL BLOCK ON THE RETURN - 10 YDS ***"
+            penaltyYds! = 10
 
     End Select
 
     Print #11, "(PUNT RETURN) "; pbpString$
 
 End Sub
-	
+    
 
 '----------------------------------------
 '          PenaltyChoice Function
@@ -15332,11 +15332,11 @@ End Sub
 
 
 '----------------------------------------
-'       PenaltyPre-Snap Subroutine
+'       PenaltyPreSnap Subroutine
 '----------------------------------------
 'This handles tracking of penalties and
 'yardage for pre-snap fouls
-Sub PenaltyPre-Snap (flagOnPlay)
+Sub PenaltyPreSnap (flagOnPlay)
 
     RN1 = Int(Rnd(1) * 1000) + 1
 
@@ -15406,7 +15406,7 @@ Sub PenaltyPre-Snap (flagOnPlay)
 
         End Select
 
-		flagOnPlay = 1
+        flagOnPlay = 1
 
     End If
 
