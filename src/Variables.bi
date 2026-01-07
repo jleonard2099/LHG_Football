@@ -438,8 +438,7 @@ Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToSco
 Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
 Dim Shared lastPlayType, last2PlayType, last3PlayTypem, lastPlayYards, loseDown
-Dim Shared nbrLines, rushEra, scoreX0, scoreX1
-Dim Shared YF
+Dim Shared nbrLines, rushEra, scoreX0, scoreX1, totalSTPenalties, YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 

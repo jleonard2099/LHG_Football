@@ -40,12 +40,12 @@ Sub LoadLeaderFiles_League (league$, targetFile$)
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    Call ReadConferenceStats(targetFile$, 1)
+    Call ReadConferenceStats(diskPaths$(2) + GetFileBaseName$(targetFile$) + ".TMS", 1)
 
-    div1Name$ = PadRight$(div1Name$, 8)
-    div2Name$ = PadRight$(div2Name$, 8)
-    div3Name$ = PadRight$(div3Name$, 8)
-    div4Name$ = PadRight$(div4Name$, 8)
+    'div1Name$ = PadRight$(div1Name$, 8)
+    'div2Name$ = PadRight$(div2Name$, 8)
+    'div3Name$ = PadRight$(div3Name$, 8)
+    'div4Name$ = PadRight$(div4Name$, 8)
 
     Cls
 
@@ -219,180 +219,110 @@ Sub LeagStdgs_Screen ()
 
     Color 12
 
-    Locate 2, 33
-    Print leagueName$
+    Locate 2, Int((80 - Len(leagueName$) - 17) / 2)
+    Print leagueName$; " LEAGUE STANDINGS"
 
-    Color 2
-    Locate 4, 1
-    Print RTrim$(div1Name$) + " DIVISION"
+    'Cycle through divisions
+    For division = 1 To 4
 
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
+        Select Case division
 
-    For P = 1 To 10:
+            Case 1
+                divisionName$ = RTrim$(div1Name$)
+                yCoord = 4
+                xCoord = 1
 
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P + 5 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            Case 2
+                divisionName$ = RTrim$(div2Name$)
+                yCoord = 4
+                xCoord = 41
 
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
+            Case 3
+                divisionName$ = RTrim$(div3Name$)
+                yCoord = 17
+                xCoord = 1
 
-            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+            Case 4
+                divisionName$ = RTrim$(div4Name$)
+                yCoord = 17
+                xCoord = 41
 
-        End If
+        End Select
 
-    Next
+        'If division = 1 Or (division > 1 And divisionName$ <> "") Then
 
-    RT = 0
-
-    If RTrim$(div2Name$) <> "" Then
+        Locate yCoord, xCoord
 
         Color 2
-        Locate 4, 41
-        Print RTrim$(div2Name$) + " DIVISION"
-        Locate , 41
+        Print divisionName$;
+
+        Locate yCoord, xCoord + 13
 
         Color 14
-        Print "              W   L   T   PCT  PF  PA"
+        Print "W   L   T  PCT  PF   PA"
+
         Color 15
 
-        For P = 11 To 20:
+        RT = 0
+        first = ((division - 1) * 10) + 1
+        last = division * 10
 
-            If leagRecText$(P) = "" Then
+        For P = first To last:
+
+            If leagRecText$(P) = "" Or leagRecText$(P) = "*" Then
                 RT = RT + 1
             Else
-                Locate (P - 5 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+                Select Case division
+
+                    Case 1
+                        Locate (P + 4 - RT), 1
+
+                    Case 2
+                        Locate (P - 6 - RT), 41
+
+                    Case 3
+                        Locate (P - 3 - RT), 1
+
+                    Case 4
+                        Locate (P - 13 - RT), 41
+
+                End Select
+
+                Print PadRight$(divTeamNames$(P), 13); Using "##  ## ##"; divWins(P); divLosses(P); divTies(P);
 
                 'Win %
                 If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                    Print "  .---";
+                    Print " .---";
                 Else
                     If divLosses(P) + divTies(P) = 0 Then
                         Print " 1.000";
                     Else
                         If divWins(P) = 0 Then
-                            Print "  .000";
+                            Print " .000";
                         Else
                             'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                            PCT! = (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P))
+                            Print Using " .###"; PCT!;
                         End If
                     End If
                 End If
 
-                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-            End If
-        Next
-
-        RT = 0
-
-    End If
-
-    If RTrim$(div3Name$) <> "" Then
-
-        Color 2
-        Locate 13, 1
-        Print RTrim$(div3Name$) + " DIVISION"
-
-        Color 14
-        Print "              W   L   T   PCT  PF  PA"
-        Color 15
-
-        For P = 21 To 30:
-
-            If leagRecText$(P) = "" Then
-                RT = RT + 1
-            Else
-                Locate (P - 5 - RT)
-                Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-                'Win %
-                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                    Print "  .---";
+                If division = 1 Or division = 3 Then
+                    Locate , 30
                 Else
-                    If divLosses(P) + divTies(P) = 0 Then
-                        Print " 1.000";
-                    Else
-                        If divWins(P) = 0 Then
-                            Print "  .000";
-                        Else
-                            'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                        End If
-                    End If
+                    Locate , 70
                 End If
 
-                Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+                Print Using "###  ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
             End If
 
-        Next
+        Next P
 
-        RT = 0
+        'End If
 
-    End If
-
-    If RTrim$(div4Name$) <> "" Then
-
-        Color 2
-        Locate 13, 41
-        Print RTrim$(div4Name$) + " DIVISION"
-
-        Locate , 41
-        Color 14
-        Print "              W   L   T   PCT  PF  PA"
-        Color 15
-
-        For P = 31 To 40:
-
-            If leagRecText$(P) = "" Then
-                RT = RT + 1
-            Else
-                Locate (P - 15 - RT), 41
-                Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-                'Win %
-                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                    Print "  .---";
-                Else
-                    If divLosses(P) + divTies(P) = 0 Then
-                        Print " 1.000";
-                    Else
-                        If divWins(P) = 0 Then
-                            Print "  .000";
-                        Else
-                            'Ties count as 1/2 win
-                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                        End If
-                    End If
-                End If
-
-                Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
-            End If
-
-        Next
-
-        RT = 0
-
-    End If
+    Next division
 
     '-----
     Color 12
@@ -400,7 +330,7 @@ Sub LeagStdgs_Screen ()
     Color 15
     QK$ = GetKeyPress$
     '-----
-    
+
 End Sub
 
 
@@ -429,135 +359,81 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     Open destFile$ For Output As #1
 
-    Print #1, league$ + " OVERALL RECORD"
-    Print #1, div1Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
+    XCoord = Int((80 - Len(league$) - 17) / 2)
+    Print #1,
+    Print #1, Tab(XCoord); leagueName$; " LEAGUE STANDINGS"
+    Print #1,
 
-    For P = 1 To 10
+    For division = 1 To 4
 
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+        Select Case division
 
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
+            Case 1
+                divisionName$ = RTrim$(div1Name$)
+
+            Case 2
+                divisionName$ = RTrim$(div2Name$)
+
+            Case 3
+                divisionName$ = RTrim$(div3Name$)
+
+            Case 4
+                divisionName$ = RTrim$(div4Name$)
+
+        End Select
+
+        Print #1, divisionName$;
+        Print #1, Tab(15); "W   L   T   PCT  PF  PA"
+
+        first = ((division - 1) * 10) + 1
+        last = division * 10
+
+        D1 = divWins(first) - divLosses(first)
+
+        For P = first To last
+
+            If leagRecText$(P) <> "" And leagRecText$(P) <> "*" Then
+
+                Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                    Print #1, "  .---";
                 Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
+                    If divLosses(P) + divTies(P) = 0 Then
+                        Print #1, " 1.000";
                     Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        If divWins(P) = 0 Then
+                            Print #1, "  .000";
+                        Else
+                            Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        End If
                     End If
                 End If
+
+                Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
             End If
 
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
+        Next P
 
-    Next
+    Next division
 
     Print #1,
-    Print #1, div2Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
-
-    For P = 11 To 20
-
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
-                    Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-
-    Next
-
+    If printDest = 1 Then Print #1, Chr$(12)
     Print #1,
-    Print #1, div3Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
 
-    For P = 21 To 30
-
-        If leagRecText$(P) <> "" Then
-
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
-                    Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-
-    Next
-
-    Print #1,
-    Print #1, div4Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
-
-    For P = 31 To 40
-
-        If leagRecText$(P) <> "" Then
-
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
-                    Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-
-    Next
-
-    Print #1, Chr$(12)
     Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 4 REC/G)"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
             Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+        Print #1, Tab(41);
         If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
@@ -573,20 +449,18 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 41 To 50
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -597,20 +471,18 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 81 To 90
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -620,43 +492,44 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Print #1, "ALL PURPOSE YARDAGE"; Tab(41); "SCORING NON-KICKERS"
 
     For P = 101 To 110
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1,
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1,
+
     Print #1, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
     For P = 61 To 70
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -667,20 +540,18 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 121 To 130
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(32);
             Print #1, Using "###.#"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(72);
             Print #1, Using "###.#"; leaderVal1!(P + 10)
         End If
 
@@ -690,20 +561,19 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     Print #1, "PASSING YARDAGE"; Tab(41); "PASSING TOUCHDOWNS"
 
     For P = 141 To 150
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -714,21 +584,19 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 161 To 170
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
-            Print #1, Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
+            Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
             Print #1, Tab(68);
-            Print #1, Using "##.#  ##"; leaderVal1!(P + 10); leaderVal2!(P + 10)
+            Print #1, Using "##.#  ###"; leaderVal1!(P + 10); leaderVal2!(P + 10)
         End If
 
     Next
@@ -738,44 +606,40 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 181 To 190
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
             Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "###"; leaderVal1!(P + 10)
         End If
 
     Next
 
     Print #1,
-    Print #1, "FIELD GOAL %                     FGA"; Tab(41); "EXTRA POINT %                   EPA"
+    Print #1, "FIELD GOAL %                     FGA"; Tab(41); "EXTRA POINT %                    EPA"
 
     For P = 201 To 210
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(27);
             Print #1, Using "###.#  ###"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(67);
             Print #1, Using "###.#  ##"; leaderVal1!(P + 10); leaderVal2!(P + 10)
         End If
 
@@ -786,40 +650,39 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     For P = 221 To 230
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(35);
             Print #1, Using "##"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(75);
             Print #1, Using "##"; leaderVal1!(P + 10)
         End If
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1,
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1,
+
     Print #1, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 
     For P = 1 To 20
 
         CA = 1
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
-        Else
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         CA = 2
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -838,14 +701,12 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
         CA = 3
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
-        Else
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         CA = 4
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -857,7 +718,10 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1,
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1,
+
     Print #1, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
 
     CA = 7
@@ -881,21 +745,22 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
         End If
     Next
 
-    Print #1, Chr$(12)
+    Print #1,
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1,
+
     Print #1, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
 
     For P = 1 To 20
 
         CA = 5
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
-        Else
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         CA = 6
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -919,7 +784,10 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
         End If
     Next
 
-    Print #1, Chr$(12)
+    Print #1,
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1,
+
     Print #1, "TURNOVER MARGIN"
     Print #1, "                     GAINED          LOST           MARGIN/"
     Print #1, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
@@ -953,5 +821,3 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
     End If
 
 End Sub
-
-

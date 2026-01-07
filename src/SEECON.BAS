@@ -220,129 +220,97 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Open destFile$ For Output As #1
 
-    Print #1, confName$ + " OVERALL RECORD"
+    XCoord = Int((80 - Len(league$) - 10) / 2)
+    Print #1, 
+    Print #1, Tab(XCoord); confName$; " STANDINGS"
+    Print #1, 
 
-    If div1Name$ <> "" Then Print #1, div1Name$; " DIVISION"
+    For division = 1 To 2
 
-    Print #1, "              W   L   T   PCT  PF  PA"
-
-    For P = 1 To 15
-
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
-                    Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        If division = 1 Then
+            divisionName$ = RTrim$(div1$)
+        Else
+            divisionName$ = RTrim$(div2$)
         End If
 
-    Next
+        Print #1, divisionName$;
+        Print #1, Tab(15); "W   L   T   PCT  PF  PA"
+        Print #1,
 
-    Print #1,
-    If div2Name$ <> "" Then Print #1, div2Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
+        first = ((division - 1) * 15) + 1
+        last = division * 15
 
-    For P = 16 To 30
+        D1 = divWins(first) - divLosses(first)
 
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
+        For P = first To last
+
+            If leagRecText$(P) <> "" And leagRecText$(P) <> "*" Then
+ 
+                Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                    Print #1, "  .---";
                 Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
+                    If divLosses(P) + divTies(P) = 0 Then
+                        Print #1, " 1.000";
                     Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        If divWins(P) = 0 Then
+                            Print #1, "  .000";
+                        Else
+                            Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        End If
                     End If
                 End If
+
+                Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
             End If
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
 
-    Next
+        Next P
 
-    Print #1,
-    Print #1, confName$ + " CONFERENCE RECORD"
+        Print #1, "               CONFERENCE       "
+        Print #1, Tab(15); "W   L   T   PCT  PF  PA"
 
-    If div1Name$ <> "" Then Print #1, div1Name$; " DIVISION"
+        For P = (first + 30) To (last + 30)
 
-    Print #1, "              W   L   T   PCT  PF  PA"
-
-    For P = 31 To 45
-
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
+            If leagRecText$(P) <> "" Then
+                Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                    Print #1, "  .---";
                 Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
+                    If divLosses(P) + divTies(P) = 0 Then
+                        Print #1, " 1.000";
                     Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        If divWins(P) = 0 Then
+                            Print #1, "  .000";
+                        Else
+                            Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
+                        End If
                     End If
                 End If
+                Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
             End If
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
 
-    Next
+        Next
 
-    Print #1,
-    If div2Name$ <> "" Then Print #1, div2Name$; " DIVISION"
-    Print #1, "              W   L   T   PCT  PF  PA"
+    Next division
 
-    For P = 46 To 60
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
 
-        If leagRecText$(P) <> "" Then
-            Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print #1, "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print #1, " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print #1, "  .000";
-                    Else
-                        Print #1, Using "  .###"; divWins(P) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-            Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-
-    Next
-
-    Print #1, Chr$(12)
     Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 3 REC/G)"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
 
     For P = 1 To 20
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
             Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
@@ -357,20 +325,19 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1, "RUSHING YARDS TOTAL"; Tab(41); "RECEIVING YARDS TOTAL"
 
     For P = 41 To 50
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -380,20 +347,19 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Print #1, "RUSHING ATTEMPTS"; Tab(41); "TOTAL RECEPTIONS"
 
     For P = 81 To 90
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -404,44 +370,43 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 101 To 110
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
+
     Print #1, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
     For P = 61 To 70
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -452,20 +417,18 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 121 To 130
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(32);
             Print #1, Using "###.#"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(72);
             Print #1, Using "###.#"; leaderVal1!(P + 10)
         End If
 
@@ -476,20 +439,18 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 141 To 150
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(33);
             Print #1, Using "####"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "####"; leaderVal1!(P + 10)
         End If
 
@@ -500,15 +461,13 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 161 To 170
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
             Print #1, Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -524,20 +483,18 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 181 To 190
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
             Print #1, Tab(28);
             Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(73);
             Print #1, Using "###"; leaderVal1!(P + 10)
         End If
 
@@ -548,20 +505,18 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 201 To 210
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(27);
             Print #1, Using "###.#  ###"; leaderVal1!(P); leaderVal2!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(67);
             Print #1, Using "###.#  ##"; leaderVal1!(P + 10); leaderVal2!(P + 10)
         End If
 
@@ -572,40 +527,39 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     For P = 221 To 230
 
-        If leaderName$(P) = "*" Then
-            Print #1, Tab(41);
-        Else
+        If leaderName$(P) <> "*" Then
             Print #1, leaderName$(P) + ", " + leaderTeam$(P);
-            Print #1, Tab(28);
+            Print #1, Tab(35);
             Print #1, Using "##"; leaderVal1!(P);
-            Print #1, Tab(41);
         End If
 
+		Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
             Print #1, leaderName$(P + 10) + ", " + leaderTeam$(P + 10);
-            Print #1, Tab(68);
+            Print #1, Tab(75);
             Print #1, Using "##"; leaderVal1!(P + 10)
         End If
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
+
     Print #1, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 
     For P = 1 To 20
 
         CA = 1
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
-        Else
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
-            Print #1, Tab(41);
         End If
 
+        Print #1, Tab(41);
         CA = 2
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -624,14 +578,13 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
         CA = 3
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
         Else
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
-            Print #1, Tab(41);
         End If
 
+        Print #1, Tab(41);
         CA = 4
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -643,7 +596,10 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Next
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
+
     Print #1, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
 
     CA = 7
@@ -666,21 +622,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         End If
     Next
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
+
     Print #1, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
 
     For P = 1 To 20
 
         CA = 5
 
-        If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
-            Print #1, Tab(41);
-        Else
+        If totalTeamName$(CA, P) <> "*" And totalTeamName$(CA, P) <> "" Then
             Print #1, totalTeamName$(CA, P); Tab(15);
             Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
-            Print #1, Tab(41);
         End If
 
+        Print #1, Tab(41);
         CA = 6
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -704,7 +661,10 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         End If
     Next
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
+
     Print #1, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
     Print #1, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
 
@@ -755,98 +715,89 @@ Sub CollegeStdgs_Screen (confName$)
     Shared div1Name$, div2Name$
 
     Color 15, 0
-
     Cls
+
     Color 12
 
-    Locate 2, 33
+    Locate 2, Int((80 - Len(confName$) - 14) / 2)
     Print confName$ + "OVERALL RECORD"
 
-    Color 2
-    Locate 4, 1
-    Print RTrim$(div1Name$); " DIVISION"
+    'Cycle through divisions
+    For division = 1 To 2
 
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
+        Select Case division
 
-    For P = 1 To 15:
+            Case 1
+                divisionName$ = RTrim$(div1Name$)
+                yCoord = 4
+                xCoord = 1
 
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P + 5 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            Case 2
+                divisionName$ = RTrim$(div2Name$)
+                yCoord = 4
+                xCoord = 41
 
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
+        End Select
+
+        Locate yCoord, xCoord
+
+        Color 2
+        Print divisionName$;
+
+        Locate yCoord, xCoord + 13
+
+        Color 14
+        Print "W   L   T   PCT  PF  PA"
+
+        Color 15
+
+        RT = 0
+        first = ((division - 1) * 15) + 1
+        last = division * 15
+
+        For P = first To last:
+
+            If leagRecText$(P) = "" Then
+                RT = RT + 1
             Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
+
+                Select Case division
+
+                    Case 1
+                        Locate (P + 5 - RT), 1
+
+                    Case 2
+                        Locate (P - 10 - RT), 41
+
+                End Select
+
+                Print PadRight$(divTeamNames$(P), 13); 
+                Print Using " ##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+                'Win %
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                    Print "  .---";
                 Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
+                    If divLosses(P) + divTies(P) = 0 Then
+                        Print " 1.000";
                     Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                        If divWins(P) = 0 Then
+                            Print "  .000";
+                        Else
+                            'Ties count as 1/2 win
+                            PCT! = (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P))
+                            Print Using " .###"; PCT!;
+                        End If
                     End If
                 End If
+
+                Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
             End If
 
-            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        Next P
 
-        End If
-
-    Next
-
-    RT = 0
-
-    'If RTrim$(div2Name$) <> "" Then
-
-    Locate 4, 41
-
-    Color 2
-    Print RTrim$(div2Name$); " DIVISION"
-
-    Locate , 41
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 16 To 30
-
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 10 - RT), 41
-            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-
-        End If
-
-    Next
-
-    RT = 0
-
-    'End If
+    Next division
 
     '-----
     Color 12
@@ -858,90 +809,84 @@ Sub CollegeStdgs_Screen (confName$)
     Cls
 
     Color 12
-    Locate 2, 33
+
+    Locate 2, Int((80 - Len(confName$) - 17) / 2)
     Print confName$ + "CONFERENCE RECORD"
 
-    Locate 4, 1
-    Color 2
-    Print RTrim$(div1Name$); " DIVISION"
+    'Cycle through divisions
+    For division = 1 To 2
 
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
+        Select Case division
 
-    For P = 31 To 45
+            Case 1
+                divisionName$ = div1Name$
+                yCoord = 4
+                xCoord = 1
 
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 25 - RT)
-            Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+            Case 2
+                divisionName$ = div2Name$
+                yCoord = 4
+                xCoord = 41
 
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
+        End Select
+
+        Locate yCoord, xCoord
+
+        Color 2
+        Print RTrim$(divisionName$);
+
+        Locate yCoord, xCoord + 13
+
+        Color 14
+        Print "W   L   T   PCT  PF  PA"
+
+        Color 15
+
+        RT = 0
+        first = ((division + 1) * 15) + 1
+        last = (division + 2) * 15
+
+        For P = first To last:
+
+            If leagRecText$(P) = "" Then
+                RT = RT + 1
             Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
+
+                Select Case division
+
+                    Case 1
+                        Locate (P - 25 - RT), 1
+
+                    Case 2
+                        Locate (P - 40 - RT), 41
+
+                End Select
+
+                Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+
+                'Win %
+                If divWins(P) + divLosses(P) + divTies(P) = 0 Then
+                    Print "  .---";
                 Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
+                    If divLosses(P) + divTies(P) = 0 Then
+                        Print " 1.000";
                     Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                        If divWins(P) = 0 Then
+                            Print "  .000";
+                        Else
+                            'Ties count as 1/2 win
+                            Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
+                        End If
                     End If
                 End If
+
+                Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
             End If
 
-            Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+        Next P
 
-        End If
-
-    Next
-
-    RT = 0
-
-    'If RTrim$(div2Name$) <> "" Then
-
-    Locate 4, 41
-    Color 2
-    Print RTrim$(div2Name$); " DIVISION"
-
-    Locate , 41
-    Color 14
-    Print "              W   L   T   PCT  PF  PA"
-    Color 15
-
-    For P = 46 To 60
-        If leagRecText$(P) = "" Then
-            RT = RT + 1
-        Else
-            Locate (P - 40 - RT), 41
-            Print divTeamNames$(P); Tab(54); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
-
-            'Win %
-            If divWins(P) + divLosses(P) + divTies(P) = 0 Then
-                Print "  .---";
-            Else
-                If divLosses(P) + divTies(P) = 0 Then
-                    Print " 1.000";
-                Else
-                    If divWins(P) = 0 Then
-                        Print "  .000";
-                    Else
-                        'Ties count as 1/2 win
-                        Print Using "  .###"; (divWins(P) + (divTies(P) * .5)) / (divWins(P) + divLosses(P) + divTies(P));
-                    End If
-                End If
-            End If
-
-            Print Tab(71); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
-        End If
-    Next
-
-    RT = 0
-
-    'End If
+    Next division
 
     '-----
     Color 12

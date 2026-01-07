@@ -153,7 +153,8 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(3); Tab(28); indRecDesc$(3, 0); Tab(42); indRecDesc$(3, 1); Tab(62); Using "##.#"; indRecords!(3)
     'Longest Run
     Locate , 4
-    Print indRecCategory$(4); Tab(28); indRecDesc$(4, 0); Tab(42); indRecDesc$(4, 1); Tab(62); Using " ###"; indRecords!(4);: Print indRecDesc$(4, 2)
+    Print indRecCategory$(4); Tab(28); indRecDesc$(4, 0); Tab(42); indRecDesc$(4, 1); Tab(62); Using " ###"; indRecords!(4);
+    Print indRecDesc$(4, 2)
 
     'Receiving Records
     For I = 5 To 7
@@ -166,7 +167,8 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(8); Tab(28); indRecDesc$(8, 0); Tab(42); indRecDesc$(8, 1); Tab(62); Using "##.#"; indRecords!(8)
     'Longest Catch
     Locate , 4
-    Print indRecCategory$(9); Tab(28); indRecDesc$(9, 0); Tab(42); indRecDesc$(9, 1); Tab(62); Using " ###"; indRecords!(9);: Print indRecDesc$(9, 2)
+    Print indRecCategory$(9); Tab(28); indRecDesc$(9, 0); Tab(42); indRecDesc$(9, 1); Tab(62); Using " ###"; indRecords!(9);
+    Print indRecDesc$(9, 2)
 
     'Passing Records
     For I = 10 To 14
@@ -182,7 +184,8 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(16); Tab(28); indRecDesc$(16, 0); Tab(42); indRecDesc$(16, 1); Tab(61); Using "###.#"; indRecords!(16)
     'Longest Pass
     Locate , 4
-    Print indRecCategory$(17); Tab(28); indRecDesc$(17, 0); Tab(42); indRecDesc$(17, 1); Tab(62); Using " ###"; indRecords!(17);: Print indRecDesc$(17, 2)
+    Print indRecCategory$(17); Tab(28); indRecDesc$(17, 0); Tab(42); indRecDesc$(17, 1); Tab(62); Using " ###"; indRecords!(17);
+    Print indRecDesc$(17, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -208,7 +211,8 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(25); Tab(28); indRecDesc$(25, 0); Tab(42); indRecDesc$(25, 1); Tab(62); Using "##.#"; indRecords!(25)
     'Longest KR
     Locate , 4
-    Print indRecCategory$(26); Tab(28); indRecDesc$(26, 0); Tab(42); indRecDesc$(26, 1); Tab(62); Using " ###"; indRecords!(26);: Print indRecDesc$(26, 2)
+    Print indRecCategory$(26); Tab(28); indRecDesc$(26, 0); Tab(42); indRecDesc$(26, 1); Tab(62); Using " ###"; indRecords!(26);
+    Print indRecDesc$(26, 2)
 
     'PR Records
     For I = 27 To 29
@@ -221,7 +225,8 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(30); Tab(28); indRecDesc$(30, 0); Tab(42); indRecDesc$(30, 1); Tab(62); Using "##.#"; indRecords!(30)
     'Longest PR
     Locate , 4
-    Print indRecCategory$(31); Tab(28); indRecDesc$(31, 0); Tab(42); indRecDesc$(31, 1); Tab(62); Using " ###"; indRecords!(31);: Print indRecDesc$(31, 2)
+    Print indRecCategory$(31); Tab(28); indRecDesc$(31, 0); Tab(42); indRecDesc$(31, 1); Tab(62); Using " ###"; indRecords!(31);
+    Print indRecDesc$(31, 2)
 
     'Punts / Punt Yds
     For I = 32 To 33
@@ -258,7 +263,8 @@ Sub ViewSeasonRecords ()
 
     'Longest FG
     Locate , 4
-    Print indRecCategory$(38); Tab(28); indRecDesc$(38, 0); Tab(42); indRecDesc$(38, 1); Tab(62); Using " ###"; indRecords!(38);: Print indRecDesc$(38, 2)
+    Print indRecCategory$(38); Tab(28); indRecDesc$(38, 0); Tab(42); indRecDesc$(38, 1); Tab(62); Using " ###"; indRecords!(38);
+    Print indRecDesc$(38, 2)
 
     'PAT / PAM
     For I = 39 To 40
@@ -278,7 +284,8 @@ Sub ViewSeasonRecords ()
 
     'Longest Int
     Locate , 4
-    Print indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);: Print indRecDesc$(45, 2)
+    Print indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);
+	Print indRecDesc$(45, 2)
 
     Color 15
     Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
@@ -576,7 +583,9 @@ Sub SeasonRecords_Report (printDest, destFile$)
     Print #1, indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);
     Print #1, indRecDesc$(45, 2)
 
-    Print #1, Chr$(12)
+    Print #1, 
+    If printDest = 1 Then Print #1, Chr$(12)
+    Print #1, 
 
     Print #1, Tab(23); "******* OFFENSIVE TEAM RECORDS *******"
     Print #1,

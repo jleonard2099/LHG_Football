@@ -411,8 +411,10 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 15
                         Locate 4
                         Print "1. NAME   "; rbName$(I1)
-                        Print "2. RUSHING AVG  ";: Print Using "##.#"; rushAvg(I1) * .3
-                        Print "3. RECEIVING AVG  ";: Print Using "##"; rbRecAvg(I1) * 3
+                        Print "2. RUSHING AVG  ";
+						Print Using "##.#"; rushAvg(I1) * .3
+                        Print "3. RECEIVING AVG  ";
+						Print Using "##"; rbRecAvg(I1) * 3
 
                         Do
 
@@ -487,7 +489,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 15
                         Locate 4
                         Print "1. NAME   "; wrName$(I1)
-                        Print "2. RECEIVING AVG  ";: Print Using "##"; wrRecAvg(I1) * 3
+                        Print "2. RECEIVING AVG  ";
+						Print Using "##"; wrRecAvg(I1) * 3
 
                         Do
 
@@ -633,7 +636,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                         Locate 4
                         Print "1. NAME   "; krName$(I1)
-                        Print "2. RETURN AVG  ";: Print Using "##"; krRetAvg(I1) * 3
+                        Print "2. RETURN AVG  ";
+						Print Using "##"; krRetAvg(I1) * 3
 
                         Do
 
@@ -768,7 +772,8 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 15
                         Locate 4
                         Print "1. NAME   "; punterName$(I1)
-                        Print "2. PUNTING AVG  ";: Print Using "##"; puntAvg(I1) * 2 + 28
+                        Print "2. PUNTING AVG  ";
+						Print Using "##"; puntAvg(I1) * 2 + 28
 
                         Do
 
@@ -835,8 +840,10 @@ Sub EditTeam (teamName$, YN$, teamNbr)
                         Color 15
                         Locate 4
                         Print "1. NAME   "; pkName$(I1)
-                        Print "2. FIELD GOAL %  ";: Print pkFGA(I1) * 5 + 25
-                        Print "3. EXTRA POINT %  ";: Print pkPAT(I1)
+                        Print "2. FIELD GOAL %  ";
+						Print pkFGA(I1) * 5 + 25
+                        Print "3. EXTRA POINT %  ";
+						Print pkPAT(I1)
 
                         Do
 
@@ -1737,7 +1744,8 @@ Sub CheckContributions
             BC% = BC% + rushContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print "11  PROCEED TO RECEIVERS"
 
         Do
@@ -1788,17 +1796,20 @@ Sub CheckContributions
 
         For I = 0 To 9:
             Print Using "## "; I + 1;
-            Print " "; rbName$(I); Tab(20);: Print Using "      ##"; rbRecepts(I)
+            Print " "; rbName$(I); Tab(20);
+			Print Using "      ##"; rbRecepts(I)
             BC% = BC% + rbRecepts(I)
         Next
 
         For I = 0 To 5
             Print Using "## "; I + 11;
-            Print " "; wrName$(I); Tab(20);: Print Using "      ##"; recContrib(I)
+            Print " "; wrName$(I); Tab(20);
+			Print Using "      ##"; recContrib(I)
             BC% = BC% + recContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+			Print Using "     ###"; BC%
         Print "17  PROCEED TO QUARTERBACKS"
 
         Do
@@ -1861,7 +1872,8 @@ Sub CheckContributions
             BC% = BC% + passContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print " 5  PROCEED TO KO RETURNMEN"
 
         Do
@@ -1916,7 +1928,8 @@ Sub CheckContributions
             BC% = BC% + krContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print " 4  PROCEED TO PUNT RETURNMEN"
 
         Do
@@ -1976,7 +1989,8 @@ Sub CheckContributions
             BC% = BC% + prContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print " 4  PROCEED TO FG KICKERS"
 
         Do
@@ -2034,7 +2048,8 @@ Sub CheckContributions
             BC% = BC% + pkFGContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print " 3  PROCEED TO PAT/EP KICKERS"
 
         Do
@@ -2091,7 +2106,8 @@ Sub CheckContributions
             Print Using "     ###"; pkPATContrib(I): BC% = BC% + pkPATContrib(I)
         Next
 
-        Print "    TOTAL"; Tab(20);: Print Using "     ###"; BC%
+        Print "    TOTAL"; Tab(20);
+		Print Using "     ###"; BC%
         Print " 3  PROCEED"
 
         Do

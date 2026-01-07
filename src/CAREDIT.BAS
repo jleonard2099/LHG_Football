@@ -855,9 +855,11 @@ Sub CareerStatsRB_Report (exitFlag%, careerName$, playerIdx)
                     'Rec TDs
                     Print #1, Tab(65); Using "##"; careerRBS!(V, playerIdx, 5);
                     'Longest Run
-                    Print #1, Tab(71); Using "##"; careerRBS!(V, playerIdx, 6);: Print #1, careerRBS$(V, playerIdx, 0);
+                    Print #1, Tab(71); Using "##"; careerRBS!(V, playerIdx, 6);
+                    Print #1, careerRBS$(V, playerIdx, 0);
                     'Longest Rec
-                    Print #1, Tab(77); Using "##"; careerRBS!(V, playerIdx, 9);: Print #1, careerRBS$(V, playerIdx, 1)
+                    Print #1, Tab(77); Using "##"; careerRBS!(V, playerIdx, 9);
+                    Print #1, careerRBS$(V, playerIdx, 1)
 
                 Next V
 
@@ -912,8 +914,10 @@ Sub CareerStatsRB_Report (exitFlag%, careerName$, playerIdx)
                 End If
 
                 Print #1, Tab(64); Using "###"; TT6;
-                Print #1, Tab(71); Using "##"; careerRecVal!(0);: Print #1, careerRecPlyr$(0);
-                Print #1, Tab(77); Using "##"; careerRecVal!(1);: Print #1, careerRecPlyr$(1)
+                Print #1, Tab(71); Using "##"; careerRecVal!(0);
+                Print #1, careerRecPlyr$(0);
+                Print #1, Tab(77); Using "##"; careerRecVal!(1);
+                Print #1, careerRecPlyr$(1)
 
                 TT1 = 0
                 TT2 = 0
@@ -921,8 +925,6 @@ Sub CareerStatsRB_Report (exitFlag%, careerName$, playerIdx)
                 TT4 = 0
                 TT5 = 0
                 TT6 = 0
-
-                LPrint Chr$(12)
 
                 If printDest = 1 Then
 
@@ -1258,7 +1260,8 @@ Sub CareerStatsQB_Report (exitFlag%, careerName$, playerIdx)
                     careerQBS!(V, playerIdx, 12) = Int(careerQBS!(V, playerIdx, 12) * 10) / 10
 
                     Print #1, Tab(70); "###.#"; careerQBS!(V, playerIdx, 12);
-                    Print #1, Tab(80); "##"; careerQBS!(V, playerIdx, 5);: Print #1, careerQBS$(V, playerIdx, 0)
+                    Print #1, Tab(80); "##"; careerQBS!(V, playerIdx, 5);
+                    Print #1, careerQBS$(V, playerIdx, 0)
 
                 Next V
 
@@ -1519,7 +1522,8 @@ Sub CareerStatsKR_Report (exitFlag%, careerName$, playerIdx)
                 End If
 
                 Print #1, Tab(61); "###"; TT17;
-                Print #1, Tab(68); "##"; careerRecVal!(0);: Print #1, careerRecPlyr$(0)
+                Print #1, Tab(68); "##"; careerRecVal!(0);
+                Print #1, careerRecPlyr$(0)
 
                 TT15 = 0
                 TT16 = 0
@@ -1790,6 +1794,7 @@ Sub CareerStatsP_Report (exitFlag%, careerName$, playerIdx)
                 If TT21 > 0 Then 
                     Print #1, Tab(47); "##.#"; TT22 / TT21
                 End If
+                
                 TT21 = 0
                 TT22 = 0
 
@@ -1912,16 +1917,27 @@ Sub CareerStatsK_Report (exitFlag%, careerName$, playerIdx)
                     End If
 
                     Print #1, Tab(46); "##"; careerFGS!(V, playerIdx, 4);
-                    Print #1, Tab(49); "##"; careerFGS!(V, playerIdx, 5);: Print #1, "-";
+
+                    Print #1, Tab(49); "##"; careerFGS!(V, playerIdx, 5);
+                    Print #1, "-";
                     Print #1, Tab(52); "##"; careerFGS!(V, playerIdx, 10);
-                    Print #1, Tab(55); "##"; careerFGS!(V, playerIdx, 6);: Print #1, "-";
+
+                    Print #1, Tab(55); "##"; careerFGS!(V, playerIdx, 6);
+                    Print #1, "-";
                     Print #1, Tab(58); "##"; careerFGS!(V, playerIdx, 11);
-                    Print #1, Tab(61); "##"; careerFGS!(V, playerIdx, 7);: Print #1, "-";
+
+                    Print #1, Tab(61); "##"; careerFGS!(V, playerIdx, 7);
+                    Print #1, "-";
                     Print #1, Tab(64); "##"; careerFGS!(V, playerIdx, 12);
-                    Print #1, Tab(67); "##"; careerFGS!(V, playerIdx, 8);: Print #1, "-";
+
+                    Print #1, Tab(67); "##"; careerFGS!(V, playerIdx, 8);
+                    Print #1, "-";
                     Print #1, Tab(70); "##"; careerFGS!(V, playerIdx, 13);
-                    Print #1, Tab(73); "##"; careerFGS!(V, playerIdx, 9);: Print #1, "-";
+
+                    Print #1, Tab(73); "##"; careerFGS!(V, playerIdx, 9);
+                    Print #1, "-";
                     Print #1, Tab(76); "##"; careerFGS!(V, playerIdx, 14)
+
                 Next V
 
                 For V = 1 To VV
@@ -1972,15 +1988,25 @@ Sub CareerStatsK_Report (exitFlag%, careerName$, playerIdx)
                 End If
 
                 Print #1, Tab(46); "##"; careerRecVal!(0);
-                Print #1, Tab(49); "##"; careerTeamTotal!(36);: Print #1, "-";
+
+                Print #1, Tab(49); "##"; careerTeamTotal!(36);
+                Print #1, "-";
                 Print #1, Tab(52); "##"; careerTeamTotal!(41);
-                Print #1, Tab(55); "##"; careerTeamTotal!(37);: Print #1, "-";
+                
+                Print #1, Tab(55); "##"; careerTeamTotal!(37);
+                Print #1, "-";
                 Print #1, Tab(58); "##"; careerTeamTotal!(42);
-                Print #1, Tab(61); "##"; careerTeamTotal!(38);: Print #1, "-";
+
+                Print #1, Tab(61); "##"; careerTeamTotal!(38);
+                Print #1, "-";
                 Print #1, Tab(64); "##"; careerTeamTotal!(43);
-                Print #1, Tab(67); "##"; careerTeamTotal!(39);: Print #1, "-";
+
+                Print #1, Tab(67); "##"; careerTeamTotal!(39);
+                Print #1, "-";
                 Print #1, Tab(70); "##"; careerTeamTotal!(44);
-                Print #1, Tab(73); "##"; careerTeamTotal!(40);: Print #1, "-";
+
+                Print #1, Tab(73); "##"; careerTeamTotal!(40);
+                Print #1, "-";
                 Print #1, Tab(76); "##"; careerTeamTotal!(45)
 
                 For J = 23 To 45: careerTeamTotal!(J) = 0: Next
@@ -2206,23 +2232,6 @@ Sub CareerStatsSACK_Report (exitFlag%, careerName$, playerIdx)
                 Print #1, "TOTALS";
                 Print #1, Tab(23); "##"; VV;
                 Print #1, Tab(33); "####"; careerTeamTotal!(33)
-
-                If printDest = 1 Then
-
-                    Open destFile$ For Input As #2
-
-                    Do While Not EOF(2)
-                        Line Input #2, X$
-                        LPrint X$
-                    Loop
-
-                    Close #2
-
-                    LPrint Chr$(12)
-
-                    Kill destFile$
-
-                End If
 
                 If printDest = 1 Then
 

@@ -41,8 +41,6 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
-Dim Shared totalSTPenalties
-
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1011,6 +1009,7 @@ End Sub
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
 '$Include: 'FileTeamSelection.bm'
+
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
 '$Include: 'BLANKCON.BAS'
@@ -2809,9 +2808,9 @@ Sub FOOTBALL ()
     ' *** PRE-SNAP PENALTIES ***
     penaltyOnPlay = 0
 
-    If penaltyOnPlay = 1 Then 
+    If penaltyOnPlay = 1 Then
         
-        Call PenaltyPreSnap (penaltyOnPlay)
+        Call PenaltyPreSnap(penaltyOnPlay)
         playSegment = 8
         GoTo HANDLEPENALTY
 
@@ -20068,20 +20067,20 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         Locate , 1: Print #1,
     Next I
 
-    If printChoice = 1 Then Print #1, Chr$(12)
-
     Close #1
 
     If printChoice = 1 Then
 
         Open boxName$ For Input As #2
 
-        Do
+        Do While Not EOF(2)
             Line Input #2, X$
             LPrint X$
-        Loop While Left$(X$, 1) <> Chr$(12)
-
+        Loop
+        
         Close #2
+
+        LPrint Chr$(12)
 
         Kill boxName$
 
@@ -20695,10 +20694,16 @@ Sub STATS2SCREEN ()
             Else
                 Locate , 32
                 Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 3, 17), gameStatsPlayer(I, 4, 17), gameStatsPlayer(I, 3, 17) / gameStatsPlayer(I, 4, 17) * 100, gameLongFGAtt(I, 0), playerFGM(I, 0, 0);
+
+                'FG's 0 - 19
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 0); playerFGM(I, 0, 1);
+                'FG's 20 - 29
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 1); playerFGM(I, 0, 2);
+                'FG's 30 - 39
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 2); playerFGM(I, 0, 3);
+                'FG's 40 - 49
                 Print "- ";: Print Using "#  #"; playerFGA(I, 0, 3); playerFGM(I, 0, 4);
+                'FG's 50+
                 Print "- ";: Print Using "#"; playerFGA(I, 0, 4)
             End If
 
@@ -20720,10 +20725,16 @@ Sub STATS2SCREEN ()
 
                 Locate , 32
                 Print Using "### ### ###.# ##  #"; gameStatsPlayer(I, 7, 17), gameStatsPlayer(I, 8, 17), gameStatsPlayer(I, 7, 17) / gameStatsPlayer(I, 8, 17) * 100, gameLongFGAtt(I, 1), playerFGM(I, 1, 0);
+
+                'FG's 0 - 19
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 0); playerFGM(I, 1, 1);
+                'FG's 20 - 29
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 1); playerFGM(I, 1, 2);
+                'FG's 30 - 39
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 2); playerFGM(I, 1, 3);
+                'FG's 40 - 49
                 Print "- ";: Print Using "#  #"; playerFGA(I, 1, 3); playerFGM(I, 1, 4);
+                'FG's 50+
                 Print "- ";: Print Using "#"; playerFGA(I, 1, 4)
 
             End If

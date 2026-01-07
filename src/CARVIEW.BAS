@@ -532,7 +532,8 @@ Sub CareerStats_Report (careerName$, printDest, destFile$)
             End If
 
             Print #1, Tab(61); Using "###"; TT17;
-            Print #1, Tab(70); Using "###"; careerRecVal!(0);: Print #1, careerRecPlyr$(0)
+            Print #1, Tab(70); Using "###"; careerRecVal!(0);
+		Print #1, careerRecPlyr$(0)
 
             TT15 = 0
             TT16 = 0
@@ -611,7 +612,8 @@ Sub CareerStats_Report (careerName$, printDest, destFile$)
             End If
 
             Print #1, Tab(61); Using "###"; TT20;
-            Print #1, Tab(70); Using "###"; careerRecVal!(0);: Print #1, careerRecPlyr$(0)
+            Print #1, Tab(70); Using "###"; careerRecVal!(0);
+		Print #1, careerRecPlyr$(0)
 
             TT18 = 0: TT19 = 0: TT20 = 0
 
@@ -734,23 +736,28 @@ Sub CareerStats_Report (careerName$, printDest, destFile$)
                 Print #1, Tab(46); Using "##"; careerFGS!(V, I, 4);
 
                 'FG's 0-19
-                Print #1, Tab(49); Using "##"; careerFGS!(V, I, 5);: Print #1, "-";
+                Print #1, Tab(49); Using "##"; careerFGS!(V, I, 5);
+				Print #1, "-";
                 Print #1, Tab(52); Using "##"; careerFGS!(V, I, 10);
 
                 'FG's 20-29
-                Print #1, Tab(55); Using "##"; careerFGS!(V, I, 6);: Print #1, "-";
+                Print #1, Tab(55); Using "##"; careerFGS!(V, I, 6);
+				Print #1, "-";
                 Print #1, Tab(58); Using "##"; careerFGS!(V, I, 11);
 
                 'FG's 30-39
-                Print #1, Tab(61); Using "##"; careerFGS!(V, I, 7);: Print #1, "-";
+                Print #1, Tab(61); Using "##"; careerFGS!(V, I, 7);
+				Print #1, "-";
                 Print #1, Tab(64); Using "##"; careerFGS!(V, I, 12);
 
                 'FG's 40-49
-                Print #1, Tab(67); Using "##"; careerFGS!(V, I, 8);: Print #1, "-";
+                Print #1, Tab(67); Using "##"; careerFGS!(V, I, 8);
+				Print #1, "-";
                 Print #1, Tab(70); Using "##"; careerFGS!(V, I, 13);
 
                 'FG's 50+
-                Print #1, Tab(73); Using "##"; careerFGS!(V, I, 9);: Print #1, "-";
+                Print #1, Tab(73); Using "##"; careerFGS!(V, I, 9);
+				Print #1, "-";
                 Print #1, Tab(76); Using "##"; careerFGS!(V, I, 14)
             Next V
 
@@ -802,15 +809,20 @@ Sub CareerStats_Report (careerName$, printDest, destFile$)
             End If
 
             Print #1, Tab(46); Using "##"; careerRecVal!(0);
-            Print #1, Tab(49); Using "##"; careerTeamTotal!(36);: Print #1, "-";
+            Print #1, Tab(49); Using "##"; careerTeamTotal!(36);
+			Print #1, "-";
             Print #1, Tab(52); Using "##"; careerTeamTotal!(41);
-            Print #1, Tab(55); Using "##"; careerTeamTotal!(37);: Print #1, "-";
+            Print #1, Tab(55); Using "##"; careerTeamTotal!(37);
+			Print #1, "-";
             Print #1, Tab(58); Using "##"; careerTeamTotal!(42);
-            Print #1, Tab(61); Using "##"; careerTeamTotal!(38);: Print #1, "-";
+            Print #1, Tab(61); Using "##"; careerTeamTotal!(38);
+			Print #1, "-";
             Print #1, Tab(64); Using "##"; careerTeamTotal!(43);
-            Print #1, Tab(67); Using "##"; careerTeamTotal!(39);: Print #1, "-";
+            Print #1, Tab(67); Using "##"; careerTeamTotal!(39);
+			Print #1, "-";
             Print #1, Tab(70); Using "##"; careerTeamTotal!(44);
-            Print #1, Tab(73); Using "##"; careerTeamTotal!(40);: Print #1, "-";
+            Print #1, Tab(73); Using "##"; careerTeamTotal!(40);
+			Print #1, "-";
             Print #1, Tab(76); Using "##"; careerTeamTotal!(45)
 
             For J = 23 To 45: careerTeamTotal!(J) = 0: Next
@@ -2161,20 +2173,30 @@ Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerName$)
                             Print Tab(46); Using "##"; careerFGS!(V, I, 4);
 
                             'FGs 0-19 Yds
-                            Print Tab(49); Using "##"; careerFGS!(V, I, 5);: Print "-";
+                            Print Tab(49); Using "##"; careerFGS!(V, I, 5);
+							Print "-";
                             Print Tab(52); Using "##"; careerFGS!(V, I, 10);
+
                             'FGs 20-29 Yds
-                            Print Tab(55); Using "##"; careerFGS!(V, I, 6);: Print "-";
+                            Print Tab(55); Using "##"; careerFGS!(V, I, 6);
+							Print "-";
                             Print Tab(58); Using "##"; careerFGS!(V, I, 11);
+
                             'FGs 30-39 Yds
-                            Print Tab(61); Using "##"; careerFGS!(V, I, 7);: Print "-";
+                            Print Tab(61); Using "##"; careerFGS!(V, I, 7);
+							Print "-";
                             Print Tab(64); Using "##"; careerFGS!(V, I, 12);
+
                             'FGs 40-49 Yds
-                            Print Tab(67); Using "##"; careerFGS!(V, I, 8);: Print "-";
+                            Print Tab(67); Using "##"; careerFGS!(V, I, 8);
+							Print "-";
                             Print Tab(70); Using "##"; careerFGS!(V, I, 13);
+
                             'FGs 50+ Yds
-                            Print Tab(73); Using "##"; careerFGS!(V, I, 9);: Print "-";
+                            Print Tab(73); Using "##"; careerFGS!(V, I, 9);
+							Print "-";
                             Print Tab(76); Using "##"; careerFGS!(V, I, 14)
+
                         Next V
 
                         For V = 1 To VV
@@ -2228,15 +2250,25 @@ Sub CareerCategory_Screen (RT, B9, categoryID%, escPressed%, careerName$)
                         End If
 
                         Print Tab(46); Using "##"; careerRecVal!(6);
-                        Print Tab(49); Using "##"; careerTeamTotal!(36);: Print "-";
+
+                        Print Tab(49); Using "##"; careerTeamTotal!(36);
+						Print "-";
                         Print Tab(52); Using "##"; careerTeamTotal!(41);
-                        Print Tab(55); Using "##"; careerTeamTotal!(37);: Print "-";
+
+                        Print Tab(55); Using "##"; careerTeamTotal!(37);
+						Print "-";
                         Print Tab(58); Using "##"; careerTeamTotal!(42);
-                        Print Tab(61); Using "##"; careerTeamTotal!(38);: Print "-";
+
+                        Print Tab(61); Using "##"; careerTeamTotal!(38);
+						Print "-";
                         Print Tab(64); Using "##"; careerTeamTotal!(43);
-                        Print Tab(67); Using "##"; careerTeamTotal!(39);: Print "-";
+
+                        Print Tab(67); Using "##"; careerTeamTotal!(39);
+						Print "-";
                         Print Tab(70); Using "##"; careerTeamTotal!(44);
-                        Print Tab(73); Using "##"; careerTeamTotal!(40);: Print "-";
+
+                        Print Tab(73); Using "##"; careerTeamTotal!(40);
+						Print "-";
                         Print Tab(76); Using "##"; careerTeamTotal!(45)
 
                         For J = 23 To 45:

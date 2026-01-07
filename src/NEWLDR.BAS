@@ -852,7 +852,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 0 To 4:
                             Color 14
                             Locate I + 3, 24
-                            Print Using "##"; I;: Print " ";
+                            Print Using "##"; I;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -874,7 +875,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 5 To 9:
                             Color 14
                             Locate I - 2, 24
-                            Print Using "##"; I - 5;: Print " ";
+                            Print Using "##"; I - 5;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -896,7 +898,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 10 To 18:
                             Color 14
                             Locate I - 7, 24
-                            Print Using "##"; I - 10;: Print " ";
+                            Print Using "##"; I - 10;
+                            Print " ";
                             Color 15: Print expCategories$(I)
                         Next
 
@@ -917,7 +920,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 19 To 23:
                             Color 14
                             Locate I - 16, 24
-                            Print Using "##"; I - 19;: Print " ";
+                            Print Using "##"; I - 19;
+                            Print " ";
                             Color 15
                             Print expCategories$(I):
                         Next
@@ -939,7 +943,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 24 To 28:
                             Color 14
                             Locate I - 21, 24
-                            Print Using "##"; I - 24;: Print " ";
+                            Print Using "##"; I - 24;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -961,7 +966,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 29 To 31:
                             Color 14
                             Locate I - 26, 24
-                            Print Using "##"; I - 29;: Print " ";
+                            Print Using "##"; I - 29;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -983,7 +989,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 32 To 38:
                             Color 14
                             Locate I - 29, 24
-                            Print Using "##"; I - 32;: Print " ";
+                            Print Using "##"; I - 32;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -1005,7 +1012,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 39 To 40:
                             Color 14
                             Locate I - 36, 24
-                            Print Using "##"; I - 39;: Print " ";
+                            Print Using "##"; I - 39;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -1030,7 +1038,8 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 41 To 43:
                             Color 14
                             Locate I - 38, 24
-                            Print Using "##"; I - 41;: Print " ";
+                            Print Using "##"; I - 41;
+                            Print " ";
                             Color 15
                             Print expCategories$(I)
                         Next
@@ -1053,14 +1062,16 @@ Sub ExpandedLeaders_Menu (totalStats)
                         For I = 44 To 58:
                             Color 0
                             Locate I - 41, 4
-                            Print Using "##"; I - 44;: Print " ";
+                            Print Using "##"; I - 44;
+                            Print " ";
                             Print expCategories$(I)
                         Next
 
                         For I = 59 To 72:
                             Color 0
                             Locate I - 56, 40
-                            Print Using "##"; I - 44;: Print " ";
+                            Print Using "##"; I - 44;
+                            Print " ";
                             Print expCategories$(I)
                         Next
 
@@ -2557,7 +2568,10 @@ Sub NewLeaders_Report (printDest, destFile$, categoryId, maxRecords, TVN)
     For W = 1 To maxRecords
 
         If (W - 1) Mod 50 = 0 Then
-            Print #1, Chr$(12)
+            Print #1, 
+            If printDest = 1 Then Print #1, Chr$(12)
+            Print #1, 
+
             Print #1, "     PLAYER                  TEAM                     "; expCategories$(categoryId)
             Print #1, "     ------                  ----                     ";
             Print #1, String$(Len(expCategories$(categoryId)), 45)

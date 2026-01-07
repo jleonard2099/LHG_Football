@@ -1348,4 +1348,3 @@ Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
     End If
 
 End Function
-
