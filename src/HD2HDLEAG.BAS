@@ -331,11 +331,22 @@ Sub Hd2HdPro_League (secondLeague)
                 End If
 
                 'Generate output
-                If VPP <> 1 Then
-                    Call Hd2HdPro_Report(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printChoice)
-                Else
-                    Call Hd2HdPro_Screen(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague)
-                End If
+                Select Case VPP
+
+                    Case 0
+                        If printChoice = 0 Then
+                            destFile$ = _SaveFileDialog$("Save League Comparison Report", _CWD$ + "\League Comparison Report", "*.txt", "Text File")
+                            If destFile$ <> "" Then
+                                Call Hd2HdPro_Report(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printChoice, destFile$)
+                            End If
+                        Else
+                            Call Hd2HdPro_Report(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printChoice, "Comparison")
+                        End If
+                    
+                    Case 1
+                        Call Hd2HdPro_Screen(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague)
+                
+                End Select
 
                 Cls
 
@@ -404,7 +415,7 @@ End Sub
 '----------------------------------------
 'This subroutine outputs the calculated
 'comparison values to a report file
-Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printDest)
+Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printDest, printFile$)
 
     Shared awayWins(), awayLosses(), awayTies()
     Shared homeWins(), homeLosses(), homeTies()
@@ -430,12 +441,6 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
     Shared div1Name_2$, div2Name_2$, div3Name_2$, div4Name_2$
 
-    If printDest = 0 Then
-        destFile$ = _SaveFileDialog$("Save Comparison Report", _CWD$ + "\Comparison", "*.txt", "Text File")
-    Else
-        destFile$ = "Comparison"
-    End If
-
     Color 15, 0
     Cls
 
@@ -444,7 +449,7 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
     divisionNames$(3) = div3Name$
     divisionNames$(4) = div4Name$
 
-    Open destFile$ For Output As #1
+    Open printFile$ For Output As #1
 
     div = 0
 
@@ -824,7 +829,7 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
     If printDest = 1 Then
 
-        Open destFile$ For Input As #2
+        Open printFile$ For Input As #2
 
         Do While Not EOF(2)
             Line Input #2, X$
@@ -835,7 +840,7 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
         LPrint Chr$(12)
 
-        Kill destFile$
+        Kill printFile$
 
     End If
 

@@ -502,6 +502,7 @@ ruleYrPro$(7) = "2016-2017"
 ruleYrPro$(8) = "2018-2022"
 ruleYrPro$(9) = "2023"
 ruleYrPro$(10) = "2024"
+ruleYrPro$(11) = "2025+"
 
 ruleYrColl$(0) = "PRE-1968 "
 ruleYrColl$(1) = "1968-1980"
@@ -1009,7 +1010,6 @@ End Sub
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
 '$Include: 'FileTeamSelection.bm'
-
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
 '$Include: 'BLANKCON.BAS'
@@ -1364,7 +1364,7 @@ Sub FOOTBALL ()
 
                     Case 6:
                         ruleOptPro = ruleOptPro + 1
-                        If ruleOptPro > 10 Then ruleOptPro = 0
+                        If ruleOptPro > 11 Then ruleOptPro = 0
 
                     Case 7
                         ruleOptColl = ruleOptColl + 1
@@ -1904,9 +1904,9 @@ Sub FOOTBALL ()
             I$ = GetKeyPress$
             kickChoice = Val(I$)
 
-            If kickChoice = 2 And ruleOptType <> 0 And ruleOptPro >= 9 And teamYears(P1) >= 2024 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
+            If kickChoice = 2 And ruleOptType <> 0 And ruleOptPro >= 10 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
                 'Onside kick NOT ALLOWED
-                'Pro Rules Year 2023+, Team Year 2024+, Onside Kick before 4th Quarter
+                'Pro Rules Year 2024+, Onside Kick before 4th Quarter
                 pbpString$ = "CAN ONLY USE IN 4TH QUARTER IF YOU ARE BEHIND IN SCORE"
                 Call PBP
 
@@ -7563,7 +7563,7 @@ Sub FOOTBALL ()
 
                 pbpString$ = "*** PENALTY - ILLEGAL BLOCK - 10 YDS ***"
                 penaltyYds! = 10
-                Print #11, "(INT RET) "; pbpString$
+                'Print #11, "(INT RET) "; pbpString$
                 GoTo HANDLEPENALTY
 
             End If
@@ -10066,7 +10066,7 @@ Sub QBSNEAK ()
 
     teamName$ = Right$(gameTeams$(P1), Len(gameTeams$(P1)) - 3)
 
-    If (teamName$ = "PHILADELPHIA" Or teamName$ = "BUFFALO") And (teamYears(P1) >= 2022 And teamYears(P1) <= 2024) Then
+    If (teamName$ = "PHILADELPHIA" Or teamName$ = "BUFFALO") And (teamYears(P1) >= 2022 And teamYears(P1) <= 2025) Then
 
         brotherlyShove = 1
 
@@ -12871,10 +12871,12 @@ Sub ComputerOffense ()
     'So 50 yarder is attempted from Opp 33 (67)
     fgAttLine = (117 - fgLimit% + goalPostAdj)
     inFGRange = fgAttLine - 3
-    inLongFGRange = inLongFGRange
+    inLongFGRange = fgAttLine + 10
 
     scoreDiff = score(P1, 0) - score(D, 0)
     teamRushPct = leagRat_GAME(P1, 7)
+
+    Print #11, , "DEBUG: Computer is choosing offense. Situation: RuleType="; ruleOptType; "; Down="; currDown; "; Yards="; ydsToFirst; "; YardLine="; ydLine; "; YdsToScore="; ydsToScore
 
     'Increase run % based on AI tendency for
     'special scenarios favoring a pass choice
@@ -12957,6 +12959,8 @@ Sub ComputerOffense ()
 
         Exit Sub
 
+        Print #11, , "DEBUG: Computer chose offense. 2-pt Conversion. PlayCall="; playCall
+
     End If
 
 
@@ -12975,6 +12979,8 @@ Sub ComputerOffense ()
         qbTakeKnee = 1
 
         Exit Sub
+
+        Print #11, , "DEBUG: Computer chose offense. Victory Formation. PlayCall="; playCall
 
     End If
 
@@ -13012,12 +13018,15 @@ Sub ComputerOffense ()
         'In FG range, < 22 secs to go, 2nd Qtr | 4th Qtr Tie | Overtime
         If ydLine >= inFGRange And gameClock! <= 22 And (quarter = 2 Or quarter > 4 Or (quarter = 4 And scoreDiff = 0)) Then
             'Field Goal
+            Print #11, , "DECISION: Field Goal, late in Q2/Q4"
             playCall = 20
         End If
 
         '4th Down, >= 3 Yds to go, In FG range, Modern Era (FGs uncommon before 1960)
-        If currDown = 4 And ydsToFirst >= 3 And ydLine >= inFGRange And ydLine < 87 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+        If currDown = 4 And ydsToFirst >= 3 And ydLine >= inFGRange And ydLine < 87 And _ 
+            (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
             'Field Goal
+            Print #11, , "DECISION: Field Goal, 4th down, >=3 Yds"
             playCall = 20
         End If
 
@@ -13117,6 +13126,7 @@ Sub ComputerOffense ()
                 'In FG range, Score = 3 Pt. Margin,
                 If quarter >= 4 And ydLine >= inFGRange And scoreDiff <= 3 And scoreDiff >= -3 Then
                     'Field Goal
+                    Print #11, , "DECISION: Field Goal, 4th Quarter, 4th Down, Within 3 Pts"
                     playCall = 20
                     GoTo 8800
                 End If
@@ -13124,15 +13134,17 @@ Sub ComputerOffense ()
                 'In FG range, Score = 3 Pt. Deficit
                 If quarter >= 4 And ydLine >= inFGRange And score(D, 0) - score(P1, 0) <= 3 Then
                     'Field Goal
+                    Print #11, , "DECISION: Field Goal, 4th Quarter, 4th Down, Down 3 Pts"
                     playCall = 20
                     GoTo 8800
                 End If
 
                 '<5 Minutes, Long FG range, Down by 1-10
-                If quarter >= 4 And gameClock! < 300 And ydLine >= inLongFGRange And ydLine < inFGRange And _ 
+                If quarter >= 4 And gameClock! < 300 And ydLine >= inLongFGRange And ydLine < inFGRange + goalPostAdj And _
                     score(D, 0) - score(P1, 0) <= 10 And score(D, 0) - score(P1, 0) > 0 Then
 
                     If ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960 Then
+                        Print #11, , "DECISION: Field Goal, 4th Quarter, <5 Mins, Down by 1-10"
                         playCall = 20
                     Else
                         playCall = 19
@@ -13145,6 +13157,7 @@ Sub ComputerOffense ()
                     'Take all attempts < 49 yards; 40% of attempts 50-59 yds
                     If (ydLine >= 68) Or (ydLine >= 67 And ydLine <= 58 And d100% < 40) Then
                         'Field Goal
+                        Print #11, , "DECISION: Field Goal, 4th Quarter, >= 3 Yds, Normal Attempt"
                         '-- Most field goals are done here
                         playCall = 20
                         GoTo 8800
@@ -13156,6 +13169,7 @@ Sub ComputerOffense ()
             '<5 Minutes, Down by 4 to 11, Inside Red Zone
             If quarter = 4 And gameClock! > 240 And score(D, 0) - score(P1, 0) >= 4 And score(D, 0) - score(P1, 0) <= 11 And ydLine > 80 + goalPostAdj Then
                 'Field Goal
+                Print #11, , "DECISION: Field Goal, 4th Quarter, 4th Down, <5 Mins, Down by 4-11, Red Zone"
                 playCall = 20
                 GoTo 8800
             End If
@@ -13347,6 +13361,7 @@ Sub ComputerOffense ()
             'In FG range, Modern Era (FGs uncommon before 1960)
             If (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
                 'Field Goal
+                Print #11, , "DECISION: Field Goal, 2nd Quarter, 4th Down"
                 playCall = 20
             End If
         End If
@@ -13385,8 +13400,10 @@ Sub ComputerOffense ()
 
     '2nd Qtr Only
     '4th Down, In FG range, Modern Era (FGs uncommon before 1960)
-    If ydLine >= inFGRange And quarter = 2 And currDown = 4 And (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
+    If ydLine >= inFGRange And quarter = 2 And currDown = 4 And _
+        (ruleOptType <> 0 Or (ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960)) Then
         'Field Goal
+        Print #11, , "DECISION: Field Goal, 2-Min Warning, 4th Down, In Range"
         playCall = 20
         GoTo 8800
     End If
@@ -13403,9 +13420,10 @@ Sub ComputerOffense ()
         GoTo 8800
     End If
 
-    'Outside FG range, < 22 secs to go, No TOs (Off)
+    'In FG range, < 22 secs to go, No TOs (Off)
     If ydLine >= inFGRange And gameClock! <= 22 And timeouts(P1) = 0 Then
         'Field Goal
+        Print #11, , "DECISION: Field Goal, Late Game, No TOs, In Range"
         playCall = 20
         GoTo 8800
     End If
@@ -13413,13 +13431,16 @@ Sub ComputerOffense ()
     'In FG range, < 12 secs to go, TOs Remaining (Off)
     If ydLine >= inFGRange And gameClock! <= 12 And timeouts(P1) > 0 Then
         'Field Goal
+        Print #11, , "DECISION: Field Goal, Late Game, TOs, In Range"
         playCall = 20
         GoTo 8800
     End If
 
     'In FG range, 4th Down, Modern Era (FGs uncommon before 1960)
-    If ydLine >= inFGRange And currDown = 4 And (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
+    If ydLine >= inFGRange And currDown = 4 And _ 
+        (ruleOptType <> 0 Or ruleOptType = 0 And teamYears(1) > 1960 And teamYears(0) > 1960) Then
         'Field Goal
+        Print #11, , "DECISION: Field Goal, 4th Down, In Range"
         playCall = 20
         GoTo 8800
     End If
@@ -13503,6 +13524,8 @@ Sub ComputerOffense ()
     If playCall = 20 And ydLine > 78 And climate(1) = -15 And kickerAvgPct < 80 Then
         playCall = 12
     End If
+
+    Print #11, , "DEBUG: Computer chose offense. Normal Exit. PlayCall="; playCall
 
     '--- Uncomment to see what the play call %'s are
     '-- Call pbplog(12977)
@@ -14710,15 +14733,15 @@ Sub AdjustForEra (teamYear)
         End If
         
     End If
-    
+
     ' ========================================
     ' COLLEGE-SPECIFIC ADJUSTMENTS
     ' ========================================
     ' College offenses historically more diverse
-    
+
     'NCAA rules
     If ruleOptType = 0 Then
-        
+
         'Pre-1980: College ran even more than pros
         If teamYear < 1980 Then
 
@@ -15058,7 +15081,7 @@ Sub PenaltyOnKickoff (autoFD)
 
     End Select
 
-    Print #11, "(KICKOFF) "; pbpString$
+    'Print #11, "(KICKOFF) "; pbpString$
 
     playSegment = 4
 
@@ -15113,7 +15136,7 @@ Sub PenaltyOnPlaceKick (autoFD)
 
     End Select
 
-    Print #11, "(PLACE KICK) "; pbpString$
+    'Print #11, "(PLACE KICK) "; pbpString$
 
     playSegment = 4
 
@@ -15164,7 +15187,7 @@ Sub PenaltyOnPunt (autoFD)
 
     End Select
 
-    Print #11, "(PUNT) "; pbpString$
+    'Print #11, "(PUNT) "; pbpString$
 
     Call PBP
 
@@ -15207,7 +15230,7 @@ Sub PenaltyOnPuntReturn (autoFD)
 
     End Select
 
-    Print #11, "(PUNT RETURN) "; pbpString$
+    'Print #11, "(PUNT RETURN) "; pbpString$
 
 End Sub
     
@@ -17276,10 +17299,9 @@ Sub TwoMinMenu (menuChoice)
             'If computer is on Defense
             If (D = compTeam Or playerMode = 2) Then
 
-                'If DEF is behind, take a timeout
-                '-- UPDATE to only be after the clock isn't stopped
-                'playSegment <> 4
-                If scoreDiff > 0 And timeouts(D) > 0 And gameClock! < 120 Then
+                'If DEF is behind, take TO to get extra time
+                If playSegment <> 4 And (scoreDiff > 0 And timeouts(D) > 0 And gameClock! < 120) Then
+                    Print #11, "DEF behind - take TO"
                     menuChoice = 3
                 End If
 
@@ -18325,8 +18347,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
         Else
 
             'Newer NFL / NCAA rules reward touchback on fair catch
-            'For the NFL, ruleOpt 9 is for 2023 but the rule was approved in summer 2023 for 2024 season
-            If kickYL! <= fairCatchLine And ((ruleOptType = 0 And ruleOptColl >= 11) Or (ruleOptType > 0 And ruleOptPro >= 9 And teamYears(impactTeam) >= 2024)) Then
+            If kickYL! <= fairCatchLine And ((ruleOptType = 0 And ruleOptColl >= 11) Or (ruleOptType > 0 And ruleOptPro >= 10)) Then
                 Call Touchback(0)
             Else
                 ydLine = kickYL!
@@ -18548,21 +18569,47 @@ Sub KickoffDistance ()
                 'They had a return rate of 75%
                 returnRate = 75
 
-            Case 2 To 3
+            Case 3
                 'In 1974, the NFL moved the kick line to the 35.
                 'They had a return rate of 92%
                 returnRate = 92
 
-            Case 4 To 5
+            Case 3
+                'Rates from 1978 - 1990 are unknown
+                'From 1991-1993, rates were about 76%
+                returnRate = 76
+
+            Case 4
                 'In 1994, the NFL moved the kick line to the 30.
                 'They had a return rate up to 88%
-                returnRate = 88
+                returnRate = 90
 
-            Case 6 To 9
+            Case 5
+                returnRate = 84
+
+            Case 6
                 'In 2011, the NFL moved the kick line to the 35.
                 'They also eliminated running starts.
                 'Return rates fell to nearly 50%
-                returnRate = 50
+                returnRate = 51
+
+            Case 7
+                returnRate = 42
+
+            Case 8
+                returnRate = 40
+
+            Case 9
+                '2023 - Last year before dynamic kickoff
+                returnRate = 27
+
+            Case 10
+                '2024 - First year of dynamic kickoff
+                returnRate = 36
+
+            Case 11
+                '2025+ - Dynamic kickoff finally taken serious
+                returnRate = 79
 
         End Select
 
@@ -18607,14 +18654,28 @@ Sub KickoffDistance ()
     End If
 
     If RN0 <= returnRate Then
-        'Kick will travel 55 to 67 yds
-        'that is, outside the end zone (returnable)
-        kickYL! = 100 - (ydLine + Int(Rnd(1) * 13) + 55 + goalPostAdj)
+
+        If ruleOptType > 0 And ruleOptPro >= 11 Then
+            'Dynamic kickoff - most travel 59-61 yards (return zone)
+            'Outliers range from 56-64 yards
+            'So here we weight our results around a bell curve
+            distWeight = 0
+            For i = 1 To 12
+                distWeight = distWeight + Rnd(1)
+            Next i
+            kickDistance = Int(distWeight * 4) + 56
+        Else
+            'Kick travels 55 to 67 yds (returnable)
+            kickDistance = Int(Rnd(1) * 13) + 55
+        End If
     Else
-        'Kick will travel 68 to 75 yds
         'that is, inside the end zone (not returnable)
-        kickYL! = 100 - (ydLine + Int(Rnd(1) * 8) + 68 + goalPostAdj)
+        'Kick will travel 68 to 75 yds
+        kickDistance = Int(Rnd(1) * 8) + 68
     End If
+
+    'Determine where resulting yard line is after kick
+    kickYL! = 100 - (ydLine + kickDistance + goalPostAdj)
 
     If ruleOptType = 0 And ruleOptColl = 0 Then
         'College before 1968
@@ -19604,7 +19665,9 @@ Sub BOXOPTIONS (outputChoice)
             End If
 
             'Includes a special option to send to printer when done
-            Call BOX2FILE(outputChoice, boxName$, 0)
+            If boxName$ <> "" Then
+                Call BOX2FILE(outputChoice, boxName$, 0)
+            End If
 
     End Select
 

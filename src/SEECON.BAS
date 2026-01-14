@@ -29,6 +29,8 @@ End Sub
 'from the file into several arrays
 Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
+    Shared leagueName$
+
     Shared divLosses(), divTies(), divWins()
     Shared leaderVal1!(), leaderVal2!()
     Shared leagPtsAgnst!(), leagPtsFor!()
@@ -40,8 +42,9 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     Shared div1Name$, div2Name$
 
-    Call ReadConferenceStats(targetFile$, 0)
+    Call ReadConferenceStats(diskPaths$(2) + GetFileBaseName$(targetFile$) + ".TMS", 0)
 
+    confName$ = leagueName$
     div1Name$ = PadRight(div1Name$, 8)
     div2Name$ = PadRight(div2Name$, 8)
 
@@ -159,7 +162,7 @@ Sub StatOptions_Coll (confName$)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SaveFileDialog$("Save Conference Report", _CWD$ + "\Report", "*.txt", "Text File")
+                    userFile$ = _SaveFileDialog$("Save Conference Leaders Report", _CWD$ + "\Conference Leaders Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call CollLeaders_Report(confName$, 0, userFile$)
                     End If
@@ -169,7 +172,7 @@ Sub StatOptions_Coll (confName$)
 
                 Case "S":
                     Call CollegeStdgs_Screen(confName$)
-                    Call Leaders_Screen                        
+                    Call Leaders_Screen
 
             End Select
 
@@ -221,21 +224,20 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
     Open destFile$ For Output As #1
 
     XCoord = Int((80 - Len(league$) - 10) / 2)
-    Print #1, 
+    Print #1,
     Print #1, Tab(XCoord); confName$; " STANDINGS"
-    Print #1, 
+    Print #1,
 
     For division = 1 To 2
 
         If division = 1 Then
-            divisionName$ = RTrim$(div1$)
+            divisionName$ = RTrim$(div1Name$)
         Else
-            divisionName$ = RTrim$(div2$)
+            divisionName$ = RTrim$(div2Name$)
         End If
 
         Print #1, divisionName$;
-        Print #1, Tab(15); "W   L   T   PCT  PF  PA"
-        Print #1,
+        Print #1, Tab(15); "W   L   T  PCT  PF  PA"
 
         first = ((division - 1) * 15) + 1
         last = division * 15
@@ -245,7 +247,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         For P = first To last
 
             If leagRecText$(P) <> "" And leagRecText$(P) <> "*" Then
- 
+
                 Print #1, divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
 
                 If divWins(P) + divLosses(P) + divTies(P) = 0 Then
@@ -262,14 +264,22 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
                     End If
                 End If
 
-                Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+                If division = 1 Then
+                    Print #1, Tab(29);
+                Else
+                    Print #1, Tab(69);
+                End If
+ 
+                Print #1, Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
             End If
 
         Next P
 
-        Print #1, "               CONFERENCE       "
-        Print #1, Tab(15); "W   L   T   PCT  PF  PA"
+        Print #1,
+        Print #1, "                CONFERENCE"
+        Print #1,
+        Print #1, Tab(15); "W   L   T  PCT  PF  PA"
 
         For P = (first + 30) To (last + 30)
 
@@ -288,16 +298,24 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
                         End If
                     End If
                 End If
-                Print #1, Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
+                If division = 1 Then
+                    Print #1, Tab(29);
+                Else
+                    Print #1, Tab(69);
+                End If
+ 
+                Print #1, Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+
             End If
 
         Next
 
     Next division
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "RUSHING LEADERS (MIN 10 ATT/G)"; Tab(41); "RECEIVING LEADERS (MIN 3 REC/G)"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
@@ -310,7 +328,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
@@ -332,7 +350,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -354,7 +372,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -376,7 +394,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -387,9 +405,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
@@ -401,7 +419,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -423,7 +441,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "###.#"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -445,7 +463,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -467,7 +485,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "##.#  ##"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -489,7 +507,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -511,7 +529,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "###.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -533,7 +551,7 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
             Print #1, Using "##"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -544,9 +562,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 
@@ -596,9 +614,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
 
@@ -622,9 +640,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         End If
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
 
@@ -661,9 +679,9 @@ Sub CollLeaders_Report (confName$, printDest, destFile$)
         End If
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
     Print #1, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
@@ -719,8 +737,8 @@ Sub CollegeStdgs_Screen (confName$)
 
     Color 12
 
-    Locate 2, Int((80 - Len(confName$) - 14) / 2)
-    Print confName$ + "OVERALL RECORD"
+    Locate 2, Int((80 - Len(confName$) - 12) / 2)
+    Print confName$ + " FULL SEASON"
 
     'Cycle through divisions
     For division = 1 To 2
@@ -744,10 +762,10 @@ Sub CollegeStdgs_Screen (confName$)
         Color 2
         Print divisionName$;
 
-        Locate yCoord, xCoord + 13
+        Locate yCoord, xCoord + 15
 
         Color 14
-        Print "W   L   T   PCT  PF  PA"
+        Print "W  L  T  PCT  PF  PA"
 
         Color 15
 
@@ -764,15 +782,14 @@ Sub CollegeStdgs_Screen (confName$)
                 Select Case division
 
                     Case 1
-                        Locate (P + 5 - RT), 1
+                        Locate (P + 4 - RT), 1
 
                     Case 2
-                        Locate (P - 10 - RT), 41
+                        Locate (P - 11 - RT), 41
 
                 End Select
 
-                Print PadRight$(divTeamNames$(P), 13); 
-                Print Using " ##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+                Print PadRight$(divTeamNames$(P), 14); Using "## ## ##"; divWins(P); divLosses(P); divTies(P);
 
                 'Win %
                 If divWins(P) + divLosses(P) + divTies(P) = 0 Then
@@ -791,7 +808,13 @@ Sub CollegeStdgs_Screen (confName$)
                     End If
                 End If
 
-                Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+                If division = 1 Then
+                    Locate , 29
+                Else
+                    Locate , 69
+                End If
+
+                Print Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
             End If
 
@@ -810,8 +833,8 @@ Sub CollegeStdgs_Screen (confName$)
 
     Color 12
 
-    Locate 2, Int((80 - Len(confName$) - 17) / 2)
-    Print confName$ + "CONFERENCE RECORD"
+    Locate 2, Int((80 - Len(confName$) - 11) / 2)
+    Print confName$ + " CONFERENCE"
 
     'Cycle through divisions
     For division = 1 To 2
@@ -835,10 +858,10 @@ Sub CollegeStdgs_Screen (confName$)
         Color 2
         Print RTrim$(divisionName$);
 
-        Locate yCoord, xCoord + 13
+        Locate yCoord, xCoord + 15
 
         Color 14
-        Print "W   L   T   PCT  PF  PA"
+        Print "W  L  T  PCT  PF  PA"
 
         Color 15
 
@@ -862,7 +885,7 @@ Sub CollegeStdgs_Screen (confName$)
 
                 End Select
 
-                Print divTeamNames$(P); Tab(14); Using "##  ##  ##"; divWins(P); divLosses(P); divTies(P);
+                Print divTeamNames$(P); Tab(14); Using "## ## ##"; divWins(P); divLosses(P); divTies(P);
 
                 'Win %
                 If divWins(P) + divLosses(P) + divTies(P) = 0 Then
@@ -880,7 +903,13 @@ Sub CollegeStdgs_Screen (confName$)
                     End If
                 End If
 
-                Print Tab(31); Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
+                If division = 1 Then
+                    Locate , 29
+                Else
+                    Locate , 69
+                End If
+
+                Print Using "### ###"; leagPtsFor!(P); leagPtsAgnst!(P)
 
             End If
 

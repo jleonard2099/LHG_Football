@@ -66,7 +66,7 @@ Sub CREATCON ()
                     'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", FileExit%)
 
                     If confFile$ <> "" Then
-                        Call ReviewEditConference(confFile$)
+                        Call ReviewEditLeague(GetFileBaseName$(confFile$))
                     End If
 
             End Select
@@ -94,7 +94,7 @@ Sub DefineConference ()
         Color 15, 0
         Cls
 
-        Call MenuBox (6, 8, 61, 7, 15, 1)
+        Call MenuBox(6, 8, 61, 7, 15, 1)
 
         Do
 
@@ -173,8 +173,8 @@ Sub ReviewEditConference (confFile$)
 
     targetFile$ = diskPaths$(2) + confFile$ + ".TMI"
 
-    If _FileExists (targetFile$) Then
-        Call ReadConferenceIndex (targetFile$, null)
+    If _FileExists(targetFile$) Then
+        Call ReadConferenceIndex(targetFile$, statType)
     End If
 
     If statType <> 0 Then
@@ -259,7 +259,7 @@ End Sub
 '       SaveConferences Subroutine
 '----------------------------------------
 'This subroutine writes the conference's
-'team memberships and definition to 
+'team memberships and definition to
 'each of the corresponding files (.TMI, .TMS)
 Sub SaveConferences (confFile$)
 

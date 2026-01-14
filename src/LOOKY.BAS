@@ -197,7 +197,7 @@ Sub ViewStatsSummary (teamName$, totalGames, statFormat, teamPower, SS)
             Select Case userKey$
 
                 Case "F"
-                    userFile$ = _SaveFileDialog$("Save Stats Report", _CWD$ + "\Report", "*.txt", "Text File")
+                    userFile$ = _SaveFileDialog$("Save Team Summary Report", _CWD$ + "\Team Summary Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call StatsToReport(0, userFile$, teamName$, totalGames, statFormat, teamPower, SS)
                     End If

@@ -42,11 +42,6 @@ Sub LoadLeaderFiles_League (league$, targetFile$)
 
     Call ReadConferenceStats(diskPaths$(2) + GetFileBaseName$(targetFile$) + ".TMS", 1)
 
-    'div1Name$ = PadRight$(div1Name$, 8)
-    'div2Name$ = PadRight$(div2Name$, 8)
-    'div3Name$ = PadRight$(div3Name$, 8)
-    'div4Name$ = PadRight$(div4Name$, 8)
-
     Cls
 
     Locate 9, 6
@@ -162,7 +157,7 @@ Sub StatOptions_League (careerName$)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SaveFileDialog$("Save League Report", _CWD$ + "\Report", "*.txt", "Text File")
+                    userFile$ = _SaveFileDialog$("Save League Report", _CWD$ + "\League Leader Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call ProLeaders_Report(careerName$, 0, userFile$)
                     End If
@@ -335,7 +330,7 @@ End Sub
 
 
 '----------------------------------------
-'       ProLeaders_Report Subroutine
+'      ProLeaders_Report Subroutine
 '----------------------------------------
 'This subroutine formats the previously
 'loaded stats and outputs them to a file

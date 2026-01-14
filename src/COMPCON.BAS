@@ -170,7 +170,7 @@ Sub CompileCollege ()
             Next XW
 
             Call SortStandingsConference
-            Call PostLeadersConf(conferenceFile$)
+            Call PostLeadersConf(GetFileBaseName$(conferenceFile$))
             Call PostRecordsColl
 
         End If 'Done checking file type

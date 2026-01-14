@@ -803,7 +803,7 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
 
                 Case 9:
                     scheduleNG%(gameIndex%, 11) = 1 + scheduleNG%(gameIndex%, 11)
-                    If scheduleNG%(gameIndex%, 11) > 9 Then scheduleNG%(gameIndex%, 11) = 0
+                    If scheduleNG%(gameIndex%, 11) > 11 Then scheduleNG%(gameIndex%, 11) = 0
 
                 Case 10:
                     scheduleNG%(gameIndex%, 7) = 1 + scheduleNG%(gameIndex%, 7)
@@ -1486,7 +1486,7 @@ Sub ChangeGlobalSettings ()
 
             Case 3:
                 ruleOptPro = ruleOptPro + 1
-                If ruleOptPro > 9 Then ruleOptPro = 0
+                If ruleOptPro > 11 Then ruleOptPro = 0
 
             Case 4:
                 ruleOptColl = ruleOptColl + 1

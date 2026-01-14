@@ -207,387 +207,391 @@ Sub MergeFirstYear ()
 
         Loop Until UCase$(I$) = "C" Or UCase$(I$) = "P" 'Or I$ = Chr$(27)
 
-        teamNbr = 0
-        Call ChooseTeam(YN$, NTMS, teamNbr, team$)
+        If careerFile$ <> "" Then
 
-        If teamNbr <> 0 Then
+            teamNbr = 0
+            Call ChooseTeam(YN$, NTMS, teamNbr, team$)
 
-            statFile$ = nameStatFile$(team$)
+            If teamNbr <> 0 Then
 
-            Color 15, 0
-            Cls
+                statFile$ = nameStatFile$(team$)
 
-            statYear = Val(YN$)
-            Locate 8, 53: Print targetYear
+                Color 15, 0
+                Cls
 
-            Do
-
-                Locate 8, 22: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
-                Locate 9, 22: Print "ANY CHANGE? (Y/N)"
-
-                J$ = GetKeyPress$
-
-            Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N" Or J$ = Chr$(27)
-
-            If UCase$(J$) = "N" Then
+                statYear = Val(YN$)
+                Locate 8, 53: Print targetYear
 
                 Do
-                    Locate 11, 18
-                    Print "WOULD YOU LIKE TO POST CAREER RECORDS? (Y/N)"
-                    K$ = GetKeyPress$
-                Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
 
-                If UCase$(K$) = "Y" Then
-                    doPostLeaders = 1
-                Else
-                    doPostLeaders = 0
-                End If
+                    Locate 8, 22: Input "ENTER YEAR TO ADD (EX. - 1961)"; statYear
+                    Locate 9, 22: Print "ANY CHANGE? (Y/N)"
 
-                If Not _FileExists(diskPaths$(1) + statFile$) Then
+                    J$ = GetKeyPress$
 
-                    MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
-                    BoxWidth = 24
-                    BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
-                    Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
-                    Call CSMsgBox(MsgText$, BoxWidth, Pass)
-                    I$ = GetKeyPress$
-                    Call CSMsgBox("", 0, Pass)
+                Loop Until UCase$(J$) = "Y" Or UCase$(J$) = "N" Or J$ = Chr$(27)
 
-                Else
+                If UCase$(J$) = "N" Then
 
-                    Locate 20, 5
-                    Color 15
-                    Print "MERGING AND UPDATING CAREER STATS . . . . PLEASE WAIT"
+                    Do
+                        Locate 11, 18
+                        Print "WOULD YOU LIKE TO POST CAREER RECORDS? (Y/N)"
+                        K$ = GetKeyPress$
+                    Loop Until UCase$(K$) = "Y" Or UCase$(K$) = "N" Or K$ = Chr$(27)
 
-                    Open diskPaths$(1) + statFile$ + "S" For Input As #1
-                    Input #1, nbrGames
-                    Close #1
-
-                    '-- These have to be unique from regular stats
-                    Open diskPaths$(1) + statFile$ For Input As #2
-
-                    Input #2, temp$
-
-                    For I = 0 To 9:
-                        Input #2, carRBacks$(I)
-                    Next I
-
-                    For I = 0 To 5:
-                        Input #2, carWdRec$(I)
-                    Next I
-
-                    For I = 0 To 3:
-                        Input #2, carQBacks$(I)
-                    Next I
-
-                    For I = 0 To 2:
-                        Input #2, carKickRet$(I)
-                    Next I
-
-                    For I = 0 To 2:
-                        Input #2, carPRet$(I)
-                    Next I
-
-                    Input #2, carPunter$(0)
-
-                    For I = 0 To 1:
-                        Input #2, carKicker$(I)
-                    Next I
-
-                    '-- These DO NOT have to be unique from regular stats
-                    For J = 0 To 13
-                        For K = 0 To 17:
-                            Input #2, statsPlayers!(J, K)
-                        Next K
-                    Next J
-
-                    For L = 0 To 38:
-                        Input #2, statsTeam!(L)
-                    Next L
-
-                    For L = 0 To 38:
-                        Input #2, statsOpp!(L)
-                    Next L
-
-                    For J = 0 To 9:
-                        Input #2, carIntName$(J)
-                        For J1 = 0 To 2:
-                            Input #2, carGameInts(J, J1)
-                        Next
-                    Next
-
-                    For J = 0 To 14:
-                        Input #2, carSackName$(J)
-                        For J1 = 0 To 1:
-                            Input #2, carGameSacks(J, J1)
-                        Next
-                    Next
-
-                    For I = 0 To 9:
-                        Input #2, careerLRush!(I)
-                        Input #2, careerLRush$(I, 0)
-                        Input #2, careerLRush$(I, 1)
-                    Next
-
-                    For I = 0 To 15:
-                        Input #2, careerLRec!(I)
-                        Input #2, careerLRec$(I, 0)
-                        Input #2, careerLRec$(I, 1)
-                    Next
-
-                    For I = 0 To 3:
-                        Input #2, careerLPass!(I)
-                        Input #2, careerLPass$(I, 0)
-                        Input #2, careerLPass$(I, 1)
-                    Next
-
-                    For I = 0 To 2:
-                        Input #2, careerLKR!(I)
-                        Input #2, careerLKR$(I, 0)
-                        Input #2, careerLKR$(I, 1)
-                    Next
-
-                    For I = 0 To 2:
-                        Input #2, careerLPR!(I)
-                        Input #2, careerLPR$(I, 0)
-                        Input #2, careerLPR$(I, 1)
-                    Next
-
-                    For I = 0 To 1:
-                        Input #2, statsLFG!(I)
-                        Input #2, careerLFG$(I)
-                        For I1 = 0 To 4:
-                            Input #2, careerFGM!(I, I1)
-                            Input #2, careerFGA!(I, I1)
-                        Next
-                    Next
-
-                    For I = 0 To 9:
-                        Input #2, statsLInt!(I)
-                        Input #2, careerLInt$(I, 0)
-                        Input #2, careerLInt$(I, 1)
-                    Next
-
-                    Close #2
-
-                    For I = 0 To 49
-
-                        N = 1
-
-                        If carRBacks$(I) = "END" Or carRBacks$(I) = "XXX" Or carRBacks$(I) = "" Then
-                            carRBacks$(I) = ""
-                        Else
-                            NB = NB + 1
-                        End If
-
-                        For J = 0 To 5
-                            careerRBS!(N, I, J) = statsPlayers!(I, J)
-                        Next J
-
-                        careerRBS!(N, I, 6) = careerLRush!(I)
-                        careerRBS$(N, I, 0) = careerLRush$(I, 0)
-                        careerRBS!(N, I, 9) = careerLRec!(I)
-                        careerRBS$(N, I, 1) = careerLRec$(I, 0)
-                        careerRBS!(N, I, 7) = 1
-                        careerRBS!(N, I, 8) = statYear
-
-                    Next I
-
-                    For I = 0 To 39
-
-                        N = 1
-
-                        If carWdRec$(I) = "END" Or carWdRec$(I) = "XXX" Or carWdRec$(I) = "" Then
-                            carWdRec$(I) = ""
-                        Else
-                            NC = NC + 1
-                        End If
-
-                        For J = 6 To 8
-                            careerWRS!(N, I, J - 6) = statsPlayers!(I, J)
-                        Next J
-
-                        careerWRS!(N, I, 3) = careerLRec!(I + 10)
-                        careerWRS$(N, I, 0) = careerLRec$(I + 10, 0)
-                        careerWRS!(N, I, 4) = 1
-                        careerWRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 19
-
-                        N = 1
-
-                        If carQBacks$(I) = "END" Or carQBacks$(I) = "XXX" Or carQBacks$(I) = "" Then
-                            carQBacks$(I) = ""
-                        Else
-                            ND = ND + 1
-                        End If
-
-                        For J = 9 To 13:
-                            careerQBS!(N, I, J - 9) = statsPlayers!(I, J)
-                        Next J
-
-                        careerQBS!(N, I, 5) = careerLPass!(I)
-                        careerQBS$(N, I, 0) = careerLPass$(I, 0)
-                        careerQBS!(N, I, 6) = 1
-                        careerQBS!(N, I, 7) = statYear
-
-                    Next I
-
-                    For I = 0 To 14
-
-                        N = 1
-
-                        If carKickRet$(I) = "END" Or carKickRet$(I) = "XXX" Or carKickRet$(I) = "" Then
-                            carKickRet$(I) = ""
-                        Else
-                            NE = NE + 1
-                        End If
-
-                        For J = 14 To 16:
-                            careerKRS!(N, I, J - 14) = statsPlayers!(I, J)
-                        Next J
-
-                        careerKRS!(N, I, 3) = careerLKR!(I)
-                        careerKRS$(N, I, 0) = careerLKR$(I, 0)
-                        careerKRS!(N, I, 4) = 1
-                        careerKRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 14
-
-                        N = 1
-
-                        If carPRet$(I) = "END" Or carPRet$(I) = "XXX" Or carPRet$(I) = "" Then
-                            carPRet$(I) = ""
-                        Else
-                            NF = NF + 1
-                        End If
-
-                        For J = 14 To 16:
-                            careerPRS!(N, I, J - 14) = statsPlayers!(I + 3, J)
-                        Next J
-
-                        careerPRS!(N, I, 3) = careerLPR!(I)
-                        careerPRS$(N, I, 0) = careerLPR$(I, 0)
-                        careerPRS!(N, I, 4) = 1
-                        careerPRS!(N, I, 5) = statYear
-
-                    Next I
-
-                    For I = 0 To 9
-
-                        N = 1
-
-                        If carPunter$(I) = "END" Or carPunter$(I) = "XXX" Or carPunter$(I) = "" Then
-                            carPunter$(I) = ""
-                        Else
-                            NG = NG + 1
-                        End If
-
-                        careerPUS!(N, I, 0) = statsTeam!(7)
-                        careerPUS!(N, I, 1) = statsTeam!(8)
-                        careerPUS!(N, I, 2) = 1
-                        careerPUS!(N, I, 3) = statYear
-                    Next I
-
-                    For I = 0 To 9
-
-                        N = 1
-
-                        If carKicker$(I) = "END" Or carKicker$(I) = "XXX" Or carKicker$(I) = "" Then
-                            carKicker$(I) = ""
-                        Else
-                            NH = NH + 1
-                        End If
-
-                        If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
-
-                            For J = 3 To 6
-                                careerFGS!(N, I, J - 3) = statsPlayers!(J, 17)
-                            Next J
-
-                            careerFGS!(N, I, 4) = statsLFG!(I)
-                            careerFGS!(N, I, 15) = 1
-                            careerFGS!(N, I, 16) = statYear
-
-                            For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
-                            Next
-
-                            For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
-                            Next
-
-                        End If
-
-                        If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
-
-                            For J = 7 To 10:
-                                careerFGS!(N, I, J - 7) = statsPlayers!(J, 17)
-                            Next J
-
-                            test = statsLFG!(I)
-                            careerFGS!(N, I, 4) = statsLFG!(I)
-                            careerFGS!(N, I, 15) = 1
-                            careerFGS!(N, I, 16) = statYear
-
-                            For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
-                            Next
-
-                            For I1 = 0 To 4:
-                                careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
-                            Next
-
-                        End If
-
-                    Next I
-
-                    For I = 0 To 54
-
-                        N = 1
-
-                        If carIntName$(I) = "END" Or carIntName$(I) = "XXX" Or carIntName$(I) = "" Then
-                            carIntName$(I) = ""
-                        Else
-                            NJ = NJ + 1
-                        End If
-
-                        careerGIS!(N, I, 0) = carGameInts(I, 0)
-                        careerGIS!(N, I, 1) = 1
-                        careerGIS!(N, I, 2) = statYear
-                    Next I
-
-                    For I = 0 To 54
-
-                        N = 1
-
-                        If carSackName$(I) = "END" Or carSackName$(I) = "XXX" Or carSackName$(I) = "" Then
-                            carSackName$(I) = ""
-                        Else
-                            NK = NK + 1
-                        End If
-
-                        careerGSS!(N, I, 0) = carGameSacks(I, 0)
-                        careerGSS!(N, I, 1) = 1
-                        careerGSS!(N, I, 2) = statYear
-
-                    Next I
-
-                    If doPostLeaders = 1 Then
-                        Call UpdateCareerRecords(diskPaths$(2) + GetFileBaseName$(careerFile$) + ".CLD")
+                    If UCase$(K$) = "Y" Then
+                        doPostLeaders = 1
+                    Else
+                        doPostLeaders = 0
                     End If
 
-                    Call SaveCareerFile(careerFile$)
+                    If Not _FileExists(diskPaths$(1) + statFile$) Then
 
-                End If 'Done checking for stat file
+                        MsgText$ = "NO COMPILED STATS COULD BE FOUND FOR THIS TEAM. PRESS ANY KEY TO RETURN TO THE MAIN MENU"
+                        BoxWidth = 24
+                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                        I$ = GetKeyPress$
+                        Call CSMsgBox("", 0, Pass)
 
-            End If 'Done checking for changes
+                    Else
 
-        End If 'Done checking if team was chosen
+                        Locate 20, 5
+                        Color 15
+                        Print "MERGING AND UPDATING CAREER STATS . . . . PLEASE WAIT"
+
+                        Open diskPaths$(1) + statFile$ + "S" For Input As #1
+                        Input #1, nbrGames
+                        Close #1
+
+                        '-- These have to be unique from regular stats
+                        Open diskPaths$(1) + statFile$ For Input As #2
+
+                        Input #2, temp$
+
+                        For I = 0 To 9:
+                            Input #2, carRBacks$(I)
+                        Next I
+
+                        For I = 0 To 5:
+                            Input #2, carWdRec$(I)
+                        Next I
+
+                        For I = 0 To 3:
+                            Input #2, carQBacks$(I)
+                        Next I
+
+                        For I = 0 To 2:
+                            Input #2, carKickRet$(I)
+                        Next I
+
+                        For I = 0 To 2:
+                            Input #2, carPRet$(I)
+                        Next I
+
+                        Input #2, carPunter$(0)
+
+                        For I = 0 To 1:
+                            Input #2, carKicker$(I)
+                        Next I
+
+                        '-- These DO NOT have to be unique from regular stats
+                        For J = 0 To 13
+                            For K = 0 To 17:
+                                Input #2, statsPlayers!(J, K)
+                            Next K
+                        Next J
+
+                        For L = 0 To 38:
+                            Input #2, statsTeam!(L)
+                        Next L
+
+                        For L = 0 To 38:
+                            Input #2, statsOpp!(L)
+                        Next L
+
+                        For J = 0 To 9:
+                            Input #2, carIntName$(J)
+                            For J1 = 0 To 2:
+                                Input #2, carGameInts(J, J1)
+                            Next
+                        Next
+
+                        For J = 0 To 14:
+                            Input #2, carSackName$(J)
+                            For J1 = 0 To 1:
+                                Input #2, carGameSacks(J, J1)
+                            Next
+                        Next
+
+                        For I = 0 To 9:
+                            Input #2, careerLRush!(I)
+                            Input #2, careerLRush$(I, 0)
+                            Input #2, careerLRush$(I, 1)
+                        Next
+
+                        For I = 0 To 15:
+                            Input #2, careerLRec!(I)
+                            Input #2, careerLRec$(I, 0)
+                            Input #2, careerLRec$(I, 1)
+                        Next
+
+                        For I = 0 To 3:
+                            Input #2, careerLPass!(I)
+                            Input #2, careerLPass$(I, 0)
+                            Input #2, careerLPass$(I, 1)
+                        Next
+
+                        For I = 0 To 2:
+                            Input #2, careerLKR!(I)
+                            Input #2, careerLKR$(I, 0)
+                            Input #2, careerLKR$(I, 1)
+                        Next
+
+                        For I = 0 To 2:
+                            Input #2, careerLPR!(I)
+                            Input #2, careerLPR$(I, 0)
+                            Input #2, careerLPR$(I, 1)
+                        Next
+
+                        For I = 0 To 1:
+                            Input #2, statsLFG!(I)
+                            Input #2, careerLFG$(I)
+                            For I1 = 0 To 4:
+                                Input #2, careerFGM!(I, I1)
+                                Input #2, careerFGA!(I, I1)
+                            Next
+                        Next
+
+                        For I = 0 To 9:
+                            Input #2, statsLInt!(I)
+                            Input #2, careerLInt$(I, 0)
+                            Input #2, careerLInt$(I, 1)
+                        Next
+
+                        Close #2
+
+                        For I = 0 To 49
+
+                            N = 1
+
+                            If carRBacks$(I) = "END" Or carRBacks$(I) = "XXX" Or carRBacks$(I) = "" Then
+                                carRBacks$(I) = ""
+                            Else
+                                NB = NB + 1
+                            End If
+
+                            For J = 0 To 5
+                                careerRBS!(N, I, J) = statsPlayers!(I, J)
+                            Next J
+
+                            careerRBS!(N, I, 6) = careerLRush!(I)
+                            careerRBS$(N, I, 0) = careerLRush$(I, 0)
+                            careerRBS!(N, I, 9) = careerLRec!(I)
+                            careerRBS$(N, I, 1) = careerLRec$(I, 0)
+                            careerRBS!(N, I, 7) = 1
+                            careerRBS!(N, I, 8) = statYear
+
+                        Next I
+
+                        For I = 0 To 39
+
+                            N = 1
+
+                            If carWdRec$(I) = "END" Or carWdRec$(I) = "XXX" Or carWdRec$(I) = "" Then
+                                carWdRec$(I) = ""
+                            Else
+                                NC = NC + 1
+                            End If
+
+                            For J = 6 To 8
+                                careerWRS!(N, I, J - 6) = statsPlayers!(I, J)
+                            Next J
+
+                            careerWRS!(N, I, 3) = careerLRec!(I + 10)
+                            careerWRS$(N, I, 0) = careerLRec$(I + 10, 0)
+                            careerWRS!(N, I, 4) = 1
+                            careerWRS!(N, I, 5) = statYear
+
+                        Next I
+
+                        For I = 0 To 19
+
+                            N = 1
+
+                            If carQBacks$(I) = "END" Or carQBacks$(I) = "XXX" Or carQBacks$(I) = "" Then
+                                carQBacks$(I) = ""
+                            Else
+                                ND = ND + 1
+                            End If
+
+                            For J = 9 To 13:
+                                careerQBS!(N, I, J - 9) = statsPlayers!(I, J)
+                            Next J
+
+                            careerQBS!(N, I, 5) = careerLPass!(I)
+                            careerQBS$(N, I, 0) = careerLPass$(I, 0)
+                            careerQBS!(N, I, 6) = 1
+                            careerQBS!(N, I, 7) = statYear
+
+                        Next I
+
+                        For I = 0 To 14
+
+                            N = 1
+
+                            If carKickRet$(I) = "END" Or carKickRet$(I) = "XXX" Or carKickRet$(I) = "" Then
+                                carKickRet$(I) = ""
+                            Else
+                                NE = NE + 1
+                            End If
+
+                            For J = 14 To 16:
+                                careerKRS!(N, I, J - 14) = statsPlayers!(I, J)
+                            Next J
+
+                            careerKRS!(N, I, 3) = careerLKR!(I)
+                            careerKRS$(N, I, 0) = careerLKR$(I, 0)
+                            careerKRS!(N, I, 4) = 1
+                            careerKRS!(N, I, 5) = statYear
+
+                        Next I
+
+                        For I = 0 To 14
+
+                            N = 1
+
+                            If carPRet$(I) = "END" Or carPRet$(I) = "XXX" Or carPRet$(I) = "" Then
+                                carPRet$(I) = ""
+                            Else
+                                NF = NF + 1
+                            End If
+
+                            For J = 14 To 16:
+                                careerPRS!(N, I, J - 14) = statsPlayers!(I + 3, J)
+                            Next J
+
+                            careerPRS!(N, I, 3) = careerLPR!(I)
+                            careerPRS$(N, I, 0) = careerLPR$(I, 0)
+                            careerPRS!(N, I, 4) = 1
+                            careerPRS!(N, I, 5) = statYear
+
+                        Next I
+
+                        For I = 0 To 9
+
+                            N = 1
+
+                            If carPunter$(I) = "END" Or carPunter$(I) = "XXX" Or carPunter$(I) = "" Then
+                                carPunter$(I) = ""
+                            Else
+                                NG = NG + 1
+                            End If
+
+                            careerPUS!(N, I, 0) = statsTeam!(7)
+                            careerPUS!(N, I, 1) = statsTeam!(8)
+                            careerPUS!(N, I, 2) = 1
+                            careerPUS!(N, I, 3) = statYear
+                        Next I
+
+                        For I = 0 To 9
+
+                            N = 1
+
+                            If carKicker$(I) = "END" Or carKicker$(I) = "XXX" Or carKicker$(I) = "" Then
+                                carKicker$(I) = ""
+                            Else
+                                NH = NH + 1
+                            End If
+
+                            If I = 0 Or I = 2 Or I = 4 Or I = 6 Or I = 8 Then
+
+                                For J = 3 To 6
+                                    careerFGS!(N, I, J - 3) = statsPlayers!(J, 17)
+                                Next J
+
+                                careerFGS!(N, I, 4) = statsLFG!(I)
+                                careerFGS!(N, I, 15) = 1
+                                careerFGS!(N, I, 16) = statYear
+
+                                For I1 = 0 To 4:
+                                    careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
+                                Next
+
+                                For I1 = 0 To 4:
+                                    careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
+                                Next
+
+                            End If
+
+                            If I = 1 Or I = 3 Or I = 5 Or I = 7 Or I = 9 Then
+
+                                For J = 7 To 10:
+                                    careerFGS!(N, I, J - 7) = statsPlayers!(J, 17)
+                                Next J
+
+                                test = statsLFG!(I)
+                                careerFGS!(N, I, 4) = statsLFG!(I)
+                                careerFGS!(N, I, 15) = 1
+                                careerFGS!(N, I, 16) = statYear
+
+                                For I1 = 0 To 4:
+                                    careerFGS!(N, I, I1 + 5) = careerFGM!(I, I1)
+                                Next
+
+                                For I1 = 0 To 4:
+                                    careerFGS!(N, I, I1 + 10) = careerFGA!(I, I1)
+                                Next
+
+                            End If
+
+                        Next I
+
+                        For I = 0 To 54
+
+                            N = 1
+
+                            If carIntName$(I) = "END" Or carIntName$(I) = "XXX" Or carIntName$(I) = "" Then
+                                carIntName$(I) = ""
+                            Else
+                                NJ = NJ + 1
+                            End If
+
+                            careerGIS!(N, I, 0) = carGameInts(I, 0)
+                            careerGIS!(N, I, 1) = 1
+                            careerGIS!(N, I, 2) = statYear
+                        Next I
+
+                        For I = 0 To 54
+
+                            N = 1
+
+                            If carSackName$(I) = "END" Or carSackName$(I) = "XXX" Or carSackName$(I) = "" Then
+                                carSackName$(I) = ""
+                            Else
+                                NK = NK + 1
+                            End If
+
+                            careerGSS!(N, I, 0) = carGameSacks(I, 0)
+                            careerGSS!(N, I, 1) = 1
+                            careerGSS!(N, I, 2) = statYear
+
+                        Next I
+
+                        If doPostLeaders = 1 Then
+                            Call UpdateCareerRecords(diskPaths$(2) + GetFileBaseName$(careerFile$) + ".CLD")
+                        End If
+
+                        Call SaveCareerFile(careerFile$)
+
+                    End If 'Done checking for stat file
+
+                End If 'Done checking for changes
+
+            End If 'Done checking if team was chosen
+
+        End If
 
     Loop Until UCase$(I$) = "N" Or UCase$(J$) = "N"
 
@@ -620,7 +624,7 @@ Sub ReviewCareerRecords ()
             Select Case userKey$
 
                 Case "F"
-                    userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Career", "*.txt", "Text File")
+                    userFile$ = _SaveFileDialog$("Save Career Records Report", _CWD$ + "\Career Records Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call CareerRecords_Report(GetFileBaseName$(recordFile$), 0, userFile$)
                     End If

@@ -107,7 +107,7 @@ Sub StatOptions_Natl (confName$, NRT)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SaveFileDialog$("Save Organization Report", _CWD$ + "\Report", "*.txt", "Text File")
+                    userFile$ = _SaveFileDialog$("Save National Org Report",_CWD$ + "\National Org Report","*.txt","Text File")
                     If userFile$ <> "" Then
                         Call NatLeaders_Report(confName$, NRT, 0, userFile$)
                     End If

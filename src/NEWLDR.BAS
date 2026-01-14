@@ -149,7 +149,7 @@ Sub NEWLDR (statType)
                                 Select Case userKey$
 
                                     Case "F"
-                                        userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                                        userFile$ = _SaveFileDialog$("Save Expanded Standings Report", _CWD$ + "\Expanded Standings Report", "*.txt", "Text File")
                                         If userFile$ <> "" Then
                                             Call NewStandings_Report(0, userFile$, leagueName$, statType)
                                         End If
@@ -2019,7 +2019,7 @@ Sub ExpandedLeaders_Menu (totalStats)
                             Select Case userKey$
 
                                 Case "F"
-                                    userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                                    userFile$ = _SaveFileDialog$("Save Expanded Leaders Report", _CWD$ + "\Expanded Leaders Report", "*.txt", "Text File")
                                     If userFile$ <> "" Then
                                         Call NewLeaders_Report(0, userFile$, XX, LG, TVN)
                                     End If
@@ -2488,7 +2488,7 @@ Sub DisplayTeamView (printOrView, TVN, maxRecords, categoryId)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SaveFileDialog$("Save Report File", _CWD$ + "\Report", "*.txt", "Text File")
+                        userFile$ = _SaveFileDialog$("Save Expanded Team Leaders Report", _CWD$ + "\Expanded Team Leaders Report", "*.txt", "Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                         End If

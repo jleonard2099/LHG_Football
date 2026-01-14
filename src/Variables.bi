@@ -76,7 +76,7 @@ Dim eventSettings(13)
 
 Dim location$(2), modeAbbrev$(3), overtime$(0 To 8)
 Dim playMode$(3)
-Dim rulesType$(6), ruleYrPro$(0 To 10), ruleYrColl$(0 To 11)
+Dim rulesType$(6), ruleYrPro$(0 To 11), ruleYrColl$(0 To 11)
 Dim teamIndicator$(1), weather$(3), windSetting$(3)
 Dim yesNo$(1), yesNoText$(1)
 

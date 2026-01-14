@@ -791,7 +791,7 @@ Sub CareerStatsRB_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -992,7 +992,7 @@ Sub CareerStatsWR_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -1141,7 +1141,7 @@ Sub CareerStatsQB_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -1449,7 +1449,7 @@ Sub CareerStatsKR_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -1597,7 +1597,7 @@ Sub CareerStatsPR_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -1739,7 +1739,7 @@ Sub CareerStatsP_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -1866,7 +1866,7 @@ Sub CareerStatsK_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -2078,7 +2078,7 @@ Sub CareerStatsINT_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
@@ -2190,7 +2190,7 @@ Sub CareerStatsSACK_Report (exitFlag%, careerName$, playerIdx)
                 Select Case userKey$
 
                     Case "F"
-                        userFile$ = _SAVEFILEDIALOG$("Save Report File",_CWD$ + "\Report","*.txt","Text File")
+                        userFile$ = _SaveFileDialog$("Save Career Stats Report",_CWD$ + "\Career Stats Report","*.txt","Text File")
                         If userFile$ <> "" Then
                             printDest = 0
                             destFile$ = userFile$
