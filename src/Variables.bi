@@ -376,7 +376,7 @@ Dim divTeamNames$(60), leagRecText$(60)
 '----------------------------------------
 ' Used in Game Routines
 '----------------------------------------
-Dim tickerStart
+Dim ballFumbled, tickerStart
 
 Dim actualAttendance&, avgAttendance&
 
@@ -388,7 +388,7 @@ Dim Shared earlyExit
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 
 'BW = black & white; as in, set to 1 and the game will lose all color
-Dim Shared autoPlay, avgRecYds, ballFumbled, BW
+Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
@@ -433,12 +433,14 @@ Dim Shared winTeam
 Dim Shared XD, XE
 
 Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
-Dim Shared convChoice, defPlayer, fgAttLine, fleaFlicker
+Dim Shared convChoice, convGood, defPlayer, enforceOnKO
+Dim Shared fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
-Dim Shared lastPlayType, last2PlayType, last3PlayTypem, lastPlayYards, loseDown
-Dim Shared nbrLines, rushEra, scoreX0, scoreX1, totalSTPenalties, YF
+Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
+Dim Shared loseDown, nbrLines, rushEra
+Dim Shared scoreX0, scoreX1, totalSTPenalties, YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
@@ -463,8 +465,8 @@ Dim Shared gameLongInt(1, 9), gameLongPassYds(1, 3), gameLongPRYds(0 To 1, 0 To 
 Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
 Dim Shared hasRunRBPass(1), hasRunFF(1), hasRunRev(1)
-Dim Shared indRushPct(1, 9), K1(50, 6), K3(1, 6)
-Dim Shared kickerFGA(1, 1), kickerFGPct(1, 1), kickerIdx(1, 1), kickerPATPct(1, 1)
+Dim Shared indRushPct(1, 9), K3(1, 6)
+Dim Shared kickerFGPct(1, 1), kickerFGContrib(1, 1), kickerPATPct(1, 1), kickerPATContrib(1, 1)
 Dim Shared krNumRet(1, 2), krYdsPerRet(1, 2)
 Dim Shared leagRat_GAME(1, 7)
 Dim Shared nbrPossOT(1), otTDs(0 To 1)
@@ -478,7 +480,18 @@ Dim Shared qbRushIdx(1, 3)
 Dim Shared runYdAdj(1, 38)
 Dim Shared rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
 Dim Shared sackStatsOpp(1, 14, 1)
-Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50), schedGame(2)
+Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50)
+Dim Shared scoringPlays(50, 6)
+'scoringPlays(__, X)
+'X = 0: Score Type
+'X = 1: Team Index
+'X = 2: Player Index (Def/ST)
+'X = 3: Player Index (Off - RB/WR)
+'X = 4: Conversion Result
+'X = 5: Score Distance
+'X = 6: Player Index (Kicker)
+
+Dim Shared schedGame(2)
 Dim Shared teamIdx_GAME(2), teamInts(1), teamSacks(1), timeouts(1), timePoss(1), teamRat_GAME(2, 9)
 Dim Shared teamYears(1), thirdDownAtt(1), thirdDownFail(1)
 Dim Shared totalInts(0 To 1, 0 To 9, 0 To 2), totalSacks(0 To 1, 0 To 14, 0 To 1)

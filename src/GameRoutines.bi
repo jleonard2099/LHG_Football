@@ -27,6 +27,7 @@ Declare Sub NAMEEDIT ()
 Declare Sub SCOUTREPT ()
 Declare Sub ADDBACKS ()
 Declare Sub ONSIDE ()
+Declare Sub DecideFGBlock (fgFormation)
 Declare Sub INCOMPLETE ()
 Declare Sub QBSNEAK ()
 Declare Sub OffPlayOveruse ()
@@ -75,6 +76,7 @@ Declare Sub PenaltyOnKickoff (autoFD)
 Declare Sub PenaltyOnPlaceKick (autoFD)
 Declare Sub PenaltyOnPunt (autoFD)
 Declare Sub PenaltyOnPuntReturn(autoFD)
+Declare Sub PenaltyOnScore (flagOnPlay, enforceOnKO)
 Declare Sub PenaltyChoice (decision, autoFD)
 Declare Sub PenaltyCharge (teamIdx, ydsCharged!)
 Declare Sub PenaltyPreSnap (flagOnPlay)
@@ -88,8 +90,7 @@ Declare Sub FINDINT (defPlayIdx)
 Declare Sub YARDAGE ()
 Declare Sub PuntReturnYards ()
 Declare Sub PuntFakeRunYards (choice)
-Declare Sub CheckFumble_1 ()
-Declare Sub CheckFumble_2 ()
+Declare Sub CheckFumble_1 (playType, fumbleOnPlay)
 Declare Sub FLEA (ffChance)
 Declare Sub REVGAIN ()
 Declare Sub FGFakeRunYards (choice)
@@ -146,11 +147,15 @@ Declare Sub EndOfGame
 
 Declare Function d100% ()
 Declare Function TickerTime% (timeInterval, X)
+Declare Function decideOnside%
 Declare Function fatigueLevel%
 Declare Function fgLimit%
+Declare Function FieldGoalChance%
+Declare Function FieldGoalDistance%
 Declare Function GetPlaySequencingModifier() As Integer
 Declare Function GetSneakChance%
 Declare Function FindMarkerColumn (X)
 Declare Function GetTeamYear% (yearFromName$)
+Declare Function patEnforcementChance%
 Declare Function ShouldUseQuickPassing() As Boolean
 Declare Function yardsToDecimalStr$ (sourceYds!)

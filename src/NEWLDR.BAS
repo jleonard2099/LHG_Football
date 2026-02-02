@@ -10,8 +10,6 @@ Sub NEWLDR (statType)
 
     ReDim menuChoices$(1 To 5)
 
-    Dim printOrView
-
     Shared leagueName$
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 

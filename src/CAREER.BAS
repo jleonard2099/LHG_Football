@@ -155,8 +155,6 @@ Sub MergeFirstYear ()
     Shared statsLKR$(), statsLPass$(), statsLRush$()
     Shared statsLPR$()
 
-    Dim TMR
-
     NB = -1
     NC = -1
     ND = -1
@@ -2035,6 +2033,8 @@ Sub LoadCareerFile (loadFile$)
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
 
+    Dim TMR
+
     Color 15, 0
     Cls
 
@@ -2314,6 +2314,8 @@ Sub SaveCareerFile (saveFile$)
     Shared careerGIS!(), careerGSS!(), careerFGS!()
     Shared careerKRS!(), careerPRS!(), careerPUS!()
     Shared careerQBS!(), careerRBS!(), careerWRS!()
+
+    Dim TMR
 
     Cls
     Color 15
