@@ -433,14 +433,15 @@ Dim Shared winTeam
 Dim Shared XD, XE
 
 Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared fgAttLine, fleaFlicker
 Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
 Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
-Dim Shared loseDown, nbrLines, rushEra
-Dim Shared scoreX0, scoreX1, totalSTPenalties, YF
+Dim Shared loseDown, nbrLines, playContext, rushEra
+Dim Shared scoreX0, scorePenaltyType
+Dim Shared totalSTPenalties, YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
@@ -505,7 +506,7 @@ Dim Shared ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-Dim Shared pbpString$, targetWRName$, YN$
+Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)

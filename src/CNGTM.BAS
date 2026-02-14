@@ -1648,7 +1648,7 @@ Sub ViewRoster (targetTeam$)
 
         Cls
 
-        Locate 2, 1
+        Locate 2, 9
         Color 12: Print "SACKS"
         Color 14
         Print "NAME              SACKS"
@@ -1662,16 +1662,18 @@ Sub ViewRoster (targetTeam$)
             End If
         Next
 
-        Print
+        Locate 2, 45
         Color 12: Print "INTERCEPTIONS"
         Color 14
+        Locate , 40
         Print "NAME              INT'S"
         For I = 0 To 9:
             If intName$(I) <> "" And Left$(intName$(I), 1) <> " " And Left$(intName$(I), 3) <> "END" Then
                 Color 3
+                Locate , 40
                 Print intName$(I);
                 Color 15
-                Locate , 19
+                Locate , 59
                 Print Using "###"; numInts(I)
             End If
         Next
@@ -1761,7 +1763,7 @@ Sub CheckContributions
                 Locate I1 + 5, 24: Print "    "
                 Locate I1 + 5, 23: Input rushContrib(I1)
             Else
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 20: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -1775,7 +1777,7 @@ Sub CheckContributions
 
         Locate 19, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 11) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 11) And (BC% > 98 And BC% < 102)
 
     '-----
 
@@ -1833,7 +1835,7 @@ Sub CheckContributions
 
             Else
 
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 25: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -1846,7 +1848,7 @@ Sub CheckContributions
 
         Locate 24, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 17) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 17) And (BC% > 98 And BC% < 102)
 
     '-----
 
@@ -1889,7 +1891,7 @@ Sub CheckContributions
                 Locate I1 + 5, 23
                 Input passContrib(I1)
             Else
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -1902,7 +1904,7 @@ Sub CheckContributions
 
         Locate 13, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 5) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 5) And (BC% > 98 And BC% < 102)
 
     '-----
 
@@ -1949,7 +1951,7 @@ Sub CheckContributions
 
             Else
 
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -1962,7 +1964,7 @@ Sub CheckContributions
 
         Locate 12, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 4) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 4) And (BC% > 98 And BC% < 102)
 
 
     '-----
@@ -2009,7 +2011,7 @@ Sub CheckContributions
 
             Else
 
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -2022,7 +2024,7 @@ Sub CheckContributions
 
         Locate 13, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 4) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 4) And (BC% > 98 And BC% < 102)
 
     '-----
 
@@ -2068,7 +2070,7 @@ Sub CheckContributions
 
             Else
 
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 14: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -2081,7 +2083,7 @@ Sub CheckContributions
 
         Locate 12, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 3) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 3) And (BC% > 98 And BC% < 102)
 
     '-----
 
@@ -2126,7 +2128,7 @@ Sub CheckContributions
 
             Else
 
-                If BC% <> 100 Then
+                If BC% > 101 Or BC% < 99 Then
                     Locate 13: Print "TOTAL IS NOT 100%!"
                     Locate LAST_ROW - 1: Print "PRESS ANY KEY TO CONTINUE";
                     I$ = GetKeyPress$
@@ -2139,7 +2141,7 @@ Sub CheckContributions
 
         Locate 12, 9: Print " "
 
-    Loop Until (B9 = 0 Or B9 = 3) And BC% = 100
+    Loop Until (B9 = 0 Or B9 = 3) And (BC% > 98 And BC% < 102)
 
 End Sub
 

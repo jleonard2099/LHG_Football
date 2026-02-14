@@ -783,11 +783,11 @@ Sub NewGame (visitor$, visitorQB$, home$, homeQB$, YN$, DT$, TM$, NTMS, gameInde
                     End If
 
                 Case 4:
-                    Locate 5, 26: Input DT$
+                    Locate 7, 26: Input DT$
 
                 Case 5:
-                    Locate 6, 26: Print "        "
-                    Locate 6, 26: Input TM$
+                    Locate 8, 26: Print "        "
+                    Locate 8, 26: Input TM$
 
                 Case 6:
                     Locate 9, 32: Input displayPause!
