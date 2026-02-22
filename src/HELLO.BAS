@@ -1,4 +1,4 @@
-3$Debug
+$Debug
 $Color:32
 
 Const GAME_VERSION$ = "7.23"
@@ -4813,7 +4813,7 @@ Sub FOOTBALL ()
                         returnYL! = (100 - puntYdLine!) + ydsGained
                         ydLine = returnYL!
 
-                        If returnYL! >= 99.99 Then
+                        If returnYL! >= 99.9499 Then
                             'Return yardage (touchdown)
                             ydsGained = 100 - puntYdLine!
                         End If
@@ -4822,7 +4822,7 @@ Sub FOOTBALL ()
                         If ydsGained > gameLongPRYds(P1, puntRetNbr) Then
                             gameLongPRTD$(P1, puntRetNbr) = ""
                             gameLongPRYds(P1, puntRetNbr) = ydsGained
-                            If returnYL! >= 99.99 Then
+                            If returnYL! >= 99.9499 Then
                                 gameLongPRTD$(P1, puntRetNbr) = "t"
                             End If
                         End If
@@ -4877,7 +4877,7 @@ Sub FOOTBALL ()
                             flagOnPlay = 1
                         End If
 
-                        If returnYL! >= 99.99 Then
+                        If returnYL! >= 99.9499 Then
                             'Touchdown!
                             gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
                             If flagOnPlay = 1 Then
@@ -5681,7 +5681,7 @@ Sub FOOTBALL ()
 
                     Call YARDAGE
 
-                    If penaltyYds! + ydLine >= 99.99 Then
+                    If penaltyYds! + ydLine >= 99.9499 Then
 
                         If ruleOptType = 0 Then
                             pbpString$ = pbpString$ + " IN THE END ZONE ***"
@@ -23282,3 +23282,4 @@ Sub CountGames ()
 
 
 End Sub
+
