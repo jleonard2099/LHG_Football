@@ -439,7 +439,8 @@ Sub SortStandings (AA, ZZ)
 
                 If diffX <> diffY Then
 
-                    If Not (totTeamWins(X) <= totTeamWins(Y) And totTeamWins(X) > totTeamLosses(X)) Or Not (totTeamWins(X) >= totTeamWins(Y) And totTeamWins(X) < totTeamLosses(X)) Then
+                    'If Not (totTeamWins(X) <= totTeamWins(Y) And totTeamWins(X) > totTeamLosses(X)) Or Not (totTeamWins(X) >= totTeamWins(Y) And totTeamWins(X) < totTeamLosses(X)) Then
+                    If (totTeamWins(X) > totTeamWins(Y) Or totTeamWins(X) <= totTeamLosses(X)) Or (totTeamWins(X) < totTeamWins(Y) Or totTeamWins(X) >= totTeamLosses(X)) Then
 
                         Swap expStdLeagName$(X), expStdLeagName$(Y)
                         Swap totTeamWins(X), totTeamWins(Y)

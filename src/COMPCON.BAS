@@ -841,14 +841,19 @@ Sub SortStandingsConference
                 If diffX <= diffY Then
 
                     If diffX <> diffY Then
-                        If Not (divWins(X) <= divWins(Y) And divWins(X) > divLosses(X)) Or Not (divWins(X) >= divWins(Y) And divWins(X) < divLosses(X)) Then
+                        
+                        'If Not (divWins(X) <= divWins(Y) And divWins(X) > divLosses(X)) Or Not (divWins(X) >= divWins(Y) And divWins(X) < divLosses(X)) Then
+                        If (divWins(X) > divWins(Y)) Or (divWins(X) <= divLosses(X)) Or (divWins(X) < divWins(Y)) Or (divWins(X) >= divLosses(X)) Then
+
                             Swap memberName$(X), memberName$(Y)
                             Swap divWins(X), divWins(Y)
                             Swap divLosses(X), divLosses(Y)
                             Swap divTies(X), divTies(Y)
                             Swap leagPtsFor!(X), leagPtsFor!(Y)
                             Swap leagPtsAgnst!(X), leagPtsAgnst!(Y)
+
                         End If
+
                     End If
 
                 End If

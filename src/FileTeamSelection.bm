@@ -1031,7 +1031,7 @@ Sub ReadConferenceIndex (indexFile$, fileType)
     Shared leagueName$
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    Open diskPaths$(2) + indexFile$ + ".TMI" For Input As #2
+    Open indexFile$ For Input As #2
 
     Input #2, fileType
 

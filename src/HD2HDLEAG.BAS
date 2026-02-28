@@ -116,12 +116,12 @@ Sub Hd2HdPro_League (secondLeague)
                     Call ReadScheduleStats(statFile$, null, nbrGames)
 
                     'Check if same league
-                    If sameLeague <> 1 Then
+                    If sameLeague = 0 Then
 
                         leagFile1$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
                         'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
 
-                        If secondLeague <> 0 Then
+                        If secondLeague = 1 Then
                             leagFile2$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
                             'ChooseFile$(diskPaths$(2) + "*.TMI", "LEAGUE", ExitCode%)
                         End If
@@ -141,7 +141,7 @@ Sub Hd2HdPro_League (secondLeague)
         Color 7, 0
         Cls
 
-        If teamNbr > 0 And ExitCode% <> 27 And ExitCode% <> 0 Then
+        If teamNbr > 0 And ExitCode% <> 27 And leagFile1$ <> "" Then
 
             userKey$ = GetOutputOptions$
 
@@ -342,10 +342,10 @@ Sub Hd2HdPro_League (secondLeague)
                         Else
                             Call Hd2HdPro_Report(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague, printChoice, "Comparison")
                         End If
-                    
+
                     Case 1
                         Call Hd2HdPro_Screen(team$, leag2$, divisionNames$(), divisionNames_2nd$(), secondLeague)
-                
+
                 End Select
 
                 Cls
@@ -542,7 +542,7 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_LEAGUE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
+    Loop Until div = DIVS_PER_LEAGUE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
 
     If secondLeague = 1 Then
 
@@ -644,7 +644,7 @@ Sub Hd2HdPro_Report (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
             div = div + 1
 
-        Loop Until div > DIVS_PER_LEAGUE Or divisionNames_2nd$(div) = "XXX" Or divisionNames_2nd$(div) = "*" Or divisionNames_2nd$(div) = ""
+        Loop Until div = DIVS_PER_LEAGUE Or divisionNames_2nd$(div) = "XXX" Or divisionNames_2nd$(div) = "*" Or divisionNames_2nd$(div) = ""
 
     End If
 
@@ -1012,7 +1012,7 @@ Sub Hd2HdPro_Screen (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_LEAGUE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
+    Loop Until div = DIVS_PER_LEAGUE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
 
     'Second League
     If secondLeague = 1 Then
@@ -1143,7 +1143,7 @@ Sub Hd2HdPro_Screen (teamName$, leag2$, divisionNames$(), divisionNames_2nd$(), 
 
             div = div + 1
 
-        Loop Until div > DIVS_PER_LEAGUE Or divisionNames_2nd$(div) = "XXX" Or divisionNames_2nd$(div) = "*" Or divisionNames_2nd$(div) = ""
+        Loop Until div = DIVS_PER_LEAGUE Or divisionNames_2nd$(div) = "XXX" Or divisionNames_2nd$(div) = "*" Or divisionNames_2nd$(div) = ""
 
     End If
 

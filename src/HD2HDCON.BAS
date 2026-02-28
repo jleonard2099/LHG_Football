@@ -114,12 +114,12 @@ Sub Hd2HdCon_Conf (secondConf)
                     Call ReadScheduleStats(statFile$, null, nbrGames)
 
                     'Check if same conference
-                    If sameConf <> 1 Then
+                    If sameConf = 0 Then
 
                         confFile1$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
                         'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
 
-                        If secondConf <> 0 Then
+                        If secondConf = 1 Then
                             confFile2$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
                             'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
                         End If
@@ -139,7 +139,7 @@ Sub Hd2HdCon_Conf (secondConf)
         Color 7, 0
         Cls
 
-        If teamNbr > 0 And ExitCode% <> 27 And ExitCode% <> 0 Then
+        If teamNbr > 0 And ExitCode% <> 27 And confFile1$ <> "" Then
 
             userKey$ = GetOutputOptions$
 
@@ -538,7 +538,7 @@ Sub Hd2HdCon_Report (teamName$, conf2$, divisionNames$(), divisionNames_2nd$(), 
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_CONFERENCE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
+    Loop Until div = DIVS_PER_CONFERENCE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
 
     If secondConf = 1 Then
 
@@ -1002,7 +1002,7 @@ Sub Hd2HdCon_Screen (teamName$, conf2$, divisionNames$(), divisionNames_2nd$(), 
 
         div = div + 1
 
-    Loop Until div > DIVS_PER_CONFERENCE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
+    Loop Until div = DIVS_PER_CONFERENCE Or divisionNames$(div) = "XXX" Or divisionNames$(div) = "*" Or divisionNames$(div) = ""
 
     'Second Conference
     If secondConf = 1 Then

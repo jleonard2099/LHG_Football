@@ -66,7 +66,7 @@ Sub Records_Menu (menuChoice)
 
             Else
 
-                Call ReadSeasonRecords (recordsFile$)
+                Call ReadSeasonRecords(recordsFile$)
 
                 Select Case SELECTION%
 
@@ -105,7 +105,7 @@ Sub Records_Menu (menuChoice)
                         'Call GameRecords(2)
 
                     Case 6:
-                        If _FileExists(diskPaths$(1) + "RECORDS.GAM") Then 
+                        If _FileExists(diskPaths$(1) + "RECORDS.GAM") Then
                             Kill diskPaths$(1) + "RECORDS.GAM"
                         End If
 
@@ -130,14 +130,14 @@ Sub ViewSeasonRecords ()
     Shared indRecCategory$(), teamRecCategory$(), teamRecDesc$()
     Shared indRecords!(), teamRecords!()
 
-    Color 0, 15
+    Color 15, 0
     Cls
 
-    Call ShadowBox(1, 1, 73, 20, 15, 4)
+    Call ShadowBox(1, 1, 73, 26, 15, 4)
 
     Locate 2, 23
     Print "******* INDIVIDUAL RECORDS *******"
-    Locate , 4
+    Locate 4, 4
     Print "CATEGORY                PLAYER           TEAM            RECORD"
 
     Color 7
@@ -187,21 +187,27 @@ Sub ViewSeasonRecords ()
     Print indRecCategory$(17); Tab(28); indRecDesc$(17, 0); Tab(42); indRecDesc$(17, 1); Tab(62); Using " ###"; indRecords!(17);
     Print indRecDesc$(17, 2)
 
+    'Total Yds, Scoring
+    For I = 18 To 21
+        Locate , 4
+        Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
+    Next
+
     Color 15
-    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
-    For I = 4 To 21:
+    For I = 5 To 26:
         Locate I, 4
         Print Space$(72)
     Next
 
     Color 7
-    Locate 4
+    Locate 5
 
-    'Total Yds, Scoring, Kickoff
-    For I = 18 To 24
+    'KO Returns, Yds, TDs
+    For I = 22 To 24
         Locate , 4
         Print indRecCategory$(I); Tab(28); indRecDesc$(I, 0); Tab(42); indRecDesc$(I, 1); Tab(62); Using "####"; indRecords!(I)
     Next
@@ -209,6 +215,7 @@ Sub ViewSeasonRecords ()
     'KR Avg
     Locate , 4
     Print indRecCategory$(25); Tab(28); indRecDesc$(25, 0); Tab(42); indRecDesc$(25, 1); Tab(62); Using "##.#"; indRecords!(25)
+
     'Longest KR
     Locate , 4
     Print indRecCategory$(26); Tab(28); indRecDesc$(26, 0); Tab(42); indRecDesc$(26, 1); Tab(62); Using " ###"; indRecords!(26);
@@ -238,19 +245,6 @@ Sub ViewSeasonRecords ()
     Locate , 4
     Print indRecCategory$(34); Tab(28); indRecDesc$(34, 0); Tab(42); indRecDesc$(34, 1); Tab(62); Using "##.#"; indRecords!(34)
 
-    Color 15
-    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
-    I$ = GetKeyPress$
-
-    'Clear existing categories, leaving border
-    For I = 4 To 21:
-        Locate I, 4
-        Print Space$(72)
-    Next
-
-    Color 7
-    Locate 4
-
     'FGM/FGA
     For I = 35 To 36
         Locate , 4
@@ -276,6 +270,19 @@ Sub ViewSeasonRecords ()
     Locate , 4
     Print indRecCategory$(41); Tab(28); indRecDesc$(41, 0); Tab(42); indRecDesc$(41, 1); Tab(61); Using "###.#"; indRecords!(41)
 
+    Color 15
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
+    I$ = GetKeyPress$
+
+    'Clear existing categories, leaving border
+    For I = 5 To 26:
+        Locate I, 4
+        Print Space$(72)
+    Next
+
+    Color 7
+    Locate 5
+
     'Intereception Records
     For I = 42 To 44
         Locate , 4
@@ -285,26 +292,26 @@ Sub ViewSeasonRecords ()
     'Longest Int
     Locate , 4
     Print indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);
-	Print indRecDesc$(45, 2)
+    Print indRecDesc$(45, 2)
 
     Color 15
-    Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
-    For I = 4 To 21
+    For I = 5 To 26:
         Locate I, 4
         Print Space$(72)
     Next
 
-    Color 0, 15
+    Color 15, 0
     Cls
 
-    Call ShadowBox(1, 1, 73, 20, 15, 4)
+    Call ShadowBox(1, 1, 73, 26, 15, 4)
 
     Locate 2, 21
     Print "******* OFFENSIVE TEAM RECORDS *******"
-    Locate , 4
+    Locate 4, 4
     Print "CATEGORY                   TEAM                  RECORD            "
 
     Color 7
@@ -358,18 +365,6 @@ Sub ViewSeasonRecords ()
         Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next I
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
-    I$ = GetKeyPress$
-
-    'Clear existing categories, leaving border
-    For I = 4 To 21:
-        Locate I, 4
-        Print Space$(72)
-    Next
-
-    Color 7
-    Locate 4
-
     'Punt Avg, PR/KR Avg
     For I = 15 To 17
         Locate , 4
@@ -382,6 +377,19 @@ Sub ViewSeasonRecords ()
     '1st Down / Gm
     Locate , 4
     Print teamRecCategory$(19); Tab(28); teamRecDesc$(19); Tab(53); Using "###.#"; teamRecords!(19)
+
+    Color 15
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
+    I$ = GetKeyPress$
+
+    'Clear existing categories, leaving border
+    For I = 5 To 26:
+        Locate I, 4
+        Print Space$(72)
+    Next
+
+    Color 7
+    Locate 5
 
     'Fumbles
     For I = 20 To 22
@@ -396,11 +404,12 @@ Sub ViewSeasonRecords ()
     Locate , 4
     Print teamRecCategory$(24); Tab(28); teamRecDesc$(24); Tab(53); Using "###.#"; teamRecords!(24)
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Color 15
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
 
     'Clear existing categories, leaving border
-    For I = 4 To 21:
+    For I = 5 To 26:
         Locate I, 4
         Print Space$(72)
     Next
@@ -408,7 +417,7 @@ Sub ViewSeasonRecords ()
     Color 15
     Locate 2, 21
     Print "******* DEFENSIVE TEAM RECORDS *******"
-    Locate , 4
+    Locate 4, 4
     Print "CATEGORY                   TEAM                  RECORD            "
 
     Color 7
@@ -452,18 +461,6 @@ Sub ViewSeasonRecords ()
         Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I) * 100
     Next
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
-    I$ = GetKeyPress$
-
-    'Clear existing categories, leaving border
-    For I = 4 To 21:
-        Locate I, 4
-        Print Space$(72)
-    Next
-
-    Color 7
-    Locate 4
-
     'Pts Allowed
     Locate , 4
     Print teamRecCategory$(38); Tab(28); teamRecDesc$(38); Tab(53); Using "#####"; teamRecords!(38)
@@ -483,14 +480,9 @@ Sub ViewSeasonRecords ()
         Print teamRecCategory$(I); Tab(28); teamRecDesc$(I); Tab(53); Using "###.#"; teamRecords!(I)
     Next
 
-    Color 15: Locate 22, 30: Print "HIT ANY KEY TO CONTINUE"
+    Color 15
+    Locate 28, 30: Print "HIT ANY KEY TO CONTINUE"
     I$ = GetKeyPress$
-
-    'Clear existing categories, leaving border
-    For I = 4 To 21:
-        Locate I, 4
-        Print Space$(72)
-    Next
 
 End Sub
 
@@ -583,9 +575,9 @@ Sub SeasonRecords_Report (printDest, destFile$)
     Print #1, indRecCategory$(45); Tab(28); indRecDesc$(45, 0); Tab(42); indRecDesc$(45, 1); Tab(62); Using " ###"; indRecords!(45);
     Print #1, indRecDesc$(45, 2)
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, Tab(23); "******* OFFENSIVE TEAM RECORDS *******"
     Print #1,

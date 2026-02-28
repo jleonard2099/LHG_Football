@@ -42,6 +42,7 @@ Dim memberConf$(MAX_CONFERENCES)
 'values when needed
 Dim memberIdx(40)
 Dim memberName$(60), memberNames_2nd$(60)
+Dim memberTeam$(60)
 Dim memberYear$(40), memberYear_2nd$(40)
 Dim statFilesComp$(60)
 
@@ -228,7 +229,7 @@ Dim natLdrTotTeam$(10, 20)
 Dim natLdrTotVal!(10, 20, 9)
 Dim natLdrVal!(240, 2)
 
-Dim pollTeam$(1200)
+Dim pollName$(1200), pollTeam$(1200)
 Dim pollRatings!(1200, 5)
 
 Dim statsGeneral!(14, 18)
@@ -314,15 +315,15 @@ Dim divisionNames$(4), divisionNames_2nd$(4)
 'so they could probably be INTEGERS.
 'However from the original code they are intended to be Singles
 
-Dim awayLosses(30), awayLosses_2nd!(30)
-Dim awayTies(30), awayTies_2nd!(30)
-Dim awayWins(30), awayWins_2nd!(30)
+Dim awayLosses(40), awayLosses_2nd!(40)
+Dim awayTies(40), awayTies_2nd!(40)
+Dim awayWins(40), awayWins_2nd!(40)
 Dim awayScoreTeam!(100), awayScoreTeam_2nd!(100)
 Dim awayScoreOpp!(100), awayScoreOpp_2nd!(100)
 
-Dim homeLosses(30), homeLosses_2nd!(30)
-Dim homeTies(30), homeTies_2nd!(30)
-Dim homeWins(30), homeWins_2nd!(30)
+Dim homeLosses(40), homeLosses_2nd!(40)
+Dim homeTies(40), homeTies_2nd!(40)
+Dim homeWins(40), homeWins_2nd!(40)
 Dim homeScoreTeam!(100), homeScoreTeam_2nd!(100)
 Dim homeScoreOpp!(100), homeScoreOpp_2nd!(100)
 
@@ -369,7 +370,6 @@ Dim HA&, AA&, NA&, TA&
 '----------------------------------------
 Dim leaderVal1!(240), leaderVal2!(240)
 Dim divLosses(60), divTies(60), divWins(60)
-
 Dim divTeamNames$(60), leagRecText$(60)
 
 

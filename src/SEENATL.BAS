@@ -35,8 +35,9 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
     Shared leagPtsAgnst!(), leagPtsFor!()
     Shared totalTeamVal!()
 
-    Shared pollTeam$(), divTeamNames$()
+    Shared divTeamNames$()
     Shared leaderName$(), leaderTeam$()
+    Shared pollName$(), pollTeam$()
     Shared totalTeamName$()
 
     Cls
@@ -107,7 +108,7 @@ Sub StatOptions_Natl (confName$, NRT)
             Select Case userKey$
 
                 Case "F":
-                    userFile$ = _SaveFileDialog$("Save National Org Report",_CWD$ + "\National Org Report","*.txt","Text File")
+                    userFile$ = _SaveFileDialog$("Save National Org Report", _CWD$ + "\National Org Report", "*.txt", "Text File")
                     If userFile$ <> "" Then
                         Call NatLeaders_Report(confName$, NRT, 0, userFile$)
                     End If
@@ -824,7 +825,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     XCoord = Int((80 - Len(confName$) - 17) / 2)
     Print #1,
     Print #1, Tab(XCoord); confName$; " OVERALL RANKINGS"
-    Print #1, 
+    Print #1,
     Print #1, "                    RATING     W    L    T   STRENGTH OF SCHEDULE"
 
     For P = 1 To NRT
@@ -832,9 +833,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
         Print #1, pollTeam$(P); Tab(22); Using "###.#    ##   ##   ##         ###.#"; pollRatings!(P, 1); pollRatings!(P, 2); pollRatings!(P, 3); pollRatings!(P, 4); pollRatings!(P, 5)
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "RUSHING LEADERS"; Tab(41); "RECEIVING LEADERS"
     Print #1, "                            AVG  ATT"; Tab(41); "                            AVG  REC"
@@ -847,7 +848,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "##.# ####"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 20) = "*" Then
             Print #1,
         Else
@@ -869,7 +870,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -891,7 +892,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -913,7 +914,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -924,9 +925,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "RUSHING TOUCHDOWNS"; Tab(41); "RECEIVING TOUCHDOWNS"
 
@@ -938,7 +939,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -961,7 +962,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "###.#"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -983,7 +984,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -1005,7 +1006,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "##.#  ##"; leaderVal1!(P), leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -1027,7 +1028,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "##.#  ###"; leaderVal1!(P), leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -1049,7 +1050,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "###.#  ###"; leaderVal1!(P), leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -1071,7 +1072,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "##"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -1082,9 +1083,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "TOTAL OFFENSE  G PLAYS  YDS  AVG YDS/G"; Tab(41); "TOTAL DEFENSE   G PLAYS  YDS  AVG YDS/G"
 
@@ -1097,7 +1098,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 2
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -1121,7 +1122,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 4
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -1133,9 +1134,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
 
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "PASSING OFF    G   ATT   COM  INT    PCT  YARDS  YDS/ATT   YDS/G"
 
@@ -1160,9 +1161,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
         End If
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "SCORING OFF    G  POINTS    AVG"; Tab(41); "SCORING DEF     G  POINTS    AVG"
 
@@ -1175,7 +1176,7 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
             Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 6
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -1199,9 +1200,9 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
         End If
     Next
 
-    Print #1, 
+    Print #1,
     If printDest = 1 Then Print #1, Chr$(12)
-    Print #1, 
+    Print #1,
 
     Print #1, "TURNOVER MARGIN      GAINED          LOST           MARGIN/"
     Print #1, "                 FUM INT TOTAL   FUM INT TOTAL       GAME  "
@@ -1235,3 +1236,4 @@ Sub NatLeaders_Report (confName$, NRT, printDest, destFile$)
     End If
 
 End Sub
+

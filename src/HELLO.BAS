@@ -1010,6 +1010,7 @@ End Sub
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
 '$Include: 'FileTeamSelection.bm'
+
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
 '$Include: 'BLANKCON.BAS'
@@ -6425,7 +6426,9 @@ Sub FOOTBALL ()
 
             'Most defensive penalties result in 1st down
             'except Incidental Facemask | Unsportsmanlike Conduct
-            If Not (penaltyRoll >= 75 And penaltyRoll >= 84) Then
+            If penaltyRoll >= 75 And penaltyRoll <= 84) Then
+                autoFirst = 0
+            Else
                 autoFirst = 1
             End If
 
@@ -14086,7 +14089,7 @@ Sub ComputerOffense ()
         Call AdjustForPreventDefense
     End If
 
-    If Not (climate(1) = 0) And Not (climate(4) = 0) Then
+    If climate(1) <> 0) And climate(4) <> 0 Then
         Call AdjustForWeather
     End If
 
@@ -18418,7 +18421,6 @@ Sub QBLINE ()
 
     Call Rolld100(RN1)
 
-    'If Not (currDown <= 2 Or currDown = 3 And d100% <= 80) Then
     If (currDown = 3 And d100% > 80) Or currDown = 4 Then
 
         RN0 = Int(Rnd(1) * 10) + 1

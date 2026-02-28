@@ -903,7 +903,6 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
 
                 'Pick conference to extract
                 conferenceFile$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
-                'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", ExitCode%)
 
                 If conferenceFile$ <> "" Then
 
