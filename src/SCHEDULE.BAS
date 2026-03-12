@@ -1103,11 +1103,11 @@ Sub EditParameters ()
 
     Cls
     Color 14
-
+    Locate 2
     Print "PARAMETERS FOR SAVING SPECIAL EVENTS BOXSCORES"
 
     Color 15
-
+    Locate 4
     Print " 1. IF QUARTERS ARE OVER "; eventSettings(1)
     Print " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
     Print " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
@@ -1123,21 +1123,61 @@ Sub EditParameters ()
 
     Do
 
+        Locate LAST_ROW - 2, 40: Print Space$(10);
         Locate LAST_ROW - 2, 1: Print "SELECT # TO CHANGE 1-10 (0 TO CONTINUE) ";
         Input B9
 
         Select Case B9
 
-            Case 1: Locate 2: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
-            Case 2: Locate 3: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
-            Case 3: Locate 4: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
-            Case 4: Locate 5: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
-            Case 5: Locate 6: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
-            Case 6: Locate 7: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
-            Case 7: Locate 8: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
-            Case 8: Locate 9: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
-            Case 9: Locate 10: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
-            Case 10: Locate 11: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
+            Case 1: 
+                Locate 4, 26: Print Space$(10)
+                Locate 4, 1: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
+                Locate 4, 26: Print " "
+
+            Case 2: 
+                Locate 5, 31: Print Space$(10)
+                Locate 5, 1: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
+                Locate 5, 31: Print " "
+
+            Case 3: 
+                Locate 6, 31: Print Space$(10)
+                Locate 6, 1: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
+                Locate 6, 31: Print " "
+
+            Case 4: 
+                Locate 7, 30: Print Space$(10)
+                Locate 7, 1: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
+                Locate 7, 30: Print " "
+
+            Case 5: 
+                Locate 8, 28: Print Space$(10)
+                Locate 8, 1: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
+                Locate 8, 28: Print " "
+
+            Case 6: 
+                Locate 9, 32: Print Space$(10)
+                Locate 9, 1: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
+                Locate 9, 32: Print " "
+
+            Case 7: 
+                Locate 10, 30: Print Space$(10)
+                Locate 10, 1: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
+                Locate 10, 30: Print " "
+
+            Case 8: 
+                Locate 11, 30: Print Space$(10)
+                Locate 11, 1: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
+                Locate 11, 30: Print " "
+
+            Case 9: 
+                Locate 12, 28: Print Space$(10)
+                Locate 12, 1: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
+                Locate 12, 28: Print " "
+
+            Case 10: 
+                Locate 13, 28: Print Space$(10)
+                Locate 13, 1: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
+                Locate 13, 28: Print " "
 
         End Select
 
