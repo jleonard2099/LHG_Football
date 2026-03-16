@@ -93,7 +93,8 @@ Sub CompileCollege ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + GetFileBaseName$(conferenceFile$) + ".TMI" For Input As #3
+        idxFile$ = String.Replace$(conferenceFile$, ".TMS", ".TMI")
+        Open idxFile$ For Input As #3
         Input #3, statType
         Close #3
 
@@ -109,7 +110,7 @@ Sub CompileCollege ()
 
         Else
 
-            Call ReadConferenceStats(conferenceFile$, 0)
+            Call ReadConferenceMembers(conferenceFile$, 0)
 
             Erase divWins, divLosses, divTies
             Erase leagPtsAgnst!, leagPtsFor!

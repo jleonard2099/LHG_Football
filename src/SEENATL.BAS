@@ -45,10 +45,6 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
     Locate 9, 6
     Print "PLEASE WAIT WHILE THE LEADER FILES ARE LOADING!!"
 
-    Open diskPaths$(2) + GetFileBaseName$(targetFile$) + ".CON" For Input As #1
-    Input #1, confName$
-    Close #1
-
     Open targetFile$ For Input As #2
 
     For X = 1 To 60
@@ -75,7 +71,8 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
     Close #2
 
-    Open diskPaths$(2) + GetFileBaseName$(targetFile$) + ".POL" For Input As #3
+    polFile$ = String.Replace$(targetFile$, ".LDR", ".POL"
+    Open polFile$ For Input As #3
 
     Input #3, NRT
 

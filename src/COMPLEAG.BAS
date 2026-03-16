@@ -95,7 +95,8 @@ Sub CompileLeague ()
             finalUpdate$ = UCase$(I$)
         Loop Until finalUpdate$ = "Y" Or finalUpdate$ = "N"
 
-        Open diskPaths$(2) + GetFileBaseName$(leagueFile$) + ".TMI" For Input As #3
+        idxFile$ = String.Replace$(leagueFile$, ".TMS", ".TMI")
+        Open idxFile$ For Input As #3
         Input #3, statType
         Close #3
 
@@ -111,7 +112,7 @@ Sub CompileLeague ()
 
         Else
 
-            Call ReadConferenceStats(leagueFile$, 1)
+            Call ReadConferenceMembers(leagueFile$, 1)
 
             Erase divWins, divLosses, divTies
             Erase leagPtsAgnst!, leagPtsFor!

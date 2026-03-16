@@ -59,14 +59,14 @@ Sub CREATCON ()
 
                 Case 1:
                     Call DefineConference
-                    Call ReviewEditConference(leagueName$)
+                    confFile$ = diskPaths$(2) + leagueName$ + ".TMI"
+                    Call ReviewEditConference(confFile$)
 
                 Case 2:
                     confFile$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
-                    'ChooseFile$(diskPaths$(2) + "*.TMI", "CONFERENCE", FileExit%)
 
                     If confFile$ <> "" Then
-                        Call ReviewEditLeague(GetFileBaseName$(confFile$))
+                        Call ReviewEditConference(confFile$)
                     End If
 
             End Select
@@ -163,15 +163,13 @@ End Sub
 'This subroutine provides an interface to
 'the user allowing them to choose / clear
 'teams from the conference
-Sub ReviewEditConference (confFile$)
+Sub ReviewEditConference (targetFile$)
 
     Shared memberIdx()
     Shared memberName$(), memberYear$()
 
     Shared leagueName$
     Shared div1Name$, div2Name$
-
-    targetFile$ = diskPaths$(2) + confFile$ + ".TMI"
 
     If _FileExists(targetFile$) Then
         Call ReadConferenceIndex(targetFile$, statType)
@@ -248,7 +246,7 @@ Sub ReviewEditConference (confFile$)
 
         Loop Until choice = 3
 
-        Call SaveConferences(confFile$)
+        Call SaveConferences(targetFile$)
 
     End If
 
@@ -269,10 +267,11 @@ Sub SaveConferences (confFile$)
     Shared leagueName$
     Shared div1Name$, div2Name$
 
+    Dim confFile$
     Dim statFileNames$(TEAMS_PER_CONFERENCE)
 
-    'Ready to save work
-    Open diskPaths$(2) + confFile$ + ".TMI" For Output As #1
+    'Open Definition File
+    Open confFile$ For Output As #1
 
     Print #1, 0
     Print #1, leagueName$ 'League / Conference Name
@@ -298,7 +297,9 @@ Sub SaveConferences (confFile$)
 
     Next X
 
-    Open diskPaths$(2) + confFile$ + ".TMS" For Output As #2
+    'Open Stat File
+    confStatFile$ = String.Replace$(leagueFile$, ".TMI", ".TMS"
+    Open confStatFile$ For Output As #2
 
     Write #2, leagueName$
     Write #2, div1Name$

@@ -25,7 +25,7 @@ Sub BLANKPRO ()
 
         If UCase$(A$) = "Y" Then
 
-            Call ReadConferenceStats (leagueFile$, 1)
+            Call ReadConferenceMembers (leagueFile$, 1)
 
             For XW = 1 To TEAMS_PER_LEAGUE
 

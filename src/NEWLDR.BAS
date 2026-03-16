@@ -72,7 +72,7 @@ Sub NEWLDR (statType)
                     'ChooseFile$(diskPaths$(2) + "*.TMS", "CONFERENCE STATS", FileExit%)
 
                     If confStatFile$ <> "" Then
-                        Call ReadConferenceStats(confStatFile$, statType)
+                        Call ReadConferenceMembers(confStatFile$, statType)
                         Call UpdateExpandedLeaders(statType, totalStats)
                         Call SaveExpandedLeaders(GetFileBaseName$(confStatFile$), totalStats)
                     End If
@@ -93,7 +93,7 @@ Sub NEWLDR (statType)
                     If confStatFile$ <> "" Then
                         Color 15, 0
                         Cls
-                        Call ReadConferenceStats(confStatFile$, statType)
+                        Call ReadConferenceMembers(confStatFile$, statType)
                         Call UpdateExpandedStandings(statType)
                     End If
 

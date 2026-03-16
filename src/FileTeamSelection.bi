@@ -12,7 +12,7 @@ Declare Sub SaveScheduleStats (saveFile$, numberGames)
 Declare Sub ReadSeasonRecords (recordFile$)
 Declare Sub ReadGameRecords (recordFile$)
 Declare Sub ReadConferenceIndex (indexFile$, fileType)
-Declare Sub ReadConferenceStats (statFile$, statType)
+Declare Sub ReadConferenceMembers (statFile$, statType)
 Declare Sub ReadOrganizationFile (organizationFile$, organization$)
 
 Declare Function nameStatFile$ (teamName$)

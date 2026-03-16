@@ -26,7 +26,7 @@ Sub BLANKCON ()
 
         If UCase$(G$) = "Y" Then
 
-            Call ReadConferenceStats (conferenceFile$, 0)
+            Call ReadConferenceMembers (conferenceFile$, 0)
 
             For XW = 1 To TEAMS_PER_CONFERENCE
 

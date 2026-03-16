@@ -40,7 +40,9 @@ Sub LoadLeaderFiles_League (league$, targetFile$)
 
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    Call ReadConferenceStats(diskPaths$(2) + GetFileBaseName$(targetFile$) + ".TMS", 1)
+    'Assume stat files are in same folder
+    memberFile$ = String.Replace$(targetFile$, ".LDR", ".TMS"
+    Call ReadConferenceMembers(memberFile$)
 
     Cls
 

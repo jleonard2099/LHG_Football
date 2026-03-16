@@ -42,11 +42,11 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     Shared div1Name$, div2Name$
 
-    Call ReadConferenceStats(diskPaths$(2) + GetFileBaseName$(targetFile$) + ".TMS", 0)
+    'Assume stat files are in same folder
+    memberFile$ = String.Replace$(targetFile$, ".LDR", ".TMS")
+    Call ReadConferenceMembers(memberFile$)
 
     confName$ = leagueName$
-    div1Name$ = PadRight(div1Name$, 8)
-    div2Name$ = PadRight(div2Name$, 8)
 
     Cls
 
