@@ -1184,7 +1184,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open cfgPath$ + "pbplog" + Str$(currGame) For Append As #11
-        Open cfgPath$ + "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
         If Not _FileExists(scheduleFile$) Then
 
@@ -1228,7 +1228,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Open cfgPath$ + "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
     End If
 
@@ -1461,7 +1461,7 @@ Sub FOOTBALL ()
 
     'If we've run into issues so far...
     If earlyExit = 1 Then
-        Close #11
+        'Close #11
         Exit Sub
     End If
 
@@ -2015,7 +2015,7 @@ Sub FOOTBALL ()
                             End Select
 
                         Case 9
-                            If RN0 <= 12 Then
+                            If krResult <= 12 Then
                                 'Kick return for TD - 1.2% chance
                                 ydsGained = 110
                             Else
@@ -2024,7 +2024,7 @@ Sub FOOTBALL ()
                             End If
 
                         Case Is >= 10
-                            If RN0 <= 20 Then
+                            If krResult <= 20 Then
                                 'Kick return for TD - 2% chance
                                 ydsGained = 110
                             Else
@@ -6426,7 +6426,7 @@ Sub FOOTBALL ()
 
             'Most defensive penalties result in 1st down
             'except Incidental Facemask | Unsportsmanlike Conduct
-            If penaltyRoll >= 75 And penaltyRoll <= 84) Then
+            If (penaltyRoll >= 75 And penaltyRoll <= 84) Then
                 autoFirst = 0
             Else
                 autoFirst = 1
@@ -6533,7 +6533,10 @@ Sub FOOTBALL ()
 
                     Call COMPILER
 
-                    ydLine = ydLine + ydsGained
+                    'No score on play - move spot of ball
+                    If playYdLine! < 99.9499 Then
+                        ydLine = ydLine + ydsGained
+                    End If
 
                     ydsToFirst = ydsToFirst - ydsGained
                     currDown = currDown + 1
@@ -6622,7 +6625,10 @@ Sub FOOTBALL ()
 
                     Call COMPILER
 
-                    ydLine = ydLine + ydsGained
+                    'No score on play - move spot of ball
+                    If playYdLine! < 99.9499 Then
+                        ydLine = ydLine + ydsGained
+                    End If
 
                     ydsToFirst = ydsToFirst - ydsGained
                     currDown = currDown + 1
@@ -8497,6 +8503,8 @@ Sub PBP ()
             End
 
     End Select
+
+    'Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -14089,7 +14097,7 @@ Sub ComputerOffense ()
         Call AdjustForPreventDefense
     End If
 
-    If climate(1) <> 0) And climate(4) <> 0 Then
+    If climate(1) <> 0 And climate(4) <> 0 Then
         Call AdjustForWeather
     End If
 
@@ -17686,10 +17694,7 @@ Sub SCOREUPD ()
     scoreTimes(nbrScores) = gameClock!
     scoreQuarters(nbrScores) = quarter
 
-    'If quarter = 4 Then
-    '
-    'End If
-
+    'Score Team
     If playContext <> 7 Then
         scoringPlays(nbrScores, 1) = P1
     Else
@@ -17697,27 +17702,36 @@ Sub SCOREUPD ()
     End If
 
     scoringPlays(nbrScores, 0) = playContext
-    scoringPlays(nbrScores, 5) = 100 - ydLine
 
-    If playContext = 3 Then
-        scoringPlays(nbrScores, 5) = 100 - kickYL!
+    'Score Yardage
+    Select Case playContext
+
+        Case 3
+            'Kick return yards
+            scoringPlays(nbrScores, 5) = 100 - kickYL!
+
+        Case 8
+            scoringPlays(nbrScores, 5) = FieldGoalDistance%
+
+        Case Else
+            'Normal play
+            scoringPlays(nbrScores, 5) = 100 - ydLine
+
+    End Select
+
+    If scoringPlays(nbrScores, 5) < 1 Then
+        scoringPlays(nbrScores, 5) = 1
     End If
 
-    If playContext = 8 Then
-        scoringPlays(nbrScores, 5) = FieldGoalDistance%
-    End If
-
+    'Score Player
     If playContext = 5 Or playContext = 12 Then
         scoringPlays(nbrScores, 2) = defPlayer
     Else
         scoringPlays(nbrScores, 2) = I1
     End If
 
+    'Receiver Index
     scoringPlays(nbrScores, 3) = I3
-
-    If scoringPlays(nbrScores, 5) < 1 Then
-        scoringPlays(nbrScores, 5) = 1
-    End If
 
 End Sub
 

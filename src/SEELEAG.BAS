@@ -41,8 +41,8 @@ Sub LoadLeaderFiles_League (league$, targetFile$)
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     'Assume stat files are in same folder
-    memberFile$ = String.Replace$(targetFile$, ".LDR", ".TMS"
-    Call ReadConferenceMembers(memberFile$)
+    memberFile$ = String.Replace$(targetFile$, ".LDR", ".TMS")
+    Call ReadConferenceMembers(memberFile$, 1)
 
     Cls
 
@@ -452,7 +452,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -474,7 +474,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -496,7 +496,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -521,7 +521,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -543,7 +543,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "###.#"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -565,7 +565,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "####"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -587,7 +587,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -609,7 +609,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "##.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -631,7 +631,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "###.#  ###"; leaderVal1!(P); leaderVal2!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -653,7 +653,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "##"; leaderVal1!(P);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         If leaderName$(P + 10) = "*" Then
             Print #1,
         Else
@@ -679,7 +679,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 2
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -703,7 +703,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "## #### ##### ##.# ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3); totalTeamVal!(CA, P, 4); totalTeamVal!(CA, P, 5);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 4
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then
@@ -757,7 +757,7 @@ Sub ProLeaders_Report (league$, printDest, destFile$)
             Print #1, Using "##   ####   ###.#"; totalTeamVal!(CA, P, 1); totalTeamVal!(CA, P, 2); totalTeamVal!(CA, P, 3);
         End If
 
-		Print #1, Tab(41);
+        Print #1, Tab(41);
         CA = 6
 
         If totalTeamName$(CA, P) = "*" Or totalTeamName$(CA, P) = "" Then

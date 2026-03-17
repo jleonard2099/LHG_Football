@@ -44,7 +44,7 @@ Sub LoadLeaderFiles_Coll (targetFile$, confName$)
 
     'Assume stat files are in same folder
     memberFile$ = String.Replace$(targetFile$, ".LDR", ".TMS")
-    Call ReadConferenceMembers(memberFile$)
+    Call ReadConferenceMembers(memberFile$, 0)
 
     confName$ = leagueName$
 

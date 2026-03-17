@@ -71,7 +71,8 @@ Sub LoadLeaderFiles_Natl (targetFile$, confName$, NRT)
 
     Close #2
 
-    polFile$ = String.Replace$(targetFile$, ".LDR", ".POL"
+    polFile$ = String.Replace$(targetFile$, ".LDR", ".POL")
+
     Open polFile$ For Input As #3
 
     Input #3, NRT
