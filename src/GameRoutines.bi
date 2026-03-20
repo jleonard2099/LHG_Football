@@ -152,10 +152,11 @@ Declare Function fatigueLevel%
 Declare Function fgLimit%
 Declare Function FieldGoalChance%
 Declare Function FieldGoalDistance%
+Declare Function FindMarkerColumn (X)
 Declare Function GetPlaySequencingModifier() As Integer
 Declare Function GetSneakChance%
-Declare Function FindMarkerColumn (X)
 Declare Function GetTeamYear% (yearFromName$)
+Declare Function kickReturnFoulSpot% (catchYard!, returnDistance)
 Declare Function patEnforcementChance%
 Declare Function ShouldUseQuickPassing() As Boolean
 Declare Function yardsToDecimalStr$ (sourceYds!)

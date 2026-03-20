@@ -43,6 +43,8 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1184,7 +1186,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open cfgPath$ + "pbplog" + Str$(currGame) For Append As #11
-        'Open cfgPath$ + "pbplog" For Append As #11
+        Open cfgPath$ + "pbplog" For Append As #11
 
         If Not _FileExists(scheduleFile$) Then
 
@@ -1228,7 +1230,7 @@ Sub FOOTBALL ()
 
     Else
 
-        'Open cfgPath$ + "pbplog" For Append As #11
+        Open cfgPath$ + "pbplog" For Append As #11
 
     End If
 
@@ -1461,7 +1463,7 @@ Sub FOOTBALL ()
 
     'If we've run into issues so far...
     If earlyExit = 1 Then
-        'Close #11
+        Close #11
         Exit Sub
     End If
 
@@ -2035,10 +2037,13 @@ Sub FOOTBALL ()
 
                     End Select
 
+                    ydLine = kickYL!
+
                     'Normal KR yardage
                     ydsToScore = 100 - ydLine
                     Call StatusBoard
 
+                    'Move ball marker to where the kick landed
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
                     Call MOVEBALL
@@ -2110,7 +2115,7 @@ Sub FOOTBALL ()
                         End If
 
                         If flagOnPlay = 1 Then
-                            foulLine = returnForTDFoulSpot%(kickYL!, ydsGained)
+                            foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
                             Call PenaltyOnKickoff(foulLine, autoFirst)
                             GoTo HANDLEPENALTY
                         End If
@@ -2143,7 +2148,7 @@ Sub FOOTBALL ()
             '3% chance of penalty on squib kick
             If d100% >= 97 Then
                 flagOnPlay = 1
-                foulLine = returnForTDFoulSpot%(kickYL!, ydsGained)
+                foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
                 Call PenaltyOnKickoff(foulLine, autoFirst)
             End If
 
@@ -3859,7 +3864,7 @@ Sub FOOTBALL ()
                     End If
 
                     If playYdLine! >= 99.9499 Then
-                        '
+                        'Touchdown!
                     End If
 
                 End If
@@ -4495,7 +4500,7 @@ Sub FOOTBALL ()
                             End If
 
                             If playYdLine! >= 99.9499 Then
-                                '
+                                'Touchdown!
                             End If
 
                         Else
@@ -4511,7 +4516,7 @@ Sub FOOTBALL ()
                             End If
 
                             If playYdLine! >= 99.9499 Then
-                                '
+                                'Touchdown!
                             End If
 
                         End If
@@ -4654,7 +4659,7 @@ Sub FOOTBALL ()
                             GoTo 3840
 
                         Case 9 To 11
-                            Call PenaltyOnPunt(ydLine, autoFirst)
+                            Call PenaltyOnPunt(ydLine, autoFirst, scrimmFoul)
                             GoTo HANDLEPENALTY
 
                     End Select
@@ -4676,6 +4681,8 @@ Sub FOOTBALL ()
                     End If
 
                 End If
+
+                Print #11, gameTeams$(P1) + " PUNTING ON " + downDesc$(currDown) + " DOWN FROM THE" + Str$(Int(ydLine)) + " YARD LINE"
 
                 If ydsGained < 40 Then
                     pbpString$ = "HE GETS THE PUNT AWAY"
@@ -4878,6 +4885,9 @@ Sub FOOTBALL ()
                             flagOnPlay = 1
                         End If
 
+                        '-- REMOVE ME!
+                        flagOnPlay = 1
+
                         If returnYL! >= 99.9499 Then
                             'Touchdown!
                             gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
@@ -4889,8 +4899,8 @@ Sub FOOTBALL ()
                         End If
 
                         If flagOnPlay = 1 Then
-                            foulLine = returnForTDFoulSpot%(returnYL!, ydsGained)
-                            Call PenaltyOnPunt(foulLine, autoFirst)
+                            foulLine = kickReturnFoulSpot%(returnYL!, ydsGained)
+                            Call PenaltyOnPunt(foulLine, autoFirst, scrimmFoul)
                             GoTo HANDLEPENALTY
                         End If
 
@@ -5033,7 +5043,7 @@ Sub FOOTBALL ()
                         End If
 
                         If playYdLine! >= 99.9499 Then
-                            '
+                            'Touchdown!
                         End If
 
                     Else
@@ -5155,7 +5165,7 @@ Sub FOOTBALL ()
                                 End If
 
                                 If playYdLine! >= 99.9499 Then
-                                    '
+                                    'Touchdown!
                                 End If
 
                             End If
@@ -5847,6 +5857,11 @@ Sub FOOTBALL ()
 
     Call SCOREUPD
 
+    'This is for tracking regular plays
+    'It gets checked later even during
+    'returns and other calls
+    playYdLine! = 0
+
     If flagOnPlay = 1 Then
 
         Select Case scorePenaltyType
@@ -5859,13 +5874,13 @@ Sub FOOTBALL ()
 
             Case 3
                 'Kick Return
-                foulLine = returnForTDFoulSpot%(kickYL!, ydsGained)
+                foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
                 Call PenaltyOnKickoff(foulLine, autoFirst)
 
             Case 4
                 'Punt Return
-                foulLine = returnForTDFoulSpot%(kickYL!, ydsGained)
-                Call PenaltyOnPunt(foulLine, autoFirst)
+                foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
+                Call PenaltyOnPunt(foulLine, autoFirst, scrimmFoul)
 
         End Select
 
@@ -6472,15 +6487,22 @@ Sub FOOTBALL ()
     'blocked / intercepted / penalized / etc.
 
     ' *** PENALTIES DURING PLAY ***
-    flagOnPlay = 1
-
-    RN4 = Int(Rnd(1) * 1000) + 1
+    If flagOnPlay = 0 Then
+        'No penalty so far?
+        'Check for one
+        'flagOnPlay = 1
+        penaltyRoll = Int(Rnd(1) * 1000) + 1
+    Else
+        'Flag already on play
+        'Go straight to resolving
+        penaltyRoll = 1000
+    End If
 
     Select Case playType
 
         Case 1
             'Run Play
-            Select Case RN4
+            Select Case penaltyRoll
 
                 Case 1 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - OFF - ILLEGAL MOTION - 5 YDS ***"
@@ -6557,7 +6579,7 @@ Sub FOOTBALL ()
 
         Case 2
             'Pass Play
-            Select Case RN4
+            Select Case penaltyRoll
 
                 Case 1 To 16 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - "
@@ -6686,12 +6708,16 @@ Sub FOOTBALL ()
 
     penAccepted = 0
 
-    If penaltyString$ = "" Then
+    If flagOnPlay = 1 And penaltyString$ = "" Then
         penaltyString$ = pbpString$
     End If
 
     'Choice for Penalty
-    pbpString$ = penaltyString$
+    If flagOnPlay = 1 Then
+        pbpString$ = penaltyString$
+    End If
+
+    penaltyString$ = ""
     Call PenaltyChoice(penAccepted, autoFirst, scorePenaltyType)
 
     If penAccepted = 1 Then
@@ -6780,6 +6806,13 @@ Sub FOOTBALL ()
             scorePenaltyType = 0
             playSegment = 0
 
+        End If
+
+        'This is only set for returns,
+        'so we can assess foul from spot
+        If scrimmFoul = 0 And foulLine > 0 Then
+            ydLine = foulLine
+            foulLine = 0
         End If
 
         If penaltyYds! > 0 Then
@@ -8504,7 +8537,7 @@ Sub PBP ()
 
     End Select
 
-    'Print #11, pbpString$
+    Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -10741,11 +10774,13 @@ Sub QBSNEAK ()
 
     Call PBP
 
+    Call Rolld100(successRoll)
+
     'Inside Linebacker is blitzing
     If (coverage = 7 Or coverage = 9 Or coverage = 11) Then
 
         'QB sneaks succeed 80% of the time
-        If d100% > 80 Then
+        If successRoll > 80 Then
             '0.3 to 0.9
             ydsGained = (Int(Rnd(1) * 7) + 3) / 10
         Else
@@ -10805,7 +10840,7 @@ Sub QBSNEAK ()
 
             Case 1
                 'Read
-                Select Case RN4
+                Select Case successRoll
                     Case 1 To 10
                         '-.3 to .2
                         ydsGained = (Int(Rnd(1) * 6) - 3) / 10
@@ -10822,7 +10857,7 @@ Sub QBSNEAK ()
 
             Case 2
                 'Pinch
-                If RN4 <= 30 Then
+                If successRoll <= 30 Then
                     '-.3 to .2
                     ydsGained = (Int(Rnd(1) * 6) - 3) / 10
                 Else
@@ -10832,7 +10867,7 @@ Sub QBSNEAK ()
 
             Case 3
                 'Inside Stunt
-                If RN4 <= 15 Then
+                If successRoll <= 15 Then
                     '-.3 to .2
                     ydsGained = (Int(Rnd(1) * 6) - 3) / 10
                 Else
@@ -10842,7 +10877,7 @@ Sub QBSNEAK ()
 
             Case 4
                 'Outside Stunt / Pass Rush
-                Select Case RN4
+                Select Case successRoll
                     Case 1 To 10
                         '-.3 to .2
                         ydsGained = (Int(Rnd(1) * 6) - 3) / 10
@@ -10859,7 +10894,7 @@ Sub QBSNEAK ()
 
             Case 5
                 'Goal line
-                If RN4 <= 40 Then
+                If successRoll <= 40 Then
                     '-.3 to .2
                     ydsGained = (Int(Rnd(1) * 6) - 3) / 10
                 Else
@@ -10875,7 +10910,7 @@ Sub QBSNEAK ()
     'but are about 85% successful overall
     'Buffalo has converted 77% overall
     If brotherlyShove = 1 Then
-        If (teamName$ = "PHILADELPHIA" And RN4 <= 85) Or (teamName$ = "BUFFALO" And RN4 <= 77) Then
+        If (teamName$ = "PHILADELPHIA" And successRoll <= 85) Or (teamName$ = "BUFFALO" And successRoll <= 77) Then
             '1.3 - 2.4 yards
             ydsGained = 1 + (Int(Rnd(1) * 15) + 3) / 10
         End If
@@ -11258,13 +11293,13 @@ End Sub
 'blitz yardage gains.
 Sub BLITZ2 ()
 
-    Call Rolld100(RN4)
+    Call Rolld100(blitzResult)
 
     Select Case rushBase
 
         Case Is <= 15
 
-            Select Case RN4
+            Select Case blitzResult
 
                 Case 1 To 15
                     ydsGained = Int(Rnd(1) * 5) - 4
@@ -11279,7 +11314,7 @@ Sub BLITZ2 ()
 
         Case 16, 17
 
-            Select Case RN4
+            Select Case blitzResult
 
                 Case 1 To 10
                     ydsGained = Int(Rnd(1) * 5) - 4
@@ -11294,7 +11329,7 @@ Sub BLITZ2 ()
 
         Case 18, 19
 
-            Select Case RN4
+            Select Case blitzResult
 
                 Case 1 To 10
                     ydsGained = Int(Rnd(1) * 5) - 4
@@ -11309,7 +11344,7 @@ Sub BLITZ2 ()
 
         Case 20, 21
 
-            Select Case RN4
+            Select Case blitzResult
 
                 Case 1 To 5
                     ydsGained = Int(Rnd(1) * 5) - 4
@@ -11324,7 +11359,7 @@ Sub BLITZ2 ()
 
         Case Else
 
-            Select Case RN4
+            Select Case blitzResult
 
                 Case 1 To 5
                     ydsGained = Int(Rnd(1) * 5) - 4
@@ -14431,7 +14466,7 @@ Sub AdjustForSituation ()
                     ' Screen - 10% (safe, quick play)
                 Case 71 To 80:
                     playCall = 13
-                
+
                     ' Medium Pass - 10%
                 Case 81 To 90:
                     playCall = 11
@@ -14482,7 +14517,7 @@ Sub AdjustForSituation ()
                     ' Screen - 15% (great opening play for 2-min drill)
                 Case 61 To 75:
                     playCall = 13
-                
+
                     ' Long Pass - 15%
                 Case 76 To 90:
                     playCall = 12
@@ -15682,7 +15717,7 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD)
 
     totalSTPenalties = totalSTPenalties + 1
 
-    pbpString$ = "THERE'S A FLAG ON THE PLAY AT THE " + Str$(foulYdLine) + "YARD LINE!!"
+    pbpString$ = "THERE'S A FLAG ON THE PLAY AT THE" + Str$(foulYdLine) + " YARD LINE!!"
     Call PBP
 
     Call Rolld100(kickPenalty)
@@ -15775,7 +15810,9 @@ End Sub
 '----------------------------------------
 'This subroutine handles the yardage and
 'Play-by-Play for a penalty on the punt.
-Sub PenaltyOnPunt (foulYdLine, autoFD)
+Sub PenaltyOnPunt (foulYdLine, autoFD, scrimmageFoul)
+
+    scrimmageFoul = 0
 
     totalSTPenalties = totalSTPenalties + 1
 
@@ -15786,6 +15823,14 @@ Sub PenaltyOnPunt (foulYdLine, autoFD)
 
     'OFF = Punting Team
     'DEF = Return Team
+
+    '-- REMOVE ME
+    puntPenalty = 90
+
+    If puntPenalty < 20 Then
+        pbpString$ = "IT LOOKS LIKE IT'S BEING SPOTTED AT THE" + Str$(foulYdLine) + " YARD LINE!!"
+        Call PBP
+    End If
 
     Select Case puntPenalty
 
@@ -15803,14 +15848,17 @@ Sub PenaltyOnPunt (foulYdLine, autoFD)
             pbpString$ = "*** PENALTY - ROUGHING KICKER - DEF - 15 YDS / 1ST D! ***"
             penaltyYds! = 15
             autoFD = 1
+            scrimmageFoul = 1
 
         Case 61 To 94
             pbpString$ = "*** PENALTY - INELIG. DOWNFLD. KICK - OFF - 15 YDS ***"
             penaltyYds! = -15
+            scrimmageFoul = 1
 
         Case 95 To 100
             pbpString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - OFF - 5 YDS ***"
             penaltyYds! = -5
+            scrimmageFoul = 1
 
     End Select
 
@@ -23031,9 +23079,9 @@ End Function
 
 
 '----------------------------------------
-'      returnForTDFoulSpot% Function
+'      kickReturnFoulSpot% Function
 '----------------------------------------
-Function returnForTDFoulSpot% (catchYard!, returnDistance)
+Function kickReturnFoulSpot% (catchYard!, returnDistance)
 
     ' Divide return into four zones with different probabilities
     Dim foulSpot, zoneRoll, zoneSize
@@ -23067,7 +23115,7 @@ Function returnForTDFoulSpot% (catchYard!, returnDistance)
     If foulSpot < 1 Then foulSpot = 1
     If foulSpot > 99 Then foulSpot = 99
 
-    returnForTDFoulSpot% = foulSpot
+    kickReturnFoulSpot% = foulSpot
 
 End Function
 
