@@ -2106,12 +2106,36 @@ Sub FOOTBALL ()
                         End If
 
                         If returnYL! > 99.99 Then
+
                             'Touchdown!
                             gameStatsPlayer(P1, I1, 16) = gameStatsPlayer(P1, I1, 16) + 1
+
+                            pbpStr = Int(Rnd(1) * 4) + 1
+
+                            Select Case pbpStr
+
+                                Case 1
+                                    pbpString$ = kickRet$(P1, I1) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
+
+                                Case 2
+                                    pbpString$ = "HE'S PICKING UP SPEED AND LEAVING COVERAGE BEHIND!"
+
+                                Case 3
+                                    pbpString$ = kickRet$(P1, I1) + " HAS SOME DAYLIGHT AHEAD OF HIM!"
+                                                                
+                                Case 4
+                                    pbpString$ = "HE SEEMS TO BE SLIPPING PAST THE COVERAGE WITH EASE!"
+
+                            End Select
+
+                            Call PBP
+
                             If flagOnPlay = 1 Then
                                 scorePenaltyType = 3
                             End If
+
                             GoTo 3200
+
                         End If
 
                         If flagOnPlay = 1 Then
@@ -4209,7 +4233,10 @@ Sub FOOTBALL ()
 
                     scoreX0 = 0
 
-                    ydsGained = ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 11
+                    '10 yds extra to account for the punt
+                    'rolling without a returner and also
+                    'a very likely flat trajectory
+                    ydsGained = PuntDistance% + 10
 
                     Select Case climate(0)
 
@@ -4337,7 +4364,7 @@ Sub FOOTBALL ()
             scoreX0 = 0
 
             'Punt yardage - normal punt
-            ydsGained = ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 3
+            ydsGained = PuntDistance%
 
             If (100 - ydLine) <= ((ydsPerPunt(P1, 0) * 2) + 28) Then
                 ydsGained = ydsGained + (100 - ydLine) - (31 + ydsPerPunt(P1, 0) * 2)
@@ -4659,7 +4686,7 @@ Sub FOOTBALL ()
                             GoTo 3840
 
                         Case 9 To 11
-                            Call PenaltyOnPunt(ydLine, autoFirst, scrimmFoul)
+                            Call PenaltyOnPunt(autoFirst)
                             GoTo HANDLEPENALTY
 
                     End Select
@@ -4697,215 +4724,247 @@ Sub FOOTBALL ()
                 Call PBP
 
                 ' ** Regular Punt attempt + return **
+                puntPenaltyChance = Int(Rnd(1) * 1000) + 1
 
-                'Increase punt attempt
-                gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
+                '1.3% chance
+                If puntPenaltyChance <= 13 Then
 
-                puntYdLine! = CInt((ydsGained + ydLine) * 10) / 10
-
-                If puntYdLine! >= 99.94999 Then
-
-                    'Track punt yards
-                    gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + (100 - ydLine)
-
-                    'Track touchback
-                    gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
-
-                    'Hangtime of 4 - 5 seconds
-                    '-- Average is 4.2-4.4 seconds
-                    '-- Range is 3.7 - 4.7 seconds
-                    Call AddPossessionTime(4, 5)
-                    Call CHANGEPOSS
-                    Call Touchback(0)
+                    flagOnPlay = 1
+                    Call PenaltyOnPunt(autoFirst)
+                    GoTo HANDLEPENALTY
 
                 Else
 
-                    'Track punt yards
-                    gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + ydsGained
+                    'Increase punt attempt
+                    gameStatsTeam(P1, 7) = gameStatsTeam(P1, 7) + 1
 
-                    Call Rolld100(puntChance)
+                    puntYdLine! = CInt((ydsGained + ydLine) * 10) / 10
 
-                    Select Case ruleOptType
+                    If puntYdLine! >= 99.94999 Then
 
-                        Case 0
-                            'College
-                            If ruleOptColl <= 10 Then
-                                fairCatchLine = 80
-                            Else
-                                fairCatchLine = 75
-                            End If
+                        'Track punt yards
+                        gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + (100 - ydLine)
 
-                        Case Is >= 1
-                            'Pro
-                            If ruleOptPro <= 8 Then
-                                fairCatchLine = 80
-                            Else
-                                fairCatchLine = 75
-                            End If
-
-                    End Select
-
-                    resultLine = ydsGained + ydLine
-                    If resultLine > 80 Then
-                        'Kicks inside the 20
-                        gameStatsTeam(P1, 29) = gameStatsTeam(P1, 29) + 1
-                    End If
-
-                    fairCatchZone = 0
-
-                    If resultLine > fairCatchLine Then
-                        'We're in the fair catch zone, but let's ensure it makes sense to call
-
-                        'For older rulesets that didn't auto-grant a touchback,
-                        'only call fair catch outside the 10 yard line.
-                        If ((ruleOptType > 0 And ruleOptPro < 9) Or (ruleOptType = 0 And ruleOptColl < 11)) And resultLine <= 90 Then
-                            fairCatchZone = 1
-                        End If
-
-                        'For newer rule sets, we would take the fair catch
-                        'anywhere in the allowed zone because it gives us touchback
-                        If ((ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11)) Then
-                            fairCatchZone = 1
-                        End If
-
-                    End If
-
-                    If ydsGained > gameStatsTeam(P1, 26) Then
-                        'Longest punt?
-                        gameStatsTeam(P1, 26) = ydsGained
-                    End If
-
-                    'Update possession for DEF (receiving team) - punt
-                    If isOT = 1 And overtimeOpt >= 6 Then
-                        nbrPossOT(D) = 1
-                    End If
-
-                    'See if punt can be returned
-                    If (puntChoice = 1 And d100% < 50) Or (fairCatchZone = 1 And d100% < 75) Or (ydsGained + ydLine >= 90 And puntChance <= 5) Or (ydsGained + ydLine < fairCatchLine And puntChance > 65) Or puntDefChoice = 2 Then
-                        ' ** DO NOT RETURN:
-                        ' - 50% of pnnts away from return man
-                        ' - 75% of punts inside the fair catch zone
-                        ' - 5% of punts inside the 10
-                        ' - 35% of punts outside fair catch zone
-                        ' - Punt Safe formation
-                        Call PuntNotReturned(fairCatchZone, puntChoice, penOnPlay)
-
-                        If penOnPlay = 1 Then
-
-                            totalSTPenalties = totalSTPenalties + 1
-
-                            'Fair Catch Interference
-                            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - FAIR CATCH INTERFERENCE - 15 YDS ***"
-
-                            penaltyYds! = 15
-
-                            GoTo HANDLEPENALTY
-
-                        Else
-
-                            Call CheckGameClock
-                            If gameClock! = 0 Then GoTo 3360
-
-                            Call DELAY
-
-                        End If
-
-                    Else
-
-                        'Normal PR yardage
-                        Call PuntReturnYards
-
-                        'Track Punt Return
-                        gameStatsPlayer(P1, puntRetNbr + 3, 14) = gameStatsPlayer(P1, puntRetNbr + 3, 14) + 1
-
-                        returnYL! = (100 - puntYdLine!) + ydsGained
-                        ydLine = returnYL!
-
-                        If returnYL! >= 99.9499 Then
-                            'Return yardage (touchdown)
-                            ydsGained = 100 - puntYdLine!
-                        End If
-
-                        'Check for longest return
-                        If ydsGained > gameLongPRYds(P1, puntRetNbr) Then
-                            gameLongPRTD$(P1, puntRetNbr) = ""
-                            gameLongPRYds(P1, puntRetNbr) = ydsGained
-                            If returnYL! >= 99.9499 Then
-                                gameLongPRTD$(P1, puntRetNbr) = "t"
-                            End If
-                        End If
-
-                        'Track Return Yards
-                        playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
-                        gameStatsPlayer(P1, puntRetNbr + 3, 15) = gameStatsPlayer(P1, puntRetNbr + 3, 15) + ydsGained
-                        playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
-
-                        I1 = puntRetNbr
-
-                        If returnYL! <= .01 Then
-                            'Safety!
-                            GoTo 3250
-                        End If
-
-                        currDown = 1
-                        ydsToFirst = 10
-
-                        If returnYL! >= 89.99 Then
-                            ydsToFirst = 100 - ydLine
-                        End If
-
-                        'Check for fumble - punt return
-                        fumbPlayType = 4
-
-                        Call CheckFumble_1(fumbPlayType, ballFumbled)
-
-                        If ballFumbled = 1 Then
-                            Call FumblePBP
-                            GoTo 650
-                        End If
+                        'Track touchback
+                        gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
 
                         'Hangtime of 4 - 5 seconds
                         '-- Average is 4.2-4.4 seconds
                         '-- Range is 3.7 - 4.7 seconds
                         Call AddPossessionTime(4, 5)
+                        Call CHANGEPOSS
+                        Call Touchback(0)
 
-                        If ydsGained <= 10 Then
-                            'Shorter returns are 4-8 seconds
-                            Call AddPossessionTime(4, 8)
-                        Else
-                            'Longer returns are 10-12 seconds
-                            Call AddPossessionTime(10, 12)
+                    Else
+
+                        'Track punt yards
+                        gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + ydsGained
+
+                        Call Rolld100(puntChance)
+
+                        Select Case ruleOptType
+
+                            Case 0
+                                'College
+                                If ruleOptColl <= 10 Then
+                                    fairCatchLine = 80
+                                Else
+                                    fairCatchLine = 75
+                                End If
+
+                            Case Is >= 1
+                                'Pro
+                                If ruleOptPro <= 8 Then
+                                    fairCatchLine = 80
+                                Else
+                                    fairCatchLine = 75
+                                End If
+
+                        End Select
+
+                        resultLine = ydsGained + ydLine
+                        If resultLine > 80 Then
+                            'Kicks inside the 20
+                            gameStatsTeam(P1, 29) = gameStatsTeam(P1, 29) + 1
                         End If
 
-                        Call DELAY
+                        fairCatchZone = 0
 
-                        prPenaltyChance = Int(Rnd(1) * 1000) + 1
+                        If resultLine > fairCatchLine Then
+                            'We're in the fair catch zone, but let's ensure it makes sense to call
 
-                        If prPenaltyChance >= 388 - teamRat_GAME(P1, 0) Then
-                            flagOnPlay = 1
-                        End If
-
-                        '-- REMOVE ME!
-                        flagOnPlay = 1
-
-                        If returnYL! >= 99.9499 Then
-                            'Touchdown!
-                            gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
-                            If flagOnPlay = 1 Then
-                                scorePenaltyType = 4
+                            'For older rulesets that didn't auto-grant a touchback,
+                            'only call fair catch outside the 10 yard line.
+                            If ((ruleOptType > 0 And ruleOptPro < 9) Or (ruleOptType = 0 And ruleOptColl < 11)) And resultLine <= 90 Then
+                                fairCatchZone = 1
                             End If
 
-                            GoTo 3200
+                            'For newer rule sets, we would take the fair catch
+                            'anywhere in the allowed zone because it gives us touchback
+                            If ((ruleOptType > 0 And ruleOptPro >= 9) Or (ruleOptType = 0 And ruleOptColl >= 11)) Then
+                                fairCatchZone = 1
+                            End If
+
                         End If
 
-                        If flagOnPlay = 1 Then
-                            foulLine = kickReturnFoulSpot%(returnYL!, ydsGained)
-                            Call PenaltyOnPunt(foulLine, autoFirst, scrimmFoul)
-                            GoTo HANDLEPENALTY
+                        If ydsGained > gameStatsTeam(P1, 26) Then
+                            'Longest punt?
+                            gameStatsTeam(P1, 26) = ydsGained
                         End If
 
-                        Call CheckGameClock
-                        If gameClock! = 0 Then GoTo 3360
+                        'Update possession for DEF (receiving team) - punt
+                        If isOT = 1 And overtimeOpt >= 6 Then
+                            nbrPossOT(D) = 1
+                        End If
+
+                        'See if punt can be returned
+                        If (puntChoice = 1 And d100% < 50) Or (fairCatchZone = 1 And d100% < 75) Or (ydsGained + ydLine >= 90 And puntChance <= 5) Or (ydsGained + ydLine < fairCatchLine And puntChance > 65) Or puntDefChoice = 2 Then
+                            ' ** DO NOT RETURN:
+                            ' - 50% of pnnts away from return man
+                            ' - 75% of punts inside the fair catch zone
+                            ' - 5% of punts inside the 10
+                            ' - 35% of punts outside fair catch zone
+                            ' - Punt Safe formation
+                            Call PuntNotReturned(fairCatchZone, puntChoice, penOnPlay)
+
+                            If penOnPlay = 1 Then
+
+                                totalSTPenalties = totalSTPenalties + 1
+
+                                'Fair Catch Interference
+                                pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - FAIR CATCH INTERFERENCE - 15 YDS ***"
+
+                                penaltyYds! = 15
+
+                                GoTo HANDLEPENALTY
+
+                            Else
+
+                                Call CheckGameClock
+                                If gameClock! = 0 Then GoTo 3360
+
+                                Call DELAY
+
+                            End If
+
+                        Else
+
+                            'Normal PR yardage
+                            Call PuntReturnYards
+
+                            'Track Punt Return
+                            gameStatsPlayer(P1, puntRetNbr + 3, 14) = gameStatsPlayer(P1, puntRetNbr + 3, 14) + 1
+
+                            returnYL! = (100 - puntYdLine!) + ydsGained
+                            ydLine = returnYL!
+
+                            If returnYL! >= 99.9499 Then
+                                'Return yardage (touchdown)
+                                ydsGained = 100 - puntYdLine!
+                            End If
+
+                            'Check for longest return
+                            If ydsGained > gameLongPRYds(P1, puntRetNbr) Then
+                                gameLongPRTD$(P1, puntRetNbr) = ""
+                                gameLongPRYds(P1, puntRetNbr) = ydsGained
+                                If returnYL! >= 99.9499 Then
+                                    gameLongPRTD$(P1, puntRetNbr) = "t"
+                                End If
+                            End If
+
+                            'Track Return Yards
+                            playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
+                            gameStatsPlayer(P1, puntRetNbr + 3, 15) = gameStatsPlayer(P1, puntRetNbr + 3, 15) + ydsGained
+                            playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
+
+                            I1 = puntRetNbr
+
+                            If returnYL! <= .01 Then
+                                'Safety!
+                                GoTo 3250
+                            End If
+
+                            currDown = 1
+                            ydsToFirst = 10
+
+                            If returnYL! >= 89.99 Then
+                                ydsToFirst = 100 - ydLine
+                            End If
+
+                            'Check for fumble - punt return
+                            fumbPlayType = 4
+
+                            Call CheckFumble_1(fumbPlayType, ballFumbled)
+
+                            If ballFumbled = 1 Then
+                                Call FumblePBP
+                                GoTo 650
+                            End If
+
+                            'Hangtime of 4 - 5 seconds
+                            '-- Average is 4.2-4.4 seconds
+                            '-- Range is 3.7 - 4.7 seconds
+                            Call AddPossessionTime(4, 5)
+
+                            If ydsGained <= 10 Then
+                                'Shorter returns are 4-8 seconds
+                                Call AddPossessionTime(4, 8)
+                            Else
+                                'Longer returns are 10-12 seconds
+                                Call AddPossessionTime(10, 12)
+                            End If
+
+                            Call DELAY
+
+                            prPenaltyChance = Int(Rnd(1) * 1000) + 1
+
+                            If prPenaltyChance >= 388 - teamRat_GAME(P1, 0) Then
+                                flagOnPlay = 1
+                            End If
+
+                            If returnYL! >= 99.9499 Then
+
+                                'Touchdown!
+                                gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
+
+                                pbpStr = Int(Rnd(1) * 3) + 1
+
+                                Select Case pbpStr
+
+                                    Case 1
+                                        pbpString$ = pret$(P1, puntRetNbr) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
+
+                                    Case 2
+                                        pbpString$ = "HE'S PICKING UP SPEED AND LEAVING COVERAGE BEHIND!"
+
+                                    Case 3
+                                        pbpString$ = kickRet$(P1, I1) + " HAS SOME DAYLIGHT AHEAD OF HIM!"
+                                                                    
+                                    Case 4
+                                        pbpString$ = "HE SEEMS TO BE SLIPPING PAST THE COVERAGE WITH EASE!"
+
+                                End Select
+
+                                Call PBP
+
+                                If flagOnPlay = 1 Then
+                                    scorePenaltyType = 4
+                                End If
+
+                                GoTo 3200
+
+                            End If
+
+                            If flagOnPlay = 1 Then
+                                foulLine = kickReturnFoulSpot%(returnYL!, ydsGained)
+                                Call PenaltyOnPuntReturn(foulLine, autoFirst)
+                                GoTo HANDLEPENALTY
+                            End If
+
+                            Call CheckGameClock
+                            If gameClock! = 0 Then GoTo 3360
+
+                        End If
 
                     End If
 
@@ -5880,9 +5939,36 @@ Sub FOOTBALL ()
             Case 4
                 'Punt Return
                 foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
-                Call PenaltyOnPunt(foulLine, autoFirst, scrimmFoul)
+                Call PenaltyOnPuntReturn(foulLine, autoFirst)
 
         End Select
+
+        If scorePenaltyType >= 3 Then
+
+            penaltyString$ = pbpString$
+
+            'Penalty on TD against return team
+            If penaltyYds! < 0 Then
+                tdStr = Int(Rnd(1) * 3) + 1
+                Select Case tdStr
+
+                    Case 1
+                        pbpString$ = "THIS ONE COULD BE COMING BACK"
+
+                    Case 2
+                        pbpString$ = "THEY MAY WISH THEY COULD TAKE THAT BACK"
+
+                    Case 3
+                        pbpString$ = "THAT SCORE LIKELY WON'T COUNT"
+
+                End Select
+
+            End If
+
+            Call PBP
+
+        End If
+
 
         flagOnPlay = 0
         GoTo HANDLEPENALTY
@@ -6708,12 +6794,15 @@ Sub FOOTBALL ()
 
     penAccepted = 0
 
-    If flagOnPlay = 1 And penaltyString$ = "" Then
-        penaltyString$ = pbpString$
-    End If
+    'If flagOnPlay = 1 And penaltyString$ = "" Then
+    '    penaltyString$ = pbpString$
+    'End If
 
     'Choice for Penalty
-    If flagOnPlay = 1 Then
+    If flagOnPlay = 1 Or scorePenaltyType > 0 Then
+        If penaltyString$ = "" Then
+            penaltyString$ = pbpString$
+        End If
         pbpString$ = penaltyString$
     End If
 
@@ -6747,7 +6836,6 @@ Sub FOOTBALL ()
                     'Stats have not been "compiled" yet
                     'So there is no need to remove anything
                     'from the record
-                    test1 = 1
 
                 Case 2
                     'Stats have not been "compiled" yet
@@ -6948,7 +7036,11 @@ Sub FOOTBALL ()
         autoFirst = 0
 
         'Proceed with recording yards, etc.
-        ydLine = ydLine + ydsGained
+        'In the case of a kick return (context = 3),
+        'the ball has already been advanced.
+        If playContext <> 3 Then
+            ydLine = ydLine + ydsGained
+        End If
 
         ydsToFirst = ydsToFirst - ydsGained
         currDown = currDown + 1
@@ -15810,7 +15902,7 @@ End Sub
 '----------------------------------------
 'This subroutine handles the yardage and
 'Play-by-Play for a penalty on the punt.
-Sub PenaltyOnPunt (foulYdLine, autoFD, scrimmageFoul)
+Sub PenaltyOnPunt (autoFD)
 
     scrimmageFoul = 0
 
@@ -15824,41 +15916,25 @@ Sub PenaltyOnPunt (foulYdLine, autoFD, scrimmageFoul)
     'OFF = Punting Team
     'DEF = Return Team
 
-    '-- REMOVE ME
-    puntPenalty = 90
-
-    If puntPenalty < 20 Then
-        pbpString$ = "IT LOOKS LIKE IT'S BEING SPOTTED AT THE" + Str$(foulYdLine) + " YARD LINE!!"
-        Call PBP
-    End If
-
     Select Case puntPenalty
 
-        Case 1 To 7
-            pbpString$ = "*** PENALTY - LEVERAGE - DEF - 15 YDS / 1ST D! ***"
-            penaltyYds! = 15
-            autoFD = 1
-
-        Case 8 To 20
-            pbpString$ = "*** PENALTY - ILLEGAL BLOCK - DEF - 15 YDS / 1ST D! ***"
-            penaltyYds! = 15
-            autoFD = 1
-
-        Case 21 To 60
+        Case 1 To 22
             pbpString$ = "*** PENALTY - ROUGHING KICKER - DEF - 15 YDS / 1ST D! ***"
             penaltyYds! = 15
             autoFD = 1
-            scrimmageFoul = 1
 
-        Case 61 To 94
+        Case 23 To 51
+            pbpString$ = "*** PENALTY - RUNNING INTO KICKER - DEF - 15 YDS / 1ST D! ***"
+            penaltyYds! = 15
+            autoFD = 1
+
+        Case 52 To 80
             pbpString$ = "*** PENALTY - INELIG. DOWNFLD. KICK - OFF - 15 YDS ***"
             penaltyYds! = -15
-            scrimmageFoul = 1
 
-        Case 95 To 100
+        Case 81 To 100
             pbpString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - OFF - 5 YDS ***"
             penaltyYds! = -5
-            scrimmageFoul = 1
 
     End Select
 
@@ -15874,11 +15950,14 @@ End Sub
 '----------------------------------------
 'This subroutine determines the outcome
 'for a penalty on a punt return.
-Sub PenaltyOnPuntReturn (autoFD)
+Sub PenaltyOnPuntReturn (foulYdLine, autoFD)
 
     totalSTPenalties = totalSTPenalties + 1
 
     pbpString$ = "THERE'S A FLAG ON THE PLAY!!"
+    Call PBP
+
+    pbpString$ = "IT LOOKS LIKE IT'S BEING SPOTTED AT THE" + Str$(foulYdLine) + " YARD LINE!!"
     Call PBP
 
     Call Rolld100(puntPenalty)
@@ -15887,13 +15966,13 @@ Sub PenaltyOnPuntReturn (autoFD)
 
         Case 1 To 41
             'Holding - Return team
-            pbpString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 15 YDS! ***"
-            penaltyYds! = -15
+            pbpString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 10 YDS! ***"
+            penaltyYds! = -10
 
         Case 42 To 44
             'Holding - Kicking team
-            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 5 YDS / 1ST D! ***"
-            penaltyYds! = -5
+            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 10 YDS ***"
+            penaltyYds! = 10
             autoFD = 1
 
         Case 45 To 100
@@ -23116,6 +23195,30 @@ Function kickReturnFoulSpot% (catchYard!, returnDistance)
     If foulSpot > 99 Then foulSpot = 99
 
     kickReturnFoulSpot% = foulSpot
+
+End Function
+
+
+'----------------------------------------
+'         PuntDistance% Function
+'----------------------------------------
+'This functions calculates the distance
+'for a punt, based on the punter's stored
+'value (which is calculated on a scale from
+'their original raw average.
+Function PuntDistance%
+
+    'Original Formula - Quick Punt
+    'ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 11
+
+    'Original Formula - Normal Punt 
+    'ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 3
+
+    ' Bell curve: average of 3 rolls gives normal-ish distribution
+    rollAvg = (Rnd(1) + Rnd(1) + Rnd(1)) / 3
+
+    ' Base reflects punter skill, small scaling
+    PuntDistance% = ydsPerPunt(P1, 0) + 20 + Int(rollAvg * (28 + Y))
 
 End Function
 
