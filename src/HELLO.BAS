@@ -1915,7 +1915,7 @@ Sub FOOTBALL ()
             I$ = GetKeyPress$
             kickChoice = Val(I$)
 
-            If kickChoice = 2 And ruleOptType <> 0 And ruleOptPro >= 10 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
+            If kickChoice = 2 And ruleOptType > 0 And ruleOptPro >= 10 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
                 'Onside kick NOT ALLOWED
                 'Pro Rules Year 2024+, Onside Kick before 4th Quarter
                 pbpString$ = "CAN ONLY USE IN 4TH QUARTER IF YOU ARE BEHIND IN SCORE"
@@ -3802,7 +3802,6 @@ Sub FOOTBALL ()
                 End If
 
                 Call YARDAGE
-
                 startYds = 100 - ydLine
                 endYds = startYds - ydsGained
                 Call MOVEBALL
@@ -3993,7 +3992,7 @@ Sub FOOTBALL ()
                             'Big gain check:
                             '   4% for short/medium, better odds for deep passes
                             If (playCall <> 12 And playCall <> 15 And bigGainRoll = bigGainThreshold) Or _
-                                ((playCall = 12 Or playCall = 15) And ((bigGainRoll = bigGainThreshold And ruleOptType = 0) Or (ruleOptType <> 0 And bigGainRoll >= bigGainThreshold - 1))) Then
+                                ((playCall = 12 Or playCall = 15) And ((bigGainRoll = bigGainThreshold And ruleOptType = 0) Or (ruleOptType > 0 And bigGainRoll >= bigGainThreshold - 1))) Then
                                 'Longer gains - ~3% chance of TD when winning big already
                                 If bigGainRoll = 25 And Int(Rnd(1) * 32) = 11 And score(P1, 0) > 13 And XD(D) > .6 Then
                                     ydsGained = 102
@@ -4026,7 +4025,7 @@ Sub FOOTBALL ()
                         3586 '
                         'ADDED AFTER REPLAYS OF 5-24-93 <-- ???
                         '1-in-3 Chance And Pro Game = adjust by 1
-                        If Int(Rnd(1) * 3) + 1 = 1 And ruleOptType <> 0 Then
+                        If Int(Rnd(1) * 3) + 1 = 1 And ruleOptType > 0 Then
                             ydsGained = ydsGained - 1
                         End If
 
@@ -4075,7 +4074,6 @@ Sub FOOTBALL ()
                             End If
 
                         End If
-
 
                         'Longest catch?
                         If ydsGained > gameLongRec(P1, I3) Then
@@ -6119,7 +6117,7 @@ Sub FOOTBALL ()
         endZone = 2
 
         'We need to track this for penalty purposes
-        If ruleOptType <> 0 And (ruleOptPro >= 7 Or (ruleOptPro = 6 And teamYears(impactTeam) = 2015)) Then
+        If ruleOptType > 0 And (ruleOptPro >= 7 Or (ruleOptPro = 6 And teamYears(impactTeam) = 2015)) Then
             'PAT line moved to the 15 in 2015
             patLine = 85
         Else
@@ -7613,21 +7611,29 @@ Sub FOOTBALL ()
 
     Call AddPossessionTime(5, 8)
 
-    If fleaFlicker <> 0 Then
+    If fleaFlicker = 1 Then
         fleaFlicker = 0
     Else
+
         If playCall = 12 Or playCall = 15 Then
+            '21-40 yards
             ydsGained = Int(Rnd(1) * 20) + 21
-        End If
-        If playCall <> 12 And playCall <> 15 Then
+        Else
+            '1-10 yards
             ydsGained = Int(Rnd(1) * 10) + 1
+
+            'Screen pass
+            If playCall = 13 Then
+                ydsGained = ydsGained - 5
+            End If
+
+            'Medium / Sideline / Rollout / Fake
+            If playCall = 11 Or playCall = 14 Or playCall = 17 Or playCall = 16 Or playCall = 18 Then
+                ydsGained = ydsGained + 10
+            End If
+
         End If
-        If playCall = 13 Then
-            ydsGained = ydsGained - 5
-        End If
-        If playCall = 11 Or playCall = 14 Or playCall = 17 Or playCall = 16 Or playCall = 18 Then
-            ydsGained = ydsGained + 10
-        End If
+
     End If
 
     GoTo InterceptionReturn
@@ -7639,12 +7645,8 @@ Sub FOOTBALL ()
     3900 '
     'Adjust possession time, check for special scenarios
     '(ie, hurry up, 2-minute warning, etc.)
-
-    '--> Convert to a subroutine
-    '--> takes a parameter regarding gameClock
-    '--> then returns that so we can issue the following afterwards
-    '       If gameClock! = 0 Then GoTo 3360
     twoMinWarn = 0
+    skipClockUpdate = 0
 
     If playSegment <> 8 Then
 
@@ -7702,10 +7704,7 @@ Sub FOOTBALL ()
                             playSegment = 9
 
                             Call AddPossessionTime(7, 10)
-                            Call CheckGameClock
-                            If gameClock! = 0 Then GoTo 3360
-
-                            Return 'aka Exit Sub
+                            skipClockUpdate = 1
 
                         End If
 
@@ -7721,10 +7720,7 @@ Sub FOOTBALL ()
                             playSegment = 9
 
                             Call AddPossessionTime(7, 10)
-                            Call CheckGameClock
-                            If gameClock! = 0 Then GoTo 3360
-
-                            Return 'aka Exit Sub
+                            skipClockUpdate = 1
 
                         End If
 
@@ -7766,71 +7762,14 @@ Sub FOOTBALL ()
                             Call AddPossessionTime(2, 3)
                         End If
 
-                        Call CheckGameClock
-                        If gameClock! = 0 Then GoTo 3360
-
                 End Select
 
             End If
 
         End If
 
-        If playSegment = 0 Then
-
-            Call AddPossessionTime(33, 38)
-
-            If ruleOptType <> 0 Then
-                'Pro Rules
-                If gameClock! > 40 Then
-                    gameClock! = gameClock! - 4
-                    timePoss(P1) = timePoss(P1) + 4
-                End If
-
-                If gameClock! > 43 And teamYears(0) >= 1990 And teamYears(1) >= 1990 Then
-                    gameClock! = gameClock! - 3
-                    timePoss(P1) = timePoss(P1) + 3
-                End If
-
-                If gameClock! > 43 And teamYears(0) >= 1993 And teamYears(1) >= 1993 Then
-                    gameClock! = gameClock! + 3
-                    timePoss(P1) = timePoss(P1) - 3
-                End If
-
-            Else
-                'College Rules
-                If gameClock! > 43 Then
-
-                    If teamYears(0) = 1956 And teamYears(1) = 1956 Then
-                        gameClock! = gameClock! + 3
-                        timePoss(P1) = timePoss(P1) - 3
-                    End If
-
-                    If teamYears(0) = 1957 And teamYears(1) = 1957 Then
-                        gameClock! = gameClock! + 3
-                        timePoss(P1) = timePoss(P1) - 3
-                    End If
-
-                End If
-
-            End If
-
-        Else
-            'playSegment 1 to 3
-            If playSegment >= 1 And playSegment <= 3 Then
-                timeElapsed! = 27 - (playSegment * 5) + (Int(Rnd(1) * 5) + 1)
-            Else
-                'playSegment >= 4
-                'Only subtract time if we're not AT the 2-min warning
-                If twoMinWarn = 1 Then
-                    timeElapsed! = 0
-                Else
-                    timeElapsed! = (2 * playSegment) - 5 + (Int(Rnd(1) * 3) + 1)
-                End If
-            End If
-
-            gameClock! = gameClock! - timeElapsed!
-            timePoss(P1) = timePoss(P1) + timeElapsed!
-
+        If skipClockUpdate = 0 Then
+            Call UpdatePossessionTime
         End If
 
         Call CheckGameClock
@@ -8629,7 +8568,7 @@ Sub PBP ()
 
     End Select
 
-    Print #11, pbpString$
+    'Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -11648,6 +11587,77 @@ Sub CheckGameClock ()
         TE = gameClock!
         timePoss(P1) = timePoss(P1) + TE
         gameClock! = 0
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'     UpdatePossessionTime Subroutine
+'----------------------------------------
+'This subroutine will update the time of
+'possesion for a team after a play has
+'completed. The time is based on the type
+'of play as well as where it ended.
+Sub UpdatePossessionTime
+
+    If playSegment = 0 Then
+    
+        'Clock runoff time
+        Call AddPossessionTime(33, 38)
+
+        If ruleOptType <> 0 Then
+            'Pro Rules
+            If gameClock! > 40 Then
+                gameClock! = gameClock! - 4
+                timePoss(P1) = timePoss(P1) + 4
+            End If
+
+            If gameClock! > 43 And teamYears(0) >= 1990 And teamYears(1) >= 1990 Then
+                gameClock! = gameClock! - 3
+                timePoss(P1) = timePoss(P1) + 3
+            End If
+
+            If gameClock! > 43 And teamYears(0) >= 1993 And teamYears(1) >= 1993 Then
+                gameClock! = gameClock! + 3
+                timePoss(P1) = timePoss(P1) - 3
+            End If
+
+        Else
+            'College Rules
+            If gameClock! > 43 Then
+
+                If teamYears(0) = 1956 And teamYears(1) = 1956 Then
+                    gameClock! = gameClock! + 3
+                    timePoss(P1) = timePoss(P1) - 3
+                End If
+
+                If teamYears(0) = 1957 And teamYears(1) = 1957 Then
+                    gameClock! = gameClock! + 3
+                    timePoss(P1) = timePoss(P1) - 3
+                End If
+
+            End If
+
+        End If
+
+    Else
+        'playSegment 1 to 3
+        If playSegment >= 1 And playSegment <= 3 Then
+            timeElapsed! = 27 - (playSegment * 5) + (Int(Rnd(1) * 5) + 1)
+        Else
+            'playSegment >= 4
+            'Only subtract time if we're not AT the 2-min warning
+            If twoMinWarn = 1 Then
+                timeElapsed! = 0
+            Else
+                timeElapsed! = (2 * playSegment) - 5 + (Int(Rnd(1) * 3) + 1)
+            End If
+        End If
+
+        gameClock! = gameClock! - timeElapsed!
+        timePoss(P1) = timePoss(P1) + timeElapsed!
 
     End If
 
@@ -18547,7 +18557,6 @@ End Sub
 'when the QB approaches the o-line.
 Sub QBLINE ()
 
-    test1 = 1
     qback = 0
 
     If useRandomQB(P1) = 1 Then
@@ -19524,13 +19533,18 @@ End Sub
 'udpating variables for position.
 Sub PassCompletePBP (direction)
 
+    Dim noYAC
+
+    noYAC = 0
+
     Call QBTHROW
 
     If fleaFlicker = 0 Then
-        'Adjust Comp %
+
         Select Case playCall
 
             Case 9, 10
+                'Short Pass
                 If avgRecYds < 3 Then
                     catchYds = Int(Rnd(1) * 7) - 2
                 Else
@@ -19538,6 +19552,7 @@ Sub PassCompletePBP (direction)
                 End If
 
             Case 13:
+                'Screen Pass
                 If avgRecYds < 3 Then
                     catchYds = Int(Rnd(1) * 4) - 7
                 Else
@@ -19545,6 +19560,7 @@ Sub PassCompletePBP (direction)
                 End If
 
             Case 11, 14, 16, 17, 18:
+                'Medium / Sideline / Rollout / Fake Pass
                 If avgRecYds < 4 Then
                     catchYds = Int(Rnd(1) * 5) + 3
                 Else
@@ -19556,6 +19572,7 @@ Sub PassCompletePBP (direction)
                 End If
 
             Case 12, 15
+                'Long Pass
                 If avgRecYds < 3 Then
                     catchYds = Int(Rnd(1) * 5) + 3
                 Else
@@ -19565,13 +19582,14 @@ Sub PassCompletePBP (direction)
                         catchYds = Int(Rnd(1) * 36) + 20
                     End If
                 End If
+
         End Select
 
     End If
 
     If catchYds > ydsGained Then
         catchYds = ydsGained
-        itFlag = 1
+        noYAC = 1
     End If
 
     ydsToScore = 100 - ydLine - catchYds
@@ -19592,34 +19610,46 @@ Sub PassCompletePBP (direction)
             Case 9, 10
                 'Short Pass
                 Select Case catchContext
+
                     Case 1 To 33
                         pbpString$ = targetWRName$ + " HAS THE TOSS OVER THE MIDDLE"
+
                     Case 34 To 66
                         pbpString$ = targetWRName$ + " CATCHES IT IN THE FLAT"
+
                     Case 67 To 100
                         pbpString$ = "HE DUMPS IT TO " + targetWRName$
+
                 End Select
 
             Case 13
                 'Screen pass
                 Select Case catchContext
+
                     Case 1 To 33
                         pbpString$ = "HE SCREENS IT TO " + targetWRName$
+
                     Case 34 To 66
                         pbpString$ = "HE DUMPS THE SCREEN TO " + targetWRName$
+
                     Case 67 To 199
                         pbpString$ = "HE HAS " + targetWRName$ + " ON THE SCREEN"
+
                 End Select
 
             Case 11, 14
                 'Medium Pass
                 Select Case catchContext
+
                     Case 1 To 33
                         pbpString$ = targetWRName$ + " TAKES IT OVER THE MIDDLE"
+
                     Case 34 To 66
                         pbpString$ = "HE HAS " + targetWRName$ + " OPEN"
+
                     Case 67 To 100
                         pbpString$ = "HE COMPLETES IT TO " + targetWRName$
+
                 End Select
 
             Case 12, 15
@@ -19654,6 +19684,7 @@ Sub PassCompletePBP (direction)
             Case 17, 18
                 'Rollout / Fake Pass
                 Select Case catchContext
+
                     Case 1 To 40
                         pbpString$ = "HE HITS " + targetWRName$
 
@@ -19665,11 +19696,12 @@ Sub PassCompletePBP (direction)
 
                     Case 91 To 100
                         pbpString$ = targetWRName$ + " MAKES A GREAT CATCH"
+
                 End Select
 
         End Select
 
-        If fleaFlicker <> 0 Then
+        If fleaFlicker = 1 Then
             pbpString$ = targetWRName$ + " MAKES A GREAT CATCH"
         End If
 
@@ -19680,14 +19712,11 @@ Sub PassCompletePBP (direction)
         End If
 
         pbpString$ = pbpString$ + " AT THE" + yardLineString$ + " YARD LINE"
+        Call PBP
 
-        If itFlag = 1 Then
-            itFlag = 0
-            Call PBP
-        Else
+        If noYAC = 0 Then
+
             'Adjust team position
-            Call PBP
-
             startYds = 100 - ydLine - catchYds
             endYds = 100 - ydLine - ydsGained
             Call MOVEBALL
@@ -22855,6 +22884,7 @@ Function FieldGoalDistance%
 
 End Function
 
+
 '----------------------------------------
 '   GetPlaySequencingModifier Function
 '----------------------------------------
@@ -23211,7 +23241,7 @@ Function PuntDistance%
     'Original Formula - Quick Punt
     'ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 11
 
-    'Original Formula - Normal Punt 
+    'Original Formula - Normal Punt
     'ydsPerPunt(P1, 0) + 19 + Int(Rnd(1) * (17 + (2 * ydsPerPunt(P1, 0)))) + 3
 
     ' Bell curve: average of 3 rolls gives normal-ish distribution
@@ -23278,7 +23308,7 @@ End Function
 
 
 '----------------------------------------
-'         yardsToString Function
+'       yardsToDecimalStr$ Function
 '----------------------------------------
 'This functions conerts a yardage value
 '(ie, from a play gain / loss) to a string
