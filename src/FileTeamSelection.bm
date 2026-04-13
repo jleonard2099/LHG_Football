@@ -446,8 +446,6 @@ Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 
         Close #2
 
-        T& = teamAttendance&
-
         If Z$ <> "x" Or teamAttendance& > 200000 Then
 
             dataOK = 0

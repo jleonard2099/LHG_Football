@@ -16,6 +16,8 @@ Sub CREATLEAG ()
 
     ReDim menuChoices$(1 To 4)
 
+    SELECTION% = 1
+
     Do
 
         Color 15, 0
@@ -26,7 +28,6 @@ Sub CREATLEAG ()
         menuChoices$(2) = "MODIFY LEAGUE MEMBERS "
         menuChoices$(3) = "CONVERT LEAGUE TO 7.0"
         menuChoices$(4) = "RETURN TO LEADERS MENU"
-        SELECTION% = 1
         Count% = 4
         Start% = 1
         ExitCode% = 4
@@ -99,20 +100,23 @@ Sub DefineLeague ()
 
     Do
 
+        'boxText$ = "The name should have no periods or special characters" + Chr$(13) + Chr$(10) + "Sample names are AFC 2020, NFC 2020, UFL 2020"
+        'leagueName$ = _InputBox$("Enter Name for League", boxText$)
+
         Color 15, 0
         Cls
 
-        Call MenuBox(6, 8, 61, 7, 15, 1)
+        Call MenuBox(6, 8, 61, 8, 15, 1)
 
         Do
 
-            Locate 7, 
+            Locate 8,
 
             Locate , 12: Print "ENTER NAME FOR LEAGUE: "
             Print
             Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS."
-            Locate , 12: Print "SAMPLE NAMES ARE SEC, SWC, 94-ACC"
-            Locate 7, 33: Input leagueName$
+            Locate , 12: Print "SAMPLE NAMES ARE AFC 2020, NFC 2020, UFL 2020"
+            Locate 8, 33: Input leagueName$
 
             If leagueName$ <> "" Then
 
@@ -199,8 +203,8 @@ Sub ReviewEditLeague (targetFile$)
     Shared leagueName$
     Shared div1Name$, div2Name$, div3Name$, div4Name$
 
-    If _FileExists (targetFile$) Then
-        Call ReadConferenceIndex (targetFile$, statType)
+    If _FileExists(targetFile$) Then
+        Call ReadConferenceIndex(targetFile$, statType)
     End If
 
     If statType <> 1 Then
@@ -234,28 +238,28 @@ Sub ReviewEditLeague (targetFile$)
                 Color 15: Print " "; Left$(memberName$(I), 17);
 
                 Locate , 21
-                Color 2: Print Using "  ##"; I + 10;
+                Color 2: Print Using "##"; I + 10;
                 Color 15: Print " "; Left$(memberName$(I + 10), 17);
 
                 Locate , 41
-                Color 2: Print Using "  ##"; I + 20;
+                Color 2: Print Using "##"; I + 20;
                 Color 15: Print " "; Left$(memberName$(I + 20), 17);
 
                 Locate , 61
-                Color 2: Print Using "  ##"; I + 30;
+                Color 2: Print Using "##"; I + 30;
                 Color 15: Print " "; Left$(memberName$(I + 30), 17)
 
             Next I
 
             Do
 
-                Locate 21, 1
+                Locate 22, 1
 
-                Color 14: Print "(1) ";
+                Color 14: Print "  (1) ";
                 Color 15: Print "ADD A TEAM"
-                Color 14: Print "(2) ";
+                Color 14: Print "  (2) ";
                 Color 15: Print "REMOVE A TEAM"
-                Color 14: Print "(3) ";
+                Color 14: Print "  (3) ";
                 Color 15: Print "END AND SAVE LEAGUE"
 
                 I$ = GetKeyPress$

@@ -20,6 +20,8 @@ Sub SCHEDULE ()
     '    scheduleNG%(I, 13) = 0
     'Next
 
+    SELECTION% = 1
+
     Do
 
         Color 7, 0
@@ -36,7 +38,6 @@ Sub SCHEDULE ()
         menuChoices$(7) = "BOXSCORE MAINTENANCE / PARAMETERS "
         menuChoices$(8) = "CONVERT SCHEDULE FILE FROM 6.0    "
         menuChoices$(9) = "RETURN TO 3 IN 1 FB MENU          "
-        SELECTION% = 1
         Count% = 9
         Start% = 1
         ExitCode% = 9
@@ -347,6 +348,7 @@ Sub NewSchedule (scheduleFile$)
                 Call EditGame(DT$, TM$)
 
             Case "B":
+                Color 15, 2
                 Do
                     Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO GO TO        "
                     Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO GO TO "; targetGame%
@@ -362,6 +364,7 @@ Sub NewSchedule (scheduleFile$)
 
             Case "D":
                 ' *** DELETE A GAME FROM THE SCHEDULE ***
+                Color 15, 4
                 Do
                     Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO DELETE "; targetGame%
                 Loop Until targetGame% >= 1 And targetGame% <= scheduleAP%(0)
@@ -385,6 +388,7 @@ Sub NewSchedule (scheduleFile$)
 
             Case "G":
                 'GOTO A SPECIFIC PAGE
+                Color 15, 2
                 Do
                     Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO GO TO        "
                     Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO GO TO "; targetGame%
@@ -596,6 +600,7 @@ Sub EditGame (DT$, TM$)
     Shared NS%
 
     ' *** EDIT A GAME ***
+    Color 15, 6
     Do
         Locate LAST_ROW - 3, 1: Print "ENTER GAME # TO EDIT        "
         Locate LAST_ROW - 3, 1: Input "ENTER GAME # TO EDIT "; targetGame%
@@ -928,12 +933,14 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                 If memberIdx(I1) = scheduleNG%(I, 0) And memberYear$(I1) = scheduleYN$(I, 0) Or memberIdx(I1) = scheduleNG%(I, 1) And memberYear$(I1) = scheduleYN$(I, 1) Then
 
                                     Print
-                                    Print "FOUND A MATCH"
+                                    Print "FOUND A MATCH - ADDING GAME # ";
 
                                     Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #2 Len = SCHEDULE_SIZE_BYTES
 
                                     fileLength& = LOF(2)
                                     numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                    Print numberGames + 1
 
                                     For X = 0 To 20
                                         Field #2, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
@@ -1035,12 +1042,15 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                             'Extract only
                             If Not (scheduleAction% = 5) Then
 
-                                Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
-                                fileLength& = LOF(3)
-                                totalGames = fileLength& / SCHEDULE_SIZE_BYTES
+                                Print
+                                Print "FOUND A MATCH - ADDING GAME # ";
 
-                                'Write matching games
-                                Locate 1, 1: Print totalGames + 1; " MATCHES"
+                                Open diskPaths$(3) + subSchedFile$ + ".SCD" For Random As #3 Len = SCHEDULE_SIZE_BYTES
+
+                                fileLength& = LOF(3)
+                                numberGames = fileLength& / SCHEDULE_SIZE_BYTES
+
+                                Print numberGames + 1
 
                                 For X = 0 To 20
                                     Field #3, X * 2 As X$, 2 As Q$(X + 1), SCHEDULE_SIZE_BYTES - 2 - 2 * X As X$
@@ -1059,7 +1069,7 @@ Sub ExtractSchedule (scheduleAction%, scheduleFile$)
                                 LSet Q$(24) = MKI$(visitorScores(I))
                                 LSet Q$(25) = MKI$(homeScores(I))
 
-                                Put #3, totalGames + 1
+                                Put #3, numberGames + 1
 
                                 Close #3
 
@@ -1129,52 +1139,52 @@ Sub EditParameters ()
 
         Select Case B9
 
-            Case 1: 
+            Case 1:
                 Locate 4, 26: Print Space$(10)
                 Locate 4, 1: Input " 1. IF QUARTERS ARE OVER "; eventSettings(1)
                 Locate 4, 26: Print " "
 
-            Case 2: 
+            Case 2:
                 Locate 5, 31: Print Space$(10)
                 Locate 5, 1: Input " 2. A TEAM'S POINTS MORE THAN "; eventSettings(2)
                 Locate 5, 31: Print " "
 
-            Case 3: 
+            Case 3:
                 Locate 6, 31: Print Space$(10)
                 Locate 6, 1: Input " 3. A TEAM'S POINTS LESS THAN "; eventSettings(3)
                 Locate 6, 31: Print " "
 
-            Case 4: 
+            Case 4:
                 Locate 7, 30: Print Space$(10)
                 Locate 7, 1: Input " 4. RUSHER'S YARDS MORE THAN "; eventSettings(4)
                 Locate 7, 30: Print " "
 
-            Case 5: 
+            Case 5:
                 Locate 8, 28: Print Space$(10)
                 Locate 8, 1: Input " 5. RUSHER'S TDS MORE THAN "; eventSettings(5)
                 Locate 8, 28: Print " "
 
-            Case 6: 
+            Case 6:
                 Locate 9, 32: Print Space$(10)
                 Locate 9, 1: Input " 6. RECEIVER'S YARDS MORE THAN "; eventSettings(6)
                 Locate 9, 32: Print " "
 
-            Case 7: 
+            Case 7:
                 Locate 10, 30: Print Space$(10)
                 Locate 10, 1: Input " 7. RECEIVER'S TDS MORE THAN "; eventSettings(7)
                 Locate 10, 30: Print " "
 
-            Case 8: 
+            Case 8:
                 Locate 11, 30: Print Space$(10)
                 Locate 11, 1: Input " 8. PASSER'S YARDS MORE THAN "; eventSettings(8)
                 Locate 11, 30: Print " "
 
-            Case 9: 
+            Case 9:
                 Locate 12, 28: Print Space$(10)
                 Locate 12, 1: Input " 9. PASSER'S TDS MORE THAN "; eventSettings(9)
                 Locate 12, 28: Print " "
 
-            Case 10: 
+            Case 10:
                 Locate 13, 28: Print Space$(10)
                 Locate 13, 1: Input "10. KICKER'S FGM MORE THAN "; eventSettings(10)
                 Locate 13, 28: Print " "
@@ -1709,4 +1719,3 @@ Sub EditBoxscore (boxName$)
     End If
 
 End Sub
-

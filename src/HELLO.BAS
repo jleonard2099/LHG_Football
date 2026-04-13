@@ -683,7 +683,6 @@ Sub Main_Menu (menuSelection)
         menuChoices$(6) = "CONFIGURE GAME FOLDERS "
         menuChoices$(7) = "EXIT PROGRAM           "
 
-        menuSelection = 1
         Count% = 7
         Start% = 1
         ExitCode% = 7
@@ -752,6 +751,8 @@ End Sub
 'it's roster.
 Sub TeamMgt_Menu ()
 
+    menuSelection = 1
+
     Do
 
         Cls
@@ -768,7 +769,6 @@ Sub TeamMgt_Menu ()
         menuChoices$(6) = "TRADE PLAYERS             "
         menuChoices$(7) = "RETURN TO MAIN MENU       "
 
-        menuSelection = 1
         Count% = 7
         Start% = 1
         ExitCode% = 7
@@ -827,6 +827,8 @@ End Sub
 'team careers
 Sub Replay_Menu ()
 
+    menuSelection = 1
+
     Do
 
         Cls
@@ -842,7 +844,6 @@ Sub Replay_Menu ()
         menuChoices$(4) = "TEAM CAREER OPTIONS             "
         menuChoices$(5) = "RETURN TO MAIN MENU             "
 
-        menuSelection = 1
         Count% = 5
         Start% = 1
         ExitCode% = 5
@@ -897,6 +898,8 @@ End Sub
 'leaders, stats and standings
 Sub Leaders_Menu ()
 
+    menuSelection = 1
+
     Do
 
         Call TITLE
@@ -927,7 +930,6 @@ Sub Leaders_Menu ()
         menuChoices$(20) = "RETURN TO MAIN MENU    "
         menuChoices$(21) = "EXIT PROGRAM           "
 
-        menuSelection = 1
         Count% = 21
         Start% = 1
         FileFGColor = 15: FileBGColor = 1
@@ -1009,7 +1011,1357 @@ End Sub
 ' For Utils
 '$Include: 'BoxRoutines.bm'
 '$Include: 'ConfigureDrives.bm'
-'$Include: 'FileTeamSelection.bm'
+'Include: 'FileTeamSelection.bm'
+
+
+'----------------------------------------
+'          ChooseTeam Subroutine
+'----------------------------------------
+'Provides dialog for user to select teams
+' from a previously populated team file.
+'The focus of this routine is to accept
+' a disk ID from the user. It then relies
+' on separate subroutines to assist with
+' actually choosing the team, and also
+' reading in data for the chosen team
+Sub ChooseTeam (yearNumber$, numberTeams, chosenIdx, teamName$)
+
+    Shared teamRatings()
+
+    Shared previousYear$
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(6, 8, 61, 7, 15, 4)
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER DISK ID: "
+        Print
+        Locate , 12: Print "THE DISK ID IS USUALLY THE LAST TWO DIGITS OF THE"
+        Locate , 12: Print "SEASON DISK YOU ARE PLAYING FROM (IE. 89, 76, 67)."
+        Print
+        Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID"
+
+        I$ = GetKeyPress$
+
+        If I$ <> Chr$(27) Then
+
+            If I$ <> Chr$(13) Then
+
+                Locate 7, 27: Print I$;
+
+                NY$ = ""
+
+                Do Until NY$ = Chr$(13)
+
+                    NY$ = GetKeyPress$
+
+                    If NY$ = Chr$(8) And Len(I$) >= 1 Then
+                        col% = Pos(0)
+                        I$ = Left$(I$, (Len(I$) - 1))
+                        Locate , col% - 1
+                        Print " ";
+                        Locate , col% - 1
+                    Else
+                        I$ = I$ + NY$
+                        Print NY$;
+                    End If
+
+                Loop
+
+                I$ = Left$(I$, (Len(I$) - 1))
+
+                If Not (I$ = "" And yearNumber$ <> "") Then
+
+                    yearNumber$ = RTrim$(I$)
+                    Erase teamNames$
+                    numberTeams = 0
+
+                    Cls
+
+                    If Not _FileExists(diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$) Then
+
+                        MsgText$ = "NO TEAMS WERE FOUND MATCHING THAT ID... PRESS ANY KEY TO SELECT ANOTHER ID"
+                        BoxWidth = 20
+                        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+                        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+                        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+                        I$ = GetKeyPress$
+                        Call CSMsgBox("", 0, Pass)
+                        Exit Sub
+
+                    Else
+
+                        Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + yearNumber$ For Random As #1 Len = TEAM_SIZE_BYTES
+
+                        fileLength& = LOF(1)
+
+                        Field #1, 15 As Q$(0)
+
+                        numberTeams = fileLength& / TEAM_SIZE_BYTES
+
+                        For teamIdx = 1 To numberTeams
+                            Get #1, teamIdx
+                            'numberTeams = numberTeams + 1
+                            teamNames$(teamIdx) = Q$(0)
+                            teamIndex%(teamIdx) = teamIdx
+                        Next teamIdx
+
+                        Close #1
+
+                    End If 'Done checking if file exists
+
+                End If 'Done checking for blank year number
+
+                previousYear$ = yearNumber$
+
+            Else
+
+                yearNumber$ = previousYear$
+
+            End If 'Done checking for ENTER key
+
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
+            chosenIdx = 1
+
+            Do
+
+                Call SelectTeam(numberTeams, yearNumber$, chosenIdx, teamName$, ExitCode%)
+                'teamGender$(gameIdx) = GetTeamGender$(yearNumber$)
+
+                If ExitCode% <> 27 And numberTeams <> 0 And chosenIdx > 0 Then
+
+                    Do
+
+                        YCoord = Int((80 - Len(teamName$)) / 2)
+                        Locate 2, YCoord
+                        Color teamRatings(2), teamRatings(1): Print teamName$
+
+                        Color 15, 4
+                        Locate 3, 32: Print "ANY CHANGE? (Y/N)";
+
+                        J$ = GetKeyPress$
+
+                    Loop Until J$ = Chr$(27) Or UCase$(J$) = "Y" Or UCase$(J$) = "N"
+
+                End If
+
+                'chosenIdx = -1 means there was invalid data
+            Loop Until ExitCode% = 27 Or J$ = Chr$(27) Or UCase$(J$) = "N" Or chosenIdx = -1
+
+        End If 'Done checking for ESC
+
+    Loop Until UCase$(J$) = "N" Or I$ = Chr$(27) 'Or J$ = Chr$(27)
+
+    If I$ = Chr$(27) Or J$ = Chr$(27) Then
+        chosenIdx = 0
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'          SelectTeam Subroutine
+'----------------------------------------
+'Presents selection menu of all teams
+' found in the target "disk" file.
+'The focus of this routine is confirming
+' a team choice. It then relies on
+' another subroutine to read in data
+' from the selected team.
+Sub SelectTeam (numberTeams, yearNumber$, selectedIdx, teamName$, ExitCode%)
+
+    ExitCode% = -1
+    validData = 0
+
+    If numberTeams > 0 And CheckString%(teamNames$(numberTeams)) = 0 Then
+
+        SELECTION% = selectedIdx
+        Count% = numberTeams
+        Start% = 1
+        FileFGColor = 15: FileBGColor = 4
+        HiLiteFGColor = 0: HiLiteBGColor = 7
+        '3 rows header, 2 rows spacing, 1 row footer
+        Rows% = LAST_ROW - 6
+        Columns% = 4
+        Spacing% = 6
+        Row% = 5
+        Column% = 1
+
+        Color , 4
+        Cls
+
+        Color 14
+        Locate , 33: Print "TEAM SELECTION"
+        Locate LAST_ROW, 1
+        Color 14
+        Print Tab(3); "PG DN";
+        Print Tab(18); "ENTER";
+        Color 15: Print "-SELECTS TEAM";
+        Color 14
+        Print Tab(39); "ESC";
+        Color 15: Print "-SELECT NEW ID";
+        Color 14
+        Print Tab(72); "PG UP";
+
+        _MouseShow "DEFAULT"
+        MAMenu teamNames$(), SELECTION%, Start%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor, HiLiteBGColor, Rows%, Columns%, Spacing%, Row%, Column%
+        _MouseHide
+
+        If ExitCode% <> 27 Then
+
+            selectedIdx = teamIndex%(SELECTION%)
+
+            'Locate 2, 33
+            'Color 31: Print "LOADING..."
+
+            Call ReadTeam(yearNumber$, teamName$, selectedIdx)
+            Call ReadExtraData(yearNumber$, selectedIdx, validData)
+
+        End If
+
+    End If
+
+    If validData = 0 And ExitCode% <> 27 Then
+
+        selectedIdx = -1
+        Locate 9,
+        Call CSMsgBox("THERE WAS AN ISSUE READING TEAM DATA.... PRESS ANY KEY AND TRY ANOTHER DISK ID", 20, PASS)
+        K$ = GetKeyPress$
+        Call CSMsgBox("", 0, PASS)
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'           ReadTeam Subroutine
+'----------------------------------------
+'Reads in all data for the selected team,
+' given it's index in the team file.
+'This routine is highly customized TO
+' the specific game for which it has
+' been included for.
+Sub ReadTeam (teamYear$, targetTeam$, teamIdx)
+
+    Shared ydsCompAdj
+
+    Shared mascot$, teamNick$
+
+    Shared leagueRatings(), teamRatings()
+
+    Shared rushContrib(), rushAvg(), rbRecepts(), rbRecAvg()
+    Shared recContrib(), wrRecAvg()
+    Shared passContrib(), compPct(), qbIntPct()
+    Shared krContrib(), krRetAvg(), prContrib(), prRetAvg()
+    Shared puntAvg()
+    Shared pkFGA(), pkFGContrib(), pkPAT(), pkPATContrib()
+    Shared numInts(), numSacks(), armRating()
+
+    Shared intName$(), krName$()
+    Shared pkName$(), prName$(), punterName$()
+    Shared qbName$(), rbName$()
+    Shared sackName$(), wrName$()
+
+    Open diskPaths$(0) + TEAM_FILE_NAME$ + "." + teamYear$ For Random As #1 Len = TEAM_SIZE_BYTES
+
+    Field #1, 15 As Q$(1), 15 As Q$(2), 2 As Q$(3), 2 As Q$(4), 2 As Q$(5), 2 As Q$(6), 2 As Q$(7), 2 As Q$(8), 2 As Q$(9), 2 As Q$(10), 2 As Q$(11), 2 As Q$(12), 2 As Q$(13), 2 As Q$(14), 2 As Q$(15), 200 As Q$(0), 200 As Q$(199), 200 As Q$, 200 As Q$, 78 As Q$(0)
+
+    Field #1, 56 As Q$(0), 12 As Q$(16), 2 As Q$(17), 2 As Q$(18), 2 As Q$(19), 2 As Q$(20), 12 As Q$(21), 2 As Q$(22), 2 As Q$(23), 2 As Q$(24), 2 As Q$(25), 200 As Q$, 200 As Q$(200), 238 As Q$(201), 200 As Q$
+
+    Field #1, 96 As Q$(0), 12 As Q$(26), 2 As Q$(27), 2 As Q$(28), 2 As Q$(29), 2 As Q$(30), 12 As Q$(31), 2 As Q$(32), 2 As Q$(33), 2 As Q$(34), 2 As Q$(35), 200 As Q$(199), 200 As Q$(200), 198 As Q$(201), 200 As Q$
+
+    Field #1, 136 As Q$(0), 12 As Q$(36), 2 As Q$(37), 2 As Q$(38), 2 As Q$(39), 2 As Q$(40), 12 As Q$(41), 2 As Q$(42), 2 As Q$(43), 2 As Q$(44), 2 As Q$(45), 200 As Q$(199), 200 As Q$(200), 158 As Q$(201), 200 As Q$
+
+    Field #1, 176 As Q$(0), 12 As Q$(46), 2 As Q$(47), 2 As Q$(48), 2 As Q$(49), 2 As Q$(50), 12 As Q$(51), 2 As Q$(52), 2 As Q$(53), 2 As Q$(54), 2 As Q$(55), 200 As Q$(199), 200 As Q$(200), 118 As Q$(201), 200 As Q$
+
+    Field #1, 216 As Q$(0), 12 As Q$(56), 2 As Q$(57), 2 As Q$(58), 2 As Q$(59), 2 As Q$(60), 12 As Q$(61), 2 As Q$(62), 2 As Q$(63), 2 As Q$(64), 2 As Q$(65), 200 As Q$(199), 200 As Q$(200), 78 As Q$(201), 200 As Q$
+
+    Field #1, 200 As Q$(0), 56 As Q$, 12 As Q$(66), 2 As Q$(67), 2 As Q$(68), 12 As Q$(69), 2 As Q$(70), 2 As Q$(71), 12 As Q$(72), 2 As Q$(73), 2 As Q$(74), 200 As Q$(99), 200 As Q$(200), 200 As Q$, 30 As Q$
+
+    Field #1, 200 As Q$(0), 100 As Q$, 4 As Q$(201), 12 As Q$(75), 2 As Q$(76), 2 As Q$(77), 12 As Q$(78), 2 As Q$(79), 2 As Q$(80), 12 As Q$(81), 2 As Q$(82), 2 As Q$(83), 200 As Q$(199), 182 As Q$(200), 200 As Q$
+
+    Field #1, 200 As Q$(0), 152 As Q$(201), 12 As Q$(84), 2 As Q$(85), 2 As Q$(86), 2 As Q$(87), 2 As Q$(88), 12 As Q$(89), 2 As Q$(90), 2 As Q$(91), 2 As Q$(92), 2 As Q$(93), 200 As Q$(199), 200 As Q$(200), 142 As Q$(202)
+
+    Field #1, 200 As Q$(0), 192 As Q$(201), 12 As Q$(94), 2 As Q$(95), 2 As Q$(96), 2 As Q$(97), 2 As Q$(98), 12 As Q$(99), 2 As Q$(100), 2 As Q$(101), 2 As Q$(102), 2 As Q$(103), 200 As Q$(199), 200 As Q$(200), 102 As Q$(202)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 32 As Q$(200), 12 As Q$(104), 2 As Q$(105), 2 As Q$(106), 12 As Q$(107), 2 As Q$(108), 2 As Q$(109), 12 As Q$(110), 2 As Q$(111), 2 As Q$(112), 200 As Q$(201), 200 As Q$(202), 54 As Q$(203)
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 80 As Q$(200), 12 As Q$(113), 2 As Q$(114), 2 As Q$(115), 12 As Q$(116), 2 As Q$(117), 2 As Q$(118), 12 As Q$(119), 2 As Q$(120), 2 As Q$(121), 200 As Q$(201), 200 As Q$(202), 6 As Q$(203)
+
+    Field #1, 200 As Q$, 200 As Q$, 128 As Q$, 12 As Q$(122), 2 As Q$(123), 12 As Q$(124), 2 As Q$(125), 2 As Q$(126), 2 As Q$(127), 2 As Q$(128), 12 As Q$(129), 2 As Q$(130), 2 As Q$(131), 2 As Q$(132), 2 As Q$(133), 2 As Q$(134), 200 As Q$, 150 As Q$
+
+    Field #1, 200 As Q$(0), 200 As Q$(199), 184 As Q$(200), 12 As Q$(135), 2 As Q$(136), 12 As Q$(137), 2 As Q$(138), 12 As Q$(139), 2 As Q$(140), 12 As Q$(141), 2 As Q$(142), 12 As Q$(143), 2 As Q$(144), 200 As Q$(201), 80 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 154 As Q$(200), 12 As Q$(145), 2 As Q$(146), 12 As Q$(147), 2 As Q$(148), 12 As Q$(149), 2 As Q$(150), 12 As Q$(151), 2 As Q$(152), 12 As Q$(153), 2 As Q$(154), 200 As Q$(201), 10 As Q$(202)
+
+    Field #1, 200 As Q$(0), 100 As Q$, 200 As Q$(199), 224 As Q$(200), 12 As Q$(155), 2 As Q$(156), 12 As Q$(157), 2 As Q$(158), 12 As Q$(159), 2 As Q$(160), 12 As Q$(161), 2 As Q$(162), 12 As Q$(163), 2 As Q$(164), 140 As Q$(201)
+
+    Field #1, 200 As Q$(0), 200 As Q$, 200 As Q$(199), 194 As Q$(200), 12 As Q$(165), 2 As Q$(166), 12 As Q$(167), 2 As Q$(168), 12 As Q$(169), 2 As Q$(170), 12 As Q$(171), 2 As Q$(172), 12 As Q$(173), 2 As Q$(174), 70 As Q$(201)
+
+    Field #1, 232 As Q$(0), 200 As Q$, 200 As Q$(199), 232 As Q$(200), 12 As Q$(175), 2 As Q$(176), 12 As Q$(177), 2 As Q$(178), 12 As Q$(179), 2 As Q$(180), 12 As Q$(181), 2 As Q$(182), 12 As Q$(183), 2 As Q$(184)
+
+    Get #1, teamIdx
+
+    targetTeam$ = RTrim$(Q$(1))
+    mascot$ = RTrim$(Q$(2))
+
+    For I = 0 To 7:
+        leagueRatings(I) = CVI(Q$(I + 3))
+    Next I
+
+    For I = 0 To 4:
+        teamRatings(I) = CVI(Q$(I + 11))
+    Next I
+
+    'Running Backs
+    For I = 0 To 9
+        'Name
+        rbName$(I) = Q$(I * 5 + 16)
+        'Rush Att
+        rushContrib(I) = CVI(Q$(I * 5 + 17))
+        'Rush Avg
+        rushAvg(I) = CVI(Q$(I * 5 + 18))
+        'Receptions
+        rbRecepts(I) = CVI(Q$(I * 5 + 19))
+        'Rec Avg
+        rbRecAvg(I) = CVI(Q$(I * 5 + 20))
+    Next I
+
+    'Wide Receivers
+    For I = 0 To 5
+        'Name
+        wrName$(I) = Q$(I * 3 + 66)
+        'Receptions
+        recContrib(I) = CVI(Q$(I * 3 + 67))
+        'Rec Avg
+        wrRecAvg(I) = CVI(Q$(I * 3 + 68))
+    Next I
+
+    'Quarterbacks
+    For I = 0 To 3
+        'Name
+        qbName$(I) = Q$(I * 5 + 84)
+        'Attempts
+        passContrib(I) = CVI(Q$(I * 5 + 85))
+        'Completion %
+        compPct(I) = CVI(Q$(I * 5 + 86))
+        'Interception %
+        qbIntPct(I) = CVI(Q$(I * 5 + 87))
+        'Arm Rating | Yds/Comp Adj
+        armRating(I) = CVI(Q$(I * 5 + 88))
+    Next I
+
+    'Kickoff Returners
+    For I = 0 To 2
+        'Name
+        krName$(I) = Q$(I * 3 + 104)
+        'Returns
+        krContrib(I) = CVI(Q$(I * 3 + 105))
+        'Return Avg
+        krRetAvg(I) = CVI(Q$(I * 3 + 106))
+    Next I
+
+    'Punt Returners
+    For I = 0 To 2
+        'Name
+        prName$(I) = RTrim$(Q$(I * 3 + 113))
+        'Returns
+        prContrib(I) = CVI(Q$(I * 3 + 114))
+        'Return Avg
+        prRetAvg(I) = CVI(Q$(I * 3 + 115))
+    Next I
+
+    'Punter Name
+    punterName$(0) = RTrim$(Q$(122))
+    'Punt Average
+    puntAvg(0) = CVI(Q$(123))
+
+    'Place Kickers
+    For I = 0 To 1
+        'Name
+        pkName$(I) = RTrim$(Q$(I * 5 + 124))
+        'FGA
+        pkFGA(I) = CVI(Q$(I * 5 + 125))
+        'FG%
+        pkFGContrib(I) = CVI(Q$(I * 5 + 126))
+        'PAT
+        pkPAT(I) = CVI(Q$(I * 5 + 127))
+        'PAT %
+        pkPATContrib(I) = CVI(Q$(I * 5 + 128))
+
+    Next I
+
+    ydsCompAdj = CVI(Q$(134))
+
+    'Sacks
+    For I = 0 To 14
+        'Name
+        sackName$(I) = Q$(I * 2 + 135)
+        '# Sacks
+        numSacks(I) = CVI(Q$(I * 2 + 136))
+    Next I
+
+    'Interceptions
+    For I = 0 To 9
+        'Name
+        intName$(I) = Q$(I * 2 + 165)
+        '# Ints
+        numInts(I) = CVI(Q$(I * 2 + 166))
+    Next I
+
+    'Close team file
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'        ReadExtraData Subroutine
+'----------------------------------------
+'Reads in extra data for the selected team,
+' given it's index in the team file.
+'This extra file usually includes info.
+' related to stadiums, coaches, etc.
+'This routine is highly customized TO
+' the specific game for which it has
+' been included for.
+Sub ReadExtraData (teamYear$, teamIdx, dataOK)
+
+    Shared stadium$
+
+    If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
+
+        MsgText$ = "WARNING!!! NO DATA FILE WAS FOUND FOR THIS TEAM. PRESS ANY KEY TO CONTINUE"
+        BoxWidth = 20
+        BoxHeight = (Len(MsgText$) / BoxWidth) + 3 'top and box lines + 1 extra
+        Locate ((LAST_ROW - BoxHeight) / 2), (80 - ((BoxWidth + 2) / 2))
+        Call CSMsgBox(MsgText$, BoxWidth, Pass)
+        I$ = GetKeyPress$
+        Call CSMsgBox("", 0, Pass)
+
+    Else
+
+        Open diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$ For Random As #2 Len = DATA_SIZE_BYTES
+
+        Field #2, 15 As X$, 30 As QQ$(1), 4 As QQ$(3), 1 As QQ$(4)
+
+        Get #2, teamIdx
+
+        stadium$ = RTrim$(QQ$(1))
+        teamAttendance& = CVL(QQ$(3))
+        Z$ = QQ$(4)
+
+        Close #2
+
+        If Z$ <> "x" Or teamAttendance& > 200000 Then
+
+            dataOK = 0
+            stadium$ = ""
+            teamAttendance& = 0
+
+        Else
+
+            dataOK = 1
+
+        End If
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'     ReportFilePrompt_Pro Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the report file to be saved
+Sub UserFilePrompt (reportFile$)
+
+    Do
+
+        Color 15, 0
+        Cls
+
+        Call MenuBox(6, 8, 61, 7, 15, 1)
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR FILE: ": Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .RPT"
+        Locate 7, 37: Input reportFile$
+
+        If reportFile$ <> "" Then
+
+            Do
+                Locate 13, 12: Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+        End If
+
+    Loop Until UCase$(I$) = "N" And reportFile$ <> ""
+
+End Sub
+
+
+'----------------------------------------
+'     ScheduleFilePrompt Subroutine
+'----------------------------------------
+'This subroutine prompts the user for
+'the name of the schedule file to be saved
+Sub ScheduleFilePrompt (scheduleFile$)
+
+    Color 15, 0
+    Cls
+
+    Call MenuBox(6, 8, 61, 8, 15, 1)
+
+    Do
+
+        Locate 7, 32
+
+        Locate , 12: Print "ENTER NAME FOR SCHEDULE: "
+        Print
+        Locate , 12: Print "THE NAME SHOULD HAVE NO PERIODS OR SPECIAL CHARACTERS"
+        Locate , 12: Print "DO NOT ADD A FILE EXTENSION; THE PROGRAM"
+        Locate , 12: Print "WILL AUTOMATICALLY ADD .SCD"
+        Locate , 12: Print "SAMPLE NAMES ARE INDIANA, BOS68, CHI-76, ETC      "
+        Locate 7, 40: Input scheduleFile$
+
+        If scheduleFile$ <> "" Then
+
+            Do
+
+                Locate 14, 12
+                Print "ANY CHANGE? (Y/N) "
+                I$ = GetKeyPress$
+
+            Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N" Or I$ = Chr$(27)
+
+        End If
+
+    Loop Until (UCase$(I$) = "N" And scheduleFile$ <> "") Or I$ = Chr$(27)
+
+
+End Sub
+
+
+'----------------------------------------
+'        ReadTeamStats Subroutine
+'----------------------------------------
+'Reads in compiled stats for a given team
+Sub ReadTeamStats (teamName$, statFile$)
+
+    Shared statsGI(), statsGS()
+
+    Shared scoreTotals()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared statsLPR!(), sackStats!()
+    Shared statsLRec!(), statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLRush!()
+    Shared statsTeam!(), statsOpp!(), statsPlayers!()
+
+    Shared intName$(), sackName$()
+    Shared rbName$(), wrName$(), qbName$(), krName$(), prName$(), punterName$(), pkName$()
+
+    Shared statsLFG$(), statsLRec$(), statsLInt$(), statsLKR$(), statsLPass$(), statsLRush$()
+    Shared statsLPR$()
+
+    'Load player stats
+    Open diskPaths$(1) + statFile$ For Input As #2
+
+    Input #2, teamName$
+
+    For I = 0 To 9:
+        Input #2, rbName$(I)
+    Next I
+
+    For I = 0 To 5:
+        Input #2, wrName$(I)
+    Next I
+
+    For I = 0 To 3:
+        Input #2, qbName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, krName$(I)
+    Next I
+
+    For I = 0 To 2:
+        Input #2, prName$(I)
+    Next I
+
+    Input #2, punterName$(0)
+
+    For I = 0 To 1:
+        Input #2, pkName$(I)
+    Next I
+
+    'Leader Values
+    '--------------------
+    'Rushers / Receivers
+    For J = 0 To 13
+        For K = 0 To 17:
+            Input #2, statsPlayers!(J, K)
+        Next K
+    Next J
+
+    'Offensive Team stats
+    For L = 0 To 38:
+        Input #2, statsTeam!(L)
+    Next L
+
+    'Defensive Team stats
+    For L = 0 To 38:
+        Input #2, statsOpp!(L)
+    Next L
+
+    'Interceptions
+    For J = 0 To 9:
+        Input #2, intName$(J)
+        For J1 = 0 To 2:
+            Input #2, statsGI(J, J1)
+        Next
+    Next
+
+    'Sacks
+    For J = 0 To 14:
+        Input #2, sackName$(J)
+        For J1 = 0 To 1:
+            Input #2, statsGS(J, J1)
+        Next
+    Next
+
+    'Longest rush
+    For I = 0 To 9:
+        Input #2, statsLRush!(I)
+        Input #2, statsLRush$(I, 0)
+        Input #2, statsLRush$(I, 1)
+    Next
+
+    'Longest Catch
+    For I = 0 To 15:
+        Input #2, statsLRec!(I)
+        Input #2, statsLRec$(I, 0)
+        Input #2, statsLRec$(I, 1)
+    Next
+
+    'Longest Pass
+    For I = 0 To 3:
+        Input #2, statsLPass!(I)
+        Input #2, statsLPass$(I, 0)
+        Input #2, statsLPass$(I, 1)
+    Next
+
+    'Longest KR
+    For I = 0 To 2:
+        Input #2, statsLKR!(I)
+        Input #2, statsLKR$(I, 0)
+        Input #2, statsLKR$(I, 1)
+    Next
+
+    'Longest PR
+    For I = 0 To 2:
+        Input #2, statsLPR!(I)
+        Input #2, statsLPR$(I, 0)
+        Input #2, statsLPR$(I, 1)
+    Next
+
+    'Longest FG
+    For I = 0 To 1:
+        Input #2, statsLFG!(I)
+        Input #2, statsLFG$(I)
+        For I1 = 0 To 4:
+            Input #2, statsFGM!(I, I1)
+            Input #2, statsFGA!(I, I1)
+        Next
+    Next
+
+    'Longest INT Return
+    For I = 0 To 9:
+        Input #2, statsLInt!(I)
+        Input #2, statsLInt$(I, 0)
+        Input #2, statsLInt$(I, 1)
+    Next
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
+'      ReadTeamStatsComp Subroutine
+'----------------------------------------
+'Reads in compiled stats for a given team
+Sub ReadTeamStatsComp (teamName$, statFile$)
+
+    Shared punterName$()
+
+    Shared statsGI(), statsGS()
+
+    Shared statsFGA!(), statsFGM!()
+    Shared defTotals!(), offTotals!()
+
+    Shared statsGeneral!()
+    Shared statsLFG!(), statsLInt!(), statsLKR!(), statsLPass!(), statsLPR!(), statsLRec!(), statsLRush!()
+
+    Shared compKR$(), compKicker$(), compPR$()
+    Shared compQB$(), compRB$(), compWR$()
+    Shared intName$(), sackName$()
+    Shared statsLRec$(), statsLFG$(), statsLInt$()
+    Shared statsLKR$(), statsLPR$()
+    Shared statsLPass$(), statsLRush$()
+
+    Erase compKR$, compKicker$, compPR$, compQB$, compRB$, compWR$
+    Erase intName$
+
+    Erase offTotals!, defTotals!
+    Erase statsFGA!, statsFGM!
+    Erase statsGeneral!
+    Erase statsGI, statsGS
+
+    Erase statsLRec!, statsLFG!, statsLInt!, statsLKR!, statsLPass!, statsLRush!
+    Erase statsLRec$, statsLFG$, statsLInt$, statsLKR$, statsLPass$, statsLRush$
+
+    Open diskPaths$(1) + statFile$ For Input As #1
+
+    Input #1, teamName$
+
+    'RB Names
+    For I = 1 To 10:
+        Input #1, compRB$(I)
+    Next
+
+    'WR Names
+    For I = 1 To 6:
+        Input #1, compWR$(I + 10)
+    Next
+
+    'QB Names
+    For I = 1 To 4:
+        Input #1, compQB$(I)
+    Next
+
+    'KR Names
+    For I = 1 To 3:
+        Input #1, compKR$(I)
+    Next
+
+    'PR Names
+    For I = 1 To 3:
+        Input #1, compPR$(I)
+    Next I
+
+    'Punter
+    Input #1, punterName$(0)
+
+    'Place Kickers
+    For I = 1 To 2:
+        Input #1, compKicker$(I)
+    Next
+
+    'Rushers / Receivers
+    For J = 1 To 14
+        For K = 1 To 18
+            Input #1, statsGeneral!(J, K)
+        Next K
+    Next J
+
+    'Offensive Team stats
+    For L = 0 To 38:
+        Input #1, offTotals!(L)
+    Next L
+
+    'Defensive Team stats
+    For L = 0 To 38:
+        Input #1, defTotals!(L)
+    Next L
+
+    For J = 0 To 9:
+        'Interception Names
+        Input #1, intName$(J)
+        For J1 = 0 To 2
+            Input #1, statsGI(J, J1)
+        Next
+    Next
+
+    For J = 0 To 14:
+        'Sack Names
+        Input #1, sackName$(J)
+        For J1 = 0 To 1:
+            Input #1, statsGS(J, J1)
+        Next
+    Next
+
+    'Longest rush?
+    For I = 0 To 9:
+        Input #1, statsLRush!(I)
+        Input #1, statsLRush$(I, 0)
+        Input #1, statsLRush$(I, 1)
+    Next
+
+    'Longest catch?
+    For I = 0 To 15:
+        Input #1, statsLRec!(I)
+        Input #1, statsLRec$(I, 0)
+        Input #1, statsLRec$(I, 1)
+    Next
+
+    'Longest punt?
+    For I = 0 To 3:
+        Input #1, statsLPass!(I)
+        Input #1, statsLPass$(I, 0)
+        Input #1, statsLPass$(I, 1)
+    Next
+
+    'Longest kick return
+    For I = 0 To 2:
+        Input #1, statsLKR!(I)
+        Input #1, statsLKR$(I, 0)
+        Input #1, statsLKR$(I, 1)
+    Next
+
+    'Longest punt return
+    For I = 0 To 2:
+        Input #1, statsLPR!(I)
+        Input #1, statsLPR$(I, 0)
+        Input #1, statsLPR$(I, 1)
+    Next
+
+    'Longest field goal
+    For I = 0 To 1:
+        Input #1, statsLFG!(I)
+        Input #1, statsLFG$(I)
+
+        For I1 = 0 To 4
+            Input #1, statsFGM!(I, I1)
+            Input #1, statsFGA!(I, I1)
+        Next
+    Next
+
+    'Longest interception
+    For I = 0 To 9:
+        Input #1, statsLInt!(I)
+        Input #1, statsLInt$(I, 0)
+        Input #1, statsLInt$(I, 1)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'      ReadScheduleStats Subroutine
+'----------------------------------------
+'This subroutine reads in all data from the
+'team's schedule stats file.
+Sub ReadScheduleStats (statFile$, ptsIdx, numberGames)
+
+    Shared gameSite$()
+    Shared locIndicator$(), oppName$()
+
+    Shared oppScore(), powerRating(), teamScore()
+
+    Shared gameAttendance&()
+
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
+    baseFile$ = diskPaths$(1) + statFile$ + "S"
+
+    Erase gameSite$, oppName$, locIndicator$
+    Erase powerRating, oppScore, teamScore
+    Erase gameAttendance&
+    leagPtsAgnst!(ptsIdx) = 0
+    leagPtsFor!(ptsIdx) = 0
+
+    Open baseFile$ For Input As #1
+
+    Input #1, numberGames
+
+    'Opponent Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, teamScore(I)
+        leagPtsFor!(ptsIdx) = leagPtsFor!(ptsIdx) + teamScore(I)
+    Next I
+
+    'Opponent
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppName$(I)
+    Next I
+
+    'Team Score
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, oppScore(I)
+        leagPtsAgnst!(ptsIdx) = leagPtsAgnst!(ptsIdx) + oppScore(I)
+    Next I
+
+    'Home / Away
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, locIndicator$(I)
+    Next I
+
+    'Power Rating
+    For I = 0 To 1
+        For I1 = 1 To MAX_SCHED_STATS
+            Input #1, powerRating(I, I1)
+        Next
+    Next
+
+    'Attendance
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameAttendance&(I)
+    Next I
+
+    'Stadium
+    For I = 1 To MAX_SCHED_STATS:
+        Input #1, gameSite$(I)
+    Next I
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'      SaveScheduleStats Subroutine
+'----------------------------------------
+'This subroutine writes in all data to the
+'team's schedule stats file.
+Sub SaveScheduleStats (saveFile$, numberGames)
+
+    Shared gameSite$()
+    Shared locIndicator$(), oppName$()
+
+    Shared oppScore(), powerRating(), teamScore()
+
+    Shared gameAttendance&()
+
+    Shared leagPtsAgnst!(), leagPtsFor!()
+
+    Open diskPaths$(1) + saveFile$ + "S" For Output As #2
+
+    Print #2, numberGames
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, teamScore(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, oppName$(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, oppScore(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, locIndicator$(I)
+    Next
+
+    For I = 0 To 1
+        For I1 = 1 To MAX_SCHED_STATS
+            Print #2, powerRating(I, I1)
+        Next
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, gameAttendance&(I)
+    Next
+
+    For I = 1 To MAX_SCHED_STATS:
+        Print #2, gameSite$(I)
+    Next
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
+'      ReadSeasonRecords Subroutine
+'----------------------------------------
+'Reads in list of team and individual
+'record values from the records file.
+Sub ReadSeasonRecords (recordFile$)
+
+    Shared indRecords!(), teamRecords!()
+    Shared indRecDesc$(), teamRecDesc$()
+
+    Erase indRecords!, teamRecords!
+    Erase indRecDesc$, teamRecDesc$
+
+    Open diskPaths$(1) + recordFile$ For Input As #1
+
+    For I = 0 To 50:
+        Input #1, indRecords!(I)
+        Input #1, indRecDesc$(I, 0)
+        Input #1, indRecDesc$(I, 1)
+        Input #1, indRecDesc$(I, 2)
+    Next
+
+    For I = 0 To 50:
+        Input #1, teamRecords!(I)
+        Input #1, teamRecDesc$(I)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'       ReadGameRecords Subroutine
+'----------------------------------------
+'Reads in list of team and individual
+'record values from the records file.
+Sub ReadGameRecords (recordFile$)
+
+End Sub
+
+
+'----------------------------------------
+'     ReadConferenceIndex Subroutine
+'----------------------------------------
+'This subroutine reads in the team file
+'indexes from the .TMI file and assigns them
+'to variables for use later.
+Sub ReadConferenceIndex (indexFile$, fileType)
+
+    Shared memberIdx()
+    Shared memberName$(), memberYear$()
+
+    Shared leagueName$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+
+    Open indexFile$ For Input As #2
+
+    Input #2, fileType
+
+    If fileType = 0 Then
+
+        Input #2, leagueName$
+        Input #2, div1Name$
+        Input #2, div2Name$
+
+        For X = 1 To TEAMS_PER_CONFERENCE:
+            Input #2, memberName$(X)
+            Input #2, memberIdx(X)
+            Input #2, memberYear$(X)
+        Next
+
+    End If
+
+    If fileType = 1 Then
+
+        Input #2, leagueName$
+        Input #2, div1Name$
+        Input #2, div2Name$
+        Input #2, div3Name$
+        Input #2, div4Name$
+
+        For X = 1 To TEAMS_PER_LEAGUE:
+            Input #2, memberName$(X)
+            Input #2, memberIdx(X)
+            Input #2, memberYear$(X)
+        Next
+
+    End If
+
+    Close #2
+
+End Sub
+
+
+'----------------------------------------
+'     ReadConferenceMembers Subroutine
+'----------------------------------------
+'This subroutine reads in the stat file
+'names from the .TMS file and assigns them
+'to variables for use later.
+
+'statType
+'   0 = College
+'   1 = Pro
+Sub ReadConferenceMembers (statFile$, statType)
+
+    Shared memberName$()
+
+    Shared leagueName$
+    Shared div1Name$, div2Name$, div3Name$, div4Name$
+
+    Erase memberName$
+
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE
+            memberName$(X) = "XXX"
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE
+            memberName$(X) = "XXX"
+        Next
+    End If
+
+    Open statFile$ For Input As #1
+
+    If statType = 1 Then
+        'Pro
+        Input #1, leagueName$
+        Input #1, div1Name$
+        Input #1, div2Name$
+        Input #1, div3Name$
+        Input #1, div4Name$
+    Else
+        'College
+        Input #1, leagueName$
+        Input #1, div1Name$
+        Input #1, div2Name$
+    End If
+
+    If statType = 0 Then
+        For X = 1 To TEAMS_PER_CONFERENCE:
+            Input #1, memberName$(X)
+        Next
+    Else
+        For X = 1 To TEAMS_PER_LEAGUE:
+            Input #1, memberName$(X)
+        Next
+    End If
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'     ReadOrganizationFile Subroutine
+'----------------------------------------
+'Reads in list of conferences from a .CON
+'file that represents a national Org.
+Sub ReadOrganizationFile (organizationFile$, organization$)
+
+    Shared memberConf$()
+
+    Open organizationFile$ For Input As #1
+
+    Input #1, organization$
+
+    For X = 1 To MAX_CONFERENCES
+        Input #1, memberConf$(X)
+    Next
+
+    Close #1
+
+End Sub
+
+
+'----------------------------------------
+'         nameStatFile$ Function
+'----------------------------------------
+'Helps create uniquely named file to
+' store a team's stats.
+'
+'There are 2 main changes done in order
+' to accomodate this:
+' 1) Replaces invalid characters with _
+' 2) If "ST" is the name, shortens the
+'    prefix. This helps with college
+'    teams (ARKANSAS vs ARKANSAS ST)
+Function nameStatFile$ (teamName$)
+
+    teamPrefix$ = teamName$
+
+    For XX = 4 To 11
+
+        If Mid$(teamPrefix$, XX, 1) = " " Or Mid$(teamPrefix$, XX, 1) = "." Or Mid$(teamPrefix$, XX, 1) = "/" Or Mid$(teamPrefix$, XX, 1) = "_" Then
+            Mid$(teamPrefix$, XX, 1) = "_"
+        End If
+
+    Next XX
+
+    For XX = 12 To 14
+
+        If Mid$(teamPrefix$, XX, 2) = "ST" Then
+            Mid$(teamPrefix$, 9, 1) = "_"
+            Mid$(teamPrefix$, 10, 2) = "ST"
+        End If
+
+    Next XX
+
+    'Length of 'converted' name for file
+    '-- update this if we want to support long files
+    QQ = 8
+
+    For XX = 11 To 4 Step -1
+        If Mid$(teamPrefix$, XX, 1) = "_" Then
+            QQ = XX - 4
+        Else
+            Exit For
+        End If
+    Next XX
+
+    nameStatFile$ = Mid$(teamPrefix$, 4, QQ) + "." + Left$(teamPrefix$, 2)
+
+End Function
+
+
+'----------------------------------------
+'          CheckString Function
+'----------------------------------------
+'This function checks the given string
+'to determine if any characters are not
+'alpha-numeric or printable.
+'Return Values
+'1 = non-printable characters were found
+'0 = all characters in string are alpha-numeric.
+Function CheckString% (targetString$)
+
+    badString = 0
+    stringPosition% = 1
+
+    Do
+
+        test = Asc(Mid$(targetString$, stringPosition%, 1))
+
+        'If it is a non-printable character (corrupt data)
+        If test > 122 Or test < 32 Then
+            stringPosition% = 1
+            badString = 1
+        Else
+            stringPosition% = stringPosition% + 1
+        End If
+
+    Loop Until stringPosition% = Len(targetString$) Or badString = 1
+
+    CheckString% = badString
+
+End Function
+
+
+'----------------------------------------
+'        ChooseFile$ Function
+'----------------------------------------
+'Shows user a file selection menu, based
+' on the file spec parameter passed.
+'
+'fileSpec$ - file specification to load
+'            should include base path.
+'
+' EXAMPLE - C:\Temp\*.tmp
+'
+'fileDesc$ - brief description of the
+'            type of file
+'
+' RETURNS - base name of chosen file
+'            (that is, without extension)
+Function ChooseFile$ (fileSpec$, fileDesc$, ExitCode%)
+
+    descLength = Len(fileDesc$)
+
+    Do
+        'Display list of files...
+
+        Count% = FileCount%(fileSpec$)
+
+        If Count% = 0 Then
+
+            Locate 10, 8
+            zeroCountMsg$ = "NO " + fileDesc$ + " FILES WERE FOUND... PRESS ANY KEY TO RETURN TO MAIN MENU"
+
+            Call CSMsgBox(zeroCountMsg$, 20, Pass)
+            I$ = GetKeyPress$
+            Call CSMsgBox("", 0, Pass)
+
+        Else
+
+            ReDim foundFiles$(0 To Count%)
+
+            'For X = 1 To Count%
+            '8 char's filename + 4 char's (. + ext)
+            'foundFiles$(X) = Space$(12)
+            'Next
+
+            foundFiles$(0) = fileSpec$
+            Call ReadFile(foundFiles$())
+
+            Do
+
+                XCoord = Int((80 - (descLength + 12)) / 2)
+
+                Color , 1
+                Cls
+
+                Locate , XCoord
+                Color 14
+                Print "SELECT "; fileDesc$; " FILE"
+                Color 15
+
+                SELECTION% = 1
+                START% = 1
+                FileFGColor = 15: FileBGColor = 1
+                HiLiteFGColor% = 0: HiLiteBGColor% = 7
+                '3 rows header, 2 rows spacing, 1 row footer
+                Rows% = LAST_ROW - 6
+                Columns% = 3
+                Spacing% = 5
+                Row% = 5
+                Column% = 1
+
+                Locate LAST_ROW, 1
+                Color 14
+                Print "ENTER";
+                Color 15
+                Print "-SELECTS "; fileDesc$;
+                Color 14
+                Locate , 55
+                Print "HIT ESCAPE KEY TO EXIT";
+                Color 15
+
+                _MouseShow "DEFAULT"
+                MAMenu foundFiles$(), SELECTION%, START%, Count%, ExitCode%, FileFGColor, FileBGColor, HiLiteFGColor%, HiLiteBGColor%, Rows%, Columns%, Spacing%, Row%, Column%
+                _MouseHide
+
+                If ExitCode% <> 27 Then
+
+                    Color 15, 1
+                    targetFile$ = RTrim$(foundFiles$(SELECTION%))
+                    XCoord = Int((80 - Len(targetFile$)) / 2)
+                    Locate 2, XCoord
+                    Print targetFile$
+
+                    Do
+                        Locate , 31
+                        Print "ANY CHANGE? (Y/N)";
+                        I$ = GetKeyPress$
+                    Loop Until UCase$(I$) = "Y" Or UCase$(I$) = "N"
+
+                    Color 15, 0
+
+                End If
+
+            Loop Until UCase$(I$) = "N" Or ExitCode% = 27
+
+        End If 'Done checking file count
+
+        '...Until we press ESC
+    Loop Until ExitCode% = 27 Or Count% = 0 Or UCase$(I$) = "N"
+
+    If ExitCode% <> 27 Then
+        ChooseFile$ = Left$(RTrim$(targetFile$), Len(targetFile$) - 4)
+    End If
+
+End Function
+
 
 '$Include: 'TITLE.bm'
 '$Include: 'ALIGN.BAS'
@@ -4705,7 +6057,7 @@ Sub FOOTBALL ()
 
                 End If
 
-                Print #11, gameTeams$(P1) + " PUNTING ON " + downDesc$(currDown) + " DOWN FROM THE" + Str$(Int(ydLine)) + " YARD LINE"
+                'Print #11, gameTeams$(P1) + " PUNTING ON " + downDesc$(currDown) + " DOWN FROM THE" + Str$(Int(ydLine)) + " YARD LINE"
 
                 If ydsGained < 40 Then
                     pbpString$ = "HE GETS THE PUNT AWAY"
@@ -5524,6 +6876,9 @@ Sub FOOTBALL ()
 
                                 Call FGATT
 
+                                '-- REMOVE ME
+                                fgChance = 101
+
                                 If fgChance <= fgSuccessChance Then
 
                                     'Increase FGM
@@ -5640,17 +6995,16 @@ Sub FOOTBALL ()
                                     'Off always kicks off to Def
                                     Call CHANGEPOSS
 
-                                    If ydLine > 40 And ydLine <= 79.99 And ruleOptType = 1 And ruleOptPro >= 4 Then
-                                        'NFL, after 1993
+                                    'ydLine > 40 And
+                                    If (ruleOptType >= 1 And ruleOptPro >= 2) Or _
+                                        (ruleOptType = 0 And ruleOptColl >= 1 And teamYears(impactTeam) >= 1978 And ydLine <= 79.99) Then
+                                        'NFL post-1973, NCAA 1978+
+                                        'Return to line of scrimmage
                                         ydLine = ydLine - 7
                                         ydLine = 100 - ydLine
                                     Else
-                                        If ydLine > 79.99 Or goalPostAdj < 0 Then
-                                            ydLine = 20
-                                        End If
-                                        If ydLine > 40 And ydLine <= 79.99 And goalPostAdj = 0 Then
-                                            ydLine = 100 - ydLine
-                                        End If
+                                        'All other cases: ball to the 20
+                                        ydLine = 20
                                     End If
 
                                     Call AddPossessionTime(4, 7)
@@ -6221,12 +7575,13 @@ Sub FOOTBALL ()
                     nbrPossOT(D) = 1
                 End If
 
-                If ruleOptType <> 1 Then
-                    'All but NFL
+                'Blocked PAT's are deadball for older seasons / years
+                'Here we figure out which seasons allow a return
+                If (ruleOptType = 1 And (ruleOptPro >= 7 Or (ruleOptPro >= 6 And teamYears(impactTeam) >= 2015)) ) Or _
+                    (ruleOptType = 0 And (ruleOptColl >= 6 Or (ruleOptColl = 5 And teamYears(impactTeam) >= 1988)) ) THen
                     Call Turnover_PAT
                     U3 = 9
                     GoTo CheckPoss_OT
-
                 End If
 
             Case Else
@@ -6537,6 +7892,8 @@ Sub FOOTBALL ()
 
     Else
 
+        'NO PERSONAL FOUL
+
         If playYdLine! >= 99.9499 Then
 
             'Scoring play with no penalties
@@ -6547,7 +7904,11 @@ Sub FOOTBALL ()
 
             'If we're within a foot of the first down
             If ydsGained - ydsToFirst >= -.33 And ydsGained - ydsToFirst <= .33 Then
-                Call MEASUREMENT
+                Call MEASUREMENT(downYds!)
+                If downYds! >= 0 Then
+                    Call FirstDownAfterPlay
+                End If
+
             End If
 
         End If
@@ -7546,7 +8907,8 @@ Sub FOOTBALL ()
 
         Call StatusBoard
 
-        GoTo 330
+        GoTo 340
+        'GoTo 330
 
     Else
 
@@ -8197,7 +9559,6 @@ Sub InitVar ()
     endZone = 0
     expCompPct = 0
     ffPctSuccess = 0
-    fgAttYds = 0
     firstDownClockOpt = 0
     fleaFlicker = 0
     fumbPlayType = 0
@@ -13042,6 +14403,7 @@ End Sub
 Sub DEF_CheckGoalLine ()
 
     If (quarter >= 9 And overtimeOpt = 4) Then
+        '-- FATIGUE not implemented --
         'Confirm that we are here correctly
         'and that goal line is being chosen
         'If so, then we just need to make it
@@ -13075,6 +14437,7 @@ Sub Turnover_PAT
     Call ShowChainMarker
     Call YARDLINE
 
+    'Return blocked PAT
     If d100% <= 18 Then
         ydsGained = 110
     Else
@@ -13118,6 +14481,8 @@ Sub Turnover_PAT
     ydsToScore = 100 - ydLine
 
     endZone = 0
+
+    End
 
 End Sub
 
@@ -13408,7 +14773,7 @@ Sub SETWEATHER ()
 
         'Bad Weather
         climate(4) = -1
-        climate(5) = 12
+        climate(5) = 1
         Select Case teamYears(impactTeam)
 
             Case Is <= 1989
@@ -13608,6 +14973,8 @@ End Sub
 'made based on yardage increments for
 'the current kicker.
 Sub FGMADE ()
+
+    fgAttYds = FieldGoalDistance%
 
     If fgAttYds > gameLongFGAtt(P1, activeKicker(P1)) Then
         gameLongFGAtt(P1, activeKicker(P1)) = fgAttYds
@@ -15349,7 +16716,7 @@ Sub AdjustForEra (teamYear)
                     'Medium Pass
                     playCall = 11
                 End If
-            
+
                 'Medium PA, Long PA
             Case 14, 15
                 'Play-action less developed
@@ -15364,15 +16731,15 @@ Sub AdjustForEra (teamYear)
                 End If
 
         End Select
-        
+
     End If
-    
+
     ' ========================================
     ' 1960-1977: TRANSITION ERA
     ' ========================================
     ' Passing game developing, more balanced
     ' AFL influence, vertical passing emerges
-    
+
     If teamYear >= 1960 And teamYear < 1978 Then
 
         'Screens still relatively uncommon
@@ -15382,23 +16749,23 @@ Sub AdjustForEra (teamYear)
                 playCall = 10
             End If
         End If
-        
+
         'Rollouts more common but not as prevalent as modern
         'No adjustment needed - they existed
-        
+
     End If
-    
+
     ' ========================================
     ' 1978-1994: WEST COAST OFFENSE ERA
     ' ========================================
     ' Bill Walsh revolution, short passing as extension of run
     ' Timing routes, precision passing
-    
+
     If teamYear >= 1978 And teamYear < 1995 Then
-        
+
         ' Short passes and screens become MORE effective
         ' No adjustments needed - this is baseline era
-        
+
     End If
     
     ' ========================================
@@ -15664,16 +17031,16 @@ Sub UpdatePlayHistory (playCallExecuted, yardsGained)
         
         Case 19, 20 ' Special teams (Punt, FG)
             lastPlayType = 2
-        
+
         Case Else
             ' Unknown play type, keep previous value
             ' Don't shift history
             Exit Sub
     End Select
-    
+
     ' Store yards gained
     lastPlayYards = yardsGained
-    
+
 End Sub
 
 
@@ -15683,7 +17050,7 @@ End Sub
 'This subroutine handles the play-by-play
 'for when a measurement is done to check
 'for first down.
-Sub MEASUREMENT ()
+Sub MEASUREMENT (decimalYds!)
 
     pbpString$ = "HE'S CLOSE TO A FIRST DOWN"
     Call PBP
@@ -15693,12 +17060,12 @@ Sub MEASUREMENT ()
     Call DELAY
 
     'Calculate yards to first
-    measure! = ydsGained - ydsToFirst
+    decimalYds! = ydsGained - ydsToFirst
 
     'Round to 2 decimals
-    measure! = Fix(measure! * 100 + Sgn(measure!) * .5) / 100
+    decimalYds! = Fix(decimalYds! * 100 + Sgn(decimalYds!) * .5) / 100
 
-    Select Case measure!
+    Select Case decimalYds!
 
         Case -0.33 To -.22
             pbpString$ = "HE'S ABOUT A FOOT SHY"
@@ -16482,21 +17849,25 @@ Sub KickoffChoices (deferOpt)
         End If
 
     Else
-        Call OPTIONBOX(9)
-        Print gameTeams$(winTeam); " DO YOU ELECT TO:"
-        Locate 12, 14
-        Locate , 14: Print "1 - KICK OFF"
-        Locate , 14: Print "2 - RECEIVE"
-        Locate , 14: Print "3 - DEFEND GOAL WITH WIND AT BACK"
-        Locate , 14: Print "4 - DEFEND GOAL WITH WIND IN FACE"
-        If deferOpt = 1 Then
-            Locate , 14: Print "5 - DEFER CHOICE TO 2ND HALF"
-        End If
 
-        Do
-            I$ = GetKeyPress$
-            koChoice = Val(I$)
-        Loop Until koChoice >= 1 And koChoice <= (4 + deferOpt)
+        If quarter = 1 Then
+            Call OPTIONBOX(9)
+            Print gameTeams$(winTeam); " DO YOU ELECT TO:"
+            Locate 12, 14
+
+            Locate , 14: Print "1 - KICK OFF"
+            Locate , 14: Print "2 - RECEIVE"
+            Locate , 14: Print "3 - DEFEND GOAL WITH WIND AT BACK"
+            Locate , 14: Print "4 - DEFEND GOAL WITH WIND IN FACE"
+            If deferOpt = 1 Then
+                Locate , 14: Print "5 - DEFER CHOICE TO 2ND HALF"
+            End If
+
+            Do
+                I$ = GetKeyPress$
+                koChoice = Val(I$)
+            Loop Until koChoice >= 1 And koChoice <= (4 + deferOpt)
+        End If
 
     End If
 
@@ -18155,7 +19526,7 @@ Sub TwoMinMenu (menuChoice)
 
         End If
 
-        'Check that the computer didn't already call timeout)
+        'Check that the computer didn't already call timeout
         If playerMode = 0 Or (playerMode = 1 And (menuChoice <> 2 And menuChoice <> 3)) Then
             Do
                 I$ = GetKeyPress$
@@ -18163,7 +19534,8 @@ Sub TwoMinMenu (menuChoice)
             Loop Until menuChoice >= 1 And menuChoice <= 5
         End If
 
-    Loop Until Not ((menuChoice = 2 Or menuChoice = 4 Or menuChoice = 5) And playerMode = 1 And P1 = compTeam) Or (menuChoice = 3 And playerMode = 1 And D = compTeam)
+        'Loop Until Not ((menuChoice = 2 Or menuChoice = 4 Or menuChoice = 5) And playerMode = 1 And P1 = compTeam) Or (menuChoice = 3 And playerMode = 1 And D = compTeam)
+    Loop Until Not (playerMode = 1 And P1 = compTeam And (menuChoice = 4 Or menuChoice = 5) And timeouts(D) > 0)
 
     Color 0, 5 * (1 - BW)
 
@@ -20738,7 +22110,10 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         If gameStatsPlayer(I, 4, 17) <> 0 Or gameStatsPlayer(I, 6, 17) <> 0 Then
 
             Print #1, kicker$(I, 0); Tab(19);
-            If gameStatsPlayer(I, 6, 17) <> 0 Then Print #1, Using "### ### ###.# "; gameStatsPlayer(I, 5, 17), gameStatsPlayer(I, 6, 17), gameStatsPlayer(I, 5, 17) / gameStatsPlayer(I, 6, 17) * 100;
+
+            If gameStatsPlayer(I, 6, 17) <> 0 Then
+                Print #1, Using "### ### ###.# "; gameStatsPlayer(I, 5, 17), gameStatsPlayer(I, 6, 17), gameStatsPlayer(I, 5, 17) / gameStatsPlayer(I, 6, 17) * 100;
+            End If
 
             If gameStatsPlayer(I, 4, 17) = 0 Then
                 Print #1,
@@ -20762,7 +22137,10 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
         If gameStatsPlayer(I, 8, 17) <> 0 Or gameStatsPlayer(I, 10, 17) <> 0 Then
 
             Print #1, kicker$(I, 1); Tab(19);
-            If gameStatsPlayer(I, 10, 17) <> 0 Then Print #1, Using "### ### ###.# "; gameStatsPlayer(I, 9, 17), gameStatsPlayer(I, 10, 17), gameStatsPlayer(I, 9, 17) / gameStatsPlayer(I, 10, 17) * 100;
+
+            If gameStatsPlayer(I, 10, 17) <> 0 Then
+                Print #1, Using "### ### ###.# "; gameStatsPlayer(I, 9, 17), gameStatsPlayer(I, 10, 17), gameStatsPlayer(I, 9, 17) / gameStatsPlayer(I, 10, 17) * 100;
+            End If
 
             If gameStatsPlayer(I, 8, 17) = 0 Then
                 Print #1,
@@ -23441,11 +24819,7 @@ Sub CountGames ()
     'Process schedule file
     If scheduleFile$ <> "" And numberTeams > 0 Then
 
-        test = scheduleAP%(0)
-
         Call LoadScheduleInfo(scheduleFile$)
-
-        test = scheduleAP%(0)
 
         Open "GamesCount" For Append As #3
         Print #3, "TeamName,NumberGames"

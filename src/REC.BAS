@@ -20,6 +20,8 @@ Sub Records_Menu (menuChoice)
 
     End Select
 
+    SELECTION% = 1
+
     Do
 
         Cls
@@ -34,7 +36,6 @@ Sub Records_Menu (menuChoice)
         'menuChoices$(5) = "PRINT SINGLE GAME RECORDS"
         'menuChoices$(6) = "DELETE GAME RECORDS      "
         'menuChoices$(7) = "RETURN TO GAME MENU      "
-        SELECTION% = 1
         Count% = 4
         Start% = 1
         ExitCode% = 4

@@ -37,6 +37,8 @@ Sub NEWLDR (statType)
         menuChoices$(5) = "RETURN TO LEAGUE LEADERS MENU   "
     End If
 
+    SELECTION% = 1
+
     Do
 
         Cls
@@ -44,7 +46,6 @@ Sub NEWLDR (statType)
 
         Call TITLE
 
-        SELECTION% = 1
         Count% = 5
         Start% = 1
         ExitCode% = 5

@@ -394,7 +394,7 @@ Dim Shared checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
-Dim Shared fgSuccessChance, fgAttYds, ffPctSuccess
+Dim Shared fgSuccessChance, ffPctSuccess
 Dim Shared firstDownClockOpt
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 Dim Shared gameLoc, gameOver, goalPostAdj, halfTime

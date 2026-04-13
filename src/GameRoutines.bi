@@ -68,7 +68,7 @@ Declare Sub AdjustForWeather()
 Declare Sub AdjustForEra(teamYear)
 Declare Sub AdjustPassPlayForSequencing()
 Declare Sub UpdatePlayHistory(playCallExecuted As Integer, yardsGained As Integer)
-Declare Sub MEASUREMENT ()
+Declare Sub MEASUREMENT (decimalYds!)
 Declare Sub ReceiverLossPBP (yardString$)
 Declare Sub WHICHRECEIVER
 Declare Sub TurnoverOnDowns
