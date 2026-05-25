@@ -418,9 +418,7 @@ End Sub
 ' been included for.
 Sub ReadExtraData (teamYear$, teamIdx, dataOK)
 
-    Shared teamAttendance&
-
-    Shared stadium$, Z$
+    Shared stadium$
 
     If Not _FileExists(diskPaths$(0) + DATA_FILE_NAME$ + "." + teamYear$) Then
 

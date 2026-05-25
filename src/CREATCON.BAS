@@ -72,12 +72,6 @@ Sub CREATCON ()
                     End If
 
                 Case 3
-                    'confFile$ = _OpenFileDialog$("Choose League Definition file", diskPaths$(2), "*.TMI", "League Definition files [.TMI]")
-
-                    'If confFile$ <> "" Then
-                    '    Call UpdateConferenceIndexes(confFile$)
-                    'End If
-
                     fileSpec$ = diskPaths$(2) + "*.TMI"
 
                     Count% = FileCount%(fileSpec$)
@@ -338,16 +332,18 @@ Sub SaveConferences (confFile$)
 End Sub
 
 
-
 '----------------------------------------
 '   UpdateConferenceIndexes Subroutine
 '----------------------------------------
+' This routine was specifically designed
+' to assist with fixing league / conference
+' files after a Teams file has been sorted.
+' It will find the new indexes of each team
+' in the file and update it.
 Sub UpdateConferenceIndexes (sourceFile$)
 
     Shared memberIdx()
     Shared memberName$(), memberYear$()
-    Shared leagueName$
-    Shared div1Name$, div2Name$, div3Name$, div4Name$
 
     Dim totalMembers As Integer
     Dim currMember As Integer, currTeam As Integer
@@ -375,7 +371,7 @@ Sub UpdateConferenceIndexes (sourceFile$)
     For teamIdx = 1 To numberTeams
         Get #1, teamIdx
         teamNames$(teamIdx) = team$
-        teamIndex%(teamIdx) = teamIdx
+        teamIndex(teamIdx) = teamIdx
     Next teamIdx
 
     Close #1

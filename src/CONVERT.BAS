@@ -507,7 +507,7 @@ End Sub
 '       ConvertAllLeague Subroutine
 '----------------------------------------
 ' Quick and dirty script to convert all
-' team files in the "Schedule" folder
+' league files in the "Schedule" folder
 Sub ConvertAllLeague ()
 
     fileSpec$ = diskPaths$(2) + "*.TMI"

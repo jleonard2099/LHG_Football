@@ -335,7 +335,7 @@ Sub EditTeam (teamName$, YN$, teamNbr)
         Locate 2, 40 - Len(U$) / 2
         Color 14: Print U$
 
-        Locate 3, 1
+        Locate 4, 1
         Color 12: Print "(1) ";
         Color 15: Print "TEAM RATINGS"
         Color 12: Print "(2) ";

@@ -376,7 +376,7 @@ Dim divTeamNames$(60), leagRecText$(60)
 '----------------------------------------
 ' Used in Game Routines
 '----------------------------------------
-Dim ballFumbled, tickerStart
+Dim ballFumbled, tickerStart, winTeam
 
 Dim actualAttendance&, avgAttendance&
 
@@ -390,10 +390,10 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 'BW = black & white; as in, set to 1 and the game will lose all color
 Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
-Dim Shared checkFumbRev, chosenPlay
+'Dim Shared checkFumbRev, chosenPlay
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
-Dim Shared endAllGames, endYds, endZone, expCompPct
+'Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, ffPctSuccess
 Dim Shared firstDownClockOpt
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
@@ -408,14 +408,13 @@ Dim Shared kickYL!
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared P1, playCall, periodNbr, puntRetNbr
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared sndOpt, startYds, tickerGames
+'Dim Shared sndOpt, startYds, tickerGames
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
-Dim Shared winTeam
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -432,8 +431,8 @@ Dim Shared winTeam
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+'Dim Shared ydsToFirst As Single
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared fgAttLine, fleaFlicker
@@ -443,7 +442,7 @@ Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
 Dim Shared totalSTPenalties, YF
 
-Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
