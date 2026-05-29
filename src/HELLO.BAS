@@ -26,6 +26,7 @@ Const MAX_PBP_LINES = 4
 
 'Adjust these to change the frequency
 'of penalties being called on special teams
+Const AVG_KICK_DIST = 60
 Const PK_PENALTY_THRESHOLD = 3
 Const KO_PENALTY_THRESHOLD = 775
 Const BLOCK_THRESHOLD_NFL = 55
@@ -46,7 +47,7 @@ DefInt A-Z
 Dim Shared testPenaltyCheck
 
 Dim Shared checkFumbRev, chosenPlay
-Dim Shared P1, playCall, periodNbr, puntRetNbr
+Dim Shared P1, playCall, periodNbr, puntRetIdx
 
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared sndOpt, startYds, tickerGames
@@ -1075,7 +1076,8 @@ Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GAME TIME!"
 
-    Dim flagOnPlay, penaltyOnKO, tbLine, ydsForConv
+    Dim flagOnPlay, koPenalty, penaltyOnKO
+    Dim tbLine, ydsForConv
     Dim playYdLine!
 
     Shared scheduleFile$
@@ -1818,8 +1820,6 @@ Sub FOOTBALL ()
     '----------------------------------------
     Call CoinToss
 
-    '-- Start of a "kickoff" routine
-
     ' ** Kickoff Choices **
     330 '
     If ruleOptType > 0 And ruleOptPro < 8 Then
@@ -1849,97 +1849,10 @@ Sub FOOTBALL ()
     Call CheckGameClock
     If gameClock! = 0 Then GoTo 3360
 
-    'Determine 1st returner
-    For I = 0 To 2
-        If krNumRet(D, I) = 100 Then
-            KN = I
-            Exit For
-        End If
-    Next
-
-    'Find 2nd returner by contribution
-    Call Rolld100(krChance)
-
-    For I = 2 To 0 Step -1
-        If krChance <= krNumRet(D, I) Then
-            I1 = I
-        End If
-    Next I
-
-    Call WINDEX
-    Call CLEARPBP
-
-    Select Case KN
-
-        Case 0
-            pbpString$ = kickRet$(D, I1) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, I1) * 3))) + " AVG) IS DEEP TO RECEIVE THE KICK"
-            Call PBP
-
-        Case 1
-            If I1 = 1 Then KN2 = 0
-            If I1 = 0 Then KN2 = 1
-
-        Case 2
-            If I1 = 1 Then KN2 = 0
-            If I1 = 0 Then KN2 = 1
-
-    End Select
-
-    If KN > 0 Then
-        If d100% <= 50 Then
-            pbpString$ = kickRet$(D, I1) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, I1) * 3))) + " AVG) AND " + kickRet$(D, KN2) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, KN2) * 3))) + " AVG) ARE DEEP"
-        Else
-            pbpString$ = kickRet$(D, KN2) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, KN2) * 3))) + " AVG) AND " + kickRet$(D, I1) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, I1) * 3))) + " AVG) ARE DEEP"
-        End If
-    End If
-
-    Call PBP
-
-    'After a TD is scored
-    'Change possession back to where it should be
-    'P1 = team that kicks off
-    'D = team that receives
-
-    'If human scores, P1 will be compTeam
-    If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
-
-        'Computer Choice
-        kickChoice = 0
-
-        '4th Quarter, Team is behind
-        If quarter = 4 And score(P1, 0) - score(D, 0) < 0 Then
-            ' Check if conditions are good for onside
-            ' Also add randomness - not every team makes same decision
-            If decideOnside% = 1 And d100% < 75 Then
-                'Onside Kick
-                kickChoice = 2
-            End If
-
-        End If
-
-    Else
-
-        pbpString$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + gameTeams$(P1)
-        Call PBP
-
-        Do
-            I$ = GetKeyPress$
-            kickChoice = Val(I$)
-
-            If kickChoice = 2 And ruleOptType > 0 And ruleOptPro >= 10 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
-                'Onside kick NOT ALLOWED
-                'Pro Rules Year 2024+, Onside Kick before 4th Quarter
-                pbpString$ = "CAN ONLY USE IN 4TH QUARTER IF YOU ARE BEHIND IN SCORE"
-                Call PBP
-
-                kickChoice = -1
-            End If
-
-        Loop Until kickChoice >= 0 And kickChoice <= 2
-
-    End If
+    Call Kickoff(kickChoice)
 
     notReturned = 0
+    koPenalty = 0
 
     Select Case kickChoice
 
@@ -2003,7 +1916,7 @@ Sub FOOTBALL ()
                     'Normal kick return
                     krResult = Int(Rnd(1) * 1000) + 1
 
-                    Select Case krYdsPerRet(P1, I1)
+                    Select Case krYdsPerRet(P1, kickRetIdx)
 
                         Case Is <= 8
 
@@ -2015,15 +1928,15 @@ Sub FOOTBALL ()
 
                                 Case 6 To 20 '1.5% chance
                                     '45 to 65 yds + (-21 to to 3 yds); based on KR's avg - 7
-                                    ydsGained = Int((Rnd(1) * 21) + 45) + (krYdsPerRet(P1, I1) - 7) * 3
+                                    ydsGained = Int((Rnd(1) * 21) + 45) + (krYdsPerRet(P1, kickRetIdx) - 7) * 3
 
                                 Case 21 To 70 '5% chance
                                     '25 to 45 ys + (-21 to to 3 yds); based on KR's avg - 7
-                                    ydsGained = Int((Rnd(1) * 21) + 25) + (krYdsPerRet(P1, I1) - 7) * 3
+                                    ydsGained = Int((Rnd(1) * 21) + 25) + (krYdsPerRet(P1, kickRetIdx) - 7) * 3
 
                                 Case Is >= 71 '93% chance
                                     '15 to 25 yds  + (-21 to to 3 yds); based on KR's avg - 7
-                                    ydsGained = Int((Rnd(1) * 10) + 15) + (krYdsPerRet(P1, I1) - 7) * 3
+                                    ydsGained = Int((Rnd(1) * 10) + 15) + (krYdsPerRet(P1, kickRetIdx) - 7) * 3
 
                             End Select
 
@@ -2043,7 +1956,7 @@ Sub FOOTBALL ()
                             Else
                                 '15 to 33 yds + (3 yds / int value of return average > 10)
                                 'So a returner with 12 yard average would be 21 to 39 yards
-                                ydsGained = Int((Rnd(1) * 19) + 15) + (krYdsPerRet(P1, I1) - 10) * 3
+                                ydsGained = Int((Rnd(1) * 19) + 15) + (krYdsPerRet(P1, kickRetIdx) - 10) * 3
                             End If
 
                     End Select
@@ -2062,7 +1975,7 @@ Sub FOOTBALL ()
                     playContext = 3
 
                     'Increase return attempts
-                    gameStatsPlayer(P1, I1, 14) = gameStatsPlayer(P1, I1, 14) + 1
+                    gameStatsPlayer(P1, kickRetIdx, 14) = gameStatsPlayer(P1, kickRetIdx, 14) + 1
 
                     returnYL! = ydsGained + kickYL!
 
@@ -2082,20 +1995,20 @@ Sub FOOTBALL ()
                         End If
 
                         'Check for longest return
-                        If ydsGained > gameLongKRYds(P1, I1) Then
+                        If ydsGained > gameLongKRYds(P1, kickRetIdx) Then
 
-                            gameLongKRTD$(P1, I1) = ""
-                            gameLongKRYds(P1, I1) = ydsGained
+                            gameLongKRTD$(P1, kickRetIdx) = ""
+                            gameLongKRYds(P1, kickRetIdx) = ydsGained
 
                             If returnYL! > 99.99 Then
                                 'Count it a TD
-                                gameLongKRTD$(P1, I1) = "t"
+                                gameLongKRTD$(P1, kickRetIdx) = "t"
                             End If
 
                         End If
 
                         'Track return yards
-                        gameStatsPlayer(P1, I1, 15) = gameStatsPlayer(P1, I1, 15) + ydsGained
+                        gameStatsPlayer(P1, kickRetIdx, 15) = gameStatsPlayer(P1, kickRetIdx, 15) + ydsGained
 
                         'Check for fumble - kick return (normal)
                         fumbPlayType = 3
@@ -2119,20 +2032,20 @@ Sub FOOTBALL ()
                         If returnYL! > 99.99 Then
 
                             'Touchdown!
-                            gameStatsPlayer(P1, I1, 16) = gameStatsPlayer(P1, I1, 16) + 1
+                            gameStatsPlayer(P1, kickRetIdx, 16) = gameStatsPlayer(P1, kickRetIdx, 16) + 1
 
                             pbpStr = Int(Rnd(1) * 4) + 1
 
                             Select Case pbpStr
 
                                 Case 1
-                                    pbpString$ = kickRet$(P1, I1) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
+                                    pbpString$ = kickRet$(P1, kickRetIdx) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
 
                                 Case 2
                                     pbpString$ = "HE'S PICKING UP SPEED AND LEAVING COVERAGE BEHIND!"
 
                                 Case 3
-                                    pbpString$ = kickRet$(P1, I1) + " HAS SOME DAYLIGHT AHEAD OF HIM!"
+                                    pbpString$ = kickRet$(P1, kickRetIdx) + " HAS SOME DAYLIGHT AHEAD OF HIM!"
 
                                 Case 4
                                     pbpString$ = "HE SEEMS TO BE SLIPPING PAST THE COVERAGE WITH EASE!"
@@ -2148,10 +2061,6 @@ Sub FOOTBALL ()
                             GoTo 3200
 
                         End If
-
-                        '-- REMOVE ME
-                        koPenalty = 0
-                        flagOnPlay = 1
 
                         If flagOnPlay = 1 Then
                             foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
@@ -4180,16 +4089,16 @@ Sub FOOTBALL ()
 
             For J = 2 To 0 Step -1
                 If prChance <= prNumRet(D, J) Then
-                    I1 = J
+                    puntRetIdx = J
                 End If
             Next J
 
-            puntRetNbr = I1
+            puntRetIdx = I1
 
             Call WINDEX
             Call CLEARPBP
 
-            pbpString$ = pret$(D, puntRetNbr) + " (" + LTrim$(Str$(Int(prYdsPerRet(D, puntRetNbr) * 3))) + " AVG) IS DEEP TO RECEIVE"
+            pbpString$ = pret$(D, puntRetIdx) + " (" + LTrim$(Str$(Int(prYdsPerRet(D, puntRetIdx) * 3))) + " AVG) IS DEEP TO RECEIVE"
             Call PBP
 
             If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
@@ -4198,7 +4107,7 @@ Sub FOOTBALL ()
                 'Wind is not AGAINST us AND
                 '  Average >= 10   --OR--
                 '  Team is close to midfield
-                If climate(0) <> D And ((prYdsPerRet(D, puntRetNbr) * 3) >= 12 Or ydLine >= 50) Then
+                If climate(0) <> D And ((prYdsPerRet(D, puntRetIdx) * 3) >= 12 Or ydLine >= 50) Then
                     puntChoice = 1
                 Else
                     puntChoice = 0
@@ -4865,7 +4774,7 @@ Sub FOOTBALL ()
                             Call PuntReturnYards(catchYL!)
 
                             'Track Punt Return
-                            gameStatsPlayer(P1, puntRetNbr + 3, 14) = gameStatsPlayer(P1, puntRetNbr + 3, 14) + 1
+                            gameStatsPlayer(P1, puntRetIdx + 3, 14) = gameStatsPlayer(P1, puntRetIdx + 3, 14) + 1
 
                             returnYL! = (100 - puntYdLine!) + ydsGained
                             ydLine = returnYL!
@@ -4876,20 +4785,20 @@ Sub FOOTBALL ()
                             End If
 
                             'Check for longest return
-                            If ydsGained > gameLongPRYds(P1, puntRetNbr) Then
-                                gameLongPRTD$(P1, puntRetNbr) = ""
-                                gameLongPRYds(P1, puntRetNbr) = ydsGained
+                            If ydsGained > gameLongPRYds(P1, puntRetIdx) Then
+                                gameLongPRTD$(P1, puntRetIdx) = ""
+                                gameLongPRYds(P1, puntRetIdx) = ydsGained
                                 If returnYL! >= 99.9499 Then
-                                    gameLongPRTD$(P1, puntRetNbr) = "t"
+                                    gameLongPRTD$(P1, puntRetIdx) = "t"
                                 End If
                             End If
 
                             'Track Return Yards
-                            playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
-                            gameStatsPlayer(P1, puntRetNbr + 3, 15) = gameStatsPlayer(P1, puntRetNbr + 3, 15) + ydsGained
-                            playYds! = gameStatsPlayer(P1, puntRetNbr + 3, 15)
+                            playYds! = gameStatsPlayer(P1, puntRetIdx + 3, 15)
+                            gameStatsPlayer(P1, puntRetIdx + 3, 15) = gameStatsPlayer(P1, puntRetIdx + 3, 15) + ydsGained
+                            playYds! = gameStatsPlayer(P1, puntRetIdx + 3, 15)
 
-                            I1 = puntRetNbr
+                            I1 = puntRetIdx
 
                             If returnYL! <= .01 Then
                                 'Safety!
@@ -4937,14 +4846,14 @@ Sub FOOTBALL ()
                             If returnYL! >= 99.9499 Then
 
                                 'Touchdown!
-                                gameStatsPlayer(P1, puntRetNbr + 3, 16) = gameStatsPlayer(P1, puntRetNbr + 3, 16) + 1
+                                gameStatsPlayer(P1, puntRetIdx + 3, 16) = gameStatsPlayer(P1, puntRetIdx + 3, 16) + 1
 
                                 pbpStr = Int(Rnd(1) * 3) + 1
 
                                 Select Case pbpStr
 
                                     Case 1
-                                        pbpString$ = pret$(P1, puntRetNbr) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
+                                        pbpString$ = pret$(P1, puntRetIdx) + " MAKES A MAN MISS - THIS COULD BE HUGE!"
 
                                     Case 2
                                         pbpString$ = "HE'S PICKING UP SPEED AND LEAVING COVERAGE BEHIND!"
@@ -5980,7 +5889,6 @@ Sub FOOTBALL ()
 
         End If
 
-
         flagOnPlay = 0
         GoTo HANDLEPENALTY
 
@@ -6505,8 +6413,14 @@ Sub FOOTBALL ()
                 penaltyYds! = 15
 
             Case 80 To 84
-                pbpString$ = pbpString$ + "DEF - INCIDENTAL FACEMASK -"
-                penaltyYds! = 15
+                'Incidental facemaks in place until 2008
+                If ruleOptType = 1 And ruleOptPro <= 4 Then
+                    pbpString$ = pbpString$ + "DEF - INCIDENTAL FACEMASK -"
+                    penaltyYds! = 5
+                Else
+                    pbpString$ = pbpString$ + "DEF - FACEMASK -"
+                    penaltyYds! = 15
+                End If
 
             Case 85 To 100
                 pbpString$ = pbpString$ + "DEF - FACEMASK -"
@@ -6825,10 +6739,6 @@ Sub FOOTBALL ()
 
     penAccepted = 0
 
-    'If flagOnPlay = 1 And penaltyString$ = "" Then
-    '    penaltyString$ = pbpString$
-    'End If
-
     'Choice for Penalty
     If flagOnPlay = 1 Or scorePenaltyType > 0 Then
         If penaltyString$ = "" Then
@@ -6837,10 +6747,25 @@ Sub FOOTBALL ()
         pbpString$ = penaltyString$
     End If
 
-    'Print #11, penaltyString$
+    Print #11, pbpString$
 
     penaltyString$ = ""
-    Call PenaltyChoice(penAccepted, autoFirst, scorePenaltyType)
+
+    If koPenalty = 1 Then
+
+        Call KOPenaltyChoice(penAccepted)
+        If penAccepted = 2 Then
+            'Re-kick - bypass enforcement on return
+            Call KickoffLine(koPenalty, 0)
+            koPenalty = 0
+            GoTo 340
+        End If
+
+    Else
+
+        Call PenaltyChoice(penAccepted, autoFirst, scorePenaltyType)
+
+    End If
 
     If penAccepted = 1 Then
 
@@ -6878,15 +6803,15 @@ Sub FOOTBALL ()
                 Case 3
                     ' ** Kick Return **
                     'Remove TD
-                    gameStatsPlayer(P1, I1, 16) = gameStatsPlayer(P1, I1, 16) - 1
-                    If gameLongKRTD$(P1, I1) = "t" Then
-                        gameLongKRTD$(P1, I1) = ""
+                    gameStatsPlayer(P1, kickRetIdx, 16) = gameStatsPlayer(P1, kickRetIdx, 16) - 1
+                    If gameLongKRTD$(P1, kickRetIdx) = "t" Then
+                        gameLongKRTD$(P1, kickRetIdx) = ""
                     End If
 
                     'Remove all yards gained
-                    returnYds = gameStatsPlayer(P1, I1, 15)
-                    gameStatsPlayer(P1, I1, 15) = gameStatsPlayer(P1, I1, 15) - ydsGained
-                    returnYds = gameStatsPlayer(P1, I1, 15)
+                    returnYds = gameStatsPlayer(P1, kickRetIdx, 15)
+                    gameStatsPlayer(P1, kickRetIdx, 15) = gameStatsPlayer(P1, kickRetIdx, 15) - ydsGained
+                    returnYds = gameStatsPlayer(P1, kickRetIdx, 15)
 
                     'Start drive at spot of foul
                     ydLine = foulLine
@@ -6895,8 +6820,8 @@ Sub FOOTBALL ()
                     ydsGained = foulLine - (100 - ydsGained)
 
                     'Record gain from spot of foul
-                    gameStatsPlayer(P1, I1, 15) = gameStatsPlayer(P1, I1, 15) + ydsGained
-                    returnYds = gameStatsPlayer(P1, I1, 15)
+                    gameStatsPlayer(P1, kickRetIdx, 15) = gameStatsPlayer(P1, kickRetIdx, 15) + ydsGained
+                    returnYds = gameStatsPlayer(P1, kickRetIdx, 15)
 
 
                 Case 4
@@ -8266,7 +8191,7 @@ Sub InitVar ()
     playType = 0
     playerMode = 0
     playerOpt = 0
-    puntRetNbr = 0
+    puntRetIdx = 0
     qbTakeKnee = 0
     qback = 0
     quarter = 0
@@ -10497,7 +10422,7 @@ Sub DecideFGBlock (fgFormation)
     If isOT = 1 Then
 
         If ruleOptType = 0 And ((overtimeOpt = 4 Or overtimeOpt = 5)) Then
-    
+
             ' College - Alternating possession OT.
             ' If offense scores here, defending team still gets
             ' their possession. A block is important but not
@@ -13030,7 +12955,7 @@ Sub DEFMENU (defEra)
 
                 If teamYears(D) <= 1960 And (coverage = 5 Or coverage = 6) Then
                     'These coverages would have only been used in the 1960's and on
-                    pbpString$ = "THESE WERE FIRST USED BY TEAMS IN THE 1960's; CHOOSE AGAIN"
+                    pbpString$ = "THIS COVERAGE WAS FIRST USED BY TEAMS IN THE 1960's; CHOOSE AGAIN"
                     Call PBP
                     goodChoice = 0
                 End If
@@ -15873,9 +15798,6 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD)
 
     Call Rolld100(kickPenalty)
 
-    '-- REMOVE ME
-    kickPenalty = 50
-
     Select Case kickPenalty
 
         Case 1 To 54
@@ -15890,9 +15812,9 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD)
 
         Case 57 To 58
             'Holding (Kicking team)
-            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 5 YDS / 1ST D! ***"
-            penaltyYds! = 5
-            autoFD = 1
+            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 10 YDS ***"
+            penaltyYds! = 10
+            'autoFD = 1
 
         Case 59 To 100
             'Holding (Return team)
@@ -16110,29 +16032,142 @@ Sub PenaltyOnScore (enforceOnKO)
                     'Enforce on PAT
                     enforceOnKO = 0
                 Else
-                    'Enforce on PAT
+                    'Enforce on KO
                     enforceOnKO = 1
                 End If
-    
+
             End If
 
         Else
             'Minor penalty on PAT
             'Nothing to do
         End If
-            
+
     End If
 
 End Sub
 
 
 '----------------------------------------
-'          PenaltyChoice Function
+'        KOPenaltyChoice Function
+'----------------------------------------
+'Provide choices relevant to penalties
+'that occur during a kickoff. This includes
+'the possibility of a re-kick.
+'Enforcement is considered from the spot
+'of the return like a normal play.
+Sub KOPenaltyChoice (decision)
+
+    ' Positive penaltyYds = kicking team fouled = receiving team (D) decides
+    ' Negative penaltyYds = return team fouled  = kicking team (P1) decides
+    Dim decidingTeam As Integer
+
+    If penaltyYds! > 0 Then
+        decidingTeam = D
+    Else
+        decidingTeam = P1
+    End If
+
+    If (playerMode = 1 And decidingTeam <> compTeam) Or playerMode = 0 Then
+
+        ' Human decision
+        If penaltyYds! > 0 And teamYears(decidingTeam) >= 1944 Then
+
+            ' Kicking team penalty
+            'Option to force re-kick from 1944+
+            pbpString$ = "0-DECLINE  1-ENFORCE FROM RETURN  2-FORCE RE-KICK " + gameTeams$(decidingTeam)
+            Call PBP
+
+            Do
+                I$ = GetKeyPress$
+                decision = Val(I$)
+            Loop Until decision >= 0 And decision <= 2
+
+        Else
+
+            ' Return team penalty - binary
+            pbpString$ = "0-DECLINE  1-ACCEPT " + gameTeams$(decidingTeam)
+            Call PBP
+
+            Do
+                I$ = GetKeyPress$
+                decision = Val(I$)
+            Loop Until decision >= 0 And decision <= 1
+
+        End If
+
+    Else
+
+        ' Computer decision
+        If penaltyYds! > 0 Then
+
+            ' Kicking team penalty
+            'Decided based on possibilities with field position
+            Dim posDecline As Integer
+            Dim posAccept As Integer
+            Dim posRekick As Integer
+            Dim avgReturnYds As Integer
+            Dim savedYdLine As Integer
+            Dim newKickSpot As Integer
+            Dim expectedKickYL As Integer
+
+            avgReturnYds = CInt(krYdsPerRet(D, kickRetIdx) * 3)
+            posDecline = CInt(ydLine)
+            posAccept = CInt(ydLine + penaltyYds!)
+
+            ' Get expected kick spot after penalty, then restore ydLine
+            savedYdLine = ydLine
+            Call KickoffLine(1, 0)
+            newKickSpot = ydLine
+            ydLine = savedYdLine
+
+            ' Expected landing spot from receiving team's perspective
+            expectedKickYL = (100 - newKickSpot) - AVG_KICK_DIST
+
+            If expectedKickYL <= 0 Then
+                ' kick likely results in touchback
+                posRekick = tbLine
+            Else
+                posRekick = expectedKickYL + avgReturnYds
+            End If
+
+            ' Pick best field position
+            If posAccept >= posRekick And posAccept > posDecline Then
+                ' Enforce from end of return
+                decision = 1
+            ElseIf posRekick > posAccept And posRekick > posDecline Then
+                'Force re-kick
+                decision = 2
+                'Penalty yards will benefit return team
+                penaltyYds! = 0 - penaltyYds!
+
+            Else
+                ' Decline
+                decision = 0
+            End If
+
+        Else
+
+            'Return team penalty
+            'Always accept
+            decision = 1
+
+        End If
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
+'         PenaltyChoice Function
 '----------------------------------------
 'Determine how to handle PENALTIES
 'Both penalty yardage and yards gained
 'from the play have been determined
 Sub PenaltyChoice (decision, autoFD, scoringPenalty)
+
+    'Regular Penalty decision (accept / decline)
 
     '0 yards = unhandled penalty
     If penaltyYds! <> 0 Then
@@ -16693,6 +16728,107 @@ End Sub
 
 
 '----------------------------------------
+'           Kickoff Subroutine
+'----------------------------------------
+'This subroutine handles the selection
+'of a returner and the type of kick
+'for the kickoff
+Sub Kickoff (kickChoice)
+
+    'Determine 1st returner
+    For I = 0 To 2
+        If krNumRet(D, I) = 100 Then
+            KN = I
+            Exit For
+        End If
+    Next
+
+    'Find 2nd returner by contribution
+    Call Rolld100(krChance)
+
+    For I = 2 To 0 Step -1
+        If krChance <= krNumRet(D, I) Then
+            kickRetIdx = I
+        End If
+    Next I
+
+    Call WINDEX
+    Call CLEARPBP
+
+    Select Case KN
+
+        Case 0
+            pbpString$ = kickRet$(D, kickRetIdx) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, kickRetIdx) * 3))) + " AVG) IS DEEP TO RECEIVE THE KICK"
+            Call PBP
+
+        Case 1
+            If kickRetIdx = 1 Then KN2 = 0
+            If kickRetIdx = 0 Then KN2 = 1
+
+        Case 2
+            If I1 = 1 Then KN2 = 0
+            If I1 = 0 Then KN2 = 1
+
+    End Select
+
+    If KN > 0 Then
+        If d100% <= 50 Then
+            pbpString$ = kickRet$(D, kickRetIdx) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, kickRetIdx) * 3))) + " AVG) AND " + kickRet$(D, KN2) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, KN2) * 3))) + " AVG) ARE DEEP"
+        Else
+            pbpString$ = kickRet$(D, KN2) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, KN2) * 3))) + " AVG) AND " + kickRet$(D, kickRetIdx) + " (" + LTrim$(Str$(Int(krYdsPerRet(D, kickRetIdx) * 3))) + " AVG) ARE DEEP"
+        End If
+    End If
+
+    Call PBP
+
+    'After a TD is scored
+    'Change possession back to where it should be
+    'P1 = team that kicks off
+    'D = team that receives
+
+    'If human scores, P1 will be compTeam
+    If (playerMode = 1 And P1 = compTeam) Or playerMode = 2 Then
+
+        'Computer Choice
+        kickChoice = 0
+
+        '4th Quarter, Team is behind
+        If quarter = 4 And score(P1, 0) - score(D, 0) < 0 Then
+            ' Check if conditions are good for onside
+            ' Also add randomness - not every team makes same decision
+            If decideOnside% = 1 And d100% < 75 Then
+                'Onside Kick
+                kickChoice = 2
+            End If
+
+        End If
+
+    Else
+
+        pbpString$ = "0-REGULAR  1-SQUIBB  2-ONSIDE KICK " + gameTeams$(P1)
+        Call PBP
+
+        Do
+            I$ = GetKeyPress$
+            kickChoice = Val(I$)
+
+            If kickChoice = 2 And ruleOptType > 0 And ruleOptPro >= 10 And quarter < 4 And score(P1, 0) > score(D1, 0) Then
+                'Onside kick NOT ALLOWED
+                'Pro Rules Year 2024+, Onside Kick before 4th Quarter
+                pbpString$ = "CAN ONLY USE IN 4TH QUARTER IF YOU ARE BEHIND IN SCORE"
+                Call PBP
+
+                kickChoice = -1
+            End If
+
+        Loop Until kickChoice >= 0 And kickChoice <= 2
+
+    End If
+
+End Sub
+
+
+'----------------------------------------
 '       PuntNotReturned Subroutine
 '----------------------------------------
 'This subroutine factors in for all the
@@ -16990,7 +17126,7 @@ Sub PuntReturnYards (catchYardline!)
 
     RN0 = Int(Rnd(1) * 1000) + 1
 
-    Select Case prYdsPerRet(P1, puntRetNbr)
+    Select Case prYdsPerRet(P1, puntRetIdx)
 
         Case 1 To 4
 
@@ -17002,12 +17138,12 @@ Sub PuntReturnYards (catchYardline!)
 
                 Case 51 To 899
                     '-6 to 16
-                    ydsGained = Int((Rnd(1) * 14)) + (prYdsPerRet(P1, puntRetNbr) - 3) * 3
+                    ydsGained = Int((Rnd(1) * 14)) + (prYdsPerRet(P1, puntRetIdx) - 3) * 3
 
                 Case 900 To 995
                     If rushBase <> 1 Then
                         '6 to 53
-                        ydsGained = Int((Rnd(1) * 39) + 12) + (prYdsPerRet(P1, puntRetNbr) - 3) * 3
+                        ydsGained = Int((Rnd(1) * 39) + 12) + (prYdsPerRet(P1, puntRetIdx) - 3) * 3
                     End If
 
                 Case 993 To 1000
@@ -17048,7 +17184,7 @@ Sub PuntReturnYards (catchYardline!)
             Else
                 '95% chance
                 '0 to 34
-                ydsGained = Int((Rnd(1) * 26)) + (prYdsPerRet(P1, puntRetNbr) - 6) * 3
+                ydsGained = Int((Rnd(1) * 26)) + (prYdsPerRet(P1, puntRetIdx) - 6) * 3
             End If
 
     End Select
@@ -17058,7 +17194,7 @@ Sub PuntReturnYards (catchYardline!)
 
     Call ShowChainMarker
 
-    pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetNbr) + " AT THE" + Str$(Int(ydLineTeam))
+    pbpString$ = "THE BALL IS TAKEN BY " + pret$(P1, puntRetIdx) + " AT THE" + Str$(Int(ydLineTeam))
     Call PBP
 
     startYds = catchYardline!
@@ -19064,7 +19200,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
 
         If kickYL! < .01 Then
 
-            pbpString$ = kickRet$(P1, I1) + " SIGNALS FOR FAIR CATCH IN THE END ZONE"
+            pbpString$ = kickRet$(P1, kickRetIdx) + " SIGNALS FOR FAIR CATCH IN THE END ZONE"
 
         Else
 
@@ -19077,9 +19213,9 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
             RN0 = Int(Rnd(1) * 2) + 1
 
             If RN0 = 1 Then
-                pbpString$ = kickRet$(P1, I1) + " SIGNALS FOR FAIR CATCH AT THE" + yardLineString$ + " YARD LINE"
+                pbpString$ = kickRet$(P1, kickRetIdx) + " SIGNALS FOR FAIR CATCH AT THE" + yardLineString$ + " YARD LINE"
             Else
-                pbpString$ = kickRet$(P1, I1) + " CALLS FOR A FAIR CATCH ON THE" + yardLineString$ + " YARD LINE"
+                pbpString$ = kickRet$(P1, kickRetIdx) + " CALLS FOR A FAIR CATCH ON THE" + yardLineString$ + " YARD LINE"
             End If
 
         End If
@@ -19135,7 +19271,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 Call ShowChainMarker
                 Call YARDLINE
 
-                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + Str$(CInt((kickYL! - 2 * kickYL!))) + " YDS DEEP IN THE END ZONE"
+                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, kickRetIdx) + Str$(CInt((kickYL! - 2 * kickYL!))) + " YDS DEEP IN THE END ZONE"
                 Call PBP
 
                 'Computer is receiving?
@@ -19182,7 +19318,7 @@ Sub KickoffReturn (kickNotReturned, isPenalty)
                 Call ShowChainMarker
                 Call YARDLINE
 
-                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, I1) + " AT THE" + Str$(CInt(kickYL!)) + " YD LINE "
+                pbpString$ = "KICK TAKEN BY " + kickRet$(P1, kickRetIdx) + " AT THE" + Str$(CInt(kickYL!)) + " YD LINE "
                 Call PBP
 
             End If

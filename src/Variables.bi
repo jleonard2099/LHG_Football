@@ -383,6 +383,9 @@ Dim actualAttendance&, avgAttendance&
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
 
+Dim Shared I4 As Single
+Dim Shared kickYL!
+
 ' Shared / Global
 Dim Shared earlyExit
 Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
@@ -402,13 +405,10 @@ Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I3, I5, I6, I7, I8
 
-Dim Shared I4 As Single
-Dim Shared kickYL!
-
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetNbr
+'Dim Shared P1, playCall, periodNbr, puntRetIdx
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -435,8 +435,8 @@ Dim Shared XD, XE
 'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
-Dim Shared fgAttLine, fleaFlicker
-Dim Shared goalLnYdAdj, halfbackPass, impactTeam, intChance
+Dim Shared fgAttLine, fleaFlicker, goalLnYdAdj
+Dim Shared halfbackPass, impactTeam, intChance, kickRetIdx
 Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
 Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
