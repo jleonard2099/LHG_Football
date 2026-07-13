@@ -156,6 +156,10 @@ Declare Function FindMarkerColumn (X)
 Declare Function GetPlaySequencingModifier() As Integer
 Declare Function GetSneakChance%
 Declare Function GetTeamYear% (yearFromName$)
+Declare Function IsDefensePC
+Declare Function IsOffensePC
+Declare Function IsOffenseHuman
+Declare Function IsDefenseHuman
 Declare Function kickReturnFoulSpot% (catchYard!, returnDistance)
 Declare Function patEnforcementChance%
 Declare Function ShouldUseQuickPassing() As Boolean

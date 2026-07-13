@@ -420,7 +420,11 @@ Sub InputTeam ()
                 Locate 8, 17: Print " "
                 Locate 9: Input "4. INTERCEPTION % "; qbIntPct(I)
                 Locate 9, 19: Print " "
-                Locate 10: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+                
+                Do
+                    Locate 10: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+                Loop Until armRating(I) >= -20 And armRating(I) <= 20
+                                
                 Locate 10, 45: Print " "
 
                 Do
@@ -457,7 +461,10 @@ Sub InputTeam ()
 
                         Case 5
                             Locate 10, 45: Print Space$(10)
-                            Locate 10, 1: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+
+                            Do
+                                Locate 10, 1: Input "5. YARDS/COMPLETION ADJUSTMENT (ARM RATING) "; armRating(I)
+                            Loop Until armRating(I) >= -20 And armRating(I) <= 20
                             Locate 10, 45: Print " "
 
                     End Select

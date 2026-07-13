@@ -588,7 +588,11 @@ Sub EditTeam (teamName$, YN$, teamNbr)
 
                                 Case 4
                                     Locate 7, 17: Print Space$(10)
-                                    Locate 7: Input "4. YDS/COMP ADJ "; armRating(I1)
+
+                                    Do
+                                        Locate 7: Input "4. YDS/COMP ADJ "; armRating(I1)
+                                    Loop Until armRating(I1) >= -20 And armRating(I1) <= 20
+
                                     Locate 7, 17: Print " "
 
                             End Select
