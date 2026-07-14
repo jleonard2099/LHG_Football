@@ -412,7 +412,7 @@ Dim Shared playerMode, playerOpt, playType
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared sndOpt, startYds, tickerGames
+Dim Shared sndOpt, startYds, useTicker
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
 
@@ -500,7 +500,7 @@ Dim Shared sackStatsTeam(1, 1), schedOptions(20)
 Dim Shared wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1)
 Dim Shared ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
 
-Dim Shared ST%(1 To 32), SX%(1 To 33, 0 To 1, 0 To 14)
+Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 
 Dim scheduleFile$
 

@@ -54,7 +54,8 @@ Dim Shared D, dLine
 Dim Shared P1, playCall, periodNbr, puntRetIdx
 
 Dim ballFumbled, openKickTeam
-Dim tickerStart, wasSafety, winTeam
+Dim playResultSafety, playResultTD
+Dim tickerStart, winTeam
 
 
 '$Include: 'MainRoutines.bi'
@@ -1180,11 +1181,11 @@ Sub FOOTBALL ()
 
         Close #5
 
-        tickerGames = 1
+        useTicker = 1
 
     Else
 
-        tickerGames = 0
+        useTicker = 0
 
     End If
 
@@ -1972,7 +1973,7 @@ Sub FOOTBALL ()
                     ydsToScore = 100 - ydLine
                     Call StatusBoard
 
-                    'Move ball marker to where the kick landed
+                    'Move ball marker to where the returner ends up
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
                     Call MOVEBALL
@@ -3356,7 +3357,6 @@ Sub FOOTBALL ()
             End If
 
             If ydsGained > 10 And ydLine + ydsGained < 99.94999 Then
-                'Print #11, " ~~~ LONG GAIN COMING"
                 Call LongGainPBP
             End If
 
@@ -3427,6 +3427,7 @@ Sub FOOTBALL ()
                 End If
 
                 If playYdLine! >= 99.94999 Then
+                    playResultTD = 1
                     ballFumbled = 0
                 End If
 
@@ -5888,10 +5889,6 @@ Sub FOOTBALL ()
 
     Call SCOREUPD
 
-    If dLine = 13 Then
-        'Print #11, "--- IT IS NOT IMPOSSIBLE TO SCORE AGAINST JUMBO ---"
-    End If
-
     'This is for tracking regular plays
     'It gets checked later even during
     'returns and other calls
@@ -5950,6 +5947,15 @@ Sub FOOTBALL ()
 
     End If
 
+    playResultTD = 1
+
+    If pendingFlag = 1 Then
+        'Resolve flag before recording TD
+        pbpString$ = pendingPenString$
+        penaltyYds! = pendingPenYds!
+        GoTo HANDLEPENALTY
+    End If
+
     'Record run / pass stats
     Call COMPILER
 
@@ -5970,6 +5976,8 @@ Sub FOOTBALL ()
     ydsToFirst = 10
 
     Call StatusBoard
+
+    playResultTD = 0
 
     'Overtime - Single Q / Sudden Death
     If isOT = 1 And (overtimeOpt = 1 Or overtimeOpt = 2) Then
@@ -6311,7 +6319,7 @@ Sub FOOTBALL ()
 
     3250 '
     ' *** SAFETY ***
-    wasSafety = 1
+    playResultSafety = 1
     If pendingFlag = 1 Then
         'Resolve flag before recording safety
         pbpString$ = pendingPenString$
@@ -6319,7 +6327,6 @@ Sub FOOTBALL ()
         GoTo HANDLEPENALTY
     End If
 
-    ResolveSafety:
     score(D, quarter) = score(D, quarter) + 2
     score(D, 0) = score(D, 0) + 2
 
@@ -6357,7 +6364,7 @@ Sub FOOTBALL ()
 
     Call SETSCREEN
 
-    wasSafety = 0
+    playResultSafety = 0
 
     'Overtime - Evaluate Score / Change Poss
     If isOT = 1 And (overtimeOpt >= 1 And overtimeOpt <= 5) Or (overtimeOpt >= 6 And nbrPossOT(D) = 1) Then
@@ -7084,8 +7091,14 @@ Sub FOOTBALL ()
                 End If
             End If
 
-            If wasSafety = 1 Then
-                GoTo ResolveSafety
+            If playResultTD = 1 Then
+                pendingFlag = 0
+                GoTo 3200
+            End If
+
+            If playResultSafety = 1 Then
+                pendingFlag = 0
+                GoTo 3250
             End If
 
         End If
@@ -8212,7 +8225,8 @@ End Sub
 ' in from file or assigned elsewhere
 Sub InitVar ()
 
-    Shared ballFumbled, wasSafety, winTeam
+    Shared ballFumbled, playResultSafety, playResultTD
+    Shared tickerStart, winTeam
 
     Shared scheduleFile$
     Shared actualAttendance&, avgAttendance&
@@ -8316,12 +8330,14 @@ Sub InitVar ()
     rushYds = 0
     scoreX0 = 0
     playContext = 0
+    playResultSafety = 0
+    playResultTD = 0
     scorePenaltyType = 0
     sndOpt = 1
     startYds = 0
-    tickerGames = 0
+    useTicker = 0
+    tickerStart = 0
     timeElapsed! = 0
-    wasSafety = 0
     winTeam = 0
     ydLine = 0
     ydLineTeam = 0
@@ -8731,6 +8747,8 @@ Sub TICKER ()
         Color 14, 0
         Cls
 
+        Call Rolld100(RN0)
+
         If halfTime = 1 Then
 
             Select Case RN0
@@ -8808,7 +8826,7 @@ Sub TICKER ()
 
         Color 15
 
-        If tickerGames = 0 Then
+        If useTicker = 0 Then
 
             Locate 10, 28: Print "NO OTHER GAMES SCHEDULED"
 
@@ -8903,446 +8921,9 @@ Sub TICKER ()
                 timeInterval = 8
             End If
 
-            If Left$(SX$(1, 0), 3) <> "XXX" Then
-                Locate 2, 1
-                tickerX = 1
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(1, 0), 13);
-                Locate , 15
-                Print Using "## "; SX%(1, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(1, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(1, 1, tickInterval)
-            End If
-
-            If Left$(SX$(2, 0), 3) <> "XXX" Then
-                Locate 5, 1
-                tickerX = 2
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(2, 0), 13);
-                Locate , 15: Print Using "## "; SX%(2, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(2, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(2, 1, tickInterval)
-            End If
-
-            If Left$(SX$(3, 0), 3) <> "XXX" Then
-                Locate 8, 1
-                tickerX = 3
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(3, 0), 13);
-                Locate , 15: Print Using "## "; SX%(3, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(3, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(3, 1, tickInterval)
-            End If
-
-            If Left$(SX$(4, 0), 3) <> "XXX" Then
-                Locate 11, 1
-                tickerX = 4
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(4, 0), 13);
-                Locate , 15: Print Using "## "; SX%(4, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(4, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(4, 1, tickInterval)
-            End If
-
-            If Left$(SX$(5, 0), 3) <> "XXX" Then
-                Locate 14, 1
-                tickerX = 5
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(5, 0), 13);
-                Locate , 15: Print Using "## "; SX%(5, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(5, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(5, 1, tickInterval)
-            End If
-
-            If Left$(SX$(6, 0), 3) <> "XXX" Then
-                Locate 17, 1
-                tickerX = 6
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(6, 0), 13);
-                Locate , 15: Print Using "## "; SX%(6, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(6, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(6, 1, tickInterval)
-            End If
-
-            If Left$(SX$(7, 0), 3) <> "XXX" Then
-                Locate 20, 1
-                tickerX = 7
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(7, 0), 13);
-                Locate , 15: Print Using "## "; SX%(7, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(7, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(7, 1, tickInterval)
-            End If
-
-            If Left$(SX$(8, 0), 3) <> "XXX" Then
-                Locate 23, 1
-                tickerX = 8
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(8, 0), 13);
-                Locate , 15: Print Using "## "; SX%(8, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-
-                Print Left$(SX$(8, 1), 13);
-                Locate , 15: Print Using "## #"; SX%(8, 1, tickInterval);
-            End If
-
-            If Left$(SX$(9, 0), 3) <> "XXX" Then
-                Locate 2, 21
-                tickerX = 9
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(9, 0), 13);
-                Locate , 35: Print Using "## "; SX%(9, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(9, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(9, 1, tickInterval)
-            End If
-
-            If Left$(SX$(10, 0), 3) <> "XXX" Then
-                Locate 5, 21
-                tickerX = 10
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(10, 0), 13);
-                Locate , 35: Print Using "## "; SX%(10, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(10, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(10, 1, tickInterval)
-            End If
-
-            If Left$(SX$(11, 0), 3) <> "XXX" Then
-                Locate 8, 21
-                tickerX = 11
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(11, 0), 13);
-                Locate , 35: Print Using "## "; SX%(11, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(11, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(11, 1, tickInterval)
-            End If
-
-            If Left$(SX$(12, 0), 3) <> "XXX" Then
-                Locate 11, 21
-                tickerX = 12
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(12, 0), 13);
-                Locate , 35: Print Using "## "; SX%(12, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(12, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(12, 1, tickInterval)
-            End If
-
-            If Left$(SX$(13, 0), 3) <> "XXX" Then
-                Locate 14, 21
-                tickerX = 13
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(13, 0), 13);
-                Locate , 35: Print Using "## "; SX%(13, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(13, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(13, 1, tickInterval)
-            End If
-
-            If Left$(SX$(14, 0), 3) <> "XXX" Then
-                Locate 17, 21
-                tickerX = 14
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(14, 0), 13);
-                Locate , 35: Print Using "## "; SX%(14, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(14, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(14, 1, tickInterval)
-            End If
-
-            If Left$(SX$(15, 0), 3) <> "XXX" Then
-                Locate 20, 21
-                tickerX = 15
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(15, 0), 13);
-                Locate , 35: Print Using "## "; SX%(15, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(15, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(15, 1, tickInterval)
-            End If
-
-            If Left$(SX$(16, 0), 3) <> "XXX" Then
-                Locate 23, 21
-                tickerX = 16
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(16, 0), 13);
-                Locate , 35: Print Using "## "; SX%(16, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 21
-
-                Print Left$(SX$(16, 1), 13);
-                Locate , 35: Print Using "## #"; SX%(16, 1, tickInterval);
-            End If
-
-            If Left$(SX$(17, 0), 3) <> "XXX" Then
-                Locate 2, 41
-                tickerX = 17
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(17, 0), 13);
-                Locate , 55: Print Using "## "; SX%(17, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(17, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(17, 1, tickInterval)
-            End If
-
-            If Left$(SX$(18, 0), 3) <> "XXX" Then
-                Locate 5, 41
-                tickerX = 18
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(18, 0), 13);
-                Locate , 55: Print Using "## "; SX%(18, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(18, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(18, 1, tickInterval)
-            End If
-
-            If Left$(SX$(19, 0), 3) <> "XXX" Then
-                Locate 8, 41
-                tickerX = 19
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(19, 0), 13);
-                Locate , 55: Print Using "## "; SX%(19, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(19, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(19, 1, tickInterval)
-            End If
-
-            If Left$(SX$(20, 0), 3) <> "XXX" Then
-                Locate 11, 41
-                tickerX = 20
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(20, 0), 13);
-                Locate , 55: Print Using "## "; SX%(20, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(20, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(20, 1, tickInterval)
-            End If
-
-            If Left$(SX$(21, 0), 3) <> "XXX" Then
-                Locate 14, 41
-                tickerX = 21
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(21, 0), 13);
-                Locate , 55: Print Using "## "; SX%(21, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(21, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(21, 1, tickInterval)
-            End If
-
-            If Left$(SX$(22, 0), 3) <> "XXX" Then
-                Locate 17, 41
-                tickerX = 22
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(22, 0), 13);
-                Locate , 55: Print Using "## "; SX%(22, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(22, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(22, 1, tickInterval)
-            End If
-
-            If Left$(SX$(23, 0), 3) <> "XXX" Then
-                Locate 20, 41
-                tickerX = 23
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(23, 0), 13);
-                Locate , 55: Print Using "## "; SX%(23, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(23, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(23, 1, tickInterval)
-            End If
-
-            If Left$(SX$(24, 0), 3) <> "XXX" Then
-                Locate 23, 41
-                tickerX = 24
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(24, 0), 13);
-                Locate , 55: Print Using "## "; SX%(24, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 41
-
-                Print Left$(SX$(24, 1), 13);
-                Locate , 55: Print Using "## #"; SX%(24, 1, tickInterval);
-            End If
-
-            If Left$(SX$(25, 0), 3) <> "XXX" Then
-                Locate 2, 61
-                tickerX = 25
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(25, 0), 13);
-                Locate , 75: Print Using "## "; SX%(25, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(25, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(25, 1, tickInterval)
-            End If
-
-            If Left$(SX$(26, 0), 3) <> "XXX" Then
-                Locate 5, 61
-                tickerX = 26
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(26, 0), 13);
-                Locate , 75: Print Using "## "; SX%(26, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(26, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(26, 1, tickInterval)
-            End If
-
-            If Left$(SX$(27, 0), 3) <> "XXX" Then
-                Locate 8, 61
-                tickerX = 27
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(27, 0), 13);
-                Locate , 75: Print Using "## "; SX%(27, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(27, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(27, 1, tickInterval)
-            End If
-
-            If Left$(SX$(28, 0), 3) <> "XXX" Then
-                Locate 11, 61
-                tickerX = 28
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(28, 0), 13);
-                Locate , 75: Print Using "## "; SX%(28, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(28, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(28, 1, tickInterval)
-            End If
-
-            If Left$(SX$(29, 0), 3) <> "XXX" Then
-                Locate 14, 61
-                tickerX = 29
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(29, 0), 13);
-                Locate , 75: Print Using "## "; SX%(29, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(29, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(29, 1, tickInterval)
-            End If
-
-            If Left$(SX$(30, 0), 3) <> "XXX" Then
-                Locate 17, 61
-                tickerX = 30
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(30, 0), 13);
-                Locate , 75: Print Using "## "; SX%(30, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(30, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(30, 1, tickInterval)
-            End If
-
-            If Left$(SX$(31, 0), 3) <> "XXX" Then
-                Locate 20, 61
-                tickerX = 31
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(31, 0), 13);
-                Locate , 75: Print Using "## "; SX%(31, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(31, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(31, 1, tickInterval)
-            End If
-
-            If Left$(SX$(32, 0), 3) <> "XXX" Then
-                Locate 23, 61
-                tickerX = 32
-                tickInterval = TickerTime%(timeInterval, tickerX)
-
-                Print Left$(SX$(32, 0), 13);
-                Locate , 75: Print Using "## "; SX%(32, 0, tickInterval);
-                Print tickerPeriod$(tickInterval)
-                Locate , 61
-
-                Print Left$(SX$(32, 1), 13);
-                Locate , 75: Print Using "## #"; SX%(32, 1, tickInterval);
-            End If
+            For idx = 1 To 32
+                Call PrintTickerLine(idx, timeInterval)
+            Next idx
 
         End If
 
@@ -9352,6 +8933,49 @@ Sub TICKER ()
 
     Screen , , 0, 0
     Cls
+
+End Sub
+
+
+'----------------------------------------
+'       PrintTickerLine Subroutine
+'----------------------------------------
+'This subroutine displays the score for
+'the game at the specified index.
+'Score presented is based on the interval
+'specified by parameter.
+Sub PrintTickerLine (gameIdx, timeInterval)
+
+    Dim col, posInCol
+    Dim row, labelX, valueX
+    Dim tickInterval
+
+    If Left$(SX$(gameIdx, 0), 3) <> "XXX" Then
+
+        col = (gameIdx - 1) \ 8
+        posInCol = (gameIdx - 1) Mod 8
+        row = 3 + posInCol * 3
+        labelX = col * 20 + 1
+        valueX = labelX + 14
+
+        Locate row, labelX
+        tickInterval = TickerTime%(timeInterval, gameIdx)
+
+        Print Left$(SX$(gameIdx, 0), 13);
+        Locate , valueX: Print Using "### "; SX%(gameIdx, 0, tickInterval);
+        Print tickerPeriod$(tickInterval)
+
+        If labelX <> 1 Then Locate , labelX
+
+        Print Left$(SX$(gameIdx, 1), 13);
+        Locate , valueX
+        If posInCol = 7 Then
+            Print Using "### #"; SX%(gameIdx, 1, tickInterval);
+        Else
+            Print Using "### #"; SX%(gameIdx, 1, tickInterval)
+        End If
+
+    End If
 
 End Sub
 
@@ -9384,71 +9008,89 @@ End Function
 'scores for the ticker games.
 Sub TICKERUPDATE ()
 
-    'Should this be <= 31???
-    If autoPlay = 1 And schedGame(2) <= 32 Then
+    If autoPlay = 1 And schedGame(2) <= 31 Then
+
+        tickIdx = schedGame(2) + 1
 
         If quarter = 1 Then
             If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 1) = -1 Then
-                SX%(schedGame(2) + 1, 0, 1) = score(0, 0): SX%(schedGame(2) + 1, 1, 1) = score(1, 0)
+                SX%(tickIdx, 0, 1) = score(0, 0)
+                SX%(tickIdx, 1, 1) = score(1, 0)
+            Else
+                If gameClock! <= 300 And SX%(tickIdx, 0, 2) = -1 Then
+                    SX%(tickIdx, 0, 2) = score(0, 0)
+                    SX%(tickIdx, 1, 2) = score(1, 0)
+                End If
             End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 2) = -1 Then
-                SX%(schedGame(2) + 1, 0, 2) = score(0, 0): SX%(schedGame(2) + 1, 1, 2) = score(1, 0)
+        End If
+
+        If quarter > 1 Then
+            If SX%(1 + schedGame(2), 0, 3) = -1 Then
+                SX%(1 + schedGame(2), 0, 3) = score(0, 1)
+                SX%(1 + schedGame(2), 1, 3) = score(1, 1)
             End If
         End If
 
         If quarter = 2 Then
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 4) = -1 Then
-                SX%(schedGame(2) + 1, 0, 4) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 4) = score(1, 0)
-            End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 5) = -1 Then
-                SX%(schedGame(2) + 1, 0, 5) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 5) = score(1, 0)
+            If gameClock! <= 600 And SX%(tickIdx, 0, 4) = -1 Then
+                SX%(tickIdx, 0, 4) = score(0, 0)
+                SX%(tickIdx, 1, 4) = score(1, 0)
+            Else
+                If gameClock! <= 300 And SX%(tickIdx, 0, 5) = -1 Then
+                    SX%(tickIdx, 0, 5) = score(0, 0)
+                    SX%(tickIdx, 1, 5) = score(1, 0)
+                End If
             End If
         End If
 
         If quarter > 2 Then
-            If SX%(schedGame(2) + 1, 0, 3) = -1 Then
-                SX%(schedGame(2) + 1, 0, 3) = score(0, 1)
-                SX%(schedGame(2) + 1, 1, 3) = score(1, 1)
-            End If
-            If SX%(schedGame(2) + 1, 0, 6) = -1 Then
-                For I2 = 6 To 8:
-                    SX%(schedGame(2) + 1, 0, I2) = score(0, 2) + score(0, 1)
-                    SX%(schedGame(2) + 1, 1, I2) = score(1, 2) + score(1, 1)
-                Next
+            If SX%(tickIdx, 0, 3) = -1 Then
+                SX%(tickIdx, 0, 3) = score(0, 1)
+                SX%(tickIdx, 1, 3) = score(1, 1)
+            Else
+                If SX%(tickIdx, 0, 6) = -1 Then
+                    For I2 = 6 To 8:
+                        SX%(tickIdx, 0, I2) = score(0, 1) + score(0, 2)
+                        SX%(tickIdx, 1, I2) = score(1, 1) + score(1, 2)
+                    Next
+                End If
             End If
         End If
 
         If quarter = 3 Then
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 9) = -1 Then
-                SX%(schedGame(2) + 1, 0, 9) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 9) = score(1, 0)
-            End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 10) = -1 Then
-                SX%(schedGame(2) + 1, 0, 10) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 10) = score(1, 0)
+            If gameClock! <= 600 And SX%(tickIdx, 0, 9) = -1 Then
+                SX%(tickIdx, 0, 9) = score(0, 0)
+                SX%(tickIdx, 1, 9) = score(1, 0)
+            Else
+                If gameClock! <= 300 And SX%(tickIdx, 0, 10) = -1 Then
+                    SX%(tickIdx, 0, 10) = score(0, 0)
+                    SX%(tickIdx, 1, 10) = score(1, 0)
+                End If
             End If
         End If
 
-        If quarter > 3 And SX%(schedGame(2) + 1, 0, 11) = -1 Then
-            SX%(schedGame(2) + 1, 0, 11) = score(0, 3) + score(0, 2) + score(0, 1)
-            SX%(schedGame(2) + 1, 1, 11) = score(1, 3) + score(1, 2) + score(1, 1)
+        If quarter > 3 Then
+            If SX%(tickIdx, 0, 11) = -1 Then
+                SX%(tickIdx, 0, 11) = score(0, 1) + score(0, 2) + score(0, 3)
+                SX%(tickIdx, 1, 11) = score(1, 1) + score(1, 2) + score(1, 3)
+            End If
         End If
 
         If quarter = 4 Then
-            If gameClock! <= 600 And SX%(schedGame(2) + 1, 0, 12) = -1 Then
-                SX%(schedGame(2) + 1, 0, 12) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 12) = score(1, 0)
-            End If
-            If gameClock! <= 300 And SX%(schedGame(2) + 1, 0, 13) = -1 Then
-                SX%(schedGame(2) + 1, 0, 13) = score(0, 0)
-                SX%(schedGame(2) + 1, 1, 13) = score(1, 0)
+            If gameClock! <= 600 And SX%(tickIdx, 0, 12) = -1 Then
+                SX%(tickIdx, 0, 12) = score(0, 0)
+                SX%(tickIdx, 1, 12) = score(1, 0)
+            Else
+                If gameClock! <= 300 And SX%(tickIdx, 0, 13) = -1 Then
+                    SX%(tickIdx, 0, 13) = score(0, 0)
+                    SX%(tickIdx, 1, 13) = score(1, 0)
+                End If
             End If
         End If
 
-        SX%(schedGame(2) + 1, 0, 14) = score(0, 0)
-        SX%(schedGame(2) + 1, 1, 14) = score(1, 0)
+        'Total score
+        SX%(tickIdx, 0, 14) = score(0, 0)
+        SX%(tickIdx, 1, 14) = score(1, 0)
 
     End If
 
@@ -12602,7 +12244,7 @@ End Sub
 'tackle / stop.
 Sub MOVEBALL ()
 
-    Dim ydLineTemp
+    Dim ydLineTemp, ydsRemaining
 
     If pbpDelay! <> 0 Then
 
@@ -12610,15 +12252,15 @@ Sub MOVEBALL ()
 
         If endYds <= startYds Then
 
-            For ydsToScore = startYds To endYds Step -1
+            For ydsRemaining = startYds To endYds Step -1
 
                 Call ShowChainMarker
                 _Delay pbpDelay! / 20
                 Call YARDLINE
                 ydLineTemp = ydLineTeam
 
-                If ydsToScore <= 0 Then
-                    ydsToScore = endYds
+                If ydsRemaining <= 0 Then
+                    ydsRemaining = endYds
                 Else
                     'We need to be careful not to say someone is at the 0 yard line
                     If Int(ydLineTemp / 10) * 10 = ydLineTemp And ydLineTemp > 0 Then
@@ -12628,19 +12270,19 @@ Sub MOVEBALL ()
                     End If
                 End If
 
-            Next ydsToScore
+            Next ydsRemaining
 
         Else
 
-            For ydsToScore = startYds To endYds
+            For ydsRemaining = startYds To endYds
 
                 Call ShowChainMarker
                 _Delay pbpDelay! / 20
                 Call YARDLINE
                 ydLineTemp = ydLineTeam
 
-                If ydsToScore <= 0 Then
-                    ydsToScore = endYds
+                If ydsRemaining <= 0 Then
+                    ydsRemaining = endYds
                 Else
                     'We need to be careful not to say someone is at the 0 yard line
                     If Int(ydLineTemp / 10) * 10 = ydLineTemp And ydLineTemp > 0 Then
@@ -12650,14 +12292,14 @@ Sub MOVEBALL ()
                     End If
                 End If
 
-            Next ydsToScore
+            Next ydsRemaining
 
         End If
 
-        If ydsToScore <= 0 Then
-            ydsToScore = 0
+        If ydsRemaining <= 0 Then
+            ydsRemaining = 0
         Else
-            ydsToScore = ydsToScore + 1
+            ydsRemaining = ydsRemaining + 1
 
             Call YARDLINE
 
@@ -12690,13 +12332,13 @@ Sub MOVEBALL ()
                 Case 22: I$ = " IS BROUGHT DOWN"
             End Select
 
-            If ydsToScore >= 100 Then
+            If ydsRemaining >= 100 Then
 
                 pbpString$ = "THE BALL CARRIER" + I$ + " FOR A" + Str$(Int(ydLine)) + " YARD LOSS"
 
             Else
 
-                If ydsToScore > 0 Then
+                If ydsRemaining > 0 Then
                     Call ShowChainMarker
                     If ydLineTeam <= 1 Then
                         pbpString$ = "AND HE" + I$ + " AT THE 1 YARD LINE"
@@ -12709,7 +12351,7 @@ Sub MOVEBALL ()
 
         End If
 
-        If ydsToScore <> 0 Then
+        If ydsRemaining <> 0 Then
             Call PBP
         End If
 
@@ -16539,15 +16181,9 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul)
         penaltyChance = penaltyChance + 7.5
     End If
 
-    '-- REMOVE ME
-    'penaltyRoll = 1
-
     If penaltyRoll <= penaltyChance And playCall < 21 Then
 
         pbpString$ = "*** PENALTY - "
-
-        '-- REMOVE ME
-        'penaltyType = 99
 
         Select Case penaltyType
 
@@ -22629,8 +22265,8 @@ Sub ChooseGameTeam (yearNumber$, numberTeams, chosenIdx, teamName$, gameIdx)
         Locate , 12: Print "HIT <ENTER> TO USE PREVIOUS ID:"
         Locate 8,
 
-        If numberTeams > 0 Then 
-            yearToShow$ = _IIF(previousYear$ <> "", previousYear$, yearNumber$)
+        If numberTeams > 0 Then
+            yearToShow$ = _IIf(previousYear$ <> "", previousYear$, yearNumber$)
             Locate 13, 44
             Color 14, 4: Print yearToShow$
             Color 15, 4
