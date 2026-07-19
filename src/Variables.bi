@@ -376,12 +376,16 @@ Dim divTeamNames$(60), leagRecText$(60)
 '----------------------------------------
 ' Used in Game Routines
 '----------------------------------------
-'Dim ballFumbled, tickerStart, winTeam
+Dim ballFumbled, openKickTeam
+Dim playResultSafety, playResultTD
+Dim tickerStart, winTeam
 
 Dim actualAttendance&, avgAttendance&
 
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
+
+Dim koPenalty, prPenalty
 
 Dim Shared I4 As Single
 Dim Shared kickYL!
@@ -394,9 +398,9 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
-'Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-'Dim Shared D, dLine
-'Dim Shared endAllGames, endYds, endZone, expCompPct
+Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
+Dim Shared D, dLine
+Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, ffPctSuccess
 Dim Shared firstDownClockOpt
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
@@ -408,7 +412,7 @@ Dim Shared I1, I3, I5, I6, I7, I8
 Dim Shared isOT, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetIdx
+Dim Shared P1, playCall, periodNbr, puntRetIdx
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
@@ -432,7 +436,7 @@ Dim Shared W5
 Dim Shared XD, XE
 
 Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared fgAttLine, fleaFlicker, goalLnYdAdj
@@ -442,7 +446,7 @@ Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
 Dim Shared totalSTPenalties, YF
 
-'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
@@ -505,7 +509,7 @@ Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-'Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
+Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
