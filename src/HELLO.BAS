@@ -1192,7 +1192,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open cfgPath$ + "pbplog" + Str$(currGame) For Append As #11
-        Open cfgPath$ + "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
         If Not _FileExists(scheduleFile$) Then
 
@@ -1236,7 +1236,7 @@ Sub FOOTBALL ()
 
     Else
 
-        Open cfgPath$ + "pbplog" For Append As #11
+        'Open cfgPath$ + "pbplog" For Append As #11
 
     End If
 
@@ -1469,7 +1469,7 @@ Sub FOOTBALL ()
 
     'If we've run into issues so far...
     If earlyExit = 1 Then
-        Close #11
+        'Close #11
         Exit Sub
     End If
 
@@ -22683,7 +22683,7 @@ End Sub
 'should be started.
 Sub EndOfGame
 
-    Close #11
+    'Close #11
     Call POSTGAME
 
     Cls
