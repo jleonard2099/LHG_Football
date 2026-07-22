@@ -44,6 +44,12 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared P1, playCall, periodNbr, puntRetIdx
+Dim Shared kickYL!
+Dim Shared endAllGames, endYds, endZone, expCompPct
+Dim Shared sndOpt, startYds, useTicker
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1192,7 +1198,7 @@ Sub FOOTBALL ()
         currGame = schedGame(0) + schedGame(2)
 
         'Open cfgPath$ + "pbplog" + Str$(currGame) For Append As #11
-        'Open cfgPath$ + "pbplog" For Append As #11
+        Open cfgPath$ + "pbplog" For Append As #11
 
         If Not _FileExists(scheduleFile$) Then
 
@@ -1236,7 +1242,7 @@ Sub FOOTBALL ()
 
     Else
 
-        'Open cfgPath$ + "pbplog" For Append As #11
+        Open cfgPath$ + "pbplog" For Append As #11
 
     End If
 
@@ -1469,7 +1475,7 @@ Sub FOOTBALL ()
 
     'If we've run into issues so far...
     If earlyExit = 1 Then
-        'Close #11
+        Close #11
         Exit Sub
     End If
 
@@ -1960,7 +1966,6 @@ Sub FOOTBALL ()
                     ydsToScore = 100 - ydLine
                     Call StatusBoard
 
-                    'Move ball marker to where the returner ends up
                     startYds = 100 - ydLine
                     endYds = startYds - ydsGained
                     Call MOVEBALL
@@ -1979,7 +1984,7 @@ Sub FOOTBALL ()
 
                     Else
 
-                        'Move ball marker to where the return ended
+                        'Set ball marker to where the return ended
                         ydLine = returnYL!
 
                         If returnYL! > 99.99 Then
@@ -2056,6 +2061,7 @@ Sub FOOTBALL ()
                         End If
 
                         koPenalty = 0
+
                         If flagOnPlay = 1 Then
                             foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
                             Call PenaltyOnKickoff(foulLine, autoFirst)
@@ -6201,7 +6207,7 @@ Sub FOOTBALL ()
                 'Blocked PAT's are deadball for older seasons / years
                 'Conditions below actually allow a return
                 If (ruleOptType = 1 And (ruleOptPro >= 7 Or (ruleOptPro >= 6 And teamYears(impactTeam) >= 2015)) ) Or _
-                    (ruleOptType = 0 And (ruleOptColl >= 6 Or (ruleOptColl = 5 And teamYears(impactTeam) >= 1988)) ) THen
+                    (ruleOptType = 0 And (ruleOptColl >= 6 Or (ruleOptColl = 5 And teamYears(impactTeam) >= 1988)) ) Then
                     Call Turnover_PAT
                     U3 = 9
                     GoTo CheckPoss_OT
@@ -6600,6 +6606,12 @@ Sub FOOTBALL ()
 
         Case 1
             'Run Play
+
+
+            '-- REMOVE ME
+            penaltyRoll = 1 + teamRat_GAME(P1, 0)
+
+
             Select Case penaltyRoll
 
                 Case 1 + teamRat_GAME(P1, 0)
@@ -6843,6 +6855,12 @@ Sub FOOTBALL ()
         If penAccepted = 2 Then
             'Re-kick - bypass enforcement on return
             'Restore possession to kicking team
+            pbpString$ = "PENALTY ACCEPTED"
+            Call PBP
+
+            pbpString$ = gameTems$(D) + " WILL RE-KICK"
+            Call PBP
+
             Call CHANGEPOSS
             Call KickoffLine(koPenalty, 0)
             Call SETSCREEN
@@ -8654,7 +8672,7 @@ Sub PBP ()
 
     End Select
 
-    'Print #11, pbpString$
+    Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -9733,12 +9751,13 @@ End Sub
 'yards to endzone.
 Sub YARDLINE ()
 
-    'IF ydsToScore >= 50 Then
-    If ydLine <= 50 Then
-        ydLineTeam = 100 - ydsToScore
-    Else
-        ydLineTeam = ydsToScore
-    End If
+    ydLineTeam = ydsToScore - (ydsToScore > 50) * (100 - ydsToScore - ydsToScore)
+
+    'If ydLine <= 50 Then
+    '    ydLineTeam = 100 - ydsToScore
+    'Else
+    '    ydLineTeam = ydsToScore
+    'End If
 
 End Sub
 
@@ -12095,8 +12114,8 @@ End Sub
 Sub ShowChainMarker ()
 
     'Determine physical direction based on team and quarter
-    'Home team (P1=1): goes right in Q1&Q4, left in Q2&Q3
-    'Visiting team (P1=0): goes left in Q1&Q4, right in Q2&Q3
+    'Home team (P1=1): goes left in Q1&Q4, right in Q2&Q3
+    'Visiting team (P1=0): goes right in Q1&Q4, left in Q2&Q3
     If P1 = 1 Then
         'Home team
         If quarter Mod 2 = 1 Then
@@ -12239,7 +12258,7 @@ End Sub
 'tackle / stop.
 Sub MOVEBALL ()
 
-    Dim ydLineTemp, ydsRemaining
+    Dim ydLineTemp
 
     'If pbpDelay! <> 0 Then
     If pbpDelay! >= 0 Then
@@ -12248,15 +12267,15 @@ Sub MOVEBALL ()
 
         If endYds <= startYds Then
 
-            For ydsRemaining = startYds To endYds Step -1
+            For ydsToScore = startYds To endYds Step -1
 
                 Call ShowChainMarker
                 _Delay pbpDelay! / 20
                 Call YARDLINE
                 ydLineTemp = ydLineTeam
 
-                If ydsRemaining <= 0 Then
-                    ydsRemaining = endYds
+                If ydsToScore <= 0 Then
+                    ydsToScore = endYds
                 Else
                     'We need to be careful not to say someone is at the 0 yard line
                     If Int(ydLineTemp / 10) * 10 = ydLineTemp And ydLineTemp > 0 Then
@@ -12266,19 +12285,19 @@ Sub MOVEBALL ()
                     End If
                 End If
 
-            Next ydsRemaining
+            Next ydsToScore
 
         Else
 
-            For ydsRemaining = startYds To endYds
+            For ydsToScore = startYds To endYds
 
                 Call ShowChainMarker
                 _Delay pbpDelay! / 20
                 Call YARDLINE
                 ydLineTemp = ydLineTeam
 
-                If ydsRemaining <= 0 Then
-                    ydsRemaining = endYds
+                If ydsToScore <= 0 Then
+                    ydsToScore = endYds
                 Else
                     'We need to be careful not to say someone is at the 0 yard line
                     If Int(ydLineTemp / 10) * 10 = ydLineTemp And ydLineTemp > 0 Then
@@ -12288,14 +12307,14 @@ Sub MOVEBALL ()
                     End If
                 End If
 
-            Next ydsRemaining
+            Next ydsToScore
 
         End If
 
-        If ydsRemaining <= 0 Then
-            ydsRemaining = 0
+        If ydsToScore <= 0 Then
+            ydsToScore = 0
         Else
-            ydsRemaining = ydsRemaining + 1
+            ydsToScore = ydsToScore + 1
 
             Call YARDLINE
 
@@ -12328,26 +12347,40 @@ Sub MOVEBALL ()
                 Case 22: I$ = " IS BROUGHT DOWN"
             End Select
 
-            If ydsRemaining >= 100 Then
+            If ydsToScore >= 100 Then
 
                 pbpString$ = "THE BALL CARRIER" + I$ + " FOR A" + Str$(Int(ydLine)) + " YARD LOSS"
 
             Else
 
-                If ydsRemaining > 0 Then
+                If ydsToScore > 0 Then
+
                     Call ShowChainMarker
-                    If ydLineTeam <= 1 Then
-                        pbpString$ = "AND HE" + I$ + " AT THE 1 YARD LINE"
+                    pbpString$ = "AND HE" + I$ + " AT THE "
+
+                    If ydLineTeam <= 50 Then
+                        'Moving towards the 50; closest INT
+                        If CInt(ydLineTeam) = 0 Then
+                            pbpString$ = pbpString$ + "1 YARD LINE"
+                        Else
+                            pbpString$ = pbpString$ + Str$(CInt(ydLineTeam)) + " YARD LINE"
+                        End If
                     Else
-                        pbpString$ = "AND HE" + I$ + " AT THE" + Str$(Int(ydLineTemp)) + " YARD LINE"
+                        'Opponent territory; closest INT could move us back
+                        If Int(ydLineTeam) = 0 Then
+                            pbpString$ = pbpString$ + "1 YARD LINE"
+                        Else
+                            pbpString$ = pbpString$ + Str$(Int(ydLineTeam)) + " YARD LINE"
+                        End If
                     End If
+
                 End If
 
             End If
 
         End If
 
-        If ydsRemaining <> 0 Then
+        If ydsToScore <> 0 Then
             Call PBP
         End If
 
@@ -14434,7 +14467,7 @@ Sub AdjustForSituation ()
             playCall = Int(Rnd(1) * 4) + 1
         End If
     End If
-    
+
     ' Very low clock situations (<15 seconds, no timeouts)
     ' Force sideline or incompletion-friendly plays
     If gameClock! < 15 And timeouts(P1) = 0 Then
@@ -15621,7 +15654,38 @@ End Sub
 'Play-by-Play for a penalty on the kick.
 Sub PenaltyOnKickoff (foulYdLine, autoFD)
 
+    Dim koPenaltyString$
+
     totalSTPenalties = totalSTPenalties + 1
+
+    Call Rolld100(kickPenalty)
+
+    Select Case kickPenalty
+
+        Case 1 To 54
+            '(Kicking team)
+            'pbpString$ = "*** PENALTY - ILLEGAL BLOCK - " + gameTeams$(D) + " - 15 YDS ***"
+            'penaltyYds! = 15
+            koPenaltyString$ = "*** PENALTY - OFFSIDES - " + gameTeams$(D) + " - 5 YDS ***"
+            penaltyYds! = 5
+
+        Case 55 To 56
+            'Player OOB (Kicking team)
+            koPenaltyString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - " + gameTeams$(D) + " - 5 YDS ***"
+            penaltyYds! = 5
+
+        Case 57 To 58
+            'Holding (Kicking team)
+            koPenaltyString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 10 YDS ***"
+            penaltyYds! = 10
+            'autoFD = 1
+
+        Case 59 To 100
+            'Holding (Return team)
+            koPenaltyString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 15 YDS! ***"
+            penaltyYds! = -15
+
+    End Select
 
     If foulYdLine > 50 Then
         pbpYdLine = 100 - foulYdLine
@@ -15631,36 +15695,14 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD)
         ydSideString$ = ""
     End If
 
-    'pbpString$ = "THERE'S A FLAG ON THE PLAY AT THE" + ydSideString$ + Str$(pbpYdLine) + " YARD LINE!!"
-    pbpString$ = "THERE'S A FLAG ON THE PLAY AT THE" + Str$(pbpYdLine) + " YARD LINE!!"
+    If kickPenalty >= 55 Then
+        'Note the foul line for plays not at the kickoff line
+        pbpString$ = "THERE'S A FLAG ON THE PLAY AT THE" + Str$(pbpYdLine) + " YARD LINE!!"
+        Call PBP
+    End If
+
+    pbpString$ = koPenaltyString$
     Call PBP
-
-    Call Rolld100(kickPenalty)
-
-    Select Case kickPenalty
-
-        Case 1 To 54
-            'Illegal Block (Kicking team)
-            pbpString$ = "*** PENALTY - ILLEGAL BLOCK - " + gameTeams$(D) + " - 15 YDS ***"
-            penaltyYds! = 15
-
-        Case 55 To 56
-            'Player OOB (Kicking team)
-            pbpString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - " + gameTeams$(D) + " - 5 YDS ***"
-            penaltyYds! = 5
-
-        Case 57 To 58
-            'Holding (Kicking team)
-            pbpString$ = "*** PENALTY - " + gameTeams$(D) + " - HOLDING - 10 YDS ***"
-            penaltyYds! = 10
-            'autoFD = 1
-
-        Case 59 To 100
-            'Holding (Return team)
-            pbpString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 15 YDS! ***"
-            penaltyYds! = -15
-
-    End Select
 
     playSegment = 4
 
@@ -16252,7 +16294,13 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul)
             Case Else
                 pbpString$ = pbpString$ + "DEF - OFFSIDES - 5 YDS ***"
                 penaltyYds! = 5
-                liveBallFoul = 1
+
+                'On a DEF OFFSIDES penalty, offenses don't
+                'get a play off before the flag about 45%
+                'of the time, making them deadball scenarios
+                If d100% > 45 Then
+                    liveBallFoul = 1
+                End If
 
         End Select
 
@@ -22683,7 +22731,7 @@ End Sub
 'should be started.
 Sub EndOfGame
 
-    'Close #11
+    Close #11
     Call POSTGAME
 
     Cls
