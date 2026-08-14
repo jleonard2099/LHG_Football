@@ -7,9 +7,14 @@ Declare Sub TEAMBOX (boxHeight, teamIdx)
 Declare Sub FRAMEOPTION (boxHeight, teamIdx)
 Declare Sub Rolld100 (randNumVar)
 Declare Sub DELAY ()
+Declare Sub DownDescription
 Declare Sub CoinToss
 Declare Sub PBP ()
+Declare Sub WINDEX ()
+Declare Sub BLANKLINE ()
+Declare Sub CLEARPBP ()
 Declare Sub TICKER ()
+Declare Sub PrintTickerLine (gameIdx, timeInterval)
 Declare Sub TICKERUPDATE ()
 Declare Sub UpdateSchedule ()
 Declare Sub SCOUT ()
@@ -31,13 +36,14 @@ Declare Sub DecideFGBlock (fgFormation)
 Declare Sub INCOMPLETE ()
 Declare Sub QBSNEAK ()
 Declare Sub OffPlayOveruse ()
-Declare Sub DefPlayOveruse ()
+Declare Sub DEF_PlayOveruse ()
 Declare Sub BLITZ ()
 Declare Sub BlitzYardageLong (I8)
 Declare Sub BLITZ2 ()
 Declare Sub COMPCHEAT (defEra)
 Declare Sub FumbleRecoverPBP ()
 Declare Sub CheckGameClock ()
+Declare Sub ApplyClockRunoff
 Declare Sub GetDefensiveEra (defEra)
 Declare Sub ComputerDefense (defEra)
 Declare Sub TwoMinDefense (scoreDiff)
@@ -50,6 +56,7 @@ Declare Sub ColorChange ()
 Declare Sub DisplayClockDown
 Declare Sub DEFMENU (defEra)
 Declare Sub DEF_CheckGoalLine ()
+Declare Sub DEF_DownDistanceLogic
 Declare Sub Turnover_PAT
 Declare Sub GetPATChoice (userChoice)
 Declare Sub LongGainPBP ()
@@ -58,50 +65,52 @@ Declare Sub SETWEATHER ()
 Declare Sub FGATT ()
 Declare Sub FGMADE ()
 Declare Sub ComputerOffense ()
-Declare Sub Offense_PreventSafety ()
-Declare Sub Offense_ShortYardage ()
-Declare Sub Offense_LongYardage ()
+Declare Sub Offense_PreventSafety
+Declare Sub Offense_ShortYardage
+Declare Sub Offense_LongYardage
 Declare Sub AdjustForSituation ()
-Declare Sub AdjustForRedZone()
-Declare Sub AdjustForPreventDefense()
-Declare Sub AdjustForWeather()
-Declare Sub AdjustForEra(teamYear)
-Declare Sub AdjustPassPlayForSequencing()
-Declare Sub UpdatePlayHistory(playCallExecuted As Integer, yardsGained As Integer)
+Declare Sub AdjustForRedZone ()
+Declare Sub AdjustForPreventDefense ()
+Declare Sub AdjustForWeather ()
+Declare Sub AdjustForEra (teamYear)
+Declare Sub AdjustPassPlayForSequencing ()
+Declare Sub UpdatePlayHistory (playCallExecuted, yardsGained)
 Declare Sub MEASUREMENT (decimalYds!)
 Declare Sub ReceiverLossPBP (yardString$)
 Declare Sub WHICHRECEIVER
 Declare Sub TurnoverOnDowns
-Declare Sub PenaltyOnKickoff (autoFD)
+Declare Sub FreePlayPenalty (penYards!, penString$)
+Declare Sub PenaltyOnKickoff (foulYdLine, autoFD, koOffsides)
 Declare Sub PenaltyOnPlaceKick (autoFD)
 Declare Sub PenaltyOnPunt (autoFD)
-Declare Sub PenaltyOnPuntReturn(autoFD)
-Declare Sub PenaltyOnScore (flagOnPlay, enforceOnKO)
-Declare Sub PenaltyChoice (decision, autoFD)
+Declare Sub PenaltyOnPuntReturn (prYdLine!, foulYdLine, autoFD)
+Declare Sub PenaltyOnScore (enforceOnKO)
+Declare Sub KOPenaltyChoice (decision, koOffsides)
+Declare Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 Declare Sub PenaltyCharge (teamIdx, ydsCharged!)
-Declare Sub PenaltyPreSnap (flagOnPlay)
+Declare Sub PenaltyPreSnap (throwFlag, liveBallFoul, autoAcc)
 Declare Sub FirstDownAfterPlay
 Declare Sub CHOOSEQB (currTeam)
 Declare Sub TimeoutCalled (teamIdx, periodOver)
 Declare Sub KickoffChoices (deferOpt)
+Declare Sub Kickoff (kickChoice)
 Declare Sub PuntNotReturned (fairCatchPossible, puntType, isPenalty)
 Declare Sub TAKESAFETY ()
 Declare Sub FINDINT (defPlayIdx)
 Declare Sub YARDAGE ()
-Declare Sub PuntReturnYards ()
+Declare Sub PuntReturnYards (catchYardline!)
 Declare Sub PuntFakeRunYards (choice)
-Declare Sub CheckFumble_1 (playType, fumbleOnPlay)
+Declare Sub CheckFumble_1 (playSitutation, fumbleOnPlay)
 Declare Sub FLEA (ffChance)
 Declare Sub REVGAIN ()
 Declare Sub FGFakeRunYards (choice)
 Declare Sub HANDOFF ()
 Declare Sub DisplayDefense
-Declare Sub PASSBALL (direction, fieldSide)
+Declare Sub PASSBALL (direction)
 Declare Sub AdjustCompPct ()
 Declare Sub SCOREUPD ()
 Declare Sub COMPILER ()
 Declare Sub TwoMinMenu (menuChoice)
-Declare Sub FieldGoalChance ()
 Declare Sub RUNMENU ()
 Declare Sub PASSMENU ()
 Declare Sub SHORTYARDAGE ()
@@ -116,16 +125,16 @@ Declare Sub ITSGOOD
 Declare Sub MISSPAT
 Declare Sub MADEPAT
 Declare Sub KickoffReturn (kickNotReturned, isPenalty)
-Declare Sub KickoffLine
+Declare Sub KickoffLine (applyPenalty, afterSafety)
 Declare Sub KickoffDistance ()
 Declare Sub QBTHROW ()
 Declare Sub RUNPBP ()
-Declare Sub PassCompletePBP (direction, fieldSide)
+Declare Sub PassCompletePBP (direction)
 Declare Sub PassYardagePBP (yardString$)
-Declare Sub Touchback (endZone)
-Declare Sub AddPossessionTime (minSeconds, maxSeconds)
+Declare Sub Touchback (touchbackLine, endZone)
+Declare Sub AddPossessionTime (teamIdx, minSeconds, maxSeconds)
 Declare Sub FumblePBP ()
-Declare Sub TryForTwoResult ()
+Declare Sub TryForTwoResult (convYds)
 Declare Sub OPTIONS ()
 Declare Sub EVENTS (specialCount, specialStat)
 Declare Sub FoundSpecial (specialCount, specialStat)
@@ -144,6 +153,7 @@ Declare Sub SelectGameTeam (numberTeams, yearNumber$, selectedIdx, teamName$, Ex
 Declare Sub ReadGameTeam (teamYear$, targetTeam$, teamIdx, gameIdx, dataOK)
 Declare Sub GetKeyWhenNoDelay ()
 Declare Sub EndOfGame
+Declare Sub CountGames ()
 
 Declare Function d100% ()
 Declare Function TickerTime% (timeInterval, X)
@@ -153,14 +163,19 @@ Declare Function fgLimit%
 Declare Function FieldGoalChance%
 Declare Function FieldGoalDistance%
 Declare Function FindMarkerColumn (X)
-Declare Function GetPlaySequencingModifier() As Integer
+Declare Function GetPlaySequencingModifier% ()
 Declare Function GetSneakChance%
 Declare Function GetTeamYear% (yearFromName$)
-Declare Function IsDefensePC
 Declare Function IsOffensePC
+Declare Function IsDefensePC
 Declare Function IsOffenseHuman
 Declare Function IsDefenseHuman
-Declare Function kickReturnFoulSpot% (catchYard!, returnDistance)
 Declare Function patEnforcementChance%
-Declare Function ShouldUseQuickPassing() As Boolean
+Declare Function kickReturnFoulSpot% (catchYard!, returnDistance)
+Declare Function PuntDistance%
+Declare Function RoundTo1! (decimal!)
+Declare Function RoundTo2! (decimal!)
+Declare Function runnerOverused% (rbIdx)
+Declare Function scrambleChance% (qbContrib)
+Declare Function ShouldUseQuickPassing% ()
 Declare Function yardsToDecimalStr$ (sourceYds!)

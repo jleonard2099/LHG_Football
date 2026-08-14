@@ -388,7 +388,7 @@ Dim playActAdj(2, 21)
 Dim koPenalty, prPenalty
 
 Dim Shared I4 As Single
-'Dim Shared kickYL!
+Dim Shared kickYL!
 
 ' Shared / Global
 Dim Shared earlyExit
@@ -398,9 +398,9 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
-Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
+'Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
-'Dim Shared endAllGames, endYds, endZone, expCompPct
+Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, ffPctSuccess
 Dim Shared firstDownClockOpt
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
@@ -410,13 +410,13 @@ Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 Dim Shared I1, I3, I5, I6, I7, I8
 
 Dim Shared isOT, kickDist
-Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
+'Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
-'Dim Shared P1, playCall, periodNbr, puntRetIdx
+Dim Shared P1, playCall, periodNbr, puntRetIdx
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-'Dim Shared sndOpt, startYds, useTicker
+Dim Shared sndOpt, startYds, useTicker
 'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
 Dim Shared W5
 
@@ -435,7 +435,7 @@ Dim Shared W5
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-Dim Shared ydsToFirst As Single
+'Dim Shared ydsToFirst As Single
 'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
@@ -446,7 +446,7 @@ Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
 Dim Shared totalSTPenalties, YF
 
-Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
