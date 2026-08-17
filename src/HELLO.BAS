@@ -6551,13 +6551,19 @@ Sub FOOTBALL ()
                 Case 2 + teamRat_GAME(P1, 0) To 14 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - "
 
-                    'Pro Rules before 1974 | College Rules before 1984
-                    If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl < 3) Then
-                        pbpString$ = pbpString$ + "OFF - HOLDING - 15 YDS ***"
-                        penaltyYds! = -15
-                    Else
+                    'WFL Rules
+                    If ruleOptType = 4 Then
                         pbpString$ = pbpString$ + "OFF - HOLDING - 10 YDS ***"
                         penaltyYds! = -10
+                    Else
+                        'Pro Rules before 1974 | College Rules before 1984 | WFL always 10 yds
+                        If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl <= 2) Then
+                            pbpString$ = pbpString$ + "OFF - HOLDING - 15 YDS ***"
+                            penaltyYds! = -15
+                        Else
+                            pbpString$ = pbpString$ + "OFF - HOLDING - 10 YDS ***"
+                            penaltyYds! = -10
+                        End If
                     End If
 
                     isOffHold = 1
@@ -6634,16 +6640,22 @@ Sub FOOTBALL ()
                 Case 1 To 16 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - "
 
-                    'Pro Rules before 1978 | College Rules before 1984
-                    If (ruleOptType > 0 And ruleOptPro < 3) Or (ruleOptType = 0 And ruleOptColl < 3) Then
-                        pbpString$ = pbpString$ + "OFF - HOLDING - 15 YDS *** "
-                        penaltyYds! = -15
-                        isOffHold = 1
-                    Else
+                    'WFL Rules
+                    If ruleOptType = 4 Then
                         pbpString$ = pbpString$ + "OFF - HOLDING - 10 YDS ***"
                         penaltyYds! = -10
-                        isOffHold = 1
+                    Else
+                        'Pro Rules before 1974 | College Rules before 1984 | WFL always 10 yds
+                        If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl <= 2) Then
+                            pbpString$ = pbpString$ + "OFF - HOLDING - 15 YDS ***"
+                            penaltyYds! = -15
+                        Else
+                            pbpString$ = pbpString$ + "OFF - HOLDING - 10 YDS ***"
+                            penaltyYds! = -10
+                        End If
                     End If
+                    
+                    isOffHold = 1
 
                 Case 17 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - OFF - ILLEGAL MOTION - 5 YDS ***"
@@ -6728,10 +6740,12 @@ Sub FOOTBALL ()
     End Select
 
     ' *** HOLDING PENALTY ***
-    'College 1991+
-    'Randomly determine the "infraction point" for enforcing the penalty
-    If (ruleOptType = 0 And ruleOptColl >= 6 And isOffHold = 1) Or (isIllBlock = 1) Then
-
+    'Offensive Holding - College 1991+ | Pro Pre-1974 
+    'Illegal Block penalty
+    'Spot penalty - randomly determine the "infraction point" for enforcing the penalty    
+    If isIllBlock = 1) Or _
+        (isOffHold = 1 And (ruleOptType = 0 And ruleOptColl >= 6) Or (ruleOptType > 0 And ruleOptPro <= 2)) Then
+        
         penaltyString$ = pbpString$
 
         'Hint at point of infraction
@@ -7762,12 +7776,6 @@ Sub FOOTBALL ()
                     End If
 
                 End If
-
-                '-- REMOVE ME
-                'playerMode = 1
-                'D = compTeam
-                'P1 = 1 - D
-                '-- REMOVE ME
 
                 Call TwoMinMenu(choice)
 
@@ -16160,6 +16168,10 @@ End Sub
 Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
     'Regular Penalty decision (accept / decline)
+
+    '-- REMOVE ME
+    'Print #11, pbpString$
+
     Call PBP
 
     '0 yards = unhandled penalty
@@ -16345,25 +16357,19 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul, autoAcc)
         'routine plays like FG, PAT, conversion
         penaltyChance = 5
     Else
-        penaltyChance = 25
+        penaltyChance = 31
     End If
 
     'Determine type of penalty
     penaltyType = Int(Rnd(1) * 43) + 1
 
-    If penaltyType <= 38 + teamRat_GAME(P1, 0) Then
-        penaltyTeam = P1
-    Else
-        penaltyTeam = D
-    End If
-
     'Home Field Advantage - Penalties
     If penaltyTeam = gameLoc Then
         'Home: 7.5% less chance of penalty
-        penaltyChance = penaltyChance - 7.5
+        penaltyChance = penaltyChance * .925
     Else
         'Away: 7.5% more chance of penalty
-        penaltyChance = penaltyChance + 7.5
+        penaltyChance = penaltyChance * 1.075
     End If
 
     If penaltyRoll <= penaltyChance And playCall < 21 Then
@@ -16380,42 +16386,50 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul, autoAcc)
 
         Select Case penaltyType
 
-            Case 1 + teamRat_GAME(P1, 0) To 3 + teamRat_GAME(P1, 0)
+            Case 1 + teamRat_GAME(P1, 0) To 6 + teamRat_GAME(P1, 0)
                 pbpString$ = pbpString$ + "OFF - DELAY OF GAME - 5 YDS ***"
                 penaltyYds! = -5
                 autoAccept = 1
+                penaltyTeam = P1
 
-            Case 4 + teamRat_GAME(P1, 0) To 32 + teamRat_GAME(P1, 0)
+            Case 7 + teamRat_GAME(P1, 0) To 27 + teamRat_GAME(P1, 0)
                 pbpString$ = pbpString$ + "OFF - FALSE START - 5 YDS ***"
                 penaltyYds! = -5
                 autoAccept = 1
+                penaltyTeam = P1
 
-            Case 33 + teamRat_GAME(P1, 0) To 37 + teamRat_GAME(P1, 0)
+            Case 28 + teamRat_GAME(P1, 0) To 31 + teamRat_GAME(P1, 0)
                 pbpString$ = pbpString$ + "OFF - ILLEGAL FORMATION - 5 YDS ***"
                 penaltyYds! = -5
+                penaltyTeam = P1
 
-            Case 38 + teamRat_GAME(P1, 0)
+            Case 32 + teamRat_GAME(P1, 0) To 33 + teamRat_GAME(P1, 0)
                 pbpString$ = pbpString$ + "OFF - ILLEGAL SHIFT - 5 YDS ***"
                 penaltyYds! = -5
+                penaltyTeam = P1
 
-            Case 39 + teamRat_GAME(P1, 0)
+            Case 34 + teamRat_GAME(P1, 0) To 35 + teamRat_GAME(D, 0)
                 pbpString$ = pbpString$ + "DEF - NEUTRAL ZONE INFRACTION - 5 YDS ***"
                 penaltyYds! = 5
                 autoAccept = 1
+                penaltyTeam = D
 
-            Case 40 + teamRat_GAME(D, 0)
+            Case 36 + teamRat_GAME(D, 0)
                 pbpString$ = pbpString$ + "DEF - DELAY OF GAME - 5 YDS ***"
                 penaltyYds! = 5
                 autoAccept = 1
+                penaltyTeam = D
 
-            Case 41 + teamRat_GAME(D, 0) To 49 + teamRat_GAME(D, 0)
+            Case 37 + teamRat_GAME(D, 0) To 38 + teamRat_GAME(D, 0)
                 pbpString$ = pbpString$ + "DEF - ENCROACHMENT - 5 YDS ***"
                 penaltyYds! = 5
                 autoAccept = 1
+                penaltyTeam = D
 
             Case Else
                 pbpString$ = pbpString$ + "DEF - OFFSIDES - 5 YDS ***"
                 penaltyYds! = 5
+                penaltyTeam = D
 
                 'On a DEF OFFSIDES penalty, offenses don't
                 'get a play off before the flag about 45%
