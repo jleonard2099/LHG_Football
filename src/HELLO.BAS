@@ -3381,14 +3381,15 @@ Sub FOOTBALL ()
             scoreX0 = 1
             playContext = 1
 
+            pbpString$ = ""
+
             If Int(ydsGained) = 0 Then
                 pbpString$ = "HE'LL GAIN JUST A LITTLE BIT"
             Else
                 'Print / call PBP for actual yardage
                 If ydsGained < 0 Then
 
-                    pbpString$ = rbacks$(P1, I1) + " LOST"
-                    pbpString$ = pbpString$ + yardsToDecimalStr$(ydsGained * -1)
+                    pbpString$ = rbacks$(P1, I1) + " LOST" + yardsToDecimalStr$(ydsGained * -1)
 
                 Else
 
@@ -6742,7 +6743,7 @@ Sub FOOTBALL ()
     ' *** HOLDING PENALTY ***
     'Illegal Block --OR--
     'Offensive Holding - College 1991+ | Pro Before 1975
-    'Spot penalty - randomly determine the "infraction point" for enforcing the penalty    
+    'Spot penalty - randomly determine the "infraction point" for enforcing the penalty
     If isIllBlock = 1 Or _
         (isOffHold = 1 And _
         (ruleOptType = 0 And ruleOptColl >= 6) Or _ 
@@ -9533,14 +9534,13 @@ End Sub
 ' Draws the latest score on the screen
 Sub Scoreboard
 
-    'Converted these Chr$ statements so the graphics
-    'are preserved in any text editor
-    Print Chr$(219); String$(38, 223)
+    'Outline box for score / TO's
+    Print Chr$(219); String$(40, 223)
     Print Chr$(219)
     Print Chr$(219)
     Print Chr$(219)
 
-    Locate 2, 40
+    Locate 2, 42
     Color 1 + BW * 6, 0
     Print Chr$(220)
 
@@ -9581,7 +9581,7 @@ Sub Scoreboard
 
     End If
 
-    Locate , 37: Print "T   ";
+    Locate , 37: Print "T  TO ";
 
     'Score
     For I = 0 To 1
@@ -9625,7 +9625,7 @@ Sub Scoreboard
         End If
 
         Locate , 35
-        Print Using "###   "; score(I, 0);
+        Print Using "###   # "; score(I, 0); timeouts(I)
 
     Next I
 
@@ -9637,19 +9637,20 @@ Sub Scoreboard
 
     Locate 6, 1
     Color 0, 1 + BW * 6
-    Print Chr$(219); String$(39, 220);
+    Print Chr$(219); String$(41, 220);
 
-    Locate 2, 43
+    'Outline box for down / distance
+    Locate 2, 45
     Color 15, 4 + BW * 3
-    Print Chr$(219); String$(36, 223);
+    Print Chr$(219); String$(34, 223);
 
-    Locate 3, 43
+    Locate 3, 45
     Print Chr$(219);
 
-    Locate 4, 43
+    Locate 4, 45
     Print Chr$(219);
 
-    Locate 5, 43
+    Locate 5, 45
     Print Chr$(219);
 
     Locate 2, 80
@@ -9674,10 +9675,6 @@ Sub DisplayField ()
     'Display Status (Clock/Down/Yardage)
     Call YARDLINE
     Call DisplayClockDown
-
-    Locate 6, 44
-
-    Color 0, 4 + BW * 3: Print String$(37, 220);
 
     Color 15 * (1 - BW), 2 + 5 * BW
 
@@ -12056,7 +12053,7 @@ Sub MOVEBALL ()
                 If ydsToScore > 0 Then
 
                     Call ShowChainMarker
-                    pbpString$ = "AND HE" + I$ + " AT THE "
+                    pbpString$ = "AND HE" + I$ + " AT THE"
 
                     If ydLineTeam <= 50 Then
                         'Moving towards the 50; closest INT
@@ -12318,7 +12315,7 @@ Sub DisplayClockDown
 
     qtrTime! = I + J / 100
 
-    Locate 3, 44:
+    Locate 3, 46:
     If quarter <= 4 Then
         Print Using " TIME: ##.##     QUARTER: #  "; qtrTime!, quarter;
     Else
@@ -12333,11 +12330,11 @@ Sub DisplayClockDown
 
     End If
 
-    Locate 3, 53: Print ":";
-    Locate , 73: Print Tab(80); " ";
+    Locate 3, 55: Print ":";
+    Locate , 75: Print Tab(80); " ";
 
-    Locate 4, 44: Print Using " DOWN: #"; currDown;
-    Print Tab(60);
+    Locate 4, 46: Print Using " DOWN: #"; currDown;
+    Print Tab(62);
 
     If ydsToFirst >= 0.7 Then
         Print Using " TO GO: ##"; CInt(ydsToFirst);
@@ -12347,7 +12344,7 @@ Sub DisplayClockDown
 
     Print Tab(80); " ";
 
-    Locate 5, 44: Print " BALL ON ";
+    Locate 5, 46: Print " BALL ON ";
     If ydLine < 50 Then
         Print "OWN";
     End If
@@ -12375,6 +12372,10 @@ Sub DisplayClockDown
     End If
 
     Print Tab(80); " ";
+
+    Locate 6, 46
+
+    Color 0, 4 + BW * 3: Print String$(35, 220);
 
 End Sub
 
@@ -12928,6 +12929,8 @@ Sub Turnover_PAT
     endYds = startYds - ydsGained
     Call MOVEBALL
 
+    pbpString$ = ""
+
     If ydsGained + ydLine > 99.99 Then
 
         returnYds = Int(100 - ydLine)
@@ -12952,7 +12955,7 @@ Sub Turnover_PAT
 
         convYds! = RoundTo1!(ydsGained)
 
-        pbpString$ = pbpString$ + Str$(Int(convYds)) + " YARDS"
+        pbpString$ = pbpString$ + Str$(Int(convYds!)) + " YARDS"
         Call PBP
 
     End If
