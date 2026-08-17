@@ -6740,11 +6740,13 @@ Sub FOOTBALL ()
     End Select
 
     ' *** HOLDING PENALTY ***
-    'Offensive Holding - College 1991+ | Pro Pre-1974 
-    'Illegal Block penalty
+    'Illegal Block --OR--
+    'Offensive Holding - College 1991+ | Pro Before 1975
     'Spot penalty - randomly determine the "infraction point" for enforcing the penalty    
-    If isIllBlock = 1) Or _
-        (isOffHold = 1 And (ruleOptType = 0 And ruleOptColl >= 6) Or (ruleOptType > 0 And ruleOptPro <= 2)) Then
+    If isIllBlock = 1 Or _
+        (isOffHold = 1 And _
+        (ruleOptType = 0 And ruleOptColl >= 6) Or _ 
+        (ruleOptType > 0 And (ruleOptPro <= 1 Or (ruleOptPro = 2 And teamYears(impactTeam) = 1974)))) Then
         
         penaltyString$ = pbpString$
 
