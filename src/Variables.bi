@@ -376,16 +376,19 @@ Dim divTeamNames$(60), leagRecText$(60)
 '----------------------------------------
 ' Used in Game Routines
 '----------------------------------------
-Dim ballFumbled, openKickTeam
-Dim playResultSafety, playResultTD
+Dim ballFumbled, evalDown
+Dim freePlayYdsGained, freePlayYdsToFirst
+Dim openKickTeam, playResultSafety, playResultTD
 Dim tickerStart, winTeam
+
+Dim downYds!, evalYdsToFirst!
 
 Dim actualAttendance&, avgAttendance&
 
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
 
-Dim koPenalty, prPenalty
+'Dim koPenalty, prPenalty
 
 Dim Shared I4 As Single
 Dim Shared kickYL!
@@ -398,7 +401,7 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
-'Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
+Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgSuccessChance, ffPctSuccess
@@ -409,16 +412,14 @@ Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I3, I5, I6, I7, I8
 
-Dim Shared isOT, kickDist
-'Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
+Dim Shared isOT, isSack, kickDist
+Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetIdx
 Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared sndOpt, startYds, useTicker
-'Whatever W5 is, it can have a value of 0 or 1 and relates to compiling play stat
-Dim Shared W5
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -435,7 +436,7 @@ Dim Shared W5
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
-'Dim Shared ydsToFirst As Single
+Dim Shared ydsToFirst As Single
 'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
@@ -446,7 +447,7 @@ Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
 Dim Shared totalSTPenalties, YF
 
-'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
 Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
@@ -514,7 +515,7 @@ Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
 Dim Shared defPlay$(1 To 15)
-Dim Shared defInts$(1, 9), defSacks$(1, 14)
+Dim Shared defInts$(1, 9), defSackNames$(1, 14)
 Dim Shared direction$(0 To 1), diskIDs$(0 To 1), downDesc$(0 To 4)
 Dim Shared gameMascots$(1), gameTeams$(0 To 1), gadget$(3)
 Dim Shared kicker$(1, 1), kickRet$(1, 2)
