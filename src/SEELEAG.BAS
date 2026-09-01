@@ -23,7 +23,7 @@ End Sub
 
 
 '----------------------------------------
-'     LoadLeaderFiles_League Subroutine
+'    LoadLeaderFiles_League Subroutine
 '----------------------------------------
 'This subroutine loads the conference stats
 'from the file into several arrays
@@ -139,7 +139,7 @@ End Sub
 
 
 '----------------------------------------
-'       StatOptions_League Subroutine
+'      StatOptions_League Subroutine
 '----------------------------------------
 'This subroutine gives the user various
 'options for viewing the previously loaded

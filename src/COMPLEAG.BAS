@@ -529,37 +529,33 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compRB!(X, 9) 'Rush Avg
                     leaderVal!(Y, 2) = compRB!(X, 1) 'Rush Att
 
-                    If leaderVal!(Y, 2) < minRushAtt Then
-                        leaderName$(Y) = "*"
-                        leaderTeam$(Y) = "*"
-                        leaderVal!(Y, 1) = 0
-                        leaderVal!(Y, 2) = 0
-                    End If
+                    'Only include players with 10 rushes / game
+                    'If leaderVal!(Y, 2) < minRushAtt Then
+                    '    leaderName$(Y) = "*"
+                    '    leaderTeam$(Y) = "*"
+                    '    leaderVal!(Y, 1) = 0
+                    '    leaderVal!(Y, 2) = 0
+                    'End If
 
-                    For Y = 1 To 19:
-
-                        For Z = Y + 1 To 20:
-
-                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
-                                Swap leaderTeam$(Y), leaderTeam$(Z)
-                                Swap leaderName$(Y), leaderName$(Z)
-
+                    For Y1 = 1 To 19:
+                        For Z = Y1 + 1 To 20:
+                            If leaderVal!(Y1, 1) < leaderVal!(Z, 1) Then
+                                Swap leaderTeam$(Y1), leaderTeam$(Z)
+                                Swap leaderName$(Y1), leaderName$(Z)
                                 For Z1 = 1 To 2:
-                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
+                                    Swap leaderVal!(Y1, Z1), leaderVal!(Z, Z1)
                                 Next Z1
-
                             End If
-
                         Next Z
-
-                    Next Y
+                    Next Y1
 
                     GoTo 3118
+
                 End If
 
             Next Y
 
-            If compRB!(X, 9) >= leaderVal!(20, 1) And compRB!(X, 1) => minRushAtt Then
+            If compRB!(X, 9) >= leaderVal!(20, 1) And compRB!(X, 1) >= minRushAtt Then
 
                 leaderName$(20) = compRB$(X)
                 leaderTeam$(20) = statName$
@@ -567,9 +563,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 leaderVal!(20, 2) = compRB!(X, 1)
 
                 For Y = 1 To 19:
-
                     For Z = Y + 1 To 20:
-
                         If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
                             Swap leaderTeam$(Y), leaderTeam$(Z)
                             Swap leaderName$(Y), leaderName$(Z)
@@ -577,9 +571,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                                 Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
                         End If
-
                     Next Z
-
                 Next Y
 
             End If
@@ -719,26 +711,24 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Z, 1) = compWR!(X, 4)
                     leaderVal!(Z, 2) = compWR!(X, 1)
 
-                    'Only include players with 3 RECs / game
-                    If leaderVal!(Z, 2) < minRecept Then
-                        leaderName$(Z) = "*"
-                        leaderTeam$(Z) = "*"
-                        leaderVal!(Z, 1) = 0
-                        leaderVal!(Z, 2) = 0
-                    End If
+                    'Only include players with 3 receptions / game
+                    'If leaderVal!(Z, 2) < minRecept Then
+                    '    leaderName$(Z) = "*"
+                    '    leaderTeam$(Z) = "*"
+                    '    leaderVal!(Z, 1) = 0
+                    '    leaderVal!(Z, 2) = 0
+                    'End If
 
                     For Y = 21 To 39:
-                        For Z = Y + 1 To 40:
-                            If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
-                                Swap leaderTeam$(Y), leaderTeam$(Z)
-                                Swap leaderName$(Y), leaderName$(Z)
+                        For Y1 = Y + 1 To 40:
+                            If leaderVal!(Y, 1) < leaderVal!(Y1, 1) Then
+                                Swap leaderTeam$(Y), leaderTeam$(Y1)
+                                Swap leaderName$(Y), leaderName$(Y1)
                                 For Z1 = 1 To 2:
-                                    Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
+                                    Swap leaderVal!(Y, Z1), leaderVal!(Y1, Z1)
                                 Next Z1
                             End If
-
-                        Next Z
-
+                        Next Y1
                     Next Y
 
                     GoTo 3178
@@ -757,15 +747,12 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 For Y = 21 To 39:
                     For Z = Y + 1 To 40:
                         If leaderVal!(Y, 1) < leaderVal!(Z, 1) Then
-
                             Swap leaderTeam$(Y), leaderTeam$(Z)
                             Swap leaderName$(Y), leaderName$(Z)
                             For Z1 = 1 To 2:
                                 Swap leaderVal!(Y, Z1), leaderVal!(Z, Z1)
                             Next Z1
-
                         End If
-
                     Next Z
 
                 Next Y
@@ -1049,12 +1036,12 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compQB!(X, 6)
                     leaderVal!(Y, 2) = compQB!(X, 1)
 
-                    If leaderVal!(Y, 2) < minComp Then
-                        leaderName$(Y) = "*"
-                        leaderTeam$(Y) = "*"
-                        leaderVal!(Y, 1) = 0
-                        leaderVal!(Y, 2) = 0
-                    End If
+                    'If leaderVal!(Y, 2) < minComp Then
+                    '    leaderName$(Y) = "*"
+                    '    leaderTeam$(Y) = "*"
+                    '    leaderVal!(Y, 1) = 0
+                    '    leaderVal!(Y, 2) = 0
+                    'End If
 
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
@@ -1112,12 +1099,12 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compQB!(X, 7)
                     leaderVal!(Y, 2) = compQB!(X, 1)
 
-                    If leaderVal!(Y, 2) < minComp Then
-                        leaderName$(Y) = "*"
-                        leaderTeam$(Y) = "*"
-                        leaderVal!(Y, 1) = 0
-                        leaderVal!(Y, 2) = 0
-                    End If
+                    'If leaderVal!(Y, 2) < minComp Then
+                    '    leaderName$(Y) = "*"
+                    '    leaderTeam$(Y) = "*"
+                    '    leaderVal!(Y, 1) = 0
+                    '    leaderVal!(Y, 2) = 0
+                    'End If
 
                     For Y = 131 To 139:
                         For Z = Y + 1 To 140:

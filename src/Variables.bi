@@ -388,7 +388,7 @@ Dim actualAttendance&, avgAttendance&
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
 
-'Dim koPenalty, prPenalty
+Dim koPenalty, prPenalty
 
 Dim Shared I4 As Single
 Dim Shared kickYL!
@@ -437,7 +437,7 @@ Dim Shared sndOpt, startYds, useTicker
 Dim Shared XD, XE
 
 Dim Shared ydsToFirst As Single
-'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
+Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared fgAttLine, fleaFlicker, goalLnYdAdj
