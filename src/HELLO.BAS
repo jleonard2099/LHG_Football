@@ -46,6 +46,8 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+Dim Shared quarter, qback, qbTakeKnee
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1073,7 +1075,7 @@ Sub FOOTBALL ()
     Dim isFCPuntInt, isIllBlock, isOffHold, isOffsides
     Dim applyKOPenalty, pendingFlag
     Dim rbStatus, roundedTeamYd, spotFoul
-    Dim tbLine, twoMinWarn, ydsAttempted, ydsForConv
+    Dim tbLine, ydsAttempted, ydsForConv
 
     Dim pendingPenYds!, playYdLine!, qbRushAvg!
 
@@ -2976,7 +2978,7 @@ Sub FOOTBALL ()
             'Take Knee
             If playCall = 9 Then
 
-                playYdLine! = RoundTo1!(ydsGained + ydLine)
+                playYdLine! = ydsGained + ydLine
                 pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND KNEELS DOWN"
 
                 ydsGained = -1.0
@@ -3008,7 +3010,8 @@ Sub FOOTBALL ()
                 pbpString$ = "HE LOSES " + YardsGainedStr$(-ydsGained) + " YARDS"
                 Call PBP
 
-                If IsSafety(ydsGained + ydLine) Then
+                fumbYL! = ydsGained + ydLine
+                If IsSafety(fumbYL!) Then
 
                     ballFumbled = 0
 
@@ -3029,7 +3032,7 @@ Sub FOOTBALL ()
 
                         Call COMPILER
 
-                        ydLine = ydLine + ydsGained
+                        ydLine = fumbYL!
 
                         ydsToFirst = ydsToFirst - ydsGained
                         currDown = currDown + 1
@@ -3298,9 +3301,6 @@ Sub FOOTBALL ()
 
             If IsTouchdown(ydLine + ydsGained) Then
                 Call RunForTD_PBP
-            End If
-
-            If IsTouchdown(ydLine + ydsGained) Then
                 'Touchdown is only worth yards left on the field
                 ydsGained = ydsToScore
             End If
@@ -4295,7 +4295,9 @@ Sub FOOTBALL ()
 
                             pbpString$ = "PASS IS COMPLETE FOR "
 
-                            If IsTouchdown(ydsGained + ydLine) Then
+                            playYdLine! = ydsGained + ydLine
+
+                            If IsTouchdown(playYdLine!) Then
                                 'Touchdown is only worth yards left on the field
                                 pbpString$ = pbpString$ + YardsGainedStr$(100 - ydLine) + " YARDS"
                                 Call PBP
@@ -4303,8 +4305,6 @@ Sub FOOTBALL ()
                                 pbpString$ = pbpString$ + YardsGainedStr$(ydsGained) + " YARDS"
                                 Call PBP
                             End If
-
-                            playYdLine! = ydsGained + ydLine
 
                             If IsSafety(playYdLine!) Then
                                 'Safety!
@@ -4355,6 +4355,9 @@ Sub FOOTBALL ()
 
             RN5 = Int(Rnd(1) * 200) + 1
 
+            '-- REMOVE ME
+            RN5 = 13
+
             If RN5 >= 12 And RN5 <= 14 Then
 
                 '1.5% chance of bad snap - punt
@@ -4376,9 +4379,9 @@ Sub FOOTBALL ()
                 'Team Fumbles lost
                 gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
-                fumbRetYdLine! = ydsGained + ydLine
+                playYdLine! = ydsGained + ydLine
 
-                If fumbRetYdLine! < (-10 + YDS_TOLERANCE!) Then
+                If playYdLine! < (-10 + YDS_TOLERANCE!) Then
 
                     'Offensive Safety
                     score(D, quarter) = score(D, quarter) + 2
@@ -4387,7 +4390,7 @@ Sub FOOTBALL ()
 
                 End If
 
-                If fumbRetYdLine! <= YDS_TOLERANCE! And fumbRetYdLine! >= (10 + YDS_TOLERANCE!) Then
+                If playYdLine! <= YDS_TOLERANCE! And playYdLine! >= (10 + YDS_TOLERANCE!) Then
 
                     pbpString$ = "IT'S BLOCKED IN THE END ZONE!"
                     Call PBP
@@ -4426,15 +4429,19 @@ Sub FOOTBALL ()
                 currDown = 1
                 ydsToFirst = 10
 
-                ydLine = 100 - ydLine
+                ydLine = 100 - playYdLine!
 
                 If ydLine >= (90 - YDS_TOLERANCE!) Then
                     ydsToFirst = 100 - ydLine
                 End If
 
                 If d100% <= 50 Then
+                    pbpString$ = gameMascots$(P1) + " FALL ON IT"
+                    Call PBP
                     pbpString$ = gameTeams$(P1) + " TAKES OVER ON THE"
                 Else
+                    pbpString$ = gameTeams$(P1) + " SCOOPS IT UP"
+                    Call PBP
                     pbpString$ = gameMascots$(P1) + " TAKE OVER ON THE"
                 End If
 
@@ -4631,36 +4638,33 @@ Sub FOOTBALL ()
                         Else
 
                             'Normal PR yardage
-                            Call PuntReturnYards(catchYL!)
+                            Call PuntReturnYards(resultLine!)
 
                             'Track Punt Return
                             gameStatsPlayer(P1, puntRetIdx + 3, 14) = gameStatsPlayer(P1, puntRetIdx + 3, 14) + 1
 
-                            returnYL! = (100 - puntYdLine!) + ydsGained
-                            ydLine = returnYL!
+                            ydLine = resultLine! + ydsGained
 
-                            If IsTouchdown(returnYL!) Then
+                            If IsTouchdown(ydLine) Then
                                 'Return yardage (touchdown)
-                                ydsGained = 100 - puntYdLine!
+                                ydsGained = 100 - ydLine
                             End If
 
                             'Check for longest return
                             If ydsGained > gameLongPRYds(P1, puntRetIdx) Then
                                 gameLongPRTD$(P1, puntRetIdx) = ""
                                 gameLongPRYds(P1, puntRetIdx) = ydsGained
-                                If IsTouchdown(returnYL!) Then
+                                If IsTouchdown(ydLine) Then
                                     gameLongPRTD$(P1, puntRetIdx) = "t"
                                 End If
                             End If
 
                             'Track Return Yards
-                            playYds! = gameStatsPlayer(P1, puntRetIdx + 3, 15)
                             gameStatsPlayer(P1, puntRetIdx + 3, 15) = gameStatsPlayer(P1, puntRetIdx + 3, 15) + ydsGained
-                            playYds! = gameStatsPlayer(P1, puntRetIdx + 3, 15)
 
                             I1 = puntRetIdx
 
-                            If IsSafety(returnYL!) Then
+                            If IsSafety(ydLine) Then
                                 'Safety!
                                 GoTo 3250
                             End If
@@ -4668,7 +4672,7 @@ Sub FOOTBALL ()
                             currDown = 1
                             ydsToFirst = 10
 
-                            If returnYL! >= (90 - YDS_TOLERANCE!) Then
+                            If ydLine >= (90 - YDS_TOLERANCE!) Then
                                 ydsToFirst = 100 - ydLine
                             End If
 
@@ -4827,7 +4831,7 @@ Sub FOOTBALL ()
                     Do
                         I$ = GetKeyPress$
                         fgDefChoice = Val(I$)
-                    Loop Until fgDefChoice >= 1 And fgDefChoice <= 2
+                    Loop Until fgDefChoice = 1 Or fgDefChoice = 2
 
                 End If
 
@@ -5090,15 +5094,15 @@ Sub FOOTBALL ()
                         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
                         ydsGained = (Int(Rnd(1) * 9) + 6) * -1
-                        retYdLine! = ydsGained + ydLine
+                        playYdLine! = ydsGained + ydLine
 
-                        If retYdLine! < (-10 + YDS_TOLERANCE!) Then
+                        If playYdLine! < (-10 + YDS_TOLERANCE!) Then
                             score(D, quarter) = score(D, quarter) + 2
                             score(D, 0) = score(D, 0) + 2
                             GoTo 3251
                         End If
 
-                        If retYdLine! <= YDS_TOLERANCE! And retYdLine! >= (10 + YDS_TOLERANCE!) Then
+                        If playYdLine! <= YDS_TOLERANCE! And playYdLine! >= (10 + YDS_TOLERANCE!) Then
 
                             If d100% <= 50 Then
 
@@ -5122,7 +5126,7 @@ Sub FOOTBALL ()
                                 Call CHANGEPOSS
                                 Call ShowChainMarker
                                 startYds = 100 - ydLine
-                                endYds = retYdLine!
+                                endYds = playYdLine!
                                 Call MOVEBALL
 
                                 'Touchdown!
@@ -5617,8 +5621,7 @@ Sub FOOTBALL ()
 
                     Else
 
-                        playYdLine! = ydsGained + ydLine
-                        penaltyText$ = penaltyText$ + " AT THE" + YardLineStr$(playYdLine!) + " YD LINE ***"
+                        penaltyText$ = penaltyText$ + " AT THE" + YardLineStr$(penaltyYds! + ydLine) + " YD LINE ***"
 
                     End If
 
@@ -6320,10 +6323,23 @@ Sub FOOTBALL ()
 
     perFoulRoll = Int(Rnd(1) * 1000) + 1
 
+    Select Case teamYears(impactTeam)
+
+        Case Is <= 1975
+            perFoulChance = 13
+
+        Case 1976 To 1993
+            perFoulChance = 18
+
+        Case 1994 To 2010
+            perFoulChance = 20
+            
+    End Select
+
     flagOnPlay = 0
 
     ' *** PERSONAL FOULS ***
-    If perFoulRoll <= 20 + teamRat_GAME(D, 0) Then
+    If perFoulRoll <= perFoulChance + teamRat_GAME(D, 0) Then
 
         flagOnPlay = 1
         spotFromGain = 1
@@ -6750,15 +6766,12 @@ Sub FOOTBALL ()
 
     penaltyString$ = ""
 
+    '-- REMOVE ME
+    Print #11, pbpString$
+
     If koPenalty = 1 Then
 
         Call KOPenaltyChoice(penAccepted, isOffsides)
-
-        If penAccepted <> 2 Then
-            'Not doing a re-kick
-            'Prevent penalty from being enforced
-            koPenalty = 0
-        End If
 
         If penAccepted = 2 Then
             'Restore possession to kicking team
@@ -6890,6 +6903,7 @@ Sub FOOTBALL ()
             'Penalty on Defense
             Call PenaltyCharge(D, penaltyYds!, spotFoul)
 
+            koPenalty = 0
             prPenalty = 0
 
             'Penalty on PAT or conversion hasn't happened
@@ -6934,6 +6948,7 @@ Sub FOOTBALL ()
             'Penalty on Offense
             Call PenaltyCharge(P1, penaltyYds!, spotFoul)
 
+            koPenalty = 0
             prPenalty = 0
 
             'Penalty on PAT or conversion hasn't happened
@@ -6994,6 +7009,7 @@ Sub FOOTBALL ()
 
     Else
 
+        koPenalty = 0
         pbpString$ = "PENALTY DECLINED"
         Call PBP
 
@@ -7245,7 +7261,7 @@ Sub FOOTBALL ()
             If gameOver = 1 Then
 
                 'Game ends after quarter;
-                If isOT = 0 Or overtimeOpt = 1 Then
+                If isOT = 0 Then 'Or overtimeOpt = 1 Then
                     'restore actual quarter #
                     quarter = quarter - 1
                 End If
@@ -7680,7 +7696,6 @@ Sub FOOTBALL ()
     3900 '
     'Adjust possession time, check for special scenarios                                                                                                                             0
     '(ie, hurry up, 2-minute warning, etc.)
-    twoMinWarn = 0
     skipRunoff = 0
 
     If playSegment <> 8 Then
@@ -7711,9 +7726,6 @@ Sub FOOTBALL ()
                     timePoss(P1) = timePoss(P1) + (gameClock! - 120)
                     gameClock! = 120
                 End If
-
-                playSegment = 4
-                twoMinWarn = 1
 
             End If
 
@@ -7751,12 +7763,7 @@ Sub FOOTBALL ()
                             pbpString$ = "HUDDLE"
                             Call PBP
                         Else
-                            pbpString$ = "TIME OUT " + gameTeams$(P1) + " - THEY HAVE" + Str$(timeouts(P1) - 1) + " REMAINING"
-                            Call PBP
-                            timeouts(P1) = timeouts(P1) - 1
-                            playSegment = 9
-
-                            Call AddPossessionTime(P1, 7, 10)
+                            Call TimeoutCalled(P1, periodOver)
                             skipRunoff = 1
 
                         End If
@@ -7807,14 +7814,8 @@ Sub FOOTBALL ()
                             pbpString$ = "HUDDLE"
                             Call PBP
                         Else
-                            pbpString$ = "TIME OUT " + gameTeams$(D) + " - THEY HAVE" + Str$(timeouts(D) - 1) + " REMAINING"
-                            Call PBP
-                            timeouts(D) = timeouts(D) - 1
-                            playSegment = 9
-
-                            Call AddPossessionTime(D, 7, 10)
+                            Call TimeoutCalled(D, periodOver)
                             skipRunoff = 1
-
                         End If
 
                 End Select
@@ -7824,7 +7825,7 @@ Sub FOOTBALL ()
         End If
 
         If skipRunoff = 0 Then
-            Call ApplyClockRunoff(twoMinWarning)
+            Call ApplyClockRunoff
         End If
 
         Call CheckGameClock
@@ -7981,11 +7982,11 @@ Sub FOOTBALL ()
     'track all associated stats
 
     ydsGained = Int(Rnd(1) * 10) + 1
-
+    intYL! = ydsGained + ydLine
     Call YARDAGE
 
     'Spot of the interception
-    If IsTouchdown(ydsGained + ydLine) Then
+    If IsTouchdown(intYL!) Then
 
         'Interception in the end zone
         pbpString$ = pbpString$ + " IN THE END ZONE"
@@ -7995,13 +7996,13 @@ Sub FOOTBALL ()
 
     Else
 
-        pbpString$ = pbpString$ + " AT THE" + YardLineStr$(ydsGained + ydLine) + " YARD LINE"
+        pbpString$ = pbpString$ + " AT THE" + YardLineStr$(intYL!) + " YARD LINE"
         Call PBP
 
         Call CHANGEPOSS
 
         currDown = 1
-        ydLine = 100 - ydsGained - ydLine
+        ydLine = 100 - intYL!
 
         ydsToScore = 100 - ydLine
         Call ShowChainMarker
@@ -8123,7 +8124,7 @@ Sub FOOTBALL ()
             Call PBP
 
             playSegment = 5
-            ydLine = ydLine + ydsGained
+            ydLine = playYdLine!
 
             ydsToFirst = 10
 
@@ -8697,7 +8698,7 @@ Sub PBP ()
 
     End Select
 
-    Print #11, pbpString$
+    'Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -11440,7 +11441,7 @@ End Sub
 'possesion for a team after a play has
 'completed. The time is based on the type
 'of play as well as where it ended.
-Sub ApplyClockRunoff (twoMinClock)
+Sub ApplyClockRunoff ()
 
     If playSegment = 0 Then
 
@@ -11491,18 +11492,7 @@ Sub ApplyClockRunoff (twoMinClock)
     Else
 
         'playSegment 1 to 3
-        If playSegment >= 1 And playSegment <= 3 Then
-            timeElapsed! = 27 - (playSegment * 5) + (Int(Rnd(1) * 5) + 1)
-        Else
-            'playSegment >= 4
-            'Only subtract time if we're not AT the 2-min warning
-            If twoMinClock = 1 Then
-                timeElapsed! = 0
-            Else
-                timeElapsed! = (2 * playSegment) - 5 + (Int(Rnd(1) * 3) + 1)
-            End If
-        End If
-
+        timeElapsed! = 27 - (playSegment * 5) + (Int(Rnd(1) * 5) + 1)
         gameClock! = gameClock! - timeElapsed!
         timePoss(P1) = timePoss(P1) + timeElapsed!
 
@@ -12474,7 +12464,7 @@ Sub DEFMENU (defEra)
             Print
             Locate , 27: Print "G - GOAL LINE (5 YL AND IN)"
 
-            If timeouts(D) > 0 Then
+            If playSegment < 4 And timeouts(D) > 0 Then
                 Locate , 27: Print "T - CALL TIMEOUT"
             End If
 
@@ -12495,7 +12485,7 @@ Sub DEFMENU (defEra)
 
                 If UCase$(I$) = "T" Then
                     Call TimeoutCalled(D, periodOver)
-                    Call DisplayClockDown
+                    Call Scoreboard
                     Call CheckGameClock
                     If gameClock! = 0 Then Exit Sub
                     'If periodOver = 1 Then GoTo 3360
@@ -15807,8 +15797,6 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD, koOffsides)
 
         Case 1 To 54
             '(Kicking team)
-            'pbpString$ = "*** PENALTY - ILLEGAL BLOCK - " + gameTeams$(D) + " - 15 YDS ***"
-            'penaltyYds! = 15
             koPenaltyString$ = "*** PENALTY - OFFSIDES - " + gameTeams$(D) + " - 5 YDS ***"
             penaltyYds! = 5
             koOffsides = 1
@@ -16496,7 +16484,20 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul, autoAcc)
         'routine plays like FG, PAT, conversion
         penaltyChance = 5
     Else
-        penaltyChance = 31
+
+        Select Case teamYears(impactTeam)
+
+            Case Is <= 1975
+                penaltyChance = 21
+
+            Case 1976 To 1993
+                penaltyChance = 29
+
+            Case 1994 To 2010
+                penaltyChance = 31
+
+        End Select
+
     End If
 
     'Determine type of penalty
@@ -16755,6 +16756,17 @@ Sub TimeoutCalled (teamIdx, periodOver)
     playSegment = 9
 
     Call AddPossessionTime(P1, 7, 10)
+
+    Color 15 * (1 - BW), 1 + BW * 6
+
+    'Print updated timeout counts
+    For X = 0 To 1
+        Locate X + 4, 41
+        Print Using "#"; timeouts(I)
+    Next X
+
+    Color 0
+
     'Call CheckGameClock(periodOver)
 
 End Sub
@@ -18526,8 +18538,11 @@ Sub TwoMinMenu (menuChoice)
         Else
             Locate , 14: Print "4 - SPIKE THE BALL"
         End If
-
-        Screen , , 0, 0
+        If Not IsDefensePC Then
+            Locate , 14: Print "5 - TIME OUT "; gameTeams$(D); " ";
+            Locate , 43: Print timeouts(D)
+            Locate , 14: Print "PRESS ANY OTHER KEY TO CONTINUE"
+        End If
 
     End If
 
@@ -18537,12 +18552,11 @@ Sub TwoMinMenu (menuChoice)
 
         'We'll get to this routine even at 2 minutes
         'Therefore, you will see checks if gameClock < 120 before taking TOs
-        If playerMode > 0 And (compTeam = P1 Or playerMode = 2) Then
+        If IsOffensePC Then
 
             scoreDiff = score(P1, 0) - score(D, 0)
 
             If quarter = 2 Then
-
                 '2nd quarter
                 '-----------
                 'Offense ahead, outside the 35 - Modern era
@@ -18557,37 +18571,10 @@ Sub TwoMinMenu (menuChoice)
                         If playSegment < 4 And timeouts(P1) = 0 And gameClock! < 120 And _
                             currDown < 4 And scoreDiff >= -21 And scoreDiff <= 8 Then
 
-                            If ydLine > inFGRange And scoreDiff >= -3 Then
-                                'Spike the ball to give time for a FG
+                            If d100% < CalcOffSpikeChance(scoreDiff) Then
                                 menuChoice = 4
                             Else
-
-                                If scoreDiff >= -3 Then
-                                    'FG would help - target is getting into range, not the endzone
-                                    yardsNeeded! = inFGRange - ydLine
-                                Else
-                                    'FG doesn't help - need the actual TD
-                                    yardsNeeded! = ydsToScore
-                                End If
-
-                                estPlaysAvailable = Int(gameClock! / 20)
-                                estPlaysNeeded = Int(ydsToScore / 7.5) + 1
-                                urgencyRatio! = estPlaysAvailable / estPlaysNeeded
-
-                                Select Case urgencyRatio!
-                                    Case Is >= 1.25
-                                        callChance = 15
-                                    Case Is >= 1.0
-                                        callChance = 50
-                                    Case Else
-                                        callChance = 85
-                                End Select
-
-                                If d100% < callChance Then
-                                    menuChoice = 4
-                                Else
-                                    menuChoice = 3
-                                End If
+                                menuChoice = 3
                             End If
                         Else
                             menuChoice = 3
@@ -18599,8 +18586,6 @@ Sub TwoMinMenu (menuChoice)
                 End If
 
             Else
-
-
                 '4th quarter
                 '-----------
                 'Offense is behind; they NEED to score fast
@@ -18612,37 +18597,10 @@ Sub TwoMinMenu (menuChoice)
                         If playSegment < 4 And timeouts(P1) = 0 And gameClock! < 120 And _
                             currDown < 4 And scoreDiff >= -21 Then
 
-                            If ydLine > inFGRange And scoreDiff >= -3 Then
-                                'Spike the ball to give time for a FG
+                            If d100% < CalcOffSpikeChance(scoreDiff) Then
                                 menuChoice = 4
                             Else
-
-                                If scoreDiff >= -3 Then
-                                    'FG would help - target is getting into range, not the endzone
-                                    yardsNeeded! = inFGRange - ydLine
-                                Else
-                                    'FG doesn't help - need the actual TD
-                                    yardsNeeded! = ydsToScore
-                                End If
-
-                                estPlaysAvailable = Int(gameClock! / 20)
-                                estPlaysNeeded = Int(yardsNeeded! / 7.5) + 1
-                                urgencyRatio! = estPlaysAvailable / estPlaysNeeded
-
-                                Select Case urgencyRatio!
-                                    Case Is >= 1.25
-                                        callChance = 15
-                                    Case Is >= 1.0
-                                        callChance = 50
-                                    Case Else
-                                        callChance = 85
-                                End Select
-
-                                If d100% < callChance Then
-                                    menuChoice = 4
-                                Else
-                                    menuChoice = 3
-                                End If
+                                menuChoice = 3
                             End If
                         Else
                             menuChoice = 3
@@ -18654,10 +18612,10 @@ Sub TwoMinMenu (menuChoice)
 
             End If
 
-        End If
 
-        If decided = 0 And playerMode = 0 Or (playerMode = 1 And compTeam = D) Then
+        Else
 
+            'Allow human player to make a choice
             Do
                 I$ = GetKeyPress$
                 menuChoice = Val(I$)
@@ -18670,115 +18628,53 @@ Sub TwoMinMenu (menuChoice)
 
     'If offense is not taking a TO, clock is running
     'and DEF has timeouts...
-    If IsDefensePC And menuChoice <> 2 And _ 
-        playSegment < 4 And timeouts(D) > 0 And gameClock! < 120 Then
+    If menuChoice <> 2 And _ 
+        playSegment <= 4 And timeouts(D) > 0 And gameClock! <= 120 Then
 
-        'Determine if we should take TO
-        scoreDiff = score(D, 0) - score(P1, 0)
+        If IsDefensePC Then
 
-        If quarter = 2 Then
+            'Determine if we should take TO
+            scoreDiff = score(D, 0) - score(P1, 0)
 
-            'Down more than one score - call TO!
-            If scoreDiff < -8 Then
-                menuChoice = 5
-            Else
+            If playSegment < 4 And timeouts(D) > 0 And gameClock! < 120 Then
 
-                'Decide whether to take TO based on the
-                'likelihood Defense can hold the team
-                avgYardsPerPlay! = 5.5
+                If quarter = 2 Then
+                    If d100% < CalcDefTOChance(scoreDiff, menuChoice) Then
+                        menuChoice = 5
+                    End If
+                Else
+                    '4th Quarter
+                    'Don't even consider a timeout when down by more than 2 scores
+                    If scoreDiff < 0 And scoreDiff >= -14 Then
+                        If d100% < CalcDefTOChance(scoreDiff, menuChoice) Then
+                            menuChoice = 5
+                        End If
+                    End If
 
-                'The current down hasn't been played so it counts
-                downsRemaining = 4 - (currDown - 1)
-                expectedYards! = downsRemaining * avgYardsPerPlay!
-                convertRatio! = expectedYards! / ydsToFirst
-
-                Select Case convertRatio
-
-                    Case Is >= 1.5
-                        'Offense likely to convert - hold off, don't burn timeout
-                        callChance = 15
-
-                    Case Is >= 1.0
-                        'Borderline - moderate urgency, may call timeout
-                        callChance = 50
-
-                    Case Else
-                        'Offense unlikely to convert - call timeout more freely
-                        callChance = 85
-
-                End Select
-
-                If menuChoice = 1 Then
-                    'Huddle = offense is taking time
-                    callChance = callChance + 10
                 End If
 
-                If D = (1 - openKickTeam) Then
-                    'Defense is receiving next half - less urgent
-                    callChance = callChance - 15
-                End If
-
-                If d100% < callChance Then
-                    menuChoice = 5
-                End If
-
-            End If 'Done checking if team is within 1 score
+            End If
 
         Else
 
-            '4th Quarter - defensive timeout logic
-            downsLeftInSet = 4 - (currDown - 1)
+            Do
+                I$ = GetKeyPress$
+                defChoice = Val(I$)
+            Loop Until defChoice = 5 Or Not (defChoice >= 1 And defChoice <= 4)
 
-            If scoreDiff < -8 And scoreDiff >= -14 Then
-                'Down 9-14 (more than one score)
-                'Game is still recoverable - take TO on any down
+            If defChoice = 5 Then
                 menuChoice = 5
+            End If
 
-            Else
-
-                If scoreDiff < 0 And scoreDiff >= -8 Then
-
-                    'Down 1-8 (one score or less)
-                    If downsLeftInSet <= 2 Then
-                        '3rd/4th down - stop imminent, call TO
-                        menuChoice = 5
-                    Else
-                        '1st/2nd down - conservative, use convertRatio approach
-                        avgYardsPerPlay! = 5.5
-                        expectedYards! = downsLeftInSet * avgYardsPerPlay!
-                        convertRatio! = expectedYards! / ydsToFirst
-
-                        Select Case convertRatio!
-                            Case Is >= 1.5
-                                callChance = 15
-                            Case Is >= 1.0
-                                callChance = 50
-                            Case Else
-                                callChance = 85
-                        End Select
-
-                        If menuChoice = 1 Then
-                            'Huddle = offense is taking time
-                            callChance = callChance + 10
-                        End If
-
-                        If d100% < callChance Then
-                            menuChoice = 5
-                        End If
-
-                    End If 'Done checking downs left
-
-                End If
-
-            End If 'Done checking score deficit
-
-        End If 'Done checking Q2/Q4
+        End If
 
     End If
 
+    Screen , , 0, 0
+
     Color 0, 5 * (1 - BW)
 
-    Call DisplayField
+    Call DisplayClockDown
 
 End Sub
 
@@ -23306,11 +23202,144 @@ Sub EndOfGame
 End Sub
 
 
+'----------------------------------------
+'        CalcDefTOChance Function
+'----------------------------------------
+'This routine determines the chance that
+'a team on Defense will take a TIMEOUT.
+'It is based on several factors related
+'to ball position, score, downs remaining,
+'etc.
+Function CalcDefTOChance (defScoreDiff, menuChoice)
+
+    If quarter = 2 And defScoreDiff > 0 Then
+        'Leading defense - only worth a TO if there's time for one more shot before half
+        If gameClock! >= 25 Then
+            callChance = 100
+        Else
+            callChance = 0
+        End If
+    Else
+
+        avgYardsPerPlay! = 5.5
+        downsRemaining = 4 - (currDown - 1)
+        expectedYards! = downsRemaining * avgYardsPerPlay!
+        convertRatio! = expectedYards! / ydsToFirst
+
+        If defScoreDiff < -8 Then
+            'Down two scores (9-14) - higher baseline urgency
+            Select Case convertRatio!
+                Case Is >= 1.5
+                    callChance = 30
+                Case Is >= 1.0
+                    callChance = 65
+                Case Else
+                    callChance = 90
+            End Select
+        Else
+            'Within one score - standard baseline
+            Select Case convertRatio!
+                Case Is >= 1.5
+                    callChance = 15
+                Case Is >= 1.0
+                    callChance = 50
+                Case Else
+                    callChance = 85
+            End Select
+        End If
+
+        'Time-remaining modifier - less time left, more urgency
+        timeUrgency = Int((120 - gameClock!) / 6)
+
+        'Scoring-threat modifier - only if offense's likely score would threaten D's lead
+        threatBonus = 0
+        estPlaysNeeded = Int(ydsToScore / 7.5) + 1
+        If (ydLine > inFGRange And defScoreDiff <= 3) Or (estPlaysNeeded <= 2 And defScoreDiff <= 8) Then
+            threatBonus = Int(30 / estPlaysNeeded)
+        End If
+
+        huddleBonus = 0
+        If menuChoice = 1 Then
+            'Huddle = offense is taking time
+            huddleBonus = 10
+        End If
+
+        'Cap combined modifiers based on down - discourage early-down TOs when convertRatio! is favorable
+        modifierTotal = timeUrgency + threatBonus + huddleBonus
+        Select Case currDown
+            Case 1, 2
+                If modifierTotal > 25 Then modifierTotal = 25
+            Case 3, 4
+                If modifierTotal > 50 Then modifierTotal = 50
+        End Select
+        callChance = callChance + modifierTotal
+
+        If quarter = 2 And D = (1 - openKickTeam) Then
+            'Defense is receiving next half - less urgent
+            callChance = callChance - 15
+        End If
+
+        If callChance > 100 Then callChance = 100
+        If callChance < 0 Then callChance = 0
+
+    End If
+
+    CalcDefTOChance = callChance
+
+End Function
+
+
+'----------------------------------------
+'       CalcOffSpikeChance Function
+'----------------------------------------
+'This routine determines the chance the
+'offense needs to stop the clock before
+'they would call a timeout
+Function CalcOffSpikeChance (offScoreDiff)
+
+    Dim inFGRange, inLongFGRange
+
+    fgAttLine = (117 - fgLimit% + goalPostAdj)
+    inFGRange = fgAttLine - 3
+    inLongFGRange = fgAttLine + 10
+
+    If ydLine > inFGRange And offScoreDiff >= -3 Then
+        'Spike the ball to give time for a FG - unconditional
+        CalcOffSpikeChance = 100
+        Exit Function
+    End If
+
+    If offScoreDiff >= -3 Then
+        'FG would help - target is getting into range, not the endzone
+        ydsNeeded! = inFGRange - ydLine
+    Else
+        'FG doesn't help - need the actual TD
+        ydsNeeded! = ydsToScore
+    End If
+
+    estPlaysAvailable = Int(gameClock! / 20)
+    estPlaysNeeded = Int(ydsNeeded! / 7.5) + 1
+    urgencyRatio! = estPlaysAvailable / estPlaysNeeded
+
+    Select Case urgencyRatio!
+        Case Is >= 1.25
+            callChance = 15
+        Case Is >= 1.0
+            callChance = 50
+        Case Else
+            callChance = 85
+    End Select
+
+    CalcOffSpikeChance = callChance
+
+End Function
+
 
 '----------------------------------------
 '         decideOnside% Function
 '----------------------------------------
-'This routine determines a team fatigue
+'This routine determines a team's chances
+'that an onside kick would benefit them
 Function decideOnside%
 
     Dim shouldTryOnside
