@@ -378,7 +378,9 @@ Dim divTeamNames$(60), leagRecText$(60)
 '----------------------------------------
 Dim ballFumbled, evalDown
 Dim freePlayYdsGained, freePlayYdsToFirst
-Dim openKickTeam, playResultSafety, playResultTD
+Dim koPenalty, openKickTeam
+Dim playResultSafety, playResultTD, prPenalty
+Dim spotFoul, spotFromGain
 Dim tickerStart, winTeam
 
 Dim downYds!, evalYdsToFirst!
@@ -387,8 +389,6 @@ Dim actualAttendance&, avgAttendance&
 
 Dim blitzCovAdj(5, 10, 14)
 Dim playActAdj(2, 21)
-
-Dim koPenalty, prPenalty
 
 Dim Shared I4 As Single
 Dim Shared kickYL!
@@ -416,7 +416,7 @@ Dim Shared isOT, isSack, kickDist
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetIdx
-'Dim Shared quarter, qback, qbTakeKnee
+Dim Shared quarter, qback, qbTakeKnee
 
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
 Dim Shared sndOpt, startYds, useTicker
@@ -526,4 +526,3 @@ Dim Shared tickerPeriod$(14), wdRec$(1, 5)
 
 Dim Shared gameLongIntTD$(1, 9), gameLongKRTD$(1, 2), gameLongPRTD$(1, 2)
 Dim Shared gameLongRunTD$(1, 17), gameLongPassTD$(1, 3), gameLongRecTD$(1, 20)
-
