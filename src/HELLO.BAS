@@ -46,6 +46,8 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+
+
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
 
@@ -1072,7 +1074,7 @@ Sub FOOTBALL ()
     Dim fgWasMade, flagOnPlay
     Dim isFCPuntInt, isIllBlock, isOffHold, isOffsides
     Dim pendingFlag, perFoulCall, pkPenalty, playResolved
-    Dim rbStatus, roundedTeamYd
+    Dim rbStatus, roundedTeamYd, skipRunoff
     Dim tbLine, ydsAttempted, ydsForConv
 
     Dim pendingPenYds!, playYdLine!, qbRushAvg!
@@ -1771,7 +1773,7 @@ Sub FOOTBALL ()
                 For currBack = 0 To 9:
                     For currQB = 0 To 3
                         If rbacks$(currTeam, currBack) = qbacks$(currTeam, currQB) And currQB <> qbNumber(currTeam) Then
-                            player$ = rbacks$(currTeam, currBack)
+                            'player$ = rbacks$(currTeam, currBack)
                             qbRushIdx(currTeam, currQB) = currBack
                         End If
                     Next currQB
@@ -1792,6 +1794,7 @@ Sub FOOTBALL ()
             '-- we could probably update the routine
             '-- to handle autoPlay = 1 by itself
             Call CHOOSEQB(currTeam)
+            Print #11, "DEBUG: Quarterback chosen = "; qbacks$(currTeam, qbNumber(currTeam))
 
         End If
 
@@ -1859,6 +1862,30 @@ Sub FOOTBALL ()
     notReturned = 0
     koPenalty = 0
 
+    Select Case teamYears(P1)
+
+        Case teamYears >= 1939 And teamYears <= 1973
+            'straight-on era, rare touchbacks
+            avgKickDistEra = 53
+
+        Case teamYears >= 1974 And teamYears <= 1993
+            'soccer-style transition
+            avgKickDistEra = 58
+
+        Case teamYears >= 1994 And teamYears <= 2010
+            'soccer-style universal
+            avgKickDistEra = 62
+
+        Case teamYears >= 2011 And teamYears <= 2023
+            'peak leg strength, majority touchbacks post-2016
+            avgKickDistEra = 66
+
+        Case teamYears >= 2024
+            'dynamic kickoff; kickers intentionally target landing zone
+            avgKickDistEra = 50
+
+    End Select
+
     Select Case kickChoice
 
         Case 0
@@ -1892,7 +1919,7 @@ Sub FOOTBALL ()
                     'Research is required to confirm the speifics
                     'for NCAA; only pro years here are mapped
 
-                    Select Case teamYears(impactTeam)
+                    Select Case teamYears(P1)
 
                         Case 1920 To 1925
                             'Out-of-bounds is a live ball
@@ -1911,8 +1938,10 @@ Sub FOOTBALL ()
                         Case 1939 To 1943
                             'Ball placed at spot
                             'Assign a random yard line based on where the kick went out
-                            'This needs to be based on a distribution that is related
-                            'to the type of kick that happened
+                            'This is based on a distribution from average kick distances
+                            '-- Rules for 1942-1943 may be different; not yet confirmed
+                            Call KickoffLine(0, 0)
+                            ydLine = ydLine + (avgKickDistEra * KOTouchedOOBFraction#)
 
                         Case 1944 To 1986
                             'No change
@@ -2592,7 +2621,7 @@ Sub FOOTBALL ()
                         End If
 
                         If UCase$(I$) = "T" Then
-                            Call TimeoutCalled(P1, periodOver)
+                            Call TimeoutCalled(P1, periodOver, 0)
                             Call CheckGameClock
                             If gameClock! = 0 Then GoTo 3360
                             I$ = "10"
@@ -2835,7 +2864,8 @@ Sub FOOTBALL ()
     flagOnPlay = 0
     deadBall = 0
 
-    If d100% < 25 Then
+    'If d100% < 25 Then
+    If d100% < 101 Then
         Call DownDescription
         Call BallPosition
     End If
@@ -2880,9 +2910,18 @@ Sub FOOTBALL ()
             Else
 
                 3401 '
+                If playCall = 5 Then
+                    'Option play - QB can be runner
+                    checkForPass = 0
+                Else
+                    checkForPass = 1
+                End If
+
                 Do
                     'Get random runner based on contribution
+                    Print #11, "DEBUG: Prev. Runner (I1)    ="; Str$(I1); ", Name = "; rbacks$(P1, I1)
                     Call GetValidRunner(P1, I1, checkForPass, rbStatus)
+                    Print #11, "DEBUG: Chosen Runner (I1)   ="; Str$(I1); ", Name = "; rbacks$(P1, I1)
 
                     If rbStatus = 2 Then
                         If isReverse = 1 Then
@@ -2893,6 +2932,9 @@ Sub FOOTBALL ()
                     End If
 
                 Loop Until rbStatus <> 2
+
+                Print #11, "DEBUG: Current QB Name      = "; qbacks$(P1, qbNumber(P1))
+                Print #11, "DEBUG: ValidRunner rbStatus ="; Str$(rbStatus)
 
                 ResolveRunner:
                 Select Case rbStatus
@@ -5083,23 +5125,24 @@ Sub FOOTBALL ()
                         fgSuccessChance = FieldGoalChance%
                     End If
 
-                    Call Rolld100(RN9)
-
-                    If RN9 < 50 Then
+                    If d100% < 50 Then
                         pbpString$ = kicker$(P1, activeKicker(P1)) + " TROTS ON TO TRY A FIELD GOAL"
+                        Call PBP
+
+                        pbpString$ = "THIS WILL BE A" + Str$(FieldGoalDistance%) + " YARD ATTEMPT"
+                        Call PBP
+
+                        pbpString$ = "HE WAITS FOR THE SNAP"
+
                     Else
                         pbpString$ = "THE FIELD GOAL UNIT FOR " + gameTeams$(P1) + " COMES ON THE FIELD"
-                    End If
 
-                    Call PBP
+                        pbpString$ = "THIS WILL BE A" + Str$(FieldGoalDistance%) + " YARD ATTEMPT"
+                        Call PBP
 
-                    pbpString$ = "THIS WILL BE A" + Str$(FieldGoalDistance%) + " YARD ATTEMPT"
-                    Call PBP
-
-                    If RN9 < 50 Then
-                        pbpString$ = "HE WAITS FOR THE SNAP"
-                    Else
                         pbpString$ = kicker$(P1, activeKicker(P1)) + " WAITS FOR THE SNAP"
+                        Call PBP
+
                     End If
 
                     flagOnPlay = 0
@@ -5460,6 +5503,12 @@ Sub FOOTBALL ()
                                     Call CHANGEPOSS
 
                                     'Wait for keypress to start the kickoff
+                                    If Not (playerMode = 2) Then
+                                        pbpString$ = "PRESS ANY KEY FOR KICKOFF"
+                                        Call PBP
+                                        I$ = GetKeyPress$
+                                    End If
+
                                     Call GetKeyWhenNoDelay
 
                                     GoTo 340
@@ -6570,9 +6619,6 @@ Sub FOOTBALL ()
 
         If penaltyRoll >= 23 Then
 
-            'Can't end on defensive penalty
-            If gameClock! <= 0 Then gameClock! = 1
-
             'Most defensive penalties result in 1st down
             'except Incidental Facemask
             If (penaltyRoll >= 80 And penaltyRoll <= 84) Then
@@ -7008,7 +7054,6 @@ Sub FOOTBALL ()
                     gameStatsPlayer(P1, kickRetIdx, 15) = gameStatsPlayer(P1, kickRetIdx, 15) + ydsGained
                     returnYds = gameStatsPlayer(P1, kickRetIdx, 15)
 
-
                 Case 4
                     ' ** Punt Return **
                     'Remove TD
@@ -7067,6 +7112,11 @@ Sub FOOTBALL ()
 
             koPenalty = 0
             prPenalty = 0
+
+            '2nd / 4th quarter can't end on defensive penalty
+            If (quarter = 2 or quarter = 4) And gameClock! <= 0 Then
+                gameClock! = 1
+            End If
 
             'Penalty on PAT or conversion hasn't happened
             If endZone >= 1 Or convGood = -1 Then
@@ -7195,8 +7245,6 @@ Sub FOOTBALL ()
             If playCall = 20 Then
                 'Don't compile stats / resolve here
                 'Go back to resolving result
-
-                test = 1
 
                 If fgWasMade = 1 Then
                     GoTo ResolveMadeFG
@@ -7328,10 +7376,12 @@ Sub FOOTBALL ()
     'Crosswind 10-30% chance
     xwindChance = Int(Rnd(1) * 21) + 10
 
+    windFavorTeam = 1 - windFavorTeam
+
     If d100% <= xwindChance Then
         climate(0) = 2
     Else
-        climate(0) = 1 - climate(0)
+        climate(0) = 1 - windFavorTeam
     End If
 
     gameOver = 0
@@ -7764,6 +7814,7 @@ Sub FOOTBALL ()
         If autoPlay <> 1 Then
             For I3 = 0 To 1:
                 Call CHOOSEQB(I3)
+                Print #11, "DEBUG: Quarterback chosen = "; qbacks$(I3, qbNumber(I3))
             Next I3
         End If
 
@@ -7942,9 +7993,8 @@ Sub FOOTBALL ()
                             pbpString$ = "HUDDLE"
                             Call PBP
                         Else
-                            Call TimeoutCalled(P1, periodOver)
+                            Call TimeoutCalled(P1, periodOver, (playSegment = 4))
                             skipRunoff = 1
-
                         End If
 
                     Case 3
@@ -7993,7 +8043,7 @@ Sub FOOTBALL ()
                             pbpString$ = "HUDDLE"
                             Call PBP
                         Else
-                            Call TimeoutCalled(D, periodOver)
+                            Call TimeoutCalled(D, periodOver, (playSegment = 4))
                             skipRunoff = 1
                         End If
 
@@ -8835,6 +8885,15 @@ End Sub
 ' that is up for the Offense
 Sub DownDescription
 
+    '-- REMOVE ME --
+    TI = gameClock!
+    TI = TI + TI * (TI < 0)
+    I = Int(TI / 60)
+    J = TI - I * 60
+    qtrTime! = I + J / 100
+    Print #11, Using " TIME: ##.##     QUARTER: #  "; qtrTime!, quarter
+    '-- REMOVE ME --
+
     pbpString$ = "IT'S " + downDesc$(currDown) + " DOWN"
 
     If ydsToFirst >= 1 Then
@@ -8879,7 +8938,7 @@ Sub PBP ()
 
     End Select
 
-    'Print #11, pbpString$
+    Print #11, pbpString$
 
     If pbpDelay! > 0 Then
 
@@ -9965,8 +10024,6 @@ Sub YARDLINE ()
         ydLineTeam = ydsToScore
     End If
 
-    'ydLineTeam = ydsToScore - (ydsToScore > 50) * (100 - ydsToScore - ydsToScore)
-
 End Sub
 
 
@@ -10044,13 +10101,20 @@ Sub GetValidRunner (teamIdx, rbIdx, checkPass, runnerStatus)
                         runnerStatus = 2
                         doneChecking = 1
                     Else
-                        If checkForPass = 0 Then
-                            'Gadget play - accept reassigned runner as-is, regular gain
-                            'No need to consider QB as they won't be a target
-                            runnerStatus = 4
+                        If checkPass = 0 Then
+
+                            If isReverse = 1 Then
+                                'reverse abandoned - reassign to active QB
+                                runnerStatus = 4
+                            Else
+                                'option run - reassign to active QB
+                                runnerStatus = 0
+                            End If
+
                             doneChecking = 1
+                        Else
+                            'checkPass = 1 - loop again to re-validate reassigned rbIdx
                         End If
-                        'else: checkForPass=1 - loop again to re-validate reassigned I1
                     End If
 
                 Else
@@ -10371,8 +10435,9 @@ End Sub
 '----------------------------------------
 '          ADDBACKS Subroutine
 '----------------------------------------
-'This subroutine populates running backs
-'to the list of receivers.
+'This subroutine adds quarterbacks with
+'rushing attempts to the list of running
+'backs
 Sub ADDBACKS ()
 
     For I = 0 To 1
@@ -12274,38 +12339,42 @@ Sub MOVEBALL ()
                 Case 22: I$ = " IS BROUGHT DOWN"
             End Select
 
-            If ydsToScore >= 100 Then
+            If playCall <> 9 Then
 
-                pbpString$ = "THE BALL CARRIER" + I$
-                displayLoss = RoundHalfUp%(-ydLine)
+                If ydsToScore >= 100 Then
 
-                If displayLoss = 0 Then
-                    pbpString$ = pbpString$ + "NEAR THE LINE OF SCRIMMAGE"
-                Else
-                    pbpString$ = pbpString$ + " FOR A" + Str$(displayLoss)
-                    pbpString$ = pbpString$ + " YARD LOSS"
-                End If
+                    pbpString$ = "THE BALL CARRIER" + I$
+                    displayLoss = RoundHalfUp%(-ydLine)
 
-            Else
-
-                If ydsToScore > 0 Then
-
-                    Call ShowChainMarker
-                    pbpString$ = "AND HE" + I$ + " AT THE"
-
-                    roundedTeamYd = RoundHalfUp%(ydLineTeam)
-
-                    If roundedTeamYd <= 1 Then
-                        pbpString$ = pbpString$ + " 1 YARD LINE"
+                    If displayLoss = 0 Then
+                        pbpString$ = pbpString$ + "NEAR THE LINE OF SCRIMMAGE"
                     Else
-                        pbpString$ = pbpString$ + Str$(roundedTeamYd) + " YARD LINE"
+                        pbpString$ = pbpString$ + " FOR A" + Str$(displayLoss)
+                        pbpString$ = pbpString$ + " YARD LOSS"
+                    End If
+
+                Else
+
+                    If ydsToScore > 0 Then
+
+                        Call ShowChainMarker
+                        pbpString$ = "AND HE" + I$ + " AT THE"
+
+                        roundedTeamYd = RoundHalfUp%(ydLineTeam)
+
+                        If roundedTeamYd <= 1 Then
+                            pbpString$ = pbpString$ + " 1 YARD LINE"
+                        Else
+                            pbpString$ = pbpString$ + Str$(roundedTeamYd) + " YARD LINE"
+                        End If
+
                     End If
 
                 End If
 
-            End If
+            End If 'Done excluding QB kneel
 
-        End If
+        End If 'Done with PBP building
 
         If ydsToScore <> 0 Then
             Call PBP
@@ -12669,7 +12738,7 @@ Sub DEFMENU (defEra)
                 End If
 
                 If UCase$(I$) = "T" Then
-                    Call TimeoutCalled(D, periodOver)
+                    Call TimeoutCalled(D, periodOver, 0)
                     Call CheckGameClock
                     If gameClock! = 0 Then Exit Sub
                     'If periodOver = 1 Then GoTo 3360
@@ -16933,7 +17002,7 @@ Sub CHOOSEQB (currTeam)
 
             For currQB = 0 To 3
                 'Store the rushing index of other QB's
-                If rbacks$(currTeam, currBack) = qbacks$(currTeam, currQB) And I5 <> qbNumber(currTeam) Then
+                If rbacks$(currTeam, currBack) = qbacks$(currTeam, currQB) And currQB <> qbNumber(currTeam) Then
                     qbRushIdx(currTeam, currQB) = currBack
                 End If
             Next currQB
@@ -16948,7 +17017,7 @@ End Sub
 '----------------------------------------
 '        TimeoutCalled Subroutine
 '----------------------------------------
-Sub TimeoutCalled (teamIdx, periodOver)
+Sub TimeoutCalled (teamIdx, periodOver, prevClockStop)
 
     pbpString$ = "TIME OUT " + gameTeams$(teamIdx) + " - THEY HAVE" + Str$(timeouts(teamIdx) - 1) + " REMAINING"
     Call PBP
@@ -16956,19 +17025,25 @@ Sub TimeoutCalled (teamIdx, periodOver)
     timeouts(teamIdx) = timeouts(teamIdx) - 1
     playSegment = 9
 
-    Call AddPossessionTime(P1, 7, 10)
+    If Not prevClockStop Then
+        'Only subtract time if previous play
+        'did not stop the clock
+        'This prevents back-to-back stoppage
+        'from wasting the clock
+        Call AddPossessionTime(P1, 7, 10)
+    End If
 
     Color 15 * (1 - BW), 1 + BW * 6
 
     'Print updated timeout counts
     For X = 0 To 1
         Locate X + 4, 41
-        Print Using "#"; timeouts(I)
+        Print Using "#"; timeouts(X)
     Next X
 
     Color 0
 
-    Call Scoreboard
+    'Call Scoreboard
 
     'Call CheckGameClock(periodOver)
 
@@ -16981,6 +17056,8 @@ End Sub
 'This subroutine gives the user choices
 'to handle a pro kick off.
 Sub KickoffChoices (deferOpt)
+
+    Dim originalWinTeam
 
     Shared openKickTeam, winTeam
 
@@ -17062,6 +17139,8 @@ Sub KickoffChoices (deferOpt)
                 climate(0) = winTeam
             End If
 
+            windFavorTeam = climate(0)
+
             'Kicking team is always P1
             'Receiving team is always D
             If koChoice = 1 Then
@@ -17083,6 +17162,8 @@ Sub KickoffChoices (deferOpt)
                 'Working against the wind
                 climate(0) = 1 - winTeam
             End If
+
+            windFavorTeam = climate(0)
 
             'Player picked side to defend
             'Computer chooses KO/Receive
@@ -17120,9 +17201,13 @@ Sub KickoffChoices (deferOpt)
                 P1 = winTeam
             End If
 
+            openKickTeam = P1
+
         Case 5
+            originalWinTeam = winTeam
             winTeam = 1 - winTeam
             Call KickoffChoices(0)
+            winTeam = originalWinTeam
 
     End Select
 
@@ -18118,7 +18203,7 @@ Sub HANDOFF (runnerStatus)
             Else
 
                 If runnerStatus = 3 Then
-                    'Benched QB w/ receptions, pitch/toss phrasing TBD
+                    'Benched QB w/ receptions, pitch/toss phrasing
                     pbpString$ = pbpString$ + " AND FLIPS IT TO " + rbacks$(P1, I1)
                     Call PBP
                 Else
@@ -18126,7 +18211,6 @@ Sub HANDOFF (runnerStatus)
                     If d100% <= 50 Then
                         pbpString$ = pbpString$ + " AND TOSSES OUT TO " + rbacks$(P1, I1)
                     Else
-                        'RN0 = 2
                         pbpString$ = pbpString$ + " AND PITCHES OUT TO " + rbacks$(P1, I1)
                     End If
 
@@ -18218,7 +18302,7 @@ Sub DisplayDefense
     End If
 
     Call PBP
-    
+
 End Sub
 
 
@@ -18233,27 +18317,7 @@ Sub PASSBALL (direction)
 
     overuseAdj = 0
 
-    'Pick QB based on contribution
-    Call Rolld100(qbChance)
-
-    For J = 3 To 0 Step -1
-        If qbChance <= qbNumAtt(P1, J) Then
-            I1 = J
-        End If
-    Next J
-
-    If useRandomQB(P1) = 1 Then
-        'Update selected QB from random choice
-        If I1 > 0 Then
-            qbNumber(P1) = I1
-        End If
-        qbNumber(P1) = I1
-        qbContrib = GetQBRushPctGame%(qbacks$(P1, qbNumber(P1)), currTeam)
-        qbMobility(P1) = GetQBMobility%(qbContrib)
-    Else
-        'Assign seleted QB
-        I1 = qbNumber(P1)
-    End If
+    I1 = qbNumber(P1)
 
     'Determine target WR
     Do
@@ -18813,6 +18877,8 @@ Sub TwoMinMenu (menuChoice)
             menuChoice = Val(I$)
         Loop Until menuChoice >= 1 And menuChoice <= 4
 
+        Screen , , 0, 0
+
     End If
 
 
@@ -18856,11 +18922,11 @@ Sub TwoMinMenu (menuChoice)
                 menuChoice = 5
             End If
 
+            Screen , , 0, 0
+
         End If
 
     End If
-
-    Screen , , 0, 0
 
     Color 0, 5 * (1 - BW)
 
@@ -19243,23 +19309,29 @@ End Sub
 '----------------------------------------
 '           QBLINE Subroutine
 '----------------------------------------
-'This subroutine handles Play-by-Play for
-'when the QB approaches the o-line.
+'This subroutine handles line of scrimmage
+'Play-by-Play for when the team or QB
+'approaches the line.
 Sub QBLINE ()
 
     qback = 0
 
     If useRandomQB(P1) = 1 Then
-        'Assign the starting QB
-        qbNumber(P1) = 0
+        'Weighted roll against pass-attempt distribution - decides the QB
+        'for this entire play (rush or pass), consumed later by PASSBALL
+        Call Rolld100(qbChance)
+        For J = 3 To 0 Step -1
+            If qbChance <= qbNumAtt(P1, J) Then
+                qbNumber(P1) = J
+            End If
+        Next J
+
         qbContrib = GetQBRushPctGame%(qbacks$(P1, qbNumber(P1)), currTeam)
         qbMobility(P1) = GetQBMobility%(qbContrib)
-    Else
-        'use the randomly assigned QB
-        qback = qbNumber(P1)
+
     End If
 
-    Call Rolld100(RN1)
+    qback = qbNumber(P1)
 
     If (currDown = 3 And d100% > 80) Or currDown = 4 Then
 
@@ -21381,6 +21453,7 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     Print #1,
 
     Print #1, Tab(17); "RUSHING STATISTICS"
+    Print #1,
     Call ADDBACKS
 
     For I = 0 To 1
@@ -24185,6 +24258,40 @@ End Function
 
 
 '----------------------------------------
+'     KOTouchedOOBFraction# Function
+'----------------------------------------
+' A kickoff out of bounds after being
+' touched ONLY by the receiving team is
+' a flat spot foul - receivers take the
+' ball at the inbounds spot where it
+' crossed. No relative offset yards apply
+' here, unlike later eras (1987+).
+' Calculation is a triangular distribution
+' of the average kick distance. This models
+' a kick drifting out sideways mid-flight.
+' This does not apply for an intentional
+' squib (too short) or a near-full-distance
+' kick (too long).
+Function KOTouchedOOBFraction# ()
+    Const KO_OOB_LO# = 0.5
+    Const KO_OOB_PEAK# = 0.75
+    Const KO_OOB_HI# = 0.95
+
+    Dim u As Double
+    Dim splitPoint As Double
+    u = Rnd
+    splitPoint = (KO_OOB_PEAK# - KO_OOB_LO#) / (KO_OOB_HI# - KO_OOB_LO#)
+
+    If u < splitPoint Then
+        KOTouchedOOBFraction# = KO_OOB_LO# + Sqr(u * (KO_OOB_HI# - KO_OOB_LO#) * (KO_OOB_PEAK# - KO_OOB_LO#))
+    Else
+        KOTouchedOOBFraction# = KO_OOB_HI# - Sqr((1 - u) * (KO_OOB_HI# - KO_OOB_LO#) * (KO_OOB_HI# - KO_OOB_PEAK#))
+    End If
+
+End Function
+
+
+'----------------------------------------
 '     patEnforcementChance% Function
 '----------------------------------------
 'This function performs a series of checks
@@ -24368,6 +24475,7 @@ Function RoundTo2! (decimal!)
     RoundTo2! = Fix(decimal! * 100 + Sgn(decimal!) * .5) / 100
 
 End Function
+
 
 '----------------------------------------
 '        runnerOverused% Function
@@ -24945,5 +25053,5 @@ Sub CountGames ()
 
     End If
 
-
 End Sub
+

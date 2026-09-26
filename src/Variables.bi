@@ -445,7 +445,7 @@ Dim Shared halfbackPass, impactTeam, intChance, kickRetIdx
 Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
 Dim Shared loseDown, nbrLines, playContext, rushEra
 Dim Shared scoreX0, scorePenaltyType
-Dim Shared totalSTPenalties, YF
+Dim Shared totalSTPenalties, windFavorTeam, YF
 
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
 
@@ -526,3 +526,5 @@ Dim Shared tickerPeriod$(14), wdRec$(1, 5)
 
 Dim Shared gameLongIntTD$(1, 9), gameLongKRTD$(1, 2), gameLongPRTD$(1, 2)
 Dim Shared gameLongRunTD$(1, 17), gameLongPassTD$(1, 3), gameLongRecTD$(1, 20)
+
+

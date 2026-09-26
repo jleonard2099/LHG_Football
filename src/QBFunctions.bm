@@ -450,8 +450,28 @@ Function GetQBRushPct% (targetQB$)
     'we need a value in case we don't find the QB
     qbRushContrib = 0
 
-    For currRB = 0 To 9
+    'For currRB = 0 To 9
 
+        'currContrib = rushContrib(currRB)
+
+        'Check for QB as a runner
+        'If rbName$(currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            'qbRushContrib = currContrib - previousContrib
+
+            'Exit For
+
+        'End If
+
+        'If currContrib <> 0 Then previousContrib = currContrib
+
+    'Next
+
+    currRB = 0
+    found = 0
+
+    Do
         currContrib = rushContrib(currRB)
 
         'Check for QB as a runner
@@ -459,14 +479,15 @@ Function GetQBRushPct% (targetQB$)
 
             'Determine QB's individual rushing contributions
             qbRushContrib = currContrib - previousContrib
+            found = 1
 
-            Exit For
-
+        Else
+            If currContrib <> 0 Then previousContrib = currContrib
         End If
 
-        If currContrib <> 0 Then previousContrib = currContrib
+        currRB = currRB + 1
 
-    Next
+    Loop Until found = 1 Or currRB > 9
 
     GetQBRushPct% = qbRushContrib
 
@@ -490,8 +511,28 @@ Function GetQBRushPctGame% (targetQB$, currTeam)
     'we need a value in case we don't find the QB
     qbRushContrib = 0
 
-    For currRB = 0 To 9
+    'For currRB = 0 To 9
 
+        'currContrib = rbRushContrib(currTeam, currRB)
+
+        'Check for QB as a runner
+        'If rbacks$(currTeam, currRB) = targetQB$ Then
+
+            'Determine QB's individual rushing contributions
+            'qbRushContrib = currContrib - previousContrib
+
+            'Exit For
+
+        'End If
+
+        'If currContrib <> 0 Then previousContrib = currContrib
+
+    'Next
+
+    currRB = 0
+    found = 0
+
+    Do
         currContrib = rbRushContrib(currTeam, currRB)
 
         'Check for QB as a runner
@@ -499,14 +540,16 @@ Function GetQBRushPctGame% (targetQB$, currTeam)
 
             'Determine QB's individual rushing contributions
             qbRushContrib = currContrib - previousContrib
+            found = 1
 
-            Exit For
-
+        Else
+            If currContrib <> 0 Then previousContrib = currContrib
         End If
 
-        If currContrib <> 0 Then previousContrib = currContrib
+        currRB = currRB + 1
 
-    Next
+    Loop Until found = 1 Or currRB > 9
+
 
     GetQBRushPctGame% = qbRushContrib
 

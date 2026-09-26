@@ -1310,7 +1310,8 @@ Sub StatsToScreen (teamName$, totalGames, statFormat, teamPower, SS)
     '   End If
     'Next pk
 
-    If allPlayerStats!(4, 17) <> 0 And allPlayerStats!(6, 17) <> 0 Then
+    If allPlayerStats!(6, 17) <> 0 Then
+    'Skip kickers without any PAT's
 
         Print pkName$(0);
         Print Tab(16);
@@ -1348,7 +1349,8 @@ Sub StatsToScreen (teamName$, totalGames, statFormat, teamPower, SS)
 
     End If
 
-    If allPlayerStats!(8, 17) <> 0 And allPlayerStats!(10, 17) <> 0 Then
+    If allPlayerStats!(10, 17) <> 0 Then
+    'Skip kickers without any PAT's
 
         Print pkName$(1); Tab(16);
 
