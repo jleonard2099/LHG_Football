@@ -417,9 +417,8 @@ Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetIdx
 Dim Shared quarter, qback, qbTakeKnee
-
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
-Dim Shared sndOpt, startYds, useTicker
+Dim Shared sndOpt, startYds, useTicker, windScreenDir
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
