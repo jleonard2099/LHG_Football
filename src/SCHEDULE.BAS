@@ -66,14 +66,14 @@ Sub SCHEDULE ()
             ReDim scheduleQB_V$(MAX_SCHEDULE_GAMES)
             ReDim scheduleQB_H$(MAX_SCHEDULE_GAMES)
 
-            scheduleNG%(0, 2) = 1
-            scheduleNG%(0, 3) = 1
-            scheduleNG%(0, 7) = 11
-            scheduleNG%(0, 10) = 3
-            scheduleNG%(0, 11) = 8
-            scheduleNG%(0, 14) = 1
-            scheduleNG%(0, 19) = 3
-            scheduleNG%(0, 20) = 3
+            scheduleNG%(0, 2) = 1 'Location: Home
+            scheduleNG%(0, 3) = 1 'Game Type: NFL
+            scheduleNG%(0, 7) = 11 'College Rules: 2018+
+            scheduleNG%(0, 10) = 3 'Team Control: PC vs PC
+            scheduleNG%(0, 11) = 11 'NFL Rules: 2025+
+            scheduleNG%(0, 14) = 7 'Sudden Death: Mod. Regular Season 2017
+            scheduleNG%(0, 19) = 3 'Wind: Auto
+            scheduleNG%(0, 20) = 3 'Weather: Auto
 
             Select Case SELECTION%
 
@@ -340,8 +340,8 @@ Sub NewSchedule (scheduleFile$)
                     scheduleYN$(targetGame%, X) = scheduleYN$(targetGame% - 1, X)
                 Next
 
-                DT$ = "09-05-24"
-                TM$ = "01:00P"
+                DT$ = "09-09-26"
+                TM$ = "08:00P"
                 Call NewGame(V$, QV$, H$, QH$, YN$, DT$, TM$, NTMS, targetGame%)
 
             Case "E":
@@ -1484,8 +1484,8 @@ Sub ChangeGlobalSettings ()
     windOpt = scheduleNG%(1, 19)
     weatherOpt = scheduleNG%(1, 20)
 
-    DT$ = "09-05-24"
-    TM$ = "07:30P"
+    DT$ = "09-09-26"
+    TM$ = "08:00P"
 
     Do
 

@@ -140,13 +140,13 @@ Next I
 
 'Below values are for defYdAdj
 'This impacts rushing yards (modern eras)
-Data 0,3,-6,0,-3,-3,-3,0,0,3,3,6: 'Blast
+Data 0,3,-6,0,0,0,-3,0,0,3,3,6: 'Blast
 Data 0,3,-3,0,0,0,-6,0,0,6,3,6: 'Dive
-Data -3,0,0,3,0,0,3,0,0,-3,3,6: 'Off Tackle
-Data 0,-3,3,0,0,0,3,3,-3,-3,0,3: 'Sweep
-Data 0,-3,6,0,0,0,6,3,-3,-6,-3,-3: 'Option
-Data -6,-6,-3,-3,6,6,-3,-3,-3,-3,-3,-6: 'Draw
-Data 3,3,-3,-3,-3,-3,-6,-6,-6,-6,3,6: 'Trap
+Data -3,0,0,3,0,0,3,0,0,-3,0,3: 'Off Tackle
+Data 0,-3,3,0,0,0,3,3,-3,-3,0,3: 'Stretch Sweep
+Data 0,-3,6,0,0,0,6,3,-3,-6,0,3: 'Option
+Data -3,-3,-3,-3,6,6,-3,-3,-3,-3,6,6: 'Draw
+Data 3,3,-3,-3,3,3,-6,-6,-6,-6,3,6: 'Long Trap
 
 For I = 1 To 7:
     For J = 1 To 12:
@@ -401,8 +401,8 @@ For I = 1 To 2:
 Next
 
 
-Data BLAST,DIVE,OFF TACKLE,TOSS SWEEP,OPTION RUN,DRAW PLAY,MISDIRECTION
-Data QB SNEAK,POWER SWEEP,QUICK PITCH,QUICK TRAP,ISOLATION,SPRINT DRAW
+Data BLAST,DIVE,OFF TACKLE,STRETCH SWEEP,OPTION RUN,DRAW PLAY,LONG TRAP
+Data QB SNEAK,GAP SWEEP,QUICK PITCH,QUICK TRAP,ISOLATION,SPRINT DRAW
 Data OVER THE TOP,COUNTER
 Data 3 STEP DROP,SHORT PASS,MEDIUM PASS,LONG PASS,SCREEN PASS
 Data MED PLAY ACT PASS,LONG PLAY ACT PASS,SIDELINE PASS,ROLLOUT PASS
@@ -422,13 +422,15 @@ Next I
 
 'Below values are for rush yard adjustments
 'These apply to eras before 1945
-Data -3,-3,0,-3,-3,0,0,-3,0,3,3,6
-Data -3,-3,0,-3,-3,0,-3,-3,-3,0,3,6
-Data 0,3,0,3,3,0,0,0,0,-3,3,6
-Data 6,6,-3,6,6,-3,3,6,6,0,0,3
-Data 6,6,3,6,6,3,3,3,3,0,-3,-3
-Data 0,3,6,0,3,6,0,0,-3,0,-3,-6
-Data -3,-3,0,0,-3,3,0,-3,0,3,3,6
+'Data -3,-3,0,-3,0,3,0,-6,-3,3,0,0: 'Blast
+'Data -3,-3,0,-3,0,3,0,-3,-3,3,0,0: 'Dive
+Data -3,-6,0,-3,-3,3,0,-6,-3,3,0,0: 'Blast
+Data -3,-6,0,-3,-3,3,0,-3,-3,3,0,0: 'Dive
+Data -3,0,-3,-3,3,-3,0,3,3,-3,0,0: 'Off Tackle
+Data 3,3,-3,0,3,-3,0,3,3,-3,0,0: 'Stretch Sweep
+Data 0,3,-3,0,3,-3,-3,3,3,-6,0,0: 'Option
+Data -3,-3,0,-3,-3,0,-3,-3,-3,0,0,0: 'Draw
+Data 0,-6,-3,3,-6,-3,3,-3,-6,-3,0,0: 'Long Trap
 
 For I = 1 To 7:
     For J = 1 To 12:
@@ -447,13 +449,15 @@ Next I
 
 'Below values are for rush yard adjustments
 'These apply to 1945 - 1956
-Data -3,-3,0,0,0,3,-3,-6,-3,0,3,6
-Data -3,-3,0,-3,-3,0,-3,-3,-3,0,3,6
-Data 3,3,0,0,0,-3,0,0,0,-3,3,6
-Data 6,6,-3,3,6,0,0,0,0,-6,0,3
-Data 6,6,3,3,3,0,0,3,3,-3,-3,-3
-Data 0,3,6,0,-3,0,0,0,0,0,-3,-6
-Data 0,-3,3,0,0,3,-3,-3,-6,0,3,6
+'Data -3,0,3,0,-3,3,0,-3,0,3,0,0: 'Blast
+'Data -3,0,3,0,-3,3,0,0,0,3,0,0: 'Dive
+Data -3,-3,3,0,-3,3,0,-3,0,3,0,0: 'Blast
+Data -3,-3,3,0,-3,3,0,0,0,3,0,0: 'Dive
+Data -3,3,-3,0,3,-3,0,3,0,-3,0,0: 'Off Tackle
+Data 0,3,-3,0,3,-3,-3,0,3,-3,0,0: 'Stretch Sweep
+Data 0,3,-3,0,3,-3,-3,0,3,-6,0,0: 'Option
+Data -3,-3,0,-3,-3,0,-3,-3,-3,0,0,0: 'Draw
+Data 3,-6,-3,3,-6,-3,3,-3,-6,-6,0,0: 'Long Trap
 
 For I = 1 To 7:
     For J = 1 To 12:
@@ -1067,13 +1071,14 @@ Sub FOOTBALL ()
 
     _Title "3-in-1 Football v" + GAME_VERSION$ + " - GAME TIME!"
 
-    Dim applyOnKO, autoAccept
+    Dim applyOnKO, autoAccept, convState
     Dim deadBall, distToGoal, displayGain, displayLoss
-    Dim fgWasMade, flagOnPlay
+    Dim fgGood, flagOnPlay
     Dim isFCPuntInt, isIllBlock, isOffHold, isOffsides
     Dim pendingFlag, perFoulCall, pkPenalty, playResolved
     Dim rbStatus, roundedTeamYd, skipRunoff
     Dim tbLine, ydsAttempted, ydsForConv
+    Dim warningTime
 
     Dim pendingPenYds!, playYdLine!, qbRushAvg!
 
@@ -1103,6 +1108,7 @@ Sub FOOTBALL ()
     '        INITIALIZE ALL VARIABLES
     '----------------------------------------
     Call InitVar
+    convState = -2
 
     '----------------------------------------
     '         DETERMINE GAME OPTIONS
@@ -1807,6 +1813,7 @@ Sub FOOTBALL ()
 
     quarter = 1
     gameClock! = 900
+    warningTime = 0
 
     Call HALFSTART
 
@@ -1842,6 +1849,10 @@ Sub FOOTBALL ()
     ' ** Ready for Kickoff **
     340 '
     playYdLine! = 0
+    'Make sure last play call doesn't factor into decisions
+    'until a play is chosen by the offense
+    playCall = -1
+
     Call SetChainMarker
 
     'Update scoreboard with kicking team
@@ -2139,8 +2150,6 @@ Sub FOOTBALL ()
                             GoTo 3200
 
                         End If
-
-                        'koPenalty = 0
 
                         If flagOnPlay = 1 Then
                             foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
@@ -2664,22 +2673,23 @@ Sub FOOTBALL ()
 
                             chosenPlay = playCall
 
-                            'Here we are categorizing plays that are
-                            'simply alternate names for the same thing
+                            'For some run types, map to a different
+                            'playCall value so they have equivalent
+                            'outcomes and adjustments applied
 
-                            'Power Sweep / Quick Pitch = Toss Sweep
+                            'Gap Sweep / Quick Pitch = Stretch Sweep
                             If playCall = 9 Or playCall = 10 Then playCall = 4
 
-                            'Quick Trap = Trap / Misdirection
+                            'Quick Trap = Long Trap
                             If playCall = 11 Then playCall = 7
 
-                            'Isolation = Off Tackle
-                            If playCall = 12 Then playCall = 3
+                            'Isolation = Blast
+                            If playCall = 12 Then playCall = 1
 
                             'Sprint Draw = Draw
                             If playCall = 13 Then playCall = 6
 
-                            'Over the Top = Trap / Misdirection
+                            'Over the Top = Long Trap
                             If playCall = 14 Then playCall = 7
 
                             'Counter = Dive
@@ -3093,10 +3103,14 @@ Sub FOOTBALL ()
             'Take Knee
             If playCall = 9 Then
 
+                ydsGained = -1.0
                 playYdLine! = ydsGained + ydLine
+
                 pbpString$ = qbacks$(P1, qbNumber(P1)) + " TAKES THE SNAP AND KNEELS DOWN"
 
-                ydsGained = -1.0
+                startYds = 100 - ydLine
+                endYds = 100 - playYdLine!
+
                 qbTakeKnee = 0
 
                 GoTo 3546
@@ -3319,12 +3333,12 @@ Sub FOOTBALL ()
 
                         Else
 
-                            '10% of runs
                             baseBrkawayChance = 10
 
                             '-- FATIGUE NOT IMPLEMENTED
                             'Increase chance based on defensive fatigue
-                            fatigueBonus = 0 'CInt((1.0 - fatigueLevel%) * chanceScale)
+                            fatigueBonus = 0
+                            'fatigueBonus = CInt((1.0 - fatigueLevel%) * chanceScale)
 
                             adjBrkawayChance = baseBrkawayChance + fatigueBonus
 
@@ -3398,6 +3412,7 @@ Sub FOOTBALL ()
 
             'Determine play yardage
             Call YARDAGE
+
 
             '-- FATIGUE NOT IMPLEMENTED
             'Fatigue yards - run play (increase)
@@ -3632,6 +3647,7 @@ Sub FOOTBALL ()
                 End If
 
                 Call YARDAGE
+
                 startYds = 100 - ydLine
                 endYds = startYds - ydsGained
 
@@ -3720,6 +3736,13 @@ Sub FOOTBALL ()
                 Call PBP
 
                 Call MOVEBALL
+
+
+                If ruleOptType = 0 And ydsGained < 0 Then
+                    'Scramble ends up behind scrimmage
+                    'Counts as sack for statistics
+                    isSack = 1
+                End If
 
                 'Play results - scramble
 
@@ -3979,7 +4002,6 @@ Sub FOOTBALL ()
                                     Call ReceiverLossPBP(YardsGainedStr$(-ydsGained))
                                 Else
                                     'Gain on the play
-                                    test$ = YardsGainedStr$(ydsGained)
                                     Call PassYardagePBP(YardsGainedStr$(ydsGained))
                                 End If
                             End If
@@ -4182,7 +4204,7 @@ Sub FOOTBALL ()
                         'Punt travels to end zone
 
                         'Track punt yards
-                        gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + 100 - ydLine
+                        gameStatsTeam(P1, 8) = gameStatsTeam(P1, 8) + (100 - ydLine)
 
                         'Track touchback for punter
                         gameStatsTeam(P1, 27) = gameStatsTeam(P1, 27) + 1
@@ -5149,8 +5171,6 @@ Sub FOOTBALL ()
                 Else
 
                     3602 'FIELD GOAL
-                    fgWasMade = 0
-
                     If ydLine >= 97 + goalPostAdj Then
                         'FG Chance = PAT Chance
                         fgSuccessChance = kickerPATPct(P1, activeKicker(P1))
@@ -5244,6 +5264,7 @@ Sub FOOTBALL ()
 
                                 Call CHANGEPOSS
                                 Call ShowChainMarker
+
                                 startYds = 100 - ydLine
                                 endYds = playYdLine!
                                 Call MOVEBALL
@@ -5338,7 +5359,7 @@ Sub FOOTBALL ()
                                     GoTo 3250
                                 End If
 
-                                If ydLine >= (100 - YDS_TOLERANCE!) Then
+                                If IsTouchdown(ydLine) Then
 
                                     'Update possession for DEF (blocked FG)
                                     If isOT = 1 And overtimeOpt >= 6 Then
@@ -5444,6 +5465,12 @@ Sub FOOTBALL ()
                                 Call FGATT
 
                                 If fgChance <= fgSuccessChance Then
+                                    fgGood = 1
+                                Else
+                                    fgGood = 0
+                                End If
+
+                                If (fgGood = 1) Then
 
                                     'Increase FGM
                                     gameStatsPlayer(P1, 3 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 3 + activeKicker(P1) * 4, 17) + 1
@@ -5459,7 +5486,7 @@ Sub FOOTBALL ()
                                     score(P1, quarter) = score(P1, quarter) + 3
 
                                     Call FGMADE
-                                    fgWasMade = 1
+                                    fgGood = 1
 
                                     'For any potential penalty to be declined.
                                     'it is easiest to treat the FG as a score
@@ -5776,7 +5803,9 @@ Sub FOOTBALL ()
                 loseDown = 1
 
             Case 51
-
+                '-- TO DO --
+                ' * Update enforcement of this to be handled properly
+                '   when the penalty occurs in the end zone
                 If teamYears(impactTeam) >= 1982 Then
                     penaltyText$ = "*** PENALTY - OFF - ILLEGAL TOUCH PASS - 5 YDS ***"
                     penaltyYds! = -5
@@ -5792,7 +5821,6 @@ Sub FOOTBALL ()
                     If ruleOptType = 0 And ruleOptColl = 11 And teamYears(impactTeam) >= 2022 Then
                         loseDown = 1
                     End If
-
                 End If
 
             Case 52 To 56
@@ -5805,15 +5833,94 @@ Sub FOOTBALL ()
                 End If
 
             Case 57 To 64
-                penaltyText$ = "*** PENALTY - OFF - INTENTIONAL GROUNDING - 10 YDS ***"
-                penaltyYds! = -10
+
+                If ruleOptType = 0 Then
+
+                    'College Rules
+                    Select Case ruleOptColl
+
+                        Case 0
+                        
+                            Select Case teamYears(impactTeam)
+
+                                Case 1914 To 1923
+                                    penaltyYds! = -10
+                                
+                                Case 1924 To 1948
+                                    penaltyYds! = -15
+                                
+                                Case Is >= 1949
+                                    penaltyYds! = -5
+                                    
+                            End Select
+                                                        
+                        Case 1 To 6
+                            penaltyYds! = -5
+
+                        Case 7
+                            If teamYears(impactTeam) < 1999 Then
+                                penaltyYds! = -5
+                            Else
+                                '1999 - NCAA stopped penalizing yards
+                                penaltyYds! = 0
+                            End If
+
+                        Case Else
+                            penaltyYds! = -10
+
+                    End Select
+
+                Else
+
+                    'NFL Rules
+                    Select Case ruleOptPro
+
+                        Case 0
+
+                            Select Case teamYears(impactTeam)
+
+                                Case 1914 To 1923
+                                    penaltyYds! = -10
+
+                                Case 1924 To 1948
+                                    penaltyYds! = -15
+
+                                Case Is >= 1949
+                                    penaltyYds! = -5
+
+                            End Select
+
+                        Case 1 To 2
+                            '1950 - 1991
+                            penaltyYds! = -5
+
+                        Case 3
+                            If teamYears(impactTeam) < 1993 Then
+                                '1992
+                                penaltyYds! = -5
+                            Else
+                                '1993+
+                                penaltyYds! = -10
+                            End If
+
+                        Case Else
+                            penaltyYds! = -10
+
+                    End Select
+
+                End If
+
+                If penaltyYds! = 0 Then
+                    penaltyText$ = "*** PENALTY - OFF - INTENTIONAL GROUNDING ***"
+                Else
+                    penaltyText$ = "*** PENALTY - OFF - INTENTIONAL GROUNDING -" + Str$(Abs(penaltyYds!)) + " YDS ***"
+                End If
                 loseDown = 1
 
             Case 65 To 80
 
                 If teamYears(impactTeam) >= 1938 Then
 
-                    penaltyText$ = "*** PENALTY - OFF - PASS INTERFERENCE - "
 
                     'NCAA before 2026 was a 15 yard penalty
                     If ruleOptType = 0 And ruleOptColl <= 11 And teamYears(impactTeam) >= 2026 Then
@@ -5824,7 +5931,7 @@ Sub FOOTBALL ()
                         penaltyYds! = -10
                     End If
 
-                    includePBP = 1
+                    penaltyText$ = "*** PENALTY - OFF - PASS INTERFERENCE -" + Str$(Abs(penaltyYds!)) + " YDS ***"
 
                 Else
 
@@ -5846,10 +5953,10 @@ Sub FOOTBALL ()
 
                     Case 2
                         pbpString$ = "DEFENSE CAME IN HOT ON THAT ONE! A FLAG IS OUT!"
-                    
+
                     Case 3
                         pbpString$ = "HE GETS POPPED ON THAT ONE AND WON'T COMPLETE IT!"
-                
+
                 End Select
 
                 Call PBP
@@ -5956,6 +6063,7 @@ Sub FOOTBALL ()
                 foulLine = kickReturnFoulSpot%(kickYL!, ydsGained)
                 isOffsides = 0
                 Call PenaltyOnKickoff(foulLine, autoFirst, isOffsides)
+                koPenalty = 1
 
             Case 4
                 'Punt Return
@@ -6070,8 +6178,10 @@ Sub FOOTBALL ()
     PointsAfterTD:
     Call GetPATChoice(convChoice)
 
-    'A value of -1 means the conversion hasn't happened
-    convGood = -1
+    'convState:
+    ' -2 means there is no conversion in progress
+    ' -1 means there is a conversion in progress
+    convState = -1
     ydsForConv = 0
 
     If convChoice = 2 Then
@@ -6113,7 +6223,7 @@ Sub FOOTBALL ()
                 End If
 
                 penaltyYds! = patPenaltyYds!
-                convGood = 0
+                convState = 0
 
                 'Offense chooses if they want to retry or enforce on kickoff
                 Call PenaltyOnScore(applyOnKO)
@@ -6164,28 +6274,31 @@ Sub FOOTBALL ()
 
         ydLine = patLine
 
+        'Penalty accepted on scoring play
         If prevPlayPenaltyAcc = 1 Then
 
             prevPlayPenaltyAcc = 0
+
+            'Apply penalty to PAT
             applyOnConv = 1
 
             If penaltyYds! < 0 Then
                 'Penalty on OFF
-                'Team may want to choose PAT
+                'Team may want to re-choose
                 GoTo PointsAfterTD
             Else
                 origPenaltyYds! = penaltyYds!
 
                 'Penalty on DEF is being applied to 2-pt conversion
                 If (ydLine + penaltyYds! >= 100) Then
-                    '(that is, 1/2 the distance to the goal)
+                    '(1/2 the distance to the goal)
                     patPenaltyYds! = CInt(100 - patLine) / 2
                 Else
                     patPenaltyYds! = penaltyYds!
                 End If
 
                 penaltyYds! = patPenaltyYds!
-                convGood = 0
+                convState = 0
 
                 'Offense chooses if they want to retry or enforce on kickoff
                 Call PenaltyOnScore(applyOnKO)
@@ -6222,6 +6335,7 @@ Sub FOOTBALL ()
             End If
         Next J
 
+        'Increase point after attempts
         gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 6 + activeKicker(P1) * 4, 17) + 1
 
         pbpString$ = kicker$(P1, activeKicker(P1)) + " IS ON TO TRY THE EXTRA POINT"
@@ -6256,51 +6370,48 @@ Sub FOOTBALL ()
 
         Select Case patResult
 
-            Case 1 To 30
-                '3% chance
-                'Foul on the play
-                Call PenaltyOnPlaceKick(autoFirst, pendingPenYds!, pendingPenString$)
-                GoTo HANDLEPENALTY
-
-            Case 31 To 45
-                '1.5% chance
-                'No longer evaluating PAT play / penalty
+            Case 1 To 15
+                '1.5% chance - block
                 pbpString$ = "KICK IS BLOCKED!!"
                 Call PBP
 
                 endZone = 0
-                convGood = 0
+                convState = 0
 
                 If isOT = 1 And overtimeOpt >= 6 Then
                     nbrPossOT(D) = 1
                 End If
 
-                'Blocked PAT's are deadball for older seasons / years
-                'Return only allowed for NCAA 1988+ and NFL 2015+
-                If (ruleOptType = 1 And (ruleOptPro >= 7 Or (ruleOptPro >= 6 And teamYears(impactTeam) >= 2015)) ) Or _
-                    (ruleOptType = 0 And (ruleOptColl >= 6 Or (ruleOptColl = 5 And teamYears(impactTeam) >= 1988)) ) Then
+                If (ruleOptType = 1 And (ruleOptPro >= 7 Or (ruleOptPro >= 6 And teamYears(impactTeam) >= 2015))) Or _
+                    (ruleOptType = 0 And (ruleOptColl >= 6 Or (ruleOptColl = 5 And teamYears(impactTeam) >= 1988))) Then
                     Call Turnover_PAT
                     U3 = 9
                     GoTo CheckPoss_OT
                 End If
 
             Case Else
+                ' 16-45 = penalty (3%), 46-1000 = attempt (95.5%)
+                penaltyOnKick = (patResult <= 45)
 
-                'If no flags are pending, we are
-                'no longer evaluating the play
-                'as after a score
                 If pendingFlag = 0 Then
                     endZone = 0
                 End If
 
                 If d100% <= patChance Then
+                    patGood = 1
+                Else
+                    patGood = 0
+                End If
+
+                If patGood = 1 Then
 
                     pbpString$ = "THE KICK IS UP..."
                     Call PBP
                     Call MADEPAT
-                    convGood = 1
 
-                    'Increase kicker attempts
+                    convState = 1
+
+                    'Increase point after makes
                     gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) + 1
 
                     'Increase score
@@ -6318,8 +6429,13 @@ Sub FOOTBALL ()
                 Else
 
                     Call MISSPAT
-                    convGood = 0
+                    convState = 0
 
+                End If
+
+                If penaltyOnKick Then
+                    Call PenaltyOnPlaceKick(autoFirst, pendingPenYds!, pendingPenString$)
+                    GoTo HANDLEPENALTY
                 End If
 
         End Select
@@ -6332,6 +6448,10 @@ Sub FOOTBALL ()
         penaltyYds! = pendingPenYds!
         GoTo HANDLEPENALTY
     End If
+
+
+    PostConversion:
+    convState = -2
 
     'Overtime - After TD + PAT
     If isOT = 1 And ((overtimeOpt >= 3 And overtimeOpt <= 5) Or overtimeOpt = 8) Then
@@ -6604,18 +6724,26 @@ Sub FOOTBALL ()
                 pbpString$ = pbpString$ + "DEF - TRIPPING -"
                 'NFL: before 1974, 2023+
                 If (ruleOptType > 0 And (ruleOptPro < 2 Or ruleOptPro >= 9)) Or ruleOptType = 0 Then
-                    penaltyYds! = -15
+                    penaltyYds! = 15
                     'Automatic 1st for NCAA
                     If ruleOptType = 0 Then autoFirst = 1
                 Else
-                    penaltyYds! = -10
+                    penaltyYds! = 10
                 End If
+                spotFromGain = 1
 
             Case 47 To 74
                 'Unnecessary Roughness can sometimes be a spot / deadball foul,
                 'but we're treating it as only a live-ball foul
                 pbpString$ = pbpString$ + "DEF - UNNECESSARY ROUGHNESS -"
                 penaltyYds! = 15
+
+                'If the offense made it past scrimmage
+                If ydsGained > 0 Then
+                    'tack yards on to the gain
+                    spotFromGain = 1
+                End If
+
 
             Case 75 To 79
                 'This is being assumed to have occurred after the play
@@ -6634,10 +6762,12 @@ Sub FOOTBALL ()
                     pbpString$ = pbpString$ + "DEF - FACEMASK -"
                     penaltyYds! = 15
                 End If
+                spotFromGain = 1
 
             Case 85 To 100
                 pbpString$ = pbpString$ + "DEF - FACEMASK -"
                 penaltyYds! = 15
+                spotFromGain = 1
 
         End Select
 
@@ -6916,7 +7046,7 @@ Sub FOOTBALL ()
             'Run Play - past scrimmage
             infracPoint = Int(Rnd(1) * 5) + 1
             ydLine = ydLine + infracPoint
-            pbpString$ = pbpString$ + "JUST AHEAD OF THE SCRIMMAGE LINE."
+            pbpString$ = pbpString$ + "JUST SLIGHTLY DOWNFIELD."
             Call PBP
         End If
 
@@ -6924,7 +7054,7 @@ Sub FOOTBALL ()
             'Pass Play - behind scrimmage
             infracPoint = Int(Rnd(1) * 8) + 1
             ydLine = ydLine - infracPoint
-            pbpString$ = pbpString$ + "BEHIND THE LINE OF SCRIMMAGE."
+            pbpString$ = pbpString$ + "IN THE BACKFIELD."
             Call PBP
         End If
 
@@ -6991,6 +7121,9 @@ Sub FOOTBALL ()
             Call KickoffLine(1, 0)
 
             Call SETSCREEN
+
+            flagOnPlay = 0
+
             GoTo 340
 
         End If
@@ -7036,6 +7169,7 @@ Sub FOOTBALL ()
 
     If penAccepted = 1 Or autoAccept = 1 Then
 
+        penAccepted = 0
         prevPlayPenaltyAcc = 1
 
         'Accept the Penalty
@@ -7057,10 +7191,11 @@ Sub FOOTBALL ()
 
         'Field Goal
         If playCall = 20 Then
-            'Wipe out the field goal attempt
-            gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) + 1
 
-            If fgWasMade = 1 Then
+            'Wipe out the field goal attempt
+            gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 4 + activeKicker(P1) * 4, 17) - 1
+
+            If fgGood = 1 Then
                 'Remove successful field goal attempt
                 gameStatsPlayer(P1, 3 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 3 + activeKicker(P1) * 4, 17) - 1
                 score(P1, 0) = score(P1, 0) - 3
@@ -7170,20 +7305,13 @@ Sub FOOTBALL ()
                 gameClock! = 1
             End If
 
-            'Penalty on PAT or conversion hasn't happened
-            If endZone >= 1 Or convGood = -1 Then
-
-                'No longer evaluating PAT play / penalty
-                endZone = 0
-
-                'Remove the previous PAT
-                If endZone = 2 Then
-                    gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) - 1
-                End If
+            'Penalty prior to PAT or conversion
+            If endZone >= 1 Or convState = -1 Then
 
                 'Undo the score if the conversion was made before the penalty
                 '(this means we're attempting again)
-                If convGood = 1 Then
+                '(has the attempt been removed?)
+                If convState = 1 Then
 
                     If endZone = 1 Then
                         score(P1, quarter) = score(P1, quarter) - 2
@@ -7199,7 +7327,26 @@ Sub FOOTBALL ()
 
                 Call SETSCREEN
 
+                'No longer evaluating PAT play / penalty
+                endZone = 0
+
+                'Team gets new conversion choice
                 GoTo PointsAfterTD
+
+            End If
+
+            'Penalty during PAT
+            If convState >= 0 And playSegment = 4 Then
+
+                If patGood = 1 Then
+                    'Enforce on kickoff
+                    applyOnKO = 1
+                    convState = -2
+                    GoTo PostConversion
+                Else
+                    'Retry / enforce yardage
+                    GoTo PointsAfterTD
+                End If
 
             End If
 
@@ -7216,20 +7363,20 @@ Sub FOOTBALL ()
             koPenalty = 0
             prPenalty = 0
 
-            'Penalty on PAT or conversion hasn't happened
-            If endZone >= 1 Or convGood = -1 Then
+            'Penalty accepted on PAT, or conversion hasn't happened
+            If endZone >= 1 Or convState = -1 Then
 
                 'No longer evaluating PAT play / penalty
                 endZone = 0
 
-                'Remove the previous PAT
                 If endZone = 2 Then
+                    'Wipe out the PAT
                     gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) = gameStatsPlayer(P1, 5 + activeKicker(P1) * 4, 17) - 1
                 End If
 
                 'Undo the score if the conversion was made before the penalty
                 '(this means we're attempting again)
-                If convGood = 1 Then
+                If convState = 1 Then
 
                     If endZone = 1 Then
                         score(P1, quarter) = score(P1, quarter) - 2
@@ -7240,6 +7387,8 @@ Sub FOOTBALL ()
                         score(P1, quarter) = score(P1, quarter) - 1
                         score(P1, 0) = score(P1, 0) - 1
                     End If
+
+                    scoringPlays(nbrScores, 4) = scoringPlays(nbrScores, 4) - 1
 
                 End If
 
@@ -7298,8 +7447,7 @@ Sub FOOTBALL ()
                 'Don't compile stats / resolve here
                 'Go back to resolving result
 
-                If fgWasMade = 1 Then
-                    fgWasMade = 0
+                If fgGood = 1 Then
                     GoTo ResolveMadeFG
                 Else
                     GoTo ResolveMissedFG
@@ -7322,16 +7470,11 @@ Sub FOOTBALL ()
         'since result will now count
         Call COMPILER
 
-        If endZone = 2 Then
-
+        'Penalty declined during conversion window
+        If convState > -2 Then
             endZone = 0
-
-            'Check if any pending flags
-            If pendingFlag = 0 Then
-                'NONE - no longer evaluating PAT play / penalty
-                GoTo PointsAfterTD
-            End If
-
+            convState = -2
+            GoTo PostConversion
         End If
 
         autoFirst = 0
@@ -7354,8 +7497,9 @@ Sub FOOTBALL ()
             thirdDownAtt(P1) = thirdDownAtt(P1) + 1
         End If
 
-        'What about playSegment 8??? that shouldn't be changed
-        If playSegment < 4 Or playSegment > 5 And deadBall = 0 Then
+        'If clock not stopped and play is live,
+        'go back to huddle
+        If playSegment < 4 Or (playSegment > 5 And playSegment < 8) And deadBall = 0 Then
             playSegment = 1
         End If
 
@@ -7396,18 +7540,13 @@ Sub FOOTBALL ()
 
 
     If playSegment = 4 Then
-
         'End of Pass Play / Down
         'Assess for personal fouls
         GoTo 3303
-
     Else
-
         'Move on to next play
         GoSub 3900
-
         GoTo 700
-
     End If
 
 
@@ -7460,6 +7599,7 @@ Sub FOOTBALL ()
             Call StatusBoard
             pbpString$ = "HALF TIME"
             Call PBP
+            warningTime = 0
 
             Call HALFSTART
             Call GetKeyWhenNoDelay
@@ -8019,6 +8159,7 @@ Sub FOOTBALL ()
                 End If
 
                 playSegment = 4
+                warningTime = 1
 
             End If
 
@@ -8049,11 +8190,9 @@ Sub FOOTBALL ()
                     Case 1:
                         pbpString$ = "HUDDLE"
                         Call PBP
-                        If playSegment = 4 Then
-                            'This should only perform a slight runoff
-                            'for the 1st play of the 2-minute warning
-                            Call AddPossessionTime(P1, 5, 8)
+                        If warningTime = 1 Then
                             skipRunoff = 1
+                            warningTime = 0
                         End If
 
                     Case 2:
@@ -8064,13 +8203,18 @@ Sub FOOTBALL ()
                         Else
                             Call TimeoutCalled(P1, periodOver, (playSegment = 4))
                             skipRunoff = 1
+                            warningTime = 0
                         End If
 
                     Case 3
                         If playSegment = 0 Or playSegment = 1 Then
-                            pbpString$ = "HURRY UP"
-                            Call PBP
                             playSegment = playSegment + 2
+                        Else
+                            If warningTime = 1 Then
+                                playSegment = 2
+                                skipRunoff = 1
+                                warningTime = 0
+                            End If
                         End If
 
                     Case 4
@@ -8098,12 +8242,16 @@ Sub FOOTBALL ()
                             thirdDownAtt(P1) = thirdDownAtt(P1) + 1
                         End If
 
-                        If teamYears(P1) < 1990 Then
-                            'Call AddPossessionTime(P1, 3, 4)
-                            Call AddPossessionTime(P1, 7, 9)
+                        If warningTime = 1 Then
+                            warningTime = 0
                         Else
-                            'Call AddPossessionTime(P1, 2, 3)
-                            Call AddPossessionTime(P1, 6, 8)
+                            If teamYears(P1) < 1990 Then
+                                'Call AddPossessionTime(P1, 3, 4)
+                                Call AddPossessionTime(P1, 7, 9)
+                            Else
+                                'Call AddPossessionTime(P1, 2, 3)
+                                Call AddPossessionTime(P1, 6, 8)
+                            End If
                         End If
 
                         skipRunoff = 1
@@ -8116,6 +8264,7 @@ Sub FOOTBALL ()
                         Else
                             Call TimeoutCalled(D, periodOver, (playSegment = 4))
                             skipRunoff = 1
+                            warningTime = 0
                         End If
 
                 End Select
@@ -8396,7 +8545,7 @@ Sub FOOTBALL ()
             Call PBP
 
             'Record INT Yds, TDs
-            gameInts(P1, defPlayer, 1) = gameInts(P1, defPlayer, 1) + 100 - ydLine
+            gameInts(P1, defPlayer, 1) = gameInts(P1, defPlayer, 1) + (100 - ydLine)
             gameInts(P1, defPlayer, 2) = gameInts(P1, defPlayer, 2) + 1
 
             If 100 - ydLine > gameLongInt(P1, defPlayer) Then
@@ -8566,6 +8715,7 @@ Sub InitVar ()
     checkFumbRev = 0
     chosenPlay = 0
     compTeam = 0
+    convState = -2
     coverage = 0
     currDown = 0
     dLine = 1
@@ -9878,6 +10028,10 @@ Sub Scoreboard
 
     Screen , , 0, 0
 
+    Locate 2, 1
+
+    Color 15, 1 + BW * 6
+
     'Outline box for score / TO's
     Print Chr$(219); String$(40, 223)
     Print Chr$(219)
@@ -10855,7 +11009,7 @@ Sub INCOMPLETE ()
                 Case 1: pbpString$ = "HE THROWS THIS ONE AWAY"
                 Case 2: pbpString$ = "HE JUST GETS IT OUT OF HIS HAND"
                 Case 3: pbpString$ = "HE HAS TO THROW IT AWAY"
-                Case 4: pbpString$ = "THIS ONE WILL GO NOWHERE"
+                Case 4: pbpString$ = "HE TOSSES IT TO AVOID THE SACK"
             End Select
 
         Case 21 To 100
@@ -12425,7 +12579,7 @@ Sub MOVEBALL ()
 
             Call YARDLINE
 
-            RN0 = Int(Rnd(1) * 22) + 1
+            RN0 = Int(Rnd(1) * 23) + 1
 
             Select Case RN0
                 Case 1: I$ = " IS TACKLED"
@@ -12487,13 +12641,11 @@ Sub MOVEBALL ()
 
                 End If
 
+                Call PBP
+
             End If 'Done excluding QB kneel
 
         End If 'Done with PBP building
-
-        If ydsToScore <> 0 Then
-            Call PBP
-        End If
 
     End If
 
@@ -14102,8 +14254,8 @@ Sub ComputerOffense ()
 
         ' *** REGULAR STRATEGY ***
         '---------------------------
-        'Safety Prevention (Inside Own 10)
-        If currDown <= 3 And ydLine <= 10 Then
+        'Safety Prevention (Inside Own 3)
+        If currDown <= 3 And ydLine <= 3 Then
             Call Offense_PreventSafety
             GoTo 8880
         End If 'Done checking if in danger of safety
@@ -16165,18 +16317,18 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD, koOffsides)
     Select Case kickPenalty
 
         Case 1 To 55
-            '(Kicking team)
+            'Kicking team
             koPenaltyString$ = "*** PENALTY - OFFSIDES - " + gameTeams$(D) + " - 5 YDS ***"
             penaltyYds! = 5
             koOffsides = 1
 
         Case 56 To 57
-            'Player OOB (Kicking team)
+            'Kicking team
             koPenaltyString$ = "*** PENALTY - PLAYER OUT-OF-BOUNDS - " + gameTeams$(D) + " - 5 YDS ***"
             penaltyYds! = 5
 
         Case 58 To 100
-            'Holding (Return team)
+            'Return team
             koPenaltyString$ = "*** PENALTY - " + gameTeams$(P1) + " - HOLDING - 15 YDS! ***"
             penaltyYds! = -15
 
@@ -16240,7 +16392,7 @@ Sub PenaltyOnPlaceKick (autoFD, penYards!, penString$)
 
         Case 30 To 100
             If ruleOptType = 0 Then
-                pbpString$ = "*** PENALTY - DEF - HOLDING - 10 YDS ***"
+                pbpString$ = "*** PENALTY - DEF - HOLDING - 10 YDS / 1ST D! ***"
                 penaltyYds! = 10
             Else
                 pbpString$ = "*** PENALTY - DEF - HOLDING - 5 YDS / 1ST D! ***"
@@ -16631,6 +16783,7 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
     Shared autoAccept
     Shared evalDown, freePlayYdsGained
+    Shared koPenalty, prPenalty
     Shared spotFoul, spotFromGain
 
     fgAttLine = (117 - fgLimit% + goalPostAdj)
@@ -16711,7 +16864,7 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
                     End If
 
                     'Decline penalty on TD / PAT made
-                    If scoringPenalty > 0 Or (endZone = 2 And convGood = 1) Then
+                    If scoringPenalty > 0 Or (endZone = 2 And convState = 1) Then
                         decision = 2
                     End If
 
@@ -16736,7 +16889,8 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
                     lateGameLead = (quarter = 4 And gameClock! <= 240 And scoreDiff <= -9 And scoreDiff >= -14)
 
                     ' Offense failed to convert on 3rd / 4th
-                    If evalDown >= 3 And (evalYdsToFirst! - evalYdsGained) > YDS_TOLERANCE! And scoringPenalty = 0 Then
+                    If evalDown >= 3 And (evalYdsToFirst! - evalYdsGained) > YDS_TOLERANCE! And _
+                        scoringPenalty = 0 And prPenalty = 0 And koPenalty = 0 Then
 
                         ' On 3rd down (evalDown = 4): if offense is in FG range, and defense
                         'has a lead, we want to deny the kick by pushing them out of FG range
@@ -16902,14 +17056,6 @@ Sub PenaltyPreSnap (throwFlag, liveBallFoul, autoAcc)
     End If
 
     If penaltyRoll <= penaltyChance And playCall < 21 Then
-
-        'Give a heads up that this is a new down...
-        'PBP isn't always clear the previous play
-        'has been marked dead. We could add PBP
-        'for deadball scenarios, or just put this
-        'in a fraction of downs
-
-        'Call DownDescription
 
         pbpString$ = "*** PENALTY - "
 
@@ -17140,10 +17286,11 @@ End Sub
 '----------------------------------------
 Sub TimeoutCalled (teamIdx, periodOver, prevClockStop)
 
-    pbpString$ = "TIME OUT " + gameTeams$(teamIdx) + " - THEY HAVE" + Str$(timeouts(teamIdx) - 1) + " REMAINING"
+    timeouts(teamIdx) = timeouts(teamIdx) - 1
+
+    pbpString$ = "TIME OUT " + gameTeams$(teamIdx) + " - THEY HAVE" + Str$(timeouts(teamIdx)) + " REMAINING"
     Call PBP
 
-    timeouts(teamIdx) = timeouts(teamIdx) - 1
     playSegment = 9
 
     If Not prevClockStop Then
@@ -17154,17 +17301,7 @@ Sub TimeoutCalled (teamIdx, periodOver, prevClockStop)
         Call AddPossessionTime(P1, 7, 9)
     End If
 
-    Color 15 * (1 - BW), 1 + BW * 6
-
-    'Print updated timeout counts
-    For X = 0 To 1
-        Locate X + 4, 41
-        Print Using "#"; timeouts(X)
-    Next X
-
-    Color 0
-
-    'Call Scoreboard
+    Call Scoreboard
 
     'Call CheckGameClock(periodOver)
 
@@ -17804,7 +17941,6 @@ Sub PuntReturnYards (catchYardline!)
 
     startYds = 100 - ydLine
     endYds = startYds - ydsGained
-
     Call MOVEBALL
 
 End Sub
@@ -18737,10 +18873,10 @@ Sub COMPILER ()
                 gameStatsTeam(P1, 1) = gameStatsTeam(P1, 1) + 1
 
                 'Team Rush Yds
-                If ydsGained + ydLine < (100 - YDS_TOLERANCE!) Then
-                    gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + ydsGained
+                If IsTouchdown(ydsGained + ydLine) Then
+                    gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + (100 - ydLine)
                 Else
-                    gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + 100 - ydLine
+                    gameStatsTeam(P1, 2) = gameStatsTeam(P1, 2) + ydsGained
                 End If
 
             Case 2
@@ -18756,13 +18892,23 @@ Sub COMPILER ()
                 gameStatsTeam(P1, 4) = gameStatsTeam(P1, 4) + 1
 
                 'Team Pass Yds
-                If ydsGained + ydLine < (100 - YDS_TOLERANCE!) Then
-                    gameStatsTeam(P1, 6) = gameStatsTeam(P1, 6) + ydsGained
+                If IsTouchdown(ydsGained + ydLine) Then
+                    gameStatsTeam(P1, 6) = gameStatsTeam(P1, 6) + (100 - ydLine)
                 Else
-                    gameStatsTeam(P1, 6) = gameStatsTeam(P1, 6) + 100 - ydLine
+                    gameStatsTeam(P1, 6) = gameStatsTeam(P1, 6) + ydsGained
                 End If
 
         End Select
+
+
+        '-- REMOVE ME --
+        If playCall = 8 Or playCall = 9 Then
+            runner$ = qbacks$(P1, qbNumber(P1))
+        Else
+            runner$ = rbacks$(P1, I1)
+        End If
+
+
 
         '** Increase Player Stats **
         Select Case scoreX0
@@ -18775,7 +18921,7 @@ Sub COMPILER ()
 
                 If IsTouchdown(ydsGained + ydLine) Then
                     'Increase RB Rush Yards
-                    gameStatsPlayer(P1, I1, 1) = gameStatsPlayer(P1, I1, 1) + 100 - ydLine
+                    gameStatsPlayer(P1, I1, 1) = gameStatsPlayer(P1, I1, 1) + (100 - ydLine)
                     'Increase RB Rush TDs
                     gameStatsPlayer(P1, I1, 2) = gameStatsPlayer(P1, I1, 2) + 1
                     BG = 100 - ydLine
@@ -18783,6 +18929,7 @@ Sub COMPILER ()
                         gameLongRunTD$(P1, I1) = "t"
                         gameLongRunYds(P1, I1) = BG
                     End If
+
                 Else
                     'Increase RB Rush Yards
                     gameStatsPlayer(P1, I1, 1) = gameStatsPlayer(P1, I1, 1) + ydsGained
@@ -18790,6 +18937,7 @@ Sub COMPILER ()
                         gameLongRunTD$(P1, I1) = ""
                         gameLongRunYds(P1, I1) = ydsGained
                     End If
+
                 End If
 
             Case 2
@@ -18810,7 +18958,7 @@ Sub COMPILER ()
 
                     If IsTouchdown(ydsGained + ydLine) Then
                         'Pass Yards
-                        gameStatsPlayer(P1, I1, 12) = gameStatsPlayer(P1, I1, 12) + 100 - ydLine
+                        gameStatsPlayer(P1, I1, 12) = gameStatsPlayer(P1, I1, 12) + (100 - ydLine)
                         'Increase Pass TDs
                         gameStatsPlayer(P1, I1, 13) = gameStatsPlayer(P1, I1, 13) + 1
                     Else
@@ -18824,7 +18972,7 @@ Sub COMPILER ()
 
                     If IsTouchdown(ydsGained + ydLine) Then
                         'Increase WR Rec Yds
-                        gameStatsPlayer(P1, I3 - 10, 7) = gameStatsPlayer(P1, I3 - 10, 7) + 100 - ydLine
+                        gameStatsPlayer(P1, I3 - 10, 7) = gameStatsPlayer(P1, I3 - 10, 7) + (100 - ydLine)
                         'Increase WR Rec TDs
                         gameStatsPlayer(P1, I3 - 10, 8) = gameStatsPlayer(P1, I3 - 10, 8) + 1
                     Else
@@ -18839,7 +18987,7 @@ Sub COMPILER ()
 
                     If IsTouchdown(ydsGained + ydLine) Then
                         'Increase RB Rec Yds
-                        gameStatsPlayer(P1, I3, 4) = gameStatsPlayer(P1, I3, 4) + 100 - ydLine
+                        gameStatsPlayer(P1, I3, 4) = gameStatsPlayer(P1, I3, 4) + (100 - ydLine)
                         'Increase RB Rec TDs
                         gameStatsPlayer(P1, I3, 5) = gameStatsPlayer(P1, I3, 5) + 1
                     Else
@@ -18855,22 +19003,24 @@ Sub COMPILER ()
             Case 4
                 'Misc. lost yardage (sack, scramble, QB sneak)
                 If isSack = 0 Or (isSack = 1 And ruleOptType = 0) Then
+
                     'Increase Rush Att
                     gameStatsPlayer(P1, qbNumber(P1) + 10, 0) = gameStatsPlayer(P1, qbNumber(P1) + 10, 0) + 1
-                End If
 
-                If (isSack = 0 And ydsGained + ydLine < (100 - YDS_TOLERANCE!)) Or _
-                    (isSack = 1 And ruleOptType = 0 And ydsGained + ydLine < (100 - YDS_TOLERANCE!)) Then
-                    'Increase Rush Yards
-                    gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + ydsGained
-                End If
+                    If IsTouchdown(ydsGained + ydLine) Then
+                        'Increase Rush Yards
 
-                If (isSack = 0 And IsTouchdown(ydsGained + ydLine)) Or _
-                    (isSack = 1 And ruleOptType = 0 And IsTouchdown(ydsGained + ydLine)) Then
-                    'Increase Rush Yds
-                    gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + 100 - ydLine
-                    'Increase Rush TDs
-                    gameStatsPlayer(P1, qbNumber(P1) + 10, 2) = gameStatsPlayer(P1, qbNumber(P1) + 10, 2) + 1
+                        'Increase Rush Yds
+                        gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + (100 - ydLine)
+                        'Increase Rush TDs
+                        gameStatsPlayer(P1, qbNumber(P1) + 10, 2) = gameStatsPlayer(P1, qbNumber(P1) + 10, 2) + 1
+
+                    Else
+
+                        gameStatsPlayer(P1, qbNumber(P1) + 10, 1) = gameStatsPlayer(P1, qbNumber(P1) + 10, 1) + ydsGained
+
+                    End If
+
                 End If
 
                 If isSack = 1 Then
@@ -19071,13 +19221,13 @@ Sub RUNMENU ()
 
     Print "SELECT RUNNING PLAY "; gameTeams$(P1)
     Print
-    Locate , 14: Print "1 - BLAST                 9 - POWER SWEEP "
+    Locate , 14: Print "1 - BLAST                 9 - GAP SWEEP   "
     Locate , 14: Print "2 - DIVE                 10 - QUICK PITCH "
     Locate , 14: Print "3 - OFF TACKLE           11 - QUICK TRAP  "
-    Locate , 14: Print "4 - TOSS SWEEP           12 - ISOLATION   "
+    Locate , 14: Print "4 - STRETCH SWEEP        12 - ISOLATION   "
     Locate , 14: Print "5 - OPTION RUN           13 - SPRINT DRAW "
     Locate , 14: Print "6 - DRAW PLAY            14 - OVER THE TOP"
-    Locate , 14: Print "7 - TRAP/MISDIRECTION    15 - COUNTER     "
+    Locate , 14: Print "7 - LONG TRAP            15 - COUNTER     "
     Locate , 14: Print "8 - QB SNEAK                              "
 
 End Sub
@@ -19398,18 +19548,17 @@ Sub SACK ()
     End If
 
     RN0 = Int(Rnd(1) * 12) + 1
-    Call Rolld100(RN1)
 
     Select Case RN0
         Case 1: pbpString$ = pbpString$ + " IS SACKED"
-        Case 2: If RN1 <= 20 Then pbpString$ = pbpString$ + " IS NAILED"
-        Case 3: If RN1 <= 30 Then pbpString$ = pbpString$ + " IS BURIED"
-        Case 4: If RN1 <= 40 Then pbpString$ = pbpString$ + " IS DRILLED"
-        Case 5: If RN1 <= 50 Then pbpString$ = pbpString$ + " IS PANCAKED"
-        Case 6: If RN1 <= 60 Then pbpString$ = pbpString$ + " IS THROWN"
-        Case 7: If RN1 <= 70 Then pbpString$ = pbpString$ + " IS HAMMERED"
-        Case 8: If RN1 <= 80 Then pbpString$ = pbpString$ + " IS TACKLED"
-        Case 9: If RN1 <= 90 Then pbpString$ = pbpString$ + " IS SWARMED UNDER"
+        Case 2: pbpString$ = pbpString$ + " IS NAILED"
+        Case 3: pbpString$ = pbpString$ + " IS BURIED"
+        Case 4: pbpString$ = pbpString$ + " IS DRILLED"
+        Case 5: pbpString$ = pbpString$ + " IS PANCAKED"
+        Case 6: pbpString$ = pbpString$ + " IS THROWN"
+        Case 7: pbpString$ = pbpString$ + " IS HAMMERED"
+        Case 8: pbpString$ = pbpString$ + " IS TACKLED"
+        Case 9: pbpString$ = pbpString$ + " IS SWARMED UNDER"
         Case 10: pbpString$ = pbpString$ + " IS LEVELED"
         Case 11: pbpString$ = pbpString$ + " IS TACKLED"
         Case 12: pbpString$ = pbpString$ + " IS WRAPPED UP"
@@ -19453,6 +19602,21 @@ Sub QBLINE ()
 
         qbContrib = GetQBRushPctGame%(qbacks$(P1, qbNumber(P1)), currTeam)
         qbMobility(P1) = GetQBMobility%(qbContrib)
+
+        'Rebuild the benched-QB lookup
+        For I = 0 To 3
+            qbRushIdx(P1, I) = -1
+        Next I
+
+        For currBack = 0 To 9
+            For currQB = 0 To 3
+                If qbacks$(P1, currQB) <> "" And currQB <> qbNumber(P1) Then
+                    If rbacks$(P1, currBack) = qbacks$(P1, currQB) Then
+                        qbRushIdx(P1, currQB) = currBack
+                    End If
+                End If
+            Next currQB
+        Next currBack
 
     End If
 
@@ -19560,6 +19724,9 @@ End Sub
 'This subroutine creates the Play-by-play
 'text for a punt.
 Sub PUNTPBP ()
+
+    pbpString$ = punter$(P1, 0) + " TAKES THE SNAP"
+    Call PBP
 
     RN0 = Int(Rnd(1) * 12) + 1
 
@@ -20479,9 +20646,9 @@ End Sub
 'udpating variables for position.
 Sub PassCompletePBP (direction)
 
-    Dim noYAC
+    Dim hasYAC
 
-    noYAC = 0
+    hasYAC = 1
 
     Call QBTHROW
 
@@ -20535,7 +20702,7 @@ Sub PassCompletePBP (direction)
 
     If catchYds > ydsGained Then
         catchYds = ydsGained
-        noYAC = 1
+        hasYAC = 0
     End If
 
     ydsToScore = 100 - ydLine - catchYds
@@ -20659,7 +20826,7 @@ Sub PassCompletePBP (direction)
 
         Call PBP
 
-        If noYAC = 0 Then
+        If hasYAC = 1 Then
 
             'Adjust team position
             startYds = 100 - ydLine - catchYds
@@ -20798,7 +20965,7 @@ End Sub
 'update the variables for down, YARDLINE
 'Also calls Play-by-Play and sets the
 'ball position marker.
-Sub Touchback (touchbackLine, endZone)
+Sub Touchback (touchbackLine, inEndZone)
 
     Call CHANGEPOSS
 
@@ -20837,7 +21004,7 @@ Sub Touchback (touchbackLine, endZone)
 
                 Case Is >= 10
                     '2024 - Present
-                    If endZone = 1 Then
+                    If inEndZone = 1 Then
                         '2025 = 35 yard line ??
                         touchbackLine = 30
                     Else
@@ -20961,11 +21128,11 @@ Sub TryForTwoResult (convYds)
     gameStatsTeam(P1, 35) = gameStatsTeam(P1, 35) + 1
 
     If ydsGained < convYds Then
-        convGood = 0
+        convState = 0
         pbpString$ = pbpString$ + "NO GOOD"
         Call PBP
     Else
-        convGood = 1
+        convState = 1
         pbpString$ = pbpString$ + "GOOD"
         Call PBP
 
@@ -23601,8 +23768,9 @@ End Sub
 'to ball position, score, downs remaining
 Function CalcDefTOChance (defScoreDiff, menuChoice)
 
-    If quarter = 2 And defScoreDiff > 0 Then
-        'Leading defense - only worth a TO if there's time for one more shot before half
+    If quarter = 2 And defScoreDiff > 8 Then
+        'Leading defense - only worth a TO if there's time for
+        'one more shot before halfand score is close enough
         If gameClock! >= 25 Then
             callChance = 100
         Else
