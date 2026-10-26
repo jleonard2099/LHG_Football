@@ -1857,33 +1857,33 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
 
     'CATEGORY 5 - SCORING OFFENSE
     CA = 5
-    PTS = 0
-    OPTS = 0
+    teamPts = 0
+    oppPts = 0
 
     For I = 1 To totalGames
-        PTS = PTS + teamScore(I)
-        OPTS = OPTS + oppScore(I)
+        teamPts = teamPts + teamScore(I)
+        oppPts = oppPts + oppScore(I)
     Next
 
-    If UCase$(finalUpdate$) = "Y" And PTS / totalGames > teamRecords!(13) Then
-        teamRecords!(13) = PTS / totalGames
+    If UCase$(finalUpdate$) = "Y" And teamPts / totalGames > teamRecords!(13) Then
+        teamRecords!(13) = teamPts / totalGames
         teamRecDesc$(13) = teamName$
     End If
 
-    If PTS > teamRecords!(12) Then
-        teamRecords!(12) = PTS
+    If teamPts > teamRecords!(12) Then
+        teamRecords!(12) = teamPts
         teamRecDesc$(12) = teamName$
     End If
 
-    If UCase$(finalUpdate$) = "Y" And (PTS - OPTS) / totalGames > teamRecords!(14) Then
-        teamRecords!(14) = (PTS - OPTS) / totalGames
+    If UCase$(finalUpdate$) = "Y" And (teamPts - oppPts) / totalGames > teamRecords!(14) Then
+        teamRecords!(14) = (teamPts - oppPts) / totalGames
         teamRecDesc$(14) = teamName$
     End If
 
-    If PTS / totalGames > totalTeamVal!(CA, 20, 3) Then
+    If teamPts / totalGames > totalTeamVal!(CA, 20, 3) Then
 
         totalTeamVal!(CA, 20, 1) = totalGames
-        totalTeamVal!(CA, 20, 2) = PTS
+        totalTeamVal!(CA, 20, 2) = teamPts
         totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / totalGames
         totalTeamName$(CA, 20) = statName$
 
@@ -1902,40 +1902,40 @@ Sub CalcRecordsPro (totalGames, teamName$, statName$, finalUpdate$)
 
     'CATEGORY 6 - SCORING DEFENSE
     CA = 6
-    PTS = 0
+    teamPts = 0
 
     For I = 1 To totalGames
-        PTS = PTS + oppScore(I)
+        teamPts = teamPts + oppScore(I)
     Next
 
     If UCase$(finalUpdate$) = "Y" Then
 
-        If PTS / totalGames < teamRecords!(39) Then
-            teamRecords!(39) = PTS / totalGames
+        If teamPts / totalGames < teamRecords!(39) Then
+            teamRecords!(39) = teamPts / totalGames
             teamRecDesc$(39) = teamName$
         End If
 
-        If PTS < teamRecords!(38) Then
-            teamRecords!(38) = PTS
+        If teamPts < teamRecords!(38) Then
+            teamRecords!(38) = teamPts
             teamRecDesc$(38) = teamName$
         End If
 
-        If PTS / totalGames > teamRecords!(41) Then
-            teamRecords!(41) = PTS / totalGames
+        If teamPts / totalGames > teamRecords!(41) Then
+            teamRecords!(41) = teamPts / totalGames
             teamRecDesc$(41) = teamName$
         End If
 
     End If
 
-    If PTS > teamRecords!(40) Then
-        teamRecords!(40) = PTS
+    If teamPts > teamRecords!(40) Then
+        teamRecords!(40) = teamPts
         teamRecDesc$(40) = teamName$
     End If
 
-    If PTS / totalGames < totalTeamVal!(CA, 20, 3) Then
+    If teamPts / totalGames < totalTeamVal!(CA, 20, 3) Then
 
         totalTeamVal!(CA, 20, 1) = totalGames
-        totalTeamVal!(CA, 20, 2) = PTS
+        totalTeamVal!(CA, 20, 2) = teamPts
         totalTeamVal!(CA, 20, 3) = totalTeamVal!(CA, 20, 2) / totalGames
         totalTeamName$(CA, 20) = statName$
 

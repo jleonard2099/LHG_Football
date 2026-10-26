@@ -380,7 +380,7 @@ Dim ballFumbled, evalDown
 Dim freePlayYdsGained, freePlayYdsToFirst
 Dim koPenalty, openKickTeam
 Dim playResultSafety, playResultTD, prPenalty
-Dim spotFoul, spotFromGain
+'Dim spotFoul, spotFromGain
 Dim tickerStart, winTeam
 
 Dim downYds!, evalYdsToFirst!
@@ -401,24 +401,33 @@ Dim Shared ballPosCmpAdj, passTypeCmpAdj, windCmpAdj
 Dim Shared autoPlay, avgRecYds, BW
 Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
+'Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
-Dim Shared endAllGames, endYds, endZone, expCompPct
+'Dim Shared endAllGames, endYds, endZone, expCompPct
+
+Dim Shared fgAttLine
 Dim Shared fgSuccessChance, ffPctSuccess
-Dim Shared firstDownClockOpt
+Dim Shared firstDownClockOpt, fleaFlicker
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
-Dim Shared gameLoc, gameOver, goalPostAdj, halfTime
+Dim Shared gameLoc, gameOver, goalLnYdAdj, goalPostAdj, halfTime
+Dim Shared halfbackPass, impactTeam, intChance, kickRetIdx
 
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I3, I5, I6, I7, I8
 
-Dim Shared isOT, isSack, kickDist
-Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
+Dim Shared isOT, isSack, kickDist, kneelPlay
+Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
+Dim Shared loseDown, nbrLines, playContex
 Dim Shared playerMode, playerOpt, playType
 Dim Shared P1, playCall, periodNbr, puntRetIdx
+'Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType, rushBase
+Dim Shared rushEra, scoreX0, scorePenaltyType
 Dim Shared sndOpt, startYds, useTicker, windScreenDir
+Dim Shared totalSTPenalties, windFavorTeam, YF
+
 
 'playSegment appears to represent a position in the order of a play
 '0   Start clock
@@ -435,18 +444,11 @@ Dim Shared sndOpt, startYds, useTicker, windScreenDir
 'The below 2 variables are related to scout report
 Dim Shared XD, XE
 
+'Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+
+Dim Shared playTimeCharged!
 Dim Shared ydsToFirst As Single
-Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
-
-Dim Shared convChoice, convGood, defPlayer, enforceOnKO
-Dim Shared fgAttLine, fleaFlicker, goalLnYdAdj
-Dim Shared halfbackPass, impactTeam, intChance, kickRetIdx
-Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
-Dim Shared loseDown, nbrLines, playContext, rushEra
-Dim Shared scoreX0, scorePenaltyType
-Dim Shared totalSTPenalties, windFavorTeam, YF
-
-Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
+'Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 
 Dim Shared pbpText$(1 To MAX_PBP_LINES)
 
@@ -485,7 +487,7 @@ Dim Shared runYdAdj(1, 38)
 Dim Shared rbRushContrib(1, 9), rbRushAvg(1, 9), rbNumRec(1, 9), rbYdsPerC(1, 9)
 Dim Shared sackStatsOpp(1, 14, 1)
 Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50)
-Dim Shared scoringPlays(50, 6)
+'Dim Shared scoringPlays(50, 6)
 'scoringPlays(__, X)
 'X = 0: Score Type
 'X = 1: Team Index
@@ -509,7 +511,7 @@ Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 Dim scheduleFile$
 
 Dim Shared defTeam$, gameStadium$, markers$
-Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
+'Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 
 Dim Shared defFormation$(1 To 10)
 Dim Shared defFormEraA$(1 To 10), defFormEraB$(1 To 10)
