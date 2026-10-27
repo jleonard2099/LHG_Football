@@ -24,15 +24,19 @@ Const LAST_ROW = 30
 Const SCHED_ENTRIES_PER_SCREEN = 25
 Const MAX_PBP_LINES = 4
 
+'Average yards per play  = 5.3 to 5.8 depending on team
+Const AVG_YDS_PER_PLAY = 5.5
+'What fraction of a yard is close enough to be "across the line"
+Const YDS_TOLERANCE! = 0.05
+
 'Adjust these to change the frequency
 'of penalties being called on special teams
 Const AVG_KICK_DIST = 60
+Const BLOCK_THRESHOLD_NFL = 55
+Const BLOCK_THRESHOLD_COLLEGE = 48
 Const PK_PENALTY_THRESHOLD = 3
 Const PR_PENALTY_THRESHOLD = 950
 Const KO_PENALTY_THRESHOLD = 775
-Const BLOCK_THRESHOLD_NFL = 55
-Const BLOCK_THRESHOLD_COLLEGE = 48
-Const YDS_TOLERANCE! = 0.05
 
 DefInt A-Z
 
@@ -52,6 +56,9 @@ Dim Shared pbpString$, penaltyString$, targetWRName$, YN$
 Dim spotFoul, spotFromGain
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared endAllGames, endYds, endZone, expCompPct
+
+Dim Shared evalYdLine
+
 Dim Shared playSegment, overtimeOpt, overuseAdj, nbrScores
 Dim Shared ydsGained As Single, ydLine As Single, ydLineTeam As Single, ydsToScore As Single
 Dim Shared gameClock!, pbpDelay!, penaltyYds!, timeElapsed!
@@ -2916,6 +2923,7 @@ Sub FOOTBALL ()
     'Store down # before play starts
     evalDown = currDown
     evalYdsToFirst! = ydsToFirst
+    evalYdLine = ydLine
 
     Call PenaltyPreSnap(flagOnPlay, pendingFlag, autoAccept)
 
@@ -6005,8 +6013,6 @@ Sub FOOTBALL ()
         penaltyString$ = pbpString$
     End If
 
-    Print #11, "DEBUG: Offense score before TD: "; Str$(score(P1, 0))
-
     If d100% <= 50 Then
         pbpString$ = "T O U C H D O W N !!! " + gameTeams$(P1)
     Else
@@ -6102,7 +6108,6 @@ Sub FOOTBALL ()
         score(P1, 0) = score(P1, 0) + 7
     End If
 
-    Print #11, "DEBUG: Offense score after TD: "; Str$(score(P1, 0))
     Call SETSCREEN
 
     Call KickoffLine(0, 0)
@@ -6196,7 +6201,6 @@ Sub FOOTBALL ()
                 convState = -1
 
                 'Offense chooses if they want to retry or enforce on kickoff
-                Print #11, "DEBUG: 6200"
                 Call PenaltyOnScore(applyOnKO)
 
                 If applyOnKO = 0 Then
@@ -6272,7 +6276,6 @@ Sub FOOTBALL ()
                 convState = -1
 
                 'Offense chooses if they want to retry or enforce on kickoff
-                Print #11, "DEBUG: 6275"
                 Call PenaltyOnScore(applyOnKO)
 
                 If applyOnKO = 0 Then
@@ -6405,8 +6408,6 @@ Sub FOOTBALL ()
                     convState = 0
 
                 End If
-
-                Print #11, "DEBUG: Offense score after PAT: "; Str$(score(P1, 0))
 
                 If penaltyOnKick Then
                     Call PenaltyOnPlaceKick(autoFirst, pendingPenYds!, pendingPenString$)
@@ -6714,10 +6715,6 @@ Sub FOOTBALL ()
                 pbpString$ = pbpString$ + "DEF - UNNECESSARY ROUGHNESS -"
                 penaltyYds! = 15
 
-                If playCall > 8 And ydsGained > penaltyYds! Then
-                    test = 1
-                End If
-
                 'If the offense made it past scrimmage
                 If ydsGained > 0 Then
                     'tack yards on to the gain
@@ -6768,6 +6765,10 @@ Sub FOOTBALL ()
         End If
 
         If penaltyRoll >= 23 Then
+
+            If ydsGained > 0 And spotFromGain = 0 And ydLine > 80 Then
+                test = 1
+            End If
 
             'Most defensive penalties result in 1st down
             'except Incidental Facemask
@@ -7120,7 +7121,6 @@ Sub FOOTBALL ()
             perFoulCall = 0
 
             'Prompt when to apply penalty
-            Print #11, "DEBUG: 7122"
             Call PenaltyOnScore(applyOnKO)
 
             If applyOnKO = 0 Then
@@ -7279,7 +7279,6 @@ Sub FOOTBALL ()
 
             'Penalty on Defense
             Print #11, "DEBUG: Penalty Charge - Assessment   : ydLine="; ydLine; " ydsGained="; ydsGained; " penaltyYds="; penaltyYds!; " spotFromGain="; spotFromGain; " playSegment="; playSegment
-            Print #11, "DEBUG: Penalty / Charge - Score State: endZone="; endZone; " convState="; convState; " patGood="; patGood
             Call PenaltyCharge(D, penaltyYds!)
             Print #11, "DEBUG: Penalty Charge - Result       : ydLine="; ydLine
 
@@ -7290,8 +7289,6 @@ Sub FOOTBALL ()
             If (quarter = 2 Or quarter >= 4) And gameClock! <= 0 Then
                 gameClock! = 1
             End If
-
-            Print #11, "ACCEPT-PRIOR: convState="; convState; " endZone="; endZone; " playSegment="; playSegment; " pendingFlag="; pendingFlag; " patGood="; patGood
 
             'Penalty prior to PAT or conversion
             If endZone >= 1 Or convState = -1 Then
@@ -7319,12 +7316,9 @@ Sub FOOTBALL ()
                 endZone = 0
 
                 'Team gets new conversion choice
-                Print #11, "DEBUG: Line 7340; convState="; Str$(convState); ", endZone="; Str$(endZone); ", playSegment="; Str$(playSegment)
                 GoTo PointsAfterTD
 
             End If
-
-            Print #11, "ACCEPT-DURING: convState="; convState; " endZone="; endZone; " playSegment="; playSegment; " pendingFlag="; pendingFlag; " patGood="; patGood
 
             'Penalty during PAT
             If convState >= 0 And playSegment = 4 Then
@@ -7336,7 +7330,6 @@ Sub FOOTBALL ()
                     GoTo PostConversion
                 Else
                     'Retry / enforce yardage
-                    Print #11, "DEBUG: Line 7355; convState="; Str$(convState); ", endZone="; Str$(endZone); ", playSegment="; Str$(playSegment)
                     GoTo PointsAfterTD
                 End If
 
@@ -7351,7 +7344,6 @@ Sub FOOTBALL ()
             3326 '
             'Penalty on Offense
             Print #11, "DEBUG: Penalty Charge - Assessment   : ydLine="; ydLine; " ydsGained="; ydsGained; " penaltyYds="; penaltyYds!; " spotFromGain="; spotFromGain; " playSegment="; playSegment
-            Print #11, "DEBUG: Penalty / Charge - Score State: endZone="; endZone; " convState="; convState; " patGood="; patGood
             Call PenaltyCharge(P1, penaltyYds!)
             Print #11, "DEBUG: Penalty Charge - Result       :     ydLine="; ydLine
 
@@ -7389,10 +7381,6 @@ Sub FOOTBALL ()
 
                 'No longer evaluating PAT play / penalty
                 endZone = 0
-
-                If autoAccept = 1 Then
-                    test = 1
-                End If
 
                 GoTo PointsAfterTD
 
@@ -7471,8 +7459,6 @@ Sub FOOTBALL ()
         Call COMPILER
 
         'Penalty declined during conversion window
-        Print #11, "DECLINE-PRIOR: convState="; convState; " endZone="; endZone; " playSegment="; playSegment; " pendingFlag="; pendingFlag; " patGood="; patGood
-
         If convState > -2 Then
             endZone = 0
             convState = -2
@@ -9121,12 +9107,8 @@ Sub BallPosition
 
     Dim roundedYd
 
-    '-- Added!
-    Call YARDLINE
-
     pbpString$ = "THE BALL IS ON "
-    'roundedYd = RoundHalfUp%(ydLine)
-    roundedYd = RoundHalfUp%(ydLineTeam)
+    roundedYd = RoundHalfUp%(ydLine)
 
     If roundedYd = 50 Then
         pbpString$ = pbpString$ + "THE 50"
@@ -14353,20 +14335,12 @@ Sub ComputerOffense ()
                 goForIt = 1
             End If
 
-            'Print #11, "----------------------------------------"
-            'Print #11, "GUARD: ydLine ="; Str$(ydLine); " ydsToGo ="; Str$(ydsToGo); " quarter ="; Str$(quarter); " clock ="; Str$(gameClock!); " lead ="; Str$(scoreDiff)
-            'Print #11, "       currDown ="; Str$(currDown); " ydsToFirst ="; Str$(ydsToFirst)
-            'Print #11, "       Go for it? "; Str$(goForIt)
-
             If goForIt = 1 Then
                 'Short-yardage mix (includes QB sneak on 4th and 1)
                 Call Offense_ShortYardage
             Else
                 playCall = 19
             End If
-
-            'Print #11, "----------------------------------------"
-
             'Keep the 4th-down decision made above; skip the regular
             'run/pass selection at 8827
             If currDown = 4 Then GoTo 8800
@@ -16748,8 +16722,6 @@ Sub PenaltyOnScore (enforceOnKO)
         pbpString$ = "PENALTY WILL BE ENFORCED ON CONVERSION"
     End If
 
-    Print #11, "DEBUG: Offense score after penalty choice: "; Str$(score(P1, 0))
-
     Call PBP
 
 End Sub
@@ -16925,6 +16897,10 @@ End Sub
 Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
     Dim evalYdsGained As Single
+    Dim effPenYds As Single
+
+    Dim kickSpotIfDeclined!, spotIfAccepted!
+
     Dim fgAttLine, inFGRange, inLongFGRange
 
     Shared evalYdsToFirst!
@@ -16985,6 +16961,12 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
                     'Computer Offense
                     'NOTE: currDown has already been increased from the play.
+                    If spotFromGain = 0 And spotFoul = 0 And koPenalty = 0 And prPenalty = 0 Then
+                        effPenYds = CappedPenYds!(penaltyYds!, evalYdLine, 0)
+                    Else
+                        effPenYds = penaltyYds!
+                    End If
+
 
                     If spotFromGain = 1 Or spotFoul = 1 Then
                         'When yards are added to the end of a gain,
@@ -17003,8 +16985,8 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
                             '  - Penalty yardage exceeds what was gained
                             '  (check within 0.05 since variales are both Single)
                             If autoFD = 1 Or evalDown >= 3 Or _
-                                (penaltyYds! + YDS_TOLERANCE! > evalYdsToFirst! - evalYdsGained) Or _
-                                penaltyYds! + YDS_TOLERANCE! > evalYdsGained Then
+                                (effPenYds + YDS_TOLERANCE! > evalYdsToFirst! - evalYdsGained) Or _
+                                effPenYds + YDS_TOLERANCE! > evalYdsGained Then
                                 decision = 1
                             End If
                         End If
@@ -17035,6 +17017,8 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
                     'Computer Defense
                     lateGameLead = (quarter = 4 And gameClock! <= 240 And scoreDiff <= -9 And scoreDiff >= -14)
+                    kickSpotIfDeclined! = evalYdLine + evalYdsGained
+                    spotIfAccepted! = evalYdLine + CappedPenYds!(penaltyYds!, evalYdLine, 0)
 
                     ' Offense failed to convert on 3rd / 4th
                     If evalDown >= 3 And (evalYdsToFirst! - evalYdsGained) > YDS_TOLERANCE! And _
@@ -17042,11 +17026,14 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
 
                         ' On 3rd down (evalDown = 4): if offense is in FG range, and defense
                         'has a lead, we want to deny the kick by pushing them out of FG range
-                        If evalDown = 4 And lateGameLead And ydLine > inFGRange And (ydLine + penaltyYds!) <= inFGRange + YDS_TOLERANCE! Then
+                        If evalDown = 4 And lateGameLead And kickSpotIfDeclined! > inFGRange And spotIfAccepted! <= inFGRange + YDS_TOLERANCE! Then
                             decision = 1
                         End If
 
                     Else
+
+                        penLost! = Abs(CappedPenYds!(penaltyYds!, evalYdLine, 0))
+
                         'Accept if any of the following:
                         '  - 4th Down and offense got a 1st
                         '  - 3rd Down and offense has <=3 yds for 1st
@@ -17055,7 +17042,16 @@ Sub PenaltyChoice (decision, autoFD, scoringPenalty)
                             (evalDown = 3 And evalYdsToFirst! - evalYdsGained <= 3) Or _
                             evalYdsGained >= 0) Then
                             decision = 1
+                        Else
+                            'Loss on the play:
+                            '  accept if penalty takes more ground than the loss,
+                            '  by more than the value of the replayed down
+                            'prPenalty = 0 And koPenalty = 0
+                            If penLost! > Abs(evalYdsGained) + avgYardsPerPlay! Then
+                                decision = 1
+                            End If
                         End If
+
                     End If
 
                     'Accept penalty on TD
@@ -17087,51 +17083,11 @@ Sub PenaltyCharge (teamIdx, ydsCharged!)
     Shared koPenalty, prPenalty
     Shared spotFoul, spotFromGain
 
-    If spotFromGain = 1 Or spotFoul = 1 Then
-        'Spot fouls (DPI, illegal touching, etc.) are enforced at the actual
-        'spot of the foul - NOT capped at half the distance to the goal.
-        'Exception: if the spot itself would cross the goal line, cap at the 1
-        statYds! = Abs(ydsCharged!)
+    ydsCharged! = CappedPenYds!(ydsCharged!, ydLine, (spotFoul = 1))
+    statYds! = Abs(ydsCharged!)
 
-        If ydsCharged! > 0 Then
-            'Defensive penalty - moving toward 100
-            If ydLine + ydsCharged! > 99 Then
-                statYds! = 99 - ydLine
-                ydsCharged! = statYds!
-            End If
-        Else
-            'Offensive penalty - moving toward 1
-            If ydLine + ydsCharged! < 1 Then
-                statYds! = ydLine - 1
-                ydsCharged! = -statYds!
-            End If
-        End If
-
-        spotFoul = 0
-        spotFromGain = 0
-
-    Else
-
-        If ydsCharged! > 0 Then
-            ' Defensive penalty - moving toward 100
-            If ydsCharged! > (100 - ydLine) / 2 Then
-                ' Half the distance to the goal
-                statYds! = CInt(100 - ydLine) / 2
-                ydsCharged! = statYds!
-            Else
-                statYds! = ydsCharged!
-            End If
-        Else
-            ' Offensive penalty - moving toward 1
-            If Abs(ydsCharged!) > ydLine / 2 Then
-                ' Half the distance to the goal
-                statYds! = CInt(ydLine) / 2
-                ydsCharged! = -statYds!
-            Else
-                statYds! = Abs(ydsCharged!)
-            End If
-        End If
-    End If
+    spotFoul = 0
+    spotFromGain = 0
 
     'Penalty on kickoff only moves
     'the spot of the ball; down and
@@ -23912,9 +23868,8 @@ Function CalcDefTOChance (defScoreDiff, menuChoice)
         End If
     Else
 
-        avgYardsPerPlay! = 5.5
         downsRemaining = 4 - (currDown - 1)
-        expectedYards! = downsRemaining * avgYardsPerPlay!
+        expectedYards! = downsRemaining * AVG_YDS_PER_PLAY
         convertRatio! = expectedYards! / ydsToFirst
 
         If defScoreDiff < -8 Then
@@ -24047,6 +24002,57 @@ Function CanEnforceFromReturn (offsidesPenalty)
     End If
 
 End Function
+
+
+'----------------------------------------
+'         CappedPenYds! Function
+'----------------------------------------
+'This function determines how many yards
+'to charge for a penalty, based on
+'ball position and penalty Yardage
+Function CappedPenYds! (penYds As Single, fromYdLine As Single, goalLineCap)
+
+    If goalLineCap Then
+
+        'Spot foul (DPI etc.): enforced at the spot, stopping only at the 1-yard line
+        If penYds > 0 Then
+            If fromYdLine + penYds > 99 Then
+                CappedPenYds! = 99 - fromYdLine
+            Else
+                CappedPenYds! = penYds
+            End If
+        Else
+            If fromYdLine + penYds < 1 Then
+                CappedPenYds! = -(fromYdLine - 1)
+            Else
+                CappedPenYds! = penYds
+            End If
+        End If
+
+    Else
+
+        If penYds > 0 Then
+            'Penalty on defense - moving toward 100
+            If penYds > (100 - fromYdLine) / 2 Then
+                '1/2 the distance ot the goal
+                CappedPenYds! = CInt(100 - fromYdLine) / 2
+            Else
+                CappedPenYds! = penYds
+            End If
+        Else
+            'Penalty on offense - moving toward 1
+            If Abs(penYds) > fromYdLine / 2 Then
+                '1/2 the distance ot the goal
+                CappedPenYds! = -(CInt(fromYdLine) / 2)
+            Else
+                CappedPenYds! = penYds
+            End If
+        End If
+
+    End If
+
+End Function
+
 
 
 '----------------------------------------
@@ -25006,13 +25012,10 @@ Function scrambleChance% (qbContrib)
 
     End If
 
-    'Average yards per play  = 5.3 to 5.8 depending on team
-    avgYardsPerPlay! = 5.5
-
     suppressScramble = 0
     attemptsRemaining = 3 - currDown
 
-    If (inFGRange - ydLine) <= (attemptsRemaining * avgYardsPerPlay!) Then
+    If (inFGRange - ydLine) <= (attemptsRemaining * AVG_YDS_PER_PLAY) Then
         canReachFG = 1
     Else
         canReachFG = 0
