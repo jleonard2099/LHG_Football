@@ -474,7 +474,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
     minRushAtt = totalGames * 10
     minRecept = totalGames * 3
     minComp = totalGames * 15
-    minReturns = totalGames * 1.2
+    minReturns = 0 'totalGames * 1.2
     
     '---------------
     ' Running Backs
@@ -507,6 +507,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(2, 1) = teamName$
             End If
 
+			'Only incldue RB's with min att's / game
             If compRB!(X, 9) > indRecords!(3) And UCase$(finalUpdate$) = "Y" And compRB!(X, 1) >= minRushAtt Then
                 'Rushing Average
                 indRecords!(3) = compRB!(X, 9)
@@ -529,14 +530,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compRB!(X, 9) 'Rush Avg
                     leaderVal!(Y, 2) = compRB!(X, 1) 'Rush Att
 
-                    'Only include players with 10 rushes / game
-                    'If leaderVal!(Y, 2) < minRushAtt Then
-                    '    leaderName$(Y) = "*"
-                    '    leaderTeam$(Y) = "*"
-                    '    leaderVal!(Y, 1) = 0
-                    '    leaderVal!(Y, 2) = 0
-                    'End If
-
                     For Y1 = 1 To 19:
                         For Z = Y1 + 1 To 20:
                             If leaderVal!(Y1, 1) < leaderVal!(Z, 1) Then
@@ -555,6 +548,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
+			'Only incldue RB's with min att's / game
             If compRB!(X, 9) >= leaderVal!(20, 1) And compRB!(X, 1) >= minRushAtt Then
 
                 leaderName$(20) = compRB$(X)
@@ -689,6 +683,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(7, 1) = teamName$
             End If
 
+			'Only incldue WR's with min rec's / game
             If compWR!(X, 4) > indRecords!(8) And UCase$(finalUpdate$) = "Y" And compWR!(X, 1) >= minRecept Then
                 'Receiving Average
                 indRecords!(8) = compWR!(X, 4)
@@ -711,14 +706,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Z, 1) = compWR!(X, 4)
                     leaderVal!(Z, 2) = compWR!(X, 1)
 
-                    'Only include players with 3 receptions / game
-                    'If leaderVal!(Z, 2) < minRecept Then
-                    '    leaderName$(Z) = "*"
-                    '    leaderTeam$(Z) = "*"
-                    '    leaderVal!(Z, 1) = 0
-                    '    leaderVal!(Z, 2) = 0
-                    'End If
-
                     For Y = 21 To 39:
                         For Y1 = Y + 1 To 40:
                             If leaderVal!(Y, 1) < leaderVal!(Y1, 1) Then
@@ -737,6 +724,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Z
 
+			'Only incldue WR's with min rec's / game
             If compWR!(X, 4) >= leaderVal!(40, 1) And compWR!(X, 1) >= minRecept  Then
 
                 leaderName$(40) = compWR$(X)
@@ -1010,12 +998,14 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(14, 1) = teamName$
             End If
 
+			'Only include QB's with min comp / game
             If compQB!(X, 6) > indRecords!(15) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= minComp Then
                 indRecords!(15) = compQB!(X, 6)
                 indRecDesc$(15, 0) = compQB$(X)
                 indRecDesc$(15, 1) = teamName$
             End If
 
+			'Only include QB's with min comp / game
             If compQB!(X, 7) > indRecords!(16) And UCase$(finalUpdate$) = "Y" And compQB!(X, 1) >= minComp Then
                 indRecords!(16) = compQB!(X, 7)
                 indRecDesc$(16, 0) = compQB$(X)
@@ -1035,13 +1025,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
                     leaderVal!(Y, 1) = compQB!(X, 6)
                     leaderVal!(Y, 2) = compQB!(X, 1)
-
-                    'If leaderVal!(Y, 2) < minComp Then
-                    '    leaderName$(Y) = "*"
-                    '    leaderTeam$(Y) = "*"
-                    '    leaderVal!(Y, 1) = 0
-                    '    leaderVal!(Y, 2) = 0
-                    'End If
 
                     For Y = 121 To 129:
                         For Z = Y + 1 To 130:
@@ -1064,6 +1047,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
+			'Only include QB's with min comp / game
             If compQB!(X, 1) >= leaderVal!(130, 1) And compQB!(X, 1) >= minComp  Then
 
                 leaderName$(130) = compQB$(X)
@@ -1099,13 +1083,6 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                     leaderVal!(Y, 1) = compQB!(X, 7)
                     leaderVal!(Y, 2) = compQB!(X, 1)
 
-                    'If leaderVal!(Y, 2) < minComp Then
-                    '    leaderName$(Y) = "*"
-                    '    leaderTeam$(Y) = "*"
-                    '    leaderVal!(Y, 1) = 0
-                    '    leaderVal!(Y, 2) = 0
-                    'End If
-
                     For Y = 131 To 139:
                         For Z = Y + 1 To 140:
 
@@ -1127,6 +1104,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
 
             Next Y
 
+			'Only include QB's with min comp / game
             If compQB!(X, 6) >= leaderVal!(140, 1) And compQB!(X, 1) >= minComp  Then
 
                 leaderName$(140) = compQB$(X)
@@ -1239,6 +1217,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(24, 1) = teamName$
             End If
 
+			'Only include returners with min # returns / game
             If compKR!(X, 4) > indRecords!(25) And UCase$(finalUpdate$) = "Y" And compKR!(X, 1) >= minReturns Then
                 indRecords!(25) = compKR!(X, 4)
                 indRecDesc$(25, 0) = compKR$(X)
@@ -1260,6 +1239,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 End If
             Next Z
 
+			'Only include returners with min # returns / game
             If compKR!(X, 4) >= leaderVal!(170, 1) And compKR!(X, 1) >= minReturns Then
 
                 leaderVal!(170, 1) = compKR!(X, 4)
@@ -1318,6 +1298,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 indRecDesc$(29, 1) = teamName$
             End If
 
+			'Only include returners with min # returns / game
             If compPR!(X, 4) > indRecords!(30) And UCase$(finalUpdate$) = "Y" And compPR!(X, 1) >= minReturns Then
                 indRecords!(30) = compPR!(X, 4)
                 indRecDesc$(30, 0) = compPR$(X)
@@ -1339,6 +1320,7 @@ Sub CalcStatLeaders (totalGames, teamName$, statName$, finalUpdate$)
                 End If
             Next Z
 
+			'Only include returners with min # returns / game
             If compPR!(X, 4) >= leaderVal!(180, 1) And compPR!(X, 1) >= minReturns Then
 
                 leaderVal!(180, 1) = compPR!(X, 4)
