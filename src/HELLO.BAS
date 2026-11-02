@@ -50,6 +50,11 @@ DefInt A-Z
 '$Include: 'BoxRoutines.bi'
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
+
+' --- Fumble/penalty state tracking ---
+Dim Shared fumbRecYL!, fumbRetYds!, snapYL!
+Dim Shared foulTiming, fumbBehindLOS, fumbOnPlay, fumbRecBy
+
 Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 Dim Shared SX$(1 To 33, 0 To 1)
 
@@ -2385,6 +2390,7 @@ Sub FOOTBALL ()
     playYdLine! = 0
     kneelPlay = 0
     afterConv = 0
+    Call ResetFumbleState
 
     Call SetChainMarker
 
@@ -5772,6 +5778,7 @@ Sub FOOTBALL ()
                     penaltyText$ = "*** PENALTY - OFF - ILLEGAL FORWARD PASS - 5 YDS ***"
                     penaltyYds! = -5
                     loseDown = 1
+                    includePBP = 1
 
                 End If
 
@@ -5779,6 +5786,7 @@ Sub FOOTBALL ()
                 penaltyText$ = "*** PENALTY - OFF - ILLEGAL FORWARD PASS - 5 YDS ***"
                 penaltyYds! = -5
                 loseDown = 1
+                includePBP = 1
 
             Case 51
                 '-- TO DO --
@@ -5916,6 +5924,7 @@ Sub FOOTBALL ()
                     penaltyText$ = "*** PENALTY - OFF - ILLEGAL FORWARD PASS - 5 YDS ***"
                     penaltyYds! = -5
                     loseDown = 1
+                    includePBP = 1
 
                 End If
 
@@ -6700,7 +6709,12 @@ Sub FOOTBALL ()
 
             Case 25 To 36
                 pbpString$ = pbpString$ + "DEF - ILLEGAL USE HANDS"
-                penaltyYds! = 15
+                'Before 1974 this was a 15 yard penalty
+                If (ruleOptType > 0 And ruleOptPro < 2) Or ruleOptType = 0 Then
+                    penaltyYds! = -15
+                Else
+                    penaltyYds! = -10
+                End If
 
             Case 37 To 42
                 pbpString$ = pbpString$ + "DEF - PERSONAL FOUL"
@@ -6856,19 +6870,7 @@ Sub FOOTBALL ()
 
                 Case 2 + teamRat_GAME(P1, 0) To 14 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - OFF - HOLDING"
-
-                    'WFL Rules
-                    If ruleOptType = 4 Then
-                        penaltyYds! = -10
-                    Else
-                        'Pro Rules before 1974 | College Rules before 1981 | WFL always 10 yds
-                        If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl <= 1) Then
-                            penaltyYds! = -15
-                        Else
-                            penaltyYds! = -10
-                        End If
-                    End If
-
+                    penaltyYds! = GetHoldingPenYds
                     Call AppendPenaltyYards(0)
                     flagOnPlay = 1
                     isOffHold = 1
@@ -6900,9 +6902,7 @@ Sub FOOTBALL ()
 
                 Case 28 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0) To 30 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0)
                     pbpString$ = "*** PENALTY - DEF - HOLDING"
-
                     If ruleOptType = 0 Then
-                        'Penalty for NCAA is 10 yards / no auto-first
                         penaltyYds! = 10
                     Else
                         autoFirst = 1
@@ -6930,7 +6930,6 @@ Sub FOOTBALL ()
 
         Case 2
             'Pass Play
-
             If IsTouchdown(playYdLine!) Then
                 'penaltyRoll = 27 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0)
             End If
@@ -6939,19 +6938,7 @@ Sub FOOTBALL ()
 
                 Case 1 To 16 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - OFF - HOLDING"
-
-                    'WFL Rules
-                    If ruleOptType = 4 Then
-                        penaltyYds! = -10
-                    Else
-                        'Pro Rules before 1974 | College Rules before 1981 | WFL always 10 yds
-                        If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl <= 1) Then
-                            penaltyYds! = -15
-                        Else
-                            penaltyYds! = -10
-                        End If
-                    End If
-
+                    penaltyYds! = GetHoldingPenYds
                     Call AppendPenaltyYards(0)
                     flagOnPlay = 1
                     isOffHold = 1
@@ -7001,7 +6988,6 @@ Sub FOOTBALL ()
 
                 Case 28 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0) To 30 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0)
                     pbpString$ = "*** PENALTY - DEF - HOLDING"
-
                     If ruleOptType = 0 Then
                         'Penalty for NCAA is 10 yards / no auto-first
                         penaltyYds! = 10
@@ -10378,6 +10364,32 @@ Sub YARDLINE ()
     End If
 
 End Sub
+
+'----------------------------------------
+'       GetHoldingPenYds Function
+'----------------------------------------
+'This function returns the number of yards
+'a holding penalty is worth. Several diff.
+'scenarios are taken into account, and all
+'apply regardless of the context of the call.
+'DEFAULTS to using negative (-) values since
+'the majority of calls are against the OFF.
+Function GetHoldingPenYds
+
+    'WFL Rules
+    If ruleOptType = 4 Then
+        GetHoldingPenYds = -10
+    Else
+        'Pro Rules before 1974 | College Rules before 1981
+        If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl <= 1) Then
+            GetHoldingPenYds = -15
+        Else
+            GetHoldingPenYds = -10
+        End If
+
+    End If
+
+End Function
 
 
 '----------------------------------------
@@ -16531,7 +16543,11 @@ Sub PenaltyOnKickoff (foulYdLine, autoFD, koOffsides)
         Case 1 To 55
             'Kicking team
             '-- AKA Offsides; previous spot foul
-            koPenaltyString$ = koPenaltyString$ + "ILLEGAL FORMATION - " + gameTeams$(D)
+            If d100% < 50 then
+                koPenaltyString$ = koPenaltyString$ + "ILLEGAL FORMATION - " + gameTeams$(D)
+            Else
+                koPenaltyString$ = koPenaltyString$ + "ILLEGAL FORMATION - " + gameTeams$(D)
+            End If
             penaltyYds! = 5
             koOffsides = 1
 
@@ -16708,22 +16724,18 @@ Sub PenaltyOnPuntReturn (prYdLine!, foulYdLine, autoFD)
         Case 1 To 41
             'Holding - Return team
             pbpString$ = pbpString$ + gameTeams$(P1) + " - HOLDING"
-            If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl < 3) Then
-                penaltyYds! = -15
-            Else
-                penaltyYds! = -10
-            End If
+            penaltyYds! = GetHoldingPenYds
 
         Case 42 To 44
             'Holding - Kicking team
             pbpString$ = pbpString$ + gameTeams$(D) + " - HOLDING"
-            If (ruleOptType > 0 And ruleOptPro <= 1) Or (ruleOptType = 0 And ruleOptColl < 3) Then
-                penaltyYds! = 15
-            Else
-                penaltyYds! = 10
-            End If
 
-            autoFD = 1
+            If ruleOptType = 0 Then
+                penaltyYds! = 10
+            Else
+                autoFD = 1
+                penaltyYds! = 5
+            End If
 
         Case 45 To 100
             'Illegal Block
@@ -21925,7 +21937,6 @@ Sub BOX2FILE (printChoice, boxName$, hasSpecial)
     hSpace1 = (15 - Len(gameTeams$(0))) / 2
     hSpace2 = (15 - Len(gameTeams$(1))) / 2
 
-    'gameStatsTeam() = Offense Stats
     Print #1, Tab(10 + hSpace1); gameTeams$(0); Tab(45 + hSpace2); gameTeams$(1)
 
     Print #1, Tab(17); gameStatsTeam(0, 0); Tab(29); "FIRST DOWNS"; Tab(51); gameStatsTeam(1, 0)
@@ -22540,8 +22551,7 @@ Sub STATS2SCREEN ()
 
     If gameStatsTeam(0, 7) <> 0 And gameStatsTeam(1, 7) <> 0 Then
         Locate , 38: Print "PUNTS";
-        'was 15 / 50
-        Locate , 17: Print gameStatsTeam(0, 7); "-"; RoundTo1!(gameStatsTeam(0, 8) / gameStatsTeam(0, 7))
+        Locate , 17: Print gameStatsTeam(0, 7); "-"; RoundTo1!(gameStatsTeam(0, 8) / gameStatsTeam(0, 7));
         Locate , 52: Print gameStatsTeam(1, 7); "-"; RoundTo1!(gameStatsTeam(1, 8) / gameStatsTeam(1, 7))
     End If
 
@@ -22566,7 +22576,6 @@ Sub STATS2SCREEN ()
     Print Using "##"; timePoss(1) - Int(timePoss(1) / 60) * 60
 
     Locate , 32: Print "THIRD DOWN EFF";
-    'was 16, 51
     Locate , 17: Print thirdDownAtt(0) - thirdDownFail(0); "-"; thirdDownAtt(0);
     Locate , 52: Print thirdDownAtt(1) - thirdDownFail(1); "-"; thirdDownAtt(1)
 
@@ -23541,6 +23550,20 @@ Sub pbplog (lineNumber)
     'Print #11, qbacks$(P1, qbNumber(P1)), qbMobility(P1)
     'Print #11, pbpString$
     'Print #11,
+
+End Sub
+
+
+
+Sub ResetFumbleState
+
+    snapYL! = -1
+    fumbOnPlay = 0
+    fumbBehindLOS = 0
+    fumbRecBy = -1
+    fumbRecYL! = -1
+    fumbRetYds! = 0
+    foulTiming = -1
 
 End Sub
 
