@@ -381,17 +381,19 @@ Dim freePlayYdsGained, freePlayYdsToFirst
 Dim koPenalty, openKickTeam
 Dim playResultSafety, playResultTD, prPenalty
 Dim spotFoul, spotFromGain
-Dim tickerStart, winTeam
+Dim tbLine, tickerStart, winTeam
 
 Dim downYds!, evalYdsToFirst!
 
 Dim actualAttendance&, avgAttendance&
 
 Dim blitzCovAdj(5, 10, 14)
+Dim hasRunFF(1), hasRunRBPass(1), hasRunRev(1)
+
 Dim playActAdj(2, 21)
 
 Dim Shared I4 As Single
-Dim Shared kickYL!
+Dim Shared catchYL!, evalYdLine!, kickYL!
 
 ' Shared / Global
 Dim Shared earlyExit
@@ -404,19 +406,20 @@ Dim Shared checkFumbRev, chosenPlay
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
 Dim Shared D, dLine
-Dim Shared endAllGames, endYds, endZone, evalYdLine, expCompPct
+Dim Shared endAllGames, endYds, endZone, expCompPct
 
-Dim Shared fgAttLine
-Dim Shared fgSuccessChance, ffPctSuccess
-Dim Shared firstDownClockOpt, fleaFlicker
+Dim Shared fgAttLine, fgSuccessChance, ffPctSuccess
+Dim Shared firstDownClockOpt, fleaFlicker, foulLine
 Dim Shared fumbleRoll, fumbleChance, fumbPlayType, fumbleRating
 Dim Shared gameLoc, gameOver, goalLnYdAdj, goalPostAdj, halfTime
-'Dim Shared halfbackPass, impactTeam, intChance, intRetPenalty
+Dim Shared halfbackPass, impactTeam, intChance, intRetPenalty
 
 'These all seem to only be used for loops, but it is difficult to confirm
 Dim Shared I1, I3, I5, I6, I7, I8
 
-Dim Shared isOT, isSack, kickDist, kickRetIdx, kneelPlay
+Dim Shared isOT, isRetBase, isSack
+Dim Shared kickDist, kickRetIdx, kneelPlay
+
 Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
 Dim Shared loseDown, nbrLines, playContex
 Dim Shared playerMode, playerOpt, playType
@@ -470,7 +473,6 @@ Dim Shared gameLongFGAtt(1, 1), gameLongKRYds(0 To 1, 0 To 2)
 Dim Shared gameLongInt(1, 9), gameLongPassYds(1, 3), gameLongPRYds(0 To 1, 0 To 2)
 Dim Shared gameLongRec(1, 20), gameLongRunYds(1, 17)
 Dim Shared goalLnYdAdj(1 To 30, 1 To 2)
-Dim Shared hasRunRBPass(1), hasRunFF(1), hasRunRev(1)
 Dim Shared indRushPct(1, 9), K3(1, 6)
 Dim Shared kickerFGPct(1, 1), kickerFGContrib(1, 1), kickerPATPct(1, 1), kickerPATContrib(1, 1)
 Dim Shared krNumRet(1, 2), krYdsPerRet(1, 2)
@@ -506,7 +508,7 @@ Dim Shared sackStatsTeam(1, 1), schedOptions(20)
 Dim Shared wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1)
 Dim Shared ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
 
-'Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
+Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 
 Dim scheduleFile$
 
@@ -523,10 +525,8 @@ Dim Shared kicker$(1, 1), kickRet$(1, 2)
 Dim Shared passCov$(0 To 11), playDesc$(30), playSelect$(9)
 Dim Shared pret$(1, 2), punter$(1, 2), qbacks$(1, 3)
 Dim Shared rbacks$(1, 10)
-'Dim Shared SX$(1 To 33, 0 To 1)
+Dim Shared SX$(1 To 33, 0 To 1)
 Dim Shared tickerPeriod$(14), wdRec$(1, 5)
 
 Dim Shared gameLongIntTD$(1, 9), gameLongKRTD$(1, 2), gameLongPRTD$(1, 2)
 Dim Shared gameLongRunTD$(1, 17), gameLongPassTD$(1, 3), gameLongRecTD$(1, 20)
-
-

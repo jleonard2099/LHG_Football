@@ -1,0 +1,146 @@
+' Whole number as a trimmed string, right-aligned in width w.
+' If the number is wider than w it is returned as-is (never cut off).
+Function Fld$ (v As Double, w As Integer)
+
+    Dim s As String
+    s = _Trim$(Str$(v))
+
+    If Len(s) >= w Then
+        Fld$ = s
+    Else
+        Fld$ = Right$(Space$(w) + s, w)
+    End If
+
+End Function
+
+' Value with exactly one decimal place (e.g. 42 -> "42.0"), right-aligned
+' Rounded to the nearest tenth (non-negative values)
+Function Fld1$ (v As Double, w As Integer)
+
+    Dim t As Long, s As String
+
+    t = CLng(v * 10)
+    s = _Trim$(Str$(t \ 10)) + "." + _Trim$(Str$(Abs(t) Mod 10))
+
+    If Len(s) >= w Then
+        Fld1$ = s
+    Else
+        Fld1$ = Right$(Space$(w) + s, w)
+    End If
+
+End Function
+
+' "AA-BB", with first dash on a fixed column
+Function Two$ (a As Double, b As Double)
+    Two$ = Fld$(a, 3) + "-" + Fld$(b, 3)
+End Function
+
+' "AA-BB.B", with first dash on a fixed column
+Function Two1$ (a As Double, b As Double)
+    Two1$ = Fld$(a, 3) + "-" + Fld1$(b, 5)
+End Function
+
+' "AA-BB-C":  ATT- 3 wide (keeps dash aligned),
+' Comp - 2 wide, INT's - 1 wide
+Function Three$ (a As Double, b As Double, c As Double)
+    Three$ = Fld$(a, 3) + "-" + Fld$(b, 2) + "-" + Fld$(c, 1)
+End Function
+
+
+' Display possession time as Minutes:Seconds
+' Colon aligned to -'s
+Function Clock$ (secs As Double)
+
+    Dim possMin, possSec
+
+    possMin = Int(secs / 60)
+    possSec = Int(secs - possMin * 60)
+    Clock$ = Fld$(possMin, 3) + ":" + Right$("0" + _Trim$(Str$(possSec)), 2)
+
+End Function
+
+' Build / print entire stat row in a string
+' Right aligned (dashes line up)
+Sub StatRow (label$, leftVal$, righttVal$)
+
+    Dim ln As String
+
+    ln = Space$(79)
+    Mid$(ln, LBL_MID - Len(label$) \ 2) = label$
+    Mid$(ln, DASH_L - 3) = leftVal$
+    Mid$(ln, DASH_R - 3) = righttVal$
+
+    Color 0, 7
+    Locate , 12
+
+    'Print RTrim$(ln)
+    Print Mid$(ln, 12, 57)
+
+End Sub
+
+' Build / print entire stat row in a string
+' Values centered under the team names
+Sub StatRowC (label$, lv$, rv$)
+
+    Dim ln As String
+    Dim p
+
+    ln = Space$(79)
+    Mid$(ln, LBL_MID - Len(label$) \ 2) = label$
+    p = DASH_L + 1 - Len(lv$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = lv$
+    p = DASH_R + 1 - Len(rv$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = rv$
+
+    Locate , 12
+    Print Mid$(ln, 12, 57)
+    'Print RTrim$(ln)
+
+End Sub
+
+
+' Stat row, values right-aligned so first dashes line up.
+Sub StatRowF (fnum As Integer, label$, lv$, rv$)
+
+    Dim ln As String
+
+    ln = Space$(79)
+    Mid$(ln, FLBL_MID - Len(label$) \ 2) = label$
+    Mid$(ln, FDASH_L - 3) = lv$
+    Mid$(ln, FDASH_R - 3) = rv$
+    Print #fnum, RTrim$(ln)
+
+End Sub
+
+
+' Stat row, values centered under the team names (used for time of possession).
+Sub StatRowCF (fnum As Integer, label$, lv$, rv$)
+
+    Dim ln As String
+    Dim p
+
+    ln = Space$(79)
+    Mid$(ln, FLBL_MID - Len(label$) \ 2) = label$
+    p = FDASH_L + 1 - Len(lv$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = lv$
+    p = FDASH_R + 1 - Len(rv$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = rv$
+    Print #fnum, RTrim$(ln)
+
+End Sub
+
+
+' Team-name header row, each name centered over its stat column.
+Sub TeamHeaderF (fnum As Integer, n0$, n1$)
+
+    Dim ln As String
+    Dim p
+
+    ln = Space$(79)
+    p = FDASH_L + 1 - Len(n0$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = n0$
+    p = FDASH_R + 1 - Len(n1$) \ 2: If p < 1 Then p = 1
+    Mid$(ln, p) = n1$
+    Print #fnum, RTrim$(ln)
+
+End Sub
