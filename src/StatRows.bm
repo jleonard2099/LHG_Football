@@ -1,3 +1,6 @@
+'----------------------------------------
+'              Fld$ Function
+'----------------------------------------
 ' Whole number as a trimmed string, right-aligned in width w.
 ' If the number is wider than w it is returned as-is (never cut off).
 Function Fld$ (v As Double, w As Integer)
@@ -13,6 +16,10 @@ Function Fld$ (v As Double, w As Integer)
 
 End Function
 
+
+'----------------------------------------
+'             Fld1$ Function
+'----------------------------------------
 ' Value with exactly one decimal place (e.g. 42 -> "42.0"), right-aligned
 ' Rounded to the nearest tenth (non-negative values)
 Function Fld1$ (v As Double, w As Integer)
@@ -30,16 +37,28 @@ Function Fld1$ (v As Double, w As Integer)
 
 End Function
 
+
+'----------------------------------------
+'              Two$ Function
+'----------------------------------------
 ' "AA-BB", with first dash on a fixed column
 Function Two$ (a As Double, b As Double)
     Two$ = Fld$(a, 3) + "-" + Fld$(b, 3)
 End Function
 
+
+'----------------------------------------
+'             Two1$ Function
+'----------------------------------------
 ' "AA-BB.B", with first dash on a fixed column
 Function Two1$ (a As Double, b As Double)
     Two1$ = Fld$(a, 3) + "-" + Fld1$(b, 5)
 End Function
 
+
+'----------------------------------------
+'             Three$ Function
+'----------------------------------------
 ' "AA-BB-C":  ATT- 3 wide (keeps dash aligned),
 ' Comp - 2 wide, INT's - 1 wide
 Function Three$ (a As Double, b As Double, c As Double)
@@ -47,6 +66,9 @@ Function Three$ (a As Double, b As Double, c As Double)
 End Function
 
 
+'----------------------------------------
+'             Clock$ Function
+'----------------------------------------
 ' Display possession time as Minutes:Seconds
 ' Colon aligned to -'s
 Function Clock$ (secs As Double)
@@ -59,6 +81,10 @@ Function Clock$ (secs As Double)
 
 End Function
 
+
+'----------------------------------------
+'           StatRow Subroutine
+'----------------------------------------
 ' Build / print entire stat row in a string
 ' Right aligned (dashes line up)
 Sub StatRow (label$, leftVal$, righttVal$)
@@ -78,6 +104,10 @@ Sub StatRow (label$, leftVal$, righttVal$)
 
 End Sub
 
+
+'----------------------------------------
+'           StatRowC Subroutine
+'----------------------------------------
 ' Build / print entire stat row in a string
 ' Values centered under the team names
 Sub StatRowC (label$, lv$, rv$)
@@ -99,6 +129,9 @@ Sub StatRowC (label$, lv$, rv$)
 End Sub
 
 
+'----------------------------------------
+'           StatRowF Subroutine
+'----------------------------------------
 ' Stat row, values right-aligned so first dashes line up.
 Sub StatRowF (fnum As Integer, label$, lv$, rv$)
 
@@ -113,6 +146,9 @@ Sub StatRowF (fnum As Integer, label$, lv$, rv$)
 End Sub
 
 
+'----------------------------------------
+'          StatRowCF Subroutine
+'----------------------------------------
 ' Stat row, values centered under the team names (used for time of possession).
 Sub StatRowCF (fnum As Integer, label$, lv$, rv$)
 
@@ -130,6 +166,9 @@ Sub StatRowCF (fnum As Integer, label$, lv$, rv$)
 End Sub
 
 
+'----------------------------------------
+'         TeamHeaderF Subroutine
+'----------------------------------------
 ' Team-name header row, each name centered over its stat column.
 Sub TeamHeaderF (fnum As Integer, n0$, n1$)
 
