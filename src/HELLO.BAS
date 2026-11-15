@@ -60,18 +60,21 @@ DefInt A-Z
 '$Include: 'FileTeamSelection.bi'
 '$Include: 'Variables.bi'
 Dim Shared I1, I3, I5, I6, I7, I8
+Dim Shared otPossBeforeFumb
+
+Dim Shared infracOffset!
+
 Dim Shared scoringPlays(50, 6)
 Dim Shared schedGame(2), stdRunYds(1, 14)
+
 Dim Shared avgTmYdsPerPlay!(1)
 
-
 '-- TEMPORARY
-
 Dim Shared dbgFumble ' 0 = natural, 1 = force fumble on sacks, 2 = force fumble on runs
 Dim Shared dbgRecover ' 0 = natural, 1 = offense recovers, 2 = defense recovers
 
 dbgFumble = 0
-dbgRecover = 0
+dbgRecover = 1
 
 '$Include: 'MainRoutines.bi'
 '$Include: 'TITLE.bi'
@@ -2292,8 +2295,8 @@ Sub FOOTBALL ()
 
 
     '-- RESTORE ME --
-    If d100% <= offRecovChance Then
-        'If (d100% <= offRecovChance Or dbgRecover = 1) And dbgRecover <> 2 Then
+    'If d100% <= offRecovChance Then
+    If (d100% <= offRecovChance Or dbgRecover = 1) And dbgRecover <> 2 Then
 
         If playContext = 9 Then
             pbpString$ = YardageResultStr$("HE", "JUST A LITTLE FROM FALLING ON IT", "FALLS ON IT NEAR")
@@ -2325,7 +2328,7 @@ Sub FOOTBALL ()
             ElseIf pendingPenYds! < 0 Then
                 Print #11, "=== CASE B: OFF foul, OFF recovers ==="
             End If
-            Print #11, pbpString$; " pendYds="; pendingPenYds!; " penaltyYds="; penaltyYds!; " P1="; P1; " D="; D; " snapP1="; snapP1; " ydLine="; ydLine; " evalYdLine="; evalYdLine!; " ydsGained="; ydsGained; " playResolved="; playResolved; " evalDown="; evalDown; " scorePenaltyType="; scorePenaltyType; " playResultTD="; playResultTD; " playResultSafety="; playResultSafety; " spotFromGain="; spotFromGain; " spotFoul="; spotFoul; " foulLine="; foulLine; " autoFirst="; autoFirst
+            Print #11, pbpString$; " pendYds="; pendingPenYds!; " penaltyYds="; penaltyYds!; " P1="; P1; " D="; D; " snapP1="; snapP1; " ydLine="; ydLine; " evalYdLine="; evalYdLine!; " ydsGained="; ydsGained; " playResolved="; playResolved; " evalDown="; evalDown; " scorePenaltyType="; scorePenaltyType; " playResultTD="; playResultTD; " playResultSafety="; playResultSafety; " spotFromGain="; spotFromGain; " spotFoul="; spotFoul; " foulLine="; foulLine; " autoFirst="; autoFirst; " infracOffset="; infracOffset!
             '--- End TEMP DEBUG ---
 
             'Fumble plays arrive with the play already resolved
@@ -2355,13 +2358,16 @@ Sub FOOTBALL ()
         gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) + 1
 
         If isOT = 1 And overtimeOpt >= 3 Then
+            'track OT possessions
+            otPossBeforeFumb = nbrPossOT(D)
             nbrPossOT(D) = 1
         End If
-
+        
         currDown = 1
         ydsToFirst = 10
 
         ydLine = 100 - ydLine
+        fumbRetYdLine! = ydLine
 
         Call CHANGEPOSS
         ballFumbled = 2
@@ -2465,7 +2471,7 @@ Sub FOOTBALL ()
                 Print #11, "=== CASE D: OFF foul, DEF recovers ==="
             End If
             If pendingPenYds! <> 0 Then
-                Print #11, penaltyString$; " yds="; pendingPenYds!; " P1="; P1; " D="; D; " snapP1="; snapP1; " ydLine="; ydLine; " evalYdLine="; evalYdLine!; " ydsGained="; ydsGained; " playResolved="; playResolved; " evalDown="; evalDown; " scorePenaltyType="; scorePenaltyType; " playResultTD="; playResultTD; " playResultSafety="; playResultSafety; " spotFromGain="; spotFromGain; " spotFoul="; spotFoul; " foulLine="; foulLine; " autoFirst="; autoFirst
+                Print #11, penaltyString$; " yds="; pendingPenYds!; " P1="; P1; " D="; D; " snapP1="; snapP1; " ydLine="; ydLine; " evalYdLine="; evalYdLine!; " ydsGained="; ydsGained; " playResolved="; playResolved; " evalDown="; evalDown; " scorePenaltyType="; scorePenaltyType; " playResultTD="; playResultTD; " playResultSafety="; playResultSafety; " spotFromGain="; spotFromGain; " spotFoul="; spotFoul; " foulLine="; foulLine; " autoFirst="; autoFirst; " infracOffset="; infracOffset!
             End If
 
             'Fumble plays arrive with the play already resolved
@@ -3044,8 +3050,9 @@ Sub FOOTBALL ()
     evalDown = currDown
     evalYdsToFirst! = ydsToFirst
     evalYdLine! = ydLine
-    snapP1 = P1
+    infracOffset! = 0
     snapYdsToFirst! = ydsToFirst
+    snapP1 = P1
 
     Call PenaltyPreSnap(flagOnPlay, pendingFlag, autoAccept)
 
@@ -6779,6 +6786,14 @@ Sub FOOTBALL ()
 
         Case 1
             'Run Play
+
+
+            '-- REMOVE ME --
+            If evalDown = 3 Then
+                penaltyRoll = 17 + teamRat_GAME(P1, 0)
+            End If
+
+
             Select Case penaltyRoll
 
                 Case 1 + teamRat_GAME(P1, 0)
@@ -6793,6 +6808,19 @@ Sub FOOTBALL ()
                     Call AppendPenaltyYards(0)
                     flagOnPlay = 1
                     isOffHold = 1
+
+
+                    '-- RESTORE ME --
+                    'If ballFumbled = 1 Then
+                    If ballFumbled = 1 Or dbgFumble = 1 Then
+                        Call FumblePBP
+                        GoTo 650
+                    Else
+                        'Evaluate outcome of play
+                        'Resolve deadball / personal fouls
+                        GoTo 3303
+                    End If
+
 
                 Case 15 + teamRat_GAME(P1, 0) To 16 + teamRat_GAME(P1, 0)
                     pbpString$ = "*** PENALTY - OFF - TOO MANY MEN ON FIELD"
@@ -6831,52 +6859,15 @@ Sub FOOTBALL ()
                     Call AppendPenaltyYards(autoFirst)
                     flagOnPlay = 1
 
-
-
-                    '--- TEMP DEBUG: forced fumble on a play that also has this foul (remove later) ---
-                    If dbgFumble = 1 Then
-                        'Save the foul first, because the fumble text overwrites pbpString$
-                        pendingPenYds! = penaltyYds!
-                        pendingPenString$ = pbpString$
-                        If pendingPenYds! > 0 Then pendingFoulTeam = D Else pendingFoulTeam = P1
-
-                        'The same steps as Case Else
-                        Call ResolvePlayOutcome(playYdLine!, flagOnPlay, pendingFlag)
-                        playResolved = 1
-
-                        'Mark the foul as waiting, and the fumble as having happened
-                        pendingFlag = 1
-                        ballFumbled = 1
-
-                        Call FumblePBP
-                        GoTo 650
-                    End If
-                    '--- end TEMP DEBUG ---
-
-
-
                 Case Else
 
                     Call ResolvePlayOutcome(playYdLine!, flagOnPlay, pendingFlag)
                     playResolved = 1
 
-                    '-- RESTORE ME --
-                    If ballFumbled = 1 Then
-                        Call FumblePBP
-                        GoTo 650
-                    Else
-                        'Evaluate outcome of play
-                        'Resolve deadball / personal fouls
-                        GoTo 3303
-                    End If
-
             End Select
 
         Case 2
             'Pass Play
-            If IsTouchdown(playYdLine!) Then
-                'penaltyRoll = 27 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0)
-            End If
 
             Select Case penaltyRoll
 
@@ -6920,9 +6911,8 @@ Sub FOOTBALL ()
                         pbpString$ = "*** PENALTY - OFF - ILLEGAL MOTION"
                         penaltyYds! = -5
                     End If
-                    flagOnPlay = 1
-
                     Call AppendPenaltyYards(autoFirst)
+                    flagOnPlay = 1
 
                 Case 27 + teamRat_GAME(P1, 0) + teamRat_GAME(D, 0)
                     pbpString$ = "*** PENALTY - DEF - TOO MANY MEN ON FIELD"
@@ -6948,7 +6938,9 @@ Sub FOOTBALL ()
                     Call ResolvePlayOutcome(playYdLine!, flagOnPlay, pendingFlag)
                     playResolved = 1
 
-                    If ballFumbled = 1 Then
+                    '-- RESTORE ME --
+                    'If ballFumbled = 1 Then
+                    If ballFumbled = 1 Or dbgFumble = 1 Then
                         Call FumblePBP
                         GoTo 650
                     Else
@@ -6956,6 +6948,7 @@ Sub FOOTBALL ()
                         'Resolve deadball / personal fouls
                         GoTo 3303
                     End If
+
 
             End Select
 
@@ -6981,6 +6974,7 @@ Sub FOOTBALL ()
             infracPoint = Int(Rnd(1) * 5) + 1
             ydLine = ydLine + infracPoint
             pbpString$ = pbpString$ + "IN THE SECONDARY."
+            infracOffset! = infracPoint
             Call PBP
         End If
 
@@ -6989,6 +6983,7 @@ Sub FOOTBALL ()
             infracPoint = Int(Rnd(1) * 8) + 1
             ydLine = ydLine - infracPoint
             pbpString$ = pbpString$ + "IN THE BACKFIELD."
+            infracOffset! = -infracPoint
             Call PBP
         End If
 
@@ -7003,6 +6998,33 @@ Sub FOOTBALL ()
     'Reset for next penalty
     isOffHold = 0
     isIllBlock = 0
+
+
+    '--- TEMP DEBUG: forced fumble on a play that also has a foul (remove later) ---
+    If dbgFumble = 1 And (playType = 1 Or scoreX0 = 3) Then
+        'The holding block above may have moved ydLine to the foul spot.
+        'Remember the offset, then put ydLine back to the snap spot
+        infracOffset! = ydLine - evalYdLine!
+        ydLine = evalYdLine!
+
+        'Save the foul first, because the fumble text overwrites pbpString$
+        pendingPenYds! = penaltyYds!
+        pendingPenString$ = pbpString$
+        If pendingPenYds! > 0 Then pendingFoulTeam = D Else pendingFoulTeam = P1
+
+        'The same steps as Case Else
+        Call ResolvePlayOutcome(playYdLine!, flagOnPlay, pendingFlag)
+        playResolved = 1
+
+        'Mark the foul as waiting, and the fumble as having happened
+        pendingFlag = 1
+        ballFumbled = 1
+
+        Call FumblePBP
+        GoTo 650
+    End If
+    '--- end TEMP DEBUG ---
+
 
     HANDLEPENALTY:
     prevPlayPenaltyAcc = 0
@@ -7234,6 +7256,11 @@ Sub FOOTBALL ()
 
                 Call CHANGEPOSS 'P1 is the original offense again
 
+                If isOT = 1 And overtimeOpt >= 3 Then
+                    'undo recovering team's possession flag
+                    nbrPossOT(D) = otPossBeforeFumb
+                End If
+
                 'Undo fumble
                 gameStatsTeam(P1, 10) = gameStatsTeam(P1, 10) - 1
                 'Fix penalty sign
@@ -7258,6 +7285,16 @@ Sub FOOTBALL ()
             playResolved = 0
 
         End If
+
+
+        'Holding / illegal block at the foul spot:
+        'moving the ball also changes the distance to the line to gain
+        If infracOffset! <> 0 Then
+            'Fumble play rewind to the snap spot, so move to the foul spot
+            If ballFumbled > 0 Then ydLine = ydLine + infracOffset!
+            ydsToFirst = ydsToFirst - infracOffset!
+        End If
+
 
         If penaltyYds! > 0 Then
 
@@ -7397,6 +7434,11 @@ Sub FOOTBALL ()
 
         koPenalty = 0
         isRetBase = 0
+
+        If infracOffset! <> 0 And ballFumbled = 0 Then
+            ydLine = ydLine - infracOffset!
+        End If
+
         pbpString$ = "PENALTY DECLINED"
         Call PBP
 
