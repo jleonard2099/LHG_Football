@@ -90,6 +90,11 @@ Affero GNU GPL v3
 Contact me directly if interested in contributing. Only considering people who share my vision for these games and are able to honor Lance's work and legacy.
 
 ### Authors / Acknowledgment ###
+
+Made better by:
+
+<img src="claude-logo.png" width=256 height=256>
+
 - Manual images created by [Cool Clips](http://search.coolclips.com/)
 - Game icons created by [Joseph Gan (Icon-Icons)](https://icon-icons.com/users/XHgnBHIfJk0ZlajSy0A0x/icon-sets/)
 - Save icons created by [Those Icons - Flaticon](https://www.flaticon.com/free-icons/save)
@@ -101,3 +106,4 @@ Contact me directly if interested in contributing. Only considering people who s
 - Randy Dudley, original author of the stats viewer, for his thorough beta testing and attention to detail with stats / leaders
 - Tim Meegan, for helping find several bugs long after anyone else was helping out
 - Andrew <kapetan_zaharias> for simulating several scenarios during play testing
+- AJS (aspallmo123@gmail.com) for dilligently finding almost every bug that needed fixing
