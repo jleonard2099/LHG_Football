@@ -392,7 +392,8 @@ Dim hasRunFF(1), hasRunRBPass(1), hasRunRev(1)
 Dim playActAdj(2, 21)
 
 Dim Shared I4 As Single
-Dim Shared catchYL!, evalYdLine!, kickYL!
+Dim Shared catchYL!, evalYdLine!, infracOffset!
+Dim Shared kickYL!
 
 ' Shared / Global
 Dim Shared earlyExit
@@ -404,7 +405,8 @@ Dim Shared catchPctSuccess, chainStart, chainEnd
 Dim Shared checkFumbRev, chosenPlay
 Dim Shared convChoice, convGood, defPlayer, enforceOnKO
 Dim Shared coverage, compTeam, catchYds, currDown ', compOffense
-Dim Shared D, dLine
+Dim Shared D, deferCompile, dLine
+
 Dim Shared endAllGames, endYds, endZone, expCompPct
 Dim Shared fgAttLine, fgSuccessChance, ffPctSuccess
 Dim Shared firstDownClockOpt, fleaFlicker, foulLine
@@ -413,13 +415,14 @@ Dim Shared gameLoc, gameOver, goalLnYdAdj, goalPostAdj, halfTime
 Dim Shared halfbackPass, impactTeam, intChance, intRetPenalty
 
 'These all seem to only be used for loops, but it is difficult to confirm
-'Dim Shared I1, I3, I5, I6, I7, I8
+Dim Shared I1, I3, I5, I6, I7, I8
 
+Dim Shared intFoulPending, intOnPlay
 Dim Shared isOT, isRetBase, isSack
 Dim Shared kickDist, kickRetIdx, kneelPlay
 
 Dim Shared lastPlayPenalty, lastPlayType, last2PlayType, last3PlayType, lastPlayYards
-Dim Shared loseDown, nbrLines
+Dim Shared loseDown, nbrLines, otPossBeforeSwap
 Dim Shared P1, pendingFoulTeam, playContex
 Dim Shared playerMode, playerOpt, playType
 Dim Shared playCall, playContext, playSegment
@@ -428,7 +431,7 @@ Dim Shared overtimeOpt, overuseAdj, nbrScores
 Dim Shared quarter, qback, qbTakeKnee
 Dim Shared ruleOptColl, ruleOptPro, ruleOptType
 Dim Shared rushBase, rushEra
-Dim Shared scoreX0, scorePenaltyType, snapP1
+Dim Shared scoreX0, scorePenaltyType, snapD, snapP1
 Dim Shared sndOpt, startYds, useTicker, windScreenDir
 Dim Shared totalSTPenalties, windFavorTeam, YF
 
@@ -460,7 +463,7 @@ Dim Shared pbpText$(1 To MAX_PBP_LINES)
 Dim Shared adjFGPct(4), adjFGLine(4)
 Dim Shared brkawayYds(1 To 38, 1 To 4), climate(6)
 
-'Dim Shared avgTmYdsPerPlay!(1)
+Dim Shared avgTmYdsPerPlay!(1)
 Dim Shared gameFGA!(1, 1, 0 To 4), gameFGM!(1, 1, 0 To 4)
 Dim Shared gameTeamStat!(0 To 38), gameOppStat!(0 To 38), gamePlayerStat!(0 To 13, 0 To 17)
 Dim Shared recLongRec!(1, 20), recLongFG!(1, 1), recLongInt!(1, 0 To 9), recLongKR!(1, 0 To 2), recLongPass!(1, 0 To 3), recLongRush!(1, 0 To 9)
@@ -491,6 +494,7 @@ Dim Shared rushModifier(1, 38)
 Dim Shared sackStatsOpp(1, 14, 1)
 Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50)
 'Dim Shared scoringPlays(50, 6)
+
 'scoringPlays(__, X)
 'X = 0: Score Type
 'X = 1: Team Index
@@ -500,7 +504,7 @@ Dim Shared score(0 To 1, 0 To 20), scoreQuarters(50), scoreTimes(50)
 'X = 5: Score Distance
 'X = 6: Player Index (Kicker)
 
-'Dim Shared schedGame(2), stdRunYds(1, 14)
+Dim Shared schedGame(2), stdRunYds(1, 14)
 'teamAverages indexes:
 '0 = rush average (YPC)
 '1 = completion %
@@ -517,6 +521,7 @@ Dim Shared useRandomQB(1)
 Dim Shared sackStatsTeam(1, 1), schedOptions(20)
 Dim Shared wrNumRec(1, 9), wrYdsPerC(1, 9), XD(1)
 Dim Shared ydsPerComp(1), ydsPerCompPctAdj(50, 2), ydsPerPunt(1, 2)
+
 
 Dim Shared ST%(1 To 32), SX%(1 To 32, 0 To 1, 0 To 14)
 
